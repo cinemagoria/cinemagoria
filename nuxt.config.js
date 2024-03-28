@@ -1,4 +1,4 @@
-export default {
+xexport default {
   // https://nuxtjs.org/deployments/netlify/
   target: "static",
 
@@ -17,15 +17,15 @@ export default {
       {
         hid: "description",
         name: "description",
-        content: "Browse Movies, TV Shows and People",
+        content: "Fast-track your entertainment picks.",
       },
       { hid: "author", name: "author", content: "ivanluna.dev" },
       { hid: "og:locale", property: "og:locale", content: "en_GB" },
-      { hid: "og:title", property: "og:title", content: "Movies App" },
+      { hid: "og:title", property: "og:title", content: "SonarFlix" },
       {
         hid: "og:description",
         property: "og:description",
-        content: "Browse Movies, TV Shows and People",
+        content: "Fast-track your entertainment picks.",
       },
       { hid: "og:type", property: "og:type", content: "website" },
       {
