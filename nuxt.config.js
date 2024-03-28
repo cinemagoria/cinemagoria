@@ -1,4 +1,4 @@
-xexport default {
+export default {
   // https://nuxtjs.org/deployments/netlify/
   target: "static",
 
