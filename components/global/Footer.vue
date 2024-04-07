@@ -1,7 +1,7 @@
 <template>
   <footer :class="$style.footer">
     <p> By using this site you agree to and accept our <strong><a href="/terms">User Agreement and Terms</a></strong>.</p>
-    <p>All Data is provided by <a target="_blank" href="https://www.themoviedb.org/" rel="noopener">TMDb</a>.</p>
+    <p>All Data is provided by <a target="_blank" href="https://www.themoviedb.org/" rel="noopener">TMDb</a> and <a target="_blank" href="https://www.justwatch.com/" rel="noopener">JustWatch</a>.</p>
     <p>&copy; {{ new Date().getFullYear() }}<a target="_blank" href="https://ivanluna.dev/" rel="noopener"> Ivanluna.dev</a> </p>
 
     <ul class="nolist">

@@ -16,7 +16,11 @@
         <h2 class="text-center custom-center"><strong>4. RESPONSIBLE USE OF SONARFLIX AND BEST PRACTICES. IMPORTANT NOTICE:</strong></h2>
         <h2 class="text-center">BY USING SONARFLIX, THE USER ACKNOWLEDGES AND ACCEPTS THAT THE FUNCTIONALITY OF THIS WEBSITE IS DESIGNED EXCLUSIVELY FOR PRESENTATION TO RECRUITERS. THE SONARFLIX PROJECT IS MERELY A DEMONSTRATIVE FEATURE OF TMDB'S API. SONARFLIX, ITS DEVELOPMENT TEAM, AND ANY RELATED ENTITY DO NOT ASSUME ANY RESPONSIBILITY FOR THE MISUSE OF THE API OR ANY OTHER ASPECT OF THE SITE'S FUNCTIONALITY. THE RESPONSIBILITY LIES SOLELY WITH THE USER, WHO MUST USE THE PLATFORM RESPONSIBLY AND ADHERE TO ONLINE BEST PRACTICES WHEN USING THE DATA OBTAINED OF TMDB'S API. IT IS CRUCIAL TO RECOGNIZE THAT ANY MISUSE OF THE FUNCTIONALITY GOES BEYOND OUR PURPOSE. PLEASE CONSIDER THE FOLLOWING BEST PRACTICES: AVOID USING THIS WEB APP FOR ILLEGAL OR MALICIOUS ACTIVITIES. DO NOT USE SONARFLIX IN CRITICAL ENVIRONMENTS OR WITH EXPECTATIONS OF ACTIVE FUNCTIONING. YOUR UNDERSTANDING AND COMPLIANCE WITH THESE GUIDELINES ARE CRUCIAL FOR THE RESPONSIBLE USE OF SONARFLIX. WE APPRECIATE YOUR COOPERATION AND HOPE YOU ENJOY THE DEMONSTRATIVE EXPERIENCE OF OUR SERVICE. FOR MORE INFORMATION SEE THE RESPECTIVE [MIT LICENSE](https://github.com/imprvhub/sonarflix/blob/main/LICENSE) IN THE SONARFLIX REPOSITORY.</h2>
         <h2 class="text-center custom-center"><strong>5. ATTRIBUTIONS:</strong></h2>
-        <h2 class="text-center">FOR SOCIAL MEDIA AND SVG ICONS LICENSED UNDER THE CREATIVE COMMONS ATTRIBUTION 4.0 INTERNATIONAL LICENSE - ATTRIBUTION: FONT AWESOME FREE 5.2.0 BY @FONTAWESOME - HTTPS://FONTAWESOME.COM, CC BY 4.0 VIA WIKIMEDIA COMMONS.</h2>
+        <h2 class="text-center">
+            Social media icons and SVGs are licensed under the Creative Commons Attribution 4.0 International License. Attribution: Font Awesome Free 5.2.0 by @FontAwesome. Learn more at <a href="https://fontawesome.com" target="_blank">Font Awesome</a>, CC BY 4.0 via Wikimedia Commons.
+            Data regarding movies and TV shows is provided by <a href="https://www.themoviedb.org/" target="_blank">TMDB</a>.
+            Data regarding streaming providers, networks, and platforms is provided by <a href="https://www.justwatch.com" target="_blank">JustWatch</a>.
+        </h2>
         <h2 class="text-center custom-center"><strong>6. INFORMATION WE COLLECT</strong></h2>
         <h2 class="text-center">SONARFLIX MAY COLLECT AND STORE CERTAIN INFORMATION ABOUT YOUR USE OF THE WEBSITE. THIS INCLUDES NON-PERSONAL INFORMATION SUCH AS DEVICE TYPE, BROWSER TYPE, AND USAGE PATTERNS. OUR PRIVACY POLICY (SEE SECTION 9) PROVIDES FURTHER DETAILS ON HOW WE HANDLE THIS INFORMATION.</h2>
         <h2 class="text-center custom-center"><strong>7. MODIFICATIONS AND TERMINATION</strong></h2>
@@ -48,7 +52,18 @@ export default {
   }
 };
 </script>
+
 <style scoped>
+  a {
+    font-weight: 600;
+    color: #80868b;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: #ffffff;
+  }
+  
   h1 {
     text-align: center;
     margin-bottom: 20px; 
@@ -82,4 +97,6 @@ export default {
   .custom-center {
     text-align: center;
   }
+
+
 </style>
