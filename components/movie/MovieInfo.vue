@@ -111,7 +111,7 @@
 
           <li v-if="providers && providers.length">
             <div :class="$style.label">
-              Watch On:
+              Watch On
             </div>
             <div :class="$style.value">
               {{ providers.join(', ') }}
