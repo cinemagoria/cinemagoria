@@ -15,7 +15,7 @@ The data utilized in this implementation is provided by the public API of [TMDB]
 The current focus is on frontend development deployed in Netlify, with plans to integrate a Python backend for authentication in the future. This backend will enable users to save their favorite movies and TV series, as well as share them on social media platforms. Please note that this project is a work in progress.
 
 ### Planned Features
-
+- Add Providers Options for each Movie and TV Show. [DONE](https://github.com/imprvhub/sonarflix/commit/b3d8fe465590818b4e720eb0ed045dec533521f1)
 - Integration of Python backend for user authentication
 - User profile creation and management
 - Saving favorite movies and TV series
