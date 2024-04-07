@@ -65,7 +65,10 @@
             <div :class="$style.desc">
               {{ item.overview | truncate(200) }}
             </div>
-
+            <br>
+            <!-- <h2 :class="$style.title">
+              Add To Favorites (Soon)
+            </h2> -->
             <button
               v-if="trailer"
               class="button button--icon"

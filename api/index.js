@@ -233,7 +233,7 @@ export function getMovies (query, page = 1) {
   });
 };
 
-export function getMovie (id) {
+export function getMovie(id) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/movie/${id}`, {
       params: {
@@ -242,14 +242,72 @@ export function getMovie (id) {
         append_to_response: 'videos,credits,images,external_ids,release_dates',
         include_image_language: 'en',
       },
-    }).then((response) => {
-      resolve(response.data);
-    })
-      .catch((error) => {
-        reject(error);
-      });
+    }).then(async (response) => {
+      const responseData = response.data;
+      console.log("Original Movie Data:", responseData); 
+
+      try {
+        const providers = await getMovieProviders(id);
+        responseData.providers = providers;
+        console.log("Providers:", providers);
+      } catch (error) {
+        console.error("Error fetching movie providers:", error);
+      }
+
+      const movieData = {
+        id: responseData.id,
+        original_title: responseData.original_title,
+        poster_path: responseData.poster_path,
+        overview: responseData.overview,
+        genres: responseData.genres,
+        networks: responseData.networks ? responseData.networks : [],
+        release_date: responseData.release_date,
+        status: responseData.status,
+        runtime: responseData.runtime,
+        imdb_id: responseData.external_ids ? responseData.external_ids.imdb_id : null,
+        vote_average: responseData.vote_average,
+      };
+      console.log("Movie Data:", JSON.stringify(movieData));
+      resolve(responseData); 
+    }).catch((error) => {
+      console.error("Error fetching movie data:", error);
+      reject(error);
+    });
   });
 };
+
+export function getMovieProviders(id) {
+  return new Promise((resolve, reject) => {
+    axios.get(`${apiUrl}/movie/${id}/watch/providers`, {
+      params: {
+        api_key: process.env.API_KEY,
+      },
+    }).then((response) => {
+      let providers = response.data.results.AR; // Intentamos obtener primero los proveedores de AR
+      if (providers && providers.flatrate) {
+        const providerNames = providers.flatrate.map(provider => provider.provider_name);
+        console.log("Flatrate Providers in AR:", providerNames);
+        resolve(providerNames);
+      } else {
+        console.log("No flatrate providers found for AR, trying US");
+        providers = response.data.results.US; // Intentamos obtener los proveedores de US
+        if (providers && providers.flatrate) {
+          const providerNames = providers.flatrate.map(provider => provider.provider_name);
+          console.log("Flatrate Providers in US:", providerNames);
+          resolve(providerNames);
+        } else {
+          console.log("No flatrate providers found for US, unable to fetch movie providers");
+          reject(new Error("Unable to fetch movie providers"));
+        }
+      }
+    }).catch((error) => {
+      console.error("Error fetching movie providers:", error);
+      reject(error);
+    });
+  });
+};
+
+
 
 export function getMovieRecommended (id, page = 1) {
   return new Promise((resolve, reject) => {
@@ -285,7 +343,7 @@ export function getTvShows (query, page = 1) {
   });
 };
 
-export function getTvShow (id) {
+export function getTvShow(id) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/tv/${id}`, {
       params: {
@@ -295,13 +353,29 @@ export function getTvShow (id) {
         include_image_language: 'en',
       },
     }).then((response) => {
-      resolve(response.data);
-    })
-      .catch((error) => {
-        reject(error);
-      });
+      const responseData = response.data;
+      const tvShowData = {
+        id: responseData.id,
+        original_title: responseData.original_title,
+        poster_path: responseData.poster_path,
+        overview: responseData.overview,
+        release_date: responseData.release_date,
+        genres: responseData.genres,
+        networks: responseData.networks ? responseData.networks : [],
+        status: responseData.status,
+        runtime: responseData.runtime,
+        imdb_id: responseData.external_ids ? responseData.external_ids.imdb_id : null,
+        vote_average: responseData.vote_average,
+      };
+      console.log("TV Show Data:", JSON.stringify(tvShowData));
+      resolve(responseData); // Devolver los datos originales para mantener la estructura
+    }).catch((error) => {
+      console.error("Error fetching TV show data:", error);
+      reject(error);
+    });
   });
 };
+
 
 export function getTvShowRecommended (id, page = 1) {
   return new Promise((resolve, reject) => {
@@ -313,6 +387,7 @@ export function getTvShowRecommended (id, page = 1) {
       },
     }).then((response) => {
       resolve(response.data);
+      
     })
       .catch((error) => {
         reject(error);

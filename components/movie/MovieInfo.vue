@@ -13,7 +13,7 @@
         </span>
       </div>
     </div>
-
+    
     <div :class="$style.right">
       <div
         v-if="item.overview"
@@ -108,6 +108,16 @@
               {{ item.production_companies | arrayToList }}
             </div>
           </li>
+
+          <li v-if="providers && providers.length">
+            <div :class="$style.label">
+              Watch On:
+            </div>
+            <div :class="$style.value">
+              {{ providers.join(', ') }}
+            </div>
+          </li>
+
         </ul>
       </div>
 
@@ -121,6 +131,7 @@
 
 <script>
 import { apiImgUrl } from '~/api';
+import { getMovieProviders } from '~/api'; 
 import { name, directors } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
 
@@ -139,6 +150,10 @@ export default {
       type: Object,
       required: true,
     },
+    providers: {
+    type: Array,
+    default: () => [],
+    },
   },
 
   computed: {
@@ -155,11 +170,21 @@ export default {
     if (this.item.homepage) {
       this.item.external_ids.homepage = this.item.homepage;
     }
+    this.fetchProviders();
   },
+
 
   methods: {
     formatGenres (genres) {
       return genres.map(genre => `<a href="/genre/${genre.id}/movie">${genre.name}</a>`).join(', ');
+    },
+    async fetchProviders() {
+      try {
+        const providers = await getMovieProviders(this.item.id); 
+        this.providers = providers; 
+      } catch (error) {
+        console.error("Error fetching movie providers:", error);
+      }
     },
   },
 };

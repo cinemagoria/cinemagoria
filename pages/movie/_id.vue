@@ -5,7 +5,6 @@
 
     <Hero
       :item="item" />
-
     <MediaNav
       :menu="menu"
       @clicked="navClicked" />

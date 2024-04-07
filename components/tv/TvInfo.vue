@@ -111,7 +111,7 @@
           </li>
           <li v-if="item.networks && item.networks.length">
             <div :class="$style.label">
-              Network
+              Watch On:
             </div>
 
             <div :class="$style.value">
