@@ -36,7 +36,7 @@
       <div class="button-container">
         <button class="button button--icon" @click="redirectToHome">
           <!-- eslint-disable-next-line -->
-          <span class="txt">Home</span>
+          <span class="txt">Back</span>
         </button>
       </div>
     </section>
@@ -81,7 +81,7 @@ export default {
   }
 
   .button {
-    border-radius: 15px;
+    border-radius: 10px;
   }
 
   h2 {

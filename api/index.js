@@ -307,6 +307,39 @@ export function getMovieProviders(id) {
   });
 };
 
+export function getTvShow(id) {
+  return new Promise((resolve, reject) => {
+    axios.get(`${apiUrl}/tv/${id}`, {
+      params: {
+        api_key: process.env.API_KEY,
+        language: process.env.API_LANG,
+        append_to_response: 'videos,credits,images,external_ids,content_ratings',
+        include_image_language: 'en',
+      },
+    }).then((response) => {
+      const responseData = response.data;
+      const tvShowData = {
+        id: responseData.id,
+        original_title: responseData.original_title,
+        poster_path: responseData.poster_path,
+        overview: responseData.overview,
+        release_date: responseData.release_date,
+        genres: responseData.genres,
+        networks: responseData.networks ? responseData.networks : [],
+        status: responseData.status,
+        runtime: responseData.runtime,
+        imdb_id: responseData.external_ids ? responseData.external_ids.imdb_id : null,
+        vote_average: responseData.vote_average,
+      };
+      console.log("TV Show Data:", JSON.stringify(tvShowData));
+      resolve(responseData); // Devolver los datos originales para mantener la estructura
+    }).catch((error) => {
+      console.error("Error fetching TV show data:", error);
+      reject(error);
+    });
+  });
+};
+
 
 
 export function getMovieRecommended (id, page = 1) {
@@ -340,39 +373,6 @@ export function getTvShows (query, page = 1) {
       .catch((error) => {
         reject(error);
       });
-  });
-};
-
-export function getTvShow(id) {
-  return new Promise((resolve, reject) => {
-    axios.get(`${apiUrl}/tv/${id}`, {
-      params: {
-        api_key: process.env.API_KEY,
-        language: process.env.API_LANG,
-        append_to_response: 'videos,credits,images,external_ids,content_ratings',
-        include_image_language: 'en',
-      },
-    }).then((response) => {
-      const responseData = response.data;
-      const tvShowData = {
-        id: responseData.id,
-        original_title: responseData.original_title,
-        poster_path: responseData.poster_path,
-        overview: responseData.overview,
-        release_date: responseData.release_date,
-        genres: responseData.genres,
-        networks: responseData.networks ? responseData.networks : [],
-        status: responseData.status,
-        runtime: responseData.runtime,
-        imdb_id: responseData.external_ids ? responseData.external_ids.imdb_id : null,
-        vote_average: responseData.vote_average,
-      };
-      console.log("TV Show Data:", JSON.stringify(tvShowData));
-      resolve(responseData); // Devolver los datos originales para mantener la estructura
-    }).catch((error) => {
-      console.error("Error fetching TV show data:", error);
-      reject(error);
-    });
   });
 };
 
