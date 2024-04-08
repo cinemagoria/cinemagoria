@@ -46,7 +46,7 @@
     }
   
     .maintenance-image {
-      max-width: 35%;
+      max-width: 50%;
       height: auto;
       display: block;
       margin: 0 auto;
