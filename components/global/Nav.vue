@@ -54,7 +54,7 @@
       <li>
         <nuxt-link
           exact
-          :to="{ name: 'auth' }"
+          :to="{ name: 'wip' }"
           aria-label="Auth">
           <img src="~static/icon-login.png" alt="Home" style="width: 24px; height: 24px; margin-top: 2px;" />
         </nuxt-link>
