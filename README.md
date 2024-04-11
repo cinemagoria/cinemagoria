@@ -33,7 +33,3 @@ Check out the current state of SonarFlix [here](https://sonarflix.netlify.app).
 
 - This project is currently under maintenance.
 - For the latest updates and changes, refer to the [Full Changelog](https://github.com/imprvhub/sonarflix/commits/v0.1.0).
-
-### License
-
-For licensing information, please see the [MIT License](https://github.com/imprvhub/sonarflix/blob/main/LICENSE).

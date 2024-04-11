@@ -3,15 +3,15 @@ const apiUrl = 'https://api.themoviedb.org/3';
 export const apiImgUrl = 'https://image.tmdb.org/t/p';
 const lists = {
   movie: [
-    { title: 'Películas Relevantes', query: 'trending' },
-    { title: 'Películas en Tendencia', query: 'popular' },
+    { title: 'Películas en Tendencia', query: 'trending' },
+    { title: 'Películas Populares', query: 'popular' },
     { title: 'Películas Mejor Valoradas', query: 'top_rated' },
     { title: 'Próximas Películas', query: 'upcoming' },
     { title: 'Películas en Cartelera', query: 'now_playing' },
   ],
   tv: [
-    { title: 'Series de TV Relevantes', query: 'trending' },
-    { title: 'Series de TV en Tendencia', query: 'popular' },
+    { title: 'Series de TV en Tendencia', query: 'trending' },
+    { title: 'Series de TV Populares', query: 'popular' },
     { title: 'Series de TV Mejor Valoradas', query: 'top_rated' },
     { title: 'Series de TV en Emisión Actualmente', query: 'on_the_air' },
     { title: 'Series de TV que se Emiten Hoy', query: 'airing_today' },
