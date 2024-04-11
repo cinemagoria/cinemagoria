@@ -103,8 +103,8 @@ export default {
   env: {
     FRONTEND_URL: process.env.FRONTEND_URL || "",
     API_KEY: process.env.API_KEY || "",
-    API_LANG: process.env.API_LANG || "",
-    API_COUNTRY: process.env.API_COUNTRY || "",
+    API_LANG: process.env.API_LANG || "en",
+    API_COUNTRY: process.env.API_COUNTRY || "en",
     API_YOUTUBE_KEY: process.env.API_YOUTUBE_KEY || "",
     GA: process.env.GA || "",
   },
