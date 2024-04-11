@@ -70,7 +70,7 @@ export default {
     },
     changeLanguage() {
       if (this.selectedLanguage === 'spanish') {
-        window.location.href = "https://es.ivanluna.dev";
+        window.location.href = "https://en.sonarflix.netlify.app";
       }
     },
   },
