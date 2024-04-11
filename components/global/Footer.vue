@@ -70,7 +70,7 @@ export default {
     },
     changeLanguage() {
       if (this.selectedLanguage === 'spanish') {
-        window.location.href = "https://en.sonarflix.netlify.app";
+        window.location.href = "https://en--sonarflix.netlify.app";
       }
     },
   },
