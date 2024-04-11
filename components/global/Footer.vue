@@ -1,7 +1,28 @@
 <template>
   <footer :class="$style.footer">
+    <div class="language-selector" @click="toggleLanguageMenu">
+      <div class="selected-language">
+        <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="width: 16px; height: 16px; margin-bottom: 3px; margin-right: 4px;">
+        <span class="language">{{ selectedLanguage === 'spanish' ? 'Español' : 'English' }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'english'" style="width: 24px; height: 24px;">
+          <path d="M7 10l5 5 5-5z"/>
+        </svg>
+      </div>
+      <div v-if="showLanguageMenu" class="language-menu">
+        <label for="spanish" @click="selectedLanguage = 'spanish'; changeLanguage()">
+          <span>Español</span>
+        </label>
+      </div>
+    </div>
+    <br>
+    <p>All Data is provided by 
+        <a target="_blank" href="https://www.themoviedb.org/" rel="noopener">
+            <img src="~static/tmdb.svg" alt="TMDB Attribution" class="tmdb-attribution" style="width: 60px; height: 35px; display: inline-block; margin-bottom: 1px;">
+        </a>
+        and 
+        <a target="_blank" href="https://www.justwatch.com/" rel="noopener" style="margin-top: 2px;">JustWatch</a>.
+    </p>
     <p> By using this site you agree to and accept our <strong><a href="/terms">User Agreement and Terms</a></strong>.</p>
-    <p>All Data is provided by <a target="_blank" href="https://www.themoviedb.org/" rel="noopener">TMDb</a> and <a target="_blank" href="https://www.justwatch.com/" rel="noopener">JustWatch</a>.</p>
     <p>&copy; {{ new Date().getFullYear() }}<a target="_blank" href="https://ivanluna.dev/" rel="noopener"> Ivanluna.dev</a> </p>
 
     <ul class="nolist">
@@ -34,6 +55,27 @@
     </ul>
   </footer>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      showLanguageMenu: false,
+      selectedLanguage: 'english',
+    };
+  },
+  methods: {
+    toggleLanguageMenu() {
+      this.showLanguageMenu = !this.showLanguageMenu;
+    },
+    changeLanguage() {
+      if (this.selectedLanguage === 'spanish') {
+        window.location.href = "https://sonarflix.netlify.app";
+      }
+    },
+  },
+};
+</script>
 
 <style lang="scss" module>
 @import '~/assets/css/utilities/_variables.scss';
@@ -95,4 +137,60 @@
     }
   }
 }
+.language-selector {
+  position: relative;
+  cursor: pointer;
+}
+
+
+.selected-language {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.world-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 0.5rem;
+}
+
+.language {
+  margin-right: 0.5rem;
+}
+
+.arrow-icon {
+  width: 16px;
+  height: 16px;
+  margin-left: 0.5rem;
+}
+
+.language-menu {
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0 0 5px 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: none;
+}
+
+.language-menu label {
+  display: block;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.language-menu label:hover {
+  background-color: #f5f5f5;
+}
+
+.language-menu.active {
+  display: block;
+}
 </style>
+
