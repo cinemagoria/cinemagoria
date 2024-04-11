@@ -101,7 +101,7 @@ export default {
   },
 
   env: {
-    FRONTEND_URL: process.env.FRONTEND_URL || "",
+    FRONTEND_URL: process.env.FRONTEND_URL || "https://sonarflix.netlify.app",
     API_KEY: process.env.API_KEY || "",
     API_LANG: process.env.API_LANG || "es",
     API_COUNTRY: process.env.API_COUNTRY || "es",
