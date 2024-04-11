@@ -3,18 +3,18 @@ const apiUrl = 'https://api.themoviedb.org/3';
 export const apiImgUrl = 'https://image.tmdb.org/t/p';
 const lists = {
   movie: [
-    { title: 'Relevant Movies', query: 'trending' },
-    { title: 'Popular Movies', query: 'popular' },
-    { title: 'Top Rated Movies', query: 'top_rated' },
-    { title: 'Upcoming Movies', query: 'upcoming' },
-    { title: 'Now Playing Movies', query: 'now_playing' },
+    { title: 'Películas Relevantes', query: 'trending' },
+    { title: 'Películas en Tendencia', query: 'popular' },
+    { title: 'Películas Mejor Valoradas', query: 'top_rated' },
+    { title: 'Próximas Películas', query: 'upcoming' },
+    { title: 'Películas en Cartelera', query: 'now_playing' },
   ],
   tv: [
-    { title: 'Relevant TV Shows', query: 'trending' },
-    { title: 'Popular TV Shows', query: 'popular' },
-    { title: 'Top Rated TV Shows', query: 'top_rated' },
-    { title: 'Currently Airing TV Shows', query: 'on_the_air' },
-    { title: 'TV Shows Airing Today', query: 'airing_today' },
+    { title: 'Series de TV Relevantes', query: 'trending' },
+    { title: 'Series de TV en Tendencia', query: 'popular' },
+    { title: 'Series de TV Mejor Valoradas', query: 'top_rated' },
+    { title: 'Series de TV en Emisión Actualmente', query: 'on_the_air' },
+    { title: 'Series de TV que se Emiten Hoy', query: 'airing_today' },
   ],
 };
 

@@ -20,7 +20,7 @@
         v-if="item.overview"
         :class="$style.overview">
         <h2 :class="$style.title">
-          Storyline
+          Sinopsis
         </h2>
 
         <div v-html="item.overview" />
@@ -30,7 +30,7 @@
         <ul class="nolist">
           <li v-if="item.first_air_date">
             <div :class="$style.label">
-              First Aired
+              Primera Emisión
             </div>
 
             <div :class="$style.value">
@@ -39,7 +39,7 @@
           </li>
           <li v-if="item.last_air_date">
             <div :class="$style.label">
-              Last Aired
+              Última Emisión
             </div>
 
             <div :class="$style.value">
@@ -48,7 +48,7 @@
           </li>
           <li v-if="item.episode_run_time && item.episode_run_time.length">
             <div :class="$style.label">
-              Runtime
+              Duración
             </div>
 
             <div :class="$style.value">
@@ -57,7 +57,7 @@
           </li>
           <li v-if="creators">
             <div :class="$style.label">
-              Creator
+              Creador
             </div>
 
             <div
@@ -66,7 +66,7 @@
           </li>
           <li v-if="item.genres && item.genres.length">
             <div :class="$style.label">
-              Genre
+              Género
             </div>
 
             <div
@@ -75,7 +75,7 @@
           </li>
           <li v-if="item.number_of_seasons">
             <div :class="$style.label">
-              Seasons
+              Temporadas
             </div>
 
             <div :class="$style.value">
@@ -84,7 +84,7 @@
           </li>
           <li v-if="item.number_of_episodes">
             <div :class="$style.label">
-              Episodes
+              Episodios
             </div>
 
             <div :class="$style.value">
@@ -93,7 +93,7 @@
           </li>
           <li v-if="item.status">
             <div :class="$style.label">
-              Status
+              Estado
             </div>
 
             <div :class="$style.value">
@@ -102,7 +102,7 @@
           </li>
           <li v-if="item.original_language">
             <div :class="$style.label">
-              Language
+              Idioma Original
             </div>
 
             <div :class="$style.value">
@@ -111,7 +111,7 @@
           </li>
           <li v-if="item.networks && item.networks.length">
             <div :class="$style.label">
-              Watch On
+              Ver En
             </div>
 
             <div :class="$style.value">
@@ -128,6 +128,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import { apiImgUrl } from '~/api';

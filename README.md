@@ -23,7 +23,7 @@ The current focus is on frontend development deployed in Netlify, with plans to 
 
 ### Timeline
 
-The project is expected to be completed by mid-April.
+The project is expected to be completed by mid-May.
 
 ### Demo
 
