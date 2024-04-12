@@ -307,40 +307,36 @@ export function getMovieProviders(id) {
   });
 };
 
-export function getTvShow(id) {
+export function getTVShowProviders(id) {
   return new Promise((resolve, reject) => {
-    axios.get(`${apiUrl}/tv/${id}`, {
+    axios.get(`${apiUrl}/tv/${id}/watch/providers`, {
       params: {
         api_key: process.env.API_KEY,
-        language: process.env.API_LANG,
-        append_to_response: 'videos,credits,images,external_ids,content_ratings',
-        include_image_language: 'en',
       },
     }).then((response) => {
-      const responseData = response.data;
-      const tvShowData = {
-        id: responseData.id,
-        original_title: responseData.original_title,
-        poster_path: responseData.poster_path,
-        overview: responseData.overview,
-        release_date: responseData.release_date,
-        genres: responseData.genres,
-        networks: responseData.networks ? responseData.networks : [],
-        status: responseData.status,
-        runtime: responseData.runtime,
-        imdb_id: responseData.external_ids ? responseData.external_ids.imdb_id : null,
-        vote_average: responseData.vote_average,
-      };
-      console.log("TV Show Data:", JSON.stringify(tvShowData));
-      resolve(responseData); // Devolver los datos originales para mantener la estructura
+      let providers = response.data.results.AR; // Intentamos obtener primero los proveedores de AR
+      if (providers && providers.flatrate) {
+        const providerNames = providers.flatrate.map(provider => provider.provider_name);
+        console.log("Flatrate Providers in AR:", providerNames);
+        resolve(providerNames);
+      } else {
+        console.log("No flatrate providers found for AR, trying US");
+        providers = response.data.results.US; // Intentamos obtener los proveedores de US
+        if (providers && providers.flatrate) {
+          const providerNames = providers.flatrate.map(provider => provider.provider_name);
+          console.log("Flatrate Providers in US:", providerNames);
+          resolve(providerNames);
+        } else {
+          console.log("No flatrate providers found for US, unable to fetch TV show providers");
+          reject(new Error("Unable to fetch TV show providers"));
+        }
+      }
     }).catch((error) => {
-      console.error("Error fetching TV show data:", error);
+      console.error("Error fetching TV show providers:", error);
       reject(error);
     });
   });
 };
-
-
 
 export function getMovieRecommended (id, page = 1) {
   return new Promise((resolve, reject) => {
@@ -375,6 +371,50 @@ export function getTvShows (query, page = 1) {
       });
   });
 };
+
+export function getTvShow(id) {
+  return new Promise((resolve, reject) => {
+    axios.get(`${apiUrl}/tv/${id}`, {
+      params: {
+        api_key: process.env.API_KEY,
+        language: process.env.API_LANG,
+        append_to_response: 'videos,credits,images,external_ids,content_ratings',
+        include_image_language: 'en',
+      },
+    }).then(async (response) => {
+      const responseData = response.data;
+      console.log("Original TV Show DATA:", responseData)
+
+      try {
+        const providers = await getTVShowProviders(id);
+        responseData.providers = providers;
+        console.log("Providers:", providers);
+      } catch (error) {
+        console.error("Error fetching movie providers:", error);
+      }
+
+      const tvShowData = {
+        id: responseData.id,
+        original_title: responseData.original_title,
+        poster_path: responseData.poster_path,
+        overview: responseData.overview,
+        release_date: responseData.release_date,
+        genres: responseData.genres,
+        networks: responseData.networks ? responseData.networks : [],
+        status: responseData.status,
+        runtime: responseData.runtime,
+        imdb_id: responseData.external_ids ? responseData.external_ids.imdb_id : null,
+        vote_average: responseData.vote_average,
+      };
+      console.log("TV Show Data:", JSON.stringify(tvShowData));
+      resolve(responseData); 
+    }).catch((error) => {
+      console.error("Error fetching TV show data:", error);
+      reject(error);
+    });
+  });
+};
+
 
 
 export function getTvShowRecommended (id, page = 1) {

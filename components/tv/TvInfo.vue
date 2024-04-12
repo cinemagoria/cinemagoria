@@ -109,15 +109,16 @@
               {{ item.original_language | fullLang }}
             </div>
           </li>
-          <li v-if="item.networks && item.networks.length">
-            <div :class="$style.label">
-              Watch On
-            </div>
 
+          <li v-if="providers && providers.length">
+            <div :class="$style.label">
+              Ver en
+            </div>
             <div :class="$style.value">
-              {{ item.networks | arrayToList }}
+              {{ providers.join(', ') }}
             </div>
           </li>
+
         </ul>
       </div>
 
@@ -131,6 +132,7 @@
 
 <script>
 import { apiImgUrl } from '~/api';
+import { getTVShowProviders } from '~/api'; 
 import { name, creators } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
 
@@ -149,6 +151,10 @@ export default {
       type: Object,
       required: true,
     },
+    providers: {
+      type: Array,
+      default: () => [],
+    },
   },
 
   computed: {
@@ -165,6 +171,7 @@ export default {
     if (this.item.homepage) {
       this.item.external_ids.homepage = this.item.homepage;
     }
+    this.fetchProviders();
   },
 
   methods: {
@@ -174,6 +181,14 @@ export default {
 
     formatRunTime (times) {
       return times.map(time => `${time}m`).join(', ');
+    },
+    async fetchProviders() {
+      try {
+        const providers = await getTVShowProviders(this.item.id); 
+        this.providers = providers; 
+      } catch (error) {
+        console.error("Error fetching movie providers:", error);
+      }
     },
   },
 };

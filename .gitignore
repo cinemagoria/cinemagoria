@@ -18,5 +18,6 @@ dist
 sw.*
 
 #Other
+.eslintcache
 .DS_Store
 Icon?
