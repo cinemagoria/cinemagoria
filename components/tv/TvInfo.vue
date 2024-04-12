@@ -112,7 +112,7 @@
 
           <li v-if="providers && providers.length">
             <div :class="$style.label">
-              Ver en
+              Watch On
             </div>
             <div :class="$style.value">
               {{ providers.join(', ') }}
