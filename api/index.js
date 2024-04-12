@@ -244,12 +244,9 @@ export function getMovie(id) {
       },
     }).then(async (response) => {
       const responseData = response.data;
-      console.log("Original Movie Data:", responseData); 
-
       try {
         const providers = await getMovieProviders(id);
         responseData.providers = providers;
-        console.log("Providers:", providers);
       } catch (error) {
         console.error("Error fetching movie providers:", error);
       }
@@ -267,7 +264,6 @@ export function getMovie(id) {
         imdb_id: responseData.external_ids ? responseData.external_ids.imdb_id : null,
         vote_average: responseData.vote_average,
       };
-      console.log("Movie Data:", JSON.stringify(movieData));
       resolve(responseData); 
     }).catch((error) => {
       console.error("Error fetching movie data:", error);
@@ -286,17 +282,13 @@ export function getMovieProviders(id) {
       let providers = response.data.results.AR; // Intentamos obtener primero los proveedores de AR
       if (providers && providers.flatrate) {
         const providerNames = providers.flatrate.map(provider => provider.provider_name);
-        console.log("Flatrate Providers in AR:", providerNames);
         resolve(providerNames);
       } else {
-        console.log("No flatrate providers found for AR, trying US");
         providers = response.data.results.US; // Intentamos obtener los proveedores de US
         if (providers && providers.flatrate) {
           const providerNames = providers.flatrate.map(provider => provider.provider_name);
-          console.log("Flatrate Providers in US:", providerNames);
           resolve(providerNames);
         } else {
-          console.log("No flatrate providers found for US, unable to fetch movie providers");
           reject(new Error("Unable to fetch movie providers"));
         }
       }
@@ -331,7 +323,6 @@ export function getTvShow(id) {
         imdb_id: responseData.external_ids ? responseData.external_ids.imdb_id : null,
         vote_average: responseData.vote_average,
       };
-      console.log("TV Show Data:", JSON.stringify(tvShowData));
       resolve(responseData); // Devolver los datos originales para mantener la estructura
     }).catch((error) => {
       console.error("Error fetching TV show data:", error);
@@ -426,6 +417,8 @@ export function getTvShowRecommended (id, page = 1) {
       });
   });
 };
+
+
 
 export function getTvShowEpisodes (id, season) {
   return new Promise((resolve, reject) => {
