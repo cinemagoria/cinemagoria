@@ -340,6 +340,38 @@ export function getTvShow(id) {
   });
 };
 
+export function getTVShowProviders(id) {
+  return new Promise((resolve, reject) => {
+    axios.get(`${apiUrl}/tv/${id}/watch/providers`, {
+      params: {
+        api_key: process.env.API_KEY,
+      },
+    }).then((response) => {
+      let providers = response.data.results.AR; // Intentamos obtener primero los proveedores de AR
+      if (providers && providers.flatrate) {
+        const providerNames = providers.flatrate.map(provider => provider.provider_name);
+        console.log("Flatrate Providers in AR:", providerNames);
+        resolve(providerNames);
+      } else {
+        console.log("No flatrate providers found for AR, trying US");
+        providers = response.data.results.US; // Intentamos obtener los proveedores de US
+        if (providers && providers.flatrate) {
+          const providerNames = providers.flatrate.map(provider => provider.provider_name);
+          console.log("Flatrate Providers in US:", providerNames);
+          resolve(providerNames);
+        } else {
+          console.log("No flatrate providers found for US, unable to fetch TV show providers");
+          reject(new Error("Unable to fetch TV show providers"));
+        }
+      }
+    }).catch((error) => {
+      console.error("Error fetching TV show providers:", error);
+      reject(error);
+    });
+  });
+};
+
+
 
 
 export function getMovieRecommended (id, page = 1) {
