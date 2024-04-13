@@ -7,34 +7,34 @@
         <div class="column">
           <h2><router-link to="/movie">Películas</router-link></h2>
           <ul>
-            <li><router-link to="/genre/18/movie">Drama</router-link></li>
-            <li><router-link to="/genre/35/movie">Comedia</router-link></li>
-            <li><router-link to="/genre/28/movie">Acción</router-link></li>
-            <li><router-link to="/genre/27/movie">Terror</router-link></li>
-            <li><router-link to="/genre/53/movie">Suspenso</router-link></li>
-            <li><router-link to="/genre/878/movie">Ciencia Ficción</router-link></li>
-            <li><router-link to="/genre/12/movie">Aventura</router-link></li>
-            <li><router-link to="/genre/80/movie">Crimen</router-link></li>
-            <li><router-link to="/genre/36/movie">Historia</router-link></li>
-            <li><router-link to="/genre/10752/movie">Guerra</router-link></li>
-            <li><router-link to="/genre/99/movie">Documental</router-link></li>
-            <li><router-link to="/genre/16/movie">Animación</router-link></li>
-            <li><router-link to="/genre/9648/movie">Misterio</router-link></li>
+            <router-link to="/genre/18/movie"><img src="~static/thumbnails/drama-tv-esp.png" width="192" height="200" alt="Drama"></router-link>
+            <router-link to="/genre/35/movie"><img src="~static/thumbnails/comedy-movie-esp.png" width="192" height="200" alt="Comedia"></router-link>
+            <router-link to="/genre/28/movie"><img src="~static/thumbnails/action-movie-esp.png" width="192" height="200" alt="Acción"></router-link>
+            <router-link to="/genre/27/movie"><img src="~static/thumbnails/horror-movie-esp.png" width="192" height="200" alt="Terror"></router-link>
+            <router-link to="/genre/53/movie"><img src="~static/thumbnails/suspense-movie-esp.png" width="192" height="200" alt="Suspenso"></router-link>
+            <router-link to="/genre/878/movie"><img src="~static/thumbnails/sciencefiction-movie-esp.png" width="192" height="200" alt="Ciencia Ficción"></router-link>
+            <router-link to="/genre/12/movie"><img src="~static/thumbnails/adventure-tv-esp.png" width="192" height="200" alt="Aventura"></router-link>
+            <router-link to="/genre/80/movie"><img src="~static/thumbnails/crime-movie-esp.png" width="192" height="200" alt="Crimen"></router-link>
+            <router-link to="/genre/36/movie"><img src="~static/thumbnails/history-movie-esp.png" width="192" height="200" alt="Historia"></router-link>
+            <router-link to="/genre/10752/movie"><img src="~static/thumbnails/war-movie-esp.png" width="192" height="200" alt="Guerra"></router-link>
+            <router-link to="/genre/99/movie"><img src="~static/thumbnails/documentary-movie-esp.png" width="192" height="200" alt="Documental"></router-link>
+            <router-link to="/genre/16/movie"><img src="~static/thumbnails/animation-movie-esp.png" width="192" height="200" alt="Animación"></router-link>
+            <router-link to="/genre/9648/movie"><img src="~static/thumbnails/mistery-movie-esp.png" width="192" height="200" alt="Misterio"></router-link>
           </ul>
         </div>
         <div class="column">
           <h2><router-link to="/tv">Programas de TV</router-link></h2>
           <ul>
-            <li><router-link to="/genre/18/tv">Drama</router-link></li>
-            <li><router-link to="/genre/35/tv">Comedia</router-link></li>
-            <li><router-link to="/genre/10759/tv">Acción & Aventura</router-link></li>
-            <li><router-link to="/genre/10765/tv">Ciencia Ficción & Fantasía</router-link></li>
-            <li><router-link to="/genre/80/tv">Crimen</router-link></li>
-            <li><router-link to="/genre/10768/tv">Guerra & Política</router-link></li>
-            <li><router-link to="/genre/99/tv">Documental</router-link></li>
-            <li><router-link to="/genre/10767/tv">Programa de Entrevistas</router-link></li>
-            <li><router-link to="/genre/16/tv">Animación</router-link></li>
-            <li><router-link to="/genre/9648/tv">Misterio</router-link></li>
+            <router-link to="/genre/18/tv"><img src="~static/thumbnails/drama-tv-esp.png" width="192" height="200" alt="Drama TV"></router-link>
+            <router-link to="/genre/35/tv"><img src="~static/thumbnails/comedy-tv-esp.png" width="192" height="200" alt="Comedia TV"></router-link>
+            <router-link to="/genre/10759/tv"><img src="~static/thumbnails/action-movie-esp.png" width="192" height="200" alt="Acción y Aventura TV"></router-link>
+            <router-link to="/genre/10765/tv"><img src="~static/thumbnails/sciencefiction-movie-esp.png" width="192" height="200" alt="Ciencia Ficción y Fantasía TV"></router-link>
+            <router-link to="/genre/80/tv"><img src="~static/thumbnails/crime-tv-esp.png" width="192" height="200" alt="Crimen TV"></router-link>
+            <router-link to="/genre/10768/tv"><img src="~static/thumbnails/war-movie-esp.png" width="192" height="200" alt="Guerra y Política TV"></router-link>
+            <router-link to="/genre/99/tv"><img src="~static/thumbnails/documentary-tv-esp.png" width="192" height="200" alt="Documental TV"></router-link>
+            <router-link to="/genre/10767/tv"><img src="~static/thumbnails/talkshow-tv-esp.png" width="192" height="200" alt="Programa de Entrevistas TV"></router-link>
+            <router-link to="/genre/16/tv"><img src="~static/thumbnails/animation-movie-esp.png" width="192" height="200" alt="Animación TV"></router-link>
+            <router-link to="/genre/9648/tv"><img src="~static/thumbnails/mistery-tv-esp.png" width="192" height="200" alt="Misterio TV"></router-link>
           </ul>
         </div>
       </div>
