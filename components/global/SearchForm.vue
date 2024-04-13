@@ -26,7 +26,7 @@
           
         </div>
         <div :class="$style.field">
-          <a :href="'/search-genre'" class="genre-link" style="margin-left: 5px;">Buscar por géneros</a>
+          <a :href="'/search-genre'" class="genre-link" style="margin: 0 auto;">Buscar por géneros</a>
         </div>
       </div>
     </form>
