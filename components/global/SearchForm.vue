@@ -1,30 +1,33 @@
 <template>
   <div :class="$style.form">
-    <form
-      autocomplete="off"
-      @submit.prevent>
-      <label
-        class="visuallyhidden"
-        for="search">Search</label>
+    <form autocomplete="off" @submit.prevent>
+      <label class="visuallyhidden" for="search">Search</label>
 
-      <div :class="$style.field">
-        <input
-          id="search"
-          ref="input"
-          v-model.trim="query"
-          name="search"
-          type="text"
-          placeholder="Type to search.."
-          @keyup="goToRoute"
-          @blur="unFocus">
+      <div class="field-wrapper">
+        <div :class="$style.field">
+          <input
+            id="search"
+            ref="input"
+            v-model.trim="query"
+            name="search"
+            type="text"
+            placeholder="Buscar.."
+            @keyup="goToRoute"
+            @blur="unFocus">
 
-        <button
-          v-if="showButton"
-          type="button"
-          aria-label="Close"
-          @click="goBack">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-miterlimit="10" stroke-width="1.5"><path d="M.75.75l13.5 13.5M14.25.75L.75 14.25"/></g></svg>
-        </button>
+          <button
+            v-if="showButton"
+            type="button"
+            aria-label="Close"
+            @click="goBack">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-miterlimit="10" stroke-width="1.5"><path d="M.75.75l13.5 13.5M14.25.75L.75 14.25"/></g></svg>
+          </button>
+
+          
+        </div>
+        <div :class="$style.field">
+          <a :href="'/search-genre'" class="genre-link" style="margin-left: 5px;">Buscar por géneros</a>
+        </div>
       </div>
     </form>
   </div>
@@ -76,22 +79,38 @@ export default {
       });
     },
 
-    unFocus (e) {
+    unFocus(e) {
       if (this.$route.name !== 'search') {
         const target = e.relatedTarget;
+        const fromLink = target && target.tagName.toLowerCase() === 'a' && target.getAttribute('href') === '/search-genre';
 
-        if (!target || !target.classList.contains('search-toggle')) {
+        if (!target || (!target.classList.contains('search-toggle') && !fromLink)) {
           this.query = '';
           this.$store.commit('search/closeSearch');
         }
       }
-    },
-  },
+    } 
+  }
 };
 </script>
 
+
 <style lang="scss" module>
 @import '~/assets/css/utilities/_variables.scss';
+a {
+    font-weight: 600;
+    color: #80868b;
+    text-decoration: none;
+  }
+
+  a.router-link {
+  margin-left: 5px;
+  }
+
+
+  a:hover {
+    color: #ffffff;
+  }
 
 .form {
   position: fixed;
@@ -104,10 +123,27 @@ export default {
     left: 10rem;
   }
 
+  .field-wrapper {
+    display: flex;
+    flex-direction: column; 
+  }
+
+  .field {
+    display: flex;
+    align-items: flex-start; 
+    background-color: black;
+  }
+
+  .genre-link {
+    margin-top: 1rem;
+  }
+  
+
   input[type='text'] {
     flex: 1;
     height: 6rem;
     padding: 2.1rem 1.5rem;
+    margin-top: 10px;
     font-size: 1.6rem;
     color: #fff;
     background: none;
@@ -125,6 +161,7 @@ export default {
     align-items: center;
     padding: 0 1.5rem;
     background: none;
+    margin-top: 36px;
 
     @media (min-width: $breakpoint-large) {
       padding: 0 5rem;
@@ -132,8 +169,7 @@ export default {
   }
 }
 
-.field {
-  display: flex;
-  background-color: black;
+.genre-link {
+  background: black;
 }
 </style>

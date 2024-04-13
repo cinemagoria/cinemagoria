@@ -297,8 +297,8 @@ export default {
   }
 
   a {
-    color: #18729f;
-    text-decoration: underline;
+    color: #2897bc;
+    text-decoration: none;
   }
 }
 
