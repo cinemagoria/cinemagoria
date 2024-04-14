@@ -9,12 +9,12 @@
           <form @submit.prevent="register">
             <div class="form-group">
               <label for="name">Name:</label>
-              <input type="text" id="name" v-model="name" placeholder="Enter your name" required>
+              <input type="text" id="name" v-model="name" placeholder="John Doe" required>
             </div>
             <br>
             <div class="form-group">
               <label for="email">Email:</label>
-              <input type="email" id="email" v-model="email" placeholder="Enter your email" required>
+              <input type="email" id="email" v-model="email" placeholder="johndoe@example.com" required>
             </div>
             <br>
             <div class="form-group">

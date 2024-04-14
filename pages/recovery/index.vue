@@ -9,7 +9,7 @@
           <form @submit.prevent="recoverPassword">
             <div class="form-group">
               <label for="email">Email:</label>
-              <input type="email" id="email" v-model="email" placeholder="Enter your email" required>
+              <input type="email" id="email" v-model="email" placeholder="johndoe@example.com" required>
             </div>
             <br>
             <div class="button-container">
@@ -77,7 +77,7 @@ h3 {
 }
 
 .input {
-  border-radius: 18px; /* Aplica el border-radius al input */
+  border-radius: 18px; 
 }
 
 .button-container {
@@ -107,6 +107,10 @@ h2 {
 
 .custom-center {
   text-align: center;
+}
+
+.form-group {
+  margin-left: 20px;
 }
 
 .form-group input[type="email"],
