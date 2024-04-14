@@ -1,11 +1,11 @@
 <template>
     <div class="genres-section">
-      
-      <h1 class="text-white text-center"><br><b>Search by Genres:</b></h1>
+      <p class="title custom-center">
+        Search by Genres:
+      </p>
       <br>
-      <carousel>
-          <slide>
-          <h2 class="custom-center"><router-link to="/movie">Movies</router-link></h2>
+      <br>
+          <h2 class="custom-center" style="font-size: 16px;"><router-link to="/movie">Movies</router-link></h2>
             <ul class="custom-ul">
                 <router-link to="/genre/18/movie"><img src="~static/thumbnails/drama-tv-eng.png" width="192" height="200" alt="Drama"></router-link>
                 <router-link to="/genre/35/movie"><img src="~static/thumbnails/comedy-movie-eng.png" width="192" height="200" alt="Comedia"></router-link>
@@ -20,10 +20,7 @@
                 <router-link to="/genre/16/movie"><img src="~static/thumbnails/animation-movie-eng.png" width="192" height="200" alt="Animación"></router-link>
                 <router-link to="/genre/9648/movie"><img src="~static/thumbnails/mistery-movie-eng.png" width="192" height="200" alt="Misterio"></router-link>
               </ul>
-          </slide>
-          <slide>
-            <br>
-            <h2 class="custom-center"><router-link to="/tv">Programas de TV</router-link></h2>
+            <h2 class="custom-center" style="font-size: 16px; margin-top: 30px;"><router-link to="/tv">TV Shows</router-link></h2>
             <ul class="custom-ul">
               <router-link to="/genre/18/tv"><img src="~static/thumbnails/drama-tv-eng.png" width="192" height="200" alt="Drama TV"></router-link>
               <router-link to="/genre/35/tv"><img src="~static/thumbnails/comedy-tv-eng.png" width="192" height="200" alt="Comedia TV"></router-link>
@@ -35,19 +32,12 @@
               <router-link to="/genre/16/tv"><img src="~static/thumbnails/animation-movie-eng.png" width="192" height="200" alt="Animación TV"></router-link>
               <router-link to="/genre/9648/tv"><img src="~static/thumbnails/mistery-tv-eng.png" width="192" height="200" alt="Misterio TV"></router-link>
             </ul>
-          </slide>
-      </carousel>
     </div>
 </template>
   
 <script>
-import VueCarousel from 'vue-carousel';
-
 export default {
   name: "SearchByGenre",
-  components: {
-    VueCarousel
-  }
 };
 </script>
 
@@ -73,10 +63,25 @@ export default {
     9.9px 19.4px 32.7px hsl(var(--shadow-color) / 0.43);
 }
 
+.title {
+  font-size: 22px;
+  max-width: 930px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin: 0 auto;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(115, 115, 115) 100%);
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
+  font-family: 'Tahoma', sans-serif;
+}
+
+
 a {
   font-weight: 600;
   color: #80868b;
   text-decoration: none;
+  margin-top: 8px;
 }
 
 a:hover {
@@ -123,6 +128,8 @@ h2 {
   text-align: center;
 }
 
+
+
 .column ul img {
   width: 100%; 
   height: auto; 
@@ -143,12 +150,11 @@ h2 {
 }
 
 .custom-ul img {
-  width: 97%; 
+  width: 80%; 
   max-width: 192px; 
   height: 96%; 
+  margin-top:10px;
 }
-
-
 .custom-center {
   text-align: center;
 }
