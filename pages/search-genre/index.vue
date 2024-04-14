@@ -1,52 +1,43 @@
 <template>
   <div class="genres-section">
-    <h1 class="text-white text-center"><br><b>Buscar por Géneros:</b></h1>
+    <p class="title custom-center">
+      Buscar por Géneros:
+    </p>
     <br>
-    <carousel>
-      <slide>
-        <h2 class="custom-center"><router-link to="/movie">Películas</router-link></h2>
-        <ul class="custom-ul">
-          <router-link to="/genre/18/movie"><img src="~static/thumbnails/drama-tv-esp.png" width="192" height="200" alt="Drama"></router-link>
-          <router-link to="/genre/35/movie"><img src="~static/thumbnails/comedy-movie-esp.png" width="192" height="200" alt="Comedia"></router-link>
-          <router-link to="/genre/28/movie"><img src="~static/thumbnails/action-movie-esp.png" width="192" height="200" alt="Acción"></router-link>
-          <router-link to="/genre/27/movie"><img src="~static/thumbnails/horror-movie-esp.png" width="192" height="200" alt="Terror"></router-link>
-          <router-link to="/genre/53/movie"><img src="~static/thumbnails/suspense-movie-esp.png" width="192" height="200" alt="Suspenso"></router-link>
-          <router-link to="/genre/878/movie"><img src="~static/thumbnails/sciencefiction-movie-esp.png" width="192" height="200" alt="Ciencia Ficción"></router-link>
-          <router-link to="/genre/12/movie"><img src="~static/thumbnails/adventure-tv-esp.png" width="192" height="200" alt="Aventura"></router-link>
-          <router-link to="/genre/80/movie"><img src="~static/thumbnails/crime-movie-esp.png" width="192" height="200" alt="Crimen"></router-link>
-          <router-link to="/genre/36/movie"><img src="~static/thumbnails/history-movie-esp.png" width="192" height="200" alt="Historia"></router-link>
-          <router-link to="/genre/99/movie"><img src="~static/thumbnails/documentary-movie-esp.png" width="192" height="200" alt="Documental"></router-link>
-          <router-link to="/genre/16/movie"><img src="~static/thumbnails/animation-movie-esp.png" width="192" height="200" alt="Animación"></router-link>
-          <router-link to="/genre/9648/movie"><img src="~static/thumbnails/mistery-movie-esp.png" width="192" height="200" alt="Misterio"></router-link>
-        </ul>
-      </slide>
-      <slide>
-        <br>
-        <h2 class="custom-center"><router-link to="/tv">Programas de TV</router-link></h2>
-        <ul class="custom-ul">
-          <router-link to="/genre/18/tv"><img src="~static/thumbnails/drama-tv-esp.png" width="192" height="200" alt="Drama TV"></router-link>
-          <router-link to="/genre/35/tv"><img src="~static/thumbnails/comedy-tv-esp.png" width="192" height="200" alt="Comedia TV"></router-link>
-          <router-link to="/genre/10759/tv"><img src="~static/thumbnails/action-movie-esp.png" width="192" height="200" alt="Acción y Aventura TV"></router-link>
-          <router-link to="/genre/10765/tv"><img src="~static/thumbnails/sciencefiction-movie-esp.png" width="192" height="200" alt="Ciencia Ficción y Fantasía TV"></router-link>
-          <router-link to="/genre/80/tv"><img src="~static/thumbnails/crime-tv-esp.png" width="192" height="200" alt="Crimen TV"></router-link>
-          <router-link to="/genre/99/tv"><img src="~static/thumbnails/documentary-tv-esp.png" width="192" height="200" alt="Documental TV"></router-link>
-          <router-link to="/genre/10767/tv"><img src="~static/thumbnails/talkshow-tv-esp.png" width="192" height="200" alt="Programa de Entrevistas TV"></router-link>
-          <router-link to="/genre/16/tv"><img src="~static/thumbnails/animation-movie-esp.png" width="192" height="200" alt="Animación TV"></router-link>
-          <router-link to="/genre/9648/tv"><img src="~static/thumbnails/mistery-tv-esp.png" width="192" height="200" alt="Misterio TV"></router-link>
-        </ul>
-      </slide>
-    </carousel>
-  </div>
+    <br>
+        <h2 class="custom-center" style="font-size: 16px;"><router-link to="/movie">Películas</router-link></h2>
+          <ul class="custom-ul">
+            <router-link to="/genre/18/movie"><img src="~static/thumbnails/drama-tv-esp.png" width="172" height="180" alt="Drama"></router-link>
+            <router-link to="/genre/35/movie"><img src="~static/thumbnails/comedy-movie-esp.png" width="192" height="200" alt="Comedia"></router-link>
+            <router-link to="/genre/28/movie"><img src="~static/thumbnails/action-movie-esp.png" width="192" height="200" alt="Acción"></router-link>
+            <router-link to="/genre/27/movie"><img src="~static/thumbnails/horror-movie-esp.png" width="192" height="200" alt="Terror"></router-link>
+            <router-link to="/genre/53/movie"><img src="~static/thumbnails/suspense-movie-esp.png" width="192" height="200" alt="Suspenso"></router-link>
+            <router-link to="/genre/878/movie"><img src="~static/thumbnails/sciencefiction-movie-esp.png" width="192" height="200" alt="Ciencia Ficción"></router-link>
+            <router-link to="/genre/12/movie"><img src="~static/thumbnails/adventure-tv-esp.png" width="192" height="200" alt="Aventura"></router-link>
+            <router-link to="/genre/80/movie"><img src="~static/thumbnails/crime-movie-esp.png" width="192" height="200" alt="Crimen"></router-link>
+            <router-link to="/genre/36/movie"><img src="~static/thumbnails/history-movie-esp.png" width="192" height="200" alt="Historia"></router-link>
+            <router-link to="/genre/99/movie"><img src="~static/thumbnails/documentary-movie-esp.png" width="192" height="200" alt="Documental"></router-link>
+            <router-link to="/genre/16/movie"><img src="~static/thumbnails/animation-movie-esp.png" width="192" height="200" alt="Animación"></router-link>
+            <router-link to="/genre/9648/movie"><img src="~static/thumbnails/mistery-movie-esp.png" width="192" height="200" alt="Misterio"></router-link>
+          </ul>
+          <h2 class="custom-center" style="font-size: 16px; margin-top: 30px;"><router-link to="/tv">Series de TV</router-link></h2>
+          <ul class="custom-ul">
+            <router-link to="/genre/18/tv"><img src="~static/thumbnails/drama-tv-esp.png" width="192" height="200" alt="Drama TV"></router-link>
+            <router-link to="/genre/35/tv"><img src="~static/thumbnails/comedy-tv-esp.png" width="192" height="200" alt="Comedia TV"></router-link>
+            <router-link to="/genre/10759/tv"><img src="~static/thumbnails/action-movie-esp.png" width="192" height="200" alt="Acción y Aventura TV"></router-link>
+            <router-link to="/genre/10765/tv"><img src="~static/thumbnails/sciencefiction-movie-esp.png" width="192" height="200" alt="Ciencia Ficción y Fantasía TV"></router-link>
+            <router-link to="/genre/80/tv"><img src="~static/thumbnails/crime-tv-esp.png" width="192" height="200" alt="Crimen TV"></router-link>
+            <router-link to="/genre/99/tv"><img src="~static/thumbnails/documentary-tv-esp.png" width="192" height="200" alt="Documental TV"></router-link>
+            <router-link to="/genre/10767/tv"><img src="~static/thumbnails/talkshow-tv-esp.png" width="192" height="200" alt="Programa de Entrevistas TV"></router-link>
+            <router-link to="/genre/16/tv"><img src="~static/thumbnails/animation-movie-esp.png" width="192" height="200" alt="Animación TV"></router-link>
+            <router-link to="/genre/9648/tv"><img src="~static/thumbnails/mistery-tv-esp.png" width="192" height="200" alt="Misterio TV"></router-link>
+          </ul>
+    </div>
 </template>
 
 <script>
-import VueCarousel from 'vue-carousel';
-
 export default {
   name: "SearchByGenre",
-  components: {
-    VueCarousel
-  }
 };
 </script>
 
@@ -72,10 +63,25 @@ export default {
     9.9px 19.4px 32.7px hsl(var(--shadow-color) / 0.43);
 }
 
+.title {
+  font-size: 22px;
+  max-width: 930px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin: 0 auto;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(115, 115, 115) 100%);
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
+  font-family: 'Tahoma', sans-serif;
+}
+
+
 a {
   font-weight: 600;
   color: #80868b;
   text-decoration: none;
+  margin-top: 8px;
 }
 
 a:hover {
@@ -122,6 +128,8 @@ h2 {
   text-align: center;
 }
 
+
+
 .column ul img {
   width: 100%; 
   height: auto; 
@@ -142,12 +150,11 @@ h2 {
 }
 
 .custom-ul img {
-  width: 97%; 
+  width: 80%; 
   max-width: 192px; 
   height: 96%; 
+  margin-top:10px;
 }
-
-
 .custom-center {
   text-align: center;
 }
