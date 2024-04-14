@@ -11,7 +11,7 @@
             v-model.trim="query"
             name="search"
             type="text"
-            placeholder="Type to search.."
+            placeholder="Buscar.."
             @keyup="goToRoute"
             @blur="unFocus">
 
@@ -26,7 +26,7 @@
           
         </div>
         <div :class="$style.field">
-          <a :href="'/search-genre'" class="genre-link" style="margin: 0 auto;">Search by Genres</a>
+          <a :href="'/search-genre'" class="genre-link" style="margin: 0 auto;">Buscar por géneros</a>
         </div>
       </div>
     </form>

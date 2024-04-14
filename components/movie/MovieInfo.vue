@@ -19,7 +19,7 @@
         v-if="item.overview"
         :class="$style.overview">
         <h2 :class="$style.title">
-          Storyline
+          Sinopsis
         </h2>
 
         <div v-html="item.overview" />
@@ -29,7 +29,7 @@
         <ul class="nolist">
           <li v-if="item.release_date">
             <div :class="$style.label">
-              Released
+              Lanzamiento
             </div>
 
             <div :class="$style.value">
@@ -38,7 +38,7 @@
           </li>
           <li v-if="item.runtime">
             <div :class="$style.label">
-              Runtime
+              Duración
             </div>
 
             <div :class="$style.value">
@@ -56,7 +56,7 @@
           </li>
           <li v-if="item.budget">
             <div :class="$style.label">
-              Budget
+              Presupuesto
             </div>
 
             <div :class="$style.value">
@@ -65,7 +65,7 @@
           </li>
           <li v-if="item.revenue">
             <div :class="$style.label">
-              Revenue
+              Ingresos
             </div>
 
             <div :class="$style.value">
@@ -74,7 +74,7 @@
           </li>
           <li v-if="item.genres && item.genres.length">
             <div :class="$style.label">
-              Genre
+              Género
             </div>
 
             <div
@@ -83,7 +83,7 @@
           </li>
           <li v-if="item.status">
             <div :class="$style.label">
-              Status
+              Estado
             </div>
 
             <div :class="$style.value">
@@ -92,7 +92,7 @@
           </li>
           <li v-if="item.original_language">
             <div :class="$style.label">
-              Language
+              Idioma
             </div>
 
             <div :class="$style.value">
@@ -101,7 +101,7 @@
           </li>
           <li v-if="item.production_companies && item.production_companies.length">
             <div :class="$style.label">
-              Production
+              Producción
             </div>
 
             <div :class="$style.value">
@@ -111,7 +111,7 @@
 
           <li v-if="providers && providers.length">
             <div :class="$style.label">
-              Watch On
+              Ver en
             </div>
             <div :class="$style.value">
               {{ providers.join(', ') }}
@@ -128,6 +128,8 @@
     </div>
   </div>
 </template>
+
+
 
 <script>
 import { apiImgUrl } from '~/api';

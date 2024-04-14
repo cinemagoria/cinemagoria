@@ -3,18 +3,18 @@ const apiUrl = 'https://api.themoviedb.org/3';
 export const apiImgUrl = 'https://image.tmdb.org/t/p';
 const lists = {
   movie: [
-    { title: 'Relevant Movies', query: 'trending' },
-    { title: 'Popular Movies', query: 'popular' },
-    { title: 'Top Rated Movies', query: 'top_rated' },
-    { title: 'Upcoming Movies', query: 'upcoming' },
-    { title: 'Now Playing Movies', query: 'now_playing' },
+    { title: 'Películas en Tendencia', query: 'trending' },
+    { title: 'Películas Populares', query: 'popular' },
+    { title: 'Películas Mejor Valoradas', query: 'top_rated' },
+    { title: 'Próximas Películas', query: 'upcoming' },
+    { title: 'Películas en Cartelera', query: 'now_playing' },
   ],
   tv: [
-    { title: 'Relevant TV Shows', query: 'trending' },
-    { title: 'Popular TV Shows', query: 'popular' },
-    { title: 'Top Rated TV Shows', query: 'top_rated' },
-    { title: 'Currently Airing TV Shows', query: 'on_the_air' },
-    { title: 'TV Shows Airing Today', query: 'airing_today' },
+    { title: 'Series de TV en Tendencia', query: 'trending' },
+    { title: 'Series de TV Populares', query: 'popular' },
+    { title: 'Series de TV Mejor Valoradas', query: 'top_rated' },
+    { title: 'Series de TV en Emisión Actualmente', query: 'on_the_air' },
+    { title: 'Series de TV que se Emiten Hoy', query: 'airing_today' },
   ],
 };
 
@@ -299,6 +299,38 @@ export function getMovieProviders(id) {
   });
 };
 
+export function getTvShow(id) {
+  return new Promise((resolve, reject) => {
+    axios.get(`${apiUrl}/tv/${id}`, {
+      params: {
+        api_key: process.env.API_KEY,
+        language: process.env.API_LANG,
+        append_to_response: 'videos,credits,images,external_ids,content_ratings',
+        include_image_language: 'en',
+      },
+    }).then((response) => {
+      const responseData = response.data;
+      const tvShowData = {
+        id: responseData.id,
+        original_title: responseData.original_title,
+        poster_path: responseData.poster_path,
+        overview: responseData.overview,
+        release_date: responseData.release_date,
+        genres: responseData.genres,
+        networks: responseData.networks ? responseData.networks : [],
+        status: responseData.status,
+        runtime: responseData.runtime,
+        imdb_id: responseData.external_ids ? responseData.external_ids.imdb_id : null,
+        vote_average: responseData.vote_average,
+      };
+      resolve(responseData); // Devolver los datos originales para mantener la estructura
+    }).catch((error) => {
+      console.error("Error fetching TV show data:", error);
+      reject(error);
+    });
+  });
+};
+
 export function getTVShowProviders(id) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/tv/${id}/watch/providers`, {
@@ -309,13 +341,17 @@ export function getTVShowProviders(id) {
       let providers = response.data.results.AR; // Intentamos obtener primero los proveedores de AR
       if (providers && providers.flatrate) {
         const providerNames = providers.flatrate.map(provider => provider.provider_name);
+        console.log("Flatrate Providers in AR:", providerNames);
         resolve(providerNames);
       } else {
+        console.log("No flatrate providers found for AR, trying US");
         providers = response.data.results.US; // Intentamos obtener los proveedores de US
         if (providers && providers.flatrate) {
           const providerNames = providers.flatrate.map(provider => provider.provider_name);
+          console.log("Flatrate Providers in US:", providerNames);
           resolve(providerNames);
         } else {
+          console.log("No flatrate providers found for US, unable to fetch TV show providers");
           reject(new Error("Unable to fetch TV show providers"));
         }
       }
@@ -325,6 +361,9 @@ export function getTVShowProviders(id) {
     });
   });
 };
+
+
+
 
 export function getMovieRecommended (id, page = 1) {
   return new Promise((resolve, reject) => {
@@ -360,46 +399,6 @@ export function getTvShows (query, page = 1) {
   });
 };
 
-export function getTvShow(id) {
-  return new Promise((resolve, reject) => {
-    axios.get(`${apiUrl}/tv/${id}`, {
-      params: {
-        api_key: process.env.API_KEY,
-        language: process.env.API_LANG,
-        append_to_response: 'videos,credits,images,external_ids,content_ratings',
-        include_image_language: 'en',
-      },
-    }).then(async (response) => {
-      const responseData = response.data;
-      try {
-        const providers = await getTVShowProviders(id);
-        responseData.providers = providers;
-      } catch (error) {
-        console.error("Error fetching movie providers:", error);
-      }
-
-      const tvShowData = {
-        id: responseData.id,
-        original_title: responseData.original_title,
-        poster_path: responseData.poster_path,
-        overview: responseData.overview,
-        release_date: responseData.release_date,
-        genres: responseData.genres,
-        networks: responseData.networks ? responseData.networks : [],
-        status: responseData.status,
-        runtime: responseData.runtime,
-        imdb_id: responseData.external_ids ? responseData.external_ids.imdb_id : null,
-        vote_average: responseData.vote_average,
-      };
-      resolve(responseData); 
-    }).catch((error) => {
-      console.error("Error fetching TV show data:", error);
-      reject(error);
-    });
-  });
-};
-
-
 
 export function getTvShowRecommended (id, page = 1) {
   return new Promise((resolve, reject) => {
@@ -418,6 +417,8 @@ export function getTvShowRecommended (id, page = 1) {
       });
   });
 };
+
+
 
 export function getTvShowEpisodes (id, season) {
   return new Promise((resolve, reject) => {

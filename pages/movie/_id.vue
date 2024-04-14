@@ -39,7 +39,7 @@
 
     <ListingCarousel
       v-if="recommended && recommended.results.length"
-      title="More Like This"
+      title="Recomendaciones"
       :items="recommended" />
   </main>
 </template>

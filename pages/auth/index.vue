@@ -2,29 +2,29 @@
   <main class="main">
     <section class="section">
       <br>
-      <h1 class="text-white text-center"><b>Welcome Back</b></h1>
-      <h3 class="text-white text-center"><b>Sign in to your account:</b></h3>
+      <h1 class="text-white text-center"><b>¡Bienvenid@ de nuevo!</b></h1>
+      <h3 class="text-white text-center"><b>Inicie sesión en su cuenta:</b></h3>
       <br>
       <div class="form">
         <form @submit.prevent="login">
           <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" v-model="email" placeholder="johndoe@example.com" required>
+            <label for="email" style="margin-right: 10px;">Email:</label>
+            <input type="email" id="email" v-model="email" placeholder="juanperez@example.com" style="font-size: 12px;" required>
           </div>
           <br>
           <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" v-model="password" placeholder="Enter your password" required>
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" v-model="password" placeholder="Ingrese su contraseña" style="font-size: 12px;"  required>
           </div>
           <br>
           <br>
           <div class="button-container">
             <button class="button button--icon" @click="redirectToHome">
               <!-- eslint-disable-next-line -->
-              <span class="txt">Back</span>
+              <span class="txt">Volver</span>
             </button>
             <button type="submit" class="button button--icon">
-              <span class="txt">Sign In</span>
+              <span class="txt">Iniciar sesión</span>
             </button>
             
             <br>
@@ -34,11 +34,12 @@
         <br>
       </div>
       <br>
-      <h2 class="text-center custom-center" style="margin-top:20px;"><strong>Don't have an account? <router-link :to="{ name: 'register' }">Sign Up</router-link></strong></h2>
-      <h2 class="text-center custom-center"><strong>Forgot your password? <router-link :to="{ name: 'recovery' }">Reset</router-link></strong></h2>
+      <h2 class="text-center custom-center" style="margin-top:20px;"><strong>¿No tiene una cuenta? <router-link :to="{ name: 'register' }">Regístrese</router-link></strong></h2>
+      <h2 class="text-center custom-center"><strong>¿Olvidó su contraseña? <router-link :to="{ name: 'recovery' }">Restablecer</router-link></strong></h2>
     </section>
   </main>
 </template>
+
 
 <script>
 export default {
@@ -100,6 +101,10 @@ export default {
 
   .custom-center {
     text-align: center;
+  }
+
+  .form-group {
+    margin-left: 20px;
   }
 
   .form-group input[type="email"],
