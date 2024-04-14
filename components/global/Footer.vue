@@ -3,26 +3,26 @@
     <div class="language-selector" @click="toggleLanguageMenu">
       <div class="selected-language">
         <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="width: 16px; height: 16px; margin-bottom: 3px; margin-right: 4px;">
-        <span class="language">{{ selectedLanguage === 'english' ? 'English' : 'Español' }}</span>
+        <span class="language">{{ selectedLanguage === 'spanish' ? 'Español' : 'English' }}</span>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'english'" style="width: 24px; height: 24px;">
           <path d="M7 10l5 5 5-5z"/>
         </svg>
       </div>
       <div v-if="showLanguageMenu" class="language-menu">
-        <label for="english" @click="selectedLanguage = 'english'; changeLanguage()">
-          <span>English</span>
+        <label for="spanish" @click="selectedLanguage = 'spanish'; changeLanguage()">
+          <span>Español</span>
         </label>
       </div>
     </div>
     <br>
-    <p>Todos los datos son proporcionados por
+    <p>All Data is provided by 
         <a target="_blank" href="https://www.themoviedb.org/" rel="noopener">
             <img src="~static/tmdb.svg" alt="TMDB Attribution" class="tmdb-attribution" style="width: 60px; height: 35px; display: inline-block; margin-bottom: 1px;">
         </a>
-        y
+        and 
         <a target="_blank" href="https://www.justwatch.com/" rel="noopener" style="margin-top: 2px;">JustWatch</a>.
     </p>
-    <p> Al usar este sitio, usted acepta los <strong><a href="/terms">Acuerdos de Usuario, Términos y Condiciones</a></strong>.</p>
+    <p> By using this site you agree to and accept our <strong><a href="/terms">User Agreement and Terms</a></strong>.</p>
     <p>&copy; {{ new Date().getFullYear() }}<a target="_blank" href="https://ivanluna.dev/" rel="noopener"> Ivanluna.dev</a> </p>
 
     <ul class="nolist">
@@ -61,7 +61,7 @@ export default {
   data() {
     return {
       showLanguageMenu: false,
-      selectedLanguage: 'español',
+      selectedLanguage: 'english',
     };
   },
   methods: {
@@ -69,7 +69,7 @@ export default {
       this.showLanguageMenu = !this.showLanguageMenu;
     },
     changeLanguage() {
-      if (this.selectedLanguage === 'english') {
+      if (this.selectedLanguage === 'spanish') {
         window.location.href = "https://en--sonarflix.netlify.app";
       }
     },

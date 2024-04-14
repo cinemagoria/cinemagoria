@@ -20,7 +20,7 @@
         v-if="item.overview"
         :class="$style.overview">
         <h2 :class="$style.title">
-          Sinopsis
+          Storyline
         </h2>
 
         <div v-html="item.overview" />
@@ -30,7 +30,7 @@
         <ul class="nolist">
           <li v-if="item.first_air_date">
             <div :class="$style.label">
-              Primera Emisión
+              First Aired
             </div>
 
             <div :class="$style.value">
@@ -39,7 +39,7 @@
           </li>
           <li v-if="item.last_air_date">
             <div :class="$style.label">
-              Última Emisión
+              Last Aired
             </div>
 
             <div :class="$style.value">
@@ -48,7 +48,7 @@
           </li>
           <li v-if="item.episode_run_time && item.episode_run_time.length">
             <div :class="$style.label">
-              Duración
+              Runtime
             </div>
 
             <div :class="$style.value">
@@ -57,7 +57,7 @@
           </li>
           <li v-if="creators">
             <div :class="$style.label">
-              Creador
+              Creator
             </div>
 
             <div
@@ -66,7 +66,7 @@
           </li>
           <li v-if="item.genres && item.genres.length">
             <div :class="$style.label">
-              Género
+              Genre
             </div>
 
             <div
@@ -75,7 +75,7 @@
           </li>
           <li v-if="item.number_of_seasons">
             <div :class="$style.label">
-              Temporadas
+              Seasons
             </div>
 
             <div :class="$style.value">
@@ -84,7 +84,7 @@
           </li>
           <li v-if="item.number_of_episodes">
             <div :class="$style.label">
-              Episodios
+              Episodes
             </div>
 
             <div :class="$style.value">
@@ -93,7 +93,7 @@
           </li>
           <li v-if="item.status">
             <div :class="$style.label">
-              Estado
+              Status
             </div>
 
             <div :class="$style.value">
@@ -102,7 +102,7 @@
           </li>
           <li v-if="item.original_language">
             <div :class="$style.label">
-              Idioma Original
+              Language
             </div>
 
             <div :class="$style.value">
@@ -112,7 +112,7 @@
 
           <li v-if="providers && providers.length">
             <div :class="$style.label">
-              Ver en
+              Watch On
             </div>
             <div :class="$style.value">
               {{ providers.join(', ') }}
@@ -130,10 +130,9 @@
   </div>
 </template>
 
-
 <script>
 import { apiImgUrl } from '~/api';
-import { getTVShowProviders } from '~/api';
+import { getTVShowProviders } from '~/api'; 
 import { name, creators } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
 
@@ -173,7 +172,6 @@ export default {
       this.item.external_ids.homepage = this.item.homepage;
     }
     this.fetchProviders();
-    
   },
 
   methods: {

@@ -13,7 +13,7 @@
         v-if="viewAllUrl"
         :to="viewAllUrl"
         class="listing__explore">
-        <strong>Explorar Más</strong>
+        <strong>Explore All</strong>
       </nuxt-link>
     </div>
 

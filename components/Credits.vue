@@ -4,7 +4,7 @@
     class="listing listing--carousel">
     <div class="listing__head">
       <h2 class="listing__title">
-        Reparto
+        Cast
       </h2>
     </div>
 

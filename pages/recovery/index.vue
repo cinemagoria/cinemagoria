@@ -1,34 +1,33 @@
 <template>
-  <main class="main">
-    <section class="section">
-      <br>
-      <h1 class="text-white text-center"><b>Restablecer Su Contraseña</b></h1>
-      <h3 class="text-white text-center"><b>Escriba su correo electrónico y le enviaremos un enlace para restablecer su contraseña:</b></h3>
-      <br>
-      <div class="form">
-        <form @submit.prevent="recoverPassword">
-          <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" v-model="email" placeholder="juanperez@example.com" style="font-size: 12px;" required>
-          </div>
-          <br>
-          <div class="button-container">
+    <main class="main">
+      <section class="section">
+        <br>
+        <h1 class="text-white text-center"><b>Reset Your Password</b></h1>
+        <h3 class="text-white text-center"><b>Type in your email and we'll send you a link to reset your password:</b></h3>
+        <br>
+        <div class="form">
+          <form @submit.prevent="recoverPassword">
+            <div class="form-group">
+              <label for="email">Email:</label>
+              <input type="email" id="email" v-model="email" placeholder="johndoe@example.com" required>
+            </div>
+            <br>
+            <div class="button-container">
             <button class="button button--icon" @click="redirectToHome">
               <!-- eslint-disable-next-line -->
-              <span class="txt">Volver</span>
+            <span class="txt">Back</span>
             </button>
-            <button type="submit" class="button button--icon">
-              <span class="txt">Restablecer</span>
-            </button>
-          </div>
-        </form>
-      </div>
-      <br>
-      <h2 class="text-center custom-center"><strong>¿Ya tiene una cuenta? <router-link :to="{ name: 'auth' }">Iniciar Sesión</router-link></strong></h2>
-    </section>
-  </main>
-</template>
-
+              <button type="submit" class="button button--icon">
+                <span class="txt">Reset Password</span>
+              </button>
+            </div>
+          </form>
+        </div>
+        <br>
+        <h2 class="text-center custom-center"><strong>Already have an account? <router-link :to="{ name: 'auth' }">Sign In</router-link></strong></h2>
+      </section>
+    </main>
+  </template>
   
   <script>
   export default {
@@ -78,7 +77,7 @@ h3 {
 }
 
 .input {
-  border-radius: 18px;
+  border-radius: 18px; 
 }
 
 .button-container {
@@ -111,7 +110,7 @@ h2 {
 }
 
 .form-group {
-    margin-left: 20px;
+  margin-left: 20px;
 }
 
 .form-group input[type="email"],

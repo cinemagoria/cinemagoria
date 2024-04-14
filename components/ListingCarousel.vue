@@ -13,7 +13,7 @@
         v-if="viewAllUrl"
         :to="viewAllUrl"
         class="listing__explore">
-        <strong>Explorar Más</strong>
+        <strong>Explore All</strong>
       </nuxt-link>
     </div>
 
@@ -44,7 +44,7 @@
             :to="viewAllUrl"
             class="card__link">
             <div class="card__img">
-              <span>Explorar Más</span>
+              <span>Explore All</span>
             </div>
           </nuxt-link>
         </div>
