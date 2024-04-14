@@ -8,8 +8,8 @@
       <div class="form">
         <form @submit.prevent="recoverPassword">
           <div class="form-group">
-            <label for="email">Correo Electrónico:</label>
-            <input type="email" id="email" v-model="email" placeholder="Ingrese su correo electrónico" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" v-model="email" placeholder="juanperez@example.com" style="font-size: 12px;" required>
           </div>
           <br>
           <div class="button-container">
@@ -18,7 +18,7 @@
               <span class="txt">Volver</span>
             </button>
             <button type="submit" class="button button--icon">
-              <span class="txt">Restablecer Contraseña</span>
+              <span class="txt">Restablecer</span>
             </button>
           </div>
         </form>
@@ -78,7 +78,7 @@ h3 {
 }
 
 .input {
-  border-radius: 18px; /* Aplica el border-radius al input */
+  border-radius: 18px;
 }
 
 .button-container {
@@ -108,6 +108,10 @@ h2 {
 
 .custom-center {
   text-align: center;
+}
+
+.form-group {
+    margin-left: 20px;
 }
 
 .form-group input[type="email"],

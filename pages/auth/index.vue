@@ -2,19 +2,19 @@
   <main class="main">
     <section class="section">
       <br>
-      <h1 class="text-white text-center"><b>Bienvenid@ de nuevo</b></h1>
+      <h1 class="text-white text-center"><b>¡Bienvenid@ de nuevo!</b></h1>
       <h3 class="text-white text-center"><b>Inicie sesión en su cuenta:</b></h3>
       <br>
       <div class="form">
         <form @submit.prevent="login">
           <div class="form-group">
-            <label for="email">Correo electrónico:</label>
-            <input type="email" id="email" v-model="email" placeholder="Ingrese su correo electrónico" required>
+            <label for="email" style="margin-right: 10px;">Email:</label>
+            <input type="email" id="email" v-model="email" placeholder="juanperez@example.com" style="font-size: 12px;" required>
           </div>
           <br>
           <div class="form-group">
             <label for="password">Contraseña:</label>
-            <input type="password" id="password" v-model="password" placeholder="Ingrese su contraseña" required>
+            <input type="password" id="password" v-model="password" placeholder="Ingrese su contraseña" style="font-size: 12px;"  required>
           </div>
           <br>
           <br>
@@ -101,6 +101,10 @@ export default {
 
   .custom-center {
     text-align: center;
+  }
+
+  .form-group {
+    margin-left: 20px;
   }
 
   .form-group input[type="email"],
