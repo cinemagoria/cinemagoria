@@ -21,6 +21,7 @@
     "core-js": "^3.25.3",
     "nuxt": "^2.15.8",
     "smoothscroll-polyfill": "^0.4.4",
+    "swiper": "^11.1.1",
     "tiny-cookie": "^2.3.2",
     "vue": "^2.7.10",
     "vue-carousel": "^0.18.0",
