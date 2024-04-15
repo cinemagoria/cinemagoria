@@ -117,7 +117,20 @@
               {{ providers.join(', ') }}
             </div>
           </li>
-
+          <li v-if="reviews && reviews.length">
+            <strong class="label">Some Reviews<span style="cursor: pointer; letter-spacing: 2px; margin-left: 1rem; color: #2897bc;" @click="toggleFullReviews"> WARNING: MAY CONTAIN SPOILERS</span></strong>
+            <ul class="value" v-show="showFullReviews">
+                <li v-for="(review, index) in reviews" :key="index">
+                    <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">
+                        <strong>Written By:</strong> <a style="cursor: pointer;" @click="redirectToUrl(review.url)">{{ review.authorName }}</a><br>
+                        <strong>Date:</strong> {{ formatCreatedAt(review.createdAt) }}<br>
+                        <strong>Rating:</strong> {{ review.authorRating }}<br>
+                        <span style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.content, index, review.showFullContent)"></span><br>
+                        <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #2897bc;" @click="toggleReadMore(review)">..[Read More].</span>
+                    </p>
+                </li>
+            </ul>
+        </li>
         </ul>
       </div>
 
@@ -134,6 +147,7 @@
 <script>
 import { apiImgUrl } from '~/api';
 import { getMovieProviders } from '~/api'; 
+import { getMovieReviews } from '~/api'; 
 import { name, directors } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
 
@@ -148,15 +162,24 @@ export default {
   ],
 
   props: {
-    item: {
-      type: Object,
-      required: true,
-    },
-    providers: {
+  item: {
+    type: Object,
+    required: true,
+  },
+  reviewsProp: Array,
+  providers: {
     type: Array,
     default: () => [],
-    },
-  },
+  }
+},
+
+data() {
+  return {
+    showFullReviews: false,
+    reviews: [],
+  };
+},
+
 
   computed: {
     poster () {
@@ -173,23 +196,69 @@ export default {
       this.item.external_ids.homepage = this.item.homepage;
     }
     this.fetchProviders();
+    this.fetchReviews();
   },
-
 
   methods: {
-    formatGenres (genres) {
-      return genres.map(genre => `<a href="/genre/${genre.id}/movie">${genre.name}</a>`).join(', ');
-    },
-    async fetchProviders() {
-      try {
-        const providers = await getMovieProviders(this.item.id); 
-        this.providers = providers; 
-      } catch (error) {
-        console.error("Error fetching movie providers:", error);
-      }
-    },
+  toggleFullReviews() {
+    this.showFullReviews = !this.showFullReviews;
   },
-};
+  formatGenres(genres) {
+    return genres.map(genre => `<a href="/genre/${genre.id}/movie">${genre.name}</a>`).join(', ');
+  },
+  
+  toggleReadMore(review) {
+    this.$set(review, 'showFullContent', !review.showFullContent);
+  },
+
+  formatContent(content, index, showFullContent) {
+    if (!content) return '';
+
+    content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    content = content.replace(/_([^_]+)_/g, (match, p1) => p1.toUpperCase());
+    
+    if (showFullContent) {
+        return content; // Mostrar todo el contenido si showFullContent es verdadero
+    } else {
+        const words = content.split(' ');
+        if (words.length > 200) {
+            content = words.slice(0, 200).join(' ');
+        }
+        return content;
+    }
+  },
+
+  formatCreatedAt(createdAt) {
+    if (!createdAt) return '';
+    return new Date(createdAt).toLocaleString('es-ES', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  },
+  async fetchProviders() {
+    try {
+      const providers = await getMovieProviders(this.item.id);
+      this.providers = providers;
+    } catch (error) {
+      console.error("Error fetching movie providers:", error);
+    }
+  },
+  async fetchReviews() {
+    try {
+      const reviews = await getMovieReviews(this.item.id);
+      this.reviews = reviews;
+    } catch (error) {
+      console.error("Error fetching movie reviews:", error);
+    }
+  },
+  redirectToUrl(url) {
+    window.open(url, '_blank');
+  },
+}
+}
 </script>
 
 <style lang="scss" module>
@@ -244,6 +313,7 @@ export default {
     justify-content: center;
   }
 }
+
 
 .overview {
   max-width: 1000px;

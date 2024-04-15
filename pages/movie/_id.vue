@@ -10,8 +10,7 @@
       @clicked="navClicked" />
 
     <template v-if="activeMenu === 'overview'">
-      <MovieInfo
-        :item="item" />
+      <MovieInfo :item="item" :reviews-prop="reviews" />
 
       <Credits
         v-if="showCredits"

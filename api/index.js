@@ -247,8 +247,11 @@ export function getMovie(id) {
       try {
         const providers = await getMovieProviders(id);
         responseData.providers = providers;
+        const reviews = await getMovieReviews(id);
+        responseData.reviews = reviews;
       } catch (error) {
         console.error("Error fetching movie providers:", error);
+        console.error("Error fetching movie reviews:", error);
       }
 
       const movieData = {
@@ -294,6 +297,46 @@ export function getMovieProviders(id) {
       }
     }).catch((error) => {
       console.error("Error fetching movie providers:", error);
+      reject(error);
+    });
+  });
+};
+
+export function getMovieReviews(id) {
+  return new Promise((resolve, reject) => {
+    axios.get(`${apiUrl}/movie/${id}/reviews?language=es-ES&page=1`, {
+      params: {
+        api_key: process.env.API_KEY,
+      },
+    }).then((response) => {
+      const reviews = response.data.results;
+      const totalResults = response.data.total_results;
+
+      if (reviews && reviews.length > 0) {
+        const reviewsData = reviews.map(review => {
+          const authorName = review.author_details.name || review.author_details.username || null;
+          const authorAvatar = review.author_details.avatar_path || null;
+          const authorRating = review.author_details.rating || null;
+          const content = review.content;
+          const createdAt = review.created_at;
+          const url = review.url;
+
+          return {
+            authorName,
+            authorAvatar,
+            authorRating,
+            content,
+            createdAt,
+            url
+          };
+        });
+
+        resolve(reviewsData);
+      } else {
+        reject(new Error("No reviews found for this movie"));
+      }
+    }).catch((error) => {
+      console.error("Error fetching movie reviews:", error);
       reject(error);
     });
   });
@@ -361,9 +404,6 @@ export function getTVShowProviders(id) {
     });
   });
 };
-
-
-
 
 export function getMovieRecommended (id, page = 1) {
   return new Promise((resolve, reject) => {
