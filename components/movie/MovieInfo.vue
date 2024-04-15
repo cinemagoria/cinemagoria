@@ -117,21 +117,7 @@
               {{ providers.join(', ') }}
             </div>
           </li>
-          <li v-if="reviews && reviews.length">
-            <strong class="label">Some Reviews<span style="cursor: pointer; letter-spacing: 2px; margin-left: 1rem; color: #2897bc;" @click="toggleFullReviews"> WARNING: MAY CONTAIN SPOILERS</span></strong>
-            <ul class="value" v-show="showFullReviews">
-                <li v-for="(review, index) in reviews" :key="index">
-                    <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">
-                        <strong>Written By:</strong> <a style="cursor: pointer;" @click="redirectToUrl(review.url)">{{ review.authorName }}</a><br>
-                        <strong>Date:</strong> {{ formatCreatedAt(review.createdAt) }}<br>
-                        <strong>Rating:</strong> {{ review.authorRating }}<br>
-                        <span style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.content, index, review.showFullContent)"></span><br>
-                        <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #2897bc;" @click="toggleReadMore(review)">..[Read More].</span>
-                    </p>
-                </li>
-            </ul>
-        </li>
-
+          <br>
         </ul>
       </div>
 
@@ -139,6 +125,20 @@
         <ExternalLinks
           :links="item.external_ids" />
       </div>
+      <div v-if="reviews && reviews.length" class="reviews-container">
+        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reviews<br><span style="cursor: pointer; letter-spacing: 2px; margin-left: 1rem; color: #2897bc;" @click="toggleFullReviews"> WARNING: MAY CONTAIN SPOILERS</span></strong>
+        <ul class="nolist" v-show="showFullReviews">
+            <li v-for="(review, index) in reviews" :key="index" style="margin-top: 3rem;">
+                <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">
+                    <strong style="letter-spacing: 2px; font-size: 14px;">Written By:</strong> <a style="cursor: pointer; letter-spacing: 2px; font-size: 14px;" @click="redirectToUrl(review.url)">{{ review.authorName }}</a><br>
+                    <strong style="letter-spacing: 2px; font-size: 14px;">Date:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ formatCreatedAt(review.createdAt) }}</span><br>
+                    <strong style="letter-spacing: 2px; font-size: 14px;">Rating:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ review.authorRating }}</span><br>
+                    <span style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.content, index, review.showFullContent)"></span><br>
+                    <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #2897bc; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Read More].</span>
+                </p>
+            </li>
+        </ul>
+    </div>
     </div>
   </div>
 </template>
@@ -217,7 +217,7 @@ export default {
     content = content.replace(/_([^_]+)_/g, (match, p1) => p1.toUpperCase());
     
     if (showFullContent) {
-        return content; // Mostrar todo el contenido si showFullContent es verdadero
+        return content; 
     } else {
         const words = content.split(' ');
         if (words.length > 200) {
@@ -360,6 +360,7 @@ export default {
     @media (min-width: $breakpoint-medium) {
       width: 50%;
     }
+    
 
     @media (min-width: $breakpoint-xlarge) {
       width: 100%;
