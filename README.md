@@ -16,7 +16,8 @@ The current focus is on frontend development deployed in Netlify, with plans to 
 
 ### Planned Features
 - Add Providers Options for each Movie and TV Show. [DONE](https://github.com/imprvhub/sonarflix/commit/b3d8fe465590818b4e720eb0ed045dec533521f1)
-- Integration of Python backend for user authentication
+- User Reviews for Movies and TV Shows, New Carousels for Categories, Introduction of Spanish Language and Authentication Pages. [DONE](https://github.com/imprvhub/sonarflix/releases/tag/v0.4.0)
+- Integration of Python backend for user authentication. 
 - User profile creation and management
 - Saving favorite movies and TV series
 - Social media sharing functionality
