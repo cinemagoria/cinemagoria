@@ -25,9 +25,6 @@
 
           
         </div>
-        <div :class="$style.field">
-          <a :href="'/search-genre'" class="genre-link" style="margin: 0 auto; text-transform: uppercase;">Search by Genres</a>
-        </div>
       </div>
     </form>
   </div>

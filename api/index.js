@@ -322,12 +322,12 @@ export function getMovieProviders(id) {
         api_key: process.env.API_KEY,
       },
     }).then((response) => {
-      let providers = response.data.results.AR; // Intentamos obtener primero los proveedores de AR
+      let providers = response.data.results.AR; 
       if (providers && providers.flatrate) {
         const providerNames = providers.flatrate.map(provider => provider.provider_name);
         resolve(providerNames);
       } else {
-        providers = response.data.results.US; // Intentamos obtener los proveedores de US
+        providers = response.data.results.US; 
         if (providers && providers.flatrate) {
           const providerNames = providers.flatrate.map(provider => provider.provider_name);
           resolve(providerNames);
@@ -349,12 +349,12 @@ export function getTVShowProviders(id) {
         api_key: process.env.API_KEY,
       },
     }).then((response) => {
-      let providers = response.data.results.AR; // Intentamos obtener primero los proveedores de AR
+      let providers = response.data.results.AR; 
       if (providers && providers.flatrate) {
         const providerNames = providers.flatrate.map(provider => provider.provider_name);
         resolve(providerNames);
       } else {
-        providers = response.data.results.US; // Intentamos obtener los proveedores de US
+        providers = response.data.results.US;
         if (providers && providers.flatrate) {
           const providerNames = providers.flatrate.map(provider => provider.provider_name);
           resolve(providerNames);
