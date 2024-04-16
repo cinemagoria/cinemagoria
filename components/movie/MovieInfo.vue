@@ -126,7 +126,7 @@
           :links="item.external_ids" />
       </div>
       <div v-if="reviews && reviews.length" class="reviews-container">
-        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reviews<br><span style="cursor: pointer; letter-spacing: 2px; margin-left: 1rem; color: #2897bc;" @click="toggleFullReviews"> WARNING: MAY CONTAIN SPOILERS</span></strong>
+        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reviews<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px; color: #2897bc;" @click="toggleFullReviews"> WARNING: MAY CONTAIN SPOILERS</span></strong>
         <ul class="nolist" v-show="showFullReviews">
             <li v-for="(review, index) in reviews" :key="index" style="margin-top: 3rem;">
                 <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">

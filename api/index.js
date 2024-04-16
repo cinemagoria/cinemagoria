@@ -442,7 +442,45 @@ export function getTvShow(id) {
   });
 };
 
+export function getTvShowReviews(id) {
+  return new Promise((resolve, reject) => {
+    axios.get(`${apiUrl}/tv/${id}/reviews?language=en-US&page=1`, {
+      params: {
+        api_key: process.env.API_KEY,
+      },
+    }).then((response) => {
+      const reviews = response.data.results;
+      const totalResults = response.data.total_results;
 
+      if (reviews && reviews.length > 0) {
+        const reviewsData = reviews.map(review => {
+          const authorName = review.author_details.name || review.author_details.username || null;
+          const authorAvatar = review.author_details.avatar_path || null;
+          const authorRating = review.author_details.rating || null;
+          const content = review.content;
+          const createdAt = review.created_at;
+          const url = review.url;
+
+          return {
+            authorName,
+            authorAvatar,
+            authorRating,
+            content,
+            createdAt,
+            url
+          };
+        });
+
+        resolve(reviewsData);
+      } else {
+        reject(new Error("No reviews found for this tv show."));
+      }
+    }).catch((error) => {
+      console.error("Error fetching tv show reviews:", error);
+      reject(error);
+    });
+  });
+};
 
 export function getTvShowRecommended (id, page = 1) {
   return new Promise((resolve, reject) => {
