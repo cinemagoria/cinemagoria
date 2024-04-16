@@ -118,13 +118,25 @@
               {{ providers.join(', ') }}
             </div>
           </li>
-
         </ul>
       </div>
-
       <div :class="$style.external">
         <ExternalLinks
           :links="item.external_ids" />
+      </div>
+      <div v-if="reviews && reviews.length" class="reviews-container">
+          <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reseñas<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px; color: #2897bc;" @click="toggleFullReviews"> ADVERTENCIA: PUEDEN CONTENER SPOILERS</span></strong>
+          <ul class="nolist" v-show="showFullReviews">
+              <li v-for="(review, index) in reviews" :key="index" style="margin-top: 3rem;">
+                  <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">
+                      <strong style="letter-spacing: 2px; font-size: 14px;">Autor:</strong> <a style="cursor: pointer; letter-spacing: 2px; font-size: 14px;" @click="redirectToUrl(review.url)">{{ review.authorName }}</a><br>
+                      <strong style="letter-spacing: 2px; font-size: 14px;">Fecha:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ formatCreatedAt(review.createdAt) }}</span><br>
+                      <strong style="letter-spacing: 2px; font-size: 14px;">Puntuación:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ review.authorRating }}</span><br>
+                      <span style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.content, index, review.showFullContent)"></span><br>
+                      <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #2897bc; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Leer más].</span>
+                  </p>
+              </li>
+          </ul>
       </div>
     </div>
   </div>
@@ -134,6 +146,7 @@
 <script>
 import { apiImgUrl } from '~/api';
 import { getTVShowProviders } from '~/api';
+import { getTvShowReviews } from '~/api'; 
 import { name, creators } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
 
@@ -152,10 +165,18 @@ export default {
       type: Object,
       required: true,
     },
+    reviewsProp: Array,
     providers: {
       type: Array,
       default: () => [],
-    },
+    }
+  },
+
+  data() {
+    return {
+      showFullReviews: false,
+      reviews: [], 
+    };
   },
 
   computed: {
@@ -173,29 +194,74 @@ export default {
       this.item.external_ids.homepage = this.item.homepage;
     }
     this.fetchProviders();
-    
+    this.fetchReviews();
+    this.reviews = this.reviewsProp || [];
   },
 
   methods: {
+    toggleFullReviews() {
+    this.showFullReviews = !this.showFullReviews;
+    },
     formatGenres (genres) {
       return genres.map(genre => `<a href="/genre/${genre.id}/tv">${genre.name}</a>`).join(', ');
     },
 
+    toggleReadMore(review) {
+    this.$set(review, 'showFullContent', !review.showFullContent);
+    },
+
     formatRunTime (times) {
       return times.map(time => `${time}m`).join(', ');
+    },
+    formatContent(content, index, showFullContent) {
+      if (!content) return '';
+
+      content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      content = content.replace(/_([^_]+)_/g, (match, p1) => p1.toUpperCase());
+      
+      if (showFullContent) {
+          return content; 
+      } else {
+          const words = content.split(' ');
+          if (words.length > 200) {
+              content = words.slice(0, 200).join(' ');
+          }
+          return content;
+      }
+    },
+
+    formatCreatedAt(createdAt) {
+      if (!createdAt) return '';
+      return new Date(createdAt).toLocaleString('es-ES', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
     },
     async fetchProviders() {
       try {
         const providers = await getTVShowProviders(this.item.id); 
         this.providers = providers; 
       } catch (error) {
-        console.error("Error fetching movie providers:", error);
+        console.error("Error fetching tv show providers:", error);
       }
+    },
+    async fetchReviews() {
+      try {
+        const reviews = await getTvShowReviews(this.item.id);
+        this.reviews = reviews;
+      } catch (error) {
+        console.error("Error fetching tv show reviews:", error);
+      }
+    },
+    redirectToUrl(url) {
+      window.open(url, '_blank');
     },
   },
 };
 </script>
-
 <style lang="scss" module>
 @import '~/assets/css/utilities/_variables.scss';
 
@@ -249,6 +315,7 @@ export default {
   }
 }
 
+
 .overview {
   max-width: 1000px;
   margin-bottom: 3rem;
@@ -294,6 +361,7 @@ export default {
     @media (min-width: $breakpoint-medium) {
       width: 50%;
     }
+    
 
     @media (min-width: $breakpoint-xlarge) {
       width: 100%;

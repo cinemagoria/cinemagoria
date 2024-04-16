@@ -126,11 +126,11 @@
           :links="item.external_ids" />
       </div>
       <div v-if="reviews && reviews.length" class="reviews-container">
-        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reseñas<br><span style="cursor: pointer; letter-spacing: 2px; margin-left: 1rem; color: #2897bc;" @click="toggleFullReviews"> ADVERTENCIA: PUEDEN CONTENER SPOILERS</span></strong>
+        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reseñas<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px;  color: #2897bc;" @click="toggleFullReviews"> ADVERTENCIA: PUEDEN CONTENER SPOILERS</span></strong>
         <ul class="nolist" v-show="showFullReviews">
             <li v-for="(review, index) in reviews" :key="index" style="margin-top: 3rem;">
                 <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">
-                    <strong style="letter-spacing: 2px; font-size: 14px;">Autor::</strong> <a style="cursor: pointer; letter-spacing: 2px; font-size: 14px;" @click="redirectToUrl(review.url)">{{ review.authorName }}</a><br>
+                    <strong style="letter-spacing: 2px; font-size: 14px;">Autor:</strong> <a style="cursor: pointer; letter-spacing: 2px; font-size: 14px;" @click="redirectToUrl(review.url)">{{ review.authorName }}</a><br>
                     <strong style="letter-spacing: 2px; font-size: 14px;">Fecha:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ formatCreatedAt(review.createdAt) }}</span><br>
                     <strong style="letter-spacing: 2px; font-size: 14px;">Puntuación:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ review.authorRating }}</span><br>
                     <span style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.content, index, review.showFullContent)"></span><br>
