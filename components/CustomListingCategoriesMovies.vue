@@ -70,18 +70,18 @@
     data() {
       return {
         categories: [
-          { image: "/thumbnails/drama-tv-eng.png", link: "/genre/18/movie", alt: "Drama" },
-          { image: "/thumbnails/comedy-movie-eng.png", link: "/genre/35/movie", alt: "Comedia" },
-          { image: "/thumbnails/action-movie-eng.png", link: "/genre/28/movie", alt: "Acción" },
-          { image: "/thumbnails/horror-movie-eng.png", link: "/genre/27/movie", alt: "Terror" },
-          { image: "/thumbnails/suspense-movie-eng.png", link: "/genre/53/movie", alt: "Suspenso" },
-          { image: "/thumbnails/sciencefiction-movie-eng.png", link: "/genre/878/movie", alt: "Ciencia Ficción" },
-          { image: "/thumbnails/adventure-tv-eng.png", link: "/genre/12/movie", alt: "Aventura" },
-          { image: "/thumbnails/crime-movie-eng.png", link: "/genre/80/movie", alt: "Crimen" },
-          { image: "/thumbnails/history-movie-eng.png", link: "/genre/36/movie", alt: "Historia" },
-          { image: "/thumbnails/documentary-movie-eng.png", link: "/genre/99/movie", alt: "Documentales" },
-          { image: "/thumbnails/animation-movie-eng.png", link: "/genre/16/movie", alt: "Animación" },
-          { image: "/thumbnails/mistery-movie-eng.png", link: "/genre/9648/movie", alt: "Misterio" }
+          { image: "/thumbnails/drama-tv-esp.png", link: "/genre/18/movie", alt: "Drama" },
+          { image: "/thumbnails/comedy-movie-esp.png", link: "/genre/35/movie", alt: "Comedia" },
+          { image: "/thumbnails/action-movie-esp.png", link: "/genre/28/movie", alt: "Acción" },
+          { image: "/thumbnails/horror-movie-esp.png", link: "/genre/27/movie", alt: "Terror" },
+          { image: "/thumbnails/suspense-movie-esp.png", link: "/genre/53/movie", alt: "Suspenso" },
+          { image: "/thumbnails/sciencefiction-movie-esp.png", link: "/genre/878/movie", alt: "Ciencia Ficción" },
+          { image: "/thumbnails/adventure-tv-esp.png", link: "/genre/12/movie", alt: "Aventura" },
+          { image: "/thumbnails/crime-movie-esp.png", link: "/genre/80/movie", alt: "Crimen" },
+          { image: "/thumbnails/history-movie-esp.png", link: "/genre/36/movie", alt: "Historia" },
+          { image: "/thumbnails/documentary-movie-esp.png", link: "/genre/99/movie", alt: "Documentales" },
+          { image: "/thumbnails/animation-movie-esp.png", link: "/genre/16/movie", alt: "Animación" },
+          { image: "/thumbnails/mistery-movie-esp.png", link: "/genre/9648/movie", alt: "Misterio" }
         ],
       };
     },
