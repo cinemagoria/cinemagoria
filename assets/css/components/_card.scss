@@ -17,6 +17,15 @@
   background-color: $secondary-color;
   border-radius: 15px;
   transition: transform 0.3s ease-in-out;
+  
+  .card__img2 {
+    position: relative;
+    height: 0;
+    padding-top: 150.27%;
+    overflow: hidden;
+    background-color: transparent;    
+    transition: transform 0.3s ease-in-out;
+  }
 
   img,
   span {
