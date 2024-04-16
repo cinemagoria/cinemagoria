@@ -33,4 +33,4 @@ Check out the current state of SonarFlix [here](https://sonarflix.netlify.app).
 ### Notes
 
 - This project is currently under maintenance.
-- For the latest updates and changes, refer to the [Full Changelog](https://github.com/imprvhub/sonarflix/commits/v0.1.0).
+- For the latest updates and changes, refer to the [Full Changelog](https://github.com/imprvhub/sonarflix/compare/v0.1.0...v0.4.0).
