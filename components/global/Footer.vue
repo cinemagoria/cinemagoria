@@ -69,10 +69,18 @@ export default {
       this.showLanguageMenu = !this.showLanguageMenu;
     },
     changeLanguage() {
-      if (this.selectedLanguage === 'english') {
-        window.location.href = "https://sonarflix.netlify.app";
+      const currentPath = this.$route.path;
+      const currentOrigin = window.location.origin;
+      const isSpanish = currentOrigin.includes('es--');
+
+      if (isSpanish) {
+        const newOrigin = currentOrigin.replace('es--', '');
+        const newUrl = `${newOrigin}${currentPath}`;
+        window.location.href = newUrl;
+      } else {
+        console.log("La URL no tiene el prefijo 'es--', no se necesita ninguna acción.");
       }
-    },
+    }
   },
 };
 </script>
