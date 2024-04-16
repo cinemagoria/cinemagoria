@@ -33,7 +33,7 @@ import { getTrending, getMovie, getTvShow, getListItem } from '~/api';
 import Hero from '~/components/Hero';
 import ListingCarousel from '~/components/ListingCarousel';
 import FeatureDescription from '~/components/FeatureDescription';
-import CustomListingCategoriesMovies from '~/components/CustomListingCategoriesMovies ';
+import CustomListingCategoriesMovies from '~/components/CustomListingCategoriesMovies';
 import CustomListingCategoriesSeries from '~/components/CustomListingCategoriesSeries';
 
 export default {
