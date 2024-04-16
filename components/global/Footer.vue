@@ -69,11 +69,16 @@ export default {
       this.showLanguageMenu = !this.showLanguageMenu;
     },
     changeLanguage() {
-      if (this.selectedLanguage === 'spanish') {
-        window.location.href = "https://es--sonarflix.netlify.app";
-      }
+      const currentPath = this.$route.path;
+      const currentOrigin = window.location.origin;
+      const spanishUrl = `${currentOrigin.replace(
+        '://',
+        '://es--'
+      )}${currentPath}`;
+      window.location.href = spanishUrl;
+    }
+
     },
-  },
 };
 </script>
 
