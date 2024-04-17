@@ -9,39 +9,39 @@
       </div>
   
       <div class="carousel">
-      <button
-        class="carousel__nav carousel__nav--left"
-        aria-label="Previous"
-        type="button"
-        :disabled="disableLeftButton"
-        @click="moveToClickEvent('left')">
-        <!-- eslint-disable-next-line -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"/></svg>
-      </button>
-  
-        <div ref="carouselElement" class="carousel__items" @scroll="scrollEvent">
-          <div v-for="(category, index) in categories" :key="`category-${index}`" class="card" @click="redirectToRoute(category.link)">
-            <div class="card__image">
-                <img :src="category.image" :alt="category.alt">
-            </div>
-  
-            <div class="card__info">
-            <h2 class="card__label">
-                <a @click.prevent="redirectToRoute(category.link)" class="category-link">{{ category.alt }}</a>
-            </h2>
-          </div>
-          </div>
-        </div>
-  
         <button
-          class="carousel__nav carousel__nav-right"
-          aria-label="Next"
+          class="carousel__nav carousel__nav---left"
+          aria-label="Previous"
           type="button"
-          :disabled="disableRightButton"
-          @click="moveToClickEvent('right')">
+          :disabled="disableLeftButton"
+          @click="moveToClickEvent('left')">
           <!-- eslint-disable-next-line -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"/></svg>
-      </button>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"/></svg>
+        </button>
+    
+          <div ref="carouselElement" class="carousel__items" @scroll="scrollEvent">
+            <div v-for="(category, index) in categories" :key="`category-${index}`" class="card" @click="redirectToRoute(category.link)">
+              <div class="card__image">
+                  <img :src="category.image" :alt="category.alt">
+              </div>
+    
+              <div class="card__info">
+              <h2 class="card__label">
+                  <a @click.prevent="redirectToRoute(category.link)" class="category-link">{{ category.alt }}</a>
+              </h2>
+            </div>
+            </div>
+          </div>
+    
+          <button
+            class="carousel__nav carousel__nav-right"
+            aria-label="Next"
+            type="button"
+            :disabled="disableRightButton"
+            @click="moveToClickEvent('right')">
+            <!-- eslint-disable-next-line -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"/></svg>
+        </button>
       </div>
     </div>
   </template>
