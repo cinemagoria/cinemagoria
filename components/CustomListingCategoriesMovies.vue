@@ -1,13 +1,12 @@
 <template>
     <div class="listing-carousel-categories">
-      <div v-if="title || viewAllUrl" class="listing__head">
+      <div class="carousel">
+        <div v-if="title || viewAllUrl" class="listing__head">
         <h2 class="listing__title">Categories: Movies</h2>
         <nuxt-link v-if="viewAllUrl" :to="viewAllUrl" class="listing__explore">
           <strong>Explore All</strong>
         </nuxt-link>
       </div>
-  
-      <div class="carousel">
       <button
         class="carousel__nav carousel__nav--left"
         aria-label="Previous"
@@ -95,9 +94,36 @@
 </script>
 <style scoped>
     .listing__title {
-        margin-left: 5rem;
+      font-size: 1.8rem;
+      letter-spacing: 0.4px;
     }
 
+    @media (min-width: 300px) {
+      .listing__title {
+        margin-left: 1.5rem;
+      }
+    }
+
+    @media (min-width: 800px) {
+      .listing__title {
+        margin-left: 3rem;
+      }
+    }
+
+    @media (min-width: 767px) and (max-width: 1199px) {
+      .listing__title {
+        margin-left: 4rem;
+      }
+    }
+
+
+    @media (min-width: 1200px) {
+      .listing__title {
+        margin-left: 5rem;
+        font-size: 2.4rem;
+      }
+    }
+    
     .category-link {
         font-weight: 600;
         color: #80868b;
