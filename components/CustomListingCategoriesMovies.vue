@@ -1,5 +1,6 @@
 <template>
     <div class="listing-carousel-categories">
+      <br>
       <div v-if="title || viewAllUrl" class="listing__head">
         <h2 class="listing__title">Categorías: Películas</h2>
         <nuxt-link v-if="viewAllUrl" :to="viewAllUrl" class="listing__explore">
@@ -95,7 +96,34 @@
 </script>
 <style scoped>
     .listing__title {
+      font-size: 1.8rem;
+      letter-spacing: 0.4px;
+    }
+
+    @media (min-width: 300px) {
+      .listing__title {
+        margin-left: 1.5rem;
+      }
+    }
+
+    @media (min-width: 800px) {
+      .listing__title {
+        margin-left: 3rem;
+      }
+    }
+
+    @media (min-width: 767px) and (max-width: 1199px) {
+      .listing__title {
+        margin-left: 4rem;
+      }
+    }
+
+
+    @media (min-width: 1200px) {
+      .listing__title {
         margin-left: 5rem;
+        font-size: 2.4rem;
+      }
     }
 
     .category-link {
