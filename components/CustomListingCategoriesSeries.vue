@@ -20,12 +20,12 @@
   
         <div ref="carouselElement" class="carousel__items" @scroll="scrollEvent">
           <div v-for="(category, index) in categories" :key="`category-${index}`" class="card" @click="redirectToRoute(category.link)">
-            <div class="card__img2">
+            <div class="card__image">
               <img :src="category.image" :alt="category.alt">
             </div>
   
             <div class="card__info">
-              <h2 class="card__name">
+              <h2 class="card__label">
                 <a @click.prevent="redirectToRoute(category.link)" class="category-link">{{ category.alt }}</a>
               </h2>
             </div>
@@ -138,7 +138,7 @@
     margin-left: 1rem;
   }
   
-  .card__img2 {
+  .card__image {
     border-radius: 15px;
     cursor: pointer;
   }
