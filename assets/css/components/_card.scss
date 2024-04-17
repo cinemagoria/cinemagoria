@@ -18,7 +18,7 @@
   border-radius: 15px;
   transition: transform 0.3s ease-in-out;
   
-  .card__img2 {
+  .card__image {
     position: relative;
     height: 0;
     padding-top: 150.27%;
@@ -61,6 +61,20 @@
 }
 
 .card__name {
+  margin-top: 1rem;
+  overflow: hidden;
+  font-size: 1.3rem;
+  text-overflow: ellipsis;
+  letter-spacing: $letter-spacing;
+  white-space: nowrap;
+
+  @media (min-width: $breakpoint-large) {
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+  }
+}
+
+.card__label {
   margin-top: 1rem;
   overflow: hidden;
   font-size: 1.3rem;
