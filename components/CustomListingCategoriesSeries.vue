@@ -33,7 +33,7 @@
         </div>
   
         <button
-          class="carousel__nav carousel__nav--right"
+          class="carousel__nav carousel__nav---right"
           aria-label="Next"
           type="button"
           :disabled="disableRightButton"
