@@ -8,7 +8,7 @@
         </nuxt-link>
       </div>
       <button
-        class="carousel__nav carousel__nav--left"
+        class="carousel__nav carousel__nav-left"
         aria-label="Previous"
         type="button"
         :disabled="disableLeftButton"
