@@ -127,7 +127,7 @@
       </div>
       <div v-if="reviews && reviews.length" class="reviews-container">
         <br>
-        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reviews<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px; color: #2897bc;" @click="toggleFullReviews"> WARNING: MAY CONTAIN SPOILERS</span></strong>
+        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reviews ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px; color: #2897bc;" @click="toggleFullReviews"> WARNING: MAY CONTAIN SPOILERS</span></strong>
         <ul class="nolist" v-show="showFullReviews">
             <li v-for="(review, index) in reviews" :key="index" style="margin-top: 3rem;">
                 <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">
@@ -181,6 +181,9 @@ export default {
   },
 
   computed: {
+    reviewCount() {
+      return this.reviews.length;
+    },
     poster () {
       if (this.item.poster_path) {
         return `${apiImgUrl}/w370_and_h556_bestv2${this.item.poster_path}`;
