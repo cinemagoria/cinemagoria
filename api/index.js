@@ -282,12 +282,12 @@ export function getMovieProviders(id) {
         api_key: process.env.API_KEY,
       },
     }).then((response) => {
-      let providers = response.data.results.AR; // Intentamos obtener primero los proveedores de AR
+      let providers = response.data.results.AR; 
       if (providers && providers.flatrate) {
         const providerNames = providers.flatrate.map(provider => provider.provider_name);
         resolve(providerNames);
       } else {
-        providers = response.data.results.US; // Intentamos obtener los proveedores de US
+        providers = response.data.results.US; 
         if (providers && providers.flatrate) {
           const providerNames = providers.flatrate.map(provider => provider.provider_name);
           resolve(providerNames);
@@ -304,7 +304,7 @@ export function getMovieProviders(id) {
 
 export function getMovieReviews(id) {
   return new Promise((resolve, reject) => {
-    axios.get(`${apiUrl}/movie/${id}/reviews?language=es-ES&page=1`, {
+    axios.get(`${apiUrl}/movie/${id}/reviews?language=en-US&page=1`, {
       params: {
         api_key: process.env.API_KEY,
       },
