@@ -17,7 +17,7 @@
     <br>
     <p>Todos los datos son proporcionados por
         <a target="_blank" href="https://www.themoviedb.org/" rel="noopener">
-            <img src="~static/tmdb.svg" alt="TMDB Attribution" class="tmdb-attribution" style="width: 60px; height: 35px; display: inline-block; margin-bottom: 1px;">
+            <img src="~static/tmdb.svg" alt="TMDB Attribution" class="tmdb-attribution" style="width: 60px; height: 35px; display: inline-block; margin-bottom: 2px;">
         </a>
         y
         <a target="_blank" href="https://www.justwatch.com/" rel="noopener" style="margin-top: 2px;">JustWatch</a>.
