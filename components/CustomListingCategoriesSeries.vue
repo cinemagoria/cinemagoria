@@ -2,7 +2,7 @@
     <div class="listing-carousel-categories">
       <br>
       <div v-if="title || viewAllUrl" class="listing__head">
-        <h2 class="listing__title">Categories: Tv Shows</h2>
+        <h2 class="listing__title">Categories: TV Shows</h2>
         <nuxt-link v-if="viewAllUrl" :to="viewAllUrl" class="listing__explore">
           <strong>Explore All</strong>
         </nuxt-link>
