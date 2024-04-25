@@ -1,77 +1,81 @@
 <template>
-    <main class="main">
-      <section class="section">
-        <br>
-        <h1 class="text-white text-center"><b>Get started</b></h1>
-        <h3 class="text-white text-center"><b>Create a new account:</b></h3>
-        <br>
-        <div class="form">
-          <form @submit.prevent="register">
-            <div class="form-group">
-              <label for="name">Name:</label>
-              <input type="text" id="name" v-model="name" placeholder="John Doe" required>
-            </div>
+  <main class="main">
+    <section class="section">
+      <br>
+      <h1 class="text-white text-center"><b>Get started</b></h1>
+      <h3 class="text-white text-center"><b>Create a new account:</b></h3>
+      <br>
+      <div class="form">
+        <form @submit.prevent="register">
+          <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" v-model="name" placeholder="John Doe" required>
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" v-model="email" placeholder="johndoe@example.com" required>
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" v-model="password" placeholder="Enter your password" required>
             <br>
-            <div class="form-group">
-              <label for="email">Email:</label>
-              <input type="email" id="email" v-model="email" placeholder="johndoe@example.com" required>
-            </div>
-            <br>
-            <div class="form-group">
-              <label for="password">Password:</label>
-              <input type="password" id="password" v-model="password" placeholder="Enter your password" required>
+            <small v-if="password !== ''" class="text-danger">
               <br>
-              <small v-if="!isValidPassword && password !== ''" class="text-danger">
-                <br>
-                <div class="text-white text-center">
-                    Password must contain 8 characters minimum,<br>
-                    and at least one of the following: uppercase,<br>
-                    lowercase letter, number and symbol.
-                </div>
-              </small>
-            </div>
-            <br>
-            <div class="button-container">
-              <button class="button button--icon" @click="redirectToHome">
-                <span class="txt">Back</span>
-              </button>
-              <button type="submit" class="button button--icon" :disabled="!isValidPassword">
-                <span class="txt">Sign Up</span>
-              </button>
-            </div>
-          </form>
-        </div>
-        <br>
-        <h3 class="text-center custom-center"><strong>Have an account? <router-link :to="{ name: 'auth' }">Sign In Now</router-link></strong></h3>
-      </section>
-    </main>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        name: '',
-        email: '',
-        password: ''
-      };
-    },
-    computed: {
-      isValidPassword() {
-        const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
-        return regex.test(this.password);
-      }
-    },
-    methods: {
-      register() {
-      }
-    }
-  };
-  </script>
+              <div class="text-white text-center">
+                  Password must contain 8 characters minimum,<br>
+                  and at least one of the following: uppercase,<br>
+                  lowercase letter, number and symbol.
+              </div>
+            </small>
+          </div>
+          <br>
+          <div class="button-container">
+            <button class="button button--icon" @click="redirectToHome">
+              <span class="txt">Back</span>
+            </button>
+            <button type="submit" class="button button--icon" :disabled="!isFormValid">
+              <span class="txt">Sign Up</span>
+            </button>
+          </div>
+        </form>
+      </div>
+      <br>
+      <h3 class="text-center custom-center"><strong>Have an account? <router-link :to="{ name: 'auth' }">Sign In Now</router-link></strong></h3>
+    </section>
+  </main>
+</template>
 
 <script>
-  export default {
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      name: '',
+      email: '',
+      password: ''
+    };
+  },
+  computed: {
+    isFormValid() {
+      return this.name !== '' && this.email !== '' && this.password !== '';
+    }
+  },
   methods: {
+    async register() {
+      try {
+        const response = await axios.post('http://localhost:8000/api/register/', {
+          name: this.name,
+          email: this.email,
+          password: this.password
+        });
+        console.log(response.data); // Maneja la respuesta del backend si es necesario
+      } catch (error) {
+        console.error(error);
+      }
+    },
     redirectToHome() {
       window.location.href = 'https://sonarflix.netlify.app';
     }
