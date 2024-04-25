@@ -41,8 +41,27 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
+  data() {
+    return {
+      email: '',
+      password: ''
+    };
+  },
   methods: {
+    async login() {
+      try {
+        const response = await axios.post('http://localhost:8000/api/login/', {
+          email: this.email,
+          password: this.password
+        });
+        console.log(response.data); 
+      } catch (error) {
+        console.error(error);
+      }
+    },
     redirectToHome() {
       window.location.href = 'https://sonarflix.netlify.app';
     }
