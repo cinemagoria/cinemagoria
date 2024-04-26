@@ -3,43 +3,52 @@
     <section class="section">
       <br>
       <h1 class="text-white text-center"><b>Get started</b></h1>
-      <h3 class="text-white text-center"><b>Create a new account:</b></h3>
-      <br>
-      <div class="form">
-        <form @submit.prevent="register">
-          <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" id="name" v-model="name" placeholder="John Doe" required>
-          </div>
-          <br>
-          <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" v-model="email" placeholder="johndoe@example.com" required>
-          </div>
-          <br>
-          <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" v-model="password" placeholder="Enter your password" required>
+      <div v-if="!showVerificationModal">
+        <h3 class="text-white text-center"><b>Create a new account:</b></h3>
+        <div class="form">
+          <form @submit.prevent="register">
+            <div class="form-group">
+              <label for="name">Name:</label>
+              <input type="text" id="name" v-model="name" placeholder="John Doe" required>
+            </div>
             <br>
-            <small v-if="password !== ''" class="text-danger">
+            <div class="form-group">
+              <label for="email">Email:</label>
+              <input type="email" id="email" v-model="email" placeholder="johndoe@example.com" required>
+            </div>
+            <br>
+            <div class="form-group">
+              <label for="password">Password:</label>
+              <input type="password" id="password" v-model="password" placeholder="Enter your password" required>
               <br>
-              <div class="text-white text-center">
+              <small v-if="password !== ''" class="text-danger">
+                <br>
+                <div class="text-white text-center">
                   Password must contain 8 characters minimum,<br>
                   and at least one of the following: uppercase,<br>
                   lowercase letter, number and symbol.
-              </div>
-            </small>
-          </div>
-          <br>
-          <div class="button-container">
-            <button class="button button--icon" @click="redirectToHome">
-              <span class="txt">Back</span>
-            </button>
-            <button type="submit" class="button button--icon" :disabled="!isFormValid">
-              <span class="txt">Sign Up</span>
-            </button>
-          </div>
-        </form>
+                </div>
+              </small>
+            </div>
+            <br>
+            <div class="button-container">
+              <button class="button button--icon" @click="redirectToHome">
+                <span class="txt">Back</span>
+              </button>
+              <button type="submit" class="button button--icon" :disabled="!isFormValid">
+                <span class="txt">Sign Up</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div v-if="showVerificationModal" class="text-center" style="max-width: 200px; margin: 0 auto;">
+        <p>A verification email has been sent to {{ email }}. Please check your inbox and verify your account.</p>
+      </div>
+      <div v-if="showVerificationModal" class="button-container">
+        <button class="button button--icon" @click="redirectToHome">
+          <span class="txt">Back</span>
+        </button>
       </div>
       <br>
       <h3 class="text-center custom-center"><strong>Have an account? <router-link :to="{ name: 'auth' }">Sign In Now</router-link></strong></h3>
@@ -55,7 +64,8 @@ export default {
     return {
       name: '',
       email: '',
-      password: ''
+      password: '',
+      showVerificationModal: false,
     };
   },
   computed: {
@@ -71,7 +81,8 @@ export default {
           email: this.email,
           password: this.password
         });
-        console.log(response.data); // Maneja la respuesta del backend si es necesario
+        console.log(response.data);
+        this.showVerificationModal = true; 
       } catch (error) {
         console.error(error);
       }
@@ -100,6 +111,10 @@ h3 {
   text-align: center;
   margin-bottom: 20px;
   letter-spacing: 2px;
+}
+
+.button-container-show {
+  display: none;
 }
 
 .form {
