@@ -51,7 +51,7 @@
         </button>
       </div>
       <br>
-      <h3 class="text-center custom-center"><strong>Have an account? <router-link :to="{ name: 'auth' }">Sign In Now</router-link></strong></h3>
+      <h3 class="text-center custom-center"><strong>Have an account? <router-link :to="{ name: 'login' }">Sign In Now</router-link></strong></h3>
     </section>
   </main>
 </template>

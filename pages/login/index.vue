@@ -57,13 +57,22 @@ export default {
           email: this.email,
           password: this.password
         });
-        console.log(response.data); 
+        console.log(response.data);
+        console.log(response.data.name);
+        console.log(response.data.email);
+        // Guardar el token en localStorage
+        localStorage.setItem('access_token', response.data.access_token);
+        // Verificar si el token se guarda correctamente en localStorage
+        console.log(localStorage.getItem('access_token'));
+        // Imprimir el token en la consola
+        console.log(response.data.access_token);
+        this.redirectToHome();
       } catch (error) {
         console.error(error);
       }
     },
     redirectToHome() {
-      window.location.href = 'https://sonarflix.netlify.app';
+      window.location.href = 'http://localhost:3000';
     }
   }
 };

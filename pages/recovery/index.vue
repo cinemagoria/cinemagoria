@@ -24,7 +24,7 @@
           </form>
         </div>
         <br>
-        <h2 class="text-center custom-center"><strong>Already have an account? <router-link :to="{ name: 'auth' }">Sign In</router-link></strong></h2>
+        <h2 class="text-center custom-center"><strong>Already have an account? <router-link :to="{ name: 'login' }">Sign In</router-link></strong></h2>
       </section>
     </main>
   </template>
