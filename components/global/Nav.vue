@@ -74,12 +74,15 @@ export default {
   computed: {
     ...mapState('search', ['searchOpen']),
     isLoggedIn() {
-      return !!localStorage.getItem('access_token');
+      const isLoggedIn = localStorage.getItem('access_token') !== null;
+      console.log('IsLoggedIn:', isLoggedIn); // Agregar console.log aquí
+      return isLoggedIn;
     }
-  },
+},
+
 
   watch: {
-    // Observa cambios en localStorage.token
+    // Observa cambios en localStorage.access_token
     '$options.watch': {
       'localStorage.access_token': {
         handler() {

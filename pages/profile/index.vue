@@ -37,7 +37,7 @@ export default {
         async loadProfile() {
             try {
                 // Hacer una solicitud HTTP a la vista de perfil en Django
-                const response = await axios.get('http://localhost:8000/api/profile/');
+                const response = await axios.get('http://localhost:8000/profile/');
                 console.log(response);
                 // Verificar si la respuesta contiene datos
                 if (response.data) {
@@ -56,15 +56,17 @@ export default {
             }
         },
         async signOut() {
-            try {
-                // Hacer una solicitud HTTP a la vista de logout_user en Django
-                await axios.post('/api/logout/');
-                // Redirigir al usuario a la página de inicio de sesión o a donde desees
-                this.$router.push('/login');
-            } catch (error) {
-                console.error(error);
-            }
-        }
+          try {
+              // Hacer una solicitud HTTP a la vista de logout_user en Django
+              await axios.post('/api/logout/');
+              // Eliminar el token de acceso del localStorage
+              localStorage.removeItem('access_token');
+              // Redirigir al usuario a la página de inicio de sesión
+              this.$router.push('/login');
+          } catch (error) {
+              console.error(error);
+          }
+      }
     }
 };
 </script>
