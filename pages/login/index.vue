@@ -2,6 +2,7 @@
   <main class="main">
     <section class="section">
       <br>
+      <h1 class="text-white text-center"><b>[ This Section is under maintenance. ]</b></h1>
       <h1 class="text-white text-center"><b>Welcome Back</b></h1>
       <h3 class="text-white text-center"><b>Sign in to your account:</b></h3>
       <br>
