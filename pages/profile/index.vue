@@ -35,9 +35,14 @@ export default {
   watch: {
     'localStorage.access_token': {
       handler() {
-        this.isLoggedIn = false;
+        const accessToken = localStorage.getItem('access_token');
+        if (!accessToken) {
+          window.location.href = 'http://localhost:3000/login';
+        }
+        this.isLoggedIn = accessToken !== null;
       },
       deep: false,
+      immediate: true, 
     },
   },
   methods: {
@@ -46,7 +51,7 @@ export default {
       console.log('access_token eliminado del localStorage');
       localStorage.removeItem('email');
       console.log('email eliminado del localStorage');
-      this.$router.push('/login');
+      window.location.href = 'http://localhost:3000/login';
     }
   }
 };
