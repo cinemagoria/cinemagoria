@@ -1,76 +1,56 @@
 <template>
-    <main class="main">
-        <section class="profile-section">
-            <br>
-            <h1 class="text-white text-center"><b>Welcome Back! {{ userName }}</b></h1>
-            <br>
-            <div>
-            <p>Nombre: {{ userName }}</p>
-            <p>Email: {{ userEmail }}</p>
-            <p>Token de acceso: {{ accessToken }}</p>
-            </div>
-            <br>
-            <div class="button-container">
-            <button class="button button--icon" @click="signOut">
-                <span class="txt">Sign out</span>
-            </button>
-            </div>
-        </section>
-    </main>
+  <main class="main">
+      <section class="profile-section">
+          <br>
+          <h1 class="text-white text-center"><b>Welcome Back! {{ userEmail }}</b></h1>
+          <br>
+          <div>
+              <p>Email: {{ userEmail  }}</p>
+              <p>Token de acceso: {{ accessToken }}</p>
+          </div>
+          <br>
+          <div class="button-container">
+              <button class="button button--icon" @click="signOut">
+                  <span class="txt">Sign out</span>
+              </button>
+          </div>
+      </section>
+  </main>
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
-    data() {
-        return {
-            userName: '',
-            userEmail: '',
-            accessToken: ''
-        };
+  data() {
+    let email = localStorage.getItem('email');
+    console.log('Email obtenido del localStorage:', email);
+    let accessToken = localStorage.getItem('access_token');
+    console.log('Token de acceso obtenido del localStorage:', accessToken);
+      
+    return {
+      userEmail: email || '',
+      accessToken: accessToken || '',
+      isLoggedIn: accessToken !== null 
+    };
+  },
+  watch: {
+    'localStorage.access_token': {
+      handler() {
+        this.isLoggedIn = false;
+      },
+      deep: false,
     },
-    mounted() {
-        this.loadProfile();
-    },
-    methods: {
-        async loadProfile() {
-            try {
-                // Hacer una solicitud HTTP a la vista de perfil en Django
-                const response = await axios.get('http://localhost:8000/profile/');
-                console.log(response);
-                // Verificar si la respuesta contiene datos
-                if (response.data) {
-                    // Actualizar los datos del usuario en esta componente
-                    this.userName = response.data.name;
-                    this.userEmail = response.data.email;
-                    this.accessToken = response.data.access_token;
-                    console.log(this.userName);
-                    console.log(this.userEmail);
-                    console.log(this.accessToken);
-                } else {
-                    console.error("No se recibieron datos del perfil del usuario.");
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        },
-        async signOut() {
-          try {
-              // Hacer una solicitud HTTP a la vista de logout_user en Django
-              await axios.post('/api/logout/');
-              // Eliminar el token de acceso del localStorage
-              localStorage.removeItem('access_token');
-              // Redirigir al usuario a la página de inicio de sesión
-              this.$router.push('/login');
-          } catch (error) {
-              console.error(error);
-          }
-      }
+  },
+  methods: {
+    signOut() {
+      localStorage.removeItem('access_token');
+      console.log('access_token eliminado del localStorage');
+      localStorage.removeItem('email');
+      console.log('email eliminado del localStorage');
+      this.$router.push('/login');
     }
+  }
 };
 </script>
-
 
   
   <style scoped>
@@ -117,7 +97,5 @@ export default {
     .custom-center {
       text-align: center;
     }
-  
-  
   </style>
   

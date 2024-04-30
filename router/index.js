@@ -5,19 +5,17 @@ import Profile from '../pages/profile/index.vue';
 Vue.use(VueRouter);
 
 const routes = [
-  // Otras rutas...
   {
     path: '/profile',
     name: 'Profile',
     component: Profile,
-    meta: { requiresAuth: true } // Para proteger la ruta
+    meta: { requiresAuth: true } 
   },
-  // Otras rutas...
 ];
 
 const router = new VueRouter({
     mode: 'history',
-    // base: process.env.BASE_URL, <-- Puedes comentar esta línea o eliminarla
+    // base: process.env.BASE_URL,
     routes
   });
   
