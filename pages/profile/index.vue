@@ -4,9 +4,24 @@
           <br>
           <h1 class="text-white text-center"><b>Welcome Back! {{ userEmail }}</b></h1>
           <br>
-          <div>
-              <p>Email: {{ userEmail  }}</p>
-              <p>Token de acceso: {{ accessToken }}</p>
+          <div v-if="favorites.length > 0">
+            <div v-for="(favorite, index) in favorites" :key="index">
+              <h2 v-if="favorite.movies && favorite.movies.length > 0">Movies:</h2>
+              <div v-if="favorite.movies && favorite.movies.length > 0">
+                <ul>
+                  <li v-for="(movie, movieIndex) in favorite.movies" :key="movieIndex">{{ movie }}</li>
+                </ul>
+              </div>
+              <h2 v-if="favorite.tv && favorite.tv.length > 0">TV Shows:</h2>
+              <div v-if="favorite.tv && favorite.tv.length > 0">
+                <ul>
+                  <li v-for="(tvShow, tvIndex) in favorite.tv" :key="tvIndex">{{ tvShow }}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div v-else>
+            <p>No favorites or list added so far.</p>
           </div>
           <br>
           <div class="button-container">
@@ -19,31 +34,47 @@
 </template>
 
 <script>
+import supabase from '@/services/supabase';
+
 export default {
   data() {
-    let email = localStorage.getItem('email');
-    console.log('Email obtenido del localStorage:', email);
-    let accessToken = localStorage.getItem('access_token');
-    console.log('Token de acceso obtenido del localStorage:', accessToken);
-      
     return {
-      userEmail: email || '',
-      accessToken: accessToken || '',
-      isLoggedIn: accessToken !== null 
+      userEmail: '',
+      accessToken: '',
+      isLoggedIn: false,
+      favorites: []
     };
   },
-  watch: {
-    'localStorage.access_token': {
-      handler() {
-        const accessToken = localStorage.getItem('access_token');
-        if (!accessToken) {
-          window.location.href = 'http://localhost:3000/login';
-        }
-        this.isLoggedIn = accessToken !== null;
-      },
-      deep: false,
-      immediate: true, 
-    },
+  async mounted() {
+    const email = localStorage.getItem('email');
+    console.log('Email obtenido del localStorage:', email);
+    const accessToken = localStorage.getItem('access_token');
+    console.log('Token de acceso obtenido del localStorage:', accessToken);
+
+    this.userEmail = email || '';
+    this.accessToken = accessToken || '';
+    this.isLoggedIn = accessToken !== null;
+
+    if (!accessToken) {
+      window.location.href = 'http://localhost:3000/login';
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('favorites')
+        .select('favorites_json')
+        .eq('user_email', email);
+
+      if (error) {
+        console.error(error);
+      } else {
+        console.log('Valores de la tabla favorites:', data);
+        this.favorites = data.map(favorite => favorite.favorites_json);
+      }
+    } catch (error) {
+      console.error('Error al consultar la tabla favorites:', error.message);
+    }
   },
   methods: {
     signOut() {
