@@ -76,7 +76,7 @@ export default {
   methods: {
     async register() {
       try {
-        const response = await axios.post('http://localhost:8000/api/register/', {
+        const response = await axios.post('https://sonarflix-drf.vercel.app/api/register/', {
           name: this.name,
           email: this.email,
           password: this.password
