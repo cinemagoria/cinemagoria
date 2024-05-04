@@ -56,7 +56,7 @@ export default {
     this.isLoggedIn = accessToken !== null;
 
     if (!accessToken) {
-      window.location.href = 'http://localhost:3000/login';
+      window.location.href = 'https://sonarflix.netlify.app/login';
       return;
     }
 
@@ -82,7 +82,7 @@ export default {
       console.log('access_token eliminado del localStorage');
       localStorage.removeItem('email');
       console.log('email eliminado del localStorage');
-      window.location.href = 'http://localhost:3000/login';
+      window.location.href = 'https://sonarflix.netlify.app/login';
     }
   }
 };
