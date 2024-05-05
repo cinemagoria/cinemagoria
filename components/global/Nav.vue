@@ -53,12 +53,12 @@
       </li>
 
       <li v-if="!isLoggedIn">
-        <nuxt-link exact to="/login" aria-label="Auth">
+        <nuxt-link exact to="/wip" aria-label="Auth">
           <img :src="require('~/static/icon-login.png')" alt="Login" style="width: 24px; height: 24px; margin-top: 2px;" />
         </nuxt-link>
       </li>
       <li v-else>
-        <nuxt-link exact to="/profile" aria-label="Profile">
+        <nuxt-link exact to="/wip" aria-label="Profile">
           <img :src="require('~/static/icon-profile.png')" alt="Profile" style="width: 24px; height: 24px; margin-top: 2px;" />
         </nuxt-link>
       </li>
