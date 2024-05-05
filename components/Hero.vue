@@ -66,9 +66,6 @@
               {{ item.overview | truncate(200) }}
             </div>
             <br>
-            <!-- <h2 :class="$style.title">
-              Add To Favorites (Soon)
-            </h2> -->
             <button
               v-if="trailer"
               class="button button--icon"
@@ -79,6 +76,40 @@
               <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="#fff"><path d="M3 22v-20l18 10-18 10z"/></svg></span>
               <span class="txt">Watch Trailer</span>
             </button>
+
+            <!-- Botón "Add to Favorites" -->
+            <button
+              v-if="hasAccessToken"
+              class="button button--icon" 
+              type="button"
+              :class="{ [$style.favorites]: true, [$style.favoritesFilled]: isFavorite }"
+              @click="toggleFavorite">
+              <span class="icon">
+                <!-- SVG del corazón -->
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none">
+                  <!-- SVG del corazón lineado -->
+                  <path
+                    v-if="!isFavorite"
+                    d="M12 21l-1.42-1.34C5.4 15.34 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.84-8.58 11.16L12 21z"
+                    stroke="#fff"
+                    stroke-width="2"
+                  />
+                  <!-- SVG del corazón lleno -->
+                  <path
+                    v-if="isFavorite"
+                    d="M12 21l-1.42-1.34C5.4 15.34 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.84-8.58 11.16L12 21z"
+                    fill="#fff"
+                  />
+                </svg>
+              </span>
+              <span class="txt">Add To Favorites</span>
+            </button>
+
           </div>
         </transition>
       </div>
@@ -91,7 +122,6 @@
       @close="closeModal" />
   </div>
 </template>
-
 <script>
 import { name, stars, yearStart, cert, backdrop, trailer } from '~/mixins/Details';
 import Modal from '~/components/Modal';
@@ -117,26 +147,47 @@ export default {
     },
   },
 
-  data () {
+  data() {
     return {
       isSingle: this.item.id === this.$route.params.id,
       modalVisible: false,
+      isFavorite: false,
+      hasAccessToken: false,
     };
   },
 
   computed: {
-    type () {
+    type() {
       return this.item.title ? 'movie' : 'tv';
     },
+    favId() {
+      return `${this.type}/${this.item.id}`;
+    }
+  },
+
+  async mounted() {
+    console.log(`Enlace unificado: ${this.favId}`);
+    const email = localStorage.getItem('email');
+    console.log('Email obtenido del localStorage:', email);
+    const accessToken = localStorage.getItem('access_token');
+    console.log('Token de acceso obtenido del localStorage:', accessToken);
+
+    this.userEmail = email || '';
+    this.hasAccessToken = accessToken !== null;
+    this.isLoggedIn = accessToken !== null;
   },
 
   methods: {
-    openModal () {
+    openModal() {
       this.modalVisible = true;
     },
 
-    closeModal () {
+    closeModal() {
       this.modalVisible = false;
+    },
+
+    toggleFavorite() {
+      this.isFavorite = !this.isFavorite;
     },
   },
 };
@@ -217,6 +268,10 @@ export default {
   @media (min-width: $breakpoint-medium) {
     display: none;
   }
+}
+
+.favoritesFilled {
+  fill: white;
 }
 
 .image {
@@ -343,6 +398,14 @@ export default {
   }
 }
 
+.favorites {
+  margin-top: 3rem;
+  border-radius: 1.0rem;
+
+  @media (min-width: 1650px) {
+    font-size: 0.9vw;
+  }
+}
 .trailer {
   margin-top: 3rem;
   border-radius: 1.0rem;
