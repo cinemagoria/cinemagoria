@@ -85,21 +85,18 @@
               :class="{ [$style.favorites]: true, [$style.favoritesFilled]: isFavorite }"
               @click="toggleFavorite">
               <span class="icon">
-                <!-- SVG del corazón -->
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="15"
                   height="15"
                   viewBox="0 0 24 24"
                   fill="none">
-                  <!-- SVG del corazón lineado -->
                   <path
                     v-if="!isFavorite"
                     d="M12 21l-1.42-1.34C5.4 15.34 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.84-8.58 11.16L12 21z"
                     stroke="#fff"
                     stroke-width="2"
                   />
-                  <!-- SVG del corazón lleno -->
                   <path
                     v-if="isFavorite"
                     d="M12 21l-1.42-1.34C5.4 15.34 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.84-8.58 11.16L12 21z"
@@ -123,6 +120,7 @@
   </div>
 </template>
 <script>
+import supabase from '@/services/supabase';
 import { name, stars, yearStart, cert, backdrop, trailer } from '~/mixins/Details';
 import Modal from '~/components/Modal';
 
@@ -186,8 +184,108 @@ export default {
       this.modalVisible = false;
     },
 
-    toggleFavorite() {
-      this.isFavorite = !this.isFavorite;
+    async toggleFavorite() {
+      try {
+        if (this.isFavorite) {
+          const { data, error } = await supabase
+            .from('favorites')
+            .select('favorites_json')
+            .eq('user_email', this.userEmail);
+
+          if (error) {
+            console.error(error);
+            return;
+          }
+
+          if (!data.length) {
+            const { data: newData, error: newError } = await supabase
+              .from('favorites')
+              .insert([{ user_email: this.userEmail, favorites_json: {} }]);
+
+            if (newError) {
+              console.error(newError);
+              return;
+            }
+
+            data.push({ favorites_json: {} });
+          }
+
+          const favoritesJson = data[0].favorites_json;
+          const updatedFavorites = this.removeFavorite(favoritesJson, this.favId);
+
+          await supabase
+            .from('favorites')
+            .update({ favorites_json: updatedFavorites })
+            .eq('user_email', this.userEmail);
+
+          console.log(`${this.favId} eliminado de los favoritos.`);
+        } else {
+          const { data, error } = await supabase
+            .from('favorites')
+            .select('favorites_json')
+            .eq('user_email', this.userEmail);
+
+          if (error) {
+            console.error(error);
+            return;
+          }
+
+          if (!data.length) {
+            const { data: newData, error: newError } = await supabase
+              .from('favorites')
+              .insert([{ user_email: this.userEmail, favorites_json: {} }]);
+
+            if (newError) {
+              console.error(newError);
+              return;
+            }
+
+            data.push({ favorites_json: {} });
+          }
+
+          const favoritesJson = data[0].favorites_json;
+          const updatedFavorites = this.addFavorite(favoritesJson, this.favId);
+
+          await supabase
+            .from('favorites')
+            .update({ favorites_json: updatedFavorites })
+            .eq('user_email', this.userEmail);
+
+          console.log(`${this.favId} añadido a los favoritos.`);
+        }
+
+        this.isFavorite = !this.isFavorite;
+      } catch (error) {
+        console.error('Error al cambiar el estado del favorito:', error.message);
+      }
+    },
+    
+    removeFavorite(favoritesJson, favId) {
+      const updatedFavorites = { ...favoritesJson };
+      for (const key in updatedFavorites) {
+        updatedFavorites[key] = updatedFavorites[key].filter(id => id !== favId && !id.endsWith(favId));
+      }
+      return updatedFavorites;
+    },
+
+
+    addFavorite(favoritesJson, favId) {
+      const { type, id } = this.parseFavId(favId);
+      const category = type === 'movie' ? 'movies' : 'tv';
+      if (!favoritesJson[category]) {
+        favoritesJson[category] = [];
+      }
+      const fullId = `${type}/${id}`;
+      if (!favoritesJson[category].includes(fullId)) {
+        favoritesJson[category].push(fullId);
+      }
+
+      return favoritesJson;
+    },
+
+    parseFavId(favId) {
+      const [type, id] = favId.split('/');
+      return { type, id };
     },
   },
 };
