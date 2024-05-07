@@ -54,7 +54,7 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await axios.post('https://sonarflix-drf.vercel.app/login/', {
+        const response = await axios.post('https://sf-django.vercel.app/login/', {
           email: this.email,
           password: this.password
         });
