@@ -20,6 +20,8 @@ export const stars = {
 };
 
 
+
+
 export const yearStart = {
   computed: {
     yearStart () {
@@ -45,6 +47,15 @@ export const yearEnd = {
   },
 };
 
+export const poster = {
+  computed: {
+    poster_path () {
+      if (this.item.poster_path) {
+        return `${apiImgUrl}/w370_and_h556_bestv2${this.item.poster_path}`;
+      }
+    },
+  },
+};
 
 export const backdrop = {
   computed: {

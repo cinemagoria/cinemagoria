@@ -121,7 +121,7 @@
 </template>
 <script>
 import supabase from '@/services/supabase';
-import { name, stars, yearStart, cert, backdrop, trailer } from '~/mixins/Details';
+import { name, stars, yearStart, cert, backdrop, poster, trailer } from '~/mixins/Details';
 import Modal from '~/components/Modal';
 
 export default {
@@ -134,6 +134,7 @@ export default {
     stars,
     yearStart,
     cert,
+    poster,
     backdrop,
     trailer,
   ],
@@ -151,6 +152,11 @@ export default {
       modalVisible: false,
       isFavorite: false,
       hasAccessToken: false,
+
+      nameForDb: null,
+      starsForDb: null,
+      posterForDb: null,
+      yearStartForDb: null,
     };
   },
 
@@ -169,13 +175,67 @@ export default {
     console.log('Email obtenido del localStorage:', email);
     const accessToken = localStorage.getItem('access_token');
     console.log('Token de acceso obtenido del localStorage:', accessToken);
-
     this.userEmail = email || '';
     this.hasAccessToken = accessToken !== null;
     this.isLoggedIn = accessToken !== null;
+    this.checkIfFavorite();
+    this.posterForDb = this.poster_path;
+    this.nameForDb = this.name;
+    this.starsForDb = this.stars;
+    this.yearStartForDb = this.yearStart;
   },
 
   methods: {
+    async checkIfFavorite() {
+      try {
+        console.log('Iniciando conexión con la base de datos...');
+        const { data, error } = await supabase
+          .from('favorites')
+          .select('*')
+          .eq('user_email', this.userEmail); 
+        
+        if (error) {
+          throw new Error('Error al conectar con la base de datos: ' + error.message);
+        }
+
+        console.log('Datos obtenidos de la base de datos para el usuario actual:', data);
+        data.forEach((row) => {
+          console.log('Usuario:', row.user_email);
+          const moviesFetched = [];
+          if (row.favorites_json.movies) {
+            console.log('Películas favoritas:');
+            row.favorites_json.movies.forEach((movie) => {
+              const movieKey = Object.keys(movie)[0];
+              moviesFetched.push(movieKey);
+            });
+            console.log(moviesFetched);
+          }
+
+          const tvFetched = [];
+          if (row.favorites_json.tv) {
+            console.log('Programas de TV favoritos:');
+            row.favorites_json.tv.forEach((tvShow) => {
+              const tvKey = Object.keys(tvShow)[0];
+              tvFetched.push(tvKey);
+            });
+            console.log(tvFetched);
+          }
+          
+          console.log(`Buscando si ${this.favId} se encuentra en alguna de las categorías de moviesFetched o tvFetched`);
+          if (moviesFetched.includes(this.favId) || tvFetched.includes(this.favId)) {
+            console.log('El elemento está marcado como favorito.');
+            this.isFavorite = true;
+          } else {
+            console.log('El elemento no está marcado como favorito.');
+            this.isFavorite = false;
+          }
+        });
+        
+      } catch (error) {
+        console.error('Error al verificar si el elemento está agregado como favorito:', error.message);
+      }
+    },
+
     openModal() {
       this.modalVisible = true;
     },
@@ -186,33 +246,36 @@ export default {
 
     async toggleFavorite() {
       try {
-        if (this.isFavorite) {
-          const { data, error } = await supabase
-            .from('favorites')
-            .select('favorites_json')
-            .eq('user_email', this.userEmail);
+        let favoritesData;
+        const { data, error } = await supabase
+          .from('favorites')
+          .select('favorites_json')
+          .eq('user_email', this.userEmail);
 
-          if (error) {
-            console.error(error);
+        if (error) {
+          console.error(error);
+          return;
+        }
+
+        if (!data.length) {
+          const { data: newData, error: newError } = await supabase
+            .from('favorites')
+            .insert([{ user_email: this.userEmail, favorites_json: {} }]);
+
+          if (newError) {
+            console.error(newError);
             return;
           }
 
-          if (!data.length) {
-            const { data: newData, error: newError } = await supabase
-              .from('favorites')
-              .insert([{ user_email: this.userEmail, favorites_json: {} }]);
+          favoritesData = newData[0].favorites_json;
+        } else {
+          favoritesData = data[0].favorites_json;
+        }
 
-            if (newError) {
-              console.error(newError);
-              return;
-            }
+        favoritesData = favoritesData || {};
 
-            data.push({ favorites_json: {} });
-          }
-
-          const favoritesJson = data[0].favorites_json;
-          const updatedFavorites = this.removeFavorite(favoritesJson, this.favId);
-
+        if (this.isFavorite) {
+          const updatedFavorites = this.removeFavorite(favoritesData, this.favId);
           await supabase
             .from('favorites')
             .update({ favorites_json: updatedFavorites })
@@ -220,32 +283,7 @@ export default {
 
           console.log(`${this.favId} eliminado de los favoritos.`);
         } else {
-          const { data, error } = await supabase
-            .from('favorites')
-            .select('favorites_json')
-            .eq('user_email', this.userEmail);
-
-          if (error) {
-            console.error(error);
-            return;
-          }
-
-          if (!data.length) {
-            const { data: newData, error: newError } = await supabase
-              .from('favorites')
-              .insert([{ user_email: this.userEmail, favorites_json: {} }]);
-
-            if (newError) {
-              console.error(newError);
-              return;
-            }
-
-            data.push({ favorites_json: {} });
-          }
-
-          const favoritesJson = data[0].favorites_json;
-          const updatedFavorites = this.addFavorite(favoritesJson, this.favId);
-
+          const updatedFavorites = this.addFavorite(favoritesData, this.favId);
           await supabase
             .from('favorites')
             .update({ favorites_json: updatedFavorites })
@@ -259,11 +297,12 @@ export default {
         console.error('Error al cambiar el estado del favorito:', error.message);
       }
     },
-    
+
+
     removeFavorite(favoritesJson, favId) {
       const updatedFavorites = { ...favoritesJson };
       for (const key in updatedFavorites) {
-        updatedFavorites[key] = updatedFavorites[key].filter(id => id !== favId && !id.endsWith(favId));
+        updatedFavorites[key] = updatedFavorites[key].filter(id => String(id) !== favId && !String(id).endsWith(favId));
       }
       return updatedFavorites;
     },
@@ -272,24 +311,87 @@ export default {
     addFavorite(favoritesJson, favId) {
       const { type, id } = this.parseFavId(favId);
       const category = type === 'movie' ? 'movies' : 'tv';
+
       if (!favoritesJson[category]) {
         favoritesJson[category] = [];
       }
+
       const fullId = `${type}/${id}`;
       if (!favoritesJson[category].includes(fullId)) {
         favoritesJson[category].push(fullId);
+
+        this.updateFavoritesData(favoritesJson, fullId);
       }
 
       return favoritesJson;
+    },
+
+    updateFavoritesData(favoritesJson, fullId) {
+      const { type, id } = this.parseFavId(fullId);
+      const category = type === 'movie' ? 'movies' : 'tv';
+
+      if (!favoritesJson[category]) {
+        favoritesJson[category] = [];
+      }
+
+      const index = favoritesJson[category].findIndex(item => item === fullId);
+
+      if (index !== -1) {
+        if (!Array.isArray(favoritesJson[category][index])) {
+          favoritesJson[category][index] = {
+            [fullId]: {
+              details: {
+                nameForDb: this.nameForDb,
+                starsForDb: this.starsForDb,
+                yearStartForDb: this.yearStartForDb,
+                posterForDb: this.posterForDb,
+              }
+            }
+          };
+        } else {
+          const existingItem = favoritesJson[category][index].find(item => Object.keys(item)[0] === fullId);
+          if (existingItem) {
+            existingItem[fullId].details = {
+              nameForDb: this.nameForDb,
+              starsForDb: this.starsForDb,
+              yearStartForDb: this.yearStartForDb,
+              posterForDb: this.posterForDb,
+            };
+          } else {
+            favoritesJson[category][index].push({
+              [fullId]: {
+                details: {
+                  nameForDb: this.nameForDb,
+                  starsForDb: this.starsForDb,
+                  yearStartForDb: this.yearStartForDb,
+                  posterForDb: this.posterForDb,
+                }
+              }
+            });
+          }
+        }
+      } else {
+        favoritesJson[category].push({
+          [fullId]: {
+            details: {
+              nameForDb: this.nameForDb,
+              starsForDb: this.starsForDb,
+              yearStartForDb: this.yearStartForDb,
+              posterForDb: this.posterForDb,
+            }
+          }
+        });
+      }
     },
 
     parseFavId(favId) {
       const [type, id] = favId.split('/');
       return { type, id };
     },
-  },
+  }
 };
 </script>
+
 
 <style lang="scss" module>
 @import '~/assets/css/utilities/_variables.scss';
