@@ -1,35 +1,48 @@
 <template>
   <main class="main">
-      <section class="profile-section">
-          <br>
-          <h1 class="text-white text-center"><b>Welcome Back! {{ userEmail }}</b></h1>
-          <br>
-          <div v-if="favorites.length > 0">
-            <div v-for="(favorite, index) in favorites" :key="index">
-              <h2 v-if="favorite.movies && favorite.movies.length > 0">Movies:</h2>
-              <div v-if="favorite.movies && favorite.movies.length > 0">
-                <ul>
-                  <li v-for="(movie, movieIndex) in favorite.movies" :key="movieIndex">{{ movie }}</li>
-                </ul>
-              </div>
-              <h2 v-if="favorite.tv && favorite.tv.length > 0">TV Shows:</h2>
-              <div v-if="favorite.tv && favorite.tv.length > 0">
-                <ul>
-                  <li v-for="(tvShow, tvIndex) in favorite.tv" :key="tvIndex">{{ tvShow }}</li>
-                </ul>
-              </div>
+    <section class="profile-section">
+      <br>
+      <h1 class="text-white text-center"><b>Welcome Back! {{ userEmail }}</b></h1>
+      <br>
+      <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
+        <div class="column">
+          <h2>Películas Favoritas</h2>
+          <div class="movie-grid">
+            <div v-for="(movie, index) in moviesFetched" :key="index" class="movie-card">
+              <a :href="'https://sonarflix.netlify.app/' + movieKey">
+                <img :src="movie.details.posterForDb" alt="Movie Poster" class="poster" />
+              </a>
+              <p>{{ movie.details.nameForDb }}</p>
+              <p>Stars: {{ movie.details.starsForDb }}</p>
+              <p>Year: {{ movie.details.yearStartForDb }}</p>
             </div>
           </div>
-          <div v-else>
-            <p>No favorites or list added so far.</p>
+        </div>
+        <br>
+        <div class="column">
+          <h2>Programas de TV Favoritos</h2>
+          <div class="tv-show-grid">
+            <div v-for="(tvShow, index) in tvFetched" :key="index" class="tv-show-card">
+              <a :href="'https://sonarflix.netlify.app/' + tvKey">
+                <img :src="tvShow.details.posterForDb" alt="TV Show Poster" class="poster" />
+              </a>
+              <p>{{ tvShow.details.nameForDb }}</p>
+              <p>Stars: {{ tvShow.details.starsForDb }}</p>
+              <p>Year: {{ tvShow.details.yearStartForDb }}</p>
+            </div>
           </div>
-          <br>
-          <div class="button-container">
-              <button class="button button--icon" @click="signOut">
-                  <span class="txt">Sign out</span>
-              </button>
-          </div>
-      </section>
+        </div>
+      </div>
+      <div v-else>
+        <p>No hay favoritos o lista agregada hasta el momento.</p>
+      </div>
+      <br>
+      <div class="button-container">
+        <button class="button button--icon" @click="signOut">
+          <span class="txt">Cerrar sesión</span>
+        </button>
+      </div>
+    </section>
   </main>
 </template>
 
@@ -42,96 +55,150 @@ export default {
       userEmail: '',
       accessToken: '',
       isLoggedIn: false,
-      favorites: []
+      favorites: [],
+      moviesFetched: [],
+      tvFetched: [],
+      movieKey: '', 
+      tvKey: '' 
     };
   },
   async mounted() {
+    console.log(`Enlace unificado: ${this.favId}`);
     const email = localStorage.getItem('email');
     console.log('Email obtenido del localStorage:', email);
     const accessToken = localStorage.getItem('access_token');
     console.log('Token de acceso obtenido del localStorage:', accessToken);
-
     this.userEmail = email || '';
-    this.accessToken = accessToken || '';
+    this.hasAccessToken = accessToken !== null;
     this.isLoggedIn = accessToken !== null;
-
-    if (!accessToken) {
-      window.location.href = 'https://sonarflix.netlify.app/login';
-      return;
-    }
-
-    try {
-      const { data, error } = await supabase
-        .from('favorites')
-        .select('favorites_json')
-        .eq('user_email', email);
-
-      if (error) {
-        console.error(error);
-      } else {
-        console.log('Valores de la tabla favorites:', data);
-        this.favorites = data.map(favorite => favorite.favorites_json);
-      }
-    } catch (error) {
-      console.error('Error al consultar la tabla favorites:', error.message);
-    }
+    this.checkData();
   },
   methods: {
+    async checkData() {
+      try {
+        console.log('Iniciando conexión con la base de datos...');
+        const { data, error } = await supabase
+          .from('favorites')
+          .select('*')
+          .eq('user_email', this.userEmail); 
+        
+        if (error) {
+          throw new Error('Error al conectar con la base de datos: ' + error.message);
+        }
+
+        console.log('Datos obtenidos de la base de datos para el usuario actual:', data);
+        const moviesFetched = []; 
+        const tvFetched = [];
+        data.forEach((row) => {
+          console.log('Usuario:', row.user_email);
+          if (row.favorites_json.movies) {
+            console.log('Películas favoritas:');
+            row.favorites_json.movies.forEach((movie) => {
+              const movieKey = Object.keys(movie)[0];
+              moviesFetched.push(movie[movieKey]);
+            });
+            console.log(moviesFetched);
+          }
+
+          if (row.favorites_json.tv) {
+            console.log('Programas de TV favoritos:');
+            row.favorites_json.tv.forEach((tvShow) => {
+              const tvKey = Object.keys(tvShow)[0];
+              tvFetched.push(tvShow[tvKey]);
+            });
+            console.log(tvFetched);
+          }
+        });
+        this.moviesFetched = moviesFetched;
+        this.tvFetched = tvFetched;
+      } catch (error) {
+        console.error('Error', error.message);
+      }
+    },
     signOut() {
       localStorage.removeItem('access_token');
       console.log('access_token eliminado del localStorage');
       localStorage.removeItem('email');
       console.log('email eliminado del localStorage');
       window.location.href = 'https://sonarflix.netlify.app/login';
-    }
+    },
   }
 };
 </script>
 
+<style scoped>
+  a {
+    font-weight: 600;
+    color: #80868b;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: #ffffff;
+  }
   
-  <style scoped>
-    a {
-      font-weight: 600;
-      color: #80868b;
-      text-decoration: none;
-    }
-  
-    a:hover {
-      color: #ffffff;
-    }
+  h1 {
+    text-align: center;
+    margin-bottom: 20px; 
+    letter-spacing: 2px;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: center;
     
-    h1 {
-      text-align: center;
-      margin-bottom: 20px; 
-      letter-spacing: 2px;
+  }
+
+  .profile-section {
+    padding: 10px;
+  }
+
+  .button {
+    border-radius: 10px;
+  }
+
+  .column {
+    margin: 0 auto;
+    max-width: 800px; 
+  }
+
+  h2 {
+    text-align: justify;
+    letter-spacing: 2px;
+    font-size: 11px;
+    text-transform: uppercase;
+    margin: 0 auto; 
+    max-width: 800px; 
+    margin-bottom: 20px; 
+  }
+
+  .custom-center {
+    text-align: center;
+  }
+
+  .movie-grid,
+  .tv-show-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+    gap: 20px;
+  }
+
+  .movie-card img,
+  .tv-show-card img {
+    width: 60%; 
+    border-radius: 15px;
+  }
+
+  @media screen and (max-width: 600px) {
+
+    .movie-grid,
+    .tv-show-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
     }
-  
-    .button-container {
-      display: flex;
-      justify-content: center;
-      
+
+    .movie-card img,
+    .tv-show-card img {
+      width: 50%;
     }
-  
-    .profile-section {
-      padding: 10px;
-    }
-  
-    .button {
-      border-radius: 10px;
-    }
-  
-    h2 {
-      text-align: justify;
-      letter-spacing: 2px;
-      font-size: 11px;
-      text-transform: uppercase;
-      margin: 0 auto; 
-      max-width: 800px; 
-      margin-bottom: 20px; 
-    }
-  
-    .custom-center {
-      text-align: center;
-    }
-  </style>
-  
+  }
+</style>
