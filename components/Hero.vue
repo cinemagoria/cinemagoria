@@ -120,7 +120,7 @@
 </template>
 <script>
 import supabase from '@/services/supabase';
-import { name, stars, yearStart, cert, backdrop, poster, trailer, id  } from '~/mixins/Details';
+import { name, stars, yearStart, yearEnd, cert, backdrop, poster, trailer, id  } from '~/mixins/Details';
 import Modal from '~/components/Modal';
 
 export default {
@@ -132,6 +132,7 @@ export default {
     name,
     stars,
     yearStart,
+    yearEnd,
     cert,
     poster,
     backdrop,
@@ -158,6 +159,7 @@ export default {
       starsForDb: null,
       posterForDb: null,
       yearStartForDb: null,
+      yearEndForDb: null,
       idForDb: null,
     };
   },
@@ -185,6 +187,7 @@ export default {
     this.nameForDb = this.name;
     this.starsForDb = this.stars;
     this.yearStartForDb = this.yearStart;
+    this.yearEndForDb  = this.yearEnd;
     this.idForDb = this.id;
   },
 
@@ -354,6 +357,7 @@ export default {
                 nameForDb: this.nameForDb,
                 starsForDb: this.starsForDb,
                 yearStartForDb: this.yearStartForDb,
+                yearEndForDb: this.yearEndForDb,
                 posterForDb: this.posterForDb,
                 idForDb: this.id,
               }
@@ -366,6 +370,7 @@ export default {
               nameForDb: this.nameForDb,
               starsForDb: this.starsForDb,
               yearStartForDb: this.yearStartForDb,
+              yearEndForDb: this.yearEndForDb,
               posterForDb: this.posterForDb,
               idForDb: this.id,
             };
@@ -376,6 +381,7 @@ export default {
                   nameForDb: this.nameForDb,
                   starsForDb: this.starsForDb,
                   yearStartForDb: this.yearStartForDb,
+                  yearEndForDb: this.yearEndForDb,
                   posterForDb: this.posterForDb,
                   idForDb: this.id,
                 }
@@ -390,6 +396,7 @@ export default {
               nameForDb: this.nameForDb,
               starsForDb: this.starsForDb,
               yearStartForDb: this.yearStartForDb,
+              yearEndForDb: this.yearEndForDb,
               posterForDb: this.posterForDb,
               idForDb: this.id,
             }

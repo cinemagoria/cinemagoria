@@ -12,9 +12,10 @@
               <a :href="'https://sonarflix.netlify.app/movie/' + movie.details.idForDb">
                 <img :src="movie.details.posterForDb" alt="Movie Poster" class="poster" />
               </a>
-              <p>{{ movie.details.nameForDb }}</p>
-              <p>Stars: {{ movie.details.starsForDb }}</p>
-              <p>Year: {{ movie.details.yearStartForDb }}</p>
+              <h3>{{ movie.details.nameForDb }}</h3>
+              <p v-if="movie && movie.details && movie.details.starsForDb !== null && movie.details.starsForDb !== undefined && !Array.isArray(movie.details.starsForDb)">Rating: {{ movie.details.starsForDb.toString().slice(0, 1) + '.' + movie.details.starsForDb.toString().charAt(1) }}</p>
+              <p v-else>Rating: Not Specified</p>
+              <p>Release Date: {{ movie.details.yearStartForDb }}</p>
             </div>
           </div>
         </div>
@@ -26,9 +27,12 @@
               <a :href="'https://sonarflix.netlify.app/tv/' + tvShow.details.idForDb">
                 <img :src="tvShow.details.posterForDb" alt="TV Show Poster" class="poster" />
               </a>
-              <p>{{ tvShow.details.nameForDb }}</p>
-              <p>Stars: {{ tvShow.details.starsForDb }}</p>
-              <p>Year: {{ tvShow.details.yearStartForDb }}</p>
+              <h3>{{ tvShow.details.nameForDb }}</h3>
+              <p v-if="tvShow && tvShow.details && tvShow.details.starsForDb !== null && tvShow.details.starsForDb !== undefined && !Array.isArray(tvShow.details.starsForDb)">Rating: {{ tvShow.details.starsForDb.toString().slice(0, 1) + '.' + tvShow.details.starsForDb.toString().charAt(1) }}</p>
+              <p v-else>Rating: Not Specified</p>
+              <p>Aired: 
+                {{ tvShow.details.yearStartForDb === tvShow.details.yearEndForDb ? tvShow.details.yearEndForDb : tvShow.details.yearStartForDb + '-' + tvShow.details.yearEndForDb }}
+              </p>
             </div>
           </div>
         </div>
@@ -133,6 +137,11 @@ export default {
     text-decoration: none;
   }
 
+  p {
+    margin-block-start: 0.3em;
+    margin-block-end: 0.3em;
+  }
+
   a:hover {
     color: #ffffff;
   }
@@ -143,6 +152,13 @@ export default {
     letter-spacing: 2px;
   }
 
+  h3 {
+    margin-top: 5px;
+    text-align: center;
+    letter-spacing: 1.5px;
+    font-size: 11px; 
+  }
+
   .button-container {
     display: flex;
     justify-content: center;
@@ -151,6 +167,7 @@ export default {
 
   .profile-section {
     padding: 10px;
+    
   }
 
   .button {
@@ -159,13 +176,14 @@ export default {
 
   .column {
     margin: 0 auto;
+    text-align: center;
     max-width: 800px; 
   }
 
   h2 {
-    text-align: justify;
+    text-align: center;
     letter-spacing: 2px;
-    font-size: 11px;
+    font-size: 13px;
     text-transform: uppercase;
     margin: 0 auto; 
     max-width: 800px; 
@@ -181,12 +199,14 @@ export default {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
     gap: 20px;
+    justify-content: center;
   }
 
   .movie-card img,
   .tv-show-card img {
     width: 60%; 
     border-radius: 15px;
+    text-align: center;
   }
 
   @media screen and (max-width: 600px) {
