@@ -21,7 +21,6 @@
             :alt="name">
         </div>
       </div>
-
       <div :class="$style.pane">
         <transition
           appear
@@ -104,7 +103,7 @@
                   />
                 </svg>
               </span>
-              <span class="txt">Add To Favorites</span>
+              <span class="txt">{{ isFavorite ? 'Remove from Favorites' : 'Add to Favorites' }}</span>
             </button>
 
           </div>
@@ -121,7 +120,7 @@
 </template>
 <script>
 import supabase from '@/services/supabase';
-import { name, stars, yearStart, cert, backdrop, poster, trailer } from '~/mixins/Details';
+import { name, stars, yearStart, cert, backdrop, poster, trailer, id  } from '~/mixins/Details';
 import Modal from '~/components/Modal';
 
 export default {
@@ -137,6 +136,7 @@ export default {
     poster,
     backdrop,
     trailer,
+    id,
   ],
 
   props: {
@@ -153,10 +153,12 @@ export default {
       isFavorite: false,
       hasAccessToken: false,
 
+
       nameForDb: null,
       starsForDb: null,
       posterForDb: null,
       yearStartForDb: null,
+      idForDb: null,
     };
   },
 
@@ -183,6 +185,7 @@ export default {
     this.nameForDb = this.name;
     this.starsForDb = this.stars;
     this.yearStartForDb = this.yearStart;
+    this.idForDb = this.id;
   },
 
   methods: {
@@ -235,6 +238,7 @@ export default {
         console.error('Error al verificar si el elemento está agregado como favorito:', error.message);
       }
     },
+
 
     openModal() {
       this.modalVisible = true;
@@ -298,15 +302,21 @@ export default {
       }
     },
 
-
     removeFavorite(favoritesJson, favId) {
       const updatedFavorites = { ...favoritesJson };
       for (const key in updatedFavorites) {
-        updatedFavorites[key] = updatedFavorites[key].filter(id => String(id) !== favId && !String(id).endsWith(favId));
+        if (Array.isArray(updatedFavorites[key])) {
+          updatedFavorites[key] = updatedFavorites[key].filter(item => {
+            if (typeof item === 'object') {
+              return Object.keys(item)[0] !== favId;
+            } else {
+              return item !== favId;
+            }
+          });
+        }
       }
       return updatedFavorites;
     },
-
 
     addFavorite(favoritesJson, favId) {
       const { type, id } = this.parseFavId(favId);
@@ -345,6 +355,7 @@ export default {
                 starsForDb: this.starsForDb,
                 yearStartForDb: this.yearStartForDb,
                 posterForDb: this.posterForDb,
+                idForDb: this.id,
               }
             }
           };
@@ -356,6 +367,7 @@ export default {
               starsForDb: this.starsForDb,
               yearStartForDb: this.yearStartForDb,
               posterForDb: this.posterForDb,
+              idForDb: this.id,
             };
           } else {
             favoritesJson[category][index].push({
@@ -365,6 +377,7 @@ export default {
                   starsForDb: this.starsForDb,
                   yearStartForDb: this.yearStartForDb,
                   posterForDb: this.posterForDb,
+                  idForDb: this.id,
                 }
               }
             });
@@ -378,6 +391,7 @@ export default {
               starsForDb: this.starsForDb,
               yearStartForDb: this.yearStartForDb,
               posterForDb: this.posterForDb,
+              idForDb: this.id,
             }
           }
         });

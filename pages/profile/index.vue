@@ -6,10 +6,10 @@
       <br>
       <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
         <div class="column">
-          <h2>Películas Favoritas</h2>
+          <h2 v-if="moviesFetched.length > 0" class="text-white text-center">Favorite Movies</h2>
           <div class="movie-grid">
             <div v-for="(movie, index) in moviesFetched" :key="index" class="movie-card">
-              <a :href="'https://sonarflix.netlify.app/' + movieKey">
+              <a :href="'https://sonarflix.netlify.app/movie/' + movie.details.idForDb">
                 <img :src="movie.details.posterForDb" alt="Movie Poster" class="poster" />
               </a>
               <p>{{ movie.details.nameForDb }}</p>
@@ -20,10 +20,10 @@
         </div>
         <br>
         <div class="column">
-          <h2>Programas de TV Favoritos</h2>
+          <h2 v-if="tvFetched.length > 0" class="text-white text-center">Favorite TV Shows</h2>
           <div class="tv-show-grid">
             <div v-for="(tvShow, index) in tvFetched" :key="index" class="tv-show-card">
-              <a :href="'https://sonarflix.netlify.app/' + tvKey">
+              <a :href="'https://sonarflix.netlify.app/tv/' + tvShow.details.idForDb">
                 <img :src="tvShow.details.posterForDb" alt="TV Show Poster" class="poster" />
               </a>
               <p>{{ tvShow.details.nameForDb }}</p>
@@ -34,12 +34,12 @@
         </div>
       </div>
       <div v-else>
-        <p>No hay favoritos o lista agregada hasta el momento.</p>
+        <p>No favorites or list added yet.</p>
       </div>
       <br>
       <div class="button-container">
         <button class="button button--icon" @click="signOut">
-          <span class="txt">Cerrar sesión</span>
+          <span class="txt">Log out</span>
         </button>
       </div>
     </section>

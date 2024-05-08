@@ -1,5 +1,13 @@
 import { apiImgUrl } from '~/api';
 
+export const id =  {
+  computed: {
+    id () {
+      return this.item.id;
+    }
+  }
+
+}
 
 export const name = {
   computed: {
