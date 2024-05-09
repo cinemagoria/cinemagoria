@@ -2,17 +2,31 @@
   <main class="main">
     <section class="profile-section">
       <br>
-      <h1 class="text-white text-center"><b>Welcome Back! {{ userEmail }}</b></h1>
+      <h1 class="text-center"><b>Welcome Back! <span style="color: #8BE9FD;">{{ userEmail }}</span></b></h1>
       <br>
       <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
         <div class="column">
-          <h2 v-if="moviesFetched.length > 0" class="text-white text-center">Favorite Movies</h2>
+          <div class="button-container">
+            <h3 v-if="moviesFetched.length > initialResults || tvFetched.length > initialResults" class="button" @click="toggleShowAllMovies">
+              <span style="color: #FFFFFF;">Filter Movies:</span>&nbsp;&nbsp;<span style="color: #8BE9FD;">{{ showAllMovies ? 'Partial Movies' : 'Total Movies' }}</span>
+            </h3>
+            <h3 v-if="tvFetched.length > initialResults || moviesFetched.length > initialResults" class="button" @click="toggleShowAllTV">
+              <span style="color: #FFFFFF;">Filter TV Shows:</span>&nbsp;&nbsp;<span style="color: #8BE9FD;">{{ showAllTV ? 'Partial TV Shows' : 'Total TV Shows' }}</span>
+            </h3>
+            <div class="button" @click="toggleOrder">
+              <span>Order:</span>&nbsp;&nbsp;
+              <span v-if="orderText === 'Order Asc'" style="color: #8BE9FD;">Last Added</span>
+              <span v-else style="color: #8BE9FD;">First Added</span>
+            </div>
+          </div>
+          <br>
+          <h2 v-if="moviesFetched.length > 0" class="text-center" style="color: #8BE9FD; font-size: 16px; margin-top:10px;">Favorite Movies</h2>
           <div class="movie-grid">
-            <div v-for="(movie, index) in moviesFetched" :key="index" class="movie-card">
+            <div v-for="(movie, index) in moviesToShow" :key="'movie-' + index" class="movie-card">
               <a :href="'https://sonarflix.netlify.app/movie/' + movie.details.idForDb">
                 <img :src="movie.details.posterForDb" alt="Movie Poster" class="poster" />
+                <h3>{{ movie.details.nameForDb }}</h3>
               </a>
-              <h3>{{ movie.details.nameForDb }}</h3>
               <p v-if="movie && movie.details && movie.details.starsForDb !== null && movie.details.starsForDb !== undefined && !Array.isArray(movie.details.starsForDb)">Rating: {{ movie.details.starsForDb.toString().slice(0, 1) + '.' + movie.details.starsForDb.toString().charAt(1) }}</p>
               <p v-else>Rating: Not Specified</p>
               <p>Release Date: {{ movie.details.yearStartForDb }}</p>
@@ -21,13 +35,14 @@
         </div>
         <br>
         <div class="column">
-          <h2 v-if="tvFetched.length > 0" class="text-white text-center">Favorite TV Shows</h2>
+          <br>
+          <h2 v-if="tvFetched.length > 0" class="text-center" style="color: #8BE9FD; font-size: 16px;">Favorite TV Shows</h2>
           <div class="tv-show-grid">
-            <div v-for="(tvShow, index) in tvFetched" :key="index" class="tv-show-card">
+            <div v-for="(tvShow, index) in tvToShow" :key="'tvShow-' + index" class="tv-show-card">
               <a :href="'https://sonarflix.netlify.app/tv/' + tvShow.details.idForDb">
                 <img :src="tvShow.details.posterForDb" alt="TV Show Poster" class="poster" />
+                <h3>{{ tvShow.details.nameForDb }}</h3>
               </a>
-              <h3>{{ tvShow.details.nameForDb }}</h3>
               <p v-if="tvShow && tvShow.details && tvShow.details.starsForDb !== null && tvShow.details.starsForDb !== undefined && !Array.isArray(tvShow.details.starsForDb)">Rating: {{ tvShow.details.starsForDb.toString().slice(0, 1) + '.' + tvShow.details.starsForDb.toString().charAt(1) }}</p>
               <p v-else>Rating: Not Specified</p>
               <p>Aired: 
@@ -63,7 +78,11 @@ export default {
       moviesFetched: [],
       tvFetched: [],
       movieKey: '', 
-      tvKey: '' 
+      tvKey: '',
+      orderText: 'Order Asc', 
+      showAllMovies: false,
+      showAllTV: false,
+      initialResults: 6
     };
   },
   async mounted() {
@@ -113,11 +132,28 @@ export default {
             console.log(tvFetched);
           }
         });
-        this.moviesFetched = moviesFetched;
-        this.tvFetched = tvFetched;
+        this.moviesFetched = moviesFetched.reverse();
+        this.tvFetched = tvFetched.reverse();
       } catch (error) {
         console.error('Error', error.message);
       }
+    },
+    toggleOrder() {
+      if (this.orderText === 'Order Asc') {
+        this.moviesFetched.reverse();
+        this.tvFetched.reverse();
+        this.orderText = 'Order Desc';
+      } else {
+        this.moviesFetched.reverse();
+        this.tvFetched.reverse();
+        this.orderText = 'Order Asc';
+      }
+    },
+    toggleShowAllMovies() {
+      this.showAllMovies = !this.showAllMovies;
+    },
+    toggleShowAllTV() {
+      this.showAllTV = !this.showAllTV;
     },
     signOut() {
       localStorage.removeItem('access_token');
@@ -126,11 +162,60 @@ export default {
       console.log('email eliminado del localStorage');
       window.location.href = 'https://sonarflix.netlify.app/login';
     },
+  },
+  computed: {
+    moviesToShow() {
+      return this.showAllMovies ? this.moviesFetched : this.moviesFetched.slice(0, this.initialResults);
+    },
+    tvToShow() {
+      return this.showAllTV ? this.tvFetched : this.tvFetched.slice(0, this.initialResults);
+    }
   }
 };
 </script>
 
+
 <style scoped>
+  .button,
+  a.button {
+    display: inline-block;
+    padding: 1.5rem 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1;
+    color: #fff;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.2s;
+    }
+
+
+  .order-button {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .order-button svg {
+    width: 20px;
+    height: 14px;
+    margin-left: 5px;
+    transition: transform 0.3s ease;
+  }
+
+  .order-button span {
+    transition: color 0.3s ease;
+  }
+
+  .rotate-180 {
+    transform: rotate(180deg);
+  }
+  
   a {
     font-weight: 600;
     color: #80868b;
@@ -156,19 +241,66 @@ export default {
     margin-top: 5px;
     text-align: center;
     letter-spacing: 1.5px;
-    font-size: 11px; 
   }
 
   .button-container {
     display: flex;
     justify-content: center;
-    
   }
+
+  .button-container {
+    display: flex;
+    justify-content: center;
+  }
+
+.button {
+  margin: 0 10px; 
+  font-size: 14px; 
+}
+
+@media screen and (max-width: 600px) {
+  .button {
+    font-size: 12px; 
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .button {
+    font-size: 10px; 
+  }
+}
+
 
   .profile-section {
     padding: 10px;
     
   }
+
+  .movie-card h3,
+  .tv-show-card h3 {
+    margin-top: 5px;
+    color: #8BE9FD;
+    font-size: 14px; 
+    margin-top: 10px; 
+    text-align: center; 
+    overflow: hidden; 
+    white-space: nowrap; 
+    text-overflow: ellipsis; 
+  }
+
+  .movie-card h3:hover,
+  .tv-show-card h3:hover {
+    color: #ffffff; 
+    cursor: pointer; 
+  }
+
+  .movie-card p,
+  .tv-show-card p {
+    font-size: 12px;
+    margin: 5px auto; 
+    text-align: center;
+  }
+
 
   .button {
     border-radius: 10px;
@@ -210,15 +342,41 @@ export default {
   }
 
   @media screen and (max-width: 600px) {
-
-    .movie-grid,
-    .tv-show-grid {
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
-    }
-
-    .movie-card img,
-    .tv-show-card img {
-      width: 50%;
-    }
+  .movie-grid,
+  .tv-show-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
   }
+
+  .movie-card,
+  .tv-show-card {
+    width: 100%;
+    max-width: none; 
+  }
+
+  .movie-card img,
+  .tv-show-card img {
+    width: 100%; 
+    max-width: none; 
+  }
+}
+
+@media screen and (min-width: 601px) {
+  .movie-grid,
+  .tv-show-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+  }
+
+  .movie-card,
+  .tv-show-card {
+    width: 100%; 
+    max-width: none;
+  }
+
+  .movie-card img,
+  .tv-show-card img {
+    width: 100%; 
+    max-width: none; 
+  }
+}
+
 </style>
