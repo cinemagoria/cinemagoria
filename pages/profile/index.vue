@@ -53,7 +53,7 @@
         </div>
       </div>
       <div v-else>
-        <p>No favorites or list added yet.</p>
+        <p style="text-align: center;">No favorites or lists added yet.</p>
       </div>
       <br>
       <div class="button-container">
