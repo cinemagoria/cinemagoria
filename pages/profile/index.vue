@@ -15,8 +15,8 @@
             </h3>
             <div class="button" @click="toggleOrder">
               <span>Order:</span>&nbsp;&nbsp;
-              <span v-if="orderText === 'Order Asc'" style="color: #8BE9FD;">Last Added</span>
-              <span v-else style="color: #8BE9FD;">First Added</span>
+              <span v-if="orderText === 'Order Asc'" style="color: #8BE9FD;">First Added</span>
+              <span v-else style="color: #8BE9FD;">Last Added</span>
             </div>
           </div>
           <br>
