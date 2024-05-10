@@ -106,6 +106,8 @@ export default {
     API_LANG: process.env.API_LANG || "es",
     API_COUNTRY: process.env.API_COUNTRY || "en",
     API_YOUTUBE_KEY: process.env.API_YOUTUBE_KEY || "",
+    SUPABASE_URL: process.env.SUPABASE_URL || "https://lamskoiorahedpvfkvav.supabase.co",
+    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || "",
     GA: process.env.GA || "",
   },
 

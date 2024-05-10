@@ -302,6 +302,7 @@ export function getMovieProviders(id) {
   });
 };
 
+
 export function getMovieReviews(id) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/movie/${id}/reviews?language=en-US&page=1`, {
@@ -340,7 +341,7 @@ export function getMovieReviews(id) {
       reject(error);
     });
   });
-};
+};                  
 
 export function getTvShow(id) {
   return new Promise((resolve, reject) => {
@@ -351,8 +352,15 @@ export function getTvShow(id) {
         append_to_response: 'videos,credits,images,external_ids,content_ratings',
         include_image_language: 'en',
       },
-    }).then((response) => {
+    }).then(async (response) => {
       const responseData = response.data;
+      try {
+        const providers = await getTVShowProviders(id);
+        responseData.providers = providers;
+      } catch (error) {
+        console.error("Error fetching movie providers:", error);
+      }
+
       const tvShowData = {
         id: responseData.id,
         original_title: responseData.original_title,
@@ -366,7 +374,7 @@ export function getTvShow(id) {
         imdb_id: responseData.external_ids ? responseData.external_ids.imdb_id : null,
         vote_average: responseData.vote_average,
       };
-      resolve(responseData); // Devolver los datos originales para mantener la estructura
+      resolve(responseData); 
     }).catch((error) => {
       console.error("Error fetching TV show data:", error);
       reject(error);
@@ -421,18 +429,16 @@ export function getTVShowProviders(id) {
         api_key: process.env.API_KEY,
       },
     }).then((response) => {
-      let providers = response.data.results.AR; // Intentamos obtener primero los proveedores de AR
+      let providers = response.data.results.AR; 
       if (providers && providers.flatrate) {
         const providerNames = providers.flatrate.map(provider => provider.provider_name);
         resolve(providerNames);
       } else {
-        console.log("No flatrate providers found for AR, trying US");
-        providers = response.data.results.US; // Intentamos obtener los proveedores de US
+        providers = response.data.results.US;
         if (providers && providers.flatrate) {
           const providerNames = providers.flatrate.map(provider => provider.provider_name);
           resolve(providerNames);
         } else {
-          console.log("No flatrate providers found for US, unable to fetch TV show providers");
           reject(new Error("Unable to fetch TV show providers"));
         }
       }

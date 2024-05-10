@@ -2,78 +2,94 @@
   <main class="main">
     <section class="section">
       <br>
-      <h1 class="text-white text-center"><b>Registrarse en SonarFlix</b></h1>
-      <h3 class="text-white text-center"><b>Crear una nueva cuenta:</b></h3>
-      <br>
-      <div class="form">
-        <form @submit.prevent="register">
-          <div class="form-group">
-            <label for="name">Nombre:</label>
-            <input type="text" id="name" v-model="name" placeholder="Juan Pérez" required>
-          </div>
-          <br>
-          <div class="form-group">
-            <label for="email" style="margin-left: 10px;">Email:</label>
-            <input type="email" id="email" v-model="email" placeholder="juanperez@example.com" required>
-          </div>
-          <br>
-          <div class="form-group">
-            <label for="password">Contraseña:</label>
-            <input type="password" id="password" v-model="password" placeholder="Ingrese su contraseña" required>
+      <h1 class="text-white text-center"><b>Bienvenid@ a SonarFlix!</b></h1>
+      <div v-if="!showVerificationModal">
+        <h3 class="text-white text-center"><b>Crear una nueva cuenta:</b></h3>
+        <div class="form">
+          <form @submit.prevent="register">
+            <div class="form-group">
+              <label for="name">Nombre:</label>
+              <input type="text" id="name" v-model="name" placeholder="Juan Pérez" required>
+            </div>
             <br>
-            <small v-if="!isValidPassword && password !== ''" class="text-danger">
+            <div class="form-group">
+              <label for="email">Email:</label>
+              <input type="email" id="email" v-model="email" placeholder="juanperez@example.com" required>
+            </div>
+            <br>
+            <div class="form-group">
+              <label for="password">Contraseña:</label>
+              <input type="password" id="password" v-model="password" placeholder="Escriba su contraseña" required>
               <br>
-              <div class="text-white text-center">
-                  La contraseña debe contener al menos 8 caracteres,<br>
-                  y al menos uno de los siguientes: mayúscula,<br>
+              <small v-if="password !== ''" class="text-danger">
+                <br>
+                <div class="text-white text-center">
+                  La contraseña debe contener al menos 8 carácteres, <br>
+                  y uno/a de los siguientes:  mayúscula,<br>
                   minúscula, número y símbolo.
-              </div>
-            </small>
-          </div>
-          <br>
-          <div class="button-container">
-            <button class="button button--icon" @click="redirectToHome">
-              <span class="txt">Volver</span>
-            </button>
-            <button type="submit" class="button button--icon" :disabled="!isValidPassword">
-              <span class="txt">Registrarse</span>
-            </button>
-          </div>
-        </form>
+                </div>
+              </small>
+            </div>
+            <br>
+            <div class="button-container">
+              <button class="button button--icon" @click="redirectToHome">
+                <span class="txt">Volver</span>
+              </button>
+              <button type="submit" class="button button--icon" :disabled="!isFormValid">
+                <span class="txt">Crear cuenta</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div v-if="showVerificationModal" class="text-center" style="max-width: 200px; margin: 0 auto;">
+        <p>Un correo electrónico de verificación ha sido enviado a {{ email }}. Por favor revise su buzón de entrada para verificar la cuenta.</p>
+       
+      </div>
+      <div v-if="showVerificationModal" class="button-container">
+        <button class="button button--icon" @click="redirectToHome">
+          <span class="txt">Volver</span>
+        </button>
       </div>
       <br>
-      <h3 class="text-center custom-center"><strong>¿Ya tiene una cuenta? <router-link :to="{ name: 'auth' }">Inicie sesión ahora</router-link></strong></h3>
+      <h3 class="text-center custom-center"><strong>Ya tiene una cuenta? <router-link :to="{ name: 'login' }">Iniciar sesión</router-link></strong></h3>
     </section>
   </main>
 </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        name: '',
-        email: '',
-        password: ''
-      };
-    },
-    computed: {
-      isValidPassword() {
-        const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
-        return regex.test(this.password);
-      }
-    },
-    methods: {
-      register() {
-      }
-    }
-  };
-  </script>
 
 <script>
-  export default {
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      name: '',
+      email: '',
+      password: '',
+      showVerificationModal: false,
+    };
+  },
+  computed: {
+    isFormValid() {
+      return this.name !== '' && this.email !== '' && this.password !== '';
+    }
+  },
   methods: {
+    async register() {
+      try {
+        const response = await axios.post('https://sf-django.vercel.app/api/register/', {
+          name: this.name,
+          email: this.email,
+          password: this.password
+        });
+        console.log(response.data);
+        this.showVerificationModal = true; 
+      } catch (error) {
+        console.error(error);
+      }
+    },
     redirectToHome() {
-      window.location.href = 'https://sonarflix.netlify.app';
+      window.location.href = 'https://es--sonarflix.netlify.app';
     }
   }
 };
@@ -96,6 +112,10 @@ h3 {
   text-align: center;
   margin-bottom: 20px;
   letter-spacing: 2px;
+}
+
+.button-container-show {
+  display: none;
 }
 
 .form {

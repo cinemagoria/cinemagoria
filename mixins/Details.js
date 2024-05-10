@@ -1,5 +1,13 @@
 import { apiImgUrl } from '~/api';
 
+export const id =  {
+  computed: {
+    id () {
+      return this.item.id;
+    }
+  }
+
+}
 
 export const name = {
   computed: {
@@ -18,6 +26,8 @@ export const stars = {
     },
   },
 };
+
+
 
 
 export const yearStart = {
@@ -45,6 +55,15 @@ export const yearEnd = {
   },
 };
 
+export const poster = {
+  computed: {
+    poster_path () {
+      if (this.item.poster_path) {
+        return `${apiImgUrl}/w370_and_h556_bestv2${this.item.poster_path}`;
+      }
+    },
+  },
+};
 
 export const backdrop = {
   computed: {

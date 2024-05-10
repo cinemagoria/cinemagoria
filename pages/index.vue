@@ -17,13 +17,14 @@
       :view-all-url="trendingTvUrl"
       :items="trendingTv" />
 
-        <CustomListingCategoriesMovies
-      :title="'Categories Movies'"
-      :view-all-url="null"/>
+      <CustomListingCategoriesMovies
+    :title="'Categories Movies'"
+    :view-all-url="null"/>
 
-      <CustomListingCategoriesSeries
-      :title="'Categories Series'"
-      :view-all-url="null"/>
+    <CustomListingCategoriesSeries
+    :title="'Categories Series'"
+    :view-all-url="null"/>
+
   </main>
 </template>
 

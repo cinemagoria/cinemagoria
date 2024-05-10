@@ -17,7 +17,7 @@
   background-color: $secondary-color;
   border-radius: 15px;
   transition: transform 0.3s ease-in-out;
-  
+
   .card__image {
     position: relative;
     height: 0;
@@ -26,7 +26,6 @@
     background-color: transparent;    
     transition: transform 0.3s ease-in-out;
   }
-
   img,
   span {
     position: absolute;

@@ -10,7 +10,7 @@ SonarFlix is a work-in-progress project aimed at fast-tracking your entertainmen
 
 All credits for this implementation go to [Nuxt Movies](https://github.com/tastejs/nuxt-movies).
 
-The data utilized in this implementation is provided by the public API of [TMDB](https://www.themoviedb.org/).
+The data utilized in this implementation is provided by the public API of [TMDB](https://www.themoviedb.org/) and [JustWatch](https://www.justwatch.com).
 
 The current focus is on frontend development deployed in Netlify, with plans to integrate a Python backend for authentication in the future. This backend will enable users to save their favorite movies and TV series, as well as share them on social media platforms. Please note that this project is a work in progress.
 

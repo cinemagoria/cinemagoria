@@ -48,7 +48,7 @@
 export default {
   methods: {
     redirectToHome() {
-      window.location.href = 'https://sonarflix.netlify.app';
+      window.location.href = 'https://es--sonarflix.netlify.app';
     }
   }
 };

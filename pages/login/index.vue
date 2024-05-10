@@ -2,19 +2,20 @@
   <main class="main">
     <section class="section">
       <br>
-      <h1 class="text-white text-center"><b>¡Bienvenid@ de nuevo!</b></h1>
-      <h3 class="text-white text-center"><b>Inicie sesión en su cuenta:</b></h3>
+      <h1 class="text-white text-center"><b>[ Esta sección se encuentra en mantenimiento. ]</b></h1>
+      <h1 class="text-white text-center"><b>Bienvenid@ Nuevamente!</b></h1>
+      <h3 class="text-white text-center"><b>Inicia sesión con tu cuenta:</b></h3>
       <br>
       <div class="form">
         <form @submit.prevent="login">
           <div class="form-group">
-            <label for="email" style="margin-right: 10px;">Email:</label>
-            <input type="email" id="email" v-model="email" placeholder="juanperez@example.com" style="font-size: 12px;" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" v-model="email" placeholder="juanperez@example.com" required>
           </div>
           <br>
           <div class="form-group">
             <label for="password">Contraseña:</label>
-            <input type="password" id="password" v-model="password" placeholder="Ingrese su contraseña" style="font-size: 12px;"  required>
+            <input type="password" id="password" v-model="password" placeholder="Ingresa tu contraseña" required>
           </div>
           <br>
           <br>
@@ -34,19 +35,46 @@
         <br>
       </div>
       <br>
-      <h2 class="text-center custom-center" style="margin-top:20px;"><strong>¿No tiene una cuenta? <router-link :to="{ name: 'register' }">Regístrese</router-link></strong></h2>
-      <h2 class="text-center custom-center"><strong>¿Olvidó su contraseña? <router-link :to="{ name: 'recovery' }">Restablecer</router-link></strong></h2>
+      <h2 class="text-center custom-center" style="margin-top:20px;"><strong>Sin cuenta aún? <router-link :to="{ name: 'register' }">Registrarse</router-link></strong></h2>
+      <h2 class="text-center custom-center"><strong>Olvidó su contraseña? <router-link :to="{ name: 'recovery' }">Restablecer</router-link></strong></h2>
     </section>
   </main>
 </template>
 
-
 <script>
+import axios from 'axios';
+
 export default {
+  data() {
+    return {
+      email: '',
+      password: ''
+    };
+  },
   methods: {
+    async login() {
+      try {
+        const response = await axios.post('https://sf-django.vercel.app/login/', {
+          email: this.email,
+          password: this.password
+        });
+        console.log(response.data);
+        console.log(response.data.name);
+        console.log(response.data.email);
+        localStorage.setItem('email', response.data.email);
+        localStorage.setItem('access_token', response.data.access_token);
+
+        console.log(localStorage.getItem('access_token'));
+        console.log(response.data.access_token);
+        this.redirectToHome();
+      } catch (error) {
+        console.error(error);
+      }
+    },
     redirectToHome() {
-      window.location.href = 'https://sonarflix.netlify.app';
+      window.location.href = 'https://es--sonarflix.netlify.app';
     }
+
   }
 };
 </script>
@@ -101,10 +129,6 @@ export default {
 
   .custom-center {
     text-align: center;
-  }
-
-  .form-group {
-    margin-left: 20px;
   }
 
   .form-group input[type="email"],

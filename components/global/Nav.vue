@@ -51,14 +51,18 @@
           </svg>
         </nuxt-link>
       </li>
-      <li>
-        <nuxt-link
-          exact
-          :to="{ name: 'wip' }"
-          aria-label="Auth">
-          <img src="~static/icon-login.png" alt="Home" style="width: 24px; height: 24px; margin-top: 2px;" />
+
+      <li v-if="!isLoggedIn">
+        <nuxt-link exact to="/login" aria-label="Auth">
+          <img :src="require('~/static/icon-login.png')" alt="Login" style="width: 24px; height: 24px; margin-top: 2px;" />
         </nuxt-link>
       </li>
+      <li v-else>
+        <nuxt-link exact to="/profile" aria-label="Profile">
+          <img :src="require('~/static/icon-profile.png')" alt="Profile" style="width: 24px; height: 24px; margin-top: 2px;" />
+        </nuxt-link>
+      </li>
+
     </ul>
   </nav>
 </template>
@@ -68,9 +72,25 @@ import { mapState } from 'vuex';
 
 export default {
   computed: {
-    ...mapState('search', [
-      'searchOpen',
-    ]),
+    ...mapState('search', ['searchOpen']),
+    isLoggedIn() {
+      const isLoggedIn = localStorage.getItem('access_token') !== null;
+      console.log('IsLoggedIn:', isLoggedIn); 
+      return isLoggedIn;
+    }
+},
+
+
+  watch: {
+
+    '$options.watch': {
+      'localStorage.access_token': {
+        handler() {
+          this.$forceUpdate();
+        },
+        deep: true,
+      },
+    },
   },
 
   methods: {
