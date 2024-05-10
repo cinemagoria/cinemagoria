@@ -2,17 +2,19 @@
   <main class="main">
     <section class="profile-section">
       <br>
-      <h1 class="text-center"><b>Welcome Back! <span style="color: #8BE9FD;">{{ userEmail }}</span></b></h1>
+      <nav class="navbar">
+      <h1 class="navbar-title">Welcome Back! <span class="user-email">{{ userEmail }}</span></h1>
+        <div class="nav-button-container">
+          <button class="button-logout" @click="signOut">
+            <img src="~/static/icon-logout.png" alt="Logout Icon" class="logout-icon">
+            <span class="txt">Log out</span>
+          </button>
+        </div>
+      </nav>
       <br>
       <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
         <div class="column">
-          <div class="button-container">
-            <h3 v-if="moviesFetched.length > initialResults || tvFetched.length > initialResults" class="button" @click="toggleShowAllMovies">
-              <span style="color: #FFFFFF;">Filter Movies:</span>&nbsp;&nbsp;<span style="color: #8BE9FD;">{{ showAllMovies ? 'Partial Movies' : 'Total Movies' }}</span>
-            </h3>
-            <h3 v-if="tvFetched.length > initialResults || moviesFetched.length > initialResults" class="button" @click="toggleShowAllTV">
-              <span style="color: #FFFFFF;">Filter TV Shows:</span>&nbsp;&nbsp;<span style="color: #8BE9FD;">{{ showAllTV ? 'Partial TV Shows' : 'Total TV Shows' }}</span>
-            </h3>
+          <div class="button-container" style="margin-top:3rem;">
             <div class="button" @click="toggleOrder">
               <span>Order:</span>&nbsp;&nbsp;
               <span v-if="orderText === 'Order Asc'" style="color: #8BE9FD;">First Added</span>
@@ -21,6 +23,7 @@
           </div>
           <br>
           <h2 v-if="moviesFetched.length > 0" class="text-center" style="color: #8BE9FD; font-size: 16px; margin-top:10px;">Favorite Movies</h2>
+          
           <div class="movie-grid">
             <div v-for="(movie, index) in moviesToShow" :key="'movie-' + index" class="movie-card">
               <a :href="'https://sonarflix.netlify.app/movie/' + movie.details.idForDb">
@@ -32,6 +35,11 @@
               <p>Release Date: {{ movie.details.yearStartForDb }}</p>
             </div>
           </div>
+          <br>
+          <div class="pagination" v-if="moviesFetched.length > moviesPerPage">
+            <button v-for="page in Math.ceil(moviesFetched.length / moviesPerPage)" :key="page" @click="changePageMovies(page)" :class="{ 'active': currentPageMovies === page }">{{ page }}</button>
+          </div>
+
         </div>
         <br>
         <div class="column">
@@ -50,17 +58,17 @@
               </p>
             </div>
           </div>
+          <br>
+          <div class="pagination" v-if="tvFetched.length > tvPerPage">
+            <button v-for="page in Math.ceil(tvFetched.length / tvPerPage)" :key="page" @click="changePageTV(page)" :class="{ 'active': currentPageTV === page }">{{ page }}</button>
+          </div>
         </div>
       </div>
       <div v-else>
         <p style="text-align: center;">No favorites or lists added yet.</p>
       </div>
       <br>
-      <div class="button-container">
-        <button class="button button--icon" @click="signOut">
-          <span class="txt">Log out</span>
-        </button>
-      </div>
+      
     </section>
   </main>
 </template>
@@ -80,9 +88,10 @@ export default {
       movieKey: '', 
       tvKey: '',
       orderText: 'Order Asc', 
-      showAllMovies: false,
-      showAllTV: false,
-      initialResults: 6
+      currentPageMovies: 1,
+      currentPageTV: 1,
+      moviesPerPage: 6,
+      tvPerPage: 6,
     };
   },
   async mounted() {
@@ -149,12 +158,18 @@ export default {
         this.orderText = 'Order Asc';
       }
     },
-    toggleShowAllMovies() {
-      this.showAllMovies = !this.showAllMovies;
+
+    changePageMovies(pageNumber) {
+      if (pageNumber >= 1 && pageNumber <= Math.ceil(this.moviesFetched.length / this.moviesPerPage)) {
+        this.currentPageMovies = pageNumber;
+      }
     },
-    toggleShowAllTV() {
-      this.showAllTV = !this.showAllTV;
+    changePageTV(pageNumber) {
+      if (pageNumber >= 1 && pageNumber <= Math.ceil(this.tvFetched.length / this.tvPerPage)) {
+        this.currentPageTV = pageNumber;
+      }
     },
+
     signOut() {
       localStorage.removeItem('access_token');
       console.log('access_token eliminado del localStorage');
@@ -165,17 +180,104 @@ export default {
   },
   computed: {
     moviesToShow() {
-      return this.showAllMovies ? this.moviesFetched : this.moviesFetched.slice(0, this.initialResults);
+      const startIndex = (this.currentPageMovies - 1) * this.moviesPerPage;
+      const endIndex = startIndex + this.moviesPerPage;
+      return this.moviesFetched.slice(startIndex, endIndex);
     },
     tvToShow() {
-      return this.showAllTV ? this.tvFetched : this.tvFetched.slice(0, this.initialResults);
-    }
+      const startIndex = (this.currentPageTV - 1) * this.tvPerPage;
+      const endIndex = startIndex + this.tvPerPage;
+      return this.tvFetched.slice(startIndex, endIndex);
+    },
   }
 };
 </script>
 
 
 <style scoped>
+.navbar {
+    background-color: transparent;
+    padding: 10px 0;
+    margin-top: 3rem;
+    text-align: center;
+    position: relative;
+    max-width: 800px; 
+    width: 90%; 
+    margin: 0 auto; 
+  }
+
+  .navbar-title {
+    color: #fff;
+    margin: 0 auto;
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+
+  .user-email {
+    color: #8BE9FD;
+  }
+
+  .nav-button-container {
+    position: absolute; 
+    top: 50%;
+    transform: translateY(-50%);
+    right: 20px; 
+  }
+
+  .button-container {
+    top: 50%;
+    transform: translateY(-50%);
+    right: 20px; 
+  }
+
+  .button-logout {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: color 0.3s, background-color 0.3s;
+    font-weight: bold; 
+    font-size: 14px; 
+    border-radius: 15px;
+    position: relative;
+  }
+
+  .button-logout:hover {
+    background-color: #B22727;
+  }
+
+  .logout-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+  }
+
+  pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .pagination button {
+    background-color: #082D3E;
+    color: #FFF;
+    width: 40px;
+    height: 40px;
+    margin: 0 5px 5px;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .pagination button.active {
+    background-color: #59A2B2;
+  }
+
   .button,
   a.button {
     display: inline-block;
@@ -248,27 +350,33 @@ export default {
     justify-content: center;
   }
 
-  .button-container {
-    display: flex;
-    justify-content: center;
-  }
-
 .button {
   margin: 0 10px; 
   font-size: 14px; 
 }
 
 @media screen and (max-width: 600px) {
-  .button {
+  .button-logout .button .navbar-title {
     font-size: 12px; 
   }
 }
 
 @media screen and (max-width: 375px) {
   .button {
-    font-size: 10px; 
+    font-size: 12px; 
   }
 }
+
+@media screen and (max-width: 767px) {
+    .navbar-title {
+      margin-bottom: 20px;
+    }
+
+    .nav-button-container {
+      position: static;
+      margin-top: 30px; 
+    }
+  }
 
 
   .profile-section {
@@ -307,6 +415,7 @@ export default {
   }
 
   .column {
+    margin-top: 3rem;
     margin: 0 auto;
     text-align: center;
     max-width: 800px; 
