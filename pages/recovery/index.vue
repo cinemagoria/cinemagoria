@@ -18,8 +18,8 @@
         </div>
         <form v-else @submit.prevent="recoverPassword">
           <div v-if="!confirmationMessage" class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" v-model="email" style="width: 158.279px; transform: translate(11.2765px, 0px);" placeholder="juanperez@email.com" required>
+            <label for="email" style="position: relative; left: 45px; top: -3px; transform: translate(0px, 6.39957px); transition: none 0s ease 0s; cursor: move;">Email:</label>
+            <input type="email" id="email" v-model="email" style="width: 158.279px; transform: translate(11.2765px, 0px); position: relative; left: 20px; top: -3px; transition: none 0s ease 0s; cursor: move;" placeholder="juanperez@email.com" required>
           </div>
           <br>
           <div class="button-container">
