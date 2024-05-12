@@ -2,7 +2,6 @@
   <main class="main">
     <section class="section">
       <br>
-      <h1 class="text-white text-center"><b>[ Esta sección se encuentra en mantenimiento. ]</b></h1>
       <h1 class="text-white text-center"><b>Bienvenid@ Nuevamente!</b></h1>
       <h3 class="text-white text-center"><b>Inicia sesión con tu cuenta:</b></h3>
       <br>
@@ -15,10 +14,11 @@
           <br>
           <div class="form-group">
             <label for="password">Contraseña:</label>
-            <input type="password" id="password" v-model="password" placeholder="Ingresa tu contraseña" required>
+            <input type="password" id="password" v-model="password" placeholder="Ingrese su contraseña" required>
           </div>
           <br>
           <br>
+          <div class="error-message" v-if="errorMessage">{{ errorMessage }}</div>
           <div class="button-container">
             <button class="button button--icon" @click="redirectToHome">
               <!-- eslint-disable-next-line -->
@@ -35,8 +35,8 @@
         <br>
       </div>
       <br>
-      <h2 class="text-center custom-center" style="margin-top:20px;"><strong>Sin cuenta aún? <router-link :to="{ name: 'register' }">Registrarse</router-link></strong></h2>
-      <h2 class="text-center custom-center"><strong>Olvidó su contraseña? <router-link :to="{ name: 'recovery' }">Restablecer</router-link></strong></h2>
+      <h2 class="text-center custom-center" style="margin-top:20px;"><strong>¿Sin cuenta aún? <router-link :to="{ name: 'register' }">Registrarse</router-link></strong></h2>
+      <h2 class="text-center custom-center"><strong>¿Olvidó su contraseña? <router-link :to="{ name: 'recovery' }">Restablecer</router-link></strong></h2>
     </section>
   </main>
 </template>
@@ -48,7 +48,8 @@ export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      errorMessage: '' 
     };
   },
   methods: {
@@ -69,17 +70,26 @@ export default {
         this.redirectToHome();
       } catch (error) {
         console.error(error);
+        if (error.response && error.response.status === 401) {
+          this.errorMessage = 'Invalid login credentials.';
+        } else {
+          this.errorMessage = 'An error occurred. Please try again later.';
+        }
       }
     },
     redirectToHome() {
       window.location.href = 'https://es--sonarflix.netlify.app';
     }
-
   }
 };
 </script>
 
 <style scoped>
+  .error-message {
+      color: red;
+      text-align: center;
+      margin-bottom: 10px;
+    }
   a {
     font-weight: 600;
     color: #80868b;
