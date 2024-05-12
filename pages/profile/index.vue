@@ -14,12 +14,15 @@
       <br>
       <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
         <div class="column">
-          <div class="button-container" style="margin-top:3rem;">
-            <div class="button" @click="toggleOrder">
-              <span>Order:</span>&nbsp;&nbsp;
-              <span v-if="orderText === 'Order Asc'" style="color: #8BE9FD;">First Added</span>
-              <span v-else style="color: #8BE9FD;">Last Added</span>
-            </div>
+          <div class="button-container" style="margin-top: 3rem;">
+            <select @change="toggleOrder" class="order-select">
+                <option value="asc" :selected="orderText === 'Order Asc'">
+                    <span class="order-word">Order:</span> <span class="order-option">Last Added</span>
+                </option>
+                <option value="desc" :selected="orderText === 'Order Desc'">
+                    <span class="order-word">Order:</span> <span class="order-option">First Added</span>
+                </option>
+            </select>
           </div>
           <br>
           <h2 v-if="moviesFetched.length > 0" class="text-center" style="color: #8BE9FD; font-size: 16px; margin-top:10px;">Favorite Movies</h2>
@@ -37,7 +40,7 @@
           </div>
           <br>
           <div class="pagination" v-if="moviesFetched.length > moviesPerPage">
-            <button v-for="page in Math.ceil(moviesFetched.length / moviesPerPage)" :key="page" @click="changePageMovies(page)" :class="{ 'active': currentPageMovies === page }">{{ page }}</button>
+            <button v-for="page in visibleMoviePages" :key="page" @click="changePageMovies(page)" :class="{ 'active': currentPageMovies === page }">{{ page }}</button>
           </div>
 
         </div>
@@ -60,7 +63,7 @@
           </div>
           <br>
           <div class="pagination" v-if="tvFetched.length > tvPerPage">
-            <button v-for="page in Math.ceil(tvFetched.length / tvPerPage)" :key="page" @click="changePageTV(page)" :class="{ 'active': currentPageTV === page }">{{ page }}</button>
+            <button v-for="page in visibleTVPages" :key="page" @click="changePageTV(page)" :class="{ 'active': currentPageTV === page }">{{ page }}</button>
           </div>
         </div>
       </div>
@@ -105,6 +108,7 @@ export default {
     this.isLoggedIn = accessToken !== null;
     this.checkData();
   },
+  
   methods: {
     async checkData() {
       try {
@@ -147,15 +151,16 @@ export default {
         console.error('Error', error.message);
       }
     },
-    toggleOrder() {
-      if (this.orderText === 'Order Asc') {
-        this.moviesFetched.reverse();
-        this.tvFetched.reverse();
-        this.orderText = 'Order Desc';
-      } else {
+    toggleOrder(event) {
+      const selectedOption = event.target.value;
+      if (selectedOption === 'asc') {
         this.moviesFetched.reverse();
         this.tvFetched.reverse();
         this.orderText = 'Order Asc';
+      } else if (selectedOption === 'desc') {
+        this.moviesFetched.reverse();
+        this.tvFetched.reverse();
+        this.orderText = 'Order Desc';
       }
     },
 
@@ -179,6 +184,29 @@ export default {
     },
   },
   computed: {
+    visibleMoviePages() {
+      const totalPages = Math.ceil(this.moviesFetched.length / this.moviesPerPage);
+      const maxVisiblePages = 5;
+      let startPage = Math.max(1, this.currentPageMovies - Math.floor(maxVisiblePages / 2));
+      let endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+      if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+
+      return Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
+    },
+    visibleTVPages() {
+      const totalPages = Math.ceil(this.tvFetched.length / this.tvPerPage);
+      const maxVisiblePages = 5;
+      let startPage = Math.max(1, this.currentPageTV - Math.floor(maxVisiblePages / 2));
+      let endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+
+      if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+
+      return Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
+    },
     moviesToShow() {
       const startIndex = (this.currentPageMovies - 1) * this.moviesPerPage;
       const endIndex = startIndex + this.moviesPerPage;
@@ -195,6 +223,14 @@ export default {
 
 
 <style scoped>
+.order-word {
+    color: #fff;
+}
+
+.order-option {
+    color: #58A3B2;
+}
+
 .navbar {
     background-color: transparent;
     padding: 10px 0;
@@ -252,6 +288,21 @@ export default {
     width: 20px;
     height: 20px;
     margin-right: 5px;
+  }
+
+  .order-select {
+    background-color: #072E3F;
+    color: #58A3B2;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 142.626px;
+    height: 34.6172px;
+    transform: translate(-1.50976px, 3.8843px);
+    transition: none 0s ease 0s;
+    border-radius: 15px;
   }
 
   pagination {
@@ -356,8 +407,22 @@ export default {
 }
 
 @media screen and (max-width: 600px) {
-  .button-logout .button .navbar-title {
+  .button .navbar-title {
     font-size: 12px; 
+  }
+
+  .button-logout {
+    align-items: flex-start;
+    display: inline-block;
+    line-height: 16.1px;
+    padding: 10px 15px;
+    text-align: center;
+  }
+
+  .navbar-title {
+    line-height: 24px;
+    margin: 0px 125.742px 20px;
+    text-align: center;
   }
 }
 
@@ -487,5 +552,5 @@ export default {
     max-width: none; 
   }
 }
-
 </style>
+

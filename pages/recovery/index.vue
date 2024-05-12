@@ -1,57 +1,63 @@
 <template>
-    <main class="main">
-      <section class="section">
-        <br>
-        <h1 class="text-white text-center"><b>Reset Your Password</b></h1>
-        <h3 class="text-white text-center"><b>Type in your email and we'll send you a link to reset your password:</b></h3>
-        <br>
-        <div class="form">
-          <form @submit.prevent="recoverPassword">
-            <div class="form-group">
-              <label for="email">Email:</label>
-              <input type="email" id="email" v-model="email" placeholder="johndoe@example.com" required>
-            </div>
-            <br>
-            <div class="button-container">
+  <main class="main">
+    <section class="section">
+      <br>
+      <h1 class="text-white text-center"><b>Reset Your Password</b></h1>
+      <h3 class="text-white text-center" v-if="!confirmationMessage"><b>Type in your email and we'll send you a link to reset your password:</b></h3>
+      <h3 class="text-white text-center" v-else><b> </b></h3>
+      <br>
+      <div class="form">
+        <div v-if="confirmationMessage" class="confirmation-message">
+          <p style="text-align: center; width:200px">An email has been sent to {{ email }}. Please check your inbox and reset your password.</p>
+          <p style="text-align: center; width:200px">If you encounter any issues or have any questions, please contact to <a href="mailto:contact@ivanluna.dev">contact@ivanluna.dev</a>.</p>
+          <div class="button-container">
             <button class="button button--icon" @click="redirectToHome">
-              <!-- eslint-disable-next-line -->
-            <span class="txt">Back</span>
+                <span class="txt">Back</span>
             </button>
-              <button type="submit" class="button button--icon">
-                <span class="txt">Reset Password</span>
-              </button>
-            </div>
-          </form>
+          </div>
         </div>
-        <br>
-        <h2 class="text-center custom-center"><strong>Already have an account? <router-link :to="{ name: 'login' }">Sign In</router-link></strong></h2>
-      </section>
-    </main>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        email: ''
-      };
-    },
-    methods: {
-      recoverPassword() {
-        // Implement your password recovery logic here
-      }
-    }
-  };
-  </script>
-  <script>
-  export default {
+        <form v-else @submit.prevent="recoverPassword">
+          <div v-if="!confirmationMessage" class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" v-model="email" placeholder="johndoe@example.com" required>
+          </div>
+          <br>
+          <div class="button-container">
+            <button class="button button--icon" @click="redirectToHome">
+              <span class="txt">Back</span>
+            </button>
+            <button v-if="!confirmationMessage" type="submit" class="button button--icon">
+              <span class="txt">Reset Password</span>
+            </button>
+          </div>
+        </form>
+      </div>
+      <br>
+      <h2 class="text-center custom-center"><strong>Already have an account? <router-link :to="{ name: 'login' }">Sign In</router-link></strong></h2>
+    </section>
+  </main>
+</template>
+
+
+<script>
+export default {
+  data() {
+    return {
+      email: '',
+      confirmationMessage: false 
+    };
+  },
   methods: {
+    recoverPassword() {
+      this.confirmationMessage = true;
+    },
     redirectToHome() {
       window.location.href = 'https://sonarflix.netlify.app';
     }
   }
 };
 </script>
+
 
 <style scoped>
 a {

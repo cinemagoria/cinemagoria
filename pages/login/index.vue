@@ -18,7 +18,7 @@
             <input type="password" id="password" v-model="password" placeholder="Enter your password" required>
           </div>
           <br>
-          <br>
+          <div class="error-message" v-if="errorMessage">{{ errorMessage }}</div>
           <div class="button-container">
             <button class="button button--icon" @click="redirectToHome">
               <!-- eslint-disable-next-line -->
@@ -48,7 +48,8 @@ export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      errorMessage: '' 
     };
   },
   methods: {
@@ -69,17 +70,26 @@ export default {
         this.redirectToHome();
       } catch (error) {
         console.error(error);
+        if (error.response && error.response.status === 401) {
+          this.errorMessage = 'Invalid login credentials.';
+        } else {
+          this.errorMessage = 'An error occurred. Please try again later.';
+        }
       }
     },
     redirectToHome() {
       window.location.href = 'https://sonarflix.netlify.app';
     }
-
   }
 };
 </script>
 
 <style scoped>
+  .error-message {
+      color: red;
+      text-align: center;
+      margin-bottom: 10px;
+    }
   a {
     font-weight: 600;
     color: #80868b;
