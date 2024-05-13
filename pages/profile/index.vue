@@ -3,7 +3,7 @@
     <section class="profile-section">
       <br>
       <nav class="navbar">
-      <h1 class="navbar-title">Welcome Back! <span class="user-email">{{ userEmail }}</span></h1>
+        <h1 class="navbar-title">Welcome Back! <span class="user-email">{{ userEmail }}</span></h1>
         <div class="nav-button-container">
           <button class="button-logout" @click="signOut">
             <img src="~/static/icon-logout.png" alt="Logout Icon" class="logout-icon">
@@ -16,17 +16,17 @@
         <div class="column">
           <div class="button-container" style="margin-top: 3rem;">
             <select @change="toggleOrder" class="order-select">
-                <option value="asc" :selected="orderText === 'Order Asc'">
-                    <span class="order-word">Order:</span> <span class="order-option">Last Added</span>
-                </option>
-                <option value="desc" :selected="orderText === 'Order Desc'">
-                    <span class="order-word">Order:</span> <span class="order-option">First Added</span>
-                </option>
+              <option value="asc" :selected="orderText === 'Order Asc'">
+                <span class="order-word">Order:</span> <span class="order-option">Last Added</span>
+              </option>
+              <option value="desc" :selected="orderText === 'Order Desc'">
+                <span class="order-word">Order:</span> <span class="order-option">First Added</span>
+              </option>
             </select>
           </div>
           <br>
           <h2 v-if="moviesFetched.length > 0" class="text-center" style="color: #8BE9FD; font-size: 16px; margin-top:10px;">Favorite Movies</h2>
-          
+
           <div class="movie-grid">
             <div v-for="(movie, index) in moviesToShow" :key="'movie-' + index" class="movie-card">
               <a :href="'https://sonarflix.netlify.app/movie/' + movie.details.idForDb">
@@ -40,8 +40,18 @@
           </div>
           <br>
           <div class="pagination" v-if="moviesFetched.length > moviesPerPage">
-            <button v-for="page in visibleMoviePages" :key="page" @click="changePageMovies(page)" :class="{ 'active': currentPageMovies === page }">{{ page }}</button>
+            <button @click="goToFirstMovies" :disabled="currentPageMovies === 1">|<</button>
+            <button @click="prevPageMovies" :disabled="currentPageMovies === 1"><<</button>
+            <span>
+              <label for="moviePage" style="font-size:13px;">Page</label>
+              <input type="number" id="moviePage" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPageMovies" min="1" :max="totalMoviePages">
+
+            </span>
+            <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalMoviePages }}</span>
+            <button @click="nextPageMovies" :disabled="currentPageMovies === totalMoviePages">>></button>
+            <button @click="goToLastMovies" :disabled="currentPageMovies === totalMoviePages">>|</button>
           </div>
+  
 
         </div>
         <br>
@@ -56,14 +66,22 @@
               </a>
               <p v-if="tvShow && tvShow.details && tvShow.details.starsForDb !== null && tvShow.details.starsForDb !== undefined && !Array.isArray(tvShow.details.starsForDb)">Rating: {{ tvShow.details.starsForDb.toString().slice(0, 1) + '.' + tvShow.details.starsForDb.toString().charAt(1) }}</p>
               <p v-else>Rating: Not Specified</p>
-              <p>Aired: 
+              <p>Aired:
                 {{ tvShow.details.yearStartForDb === tvShow.details.yearEndForDb ? tvShow.details.yearEndForDb : tvShow.details.yearStartForDb + '-' + tvShow.details.yearEndForDb }}
               </p>
             </div>
           </div>
           <br>
           <div class="pagination" v-if="tvFetched.length > tvPerPage">
-            <button v-for="page in visibleTVPages" :key="page" @click="changePageTV(page)" :class="{ 'active': currentPageTV === page }">{{ page }}</button>
+            <button @click="goToFirstTV" :disabled="currentPageTV === 1">|<</button>
+            <button @click="prevPageTV" :disabled="currentPageTV === 1"><<</button>
+            <span>
+              <label for="tvPage" style="font-size:13px;">Page</label>
+              <input type="number" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" id="tvPage" v-model.number="currentPageTV" min="1" :max="totalTVPages">
+            </span>
+            <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalTVPages }}</span>
+            <button @click="nextPageTV" :disabled="currentPageTV === totalTVPages">>></button>
+            <button @click="goToLastTV" :disabled="currentPageTV === totalTVPages">>|</button>
           </div>
         </div>
       </div>
@@ -71,7 +89,7 @@
         <p style="text-align: center;">No favorites or lists added yet.</p>
       </div>
       <br>
-      
+
     </section>
   </main>
 </template>
@@ -88,9 +106,9 @@ export default {
       favorites: [],
       moviesFetched: [],
       tvFetched: [],
-      movieKey: '', 
+      movieKey: '',
       tvKey: '',
-      orderText: 'Order Asc', 
+      orderText: 'Order Asc',
       currentPageMovies: 1,
       currentPageTV: 1,
       moviesPerPage: 6,
@@ -108,7 +126,7 @@ export default {
     this.isLoggedIn = accessToken !== null;
     this.checkData();
   },
-  
+
   methods: {
     async checkData() {
       try {
@@ -116,14 +134,14 @@ export default {
         const { data, error } = await supabase
           .from('favorites')
           .select('*')
-          .eq('user_email', this.userEmail); 
-        
+          .eq('user_email', this.userEmail);
+
         if (error) {
           throw new Error('Error al conectar con la base de datos: ' + error.message);
         }
 
         console.log('Datos obtenidos de la base de datos para el usuario actual:', data);
-        const moviesFetched = []; 
+        const moviesFetched = [];
         const tvFetched = [];
         data.forEach((row) => {
           console.log('Usuario:', row.user_email);
@@ -175,6 +193,40 @@ export default {
       }
     },
 
+    goToFirstMovies() {
+      this.currentPageMovies = 1;
+    },
+    goToLastMovies() {
+      this.currentPageMovies = Math.ceil(this.moviesFetched.length / this.moviesPerPage);
+    },
+    prevPageMovies() {
+      if (this.currentPageMovies > 1) {
+        this.currentPageMovies--;
+      }
+    },
+    nextPageMovies() {
+      if (this.currentPageMovies < this.totalMoviePages) {
+        this.currentPageMovies++;
+      }
+    },
+
+    goToFirstTV() {
+      this.currentPageTV = 1;
+    },
+    goToLastTV() {
+      this.currentPageTV = Math.ceil(this.tvFetched.length / this.tvPerPage);
+    },
+    prevPageTV() {
+      if (this.currentPageTV > 1) {
+        this.currentPageTV--;
+      }
+    },
+    nextPageTV() {
+      if (this.currentPageTV < this.totalTVPages) {
+        this.currentPageTV++;
+      }
+    },
+
     signOut() {
       localStorage.removeItem('access_token');
       console.log('access_token eliminado del localStorage');
@@ -217,6 +269,12 @@ export default {
       const endIndex = startIndex + this.tvPerPage;
       return this.tvFetched.slice(startIndex, endIndex);
     },
+    totalMoviePages() {
+      return Math.ceil(this.moviesFetched.length / this.moviesPerPage);
+    },
+    totalTVPages() {
+      return Math.ceil(this.tvFetched.length / this.tvPerPage);
+    }
   }
 };
 </script>
