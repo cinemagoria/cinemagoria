@@ -37,11 +37,11 @@
               <p>{{ errorMessage }}</p>
             </div>
             <div class="button-container">
-              <button class="button button--icon" @click="redirectToHome">
-                <span class="txt">Back</span>
-              </button>
               <button type="submit" class="button button--icon" :disabled="!isFormValid || !isPasswordValid">
                 <span class="txt">Sign Up</span>
+              </button>
+              <button class="button button--icon" @click="redirectToHome">
+                <span class="txt">Back</span>
               </button>
             </div>
           </form>

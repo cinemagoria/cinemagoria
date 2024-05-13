@@ -19,14 +19,12 @@
           <br>
           <div class="error-message" v-if="errorMessage">{{ errorMessage }}</div>
           <div class="button-container">
-            <button class="button button--icon" @click="redirectToHome">
-              <!-- eslint-disable-next-line -->
-              <span class="txt">Back</span>
-            </button>
             <button type="submit" class="button button--icon">
               <span class="txt">Sign In</span>
             </button>
-            
+            <button class="button button--icon" @click="redirectToHome">
+              <span class="txt">Back</span>
+            </button>
             <br>
           </div>
         </form>
