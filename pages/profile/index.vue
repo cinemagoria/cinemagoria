@@ -40,7 +40,15 @@
           </div>
           <br>
           <div class="pagination" v-if="moviesFetched.length > moviesPerPage">
-            <button v-for="page in visibleMoviePages" :key="page" @click="changePageMovies(page)" :class="{ 'active': currentPageMovies === page }">{{ page }}</button>
+            <button @click="goToFirstMovies" :disabled="currentPageMovies === 1">|<</button>
+            <button @click="prevPageMovies" :disabled="currentPageMovies === 1"><<</button>
+            <span>
+              <label for="moviePage" style="font-size:13px;">Página</label>
+              <input type="number" id="moviePage" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPageMovies" min="1" :max="totalMoviePages">
+            </span>
+            <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">de {{ totalMoviePages }}</span>
+            <button @click="nextPageMovies" :disabled="currentPageMovies === totalMoviePages">>></button>
+            <button @click="goToLastMovies" :disabled="currentPageMovies === totalMoviePages">>|</button>
           </div>
 
         </div>
@@ -63,7 +71,15 @@
           </div>
           <br>
           <div class="pagination" v-if="tvFetched.length > tvPerPage">
-            <button v-for="page in visibleTVPages" :key="page" @click="changePageTV(page)" :class="{ 'active': currentPageTV === page }">{{ page }}</button>
+            <button @click="goToFirstTV" :disabled="currentPageTV === 1">|<</button>
+            <button @click="prevPageTV" :disabled="currentPageTV === 1"><<</button>
+            <span>
+              <label for="tvPage" style="font-size:13px;">Página</label>
+              <input type="number" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" id="tvPage" v-model.number="currentPageTV" min="1" :max="totalTVPages">
+            </span>
+            <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">de {{ totalTVPages }}</span>
+            <button @click="nextPageTV" :disabled="currentPageTV === totalTVPages">>></button>
+            <button @click="goToLastTV" :disabled="currentPageTV === totalTVPages">>|</button>
           </div>
         </div>
       </div>
@@ -175,6 +191,40 @@ export default {
       }
     },
 
+    goToFirstMovies() {
+      this.currentPageMovies = 1;
+    },
+    goToLastMovies() {
+      this.currentPageMovies = Math.ceil(this.moviesFetched.length / this.moviesPerPage);
+    },
+    prevPageMovies() {
+      if (this.currentPageMovies > 1) {
+        this.currentPageMovies--;
+      }
+    },
+    nextPageMovies() {
+      if (this.currentPageMovies < this.totalMoviePages) {
+        this.currentPageMovies++;
+      }
+    },
+
+    goToFirstTV() {
+      this.currentPageTV = 1;
+    },
+    goToLastTV() {
+      this.currentPageTV = Math.ceil(this.tvFetched.length / this.tvPerPage);
+    },
+    prevPageTV() {
+      if (this.currentPageTV > 1) {
+        this.currentPageTV--;
+      }
+    },
+    nextPageTV() {
+      if (this.currentPageTV < this.totalTVPages) {
+        this.currentPageTV++;
+      }
+    },
+
     signOut() {
       localStorage.removeItem('access_token');
       console.log('access_token eliminado del localStorage');
@@ -217,6 +267,12 @@ export default {
       const endIndex = startIndex + this.tvPerPage;
       return this.tvFetched.slice(startIndex, endIndex);
     },
+    totalMoviePages() {
+      return Math.ceil(this.moviesFetched.length / this.moviesPerPage);
+    },
+    totalTVPages() {
+      return Math.ceil(this.tvFetched.length / this.tvPerPage);
+    }
   }
 };
 </script>
