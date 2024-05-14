@@ -20,7 +20,7 @@
           <br>
           <div class="error-message" v-if="errorMessage">{{ errorMessage }}</div>
           <div class="button-container">
-            <button class="button button--icon" @click="redirectToHome">
+            <button class="button button--icon" @click.prevent="goBack">
               <!-- eslint-disable-next-line -->
               <span class="txt">Volver</span>
             </button>
@@ -71,8 +71,11 @@ export default {
         }
       }
     },
+    goBack() {
+      window.location.href = 'https://sonarflix.netlify.app';
+    },
     redirectToHome() {
-      window.location.href = 'https://es--sonarflix.netlify.app';
+      window.location.href = 'https://sonarflix.netlify.app';
     }
   }
 };

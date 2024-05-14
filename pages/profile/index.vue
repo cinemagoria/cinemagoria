@@ -85,7 +85,7 @@
         </div>
       </div>
       <div v-else>
-        <p style="text-align: center;">Aún no hay favoritos o listas.</p>
+        <p style="text-align: center;">Aún no hay favoritos.</p>
       </div>
       <br>
       
