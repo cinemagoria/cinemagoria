@@ -120,7 +120,7 @@
 </template>
 <script>
 import supabase from '@/services/supabase';
-import { name, stars, yearStart, yearEnd, cert, backdrop, poster, trailer, id  } from '~/mixins/Details';
+import { name, genres, stars, yearStart, yearEnd, cert, backdrop, poster, trailer, id  } from '~/mixins/Details';
 import Modal from '~/components/Modal';
 
 export default {
@@ -130,6 +130,7 @@ export default {
 
   mixins: [
     name,
+    genres,
     stars,
     yearStart,
     yearEnd,
@@ -156,6 +157,7 @@ export default {
 
 
       nameForDb: null,
+      genresForDb: null,
       starsForDb: null,
       posterForDb: null,
       yearStartForDb: null,
@@ -186,6 +188,7 @@ export default {
     this.yearStartForDb = this.yearStart;
     this.yearEndForDb  = this.yearEnd;
     this.idForDb = this.id;
+    this.genresForDb = this.item.genres.map(genre => genre.name).join(', ');
   },
 
   methods: {
@@ -338,6 +341,7 @@ export default {
             [fullId]: {
               details: {
                 nameForDb: this.nameForDb,
+                genresForDb: this.genresForDb,
                 starsForDb: this.starsForDb,
                 yearStartForDb: this.yearStartForDb,
                 yearEndForDb: this.yearEndForDb,
@@ -351,6 +355,7 @@ export default {
           if (existingItem) {
             existingItem[fullId].details = {
               nameForDb: this.nameForDb,
+              genresForDb: this.genresForDb,
               starsForDb: this.starsForDb,
               yearStartForDb: this.yearStartForDb,
               yearEndForDb: this.yearEndForDb,
@@ -362,6 +367,7 @@ export default {
               [fullId]: {
                 details: {
                   nameForDb: this.nameForDb,
+                  genresForDb: this.genresForDb,
                   starsForDb: this.starsForDb,
                   yearStartForDb: this.yearStartForDb,
                   yearEndForDb: this.yearEndForDb,
@@ -377,6 +383,7 @@ export default {
           [fullId]: {
             details: {
               nameForDb: this.nameForDb,
+              genresForDb: this.genresForDb,
               starsForDb: this.starsForDb,
               yearStartForDb: this.yearStartForDb,
               yearEndForDb: this.yearEndForDb,
