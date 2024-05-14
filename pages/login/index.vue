@@ -60,14 +60,9 @@ export default {
           email: this.email,
           password: this.password
         });
-        console.log(response.data);
-        console.log(response.data.name);
-        console.log(response.data.email);
+        
         localStorage.setItem('email', response.data.email);
         localStorage.setItem('access_token', response.data.access_token);
-
-        console.log(localStorage.getItem('access_token'));
-        console.log(response.data.access_token);
         this.redirectToHome();
       } catch (error) {
         console.error(error);

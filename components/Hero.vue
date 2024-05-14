@@ -174,11 +174,8 @@ export default {
   },
 
   async mounted() {
-    console.log(`Enlace unificado: ${this.favId}`);
     const email = localStorage.getItem('email');
-    console.log('Email obtenido del localStorage:', email);
     const accessToken = localStorage.getItem('access_token');
-    console.log('Token de acceso obtenido del localStorage:', accessToken);
     this.userEmail = email || '';
     this.hasAccessToken = accessToken !== null;
     this.isLoggedIn = accessToken !== null;
@@ -194,7 +191,6 @@ export default {
   methods: {
     async checkIfFavorite() {
       try {
-        console.log('Iniciando conexión con la base de datos...');
         const { data, error } = await supabase
           .from('favorites')
           .select('*')
@@ -204,35 +200,26 @@ export default {
           throw new Error('Error al conectar con la base de datos: ' + error.message);
         }
 
-        console.log('Datos obtenidos de la base de datos para el usuario actual:', data);
         data.forEach((row) => {
-          console.log('Usuario:', row.user_email);
           const moviesFetched = [];
           if (row.favorites_json.movies) {
-            console.log('Películas favoritas:');
             row.favorites_json.movies.forEach((movie) => {
               const movieKey = Object.keys(movie)[0];
               moviesFetched.push(movieKey);
             });
-            console.log(moviesFetched);
           }
 
           const tvFetched = [];
           if (row.favorites_json.tv) {
-            console.log('Programas de TV favoritos:');
             row.favorites_json.tv.forEach((tvShow) => {
               const tvKey = Object.keys(tvShow)[0];
               tvFetched.push(tvKey);
             });
-            console.log(tvFetched);
           }
           
-          console.log(`Buscando si ${this.favId} se encuentra en alguna de las categorías de moviesFetched o tvFetched`);
           if (moviesFetched.includes(this.favId) || tvFetched.includes(this.favId)) {
-            console.log('El elemento está marcado como favorito.');
             this.isFavorite = true;
           } else {
-            console.log('El elemento no está marcado como favorito.');
             this.isFavorite = false;
           }
         });
@@ -288,15 +275,12 @@ export default {
             .update({ favorites_json: updatedFavorites })
             .eq('user_email', this.userEmail);
 
-          console.log(`${this.favId} eliminado de los favoritos.`);
         } else {
           const updatedFavorites = this.addFavorite(favoritesData, this.favId);
           await supabase
             .from('favorites')
             .update({ favorites_json: updatedFavorites })
             .eq('user_email', this.userEmail);
-
-          console.log(`${this.favId} añadido a los favoritos.`);
         }
 
         this.isFavorite = !this.isFavorite;

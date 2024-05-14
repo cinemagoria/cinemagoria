@@ -95,7 +95,6 @@ export default {
           email: this.email,
           password: this.password
         });
-        console.log(response.data);
         this.showVerificationModal = true; 
       } catch (error) {
         console.error(error);
