@@ -2,7 +2,7 @@
   <main class="main">
     <section class="section">
       <br>
-      <h1 class="text-white text-center"><b>Bienvenid@ Nuevamente!</b></h1>
+      <h1 class="text-white text-center"><b>¡Bienvenid@ Nuevamente!</b></h1>
       <h3 class="text-white text-center"><b>Inicia sesión con tu cuenta:</b></h3>
       <br>
       <div class="form">
@@ -72,10 +72,10 @@ export default {
       }
     },
     goBack() {
-      window.location.href = 'https://sonarflix.netlify.app';
+      window.location.href = 'https://es--sonarflix.netlify.app';
     },
     redirectToHome() {
-      window.location.href = 'https://sonarflix.netlify.app';
+      window.location.href = 'https://es--sonarflix.netlify.app';
     }
   }
 };
