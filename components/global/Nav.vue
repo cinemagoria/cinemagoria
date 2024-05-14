@@ -75,7 +75,6 @@ export default {
     ...mapState('search', ['searchOpen']),
     isLoggedIn() {
       const isLoggedIn = localStorage.getItem('access_token') !== null;
-      console.log('IsLoggedIn:', isLoggedIn); 
       return isLoggedIn;
     }
 },

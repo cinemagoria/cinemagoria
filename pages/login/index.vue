@@ -19,11 +19,11 @@
           <br>
           <div class="error-message" v-if="errorMessage">{{ errorMessage }}</div>
           <div class="button-container">
-            <button type="submit" class="button button--icon">
-              <span class="txt">Sign In</span>
-            </button>
             <button class="button button--icon" @click="redirectToHome">
               <span class="txt">Back</span>
+            </button>
+            <button type="submit" class="button button--icon">
+              <span class="txt">Sign In</span>
             </button>
             <br>
           </div>
@@ -56,14 +56,8 @@ export default {
           email: this.email,
           password: this.password
         });
-        console.log(response.data);
-        console.log(response.data.name);
-        console.log(response.data.email);
         localStorage.setItem('email', response.data.email);
         localStorage.setItem('access_token', response.data.access_token);
-
-        console.log(localStorage.getItem('access_token'));
-        console.log(response.data.access_token);
         this.redirectToHome();
       } catch (error) {
         console.error(error);

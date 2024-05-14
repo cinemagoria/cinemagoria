@@ -25,7 +25,7 @@
             </select>
           </div>
           <br>
-          <h2 v-if="moviesFetched.length > 0" class="text-center" style="color: #8BE9FD; font-size: 16px; margin-top:10px;">Favorite Movies</h2>
+          <h2 v-if="moviesFetched.length > 0" class="text-center" style="color: #acafb5; font-size: 16px; margin-top:10px;">Favorite Movies</h2>
 
           <div class="movie-grid">
             <div v-for="(movie, index) in moviesToShow" :key="'movie-' + index" class="movie-card">
@@ -57,7 +57,7 @@
         <br>
         <div class="column">
           <br>
-          <h2 v-if="tvFetched.length > 0" class="text-center" style="color: #8BE9FD; font-size: 16px;">Favorite TV Shows</h2>
+          <h2 v-if="tvFetched.length > 0" class="text-center" style="color: #acafb5; font-size: 16px;">Favorite TV Shows</h2>
           <div class="tv-show-grid">
             <div v-for="(tvShow, index) in tvToShow" :key="'tvShow-' + index" class="tv-show-card">
               <a :href="'https://sonarflix.netlify.app/tv/' + tvShow.details.idForDb">
@@ -116,11 +116,8 @@ export default {
     };
   },
   async mounted() {
-    console.log(`Enlace unificado: ${this.favId}`);
     const email = localStorage.getItem('email');
-    console.log('Email obtenido del localStorage:', email);
     const accessToken = localStorage.getItem('access_token');
-    console.log('Token de acceso obtenido del localStorage:', accessToken);
     this.userEmail = email || '';
     this.hasAccessToken = accessToken !== null;
     this.isLoggedIn = accessToken !== null;
@@ -130,7 +127,6 @@ export default {
   methods: {
     async checkData() {
       try {
-        console.log('Iniciando conexión con la base de datos...');
         const { data, error } = await supabase
           .from('favorites')
           .select('*')
@@ -140,27 +136,21 @@ export default {
           throw new Error('Error al conectar con la base de datos: ' + error.message);
         }
 
-        console.log('Datos obtenidos de la base de datos para el usuario actual:', data);
         const moviesFetched = [];
         const tvFetched = [];
         data.forEach((row) => {
-          console.log('Usuario:', row.user_email);
           if (row.favorites_json.movies) {
-            console.log('Películas favoritas:');
             row.favorites_json.movies.forEach((movie) => {
               const movieKey = Object.keys(movie)[0];
               moviesFetched.push(movie[movieKey]);
             });
-            console.log(moviesFetched);
           }
 
           if (row.favorites_json.tv) {
-            console.log('Programas de TV favoritos:');
             row.favorites_json.tv.forEach((tvShow) => {
               const tvKey = Object.keys(tvShow)[0];
               tvFetched.push(tvShow[tvKey]);
             });
-            console.log(tvFetched);
           }
         });
         this.moviesFetched = moviesFetched.reverse();
@@ -229,9 +219,7 @@ export default {
 
     signOut() {
       localStorage.removeItem('access_token');
-      console.log('access_token eliminado del localStorage');
       localStorage.removeItem('email');
-      console.log('email eliminado del localStorage');
       window.location.href = 'https://sonarflix.netlify.app/login';
     },
   },
@@ -286,7 +274,7 @@ export default {
 }
 
 .order-option {
-    color: #58A3B2;
+    color: #94999d;
 }
 
 .navbar {
@@ -308,7 +296,7 @@ export default {
   }
 
   .user-email {
-    color: #8BE9FD;
+    color: #94999d;
   }
 
   .nav-button-container {
@@ -350,7 +338,7 @@ export default {
 
   .order-select {
     background-color: #072E3F;
-    color: #58A3B2;
+    color: #cfcfcf;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 5px;

@@ -23,11 +23,11 @@
           </div>
           <br>
           <div class="button-container">
-            <button v-if="!confirmationMessage" type="submit" class="button button--icon">
-              <span class="txt">Reset Password</span>
-            </button>
             <button class="button button--icon" @click="redirectToHome">
               <span class="txt">Back</span>
+            </button>
+            <button v-if="!confirmationMessage" type="submit" class="button button--icon">
+              <span class="txt">Reset Password</span>
             </button>
           </div>
         </form>
