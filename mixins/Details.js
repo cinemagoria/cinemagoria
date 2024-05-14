@@ -17,6 +17,18 @@ export const name = {
   },
 };
 
+export const genres = {
+  computed: {
+    genres (){
+      if (this.item.genres) {
+        return this.itemgenres;
+        
+      }
+      console.log(genres);
+    }
+  }
+}
+
 export const stars = {
   computed: {
     stars () {
