@@ -2,20 +2,21 @@
   <main class="main">
     <section class="profile-section">
       <br>
-      <nav class="navbar">
-      <h1 class="navbar-title">¡Bienvenid@ Nuevamente! <span class="user-email">{{ userEmail }}</span></h1>
-        <div class="nav-button-container">
-          <button class="button-logout" @click="signOut">
-            <img src="~/static/icon-logout.png" alt="Ícono de Cerrar Sesión" class="logout-icon">
-            <span class="txt">Cerrar sesión</span>
-          </button>
-        </div>
-      </nav>
+      <div class="user-profile">
+        <span class="user-email">{{ userEmail }}</span>
+        <button class="button-logout" @click="signOut">
+          <img src="~/static/icon-logout.png" alt="Ícono de Cerrar Sesión" class="logout-icon">
+          <span class="txt">Cerrar sesión</span>
+        </button>
+      </div>
       <br>
+      <nav class="navbar" style="margin-top: 4rem;">
+      <h1 class="navbar-welcome">¡Bienvenid@ Nuevamente!</h1>
+      </nav>
       <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
         <div class="column">
           <div class="button-container" style="margin-top: 3rem;">
-            <select @change="toggleOrder" class="order-select">
+            <select @change="toggleOrder" class="order-select" style="width: 198.702px;">
                 <option value="asc" :selected="orderText === 'Orden Ascendente'">
                     <span class="order-word">Ordenar:</span> <span class="order-option">Últimas adiciones</span>
                 </option>
@@ -267,6 +268,14 @@ export default {
 
 
 <style scoped>
+.welcome-text {
+    text-align: center;
+}
+
+.h1 {
+  text-align: center;
+}
+
 .order-word {
     color: #fff;
 }
@@ -277,14 +286,15 @@ export default {
 
 .navbar {
     background-color: transparent;
-    padding: 10px 0;
     margin-top: 3rem;
     text-align: center;
-    position: relative;
     max-width: 800px; 
-    width: 90%; 
     margin: 0 auto; 
-  }
+    left: 68px;
+    top: 8px;
+    transition: none 0s ease 0s;
+    cursor: move;
+  } 
 
   .navbar-title {
     color: #fff;
@@ -294,8 +304,14 @@ export default {
   }
 
   .user-email {
+    font-weight: bold; 
+    font-size: 13px; 
+    border-radius: 15px;
+    margin-top: 2rem;
     color: #94999d;
-  }
+    font-size: 13px;
+    text-align: center;
+}
 
   .nav-button-container {
     position: absolute; 
@@ -310,18 +326,24 @@ export default {
     right: 20px; 
   }
 
+  .user-profile {
+    position: absolute;
+    right: 5%; 
+    margin-top: 1rem;
+  }
+
   .button-logout {
-    background-color: #000;
+    background-color: #062F40;
     color: #fff;
     border: none;
+    margin-left: 8px;
     padding: 1rem 1.5rem;
     border-radius: 5px;
     cursor: pointer;
     transition: color 0.3s, background-color 0.3s;
     font-weight: bold; 
-    font-size: 14px; 
+    font-size: 13px; 
     border-radius: 15px;
-    position: relative;
   }
 
   .button-logout:hover {
@@ -329,8 +351,8 @@ export default {
   }
 
   .logout-icon {
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
     margin-right: 5px;
   }
 
@@ -358,11 +380,11 @@ export default {
   .pagination button {
     background-color: #082D3E;
     color: #FFF;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     margin: 0 5px 5px;
     border: none;
-    border-radius: 50%;
+    border-radius: 15px;
     font-size: 1.2rem;
     font-weight: bold;
     cursor: pointer;
@@ -445,9 +467,18 @@ export default {
     justify-content: center;
   }
 
-.button {
-  margin: 0 10px; 
-  font-size: 14px; 
+  .button {
+    margin: 0 10px; 
+    font-size: 14px; 
+  }
+
+  @media screen and (max-width: 800px) {
+  .navbar {
+    left: 68px;
+    top: 8px;
+    transition: none 0s ease 0s;
+    cursor: move;
+  } 
 }
 
 @media screen and (max-width: 600px) {
@@ -455,17 +486,16 @@ export default {
     font-size: 12px; 
   }
 
+  
   .button-logout {
     align-items: flex-start;
     display: inline-block;
     line-height: 16.1px;
-    padding: 10px 15px;
+    right: 1;
     text-align: center;
   }
 
   .navbar-title {
-    line-height: 24px;
-    margin: 0px 125.742px 20px;
     text-align: center;
   }
 }
@@ -477,10 +507,6 @@ export default {
 }
 
 @media screen and (max-width: 767px) {
-    .navbar-title {
-      margin-bottom: 20px;
-    }
-
     .nav-button-container {
       position: static;
       margin-top: 30px; 
