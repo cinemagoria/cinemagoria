@@ -19,7 +19,7 @@
           <br>
           <div class="error-message" v-if="errorMessage">{{ errorMessage }}</div>
           <div class="button-container">
-            <button class="button button--icon" @click="redirectToHome">
+            <button class="button button--icon" @click.prevent="goBack">
               <span class="txt">Back</span>
             </button>
             <button type="submit" class="button button--icon">
@@ -68,6 +68,9 @@ export default {
         }
       }
     },
+    goBack() {
+      window.location.href = 'https://sonarflix.netlify.app';
+    },
     redirectToHome() {
       window.location.href = 'https://sonarflix.netlify.app';
     }
@@ -106,6 +109,7 @@ export default {
   .button-container {
     display: flex;
     justify-content: center;
+    align-items: center;
   }
 
   .section {
@@ -116,7 +120,6 @@ export default {
     border-radius: 10px;
     margin: 3px;
   }
-
 
   h2 {
     text-align: justify;
