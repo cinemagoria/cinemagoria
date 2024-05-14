@@ -25,7 +25,7 @@
             </select>
           </div>
           <br>
-          <h2 v-if="moviesFetched.length > 0" class="text-center" style="color: #8BE9FD; font-size: 16px; margin-top:10px;">Películas Favoritas</h2>
+          <h2 v-if="moviesFetched.length > 0" class="text-center" style="color: #acafb5; font-size: 16px; margin-top:10px;">Películas Favoritas</h2>
           
           <div class="movie-grid">
             <div v-for="(movie, index) in moviesToShow" :key="'movie-' + index" class="movie-card">
@@ -55,7 +55,7 @@
         <br>
         <div class="column">
           <br>
-          <h2 v-if="tvFetched.length > 0" class="text-center" style="color: #8BE9FD; font-size: 16px;">Series de TV Favoritas</h2>
+          <h2 v-if="tvFetched.length > 0" class="text-center" style="color: #acafb5; font-size: 16px;">Series de TV Favoritas</h2>
           <div class="tv-show-grid">
             <div v-for="(tvShow, index) in tvToShow" :key="'tvShow-' + index" class="tv-show-card">
               <a :href="'https://es--sonarflix.netlify.app/tv/' + tvShow.details.idForDb">
@@ -272,7 +272,7 @@ export default {
 }
 
 .order-option {
-    color: #58A3B2;
+    color: #94999d;
 }
 
 .navbar {
@@ -294,7 +294,7 @@ export default {
   }
 
   .user-email {
-    color: #8BE9FD;
+    color: #94999d;
   }
 
   .nav-button-container {
@@ -336,7 +336,7 @@ export default {
 
   .order-select {
     background-color: #072E3F;
-    color: #58A3B2;
+    color: #cfcfcf;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 5px;
@@ -597,4 +597,5 @@ export default {
   }
 }
 </style>
+
 

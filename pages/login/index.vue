@@ -20,15 +20,13 @@
           <br>
           <div class="error-message" v-if="errorMessage">{{ errorMessage }}</div>
           <div class="button-container">
-            <button type="submit" class="button button--icon">
-              <span class="txt">Iniciar sesión</span>
-            </button>
             <button class="button button--icon" @click="redirectToHome">
               <!-- eslint-disable-next-line -->
               <span class="txt">Volver</span>
             </button>
-            
-            
+            <button type="submit" class="button button--icon">
+              <span class="txt">Iniciar sesión</span>
+            </button>
             <br>
           </div>
         </form>
@@ -60,7 +58,7 @@ export default {
           email: this.email,
           password: this.password
         });
-        
+
         localStorage.setItem('email', response.data.email);
         localStorage.setItem('access_token', response.data.access_token);
         this.redirectToHome();
