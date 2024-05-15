@@ -66,11 +66,11 @@ async function getUserAvatar(userEmail) {
       throw new Error('Error fetching user avatar:', error.message);
     }
 
-    const userAvatar = data[0]?.avatar || '/avatars/avatar-ss8.png';
+    const userAvatar = data[0]?.avatar || '/avatars/avatar-ss0.png';
     return userAvatar;
   } catch (error) {
     console.error('Error fetching user avatar:', error);
-    return '/avatars/avatar-ss8.png';
+    return '/avatars/avatar-ss0.png';
   }
 }
 
@@ -78,11 +78,12 @@ export default {
   data() {
     return {
       userData: null,
-      userAvatar: '/avatars/avatar-ss8.png',
+      userAvatar: '/avatars/avatar-ss0.png',
       lastActiveDate: '',
       isModalOpen: false,
       isDeleteModalOpen: false,
       avatars: [
+      '/avatars/avatar-ss0.png',
       '/avatars/avatar-ss1.png',
       '/avatars/avatar-ss10.png',
       '/avatars/avatar-ss11.png',
