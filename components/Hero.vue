@@ -257,7 +257,7 @@ export default {
         if (!data.length) {
           const { data: newData, error: newError } = await supabase
             .from('favorites')
-            .insert([{ username: this.userName, user_email: this.userEmail, favorites_json: {} }]);
+            .insert([{ user_email: this.userEmail, favorites_json: {} }]);
 
           if (newError) {
             console.error(newError);
