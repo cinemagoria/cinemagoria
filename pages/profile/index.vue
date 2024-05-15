@@ -3,11 +3,24 @@
     <section class="profile-section">
       <br>
       <div class="user-profile">
-        <span class="user-email">{{ userEmail }}</span>
-        <button class="button-logout" @click="signOut">
+        <div class="avatar-container" @click="toggleMenu">
+          <span class="user-email">{{ userEmail }}</span>
+          <img :src="userAvatar" alt="User Avatar" class="avatar">
+          <div v-if="isMenuOpen" class="dropdown-menu">
+            <div class="menu-item" @click="goToSettings">
+              <img src="~/static/icon-settings.png" alt="Settings Icon" class="settings-icon">
+              <span class="menu-label">Cuenta</span>
+            </div>
+            <div class="menu-item" @click="signOut">
+              <img src="~/static/icon-logout.png" alt="Logout Icon" class="logout-icon">
+              <span class="menu-label">Cerrar sesión</span>
+            </div>
+          </div>
+        </div>
+        <!-- <button class="button-logout" @click="signOut">
           <img src="~/static/icon-logout.png" alt="Ícono de Cerrar Sesión" class="logout-icon">
-          <span class="txt">Cerrar sesión</span>
-        </button>
+          <span class="txt">Log out</span>
+        </button> -->
       </div>
       <br>
       <nav class="navbar" style="margin-top: 4rem;">
@@ -96,6 +109,27 @@
 <script>
 import supabase from '@/services/supabase';
 
+async function getUserAvatar(userEmail) {
+  try {
+    const { data, error } = await supabase
+      .from('user_data')
+      .select('avatar')
+      .eq('email', userEmail);
+      
+    if (error) {
+      throw new Error('Error fetching user avatar:', error.message);
+    }
+
+    const userAvatar = data[0]?.avatar || '/avatars/avatar-ss0.png';
+    console.log(userAvatar);
+    return userAvatar;
+    
+  } catch (error) {
+    console.error('Error fetching user avatar:', error);
+    return '/avatars/avatar-ss0.png';
+  }
+}
+
 export default {
   data() {
     return {
@@ -112,6 +146,8 @@ export default {
       currentPageTV: 1,
       moviesPerPage: 6,
       tvPerPage: 6,
+      userAvatar: '/avatars/avatar-ss0.png',
+      isMenuOpen: false,
     };
   },
   async mounted() {
@@ -121,6 +157,7 @@ export default {
     this.hasAccessToken = accessToken !== null;
     this.isLoggedIn = accessToken !== null;
     this.checkData();
+    this.userAvatar = await getUserAvatar(this.userEmail);
   },
   
   methods: {
@@ -216,6 +253,13 @@ export default {
       }
     },
 
+    toggleMenu() {
+      this.isMenuOpen = !this.isMenuOpen;
+    },
+    goToSettings() {
+      this.$router.push('/settings');
+    },
+
     signOut() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('email');
@@ -268,6 +312,41 @@ export default {
 
 
 <style scoped>
+.avatar-container {
+  position: relative;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  border: 1px solid #acafb5;
+  border-radius: 5px;
+  z-index: 100;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: none;
+}
+
+.dropdown-menu {
+  display: block;
+  margin-left: 30px;
+}
+
+.menu-item {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.menu-label {
+  color: #94999d;
+  margin-top: 3px;
+}
+
+.menu-label:hover {
+  color: #ffffff;
+}
+
 .welcome-text {
     text-align: center;
 }
@@ -332,6 +411,17 @@ export default {
     margin-top: 1rem;
   }
 
+  .avatar {
+    width: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.654);
+    height: 40px;
+    box-shadow: 0 5px 32px 0 rgba(31, 97, 135, 0.37);
+    border-radius: 50%;
+    margin-left: 8px;
+    margin-bottom: 5px;
+    cursor: pointer;
+  }
+
   .button-logout {
     background-color: #062F40;
     color: #fff;
@@ -356,19 +446,33 @@ export default {
     margin-right: 5px;
   }
 
+  .settings-icon {
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+  }
+
   .order-select {
-    background-color: #072E3F;
+    background-color: #062F40;
+    font-size: 12px; 
+    box-shadow: 0 3px 15px 0 rgba(31, 97, 135, 0.37); 
     color: #cfcfcf;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 5px;
     cursor: pointer;
-    font-weight: bold;
     width: 142.626px;
     height: 34.6172px;
     transform: translate(-1.50976px, 3.8843px);
     transition: none 0s ease 0s;
-    border-radius: 15px;
+  }
+
+  .order-select:hover{
+    background-color: #084a66; 
+  }
+
+  .button:hover{
+    background-color: #084a66; 
   }
 
   pagination {
