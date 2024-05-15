@@ -66,11 +66,11 @@ async function getUserAvatar(userEmail) {
       throw new Error('Error al obtener el avatar del usuario:', error.message);
     }
 
-    const userAvatar = data[0]?.avatar || 'avatars/avatar-ss8.png';
+    const userAvatar = data[0]?.avatar || '/avatars/avatar-ss8.png';
     return userAvatar;
   } catch (error) {
     console.error('Error al obtener el avatar del usuario:', error);
-    return 'avatars/avatar-ss8.png';
+    return '/avatars/avatar-ss8.png';
   }
 }
 
@@ -78,39 +78,39 @@ export default {
   data() {
     return {
       userData: null,
-      userAvatar: 'avatars/avatar-ss8.png',
+      userAvatar: '/avatars/avatar-ss8.png',
       lastActiveDate: '',
       isModalOpen: false,
       isDeleteModalOpen: false,
       avatars: [
-      'avatars/avatar-ss1.png',
-      'avatars/avatar-ss10.png',
-      'avatars/avatar-ss11.png',
-      'avatars/avatar-ss12.png',
-      'avatars/avatar-ss13.png',
-      'avatars/avatar-ss14.png',
-      'avatars/avatar-ss15.png',
-      'avatars/avatar-ss16.png',
-      'avatars/avatar-ss17.png',
-      'avatars/avatar-ss18.png',
-      'avatars/avatar-ss19.png',
-      'avatars/avatar-ss2.png',
-      'avatars/avatar-ss20.png',
-      'avatars/avatar-ss21.png',
-      'avatars/avatar-ss22.png',
-      'avatars/avatar-ss23.png',
-      'avatars/avatar-ss24.png',
-      'avatars/avatar-ss25.png',
-      'avatars/avatar-ss26.png',
-      'avatars/avatar-ss27.png',
-      'avatars/avatar-ss28.png',
-      'avatars/avatar-ss3.png',
-      'avatars/avatar-ss4.png',
-      'avatars/avatar-ss5.png',
-      'avatars/avatar-ss6.png',
-      'avatars/avatar-ss7.png',
-      'avatars/avatar-ss8.png',
-      'avatars/avatar-ss9.png'
+      '/avatars/avatar-ss1.png',
+      '/avatars/avatar-ss10.png',
+      '/avatars/avatar-ss11.png',
+      '/avatars/avatar-ss12.png',
+      '/avatars/avatar-ss13.png',
+      '/avatars/avatar-ss14.png',
+      '/avatars/avatar-ss15.png',
+      '/avatars/avatar-ss16.png',
+      '/avatars/avatar-ss17.png',
+      '/avatars/avatar-ss18.png',
+      '/avatars/avatar-ss19.png',
+      '/avatars/avatar-ss2.png',
+      '/avatars/avatar-ss20.png',
+      '/avatars/avatar-ss21.png',
+      '/avatars/avatar-ss22.png',
+      '/avatars/avatar-ss23.png',
+      '/avatars/avatar-ss24.png',
+      '/avatars/avatar-ss25.png',
+      '/avatars/avatar-ss26.png',
+      '/avatars/avatar-ss27.png',
+      '/avatars/avatar-ss28.png',
+      '/avatars/avatar-ss3.png',
+      '/avatars/avatar-ss4.png',
+      '/avatars/avatar-ss5.png',
+      '/avatars/avatar-ss6.png',
+      '/avatars/avatar-ss7.png',
+      '/avatars/avatar-ss8.png',
+      '/avatars/avatar-ss9.png'
       ]
     }
   },
