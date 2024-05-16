@@ -110,7 +110,7 @@ export default {
       userEmail: '',
       accessToken: '',
       isLoggedIn: false,
-      userAvatar: '',
+      userAvatar: '/avatars/avatar-ss0.png',
       userName: '',
       isMenuOpen: false,
     }
@@ -311,11 +311,8 @@ export default {
 
   .dropdown-menu {
     display: block;
-    margin-left: 30px;
+    margin-left: 50px;
   }
-
-
-
 
   .dropdown-menu-else {
     position: relative; 

@@ -132,8 +132,9 @@ export default {
   methods: {
     ...mapActions(['selectAvatar', 'back', 'updateUserAvatar']),
     back() {
-    this.$router.push('/profile');
+    this.$router.go(-1);
     },
+
     openAvatarModal() {
       this.isModalOpen = true;
     },
