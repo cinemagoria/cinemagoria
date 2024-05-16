@@ -9,27 +9,24 @@
           <div v-if="isMenuOpen" class="dropdown-menu">
             <div class="menu-item" @click="goToSettings">
               <img src="~/static/icon-settings.png" alt="Settings Icon" class="settings-icon">
-              <span class="menu-label">Cuenta</span>
+              <span class="menu-label1">Mi Cuenta</span>
             </div>
             <div class="menu-item" @click="signOut">
               <img src="~/static/icon-logout.png" alt="Logout Icon" class="logout-icon">
-              <span class="menu-label">Cerrar sesión</span>
+              <span class="menu-label2">Cerrar sesión</span>
             </div>
           </div>
         </div>
-        <!-- <button class="button-logout" @click="signOut">
-          <img src="~/static/icon-logout.png" alt="Ícono de Cerrar Sesión" class="logout-icon">
-          <span class="txt">Log out</span>
-        </button> -->
       </div>
       <br>
       <nav class="navbar" style="margin-top: 4rem;">
       <h1 class="navbar-welcome">¡Bienvenid@ Nuevamente!</h1>
       </nav>
+      <h2 class="text-center-grey" style="color: #acafb5; font-size: 16px; margin-top: 10px; position: relative; text-transform: none; left: -2px; top: -20px;">{{ userName }}</h2>
       <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
         <div class="column">
           <div class="button-container" style="margin-top: 3rem;">
-            <select @change="toggleOrder" class="order-select" style="width: 198.702px;">
+            <select @change="toggleOrder" class="order-select" style="width: 185.743px;">
                 <option value="asc" :selected="orderText === 'Orden Ascendente'">
                     <span class="order-word">Ordenar:</span> <span class="order-option">Últimas adiciones</span>
                 </option>
@@ -39,7 +36,7 @@
             </select>
           </div>
           <br>
-          <h2 v-if="moviesFetched.length > 0" class="text-center" style="color: #acafb5; font-size: 16px; margin-top:10px;">Películas Favoritas</h2>
+          <h2 v-if="moviesFetched.length > 0" class="text-center-grey" style="color: #acafb5; font-size: 16px; margin-top:10px;">Películas Favoritas</h2>
           
           <div class="movie-grid">
             <div v-for="(movie, index) in moviesToShow" :key="'movie-' + index" class="movie-card">
@@ -47,7 +44,7 @@
                 <img :src="movie.details.posterForDb" alt="Póster de la Película" class="poster" />
                 <h3>{{ movie.details.nameForDb }}</h3>
               </a>
-              <p v-if="movie && movie.details && movie.details.starsForDb !== null && movie.details.starsForDb !== undefined && !Array.isArray(movie.details.starsForDb)">Calificación: {{ movie.details.starsForDb.toString().slice(0, 1) + '.' + movie.details.starsForDb.toString().charAt(1) }}</p>
+              <p v-if="movie && movie.details && movie.details.starsForDb !== null && movie.details.starsForDb !== undefined && !Array.isArray(movie.details.starsForDb)">Puntaje: {{ movie.details.starsForDb.toString().slice(0, 1) + '.' + movie.details.starsForDb.toString().charAt(1) }}</p>
               <p v-else>Puntaje: No Especificado</p>
               <p>Fecha de Estreno: {{ movie.details.yearStartForDb }}</p>
             </div>
@@ -69,14 +66,14 @@
         <br>
         <div class="column">
           <br>
-          <h2 v-if="tvFetched.length > 0" class="text-center" style="color: #acafb5; font-size: 16px;">Series de TV Favoritas</h2>
+          <h2 v-if="tvFetched.length > 0" class="text-center-grey" style="color: #acafb5; font-size: 16px;">Series de TV Favoritas</h2>
           <div class="tv-show-grid">
             <div v-for="(tvShow, index) in tvToShow" :key="'tvShow-' + index" class="tv-show-card">
               <a :href="'https://es--sonarflix.netlify.app/tv/' + tvShow.details.idForDb">
                 <img :src="tvShow.details.posterForDb" alt="Póster de la Serie de TV" class="poster" />
                 <h3>{{ tvShow.details.nameForDb }}</h3>
               </a>
-              <p v-if="tvShow && tvShow.details && tvShow.details.starsForDb !== null && tvShow.details.starsForDb !== undefined && !Array.isArray(tvShow.details.starsForDb)">Calificación: {{ tvShow.details.starsForDb.toString().slice(0, 1) + '.' + tvShow.details.starsForDb.toString().charAt(1) }}</p>
+              <p v-if="tvShow && tvShow.details && tvShow.details.starsForDb !== null && tvShow.details.starsForDb !== undefined && !Array.isArray(tvShow.details.starsForDb)">Puntaje: {{ tvShow.details.starsForDb.toString().slice(0, 1) + '.' + tvShow.details.starsForDb.toString().charAt(1) }}</p>
               <p v-else>Puntaje: No Especificado</p>
               <p>Fecha de Emisión: 
                 {{ tvShow.details.yearStartForDb === tvShow.details.yearEndForDb ? tvShow.details.yearEndForDb : tvShow.details.yearStartForDb + '-' + tvShow.details.yearEndForDb }}
@@ -130,6 +127,25 @@ async function getUserAvatar(userEmail) {
   }
 }
 
+async function getUserName(userEmail) {
+  try {
+    const { data, error } = await supabase
+      .from('user_data')
+      .select('first_name')
+      .eq('email', userEmail);
+      
+    if (error) {
+      throw new Error('Error fetching user first name:', error.message);
+    }
+
+    const userName = data[0]?.first_name|| 'undefined';
+    return userName;
+    
+  } catch (error) {
+    console.error('Error fetching user first_name:', error);
+  }
+}
+
 export default {
   data() {
     return {
@@ -147,6 +163,7 @@ export default {
       moviesPerPage: 6,
       tvPerPage: 6,
       userAvatar: '/avatars/avatar-ss0.png',
+      userName: '',
       isMenuOpen: false,
     };
   },
@@ -158,6 +175,7 @@ export default {
     this.isLoggedIn = accessToken !== null;
     this.checkData();
     this.userAvatar = await getUserAvatar(this.userEmail);
+    this.userName = await getUserName(this.userEmail);
   },
   
   methods: {
@@ -312,25 +330,51 @@ export default {
 
 
 <style scoped>
+.navbar-welcome {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
+  font-family: 'Tahoma', sans-serif;
+}
+
 .avatar-container {
   position: relative;
   cursor: pointer;
 }
 
 .dropdown-menu {
-  position: absolute;
+  position: relative; 
+  width: 149.574px;
   top: 100%;
-  left: 0;
+  background-color: #062F40;
+  box-shadow: 0 3px 15px 0 rgba(31, 97, 135, 0.37); 
   border: 1px solid #acafb5;
   border-radius: 5px;
   z-index: 100;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   display: none;
 }
 
 .dropdown-menu {
   display: block;
-  margin-left: 30px;
+  margin-left: 20px;
+}
+
+.text-center {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
+  font-family: 'Tahoma', sans-serif;
+}
+
+.text-center-grey {
+  text-align: center;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(115, 115, 115) 100%);
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
+  font-family: 'Tahoma', sans-serif;
 }
 
 .menu-item {
@@ -338,14 +382,33 @@ export default {
   cursor: pointer;
 }
 
-.menu-label {
+.menu-item:hover {
+  background-color: #084a66; 
+}
+
+.menu-label1 {
   color: #94999d;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  position: relative; 
+  top: 2px;
+}
+
+.menu-label1:hover {
+  color: #ffffff;
+}
+
+.menu-label2 {
+  color: #94999d;
+  letter-spacing: 2px;
+  text-transform: uppercase;
   margin-top: 3px;
 }
 
-.menu-label:hover {
+.menu-label2:hover {
   color: #ffffff;
 }
+
 
 .welcome-text {
     text-align: center;
@@ -372,7 +435,6 @@ export default {
     left: 68px;
     top: 8px;
     transition: none 0s ease 0s;
-    cursor: move;
   } 
 
   .navbar-title {
@@ -383,14 +445,17 @@ export default {
   }
 
   .user-email {
-    font-weight: bold; 
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
+    -webkit-background-clip: text;
+    color: transparent;
+    text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
+    font-family: 'Tahoma', sans-serif;
     font-size: 13px; 
     border-radius: 15px;
     margin-top: 2rem;
     color: #94999d;
-    font-size: 13px;
     text-align: center;
-}
+  }
 
   .nav-button-container {
     position: absolute; 
@@ -454,8 +519,8 @@ export default {
 
   .order-select {
     background-color: #062F40;
-    font-size: 12px; 
     box-shadow: 0 3px 15px 0 rgba(31, 97, 135, 0.37); 
+    font-size: 12px; 
     color: #cfcfcf;
     border: none;
     padding: 0.5rem 1rem;
@@ -581,7 +646,6 @@ export default {
     left: 68px;
     top: 8px;
     transition: none 0s ease 0s;
-    cursor: move;
   } 
 }
 
