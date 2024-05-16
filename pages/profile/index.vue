@@ -281,7 +281,7 @@ export default {
     signOut() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('email');
-      window.location.href = 'https://es--sonarflix.netlify.app/login';
+      window.location.href = 'https://es--sonarflix.netlify.app/';
     },
   },
   computed: {
