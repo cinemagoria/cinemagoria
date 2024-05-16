@@ -110,7 +110,7 @@ export default {
       userEmail: '',
       accessToken: '',
       isLoggedIn: false,
-      userAvatar: '',
+      userAvatar: '/avatars/avatar-ss0.png',
       userName: '',
       isMenuOpen: false,
     }

@@ -72,7 +72,7 @@ export default {
       }
     },
     goBack() {
-      window.location.href = 'https://es--sonarflix.netlify.app';
+      this.$router.go(-1);
     },
     redirectToHome() {
       window.location.href = 'https://es--sonarflix.netlify.app';

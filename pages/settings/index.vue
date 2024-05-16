@@ -83,6 +83,7 @@ export default {
       isModalOpen: false,
       isDeleteModalOpen: false,
       avatars: [
+      '/avatars/avatar-ss0.png',
       '/avatars/avatar-ss1.png',
       '/avatars/avatar-ss10.png',
       '/avatars/avatar-ss11.png',
@@ -131,7 +132,7 @@ export default {
   methods: {
     ...mapActions(['selectAvatar', 'back', 'updateUserAvatar']),
     back() {
-    this.$router.push('/profile');
+      this.$router.go(-1);
     },
     openAvatarModal() {
       this.isModalOpen = true;
