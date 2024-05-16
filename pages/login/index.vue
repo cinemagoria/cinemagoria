@@ -69,10 +69,10 @@ export default {
       }
     },
     goBack() {
-      window.location.href = 'https://sonarflix.netlify.app';
+      window.location.href = 'http://localhost:3000';
     },
     redirectToHome() {
-      window.location.href = 'https://sonarflix.netlify.app';
+      window.location.href = 'http://localhost:3000';
     }
   }
 };

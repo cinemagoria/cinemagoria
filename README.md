@@ -1,4 +1,4 @@
-## Welcome to the [SonarFlix](https://sonarflix.netlify.app/) Project.
+## Welcome to the [SonarFlix](http://localhost:3000/) Project.
 > [!NOTE]  
 > This project is an implementation and is currently under maintenance.
 
@@ -28,7 +28,7 @@ The project is expected to be completed by mid-May.
 
 ### Demo
 
-Check out the current state of SonarFlix [here](https://sonarflix.netlify.app).
+Check out the current state of SonarFlix [here](http://localhost:3000).
 
 ### Notes
 

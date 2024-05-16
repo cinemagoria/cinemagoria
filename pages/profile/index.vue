@@ -40,7 +40,7 @@
 
           <div class="movie-grid">
             <div v-for="(movie, index) in moviesToShow" :key="'movie-' + index" class="movie-card">
-              <a :href="'https://sonarflix.netlify.app/movie/' + movie.details.idForDb">
+              <a :href="'http://localhost:3000/movie/' + movie.details.idForDb">
                 <img :src="movie.details.posterForDb" alt="Movie Poster" class="poster" />
                 <h3>{{ movie.details.nameForDb }}</h3>
               </a>
@@ -69,7 +69,7 @@
           <h2 v-if="tvFetched.length > 0" class="text-center" style="color: #acafb5; font-size: 16px;">Favorite TV Shows</h2>
           <div class="tv-show-grid">
             <div v-for="(tvShow, index) in tvToShow" :key="'tvShow-' + index" class="tv-show-card">
-              <a :href="'https://sonarflix.netlify.app/tv/' + tvShow.details.idForDb">
+              <a :href="'http://localhost:3000/tv/' + tvShow.details.idForDb">
                 <img :src="tvShow.details.posterForDb" alt="TV Show Poster" class="poster" />
                 <h3>{{ tvShow.details.nameForDb }}</h3>
               </a>
@@ -280,7 +280,7 @@ export default {
     signOut() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('email');
-      window.location.href = 'https://sonarflix.netlify.app/login';
+      window.location.href = 'http://localhost:3000/';
     },
   },
   computed: {

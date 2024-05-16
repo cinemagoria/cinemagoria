@@ -106,7 +106,7 @@ export default {
       }
     },
     redirectToHome() {
-      window.location.href = 'https://sonarflix.netlify.app';
+      window.location.href = 'http://localhost:3000';
     },
     checkPassword() {
       this.hasUpperCase = /[A-Z]/.test(this.password);
