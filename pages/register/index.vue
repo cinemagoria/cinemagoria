@@ -206,7 +206,6 @@ h3 {
   left: -14px; 
   top: -1px; 
   transition: none 0s ease 0s; 
-  cursor: move;
 }
 
 .form-group input[type="text"],
