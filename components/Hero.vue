@@ -120,7 +120,7 @@
 </template>
 <script>
 import supabase from '@/services/supabase';
-import { name, genres, stars, yearStart, yearEnd, cert, backdrop, poster, trailer, id  } from '~/mixins/Details';
+import { name, stars, yearStart, yearEnd, cert, backdrop, poster, trailer, id, genres  } from '~/mixins/Details';
 import Modal from '~/components/Modal';
 
 export default {
@@ -130,7 +130,6 @@ export default {
 
   mixins: [
     name,
-    genres,
     stars,
     yearStart,
     yearEnd,
@@ -139,6 +138,7 @@ export default {
     backdrop,
     trailer,
     id,
+    genres,
   ],
 
   props: {
@@ -157,12 +157,12 @@ export default {
 
 
       nameForDb: null,
-      genresForDb: null,
       starsForDb: null,
       posterForDb: null,
       yearStartForDb: null,
       yearEndForDb: null,
       idForDb: null,
+      genresForDb: null,
     };
   },
 
@@ -341,12 +341,12 @@ export default {
             [fullId]: {
               details: {
                 nameForDb: this.nameForDb,
-                genresForDb: this.genresForDb,
                 starsForDb: this.starsForDb,
                 yearStartForDb: this.yearStartForDb,
                 yearEndForDb: this.yearEndForDb,
                 posterForDb: this.posterForDb,
                 idForDb: this.id,
+                genresForDb: this.genresForDb,
               }
             }
           };
@@ -355,24 +355,24 @@ export default {
           if (existingItem) {
             existingItem[fullId].details = {
               nameForDb: this.nameForDb,
-              genresForDb: this.genresForDb,
               starsForDb: this.starsForDb,
               yearStartForDb: this.yearStartForDb,
               yearEndForDb: this.yearEndForDb,
               posterForDb: this.posterForDb,
               idForDb: this.id,
+              genresForDb: this.genresForDb,
             };
           } else {
             favoritesJson[category][index].push({
               [fullId]: {
                 details: {
                   nameForDb: this.nameForDb,
-                  genresForDb: this.genresForDb,
                   starsForDb: this.starsForDb,
                   yearStartForDb: this.yearStartForDb,
                   yearEndForDb: this.yearEndForDb,
                   posterForDb: this.posterForDb,
                   idForDb: this.id,
+                  genresForDb: this.genresForDb,
                 }
               }
             });
@@ -383,12 +383,12 @@ export default {
           [fullId]: {
             details: {
               nameForDb: this.nameForDb,
-              genresForDb: this.genresForDb,
               starsForDb: this.starsForDb,
               yearStartForDb: this.yearStartForDb,
               yearEndForDb: this.yearEndForDb,
               posterForDb: this.posterForDb,
               idForDb: this.id,
+              genresForDb: this.genresForDb,
             }
           }
         });
