@@ -463,7 +463,8 @@ export default {
 
   .user-profile {
     position: absolute;
-    right: 5%; 
+    right: 3%; 
+    margin-left: 2rem;
     margin-top: 1rem;
   }
 
