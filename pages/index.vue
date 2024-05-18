@@ -222,21 +222,21 @@ export default {
     font-size: 13px; 
     border-radius: 15px;
     margin-top: 2rem;
-    margin-left: 19px;
+    margin-left: 5rem;
     color: #94999d;
     text-align: center;
   }
 
   .user-profile {
     position: absolute;
-    right: 5%; 
-    margin-top: 1rem;
+    right: 3%; 
+    margin-left: 2rem;
   }
 
   .user-profile-else {
     position: absolute;
-    right: 5%; 
-    margin-top: 1rem;
+    right: 3%; 
+    margin-left: 2rem;
   }
 
   .button-logout {
@@ -281,6 +281,7 @@ export default {
     height: 40px;
     box-shadow: 0 5px 32px 0 rgba(31, 97, 135, 0.37);
     border-radius: 50%;
+    margin-left: 8px;
     margin-bottom: 5px;
     cursor: pointer;
   }
@@ -311,11 +312,8 @@ export default {
 
   .dropdown-menu {
     display: block;
-    margin-left: 30px;
+    margin-left: 6.5rem;
   }
-
-
-
 
   .dropdown-menu-else {
     position: relative; 

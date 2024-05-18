@@ -472,7 +472,7 @@ export default {
 
   .user-profile {
     position: absolute;
-    right: 5%; 
+    right: 3%; 
     margin-top: 1rem;
   }
 
@@ -482,7 +482,7 @@ export default {
     height: 40px;
     box-shadow: 0 5px 32px 0 rgba(31, 97, 135, 0.37);
     border-radius: 50%;
-    margin-left: 8px;
+    margin-left: 1rem;
     margin-bottom: 5px;
     cursor: pointer;
   }
