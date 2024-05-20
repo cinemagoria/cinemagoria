@@ -1,6 +1,6 @@
 ## Welcome to the [Cinemathe](https://cinemathe.netlify.app/) Project.
 > [!NOTE]  
-> This project is an implementation and is currently under maintenance.
+> This project is an implementation and is currently under maintenance. 
 
 ### Overview
 
