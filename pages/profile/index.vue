@@ -7,6 +7,10 @@
           <span class="user-email">{{ userEmail }}</span>
           <img :src="userAvatar" alt="User Avatar" class="avatar">
           <div v-if="isMenuOpen" class="dropdown-menu">
+            <div class="menu-item" @click="goToHome">
+              <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10" stroke-linejoin="round" ><path d="M8.5 23.2H1.3V9L12 .8 22.7 9v14.2h-7.2v-5c0-1.9-1.6-3.4-3.5-3.4s-3.5 1.5-3.5 3.4v5z"/></g></svg>
+              <span class="menu-label1">Home</span>
+            </div>
             <div class="menu-item" @click="goToSettings">
               <img src="~/static/icon-settings.png" alt="Settings Icon" class="settings-icon">
               <span class="menu-label1">Settings</span>
@@ -273,6 +277,11 @@ export default {
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen;
     },
+
+    goToHome() {
+      this.$router.push('/');
+    },
+
     goToSettings() {
       this.$router.push('/settings');
     },
@@ -355,10 +364,12 @@ export default {
   left: 27px; 
   width: 113.574px;
   top: 100%;
-  background-color: #062F40;
-  box-shadow: 0 3px 15px 0 rgba(31, 97, 135, 0.37); 
-  border: 1px solid #acafb5;
+  background: rgba( 82, 71, 71, 0 );
+  box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+  backdrop-filter: blur( 16px );
+  -webkit-backdrop-filter: blur( 16px );
   border-radius: 5px;
+  border: 1px solid rgba( 255, 255, 255, 0.18 );
   z-index: 100;
   display: none;
 }

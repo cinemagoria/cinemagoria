@@ -5,6 +5,10 @@
           <span class="user-email">{{ userEmail }}</span>
           <img :src="userAvatar" alt="User Avatar" class="avatar">
           <div v-if="isMenuOpen" class="dropdown-menu">
+            <div class="menu-item" @click="goToProfile">
+              <img src="~/static/icon-profile.png" alt="Settings Icon" class="settings-icon">
+              <span class="menu-label1">Profile</span>
+            </div>
             <div class="menu-item" @click="goToSettings">
               <img src="~/static/icon-settings.png" alt="Settings Icon" class="settings-icon">
               <span class="menu-label1">Settings</span>
@@ -143,6 +147,11 @@ export default {
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen;
     },
+
+    goToProfile() {
+      this.$router.push('/profile');
+    },
+
     goToSettings() {
       this.$router.push('/settings');
     },
@@ -302,10 +311,12 @@ export default {
     position: relative; 
     width: 113.574px;
     top: 100%;
-    background-color: #062F40;
-    box-shadow: 0 3px 15px 0 rgba(31, 97, 135, 0.37); 
-    border: 1px solid #acafb5;
+    background: rgba( 82, 71, 71, 0 );
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 16px );
+    -webkit-backdrop-filter: blur( 16px );
     border-radius: 5px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
     z-index: 100;
     display: none;
   }
@@ -319,10 +330,12 @@ export default {
     position: relative; 
     top: 100%;
     height: 38px;
-    background-color: #062F40;
-    box-shadow: 0 3px 15px 0 rgba(31, 97, 135, 0.37); 
-    border: 1px solid #acafb5;
+    background: rgba( 82, 71, 71, 0 );
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 16px );
+    -webkit-backdrop-filter: blur( 16px );
     border-radius: 5px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
     z-index: 100;
     display: none;
   }
