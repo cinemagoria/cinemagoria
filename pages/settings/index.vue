@@ -468,14 +468,16 @@ export default {
   background-color: rgba(0,0,0,0.4);
 }
 
-
 .modal-content {
-  background-color: #062F40;
+  background: rgba( 82, 71, 71, 0 );
+  box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+  backdrop-filter: blur( 16px );
+  -webkit-backdrop-filter: blur( 16px );
+  border-radius: 10px;
+  border: 1px solid rgba( 255, 255, 255, 0.18 );
   margin: 0 auto;
   padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  border-radius: 10px;
+  width: 90%;
 }
 
 .modal-delete {
@@ -514,7 +516,7 @@ export default {
 
 .close:hover,
 .close:focus {
-  color: black;
+  color: #084a66;
   text-decoration: none;
   cursor: pointer;
 }
