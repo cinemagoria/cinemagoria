@@ -51,7 +51,7 @@ export default {
       this.confirmationMessage = true;
     },
     redirectToHome() {
-      window.location.href = 'https://es--sonarflix.netlify.app';
+      window.location.href = 'http://localhost:3000';
     }
   }
 };

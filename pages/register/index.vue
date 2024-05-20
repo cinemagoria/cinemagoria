@@ -2,7 +2,7 @@
   <main class="main">
     <section class="section">
       <br>
-      <h1 class="text-white text-center"><b>Bienvenid@ a SonarFlix!</b></h1>
+      <h1 class="text-white text-center"><b>Bienvenid@ a Cinemathe!</b></h1>
       <div v-if="!showVerificationModal">
         <h3 class="text-white text-center"><b>Crear una nueva cuenta:</b></h3>
         <div class="form">
@@ -48,7 +48,7 @@
         </div>
       </div>
       <div v-if="showVerificationModal" class="text-center" style="max-width: 200px; margin: 0 auto;">
-        <p>¡Gracias, {{ name }}, por registrarte! Se ha creado la cuenta con el correo electrónico {{ email }}. ¡Disfrute de su experiencia en Sonarflix!</p>
+        <p>¡Gracias, {{ name }}, por registrarte! Se ha creado la cuenta con el correo electrónico {{ email }}. ¡Disfrute de su experiencia en Cinemathe!</p>
       </div>
       <div v-if="showVerificationModal" class="button-container">
         <button class="button button--icon" @click="redirectToHome">
@@ -90,7 +90,7 @@ export default {
   methods: {
     async register() {
       try {
-        const response = await axios.post('https://sf-django.vercel.app/api/register/', {
+        const response = await axios.post('https://cinemathe-drf.vercel.app/api/register/', {
           name: this.name,
           email: this.email,
           password: this.password
@@ -106,7 +106,7 @@ export default {
       }
     },
     redirectToHome() {
-      window.location.href = 'https://es--sonarflix.netlify.app';
+      window.location.href = 'http://localhost:3000';
     },
     checkPassword() {
       this.hasUpperCase = /[A-Z]/.test(this.password);

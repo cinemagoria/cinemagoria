@@ -54,7 +54,7 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await axios.post('https://sf-django.vercel.app/login/', {
+        const response = await axios.post('https://cinemathe-drf.vercel.app/login/', {
           email: this.email,
           password: this.password
         });
@@ -75,7 +75,7 @@ export default {
       this.$router.go(-1);
     },
     redirectToHome() {
-      window.location.href = 'https://es--sonarflix.netlify.app';
+      window.location.href = 'http://localhost:3000';
     }
   }
 };

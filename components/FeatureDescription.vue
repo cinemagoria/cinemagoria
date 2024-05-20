@@ -1,6 +1,6 @@
 <template>
   <div class="feature-description">
-    <h1 class="metal-gradient">SonarFlix: Descubre al instante tus películas y series favoritas.</h1>
+    <h1 class="metal-gradient">Cinemathe: Descubre al instante tus películas y series favoritas.</h1>
     <p class="feature-description">
       Potenciado por NUXT para búsquedas en tiempo real.
       Explora detalles y opciones de streaming eficazmente.

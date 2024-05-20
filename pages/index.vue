@@ -154,7 +154,7 @@ export default {
     signOut() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('email');
-      window.location.href = 'https://es--sonarflix.netlify.app/';
+      window.location.href = 'http://localhost:3000/';
     },
   },
 

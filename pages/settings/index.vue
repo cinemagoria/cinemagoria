@@ -195,7 +195,7 @@ export default {
   showConfirmationMessage() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('email');
-    window.location.href = 'https://es--sonarflix.netlify.app/login'; 
+    window.location.href = 'http://localhost:3000/login'; 
   },
 
     async selectAvatar(avatar) {

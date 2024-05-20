@@ -130,18 +130,20 @@
       </div>
     </div>
     <div v-if="shareModalVisible" style="font-family: 'Roboto', 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; padding:20px;">
-      <div class="share-modal-container" style="width:100%;">
-          <div class="share-modal-content" style="font-size: 1.6rem; line-height: 1.6; background: linear-gradient(270deg, #092739, #000000); color: #fff; font-weight: 400; font-style: normal; padding: 2rem; border-radius: 1rem; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; position: relative;">
-              <button class="close-button" style="margin-left: auto; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer;" @click="closeShareModal">X</button>
-              <h3>Link:</h3>
-                  <div style="display: flex; align-items: center; margin-bottom: 1rem; padding: 0 5px;">
-                      <label :value="shareUrl" readonly ref="shareUrlInput" style="background-color: transparent; color:white; text-align: center; flex-grow: 1; padding: 1rem; margin-top: 1rem; margin-bottom: 1rem; box-sizing: border-box; font-size: 1.4rem !important; line-height: 1.6; display: block;">
-                          {{ shareUrl }}
-                      </label>
-                      <button @click="copyToClipboard" style="background: #082D3E; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 1rem; cursor: pointer; transition: background 0.3s ease; font-size: 1.3rem; margin: 0 auto; height: 4rem;">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">
-                              <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
-                          </svg>
+    <div class="share-modal-container" style="width: 100%;">
+        <div class="share-modal-content" style="font-size: 1.6rem; line-height: 1.6; background: linear-gradient(270deg, #092739, #000000); color: #fff; font-weight: 400; font-style: normal; padding: 2rem; border-radius: 1rem; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; position: relative;">
+            <button class="close-button" style="margin-left: auto; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer;" @click="closeShareModal">X</button>
+            <h3>Link:</h3>
+            <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; padding: 0 5px;">
+                <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center;">
+                    <label :value="shareUrl" readonly ref="shareUrlInput" style="background-color: transparent; color: white; text-align: center; padding: 1rem; margin: 1rem 0; box-sizing: border-box; font-size: 1.4rem !important; line-height: 1.6;">
+                        {{ shareUrl }}
+                    </label>
+                </div>
+                <button @click="copyToClipboard" style="background: #082D3E; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 1rem; cursor: pointer; transition: background 0.3s ease; font-size: 1.3rem; margin-left: 0.5rem; height: 4rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
+                    </svg>
                 </button>
                 </div>
                   <div style="margin-top: 1rem; margin-bottom: 1rem;">
@@ -271,8 +273,8 @@ export default {
     this.idForDb = this.id;
     this.genresForDb = this.item.genres.map(genre => genre.name).join(', ');
 
-    this.shareTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde SonarFlix!";
-    this.customTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde SonarFlix!";
+    this.shareTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde Cinemathe!";
+    this.customTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde Cinemathe!";
     this.customMessage = 'Sinopsis: ' + this.item.overview + '\n\nExplora opciones de streaming, trailer, ficha técnica y mucho más aquí: ';
   },
 
