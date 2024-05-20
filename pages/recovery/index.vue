@@ -52,7 +52,7 @@ export default {
       this.confirmationMessage = true;
     },
     redirectToHome() {
-      window.location.href = 'https://sonarflix.netlify.app';
+      window.location.href = 'https://cinemathe.netlify.app';
     }
   }
 };

@@ -10,7 +10,7 @@ export default {
 
   // Headers of the page
   head: {
-    title: "SonarFlix - Fast-track your entertainment picks.",
+    title: "Cinemathe - Fast-track your entertainment picks.",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -21,7 +21,7 @@ export default {
       },
       { hid: "author", name: "author", content: "ivanluna.dev" },
       { hid: "og:locale", property: "og:locale", content: "en_GB" },
-      { hid: "og:title", property: "og:title", content: "SonarFlix" },
+      { hid: "og:title", property: "og:title", content: "Cinemathe" },
       {
         hid: "og:description",
         property: "og:description",
@@ -77,8 +77,8 @@ export default {
   pwa: {
     manifest: {
       lang: "en",
-      name: "SonarFlix",
-      short_name: "SonarFlix",
+      name: "Cinemathe",
+      short_name: "Cinemathe",
       description: "Fast-track your entertainment picks.",
       theme_color: "#03496B",
 
@@ -101,7 +101,7 @@ export default {
   },
 
   env: {
-    FRONTEND_URL: process.env.FRONTEND_URL || "https://en.sonarflix.netlify.app",
+    FRONTEND_URL: process.env.FRONTEND_URL || "https://en.Cinemathe.netlify.app",
     API_KEY: process.env.API_KEY || "",
     API_LANG: process.env.API_LANG || "en",
     API_COUNTRY: process.env.API_COUNTRY || "en",

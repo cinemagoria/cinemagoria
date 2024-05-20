@@ -1,6 +1,6 @@
 <template>
   <div class="feature-description">
-    <h1 class="metal-gradient">SonarFlix: Fast-track your entertainment picks.</h1>
+    <h1 class="metal-gradient">Cinemathe: Fast-track your entertainment picks.</h1>
     <p class="feature-description">
       Nuxt dynamic capabilities are harnessed for real-time search results, 
       seamlessly presenting options for movie or series queries. 

@@ -275,8 +275,8 @@ export default {
     this.idForDb = this.id;
     this.genresForDb = this.item.genres.map(genre => genre.name).join(', ');
 
-    this.shareTitle = "I'd like to share '" + this.nameForDb + "' from SonarFlix!";
-    this.customTitle = "I'd like to share '" + this.nameForDb + "' from SonarFlix!";
+    this.shareTitle = "I'd like to share '" + this.nameForDb + "' from Cinemathe!";
+    this.customTitle = "I'd like to share '" + this.nameForDb + "' from Cinemathe!";
     this.customMessage = 'Synopsis: ' + this.item.overview + '\n\nExplore streaming options, trailer, technical details, and much more here: ';
   },
 

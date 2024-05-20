@@ -48,7 +48,7 @@
         </div>
       </div>
       <div v-if="showVerificationModal" class="text-center" style="max-width: 200px; margin: 0 auto;">
-        <p>Thank you, {{ name }}, for registering! Your account with the email {{ email }} has been created. Enjoy your Sonarflix experience!</p>
+        <p>Thank you, {{ name }}, for registering! Your account with the email {{ email }} has been created. Enjoy your Cinemathe experience!</p>
       </div>
       <div v-if="showVerificationModal" class="button-container">
         <button class="button button--icon" @click="redirectToHome">
@@ -90,7 +90,7 @@ export default {
   methods: {
     async register() {
       try {
-        const response = await axios.post('https://sf-django.vercel.app/api/register/', {
+        const response = await axios.post('https://cinemathe-drf.vercel.app/api/register/', {
           name: this.name,
           email: this.email,
           password: this.password
@@ -106,7 +106,7 @@ export default {
       }
     },
     redirectToHome() {
-      window.location.href = 'https://sonarflix.netlify.app';
+      window.location.href = 'https://cinemathe.netlify.app';
     },
     checkPassword() {
       this.hasUpperCase = /[A-Z]/.test(this.password);
