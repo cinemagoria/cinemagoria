@@ -17,10 +17,8 @@ The current focus is on frontend development deployed in Netlify, with plans to 
 ### Planned Features
 - Add Providers Options for each Movie and TV Show. [DONE](https://github.com/imprvhub/cinemathe/commit/b3d8fe465590818b4e720eb0ed045dec533521f1)
 - User Reviews for Movies and TV Shows, New Carousels for Categories, Introduction of Spanish Language and Authentication Pages. [DONE](https://github.com/imprvhub/cinemathe/releases/tag/v0.4.0)
-- Integration of Python backend for user authentication. 
-- User profile creation and management
-- Saving favorite movies and TV series
-- Social media sharing functionality
+- Integration of Python backend for user authentication. [DONE](https://github.com/imprvhub/cinemathe-drf/commits/v0.1.0)
+- User profile creation and management, saving favorite movies and TV series, social media sharing functionality [DONE](https://github.com/imprvhub/cinemathe/compare/v0.3.0...v1.0.0)
 
 ### Timeline
 
