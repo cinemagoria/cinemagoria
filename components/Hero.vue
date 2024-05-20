@@ -131,22 +131,22 @@
       </div>
     </div>
 
-    <div v-if="shareModalVisible" style="font-family: 'Roboto', 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; padding:20px; display: flex; justify-content: center; align-items: center;">
-    <div class="share-modal-container" style="max-width: 600px;">
+    <div v-if="shareModalVisible" style="font-family: 'Roboto', 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; padding:20px;">
+    <div class="share-modal-container" style="width:100%;">
         <div class="share-modal-content" style="font-size: 1.6rem; line-height: 1.6; background: linear-gradient(270deg, #092739, #000000); color: #fff; font-weight: 400; font-style: normal; padding: 2rem; border-radius: 1rem; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); display: flex; flex-direction: column; position: relative;">
             <button class="close-button" style="margin-left: auto; background: none; border: none; color: #fff; font-size: 1.6rem; cursor: pointer;" @click="closeShareModal">X</button>
-            <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-                <label :value="shareUrl" readonly ref="shareUrlInput" style="background-color: transparent; color:white; text-align: center; flex-grow: 1; padding: 1rem; margin-top: 1rem; margin-bottom: 1rem; box-sizing: border-box; font-size: 1.6rem; line-height: 1.6; display: block;">
+            <h3>Link:</h3>
+            <div style="display: flex; align-items: center; margin-bottom: 1rem; padding: 0 5px;">
+                <label :value="shareUrl" readonly ref="shareUrlInput" style="background-color: transparent; color:white; text-align: center; flex-grow: 1; padding: 1rem; margin-top: 1rem; margin-bottom: 1rem; box-sizing: border-box; font-size: 1.4rem !important; line-height: 1.6; display: block;">
                     {{ shareUrl }}
                 </label>
-                <br>
-                <button @click="copyToClipboard" style="background: #082D3E; color: #fff; border: none; padding: 0.5rem 1rem; margin-left: 1rem; border-radius: 0.5rem; cursor: pointer; transition: background 0.3s ease; font-size: 1.6rem; display: flex; align-items: center; height: 4rem;">
+                <button @click="copyToClipboard" style="background: #082D3E; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 1rem; cursor: pointer; transition: background 0.3s ease; font-size: 1.3rem; margin: 0 auto; height: 4rem;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
                     </svg>
-                    <span style="margin-left: 0.5rem;">Copy</span>
-                </button>
-            </div>
+          </button>
+          </div>
+          
           <div style="margin-top: 1rem; margin-bottom: 1rem;">
             <h3>Title:</h3>
             <input type="text" v-model="customTitle" style="background-color: transparent; color:white; width: 100%; padding: 1rem; margin-top: 0.4rem; margin-bottom: 0.4rem; border: 1px solid #ccc; border-radius: 0.5rem; box-sizing: border-box; font-size: 1.6rem; line-height: 1.6;">
@@ -156,32 +156,32 @@
             <textarea v-model="customMessage" style="background-color: transparent; color:white; width: 100%; height: 20rem; padding: 1rem; margin-top: 0.4rem; margin-bottom: 0.4rem; border: 1px solid #ccc; border-radius: 0.5rem; box-sizing: border-box; font-size: 1.6rem; line-height: 1.6;"></textarea>
           </div>
           <div class="share-buttons" style="margin-top: 2rem;">
-            <h3 style="margin-bottom: 0.4rem;">Share on:</h3>
-            <button @click="shareTo('whatsapp')" style="background: #082D3E; color: #fff; border: none; padding: 0.5rem 1rem; margin-right: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; cursor: pointer; transition: background 0.3s ease; font-size: 1.1rem;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
-                    <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
-                </svg>
-                <span style="margin-left: 0.5rem;">WhatsApp</span>
-            </button>
+                    <h3 style="margin-bottom: 0.4rem;">Share On:</h3>
+                    <button @click="shareTo('whatsapp')" style="background: #082D3E; color: #fff; border: none; padding: 0.5rem 1rem; margin-right: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; cursor: pointer; transition: background 0.3s ease; font-size: 1.1rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+                          <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                        </svg>
+                        <span style="margin-left: 0.1rem;">WhatsApp</span>
+                    </button>
 
-            <button @click="shareTo('telegram')" style="background: #082D3E; color: #fff; border: none; padding: 0.5rem 1rem; margin-right: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; cursor: pointer; transition: background 0.3s ease; font-size: 1.1rem;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                </svg>
-                <span style="margin-left: 0.5rem;">Telegram</span>
-            </button>
+                    <button @click="shareTo('telegram')" style="background: #082D3E; color: #fff; border: none; padding: 0.5rem 1rem; margin-right: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; cursor: pointer; transition: background 0.3s ease; font-size: 1.1rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                            <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                        </svg>
+                        <span style="margin-left: 0.1rem;">Telegram</span>
+                    </button>
 
-            <button @click="shareTo('twitter')" style="background: #082D3E; color: #fff; border: none; padding: 0.5rem 1rem; margin-right: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; cursor: pointer; transition: background 0.3s ease; font-size: 1.1rem;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">
-                    <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
-                </svg>
-                <span style="margin-left: 0.5rem;">Twitter</span>
-            </button>
-            <button @click="shareTo('email')" style="background: #082D3E; color: #fff; border: none; padding: 0.5rem 1rem; margin-bottom: 1rem; border-radius: 0.5rem; cursor: pointer; transition: background 0.3s ease; font-size: 1.1rem;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
-                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
-                </svg>
-                <span style="margin-left: 0.5rem;">Email</span>
+                    <button @click="shareTo('twitter')" style="background: #082D3E; color: #fff; border: none; padding: 0.5rem 1rem; margin-right: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; cursor: pointer; transition: background 0.3s ease; font-size: 1.1rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">
+                            <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
+                        </svg>
+                        <span style="margin-left: 0.1rem;">Twitter</span>
+                    </button>
+                    <button @click="shareTo('email')" style="background: #082D3E; color: #fff; border: none; padding: 0.5rem 1rem; margin-bottom: 1rem; border-radius: 0.5rem; cursor: pointer; transition: background 0.3s ease; font-size: 1.1rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
+                        </svg>
+                        <span style="margin-left: 0.1rem;">Email</span>
             </button>
           </div>
         </div>
