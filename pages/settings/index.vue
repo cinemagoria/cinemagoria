@@ -38,7 +38,7 @@
         <div class="user-details">
           <p><strong class="label">Name:</strong> <span class="value">{{ firstName }}</span></p>
           <p><strong class="label">Email:</strong> <span class="value">{{ email }}</span></p>
-          <p><strong class="label">Join Date:</strong> <span class="value">{{ joinedDate }} (UTC)</span></p>
+          <p><strong class="label">Joined Date:</strong> <span class="value">{{ joinedDate }} (UTC)</span></p>
           <p><strong class="label">Last Login:</strong> <span class="value">{{ lastLoginDate }} (UTC)</span></p>
           <p><strong class="label">Last Active:</strong> <span class="value">{{ lastActiveDate }} (UTC)</span></p>
         </div>
@@ -471,12 +471,15 @@ export default {
 
 
 .modal-content {
-  background-color: #062F40;
+  background: rgba( 82, 71, 71, 0 );
+  box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+  backdrop-filter: blur( 16px );
+  -webkit-backdrop-filter: blur( 16px );
+  border-radius: 10px;
+  border: 1px solid rgba( 255, 255, 255, 0.18 );
   margin: 0 auto;
   padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  border-radius: 10px;
+  width: 90%;
 }
 
 .modal-delete {
@@ -515,7 +518,7 @@ export default {
 
 .close:hover,
 .close:focus {
-  color: black;
+  color: #084a66;
   text-decoration: none;
   cursor: pointer;
 }
