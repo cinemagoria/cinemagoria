@@ -280,7 +280,7 @@ export default {
     signOut() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('email');
-      window.location.href = 'https://cinemathe.netlify.app/';
+      window.location.href = 'https://cinemathe.netlify.app/'; 
     },
   },
   computed: {

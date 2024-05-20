@@ -73,7 +73,7 @@ export default {
       const currentOrigin = window.location.origin;
       const spanishUrl = `${currentOrigin.replace(
         '://',
-        '://es--'
+        '://es.'
       )}${currentPath}`;
       window.location.href = spanishUrl;
     }
