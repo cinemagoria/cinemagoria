@@ -2,7 +2,7 @@
   <div
     v-if="isOpen"
     class="alert alert--default">
-    <p>¿Quiere<a href="#" @click.prevent="install">añadir esta app a su pantalla de inicio?</a></p>
+    <p><a href="#" @click.prevent="install">¿Añadir SonarFlix a su pantalla de inicio?</a></p>
 
     <button
       class="alert__close"
