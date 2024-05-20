@@ -47,7 +47,7 @@
 export default {
   methods: {
     redirectToHome() {
-      window.location.href = 'https://cinemathe.netlify.app';
+      window.location.href = 'https://cinemathe.space';
     }
   }
 };

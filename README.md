@@ -1,4 +1,4 @@
-## Welcome to the [Cinemathe](https://cinemathe.netlify.app/) Project.
+## Welcome to the [Cinemathe](https://cinemathe.space/) Project.
 > [!NOTE]  
 > This project is an implementation and is currently under maintenance.
 
@@ -28,7 +28,7 @@ The project is expected to be completed by mid-May.
 
 ### Demo
 
-Check out the current state of Cinemathe [here](https://cinemathe.netlify.app).
+Check out the current state of Cinemathe [here](https://cinemathe.space).
 
 ### Notes
 

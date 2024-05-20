@@ -106,7 +106,7 @@ export default {
       }
     },
     redirectToHome() {
-      window.location.href = 'https://cinemathe.netlify.app';
+      window.location.href = 'https://cinemathe.space';
     },
     checkPassword() {
       this.hasUpperCase = /[A-Z]/.test(this.password);

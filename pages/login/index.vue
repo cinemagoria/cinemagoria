@@ -72,7 +72,7 @@ export default {
       this.$router.go(-1);
     },
     redirectToHome() {
-      window.location.href = 'https://cinemathe.netlify.app';
+      window.location.href = 'https://cinemathe.space';
     }
   }
 };
