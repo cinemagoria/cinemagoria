@@ -71,14 +71,14 @@ export default {
     changeLanguage() {
       const currentPath = this.$route.path;
       const currentOrigin = window.location.origin;
-      const isSpanish = currentOrigin.includes('es--');
+      const isSpanish = currentOrigin.includes('es.');
 
       if (isSpanish) {
-        const newOrigin = currentOrigin.replace('es--', '');
+        const newOrigin = currentOrigin.replace('es.', '');
         const newUrl = `${newOrigin}${currentPath}`;
         window.location.href = newUrl;
       } else {
-        console.log("La URL no tiene el prefijo 'es--', no se necesita ninguna acción.");
+        console.log("La URL no tiene el prefijo 'es.', no se necesita ninguna acción.");
       }
     }
   },
