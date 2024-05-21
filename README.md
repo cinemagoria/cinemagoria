@@ -1,6 +1,7 @@
 # Welcome to the [Cinemathe](https://cinemathe.space/) Project.
 > [!NOTE]  
-> For the latest updates and changes, refer to the [Full Changelog](https://github.com/imprvhub/cinemathe/compare/v0.3.0...v1.0.0).
+> For the latest updates and changes, please refer to this section on <a href="https://ivanluna.dev/projects/post-cinemathe/" target="_blank">ivanluna.dev</a>.
+
 
 ![Guide GIF](./static/previews/cinemathe.png)
 
