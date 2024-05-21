@@ -109,6 +109,20 @@ python manage.py runserver
 ### Feedback:
 Your feedback is valuable! If you encounter any issues or have suggestions for improvements, please create a new issue in the [GitHub repository](https://github.com/imprvhub/cinemathe/issues/new).
 
+#### Pending Fixes for v1.1.1:
+- **Bug Adding First Favorite for New Users:** This issue occurs on the first click when adding a favorite for a newly created account. The first click is not recognized because the component fails to update the state when mapping '0' objects in the JSON. However, on the second click, the 'Add to Favorites' button functions correctly, and this issue never recurs for that user again. It only happens on the first click for the first favorite addition. Further investigation is needed into the Vue.js functions responsible for this behavior.
+
+- **Auto-fill Bug on Login Page:** Auto-fill on mobile devices sometimes causes a redirection to the root page. The form configuration needs adjustment to prevent this redirection and allow users to continue the authentication flow.
+
+- **Rating Score Consistency:** Refactor rating scores for movies and TV shows in the main carousel to two decimal places.
+
+- **Style Enhancements:** -Review and standardize font sizes, styles, and weights across all components to ensure a consistent and cohesive appearance throughout the entire application.
+-Review hover effect on user profile menus; the button's border-radius is causing the hover effect to misalign.
+
+- **Responsive UI:**: -Adjust avatar modal layout to fit within the parent element.
+-Align paragraph text correctly in the confirmation modal after user registration.
+-Modify the share modal width for screens larger than 800px to improve responsiveness.
+
 ### Attributions
 
 The foundational inspiration for this project is derived from the [TasteJS](https://github.com/tastejs/nuxt-movies) repository, and I extend my gratitude for their pioneering work.
