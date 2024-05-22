@@ -109,7 +109,7 @@ python manage.py runserver
 ### Feedback:
 Your feedback is valuable! If you encounter any issues or have suggestions for improvements, please create a new issue in the [GitHub repository](https://github.com/imprvhub/cinemathe/issues/new).
 
-#### Pending Fixes for v1.1.1:
+#### Pending Fixes for v1.1.2:
 - **Bug Adding First Favorite for New Users:** This issue occurs on the first click when adding a favorite for a newly created account. The first click is not recognized because the component fails to update the state when mapping '0' objects in the JSON. However, on the second click, the 'Add to Favorites' button functions correctly, and this issue never recurs for that user again. It only happens on the first click for the first favorite addition. Further investigation is needed into the Vue.js functions responsible for this behavior.
 
 - **Auto-fill Bug on Login Page:** Auto-fill on mobile devices sometimes causes a redirection to the root page. The form configuration needs adjustment to prevent this redirection and allow users to continue the authentication flow.
