@@ -121,10 +121,13 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
 - **Rating Score Consistency:** Refactor rating scores for movies and TV shows in the main carousel to two decimal places.
 
 - **Style Enhancements:** -Review and standardize font sizes, styles, and weights across all components to ensure a consistent and cohesive appearance throughout the entire application.
+
 -Review hover effect on user profile menus; the button's border-radius is causing the hover effect to misalign.
 
 - **Responsive UI:**: -Adjust avatar modal layout to fit within the parent element.
+
 -Align paragraph text correctly in the confirmation modal after user registration.
+
 -Modify the share modal width for screens larger than 800px to improve responsiveness.
 
 ### Attributions
@@ -142,6 +145,6 @@ For further details, please refer to these [Terms and Conditions](https://cinema
 
 - **Streamlined UX/UI Integration and Data Management:**  Successfully tackled the complexities of UX/UI design, encompassing the management of diverse global and dynamic components, API integration, seamless data transmission between frameworks, and robust user experience and authentication. Despite initial complexities, diligent effort and incremental improvements paved the way for adept navigation through these challenges.
 
-#### Learnings:
-- **Definitive Mastery Through Persistence:** This project deepened my understanding of Vue.js. Three months ago, Vue.js implementation seemed daunting due to complexity. However, consistent daily effort and perseverance not only established necessary logic but also exceeded initial expectations. This experience inspired exploration and implementation of features previously deemed beyond my capabilities, particularly in frontend.
-- **Overcoming Challenges and Gaining Confidence:** This project reinforced persistence and continuous learning. Facing challenges head-on and consistently working on the project boosted confidence and expanded skill set. From initial apprehension to confident execution, this journey underscores transformative power of perseverance and dedication in achieving personal and professional growth.
+##### Learnings:
+- **Improvements Through Perseverance:** This project allowed me to delve even deeper into the world of Vue.js. Just three months ago, facing the implementation of Vue.js seemed daunting due to its complexity. However, thanks to daily and constant effort, as well as my perseverance, I not only managed to understand the underlying logic required, but I also exceeded my initial expectations. This experience not only motivated me to explore new possibilities but also pushed me to implement features that I previously considered beyond my reach, especially in the frontend realm.
+This project consolidated my perseverance and commitment to continuous learning. The consistent dedication to this project not only strengthened my confidence but also significantly expanded my skill set. From the start of the planning process to the successful conclusion of the project, this journey highlights how perseverance and dedicated effort can transform both personal and professional growth.
