@@ -120,15 +120,10 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
 
 - **Rating Score Consistency:** Refactor rating scores for movies and TV shows in the main carousel to two decimal places.
 
-- **Style Enhancements:** -Review and standardize font sizes, styles, and weights across all components to ensure a consistent and cohesive appearance throughout the entire application.
-
+- **Style Enhancements:** -Review and standardize font sizes, styles, and weights across all components to ensure a consistent and cohesive appearance throughout the entire application. 
 -Review hover effect on user profile menus; the button's border-radius is causing the hover effect to misalign.
 
-- **Responsive UI:** -Adjust avatar modal layout to fit within the parent element. 
-
--Align paragraph text correctly in the confirmation modal after user registration.
-
--Modify the share modal width for screens larger than 800px to improve responsiveness.
+- **Responsive UI:** -Adjust avatar modal layout to fit within the parent element. -Align paragraph text correctly in the confirmation modal after user registration. -Modify the share modal width for screens larger than 800px to improve responsiveness.
 
 ### Attributions
 
