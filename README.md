@@ -118,7 +118,7 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
 
 - **Grid Representation of Movies and TV Shows in the Profile**: Currently, there are two separate paginations for movies and TV shows in the profile. In the future, these paginations will be replaced by a filtering option that allows users to filter by 'All - Movies - TV Shows', resulting in a single pagination.
 
-- **Rating Score Consistency:** Refactor rating scores for movies and TV shows in the main carousel to two decimal places.
+- ~~**Rating Score Consistency:** Refactor rating scores for movies and TV shows in the main carousel to two decimal places.~~ [Full changelog.](https://github.com/imprvhub/cinemathe/commit/f3251b04abb9a986559aa3f8db35a78431c6ead7)
 
 - **Style Enhancements:** -Review and standardize font sizes, styles, and weights across all components to ensure a consistent and cohesive appearance throughout the entire application. 
 -Review hover effect on user profile menus; the button's border-radius is causing the hover effect to misalign.
