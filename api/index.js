@@ -225,6 +225,9 @@ export function getMovies (query, page = 1) {
         page,
       },
     }).then((response) => {
+      response.data.results.forEach(item => {
+        item.vote_average = parseFloat(item.vote_average).toFixed(1);
+      });
       resolve(response.data);
     })
       .catch((error) => {
@@ -458,6 +461,9 @@ export function getMovieRecommended (id, page = 1) {
         page,
       },
     }).then((response) => {
+      response.data.results.forEach(item => {
+        item.vote_average = parseFloat(item.vote_average).toFixed(1);
+      });
       resolve(response.data);
     })
       .catch((error) => {
@@ -475,6 +481,9 @@ export function getTvShows (query, page = 1) {
         page,
       },
     }).then((response) => {
+      response.data.results.forEach(item => {
+        item.vote_average = parseFloat(item.vote_average).toFixed(1);
+      });
       resolve(response.data);
     })
       .catch((error) => {
@@ -493,8 +502,10 @@ export function getTvShowRecommended (id, page = 1) {
         page,
       },
     }).then((response) => {
+      response.data.results.forEach(item => {
+        item.vote_average = parseFloat(item.vote_average).toFixed(1);
+      });
       resolve(response.data);
-      
     })
       .catch((error) => {
         reject(error);
@@ -529,6 +540,10 @@ export function getTrending (media, page = 1) {
         page,
       },
     }).then((response) => {
+      response.data.results.forEach(item => {
+        item.vote_average = parseFloat(item.vote_average).toFixed(1);
+      });
+
       resolve(response.data);
     })
       .catch((error) => {
@@ -547,6 +562,9 @@ export function getMediaByGenre (media, genre, page = 1) {
         page,
       },
     }).then((response) => {
+      response.data.results.forEach(item => {
+        item.vote_average = parseFloat(item.vote_average).toFixed(1);
+      });
       resolve(response.data);
     })
       .catch((error) => {
@@ -596,6 +614,10 @@ export function getPerson (id) {
         include_image_language: 'en',
       },
     }).then((response) => {
+      response.data.combined_credits.cast.forEach(role => {
+        role.vote_average = role.vote_average.toFixed(1);
+      });
+    
       resolve(response.data);
     })
       .catch((error) => {
@@ -614,6 +636,9 @@ export function search (query, page = 1) {
         page,
       },
     }).then((response) => {
+      response.data.results.forEach(item => {
+        item.vote_average = parseFloat(item.vote_average).toFixed(1);
+      });
       resolve(response.data);
     })
       .catch((error) => {
