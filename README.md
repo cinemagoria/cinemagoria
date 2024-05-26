@@ -123,7 +123,9 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
 - **Style Enhancements:** -Review and standardize font sizes, styles, and weights across all components to ensure a consistent and cohesive appearance throughout the entire application. 
 -Review hover effect on user profile menus; the button's border-radius is causing the hover effect to misalign.
 
-- **Responsive UI:** -Adjust avatar modal layout to fit within the parent element. -Align paragraph text correctly in the confirmation modal after user registration. -Modify the share modal width for screens larger than 800px to improve responsiveness.
+- ~~**Responsive UI:**: -Adjust avatar modal layout to fit within the parent element.
+-Align paragraph text correctly in the confirmation modal after user registration.
+-Modify the share modal width for screens larger than 800px to improve responsiveness.~~[Full changelog.](https://github.com/imprvhub/cinemathe/commit/7669bcbdd2b2de83de2a8d1cdaa62450cb2f8938)
 
 ### Attributions
 
