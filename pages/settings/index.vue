@@ -14,7 +14,7 @@
         <div class="modal" v-if="isModalOpen">
           <div class="modal-content">
             <span class="close" @click="closeAvatarModal">&times;</span>
-            <h2>Selecciona tu Avatar</h2>
+            <h2 style="text-align: center;">Selecciona tu Avatar</h2>
             <div class="avatar-options">
               <img v-for="avatar in avatars" :src="avatar" alt="Avatar" @click="selectAvatar(avatar)">
             </div>
