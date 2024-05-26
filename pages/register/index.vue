@@ -47,8 +47,8 @@
           </form>
         </div>
       </div>
-      <div v-if="showVerificationModal" class="text-center" style="max-width: 200px; margin: 0 auto;">
-        <p>Thank you, {{ name }}, for registering! Your account with the email {{ email }} has been created. Enjoy your Cinemathe experience!</p>
+      <div v-if="showVerificationModal" class="text-center custom-center" style="max-width: 250px; text-align: center; margin: 0 auto;">
+        <p class="text-center custom-center">Thank you, {{ name }}, for registering! Your account with the email {{ email }} has been created. Enjoy your Cinemathe experience!</p>
       </div>
       <div v-if="showVerificationModal" class="button-container">
         <button class="button button--icon" @click="redirectToHome">
