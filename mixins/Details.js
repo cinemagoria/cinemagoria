@@ -6,7 +6,14 @@ export const id =  {
       return this.item.id;
     }
   }
+}
 
+export const type =  {
+  computed: {
+    type () {
+      return this.item.type;
+    }
+  }
 }
 
 export const name = {

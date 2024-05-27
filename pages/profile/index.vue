@@ -4,11 +4,11 @@
       <br>
       <div class="user-profile">
         <div class="avatar-container" @click="toggleMenu">
-          <span class="user-email">{{ userEmail }}</span>
+          <span v-if="userEmail !== 'undefined'" class="user-email">{{ userEmail }}</span>
           <img :src="userAvatar" alt="User Avatar" class="avatar">
           <div v-if="isMenuOpen" class="dropdown-menu">
             <div class="menu-item" @click="goToHome">
-              <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10" stroke-linejoin="round" ><path d="M8.5 23.2H1.3V9L12 .8 22.7 9v14.2h-7.2v-5c0-1.9-1.6-3.4-3.5-3.4s-3.5 1.5-3.5 3.4v5z"/></g></svg>
+              <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10" stroke-linejoin="round"><path d="M8.5 23.2H1.3V9L12 .8 22.7 9v14.2h-7.2v-5c0-1.9-1.6-3.4-3.5-3.4s-3.5 1.5-3.5 3.4v5z"/></g></svg>
               <span class="menu-label1">Home</span>
             </div>
             <div class="menu-item" @click="goToSettings">
@@ -24,77 +24,54 @@
       </div>
       <br>
       <nav class="navbar" style="margin-top: 4rem;">
-      <h1 class="navbar-welcome">Welcome Back!</h1>
+        <h1 class="navbar-welcome">Welcome Back!</h1>
       </nav>
       <h2 class="text-center" style="color: #acafb5; font-size: 16px; margin-top: 10px; position: relative; text-transform: none; left: -2px; top: -20px;">{{ userName }}</h2>
       <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
         <div class="column">
+          <h2 class="text-center" style="color: #acafb5; font-size: 16px;">Favorite {{ filterText }}</h2>
           <div class="button-container" style="margin-top: 3rem;">
+            <select @change="toggleFilter" class="filter-select">
+              <option value="movies">&nbsp;&nbsp;&nbsp;Show: Movies</option>
+              <option value="tvShows">&nbsp;&nbsp;&nbsp;Show: TV Shows</option>
+            </select>
             <select @change="toggleOrder" class="order-select">
               <option value="asc" :selected="orderText === 'Order Asc'">
-                <span class="order-word">Order:</span> <span class="order-option">Last Added</span>
+                <span class="order-word">&nbsp;&nbsp;&nbsp;Order:</span> <span class="order-option">Last Added</span>
               </option>
               <option value="desc" :selected="orderText === 'Order Desc'">
-                <span class="order-word">Order:</span> <span class="order-option">First Added</span>
+                <span class="order-word">&nbsp;&nbsp;&nbsp;Order:</span> <span class="order-option">First Added</span>
               </option>
             </select>
           </div>
-          <br>
-          <h2 v-if="moviesFetched.length > 0" class="text-center" style="color: #acafb5; font-size: 16px; margin-top:10px;">Favorite Movies</h2>
-
-          <div class="movie-grid">
-            <div v-for="(movie, index) in moviesToShow" :key="'movie-' + index" class="movie-card">
-              <a :href="'https://cinemathe.space/movie/' + movie.details.idForDb">
-                <img :src="movie.details.posterForDb" alt="Movie Poster" class="poster" />
-                <h3>{{ movie.details.nameForDb }}</h3>
+          <div class="movie-grid" style="position: relative; top:-17px;">
+            <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
+              <a :href="getLink(item)">
+                <img :src="item.details.posterForDb" alt="Poster" class="poster" />
+                <h3>{{ item.details.nameForDb }}</h3>
               </a>
-              <p v-if="movie && movie.details && movie.details.starsForDb !== null && movie.details.starsForDb !== undefined && !Array.isArray(movie.details.starsForDb)">Rating: {{ movie.details.starsForDb.toString().slice(0, 1) + '.' + movie.details.starsForDb.toString().charAt(1) }}</p>
-              <p v-else>Rating: Not Specified</p>
-              <p>Release Date: {{ movie.details.yearStartForDb }}</p>
-            </div>
-          </div>
-          <br>
-          <div class="pagination" v-if="moviesFetched.length > moviesPerPage">
-            <button @click="goToFirstMovies" :disabled="currentPageMovies === 1">|<</button>
-            <button @click="prevPageMovies" :disabled="currentPageMovies === 1"><<</button>
-            <span>
-              <label for="moviePage" style="font-size:13px;">Page</label>
-              <input type="number" id="moviePage" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPageMovies" min="1" :max="totalMoviePages">
-
-            </span>
-            <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalMoviePages }}</span>
-            <button @click="nextPageMovies" :disabled="currentPageMovies === totalMoviePages">>></button>
-            <button @click="goToLastMovies" :disabled="currentPageMovies === totalMoviePages">>|</button>
-          </div>
-        </div>
-        <br>
-        <div class="column">
-          <br>
-          <h2 v-if="tvFetched.length > 0" class="text-center" style="color: #acafb5; font-size: 16px;">Favorite TV Shows</h2>
-          <div class="tv-show-grid">
-            <div v-for="(tvShow, index) in tvToShow" :key="'tvShow-' + index" class="tv-show-card">
-              <a :href="'https://cinemathe.space/tv/' + tvShow.details.idForDb">
-                <img :src="tvShow.details.posterForDb" alt="TV Show Poster" class="poster" />
-                <h3>{{ tvShow.details.nameForDb }}</h3>
-              </a>
-              <p v-if="tvShow && tvShow.details && tvShow.details.starsForDb !== null && tvShow.details.starsForDb !== undefined && !Array.isArray(tvShow.details.starsForDb)">Rating: {{ tvShow.details.starsForDb.toString().slice(0, 1) + '.' + tvShow.details.starsForDb.toString().charAt(1) }}</p>
-              <p v-else>Rating: Not Specified</p>
-              <p>Aired:
-                {{ tvShow.details.yearStartForDb === tvShow.details.yearEndForDb ? tvShow.details.yearEndForDb : tvShow.details.yearStartForDb + '-' + tvShow.details.yearEndForDb }}
+              <p>
+                {{
+                  item.details.yearStartForDb === item.details.yearEndForDb
+                  ? item.details.yearEndForDb
+                  : (item.details.yearStartForDb + (item.details.yearEndForDb ? `-${item.details.yearEndForDb}` : ''))
+                }}
               </p>
+              <p v-if="item.details.starsForDb">Rating: {{ formatRating(item.details.starsForDb) }}</p>
+              <p v-else>Rating: Not Specified</p>
             </div>
           </div>
           <br>
-          <div class="pagination" v-if="tvFetched.length > tvPerPage">
-            <button @click="goToFirstTV" :disabled="currentPageTV === 1">|<</button>
-            <button @click="prevPageTV" :disabled="currentPageTV === 1"><<</button>
+          <div class="pagination" v-if="filteredItems.length > itemsPerPage">
+            <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
+            <button @click="prevPage" :disabled="currentPage === 1"><<</button>
             <span>
-              <label for="tvPage" style="font-size:13px;">Page</label>
-              <input type="number" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" id="tvPage" v-model.number="currentPageTV" min="1" :max="totalTVPages">
+              <label for="page" style="font-size:13px;">Page</label>
+              <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
             </span>
-            <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalTVPages }}</span>
-            <button @click="nextPageTV" :disabled="currentPageTV === totalTVPages">>></button>
-            <button @click="goToLastTV" :disabled="currentPageTV === totalTVPages">>|</button>
+            <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
+            <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
+            <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
           </div>
         </div>
       </div>
@@ -102,7 +79,6 @@
         <p style="text-align: center;">No favorites added yet.</p>
       </div>
       <br>
-
     </section>
   </main>
 </template>
@@ -158,16 +134,13 @@ export default {
       favorites: [],
       moviesFetched: [],
       tvFetched: [],
-      movieKey: '',
-      tvKey: '',
       orderText: 'Order Asc',
-      currentPageMovies: 1,
-      currentPageTV: 1,
-      moviesPerPage: 6,
-      tvPerPage: 6,
+      currentPage: 1,
+      itemsPerPage: 12,
       userAvatar: '/avatars/avatar-ss0.png',
       userName: '',
       isMenuOpen: false,
+      filter: 'movies',
     };
   },
   async mounted() {
@@ -213,64 +186,7 @@ export default {
         this.moviesFetched = moviesFetched.reverse();
         this.tvFetched = tvFetched.reverse();
       } catch (error) {
-        console.error('Error', error.message);
-      }
-    },
-    toggleOrder(event) {
-      const selectedOption = event.target.value;
-      if (selectedOption === 'asc') {
-        this.moviesFetched.reverse();
-        this.tvFetched.reverse();
-        this.orderText = 'Order Asc';
-      } else if (selectedOption === 'desc') {
-        this.moviesFetched.reverse();
-        this.tvFetched.reverse();
-        this.orderText = 'Order Desc';
-      }
-    },
-
-    changePageMovies(pageNumber) {
-      if (pageNumber >= 1 && pageNumber <= Math.ceil(this.moviesFetched.length / this.moviesPerPage)) {
-        this.currentPageMovies = pageNumber;
-      }
-    },
-    changePageTV(pageNumber) {
-      if (pageNumber >= 1 && pageNumber <= Math.ceil(this.tvFetched.length / this.tvPerPage)) {
-        this.currentPageTV = pageNumber;
-      }
-    },
-
-    goToFirstMovies() {
-      this.currentPageMovies = 1;
-    },
-    goToLastMovies() {
-      this.currentPageMovies = Math.ceil(this.moviesFetched.length / this.moviesPerPage);
-    },
-    prevPageMovies() {
-      if (this.currentPageMovies > 1) {
-        this.currentPageMovies--;
-      }
-    },
-    nextPageMovies() {
-      if (this.currentPageMovies < this.totalMoviePages) {
-        this.currentPageMovies++;
-      }
-    },
-
-    goToFirstTV() {
-      this.currentPageTV = 1;
-    },
-    goToLastTV() {
-      this.currentPageTV = Math.ceil(this.tvFetched.length / this.tvPerPage);
-    },
-    prevPageTV() {
-      if (this.currentPageTV > 1) {
-        this.currentPageTV--;
-      }
-    },
-    nextPageTV() {
-      if (this.currentPageTV < this.totalTVPages) {
-        this.currentPageTV++;
+        console.error(error.message);
       }
     },
 
@@ -279,69 +195,103 @@ export default {
     },
 
     goToHome() {
-      this.$router.push('/');
+      this.$router.push({ path: '/' });
     },
 
     goToSettings() {
-      this.$router.push('/settings');
+      this.$router.push({ path: '/settings' });
     },
 
     signOut() {
-      localStorage.removeItem('access_token');
       localStorage.removeItem('email');
-      window.location.href = 'https://cinemathe.space/'; 
+      localStorage.removeItem('access_token');
+      this.$router.push({ path: '/login' });
     },
+
+    toggleOrder(event) {
+      this.orderText = event.target.value === 'asc' ? 'Order Asc' : 'Order Desc';
+      if (this.orderText === 'Order Asc') {
+        this.moviesFetched.reverse();
+        this.tvFetched.reverse();
+      } else {
+        this.moviesFetched.reverse();
+        this.tvFetched.reverse();
+      }
+    },
+
+    toggleFilter(event) {
+      this.filter = event.target.value;
+      this.currentPage = 1;
+    },
+
+    formatRating(stars) {
+      return (stars / 10).toFixed(1);
+    },
+
+    goToFirst() {
+      this.currentPage = 1;
+    },
+
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
+    },
+
+    goToLast() {
+      this.currentPage = this.totalPages;
+    },
+
+    getLink(item) {
+      if (item.details.typeForDb === 'movie') {
+        return `https://cinemathe.space/movie/${item.details.idForDb}`;
+      } else if (item.details.typeForDb === 'tv') {
+        return `https://cinemathe.space/tv/${item.details.idForDb}`;
+      } else {
+        return '#'; 
+      }
+    }
   },
   computed: {
-    visibleMoviePages() {
-      const totalPages = Math.ceil(this.moviesFetched.length / this.moviesPerPage);
-      const maxVisiblePages = 5;
-      let startPage = Math.max(1, this.currentPageMovies - Math.floor(maxVisiblePages / 2));
-      let endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
-      if (endPage - startPage + 1 < maxVisiblePages) {
-        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    filteredItems() {
+      let items = [];
+      if (this.filter === 'movies') {
+        items = [...this.moviesFetched];
+      } else if (this.filter === 'tvShows') {
+        items = [...this.tvFetched];
       }
+      return items;
+    },
+    
+    totalPages() {
+      return Math.ceil(this.filteredItems.length / this.itemsPerPage);
+    },
 
-      return Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
+    itemsToShow() {
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.filteredItems.slice(start, end);
     },
-    visibleTVPages() {
-      const totalPages = Math.ceil(this.tvFetched.length / this.tvPerPage);
-      const maxVisiblePages = 5;
-      let startPage = Math.max(1, this.currentPageTV - Math.floor(maxVisiblePages / 2));
-      let endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
 
-      if (endPage - startPage + 1 < maxVisiblePages) {
-        startPage = Math.max(1, endPage - maxVisiblePages + 1);
-      }
-
-      return Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
-    },
-    moviesToShow() {
-      const startIndex = (this.currentPageMovies - 1) * this.moviesPerPage;
-      const endIndex = startIndex + this.moviesPerPage;
-      return this.moviesFetched.slice(startIndex, endIndex);
-    },
-    tvToShow() {
-      const startIndex = (this.currentPageTV - 1) * this.tvPerPage;
-      const endIndex = startIndex + this.tvPerPage;
-      return this.tvFetched.slice(startIndex, endIndex);
-    },
-    totalMoviePages() {
-      return Math.ceil(this.moviesFetched.length / this.moviesPerPage);
-    },
-    totalTVPages() {
-      return Math.ceil(this.tvFetched.length / this.tvPerPage);
+    filterText() {
+      return this.filter === 'tvShows' ? 'TV Shows' : 'Movies';
     }
-  }
+  },
 };
 </script>
-
 
 <style scoped>
 .navbar-welcome {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
   -webkit-background-clip: text;
   color: transparent;
+  margin-top: 20px;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
   font-family: 'Tahoma', sans-serif;
 }
@@ -521,21 +471,39 @@ export default {
   }
 
   .order-select {
-    background-color: #062F40;
-    box-shadow: 0 3px 15px 0 rgba(31, 97, 135, 0.37); 
-    font-size: 12px; 
-    color: #cfcfcf;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
     cursor: pointer;
-    width: 142.626px;
+    width: 170.626px;
     height: 34.6172px;
-    transform: translate(-1.50976px, 3.8843px);
-    transition: none 0s ease 0s;
+    text-align: center;
+    padding: 0.8rem 3.5rem 0.8rem 1.5rem;
+    font-size: 1.3rem;
+    color: #fff;
+    margin-left: 5px;
+    background: rgba( 82, 71, 71, 0 );
+    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+    backdrop-filter: blur( 16px );
+    -webkit-backdrop-filter: blur( 16px );
+    border-radius: 5px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
   }
 
   .order-select:hover{
+    background-color: #084a66; 
+  }
+
+  .filter-select {
+    background: rgba( 82, 71, 71, 0 );
+    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+    backdrop-filter: blur( 16px );
+    -webkit-backdrop-filter: blur( 16px );
+    border-radius: 5px;
+    text-align: center;
+    margin-right: 5px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+    border-radius: 5px;
+  }
+
+  .filter-select:hover{
     background-color: #084a66; 
   }
 
@@ -543,29 +511,32 @@ export default {
     background-color: #084a66; 
   }
 
-  pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
+  .pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
 
-  .pagination button {
-    background-color: #082D3E;
-    color: #FFF;
-    width: 30px;
-    height: 30px;
-    margin: 0 5px 5px;
-    border: none;
-    border-radius: 15px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
+  gap: 0.5rem;
+}
 
-  .pagination button.active {
-    background-color: #59A2B2;
-  }
+.pagination button {
+  padding: 0.5rem 1rem;
+  background: rgba( 82, 71, 71, 0 );
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur( 16px );
+  -webkit-backdrop-filter: blur( 16px );
+  border-radius: 5px;
+  border: 1px solid rgba( 255, 255, 255, 0.18 );
+  color: #fff;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
   .button,
   a.button {
@@ -754,7 +725,12 @@ export default {
     width: 60%; 
     border-radius: 15px;
     text-align: center;
+    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+    backdrop-filter: blur( 16px );
+    -webkit-backdrop-filter: blur( 16px );
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
   }
+  
 
   @media screen and (max-width: 600px) {
   .movie-grid,
@@ -794,5 +770,6 @@ export default {
   }
 }
 </style>
+
 
 
