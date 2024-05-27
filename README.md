@@ -114,7 +114,7 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
 
 - **Auto-fill Bug on Login Page:** Auto-fill on mobile devices sometimes causes a redirection to the root page. The form configuration needs adjustment to prevent this redirection and allow users to continue the authentication flow.
 
-- **Sign In Button as Loader Button**: The sign-in button will be a 'loader-button' so that when users click on it, a loader is displayed until the authentication process is complete.
+- ~~**Sign In Button as Loader Button**: The sign-in button will be a 'loader-button' so that when users click on it, a loader is displayed until the authentication process is complete.~~ [Full changelog.](https://github.com/imprvhub/cinemathe/commit/ec387757026cc216a6efc275e1e49627657a8525)
 
 - **Grid Representation of Movies and TV Shows in the Profile**: Currently, there are two separate paginations for movies and TV shows in the profile. In the future, these paginations will be replaced by a filtering option that allows users to filter by 'All - Movies - TV Shows', resulting in a single pagination.
 
