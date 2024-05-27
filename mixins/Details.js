@@ -9,6 +9,14 @@ export const id =  {
 
 }
 
+export const type =  {
+  computed: {
+    type () {
+      return this.item.type;
+    }
+  }
+}
+
 export const name = {
   computed: {
     name () {

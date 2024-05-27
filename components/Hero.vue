@@ -193,7 +193,7 @@
 </template>
 <script>
 import supabase from '@/services/supabase';
-import { name, stars, yearStart, yearEnd, cert, backdrop, poster, trailer, id, genres  } from '~/mixins/Details';
+import { name, stars, yearStart, yearEnd, cert, backdrop, poster, trailer, id, genres, type  } from '~/mixins/Details';
 import Modal from '~/components/Modal';
 
 export default {
@@ -212,6 +212,7 @@ export default {
     trailer,
     id,
     genres,
+    type,
   ],
 
   props: {
@@ -236,6 +237,8 @@ export default {
       yearEndForDb: null,
       idForDb: null,
       genresForDb: null,
+      typeForDb: null,
+      addedAt: null,
 
       shareModalVisible: false,
       shareTitle: '',
@@ -270,7 +273,8 @@ export default {
     this.yearEndForDb  = this.yearEnd;
     this.idForDb = this.id;
     this.genresForDb = this.item.genres.map(genre => genre.name).join(', ');
-
+    this.typeForDb = this.type;
+    this.addedAt = new Date();
     this.shareTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde Cinemathe!";
     this.customTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde Cinemathe!";
     this.customMessage = 'Sinopsis: ' + this.item.overview + '\n\nExplora opciones de streaming, trailer, ficha técnica y mucho más aquí: ';
@@ -463,6 +467,8 @@ export default {
                 posterForDb: this.posterForDb,
                 idForDb: this.id,
                 genresForDb: this.genresForDb,
+                typeForDb: this.typeForDb,
+                addedAt: this.addedAt,
               }
             }
           };
@@ -477,6 +483,8 @@ export default {
               posterForDb: this.posterForDb,
               idForDb: this.id,
               genresForDb: this.genresForDb,
+              typeForDb: this.typeForDb,
+              addedAt: this.addedAt,
             };
           } else {
             favoritesJson[category][index].push({
@@ -489,6 +497,8 @@ export default {
                   posterForDb: this.posterForDb,
                   idForDb: this.id,
                   genresForDb: this.genresForDb,
+                  typeForDb: this.typeForDb,
+                  addedAt: this.addedAt,
                 }
               }
             });
@@ -505,6 +515,8 @@ export default {
               posterForDb: this.posterForDb,
               idForDb: this.id,
               genresForDb: this.genresForDb,
+              typeForDb: this.typeForDb,
+              addedAt: this.addedAt,
             }
           }
         });
