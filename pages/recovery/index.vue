@@ -1,40 +1,42 @@
 <template>
     <main class="main">
-      <section class="section">
-        <br>
-        <h1 class="text-white text-center"><b>Reestablezca su contraseña</b></h1>
-        <h3 class="text-white text-center" v-if="!confirmationMessage"><b>Escriba su correo electrónico y le enviaremos un enlace para restablecer su contraseña:</b></h3>
-      <h3 class="text-white text-center" v-else><b> </b></h3>
-      <br>
-      <div class="form">
-        <div v-if="confirmationMessage" class="confirmation-message">
-          <p style="text-align: center; width:200px">Se ha enviado un correo electrónico a {{ email }}. Por favor, revise la bandeja de entrada y restablezca su contraseña.</p>
-          <p style="text-align: center; width:200px">Si usted tiene algún problema o pregunta, por favor contacte a <a href="mailto:contact@ivanluna.dev">contact@ivanluna.dev</a>.</p>
-          <div class="button-container">
-            <button class="button button--icon" @click="redirectToHome">
-                <span class="txt">Volver</span>
-            </button>
-          </div>
-        </div>
-        <form v-else @submit.prevent="recoverPassword">
-          <div v-if="!confirmationMessage" class="form-group">
-            <label for="email" style="position: relative; left: 45px; top: -3px; transform: translate(0px, 6.39957px); transition: none 0s ease 0s; cursor: move;">Email:</label>
-            <input type="email" id="email" v-model="email" style="width: 158.279px; transform: translate(11.2765px, 0px); position: relative; left: 20px; top: -3px; transition: none 0s ease 0s; cursor: move;" placeholder="juanperez@email.com" required>
+      <div class="auth-container" style="padding-top:20px;">
+        <div class="container-section">
+            <br>
+            <h1 class="text-white text-center"><b>Reestablezca su contraseña</b></h1>
+            <h3 class="text-white text-center" v-if="!confirmationMessage"><b>Escriba su correo electrónico y le enviaremos un enlace para restablecer su contraseña:</b></h3>
+          <h3 class="text-white text-center" v-else><b> </b></h3>
+          <br>
+          <div class="form">
+            <div v-if="confirmationMessage" class="confirmation-message">
+              <p style="text-align: center; width:200px">Se ha enviado un correo electrónico a {{ email }}. Por favor, revise la bandeja de entrada y restablezca su contraseña.</p>
+              <p style="text-align: center; width:200px">Si usted tiene algún problema o pregunta, por favor contacte a <a href="mailto:contact@ivanluna.dev">contact@ivanluna.dev</a>.</p>
+              <div class="button-container">
+                <button class="button button--icon" @click="redirectToHome">
+                    <span class="txt">Volver</span>
+                </button>
+              </div>
+            </div>
+            <form v-else @submit.prevent="recoverPassword">
+              <div v-if="!confirmationMessage" class="form-group">
+                <label for="email" style="position: relative; left: 45px; top: -3px; transform: translate(0px, 6.39957px); transition: none 0s ease 0s; cursor: move;">Email:</label>
+                <input type="email" id="email" v-model="email" style="width: 158.279px; transform: translate(11.2765px, 0px); position: relative; left: 20px; top: -3px; transition: none 0s ease 0s; cursor: move;" placeholder="juanperez@email.com" required>
+              </div>
+              <br>
+              <div class="button-container">
+                <button class="button button--icon" @click="redirectToHome">
+                  <span class="txt">Volver</span>
+                </button>
+                <button v-if="!confirmationMessage" type="submit" class="button button--icon">
+                  <span class="txt">Restablecer Contraseña</span>
+                </button>
+              </div>
+            </form>
           </div>
           <br>
-          <div class="button-container">
-            <button class="button button--icon" @click="redirectToHome">
-              <span class="txt">Volver</span>
-            </button>
-            <button v-if="!confirmationMessage" type="submit" class="button button--icon">
-              <span class="txt">Restablecer Contraseña</span>
-            </button>
+          <h2 class="text-center custom-center"><strong>¿Ya tiene una cuenta? <router-link :to="{ name: 'login' }">Iniciar sesión</router-link></strong></h2>
           </div>
-        </form>
       </div>
-      <br>
-      <h2 class="text-center custom-center"><strong>¿Ya tiene una cuenta? <router-link :to="{ name: 'login' }">Iniciar sesión</router-link></strong></h2>
-    </section>
   </main>
 </template>
     
@@ -59,6 +61,30 @@ export default {
 
 
 <style scoped>
+.auth-section {
+  background: rgba(6, 47, 64, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(31, 97, 135, 0.37);
+  backdrop-filter: blur(13.5px);
+  -webkit-backdrop-filter: blur(13.5px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 20px;
+  margin: 20px;
+}
+
+.container-section {
+  background: rgba(6, 47, 64, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(31, 97, 135, 0.37);
+  backdrop-filter: blur(13.5px);
+  -webkit-backdrop-filter: blur(13.5px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
 a {
   font-weight: 600;
   color: #80868b;

@@ -1,62 +1,70 @@
 <template>
   <main class="main">
-    <section class="section">
-      <br>
-      <h1 class="text-white text-center"><b>Bienvenid@ a Cinemathe!</b></h1>
-      <div v-if="!showVerificationModal">
-        <h3 class="text-white text-center"><b>Crear una nueva cuenta:</b></h3>
-        <div class="form">
-          <form @submit.prevent="register">
-            <div class="form-group">
-              <label for="name">Nombre:</label>
-              <input type="text" id="name" v-model="name" placeholder="Juan Pérez" required>
-            </div>
-            <br>
-            <div class="form-group">
-              <label for="email">Email:</label>
-              <input type="email" id="email" v-model="email" style="transform: translate(11.2765px, 0px);" placeholder="juanperez@email.com" required>
-            </div>
-            <br>
-            <div class="form-group">
-              <label for="password">Contraseña:</label>
-              <input type="password" id="password" v-model="password" placeholder="Ingrese su contraseña" required @input="checkPassword">
-              <br>
-              <div class="password-requirements">
-                <ul>
-                  <label class="pass-req-label">Requisitos de la contraseña:</label>
+    <section class="auth-section">
+      <div class="tabs">
+        <span class="tab" @click="goToSignIn">Iniciar sesión</span>
+        <span class="tab active">Registrarse</span>
+      </div>
+      <div class="auth-container">
+        <div class="container-section">
+          <br>
+          <h1 class="text-white text-center"><b>Bienvenid@ a Cinemathe!</b></h1>
+          <div v-if="!showVerificationModal">
+            <h3 class="text-white text-center"><b>Crear una nueva cuenta:</b></h3>
+            <div class="form">
+              <form @submit.prevent="register">
+                <div class="form-group">
+                  <label for="name">Nombre:</label>
+                  <input type="text" id="name" v-model="name" placeholder="Juan Pérez" required>
+                </div>
+                <br>
+                <div class="form-group">
+                  <label for="email">Email:</label>
+                  <input type="email" id="email" v-model="email" style="transform: translate(11.2765px, 0px);" placeholder="juanperez@email.com" required>
+                </div>
+                <br>
+                <div class="form-group">
+                  <label for="password">Contraseña:</label>
+                  <input type="password" id="password" v-model="password" placeholder="Ingrese su contraseña" required @input="checkPassword">
                   <br>
-                  <li :class="{ 'text-success': hasUpperCase }"><span v-if="hasUpperCase">&#10003;</span><span v-else>&#9898;</span> Una letra mayúscula</li>
-                  <li :class="{ 'text-success': hasLowerCase }"><span v-if="hasLowerCase">&#10003;</span><span v-else>&#9898;</span> Una letra minúscula</li>
-                  <li :class="{ 'text-success': hasNumber }"><span v-if="hasNumber">&#10003;</span><span v-else>&#9898;</span> Un número</li>
-                  <li :class="{ 'text-success': hasSymbol }"><span v-if="hasSymbol">&#10003;</span><span v-else>&#9898;</span> Un símbolo</li>
-                  <li :class="{ 'text-success': hasMinLength }"><span v-if="hasMinLength">&#10003;</span><span v-else>&#9898;</span> Mínimo 8 caracteres</li>
-                </ul>
-              </div>
+                  <div class="password-requirements">
+                    <ul>
+                      <label class="pass-req-label">Requisitos de la contraseña:</label>
+                      <br>
+                      <li :class="{ 'text-success': hasMinLength }"><span v-if="hasMinLength">&#10003;</span><span v-else>&#9898;</span> Mínimo 8 caracteres</li>
+                      <li :class="{ 'text-success': hasUpperCase }"><span v-if="hasUpperCase">&#10003;</span><span v-else>&#9898;</span> Una letra mayúscula</li>
+                      <li :class="{ 'text-success': hasLowerCase }"><span v-if="hasLowerCase">&#10003;</span><span v-else>&#9898;</span> Una letra minúscula</li>
+                      <li :class="{ 'text-success': hasNumber }"><span v-if="hasNumber">&#10003;</span><span v-else>&#9898;</span> Un número</li>
+                      <li :class="{ 'text-success': hasSymbol }"><span v-if="hasSymbol">&#10003;</span><span v-else>&#9898;</span> Un símbolo</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="error-message" v-if="errorMessage" :style="{ height: errorMessage ? 'auto' : '0', margin: errorMessage ? '10px auto' : '0 auto', overflow: errorMessage ? 'visible' : 'hidden' }">
+                  <p>{{ errorMessage }}</p>
+                </div>
+                <div class="button-container">
+                  <button class="button button--icon" @click="redirectToHome">
+                    <span class="txt">Volver</span>
+                  </button>
+                  <button type="submit" class="button button--icon" :disabled="!isFormValid || !isPasswordValid">
+                    <span class="txt">Registrarse</span>
+                  </button>
+                </div>
+              </form>
             </div>
-            <div class="error-message" v-if="errorMessage" :style="{ height: errorMessage ? 'auto' : '0', margin: errorMessage ? '10px auto' : '0 auto', overflow: errorMessage ? 'visible' : 'hidden' }">
-              <p>{{ errorMessage }}</p>
-            </div>
-            <div class="button-container">
-              <button class="button button--icon" @click="redirectToHome">
-                <span class="txt">Volver</span>
-              </button>
-              <button type="submit" class="button button--icon" :disabled="!isFormValid || !isPasswordValid">
-                <span class="txt">Registrarse</span>
-              </button>
-            </div>
-          </form>
-        </div>
+          </div>
+          <div v-if="showVerificationModal" class="text-center custom-center" style="max-width: 250px; text-align: center; margin: 0 auto;">
+            <p class="text-center custom-center">¡Gracias, {{ name }}, por registrarte! Se ha creado la cuenta con el correo electrónico {{ email }}. ¡Disfrute de su experiencia en Cinemathe!</p>
+          </div>
+          <div v-if="showVerificationModal" class="button-container">
+            <button class="button button--icon" @click="redirectToHome">
+              <span class="txt">Volver</span>
+            </button>
+          </div>
+          <br>
+          <h3 class="text-center custom-center"><strong>¿Ya tiene una cuenta? <router-link :to="{ name: 'login' }">Iniciar sesión</router-link></strong></h3>
       </div>
-      <div v-if="showVerificationModal" class="text-center custom-center" style="max-width: 250px; text-align: center; margin: 0 auto;">
-        <p class="text-center custom-center">¡Gracias, {{ name }}, por registrarte! Se ha creado la cuenta con el correo electrónico {{ email }}. ¡Disfrute de su experiencia en Cinemathe!</p>
-      </div>
-      <div v-if="showVerificationModal" class="button-container">
-        <button class="button button--icon" @click="redirectToHome">
-          <span class="txt">Volver</span>
-        </button>
-      </div>
-      <br>
-      <h3 class="text-center custom-center"><strong>¿Ya tiene una cuenta? <router-link :to="{ name: 'login' }">Iniciar sesión</router-link></strong></h3>
+    </div>
     </section>
   </main>
 </template>
@@ -114,12 +122,83 @@ export default {
       this.hasNumber = /\d/.test(this.password);
       this.hasSymbol = /[!@#$%^&*()_+]/.test(this.password);
       this.hasMinLength = this.password.length >= 8;
-    }
+    },
+    goToSignIn() {
+      this.$router.push({ name: 'login' });
+    },
   }
 };
 </script>
 
 <style scoped>
+.auth-section {
+  background: rgba(6, 47, 64, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(31, 97, 135, 0.37);
+  backdrop-filter: blur(13.5px);
+  -webkit-backdrop-filter: blur(13.5px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 20px;
+  margin: 20px;
+}
+
+.container-section {
+  background: rgba(6, 47, 64, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(31, 97, 135, 0.37);
+  backdrop-filter: blur(13.5px);
+  -webkit-backdrop-filter: blur(13.5px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  font-size: 9px;
+}
+
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  color: #80868b;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-bottom: none;
+}
+
+.tab.active {
+  color: #ffffff;
+  background: rgba(10, 77, 106, 0.729);
+  backdrop-filter: blur(13.5px);
+  -webkit-backdrop-filter: blur(13.5px);
+  border-radius: 5px;
+  margin-left: 5px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-bottom: none;
+}
+
+.tab:not(.active) {
+  color: #ffffff;
+  background: rgba(11, 75, 103, 0.15);
+  backdrop-filter: blur(13.5px);
+  margin-right: 5px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  -webkit-backdrop-filter: blur(13.5px);
+  border-radius: 5px;
+}
+
+.text-center {
+  text-align: center;
+}
+
 .error-message {
     color: red;
     text-align: center;
@@ -249,6 +328,68 @@ h3 {
 
 .password-requirements li {
     margin-left: -20px; 
+}
+
+@media (max-width: 400px) {
+  .button {
+    width: 80px;
+    height: 40px;
+    font-size: 9px;
+  }
+
+  .form-group {
+    margin-left: 13rem;
+  }
+
+  .password-requirements {
+    margin-left: 4rem;
+  }
+
+  .form-group input[type="email"] {
+  margin-left: 20px;
+  max-width: 100px;
+}
+.form-group input[type="password"] {
+  margin-left: -1px;
+  max-width: 100px;
+}
+
+.form-group input[type="text"] {
+  margin-left: 20px;
+  max-width: 100px;
+}
+
+.tabs {
+  width: 5%;
+  height: 3%;
+  justify-content: unset;
+  left: 5%;
+  margin-left: 3rem;
+}
+
+.tab.active {
+  max-width: 105px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: wrap;
+  flex-direction: column-reverse;      
+}
+
+.tab:not(.active) {
+  flex-wrap: wrap;
+  max-width: 105px;
+  margin: 0 auto;
+  text-align: center;
+  display:flex; 
+  justify-content: center;
+}
+
+.spinner {
+  left: 3px;
+  padding: 2px;
+  margin-right: 3px;
+}
 }
 
 </style>
