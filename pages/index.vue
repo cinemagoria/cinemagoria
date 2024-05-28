@@ -227,7 +227,7 @@ export default {
     -webkit-background-clip: text;
     color: transparent;
     text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
-    font-family: 'Tahoma', sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size: 13px; 
     border-radius: 15px;
     margin-top: 2rem;
