@@ -121,7 +121,7 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
 - ~~**Rating Score Consistency:** Refactor rating scores for movies and TV shows in the main carousel to two decimal places.~~ [Full changelog.](https://github.com/imprvhub/cinemathe/commit/f3251b04abb9a986559aa3f8db35a78431c6ead7)
 
 
-- **Style Enhancements:** -Review and standardize font sizes, styles, and weights across all components to ensure a consistent and cohesive appearance throughout the entire application. -Review hover effect on user profile menus; the button's border-radius is causing the hover effect to misalign.
+- ~~**Style Enhancements:** -Review and standardize font sizes, styles, and weights across all components to ensure a consistent and cohesive appearance throughout the entire application. -Review hover effect on user profile menus; the button's border-radius is causing the hover effect to misalign.~~ [Full changelog.](https://github.com/imprvhub/cinemathe/commit/5b80d98079c67ca89a998f9c0d68d43d67396f83)
 
 - ~~**Responsive UI:**: -Adjust avatar modal layout to fit within the parent element.
 -Align paragraph text correctly in the confirmation modal after user registration.
