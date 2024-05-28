@@ -116,7 +116,7 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
 
 - ~~**Sign In Button as Loader Button**: The sign-in button will be a 'loader-button' so that when users click on it, a loader is displayed until the authentication process is complete.~~ [Full changelog.](https://github.com/imprvhub/cinemathe/commit/ec387757026cc216a6efc275e1e49627657a8525)
 
-- **Grid Representation of Movies and TV Shows in the Profile**: Currently, there are two separate paginations for movies and TV shows in the profile. In the future, these paginations will be replaced by a filtering option that allows users to filter by 'All - Movies - TV Shows', resulting in a single pagination.
+- ~~**Grid Representation of Movies and TV Shows in the Profile**: Currently, there are two separate paginations for movies and TV shows in the profile. In the future, these paginations will be replaced by a filtering option that allows users to filter by 'All - Movies - TV Shows', resulting in a single pagination.~~ [Full changelog.](https://github.com/imprvhub/cinemathe/commit/720f5edd9206400be32c7a20017022706f01ce39) **Pending Fix**: Implement v-else to handle cases with no retrievals in movies or TV shows.
 
 - ~~**Rating Score Consistency:** Refactor rating scores for movies and TV shows in the main carousel to two decimal places.~~ [Full changelog.](https://github.com/imprvhub/cinemathe/commit/f3251b04abb9a986559aa3f8db35a78431c6ead7)
 
