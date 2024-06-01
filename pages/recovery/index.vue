@@ -12,7 +12,7 @@
               <p style="text-align: center; width:200px">Se ha enviado un correo electrónico a {{ email }}. Por favor, revise la bandeja de entrada y restablezca su contraseña.</p>
               <p style="text-align: center; width:200px">Si usted tiene algún problema o pregunta, por favor contacte a <a href="mailto:contact@ivanluna.dev">contact@ivanluna.dev</a>.</p>
               <div class="button-container">
-                <button class="button button--icon" @click="redirectToHome">
+                <button type="button" class="button button--icon" @click="redirectToHome">
                     <span class="txt">Volver</span>
                 </button>
               </div>

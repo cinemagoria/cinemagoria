@@ -26,7 +26,7 @@
               <br>
               <div class="error-message" v-if="errorMessage">{{ errorMessage }}</div>
               <div class="button-container">
-                <button class="button button--icon" @click.prevent="goBack">
+                <button type="button" class="button button--icon" @click.prevent="goBack">
                   <!-- eslint-disable-next-line -->
                   <span class="txt">Volver</span>
                 </button>
