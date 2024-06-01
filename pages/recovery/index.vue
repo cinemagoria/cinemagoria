@@ -24,7 +24,7 @@
             </div>
             <br>
             <div class="button-container">
-              <button class="button button--icon" @click="redirectToHome">
+              <button type="button" class="button button--icon" @click="redirectToHome">
                 <span class="txt">Back</span>
               </button>
               <button v-if="!confirmationMessage" type="submit" class="button button--icon">

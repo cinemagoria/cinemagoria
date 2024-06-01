@@ -24,7 +24,7 @@
               <br>
               <div class="error-message" v-if="errorMessage">{{ errorMessage }}</div>
               <div class="button-container">
-                <button class="button button--icon" @click.prevent="goBack">
+                <button type="button" class="button button--icon" @click.prevent="goBack">
                   <span class="txt">Back</span>
                 </button>
                 <button type="submit" class="button button--icon">
@@ -38,10 +38,14 @@
             <br>
           </div>
           <br>
-          <h2 class="text-center custom-center" style="margin-top:20px;"><strong>Don't have an account? <router-link :to="{ name: 'register' }">Sign Up</router-link></strong></h2>
-          <h2 class="text-center custom-center"><strong>Forgot your password? <router-link :to="{ name: 'recovery' }">Reset</router-link></strong></h2>
+          <h2 class="text-center custom-center" style="margin-top:20px;">
+            <strong>Don't have an account? <router-link :to="{ name: 'register' }">Sign Up</router-link></strong>
+          </h2>
+          <h2 class="text-center custom-center">
+            <strong>Forgot your password? <router-link :to="{ name: 'recovery' }">Reset</router-link></strong>
+          </h2>
         </div>
-    </div>
+      </div>
     </section>
   </main>
 </template>
@@ -54,8 +58,8 @@ export default {
     return {
       email: '',
       password: '',
-      errorMessage: '', 
-      loading: false 
+      errorMessage: '',
+      loading: false
     };
   },
   methods: {
@@ -92,6 +96,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 .auth-section {
