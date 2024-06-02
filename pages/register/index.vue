@@ -47,7 +47,8 @@
                     <span class="txt">Volver</span>
                   </button>
                   <button type="submit" class="button button--icon" :disabled="!isFormValid || !isPasswordValid">
-                    <span class="txt">Registrarse</span>
+                    <span v-if="loading" class="spinner"></span>
+                    <span id="submitText" style="margin-left:5px; padding-left:3px; "class="txt">{{ loading ? 'Registrando' : 'Registrarse' }}</span>
                   </button>
                 </div>
               </form>
@@ -84,7 +85,8 @@ export default {
       hasLowerCase: false,
       hasNumber: false,
       hasSymbol: false,
-      hasMinLength: false
+      hasMinLength: false,
+      loading: false
     };
   },
   computed: {
@@ -97,6 +99,7 @@ export default {
   },
   methods: {
     async register() {
+      this.loading = true;
       try {
         const response = await axios.post('https://cinemathe-drf.vercel.app/api/register/', {
           name: this.name,
@@ -112,6 +115,7 @@ export default {
           this.errorMessage = 'An error occurred. Please try again later.';
         }
       }
+      this.loading = false;
     },
     redirectToHome() {
       window.location.href = 'https://es.cinemathe.space';
@@ -255,8 +259,53 @@ h3 {
 }
 
 .button-container {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button {
+  border-radius: 10px;
+  font-size: 1rem;
+  margin: 3px;
+  position: relative;
+  width: 130px; 
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+
+.spinner {
+  display: inline-block;
+  position: absolute;
+  left: 17px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+}
+
+.spinner::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid #f3f3f3;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite, dots 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes dots {
+  0%, 20% { border-top-color: #fff; }
+  40% { border-top-color: #aaa; }
+  60% { border-top-color: #fff; }
+  80%, 100% { border-top-color: #aaa; }
 }
 
 .section {
