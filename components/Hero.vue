@@ -358,9 +358,6 @@ export default {
       }
     },
 
-
-    
-
     async toggleFavorite() {
       try {
         let favoritesData;
@@ -370,17 +367,18 @@ export default {
           .eq('user_email', this.userEmail);
 
         if (error) {
-          console.error(error);
+          console.error('Error fetching favorites:', error);
           return;
         }
 
         if (!data.length) {
           const { data: newData, error: newError } = await supabase
             .from('favorites')
-            .insert([{ user_email: this.userEmail, favorites_json: {} }]);
+            .insert([{ user_email: this.userEmail, favorites_json: {} }])
+            .select(); 
 
           if (newError) {
-            console.error(newError);
+            console.error('Error inserting new favorite record:', newError);
             return;
           }
 
@@ -393,16 +391,26 @@ export default {
 
         if (this.isFavorite) {
           const updatedFavorites = this.removeFavorite(favoritesData, this.favId);
-          await supabase
+          const { error: updateError } = await supabase
             .from('favorites')
             .update({ favorites_json: updatedFavorites })
             .eq('user_email', this.userEmail);
+
+          if (updateError) {
+            console.error('Error updating favorite (removal):', updateError);
+            return;
+          }
         } else {
           const updatedFavorites = this.addFavorite(favoritesData, this.favId);
-          await supabase
+          const { error: updateError } = await supabase
             .from('favorites')
             .update({ favorites_json: updatedFavorites })
             .eq('user_email', this.userEmail);
+
+          if (updateError) {
+            console.error('Error updating favorite (addition):', updateError);
+            return;
+          }
         }
 
         this.isFavorite = !this.isFavorite;
