@@ -31,7 +31,6 @@ export const genres = {
         return this.itemgenres;
         
       }
-      console.log(genres);
     }
   }
 }

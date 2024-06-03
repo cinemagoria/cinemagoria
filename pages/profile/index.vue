@@ -209,8 +209,6 @@ export default {
         this.tvFetched = tvFetched.reverse();
         this.genres = Array.from(genres);
         this.years = Array.from(years).sort();
-        console.log(this.genres);
-        console.log(this.years);
       } catch (error) {
         console.error(error.message);
       }
