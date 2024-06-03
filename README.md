@@ -109,7 +109,10 @@ python manage.py runserver
 ### Feedback:
 Your feedback is valuable! If you encounter any issues or have suggestions for improvements, please create a new issue in the [GitHub repository](https://github.com/imprvhub/cinemathe/issues/new).
 
-#### Pending Fixes for v1.1.2:
+#### New Features and Pending Fixes for v1.2.2:
+
+- **New Feature:** Implement filtering functionality by genres and years. This feature introduces the capability for users to perform refined searches within their favorites collection. Users can now filter entries based on specific genres and delineate results by decade intervals. For example, users can query their favorites to display action movies added between the years 1980 and 2000. The filtering logic leverages the genresForDb and yearStartForDb fields to ensure accurate and efficient data retrieval.
+
 - **Bug Adding First Favorite for New Users:** This issue occurs on the first click when adding a favorite for a newly created account. The first click is not recognized because the component fails to update the state when mapping '0' objects in the JSON. However, on the second click, the 'Add to Favorites' button functions correctly, and this issue never recurs for that user again. It only happens on the first click for the first favorite addition. Further investigation is needed into the Vue.js functions responsible for this behavior.
 
 - ~~**Auto-fill Bug on Login Page:** Auto-fill on mobile devices sometimes causes a redirection to the root page. The form configuration needs adjustment to prevent this redirection and allow users to continue the authentication flow.~~  [Full changelog.](https://github.com/imprvhub/cinemathe/commit/3435ff615c32bffc3aac2b35aaa0f43bf9d090b6)
