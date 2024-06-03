@@ -44,7 +44,17 @@
               </option>
             </select>
           </div>
-          <div class="movie-grid" style="position: relative; top:-17px;">
+          <div class="button-container" style="margin-top: 0.2rem;">
+            <select @change="filterByGenre" class="genre-select">
+              <option value="">&nbsp;&nbsp;&nbsp;Todos los géneros</option>
+              <option v-for="genre in uniqueGenres" :key="genre" :value="genre">&nbsp;&nbsp;&nbsp;{{ genre }}</option>
+            </select>
+            <select @change="filterByYear" class="year-select">
+              <option value="">&nbsp;&nbsp;&nbsp;Todos los años</option>
+              <option v-for="range in yearRanges" :key="range" :value="range">&nbsp;&nbsp;&nbsp;{{ range }}</option>
+            </select>
+          </div>
+          <div class="movie-grid" style="position: relative; top:-17px; margin-top: 0.3rem;">
             <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
               <a :href="getLink(item)">
                 <img :src="item.details.posterForDb" alt="Poster" class="poster" />
@@ -141,6 +151,10 @@ export default {
       userName: '',
       isMenuOpen: false,
       filter: 'movies',
+      selectedGenre: '',
+      selectedYearRange: '',
+      genres: [],
+      years: [],
     };
   },
   async mounted() {
@@ -168,11 +182,15 @@ export default {
 
         const moviesFetched = [];
         const tvFetched = [];
+        const genres = new Set();
+        const years = new Set();
         data.forEach((row) => {
           if (row.favorites_json.movies) {
             row.favorites_json.movies.forEach((movie) => {
               const movieKey = Object.keys(movie)[0];
               moviesFetched.push(movie[movieKey]);
+              genres.add(...movie[movieKey].details.genresForDb.split(', '));
+              years.add(movie[movieKey].details.yearStartForDb);
             });
           }
 
@@ -180,11 +198,17 @@ export default {
             row.favorites_json.tv.forEach((tvShow) => {
               const tvKey = Object.keys(tvShow)[0];
               tvFetched.push(tvShow[tvKey]);
+              genres.add(...tvShow[tvKey].details.genresForDb.split(', '));
+              years.add(tvShow[tvKey].details.yearStartForDb);
             });
           }
         });
         this.moviesFetched = moviesFetched.reverse();
         this.tvFetched = tvFetched.reverse();
+        this.genres = Array.from(genres);
+        this.years = Array.from(years).sort();
+        console.log(this.genres);
+        console.log(this.years);
       } catch (error) {
         console.error(error.message);
       }
@@ -217,6 +241,13 @@ export default {
         this.moviesFetched.reverse();
         this.tvFetched.reverse();
       }
+    },
+
+    filterByGenre(event) {
+      this.selectedGenre = event.target.value;
+    },
+    filterByYear(event) {
+      this.selectedYearRange = event.target.value;
     },
 
     toggleFilter(event) {
@@ -260,13 +291,28 @@ export default {
   },
   computed: {
     filteredItems() {
-      let items = [];
-      if (this.filter === 'movies') {
-        items = [...this.moviesFetched];
-      } else if (this.filter === 'tvShows') {
-        items = [...this.tvFetched];
-      }
-      return items;
+      const items = this.filter === 'movies' ? this.moviesFetched : this.tvFetched;
+      return items.filter(item => {
+        const matchesGenre = this.selectedGenre === '' || item.details.genresForDb.includes(this.selectedGenre);
+        const matchesYear = this.selectedYearRange === '' || (item.details.yearStartForDb >= this.selectedYearRange.split('-')[0] && item.details.yearStartForDb <= this.selectedYearRange.split('-')[1]);
+        return matchesGenre && matchesYear;
+      }).sort((a, b) => {
+        return this.orderText === 'Order Asc' ? new Date(a.addedAt) - new Date(b.addedAt) : new Date(b.addedAt) - new Date(a.addedAt);
+      });
+    },
+
+    yearRanges() {
+      return [
+        '1888-1960',
+        '1960-1980',
+        '1980-2000',
+        '2000-2010',
+        '2010-2020',
+        '2020-2024',
+      ];
+    },
+    uniqueGenres() {
+      return Array.from(new Set(this.genres));
     },
     
     totalPages() {
@@ -479,7 +525,7 @@ export default {
 
   .order-select {
     cursor: pointer;
-    width: 175.626px;
+    width: 172.626px;
     height: 34.6172px;
     text-align: center;
     padding: 0.8rem 3.5rem 0.8rem 1.5rem;
@@ -499,18 +545,54 @@ export default {
   }
 
   .filter-select {
+    width: 168px;
     background: rgba( 82, 71, 71, 0 );
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur( 16px );
     -webkit-backdrop-filter: blur( 16px );
     border-radius: 5px;
     text-align: center;
-    margin-right: 5px;
     border: 1px solid rgba( 255, 255, 255, 0.18 );
     border-radius: 5px;
   }
 
   .filter-select:hover{
+    background-color: #084a66; 
+  }
+
+  .genre-select {
+    width: 168px;
+    background: rgba( 82, 71, 71, 0 );
+    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+    backdrop-filter: blur( 16px );
+    -webkit-backdrop-filter: blur( 16px );
+    border-radius: 5px;
+    text-align: center;
+    width: 165.626px;
+    margin-right: 2px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+    border-radius: 5px;
+  }
+
+  .genre-select:hover{
+    background-color: #084a66; 
+  }
+
+  .year-select {
+    width: 172.626px;
+    background: rgba( 82, 71, 71, 0 );
+    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+    backdrop-filter: blur( 16px );
+    -webkit-backdrop-filter: blur( 16px );
+    border-radius: 5px;
+    margin-right: 5px;
+    text-align: center;
+
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+    border-radius: 5px;
+  }
+
+  .year-select:hover{
     background-color: #084a66; 
   }
 
