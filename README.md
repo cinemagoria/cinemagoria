@@ -109,6 +109,26 @@ python manage.py runserver
 ### Feedback:
 Your feedback is valuable! If you encounter any issues or have suggestions for improvements, please create a new issue in the [GitHub repository](https://github.com/imprvhub/cinemathe/issues/new).
 
+##### Planned Features and Fixes for v1.3.0:
+
+- **Feat: TV Show Episode Reminders**  
+  Add reminders for new episodes of TV shows. This feature will allow users to receive notifications about new episodes for their favorite TV shows, ensuring they never miss an update.
+
+- **Feat: Advanced Search Filters**  
+  Implement advanced search by year, genre, and rating. This feature will enhance the search functionality, enabling users to filter their search queries more precisely. Users will be able to search by specific years, genres, and ratings, making it easier to find exactly what they're looking for.
+
+- **Feat: Real-time Favorite Deletion**  
+  Live deletion of favorites from the profile page. Users will be able to delete their favorites in real-time directly from their profile page, providing a more seamless and interactive experience.
+
+- **Fix: Profile Name Display Issue**  
+  Resolve an issue where the profile name is not displayed on the first launch. This fix will ensure that the profile name is correctly shown when a user accesses their profile for the first time.
+
+- **Fix: Favorites Menu Responsiveness**  
+  Improve responsiveness of the favorite collection menu on the profile page for resolutions wider than 600px. This fix will enhance the layout and usability of the favorites menu on larger screens.
+
+- **Fix: Star Ratings in Profile**  
+  Add stars to the ratings in profile/index.vue. This fix will visually represent user ratings with star icons, providing a clearer and more intuitive rating system.
+
 ### Attributions
 
 The foundational inspiration for this project is derived from the [TasteJS](https://github.com/tastejs/nuxt-movies) repository, and I extend my gratitude for their pioneering work.
