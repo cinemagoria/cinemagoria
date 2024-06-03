@@ -109,27 +109,6 @@ python manage.py runserver
 ### Feedback:
 Your feedback is valuable! If you encounter any issues or have suggestions for improvements, please create a new issue in the [GitHub repository](https://github.com/imprvhub/cinemathe/issues/new).
 
-#### New Features and Pending Fixes for v1.2.2:
-
-- ~~**New Feature:** Implement filtering functionality by genres and years. This feature introduces the capability for users to perform refined searches within their favorites collection. Users can now filter entries based on specific genres and delineate results by decade intervals. For example, users can query their favorites to display action movies added between the years 1980 and 2000. The filtering logic leverages the genresForDb and yearStartForDb fields to ensure accurate and efficient data retrieval.~~ [Full changelog.](https://github.com/imprvhub/cinemathe/commit/bfc9e1f6c2c4bc8edd99776151ba548dcdc21c94)
-
-- ~~**Bug Adding First Favorite for New Users:** This issue occurs on the first click when adding a favorite for a newly created account. The first click is not recognized because the component fails to update the state when mapping '0' objects in the JSON. However, on the second click, the 'Add to Favorites' button functions correctly, and this issue never recurs for that user again. It only happens on the first click for the first favorite addition. Further investigation is needed into the Vue.js functions responsible for this behavior.~~ [Full changelog.](https://github.com/imprvhub/cinemathe/commit/1a8ff1c52a0119ddc7468cc54effccdb933c21fc)
-
-- ~~**Auto-fill Bug on Login Page:** Auto-fill on mobile devices sometimes causes a redirection to the root page. The form configuration needs adjustment to prevent this redirection and allow users to continue the authentication flow.~~  [Full changelog.](https://github.com/imprvhub/cinemathe/commit/3435ff615c32bffc3aac2b35aaa0f43bf9d090b6)
-
-- ~~**Sign In Button as Loader Button**: The sign-in button will be a 'loader-button' so that when users click on it, a loader is displayed until the authentication process is complete.~~ [Full changelog.](https://github.com/imprvhub/cinemathe/commit/ec387757026cc216a6efc275e1e49627657a8525)
-
-- ~~**Grid Representation of Movies and TV Shows in the Profile**: Currently, there are two separate paginations for movies and TV shows in the profile. In the future, these paginations will be replaced by a filtering option that allows users to filter by 'All - Movies - TV Shows', resulting in a single pagination.~~ [Full changelog.](https://github.com/imprvhub/cinemathe/commit/720f5edd9206400be32c7a20017022706f01ce39) **Pending Fix**: Implement v-else to handle cases with no retrievals in movies or TV shows.
-
-- ~~**Rating Score Consistency:** Refactor rating scores for movies and TV shows in the main carousel to two decimal places.~~ [Full changelog.](https://github.com/imprvhub/cinemathe/commit/f3251b04abb9a986559aa3f8db35a78431c6ead7)
-
-- ~~**Style Enhancements:** -Review and standardize font sizes, styles, and weights across all components to ensure a consistent and cohesive appearance throughout the entire application. 
--Review hover effect on user profile menus; the button's border-radius is causing the hover effect to misalign.~~ [Full changelog.](https://github.com/imprvhub/cinemathe/commit/5b80d98079c67ca89a998f9c0d68d43d67396f83)
-
-- ~~**Responsive UI:**: -Adjust avatar modal layout to fit within the parent element.
--Align paragraph text correctly in the confirmation modal after user registration.
--Modify the share modal width for screens larger than 800px to improve responsiveness.~~[Full changelog.](https://github.com/imprvhub/cinemathe/commit/7669bcbdd2b2de83de2a8d1cdaa62450cb2f8938)
-
 ### Attributions
 
 The foundational inspiration for this project is derived from the [TasteJS](https://github.com/tastejs/nuxt-movies) repository, and I extend my gratitude for their pioneering work.
