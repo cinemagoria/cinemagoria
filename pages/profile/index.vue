@@ -26,7 +26,7 @@
       <nav class="navbar" style="margin-top: 4rem;">
         <h1 class="navbar-welcome">Welcome Back!</h1>
       </nav>
-      <h2 class="text-center" style="color: #acafb5; font-size: 16px; margin-top: 10px; position: relative; text-transform: none; left: -2px; top: -20px;">{{ userName }}</h2>
+      <h2 class="text-center" style="color: #acafb5; font-size: 16px; margin-top: 10px; position: relative; text-transform: none; left: -2px; top: -20px;">{{ userFirstName }}</h2>
       <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
         <div class="column">
           <h2 class="text-center" style="color: #acafb5; font-size: 16px;">Favorite {{ filterText }}</h2>
@@ -129,7 +129,7 @@ async function getUserName(userEmail) {
       throw new Error('Error fetching user first name:', error.message);
     }
 
-    const userName = data[0]?.first_name|| 'undefined';
+    const userName = data[0]?.first_name|| '';
     return userName;
     
   } catch (error) {
@@ -150,7 +150,7 @@ export default {
       currentPage: 1,
       itemsPerPage: 12,
       userAvatar: '/avatars/avatar-ss0.png',
-      userName: '',
+      userFirstName: '', 
       isMenuOpen: false,
       filter: 'movies',
       selectedGenre: '',
@@ -167,7 +167,7 @@ export default {
     this.isLoggedIn = accessToken !== null;
     this.checkData();
     this.userAvatar = await getUserAvatar(this.userEmail);
-    this.userName = await getUserName(this.userEmail);
+    await this.fetchUserFirstName(); 
   },
 
   methods: {
@@ -287,8 +287,25 @@ export default {
       } else {
         return '#'; 
       }
-    }
+    },
+    async fetchUserFirstName() {
+      try {
+        const { data, error } = await supabase
+          .from('auth_user')
+          .select('first_name')
+          .eq('email', this.userEmail);
+        
+        if (error) {
+          throw new Error('Error connecting to the database: ' + error.message);
+        }
+        
+        this.userFirstName = data.length > 0 ? data[0].first_name : null;
+      } catch (error) {
+        console.error('Error fetching user first name:', error);
+      }
+    },
   },
+
   computed: {
     filteredItems() {
       const items = this.filter === 'movies' ? this.moviesFetched : this.tvFetched;
