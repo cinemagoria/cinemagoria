@@ -73,7 +73,7 @@
           <select v-model="selectedSortBy" class="genre-select" id="sortBy">
             <option value="popularity.desc">Most Popular</option>
             <option value="vote_average.desc">Highest Rated</option>
-            <option value="primary_release_date.desc">Newest First</option>
+            <option value="primary_release_date.desc">Latest Releases</option>
             <option value="revenue.desc">Highest Revenue</option>
           </select>
         </div>
