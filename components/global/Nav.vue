@@ -52,6 +52,14 @@
         </nuxt-link>
       </li>
 
+      <li>
+        <nuxt-link
+          :to="{ name: 'advancedsearch' }"
+          aria-label="Advanced Search">
+          <img :src="require('~/static/icon-advancedsearch.png')" alt="Login" style="width: 24px; height: 24px; margin-top: 2px;" />
+        </nuxt-link>
+      </li>
+
       <li v-if="!isLoggedIn">
         <nuxt-link exact to="/login" aria-label="Auth">
           <img :src="require('~/static/icon-login.png')" alt="Login" style="width: 24px; height: 24px; margin-top: 2px;" />
