@@ -25,7 +25,6 @@
           </svg>
         </button>
       </li>
-      
       <li>
         <nuxt-link
           :to="{ name: 'movie' }"
@@ -49,6 +48,14 @@
               <path d="M6.4 1L12 7M17.6 1L12 7"/>
             </g>
           </svg>
+        </nuxt-link>
+      </li>
+
+      <li>
+        <nuxt-link
+          :to="{ name: 'advancedsearch' }"
+          aria-label="Advanced Search">
+          <img :src="require('~/static/icon-advancedsearch.png')" alt="Login" style="width: 24px; height: 24px; margin-top: 2px;" />
         </nuxt-link>
       </li>
 
