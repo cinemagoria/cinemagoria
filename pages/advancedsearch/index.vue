@@ -73,7 +73,7 @@
           <select v-model="selectedSortBy" class="genre-select" id="sortBy">
             <option value="popularity.desc">Más Popular</option>
             <option value="vote_average.desc">Más Valorado</option>
-            <option value="primary_release_date.desc">Más Reciente Primero</option>
+            <option value="primary_release_date.desc">Últimos Lanzamientos</option>
             <option value="revenue.desc">Más Ingresos</option>
           </select>
         </div>
