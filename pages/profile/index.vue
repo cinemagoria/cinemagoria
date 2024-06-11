@@ -54,7 +54,7 @@
               <option v-for="range in yearRanges" :key="range" :value="range">&nbsp;&nbsp;&nbsp;{{ range }}</option>
             </select>
           </div>
-          <div class="movie-grid" style="position: relative; top:-17px; margin-top: 0.3rem;">
+          <div class="movie-grid" style="position: relative; margin-top: 0.3rem;">
             <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
               <a :href="getLink(item)">
                 <img :src="item.details.posterForDb" alt="Poster" class="poster" />
