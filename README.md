@@ -115,7 +115,7 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
   Add reminders for new episodes of TV shows. This feature will allow users to receive notifications about new episodes for their favorite TV shows, ensuring they never miss an update.
 
 - **Feat: Advanced Search Filters**  
-  Implement advanced search by year, genre, and rating. This feature will enhance the search functionality, enabling users to filter their search queries more precisely. Users will be able to search by specific years, genres, and ratings, making it easier to find exactly what they're looking for.
+  Implement advanced search by year, genre, and rating. This feature will enhance the search functionality, enabling users to filter their search queries more precisely. Users will be able to search by specific years, genres, and ratings, making it easier to find exactly what they're looking for. [Changelog.](https://github.com/imprvhub/cinemathe/commit/ec436b5c5772836a3332506ffb0804b479061ab9)
 
 - **Feat: Real-time Favorite Deletion**  
   Live deletion of favorites from the profile page. Users will be able to delete their favorites in real-time directly from their profile page, providing a more seamless and interactive experience.
