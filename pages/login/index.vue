@@ -30,7 +30,7 @@
                   <!-- eslint-disable-next-line -->
                   <span class="txt">Volver</span>
                 </button>
-                <button type="submit" class="button button--icon">
+                <button type="submit" class="button button--icon" style="width: 161.886px;">
                   <span v-if="loading" class="spinner"></span>
                   <span id="submitText" style="margin-left:5px; padding-left:3px; "class="txt">{{ loading ? 'Iniciando sesión' : 'Iniciar sesión' }}</span>
                 </button>
