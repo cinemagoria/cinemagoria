@@ -269,7 +269,6 @@
         <h3 style="width: 90%; margin: 0 auto;">{{ tvShowsTitle }}</h3>
         <br>
         <div class="tv-show-grid" style="width: 90%; margin: 0 auto;">
-        <div class="tv-show-grid">
           <router-link v-for="tvShow in tvShows" :key="tvShow.id" :to="'/tv/' + tvShow.id" target="_blank">
             <div class="tv-show-card">
               <div v-if="tvShow.backdrop_path" class="movie-image-container">
@@ -292,7 +291,6 @@
           </router-link>
         </div>
       </div>
-    </div>
 
       <div v-else>
         <p style="text-align: center; font-size: 13px; padding: 4rem; color: #7FDBF1;" v-if="searchPerformed && movies.length === 0 && tvShows.length === 0">No se encontraron resultados para estos parámetros de búsqueda. Intenta refinar tu búsqueda.</p>
@@ -1470,11 +1468,11 @@
     
       .movie-grid,
       .tv-show-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
-        gap: 20px;
-        justify-content: center;
-      }
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+      gap: 20px;
+      justify-content: center;
+    }
   
       .movie-card h3,
       .tv-show-card h3 {
@@ -1693,41 +1691,41 @@
     display: block;
   }
         
-      @media screen and (max-width: 600px) {
-      .movie-grid,
-      .tv-show-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
-      }
-    
-      .movie-card,
-      .tv-show-card {
-        width: 100%;
-        max-width: none; 
-      }
-    
-      .movie-card img,
-      .tv-show-card img {
-        width: 100%; 
-        max-width: none; 
-      }
+  @media screen and (max-width: 600px) {
+    .movie-grid,
+    .tv-show-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
     }
-    
-    @media screen and (min-width: 601px) {
-      .movie-grid,
-      .tv-show-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
-      }
-    
-      .movie-card,
-      .tv-show-card {
-        width: 100%; 
-        max-width: none;
-      }
-    
-      .movie-card img,
-      .tv-show-card img {
-        width: 100%; 
-        max-width: none; 
-      }
+  
+    .movie-card,
+    .tv-show-card {
+      width: 100%;
+      max-width: none; 
     }
+  
+    .movie-card img,
+    .tv-show-card img {
+      width: 100%; 
+      max-width: none; 
+    }
+  }
+  
+  @media screen and (min-width: 601px) {
+    .movie-grid,
+    .tv-show-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+    }
+  
+    .movie-card,
+    .tv-show-card {
+      width: 100%; 
+      max-width: none;
+    }
+  
+    .movie-card img,
+    .tv-show-card img {
+      width: 100%; 
+      max-width: none; 
+    }
+  }
     </style>
