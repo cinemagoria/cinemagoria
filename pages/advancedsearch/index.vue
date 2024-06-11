@@ -222,10 +222,9 @@
               :style="{ 'pointer-events': !selectedSearchType ? 'none' : 'auto', 'opacity': !selectedSearchType ? '0.5' : '1' }"
               @click="searchContent"
             >
-              <span v-if="loading" class="spinner"></span>
               <span
                 :class="{ 'txt': true, 'disabled-color': !selectedSearchType, 'active-color': selectedSearchType }"
-              >{{ loading ? 'Searching' : 'See Results' }}</span>
+              >See Results</span>
             </button>
           </div>
         </div>
