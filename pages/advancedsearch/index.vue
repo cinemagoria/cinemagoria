@@ -34,12 +34,12 @@
     <nav class="navbar">
       <h1 class="navbar-welcome" style="position: relative; top: 23px;">Búsqueda Avanzada</h1>
     </nav>
-    <h2 class="text-center" style="color: rgb(172, 175, 181); font-size: 16px; margin-top: 30px; position: relative; text-transform: none; left: -2px; top: -6px;">
+    <h2 class="text-center" style="color: rgb(172, 175, 181); font-size: 14px; margin-top: 30px; position: relative; text-transform: none; left: -2px; top: -6px;">
       Refina tus criterios de búsqueda para obtener resultados más precisos.
     </h2>
     <div class="adv-search-section">
       <div class="centered-container">
-        <div style="margin-left: 20px;">
+        <div style="margin-left: 20px; font-size: 12px; ">
           <p for="searchType">Tipo de búsqueda:</p>
           <select v-model="selectedSearchType" class="genre-select" id="searchType" @change="updateGenres">
             <option value="">Elija una opción</option>
@@ -48,7 +48,7 @@
           </select>
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 20px;">
+        <div v-if="selectedSearchType" style="margin-left: 20px; font-size: 12px;">
           <p for="searchGenre">Elige Género:</p>
           <select v-model="selectedSearchGenre" class="genre-select" id="searchGenre">
             <option value="">Opcional</option>
@@ -58,7 +58,7 @@
           </select>
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 20px;">
+        <div v-if="selectedSearchType" style="margin-left: 20px; font-size: 12px;">
           <p for="year">Año de Estreno:</p>
           <date-picker
             v-model="releaseYear"
@@ -68,7 +68,7 @@
           />
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 20px;">
+        <div v-if="selectedSearchType" style="margin-left: 20px; font-size: 12px;">
           <p for="sortBy">Ordenar Por:</p>
           <select v-model="selectedSortBy" class="genre-select" id="sortBy">
             <option value="popularity.desc">Más Popular</option>
@@ -78,7 +78,7 @@
           </select>
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 20px;">
+        <div v-if="selectedSearchType" style="margin-left: 20px; font-size: 12px;">
           <p for="originCountry">País de Origen:</p>
           <select v-model="selectedOriginCountry" class="genre-select" id="originCountry">
             <option value="">Opcional</option>
@@ -141,14 +141,14 @@
           </select>
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 20px;">
-          <p>
+        <div v-if="selectedSearchType" style="font-size: 12px;">
+          <p style="margin-left: 15px;">
             Calificación Mínima: ({{ MinRatingForLabel }}/10)<span v-if="MinRatingForLabel === 0">{{ asterisk }}</span>
           </p>
           <div>
-            <svg style="display: none;">
+            <svg style="display: none; transform: scale(1.5); margin-left: 20px; left: 25px;">
               <symbol viewBox="0 0 60 60" id="shape-star"><title>Estrella</title> <g> <path d="M46.645 54.568L29.65 45.633l-16.997 8.935L15.9 35.643 2.15 22.24l19-2.76 8.5-17.22 8.497 17.22 19.002 2.76L43.4 35.643z"></path> </g> </symbol></svg>
-              <div class="rating">
+              <div class="rating" style="transform: scale(1.5); margin-left: 20px; left: 25px; ">
                 <div class="rating-stars">
                   <svg class="icon icon-star" aria-hidden="true">
                     <use class="header-shape-star" xlink:href="#shape-star"></use>
@@ -208,7 +208,7 @@
               </div>
           </div>
         </div>
-        
+        <br>
         <br>
         <div>
           <div class="button-container">
@@ -229,9 +229,8 @@
             </button>
           </div>
         </div>
-        <br>
-        <div v-if="MinRatingForLabel === 0" style="bottom: 17px;">
-          *Para obtener mejores resultados, si no se modifica la calificación mínima, el valor por defecto será siempre 7/10.
+        <div v-if="MinRatingForLabel === 0" style="bottom: 17px; position: relative; top: -18px; max-width:320px;">
+          *Para obtener los mejores resultados, el valor mínimo de calificación predeterminado es 7/10. *Hasta 40 resultados por búsqueda.
         </div>
       </div>  
     </div>
@@ -239,8 +238,9 @@
         <br>
         <div v-if="movies.length > 0">
           <br>
-        <h2>{{ moviesTitle }}</h2>
-        <div class="movie-grid">
+          <h3 style="width: 90%; margin: 0 auto;">{{ moviesTitle }}</h3>
+          <br>
+          <div class="movie-grid" style="width: 90%; margin: 0 auto;">
           <router-link v-for="movie in movies" :key="movie.id" :to="'/movie/' + movie.id" target="_blank">
             <div class="movie-card">
               <div v-if="movie.backdrop_path" class="movie-image-container">
@@ -266,7 +266,9 @@
 
       <div v-if="tvShows.length > 0">
         <br>
-        <h2>{{ tvShowsTitle }}</h2>
+        <h3 style="width: 90%; margin: 0 auto;">{{ tvShowsTitle }}</h3>
+        <br>
+        <div class="tv-show-grid" style="width: 90%; margin: 0 auto;">
         <div class="tv-show-grid">
           <router-link v-for="tvShow in tvShows" :key="tvShow.id" :to="'/tv/' + tvShow.id" target="_blank">
             <div class="tv-show-card">
@@ -290,6 +292,7 @@
           </router-link>
         </div>
       </div>
+    </div>
 
       <div v-else>
         <p style="text-align: center; font-size: 13px; padding: 4rem; color: #7FDBF1;" v-if="searchPerformed && movies.length === 0 && tvShows.length === 0">No se encontraron resultados para estos parámetros de búsqueda. Intenta refinar tu búsqueda.</p>
@@ -756,15 +759,24 @@
           return this.releaseYear instanceof Date ? this.releaseYear.getFullYear().toString() : this.releaseYear.toString();
         },
         moviesTitle() {
+          const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : 'TODOS LOS AÑOS';
+          const genre = this.formattedGenre(this.selectedSearchGenre) || 'TODOS LOS GÉNEROS';
+          const country = this.formattedCountry(this.selectedOriginCountry) || 'TODOS LOS PAÍSES';
           const count = this.movies.length;
-          return `Resultados según sus criterios de búsqueda (${count}):`;
+          const minRating = this.selectedMinRating;
+
+          return `Resultados (${count}) para Películas de ${genre} de ${country} lanzadas en ${year} con una calificación mínima de ${minRating}/10:`;
         },
         tvShowsTitle() {
+          const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : 'TODOS LOS AÑOS';
+          const genre = this.formattedGenre(this.selectedSearchGenre) || 'TODOS LOS GÉNEROS';
+          const country = this.formattedCountry(this.selectedOriginCountry) || 'TODOS LOS PAÍSES';
           const count = this.tvShows.length;
-          return `Resultados según sus criterios de búsqueda (${count}).`;
+          const minRating = this.selectedMinRating;
+
+          return `Resultados (${count}) para Series de Televisión de ${genre} de ${country} lanzadas en ${year} con una calificación mínima de ${minRating}/10:`;
         },
 
-        
         filteredGenres() {
         return this.selectedSearchType === 'movie' ? this.movieGenres : this.tvGenres;
         },
@@ -819,7 +831,7 @@
       border-radius: 10px;
       border: 1px solid rgba(255, 255, 255, 0.18);
       padding: 20px;
-      width: 60%;
+      width: 90%;
       margin: 0 auto;
     }
   
@@ -852,7 +864,7 @@
         justify-content: center;
         align-items: center;
         gap: 20px; 
-        margin-top: 20px; 
+        margin: 0 auto;
       }
       
   
@@ -1440,7 +1452,6 @@
         margin-top: 3rem;
         margin: 0 auto;
         text-align: center;
-        max-width: 800px; 
       }
     
       h2 {
