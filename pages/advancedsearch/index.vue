@@ -248,7 +248,7 @@
                 <h3>{{ truncateTitle(movie.title) }}</h3>
                 <div class="details-container">
                   <p>{{ extractYear(movie.release_date) }}</p>
-                  <p v-if="movieRatings[movie.id]">Rating: {{ movieRatings[movie.id].toFixed(1) }}</p>
+                  <p v-if="movieRatings[movie.id]">Puntaje: {{ movieRatings[movie.id].toFixed(1) }}</p>
                 </div>
               </div>
               <div v-else class="movie-card">
@@ -256,7 +256,7 @@
                 <h3>{{ truncateTitle(movie.title) }}</h3>
                 <div class="details-container">
                   <p>{{ extractYear(movie.release_date) }}</p>
-                  <p v-if="movieRatings[movie.id]">Rating: {{ movieRatings[movie.id].toFixed(1) }}</p>
+                  <p v-if="movieRatings[movie.id]">Puntaje: {{ movieRatings[movie.id].toFixed(1) }}</p>
                 </div>
               </div>
             </div>
@@ -277,7 +277,7 @@
                 <h3>{{ truncateTitle(tvShow.name) }}</h3>
                 <div class="details-container">
                   <p>{{ extractYear(tvShow.first_air_date) }}</p>
-                  <p v-if="tvShowRatings[tvShow.id]">Rating: {{ tvShowRatings[tvShow.id].toFixed(1) }}</p>
+                  <p v-if="tvShowRatings[tvShow.id]">Puntaje: {{ tvShowRatings[tvShow.id].toFixed(1) }}</p>
                 </div>
               </div>
               <div v-else class="tv-show-card">
@@ -285,7 +285,7 @@
                 <h3>{{ truncateTitle(tvShow.name) }}</h3>
                 <div class="details-container">
                   <p>{{ extractYear(tvShow.first_air_date) }}</p>
-                  <p v-if="tvShowRatings[tvShow.id]">Rating: {{ tvShowRatings[tvShow.id].toFixed(1) }}</p>
+                  <p v-if="tvShowRatings[tvShow.id]">Puntaje: {{ tvShowRatings[tvShow.id].toFixed(1) }}</p>
                 </div>
               </div>
             </div>
@@ -397,7 +397,7 @@
           selectedSortBy: 'popularity.desc',
           selectedOriginCountry: '',
           ratings: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-          selectedMinRating: localStorage.getItem('selectedMinRating') || '7',
+          selectedMinPuntaje: localStorage.getItem('selectedMinRating') || '7',
           MinRatingForLabel: 0,
           asterisk: '*',
           movies: [],
