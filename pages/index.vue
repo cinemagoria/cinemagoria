@@ -1,6 +1,20 @@
 <template>
   <main class="main">
     <div v-if="isLoggedIn" class="user-profile">
+        <div class="language-selector" @click="toggleLanguageMenu" style="position: relative; top: -11px; left: -70px;">
+          <div class="selected-language">
+            <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
+            <span class="language">{{ selectedLanguage === 'english' ? 'En' : 'Es' }}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'español'" style="width: 24px; height: 24px; left: -70px;">
+              <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
+            </svg>
+          </div>
+          <div ref="languageMenu" class="language-menu">
+            <label class="menu-label1" @click="changeLanguage('english')">
+              <span>English</span>
+            </label>
+          </div>
+        </div>
         <div class="avatar-container" @click="toggleMenu">
           <span class="user-email">{{ userEmail }}</span>
           <img :src="userAvatar" alt="User Avatar" class="avatar">
@@ -22,14 +36,24 @@
       </div>
 
       <div v-else class="user-profile-else">
-      <div class="avatar-container-else" @click="toggleMenu">
-        <img src="/avatars/avatar-ss0.png" alt="User Avatar" class="avatar-else"> 
-        <div v-if="isMenuOpen" class="dropdown-menu-else">
-          <div class="menu-item" @click="goToLogin">
-            <img src="~/static/icon-login.png" alt="Login Icon" class="login-icon">
-            <span class="menu-label1">Login</span>
-          </div>
+        <div class="language-selector" @click="toggleLanguageMenu" style="position: relative;top: -28px;left: -69px;">
+        <div class="selected-language">
+          <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
+          <span class="language">{{ selectedLanguage === 'english' ? 'En' : 'Es' }}</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'español'" style="width: 24px; height: 24px;">
+            <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
+          </svg>
         </div>
+        <div ref="languageMenu" class="language-menu">
+          <label class="menu-label1"  @click="changeLanguage('english')">
+            <span>English</span>
+          </label>
+        </div>
+      </div>
+      <div class="avatar-container-else" @click="toggleMenu">
+          <div>
+            <span class="menu-label1" @click="goToLogin">Iniciar sesión</span>
+          </div>
       </div>
     </div>
     <FeatureDescription />
@@ -75,14 +99,14 @@ async function getUserAvatar(userEmail) {
       .from('user_data')
       .select('avatar')
       .eq('email', userEmail);
-      
+
     if (error) {
       throw new Error('Error fetching user avatar:', error.message);
     }
 
     const userAvatar = data[0]?.avatar || '/avatars/avatar-ss0.png';
     return userAvatar;
-    
+
   } catch (error) {
     console.error('Error fetching user avatar:', error);
     return '/avatars/avatar-ss0.png';
@@ -95,14 +119,14 @@ async function getUserName(userEmail) {
       .from('user_data')
       .select('first_name')
       .eq('email', userEmail);
-      
+
     if (error) {
       throw new Error('Error fetching user first name:', error.message);
     }
 
-    const userName = data[0]?.first_name|| 'undefined';
+    const userName = data[0]?.first_name || 'undefined';
     return userName;
-    
+
   } catch (error) {
     console.error('Error fetching user first_name:', error);
   }
@@ -111,6 +135,8 @@ async function getUserName(userEmail) {
 export default {
   data() {
     return {
+      showLanguageMenu: false,
+      selectedLanguage: 'español',
       userEmail: '',
       accessToken: '',
       isLoggedIn: false,
@@ -144,43 +170,57 @@ export default {
   },
 
   methods: {
+    toggleLanguageMenu() {
+      this.showLanguageMenu = !this.showLanguageMenu;
+      const menu = this.$refs.languageMenu;
+      if (menu) {
+        menu.style.display = this.showLanguageMenu ? 'block' : 'none';
+      }
+    },
+    changeLanguage(language) {
+      this.selectedLanguage = language;
+      const currentPath = this.$route.path;
+      const currentOrigin = window.location.origin;
+      const isSpanish = currentOrigin.includes('es.');
+
+      if (isSpanish) {
+        const newOrigin = currentOrigin.replace('es.', '');
+        const newUrl = `${newOrigin}${currentPath}`;
+        window.location.href = newUrl;
+      } else {
+        console.log("La URL no tiene el prefijo 'es.', no se necesita ninguna acción.");
+      }
+    },
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen;
     },
-
     goToProfile() {
       this.$router.push('/profile');
     },
-
     goToSettings() {
       this.$router.push('/settings');
     },
-
     goToLogin() {
       this.$router.push('/login');
     },
-
     signOut() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('email');
-      window.location.href = 'https://es.cinemathe.space/';
-    },
+      window.location.href = '/';
+    }
   },
 
   computed: {
-    trendingMoviesTitle () {
+    trendingMoviesTitle() {
       return getListItem('movie', 'trending').title;
     },
-
-    trendingMoviesUrl () {
+    trendingMoviesUrl() {
       return { name: 'movie-category-name', params: { name: 'trending' } };
     },
-
-    trendingTvTitle () {
+    trendingTvTitle() {
       return getListItem('tv', 'trending').title;
     },
-
-    trendingTvUrl () {
+    trendingTvUrl() {
       return { name: 'tv-category-name', params: { name: 'trending' } };
     },
   },
@@ -212,15 +252,74 @@ export default {
 
   .avatar-container {
     position: relative;
-    top: -44px;
+    top: -44.5px;
     cursor: pointer;
   }
 
   .avatar-container-else {
     position: relative;
-    top: -44px;
+    top: -49.5px;
+    font-size: 11.5px;
+    left: 10px;
     cursor: pointer;
   }
+
+  .world-icon {
+    width: 13px;
+    height: 13px;
+    font-weight: 600;
+    position: relative;
+    top: 1px;
+    left: 2px;
+  }
+
+  .language {
+    margin-right: 0.5rem;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
+    -webkit-background-clip: text;
+    color: transparent;
+    text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
+    font-family: 'Roboto', sans-serif;
+    font-size: 11px; 
+    text-transform: uppercase;
+    border-radius: 15px;
+    color: #94999d;
+    position: relative;
+    top: 1px;
+  }
+
+  .arrow-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .language-selector {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .language-menu {
+    position: absolute;
+    background: rgba( 82, 71, 71, 0 );
+    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+    backdrop-filter: blur( 16px );
+    -webkit-backdrop-filter: blur( 16px );
+    border-radius: 5px;
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+    z-index: 1000;
+    display: none;
+  }
+
+    .language-menu label {
+      display: block;
+      padding: 0.5rem;
+      cursor: pointer;
+    }
+
+    .language-menu.active {
+      display: block;
+    }
+
 
   .user-email {
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
@@ -231,7 +330,6 @@ export default {
     font-size: 13px; 
     border-radius: 15px;
     margin-top: 2rem;
-    margin-left: 5rem;
     color: #94999d;
     text-align: center;
   }
@@ -239,12 +337,13 @@ export default {
   .user-profile {
     position: absolute;
     right: 3%; 
+    top: 70px;
     margin-left: 2rem;
   }
 
   .user-profile-else {
     position: absolute;
-    right: 3%; 
+    right: 4.10%; 
     margin-left: 2rem;
   }
 
@@ -323,7 +422,7 @@ export default {
 
   .dropdown-menu {
     display: block;
-    margin-left: 6.5rem;
+    left: 2rem;
   }
 
   .dropdown-menu-else {
@@ -346,6 +445,8 @@ export default {
 
   .dropdown-menu-else {
     display: block;
+    left: 5px;
+    top: 2px;
   }
 
   .menu-item {
@@ -362,7 +463,7 @@ export default {
     letter-spacing: 2px;
     text-transform: uppercase;
     position: relative; 
-    top: 2px;
+    top: 1px;
   }
 
   .menu-label1:hover {
