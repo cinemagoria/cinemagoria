@@ -130,7 +130,7 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
   Add stars to the ratings in profile/index.vue. This fix will visually represent user ratings with star icons, providing a clearer and more intuitive rating system.
 
 - **Fix: Move Language Picker to Top**
-  Move the Language Picker from the footer to the top of the page. This change will make it more visible to all users and improve the user experience.
+  Move the Language Picker from the footer to the top of the page. This change will make it more visible to all users and improve the user experience. [Changelog.](https://github.com/imprvhub/cinemathe/commit/46450650d3b44c72ded83d559abe0f09b2765049)
 
 ### Attributions
 
