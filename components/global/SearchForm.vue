@@ -138,9 +138,9 @@ a {
 
   input[type='text'] {
     flex: 1;
-    height: 6rem;
+    height: 4rem;
     padding: 2.1rem 1.5rem;
-    margin-top: 10px;
+    margin-top: 7px;
     font-size: 1.6rem;
     color: #fff;
     background: none;
@@ -148,8 +148,7 @@ a {
     outline: 0;
 
     @media (min-width: $breakpoint-large) {
-      height: 8rem;
-      padding: 3.1rem 5rem;
+      height: 4rem;
     }
   }
 
@@ -158,7 +157,7 @@ a {
     align-items: center;
     padding: 0 1.5rem;
     background: none;
-    margin-top: 36px;
+    margin-top: 20px;
 
     @media (min-width: $breakpoint-large) {
       padding: 0 5rem;

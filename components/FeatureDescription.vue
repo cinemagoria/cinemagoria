@@ -37,7 +37,7 @@ export default {
 
 .feature-description p {
   font-size: 22px;
-  max-width: 930px;
+  width: 90%;
   padding-bottom: 40px;
   margin: 0 auto;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(115, 115, 115) 100%);
