@@ -154,7 +154,7 @@ export default {
     ...mapState('search', ['fromPage']),
   },
   async mounted() {
-    this.goToRoute = debounce(this.goToRoute, 1500);
+    this.goToRoute = debounce(this.goToRoute, 1000);
     this.$refs.input.focus();
     this.showLanguageMenu = false;
     const email = localStorage.getItem('email');
