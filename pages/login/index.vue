@@ -262,6 +262,7 @@ h2 {
   margin-left: 3rem;
 }
 
+.form-group input[type="name"],
 .form-group input[type="email"],
 .form-group input[type="password"] {
   border-radius: 10px;

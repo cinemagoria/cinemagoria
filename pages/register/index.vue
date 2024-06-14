@@ -14,7 +14,7 @@
                 <form @submit.prevent="register">
                   <div class="form-group">
                     <label for="name">Name:</label>
-                    <input type="text" id="name" v-model="name" placeholder="John Doe" required>
+                    <input type="name" id="name" v-model="name" placeholder="John Doe" required>
                   </div>
                   <br>
                   <div class="form-group">
@@ -334,7 +334,7 @@ h3 {
   transition: none 0s ease 0s; 
 }
 
-.form-group input[type="text"],
+.form-group input[type="name"],
 .form-group input[type="email"],
 .form-group input[type="password"] {
     border-radius: 10px;
@@ -342,7 +342,8 @@ h3 {
     border: 1px solid #ccc;
 }
 
-.form-group input[type="text"],
+
+.form-group input[type="name"],
 .form-group input[type="email"]{
     margin-left: 30px;
 }

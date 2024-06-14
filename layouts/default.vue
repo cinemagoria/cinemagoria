@@ -4,7 +4,7 @@
     <InstallPrompt />
 
     <transition name="slidedown">
-      <SearchForm v-if="searchOpen" />
+      <SearchForm />
     </transition>
 
     <Nav />

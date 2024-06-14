@@ -37,7 +37,7 @@
         </div>
       </div>
       <br>
-      <nav class="navbar" style="margin-top: 8rem;">
+      <nav class="navbar">
         <h1 class="navbar-welcome">Welcome Back!</h1>
       </nav>
       <h2 class="text-center" style="color: #acafb5; font-size: 16px; margin-top: 10px; position: relative; text-transform: none; left: -2px; top: -23px;">{{ userFirstName }}</h2>
@@ -416,10 +416,11 @@ export default {
     position: relative;
     cursor: pointer;
   }
+  
 
   .language-menu {
     position: absolute;
-    background: rgba( 82, 71, 71, 0 );
+    background: rgba(0, 0, 0, 0.8);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur( 16px );
     -webkit-backdrop-filter: blur( 16px );
@@ -471,7 +472,7 @@ export default {
   left: 27px; 
   width: 113.574px;
   top: 100%;
-  background: rgba( 82, 71, 71, 0 );
+  background: rgba(0, 0, 0, 0.8);
   box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
   backdrop-filter: blur( 16px );
   -webkit-backdrop-filter: blur( 16px );
@@ -491,9 +492,6 @@ export default {
   cursor: pointer;
 }
 
-.menu-item:hover {
-  background-color: #084a66; 
-}
 
 .menu-label1 {
   color: #94999d;
@@ -583,7 +581,7 @@ export default {
     position: absolute;
     right: 3%; 
     margin-left: 2rem;
-    top: 18px;
+    top: -26px;
   }
 
   .avatar {

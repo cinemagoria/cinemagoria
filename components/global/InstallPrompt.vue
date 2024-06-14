@@ -2,9 +2,14 @@
   <div
     v-if="isOpen"
     class="alert alert--default">
-    <p>Do you want to <a href="#" @click.prevent="install">Add Cinemathe in your home screen?</a></p>
+    <p style="max-width: 86%;">Do you want to <a href="#" @click.prevent="install">Add Cinemathe in your home screen?</a></p>
 
     <button
+      style="-webkit-appearance: button; 
+      cursor: pointer; 
+      position: absolute;
+      right: 0.2%;
+      margin-left: 2rem;"
       class="alert__close"
       type="button"
       aria-label="Close"

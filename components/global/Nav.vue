@@ -10,23 +10,6 @@
         </nuxt-link>
       </li>
       <li>
-        <button
-          class="search-toggle"
-          type="button"
-          aria-label="Search"
-          aria-haspopup="true"
-          :aria-expanded="`${searchOpen}`"
-          @click="toggleSearch">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <g fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10">
-              <path d="M16.4 16.7l6.3 6.5"/>
-              <ellipse cx="10.5" cy="9.8" rx="9.2" ry="9.1"/>
-            </g>
-          </svg>
-        </button>
-      </li>
-
-      <li>
         <nuxt-link
           :to="{ name: 'advancedsearch' }"
           aria-label="Advanced Search">

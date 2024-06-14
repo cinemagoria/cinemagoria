@@ -1,5 +1,5 @@
 <template>
-  <main class="main">
+  <main class="main" style="top:-50px; position: relative;">
     <div v-if="isLoggedIn" class="user-profile">
         <div class="language-selector" @click="toggleLanguageMenu" style="position: relative; top: 59px; left: -70px;"> 
           <div class="selected-language">
@@ -35,7 +35,7 @@
         </div>
       </div>
       <div v-else class="user-profile-else">
-        <div class="language-selector" @click="toggleLanguageMenu" style="position: relative;top: -28px;left: -69px;">
+        <div class="language-selector" @click="toggleLanguageMenu" style="position: relative; top: -35px; left: -69px;">
           <div class="selected-language">
             <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
             <span class="language">{{ selectedLanguage === 'spanish' ? 'Es' : 'En' }}</span>
@@ -56,8 +56,6 @@
         </div>
       </div>
       <nav class="navbar">
-        <br>
-        <br>
         <h1 class="navbar-welcome" style="position: relative; top: 23px;">Advanced Search</h1>
       </nav>
       <h2 class="text-center" style="color: rgb(172, 175, 181); font-size: 14px; margin-top: 30px; position: relative; text-transform: none; left: -2px; top: -6px;">
@@ -898,6 +896,7 @@
     position: relative;
     cursor: pointer;
   }
+  
 
   .language-menu {
     position: absolute;
@@ -975,7 +974,7 @@
 
   .avatar-container-else {
     position: relative;
-    top: -50px;
+    top: -56.5px;
     font-size: 11.5px;
     left: 10px;
     cursor: pointer;
@@ -1003,7 +1002,7 @@
   .user-profile-else {
     position: absolute;
     right: 4.10%;
-    margin-top: 8rem;
+    top: -19.9px;
   }
 
   .details-container {
@@ -1074,7 +1073,7 @@
     position: relative; 
     width: 113.574px;
     top: 100%;
-    background-color: #062F40;
+    background: rgba(0, 0, 0, 0.8);
     box-shadow: 0 3px 15px 0 rgba(31, 97, 135, 0.37); 
     border: 1px solid #acafb5;
     border-radius: 5px;
@@ -1100,7 +1099,7 @@
     position: relative; 
     top: 100%;
     height: 38px;
-    background-color: #062F40;
+    background: rgba(0, 0, 0, 0.8);
     box-shadow: 0 3px 15px 0 rgba(31, 97, 135, 0.37); 
     border: 1px solid #acafb5;
     border-radius: 5px;
@@ -1123,9 +1122,6 @@
     cursor: pointer;
   }
 
-  .menu-item:hover {
-    background-color: #084a66; 
-  }
 
   .menu-label1 {
     color: #94999d;
@@ -1251,6 +1247,7 @@
     .user-profile {
       position: absolute;
       right: 3%; 
+      top: -117.5px;
       margin-left: 2rem;
       margin-top: 0.3rem;
     }

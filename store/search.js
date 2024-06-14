@@ -1,5 +1,5 @@
 export const state = () => ({
-  searchOpen: false,
+  searchOpen: true,
   fromPage: '/',
 });
 

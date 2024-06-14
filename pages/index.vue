@@ -37,7 +37,7 @@
       </div>
 
       <div v-else class="user-profile-else">
-        <div class="language-selector" @click="toggleLanguageMenu" style="position: relative;top: -28px;left: -69px;">
+        <div class="language-selector" @click="toggleLanguageMenu" style="position: relative; top: -26px; left: -69px;">
         <div class="selected-language">
           <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
           <span class="language">{{ selectedLanguage === 'spanish' ? 'Es' : 'En' }}</span>
@@ -262,7 +262,7 @@ export default {
 
   .avatar-container-else {
     position: relative;
-    top: -49.7px;
+    top: -47.7px;
     font-size: 11.5px;
     left: 10px;
     cursor: pointer;
@@ -301,10 +301,11 @@ export default {
     position: relative;
     cursor: pointer;
   }
+  
 
   .language-menu {
     position: absolute;
-    background: rgba( 82, 71, 71, 0 );
+    background: rgba(0, 0, 0, 0.8);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur( 16px );
     -webkit-backdrop-filter: blur( 16px );
@@ -342,11 +343,13 @@ export default {
   .user-profile {
     position: absolute;
     right: 3%; 
+    top: 38px;
     margin-left: 2rem;
   }
 
   .user-profile-else {
     position: absolute;
+    top: 44px;
     right: 4.10%; 
     margin-left: 2rem;
   }
@@ -414,7 +417,7 @@ export default {
     position: relative; 
     width: 113.574px;
     top: 100%;
-    background: rgba( 82, 71, 71, 0 );
+    background: rgba(0, 0, 0, 0.8);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur( 16px );
     -webkit-backdrop-filter: blur( 16px );
@@ -433,7 +436,7 @@ export default {
     position: relative; 
     top: 100%;
     height: 38px;
-    background: rgba( 82, 71, 71, 0 );
+    background: rgba(0, 0, 0, 0.8);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur( 16px );
     -webkit-backdrop-filter: blur( 16px );
@@ -456,10 +459,6 @@ export default {
   .menu-item {
     padding: 8px 12px;
     cursor: pointer;
-  }
-
-  .menu-item:hover {
-    background-color: #084a66; 
   }
 
   .menu-label1 {
