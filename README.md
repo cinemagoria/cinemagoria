@@ -112,7 +112,7 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
 ##### Planned Features and Fixes for v1.3.0:
 
 -**Feat: Implement Global Restructuring for Enhanced User Experience.**
-  This restructuring aims to fundamentally enhance user interaction with the platform by introducing a cohesive global navigation bar with key features such as a search function, personalized user panel, language selector, and a convenient back button. These modifications are designed to streamline navigation and improve overall usability, leading to a more intuitive and efficient user experience across the entire platform. [Changelog.](https://github.com/imprvhub/cinemathe/commit/91e680d02d28b3b8f5739c0db650c704a796a031)
+  This restructuring aims to fundamentally enhance user interaction with the platform by introducing a cohesive global navigation bar with key features such as a search function, personalized user panel, language selector, and a convenient back button. These modifications are designed to streamline navigation and improve overall usability, leading to a more intuitive and efficient user experience across the entire platform. [Changelog.](https://github.com/imprvhub/cinemathe/commit/da82b26f4b22ead0de49a673f02aba83e0f04747)
 
 - **Feat: TV Show Episode Reminders**  
   Add reminders for new episodes of TV shows. This feature will allow users to receive notifications about new episodes for their favorite TV shows, ensuring they never miss an update.
