@@ -35,7 +35,7 @@
         </div>
       </div>
 
-      <div v-else class="user-profile-else">
+      <div v-else class="user-profile-else" style="margin-top: -5px;">
         <div class="language-selector" @click="toggleLanguageMenu" style="position: relative;top: -28px;left: -69px;">
         <div class="selected-language">
           <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
@@ -337,7 +337,7 @@ export default {
   .user-profile {
     position: absolute;
     right: 3%; 
-    top: 70px;
+    top: 29px;
     margin-left: 2rem;
   }
 
@@ -345,6 +345,7 @@ export default {
     position: absolute;
     right: 4.10%; 
     margin-left: 2rem;
+    top: 51px;
   }
 
   .button-logout {
@@ -410,7 +411,7 @@ export default {
     position: relative; 
     width: 149.574px;
     top: 100%;
-    background: rgba( 82, 71, 71, 0 );
+    background: rgba(0, 0, 0, 0.8);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur( 16px );
     -webkit-backdrop-filter: blur( 16px );
@@ -429,7 +430,7 @@ export default {
     position: relative; 
     top: 100%;
     height: 38px;
-    background: rgba( 82, 71, 71, 0 );
+    background: rgba(0, 0, 0, 0.8);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur( 16px );
     -webkit-backdrop-filter: blur( 16px );
@@ -454,9 +455,6 @@ export default {
     cursor: pointer;
   }
 
-  .menu-item:hover {
-    background-color: #084a66; 
-  }
 
   .menu-label1 {
     color: #94999d;

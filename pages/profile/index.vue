@@ -228,7 +228,7 @@ export default {
         console.error(error.message);
       }
     },
-    toggleLanguageMenu() {
+      toggleLanguageMenu() {
           this.showLanguageMenu = !this.showLanguageMenu;
           const menu = this.$refs.languageMenu;
           if (menu) {
@@ -422,7 +422,7 @@ export default {
 
   .language-menu {
     position: absolute;
-    background: rgba( 82, 71, 71, 0 );
+    background: rgba(0, 0, 0, 0.8);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur( 16px );
     -webkit-backdrop-filter: blur( 16px );
@@ -436,10 +436,6 @@ export default {
       display: block;
       padding: 0.5rem;
       cursor: pointer;
-    }
-
-    .language-menu label:hover {
-      background-color: #f5f5f5;
     }
 
     .language-menu.active {
@@ -464,7 +460,7 @@ export default {
   position: relative; 
   width: 149.574px;
   top: 100%;
-  background: rgba( 82, 71, 71, 0 );
+  background: rgba(0, 0, 0, 0.8);
   box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
   backdrop-filter: blur( 16px );
   -webkit-backdrop-filter: blur( 16px );
@@ -499,10 +495,6 @@ export default {
 .menu-item {
   padding: 8px 12px;
   cursor: pointer;
-}
-
-.menu-item:hover {
-  background-color: #084a66; 
 }
 
 .menu-label1 {
@@ -592,7 +584,7 @@ export default {
   .user-profile {
     position: absolute;
     right: 3%; 
-    top: 1.7rem;
+    top: -26px;
   }
 
   .avatar {

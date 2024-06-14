@@ -2,9 +2,9 @@
   <div
     v-if="isOpen"
     class="alert alert--alt">
-    <p>Utilizamos cookies y otras tecnologías de tracking para mejorar su experiencia de navegación en nuestro sitio web. Al usar nuestro sitio web, usted acepta nuestro uso de cookies y otras tecnologías de tracking. <a target="_blank" href="/terms" rel="noopener">Más Información</a>.</p>
+    <p>Utilizamos cookies para mejorar su experiencia de navegación en nuestro sitio web. Al este sitio web, usted acepta el uso de cookies y otras tecnologías de tracking. <a target="_blank" href="/terms" rel="noopener">Más Información</a>.</p>
 
-    <div>
+    <div style="background-color: black;">
       <button
         class="alert__btn alert__btn--secondary button"
         type="button"

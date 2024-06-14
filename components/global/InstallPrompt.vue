@@ -2,9 +2,14 @@
   <div
     v-if="isOpen"
     class="alert alert--default">
-    <p><a href="#" @click.prevent="install">¿Añadir Cinemathe a su pantalla de inicio?</a></p>
+    <p style="max-width: 86%;"><a href="#" @click.prevent="install">¿Añadir Cinemathe a su pantalla de inicio?</a></p>
 
     <button
+      style="-webkit-appearance: button; 
+      cursor: pointer; 
+      position: absolute;
+      right: 0.2%;
+      margin-left: 2rem;"
       class="alert__close"
       type="button"
       aria-label="Close"

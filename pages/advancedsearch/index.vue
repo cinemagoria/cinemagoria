@@ -56,8 +56,6 @@
         </div>
     </div>
     <nav class="navbar">
-      <br>
-      <br>
       <h1 class="navbar-welcome" style="position: relative; top: 23px;">Búsqueda Avanzada</h1>
     </nav>
     <h2 class="text-center" style="color: rgb(172, 175, 181); width: 90%; font-size: 14px; margin-top: 30px; position: relative; text-transform: none; left: -2px; top: -6px;">
@@ -1009,12 +1007,13 @@
     .user-profile {
       position: absolute;
       right: 5%; 
+      top: -44px;
     }
   
     .user-profile-else {
       position: absolute;
       right: 4.10%;
-      margin-top: 8rem;
+      top: 46px;
     }
   
     .details-container {
@@ -1085,7 +1084,7 @@
       position: relative; 
       width: 149.574px;
       top: 100%;
-      background: rgba( 82, 71, 71, 0 );
+      background: rgba(0, 0, 0, 0.8);
       box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
       backdrop-filter: blur( 16px );
       -webkit-backdrop-filter: blur( 16px );
@@ -1103,7 +1102,7 @@
       position: relative; 
       top: 100%;
       height: 38px;
-      background: rgba( 82, 71, 71, 0 );
+      background: rgba(0, 0, 0, 0.8);
       box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
       backdrop-filter: blur( 16px );
       -webkit-backdrop-filter: blur( 16px );
@@ -1126,10 +1125,6 @@
     .menu-item {
       padding: 8px 12px;
       cursor: pointer;
-    }
-  
-    .menu-item:hover {
-      background-color: #084a66; 
     }
   
     .menu-label1 {

@@ -1,6 +1,22 @@
 <template>
   <main class="main">
     <section class="terms-section">
+      <div class="user-profile">
+        <div class="language-selector" @click="toggleLanguageMenu" style="position: relative; top: 43px;"> 
+          <div class="selected-language">
+            <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-right: 4px; width: 13px; height: 13px; margin-right: 4px;">
+            <span class="language">{{ selectedLanguage === 'english' ? 'En' : 'Es' }}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'español'" style="width: 24px; height: 24px; left: -70px;">
+              <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
+            </svg>
+          </div>
+          <div ref="languageMenu" class="language-menu">
+            <label class="menu-label1" @click="changeLanguage('english')">
+              <span>English</span>
+            </label>
+          </div>
+        </div>
+      </div> 
       <br>
       <h1 class="text-white text-center"><b>Acuerdo de Usuario / Términos y Condiciones / Política de Cookies.</b></h1>
       <br>
@@ -46,10 +62,41 @@
 
 <script>
 export default {
+  data() {
+    return {
+      showLanguageMenu: false,
+      selectedLanguage: 'español',
+    };
+  },
   methods: {
     redirectToHome() {
       window.location.href = 'https://es.cinemathe.space';
-    }
+    },
+    toggleLanguageMenu() {
+          this.showLanguageMenu = !this.showLanguageMenu;
+          const menu = this.$refs.languageMenu;
+          if (menu) {
+            menu.style.display = this.showLanguageMenu ? 'block' : 'none';
+          }
+        },
+
+        changeLanguage(language) {
+          this.selectedLanguage = language;
+          const currentPath = this.$route.path;
+          const currentOrigin = window.location.origin;
+          const isSpanish = currentOrigin.includes('es.');
+
+          if (isSpanish) {
+            const newOrigin = currentOrigin.replace('es.', '');
+            const newUrl = `${newOrigin}${currentPath}`;
+            window.location.href = newUrl;
+          } else {
+            console.log("La URL no tiene el prefijo 'es.', no se necesita ninguna acción.");
+          }
+      },
+      toggleMenu() {
+        this.isMenuOpen = !this.isMenuOpen;
+      },
   }
 };
 </script>
@@ -99,5 +146,70 @@ export default {
     text-align: center;
   }
 
+  .user-profile {
+    position: absolute;
+    right: 5%;
+    top: -30px;
+  }
 
+  .language-selector {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .selected-language {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border-radius: 5px;
+  }
+
+.language {
+    margin-right: 0.5rem;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
+    -webkit-background-clip: text;
+    color: transparent;
+    text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
+    font-family: 'Roboto', sans-serif;
+    font-size: 11px; 
+    text-transform: uppercase;
+    border-radius: 15px;
+    color: #94999d;
+    position: relative;
+    top: 1px;
+  }
+
+  .language-menu {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+    backdrop-filter: blur( 16px );
+    -webkit-backdrop-filter: blur( 16px );
+    border-radius: 5px;
+    z-index: 1000;
+    display: none;
+  }
+
+    .language-menu label {
+      display: block;
+      padding: 0.5rem;
+      cursor: pointer;
+    }
+
+    .language-menu.active {
+      display: block;
+    }
+
+    .menu-label1 {
+  color: #94999d;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  position: relative; 
+  top: 1px;
+}
+
+.menu-label1:hover {
+  color: #ffffff;
+}
 </style>
