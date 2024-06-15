@@ -63,7 +63,7 @@
     </h2>
     <div class="adv-search-section">
       <div class="centered-container">
-        <div style="margin-left: 20px; font-size: 12px; ">
+        <div style="margin-left: 15px; font-size: 12px; ">
           <p for="searchType">Tipo de búsqueda:</p>
           <select v-model="selectedSearchType" class="genre-select" id="searchType" @change="updateGenres">
             <option value="">Elija una opción</option>
@@ -72,7 +72,7 @@
           </select>
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 20px; font-size: 12px;">
+        <div v-if="selectedSearchType" style="margin-left: 15px; font-size: 12px;">
           <p for="searchGenre">Elige Género:</p>
           <select v-model="selectedSearchGenre" class="genre-select" id="searchGenre">
             <option value="">Opcional</option>
@@ -82,7 +82,7 @@
           </select>
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 20px; font-size: 12px;">
+        <div v-if="selectedSearchType" style="margin-left: 15px; font-size: 12px;">
           <p for="year">Año de Estreno:</p>
           <date-picker
             v-model="releaseYear"
@@ -92,7 +92,7 @@
           />
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 20px; font-size: 12px;">
+        <div v-if="selectedSearchType" style="margin-left: 15px; font-size: 12px;">
           <p for="sortBy">Ordenar Por:</p>
           <select v-model="selectedSortBy" class="genre-select" id="sortBy">
             <option value="popularity.desc">Más Popular</option>
@@ -102,7 +102,7 @@
           </select>
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 20px; font-size: 12px;">
+        <div v-if="selectedSearchType" style="margin-left: 15px; font-size: 12px;">
           <p for="originCountry">País de Origen:</p>
           <select v-model="selectedOriginCountry" class="genre-select" id="originCountry">
             <option value="">Opcional</option>
@@ -253,8 +253,8 @@
 
           </div>
         </div>
-        <div v-if="MinRatingForLabel === 0" style="bottom: 17px; position: relative; top: -18px; max-width:320px;">
-          *Para obtener los mejores resultados, el valor mínimo de calificación predeterminado es 7/10. *Hasta 40 resultados por búsqueda.
+        <div v-if="MinRatingForLabel === 0" style="bottom: 17px; text-align: center; position: relative; top: -18px; margin: 0 auto; left: 0; right: 0; max-width:320px;">
+          *Para obtener los mejores resultados, el valor de calificación mínimo predeterminado es 7/10, con un máximo de 40 resultados por búsqueda.
         </div>
       </div>  
     </div>
@@ -323,7 +323,7 @@
   </main>
 </template>
   
-  <script>
+<script>
     import DatePicker from 'vue2-datepicker';
     import supabase from '@/services/supabase';
     import 'vue2-datepicker/index.css';
@@ -421,7 +421,7 @@
           selectedSortBy: 'popularity.desc',
           selectedOriginCountry: '',
           ratings: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-          selectedMinPuntaje: localStorage.getItem('selectedMinRating') || '7',
+          selectedMinRating: localStorage.getItem('selectedMinRating') || '7',
           MinRatingForLabel: 0,
           asterisk: '*',
           movies: [],
@@ -865,9 +865,9 @@
         }
       },
     };
-  </script>
+</script>
     
-  <style scoped>
+<style scoped>
     .world-icon {
       width: 13px;
       height: 13px;

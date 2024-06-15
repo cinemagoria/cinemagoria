@@ -83,8 +83,8 @@ export default {
 <style>
 .alert--bottom {
     position: fixed;
-    bottom: 40px;
-    width: 90%;
+    bottom: -1px;
+    width: 95%;
     left: 50%;
     transform: translateX(-50%);
     z-index: 2000;
