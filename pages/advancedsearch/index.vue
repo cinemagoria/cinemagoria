@@ -252,8 +252,8 @@
             </button>
           </div>
         </div>
-        <div v-if="MinRatingForLabel === 0" style="bottom: 17px; position: relative; top: -12px; max-width:320px;">
-          *For best results, the default minimum rating value is 7/10. *Up to 40 results per search.
+        <div v-if="MinRatingForLabel === 0" style="bottom: 17px; text-align: center; position: relative; top: -18px; margin: 0 auto; left: 0; right: 0; max-width:320px;">
+          *For optimal results, the default minimum rating is set to 7/10, with up to 40 results per search.
         </div>
       </div>  
       </div>

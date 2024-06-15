@@ -507,10 +507,6 @@ export default {
       cursor: pointer;
     }
 
-    .language-menu label:hover {
-      background-color: #f5f5f5;
-    }
-
     .language-menu.active {
       display: block;
     }

@@ -2,7 +2,7 @@
   <div
     v-if="isOpen"
     class="alert alert--default alert--bottom">
-    <p>Do you want to <a href="#" @click.prevent="install">add 'Cinemathe' in your home screen?</a></p>
+    <p>Do you want to <a href="#" @click.prevent="install">Add 'Cinemathe' in your home screen?</a></p>
 
     <button
       class="alert__close"
@@ -81,11 +81,15 @@ export default {
 <style>
 .alert--bottom {
     position: fixed;
-    bottom: 40px;
-    width: 90%;
+    bottom: -1px;
+    width: 95%;
     left: 50%;
     transform: translateX(-50%);
     z-index: 2000;
     border-radius: 10px;
+}
+
+.alert__close {
+  margin-bottom: 30px !important;
 }
 </style>
