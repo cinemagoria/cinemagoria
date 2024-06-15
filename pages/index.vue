@@ -1,10 +1,10 @@
 <template>
   <main class="main">
     <div v-if="isLoggedIn" class="user-profile">
-        <div class="language-selector" @click="toggleLanguageMenu" style="position: relative; top: -11px; left: -70px;">
-          <div class="selected-language">
+        <div class="language-selector" style="position: relative; top: -11px; left: -70px;">
+          <div class="selected-language" @click="toggleLanguageMenu" >
             <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
-            <span class="language">{{ selectedLanguage === 'english' ? 'En' : 'Es' }}</span>
+            <span class="language">Es</span>  
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'español'" style="width: 24px; height: 24px; left: -70px;">
               <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
             </svg>
@@ -36,10 +36,10 @@
       </div>
 
       <div v-else class="user-profile-else" style="margin-top: -5px;">
-        <div class="language-selector" @click="toggleLanguageMenu" style="position: relative;top: -28px;left: -69px;">
-        <div class="selected-language">
+        <div class="language-selector" style="position: relative;top: -28px;left: -69px;">
+        <div class="selected-language" @click="toggleLanguageMenu">
           <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
-          <span class="language">{{ selectedLanguage === 'english' ? 'En' : 'Es' }}</span>
+          <span class="language">Es</span>  
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'español'" style="width: 24px; height: 24px;">
             <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
           </svg>
@@ -178,7 +178,6 @@ export default {
       }
     },
     changeLanguage(language) {
-      this.selectedLanguage = language;
       const currentPath = this.$route.path;
       const currentOrigin = window.location.origin;
       const isSpanish = currentOrigin.includes('es.');
