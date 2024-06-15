@@ -169,6 +169,10 @@ export default {
       this.userAvatar = await getUserAvatar(this.userEmail);
       this.userName = await getUserName(this.userEmail);
     }
+    this.$root.$on('clear-search', this.clearSearch);
+  },
+  beforeDestroy() {
+    this.$root.$off('clear-search', this.clearSearch);
   },
   methods: {
     toggleLanguageMenu() {
@@ -222,8 +226,12 @@ export default {
         });
       }
     },
-    goBack() {
+    clearSearch() {
       this.query = '';
+    },
+
+    goBack() {
+      this.clearSearch();
       this.$router.go(-1);
     },
 

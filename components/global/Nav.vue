@@ -5,14 +5,16 @@
         <nuxt-link
           exact
           :to="{ name: 'index' }"
-          aria-label="Home">
+          aria-label="Home"
+          @click.native="clearSearchBeforeNavigate">
           <img src="~static/icon-medium.png" alt="Home" style="width: 32px; height: 32px;" />
         </nuxt-link>
       </li>
       <li>
         <nuxt-link
           :to="{ name: 'advancedsearch' }"
-          aria-label="Advanced Search">
+          aria-label="Advanced Search"
+          @click.native="clearSearchBeforeNavigate">
           <img :src="require('~/static/icon-advancedsearch.png')" alt="Login" style="width: 24px; height: 24px; margin-top: 2px;" />
         </nuxt-link>
       </li>
@@ -20,7 +22,8 @@
       <li>
         <nuxt-link
           :to="{ name: 'movie' }"
-          aria-label="Movies">
+          aria-label="Movies"
+          @click.native="clearSearchBeforeNavigate">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
             <g fill="none" stroke="#fff" stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round" stroke-linecap="round">
               <path d="M3.2 12.8h19.6v9.5c0 .5-.4.9-1 .9H4.1c-.5 0-1-.4-1-.9v-9.5"/>
@@ -33,7 +36,8 @@
       <li>
         <nuxt-link
           :to="{ name: 'tv' }"
-          aria-label="TV Shows">
+          aria-label="TV Shows"
+          @click.native="clearSearchBeforeNavigate">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
             <g fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10">
               <path d="M21.4 23H2.6c-.9 0-1.6-.7-1.6-1.6V8.9c0-.9.7-1.6 1.6-1.6h18.9c.8 0 1.5.7 1.5 1.6v12.6c0 .8-.7 1.5-1.6 1.5"/>
@@ -44,12 +48,12 @@
       </li>
 
       <li v-if="!isLoggedIn">
-        <nuxt-link exact to="/login" aria-label="Auth">
+        <nuxt-link exact to="/login" aria-label="Auth" @click.native="clearSearchBeforeNavigate">
           <img :src="require('~/static/icon-login.png')" alt="Login" style="width: 24px; height: 24px; margin-top: 2px;" />
         </nuxt-link>
       </li>
       <li v-else>
-        <nuxt-link exact to="/profile" aria-label="Profile">
+        <nuxt-link exact to="/profile" aria-label="Profile" @click.native="clearSearchBeforeNavigate">
           <img :src="require('~/static/icon-profile.png')" alt="Profile" style="width: 24px; height: 24px; margin-top: 2px;" />
         </nuxt-link>
       </li>
@@ -84,6 +88,9 @@ export default {
   },
 
   methods: {
+    clearSearchBeforeNavigate() {
+      this.$root.$emit('clear-search');
+    },
     toggleSearch () {
       if (this.$route.name !== 'search') {
         this.$store.commit('search/toggleSearch');
