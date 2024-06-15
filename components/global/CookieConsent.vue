@@ -1,14 +1,14 @@
 <template>
   <div
     v-if="isOpen"
-    class="alert alert--alt">
-    <p>Utilizamos cookies para mejorar su experiencia de navegación en nuestro sitio web. Al este sitio web, usted acepta el uso de cookies y otras tecnologías de tracking. <a target="_blank" href="/terms" rel="noopener">Más Información</a>.</p>
+    class="alert alert--alt alert--bottom"> 
+    <p>Utilizamos cookies y otras tecnologías de seguimiento para mejorar tu experiencia de navegación en nuestro sitio web. Al utilizar nuestro sitio web, aceptas nuestro uso de cookies y otras tecnologías de seguimiento. <a target="_blank" href="/terms" rel="noopener">Más información</a>.</p>
 
-    <div style="background-color: black;">
+    <div>
       <button
         class="alert__btn alert__btn--secondary button"
         type="button"
-        aria-label="Close"
+        aria-label="Cerrar"
         @click="decline">
         Rechazar
       </button>
@@ -16,7 +16,7 @@
       <button
         class="alert__btn alert__btn--primary button"
         type="button"
-        aria-label="Close"
+        aria-label="Cerrar"
         @click="accept">
         Aceptar
       </button>
@@ -79,3 +79,15 @@ export default {
   },
 };
 </script>
+
+<style>
+.alert--bottom {
+    position: fixed;
+    bottom: 40px;
+    width: 90%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    border-radius: 10px;
+}
+</style>

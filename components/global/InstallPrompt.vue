@@ -1,18 +1,13 @@
 <template>
   <div
     v-if="isOpen"
-    class="alert alert--default">
-    <p style="max-width: 86%;"><a href="#" @click.prevent="install">¿Añadir Cinemathe a su pantalla de inicio?</a></p>
+    class="alert alert--default alert--bottom"> 
+    <p>¿Quieres <a href="#" @click.prevent="install">añadir a 'Cinemathe' en tu pantalla de inicio?</a></p>
 
     <button
-      style="-webkit-appearance: button; 
-      cursor: pointer; 
-      position: absolute;
-      right: 0.2%;
-      margin-left: 2rem;"
       class="alert__close"
       type="button"
-      aria-label="Close"
+      aria-label="Cerrar"
       @click="close">
       <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-miterlimit="10" stroke-width="1.5"><path d="M.75.75l13.5 13.5M14.25.75L.75 14.25"/></g></svg>
     </button>
@@ -82,3 +77,15 @@ export default {
   },
 };
 </script>
+
+<style>
+.alert--bottom {
+    position: fixed;
+    bottom: 40px;
+    width: 90%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    border-radius: 10px;
+}
+</style>
