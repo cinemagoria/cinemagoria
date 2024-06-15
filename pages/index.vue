@@ -257,7 +257,7 @@ export default {
 
   .avatar-container-else {
     position: relative;
-    top: -49.5px;
+    top: -49.8px;
     font-size: 11.5px;
     left: 10px;
     cursor: pointer;
