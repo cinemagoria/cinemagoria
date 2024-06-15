@@ -63,7 +63,7 @@
     </h2>
     <div class="adv-search-section">
       <div class="centered-container">
-        <div style="margin-left: 20px; font-size: 12px;">
+        <div style="margin-left: 15px; font-size: 12px;">
           <p for="searchType">Choose Type:</p>
           <select v-model="selectedSearchType" class="genre-select" id="searchType" @change="updateGenres">
             <option value="">Choose One</option>
@@ -72,7 +72,7 @@
           </select>
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 20px; font-size: 12px;">
+        <div v-if="selectedSearchType" style="margin-left: 15px; font-size: 12px;">
           <p for="searchGenre">Choose Genre:</p>
           <select v-model="selectedSearchGenre" class="genre-select" id="searchGenre">
             <option value="">Optional</option>
@@ -82,7 +82,7 @@
           </select>
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 20px; font-size: 12px;">
+        <div v-if="selectedSearchType" style="margin-left: 15px; font-size: 12px;">
         <p for="year">Release Year:</p>
         <date-picker
           v-model="releaseYear"
@@ -92,7 +92,7 @@
         />
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 20px; font-size: 12px;">
+        <div v-if="selectedSearchType" style="margin-left: 15px; font-size: 12px;">
           <p for="sortBy">Sort By:</p>
           <select v-model="selectedSortBy" class="genre-select" id="sortBy">
             <option value="popularity.desc">Most Popular</option>
@@ -102,7 +102,7 @@
           </select>
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 20px; font-size: 12px;">
+        <div v-if="selectedSearchType" style="margin-left: 15px; font-size: 12px;">
           <p for="originCountry">Origin Country:</p>
           <select v-model="selectedOriginCountry" class="genre-select" id="originCountry">
             <option value="">Optional</option>
