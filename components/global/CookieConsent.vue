@@ -1,24 +1,24 @@
 <template>
   <div
     v-if="isOpen"
-    class="alert alert--alt">
-    <p>We use cookies and other tracking technologies to improve your browsing experience on our website. By using our website, you consent to our use of cookies and other tracking technologies. <a target="_blank" href="/terms" rel="noopener">Find out more</a>.</p>
+    class="alert alert--alt alert--bottom"> 
+    <p>We use cookies and other tracking technologies to enhance your browsing experience. By using this website, you agree to the use of cookies and other tracking technologies. <a target="_blank" href="/terms" rel="noopener">More Information</a>.</p>
 
-    <div style="background-color: black;">
+    <div>
       <button
         class="alert__btn alert__btn--secondary button"
         type="button"
-        aria-label="Close"
+        aria-label="Cerrar"
         @click="decline">
-        Decline
+        Rechazar
       </button>
 
       <button
         class="alert__btn alert__btn--primary button"
         type="button"
-        aria-label="Close"
+        aria-label="Cerrar"
         @click="accept">
-        Accept
+        Aceptar
       </button>
     </div>
   </div>
@@ -79,3 +79,15 @@ export default {
   },
 };
 </script>
+
+<style>
+.alert--bottom {
+    position: fixed;
+    bottom: 40px;
+    width: 90%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    border-radius: 10px;
+}
+</style>

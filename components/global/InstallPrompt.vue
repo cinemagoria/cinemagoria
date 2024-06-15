@@ -1,15 +1,10 @@
 <template>
   <div
     v-if="isOpen"
-    class="alert alert--default">
-    <p style="max-width: 86%;">Do you want to <a href="#" @click.prevent="install">Add Cinemathe in your home screen?</a></p>
+    class="alert alert--default alert--bottom">
+    <p>Do you want to <a href="#" @click.prevent="install">add 'Cinemathe' in your home screen?</a></p>
 
     <button
-      style="-webkit-appearance: button; 
-      cursor: pointer; 
-      position: absolute;
-      right: 0.2%;
-      margin-left: 2rem;"
       class="alert__close"
       type="button"
       aria-label="Close"
@@ -82,3 +77,15 @@ export default {
   },
 };
 </script>
+
+<style>
+.alert--bottom {
+    position: fixed;
+    bottom: 40px;
+    width: 90%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    border-radius: 10px;
+}
+</style>
