@@ -1,15 +1,15 @@
 <template>
   <main class="main" style="top:-50px; position: relative;">
     <div v-if="isLoggedIn" class="user-profile">
-        <div class="language-selector" @click="toggleLanguageMenu" style="position: relative; top: 59px; left: -70px;"> 
-          <div class="selected-language">
+        <div class="language-selector" style="position: relative; top: 59.60px; left: -62px;">
+          <div class="selected-language" @click="toggleLanguageMenu">
             <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
-            <span class="language">{{ selectedLanguage === 'spanish' ? 'Es' : 'En' }}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'english'" style="width: 24px; height: 24px; left: -70px;">
+            <span class="language">En</span>  
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" style="width: 24px; height: 24px; left: -70px;">
               <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
             </svg>
           </div>
-          <div ref="languageMenu" class="language-menu">
+          <div ref="languageMenu" class="language-menu" :style="{ display: showLanguageMenu ? 'block' : 'none' }">
             <label class="menu-label1" @click="changeLanguage('spanish')">
               <span>Español</span>
             </label>
@@ -35,16 +35,16 @@
         </div>
       </div>
       <div v-else class="user-profile-else">
-        <div class="language-selector" @click="toggleLanguageMenu" style="position: relative; top: -35px; left: -69px;">
-          <div class="selected-language">
+        <div class="language-selector" style="position: relative; top: -35.200px; left: -57px;">
+          <div class="selected-language" @click="toggleLanguageMenu">
             <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
-            <span class="language">{{ selectedLanguage === 'spanish' ? 'Es' : 'En' }}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'english'" style="width: 24px; height: 24px;">
+            <span class="language">En</span>  
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" style="width: 24px; height: 24px; left: -70px;">
               <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
             </svg>
           </div>
-          <div ref="languageMenu" class="language-menu">
-            <label class="menu-label1"  @click="changeLanguage('spanish')">
+          <div ref="languageMenu" class="language-menu" :style="{ display: showLanguageMenu ? 'block' : 'none' }">
+            <label class="menu-label1" @click="changeLanguage('spanish')">
               <span>Español</span>
             </label>
           </div>
@@ -565,21 +565,16 @@
       },
 
       toggleLanguageMenu() {
-        this.showLanguageMenu = !this.showLanguageMenu;
-        const menu = this.$refs.languageMenu;
-        if (menu) {
-          menu.style.display = this.showLanguageMenu ? 'block' : 'none';
-        }
+      this.showLanguageMenu = !this.showLanguageMenu;
       },
       changeLanguage(language) {
-        this.selectedLanguage = language;
         const currentPath = this.$route.path;
         const currentOrigin = window.location.origin;
         const spanishUrl = `${currentOrigin.replace(
           '://',
           '://es.'
         )}${currentPath}`;
-        window.location.href = spanishUrl;
+        window.location.href = spanishUrl; // Realiza la redirección
       },
 
   
@@ -873,7 +868,7 @@
   }
 
   .language {
-    margin-right: 0.5rem;
+    margin-right: 0.2rem;
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
     -webkit-background-clip: text;
     color: transparent;

@@ -2,11 +2,11 @@
   <main class="main">
     <section class="profile-section">
       <br>
-      <div class="user-profile">
-        <div class="language-selector" @click="toggleLanguageMenu" style="position: relative; top: 44px; left: -70px;"> 
-          <div class="selected-language">
+      <div v-if="isLoggedIn" class="user-profile">
+        <div class="language-selector" style="position: relative; top: 44px; left: -70px;"> 
+          <div class="selected-language" @click="toggleLanguageMenu" >
             <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
-            <span class="language">{{ selectedLanguage === 'spanish' ? 'Es' : 'En' }}</span>
+            <span class="language">En</span>  
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'english'" style="width: 24px; height: 24px; left: -70px;">
               <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
             </svg>
@@ -34,6 +34,27 @@
               <span class="menu-label2">Log out</span>
             </div>
           </div>
+        </div>
+      </div>
+      <div v-else class="user-profile-else">
+        <div class="language-selector" style="position: relative;top: -60.2px; left: -57px;">
+          <div class="selected-language" @click="toggleLanguageMenu">
+            <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
+            <span class="language">En</span>  
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" style="width: 24px; height: 24px; left: -70px;">
+              <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
+            </svg>
+          </div>
+          <div ref="languageMenu" class="language-menu" :style="{ display: showLanguageMenu ? 'block' : 'none' }">
+            <label class="menu-label1" @click="changeLanguage('spanish')">
+              <span>Español</span>
+            </label>
+          </div>
+        </div>
+        <div class="avatar-container-else" @click="toggleMenu">
+            <div>
+              <span class="menu-label1" @click="goToLogin">Sign In</span>
+            </div>
         </div>
       </div>
       <br>
@@ -313,6 +334,10 @@ export default {
       this.currentPage = this.totalPages;
     },
 
+    goToLogin() {
+        this.$router.push('/login');
+      },
+
     getLink(item) {
       if (item.details.typeForDb === 'movie') {
         return `https://cinemathe.space/movie/${item.details.idForDb}`;
@@ -384,6 +409,52 @@ export default {
 </script>
 
 <style scoped>
+.avatar-container-else {
+    position: relative;
+    top: -81.5px;
+    font-size: 11.5px;
+    left: 10px;
+    cursor: pointer;
+  }
+
+ .user-profile-else {
+    position: absolute;
+    right: 4.10%;
+  }
+
+  .avatar-else {
+    width: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.654);
+    height: 40px;
+    box-shadow: 0 5px 32px 0 rgba(31, 97, 135, 0.37);
+    border-radius: 50%;
+    margin-left: 50px;
+    margin-bottom: 5px;
+    cursor: pointer;
+  }
+
+  .dropdown-menu-else {
+    position: relative; 
+    top: 100%;
+    height: 38px;
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 3px 15px 0 rgba(31, 97, 135, 0.37); 
+    border: 1px solid #acafb5;
+    border-radius: 5px;
+    z-index: 100;
+    display: none;
+  }
+
+  .dropdown-menu-else.block + .avatar-else {
+    margin-left: 20px;
+  }
+
+  .dropdown-menu-else {
+    display: block;
+    left: 5px;
+    top: 2px;
+  }
+
   .world-icon {
     width: 13px;
     height: 13px;
@@ -393,7 +464,7 @@ export default {
   }
 
   .language {
-    margin-right: 0.5rem;
+    margin-right: 0.2rem;
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
     -webkit-background-clip: text;
     color: transparent;

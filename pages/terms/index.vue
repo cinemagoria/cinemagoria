@@ -2,10 +2,10 @@
   <main class="main">
     <section class="terms-section">
       <div class="user-profile">
-        <div class="language-selector" @click="toggleLanguageMenu" style="position: relative; top: 43px;"> 
-          <div class="selected-language">
+        <div class="language-selector" style="position: relative; top: 43px;"> 
+          <div class="selected-language"  @click="toggleLanguageMenu" >
             <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-right: 4px; width: 13px; height: 13px; margin-right: 4px;">
-            <span class="language">{{ selectedLanguage === 'spanish' ? 'Es' : 'En' }}</span>
+            <span class="language">En</span>  
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'english'" style="width: 24px; height: 24px; left: -70px;">
               <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
             </svg>

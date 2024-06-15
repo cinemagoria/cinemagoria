@@ -1,20 +1,20 @@
 <template>
   <main class="main">
     <div v-if="isLoggedIn" class="user-profile">
-      <div class="language-selector" @click="toggleLanguageMenu" style="position: relative; top: -20px; left: -57px;">
-        <div class="selected-language">
-          <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
-          <span class="language">{{ selectedLanguage === 'spanish' ? 'Es' : 'En' }}</span>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'english'" style="width: 24px; height: 24px; left: -70px;">
-            <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
-          </svg>
+        <div class="language-selector" style="position: relative; top: -20px; left: -50px;">
+          <div class="selected-language" @click="toggleLanguageMenu">
+            <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
+            <span class="language">En</span>  
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" style="width: 24px; height: 24px; left: -70px;">
+              <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
+            </svg>
+          </div>
+          <div ref="languageMenu" class="language-menu" :style="{ display: showLanguageMenu ? 'block' : 'none' }">
+            <label class="menu-label1" @click="changeLanguage('spanish')">
+              <span>Español</span>
+            </label>
+          </div>
         </div>
-        <div ref="languageMenu" class="language-menu">
-          <label class="menu-label1" @click="changeLanguage('spanish')">
-            <span>Español</span>
-          </label>
-        </div>
-      </div>
       
         <div class="avatar-container" @click="toggleMenu">
           <span class="user-email">{{ userEmail }}</span>
@@ -37,20 +37,20 @@
       </div>
 
       <div v-else class="user-profile-else">
-        <div class="language-selector" @click="toggleLanguageMenu" style="position: relative; top: -26px; left: -69px;">
-        <div class="selected-language">
-          <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
-          <span class="language">{{ selectedLanguage === 'spanish' ? 'Es' : 'En' }}</span>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'english'" style="width: 24px; height: 24px;">
-            <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
-          </svg>
+        <div class="language-selector" style="position: relative; top: -26px; left: -57px;">
+          <div class="selected-language" @click="toggleLanguageMenu">
+            <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
+            <span class="language">En</span>  
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" style="width: 24px; height: 24px; left: -70px;">
+              <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
+            </svg>
+          </div>
+          <div ref="languageMenu" class="language-menu" :style="{ display: showLanguageMenu ? 'block' : 'none' }">
+            <label class="menu-label1" @click="changeLanguage('spanish')">
+              <span>Español</span>
+            </label>
+          </div>
         </div>
-        <div ref="languageMenu" class="language-menu">
-          <label class="menu-label1"  @click="changeLanguage('spanish')">
-            <span>Español</span>
-          </label>
-        </div>
-      </div>
       <div class="avatar-container-else" @click="toggleMenu">
           <div>
             <span class="menu-label1" @click="goToLogin">Sign In</span>
@@ -179,7 +179,6 @@ export default {
       }
     },
     changeLanguage(language) {
-      this.selectedLanguage = language;
       const currentPath = this.$route.path;
       const currentOrigin = window.location.origin;
       const spanishUrl = `${currentOrigin.replace(
@@ -256,13 +255,13 @@ export default {
 
   .avatar-container {
     position: relative;
-    top: -53.4px;
+    top: -53.8px;
     cursor: pointer;
   }
 
   .avatar-container-else {
     position: relative;
-    top: -47.7px;
+    top: -47.756px;
     font-size: 11.5px;
     left: 10px;
     cursor: pointer;
@@ -278,7 +277,7 @@ export default {
   }
 
   .language {
-    margin-right: 0.5rem;
+    margin-right: 0.2rem;
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
     -webkit-background-clip: text;
     color: transparent;
