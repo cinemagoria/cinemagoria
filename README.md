@@ -121,7 +121,7 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
   Implement advanced search by year, genre, and rating. This feature will enhance the search functionality, enabling users to filter their search queries more precisely. Users will be able to search by specific years, genres, and ratings, making it easier to find exactly what they're looking for. [Changelog.](https://github.com/imprvhub/cinemathe/commit/ec436b5c5772836a3332506ffb0804b479061ab9)
 
 - **Feat: Real-time Favorite Deletion**  
-  Live deletion of favorites from the profile page. Users will be able to delete their favorites in real-time directly from their profile page, providing a more seamless and interactive experience.
+  Live deletion of favorites from the profile page. Users will be able to delete their favorites in real-time directly from their profile page, providing a more seamless and interactive experience. [Changelog.](https://github.com/imprvhub/cinemathe/commit/c0f81dfb455e345522eb1092dd5dce212822446a)
 
 - **Feat: Add Letterboxd Link to Movie Details**  
   This feature adds a Letterboxd link to the movie details page. The link is conditionally displayed based on the content type; it is visible only for movies and not for TV series. This differentiation is made because Letterboxd supports movies exclusively, not TV shows. [Changelog.](https://github.com/imprvhub/cinemathe/commit/fa1ffadb354fc7eeac0754ad8e465e00c9073eb0)
