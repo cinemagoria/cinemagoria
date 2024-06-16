@@ -104,8 +104,17 @@
                   : (item.details.yearStartForDb + (item.details.yearEndForDb ? `-${item.details.yearEndForDb}` : ''))
                 }}
               </p>
-              <p v-if="item.details.starsForDb">Rating: {{ formatRating(item.details.starsForDb) }}</p>
-              <p v-else>Rating: Not Specified</p>
+
+              <div class="card__content">
+                <div v-if="item.details.starsForDb" class="card__stars">
+                  <div :style="{ width: `${calculateStarsWidth(formatRating(item.details.starsForDb))}%` }"></div>
+                </div>
+                <div class="card__rating">
+                  <p v-if="item.details.starsForDb">{{ formatRating(item.details.starsForDb) }}</p>
+                  <p v-else>Not Specified</p>
+                </div>
+              </div>
+
               <svg fill="84E1F6" height="26px" width="26px" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 446.04" @click="removeFavorite(item)" class="delete-icon">
                   <defs>
                       <style>
@@ -187,6 +196,9 @@ async function getUserName(userEmail) {
 }
 
 export default {
+  props: {
+    item: Object,
+  },
   data() {
     return {
       showLanguageMenu: false,
@@ -390,6 +402,17 @@ export default {
     formatRating(stars) {
       return (stars / 10).toFixed(1);
     },
+    calculateStarsWidth(rating) {
+      const maxRating = 10;
+      const starWidth = 100 / maxRating;
+      const ratingInteger = Math.floor(rating);
+      const ratingDecimal = rating - ratingInteger;
+      let width = ratingInteger * starWidth;
+      if (ratingDecimal > 0) {
+        width += starWidth * ratingDecimal;
+      }
+      return width;
+    },
 
     goToFirst() {
       this.currentPage = 1;
@@ -486,6 +509,37 @@ export default {
 </script>
 
 <style scoped>
+.card__content {
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  margin: -5px;
+}
+
+.card__stars {
+  width: 7.3rem;
+  height: 1.2rem;
+  background-image: url('~assets/images/stars.png');
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  position: relative;
+  margin-right: 0.5rem; 
+}
+
+.card__stars > div {
+  height: 100%;
+  background-image: url('~assets/images/stars-filled.png');
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.card__rating {
+  margin-top: 0.30rem;
+}
+
 .avatar-container-else {
     position: relative;
     top: -81.5px;
