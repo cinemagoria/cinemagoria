@@ -600,9 +600,11 @@ export default {
     cursor: pointer;
 }
 
-.delete-icon:hover,
-.delete-icon:hover .cls-1 {
+@media screen and (min-width: 724px) {
+  .delete-icon:hover,
+  .delete-icon:hover .cls-1 {
     fill: #ff0000;
+  }
 }
 
 
