@@ -116,10 +116,3 @@
     background-size: auto 100%;
   }
 }
-
-@media (max-width: $breakpoint-xsmall - 1) {
-  .card__name,
-  .card__rating {
-    display: none;
-  }
-}
