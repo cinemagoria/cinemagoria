@@ -205,7 +205,7 @@ export default {
     signOut() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('email');
-      window.location.href = '/';
+      window.location.href = 'https://es.cinemathe.space/';
     }
   },
 

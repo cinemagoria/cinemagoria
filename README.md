@@ -59,7 +59,7 @@ SUPABASE_ANON_KEY=<Enter the anonymous key for your database, e.g., your Supabas
   ```bash
   yarn dev
   ```
-  The project should be accesible at, e.g., 'https://es.cinemathe.space'
+  The project should be accesible at, e.g., 'http://localhost:3000'
 
 <hr>
 
