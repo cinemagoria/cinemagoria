@@ -136,7 +136,7 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
   Improve responsiveness of the favorite collection menu on the profile page for resolutions wider than 600px. This fix will enhance the layout and usability of the favorites menu on larger screens.
 
 - **Fix: Star Ratings in Profile**  
-  Add stars to the ratings in profile/index.vue. This fix will visually represent user ratings with star icons, providing a clearer and more intuitive rating system.
+  Integrate star icons into the user ratings section of profile/index.vue. This enhancement will visually display user ratings using stars, offering a more clear and intuitive representation of ratings. [Changelog.](https://github.com/imprvhub/cinemathe/commit/7475c00b4d9b40841c730da397e0f40a773c9eea)
 
 - **Fix: Move Language Picker to Top**
   Move the Language Picker from the footer to the top of the page. This change will make it more visible to all users and improve the user experience. [Changelog.](https://github.com/imprvhub/cinemathe/commit/46450650d3b44c72ded83d559abe0f09b2765049)
