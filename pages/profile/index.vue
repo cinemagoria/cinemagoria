@@ -600,11 +600,12 @@ export default {
     cursor: pointer;
 }
 
-.delete-icon:hover,
-.delete-icon:hover .cls-1 {
+@media screen and (min-width: 724px) {
+  .delete-icon:hover,
+  .delete-icon:hover .cls-1 {
     fill: #ff0000;
+  }
 }
-
 
 .navbar-welcome {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
