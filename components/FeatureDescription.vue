@@ -17,7 +17,7 @@ export default {
 <style scoped>
 .feature-description {
   text-align: center;
-  margin-top: 82px;
+  margin-top: 22px;
   padding-bottom: 20px;
 }
 
