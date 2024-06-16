@@ -124,7 +124,7 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
   Live deletion of favorites from the profile page. Users will be able to delete their favorites in real-time directly from their profile page, providing a more seamless and interactive experience.
 
 - **Feat: Add Letterboxd Link to Movie Details**  
-  This feature adds a Letterboxd link to the movie details page. The link is conditionally displayed based on the content type; it is visible only for movies and not for TV series. This differentiation is made because Letterboxd supports movies exclusively, not TV shows.
+  This feature adds a Letterboxd link to the movie details page. The link is conditionally displayed based on the content type; it is visible only for movies and not for TV series. This differentiation is made because Letterboxd supports movies exclusively, not TV shows. [Changelog.](https://github.com/imprvhub/cinemathe/commit/fa1ffadb354fc7eeac0754ad8e465e00c9073eb0)
 
 - **Fix: Profile Name Display Issue**  
   Resolve an issue where the profile name is not displayed on the first launch. This fix will ensure that the profile name is correctly shown when a user accesses their profile for the first time. [Changelog.](https://github.com/imprvhub/cinemathe/commit/1bddc978def7a5d02c861fb5c81b0736cd90512a)
