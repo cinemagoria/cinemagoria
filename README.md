@@ -133,7 +133,7 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
   Resolve an issue where the profile name is not displayed on the first launch. This fix will ensure that the profile name is correctly shown when a user accesses their profile for the first time. [Changelog.](https://github.com/imprvhub/cinemathe/commit/1bddc978def7a5d02c861fb5c81b0736cd90512a)
 
 - **Fix: Favorites Menu Responsiveness**  
-  Improve responsiveness of the favorite collection menu on the profile page for resolutions wider than 600px. This fix will enhance the layout and usability of the favorites menu on larger screens.
+  Improve responsiveness of the favorite collection menu on the profile page for resolutions wider than 600px. This fix will enhance the layout and usability of the favorites menu on larger screens. [Changelog.](https://github.com/imprvhub/cinemathe/commit/5f518c99e227a79290fa2a42b31679ed23d0bfdb)
 
 - **Fix: Star Ratings in Profile**  
   Integrate star icons into the user ratings section of profile/index.vue. This enhancement will visually display user ratings using stars, offering a more clear and intuitive representation of ratings. [Changelog.](https://github.com/imprvhub/cinemathe/commit/7475c00b4d9b40841c730da397e0f40a773c9eea)
