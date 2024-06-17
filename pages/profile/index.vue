@@ -205,7 +205,7 @@ export default {
       tvFetched: [],
       orderText: 'Order Asc',
       currentPage: 1,
-      itemsPerPage: 12,
+      itemsPerPage: 20,
       userAvatar: '/avatars/avatar-ss0.png',
       userFirstName: '', 
       isMenuOpen: false,
@@ -945,7 +945,8 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 8px;
-
+  top: 30px;
+  position: relative;
   gap: 0.5rem;
 }
 
@@ -1125,7 +1126,6 @@ export default {
     margin-top: 3rem;
     margin: 0 auto;
     text-align: center;
-    max-width: 800px; 
   }
 
   h2 {
@@ -1190,7 +1190,7 @@ export default {
     width: 100%; 
     max-width: none;
   }
-
+  
   .movie-card img,
   .tv-show-card img {
     width: 100%; 
