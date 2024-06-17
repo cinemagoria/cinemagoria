@@ -208,7 +208,7 @@ export default {
       tvFetched: [],
       orderText: 'Order Asc',
       currentPage: 1,
-      itemsPerPage: 12,
+      itemsPerPage: 20,
       userAvatar: '/avatars/avatar-ss0.png',
       userFirstName: '', 
       isMenuOpen: false,
@@ -937,12 +937,13 @@ export default {
   }
 
   .pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8px;
-
-  gap: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    gap: 0.5rem;
+    top: 30px;
+    position: relative;
 }
 
 .pagination button {
