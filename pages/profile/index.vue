@@ -1,7 +1,6 @@
 <template>
   <main class="main">
     <section class="profile-section">
-      <br>
       <div v-if="isLoggedIn" class="user-profile">
         <div class="language-selector" style="position: relative; top: 44px; left: -70px;"> 
           <div class="selected-language" @click="toggleLanguageMenu" >
@@ -65,31 +64,29 @@
       <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
         <div class="column">
           <h2 class="text-center" style="color: #acafb5; font-size: 16px;">Favorite {{ filterText }}</h2>
-          <div class="button-container" style="margin-top: 3rem;">
-            <select @change="toggleFilter" class="filter-select">
-              <option value="movies">&nbsp;&nbsp;&nbsp;Show: Movies</option>
-              <option value="tvShows">&nbsp;&nbsp;&nbsp;Show: TV Shows</option>
-            </select>
-            <select @change="toggleOrder" class="order-select">
-              <option value="asc" :selected="orderText === 'Order Asc'">
-                <span class="order-word">&nbsp;&nbsp;&nbsp;Order:</span> <span class="order-option">Last Added</span>
-              </option>
-              <option value="desc" :selected="orderText === 'Order Desc'">
-                <span class="order-word">&nbsp;&nbsp;&nbsp;Order:</span> <span class="order-option">First Added</span>
-              </option>
-            </select>
-            <br>
-          </div>
-          <div class="button-container" style="margin-top: 0.2rem;">
-            <select @change="filterByGenre" class="genre-select">
-              <option value="">&nbsp;&nbsp;&nbsp;All Genres</option>
-              <option v-for="genre in uniqueGenres" :key="genre" :value="genre">&nbsp;&nbsp;&nbsp;{{ genre }}</option>
-            </select>
-            <select @change="filterByYear" class="year-select">
-              <option value="">&nbsp;&nbsp;&nbsp;All Years</option>
-              <option v-for="range in yearRanges" :key="range" :value="range">&nbsp;&nbsp;&nbsp;{{ range }}</option>
-            </select>
-          </div>
+            <div class="button-container" style="margin-top: 2rem;">
+              <select @change="toggleFilter" class="filter-select">
+                <option value="movies">&nbsp;&nbsp;&nbsp;Movies</option>
+                <option value="tvShows">&nbsp;&nbsp;&nbsp;TV Shows</option>
+              </select>
+              <select @change="toggleOrder" class="order-select">
+                <option value="asc" :selected="orderText === 'Order Asc'">
+                  <span class="order-word">&nbsp;&nbsp;&nbsp;</span> <span class="order-option">Last Added</span>
+                </option>
+                <option value="desc" :selected="orderText === 'Order Desc'">
+                  <span class="order-word">&nbsp;&nbsp;&nbsp;</span> <span class="order-option">First Added</span>
+                </option>
+              </select>
+              <select @change="filterByGenre" class="genre-select">
+                <option value="">&nbsp;&nbsp;&nbsp;All Genres</option>
+                <option v-for="genre in uniqueGenres" :key="genre" :value="genre">&nbsp;&nbsp;&nbsp;{{ genre }}</option>
+              </select>
+              <select @change="filterByYear" class="year-select">
+                <option value="">&nbsp;&nbsp;&nbsp;All Years</option>
+                <option v-for="range in yearRanges" :key="range" :value="range">&nbsp;&nbsp;&nbsp;{{ range }}</option>
+              </select>
+              <br>
+            </div>
           </div>
           <div class="movie-grid" style="position: relative; margin-top: 0.3rem;">
             <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
@@ -661,6 +658,8 @@ export default {
   }
 }
 
+
+
 .navbar-welcome {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
   -webkit-background-clip: text;
@@ -790,9 +789,27 @@ export default {
 
   .button-container {
     top: 50%;
-    transform: translateY(-50%);
     right: 20px; 
   }
+
+.button-container select {
+  border-radius: 10px;
+}
+
+
+@media screen and (max-width: 620px) {
+  .button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .button-container select {
+    width: 40%;
+    margin: 0.5rem;
+  }
+}
+
 
   .user-profile {
     position: absolute;
@@ -1112,7 +1129,6 @@ export default {
     text-transform: uppercase;
     margin: 0 auto; 
     max-width: 800px; 
-    margin-bottom: 20px; 
   }
 
   .custom-center {
