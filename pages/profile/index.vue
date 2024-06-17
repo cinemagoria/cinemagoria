@@ -58,7 +58,7 @@
         </div>
       </div>
       <br>
-      <nav class="navbar" style="margin-top: 8rem;">
+      <nav class="navbar" style="margin-top: 2rem;">
         <h1 class="navbar-welcome">¡Bienvenid@ nuevamente!</h1>
       </nav>
       <h2 class="text-center" style="color: #acafb5; font-size: 16px; margin-top: 10px; position: relative; text-transform: none; left: -2px; top: -23px;">{{ userFirstName }}</h2>
@@ -78,8 +78,6 @@
                 <span class="order-word"></span> <span class="order-option">&nbsp;&nbsp;&nbsp;Primeras adiciones</span>
               </option>
             </select>
-          </div>
-          <div class="button-container" style="margin-top: 0.2rem;">
             <select @change="filterByGenre" class="genre-select">
               <option value="">&nbsp;&nbsp;&nbsp;Todos los géneros</option>
               <option v-for="genre in uniqueGenres" :key="genre" :value="genre">&nbsp;&nbsp;&nbsp;{{ genre }}</option>
@@ -89,6 +87,7 @@
               <option v-for="range in yearRanges" :key="range" :value="range">&nbsp;&nbsp;&nbsp;{{ range }}</option>
             </select>
           </div>
+
           <div class="movie-grid" style="position: relative; margin-top: 0.3rem;">
             <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
               <a :href="getLink(item)">
@@ -796,8 +795,25 @@ export default {
 
   .button-container {
     top: 50%;
-    transform: translateY(-50%);
     right: 20px; 
+  }
+
+  .button-container select {
+    border-radius: 10px;
+  }
+
+
+  @media screen and (max-width: 620px) {
+    .button-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .button-container select {
+      width: 40%;
+      margin: 0.5rem;
+    }
   }
 
   .user-profile {
@@ -1119,7 +1135,6 @@ export default {
     text-transform: uppercase;
     margin: 0 auto; 
     max-width: 800px; 
-    margin-bottom: 20px; 
   }
 
   .custom-center {
