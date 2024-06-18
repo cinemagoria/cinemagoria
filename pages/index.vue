@@ -19,9 +19,9 @@
           <span class="user-email">{{ userEmail }}</span>
           <img :src="userAvatar" alt="User Avatar" class="avatar">
           <div v-if="isMenuOpen" class="dropdown-menu">
-            <div class="menu-item" @click="goToProfile">
-              <img src="~/static/icon-profile.png" alt="Settings Icon" class="settings-icon">
-              <span class="menu-label1">Mi Cuenta</span>
+            <div class="menu-item" @click="goTowatchlist">
+              <img src="~/static/icon-watchlist.png" alt="Settings Icon" class="settings-icon">
+              <span class="menu-label1">Mi Lista</span>
             </div>
             <div class="menu-item" @click="goToSettings">
               <img src="~/static/icon-settings.png" alt="Settings Icon" class="settings-icon">
@@ -193,8 +193,8 @@ export default {
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen;
     },
-    goToProfile() {
-      this.$router.push('/profile');
+    goTowatchlist() {
+      this.$router.push('/watchlist');
     },
     goToSettings() {
       this.$router.push('/settings');

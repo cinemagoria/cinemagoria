@@ -197,8 +197,8 @@ export default {
       this.isMenuOpen = !this.isMenuOpen;
     },
 
-    goToProfile() {
-      this.$router.push('/profile');
+    goTowatchlist() {
+      this.$router.push('/watchlist');
     },
 
     goToSettings() {

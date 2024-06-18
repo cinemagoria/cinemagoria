@@ -102,7 +102,7 @@
                   />
                 </svg>
               </span>
-              <span class="txt">{{ isFavorite ? 'Remover de Favoritos' : 'Agregar a Favoritos' }}</span>
+              <span class="txt">{{ isFavorite ? 'Remover de Mi Lista' : 'Añadir a Mi Lista' }}</span>
             </button>
             <button
               class="button button--icon"

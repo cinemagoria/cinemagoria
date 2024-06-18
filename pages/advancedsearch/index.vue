@@ -19,9 +19,9 @@
         <span class="user-email">{{ userEmail }}</span>
         <img :src="userAvatar" alt="Avatar de Usuario" class="avatar">
         <div v-if="isMenuOpen" class="dropdown-menu">
-          <div class="menu-item" @click="goToProfile">
-            <img src="~/static/icon-profile.png" alt="Ícono de Perfil" class="settings-icon">
-            <span class="menu-label1">Mi cuenta</span>
+          <div class="menu-item" @click="goTowatchlist">
+            <img src="~/static/icon-watchlist.png" alt="Ícono de Perfil" class="settings-icon">
+            <span class="menu-label1">Mi Lista</span>
           </div>
           <div class="menu-item" @click="goToSettings">
             <img src="~/static/icon-settings.png" alt="Ícono de Configuración" class="settings-icon">
@@ -71,8 +71,7 @@
             <option value="tv">Serie de TV</option>
           </select>
         </div>
-
-        <div v-if="selectedSearchType" style="margin-left: 15px; font-size: 12px;">
+        <div style="margin-left: 15px; font-size: 12px;">
           <p for="searchGenre">Elige Género:</p>
           <select v-model="selectedSearchGenre" class="genre-select" id="searchGenre">
             <option value="">Opcional</option>
@@ -82,7 +81,7 @@
           </select>
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 15px; font-size: 12px;">
+        <div style="margin-left: 15px; font-size: 12px;">
           <p for="year">Año de Estreno:</p>
           <date-picker
             v-model="releaseYear"
@@ -92,7 +91,7 @@
           />
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 15px; font-size: 12px;">
+        <div style="margin-left: 15px; font-size: 12px;">
           <p for="sortBy">Ordenar Por:</p>
           <select v-model="selectedSortBy" class="genre-select" id="sortBy">
             <option value="popularity.desc">Más Popular</option>
@@ -102,7 +101,7 @@
           </select>
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 15px; font-size: 12px;">
+        <div style="margin-left: 15px; font-size: 12px;">
           <p for="originCountry">País de Origen:</p>
           <select v-model="selectedOriginCountry" class="genre-select" id="originCountry">
             <option value="">Opcional</option>
@@ -165,7 +164,7 @@
           </select>
         </div>
 
-        <div v-if="selectedSearchType" style="font-size: 12px;">
+        <div  style="font-size: 12px;">
           <p style="margin-left: 15px;">
             Calificación Mínima: ({{ MinRatingForLabel }}/10)<span v-if="MinRatingForLabel === 0">{{ asterisk }}</span>
           </p>
@@ -269,18 +268,24 @@
             <div class="movie-card">
               <div v-if="movie.backdrop_path" class="movie-image-container">
                 <img :src="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path" :alt="movie.title" class="movie-image">
-                <h3>{{ truncateTitle(movie.title) }}</h3>
+                
                 <div class="details-container">
-                  <p>{{ extractYear(movie.release_date) }}</p>
-                  <p v-if="movieRatings[movie.id]">Puntaje: {{ movieRatings[movie.id].toFixed(1) }}</p>
+                  <div class="card-background">
+                    <h3>{{ truncateTitle(movie.title) }}</h3>
+                    <p>{{ extractYear(movie.release_date) }}</p>
+                    <p v-if="movieRatings[movie.id]">Puntaje: {{ movieRatings[movie.id].toFixed(1) }}</p>
+                  </div>
                 </div>
               </div>
               <div v-else class="movie-card">
                 <img src="~/static/image_not_found.png" :alt="movie.title" class="movie-image">
-                <h3>{{ truncateTitle(movie.title) }}</h3>
+               
                 <div class="details-container">
-                  <p>{{ extractYear(movie.release_date) }}</p>
-                  <p v-if="movieRatings[movie.id]">Puntaje: {{ movieRatings[movie.id].toFixed(1) }}</p>
+                  <div class="card-background">
+                    <h3>{{ truncateTitle(movie.title) }}</h3>
+                    <p>{{ extractYear(movie.release_date) }}</p>
+                    <p v-if="movieRatings[movie.id]">Puntaje: {{ movieRatings[movie.id].toFixed(1) }}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -297,18 +302,22 @@
             <div class="tv-show-card">
               <div v-if="tvShow.backdrop_path" class="movie-image-container">
                 <img :src="'https://image.tmdb.org/t/p/w500' + tvShow.backdrop_path" :alt="tvShow.name" class="tv-show-image">
-                <h3>{{ truncateTitle(tvShow.name) }}</h3>
-                <div class="details-container">
-                  <p>{{ extractYear(tvShow.first_air_date) }}</p>
-                  <p v-if="tvShowRatings[tvShow.id]">Puntaje: {{ tvShowRatings[tvShow.id].toFixed(1) }}</p>
+                <div class="card-background">
+                  <div class="details-container">
+                    <h3>{{ truncateTitle(tvShow.name) }}</h3>
+                    <p>{{ extractYear(tvShow.first_air_date) }}</p>
+                    <p v-if="tvShowRatings[tvShow.id]">Puntaje: {{ tvShowRatings[tvShow.id].toFixed(1) }}</p>
+                  </div>
                 </div>
               </div>
               <div v-else class="tv-show-card">
                 <img src="~/static/image_not_found.png" :alt="tvShow.name" class="tv-show-image">
-                <h3>{{ truncateTitle(tvShow.name) }}</h3>
-                <div class="details-container">
-                  <p>{{ extractYear(tvShow.first_air_date) }}</p>
-                  <p v-if="tvShowRatings[tvShow.id]">Puntaje: {{ tvShowRatings[tvShow.id].toFixed(1) }}</p>
+                <div class="card-background">
+                  <div class="details-container">
+                    <h3>{{ truncateTitle(tvShow.name) }}</h3>
+                    <p>{{ extractYear(tvShow.first_air_date) }}</p>
+                    <p v-if="tvShowRatings[tvShow.id]">Puntaje: {{ tvShowRatings[tvShow.id].toFixed(1) }}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -590,8 +599,8 @@
         this.isMenuOpen = !this.isMenuOpen;
         },
   
-        goToProfile() {
-        this.$router.push('/profile');
+        goTowatchlist() {
+        this.$router.push('/watchlist');
         },
   
         goToSettings() {
@@ -940,7 +949,7 @@
       background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
       -webkit-background-clip: text;
       color: transparent;
-      margin-top: 7rem;
+      margin-top: 2rem;
       text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
       font-family: 'Roboto', sans-serif;
     }
@@ -1080,16 +1089,15 @@
   
   
     .dropdown-menu {
-      position: relative; 
-      width: 149.574px;
+      position: relative;
+      width: 152.574px;
       top: 100%;
       background: rgba(0, 0, 0, 0.8);
-      box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
-      backdrop-filter: blur( 16px );
-      -webkit-backdrop-filter: blur( 16px );
+      box-shadow: 0 3px 15px 0 rgba(163, 189, 205, 0.37);
+      border: 1px solid #acafb5;
       border-radius: 5px;
-      border: 1px solid rgba( 255, 255, 255, 0.18 );
       z-index: 100;
+      margin: 0 auto;
       display: none;
     }
 
@@ -1436,6 +1444,14 @@
       .order-button span {
         transition: color 0.3s ease;
       }
+
+      .card-background {
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+      background: black;
+      position: relative;
+      top: -10px;
+    }
     
       .rotate-180 {
         transform: rotate(180deg);
@@ -1515,7 +1531,7 @@
       }
     
     
-      .profile-section {
+      .advanced-search-section {
         padding: 10px;
         
       }
@@ -1604,12 +1620,13 @@
       .movie-card img,
       .tv-show-card img {
         width: 60%; 
-        border-radius: 15px;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
         text-align: center;
         box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
         backdrop-filter: blur( 16px );
         -webkit-backdrop-filter: blur( 16px );
-        border: 1px solid rgba( 255, 255, 255, 0.18 );
+        /* border: 1px solid rgba( 255, 255, 255, 0.18 ); */
       }
   
       .spinner {

@@ -48,10 +48,12 @@
 }
 
 .listing__items {
-  display: flex;
-  flex-wrap: wrap;
-  margin-right: -0.4rem;
-  margin-left: -0.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -0.4rem;
+    margin-left: -0.4rem;
+    /* margin: 0 auto; */
+    position: relative;
 }
 
 .listing__nav {

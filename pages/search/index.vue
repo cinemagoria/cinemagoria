@@ -44,7 +44,7 @@ export default {
     },
 
     title () {
-      return this.query ? `Results For: ${this.query}` : '';
+      return this.query ? `Resultados Para: ${this.query}` : '';
     },
   },
 

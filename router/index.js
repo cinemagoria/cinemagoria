@@ -1,14 +1,14 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Profile from '../pages/profile/index.vue';
+import watchlist from '../pages/watchlist/index.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/profile',
-    name: 'Profile',
-    component: Profile,
+    path: '/watchlist',
+    name: 'watchlist',
+    component: watchlist,
     meta: { requiresAuth: true } 
   },
 ];

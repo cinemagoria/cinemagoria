@@ -143,12 +143,25 @@
         color: #ffffff;
     }
 
+    .card__label {
+        font-size: 1.5rem;
+        margin-bottom: .5rem;
+        text-align: center;
+        color: #8BE9FD;
+    }
+    
     .card__info {
-        margin-left: 1rem;
+      background: black;
+      border-end-end-radius: 10px;
+      border-end-start-radius: 10px;
+      position: relative;
+      top: -15px;
     }
 
     .card__image {
         border-radius: 15px;
         cursor: pointer;
+        box-shadow: 0 21px 10px 0 rgba(31, 104, 135, 0.37);
+        backdrop-filter: blur(16px);
     }
 </style>

@@ -108,3 +108,55 @@ export default {
   },
 };
 </script>
+<style>
+    .card__img {
+      position: relative;
+      height: 0;
+      padding-top: 150.27%;
+      overflow: hidden;
+      /* background-color: #000000; */
+      /* border-radius: 15px; */
+      border-start-start-radius: 10px;
+      border-start-end-radius: 10px;
+      transition: transform 0.3s ease-in-out;
+    }
+    .card__name {
+      margin-bottom: 1rem;
+      overflow: hidden;
+      font-size: 1.3rem;
+      background: black;
+      text-align: center;
+      /* border-end-end-radius: 10px; */
+      /* border-end-start-radius: 10px; */
+      text-overflow: ellipsis;
+      letter-spacing: 0.4px;
+      top: -20px;
+      white-space: nowrap;
+      position: relative;
+  }
+
+  .card__rating {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      justify-content: center;
+      background: black;
+      border-bottom-right-radius: 10px;
+      border-bottom-left-radius: 10px;
+      bottom: 10px;
+      padding-bottom: 0.5rem;
+      position: relative;
+      top: -30px;
+
+  }
+
+  .card__stars {
+    text-align: center;
+  }
+
+  .card__vote {
+    text-align: center;
+  }
+
+</style>
+

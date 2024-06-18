@@ -12,6 +12,8 @@
 .card__img {
   position: relative;
   height: 0;
+  box-shadow: 0 38px 10px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
   padding-top: 150.27%;
   overflow: hidden;
   background-color: $secondary-color;
@@ -25,6 +27,8 @@
     overflow: hidden;
     background-color: transparent;    
     transition: transform 0.3s ease-in-out;
+    box-shadow: 0 19px 10px 0 rgba(31, 104, 135, 0.37);
+    backdrop-filter: blur(16px);
   }
   img,
   span {
