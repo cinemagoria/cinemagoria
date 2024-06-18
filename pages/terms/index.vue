@@ -33,7 +33,7 @@
         <h2 class="text-center">BY USING Cinemathe, THE USER ACKNOWLEDGES AND AGREES THAT THE FUNCTIONALITY OF THIS WEBSITE IS DESIGNED EXCLUSIVELY FOR NON-COMMERCIAL OR PROFIT PURPOSES, FOR PRESENTATION TO RECRUITERS. THE CINEMATHE PROJECT IS NOT CERTIFIED OR ENDORSED BY TMDB. AS IT IS DEMONSTRATIVE AND FOR LEARNING PURPOSES BASED ON DATA PROVIDED BY THE TMDB API FOR DEVELOPERS. Cinemathe, ITS DEVELOPMENT TEAM, AND ANY RELATED ENTITY ASSUME NO RESPONSIBILITY FOR THE MISUSE OF THE TMDB API OR ANY OTHER ASPECT OF THE SITE'S FUNCTIONALITY. THE RESPONSIBILITY RESTS SOLELY WITH THE USER, WHO MUST USE THE PLATFORM RESPONSIBLY AND ADHERE TO BEST ONLINE PRACTICES WHEN USING DATA OBTAINED FROM THE TMDB API. IT IS CRUCIAL TO ACKNOWLEDGE THAT ANY MISUSE OF THE FUNCTIONALITY IS BEYOND OUR PURPOSE. PLEASE CONSIDER THE FOLLOWING BEST PRACTICES: AVOID USING THIS WEB APPLICATION FOR ILLEGAL OR MALICIOUS ACTIVITIES. DO NOT USE CINEMATHE IN CRITICAL ENVIRONMENTS OR WITH EXPECTATIONS OF ACTIVE OPERATION. YOUR UNDERSTANDING AND COMPLIANCE WITH THESE GUIDELINES ARE CRUCIAL FOR THE RESPONSIBLE USE OF Cinemathe. WE APPRECIATE YOUR COOPERATION AND HOPE YOU ENJOY THE DEMONSTRATIVE EXPERIENCE OF OUR SERVICE.</h2>
         <h2 class="text-center custom-center"><strong>5. ATTRIBUTIONS:</strong></h2>
         <h2 class="text-center">
-            Social media icons and SVGs are licensed under the Creative Commons Attribution 4.0 International License. Attribution: Font Awesome Free 5.2.0 by @FontAwesome. Learn more at <a href="https://fontawesome.com" target="_blank">Font Awesome</a>, CC BY 4.0 via Wikimedia Commons.
+            Social media icons and SVGs are licensed under the Creative Commons Attribution 4.0 International License. Attribution: Font Awesome Free 5.2.0 by @FontAwesome. Learn more at <a href="https://fontawesome.com" target="_blank">Font Awesome</a>, CC BY 4.0 via Wikimedia Commons. 
             Data regarding movies and TV shows is provided by <a href="https://www.themoviedb.org/" target="_blank">TMDB</a>.
             Data regarding streaming providers, networks, and platforms is provided by <a href="https://www.justwatch.com" target="_blank">JustWatch</a>.
         </h2>
@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     redirectToHome() {
-      window.location.href = 'https://cinemathe.space';
+      window.location.href = 'http://localhost:3000';
     },
 
     toggleLanguageMenu() {

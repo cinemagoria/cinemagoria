@@ -1,6 +1,6 @@
 <template>
   <main class="main">
-    <section class="profile-section">
+    <section class="watchlist-section">
       <div v-if="isLoggedIn" class="user-profile">
         <div class="language-selector" style="position: relative; top: 44px; left: -70px;"> 
           <div class="selected-language" @click="toggleLanguageMenu" >
@@ -58,9 +58,9 @@
       </div>
       <br>
       <nav class="navbar">
-        <h1 class="navbar-welcome">Welcome Back!</h1>
+        <h1 class="navbar-welcome">Watchlist</h1>
       </nav>
-      <h2 class="text-center" style="color: #acafb5; font-size: 16px; margin-top: 10px; position: relative; text-transform: none; left: -2px; top: -23px;">{{ userFirstName }}</h2>
+      <!-- <h2 class="text-center" style="color: #acafb5; font-size: 16px; margin-top: 10px; position: relative; text-transform: none; left: -2px; top: -23px;">{{ userFirstName }}</h2> -->
       <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
         <div class="column">
           <h2 class="text-center" style="color: #acafb5; font-size: 16px;">Favorite {{ filterText }}</h2>
@@ -88,8 +88,20 @@
               <br>
             </div>
           </div>
-          <div class="movie-grid" style="position: relative; margin-top: 0.3rem;">
+          <div class="pagination" v-if="filteredItems.length > itemsPerPage">
+            <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
+            <button @click="prevPage" :disabled="currentPage === 1"><<</button>
+            <span>
+              <label for="page" style="font-size:13px;">Page</label>
+              <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
+            </span>
+            <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
+            <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
+            <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
+          </div>
+          <div class="movie-grid">
             <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
+              <div class="card-background">
               <a :href="getLink(item)">
                 <img :src="item.details.posterForDb" alt="Poster" class="poster" />
                 <h3>{{ item.details.nameForDb }}</h3>
@@ -106,9 +118,9 @@
                 <div v-if="item.details.starsForDb" class="card__stars">
                   <div :style="{ width: `${calculateStarsWidth(formatRating(item.details.starsForDb))}%` }"></div>
                 </div>
-                <div class="card__rating">
+                <div class="card___rating">
                   <p v-if="item.details.starsForDb">{{ formatRating(item.details.starsForDb) }}</p>
-                  <p v-else>Not Specified</p>
+                  <p v-else>Not specified.</p>
                 </div>
               </div>
 
@@ -122,30 +134,20 @@
                           }
                       </style>
                   </defs>
-                  <title>Remove From Favorites.</title>
+                  <title>Remove from Watchlist.</title>
                   <path class="cls-1" d="M252.63 71.41C285.88 36.72 309.17 6.75 360.44.86c96.22-11.07 184.7 87.44 136.11 184.43-.43.85-.88 1.71-1.33 2.58-27.38-23.8-63.15-38.22-102.25-38.22-43.06 0-82.07 17.47-110.29 45.7-28.23 28.23-45.7 67.23-45.7 110.29s17.47 82.06 45.7 110.29l.15.15-30.2 29.96-59.71-57.51C121.09 319.33 3.95 232.26.09 124.36-2.62 48.79 57.02.37 125.62 1.27c61.31.8 87.08 31.31 127.01 70.14zm187.32 214.31c5.88-.05 10.08-.59 9.97 6.7l-.28 23.61c.04 7.62-2.37 9.65-9.51 9.56h-94.32c-7.14.09-9.56-1.94-9.51-9.56l-.29-23.61c-.1-7.29 4.1-6.75 9.97-6.7h93.97zm-46.98-99.11c32.87 0 62.63 13.32 84.17 34.86S512 272.77 512 305.64c0 32.88-13.33 62.64-34.86 84.17-21.54 21.54-51.31 34.86-84.17 34.86-32.88 0-62.64-13.32-84.17-34.86-21.54-21.54-34.87-51.3-34.87-84.17 0-32.88 13.33-62.63 34.86-84.17 21.54-21.54 51.31-34.86 84.18-34.86zm71.79 47.23c-18.37-18.37-43.75-29.74-71.79-29.74-28.04 0-53.43 11.37-71.81 29.74-18.37 18.37-29.73 43.76-29.73 71.8s11.36 53.43 29.74 71.8c18.37 18.37 43.75 29.74 71.8 29.74 28.03 0 53.42-11.37 71.8-29.74 18.37-18.37 29.73-43.76 29.73-71.8s-11.36-53.43-29.74-71.8z"/>
               </svg>
 
             </div>
+            </div>
           </div>
           <br>
-          <div class="pagination" v-if="filteredItems.length > itemsPerPage">
-            <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
-            <button @click="prevPage" :disabled="currentPage === 1"><<</button>
-            <span>
-              <label for="page" style="font-size:13px;">Page</label>
-              <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
-            </span>
-            <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
-            <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
-            <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
-          </div>
+          
       </div>
       
       <div v-else>
         <p style="text-align: center;">No favorites added yet.</p>
       </div>
-      <br>
     </section>
   </main>
 </template>
@@ -220,7 +222,6 @@ export default {
     };
   },
   async mounted() {
-
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');
     this.userEmail = email || '';
@@ -228,8 +229,92 @@ export default {
     this.isLoggedIn = accessToken !== null;
     this.checkData();
     this.userAvatar = await getUserAvatar(this.userEmail);
-    await this.fetchUserFirstName(); 
-  },
+    await this.fetchUserFirstName();
+
+    const detailsArray = this.tvFetched.map(({ details }) => details);
+    const currentYear = new Date().getFullYear();
+    const pastYearsLimit = currentYear - 5;
+
+    const filteredArray = detailsArray.filter(item => item.yearEndForDb >= pastYearsLimit);
+
+    const additionalSeries = detailsArray.filter(item => item.nextEpisode !== null && item.nextEpisode !== undefined);
+
+    const uniqueSeries = [...new Set([...filteredArray, ...additionalSeries])];
+
+    const seriesIds = uniqueSeries.map(item => item.idForDb);
+
+    async function fetchSeriesDetails(seriesId) {
+        const apiKey = process.env.API_KEY;
+        const apiLang = process.env.API_LANG;
+        const url = `https://api.themoviedb.org/3/tv/${seriesId}?api_key=${apiKey}&language=${apiLang}`;
+        const options = {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+            }
+        };
+
+        try {
+            const response = await fetch(url, options);
+            if (!response.ok) {
+                throw new Error('Error en la respuesta de la API');
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error al obtener detalles de la serie:', error);
+            return null;
+        }
+    }
+
+    async function fetchSeriesDetailsForIds(seriesIds) {
+        const seriesPromises = seriesIds.map(async id => await fetchSeriesDetails(id));
+        const seriesDetails = await Promise.all(seriesPromises);
+
+        function filterSeriesDetails(seriesDetails) {
+            return seriesDetails
+                .map(series => ({
+                    name: series.name,
+                    genres: series.genres.map(genre => ({ id: genre.id, name: genre.name })),
+                    nextEpisode: series.next_episode_to_air,
+                    stillPath: series.still_path,
+                    numberOfEpisodes: series.number_of_episodes,
+                    numberOfSeasons: series.number_of_seasons,
+                    firstAirDate: series.first_air_date,
+                    lastEpisode: series.last_episode_to_air
+                }))
+                .filter(series => series.nextEpisode !== undefined && series.nextEpisode !== null);
+        }
+
+        return filterSeriesDetails(seriesDetails);
+    }
+
+    const filteredSeriesDetails = await fetchSeriesDetailsForIds(seriesIds).catch(err => {
+        console.error('Error al obtener y filtrar detalles de las series:', err);
+        return [];
+    });
+
+    this.filteredSeriesDetails = filteredSeriesDetails;
+    console.log(filteredSeriesDetails);
+
+    try {
+      const { data, error } = await supabase
+        .from('notifications') 
+        .upsert([{
+          user_email: this.userEmail,
+          series_releases_details: this.filteredSeriesDetails, 
+        }], { 
+          onConflict: ['user_email'], 
+        });
+
+      if (error) {
+        throw new Error('Error al guardar en la base de datos: ' + error.message);
+      }
+    } catch (error) {
+      console.error('Error al guardar en la base de datos:', error.message);
+    }
+},
 
   methods: {
     async checkData() {
@@ -437,9 +522,9 @@ export default {
 
     getLink(item) {
       if (item.details.typeForDb === 'movie') {
-        return `https://cinemathe.space/movie/${item.details.idForDb}`;
+        return `http://localhost:3000/movie/${item.details.idForDb}`;
       } else if (item.details.typeForDb === 'tv') {
-        return `https://cinemathe.space/tv/${item.details.idForDb}`;
+        return `http://localhost:3000/tv/${item.details.idForDb}`;
       } else {
         return '#'; 
       }
@@ -511,6 +596,8 @@ export default {
   justify-content: center; 
   align-items: center; 
   margin: -5px;
+  position: relative;
+  top: -3px;
 }
 
 .card__stars {
@@ -535,6 +622,11 @@ export default {
 
 .card__rating {
   margin-top: 0.30rem;
+}
+
+.card___rating {
+  position: relative;
+  top: 1px;
 }
 
 .avatar-container-else {
@@ -793,11 +885,11 @@ export default {
   }
 
 .button-container select {
-  border-radius: 10px;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
 }
 
-
-@media screen and (max-width: 620px) {
+@media screen and (max-width: 800px) {
   .button-container {
     display: flex;
     flex-wrap: wrap;
@@ -867,12 +959,11 @@ export default {
     padding: 0.8rem 3.5rem 0.8rem 1.5rem;
     font-size: 1.3rem;
     color: #fff;
-    margin-left: 5px;
+    margin-right: 15px;
     background: rgba( 82, 71, 71, 0 );
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur( 16px );
     -webkit-backdrop-filter: blur( 16px );
-    border-radius: 5px;
     border: 1px solid rgba( 255, 255, 255, 0.18 );
   }
 
@@ -885,12 +976,14 @@ export default {
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur( 16px );
     -webkit-backdrop-filter: blur( 16px );
-    border-radius: 5px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-left-radius: none !important;
+    border-bottom-right-radius: none !important; 
     width: 165.626px;
     text-align: center;
-    margin-right: 5px;
+    margin-right: 15px;
     border: 1px solid rgba( 255, 255, 255, 0.18 );
-    border-radius: 5px;
   }
 
   .filter-select:hover{
@@ -902,12 +995,10 @@ export default {
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur( 16px );
     -webkit-backdrop-filter: blur( 16px );
-    border-radius: 5px;
     text-align: center;
     width: 165.626px;
     margin-right: 15px;
     border: 1px solid rgba( 255, 255, 255, 0.18 );
-    border-radius: 5px;
   }
 
   .genre-select:hover{
@@ -925,7 +1016,6 @@ export default {
     text-align: center;
 
     border: 1px solid rgba( 255, 255, 255, 0.18 );
-    border-radius: 5px;
   }
 
   .year-select:hover{
@@ -938,13 +1028,28 @@ export default {
 
   .pagination {
     display: flex;
+    /* background: black; */
     justify-content: center;
     align-items: center;
+    /* border-radius: 15px; */
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    /* border-radius: 15px; */
+    width: 90% !important;
+    margin: 0 auto;
+    background: rgba(82, 71, 71, 0);
+    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+    backdrop-filter: blur(16px);
     padding: 8px;
+    /* width: 80%; */
+    /* position: relative; */
     gap: 0.5rem;
-    top: 30px;
+    border: 0.5px #31414C solid;
+    /* left: -10px; */
+    /* top: 40px; */
     position: relative;
 }
+
 
 .pagination button {
   padding: 0.5rem 1rem;
@@ -1082,7 +1187,7 @@ export default {
   }
 
 
-  .profile-section {
+  .watchlist-section {
     padding: 10px;
     
   }
@@ -1109,11 +1214,6 @@ export default {
     font-size: 12px;
     margin: 5px auto; 
     text-align: center;
-  }
-
-
-  .button {
-    border-radius: 10px;
   }
 
   .column {
@@ -1144,10 +1244,19 @@ export default {
     justify-content: center;
   }
 
+  .card-background {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    background: black;
+  }
+
   .movie-card img,
   .tv-show-card img {
     width: 60%; 
-    border-radius: 15px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
     text-align: center;
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur( 16px );

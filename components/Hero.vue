@@ -76,7 +76,6 @@
               <span class="txt">Watch Trailer</span>
             </button>
 
-            <!-- Botón "Add to Favorites" -->
             <button
               v-if="hasAccessToken"
               class="button button--icon" 
@@ -103,7 +102,7 @@
                   />
                 </svg>
               </span>
-              <span class="txt">{{ isFavorite ? 'Remove from Favorites' : 'Add to Favorites' }}</span>
+              <span class="txt">{{ isFavorite ? 'Remove from Watchlist' : 'Add To Watchlist' }}</span>
             </button>
             <button
               class="button button--icon"

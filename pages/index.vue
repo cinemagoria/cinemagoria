@@ -20,9 +20,9 @@
           <span class="user-email">{{ userEmail }}</span>
           <img :src="userAvatar" alt="User Avatar" class="avatar">
           <div v-if="isMenuOpen" class="dropdown-menu">
-            <div class="menu-item" @click="goToProfile">
-              <img src="~/static/icon-profile.png" alt="Settings Icon" class="settings-icon">
-              <span class="menu-label1">Profile</span>
+            <div class="menu-item" @click="goToWatchlist">
+              <img src="~/static/icon-watchlist.png" alt="Settings Icon" class="settings-icon">
+              <span class="menu-label1">Watchlist</span>
             </div>
             <div class="menu-item" @click="goToSettings">
               <img src="~/static/icon-settings.png" alt="Settings Icon" class="settings-icon">
@@ -191,8 +191,8 @@ export default {
       this.isMenuOpen = !this.isMenuOpen;
     },
 
-    goToProfile() {
-      this.$router.push('/profile');
+    goToWatchlist() {
+      this.$router.push('/watchlist');
     },
 
     goToSettings() {
@@ -206,7 +206,7 @@ export default {
     signOut() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('email');
-      window.location.href = 'https://cinemathe.space/';
+      window.location.href = 'http://localhost:3000/';
     },
   },
 
@@ -414,7 +414,7 @@ export default {
 
   .dropdown-menu {
     position: relative; 
-    width: 113.574px;
+    width: 122.574px;
     top: 100%;
     background: rgba(0, 0, 0, 0.8);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);

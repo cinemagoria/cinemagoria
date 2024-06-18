@@ -19,9 +19,9 @@
           <span class="user-email">{{ userEmail }}</span>
           <img :src="userAvatar" alt="User Avatar" class="avatar">
           <div v-if="isMenuOpen" class="dropdown-menu">
-            <div class="menu-item" @click="goToProfile">
-              <img src="~/static/icon-profile.png" alt="Settings Icon" class="settings-icon">
-              <span class="menu-label1">Profile</span>
+            <div class="menu-item" @click="goToWatchlist">
+              <img src="~/static/icon-watchlist.png" alt="Watchlist Icon" class="settings-icon">
+              <span class="menu-label1">watchlist</span>
             </div>
             <div class="menu-item" @click="goToSettings">
               <img src="~/static/icon-settings.png" alt="Settings Icon" class="settings-icon">
@@ -72,7 +72,7 @@
           </select>
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 15px; font-size: 12px;">
+        <div  style="margin-left: 15px; font-size: 12px;">
           <p for="searchGenre">Choose Genre:</p>
           <select v-model="selectedSearchGenre" class="genre-select" id="searchGenre">
             <option value="">Optional</option>
@@ -82,7 +82,7 @@
           </select>
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 15px; font-size: 12px;">
+        <div  style="margin-left: 15px; font-size: 12px;">
         <p for="year">Release Year:</p>
         <date-picker
           v-model="releaseYear"
@@ -92,7 +92,7 @@
         />
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 15px; font-size: 12px;">
+        <div style="margin-left: 15px; font-size: 12px;">
           <p for="sortBy">Sort By:</p>
           <select v-model="selectedSortBy" class="genre-select" id="sortBy">
             <option value="popularity.desc">Most Popular</option>
@@ -102,7 +102,7 @@
           </select>
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 15px; font-size: 12px;">
+        <div style="margin-left: 15px; font-size: 12px;">
           <p for="originCountry">Origin Country:</p>
           <select v-model="selectedOriginCountry" class="genre-select" id="originCountry">
             <option value="">Optional</option>
@@ -165,7 +165,7 @@
           </select>
         </div>
 
-        <div v-if="selectedSearchType" style="margin-left: 40px; font-size: 12px;">
+        <div  style="margin-left: 40px; font-size: 12px;">
           <p style="position: relative; left: -22px;">
             Minimum Rating: ({{ MinRatingForLabel }}/10)<span v-if="MinRatingForLabel === 0">{{ asterisk }}</span>
           </p>
@@ -268,21 +268,28 @@
             <div class="movie-card">
               <div v-if="movie.backdrop_path" class="movie-image-container">
                 <img :src="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path" :alt="movie.title" class="movie-image">
-                <h3>{{ truncateTitle(movie.title) }}</h3>
-                <div class="details-container">
-                  <p>{{ extractYear(movie.release_date) }}</p>
-                  <p v-if="movieRatings[movie.id]">Rating: {{ movieRatings[movie.id].toFixed(1) }}</p>
-                </div>
+                
+                  <div class="details-container">
+                    <div class="card-background">
+                      <h3>{{ truncateTitle(movie.title) }}</h3>
+                      <p>{{ extractYear(movie.release_date) }}</p>
+                      <p v-if="movieRatings[movie.id]">Rating: {{ movieRatings[movie.id].toFixed(1) }}</p>
+                    </div>
+                  </div>
+               
               </div>
               <div v-else class="movie-card">
                 <img src="~/static/image_not_found.png" :alt="movie.title" class="movie-image">
-                <h3>{{ truncateTitle(movie.title) }}</h3>
-                <div class="details-container">
-                  <p>{{ extractYear(movie.release_date) }}</p>
-                  <p v-if="movieRatings[movie.id]">Rating: {{ movieRatings[movie.id].toFixed(1) }}</p>
+                
+                  <div class="details-container">
+                    <div class="card-background">
+                      <h3>{{ truncateTitle(movie.title) }}</h3>
+                      <p>{{ extractYear(movie.release_date) }}</p>
+                      <p v-if="movieRatings[movie.id]">Rating: {{ movieRatings[movie.id].toFixed(1) }}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
           </router-link>
         </div>
       </div>
@@ -296,18 +303,22 @@
             <div class="tv-show-card">
               <div v-if="tvShow.backdrop_path" class="movie-image-container">
                 <img :src="'https://image.tmdb.org/t/p/w500' + tvShow.backdrop_path" :alt="tvShow.name" class="tv-show-image">
-                <h3>{{ truncateTitle(tvShow.name) }}</h3>
-                <div class="details-container">
-                  <p>{{ extractYear(tvShow.first_air_date) }}</p>
-                  <p v-if="tvShowRatings[tvShow.id]">Rating: {{ tvShowRatings[tvShow.id].toFixed(1) }}</p>
+                <div class="card-background">
+                  <div class="details-container">
+                    <h3>{{ truncateTitle(tvShow.name) }}</h3>
+                    <p>{{ extractYear(tvShow.first_air_date) }}</p>
+                    <p v-if="tvShowRatings[tvShow.id]">Rating: {{ tvShowRatings[tvShow.id].toFixed(1) }}</p>
+                  </div>
                 </div>
               </div>
               <div v-else class="tv-show-card">
                 <img src="~/static/image_not_found.png" :alt="tvShow.name" class="tv-show-image">
-                <h3>{{ truncateTitle(tvShow.name) }}</h3>
-                <div class="details-container">
-                  <p>{{ extractYear(tvShow.first_air_date) }}</p>
-                  <p v-if="tvShowRatings[tvShow.id]">Rating: {{ tvShowRatings[tvShow.id].toFixed(1) }}</p>
+                <div class="card-background">
+                  <div class="details-container">
+                    <h3>{{ truncateTitle(tvShow.name) }}</h3>
+                    <p>{{ extractYear(tvShow.first_air_date) }}</p>
+                    <p v-if="tvShowRatings[tvShow.id]">Rating: {{ tvShowRatings[tvShow.id].toFixed(1) }}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -582,8 +593,8 @@
       this.isMenuOpen = !this.isMenuOpen;
       },
 
-      goToProfile() {
-      this.$router.push('/profile');
+      goToWatchlist() {
+      this.$router.push('/watchlist');
       },
 
       goToSettings() {
@@ -597,7 +608,7 @@
       signOut() {
         localStorage.removeItem('access_token');
         localStorage.removeItem('email');
-        window.location.href = 'https://cinemathe.space/';
+        window.location.href = 'http://localhost:3000/';
       },
 
       toggleOrder(event) {
@@ -653,9 +664,9 @@
   
       getLink(item) {
         if (item.details.typeForDb === 'movie') {
-          return `https://cinemathe.space/movie/${item.details.idForDb}`;
+          return `http://localhost:3000/movie/${item.details.idForDb}`;
         } else if (item.details.typeForDb === 'tv') {
-          return `https://cinemathe.space/tv/${item.details.idForDb}`;
+          return `http://localhost:3000/tv/${item.details.idForDb}`;
         } else {
           return '#'; 
         }
@@ -988,6 +999,10 @@
     text-align: center;
   }
 
+  .footer {
+    height: 50vh !important;
+  }
+
   .user-profile {
     position: absolute;
     right: 5%; 
@@ -1065,11 +1080,11 @@
 
 
   .dropdown-menu {
-    position: relative; 
-    width: 113.574px;
+    position: relative;
+    width: 122.574px;
     top: 100%;
     background: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 3px 15px 0 rgba(31, 97, 135, 0.37); 
+    box-shadow: 0 3px 15px 0 rgba(163, 189, 205, 0.37);
     border: 1px solid #acafb5;
     border-radius: 5px;
     z-index: 100;
@@ -1433,6 +1448,14 @@
     .rotate-180 {
       transform: rotate(180deg);
     }
+
+    .card-background {
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+      background: black;
+      position: relative;
+      top: -10px;
+    }
     
     a {
       color: #f3f4f6;
@@ -1508,7 +1531,7 @@
     }
   
   
-    .profile-section {
+    .advanced-search-section {
       padding: 10px;
       
     }
@@ -1575,6 +1598,7 @@
       margin-top: 5px;
       color: #8BE9FD;
       font-size: 14px; 
+      padding: 4px;
       margin-top: 10px; 
       text-align: center; 
       overflow: hidden; 
@@ -1590,6 +1614,7 @@
     .movie-card p,
     .tv-show-card p {
       font-size: 12px;
+      padding: 1px;
       margin: 5px auto; 
       text-align: center;
     }
@@ -1597,12 +1622,13 @@
     .movie-card img,
     .tv-show-card img {
       width: 60%; 
-      border-radius: 15px;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
       text-align: center;
       box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
       backdrop-filter: blur( 16px );
       -webkit-backdrop-filter: blur( 16px );
-      border: 1px solid rgba( 255, 255, 255, 0.18 );
+      /* border: 1px solid rgba( 255, 255, 255, 0.18 ); */
     }
 
     .spinner {

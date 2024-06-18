@@ -10,7 +10,7 @@
         type="button"
         aria-label="Cerrar"
         @click="decline">
-        Rechazar
+        Decline
       </button>
 
       <button
@@ -18,7 +18,7 @@
         type="button"
         aria-label="Cerrar"
         @click="accept">
-        Aceptar
+        Agree
       </button>
     </div>
   </div>

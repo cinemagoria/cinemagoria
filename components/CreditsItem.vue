@@ -16,9 +16,11 @@
         </span>
       </div>
 
-      <h2 class="credits-item__name">
-        {{ person.name }}
+      
+       <h2 class="credits-item__name">
+            {{ person.name }}
       </h2>
+
 
       <div class="credits-item__character">
         {{ person.character }}
@@ -76,6 +78,14 @@ export default {
     transform: scale(0.97);
   }
 
+  .card-background {
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+      background: black;
+      position: relative;
+      top: -10px;
+    }
+
   span {
     display: flex;
     align-items: center;
@@ -95,20 +105,27 @@ export default {
 }
 
 .credits-item__name {
-  margin-top: 1rem;
-  font-size: 1.3rem;
-  letter-spacing: $letter-spacing;
+    background: black;
+    font-size: 1.3rem;
+    letter-spacing: 0.4px;
+    text-align: center;
+  
 
   @media (min-width: $breakpoint-large) {
-    margin-bottom: 0.5rem;
     font-size: 1.5rem;
   }
 }
 
 .credits-item__character {
-  font-size: 1.2rem;
-  color: $text-color-grey;
-  letter-spacing: $letter-spacing;
+    font-size: 1.2rem;
+    /* margin: 0 auto; */
+    position: relative;
+    color: #80868b;
+    letter-spacing: 0.4px;
+    background: black;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    text-align: center;
 
   @media (min-width: $breakpoint-large) {
     font-size: 1.4rem;

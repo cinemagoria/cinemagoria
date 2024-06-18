@@ -197,8 +197,8 @@ export default {
       this.isMenuOpen = !this.isMenuOpen;
     },
 
-    goToProfile() {
-      this.$router.push('/profile');
+    goToWatchlist() {
+      this.$router.push('/watchlist');
     },
 
     goToSettings() {
@@ -212,7 +212,7 @@ export default {
     signOut() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('email');
-      window.location.href = 'https://cinemathe.space/';
+      window.location.href = 'http://localhost:3000/';
     },
     goToRoute() {
       if (this.query) {

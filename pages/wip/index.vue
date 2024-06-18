@@ -23,7 +23,7 @@
   export default {
     methods: {
       redirectToHome() {
-        window.location.href = 'https://cinemathe.space';
+        window.location.href = 'http://localhost:3000';
       }
     }
   };

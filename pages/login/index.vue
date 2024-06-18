@@ -88,7 +88,7 @@ export default {
       this.$router.go(-1);
     },
     redirectToHome() {
-      window.location.href = 'https://cinemathe.space';
+      window.location.href = 'http://localhost:3000';
     },
     goToRegister() {
       this.$router.push({ name: 'register' });

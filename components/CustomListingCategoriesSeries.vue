@@ -42,6 +42,8 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"/></svg>
         </button>
       </div>
+      <br>
+      <br>
     </div>
   </template>
   
@@ -140,14 +142,26 @@
   .category-link:hover {
     color: #ffffff;
   }
+
+  .card__label {
+        font-size: 1.5rem;
+        margin-bottom: .5rem;
+        text-align: center;
+  }
   
   .card__info {
-    margin-left: 1rem;
+    background: black;
+    border-end-end-radius: 10px;
+    border-end-start-radius: 10px;
+    position: relative;
+    top: -15px;
   }
   
   .card__image {
     border-radius: 15px;
     cursor: pointer;
+    box-shadow: 0 21px 10px 0 rgba(31, 104, 135, 0.37);
+    backdrop-filter: blur(16px);
   }
   </style>
   
