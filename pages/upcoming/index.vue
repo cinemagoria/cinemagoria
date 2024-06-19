@@ -441,12 +441,12 @@ async function getUserName(userEmail) {
 
 
       redirectTv(showId) {
-        const url = `http://localhost:3000/tv/${showId}`;
+        const url = `https://cinemathe.space/tv/${showId}`;
         window.open(url, '_blank');
       },
 
       redirectMovie(id) {
-        const url = `http://localhost:3000/movie/${id}`;
+        const url = `https://cinemathe.space/movie/${id}`;
         window.open(url, '_blank');
       },
 
@@ -567,9 +567,9 @@ async function getUserName(userEmail) {
 
         getLink(item) {
         if (item.details.typeForDb === 'movie') {
-            return `http://localhost:3000/movie/${item.details.idForDb}`;
+            return `https://cinemathe.space/movie/${item.details.idForDb}`;
         } else if (item.details.typeForDb === 'tv') {
-            return `http://localhost:3000/tv/${item.details.idForDb}`;
+            return `https://cinemathe.space/tv/${item.details.idForDb}`;
         } else {
             return '#';
         }

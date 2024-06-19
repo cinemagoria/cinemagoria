@@ -206,7 +206,7 @@ export default {
     signOut() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('email');
-      window.location.href = 'http://localhost:3000/';
+      window.location.href = 'https://cinemathe.space/';
     },
   },
 
@@ -414,7 +414,7 @@ export default {
 
   .dropdown-menu {
     position: relative; 
-    width: 122.574px;
+    width: 132.574px;
     top: 100%;
     background: rgba(0, 0, 0, 0.8);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);

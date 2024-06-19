@@ -522,9 +522,9 @@ export default {
 
     getLink(item) {
       if (item.details.typeForDb === 'movie') {
-        return `http://localhost:3000/movie/${item.details.idForDb}`;
+        return `https://cinemathe.space/movie/${item.details.idForDb}`;
       } else if (item.details.typeForDb === 'tv') {
-        return `http://localhost:3000/tv/${item.details.idForDb}`;
+        return `https://cinemathe.space/tv/${item.details.idForDb}`;
       } else {
         return '#'; 
       }

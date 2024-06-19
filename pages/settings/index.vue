@@ -196,7 +196,7 @@ export default {
   showConfirmationMessage() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('email');
-    window.location.href = 'http://localhost:3000/login'; 
+    window.location.href = 'https://cinemathe.space/login'; 
   },
 
     async selectAvatar(avatar) {
