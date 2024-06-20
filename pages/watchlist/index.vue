@@ -296,8 +296,7 @@ export default {
     });
 
     this.filteredSeriesDetails = filteredSeriesDetails;
-    console.log(filteredSeriesDetails);
-
+    
     try {
       const { data, error } = await supabase
         .from('notifications') 
