@@ -114,8 +114,8 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
 - **Feat: Implement Global Restructuring for Enhanced User Experience.**
   This restructuring aims to fundamentally enhance user interaction with the platform by introducing a cohesive global navigation bar with key features such as a search function, personalized user panel, language selector, and a convenient back button. These modifications are designed to streamline navigation and improve overall usability, leading to a more intuitive and efficient user experience across the entire platform. [Changelog.](https://github.com/imprvhub/cinemathe/commit/da82b26f4b22ead0de49a673f02aba83e0f04747)
 
-- **Feat: TV Show Episode Reminders**  
-  Add reminders for new episodes of TV shows. This feature will allow users to receive notifications about new episodes for their favorite TV shows, ensuring they never miss an update.
+- **Feat: Upcoming Page**  
+  Introduce a new 'Upcoming' page designed to highlight forthcoming releases of TV shows and movies, along with the latest news from the cinema industry. For authenticated users, the content will be personalized according to their preferences, ensuring they receive updates tailored to their interests.
 
 - **Feat: Advanced Search Filters**  
   Implement advanced search by year, genre, and rating. This feature will enhance the search functionality, enabling users to filter their search queries more precisely. Users will be able to search by specific years, genres, and ratings, making it easier to find exactly what they're looking for. [Changelog.](https://github.com/imprvhub/cinemathe/commit/ec436b5c5772836a3332506ffb0804b479061ab9)
