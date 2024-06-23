@@ -191,6 +191,7 @@ export default {
   height: 0;
   padding-top: 150.27%;
   overflow: hidden;
+  border-radius: 10px;
   background-color: $secondary-color;
 
   img,
@@ -224,6 +225,7 @@ export default {
     float: left;
     width: 40%;
     max-width: 200px;
+    border-radius: 10px;
     margin: 0 1.5rem 0 0;
 
     @media (min-width: $breakpoint-medium) {

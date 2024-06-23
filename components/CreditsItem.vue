@@ -63,6 +63,8 @@ export default {
 .credits-item__img {
   position: relative;
   height: 0;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
   padding-top: 150.27%;
   overflow: hidden;
   background-color: $secondary-color;
@@ -94,13 +96,6 @@ export default {
 
   &.lazyloaded img {
     transform: scale(1);
-  }
-}
-
-.credits-item__link:hover,
-.credits-item__link:focus {
-  .credits-item__img {
-    transform: scale(1.02);
   }
 }
 

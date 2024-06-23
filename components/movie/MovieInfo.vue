@@ -300,6 +300,7 @@ export default {
   height: 0;
   padding-top: 150.27%;
   overflow: hidden;
+  border-radius: 10px;
   background-color: $secondary-color;
 
   img,
