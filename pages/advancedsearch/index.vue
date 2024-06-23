@@ -1450,6 +1450,7 @@
       border-bottom-right-radius: 15px;
       background: black;
       position: relative;
+      box-shadow: 0 7px 10px 0 rgba(31, 104, 135, .37);
       top: -10px;
     }
     
