@@ -143,7 +143,7 @@
           <div class="listing__head">
             <h3 class="listing__title">Upcoming {{ genre.displayName }} Movies:</h3>
           </div>
-          <div v-if="movies[genre.name].length" class="carousel">
+          <div v-if="movies && movies[genre.name] && movies[genre.name].length" class="carousel">
             <button @click="prevSlide($event, genre.name)" class="carousel__nav carousel__nav--left">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                 <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"></path>
@@ -152,8 +152,11 @@
             <div class="carousel__items" ref="carouselItems">
               <div v-for="(movie, index) in movies[genre.name]" :key="movie.id" class="card" @click="redirectMovie(movie.id)">
                 <div class="card__img lazyloaded">
-                  <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" class="lazyload" />
+                  {{ movies[genre.name] }}
+                  <img v-if="movie.poster_path" :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" class="lazyload" />
+                  <img v-else src="~/static/image_not_found_yet.png" alt="Image Not Found" />
                 </div>
+
                 <h2 class="card__name">{{ formatTitle(movie.title) }}</h2>
                 <div class="card__rating">
                   <div class="card__vote">{{ formatDate(movie.release_date) }}</div>
@@ -275,7 +278,8 @@ export default {
       nextThrillerMovies: 0,
       nextWesternMovies: 0
     },
-    };
+    addedMovieIds: new Set() 
+   };
   },
   async mounted() {
       window.addEventListener('resize', this.updateItemsPerPage);
@@ -329,66 +333,62 @@ export default {
     }
 },
   methods: {
-    async fetchUpcomingMovies(){
+    async fetchUpcomingMovies() {
       const today = new Date().toISOString().split('T')[0];
       const apiKey = process.env.API_KEY;
       const apiLang = process.env.API_LANG;
 
       const genres = {
-          horror: 27,
-          scienceFiction: 878,
-          action: 28,
-          comedy: 35,
-          crime: 80,
-          documentary: 99,
-          drama: 18,
-          history: 36,
-          music: 10402,
-          mystery: 9648,
-          romance: 10749,
-          thriller: 53,
-          western: 37
+        horror: 27,
+        scienceFiction: 878,
+        action: 28,
+        comedy: 35,
+        crime: 80,
+        documentary: 99,
+        drama: 18,
+        history: 36,
+        music: 10402,
+        mystery: 9648,
+        romance: 10749,
+        thriller: 53,
+        western: 37
       };
 
       const movieOptions = {
-          method: 'GET',
-          headers: {
-              accept: 'application/json',
-              Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
-          }
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+          Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+        }
       };
 
       const fetchMoviesByGenre = async (genreId) => {
-          const moviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=${apiLang}&page=1&primary_release_date.gte=${today}&sort_by=popularity.desc&with_genres=${genreId}`;
-          try {
-              const movieResponse = await fetch(moviesUrl, movieOptions);
-              if (!movieResponse.ok) {
-                  throw new Error(`Error en la respuesta de la API de películas para género ${genreId}`);
-              }
-              const movieData = await movieResponse.json();
-              return movieData.results || [];
-          } catch (error) {
-              console.error(`Error al obtener próximas películas para género ${genreId}:`, error);
-              return [];
+        const moviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=${apiLang}&page=1&primary_release_date.gte=${today}&sort_by=popularity.desc&with_genres=${genreId}`;
+        try {
+          const movieResponse = await fetch(moviesUrl, movieOptions);
+          if (!movieResponse.ok) {
+            throw new Error(`Error en la respuesta de la API de películas para género ${genreId}`);
           }
+          const movieData = await movieResponse.json();
+          return movieData.results || [];
+        } catch (error) {
+          console.error(`Error al obtener próximas películas para género ${genreId}:`, error);
+          return [];
+        }
       };
 
       for (const [genreName, genreId] of Object.entries(genres)) {
-          this[`next${genreName.charAt(0).toUpperCase() + genreName.slice(1)}Movies`] = await fetchMoviesByGenre(genreId);
+        const movies = await fetchMoviesByGenre(genreId);
+        const filteredMovies = movies.filter(movie => !this.addedMovieIds.has(movie.id));
+        this[`next${genreName.charAt(0).toUpperCase() + genreName.slice(1)}Movies`] = filteredMovies;
+        filteredMovies.forEach(movie => this.addedMovieIds.add(movie.id));
       }
+    },
 
-      this.nextHorrorMovies = await fetchMoviesByGenre(genres.horror);
-      this.nextScienceFictionMovies = await fetchMoviesByGenre(genres.scienceFiction);
-      this.nextActionMovies = await fetchMoviesByGenre(genres.action);
-      this.nextComedyMovies = await fetchMoviesByGenre(genres.comedy);
-      this.nextCrimeMovies = await fetchMoviesByGenre(genres.crime);
-      this.nextDocumentaryMovies = await fetchMoviesByGenre(genres.documentary);
-      this.nextDramaMovies = await fetchMoviesByGenre(genres.drama);
-      this.nextHistoryMovies = await fetchMoviesByGenre(genres.history);
-      this.nextMysteryMovies = await fetchMoviesByGenre(genres.mystery);
-      this.nextRomanceMovies = await fetchMoviesByGenre(genres.romance);
-      this.nextThrillerMovies = await fetchMoviesByGenre(genres.thriller);
-      this.nextWesternMovies = await fetchMoviesByGenre(genres.western);
+    updateMovies() {
+      this.genresList.forEach(genre => {
+        this.$set(this.movies, genre.name, this[`next${genre.name.charAt(0).toUpperCase() + genre.name.slice(1)}Movies`]);
+      });
     },
 
     formatTitle(title) {
@@ -663,6 +663,12 @@ overflow: hidden;
 max-width: 90%;
 }
 
+.card:hover, 
+.card:focus {
+cursor: pointer;
+}
+
+
 .card__image {
 padding: 5px;
 width: 200px;
@@ -800,13 +806,14 @@ width: 80%;
   align-items: baseline;
   text-align: center;
   background: black;
+  font-size: 13px;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   padding: 10px;
   align-content: center;
   flex-wrap: wrap;
   font-size: 12px;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   flex-direction: row;
   justify-content: space-around;
 }
@@ -875,6 +882,7 @@ color:#ddd;
 display: flex;
 align-items: flex-start;
 margin-bottom: 20px;
+font-size: 12px;
 border-bottom-left-radius: 10px;
 border-bottom-right-radius: 10px;
 background: rgba(4, 14, 21, 0.07);
@@ -1564,35 +1572,11 @@ h3 {
   justify-content: center;
 }
 
-/* .movie-card img,
-.tv-show-card img {
-  width: 60%;
-  border-radius: 15px;
-  text-align: center;
-  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
-  backdrop-filter: blur( 16px );
-  -webkit-backdrop-filter: blur( 16px );
-  border: 1px solid rgba( 255, 255, 255, 0.18 );
-} */
-
-
 @media screen and (max-width: 600px) {
 .movie-grid,
 .tv-show-grid {
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 }
-
-/* .movie-card,
-.tv-show-card {
-  width: 100%;
-  max-width: none;
-} */
-
-/* .movie-card img,
-.tv-show-card img {
-  width: 100%;
-  max-width: none;
-} */
 }
 
 @media screen and (min-width: 601px) {
@@ -1600,23 +1584,12 @@ h3 {
 .tv-show-grid {
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
-
-/* .movie-card,
-.tv-show-card {
-  width: 100%;
-  max-width: none;
-} */
-
-/* .movie-card img,
-.tv-show-card img {
-  width: 100%;
-  max-width: none;
-} */
 }
 
 @media screen and (max-width: 1200px) {
 .upcoming-series-container {
-max-width: 100%;
+max-width: 95%;
+font-size: 11px;
 }
 }
 
@@ -1738,18 +1711,6 @@ text-align: center;
   width: 103%;
 }
 }
-/* 
-.movie-card img,
-.tv-show-card img {
-  width: 60%;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-  text-align: center;
-  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
-  backdrop-filter: blur( 16px );
-  -webkit-backdrop-filter: blur( 16px );
-  border: 1px solid rgba( 255, 255, 255, 0.18 );
-} */
 
 .card-background {
   border-top-left-radius: 15px;
@@ -1759,91 +1720,11 @@ text-align: center;
   background: black;
 }
 
-/* .movie-card img,
-.tv-show-card img {
-  width: 60%;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-  text-align: center;
-  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
-  backdrop-filter: blur( 16px );
-  -webkit-backdrop-filter: blur( 16px );
-  border: 1px solid rgba( 255, 255, 255, 0.18 );
-}
-
-
-@media screen and (max-width: 600px) {
-.movie-grid,
-.tv-show-grid {
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-}
-
-.movie-card,
-.tv-show-card {
-  width: 100%;
-  max-width: none;
-}
-
-.movie-card img,
-.tv-show-card img {
-  width: 100%;
-  max-width: none;
-}
-}
-
-
-
-@media screen and (max-width: 600px) {
-.movie-grid,
-.tv-show-grid {
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-}
-
-.movie-card,
-.tv-show-card {
-  width: 100%;
-  max-width: none;
-}
-
-.movie-card img,
-.tv-show-card img {
-  width: 100%;
-  max-width: none;
-}
-}
-
-@media screen and (min-width: 601px) {
-.movie-grid,
-.tv-show-grid {
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-}
-
-.movie-card,
-.tv-show-card {
-  width: 100%;
-  max-width: none;
-  height: 80%;
-  max-width: none;
-  margin-top: 20px;
-}
-
-.movie-card img,
-.tv-show-card img {
-  width: 100%;
-  height: 80%;
-  max-width: none;
-  margin-top: 20px;
-}
-} */
-
-.genre-section {
-margin-bottom: 40px;
-}
 
 h3 {
 text-align: center;
 position: relative;
-height: 30px;
+height: 70px;
 top: 13px;
 }
 
@@ -1862,7 +1743,7 @@ flex: 1;
 display: flex;
 flex-direction: column;
 justify-content: space-between;
-flex: 1 0 50%; /* For 2 items per page on small screens */
+flex: 1 0 50%;
 margin: 10px;
 box-sizing: border-box;
 text-align: center;
@@ -1870,7 +1751,7 @@ text-align: center;
 
 @media screen and (min-width: 1025px) {
 .movie-card {
-  flex: 1 0 25%; /* For 4 items per page on large screens */
+  flex: 1 0 25%;
   height: 400px;
 }
 
