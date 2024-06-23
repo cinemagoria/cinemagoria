@@ -6,12 +6,13 @@
       </div>
 
       <!-- eslint-disable -->
-      <div :class="$style.message">
-        <p v-if="error.statusCode === 504">Looks like we are unable to fetch the data right now, please come back and try again soon.</p>
-        <p v-else>Looks like you've followed a broken link or entered a URL that doesn't exist on this site.</p>
-        <p>Back to our <nuxt-link to="/">home page</nuxt-link>.</p>
-      </div>
-      <!-- eslint-enable -->
+        <div :class="$style.message" style="margin: 0 auto; position: relative;">
+          <p v-if="error.statusCode === 504">It appears we are unable to fetch the data at the moment. Please check your internet connection or try again later.</p>
+          <p v-else>It seems you have followed a broken link or entered a URL that does not exist on this site.</p>
+          <p>Return to our <nuxt-link to="/">home page</nuxt-link>.</p>
+        </div>
+        <!-- eslint-enable -->
+
     </div>
   </div>
 </template>
