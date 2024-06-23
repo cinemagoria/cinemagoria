@@ -252,7 +252,6 @@ export default {
 };
 </script>
 <style scoped>
-
   .avatar-container {
     position: relative;
     top: -53.8px;

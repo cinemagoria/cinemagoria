@@ -12,8 +12,6 @@
 .card__img {
   position: relative;
   height: 0;
-  box-shadow: 0 38px 10px 0 rgba(31, 104, 135, 0.37);
-  backdrop-filter: blur(16px);
   padding-top: 150.27%;
   overflow: hidden;
   background-color: $secondary-color;
@@ -53,13 +51,6 @@
 
   &.lazyloaded img {
     transform: scale(1);
-  }
-}
-
-.card__link:hover,
-.card__link:focus {
-  .card__img {
-    transform: scale(1.02);
   }
 }
 

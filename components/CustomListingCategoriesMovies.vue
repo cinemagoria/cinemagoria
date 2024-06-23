@@ -98,7 +98,7 @@
     },
   };
 </script>
-<style scoped>
+<style scoped>  
     .listing__title {
       font-size: 1.8rem;
       letter-spacing: 0.4px;

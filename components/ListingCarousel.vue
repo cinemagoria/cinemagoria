@@ -114,8 +114,7 @@ export default {
     height: 0;
     padding-top: 150.27%;
     overflow: hidden;
-    /* background-color: #000000; */
-    /* border-radius: 15px; */
+    backdrop-filter: blur(16px);
     border-start-start-radius: 10px;
     border-start-end-radius: 10px;
     transition: transform 0.3s ease-in-out;
@@ -141,6 +140,7 @@ export default {
     flex-direction: row;
     justify-content: center;
     background: black;
+    box-shadow: 0 8px 10px 0 rgba(31, 104, 135, 0.37);
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
     bottom: 10px;
