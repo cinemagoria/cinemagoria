@@ -136,27 +136,43 @@
 
 
         <br>
-        <br>
+    
 
         <div>
-          <div v-for="genre in genresList" :key="genre.name" class="genre-section">
-            <h3>Upcoming {{ genre.displayName }} Movies:</h3>
+          <div v-for="genre in genresList" :key="genre.name" class="listing">
+            <div class="listing__head">
+              <h3 class="listing__title">Upcoming {{ genre.displayName }} Movies:</h3>
+            </div>
             <div v-if="movies[genre.name].length" class="carousel">
-              <button @click="prevMovie(genre.name)" class="carousel-button">❮</button>
-              <div class="carousel-content">
-                <div v-for="(movie, index) in movies[genre.name].slice(currentIndexes[genre.name], currentIndexes[genre.name] + itemsPerPage)" :key="movie.id" class="movie-card" @click="redirectMovie(movie.id)">
-                  <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" class="movie-image" />
-                  <p class="movie-title" @click="redirectMovie(movie.id)">{{ formatTitle(movie.title) }}</p>
-                  <p class="movie-info">{{ formatDate(movie.release_date) }}</p>
+              <button @click="prevSlide($event, genre.name)" class="carousel__nav carousel__nav--left">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"></path>
+                </svg>
+              </button>
+              <div class="carousel__items" ref="carouselItems">
+                <div v-for="(movie, index) in movies[genre.name]" :key="movie.id" class="card" @click="redirectMovie(movie.id)">
+                  <div class="card__img lazyloaded">
+                    <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" class="lazyload" />
+                  </div>
+                  <h2 class="card__name">{{ formatTitle(movie.title) }}</h2>
+                  <div class="card__rating">
+                    <div class="card__vote">{{ formatDate(movie.release_date) }}</div>
+                  </div>
                 </div>
               </div>
-              <button @click="nextMovie(genre.name)" class="carousel-button">❯</button>
+              <button @click="nextSlide($event, genre.name)" class="carousel__nav carousel__nav--right">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"></path>
+                </svg>
+              </button>
             </div>
             <div v-else>
               <p>No upcoming movies available in this genre.</p>
             </div>
           </div>
         </div>
+
+
 
     </section>
   </main>
@@ -259,8 +275,6 @@ async function getUserName(userEmail) {
         nextThrillerMovies: 0,
         nextWesternMovies: 0
       },
-      itemsPerPage: window.innerWidth <= 1024 ? 2 : 4,
-      pagesToShow: 5,
       };
     },
     async mounted() {
@@ -274,8 +288,7 @@ async function getUserName(userEmail) {
         this.userAvatar = await getUserAvatar(this.userEmail);
         await this.fetchUserFirstName();
         this.fetchFavoriteSeries();
-        this.featchUpcomingMovies();
-
+        this.fetchUpcomingMovies();
     },
 
     beforeDestroy() {
@@ -316,7 +329,7 @@ async function getUserName(userEmail) {
       }
   },
     methods: {
-      async featchUpcomingMovies(){
+      async fetchUpcomingMovies(){
         const today = new Date().toISOString().split('T')[0];
         const apiKey = process.env.API_KEY;
         const apiLang = process.env.API_LANG;
@@ -382,26 +395,24 @@ async function getUserName(userEmail) {
         return title.length > 28 ? title.substring(0, 25) + '...' : title;
       },
 
-      nextMovie(genreName) {
-        const genreMovies = this.movies[genreName];
-        const currentIndex = this.currentIndexes[genreName];
-        const itemsPerPage = this.itemsPerPage;
-        if (currentIndex < genreMovies.length - itemsPerPage) {
-          this.$set(this.currentIndexes, genreName, currentIndex + itemsPerPage);
-        }
+      prevSlide(event, genreName) {
+        const carousel = event.target.closest('.carousel').querySelector('.carousel__items');
+        const slideWidth = carousel.clientWidth;
+        carousel.scrollBy({
+          left: -slideWidth,
+          behavior: 'smooth'
+        });
       },
-
-
-      prevMovie(genreName) {
-        const currentIndex = this.currentIndexes[genreName];
-        const itemsPerPage = this.itemsPerPage;
-        if (currentIndex > 0) {
-          this.$set(this.currentIndexes, genreName, currentIndex - itemsPerPage);
-        }
+      nextSlide(event, genreName) {
+        const carousel = event.target.closest('.carousel').querySelector('.carousel__items');
+        const slideWidth = carousel.clientWidth;
+        carousel.scrollBy({
+          left: slideWidth,
+          behavior: 'smooth'
+        });
       },
-
       updateItemsPerPage() {
-        this.itemsPerPage = window.innerWidth <= 1024 ? 2 : 4;
+        this.itemsPerPage = window.innerWidth <= 1024 ? 20 : 20;
       },
 
       async fetchFavoriteSeries() {
@@ -514,6 +525,8 @@ async function getUserName(userEmail) {
         }
         },
 
+        
+
         filterByGenre(event) {
         this.selectedGenre = event.target.value;
         },
@@ -524,6 +537,11 @@ async function getUserName(userEmail) {
         toggleFilter(event) {
         this.filter = event.target.value;
         this.currentPage = 1;
+        },
+
+        getVisibleMovies(genreName) {
+          const currentIndex = this.currentIndexes[genreName];
+          return this.movies[genreName].slice(currentIndex, currentIndex + this.itemsPerPage);
         },
 
         formatRating(stars) {
@@ -605,6 +623,18 @@ body {
   margin-bottom: 40px;
   background: black;
   border-radius: 10px;
+}
+
+.listing__title {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    position: relative;
+    margin: 0 auto;
+    top: 2rem;
+    width: 100%;
+    height: 50px;
+    line-height: 2.1;
+    background: black;
 }
 
 .carousel {
@@ -842,7 +872,6 @@ body {
 }
 
 .series-item {
-  top: -21px;
   display: flex;
   align-items: flex-start;
   margin-bottom: 20px;
