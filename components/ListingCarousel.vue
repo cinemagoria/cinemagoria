@@ -43,7 +43,7 @@
           <nuxt-link
             :to="viewAllUrl"
             class="card__link">
-            <div class="card__img">
+            <div class="card__img" style="position: relative; transform: scaleY(1.1); top: 20px;">
               <span>Explore All</span>
             </div>
           </nuxt-link>
