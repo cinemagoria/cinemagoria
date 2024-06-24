@@ -139,6 +139,9 @@
     
 
         <div>
+          <div class="loader" v-if="!imagesLoaded">
+            <div class="spinner"></div>
+          </div>
           <div v-for="genre in genresList" :key="genre.name" class="listing">
             <div class="listing__head">
               <h3 class="listing__title">Upcoming {{ genre.displayName }} Movies:</h3>
@@ -226,6 +229,7 @@ async function getUserName(userEmail) {
   export default {
     data() {
       return {
+        imagesLoaded: false,
         currentPage: 1,
         showLanguageMenu: false,
         selectedLanguage: 'english',
@@ -251,31 +255,43 @@ async function getUserName(userEmail) {
         nextComedyMovies: [],
         nextWesternMovies: [],
         genresList: [
-        { name: 'nextHorrorMovies', displayName: 'Horror' },
-        { name: 'nextScienceFictionMovies', displayName: 'Science Fiction' },
         { name: 'nextActionMovies', displayName: 'Action' },
+        { name: 'nextAdventureMovies', displayName: 'Adventure' },
+        { name: 'nextAnimationMovies', displayName: 'Animation' },
         { name: 'nextComedyMovies', displayName: 'Comedy' },
         { name: 'nextCrimeMovies', displayName: 'Crime' },
         { name: 'nextDocumentaryMovies', displayName: 'Documentary' },
         { name: 'nextDramaMovies', displayName: 'Drama' },
+        { name: 'nextFamilyMovies', displayName: 'Family' },
+        { name: 'nextFantasyMovies', displayName: 'Fantasy' },
         { name: 'nextHistoryMovies', displayName: 'History' },
+        { name: 'nextHorrorMovies', displayName: 'Horror' },
+        { name: 'nextMusicMovies', displayName: 'Music' },
         { name: 'nextMysteryMovies', displayName: 'Mystery' },
         { name: 'nextRomanceMovies', displayName: 'Romance' },
+        { name: 'nextScienceFictionMovies', displayName: 'Science Fiction' },
         { name: 'nextThrillerMovies', displayName: 'Thriller' },
+        { name: 'nextWarMovies', displayName: 'War' },
         { name: 'nextWesternMovies', displayName: 'Western' }
       ],
       currentIndexes: {
-        nextHorrorMovies: 0,
-        nextScienceFictionMovies: 0,
         nextActionMovies: 0,
+        nextAdventureMovies: 0,
+        nextAnimationMovies: 0,
         nextComedyMovies: 0,
         nextCrimeMovies: 0,
         nextDocumentaryMovies: 0,
         nextDramaMovies: 0,
+        nextFamilyMovies: 0,
+        nextFantasyMovies: 0,
         nextHistoryMovies: 0,
+        nextHorrorMovies: 0,
+        nextMusicMovies: 0,
         nextMysteryMovies: 0,
         nextRomanceMovies: 0,
+        nextScienceFictionMovies: 0,
         nextThrillerMovies: 0,
+        nextWarMovies: 0,
         nextWesternMovies: 0
       },
       addedMovieIds: new Set() 
@@ -302,17 +318,23 @@ async function getUserName(userEmail) {
     computed: {
       movies() {
       return {
-        nextHorrorMovies: this.nextHorrorMovies,
-        nextScienceFictionMovies: this.nextScienceFictionMovies,
         nextActionMovies: this.nextActionMovies,
+        nextAdventureMovies: this.nextAdventureMovies,
+        nextAnimationMovies: this.nextAnimationMovies,
         nextComedyMovies: this.nextComedyMovies,
         nextCrimeMovies: this.nextCrimeMovies,
         nextDocumentaryMovies: this.nextDocumentaryMovies,
         nextDramaMovies: this.nextDramaMovies,
+        nextFamilyMovies: this.nextFamilyMovies,
+        nextFantasyMovies: this.nextFantasyMovies,
         nextHistoryMovies: this.nextHistoryMovies,
+        nextHorrorMovies: this.nextHorrorMovies,
+        nextMusicMovies: this.nextMusicMovies,
         nextMysteryMovies: this.nextMysteryMovies,
         nextRomanceMovies: this.nextRomanceMovies,
+        nextScienceFictionMovies: this.nextScienceFictionMovies,
         nextThrillerMovies: this.nextThrillerMovies,
+        nextWarMovies: this.nextWarMovies,
         nextWesternMovies: this.nextWesternMovies
       };
       },
@@ -351,6 +373,14 @@ async function getUserName(userEmail) {
           mystery: 9648,
           romance: 10749,
           thriller: 53,
+
+          music: 10402,
+          animation: 16,
+          fantasty: 14,
+          family: 10751,
+          adventure: 12,
+          war: 10752,
+
           western: 37
         };
 
@@ -360,6 +390,7 @@ async function getUserName(userEmail) {
             accept: 'application/json',
             Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
           }
+        
         };
 
         const fetchMoviesByGenre = async (genreId) => {
@@ -370,25 +401,26 @@ async function getUserName(userEmail) {
               throw new Error(`Error en la respuesta de la API de películas para género ${genreId}`);
             }
             const movieData = await movieResponse.json();
+            console.log(movieData);
             return movieData.results || [];
+            
           } catch (error) {
             console.error(`Error al obtener próximas películas para género ${genreId}:`, error);
             return [];
+            
           }
         };
-
+        
         for (const [genreName, genreId] of Object.entries(genres)) {
           const movies = await fetchMoviesByGenre(genreId);
           const filteredMovies = movies.filter(movie => !this.addedMovieIds.has(movie.id));
           this[`next${genreName.charAt(0).toUpperCase() + genreName.slice(1)}Movies`] = filteredMovies;
           filteredMovies.forEach(movie => this.addedMovieIds.add(movie.id));
         }
-      },
 
-      updateMovies() {
-        this.genresList.forEach(genre => {
-          this.$set(this.movies, genre.name, this[`next${genre.name.charAt(0).toUpperCase() + genre.name.slice(1)}Movies`]);
-        });
+        setTimeout(() => {
+          this.imagesLoaded = true;
+        }, 1000);
       },
 
       formatTitle(title) {
@@ -619,6 +651,37 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
+.loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: linear-gradient(270deg, rgba(9, 39, 57, 0.95), rgba(0, 0, 0, 0.992));
+  z-index: 9999;
+}
+
+.spinner {
+  border: 8px solid rgba(129, 216, 234, 0.658);
+  border-left-color: #000;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .genre-section {
   margin-bottom: 40px;
   background: black;
@@ -677,17 +740,6 @@ body {
   min-height: 100px;
 }
 
-/* .movie-card {
-    min-width: 200px;
-    max-width: 200px;
-    text-align: center;
-    padding: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    margin: 0 10px;
-    background-color: black;
-} */
-
 .movie-poster {
     width: 100%;
     height: auto;
@@ -696,7 +748,6 @@ body {
 }
 
 .movie-title {
-  /* font-weight: bold; */
   margin: 10px 0;
   color: #8BE9FD;
 }
@@ -709,13 +760,6 @@ body {
 .movie-info {
   font-size: 12px;
 }
-
-/* @media (max-width: 1024px) {
-  .movie-card {
-    min-width: 120px;
-    max-width: 120px;
-  }
-} */
 
 .pagination-controls {
   display: flex;
@@ -769,15 +813,10 @@ body {
 .info-header-details {
     display: flex;
     align-items: center;
-    /* border-top-left-radius: 10px; */
-    /* border-top-right-radius: 10px; */
     background: black;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     justify-content: center;
-    /* padding-bottom: 10px; */
-    /* position: relative; */
-    /* top: -15px; */
     height: 20px;
 }
 
@@ -869,7 +908,6 @@ body {
 .series-title {
   font-size: 12px;
     color: #8BE9FD;
-    /* margin-bottom: 0.2rem; */
     letter-spacing: 2px;
 }
 
@@ -1060,9 +1098,6 @@ body {
       display: block;
   }
 
-/* .movie-card {
-   position: relative;
-} */
 
 .delete-icon {
     display: block;
