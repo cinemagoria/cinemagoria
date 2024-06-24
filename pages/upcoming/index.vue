@@ -241,57 +241,43 @@ export default {
       userFirstName: '',
       isMenuOpen: false,
       nextActionMovies: [],
+      nextAdventureMovies: [],
       nextHorrorMovies: [],
       nextScienceFictionMovies: [],
       nextThrillerMovies: [],
-      nextMysteryMovies: [],
       nextDocumentaryMovies: [],
       nextCrimeMovies: [],
       nextDramaMovies: [],
       nextHistoryMovies: [],
-
       nextRomanceMovies: [],
-
       nextComedyMovies: [],
       nextWesternMovies: [],
       genresList: [
       { name: 'nextActionMovies', displayName: 'Action' },
       { name: 'nextAdventureMovies', displayName: 'Adventure' },
-      { name: 'nextAnimationMovies', displayName: 'Animation' },
       { name: 'nextComedyMovies', displayName: 'Comedy' },
       { name: 'nextCrimeMovies', displayName: 'Crime' },
       { name: 'nextDocumentaryMovies', displayName: 'Documentary' },
       { name: 'nextDramaMovies', displayName: 'Drama' },
-      { name: 'nextFamilyMovies', displayName: 'Family' },
-      { name: 'nextFantasyMovies', displayName: 'Fantasy' },
       { name: 'nextHistoryMovies', displayName: 'History' },
       { name: 'nextHorrorMovies', displayName: 'Horror' },
-      { name: 'nextMusicMovies', displayName: 'Music' },
-      { name: 'nextMysteryMovies', displayName: 'Mystery' },
       { name: 'nextRomanceMovies', displayName: 'Romance' },
       { name: 'nextScienceFictionMovies', displayName: 'Science Fiction' },
       { name: 'nextThrillerMovies', displayName: 'Thriller' },
-      { name: 'nextWarMovies', displayName: 'War' },
       { name: 'nextWesternMovies', displayName: 'Western' }
     ],
     currentIndexes: {
       nextActionMovies: 0,
       nextAdventureMovies: 0,
-      nextAnimationMovies: 0,
       nextComedyMovies: 0,
       nextCrimeMovies: 0,
       nextDocumentaryMovies: 0,
       nextDramaMovies: 0,
-      nextFamilyMovies: 0,
-      nextFantasyMovies: 0,
       nextHistoryMovies: 0,
       nextHorrorMovies: 0,
-      nextMusicMovies: 0,
-      nextMysteryMovies: 0,
       nextRomanceMovies: 0,
       nextScienceFictionMovies: 0,
       nextThrillerMovies: 0,
-      nextWarMovies: 0,
       nextWesternMovies: 0
     },
     addedMovieIds: new Set() 
@@ -320,21 +306,15 @@ export default {
     return {
       nextActionMovies: this.nextActionMovies,
       nextAdventureMovies: this.nextAdventureMovies,
-      nextAnimationMovies: this.nextAnimationMovies,
       nextComedyMovies: this.nextComedyMovies,
       nextCrimeMovies: this.nextCrimeMovies,
       nextDocumentaryMovies: this.nextDocumentaryMovies,
       nextDramaMovies: this.nextDramaMovies,
-      nextFamilyMovies: this.nextFamilyMovies,
-      nextFantasyMovies: this.nextFantasyMovies,
       nextHistoryMovies: this.nextHistoryMovies,
       nextHorrorMovies: this.nextHorrorMovies,
-      nextMusicMovies: this.nextMusicMovies,
-      nextMysteryMovies: this.nextMysteryMovies,
       nextRomanceMovies: this.nextRomanceMovies,
       nextScienceFictionMovies: this.nextScienceFictionMovies,
       nextThrillerMovies: this.nextThrillerMovies,
-      nextWarMovies: this.nextWarMovies,
       nextWesternMovies: this.nextWesternMovies
     };
     },
@@ -362,6 +342,7 @@ export default {
 
       const genres = {
         horror: 27,
+        adventure: 12,
         scienceFiction: 878,
         action: 28,
         comedy: 35,
@@ -369,20 +350,14 @@ export default {
         documentary: 99,
         drama: 18,
         history: 36,
-        music: 10402,
-        mystery: 9648,
         romance: 10749,
         thriller: 53,
-
-        music: 10402,
-        animation: 16,
-        fantasty: 14,
-        family: 10751,
-        adventure: 12,
-        war: 10752,
-
         western: 37
       };
+
+      const genreIdMap = Object.fromEntries(
+        Object.entries(genres).map(([name, id]) => [id, `next${name.charAt(0).toUpperCase() + name.slice(1)}Movies`])
+      );
 
       const movieOptions = {
         method: 'GET',
@@ -390,7 +365,6 @@ export default {
           accept: 'application/json',
           Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
         }
-      
       };
 
       const fetchMoviesByGenre = async (genreId) => {
@@ -401,27 +375,41 @@ export default {
             throw new Error(`Error en la respuesta de la API de películas para género ${genreId}`);
           }
           const movieData = await movieResponse.json();
-          console.log(movieData);
           return movieData.results || [];
-          
         } catch (error) {
           console.error(`Error al obtener próximas películas para género ${genreId}:`, error);
           return [];
-          
         }
       };
-      
-      for (const [genreName, genreId] of Object.entries(genres)) {
+
+      const allMovies = [];
+
+      for (const genreId of Object.values(genres)) {
         const movies = await fetchMoviesByGenre(genreId);
-        const filteredMovies = movies.filter(movie => !this.addedMovieIds.has(movie.id));
-        this[`next${genreName.charAt(0).toUpperCase() + genreName.slice(1)}Movies`] = filteredMovies;
-        filteredMovies.forEach(movie => this.addedMovieIds.add(movie.id));
+        allMovies.push(...movies);
       }
 
+      allMovies.forEach(movie => {
+        if (movie.genre_ids && movie.genre_ids.length > 0) {
+          const primaryGenreId = movie.genre_ids[0];
+          const genreListName = genreIdMap[primaryGenreId];
+          if (genreListName && !this.addedMovieIds.has(movie.id)) {
+            if (this[genreListName]) {
+              this[genreListName].push(movie);
+              this.addedMovieIds.add(movie.id);
+            } else {
+              console.error(`La lista de géneros ${genreListName} no existe.`);
+            }
+          }
+        }
+      });
+      this.sortMoviesByReleaseDate();
       setTimeout(() => {
         this.imagesLoaded = true;
       }, 1000);
     },
+
+
 
     formatTitle(title) {
       return title.length > 28 ? title.substring(0, 25) + '...' : title;
@@ -519,6 +507,17 @@ export default {
         if (!date) return 'Not specified.';
         const [year, month, day] = date.split('-');
         return `${day}-${month}-${year}`;
+      },
+
+      sortMoviesByReleaseDate() {
+        const today = new Date();
+        this.genresList.forEach(genre => {
+          this[genre.name].sort((a, b) => {
+            const dateA = new Date(a.release_date);
+            const dateB = new Date(b.release_date);
+            return Math.abs(today - dateA) - Math.abs(today - dateB);
+          });
+        });
       },
 
       formatDateYear(date) {
