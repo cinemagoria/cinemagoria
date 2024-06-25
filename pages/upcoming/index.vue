@@ -134,8 +134,77 @@
           </div>
         </div>
 
-
-        <br>
+        <div v-if="trendingSeriesList.length > 0">
+      <div class="upcoming-series-container" v-for="series in paginatedTrendingSeries" :key="series.id">
+        <div class="info-header">
+          <h3 class="info-label">Trending TV Shows:</h3>
+        </div>
+        <div class="series-header">
+          <div class="pagination-controls">
+                <button @click="prevTrendingPage" :disabled="currentTrendingPage === 1"><</button>
+          </div>
+          <div class="series-title" @click="redirectTv(series.id)">
+            {{ series.name }}
+          </div>
+          <span class="series-year">({{ formatYearRange(series.firstAirDate, series.nextEpisode.air_date) }})</span>
+          <div class="pagination-controls">
+            <button @click="nextTrendingPage" :disabled="currentTrendingPage === totalTrendingPages">></button>
+          </div>
+        </div>
+       
+        <div class="info-header-details">
+          <button class="button-details" @click="redirectTv(series.id)">Full Details</button>
+        </div>
+        <div class="arrows-header">
+          <div class="previous-episode-label">
+            Previous Episode:
+          </div>
+          <div class="upcoming-episode-label">
+            Upcoming Episode:
+          </div>
+        </div>
+        <li class="series-item">
+          <div class="series-details-left">
+            <div class="series-image series-image-last">
+              <img v-if="series.lastEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.lastEpisode.still_path}`" alt="Series Last Episode Image">
+              <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
+            </div>
+            <div class="episode-details">
+              <p class="episode-name episode-name-last">"{{ series.lastEpisode.name }}."</p>
+            </div>
+            <div class="additional-details">
+              <p>Runtime: {{ series.lastEpisode.runtime ? series.lastEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
+              <p>Release Date: {{ formatDate(series.lastEpisode.air_date) }}</p>
+              <p>Overview: {{ series.lastEpisode.overview ? series.lastEpisode.overview : 'Not specified.' }}</p>
+            </div>
+          </div>
+          <div class="series-divider"></div>
+          <div class="series-details-right">
+            <div class="arrows-header-mobile">
+              <div class="previous-episode-label">
+                Upcoming Episode:
+              </div>
+              <div class="upcoming-episode-label">
+                Upcoming Episode:
+              </div>
+            </div>
+            <div class="series-image series-image-next">
+              <img v-if="series.nextEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.nextEpisode.still_path}`" alt="Series Next Episode Image">
+              <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
+            </div>
+            <div class="episode-details">
+              <p class="episode-name episode-name-next">"{{ series.nextEpisode.name }}."</p>
+            </div>
+            <div class="additional-details">
+              <p>Runtime: {{ series.nextEpisode.runtime ? series.nextEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
+              <p>Release Date: {{ formatDate(series.nextEpisode.air_date) }}</p>
+              <p>Overview: {{ series.nextEpisode.overview ? series.nextEpisode.overview : 'Not specified.' }}</p>
+            </div>
+          </div>
+        </li>
+      </div>
+      </div>
+      <br>
     
 
         <div>
@@ -231,6 +300,7 @@ async function getUserName(userEmail) {
       return {
         imagesLoaded: false,
         currentPage: 1,
+        currentTrendingPage: 1,
         showLanguageMenu: false,
         selectedLanguage: 'english',
         userEmail: '',
@@ -240,6 +310,10 @@ async function getUserName(userEmail) {
         userAvatar: '/avatars/avatar-ss0.png',
         userFirstName: '',
         isMenuOpen: false,
+        trendingTVShows: [],
+        trendingTVIds: [],
+        filteredSeriesDetails: [],
+        trendingSeriesList: [],
         nextActionMovies: [],
         nextAdventureMovies: [],
         nextHorrorMovies: [],
@@ -295,6 +369,8 @@ async function getUserName(userEmail) {
         await this.fetchUserFirstName();
         this.fetchFavoriteSeries();
         this.fetchUpcomingMovies();
+        await this.fetchTrendingTV();
+        await this.fetchSeriesDetailsForIds();
     },
 
     beforeDestroy() {
@@ -326,15 +402,115 @@ async function getUserName(userEmail) {
       totalPages() {
         return Math.ceil(this.seriesList.length / 1);
       },
+
+      totalTrendingPages() {
+        return Math.ceil(this.trendingSeriesList.length / 1);
+      },
       sortedSeriesList() {
         return this.seriesList.slice().sort((a, b) => {
           const dateA = new Date(a.nextEpisode.air_date);
           const dateB = new Date(b.nextEpisode.air_date);
           return dateA - dateB;
         });
-      }
-  },
+      },
+      paginatedTrendingSeries() {
+        const start = (this.currentTrendingPage - 1) * 1;
+        const end = start + 1;
+        return this.sortedTrendingSeriesList.slice(start, end);
+      },
+
+      totalTrendingPage() {
+        return Math.ceil(this.trendingSeriesList.length / this.itemsPerPage);
+      },
+      sortedTrendingSeriesList() {
+        return this.trendingSeriesList.slice().sort((a, b) => {
+          const dateA = new Date(a.nextEpisode.air_date);
+          const dateB = new Date(b.nextEpisode.air_date);
+          return dateA - dateB;
+        });
+      },
+    },
     methods: {
+      async fetchTrendingTV() {
+        const apiKey = process.env.API_KEY;
+        const apiLang = 'en-US';
+        const url = `https://api.themoviedb.org/3/trending/tv/week?api_key=${apiKey}&language=${apiLang}`;
+        const options = {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+            }
+        };
+
+        try {
+            const response = await fetch(url, options);
+            if (!response.ok) {
+                throw new Error('Error en la respuesta de la API');
+            }
+            const data = await response.json();
+            this.trendingTVShows = data.results;
+            this.trendingTVIds = data.results.map(show => show.id);
+            console.log(this.trendingTVShows);
+            console.log(this.trendingTVIds);
+        } catch (error) {
+            console.error('Error al obtener series en tendencia:', error);
+        }
+    },
+
+    async fetchSeriesDetails(seriesId) {
+        const apiKey = process.env.API_KEY;
+        const apiLang = 'en-US';
+        const url = `https://api.themoviedb.org/3/tv/${seriesId}?api_key=${apiKey}&language=${apiLang}`;
+        const options = {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+            }
+        };
+
+        try {
+            const response = await fetch(url, options);
+            if (!response.ok) {
+                throw new Error('Error en la respuesta de la API');
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error al obtener detalles de la serie:', error);
+            return null;
+        }
+    },
+
+    async fetchSeriesDetailsForIds() {
+        const seriesPromises = this.trendingTVIds.map(id => this.fetchSeriesDetails(id));
+        const seriesDetails = await Promise.all(seriesPromises);
+
+        const currentYear = new Date().getFullYear();
+        const pastYearsLimit = currentYear - 5;
+
+        const filteredSeriesDetails = seriesDetails
+            .filter(series => series !== null)
+            .map(series => ({
+                id: series.id,
+                name: series.name,
+                genres: series.genres.map(genre => ({ id: genre.id, name: genre.name })),
+                nextEpisode: series.next_episode_to_air,
+                stillPath: series.still_path,
+                numberOfEpisodes: series.number_of_episodes,
+                numberOfSeasons: series.number_of_seasons,
+                firstAirDate: series.first_air_date,
+                lastEpisode: series.last_episode_to_air,
+                yearEndForDb: series.last_episode_to_air ? new Date(series.last_episode_to_air.air_date).getFullYear() : null
+            }))
+            .filter(series => series.yearEndForDb >= pastYearsLimit && series.nextEpisode !== undefined && series.nextEpisode !== null);
+
+        this.filteredSeriesDetails = filteredSeriesDetails;
+        console.log(this.filteredSeriesDetails);
+        this.trendingSeriesList = this.filteredSeriesDetails;
+    },
+
       async fetchUpcomingMovies() {
         const today = new Date().toISOString().split('T')[0];
         const apiKey = process.env.API_KEY;
@@ -469,6 +645,31 @@ async function getUserName(userEmail) {
           this.currentPage--;
         }
       },
+
+      nextTrendingPage() {
+        if (this.currentTrendingPage < this.totalTrendingPages) {
+          this.currentTrendingPage++;
+        }
+      },
+      prevTrendingPage() {
+        if (this.currentTrendingPage > 1) {
+          this.currentTrendingPage--;
+        }
+      },
+
+
+      prevTrendingPage() {
+        if (this.currentTrendingPage > 1) {
+            this.currentTrendingPage--;
+        }
+      },
+
+      nextTrendingPage() {
+        if (this.currentTrendingPage < this.totalTrendingPages) {
+            this.currentTrendingPage++;
+        }
+      },
+
 
 
       redirectTv(showId) {

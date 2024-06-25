@@ -585,7 +585,7 @@
           '://',
           '://es.'
         )}${currentPath}`;
-        window.location.href = spanishUrl; // Realiza la redirección
+        window.location.href = spanishUrl; 
       },
 
   
