@@ -3,16 +3,16 @@
     <section class="upcoming-section">
       <div v-if="isLoggedIn" class="user-profile">
         <div class="language-selector" style="position: relative; top: 44px; left: -70px;">
-          <div class="selected-language" @click="toggleLanguageMenu" >
+          <div class="selected-language" @click="toggleLanguageMenu">
             <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
-            <span class="language">En</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'english'" style="width: 24px; height: 24px; left: -70px;">
+            <span class="language">Es</span>  
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" style="width: 24px; height: 24px; left: -70px;">
               <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
             </svg>
           </div>
-          <div ref="languageMenu" class="language-menu">
-            <label class="menu-label1" @click="changeLanguage('spanish')">
-              <span>Español</span>
+          <div ref="languageMenu" class="language-menu" :style="{ display: showLanguageMenu ? 'block' : 'none' }">
+            <label class="menu-label1" @click="changeLanguage('english')">
+              <span>English</span>
             </label>
           </div>
         </div>
@@ -22,229 +22,229 @@
           <div v-if="isMenuOpen" class="dropdown-menu">
             <div class="menu-item" @click="goToHome">
               <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10" stroke-linejoin="round"><path d="M8.5 23.2H1.3V9L12 .8 22.7 9v14.2h-7.2v-5c0-1.9-1.6-3.4-3.5-3.4s-3.5 1.5-3.5 3.4v5z"/></g></svg>
-              <span class="menu-label1">Home</span>
+              <span class="menu-label1">Inicio</span>
             </div>
             <div class="menu-item" @click="goToSettings">
               <img src="~/static/icon-settings.png" alt="Settings Icon" class="settings-icon">
-              <span class="menu-label1">Settings</span>
+              <span class="menu-label1">Ajustes</span>
             </div>
             <div class="menu-item" @click="signOut">
               <img src="~/static/icon-logout.png" alt="Logout Icon" class="logout-icon">
-              <span class="menu-label2">Log out</span>
+              <span class="menu-label2">Cerrar sesión</span>
             </div>
           </div>
         </div>
       </div>
       <div v-else class="user-profile-else">
-        <div class="language-selector" style="position: relative;top: -60.2px; left: -57px;">
+        <div class="language-selector" style="position: relative;top: -45.2px; left: -57px;">
           <div class="selected-language" @click="toggleLanguageMenu">
             <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
-            <span class="language">En</span>
+            <span class="language">Es</span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" style="width: 24px; height: 24px; left: -70px;">
               <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
             </svg>
           </div>
           <div ref="languageMenu" class="language-menu" :style="{ display: showLanguageMenu ? 'block' : 'none' }">
             <label class="menu-label1" @click="changeLanguage('spanish')">
-              <span>Español</span>
+              <span>English</span>
             </label>
           </div>
         </div>
         <div class="avatar-container-else" @click="toggleMenu">
           <div>
-            <span class="menu-label1" @click="goToLogin">Sign In</span>
+            <span class="menu-label1" @click="goToLogin">Iniciar sesión</span>
           </div>
         </div>
       </div>
       <br>
-      <h1 class="navbar-welcome">Upcoming Releases & News</h1>
-      <h2 class="subtitle">Stay Informed About Upcoming Movies, TV Shows, and Entertainment News.</h2>
-      <div>
-        <div class="loader" v-if="!imagesLoaded">
-          <div class="spinner"></div>
+      <h1 class="navbar-welcome">Próximos Estrenos</h1>
+        <h2 class="subtitle">Información sobre próximas películas y episodios de series de TV.</h2>
+        <div>
+          <div class="loader" v-if="!imagesLoaded">
+            <div class="spinner"></div>
+          </div>
+          <div class="listing" style="position:relative; top: -20px;">
+            <div class="listing__head">
+              <h3 class="listing__title">Próximas Películas:</h3>
+            </div>
+            <div v-if="combinedMovies && combinedMovies.length" class="carousel">
+              <button @click="prevSlide" class="carousel__nav carousel__nav--left">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"></path>
+                </svg>
+              </button>
+              <div class="carousel__items" ref="carouselItems">
+                <div v-for="(movie, index) in combinedMovies" :key="movie.id" class="card" @click="redirectMovie(movie.id)">
+                  <div class="card__img lazyloaded">
+                    <img v-if="movie.poster_path" :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" class="lazyload" />
+                    <img v-else src="~/static/image_not_found_yet.png" alt="Image Not Found" />
+                  </div>
+                  <h2 class="card__name">{{ formatTitle(movie.title) }}</h2>
+                  <div class="card__rating">
+                    <div class="card__vote">{{ formatDate(movie.release_date) }}</div>
+                  </div>
+                </div>
+              </div>
+              <button @click="nextSlide" class="carousel__nav carousel__nav--right">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"></path>
+                </svg>
+              </button>
+            </div>
+            <div v-else>
+              <p>No hay próximas películas disponibles.</p>
+            </div>
+          </div>
         </div>
-        <div class="listing">
-          <div class="listing__head">
-            <h3 class="listing__title">Upcoming Movies:</h3>
-          </div>
-          <div v-if="combinedMovies && combinedMovies.length" class="carousel">
-            <button @click="prevSlide" class="carousel__nav carousel__nav--left">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"></path>
-              </svg>
-            </button>
-            <div class="carousel__items" ref="carouselItems">
-              <div v-for="(movie, index) in combinedMovies" :key="movie.id" class="card" @click="redirectMovie(movie.id)">
-                <div class="card__img lazyloaded">
-                  <img v-if="movie.poster_path" :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" class="lazyload" />
-                  <img v-else src="~/static/image_not_found_yet.png" alt="Image Not Found" />
-                </div>
-                <h2 class="card__name">{{ formatTitle(movie.title) }}</h2>
-                <div class="card__rating">
-                  <div class="card__vote">{{ formatDate(movie.release_date) }}</div>
-                </div>
+        <!--  <div>
+          <div class="upcoming-series-container" v-for="series in paginatedSeries" :key="series.id">
+            <div class="info-header">
+              <h3 class="info-label" v-if="seriesList.length > 0">Upcoming TV show episodes based on your watchlist:</h3>
+              <h3 class="infoe-label "v-else>It appears that there are currently no TV shows in your watchlist collection with upcoming episodes. Please consider adding new TV series to populate this section with relevant results.</h3>
+            </div>
+            <div class="series-header">
+              <div class="pagination-controls">
+                <button @click="prevPage" :disabled="currentPage === 1"><</button>
+              </div>
+              <div class="series-title" @click="redirectTv(series.nextEpisode.show_id)">
+                {{ series.name }}
+              </div>
+              <span class="series-year">({{ formatYearRange(series.firstAirDate, series.nextEpisode.air_date) }})</span>
+              <div class="pagination-controls">
+                <button @click="nextPage" :disabled="currentPage === totalPages">></button>
               </div>
             </div>
-            <button @click="nextSlide" class="carousel__nav carousel__nav--right">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"></path>
-              </svg>
-            </button>
-          </div>
-          <div v-else>
-            <p>No upcoming movies available.</p>
-          </div>
-        </div>
-      </div>
-      <!--  <div>
-        <div class="upcoming-series-container" v-for="series in paginatedSeries" :key="series.id">
-          <div class="info-header">
-            <h3 class="info-label" v-if="seriesList.length > 0">Upcoming TV show episodes based on your watchlist:</h3>
-            <h3 class="infoe-label "v-else>It appears that there are currently no TV shows in your watchlist collection with upcoming episodes. Please consider adding new TV series to populate this section with relevant results.</h3>
-          </div>
-          <div class="series-header">
-            <div class="pagination-controls">
-              <button @click="prevPage" :disabled="currentPage === 1"><</button>
+            <div class="info-header-details">
+              <button class="button-details" @click="redirectTv(series.nextEpisode.show_id)">Full Details</button>
             </div>
-            <div class="series-title" @click="redirectTv(series.nextEpisode.show_id)">
-              {{ series.name }}
-            </div>
-            <span class="series-year">({{ formatYearRange(series.firstAirDate, series.nextEpisode.air_date) }})</span>
-            <div class="pagination-controls">
-              <button @click="nextPage" :disabled="currentPage === totalPages">></button>
-            </div>
+            <div class="previos-episode-label" style="color: #8BE9FD; text-align: center; background: black; width: 100%;">
+              SEASON {{ series.numberOfSeasons }}
           </div>
-          <div class="info-header-details">
-            <button class="button-details" @click="redirectTv(series.nextEpisode.show_id)">Full Details</button>
-          </div>
-          <div class="previos-episode-label" style="color: #8BE9FD; text-align: center; background: black; width: 100%;">
-            SEASON {{ series.numberOfSeasons }}
-        </div>
-          <div class="arrows-header">
-              <div class="previous-episode-label">
-                Previous Episode:
-              </div>
-              <div class="upcoming-episode-label">
-                Upcoming Episode:
-              </div>
-          </div>
-            <li class="series-item">
-              <div class="series-details-left">
-                <div class="series-image series-image-last">
-                  <img v-if="series.lastEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.lastEpisode.still_path}`" alt="Series Last Episode Image">
-                  <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
-                </div>
-                <div class="episode-details">
-                  <p class="episode-name episode-name-last">"{{ series.lastEpisode.name }}."</p>
-                </div>
-                <div class="additional-details">
-                  <p>Runtime: {{ series.lastEpisode.runtime ? series.lastEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
-                  <p>Release Date: {{ formatDate(series.lastEpisode.air_date) }}</p>
-                  <p>Overview: {{ series.lastEpisode.overview ? series.lastEpisode.overview : 'Not specified.' }}</p>
-                </div>
-              </div>
-              <div class="series-divider"></div>
-              <div class="series-details-right">
-                <div class="arrows-header-mobile">
+            <div class="arrows-header">
                 <div class="previous-episode-label">
-                  Upcoming Episode:
+                  Previous Episode:
                 </div>
                 <div class="upcoming-episode-label">
                   Upcoming Episode:
                 </div>
             </div>
-                <div class="series-image series-image-next">
-                  <img v-if="series.nextEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.nextEpisode.still_path}`" alt="Series Next Episode Image">
-                  <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
+              <li class="series-item">
+                <div class="series-details-left">
+                  <div class="series-image series-image-last">
+                    <img v-if="series.lastEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.lastEpisode.still_path}`" alt="Series Last Episode Image">
+                    <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
+                  </div>
+                  <div class="episode-details">
+                    <p class="episode-name episode-name-last">"{{ series.lastEpisode.name }}."</p>
+                  </div>
+                  <div class="additional-details">
+                    <p>Runtime: {{ series.lastEpisode.runtime ? series.lastEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
+                    <p>Release Date: {{ formatDate(series.lastEpisode.air_date) }}</p>
+                    <p>Overview: {{ series.lastEpisode.overview ? series.lastEpisode.overview : 'Not specified.' }}</p>
+                  </div>
                 </div>
-                <div class="episode-details">
-                  <p class="episode-name episode-name-next">"{{ series.nextEpisode.name }}."</p>
+                <div class="series-divider"></div>
+                <div class="series-details-right">
+                  <div class="arrows-header-mobile">
+                  <div class="previous-episode-label">
+                    Upcoming Episode:
+                  </div>
+                  <div class="upcoming-episode-label">
+                    Upcoming Episode:
+                  </div>
+              </div>
+                  <div class="series-image series-image-next">
+                    <img v-if="series.nextEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.nextEpisode.still_path}`" alt="Series Next Episode Image">
+                    <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
+                  </div>
+                  <div class="episode-details">
+                    <p class="episode-name episode-name-next">"{{ series.nextEpisode.name }}."</p>
+                  </div>
+                  <div class="additional-details">
+                    <p>Runtime: {{ series.nextEpisode.runtime ? series.nextEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
+                    <p>Release Date: {{ formatDate(series.nextEpisode.air_date) }}</p>
+                    <p>Overview: {{ series.nextEpisode.overview ? series.nextEpisode.overview : 'Not specified.' }}</p>
+                  </div>
                 </div>
-                <div class="additional-details">
-                  <p>Runtime: {{ series.nextEpisode.runtime ? series.nextEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
-                  <p>Release Date: {{ formatDate(series.nextEpisode.air_date) }}</p>
-                  <p>Overview: {{ series.nextEpisode.overview ? series.nextEpisode.overview : 'Not specified.' }}</p>
+            </li>
+          </div>
+        </div> -->
+
+        <div v-if="trendingSeriesList.length > 0">
+        <div class="upcoming-series-container" v-for="series in paginatedTrendingSeries" :key="series.id">
+          <div class="listing__head">
+              <h3 class="listing__title" style="top: 2.5rem; padding-top: 0.5rem;">Próximos Episodios de Series de TV:</h3>
+          </div>
+          <div class="series-header">
+            <div class="pagination-controls">
+                  <button @click="prevTrendingPage" :disabled="currentTrendingPage === 1"><</button>
+            </div>
+            <div class="series-title" @click="redirectTv(series.id)">
+              {{ series.name }}
+            </div>
+            <span class="series-year">({{ formatYearRange(series.firstAirDate, series.nextEpisode.air_date) }})</span>
+            <div class="pagination-controls">
+              <button @click="nextTrendingPage" :disabled="currentTrendingPage === totalTrendingPages">></button>
+            </div>
+          </div>
+        
+          <div class="info-header-details">
+            <button class="button-details" @click="redirectTv(series.id)">Más Información</button>
+          </div>
+          <div class="previos-episode-label" style="color: #8BE9FD; text-align: center; background: black; width: 100%;">
+              TEMPORADA {{ series.numberOfSeasons }}
+          </div>
+          <div class="arrows-header">
+            <div class="previous-episode-label">
+              Episodio Anterior:
+            </div>
+            <div class="upcoming-episode-label">
+              Próximo Episodio:
+            </div>
+          </div>
+          <li class="series-item">
+            <div class="series-details-left">
+              <div class="series-image series-image-last">
+                <img v-if="series.lastEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.lastEpisode.still_path}`" alt="Series Last Episode Image">
+                <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
+              </div>
+              <div class="episode-details">
+                <p class="episode-name episode-name-last">{{ series.lastEpisode.episode_number }}. {{ series.lastEpisode.name }}</p>
+              </div>
+              <div class="additional-details">
+                <p>Duración: {{ series.lastEpisode.runtime ? series.lastEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
+                <p>Fecha de estreno: {{ formatDate(series.lastEpisode.air_date) }}</p>
+                <p>Sinopsis: {{ series.lastEpisode.overview ? series.lastEpisode.overview : 'Not specified.' }}</p>
+              </div>
+            </div>
+            <div class="series-divider"></div>
+            <div class="series-details-right">
+              <div class="arrows-header-mobile">
+                <div class="previous-episode-label">
+                  Episodio Anterior:
+                </div>
+                <div class="upcoming-episode-label">
+                  Próximo Episodio:
                 </div>
               </div>
+              <div class="series-image series-image-next">
+                <img v-if="series.nextEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.nextEpisode.still_path}`" alt="Series Next Episode Image">
+                <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
+              </div>
+              <div class="episode-details">
+                <p class="episode-name episode-name-next">{{ series.nextEpisode.episode_number }}. {{ series.nextEpisode.name }}</p>
+              </div>
+              <div class="additional-details">
+                <p>Duración: {{ series.nextEpisode.runtime ? series.nextEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
+                <p>Fecha de estreno: {{ formatDate(series.nextEpisode.air_date) }}</p>
+                <p>Sinopsis: {{ series.nextEpisode.overview ? series.nextEpisode.overview : 'Not specified.' }}</p>
+              </div>
+            </div>
           </li>
         </div>
-      </div> -->
-
-      <div v-if="trendingSeriesList.length > 0">
-      <div class="upcoming-series-container" v-for="series in paginatedTrendingSeries" :key="series.id">
-        <div class="listing__head">
-            <h3 class="listing__title" style="top: 2.5rem; padding-top: 0.5rem;">Upcoming TV Shows:</h3>
         </div>
-        <div class="series-header">
-          <div class="pagination-controls">
-                <button @click="prevTrendingPage" :disabled="currentTrendingPage === 1"><</button>
-          </div>
-          <div class="series-title" @click="redirectTv(series.id)">
-            {{ series.name }}
-          </div>
-          <span class="series-year">({{ formatYearRange(series.firstAirDate, series.nextEpisode.air_date) }})</span>
-          <div class="pagination-controls">
-            <button @click="nextTrendingPage" :disabled="currentTrendingPage === totalTrendingPages">></button>
-          </div>
-        </div>
-      
-        <div class="info-header-details">
-          <button class="button-details" @click="redirectTv(series.id)">Full Details</button>
-        </div>
-        <div class="previos-episode-label" style="color: #8BE9FD; text-align: center; background: black; width: 100%;">
-            SEASON {{ series.numberOfSeasons }}
-        </div>
-        <div class="arrows-header">
-          <div class="previous-episode-label">
-            Previous Episode:
-          </div>
-          <div class="upcoming-episode-label">
-            Upcoming Episode:
-          </div>
-        </div>
-        <li class="series-item">
-          <div class="series-details-left">
-            <div class="series-image series-image-last">
-              <img v-if="series.lastEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.lastEpisode.still_path}`" alt="Series Last Episode Image">
-              <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
-            </div>
-            <div class="episode-details">
-              <p class="episode-name episode-name-last">{{ series.lastEpisode.episode_number }}. {{ series.lastEpisode.name }}</p>
-            </div>
-            <div class="additional-details">
-              <p>Runtime: {{ series.lastEpisode.runtime ? series.lastEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
-              <p>Release Date: {{ formatDate(series.lastEpisode.air_date) }}</p>
-              <p>Overview: {{ series.lastEpisode.overview ? series.lastEpisode.overview : 'Not specified.' }}</p>
-            </div>
-          </div>
-          <div class="series-divider"></div>
-          <div class="series-details-right">
-            <div class="arrows-header-mobile">
-              <div class="previous-episode-label">
-                Upcoming Episode:
-              </div>
-              <div class="upcoming-episode-label">
-                Upcoming Episode:
-              </div>
-            </div>
-            <div class="series-image series-image-next">
-              <img v-if="series.nextEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.nextEpisode.still_path}`" alt="Series Next Episode Image">
-              <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
-            </div>
-            <div class="episode-details">
-              <p class="episode-name episode-name-next">{{ series.nextEpisode.episode_number }}. {{ series.nextEpisode.name }}</p>
-            </div>
-            <div class="additional-details">
-              <p>Runtime: {{ series.nextEpisode.runtime ? series.nextEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
-              <p>Release Date: {{ formatDate(series.nextEpisode.air_date) }}</p>
-              <p>Overview: {{ series.nextEpisode.overview ? series.nextEpisode.overview : 'Not specified.' }}</p>
-            </div>
-          </div>
-        </li>
-      </div>
-      </div>
-  </section>
-</main>
+    </section>
+  </main>
 </template>
 
 <script>
@@ -702,12 +702,12 @@ export default {
 
 
     redirectTv(showId) {
-      const url = `https://cinemathe.space/tv/${showId}`;
+      const url = `https://es.cinemathe.space/tv/${showId}`;
       window.open(url, '_blank');
     },
 
     redirectMovie(id) {
-      const url = `https://cinemathe.space/movie/${id}`;
+      const url = `https://es.cinemathe.space/movie/${id}`;
       window.open(url, '_blank');
     },
 
@@ -719,14 +719,17 @@ export default {
       }
       },
       changeLanguage(language) {
-      this.selectedLanguage = language;
-      const currentPath = this.$route.path;
-      const currentOrigin = window.location.origin;
-      const spanishUrl = `${currentOrigin.replace(
-          '://',
-          '://es.'
-      )}${currentPath}`;
-      window.location.href = spanishUrl;
+          const currentPath = this.$route.path;
+          const currentOrigin = window.location.origin;
+          const isSpanish = currentOrigin.includes('es.');
+
+          if (isSpanish) {
+            const newOrigin = currentOrigin.replace('es.', '');
+            const newUrl = `${newOrigin}${currentPath}`;
+            window.location.href = newUrl;
+          } else {
+            console.log("La URL no tiene el prefijo 'es.', no se necesita ninguna acción.");
+          }
       },
 
       toggleMenu() {
@@ -827,11 +830,15 @@ export default {
           this.$router.push('/login');
       },
 
+      goTowatchlist() {
+        this.$router.push('/watchlist');
+      },
+
       getLink(item) {
       if (item.details.typeForDb === 'movie') {
-          return `https://cinemathe.space/movie/${item.details.idForDb}`;
+          return `https://es.cinemathe.space/movie/${item.details.idForDb}`;
       } else if (item.details.typeForDb === 'tv') {
-          return `https://cinemathe.space/tv/${item.details.idForDb}`;
+          return `https://es.cinemathe.space/tv/${item.details.idForDb}`;
       } else {
           return '#';
       }
@@ -1006,6 +1013,8 @@ opacity: .5;
 .upcoming-series-container {
 max-width: 70%;
 margin: 0 auto;
+position: relative;
+top: -20px;
 }
 
 .info-header {
@@ -1191,7 +1200,7 @@ margin-top: 0.30rem;
 
 .avatar-container-else {
   position: relative;
-  top: -81.5px;
+  top: -66.5px;
   font-size: 11.5px;
   left: 10px;
   cursor: pointer;
@@ -1256,11 +1265,6 @@ margin-top: 0.30rem;
   color: #94999d;
   position: relative;
   top: 1px;
-}
-
-.arrow-icon {
-  width: 16px;
-  height: 16px;
 }
 
 .language-selector {
@@ -1350,18 +1354,17 @@ cursor: pointer;
 }
 
 .dropdown-menu {
-position: relative;
-left: 27px;
-width: 113.574px;
-top: 100%;
-background: rgba(0, 0, 0, 0.8);
-box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
-backdrop-filter: blur( 16px );
--webkit-backdrop-filter: blur( 16px );
-border-radius: 5px;
-border: 1px solid rgba( 255, 255, 255, 0.18 );
-z-index: 100;
-display: none;
+  position: relative; 
+  width: 149.574px;
+  top: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur( 16px );
+  -webkit-backdrop-filter: blur( 16px );
+  border-radius: 5px;
+  border: 1px solid rgba( 255, 255, 255, 0.18 );
+  z-index: 100;
+  display: none;
 }
 
 .dropdown-menu {

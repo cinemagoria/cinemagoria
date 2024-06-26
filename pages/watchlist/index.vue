@@ -53,7 +53,7 @@
         </div>
         <div class="avatar-container-else" @click="toggleMenu">
             <div>
-              <span class="menu-label1" @click="goToLogin">Sign In</span>
+              <span class="menu-label1" @click="goToLogin">Iniciar sesión</span>
             </div>
         </div>
       </div>
