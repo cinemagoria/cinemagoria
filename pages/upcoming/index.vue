@@ -138,9 +138,9 @@
                     <p class="episode-name episode-name-last">"{{ series.lastEpisode.name }}."</p>
                   </div>
                   <div class="additional-details">
-                    <p>Runtime: {{ series.lastEpisode.runtime ? series.lastEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
+                    <p>Runtime: {{ series.lastEpisode.runtime ? series.lastEpisode.runtime + ' mins.' : 'No especificado.' }}</p>
                     <p>Release Date: {{ formatDate(series.lastEpisode.air_date) }}</p>
-                    <p>Overview: {{ series.lastEpisode.overview ? series.lastEpisode.overview : 'Not specified.' }}</p>
+                    <p>Overview: {{ series.lastEpisode.overview ? series.lastEpisode.overview : 'No especificado.' }}</p>
                   </div>
                 </div>
                 <div class="series-divider"></div>
@@ -161,9 +161,9 @@
                     <p class="episode-name episode-name-next">"{{ series.nextEpisode.name }}."</p>
                   </div>
                   <div class="additional-details">
-                    <p>Runtime: {{ series.nextEpisode.runtime ? series.nextEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
+                    <p>Runtime: {{ series.nextEpisode.runtime ? series.nextEpisode.runtime + ' mins.' : 'No especificado.' }}</p>
                     <p>Release Date: {{ formatDate(series.nextEpisode.air_date) }}</p>
-                    <p>Overview: {{ series.nextEpisode.overview ? series.nextEpisode.overview : 'Not specified.' }}</p>
+                    <p>Overview: {{ series.nextEpisode.overview ? series.nextEpisode.overview : 'No especificado.' }}</p>
                   </div>
                 </div>
             </li>
@@ -212,9 +212,9 @@
                 <p class="episode-name episode-name-last">{{ series.lastEpisode.episode_number }}. {{ series.lastEpisode.name }}</p>
               </div>
               <div class="additional-details">
-                <p>Duración: {{ series.lastEpisode.runtime ? series.lastEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
+                <p>Duración: {{ series.lastEpisode.runtime ? series.lastEpisode.runtime + ' mins.' : 'No especificado.' }}</p>
                 <p>Fecha de estreno: {{ formatDate(series.lastEpisode.air_date) }}</p>
-                <p>Sinopsis: {{ series.lastEpisode.overview ? series.lastEpisode.overview : 'Not specified.' }}</p>
+                <p>Sinopsis: {{ series.lastEpisode.overview ? series.lastEpisode.overview : 'No especificado.' }}</p>
               </div>
             </div>
             <div class="series-divider"></div>
@@ -235,9 +235,9 @@
                 <p class="episode-name episode-name-next">{{ series.nextEpisode.episode_number }}. {{ series.nextEpisode.name }}</p>
               </div>
               <div class="additional-details">
-                <p>Duración: {{ series.nextEpisode.runtime ? series.nextEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
+                <p>Duración: {{ series.nextEpisode.runtime ? series.nextEpisode.runtime + ' mins.' : 'No especificado.' }}</p>
                 <p>Fecha de estreno: {{ formatDate(series.nextEpisode.air_date) }}</p>
-                <p>Sinopsis: {{ series.nextEpisode.overview ? series.nextEpisode.overview : 'Not specified.' }}</p>
+                <p>Sinopsis: {{ series.nextEpisode.overview ? series.nextEpisode.overview : 'No especificado.' }}</p>
               </div>
             </div>
           </li>
@@ -468,7 +468,7 @@ export default {
       };
 
       const fetchMoviesByGenre = async (genreId) => {
-        const moviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=${apiLang}&page=1&primary_release_date.gte=${today}&sort_by=popularity.desc&with_genres=${genreId}`;
+        const moviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=es-ES&page=1&primary_release_date.gte=${today}&sort_by=popularity.desc&with_genres=${genreId}`;
         try {
           const movieResponse = await fetch(moviesUrl, movieOptions);
           if (!movieResponse.ok) {
@@ -513,7 +513,7 @@ export default {
     },
 
     formatDate(date) {
-        if (!date) return 'Not specified.';
+        if (!date) return 'No especificado.';
         const [year, month, day] = date.split('-');
         return `${day}-${month}-${year}`;
       },
@@ -553,8 +553,7 @@ export default {
 
     async fetchTrendingTV() {
           const apiKey = process.env.API_KEY;
-          const apiLang = 'en-US';
-          const baseUrl = `https://api.themoviedb.org/3/trending/tv/week?api_key=${apiKey}&language=${apiLang}`;
+          const baseUrl = `https://api.themoviedb.org/3/trending/tv/week?&language=es-ES&api_key=${apiKey}`;
           const options = {
               method: 'GET',
               headers: {
@@ -590,8 +589,7 @@ export default {
 
     async fetchSeriesDetails(seriesId) {
         const apiKey = process.env.API_KEY;
-        const apiLang = 'en-US';
-        const url = `https://api.themoviedb.org/3/tv/${seriesId}?api_key=${apiKey}&language=${apiLang}`;
+        const url = `https://api.themoviedb.org/3/tv/${seriesId}?api_key=${apiKey}&language=es-ES`;
         const options = {
             method: 'GET',
             headers: {
