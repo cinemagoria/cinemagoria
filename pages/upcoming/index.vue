@@ -137,7 +137,7 @@
         <div v-if="trendingSeriesList.length > 0">
       <div class="upcoming-series-container" v-for="series in paginatedTrendingSeries" :key="series.id">
         <div class="info-header">
-          <h3 class="info-label">Trending TV Shows:</h3>
+          <h3 class="info-label">Upcoming TV show episodes based on trending series:</h3>
         </div>
         <div class="series-header">
           <div class="pagination-controls">
@@ -431,31 +431,44 @@ async function getUserName(userEmail) {
       },
     },
     methods: {
-      async fetchTrendingTV() {
-        const apiKey = process.env.API_KEY;
-        const apiLang = 'en-US';
-        const url = `https://api.themoviedb.org/3/trending/tv/week?api_key=${apiKey}&language=${apiLang}`;
-        const options = {
-            method: 'GET',
-            headers: {
-                accept: 'application/json',
-                Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
-            }
-        };
+          async fetchTrendingTV() {
+            const apiKey = process.env.API_KEY;
+            const apiLang = 'en-US';
+            const baseUrl = `https://api.themoviedb.org/3/trending/tv/week?api_key=${apiKey}&language=${apiLang}`;
+            const options = {
+                method: 'GET',
+                headers: {
+                    accept: 'application/json',
+                    Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+                }
+            };
 
-        try {
-            const response = await fetch(url, options);
-            if (!response.ok) {
-                throw new Error('Error en la respuesta de la API');
+            try {
+                const pages = [1, 2, 3];
+                const fetchPromises = pages.map(page => {
+                    const url = `${baseUrl}&page=${page}`;
+                    return fetch(url, options);
+                });
+
+                const responses = await Promise.all(fetchPromises);
+                const dataPromises = responses.map(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta de la API');
+                    }
+                    return response.json();
+                });
+
+                const allData = await Promise.all(dataPromises);
+                const allResults = allData.flatMap(data => data.results);
+
+                this.trendingTVShows = allResults;
+                this.trendingTVIds = allResults.map(show => show.id);
+
+                console.log(this.trendingTVShows);
+                console.log(this.trendingTVIds);
+            } catch (error) {
+                console.error('Error al obtener series en tendencia:', error);
             }
-            const data = await response.json();
-            this.trendingTVShows = data.results;
-            this.trendingTVIds = data.results.map(show => show.id);
-            console.log(this.trendingTVShows);
-            console.log(this.trendingTVIds);
-        } catch (error) {
-            console.error('Error al obtener series en tendencia:', error);
-        }
     },
 
     async fetchSeriesDetails(seriesId) {
