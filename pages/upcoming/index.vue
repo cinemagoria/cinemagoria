@@ -59,14 +59,49 @@
         <br>
         <h1 class="navbar-welcome">Upcoming Releases & News</h1>
         <h2 class="subtitle">Stay Informed About Upcoming Movies, TV Shows, and Entertainment News.</h2>
-        <br>
         <div>
+          <div class="loader" v-if="!imagesLoaded">
+            <div class="spinner"></div>
+          </div>
+          <div class="listing">
+            <div class="listing__head">
+              <h3 class="listing__title">Upcoming Movies:</h3>
+            </div>
+            <div v-if="combinedMovies && combinedMovies.length" class="carousel">
+              <button @click="prevSlide" class="carousel__nav carousel__nav--left">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"></path>
+                </svg>
+              </button>
+              <div class="carousel__items" ref="carouselItems">
+                <div v-for="(movie, index) in combinedMovies" :key="movie.id" class="card" @click="redirectMovie(movie.id)">
+                  <div class="card__img lazyloaded">
+                    <img v-if="movie.poster_path" :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" class="lazyload" />
+                    <img v-else src="~/static/image_not_found_yet.png" alt="Image Not Found" />
+                  </div>
+                  <h2 class="card__name">{{ formatTitle(movie.title) }}</h2>
+                  <div class="card__rating">
+                    <div class="card__vote">{{ formatDate(movie.release_date) }}</div>
+                  </div>
+                </div>
+              </div>
+              <button @click="nextSlide" class="carousel__nav carousel__nav--right">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"></path>
+                </svg>
+              </button>
+            </div>
+            <div v-else>
+              <p>No upcoming movies available.</p>
+            </div>
+          </div>
+        </div>
+        <!--  <div>
           <div class="upcoming-series-container" v-for="series in paginatedSeries" :key="series.id">
             <div class="info-header">
               <h3 class="info-label" v-if="seriesList.length > 0">Upcoming TV show episodes based on your watchlist:</h3>
               <h3 class="infoe-label "v-else>It appears that there are currently no TV shows in your watchlist collection with upcoming episodes. Please consider adding new TV series to populate this section with relevant results.</h3>
             </div>
-            <!-- <hr style="position: relative;top: 11px;"> -->
             <div class="series-header">
               <div class="pagination-controls">
                 <button @click="prevPage" :disabled="currentPage === 1"><</button>
@@ -82,6 +117,9 @@
             <div class="info-header-details">
               <button class="button-details" @click="redirectTv(series.nextEpisode.show_id)">Full Details</button>
             </div>
+            <div class="previos-episode-label" style="color: #8BE9FD; text-align: center; background: black; width: 100%;">
+              SEASON {{ series.numberOfSeasons }}
+          </div>
             <div class="arrows-header">
                 <div class="previous-episode-label">
                   Previous Episode:
@@ -90,7 +128,6 @@
                   Upcoming Episode:
                 </div>
             </div>
-            <!-- <hr style="position: relative;top: -11px;"> -->
               <li class="series-item">
                 <div class="series-details-left">
                   <div class="series-image series-image-last">
@@ -115,7 +152,6 @@
                   <div class="upcoming-episode-label">
                     Upcoming Episode:
                   </div>
-                  <!-- <hr class="hr-mobile"style="position: relative; top: 4px; left:-10px; width:105%;">  -->
               </div>
                   <div class="series-image series-image-next">
                     <img v-if="series.nextEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.nextEpisode.still_path}`" alt="Series Next Episode Image">
@@ -132,123 +168,81 @@
                 </div>
             </li>
           </div>
-        </div>
+        </div> -->
 
         <div v-if="trendingSeriesList.length > 0">
-      <div class="upcoming-series-container" v-for="series in paginatedTrendingSeries" :key="series.id">
-        <div class="info-header">
-          <h3 class="info-label">Upcoming TV show episodes based on trending series:</h3>
-        </div>
-        <div class="series-header">
-          <div class="pagination-controls">
-                <button @click="prevTrendingPage" :disabled="currentTrendingPage === 1"><</button>
+        <div class="upcoming-series-container" v-for="series in paginatedTrendingSeries" :key="series.id">
+          <div class="listing__head">
+              <h3 class="listing__title" style="top: 2.5rem; padding-top: 0.5rem;">Upcoming TV Shows:</h3>
           </div>
-          <div class="series-title" @click="redirectTv(series.id)">
-            {{ series.name }}
-          </div>
-          <span class="series-year">({{ formatYearRange(series.firstAirDate, series.nextEpisode.air_date) }})</span>
-          <div class="pagination-controls">
-            <button @click="nextTrendingPage" :disabled="currentTrendingPage === totalTrendingPages">></button>
-          </div>
-        </div>
-       
-        <div class="info-header-details">
-          <button class="button-details" @click="redirectTv(series.id)">Full Details</button>
-        </div>
-        <div class="arrows-header">
-          <div class="previous-episode-label">
-            Previous Episode:
-          </div>
-          <div class="upcoming-episode-label">
-            Upcoming Episode:
-          </div>
-        </div>
-        <li class="series-item">
-          <div class="series-details-left">
-            <div class="series-image series-image-last">
-              <img v-if="series.lastEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.lastEpisode.still_path}`" alt="Series Last Episode Image">
-              <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
+          <div class="series-header">
+            <div class="pagination-controls">
+                  <button @click="prevTrendingPage" :disabled="currentTrendingPage === 1"><</button>
             </div>
-            <div class="episode-details">
-              <p class="episode-name episode-name-last">"{{ series.lastEpisode.name }}."</p>
+            <div class="series-title" @click="redirectTv(series.id)">
+              {{ series.name }}
             </div>
-            <div class="additional-details">
-              <p>Runtime: {{ series.lastEpisode.runtime ? series.lastEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
-              <p>Release Date: {{ formatDate(series.lastEpisode.air_date) }}</p>
-              <p>Overview: {{ series.lastEpisode.overview ? series.lastEpisode.overview : 'Not specified.' }}</p>
+            <span class="series-year">({{ formatYearRange(series.firstAirDate, series.nextEpisode.air_date) }})</span>
+            <div class="pagination-controls">
+              <button @click="nextTrendingPage" :disabled="currentTrendingPage === totalTrendingPages">></button>
             </div>
           </div>
-          <div class="series-divider"></div>
-          <div class="series-details-right">
-            <div class="arrows-header-mobile">
-              <div class="previous-episode-label">
-                Upcoming Episode:
+        
+          <div class="info-header-details">
+            <button class="button-details" @click="redirectTv(series.id)">Full Details</button>
+          </div>
+          <div class="previos-episode-label" style="color: #8BE9FD; text-align: center; background: black; width: 100%;">
+              SEASON {{ series.numberOfSeasons }}
+          </div>
+          <div class="arrows-header">
+            <div class="previous-episode-label">
+              Previous Episode:
+            </div>
+            <div class="upcoming-episode-label">
+              Upcoming Episode:
+            </div>
+          </div>
+          <li class="series-item">
+            <div class="series-details-left">
+              <div class="series-image series-image-last">
+                <img v-if="series.lastEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.lastEpisode.still_path}`" alt="Series Last Episode Image">
+                <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
               </div>
-              <div class="upcoming-episode-label">
-                Upcoming Episode:
+              <div class="episode-details">
+                <p class="episode-name episode-name-last">{{ series.lastEpisode.episode_number }}. {{ series.lastEpisode.name }}</p>
+              </div>
+              <div class="additional-details">
+                <p>Runtime: {{ series.lastEpisode.runtime ? series.lastEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
+                <p>Release Date: {{ formatDate(series.lastEpisode.air_date) }}</p>
+                <p>Overview: {{ series.lastEpisode.overview ? series.lastEpisode.overview : 'Not specified.' }}</p>
               </div>
             </div>
-            <div class="series-image series-image-next">
-              <img v-if="series.nextEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.nextEpisode.still_path}`" alt="Series Next Episode Image">
-              <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
-            </div>
-            <div class="episode-details">
-              <p class="episode-name episode-name-next">"{{ series.nextEpisode.name }}."</p>
-            </div>
-            <div class="additional-details">
-              <p>Runtime: {{ series.nextEpisode.runtime ? series.nextEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
-              <p>Release Date: {{ formatDate(series.nextEpisode.air_date) }}</p>
-              <p>Overview: {{ series.nextEpisode.overview ? series.nextEpisode.overview : 'Not specified.' }}</p>
-            </div>
-          </div>
-        </li>
-      </div>
-      </div>
-      <br>
-    
-
-        <div>
-          <div class="loader" v-if="!imagesLoaded">
-            <div class="spinner"></div>
-          </div>
-          <div v-for="genre in genresList" :key="genre.name" class="listing">
-            <div class="listing__head">
-              <h3 class="listing__title">Upcoming {{ genre.displayName }} Movies:</h3>
-            </div>
-            <div v-if="movies && movies[genre.name] && movies[genre.name].length" class="carousel">
-              <button @click="prevSlide($event, genre.name)" class="carousel__nav carousel__nav--left">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                  <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"></path>
-                </svg>
-              </button>
-              <div class="carousel__items" ref="carouselItems">
-                <div v-for="(movie, index) in movies[genre.name]" :key="movie.id" class="card" @click="redirectMovie(movie.id)">
-                  <div class="card__img lazyloaded">
-                    {{ movies[genre.name] }}
-                    <img v-if="movie.poster_path" :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" class="lazyload" />
-                    <img v-else src="~/static/image_not_found_yet.png" alt="Image Not Found" />
-                  </div>
-
-                  <h2 class="card__name">{{ formatTitle(movie.title) }}</h2>
-                  <div class="card__rating">
-                    <div class="card__vote">{{ formatDate(movie.release_date) }}</div>
-                  </div>
+            <div class="series-divider"></div>
+            <div class="series-details-right">
+              <div class="arrows-header-mobile">
+                <div class="previous-episode-label">
+                  Upcoming Episode:
+                </div>
+                <div class="upcoming-episode-label">
+                  Upcoming Episode:
                 </div>
               </div>
-              <button @click="nextSlide($event, genre.name)" class="carousel__nav carousel__nav--right">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                  <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"></path>
-                </svg>
-              </button>
+              <div class="series-image series-image-next">
+                <img v-if="series.nextEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.nextEpisode.still_path}`" alt="Series Next Episode Image">
+                <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
+              </div>
+              <div class="episode-details">
+                <p class="episode-name episode-name-next">{{ series.nextEpisode.episode_number }}. {{ series.nextEpisode.name }}</p>
+              </div>
+              <div class="additional-details">
+                <p>Runtime: {{ series.nextEpisode.runtime ? series.nextEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
+                <p>Release Date: {{ formatDate(series.nextEpisode.air_date) }}</p>
+                <p>Overview: {{ series.nextEpisode.overview ? series.nextEpisode.overview : 'Not specified.' }}</p>
+              </div>
             </div>
-            <div v-else>
-              <p>No upcoming movies available in this genre.</p>
-            </div>
-          </div>
+          </li>
         </div>
-
-
-
+        </div>
     </section>
   </main>
 </template>
@@ -314,6 +308,7 @@ async function getUserName(userEmail) {
         trendingTVIds: [],
         filteredSeriesDetails: [],
         trendingSeriesList: [],
+        combinedMovies: [],
         nextActionMovies: [],
         nextAdventureMovies: [],
         nextHorrorMovies: [],
@@ -326,19 +321,23 @@ async function getUserName(userEmail) {
         nextRomanceMovies: [],
         nextComedyMovies: [],
         nextWesternMovies: [],
+        nextWarMovies: [],
+        nextMysteryMovies: [],
         genresList: [
-        { name: 'nextActionMovies', displayName: 'Action' },
-        { name: 'nextAdventureMovies', displayName: 'Adventure' },
-        { name: 'nextComedyMovies', displayName: 'Comedy' },
-        { name: 'nextCrimeMovies', displayName: 'Crime' },
-        { name: 'nextDocumentaryMovies', displayName: 'Documentary' },
-        { name: 'nextDramaMovies', displayName: 'Drama' },
-        { name: 'nextHistoryMovies', displayName: 'History' },
-        { name: 'nextHorrorMovies', displayName: 'Horror' },
-        { name: 'nextRomanceMovies', displayName: 'Romance' },
-        { name: 'nextScienceFictionMovies', displayName: 'Science Fiction' },
-        { name: 'nextThrillerMovies', displayName: 'Thriller' },
-        { name: 'nextWesternMovies', displayName: 'Western' }
+          { name: 'nextActionMovies', displayName: 'Action' },
+          { name: 'nextAdventureMovies', displayName: 'Adventure' },
+          { name: 'nextComedyMovies', displayName: 'Comedy' },
+          { name: 'nextCrimeMovies', displayName: 'Crime' },
+          { name: 'nextDocumentaryMovies', displayName: 'Documentary' },
+          { name: 'nextDramaMovies', displayName: 'Drama' },
+          { name: 'nextHistoryMovies', displayName: 'History' },
+          { name: 'nextHorrorMovies', displayName: 'Horror' },
+          { name: 'nextRomanceMovies', displayName: 'Romance' },
+          { name: 'nextScienceFictionMovies', displayName: 'Science Fiction' },
+          { name: 'nextThrillerMovies', displayName: 'Thriller' },
+          { name: 'nextWesternMovies', displayName: 'Western' },
+          { name: 'nextWarMovies', displayName: 'War' },
+          { name: 'nextMysteryMovies', displayName: 'Mystery' }
       ],
       currentIndexes: {
         nextActionMovies: 0,
@@ -352,7 +351,9 @@ async function getUserName(userEmail) {
         nextRomanceMovies: 0,
         nextScienceFictionMovies: 0,
         nextThrillerMovies: 0,
-        nextWesternMovies: 0
+        nextWesternMovies: 0,
+        nextWarMovies: 0,
+        nextMysteryMovies: 0
       },
       addedMovieIds: new Set() 
      };
@@ -367,7 +368,6 @@ async function getUserName(userEmail) {
         this.isLoggedIn = accessToken !== null;
         this.userAvatar = await getUserAvatar(this.userEmail);
         await this.fetchUserFirstName();
-        this.fetchFavoriteSeries();
         this.fetchUpcomingMovies();
         await this.fetchTrendingTV();
         await this.fetchSeriesDetailsForIds();
@@ -391,7 +391,9 @@ async function getUserName(userEmail) {
         nextRomanceMovies: this.nextRomanceMovies,
         nextScienceFictionMovies: this.nextScienceFictionMovies,
         nextThrillerMovies: this.nextThrillerMovies,
-        nextWesternMovies: this.nextWesternMovies
+        nextWesternMovies: this.nextWesternMovies,
+        nextWarMovies: this.nextWarMovies,
+        nextMysteryMovies: this.nextMysteryMovies
       };
       },
       paginatedSeries() {
@@ -431,99 +433,6 @@ async function getUserName(userEmail) {
       },
     },
     methods: {
-          async fetchTrendingTV() {
-            const apiKey = process.env.API_KEY;
-            const apiLang = 'en-US';
-            const baseUrl = `https://api.themoviedb.org/3/trending/tv/week?api_key=${apiKey}&language=${apiLang}`;
-            const options = {
-                method: 'GET',
-                headers: {
-                    accept: 'application/json',
-                    Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
-                }
-            };
-
-            try {
-                const pages = [1, 2, 3];
-                const fetchPromises = pages.map(page => {
-                    const url = `${baseUrl}&page=${page}`;
-                    return fetch(url, options);
-                });
-
-                const responses = await Promise.all(fetchPromises);
-                const dataPromises = responses.map(response => {
-                    if (!response.ok) {
-                        throw new Error('Error en la respuesta de la API');
-                    }
-                    return response.json();
-                });
-
-                const allData = await Promise.all(dataPromises);
-                const allResults = allData.flatMap(data => data.results);
-
-                this.trendingTVShows = allResults;
-                this.trendingTVIds = allResults.map(show => show.id);
-
-                console.log(this.trendingTVShows);
-                console.log(this.trendingTVIds);
-            } catch (error) {
-                console.error('Error al obtener series en tendencia:', error);
-            }
-    },
-
-    async fetchSeriesDetails(seriesId) {
-        const apiKey = process.env.API_KEY;
-        const apiLang = 'en-US';
-        const url = `https://api.themoviedb.org/3/tv/${seriesId}?api_key=${apiKey}&language=${apiLang}`;
-        const options = {
-            method: 'GET',
-            headers: {
-                accept: 'application/json',
-                Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
-            }
-        };
-
-        try {
-            const response = await fetch(url, options);
-            if (!response.ok) {
-                throw new Error('Error en la respuesta de la API');
-            }
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error al obtener detalles de la serie:', error);
-            return null;
-        }
-    },
-
-    async fetchSeriesDetailsForIds() {
-        const seriesPromises = this.trendingTVIds.map(id => this.fetchSeriesDetails(id));
-        const seriesDetails = await Promise.all(seriesPromises);
-
-        const currentYear = new Date().getFullYear();
-        const pastYearsLimit = currentYear - 5;
-
-        const filteredSeriesDetails = seriesDetails
-            .filter(series => series !== null)
-            .map(series => ({
-                id: series.id,
-                name: series.name,
-                genres: series.genres.map(genre => ({ id: genre.id, name: genre.name })),
-                nextEpisode: series.next_episode_to_air,
-                stillPath: series.still_path,
-                numberOfEpisodes: series.number_of_episodes,
-                numberOfSeasons: series.number_of_seasons,
-                firstAirDate: series.first_air_date,
-                lastEpisode: series.last_episode_to_air,
-                yearEndForDb: series.last_episode_to_air ? new Date(series.last_episode_to_air.air_date).getFullYear() : null
-            }))
-            .filter(series => series.yearEndForDb >= pastYearsLimit && series.nextEpisode !== undefined && series.nextEpisode !== null);
-
-        this.filteredSeriesDetails = filteredSeriesDetails;
-        console.log(this.filteredSeriesDetails);
-        this.trendingSeriesList = this.filteredSeriesDetails;
-    },
-
       async fetchUpcomingMovies() {
         const today = new Date().toISOString().split('T')[0];
         const apiKey = process.env.API_KEY;
@@ -541,7 +450,9 @@ async function getUserName(userEmail) {
           history: 36,
           romance: 10749,
           thriller: 53,
-          western: 37
+          western: 37,
+          war: 10752,
+          mystery: 9648
         };
 
         const genreIdMap = Object.fromEntries(
@@ -592,13 +503,29 @@ async function getUserName(userEmail) {
             }
           }
         });
+
+        this.combinedMovies = Object.values(this.movies).flat();
         this.sortMoviesByReleaseDate();
+
         setTimeout(() => {
           this.imagesLoaded = true;
         }, 1000);
       },
 
+      formatDate(date) {
+          if (!date) return 'Not specified.';
+          const [year, month, day] = date.split('-');
+          return `${day}-${month}-${year}`;
+        },
 
+      sortMoviesByReleaseDate() {
+          const today = new Date();
+          this.combinedMovies.sort((a, b) => {
+            const dateA = new Date(a.release_date);
+            const dateB = new Date(b.release_date);
+            return Math.abs(today - dateA) - Math.abs(today - dateB);
+          });
+      },
 
       formatTitle(title) {
         return title.length > 28 ? title.substring(0, 25) + '...' : title;
@@ -623,6 +550,95 @@ async function getUserName(userEmail) {
       updateItemsPerPage() {
         this.itemsPerPage = window.innerWidth <= 1024 ? 20 : 20;
       },
+
+      async fetchTrendingTV() {
+            const apiKey = process.env.API_KEY;
+            const apiLang = 'en-US';
+            const baseUrl = `https://api.themoviedb.org/3/trending/tv/week?api_key=${apiKey}&language=${apiLang}`;
+            const options = {
+                method: 'GET',
+                headers: {
+                    accept: 'application/json',
+                    Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+                }
+            };
+
+            try {
+                const pages = [1, 2, 3, 4, 5];
+                const fetchPromises = pages.map(page => {
+                    const url = `${baseUrl}&page=${page}`;
+                    return fetch(url, options);
+                });
+
+                const responses = await Promise.all(fetchPromises);
+                const dataPromises = responses.map(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta de la API');
+                    }
+                    return response.json();
+                });
+
+                const allData = await Promise.all(dataPromises);
+                const allResults = allData.flatMap(data => data.results);
+
+                this.trendingTVShows = allResults;
+                this.trendingTVIds = allResults.map(show => show.id);
+            } catch (error) {
+                console.error('Error al obtener series en tendencia:', error);
+            }
+    },
+
+      async fetchSeriesDetails(seriesId) {
+          const apiKey = process.env.API_KEY;
+          const apiLang = 'en-US';
+          const url = `https://api.themoviedb.org/3/tv/${seriesId}?api_key=${apiKey}&language=${apiLang}`;
+          const options = {
+              method: 'GET',
+              headers: {
+                  accept: 'application/json',
+                  Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+              }
+          };
+
+          try {
+              const response = await fetch(url, options);
+              if (!response.ok) {
+                  throw new Error('Error en la respuesta de la API');
+              }
+              const data = await response.json();
+              return data;
+          } catch (error) {
+              console.error('Error al obtener detalles de la serie:', error);
+              return null;
+          }
+      },
+
+      async fetchSeriesDetailsForIds() {
+          const seriesPromises = this.trendingTVIds.map(id => this.fetchSeriesDetails(id));
+          const seriesDetails = await Promise.all(seriesPromises);
+          const currentYear = new Date().getFullYear();
+          const pastYearsLimit = currentYear - 5;
+
+          const filteredSeriesDetails = seriesDetails
+              .filter(series => series !== null)
+              .map(series => ({
+                  id: series.id,
+                  name: series.name,
+                  genres: series.genres.map(genre => ({ id: genre.id, name: genre.name })),
+                  nextEpisode: series.next_episode_to_air,
+                  stillPath: series.still_path,
+                  numberOfEpisodes: series.number_of_episodes,
+                  numberOfSeasons: series.number_of_seasons,
+                  firstAirDate: series.first_air_date,
+                  lastEpisode: series.last_episode_to_air,
+                  yearEndForDb: series.last_episode_to_air ? new Date(series.last_episode_to_air.air_date).getFullYear() : null
+              }))
+              .filter(series => series.yearEndForDb >= pastYearsLimit && series.nextEpisode !== undefined && series.nextEpisode !== null);
+
+          this.filteredSeriesDetails = filteredSeriesDetails;
+          this.trendingSeriesList = this.filteredSeriesDetails;
+      },
+
 
       async fetchFavoriteSeries() {
         try {
@@ -715,23 +731,6 @@ async function getUserName(userEmail) {
 
         toggleMenu() {
         this.isMenuOpen = !this.isMenuOpen;
-        },
-
-        formatDate(date) {
-          if (!date) return 'Not specified.';
-          const [year, month, day] = date.split('-');
-          return `${day}-${month}-${year}`;
-        },
-
-        sortMoviesByReleaseDate() {
-          const today = new Date();
-          this.genresList.forEach(genre => {
-            this[genre.name].sort((a, b) => {
-              const dateA = new Date(a.release_date);
-              const dateB = new Date(b.release_date);
-              return Math.abs(today - dateA) - Math.abs(today - dateB);
-            });
-          });
         },
 
         formatDateYear(date) {
@@ -1618,7 +1617,7 @@ body {
     font-weight: 450;
     color: #8BE9FD;
     position: relative;
-    top: -5px;
+    top: -10px;
   }
 
   .pagination {
