@@ -36,7 +36,7 @@
           </div>
         </div>
         <div v-else class="user-profile-else">
-          <div class="language-selector" style="position: relative;top: -60.2px; left: -57px;">
+          <div class="language-selector" style="position: relative;top: -45.2px; left: -57px;">
             <div class="selected-language" @click="toggleLanguageMenu">
               <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
               <span class="language">En</span>
@@ -57,13 +57,13 @@
           </div>
         </div>
         <br>
-        <h1 class="navbar-welcome">Upcoming Releases & News</h1>
-        <h2 class="subtitle">Stay Informed About Upcoming Movies, TV Shows, and Entertainment News.</h2>
+        <h1 class="navbar-welcome">Upcoming Releases</h1>
+        <h2 class="subtitle">Stay Informed About Upcoming Movies and New TV Shows Episodes.</h2>
         <div>
           <div class="loader" v-if="!imagesLoaded">
             <div class="spinner"></div>
           </div>
-          <div class="listing">
+          <div class="listing" style="position:relative; top: -20px;">
             <div class="listing__head">
               <h3 class="listing__title">Upcoming Movies:</h3>
             </div>
@@ -1006,6 +1006,8 @@ body {
 .upcoming-series-container {
   max-width: 70%;
   margin: 0 auto;
+  position: relative;
+  top: -20px;
 }
 
 .info-header {
@@ -1191,7 +1193,7 @@ body {
 
 .avatar-container-else {
     position: relative;
-    top: -81.5px;
+    top: -66.5px;
     font-size: 11.5px;
     left: 10px;
     cursor: pointer;

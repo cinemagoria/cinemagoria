@@ -10,7 +10,6 @@
           <img src="~static/icon-medium.png" alt="Home" style="width: 32px; height: 32px;" />
         </nuxt-link>
       </li>
-    
       <li>
         <nuxt-link
           :to="{ name: 'movie' }"
@@ -38,7 +37,6 @@
           </svg>
         </nuxt-link>
       </li>
-
       <li>
         <nuxt-link
           :to="{ name: 'advancedsearch' }"
@@ -47,16 +45,14 @@
           <img :src="require('~/static/icon-advancedsearch.png')" alt="Login" style="width: 24px; height: 24px; margin-top: 2px;" />
         </nuxt-link>
       </li>
-
-      <!-- <li>
+      <li>
         <nuxt-link
           :to="{ name: 'upcoming' }"
           aria-label="upcoming"
           @click.native="clearSearchBeforeNavigate">
           <img :src="require('~/static/icon-upcoming.png')" alt="Login" style="width: 24px; height: 24px; margin-top: 2px;" />
         </nuxt-link>
-      </li> -->
-
+      </li>
       <li v-if="!isLoggedIn">
         <nuxt-link exact to="/login" aria-label="Auth" @click.native="clearSearchBeforeNavigate">
           <img :src="require('~/static/icon-login.png')" alt="Login" style="width: 24px; height: 24px; margin-top: 2px;" />
@@ -67,7 +63,6 @@
           <img :src="require('~/static/icon-watchlist.png')" alt="Watchlist" style="width: 24px; height: 24px; margin-top: 2px;" />
         </nuxt-link>
       </li>
-
     </ul>
   </nav>
 </template>
