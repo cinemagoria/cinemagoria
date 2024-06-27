@@ -15,6 +15,14 @@ Cinemathe seamlessly integrates a Django Rest Framework backend for robust user 
 
 Users enjoy complete control over their profiles, with the ability to save favorite movies and TV series, personalize their entertainment preferences, and conveniently access account settings. The addition of a user profile menu on both the main and profile pages further enhances user interaction, providing easy access to authentication and account customization options, including avatar changes.
 
+### Advanced Search Filters: 
+
+Implemented advanced search functionality by year, genre, and rating. This enhancement allows users to filter search queries more precisely, making it easier to find exactly what they are looking for.
+
+### Upcoming Releases: 
+
+Added a new ‘Upcoming Releases’ page that highlights forthcoming releases of TV shows and movies. For authenticated users, the content is personalized according to their preferences, ensuring they receive updates tailored to their interests.
+
 ### Effortless Social Media Sharing:
 
 Cinemathe empowers users to share their favorite movies and TV series effortlessly across various social media platforms, fostering engagement and expanding the community.
@@ -108,6 +116,14 @@ python manage.py runserver
 
 ### Feedback:
 Your feedback is valuable! If you encounter any issues or have suggestions for improvements, please create a new issue in the [GitHub repository](https://github.com/imprvhub/cinemathe/issues/new).
+
+##### Planned Features and Fixes for v1.4.0:
+- **Feat: Welcome Screen for New Users**
+  - Implement a welcome screen on the watchlist page for new users.
+  - Recommend options for adding to favorites to optimize the recommendation engine.
+
+- **Feat: Sign In with Google**
+  - Add functionality in the backend (Django) to allow users to sign in with Google.
 
 
 ### Attributions
