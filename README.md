@@ -1,21 +1,11 @@
 # Welcome to the [Cinemathe](https://cinemathe.space/) Project.
 > [!NOTE]  
-> For the latest updates and changes, please refer to this section on <a href="https://ivanluna.dev/projects/post-cinemathe/" target="_blank">ivanluna.dev</a>.
+> The release of **Cinemathe v1.3.0** is now **available**!. Release Date: **26.06.2024** - This release includes several new features, bug fixes, and enhancements to improve the overall user experience. For further details, please refer to the [v1.3.0 Release Notes](https://github.com/imprvhub/cinemathe/releases/tag/v1.3.0). For the latest updates and changes, please refer to this section on <a href="https://ivanluna.dev/projects/post-cinemathe/" target="_blank">ivanluna.dev</a>.
 
 
 ![Guide GIF](./static/previews/cinemathe.png)
 
 ## What's New:
-
-<div align="center">
-
-##### Release Announcement: v1.3.0
-
-###### Release Date: 26 June, 2024
-
-The release of Cinemathe v1.3.0 is now available!. This release includes several new features, bug fixes, and enhancements to improve the overall user experience. For further details, please refer to the [v1.3.0 Release Notes](https://github.com/imprvhub/cinemathe/releases/tag/v1.3.0).
-
-</div>
 
 ### Integrated Python Backend: 
 
