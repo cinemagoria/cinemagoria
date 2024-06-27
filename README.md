@@ -7,6 +7,16 @@
 
 ## What's New:
 
+<div align="center">
+
+##### Release Announcement: v1.3.0
+
+###### Release Date: 26 June, 2024
+
+The release of Cinemathe v1.3.0 is now available!. This release includes several new features, bug fixes, and enhancements to improve the overall user experience. For further details, please refer to the [v1.3.0 Release Notes](https://github.com/imprvhub/cinemathe/releases/tag/v1.3.0).
+
+</div>
+
 ### Integrated Python Backend: 
 
 Cinemathe seamlessly integrates a Django Rest Framework backend for robust user authentication, ensuring enhanced security and access control via the Django Administration Panel.
@@ -109,37 +119,6 @@ python manage.py runserver
 ### Feedback:
 Your feedback is valuable! If you encounter any issues or have suggestions for improvements, please create a new issue in the [GitHub repository](https://github.com/imprvhub/cinemathe/issues/new).
 
-##### Planned Features and Fixes for v1.3.0:
-
-- **Feat: Implement Global Restructuring for Enhanced User Experience.**
-  This restructuring aims to fundamentally enhance user interaction with the platform by introducing a cohesive global navigation bar with key features such as a search function, personalized user panel, language selector, and a convenient back button. These modifications are designed to streamline navigation and improve overall usability, leading to a more intuitive and efficient user experience across the entire platform. [Changelog.](https://github.com/imprvhub/cinemathe/commit/da82b26f4b22ead0de49a673f02aba83e0f04747)
-
-- **Feat: Upcoming Page**  
-  Introduce a new 'Upcoming' page designed to highlight forthcoming releases of TV shows and movies, along with the latest news from the cinema industry. For authenticated users, the content will be personalized according to their preferences, ensuring they receive updates tailored to their interests. Changelogs: [b9e5e2f](https://github.com/imprvhub/cinemathe/commit/b9e5e2fbc9ad996bd2908d76f5b07f0759f538ac) - [4f21121](https://github.com/imprvhub/cinemathe/commit/4f2112188423255aa82bb45fe8e3457754f4a677) - [76c9c34](https://github.com/imprvhub/cinemathe/commit/76c9c34a076313843cdd717033db685dc328aa60) - [80e801f](https://github.com/imprvhub/cinemathe/commit/80e801fae06d6072a2e7b9a7d8b3974f8b3874f6) - [2457427](https://github.com/imprvhub/cinemathe/commit/24574279b30d170740848416174aea564e257aa1) - [81682ea](https://github.com/imprvhub/cinemathe/commit/81682ea1b6ec637efd4615bef06844889f90b3f9) - [dbbe70b](https://github.com/imprvhub/cinemathe/commit/dbbe70b132c072a7148551c5e4c95b88f800d120) - [5b824ad](https://github.com/imprvhub/cinemathe/commit/5b824ad4ce6307365cda3975ab90094de1fbc619).
-
-- **Feat: Advanced Search Filters**  
-  Implement advanced search by year, genre, and rating. This feature will enhance the search functionality, enabling users to filter their search queries more precisely. Users will be able to search by specific years, genres, and ratings, making it easier to find exactly what they're looking for. [Changelog.](https://github.com/imprvhub/cinemathe/commit/ec436b5c5772836a3332506ffb0804b479061ab9)
-
-- **Feat: Real-time Favorite Deletion**  
-  Live deletion of favorites from the profile page. Users will be able to delete their favorites in real-time directly from their profile page, providing a more seamless and interactive experience. [Changelog.](https://github.com/imprvhub/cinemathe/commit/c0f81dfb455e345522eb1092dd5dce212822446a)
-
-- **Feat: Add Letterboxd Link to Movie Details**  
-  This feature adds a Letterboxd link to the movie details page. The link is conditionally displayed based on the content type; it is visible only for movies and not for TV series. This differentiation is made because Letterboxd supports movies exclusively, not TV shows. [Changelog.](https://github.com/imprvhub/cinemathe/commit/fa1ffadb354fc7eeac0754ad8e465e00c9073eb0)
-
-- **Feat: Add Trakt TV Link to Movie and TV Show Details**  
-  This feature adds a Trakt TV link to the movie and TV Show details page. [Changelog.](https://github.com/imprvhub/cinemathe/commit/40b47b551998d1995172edcabbfc57a2d5fd633b)
-
-- **Fix: Profile Name Display Issue**  
-  Resolve an issue where the profile name is not displayed on the first launch. This fix will ensure that the profile name is correctly shown when a user accesses their profile for the first time. [Changelog.](https://github.com/imprvhub/cinemathe/commit/1bddc978def7a5d02c861fb5c81b0736cd90512a)
-
-- **Fix: Favorites Menu Responsiveness**  
-  Improve responsiveness of the favorite collection menu on the profile page for resolutions wider than 600px. This fix will enhance the layout and usability of the favorites menu on larger screens. [Changelog.](https://github.com/imprvhub/cinemathe/commit/5f518c99e227a79290fa2a42b31679ed23d0bfdb)
-
-- **Fix: Star Ratings in Profile**  
-  Integrate star icons into the user ratings section of profile/index.vue. This enhancement will visually display user ratings using stars, offering a more clear and intuitive representation of ratings. [Changelog.](https://github.com/imprvhub/cinemathe/commit/7475c00b4d9b40841c730da397e0f40a773c9eea)
-
-- **Fix: Move Language Picker to Top**
-  Move the Language Picker from the footer to the top of the page. This change will make it more visible to all users and improve the user experience. [Changelog.](https://github.com/imprvhub/cinemathe/commit/46450650d3b44c72ded83d559abe0f09b2765049)
 
 ### Attributions
 
