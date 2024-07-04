@@ -165,6 +165,19 @@
           </select>
         </div>
 
+        <div v-if="selectedSearchType === 'tv'" style="margin-left: 15px; font-size: 12px;">
+          <p for="watchProvider">Choose Network:</p>
+          <select v-model="selectedWatchProvider" class="genre-select" id="watchProvider">
+            <option value="">Optional</option>
+            <option value="2552">Apple TV+</option>
+            <option value="2739">Disney+</option>
+            <option value="453">Hulu</option>
+            <option value="6783">Max</option>
+            <option value="213">Netflix</option>
+            <option value="1024">Prime Video</option>
+          </select>
+        </div>
+
         <div  style="margin-left: 40px; font-size: 12px;">
           <p style="position: relative; left: -22px;">
             Minimum Rating: ({{ MinRatingForLabel }}/10)<span v-if="MinRatingForLabel === 0">{{ asterisk }}</span>
@@ -430,6 +443,7 @@
         selectedSearchType: '',
         selectedSortBy: 'popularity.desc',
         selectedOriginCountry: '',
+        selectedWatchProvider: '',
         ratings: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         selectedMinRating: localStorage.getItem('selectedMinRating') || '7',
         MinRatingForLabel: 0,
@@ -520,6 +534,9 @@
       }
       if (this.selectedOriginCountry) {
         baseUrl += `&with_origin_country=${this.selectedOriginCountry}`;
+      }
+      if (this.selectedWatchProvider) {
+        baseUrl += `&with_networks=${this.selectedWatchProvider}`;
       }
 
       try {

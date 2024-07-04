@@ -130,6 +130,12 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
 - **Feat: Sign In with Google**
   - Add functionality in the backend (Django) to allow users to sign in with Google.
 
+- **Feat(advanced-search): Add 'With Watch Providers' Parameter**
+  - Implement a dropdown in the advanced search to filter TV shows by watch provider (Apple TV+, Disney+, Hulu, Max, Netflix, Prime Video).
+  - Ensure the dropdown is visible only when 'TV Show' is selected, and pass the selected provider ID to the TMDB API call.
+
+
+
 
 ### Attributions
 
