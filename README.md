@@ -132,9 +132,7 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
 
 - **Feat(advanced-search): Add 'With Watch Providers' Parameter**
   - Implement a dropdown in the advanced search to filter TV shows by watch provider (Apple TV+, Disney+, Hulu, Max, Netflix, Prime Video).
-  - Ensure the dropdown is visible only when 'TV Show' is selected, and pass the selected provider ID to the TMDB API call.
-
-
+  - Ensure the dropdown is visible only when 'TV Show' is selected, and pass the selected provider ID to the TMDB API call. [ce4f5bf](https://github.com/imprvhub/cinemathe/commit/ce4f5bf559a9031de292b375ae8375e08822b59e).
 
 
 ### Attributions
