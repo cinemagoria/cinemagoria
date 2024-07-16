@@ -552,41 +552,43 @@ async function getUserName(userEmail) {
       },
 
       async fetchTrendingTV() {
-            const apiKey = process.env.API_KEY;
-            const apiLang = 'en-US';
-            const baseUrl = `https://api.themoviedb.org/3/trending/tv/week?api_key=${apiKey}&language=${apiLang}`;
-            const options = {
-                method: 'GET',
-                headers: {
-                    accept: 'application/json',
-                    Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
-                }
-            };
-
-            try {
-                const pages = [1, 2, 3, 4, 5];
-                const fetchPromises = pages.map(page => {
-                    const url = `${baseUrl}&page=${page}`;
-                    return fetch(url, options);
-                });
-
-                const responses = await Promise.all(fetchPromises);
-                const dataPromises = responses.map(response => {
-                    if (!response.ok) {
-                        throw new Error('Error en la respuesta de la API');
-                    }
-                    return response.json();
-                });
-
-                const allData = await Promise.all(dataPromises);
-                const allResults = allData.flatMap(data => data.results);
-
-                this.trendingTVShows = allResults;
-                this.trendingTVIds = allResults.map(show => show.id);
-            } catch (error) {
-                console.error('Error al obtener series en tendencia:', error);
+        const apiKey = process.env.API_KEY;
+        const apiLang = 'en-US';
+        const baseUrl = `https://api.themoviedb.org/3/trending/tv/week?api_key=${apiKey}&language=${apiLang}`;
+        const options = {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
             }
-    },
+        };
+
+        try {
+            const pages = [1, 2, 3, 4, 5];
+            const fetchPromises = pages.map(page => {
+                const url = `${baseUrl}&page=${page}`;
+                return fetch(url, options);
+            });
+
+            const responses = await Promise.all(fetchPromises);
+            const dataPromises = responses.map(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta de la API');
+                }
+                return response.json();
+            });
+
+            const allData = await Promise.all(dataPromises);
+            const allResults = allData.flatMap(data => data.results);
+
+            this.trendingTVShows = allResults;
+            const filteredResults = allResults.filter(show => !show.genre_ids.includes(16));
+            this.trendingTVIds = filteredResults.map(show => show.id);
+        } catch (error) {
+            console.error('Error al obtener series en tendencia:', error);
+        }
+      },
+
 
       async fetchSeriesDetails(seriesId) {
           const apiKey = process.env.API_KEY;
