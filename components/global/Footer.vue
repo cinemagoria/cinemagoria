@@ -1,18 +1,18 @@
 <template>
   <footer :class="$style.footer">
-    <div class="language-selector" @click="toggleLanguageMenu">
-      <div class="selected-language">
-        <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="width: 16px; height: 16px; margin-bottom: 3px; margin-right: 4px;">
-        <span class="language">{{ selectedLanguage === 'english' ? 'English' : 'Español' }}</span>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'english'" style="width: 24px; height: 24px;">
-          <path d="M7 10l5 5 5-5z"/>
-        </svg>
-      </div>
-      <div v-if="showLanguageMenu" class="language-menu">
-        <label for="english" @click="selectedLanguage = 'english'; changeLanguage()">
-          <span>English</span>
-        </label>
-      </div>
+    <div class="language-selector" style="position: relative; margin: 0 auto;">
+          <div class="selected-language" @click="toggleLanguageMenu">
+            <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="width: 16px; height: 16px; margin-bottom: 3px; margin-right: 4px;">
+            <span class="language">Español</span>  
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" style="width: 24px; height: 24px; left: -70px;">
+              <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
+            </svg>
+          </div>
+          <div ref="languageMenu" class="language-menu" :style="{ display: showLanguageMenu ? 'block' : 'none' }">
+            <label class="menu-label1" @click="changeLanguage('english')">
+              <span>English</span>
+            </label>
+          </div>
     </div>
     <br>
     <p>Todos los datos son proporcionados por

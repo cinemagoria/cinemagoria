@@ -42,7 +42,7 @@
           :to="{ name: 'advancedsearch' }"
           aria-label="Advanced Search"
           @click.native="clearSearchBeforeNavigate">
-          <img :src="require('~/static/icon-advancedsearch.png')" alt="Login" style="width: 24px; height: 24px; margin-top: 2px;" />
+          <img :src="require('~/static/icon-advancedsearch.png')" alt="Login" style="width: 24px; height: 24px; margin-top: 3px;" />
         </nuxt-link>
       </li>
       <li>

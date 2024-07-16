@@ -118,17 +118,27 @@ python manage.py runserver
 Your feedback is valuable! If you encounter any issues or have suggestions for improvements, please create a new issue in the [GitHub repository](https://github.com/imprvhub/cinemathe/issues/new).
 
 ##### Planned Features and Fixes for v1.4.0:
-- **Feat: Welcome Screen for New Users**
-  - Implement a welcome screen on the watchlist page for new users.
-  - Recommend options for adding to favorites to optimize the recommendation engine.
-
 - **Feat: Sign In with Google**
   - Add functionality in the backend (Django) to allow users to sign in with Google.
   - Integrate with Google OAuth2 for user authentication and registration.
 
-- **Feat(advanced-search): Add 'With Watch Providers' Parameter**
+- **Feat: Welcome Screen for New Users** 
+  - Implement a welcome screen on the watchlist page for new users.
+  - Recommend options for adding to favorites to optimize the recommendation engine.
+  - Status: **Deprecated** due to current approach not aligning with platform goals. This feature is considered irrelevant at this stage and may be revisited in the future.
+
+- **Feat(advanced-search): Add 'With Watch Providers' Parameter** [ce4f5bf](https://github.com/imprvhub/cinemathe/commit/ce4f5bf559a9031de292b375ae8375e08822b59e).
   - Implement a dropdown in the advanced search to filter TV shows by watch provider (Apple TV+, Disney+, Hulu, Max, Netflix, Prime Video).
-  - Ensure the dropdown is visible only when 'TV Show' is selected, and pass the selected provider ID to the TMDB API call. [ce4f5bf](https://github.com/imprvhub/cinemathe/commit/ce4f5bf559a9031de292b375ae8375e08822b59e).
+  - Ensure the dropdown is visible only when 'TV Show' is selected, and pass the selected provider ID to the TMDB API call. 
+
+- **Fix: Navbar Icon Alignment and Padding**
+  - Refined the alignment and padding of navbar icons to improve responsiveness by editing their alignment directly from the assets.
+
+- **Fix: Filtering Series in fetchTrendingTv Function**
+  - Applied a filter in the `fetchTrendingTv` function to exclude Japanese series from the 'upcoming' list. Reason: The overwhelming number of Japanese anime series (approximately 80% of results) was overshadowing other genres. This filter aims to enhance the visibility of diverse series offerings.
+
+- **Fix: Misalignment of Language Picker in Global Footer**
+  - Corrected the language picker in the global footer component to prevent visual replacement of the selected language before redirecting. This fix addresses menu misalignment issues on the origin page.
 
 
 ### Attributions

@@ -552,40 +552,42 @@ export default {
     },
 
     async fetchTrendingTV() {
-          const apiKey = process.env.API_KEY;
-          const baseUrl = `https://api.themoviedb.org/3/trending/tv/week?&language=es-ES&api_key=${apiKey}`;
-          const options = {
-              method: 'GET',
-              headers: {
-                  accept: 'application/json',
-                  Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
-              }
-          };
+        const apiKey = process.env.API_KEY;
+        const baseUrl = `https://api.themoviedb.org/3/trending/tv/week?&language=es-ES&api_key=${apiKey}`;
+        const options = {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+            }
+        };
 
-          try {
-              const pages = [1, 2, 3, 4, 5];
-              const fetchPromises = pages.map(page => {
-                  const url = `${baseUrl}&page=${page}`;
-                  return fetch(url, options);
-              });
+        try {
+            const pages = [1, 2, 3, 4, 5];
+            const fetchPromises = pages.map(page => {
+                const url = `${baseUrl}&page=${page}`;
+                return fetch(url, options);
+            });
 
-              const responses = await Promise.all(fetchPromises);
-              const dataPromises = responses.map(response => {
-                  if (!response.ok) {
-                      throw new Error('Error en la respuesta de la API');
-                  }
-                  return response.json();
-              });
+            const responses = await Promise.all(fetchPromises);
+            const dataPromises = responses.map(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta de la API');
+                }
+                return response.json();
+            });
 
-              const allData = await Promise.all(dataPromises);
-              const allResults = allData.flatMap(data => data.results);
+            const allData = await Promise.all(dataPromises);
+            const allResults = allData.flatMap(data => data.results);
 
-              this.trendingTVShows = allResults;
-              this.trendingTVIds = allResults.map(show => show.id);
-          } catch (error) {
-              console.error('Error al obtener series en tendencia:', error);
-          }
-  },
+            this.trendingTVShows = allResults;
+
+            const filteredResults = allResults.filter(show => !show.genre_ids.includes(16));
+            this.trendingTVIds = filteredResults.map(show => show.id);
+        } catch (error) {
+            console.error('Error al obtener series en tendencia:', error);
+        }
+      },
 
     async fetchSeriesDetails(seriesId) {
         const apiKey = process.env.API_KEY;
