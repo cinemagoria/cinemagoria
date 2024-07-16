@@ -131,13 +131,13 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
   - Implement a dropdown in the advanced search to filter TV shows by watch provider (Apple TV+, Disney+, Hulu, Max, Netflix, Prime Video).
   - Ensure the dropdown is visible only when 'TV Show' is selected, and pass the selected provider ID to the TMDB API call. 
 
-- **Fix: Navbar Icon Alignment and Padding**
+- **Fix: Navbar Icon Alignment and Padding** [5bc39c1](https://github.com/imprvhub/cinemathe/commit/5bc39c13fe4d5933dfff18ab6711d3271c0fcb0b)
   - Refined the alignment and padding of navbar icons to improve responsiveness by editing their alignment directly from the assets.
 
-- **Fix: Filtering Series in fetchTrendingTv Function**
+- **Fix: Filtering Series in fetchTrendingTv Function** [5bc39c1](https://github.com/imprvhub/cinemathe/commit/5bc39c13fe4d5933dfff18ab6711d3271c0fcb0b)
   - Applied a filter in the `fetchTrendingTv` function to exclude Japanese series from the 'upcoming' list. Reason: The overwhelming number of Japanese anime series (approximately 80% of results) was overshadowing other genres. This filter aims to enhance the visibility of diverse series offerings.
 
-- **Fix: Misalignment of Language Picker in Global Footer**
+- **Fix: Misalignment of Language Picker in Global Footer** [5bc39c1](https://github.com/imprvhub/cinemathe/commit/5bc39c13fe4d5933dfff18ab6711d3271c0fcb0b)
   - Corrected the language picker in the global footer component to prevent visual replacement of the selected language before redirecting. This fix addresses menu misalignment issues on the origin page.
 
 
