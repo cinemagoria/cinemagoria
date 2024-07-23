@@ -2,8 +2,9 @@
   <div class="feature-description">
     <h1 class="metal-gradient">Cinemathe: Descubre al instante tus películas y series favoritas.</h1>
     <p class="feature-description">
-      Potenciado por NUXT para búsquedas en tiempo real.
-      Explora detalles y opciones de streaming eficazmente.
+      Potenciado por NUXT para ofrecer resultados de búsqueda en tiempo real, 
+      con opciones detalladas para películas, series y elencos. 
+      Explora detalles específicos, tráilers y reseñas eficazmente.
     </p>
   </div>
 </template>
