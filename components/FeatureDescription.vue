@@ -3,8 +3,8 @@
     <h1 class="metal-gradient">Cinemathe: Fast-track your entertainment picks.</h1>
     <p class="feature-description">
       Nuxt dynamic capabilities are harnessed for real-time search results, 
-      seamlessly presenting options for movie or series queries. 
-      Dive into specific details and trailers for each movie or TV show in a performant way.
+      seamlessly presenting options for movies, series, cast queries and more. 
+      Dive into specific details, trailers and reviews in a performant way.
     </p>
   </div>
 </template>
