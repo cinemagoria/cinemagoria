@@ -507,11 +507,15 @@
       try {
         const responses = await Promise.all([
           fetch(`${baseUrl}&page=1`),
-          fetch(`${baseUrl}&page=2`)
+          fetch(`${baseUrl}&page=2`),
+          fetch(`${baseUrl}&page=3`),
+          fetch(`${baseUrl}&page=4`),
         ]);
         const data1 = await responses[0].json();
         const data2 = await responses[1].json();
-        this.movies = [...data1.results, ...data2.results];
+        const data3 = await responses[2].json();
+        const data4 = await responses[3].json();
+        this.movies = [...data1.results, ...data2.results, ...data3.results, ...data4.results];
         this.movies.forEach(movie => {
           this.$set(this.movieRatings, movie.id, movie.vote_average);
         });   
