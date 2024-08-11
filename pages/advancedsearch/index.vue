@@ -253,7 +253,7 @@
           </div>
         </div>
         <div v-if="MinRatingForLabel === 0" style="bottom: 17px; text-align: center; position: relative; top: -18px; margin: 0 auto; left: 0; right: 0; max-width:320px;">
-          *Para obtener los mejores resultados, el valor de calificación mínimo predeterminado es 7/10, con un máximo de 40 resultados por búsqueda.
+          *Para obtener los mejores resultados, el valor de calificación mínimo predeterminado es 6/10, con un máximo de 40 resultados por búsqueda.
         </div>
       </div>  
     </div>
@@ -430,7 +430,7 @@
           selectedSortBy: 'popularity.desc',
           selectedOriginCountry: '',
           ratings: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-          selectedMinRating: localStorage.getItem('selectedMinRating') || '7',
+          selectedMinRating: localStorage.getItem('selectedMinRating') || '6',
           MinRatingForLabel: 0,
           asterisk: '*',
           movies: [],
@@ -456,7 +456,7 @@
   
       async mounted() {
         localStorage.removeItem('selectedMinRating');
-        this.MinRatingForLabel = this.selectedMinRating !== '7' ? this.selectedMinRating : 0;
+        this.MinRatingForLabel = this.selectedMinRating !== '6' ? this.selectedMinRating : 0;
         const email = localStorage.getItem('email');
         const accessToken = localStorage.getItem('access_token');
         this.userEmail = email || '';

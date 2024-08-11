@@ -628,7 +628,7 @@ export function getPerson (id) {
 
 export function search (query, page = 1) {
   return new Promise((resolve, reject) => {
-    axios.get(`${apiUrl}/search/multi`, {
+    axios.get(`${apiUrl}/search/multi?include_adult=false`, {
       params: {
         api_key: process.env.API_KEY,
         language: process.env.API_LANG,

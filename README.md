@@ -1,4 +1,9 @@
 # Welcome to the [Cinemathe](https://cinemathe.space/) Project.
+
+> [!TIP]
+> For backend repository click [here](https://github.com/imprvhub/cinemathe-drf)
+
+
 > [!NOTE]  
 > The release of **Cinemathe v1.3.0** is now **available**!. Release Date: **26.06.2024** - This release includes several new features, bug fixes, and enhancements to improve the overall user experience. For further details, please refer to the [v1.3.0 Release Notes](https://github.com/imprvhub/cinemathe/releases/tag/v1.3.0). For the latest updates and changes, please refer to this section on <a href="https://ivanluna.dev/projects/post-cinemathe/" target="_blank">ivanluna.dev</a>.
 
@@ -118,18 +123,10 @@ python manage.py runserver
 Your feedback is valuable! If you encounter any issues or have suggestions for improvements, please create a new issue in the [GitHub repository](https://github.com/imprvhub/cinemathe/issues/new).
 
 ##### Planned Features and Fixes for v1.4.0:
-- **Feat: Sign In with Google**
-  - Add functionality in the backend (Django) to allow users to sign in with Google.
-  - Integrate with Google OAuth2 for user authentication and registration.
 
-- **Feat: Welcome Screen for New Users** 
-  - Implement a welcome screen on the watchlist page for new users.
-  - Recommend options for adding to favorites to optimize the recommendation engine.
-  - Status: **Deprecated** due to current approach not aligning with platform goals. This feature is considered irrelevant at this stage and may be revisited in the future.
-
-- **Feat(advanced-search): Add 'With Watch Providers' Parameter** [ce4f5bf](https://github.com/imprvhub/cinemathe/commit/ce4f5bf559a9031de292b375ae8375e08822b59e).
+- **Feat(advanced-search): Add 'With Watch Providers' Parameter** [ce4f5bf](https://github.com/imprvhub/cinemathe/commit/ce4f5bf559a9031de292b375ae8375e08822b59e)
   - Implement a dropdown in the advanced search to filter TV shows by watch provider (Apple TV+, Disney+, Hulu, Max, Netflix, Prime Video).
-  - Ensure the dropdown is visible only when 'TV Show' is selected, and pass the selected provider ID to the TMDB API call. 
+  - Ensure the dropdown is visible only when 'TV Show' is selected, and pass the selected provider ID to the TMDB API call.
 
 - **Fix: Navbar Icon Alignment and Padding** [5bc39c1](https://github.com/imprvhub/cinemathe/commit/5bc39c13fe4d5933dfff18ab6711d3271c0fcb0b)
   - Refined the alignment and padding of navbar icons to improve responsiveness by editing their alignment directly from the assets.
@@ -137,8 +134,14 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
 - **Fix: Filtering Series in fetchTrendingTv Function** [5bc39c1](https://github.com/imprvhub/cinemathe/commit/5bc39c13fe4d5933dfff18ab6711d3271c0fcb0b)
   - Applied a filter in the `fetchTrendingTv` function to exclude Japanese series from the 'upcoming' list. Reason: The overwhelming number of Japanese anime series (approximately 80% of results) was overshadowing other genres. This filter aims to enhance the visibility of diverse series offerings.
 
-- **Fix: Misalignment of Language Picker in Global Footer** [5bc39c1](https://github.com/imprvhub/cinemathe/commit/5bc39c13fe4d5933dfff18ab6711d3271c0fcb0b)
+- **Fix: Alignment of Language Picker in Global Footer** [5bc39c1](https://github.com/imprvhub/cinemathe/commit/5bc39c13fe4d5933dfff18ab6711d3271c0fcb0b)
   - Corrected the language picker in the global footer component to prevent visual replacement of the selected language before redirecting. This fix addresses menu misalignment issues on the origin page.
+
+- **Update: Search Function, Terms Component, Minimum Rating in Advanced Search, and Watchlist Pagination** [f88bda2](https://github.com/imprvhub/cinemathe/commit/dcdfb2b368712d818240ce24bb773c4f2bb47bd8)
+  - Add `include_adult=false` parameter to search function in `index.js`.
+  - Update `terms.vue`.
+  - Change minimum search rating to 6 from 7 in the advanced search page.
+  - Add pagination-footer to the watchlist page to provide additional pagination controls in the footer, improving user navigation.
 
 
 ### Attributions
