@@ -126,6 +126,7 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
 - **Feat: Sign In with Google**
   - Add functionality in the backend (Django) to allow users to sign in with Google.
   - Integrate with Google OAuth2 for user authentication and registration.
+  - Status: **Deprecated** due to current approach not aligning with platform goals. This feature is considered irrelevant at this stage and may be revisited in the future.
 
 - **Feat: Welcome Screen for New Users** 
   - Implement a welcome screen on the watchlist page for new users.
