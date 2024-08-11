@@ -142,7 +142,17 @@
             </div>
           </div>
           <br>
-          
+          <div class="pagination-footer" v-if="filteredItems.length > itemsPerPage">
+            <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
+            <button @click="prevPage" :disabled="currentPage === 1"><<</button>
+            <span>
+              <label for="page" style="font-size:13px;">Page</label>
+              <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
+            </span>
+            <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
+            <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
+            <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
+          </div>
       </div>
       
       <div v-else>
@@ -1049,8 +1059,50 @@ export default {
     position: relative;
 }
 
+.pagination-footer {
+    display: flex;
+    /* background: black; */
+    justify-content: center;
+    align-items: center;
+    /* border-radius: 15px; */
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    /* border-radius: 15px; */
+    width: 90% !important;
+    margin: 0 auto;
+    background: rgba(82, 71, 71, 0);
+    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+    backdrop-filter: blur(16px);
+    padding: 8px;
+    /* width: 80%; */
+    /* position: relative; */
+    gap: 0.5rem;
+    border: 0.5px #31414C solid;
+    /* left: -10px; */
+    /* top: 40px; */
+    position: relative;
+}
+
 
 .pagination button {
+  padding: 0.5rem 1rem;
+  background: rgba( 82, 71, 71, 0 );
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur( 16px );
+  -webkit-backdrop-filter: blur( 16px );
+  border-radius: 5px;
+  border: 1px solid rgba( 255, 255, 255, 0.18 );
+  color: #fff;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.pagination-footer button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-footer button {
   padding: 0.5rem 1rem;
   background: rgba( 82, 71, 71, 0 );
   box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
