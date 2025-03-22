@@ -26,7 +26,7 @@
             <span class="close" @click="closeDeleteModal">&times;</span>
             <h2 class="text-center">Eliminar Cuenta</h2>
             <p class="delete-warning" style="text-transform: uppercase; letter-spacing: 1px;">¿Confirma la eliminación permanente de su cuenta?</p>
-            <p class="delete-warning" style="letter-spacing: 1px;">Su cuenta entrará en proceso de eliminación. Tenga en cuenta que el cierre de la cuenta asociada a {{ userEmail }} será irreversible. Tiene 72 horas para revertir la acción comunicándose a contact@ivanluna.dev.
+            <p class="delete-warning" style="letter-spacing: 1px;">Su cuenta entrará en proceso de eliminación. Tenga en cuenta que el cierre de la cuenta asociada a {{ userEmail }} será irreversible. Tiene 72 horas para revertir la acción comunicándose a hello@entercinema.com.
               Si no hay solicitud de restablecimiento en ese plazo, la cuenta se eliminará definitivamente.</p> 
             <div class="button-container">
               <button @click="cancelDelete" class="button button-back">Cancelar</button>
