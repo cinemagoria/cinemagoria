@@ -1,7 +1,7 @@
 <template>
   <main class="main" style="top:-50px; position: relative;">
     <div v-if="isLoggedIn" class="user-profile">
-        <div class="language-selector" style="position: relative; top: 59.60px; left: -62px;">
+        <div class="language-selector" style="position: relative; top: -53.60px; left: -62px;">
           <div class="selected-language" @click="toggleLanguageMenu">
             <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
             <span class="language">En</span>  
@@ -1244,7 +1244,7 @@
 
 .avatar-container {
   position: relative;
-  top: 26px;
+  bottom: 87px;
   cursor: pointer;
 }
 
@@ -1276,7 +1276,6 @@
 .user-profile {
   position: absolute;
   right: 5%; 
-  margin-top: 3rem;
 }
 
 .user-profile-else {
