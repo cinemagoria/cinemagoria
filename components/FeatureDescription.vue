@@ -1,6 +1,6 @@
 <template>
   <div class="feature-description">
-    <h1 class="metal-gradient">EnterCinema: Descubre al instante tus películas y series favoritas.</h1>
+    <h1 class="metal-gradient">Descubre al instante tus películas y series favoritas.</h1>
     <p class="feature-description">
       Potenciado por NUXT para ofrecer resultados de búsqueda en tiempo real, 
       con opciones detalladas para películas, series y elencos. 
