@@ -36,6 +36,12 @@
                 </button>
                 <br>
               </div>
+              
+              <div class="divider">
+                <span>o</span>
+              </div>
+              
+              <GoogleLogin buttonText="Iniciar sesión con Google" />
             </form>
             <br>
             <br>
@@ -51,8 +57,12 @@
 
 <script>
 import axios from 'axios';
+import GoogleLogin from '@/components/global/GoogleLogin.vue';
 
 export default {
+  components: {
+    GoogleLogin
+  },
   data() {
     return {
       email: '',
@@ -317,5 +327,25 @@ h2 {
   padding: 2px;
   margin-right: 3px;
 }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.divider span {
+  padding: 0 10px;
+  color: #acafb5;
+  font-size: 12px;
 }
 </style>

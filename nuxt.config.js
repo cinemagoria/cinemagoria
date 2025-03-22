@@ -101,7 +101,8 @@ export default {
   },
 
   env: {
-    FRONTEND_URL: process.env.FRONTEND_URL || "",
+    FRONTEND_URL: process.env.FRONTEND_URL || "https://es.entercinema.com",
+    API_URL: process.env.API_URL || "https://entercinema-drf.vercel.app",
     API_KEY: process.env.API_KEY || "",
     API_LANG: process.env.API_LANG || "es",
     API_COUNTRY: process.env.API_COUNTRY || "en",
@@ -109,6 +110,7 @@ export default {
     SUPABASE_URL: process.env.SUPABASE_URL || "https://lamskoiorahedpvfkvav.supabase.co",
     SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || "",
     GA: process.env.GA || "",
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || "",
   },
 
 
