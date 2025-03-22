@@ -23,7 +23,7 @@
         <a target="_blank" href="https://www.justwatch.com/" rel="noopener" style="margin-top: 2px;">JustWatch</a>.
     </p>
     <p> Al usar este sitio, usted acepta los <strong><a href="/terms">Acuerdos de Usuario, Términos y Condiciones</a></strong>.</p>
-    <p>&copy; {{ new Date().getFullYear() }}<a target="_blank" href="https://ivanluna.dev/" rel="noopener"> Ivanluna.dev</a> </p>
+    <p>&copy; {{ new Date().getFullYear() }}<a target="_blank" href="mailto:hello@entercinema.com" rel="noopener"> ENTERCINEMA.COM</a> </p>
 
     <ul class="nolist">
       <li>
