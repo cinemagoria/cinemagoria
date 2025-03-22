@@ -72,7 +72,17 @@ export default {
       loading: false
     };
   },
+  mounted() {
+    this.checkAuthStatus();
+  },
   methods: {
+    checkAuthStatus() {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        this.redirectToHome();
+      }
+    },
+    
     async login() {
       this.loading = true;
       this.errorMessage = '';
@@ -81,11 +91,14 @@ export default {
           email: this.email,
           password: this.password
         });
+
         localStorage.setItem('email', response.data.email);
         localStorage.setItem('access_token', response.data.access_token);
+        localStorage.setItem('auth_provider', 'native'); 
+        window.dispatchEvent(new Event('auth-changed'));
+        
         this.redirectToHome();
       } catch (error) {
-        console.error(error);
         if (error.response && error.response.status === 401) {
           this.errorMessage = 'Invalid login credentials.';
         } else {
@@ -94,12 +107,15 @@ export default {
       }
       this.loading = false;
     },
+    
     goBack() {
       this.$router.go(-1);
     },
+    
     redirectToHome() {
       window.location.href = 'https://entercinema.com';
     },
+    
     goToRegister() {
       this.$router.push({ name: 'register' });
     }
