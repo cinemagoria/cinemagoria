@@ -1,4 +1,4 @@
-# Welcome to the [EnterCinema](https://entercinema.com/) Project.
+# Welcome to the [EnterCinema](https://entercinema.com/) Project v1.4.0
 
 > [!TIP]
 > For backend repository click [here](https://github.com/imprvhub/entercinema-drf)
@@ -8,39 +8,27 @@
 
 ## What's New:
 
-### Integrated Python Backend: 
+### Google OAuth Authentication
 
-EnterCinema seamlessly integrates a Django Rest Framework backend for robust user authentication, ensuring enhanced security and access control via the Django Administration Panel.
+Users can now sign in using their Google accounts in addition to the existing authentication system. The existing DRF-based authentication remains available as an alternative option.
 
-### Comprehensive User Profile Management: 
+### Rebranding from Cinemathe.space to EnterCinema.com
 
-Users enjoy complete control over their profiles, with the ability to save favorite movies and TV series, personalize their entertainment preferences, and conveniently access account settings. The addition of a user profile menu on both the main and profile pages further enhances user interaction, providing easy access to authentication and account customization options, including avatar changes.
+The application has been fully rebranded from Cinemathe.space to EnterCinema.com with updated internal references and links.
 
-### Advanced Search Filters: 
+### Enhanced Advanced Search with Watch Providers
 
-Implemented advanced search functionality by year, genre, and rating. This enhancement allows users to filter search queries more precisely, making it easier to find exactly what they are looking for.
+A new dropdown feature in the advanced search lets users filter TV shows by watch provider (Apple TV+, Disney+, Hulu, Max, Netflix, Prime Video). This option is available only when 'TV Show' is selected.
 
-### Upcoming Releases: 
+### Interface and UX Improvements
 
-Added a new ‘Upcoming Releases’ page that highlights forthcoming releases of TV shows and movies. For authenticated users, the content is personalized according to their preferences, ensuring they receive updates tailored to their interests.
-
-### Effortless Social Media Sharing:
-
-EnterCinema empowers users to share their favorite movies and TV series effortlessly across various social media platforms, fostering engagement and expanding the community.
-
-### Community-driven User Reviews:
-
-Users can explore insightful reviews for specific movies and TV shows, facilitating community engagement and providing valuable feedback from fellow users.
-
-### Extensive Provider Options:
-
-With multiple provider options available for each movie and TV show, EnterCinema informs users about the streaming platforms where they can access specific content.
-
-### Enhanced Content Discovery with New Carousels:
-
-Introducing intuitive carousels for different movie and TV series categories, EnterCinema elevates the browsing experience and simplifies content discovery for users.
-
-
+- Refined navbar icon alignment and padding for improved responsiveness
+- Fixed filtering of Japanese series in the fetchTrendingTv function to ensure more diverse content offerings
+- Corrected language picker alignment in the global footer
+- Updated search function with the include_adult=false parameter
+- Updated terms.vue component
+- Changed minimum search rating from 7 to 6 in advanced search
+- Added pagination controls to the watchlist page footer for better navigation
 
 ## Installation
 
@@ -118,41 +106,6 @@ python manage.py runserver
 ### Feedback:
 Your feedback is valuable! If you encounter any issues or have suggestions for improvements, please create a new issue in the [GitHub repository](https://github.com/imprvhub/entercinema/issues/new).
 
-##### Planned Features and Fixes for v1.4.0:
-
--**Feat(auth): Add Google OAuth Authentication** [65aff28](https://github.com/imprvhub/entercinema/commit/65aff282b5ab0f22a573c0139edfeb6bdae24b51)
- - Integrate Google OAuth for user authentication 
- - Keep existing DRF-based authentication as an alternative  
- - Update authentication flow to support both methods  
- - Add configuration settings for Google OAuth credentials  
-Users can now sign in using their Google accounts in addition to the existing authentication system.  
-
-- **BREAKING CHANGE: Rebrand Cinemathe.space to EnterCinema.com** [2ce076f](https://github.com/imprvhub/entercinema/commit/2ce076f522b12ee2ab24f63d8072b9a9d7d312dd)  
-  - Rename app from `cinemathe.space` to `EnterCinema`  
-  - Change domain from `cinemathe.space` to `entercinema.com`  
-  - Update all internal references and links  
-  -All previous references to `cinemathe.space` are no longer valid.
-
-- **Feat(advanced-search): Add 'With Watch Providers' Parameter** [ce4f5bf](https://github.com/imprvhub/entercinema/commit/ce4f5bf559a9031de292b375ae8375e08822b59e)
-  - Implement a dropdown in the advanced search to filter TV shows by watch provider (Apple TV+, Disney+, Hulu, Max, Netflix, Prime Video).
-  - Ensure the dropdown is visible only when 'TV Show' is selected, and pass the selected provider ID to the TMDB API call.
-
-- **Fix: Navbar Icon Alignment and Padding** [5bc39c1](https://github.com/imprvhub/entercinema/commit/5bc39c13fe4d5933dfff18ab6711d3271c0fcb0b)
-  - Refined the alignment and padding of navbar icons to improve responsiveness by editing their alignment directly from the assets.
-
-- **Fix: Filtering Series in fetchTrendingTv Function** [5bc39c1](https://github.com/imprvhub/entercinema/commit/5bc39c13fe4d5933dfff18ab6711d3271c0fcb0b)
-  - Applied a filter in the `fetchTrendingTv` function to exclude Japanese series from the 'upcoming' list. Reason: The overwhelming number of Japanese anime series (approximately 80% of results) was overshadowing other genres. This filter aims to enhance the visibility of diverse series offerings.
-
-- **Fix: Alignment of Language Picker in Global Footer** [5bc39c1](https://github.com/imprvhub/entercinema/commit/5bc39c13fe4d5933dfff18ab6711d3271c0fcb0b)
-  - Corrected the language picker in the global footer component to prevent visual replacement of the selected language before redirecting. This fix addresses menu misalignment issues on the origin page.
-
-- **Update: Search Function, Terms Component, Minimum Rating in Advanced Search, and Watchlist Pagination** [f88bda2](https://github.com/imprvhub/entercinema/commit/dcdfb2b368712d818240ce24bb773c4f2bb47bd8)
-  - Add `include_adult=false` parameter to search function in `index.js`.
-  - Update `terms.vue`.
-  - Change minimum search rating to 6 from 7 in the advanced search page.
-  - Add pagination-footer to the watchlist page to provide additional pagination controls in the footer, improving user navigation.
-
-
 ### Attributions
 
 The foundational inspiration for this project is derived from the [TasteJS](https://github.com/tastejs/nuxt-movies) repository, and I extend my gratitude for their pioneering work.
@@ -160,14 +113,3 @@ The foundational inspiration for this project is derived from the [TasteJS](http
 Data concerning movies and TV shows are sourced from [TMDB](https://www.themoviedb.org/), while information on streaming providers, networks, and platforms is obtained from [JustWatch](https://www.justwatch.com/).
 
 For further details, please refer to these [Terms and Conditions](https://entercinema.com/terms/).
-
-### Conclusion:
-
-#### Achievements:
-- **Synergistic Integration:** Successfully integrated Vue.js and Django Rest Framework, two less commonly paired technologies, this presented me with an intriguing challenge. Despite my prior experience with Django, blending it with Vue.js required careful problem-solving and adaptability. I successfully tackled hurdles encountered while implementing Django user authentication.
-
-- **Streamlined UX/UI Integration and Data Management:**  Successfully tackled the complexities of UX/UI design, encompassing the management of diverse global and dynamic components, API integration, seamless data transmission between frameworks, and robust user experience and authentication. Despite initial complexities, diligent effort and incremental improvements paved the way for adept navigation through these challenges.
-
-##### Learnings:
-- **Improvements Through Perseverance:** This project allowed me to delve even deeper into the world of Vue.js. Just three months ago, facing the implementation of Vue.js seemed daunting due to its complexity. However, thanks to daily and constant effort, as well as my perseverance, I not only managed to understand the underlying logic required, but I also exceeded my initial expectations. This experience not only motivated me to explore new possibilities but also pushed me to implement features that I previously considered beyond my reach, especially in the frontend realm.
-This project consolidated my perseverance and commitment to continuous learning. The consistent dedication to this project not only strengthened my confidence but also significantly expanded my skill set. From the start of the planning process to the successful conclusion of the project, this journey highlights how perseverance and dedicated effort can transform both personal and professional growth.
