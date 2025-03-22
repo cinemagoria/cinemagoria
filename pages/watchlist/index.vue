@@ -236,13 +236,11 @@ export default {
     this.hasAccessToken = accessToken !== null;
     this.isLoggedIn = accessToken !== null;
     this.authProvider = authProvider;
-    
-    // Fetch data regardless of auth method
+
     this.checkData();
     this.userAvatar = await getUserAvatar(this.userEmail);
     this.userName = await getUserName(this.userEmail);
-    
-    // Only fetch user first name if using native auth
+
     if (authProvider === 'native') {
       await this.fetchUserFirstName();
     } 
@@ -475,12 +473,10 @@ export default {
 
 
     signOut() {
-      // Clear all authentication-related data regardless of auth method
       localStorage.removeItem('email');
       localStorage.removeItem('access_token');
       localStorage.removeItem('auth_provider');
-      
-      // Redirect to login page
+
       this.$router.push({ path: '/login' });
     },
 

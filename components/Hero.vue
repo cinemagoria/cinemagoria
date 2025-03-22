@@ -269,7 +269,6 @@ export default {
     this.isLoggedIn = accessToken !== null;
     this.authProvider = authProvider;
     
-    // Check favorites regardless of authentication method
     if (this.hasAccessToken) {
       this.checkIfFavorite();
     }
@@ -444,22 +443,17 @@ export default {
       const { type, id } = this.parseFavId(favId);
       const category = type === 'movie' ? 'movies' : 'tv';
 
-      // Ensure the category array exists
       if (!favoritesJson[category]) {
         favoritesJson[category] = [];
       }
 
-      // Create the full ID string
       const fullId = `${type}/${id}`;
-      
-      // Check if this item already exists in the favorites
+
       const existingIndex = favoritesJson[category].findIndex(
         item => typeof item === 'object' && Object.keys(item)[0] === fullId
       );
       
-      // If it doesn't exist, add it
       if (existingIndex === -1) {
-        // Create a new favorite entry with the correct structure
         const newFavorite = {
           [fullId]: {
             details: {
@@ -471,12 +465,11 @@ export default {
               idForDb: this.id,
               genresForDb: this.genresForDb,
               typeForDb: this.typeForDb,
-              addedAt: new Date().toISOString() // Use ISO string for consistent date format
+              addedAt: new Date().toISOString()
             }
           }
         };
         
-        // Add to the array
         favoritesJson[category].push(newFavorite);
         
       }

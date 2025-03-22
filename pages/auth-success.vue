@@ -29,7 +29,6 @@ export default {
     }
   },
   async mounted() {
-    // Get params from URL
     const urlParams = new URLSearchParams(window.location.search);
     this.token = urlParams.get('token');
     this.email = urlParams.get('email');
@@ -47,8 +46,9 @@ export default {
       localStorage.setItem('email', this.email);
       localStorage.setItem('auth_provider', authProvider);
       window.dispatchEvent(new Event('auth-changed'));
-      
-      // Check if user exists in user_data table
+    
+      this.forceNavUpdate();
+
       const { data, error } = await supabase
         .from('user_data')
         .select('*')
@@ -57,8 +57,7 @@ export default {
       if (error) {
         throw new Error('Error al verificar datos de usuario');
       }
-      
-      // Initialize countdown
+
       this.loading = false;
       const countdownInterval = setInterval(() => {
         this.countdown--;
@@ -76,7 +75,34 @@ export default {
   },
   methods: {
     redirect() {
+      this.forceNavUpdate();
       window.location.href = '/';
+    },
+    
+    forceNavUpdate() {
+      const navElements = document.querySelectorAll('nav');
+      const loginLinks = document.querySelectorAll('a[href="/login"]');
+      const watchlistLinks = document.querySelectorAll('a[href="/watchlist"]');
+      
+      if (loginLinks.length > 0) {
+        loginLinks.forEach(link => {
+          const parentLi = link.closest('li');
+          if (parentLi) {
+            parentLi.style.display = 'none';
+          }
+        });
+      }
+      
+      if (watchlistLinks.length > 0) {
+        watchlistLinks.forEach(link => {
+          const parentLi = link.closest('li');
+          if (parentLi) {
+            parentLi.style.display = 'block';
+          }
+        });
+      }
+
+      window.dispatchEvent(new Event('auth-changed'));
     }
   }
 }

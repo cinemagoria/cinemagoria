@@ -88,9 +88,13 @@ export default {
 
   mounted() {
     this.checkAuthStatus();
-    this.authInterval = setInterval(this.checkAuthStatus, 500);
+    this.authInterval = setInterval(this.checkAuthStatus, 100);
     window.addEventListener('storage', this.handleStorageChange);
     window.addEventListener('auth-changed', this.checkAuthStatus);
+    
+    if (window.location.pathname.includes('auth-success')) {
+      this.forceUpdateNavIcons();
+    }
   },
   
   beforeDestroy() {
@@ -106,12 +110,27 @@ export default {
       const token = localStorage.getItem('access_token');
       if (token !== this.authToken) {
         this.authToken = token;
+        this.$forceUpdate();
+      }
+    },
+    
+    forceUpdateNavIcons() {
+      const token = localStorage.getItem('access_token');
+      this.authToken = token;
+      this.$forceUpdate();
+      
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+          this.authToken = localStorage.getItem('access_token');
+          this.$forceUpdate();
+        }, 150 * (i + 1));
       }
     },
     
     handleStorageChange(event) {
       if (event.key === 'access_token') {
         this.authToken = event.newValue;
+        this.$forceUpdate();
       }
     },
     

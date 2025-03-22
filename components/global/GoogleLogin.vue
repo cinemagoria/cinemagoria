@@ -27,12 +27,10 @@ export default {
       this.error = null;
       
       try {
-        // Get the Google auth URL from our backend
         const response = await fetch(`${process.env.API_URL}/auth/google/`);
         const data = await response.json();
         
         if (data && data.login_url) {
-          // Redirect to Google's login page
           window.location.href = data.login_url;
         } else {
           this.error = 'Error al iniciar sesión con Google';
