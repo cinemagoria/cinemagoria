@@ -1,20 +1,16 @@
-# Welcome to the [Cinemathe](https://cinemathe.space/) Project.
+# Welcome to the [EnterCinema](https://entercinema.com/) Project.
 
 > [!TIP]
-> For backend repository click [here](https://github.com/imprvhub/cinemathe-drf)
+> For backend repository click [here](https://github.com/imprvhub/entercinema-drf)
 
 
-> [!NOTE]  
-> The release of **Cinemathe v1.3.0** is now **available**!. Release Date: **26.06.2024** - This release includes several new features, bug fixes, and enhancements to improve the overall user experience. For further details, please refer to the [v1.3.0 Release Notes](https://github.com/imprvhub/cinemathe/releases/tag/v1.3.0). For the latest updates and changes, please refer to this section on <a href="https://ivanluna.dev/projects/post-cinemathe/" target="_blank">ivanluna.dev</a>.
-
-
-![Guide GIF](./static/previews/cinemathe.png)
+![Guide GIF](./static/previews/entercinema.png)
 
 ## What's New:
 
 ### Integrated Python Backend: 
 
-Cinemathe seamlessly integrates a Django Rest Framework backend for robust user authentication, ensuring enhanced security and access control via the Django Administration Panel.
+EnterCinema seamlessly integrates a Django Rest Framework backend for robust user authentication, ensuring enhanced security and access control via the Django Administration Panel.
 
 ### Comprehensive User Profile Management: 
 
@@ -30,7 +26,7 @@ Added a new ‘Upcoming Releases’ page that highlights forthcoming releases of
 
 ### Effortless Social Media Sharing:
 
-Cinemathe empowers users to share their favorite movies and TV series effortlessly across various social media platforms, fostering engagement and expanding the community.
+EnterCinema empowers users to share their favorite movies and TV series effortlessly across various social media platforms, fostering engagement and expanding the community.
 
 ### Community-driven User Reviews:
 
@@ -38,11 +34,11 @@ Users can explore insightful reviews for specific movies and TV shows, facilitat
 
 ### Extensive Provider Options:
 
-With multiple provider options available for each movie and TV show, Cinemathe informs users about the streaming platforms where they can access specific content.
+With multiple provider options available for each movie and TV show, EnterCinema informs users about the streaming platforms where they can access specific content.
 
 ### Enhanced Content Discovery with New Carousels:
 
-Introducing intuitive carousels for different movie and TV series categories, Cinemathe elevates the browsing experience and simplifies content discovery for users.
+Introducing intuitive carousels for different movie and TV series categories, EnterCinema elevates the browsing experience and simplifies content discovery for users.
 
 
 
@@ -53,7 +49,7 @@ To run this project locally, follow these steps:
 
 1. Clone the repository to your local machine:
 ```bash
-git clone https://github.com/imprvhub/cinemathe.git
+git clone https://github.com/imprvhub/entercinema.git
 ```
 2. Install the necessary dependencies:
 ```bash
@@ -66,7 +62,7 @@ API_KEY=<Provide your TMDB API key here>
 SUPABASE_URL=<Enter the URL for your database, e.g., your Supabase database URL>
 SUPABASE_ANON_KEY=<Enter the anonymous key for your database, e.g., your Supabase anonymous key>    
 ```
-  By default, Cinemathe is configured to work with Supabase as the backend DRF database. However, you can use another database if needed. Simply replace DATABASE_URL and DATABASE_ANON_KEY with the appropriate values based on your database configuration.
+  By default, EnterCinema is configured to work with Supabase as the backend DRF database. However, you can use another database if needed. Simply replace DATABASE_URL and DATABASE_ANON_KEY with the appropriate values based on your database configuration.
 
 4. Run the project:
   ```bash
@@ -77,20 +73,20 @@ SUPABASE_ANON_KEY=<Enter the anonymous key for your database, e.g., your Supabas
 <hr>
 
 ### Django Rest Framework Backend:
-To set up the Django Rest Framework backend for Cinemathe, follow these steps:
+To set up the Django Rest Framework backend for EnterCinema, follow these steps:
 
 ### Prerequisites:
 [Python 3.9](https://www.python.org/downloads/release/python-390/)
 
 1. Clone the backend repository to your local machine:
 ```bash
-git clone https://github.com/imprvhub/cinemathe-drf.git
+git clone https://github.com/imprvhub/entercinema-drf.git
 ```
 
 2. Install Dependencies:
 Navigate to the project directory and install the necessary dependencies using pip:
 ```bash
-cd cinemathe-drf
+cd entercinema-drf
 pip install -r requirements.txt
 ```
 
@@ -120,24 +116,24 @@ python manage.py runserver
 ```
 
 ### Feedback:
-Your feedback is valuable! If you encounter any issues or have suggestions for improvements, please create a new issue in the [GitHub repository](https://github.com/imprvhub/cinemathe/issues/new).
+Your feedback is valuable! If you encounter any issues or have suggestions for improvements, please create a new issue in the [GitHub repository](https://github.com/imprvhub/entercinema/issues/new).
 
 ##### Planned Features and Fixes for v1.4.0:
 
-- **Feat(advanced-search): Add 'With Watch Providers' Parameter** [ce4f5bf](https://github.com/imprvhub/cinemathe/commit/ce4f5bf559a9031de292b375ae8375e08822b59e)
+- **Feat(advanced-search): Add 'With Watch Providers' Parameter** [ce4f5bf](https://github.com/imprvhub/entercinema/commit/ce4f5bf559a9031de292b375ae8375e08822b59e)
   - Implement a dropdown in the advanced search to filter TV shows by watch provider (Apple TV+, Disney+, Hulu, Max, Netflix, Prime Video).
   - Ensure the dropdown is visible only when 'TV Show' is selected, and pass the selected provider ID to the TMDB API call.
 
-- **Fix: Navbar Icon Alignment and Padding** [5bc39c1](https://github.com/imprvhub/cinemathe/commit/5bc39c13fe4d5933dfff18ab6711d3271c0fcb0b)
+- **Fix: Navbar Icon Alignment and Padding** [5bc39c1](https://github.com/imprvhub/entercinema/commit/5bc39c13fe4d5933dfff18ab6711d3271c0fcb0b)
   - Refined the alignment and padding of navbar icons to improve responsiveness by editing their alignment directly from the assets.
 
-- **Fix: Filtering Series in fetchTrendingTv Function** [5bc39c1](https://github.com/imprvhub/cinemathe/commit/5bc39c13fe4d5933dfff18ab6711d3271c0fcb0b)
+- **Fix: Filtering Series in fetchTrendingTv Function** [5bc39c1](https://github.com/imprvhub/entercinema/commit/5bc39c13fe4d5933dfff18ab6711d3271c0fcb0b)
   - Applied a filter in the `fetchTrendingTv` function to exclude Japanese series from the 'upcoming' list. Reason: The overwhelming number of Japanese anime series (approximately 80% of results) was overshadowing other genres. This filter aims to enhance the visibility of diverse series offerings.
 
-- **Fix: Alignment of Language Picker in Global Footer** [5bc39c1](https://github.com/imprvhub/cinemathe/commit/5bc39c13fe4d5933dfff18ab6711d3271c0fcb0b)
+- **Fix: Alignment of Language Picker in Global Footer** [5bc39c1](https://github.com/imprvhub/entercinema/commit/5bc39c13fe4d5933dfff18ab6711d3271c0fcb0b)
   - Corrected the language picker in the global footer component to prevent visual replacement of the selected language before redirecting. This fix addresses menu misalignment issues on the origin page.
 
-- **Update: Search Function, Terms Component, Minimum Rating in Advanced Search, and Watchlist Pagination** [f88bda2](https://github.com/imprvhub/cinemathe/commit/dcdfb2b368712d818240ce24bb773c4f2bb47bd8)
+- **Update: Search Function, Terms Component, Minimum Rating in Advanced Search, and Watchlist Pagination** [f88bda2](https://github.com/imprvhub/entercinema/commit/dcdfb2b368712d818240ce24bb773c4f2bb47bd8)
   - Add `include_adult=false` parameter to search function in `index.js`.
   - Update `terms.vue`.
   - Change minimum search rating to 6 from 7 in the advanced search page.
@@ -150,7 +146,7 @@ The foundational inspiration for this project is derived from the [TasteJS](http
 
 Data concerning movies and TV shows are sourced from [TMDB](https://www.themoviedb.org/), while information on streaming providers, networks, and platforms is obtained from [JustWatch](https://www.justwatch.com/).
 
-For further details, please refer to these [Terms and Conditions](https://cinemathe.space/terms/).
+For further details, please refer to these [Terms and Conditions](https://entercinema.com/terms/).
 
 ### Conclusion:
 

@@ -704,12 +704,12 @@ async function getUserName(userEmail) {
 
 
       redirectTv(showId) {
-        const url = `https://cinemathe.space/tv/${showId}`;
+        const url = `https://entercinema.com/tv/${showId}`;
         window.open(url, '_blank');
       },
 
       redirectMovie(id) {
-        const url = `https://cinemathe.space/movie/${id}`;
+        const url = `https://entercinema.com/movie/${id}`;
         window.open(url, '_blank');
       },
 
@@ -831,9 +831,9 @@ async function getUserName(userEmail) {
 
         getLink(item) {
         if (item.details.typeForDb === 'movie') {
-            return `https://cinemathe.space/movie/${item.details.idForDb}`;
+            return `https://entercinema.com/movie/${item.details.idForDb}`;
         } else if (item.details.typeForDb === 'tv') {
-            return `https://cinemathe.space/tv/${item.details.idForDb}`;
+            return `https://entercinema.com/tv/${item.details.idForDb}`;
         } else {
             return '#';
         }

@@ -206,7 +206,7 @@ export default {
     signOut() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('email');
-      window.location.href = 'https://cinemathe.space/';
+      window.location.href = 'https://entercinema.com/';
     },
   },
 

@@ -2,7 +2,7 @@
   <div
     v-if="isOpen"
     class="alert alert--default alert--bottom">
-    <p>Do you want to <a href="#" @click.prevent="install">Add 'Cinemathe' in your home screen?</a></p>
+    <p>Do you want to <a href="#" @click.prevent="install">Add 'EnterCinema' in your home screen?</a></p>
 
     <button
       class="alert__close"

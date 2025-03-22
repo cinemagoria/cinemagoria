@@ -54,7 +54,7 @@
               </div>
             </div>
             <div v-if="showVerificationModal" class="text-center custom-center" style="max-width: 250px; text-align: center; margin: 0 auto;">
-              <p class="text-center custom-center">Thank you, {{ name }}, for registering! Your account with the email {{ email }} has been created. Enjoy your Cinemathe experience!</p>
+              <p class="text-center custom-center">Thank you, {{ name }}, for registering! Your account with the email {{ email }} has been created. Enjoy your EnterCinema experience!</p>
             </div>
             <div v-if="showVerificationModal" class="button-container">
               <button class="button button--icon" @click="redirectToHome">
@@ -100,7 +100,7 @@ export default {
     async register() {
       this.loading = true;
       try {
-        const response = await axios.post('https://cinemathe-drf.vercel.app/api/register/', {
+        const response = await axios.post('https://entercinema-drf.vercel.app/api/register/', {
           name: this.name,
           email: this.email,
           password: this.password
@@ -117,7 +117,7 @@ export default {
       this.loading = false;
     },
     redirectToHome() {
-      window.location.href = 'https://cinemathe.space';
+      window.location.href = 'https://entercinema.com';
     },
     checkPassword() {
       this.hasUpperCase = /[A-Z]/.test(this.password);

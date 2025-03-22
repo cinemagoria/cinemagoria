@@ -629,7 +629,7 @@
       signOut() {
         localStorage.removeItem('access_token');
         localStorage.removeItem('email');
-        window.location.href = 'https://cinemathe.space/';
+        window.location.href = 'https://entercinema.com/';
       },
 
       toggleOrder(event) {
@@ -685,9 +685,9 @@
   
       getLink(item) {
         if (item.details.typeForDb === 'movie') {
-          return `https://cinemathe.space/movie/${item.details.idForDb}`;
+          return `https://entercinema.com/movie/${item.details.idForDb}`;
         } else if (item.details.typeForDb === 'tv') {
-          return `https://cinemathe.space/tv/${item.details.idForDb}`;
+          return `https://entercinema.com/tv/${item.details.idForDb}`;
         } else {
           return '#'; 
         }

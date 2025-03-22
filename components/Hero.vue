@@ -277,8 +277,8 @@ export default {
     this.genresForDb = this.item.genres.map(genre => genre.name).join(', ');
     this.typeForDb = this.type;
     this.addedAt = new Date();
-    this.shareTitle = "I'd like to share '" + this.nameForDb + "' from Cinemathe!";
-    this.customTitle = "I'd like to share '" + this.nameForDb + "' from Cinemathe!";
+    this.shareTitle = "I'd like to share '" + this.nameForDb + "' from EnterCinema!";
+    this.customTitle = "I'd like to share '" + this.nameForDb + "' from EnterCinema!";
     this.customMessage = 'Synopsis: ' + this.item.overview + '\n\nExplore streaming options, trailer, technical details, and much more here: ';
   },
 
