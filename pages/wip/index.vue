@@ -11,7 +11,7 @@
           <button class="button button--icon" @click="redirectToHome">
             <span class="txt">Back</span>
           </button>
-          <a href="https://github.com/imprvhub/Cinemathe/blob/main/README.md" target="_blank" class="info button button--icon">
+          <a href="https://github.com/imprvhub/entercinema/blob/main/README.md" target="_blank" class="info button button--icon">
             <span class="txt">More Information</span>
           </a>
         </div>
@@ -23,7 +23,7 @@
   export default {
     methods: {
       redirectToHome() {
-        window.location.href = 'https://es.cinemathe.space';
+        window.location.href = 'https://es.entercinema.com';
       }
     }
   };

@@ -275,8 +275,8 @@ export default {
     this.genresForDb = this.item.genres.map(genre => genre.name).join(', ');
     this.typeForDb = this.type;
     this.addedAt = new Date();
-    this.shareTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde Cinemathe!";
-    this.customTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde Cinemathe!";
+    this.shareTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde EnterCinema!";
+    this.customTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde EnterCinema!";
     this.customMessage = 'Sinopsis: ' + this.item.overview + '\n\nExplora opciones de streaming, trailer, ficha técnica y mucho más aquí: ';
   },
 

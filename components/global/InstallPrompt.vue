@@ -2,7 +2,7 @@
   <div
     v-if="isOpen"
     class="alert alert--default alert--bottom"> 
-    <p>¿Quieres <a href="#" @click.prevent="install">Añadir a 'Cinemathe' en tu pantalla de inicio?</a></p>
+    <p>¿Quieres <a href="#" @click.prevent="install">Añadir a 'EnterCinema' en tu pantalla de inicio?</a></p>
 
     <button
       class="alert__close"

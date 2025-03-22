@@ -10,7 +10,7 @@ export default {
 
   // Headers of the page
   head: {
-    title: "Cinemathe - Fast-track your entertainment picks.",
+    title: "EnterCinema - Fast-track your entertainment picks.",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -21,7 +21,7 @@ export default {
       },
       { hid: "author", name: "author", content: "ivanluna.dev" },
       { hid: "og:locale", property: "og:locale", content: "en_GB" },
-      { hid: "og:title", property: "og:title", content: "Cinemathe" },
+      { hid: "og:title", property: "og:title", content: "entercinema" },
       {
         hid: "og:description",
         property: "og:description",
@@ -77,8 +77,8 @@ export default {
   pwa: {
     manifest: {
       lang: "en",
-      name: "Cinemathe",
-      short_name: "Cinemathe",
+      name: "entercinema",
+      short_name: "entercinema",
       description: "Fast-track your entertainment picks.",
       theme_color: "#03496B",
 

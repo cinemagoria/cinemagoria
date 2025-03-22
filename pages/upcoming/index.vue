@@ -702,12 +702,12 @@ export default {
 
 
     redirectTv(showId) {
-      const url = `https://es.cinemathe.space/tv/${showId}`;
+      const url = `https://es.entercinema.com/tv/${showId}`;
       window.open(url, '_blank');
     },
 
     redirectMovie(id) {
-      const url = `https://es.cinemathe.space/movie/${id}`;
+      const url = `https://es.entercinema.com/movie/${id}`;
       window.open(url, '_blank');
     },
 
@@ -836,9 +836,9 @@ export default {
 
       getLink(item) {
       if (item.details.typeForDb === 'movie') {
-          return `https://es.cinemathe.space/movie/${item.details.idForDb}`;
+          return `https://es.entercinema.com/movie/${item.details.idForDb}`;
       } else if (item.details.typeForDb === 'tv') {
-          return `https://es.cinemathe.space/tv/${item.details.idForDb}`;
+          return `https://es.entercinema.com/tv/${item.details.idForDb}`;
       } else {
           return '#';
       }

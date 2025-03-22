@@ -195,7 +195,7 @@ export default {
   showConfirmationMessage() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('email');
-    window.location.href = 'https://es.cinemathe.space/login'; 
+    window.location.href = 'https://es.entercinema.com/login'; 
   },
 
     async selectAvatar(avatar) {

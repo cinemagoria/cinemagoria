@@ -212,7 +212,7 @@ export default {
     signOut() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('email');
-      window.location.href = 'https://es.cinemathe.space/';
+      window.location.href = 'https://es.entercinema.com/';
     },
     goToRoute() {
       if (this.query) {

@@ -66,7 +66,7 @@ export default {
       this.loading = true;
       this.errorMessage = '';
       try {
-        const response = await axios.post('https://cinemathe-drf.vercel.app/login/', {
+        const response = await axios.post('https://entercinema-drf.vercel.app/login/', {
           email: this.email,
           password: this.password
         });
@@ -88,7 +88,7 @@ export default {
       this.$router.go(-1);
     },
     redirectToHome() {
-      window.location.href = 'https://es.cinemathe.space';
+      window.location.href = 'https://es.entercinema.com';
     },
     goToRegister() {
       this.$router.push({ name: 'register' });

@@ -8,7 +8,7 @@
       <div class="auth-container">
         <div class="container-section">
           <br>
-          <h1 class="text-white text-center"><b>Bienvenid@ a Cinemathe!</b></h1>
+          <h1 class="text-white text-center"><b>Bienvenid@ a EnterCinema!</b></h1>
           <div v-if="!showVerificationModal">
             <h3 class="text-white text-center"><b>Crear una nueva cuenta:</b></h3>
             <div class="form">
@@ -55,7 +55,7 @@
             </div>
           </div>
           <div v-if="showVerificationModal" class="text-center custom-center" style="max-width: 250px; text-align: center; margin: 0 auto;">
-            <p class="text-center custom-center">¡Gracias, {{ name }}, por registrarte! Se ha creado la cuenta con el correo electrónico {{ email }}. ¡Disfrute de su experiencia en Cinemathe!</p>
+            <p class="text-center custom-center">¡Gracias, {{ name }}, por registrarte! Se ha creado la cuenta con el correo electrónico {{ email }}. ¡Disfrute de su experiencia en EnterCinema!</p>
           </div>
           <div v-if="showVerificationModal" class="button-container">
             <button class="button button--icon" @click="redirectToHome">
@@ -101,7 +101,7 @@ export default {
     async register() {
       this.loading = true;
       try {
-        const response = await axios.post('https://cinemathe-drf.vercel.app/api/register/', {
+        const response = await axios.post('https://entercinema-drf.vercel.app/api/register/', {
           name: this.name,
           email: this.email,
           password: this.password
@@ -118,7 +118,7 @@ export default {
       this.loading = false;
     },
     redirectToHome() {
-      window.location.href = 'https://es.cinemathe.space';
+      window.location.href = 'https://es.entercinema.com';
     },
     checkPassword() {
       this.hasUpperCase = /[A-Z]/.test(this.password);

@@ -53,7 +53,7 @@ export default {
       this.confirmationMessage = true;
     },
     redirectToHome() {
-      window.location.href = 'https://es.cinemathe.space';
+      window.location.href = 'https://es.entercinema.com';
     }
   }
 };
