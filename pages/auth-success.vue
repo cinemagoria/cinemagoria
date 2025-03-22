@@ -42,9 +42,10 @@ export default {
     }
     
     try {
-      // Store authentication info in localStorage
       localStorage.setItem('access_token', this.token);
       localStorage.setItem('email', this.email);
+      localStorage.setItem('auth_provider', urlParams.get('auth_provider') || 'native');
+      window.dispatchEvent(new Event('auth-changed'));
       
       // Check if user exists in user_data table
       const { data, error } = await supabase
@@ -56,7 +57,6 @@ export default {
         throw new Error('Error verifying user data');
       }
       
-      // Initialize countdown
       this.loading = false;
       const countdownInterval = setInterval(() => {
         this.countdown--;
@@ -74,8 +74,7 @@ export default {
   },
   methods: {
     redirect() {
-      // Redirect to homepage or user profile
-      this.$router.push('/');
+      window.location.href = '/';
     }
   }
 }

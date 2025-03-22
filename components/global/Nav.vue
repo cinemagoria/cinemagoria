@@ -71,32 +71,54 @@
 import { mapState } from 'vuex';
 
 export default {
+  data() {
+    return {
+      authToken: null,
+      authInterval: null
+    };
+  },
+  
   computed: {
     ...mapState('search', ['searchOpen']),
     isLoggedIn() {
-      const isLoggedIn = localStorage.getItem('access_token') !== null;
-      return isLoggedIn;
+      return this.authToken !== null;
     }
-},
+  },
 
-
-  watch: {
-
-    '$options.watch': {
-      'localStorage.access_token': {
-        handler() {
-          this.$forceUpdate();
-        },
-        deep: true,
-      },
-    },
+  mounted() {
+    this.checkAuthStatus();
+    this.authInterval = setInterval(this.checkAuthStatus, 500);
+    window.addEventListener('storage', this.handleStorageChange);
+    window.addEventListener('auth-changed', this.checkAuthStatus);
+  },
+  
+  beforeDestroy() {
+    if (this.authInterval) {
+      clearInterval(this.authInterval);
+    }
+    window.removeEventListener('storage', this.handleStorageChange);
+    window.removeEventListener('auth-changed', this.checkAuthStatus);
   },
 
   methods: {
+    checkAuthStatus() {
+      const token = localStorage.getItem('access_token');
+      if (token !== this.authToken) {
+        this.authToken = token;
+      }
+    },
+    
+    handleStorageChange(event) {
+      if (event.key === 'access_token') {
+        this.authToken = event.newValue;
+      }
+    },
+    
     clearSearchBeforeNavigate() {
       this.$root.$emit('clear-search');
     },
-    toggleSearch () {
+    
+    toggleSearch() {
       if (this.$route.name !== 'search') {
         this.$store.commit('search/toggleSearch');
       }
