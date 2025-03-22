@@ -1280,7 +1280,6 @@ computed: {
 .user-profile {
   position: absolute;
   right: 5%; 
-  margin-top: 3rem;
 }
 
 .user-profile-else {
