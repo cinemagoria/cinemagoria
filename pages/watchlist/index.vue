@@ -230,13 +230,22 @@ export default {
   async mounted() {
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');
+    const authProvider = localStorage.getItem('auth_provider') || 'native';
+    
     this.userEmail = email || '';
     this.hasAccessToken = accessToken !== null;
     this.isLoggedIn = accessToken !== null;
+    this.authProvider = authProvider;
+    
+    // Fetch data regardless of auth method
     this.checkData();
     this.userAvatar = await getUserAvatar(this.userEmail);
     this.userName = await getUserName(this.userEmail);
-    await this.fetchUserFirstName(); 
+    
+    // Only fetch user first name if using native auth
+    if (authProvider === 'native') {
+      await this.fetchUserFirstName();
+    } 
 
     const detailsArray = this.tvFetched.map(({ details }) => details);
     const currentYear = new Date().getFullYear();
@@ -466,8 +475,12 @@ export default {
 
 
     signOut() {
+      // Clear all authentication-related data regardless of auth method
       localStorage.removeItem('email');
       localStorage.removeItem('access_token');
+      localStorage.removeItem('auth_provider');
+      
+      // Redirect to login page
       this.$router.push({ path: '/login' });
     },
 

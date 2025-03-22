@@ -75,6 +75,7 @@ export default {
   computed: {
     ...mapState('search', ['searchOpen']),
     isLoggedIn() {
+      // Check for access token regardless of authentication method (native or Google)
       const isLoggedIn = localStorage.getItem('access_token') !== null;
       return isLoggedIn;
     }

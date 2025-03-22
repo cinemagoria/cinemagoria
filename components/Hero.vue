@@ -262,10 +262,17 @@ export default {
   async mounted() {
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');
+    const authProvider = localStorage.getItem('auth_provider') || 'native';
+    
     this.userEmail = email || '';
     this.hasAccessToken = accessToken !== null;
     this.isLoggedIn = accessToken !== null;
-    this.checkIfFavorite();
+    this.authProvider = authProvider;
+    
+    // Check favorites regardless of authentication method
+    if (this.hasAccessToken) {
+      this.checkIfFavorite();
+    }
     this.posterForDb = this.poster_path;
     this.nameForDb = this.name;
     this.starsForDb = this.stars;
@@ -359,7 +366,15 @@ export default {
     },
 
     async toggleFavorite() {
+      if (!this.userEmail) {
+        console.error('No user email available. Please log in again.');
+        alert('Por favor, inicia sesión nuevamente para usar esta función.');
+        return;
+      }
+      
       try {
+        console.log(`Toggling favorite for user: ${this.userEmail} (Auth provider: ${this.authProvider})`);
+        
         let favoritesData;
         const { data, error } = await supabase
           .from('favorites')
@@ -439,81 +454,23 @@ export default {
       const { type, id } = this.parseFavId(favId);
       const category = type === 'movie' ? 'movies' : 'tv';
 
+      // Ensure the category array exists
       if (!favoritesJson[category]) {
         favoritesJson[category] = [];
       }
 
+      // Create the full ID string
       const fullId = `${type}/${id}`;
-      if (!favoritesJson[category].includes(fullId)) {
-        favoritesJson[category].push(fullId);
-
-        this.updateFavoritesData(favoritesJson, fullId);
-      }
-
-      return favoritesJson;
-    },
-
-    updateFavoritesData(favoritesJson, fullId) {
-      const { type, id } = this.parseFavId(fullId);
-      const category = type === 'movie' ? 'movies' : 'tv';
-
-      if (!favoritesJson[category]) {
-        favoritesJson[category] = [];
-      }
-
-      const index = favoritesJson[category].findIndex(item => item === fullId);
-
-      if (index !== -1) {
-        if (!Array.isArray(favoritesJson[category][index])) {
-          favoritesJson[category][index] = {
-            [fullId]: {
-              details: {
-                nameForDb: this.nameForDb,
-                starsForDb: this.starsForDb,
-                yearStartForDb: this.yearStartForDb,
-                yearEndForDb: this.yearEndForDb,
-                posterForDb: this.posterForDb,
-                idForDb: this.id,
-                genresForDb: this.genresForDb,
-                typeForDb: this.typeForDb,
-                addedAt: this.addedAt,
-              }
-            }
-          };
-        } else {
-          const existingItem = favoritesJson[category][index].find(item => Object.keys(item)[0] === fullId);
-          if (existingItem) {
-            existingItem[fullId].details = {
-              nameForDb: this.nameForDb,
-              starsForDb: this.starsForDb,
-              yearStartForDb: this.yearStartForDb,
-              yearEndForDb: this.yearEndForDb,
-              posterForDb: this.posterForDb,
-              idForDb: this.id,
-              genresForDb: this.genresForDb,
-              typeForDb: this.typeForDb,
-              addedAt: this.addedAt,
-            };
-          } else {
-            favoritesJson[category][index].push({
-              [fullId]: {
-                details: {
-                  nameForDb: this.nameForDb,
-                  starsForDb: this.starsForDb,
-                  yearStartForDb: this.yearStartForDb,
-                  yearEndForDb: this.yearEndForDb,
-                  posterForDb: this.posterForDb,
-                  idForDb: this.id,
-                  genresForDb: this.genresForDb,
-                  typeForDb: this.typeForDb,
-                  addedAt: this.addedAt,
-                }
-              }
-            });
-          }
-        }
-      } else {
-        favoritesJson[category].push({
+      
+      // Check if this item already exists in the favorites
+      const existingIndex = favoritesJson[category].findIndex(
+        item => typeof item === 'object' && Object.keys(item)[0] === fullId
+      );
+      
+      // If it doesn't exist, add it
+      if (existingIndex === -1) {
+        // Create a new favorite entry with the correct structure
+        const newFavorite = {
           [fullId]: {
             details: {
               nameForDb: this.nameForDb,
@@ -524,11 +481,24 @@ export default {
               idForDb: this.id,
               genresForDb: this.genresForDb,
               typeForDb: this.typeForDb,
-              addedAt: this.addedAt,
+              addedAt: new Date().toISOString() // Use ISO string for consistent date format
             }
           }
-        });
+        };
+        
+        // Add to the array
+        favoritesJson[category].push(newFavorite);
+        
+        console.log(`Added ${fullId} to favorites. Current count: ${favoritesJson[category].length}`);
       }
+
+      return favoritesJson;
+    },
+
+    // This method is no longer needed as we've simplified the logic in addFavorite
+    updateFavoritesData(favoritesJson, fullId) {
+      // Method kept for compatibility but functionality moved to addFavorite
+      console.log('Using simplified favorites data structure');
     },
 
     parseFavId(favId) {

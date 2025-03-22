@@ -34,6 +34,7 @@ export default {
     this.token = urlParams.get('token');
     this.email = urlParams.get('email');
     this.name = urlParams.get('name');
+    const authProvider = urlParams.get('auth_provider') || 'native';
     
     if (!this.token || !this.email) {
       this.error = 'Información de autenticación incompleta';
@@ -45,6 +46,7 @@ export default {
       // Store authentication info in localStorage
       localStorage.setItem('access_token', this.token);
       localStorage.setItem('email', this.email);
+      localStorage.setItem('auth_provider', authProvider);  // Store the auth provider
       
       // Check if user exists in user_data table
       const { data, error } = await supabase
