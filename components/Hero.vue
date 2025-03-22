@@ -305,7 +305,6 @@ export default {
         await navigator.clipboard.writeText(this.shareUrl);
         alert('¡URL copiada al portapapeles!');
       } catch (err) {
-        console.error('Error al copiar al portapapeles:', err);
       }
     },
 
@@ -333,7 +332,7 @@ export default {
           .eq('user_email', this.userEmail); 
         
         if (error) {
-          throw new Error('Error al conectar con la base de datos: ' + error.message);
+          return;
         }
 
         data.forEach((row) => {
@@ -361,20 +360,16 @@ export default {
         });
         
       } catch (error) {
-        console.error('Error al verificar si el elemento está agregado como favorito:', error.message);
       }
     },
 
     async toggleFavorite() {
       if (!this.userEmail) {
-        console.error('No user email available. Please log in again.');
         alert('Por favor, inicia sesión nuevamente para usar esta función.');
         return;
       }
       
       try {
-        console.log(`Toggling favorite for user: ${this.userEmail} (Auth provider: ${this.authProvider})`);
-        
         let favoritesData;
         const { data, error } = await supabase
           .from('favorites')
@@ -382,7 +377,6 @@ export default {
           .eq('user_email', this.userEmail);
 
         if (error) {
-          console.error('Error fetching favorites:', error);
           return;
         }
 
@@ -393,7 +387,6 @@ export default {
             .select(); 
 
           if (newError) {
-            console.error('Error inserting new favorite record:', newError);
             return;
           }
 
@@ -412,7 +405,6 @@ export default {
             .eq('user_email', this.userEmail);
 
           if (updateError) {
-            console.error('Error updating favorite (removal):', updateError);
             return;
           }
         } else {
@@ -423,14 +415,12 @@ export default {
             .eq('user_email', this.userEmail);
 
           if (updateError) {
-            console.error('Error updating favorite (addition):', updateError);
             return;
           }
         }
 
         this.isFavorite = !this.isFavorite;
       } catch (error) {
-        console.error('Error al cambiar el estado del favorito:', error.message);
       }
     },
 
@@ -489,17 +479,11 @@ export default {
         // Add to the array
         favoritesJson[category].push(newFavorite);
         
-        console.log(`Added ${fullId} to favorites. Current count: ${favoritesJson[category].length}`);
       }
 
       return favoritesJson;
     },
 
-    // This method is no longer needed as we've simplified the logic in addFavorite
-    updateFavoritesData(favoritesJson, fullId) {
-      // Method kept for compatibility but functionality moved to addFavorite
-      console.log('Using simplified favorites data structure');
-    },
 
     parseFavId(favId) {
       const [type, id] = favId.split('/');

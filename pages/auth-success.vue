@@ -43,10 +43,10 @@ export default {
     }
     
     try {
-      // Store authentication info in localStorage
       localStorage.setItem('access_token', this.token);
       localStorage.setItem('email', this.email);
-      localStorage.setItem('auth_provider', authProvider);  // Store the auth provider
+      localStorage.setItem('auth_provider', authProvider);
+      window.dispatchEvent(new Event('auth-changed'));
       
       // Check if user exists in user_data table
       const { data, error } = await supabase
@@ -76,8 +76,7 @@ export default {
   },
   methods: {
     redirect() {
-      // Redirect to homepage or user profile
-      this.$router.push('/');
+      window.location.href = '/';
     }
   }
 }
