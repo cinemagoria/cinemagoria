@@ -120,6 +120,19 @@ Your feedback is valuable! If you encounter any issues or have suggestions for i
 
 ##### Planned Features and Fixes for v1.4.0:
 
+-**Feat(auth): Add Google OAuth Authentication** [65aff28](https://github.com/imprvhub/entercinema/commit/65aff282b5ab0f22a573c0139edfeb6bdae24b51)
+ - Integrate Google OAuth for user authentication 
+ - Keep existing DRF-based authentication as an alternative  
+ - Update authentication flow to support both methods  
+ - Add configuration settings for Google OAuth credentials  
+Users can now sign in using their Google accounts in addition to the existing authentication system.  
+
+- **BREAKING CHANGE: Rebrand Cinemathe.space to EnterCinema.com** [2ce076f](https://github.com/imprvhub/entercinema/commit/2ce076f522b12ee2ab24f63d8072b9a9d7d312dd)  
+  - Rename app from `cinemathe.space` to `EnterCinema`  
+  - Change domain from `cinemathe.space` to `entercinema.com`  
+  - Update all internal references and links  
+  -All previous references to `cinemathe.space` are no longer valid.
+
 - **Feat(advanced-search): Add 'With Watch Providers' Parameter** [ce4f5bf](https://github.com/imprvhub/entercinema/commit/ce4f5bf559a9031de292b375ae8375e08822b59e)
   - Implement a dropdown in the advanced search to filter TV shows by watch provider (Apple TV+, Disney+, Hulu, Max, Netflix, Prime Video).
   - Ensure the dropdown is visible only when 'TV Show' is selected, and pass the selected provider ID to the TMDB API call.
