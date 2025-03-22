@@ -26,7 +26,7 @@
             <span class="close" @click="closeDeleteModal">&times;</span>
             <h2 class="text-center">Delete Account</h2>
             <p class="delete-warning" style="text-transform: uppercase; letter-spacing: 1px;">Confirm Permanent Deletion of Your Account?</p>
-            <p class="delete-warning" style="letter-spacing: 1px;">By confirming, your account will initiate the deletion process. Please be aware that closing the account associated with {{ userEmail }} is irreversible. You will have a 72-hour window to reverse this action by reaching out to contact@ivanluna.dev.
+            <p class="delete-warning" style="letter-spacing: 1px;">By confirming, your account will initiate the deletion process. Please be aware that closing the account associated with {{ userEmail }} is irreversible. You will have a 72-hour window to reverse this action by reaching out to hello@entercinema.com.
             If no reactivation request is made within this timeframe, your account will be permanently deleted.</p>
             <div class="button-container">
               <button @click="cancelDelete" class="button button-back">Cancel</button>

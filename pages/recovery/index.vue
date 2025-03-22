@@ -10,7 +10,7 @@
         <div class="form">
           <div v-if="confirmationMessage" class="confirmation-message">
             <p style="text-align: center; width:200px">An email has been sent to {{ email }}. Please check your inbox and reset your password.</p>
-            <p style="text-align: center; width:200px">If you encounter any issues or have any questions, please contact to <a href="mailto:contact@ivanluna.dev">contact@ivanluna.dev</a>.</p>
+            <p style="text-align: center; width:200px">If you encounter any issues or have any questions, please contact to <a href="mailto:hello@entercinema.com">hello@entercinema.com</a>.</p>
             <div class="button-container">
               <button class="button button--icon" @click="redirectToHome">
                   <span class="txt">Back</span>
