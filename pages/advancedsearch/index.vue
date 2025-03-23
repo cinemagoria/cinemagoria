@@ -194,65 +194,67 @@
             <label>
               Minimum Rating: ({{ MinRatingForLabel }}/10)<span v-if="MinRatingForLabel === 0">{{ asterisk }}</span>
             </label>
-            <div class="rating-container">
-              <svg style="display: none; transform: scale(1.5); margin: 0 auto; left: 7px;">
-                <symbol viewBox="0 0 60 60" id="shape-star"><title> Star </title> <g> <path d="M46.645 54.568L29.65 45.633l-16.997 8.935L15.9 35.643 2.15 22.24l19-2.76 8.5-17.22 8.497 17.22 19.002 2.76L43.4 35.643z"></path> </g> </symbol>
-              </svg>
-              <div class="rating" style="transform: scale(1.5); margin: 0 auto; left: 7px;">
-                <div class="rating-stars">
-                  <svg class="icon icon-star" aria-hidden="true">
-                    <use class="header-shape-star" xlink:href="#shape-star"></use>
-                  </svg>
-                  <svg class="icon icon-star" aria-hidden="true">
-                    <use class="header-shape-star" xlink:href="#shape-star"></use>
-                  </svg>
-                  <svg class="icon icon-star" aria-hidden="true">
-                    <use class="header-shape-star" xlink:href="#shape-star"></use>
-                  </svg>
-                  <svg class="icon icon-star" aria-hidden="true">
-                    <use class="header-shape-star" xlink:href="#shape-star"></use>
-                  </svg>
-                  <svg class="icon icon-star" aria-hidden="true">
-                    <use class="header-shape-star" xlink:href="#shape-star"></use>
-                  </svg>
-                </div>
-                <div class="rating-labels" aria-describedby="helper-text">
-                  <input type="radio" name="rating" id="radio_1" class="radio-rating-1" value="1" @change="updateRating(1)">
-                  <label for="radio_1">1</label>
-                  <input type="radio" name="rating" id="radio_2" class="radio-rating-2" value="2" @change="updateRating(2)">
-                  <label for="radio_2">2</label>
-                  <input type="radio" name="rating" id="radio_3" class="radio-rating-3" value="3" @change="updateRating(3)">
-                  <label for="radio_3">3</label>
-                  <input type="radio" name="rating" id="radio_4" class="radio-rating-4" value="4" @change="updateRating(4)">
-                  <label for="radio_4">4</label>
-                  <input type="radio" name="rating" id="radio_5" class="radio-rating-5" value="5" @change="updateRating(5)">
-                  <label for="radio_5">5</label>
-                  <input type="radio" name="rating" id="radio_6" class="radio-rating-6" value="6" @change="updateRating(6)">
-                  <label for="radio_6">6</label>
-                  <input type="radio" name="rating" id="radio_7" class="radio-rating-7" value="7" @change="updateRating(7)">
-                  <label for="radio_7">7</label>
-                  <input type="radio" name="rating" id="radio_8" class="radio-rating-8" value="8" @change="updateRating(8)">
-                  <label for="radio_8">8</label>
-                  <input type="radio" name="rating" id="radio_9" class="radio-rating-9" value="9" @change="updateRating(9)">
-                  <label for="radio_9">9</label>
-                  <input type="radio" name="rating" id="radio_10" class="radio-rating-10" value="10" @change="updateRating(10)">
-                  <label for="radio_10">Radio 10</label>
+            <div class="custom-rating-container">
+              <div class="rating-container">
+                <svg style="display: none; transform: scale(1.5);">
+                  <symbol viewBox="0 0 60 60" id="shape-star"><title>Star</title> <g> <path d="M46.645 54.568L29.65 45.633l-16.997 8.935L15.9 35.643 2.15 22.24l19-2.76 8.5-17.22 8.497 17.22 19.002 2.76L43.4 35.643z"></path> </g> </symbol>
+                </svg>
+                <div class="rating">
                   <div class="rating-stars">
-                    <svg class="icon icon-star icon-star-full" aria-hidden="true">
+                    <svg class="icon icon-star" aria-hidden="true">
                       <use class="header-shape-star" xlink:href="#shape-star"></use>
                     </svg>
-                    <svg class="icon icon-star icon-star-full" aria-hidden="true">
+                    <svg class="icon icon-star" aria-hidden="true">
                       <use class="header-shape-star" xlink:href="#shape-star"></use>
                     </svg>
-                    <svg class="icon icon-star icon-star-full" aria-hidden="true">
+                    <svg class="icon icon-star" aria-hidden="true">
                       <use class="header-shape-star" xlink:href="#shape-star"></use>
                     </svg>
-                    <svg class="icon icon-star icon-star-full" aria-hidden="true">
+                    <svg class="icon icon-star" aria-hidden="true">
                       <use class="header-shape-star" xlink:href="#shape-star"></use>
                     </svg>
-                    <svg class="icon icon-star icon-star-full" aria-hidden="true">
+                    <svg class="icon icon-star" aria-hidden="true">
                       <use class="header-shape-star" xlink:href="#shape-star"></use>
                     </svg>
+                  </div>
+                  <div class="rating-labels" aria-describedby="helper-text">
+                    <input type="radio" name="rating" id="radio_1" class="radio-rating-1" value="1" @change="updateRating(1)">
+                    <label for="radio_1">1</label>
+                    <input type="radio" name="rating" id="radio_2" class="radio-rating-2" value="2" @change="updateRating(2)">
+                    <label for="radio_2">2</label>
+                    <input type="radio" name="rating" id="radio_3" class="radio-rating-3" value="3" @change="updateRating(3)">
+                    <label for="radio_3">3</label>
+                    <input type="radio" name="rating" id="radio_4" class="radio-rating-4" value="4" @change="updateRating(4)">
+                    <label for="radio_4">4</label>
+                    <input type="radio" name="rating" id="radio_5" class="radio-rating-5" value="5" @change="updateRating(5)">
+                    <label for="radio_5">5</label>
+                    <input type="radio" name="rating" id="radio_6" class="radio-rating-6" value="6" @change="updateRating(6)">
+                    <label for="radio_6">6</label>
+                    <input type="radio" name="rating" id="radio_7" class="radio-rating-7" value="7" @change="updateRating(7)">
+                    <label for="radio_7">7</label>
+                    <input type="radio" name="rating" id="radio_8" class="radio-rating-8" value="8" @change="updateRating(8)">
+                    <label for="radio_8">8</label>
+                    <input type="radio" name="rating" id="radio_9" class="radio-rating-9" value="9" @change="updateRating(9)">
+                    <label for="radio_9">9</label>
+                    <input type="radio" name="rating" id="radio_10" class="radio-rating-10" value="10" @change="updateRating(10)">
+                    <label for="radio_10">Radio 10</label>
+                    <div class="rating-stars">
+                      <svg class="icon icon-star icon-star-full" aria-hidden="true">
+                        <use class="header-shape-star" xlink:href="#shape-star"></use>
+                      </svg>
+                      <svg class="icon icon-star icon-star-full" aria-hidden="true">
+                        <use class="header-shape-star" xlink:href="#shape-star"></use>
+                      </svg>
+                      <svg class="icon icon-star icon-star-full" aria-hidden="true">
+                        <use class="header-shape-star" xlink:href="#shape-star"></use>
+                      </svg>
+                      <svg class="icon icon-star icon-star-full" aria-hidden="true">
+                        <use class="header-shape-star" xlink:href="#shape-star"></use>
+                      </svg>
+                      <svg class="icon icon-star icon-star-full" aria-hidden="true">
+                        <use class="header-shape-star" xlink:href="#shape-star"></use>
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1157,11 +1159,27 @@
   margin-top: 0;
 }
 
+.custom-rating-container {
+  width: 100%;
+  height: 45px;
+  background: rgba(8, 45, 62, 0.3);
+  border: 1px solid rgba(127, 219, 241, 0.3);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-rating-container:hover {
+  background: rgba(8, 45, 62, 0.5);
+  border-color: rgba(127, 219, 241, 0.5);
+}
+
 .rating-container {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-  padding: 6px 0;
 }
 
 .rating-container svg {
@@ -1171,7 +1189,7 @@
 }
 
 .rating {
-  transform: scale(1.1) !important;
+  transform: scale(1) !important;
   margin: 0 !important;
   position: static !important;
 }
@@ -1313,7 +1331,7 @@
 }
 
 .disabled-color {
-  color: #082D3E;
+  color: #d0d0d0;
 }
 
 .active-color {
