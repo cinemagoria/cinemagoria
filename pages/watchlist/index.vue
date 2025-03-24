@@ -221,6 +221,7 @@ export default {
       orderText: 'Order Asc',
       currentPage: 1,
       itemsPerPage: 20,
+      itemsPerRow: 4,
       userAvatar: '/avatars/avatar-ss0.png',
       userFirstName: '', 
       isMenuOpen: false,
@@ -229,6 +230,7 @@ export default {
       selectedYearRange: '',
       genres: [],
       years: [],
+      resizeObserver: null,
     };
   },
   async mounted() {
@@ -240,6 +242,20 @@ export default {
     this.checkData();
     this.userAvatar = await getUserAvatar(this.userEmail);
     await this.fetchUserFirstName();
+    
+    this.$nextTick(() => {
+      this.calculateItemsPerRow();
+
+      if (typeof ResizeObserver !== 'undefined') {
+        this.resizeObserver = new ResizeObserver(this.handleResize);
+        const gridElement = document.querySelector('.movie-grid');
+        if (gridElement) {
+          this.resizeObserver.observe(gridElement);
+        }
+      } else {
+        window.addEventListener('resize', this.handleResize);
+      }
+    });
 
     const detailsArray = this.tvFetched.map(({ details }) => details);
     const currentYear = new Date().getFullYear();
@@ -325,7 +341,49 @@ export default {
     }
 },
 
+  beforeDestroy() {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    } else {
+      window.removeEventListener('resize', this.handleResize);
+    }
+  },
+  
   methods: {
+    handleResize() {
+      this.calculateItemsPerRow();
+      this.adjustItemsPerPage();
+    },
+
+    calculateItemsPerRow() {
+      const gridElement = document.querySelector('.movie-grid');
+      if (!gridElement) return;
+      
+      const gridWidth = gridElement.offsetWidth;
+      const cardWidth = 200;
+      const gap = 20;
+      
+      const calculatedItemsPerRow = Math.floor(gridWidth / (cardWidth + gap));
+      
+      this.itemsPerRow = Math.max(1, calculatedItemsPerRow);
+      
+      this.adjustItemsPerPage();
+    },
+
+    adjustItemsPerPage() {
+      const rowsToShow = 5;
+
+      const newItemsPerPage = this.itemsPerRow * rowsToShow;
+
+      if (this.itemsPerPage !== newItemsPerPage) {
+        this.itemsPerPage = newItemsPerPage;
+        
+        if (this.currentPage > this.totalPages && this.totalPages > 0) {
+          this.currentPage = this.totalPages;
+        }
+      }
+    },
+    
     async checkData() {
       try {
         const { data, error } = await supabase
