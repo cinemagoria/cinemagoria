@@ -1133,6 +1133,8 @@ export default {
     /* top: 40px; */
     margin-top: 1rem;
     position: relative;
+    bottom: 0.7rem;
+    position: relative;
 }
 
 .pagination-footer {
@@ -1379,6 +1381,8 @@ export default {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
     gap: 20px;
     justify-content: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .movie-card img,
