@@ -217,7 +217,7 @@ export default {
       orderText: 'Order Asc',
       currentPage: 1,
       itemsPerPage: 20,
-      itemsPerRow: 4, // Valor inicial, se actualizará según el tamaño de pantalla
+      itemsPerRow: 4,
       userAvatar: '/avatars/avatar-ss0.png',
       userFirstName: '', 
       isMenuOpen: false,
@@ -247,11 +247,10 @@ export default {
       await this.fetchUserFirstName();
     } 
     
-    // Inicializar el cálculo de elementos por fila y configurar ResizeObserver
+
     this.$nextTick(() => {
       this.calculateItemsPerRow();
       
-      // Configurar un observador de redimensionamiento para actualizar dinámicamente
       if (typeof ResizeObserver !== 'undefined') {
         this.resizeObserver = new ResizeObserver(this.handleResize);
         const gridElement = document.querySelector('.movie-grid');
@@ -259,7 +258,6 @@ export default {
           this.resizeObserver.observe(gridElement);
         }
       } else {
-        // Fallback para navegadores que no soportan ResizeObserver
         window.addEventListener('resize', this.handleResize);
       }
     });
@@ -349,7 +347,6 @@ export default {
   },
 
   beforeDestroy() {
-    // Limpiar el ResizeObserver o el event listener cuando se destruye el componente
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
     } else {
@@ -358,43 +355,34 @@ export default {
   },
   
   methods: {
-    // Método para manejar el redimensionamiento de la ventana
     handleResize() {
       this.calculateItemsPerRow();
       this.adjustItemsPerPage();
     },
-    
-    // Calcula cuántos elementos caben por fila basado en el ancho de la pantalla
+
     calculateItemsPerRow() {
       const gridElement = document.querySelector('.movie-grid');
       if (!gridElement) return;
       
       const gridWidth = gridElement.offsetWidth;
-      const cardWidth = 200; // Ancho base de una tarjeta (ajustar según tu CSS)
-      const gap = 20; // Espacio entre tarjetas (ajustar según tu CSS)
-      
-      // Calcular cuántas tarjetas caben en una fila
+      const cardWidth = 200;
+      const gap = 20;
+
       const calculatedItemsPerRow = Math.floor(gridWidth / (cardWidth + gap));
-      
-      // Asegurar que al menos haya una tarjeta por fila
+
       this.itemsPerRow = Math.max(1, calculatedItemsPerRow);
       
       this.adjustItemsPerPage();
     },
-    
-    // Ajusta itemsPerPage para que sea un múltiplo de itemsPerRow
+
     adjustItemsPerPage() {
-      // Determinar cuántas filas queremos mostrar (ajustar según preferencia)
       const rowsToShow = 5;
       
-      // Calcular el nuevo itemsPerPage como múltiplo de itemsPerRow
       const newItemsPerPage = this.itemsPerRow * rowsToShow;
-      
-      // Solo actualizar si el valor ha cambiado para evitar recalculos innecesarios
+
       if (this.itemsPerPage !== newItemsPerPage) {
         this.itemsPerPage = newItemsPerPage;
-        
-        // Ajustar la página actual si es necesario para evitar páginas vacías
+
         if (this.currentPage > this.totalPages && this.totalPages > 0) {
           this.currentPage = this.totalPages;
         }
@@ -1143,6 +1131,7 @@ export default {
     border: 0.5px #31414C solid;
     /* left: -10px; */
     /* top: 40px; */
+    margin-top: 1rem;
     position: relative;
 }
 
