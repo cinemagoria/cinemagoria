@@ -21,7 +21,7 @@ export default {
       },
       { hid: "author", name: "author", content: "ivanluna.dev" },
       { hid: "og:locale", property: "og:locale", content: "en_GB" },
-      { hid: "og:title", property: "og:title", content: "entercinema" },
+      { hid: "og:title", property: "og:title", content: "EnterCinema" },
       {
         hid: "og:description",
         property: "og:description",
@@ -77,8 +77,8 @@ export default {
   pwa: {
     manifest: {
       lang: "en",
-      name: "entercinema",
-      short_name: "entercinema",
+      name: "EnterCinema",
+      short_name: "EnterCinema",
       description: "Fast-track your entertainment picks.",
       theme_color: "#03496B",
 

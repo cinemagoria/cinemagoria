@@ -2,9 +2,7 @@
   <div class="feature-description">
     <h1 class="metal-gradient">Descubre al instante tus películas y series favoritas.</h1>
     <p class="feature-description">
-      Potenciado por NUXT para ofrecer resultados de búsqueda en tiempo real, 
-      con opciones detalladas para películas, series y elencos. 
-      Explora detalles específicos, tráilers y reseñas eficazmente.
+      Descubre exactamente qué ver en segundos, no horas. Explora opciones de streaming, reseñas, tráilers, detalles del elenco, además guarda tus favoritos para después. Todo en un solo lugar.
     </p>
   </div>
 </template>
