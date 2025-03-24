@@ -43,7 +43,6 @@
             <br>
             <br>
           </div>
-          <br>
           <h2 class="text-center custom-center" style="margin-top:20px;">
             <strong>Don't have an account? <router-link :to="{ name: 'register' }">Sign Up</router-link></strong>
           </h2>

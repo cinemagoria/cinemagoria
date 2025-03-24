@@ -57,10 +57,9 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 10px 20px;
-  background-color: #fff;
-  color: #757575;
-  border-radius: 4px;
-  border: 1px solid #dadce0;
+  background-color: #111;
+  color: #fff;
+  border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -71,6 +70,7 @@ export default {
 
 .google-login-button:hover {
   background-color: #f8f9fa;
+  color: #111;
   box-shadow: 0 2px 4px rgba(0,0,0,0.18);
 }
 
