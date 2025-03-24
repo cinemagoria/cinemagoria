@@ -1,10 +1,8 @@
 <template>
   <div class="feature-description">
-    <h1 class="metal-gradient">Fast-track your entertainment picks.</h1>
+    <h1 class="metal-gradient">Your Portal to Entertainment Discovery.</h1>
     <p class="feature-description">
-      Nuxt dynamic capabilities are harnessed for real-time search results, 
-      seamlessly presenting options for movies, series, cast queries and more. 
-      Dive into specific details, trailers and reviews in a performant way.
+      Step in and discover exactly what to watch in seconds, not hours. Browse streaming options, reviews, trailers and cast details, then save your favorites for later. All in one place.
     </p>
   </div>
 </template>
