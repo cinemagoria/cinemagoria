@@ -1115,6 +1115,7 @@ export default {
     /* left: -10px; */
     /* top: 40px; */
     position: relative;
+    margin-bottom: 0.5rem;
 }
 
 .pagination-footer {
