@@ -1351,6 +1351,8 @@ export default {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
     gap: 20px;
     justify-content: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .card-background {
