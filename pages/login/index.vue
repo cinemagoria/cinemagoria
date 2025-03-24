@@ -46,7 +46,6 @@
             <br>
             <br>
           </div>
-          <br>
           <h2 class="text-center custom-center" style="margin-top:20px;"><strong>¿Sin cuenta aún? <router-link :to="{ name: 'register' }">Registrarse</router-link></strong></h2>
           <h2 class="text-center custom-center"><strong>¿Olvidó su contraseña? <router-link :to="{ name: 'recovery' }">Restablecer</router-link></strong></h2>
         </div>
