@@ -129,7 +129,7 @@
         <br>
         <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reseñas ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px;  color: #2897bc;" @click="toggleFullReviews"> ADVERTENCIA: PUEDEN CONTENER SPOILERS</span></strong>
         <div v-if="showFullReviews" style="text-align: right; margin-top: 1rem;">
-          <button @click="toggleLanguage" class="button button-icon">
+          <button @click="toggleLanguage" class="button" style="display: flex !important; position: relative !important; border-radius: 10px !important;">
             {{ showTranslations ? 'Ver en inglés original' : 'Ver en español' }}
           </button>
         </div>
@@ -497,10 +497,10 @@ export default {
   cursor: pointer;
   background-color: #092C3D;
   transition: all 0.2s;
-  border-radius: 10px;
+  border-radius: 10px !important;
+  display: relative !important; 
 }
 .button-icon {
-  align-items: center;
-  display: inline-flex;
+  display: relative !important;
 }
 </style>
