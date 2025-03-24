@@ -126,14 +126,34 @@
       </div>
       <div v-if="reviews && reviews.length" class="reviews-container">
         <br>
-          <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reseñas en Inglés ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px; color: #2897bc;" @click="toggleFullReviews"> ADVERTENCIA: PUEDEN CONTENER SPOILERS</span></strong>
+          <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reseñas ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px; color: #2897bc;" @click="toggleFullReviews"> ADVERTENCIA: PUEDEN CONTENER SPOILERS</span></strong>
+          <div v-if="showFullReviews" style="text-align: right; margin-top: 1rem;">
+            <button @click="toggleLanguage" style="background-color: #2897bc; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 14px;">
+              {{ showTranslations ? 'Ver en inglés original' : 'Ver en español' }}
+            </button>
+          </div>
           <ul class="nolist" v-show="showFullReviews">
               <li v-for="(review, index) in reviews" :key="index" style="margin-top: 3rem;">
                   <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">
                       <strong style="letter-spacing: 2px; font-size: 14px;">Autor:</strong> <a style="cursor: pointer; letter-spacing: 2px; font-size: 14px;" @click="redirectToUrl(review.url)">{{ review.authorName }}</a><br>
                       <strong style="letter-spacing: 2px; font-size: 14px;">Fecha:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ formatCreatedAt(review.createdAt) }}</span><br>
                       <strong style="letter-spacing: 2px; font-size: 14px;">Puntuación:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ review.authorRating }}</span><br>
-                      <span style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.content, index, review.showFullContent)"></span><br>
+                      
+                      <span v-if="!showTranslations" style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.content, index, review.showFullContent)"></span>
+                      
+                      <span v-else-if="review.translatedContent" style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.translatedContent, index, review.showFullContent)"></span>
+                      
+                      <span v-else-if="review.isTranslating" style="font-size: 1.5rem; color: #B1BABF; font-style: italic;">Traduciendo reseña a español...</span>
+                      
+                      <span v-else-if="review.translationError" style="font-size: 1.5rem; color: #B1BABF; font-style: italic;">
+                        <span style="color: #e74c3c;">Error al traducir. Mostrando reseña en inglés original.</span>
+                      </span>
+                      
+                      <span v-else style="font-size: 1.5rem; color: #B1BABF; font-style: italic;">
+                        <span @click="translateReviewContent(review, index)" style="cursor: pointer; color: #2897bc;">Click para traducir esta reseña al español</span>
+                      </span>
+                      
+                      <br>
                       <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #2897bc; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Leer más].</span>
                   </p>
               </li>
@@ -176,7 +196,8 @@ export default {
   data() {
     return {
       showFullReviews: false,
-      reviews: [], 
+      reviews: [],
+      showTranslations: false
     };
   },
 
@@ -205,7 +226,56 @@ export default {
   methods: {
     toggleFullReviews() {
     this.showFullReviews = !this.showFullReviews;
+    
+    if (this.showFullReviews) {
+      this.showTranslations = true;
+      this.translateAllReviews();
+    }
     },
+    
+    toggleLanguage() {
+    this.showTranslations = !this.showTranslations;
+    
+    if (this.showTranslations) {
+      this.translateAllReviews();
+    }
+    },
+  
+    async translateAllReviews() {
+    for (let i = 0; i < this.reviews.length; i++) {
+      const review = this.reviews[i];
+      if (!review.translatedContent && !review.isTranslating) {
+        await this.translateReviewContent(review, i);
+      }
+    }
+    },
+  
+    async translateReviewContent(review, index) {
+    if (review.translatedContent || review.isTranslating) return;
+
+    this.$set(review, 'isTranslating', true);
+    
+    try {
+      const { translateReview } = require('~/api');
+
+      const translatedContent = await translateReview(review.content);
+
+      this.$set(review, 'translatedContent', translatedContent);
+      this.$set(review, 'isTranslating', false);
+    } catch (error) {
+      console.error('Error translating review:', error);
+      this.$set(review, 'isTranslating', false);
+      this.showTranslations = false;
+
+      if (index === 0) {
+        this.$set(review, 'translationError', true);
+        setTimeout(() => {
+          this.$set(review, 'translationError', false);
+        }, 5000);
+      }
+    }
+    },
+    
     formatGenres (genres) {
       return genres.map(genre => `<a href="/genre/${genre.id}/tv">${genre.name}</a>`).join(', ');
     },

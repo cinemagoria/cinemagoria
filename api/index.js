@@ -331,7 +331,9 @@ export function getMovieReviews(id) {
             authorRating,
             content,
             createdAt,
-            url
+            url,
+            translatedContent: null,
+            isTranslating: false
           };
         });
 
@@ -344,7 +346,61 @@ export function getMovieReviews(id) {
       reject(error);
     });
   });
-};                  
+};
+
+export function translateReview(reviewContent) {
+  return new Promise((resolve, reject) => {
+    const translationUrl = 'https://entercinema-review-translation.vercel.app/process';
+    const data = {
+      input: reviewContent,
+      options: {
+        source_language: 'English',
+        target_language: 'Spanish',
+        tone: 'natural'
+      }
+    };
+
+    // Configuración de timeout más alto para traducciones largas
+    const config = {
+      timeout: 60000, // 60 segundos
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+
+    const maxRetries = 3;
+    let retryCount = 0;
+
+    const attemptRequest = () => {
+      axios.post(translationUrl, data, config)
+        .then(response => {
+          if (response.data && response.data.result) {
+            resolve(response.data.result);
+          } else {
+            reject(new Error('No translation result returned'));
+          }
+        })
+        .catch(error => {
+          if (retryCount < maxRetries && 
+              (error.code === 'ECONNABORTED' || 
+               error.code === 'ETIMEDOUT' || 
+               (error.response && (error.response.status === 429 || error.response.status >= 500)))) {
+            
+            retryCount++;
+            const delay = Math.min(retryCount * 1000, 3000);
+            console.log(`Error en la traducción, reintentando (${retryCount}/${maxRetries}) en ${delay}ms`);
+            
+            setTimeout(attemptRequest, delay);
+          } else {
+            console.error('Error translating review:', error);
+            reject(error);
+          }
+        });
+    };
+
+    attemptRequest();
+  });
+};
 
 export function getTvShow(id) {
   return new Promise((resolve, reject) => {
@@ -410,7 +466,9 @@ export function getTvShowReviews(id) {
             authorRating,
             content,
             createdAt,
-            url
+            url,
+            translatedContent: null,
+            isTranslating: false
           };
         });
 
