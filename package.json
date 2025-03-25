@@ -1,6 +1,6 @@
 {
   "name": "entercinema",
-  "version": "1.3.0",
+  "version": "1.4.1",
   "description": "Fast-track your entertainment picks.",
   "author": "ivanluna.dev",
   "private": true,
@@ -20,8 +20,13 @@
     "@nuxtjs/dotenv": "^1.4.2",
     "@nuxtjs/pwa": "^3.3.5",
     "@supabase/supabase-js": "^2.49.3",
+    "axios": "^1.6.7",
+    "braces": "^3.0.3",
     "consola": "^3.4.2",
+    "cookie": "^0.6.0",
     "core-js": "^3.41.0",
+    "follow-redirects": "^1.15.9",
+    "http-proxy-middleware": "^2.0.7",
     "nuxt": "^2.18.1",
     "smoothscroll-polyfill": "^0.4.4",
     "swiper": "^11.2.6",
@@ -40,9 +45,15 @@
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-nuxt": "^4.0.0",
     "eslint-plugin-vue": "^9.33.0",
+    "postcss": "^8.4.36",
     "prettier": "^2.8.8",
     "sass": "^1.86.0",
     "sass-loader": "^10.5.2",
     "webpack": "4"
+  },
+  "resolutions": {
+    "follow-redirects": "^1.15.9",
+    "braces": "^3.0.3",
+    "axios": "^1.6.7"
   }
 }
