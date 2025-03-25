@@ -5,7 +5,7 @@
       <p v-if="loading">Procesando tu información...</p>
       <div v-else>
         <p v-if="error" class="error">{{ error }}</p>
-        <p v-else>Bienvenido, {{ name }}!</p>
+        <p class="welcome-label" v-else>Bienvenido, {{ name }}!</p>
         <div class="redirect-message">
           <p>Serás redirigido automáticamente en {{ countdown }} segundos...</p>
         </div>
@@ -149,5 +149,9 @@ p {
 .redirect-message {
   margin-top: 20px;
   font-size: 14px;
+}
+
+.welcome-label {
+  font-size: 16px !important
 }
 </style>
