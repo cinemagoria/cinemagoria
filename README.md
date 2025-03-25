@@ -1,4 +1,4 @@
-# Welcome to the [EnterCinema](https://entercinema.com/) Project v1.4.0
+# Welcome to the [EnterCinema](https://entercinema.com/) Project.
 
 > [!TIP]
 > For backend repository click [here](https://github.com/imprvhub/entercinema-drf)
@@ -11,6 +11,9 @@
 ### Google OAuth Authentication
 
 Users can now sign in using their Google accounts in addition to the existing authentication system. The existing DRF-based authentication remains available as an alternative option.
+
+### *** Integration for Direct Content Access
+Introduced direct streaming access through *** platform. Users can now enjoy seamless content viewing via our *** integration.
 
 ### Rebranding from Cinemathe.space to EnterCinema.com
 
