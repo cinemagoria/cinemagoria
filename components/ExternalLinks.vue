@@ -11,11 +11,11 @@
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
+            width="30"
+            height="30"
             viewBox="0 0 192 192"
             fill="currentColor"
-            class="link-icon"
+            class="link-icon ***-icon"
           >
             <path d="M100.242 23.743a6 6 0 0 0-8.485 0L23.743 91.757a6 6 0 0 0 0 8.485l68.014 68.015a6 6 0 0 0 8.485 0l68.015-68.015a6 6 0 0 0 0-8.485l-68.015-68.014ZM80 71.83c0-2.44 2.758-3.86 4.744-2.442l33.838 24.17a3 3 0 0 1 0 4.883l-33.838 24.171C82.758 124.03 80 122.611 80 120.17V71.83Z"/>
           </svg>
@@ -288,5 +288,10 @@ export default {
   .label-style {
     font-size: 12px;
   }
+}
+
+.***-icon {
+  width: 28px !important;
+  height: 28px !important;
 }
 </style>
