@@ -4,6 +4,9 @@ export default {
 
   ssr: false,
 
+  // Define the source directory explicitly
+  srcDir: __dirname,
+
   generate: {
     fallback: true,
   },
