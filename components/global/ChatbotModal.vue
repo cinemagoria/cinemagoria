@@ -2,14 +2,28 @@
     <div v-if="chatBotOpen" class="chatbot-modal" @click.self="closeChatBot">
       <div class="chatbot-container">
         <div class="chatbot-header">
-          <h3><span class="spark-logo">✨</span> Ask AI</h3>
+          <h3>Ask AI</h3>
           <button @click="closeChatBot" class="close-button">×</button>
         </div>
   
         <div class="chatbot-messages" ref="chatbotMessagesContainer">
           <div v-if="!chatBotResponse && chatBotResults.length === 0 && !chatBotLoading" class="chatbot-welcome">
+            <div class="welcome-main">
+              <h4>Movie & TV Show Assistant</h4>
               <p>Ask me anything about movies, TV shows, actors, directors...</p>
-              <p>Examples: "Who starred in the movie Pulp Fiction?", "Who directed The Matrix?", "Show me popular sci-fi series", "What is the plot summary for the series The Mandalorian?".</p>
+            </div>
+            
+            <div class="examples-section">
+              <h5>Try asking:</h5>
+              <div class="example-item">"Who directed The Matrix?"</div>
+              <div class="example-item">"Who starred in the movie Pulp Fiction?"</div>
+              <div class="example-item">"What is the plot summary for The Mandalorian?"</div>
+            </div>
+            
+            <div class="beta-notice">
+              <div class="beta-badge">BETA</div>
+              <p>This feature is in development. AI responses may be inaccurate. If you encounter any issues, please <a href="https://github.com/imprvhub/entercinema/issues/new" target="_blank" rel="noopener noreferrer">report them here.</a></p>
+            </div>
           </div>
   
           <div v-if="chatBotResponse" class="chatbot-response">
@@ -128,7 +142,7 @@
                  ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://entercinema.com')
                  : 'https://entercinema.com',
          apiUrl: typeof window !== 'undefined'
-                ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:8000/chat' : 'https://entercinema-search-api.vercel.app/chat')
+                ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:8000/chat' : 'https://entercinema-assistant.vercel.app/chat')
                 : 'https://entercinema-search-api.vercel.app/chat'
       };
     },
@@ -880,5 +894,127 @@
       .chatbot-welcome p { font-size: 14px; }
       .chatbot-welcome p:last-child { font-size: 12px; }
   }
-  
-  </style>
+  .chatbot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 25px;
+  border-bottom: 1px solid rgba(127, 219, 241, 0.2);
+  background: rgba(13, 27, 42, 0.9);
+  flex-shrink: 0;
+}
+
+.chatbot-header h3 {
+  color: #fff;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.chatbot-welcome {
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+  gap: 24px;
+  color: #e0e0e0;
+}
+
+.welcome-main {
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+.welcome-main h4 {
+  color: #fff;
+  font-size: 18px;
+  margin: 0 0 12px 0;
+  font-weight: 500;
+}
+
+.welcome-main p {
+  font-size: 15px;
+  margin: 0;
+  color: #a8d8e4;
+}
+
+.examples-section {
+  background: rgba(13, 27, 42, 0.3);
+  border-radius: 8px;
+  padding: 15px 20px;
+}
+
+.examples-section h5 {
+  color: #fff;
+  font-size: 14px;
+  margin: 0 0 10px 0;
+  font-weight: 500;
+}
+
+.examples-section ul {
+  margin: 0;
+  padding: 0 0 0 18px;
+  list-style-type: none;
+}
+
+.examples-section li {
+  position: relative;
+  padding: 4px 0;
+  font-size: 14px;
+  color: #a8d8e4;
+}
+
+.examples-section li:before {
+  content: "•";
+  position: absolute;
+  left: -15px;
+  color: #7FDBF1;
+}
+
+
+.beta-notice {
+  position: relative;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  padding: 16px 20px 16px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  border-left: 3px solid #FF5252;
+}
+
+.beta-badge {
+  background-color: #FF5252;
+  color: white;
+  font-weight: bold;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-size: 10px;
+  text-transform: uppercase;
+  display: inline-block;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.beta-notice p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+  white-space: normal;
+  word-wrap: break-word;
+  display: inline;
+}
+
+.beta-notice a {
+  color: #7FDBF1;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+  display: inline;
+}
+
+.beta-notice a:hover {
+  color: #ffffff;
+}
+</style>
