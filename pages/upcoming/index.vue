@@ -1,193 +1,137 @@
 <template>
-    <main class="main">
-      <section class="upcoming-section">
-        <div v-if="isLoggedIn" class="user-profile">
-          <div class="language-selector" style="position: relative; top: 44px; left: -70px;">
-            <div class="selected-language" @click="toggleLanguageMenu" >
-              <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
-              <span class="language">En</span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'english'" style="width: 24px; height: 24px; left: -70px;">
-                <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
-              </svg>
-            </div>
-            <div ref="languageMenu" class="language-menu">
-              <label class="menu-label1" @click="changeLanguage('spanish')">
-                <span>Español</span>
-              </label>
-            </div>
+  <main class="main">
+    <section class="upcoming-section">
+      <div v-if="isLoggedIn" class="user-profile">
+        <div class="language-selector" style="position: relative; top: 44px; left: -70px;">
+          <div class="selected-language" @click="toggleLanguageMenu" >
+            <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
+            <span class="language">En</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'english'" style="width: 24px; height: 24px; left: -70px;">
+              <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
+            </svg>
           </div>
-          <div class="avatar-container" @click="toggleMenu">
-            <span v-if="userEmail !== 'undefined'" class="user-email">{{ userEmail }}</span>
-            <img :src="userAvatar" alt="User Avatar" class="avatar">
-            <div v-if="isMenuOpen" class="dropdown-menu">
-              <div class="menu-item" @click="goToHome">
-                <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10" stroke-linejoin="round"><path d="M8.5 23.2H1.3V9L12 .8 22.7 9v14.2h-7.2v-5c0-1.9-1.6-3.4-3.5-3.4s-3.5 1.5-3.5 3.4v5z"/></g></svg>
-                <span class="menu-label1">Home</span>
-              </div>
-              <div class="menu-item" @click="goToSettings">
-                <img src="~/static/icon-settings.png" alt="Settings Icon" class="settings-icon">
-                <span class="menu-label1">Settings</span>
-              </div>
-              <div class="menu-item" @click="signOut">
-                <img src="~/static/icon-logout.png" alt="Logout Icon" class="logout-icon">
-                <span class="menu-label2">Log out</span>
-              </div>
+          <div ref="languageMenu" class="language-menu">
+            <label class="menu-label1" @click="changeLanguage('spanish')">
+              <span>Español</span>
+            </label>
+          </div>
+        </div>
+        <div class="avatar-container" @click="toggleMenu">
+          <span v-if="userEmail !== 'undefined'" class="user-email">{{ userEmail }}</span>
+          <img :src="userAvatar" alt="User Avatar" class="avatar">
+          <div v-if="isMenuOpen" class="dropdown-menu">
+            <div class="menu-item" @click="goToHome">
+              <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10" stroke-linejoin="round"><path d="M8.5 23.2H1.3V9L12 .8 22.7 9v14.2h-7.2v-5c0-1.9-1.6-3.4-3.5-3.4s-3.5 1.5-3.5 3.4v5z"/></g></svg>
+              <span class="menu-label1">Home</span>
+            </div>
+            <div class="menu-item" @click="goToSettings">
+              <img src="~/static/icon-settings.png" alt="Settings Icon" class="settings-icon">
+              <span class="menu-label1">Settings</span>
+            </div>
+            <div class="menu-item" @click="signOut">
+              <img src="~/static/icon-logout.png" alt="Logout Icon" class="logout-icon">
+              <span class="menu-label2">Log out</span>
             </div>
           </div>
         </div>
-        <div v-else class="user-profile-else">
-          <div class="language-selector" style="position: relative;top: -45.2px; left: -57px;">
-            <div class="selected-language" @click="toggleLanguageMenu">
-              <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
-              <span class="language">En</span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" style="width: 24px; height: 24px; left: -70px;">
-                <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
-              </svg>
-            </div>
-            <div ref="languageMenu" class="language-menu" :style="{ display: showLanguageMenu ? 'block' : 'none' }">
-              <label class="menu-label1" @click="changeLanguage('spanish')">
-                <span>Español</span>
-              </label>
-            </div>
+      </div>
+      <div v-else class="user-profile-else">
+        <div class="language-selector" style="position: relative;top: -45.2px; left: -57px;">
+          <div class="selected-language" @click="toggleLanguageMenu">
+            <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
+            <span class="language">En</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" style="width: 24px; height: 24px; left: -70px;">
+              <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
+            </svg>
           </div>
-          <div class="avatar-container-else" @click="toggleMenu">
-            <div>
-              <span class="menu-label1" @click="goToLogin">Sign In</span>
-            </div>
+          <div ref="languageMenu" class="language-menu" :style="{ display: showLanguageMenu ? 'block' : 'none' }">
+            <label class="menu-label1" @click="changeLanguage('spanish')">
+              <span>Español</span>
+            </label>
           </div>
         </div>
-        <br>
-        <h1 class="navbar-welcome">Upcoming Releases</h1>
-        <h2 class="subtitle">Stay Informed About Upcoming Movies and New TV Shows Episodes.</h2>
-        <div>
-          <div class="loader" v-if="!imagesLoaded">
-            <div class="spinner"></div>
+        <div class="avatar-container-else" @click="toggleMenu">
+          <div>
+            <span class="menu-label1" @click="goToLogin">Sign In</span>
           </div>
-          <div class="listing" style="position:relative; top: -20px;">
-            <div class="listing__head">
-              <h3 class="listing__title">Upcoming Movies:</h3>
-            </div>
-            <div v-if="combinedMovies && combinedMovies.length" class="carousel">
-              <button @click="prevSlide" class="carousel__nav carousel__nav--left">
+        </div>
+      </div>
+      <br>
+      <h1 class="navbar-welcome">Upcoming Releases</h1>
+      <h2 class="subtitle">Stay Informed About Upcoming Movies and New TV Shows Episodes.</h2>
+      <div>
+        <div class="loader" v-if="!imagesLoaded">
+          <div class="modern-spinner">
+            <div></div><div></div><div></div><div></div>
+          </div>
+        </div>
+        <div class="listing" style="position:relative; top: -20px;">
+          <div class="listing__head">
+            <h3 class="listing__title" style="z-index: 10 !important; padding: 15px !important;">Latest Movies:</h3>
+          </div>
+          <div v-if="combinedMovies && combinedMovies.length" class="calendar-container" style="background-color: black !important;">
+            <div class="calendar-controls">
+              <button @click="prevDate" class="calendar-nav calendar-nav--left">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                   <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"></path>
                 </svg>
               </button>
-              <div class="carousel__items" ref="carouselItems">
-                <div v-for="(movie, index) in combinedMovies" :key="movie.id" class="card" @click="redirectMovie(movie.id)">
-                  <div class="card__img lazyloaded">
-                    <img v-if="movie.poster_path" :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" class="lazyload" />
-                    <img v-else src="~/static/image_not_found_yet.png" alt="Image Not Found" />
-                  </div>
-                  <h2 class="card__name">{{ formatTitle(movie.title) }}</h2>
-                  <div class="card__rating">
-                    <div class="card__vote">{{ formatDate(movie.release_date) }}</div>
-                  </div>
-                </div>
-              </div>
-              <button @click="nextSlide" class="carousel__nav carousel__nav--right">
+              <h4 class="calendar-title">ON {{ formatDateForDisplay(selectedDate) }}</h4>
+              <button @click="nextDate" class="calendar-nav calendar-nav--right">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                   <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"></path>
                 </svg>
               </button>
             </div>
-            <div v-else>
-              <p>No upcoming movies available.</p>
+            
+            <div v-if="selectedDateMovies.length > 0" class="day-movies">
+              <div class="movies-grid">
+                <div v-for="movie in selectedDateMovies" :key="movie.id" class="movie-card" @click="redirectMovie(movie.id)">
+                  <div class="movie-poster">
+                    <img v-if="movie.poster_path" :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" />
+                    <img v-else src="~/static/image_not_found_yet.png" alt="Image Not Found" />
+                  </div>
+                  <h2 class="movie-title">{{ formatTitle(movie.title) }}</h2>
+                </div>
+              </div>
             </div>
+            <div v-else class="no-movies-message">
+              <p>No movies scheduled for release on {{ formatDateForDisplay(selectedDate) }}.</p>
+              <button @click="resetToToday" class="reset-button">Return to Today</button>
+            </div>
+          </div>
+          <div v-else>
+            <p>No upcoming movies available.</p>
           </div>
         </div>
-        <!--  <div>
-          <div class="upcoming-series-container" v-for="series in paginatedSeries" :key="series.id">
-            <div class="info-header">
-              <h3 class="info-label" v-if="seriesList.length > 0">Upcoming TV show episodes based on your watchlist:</h3>
-              <h3 class="infoe-label "v-else>It appears that there are currently no TV shows in your watchlist collection with upcoming episodes. Please consider adding new TV series to populate this section with relevant results.</h3>
-            </div>
-            <div class="series-header">
-              <div class="pagination-controls">
-                <button @click="prevPage" :disabled="currentPage === 1"><</button>
-              </div>
-              <div class="series-title" @click="redirectTv(series.nextEpisode.show_id)">
-                {{ series.name }}
-              </div>
-              <span class="series-year">({{ formatYearRange(series.firstAirDate, series.nextEpisode.air_date) }})</span>
-              <div class="pagination-controls">
-                <button @click="nextPage" :disabled="currentPage === totalPages">></button>
-              </div>
-            </div>
-            <div class="info-header-details">
-              <button class="button-details" @click="redirectTv(series.nextEpisode.show_id)">Full Details</button>
-            </div>
-            <div class="previos-episode-label" style="color: #8BE9FD; text-align: center; background: black; width: 100%;">
-              SEASON {{ series.numberOfSeasons }}
-          </div>
-            <div class="arrows-header">
-                <div class="previous-episode-label">
-                  Previous Episode:
-                </div>
-                <div class="upcoming-episode-label">
-                  Upcoming Episode:
-                </div>
-            </div>
-              <li class="series-item">
-                <div class="series-details-left">
-                  <div class="series-image series-image-last">
-                    <img v-if="series.lastEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.lastEpisode.still_path}`" alt="Series Last Episode Image">
-                    <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
-                  </div>
-                  <div class="episode-details">
-                    <p class="episode-name episode-name-last">"{{ series.lastEpisode.name }}."</p>
-                  </div>
-                  <div class="additional-details">
-                    <p>Runtime: {{ series.lastEpisode.runtime ? series.lastEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
-                    <p>Release Date: {{ formatDate(series.lastEpisode.air_date) }}</p>
-                    <p>Overview: {{ series.lastEpisode.overview ? series.lastEpisode.overview : 'Not specified.' }}</p>
-                  </div>
-                </div>
-                <div class="series-divider"></div>
-                <div class="series-details-right">
-                  <div class="arrows-header-mobile">
-                  <div class="previous-episode-label">
-                    Upcoming Episode:
-                  </div>
-                  <div class="upcoming-episode-label">
-                    Upcoming Episode:
-                  </div>
-              </div>
-                  <div class="series-image series-image-next">
-                    <img v-if="series.nextEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.nextEpisode.still_path}`" alt="Series Next Episode Image">
-                    <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
-                  </div>
-                  <div class="episode-details">
-                    <p class="episode-name episode-name-next">"{{ series.nextEpisode.name }}."</p>
-                  </div>
-                  <div class="additional-details">
-                    <p>Runtime: {{ series.nextEpisode.runtime ? series.nextEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
-                    <p>Release Date: {{ formatDate(series.nextEpisode.air_date) }}</p>
-                    <p>Overview: {{ series.nextEpisode.overview ? series.nextEpisode.overview : 'Not specified.' }}</p>
-                  </div>
-                </div>
-            </li>
-          </div>
-        </div> -->
-
-        <div v-if="trendingSeriesList.length > 0">
-        <div class="upcoming-series-container" v-for="series in paginatedTrendingSeries" :key="series.id">
-          <div class="listing__head">
-              <h3 class="listing__title" style="top: 2.5rem; padding-top: 0.5rem;">Upcoming TV Shows:</h3>
-          </div>
-          <div class="series-header">
-            <div class="pagination-controls">
-                  <button @click="prevTrendingPage" :disabled="currentTrendingPage === 1"><</button>
-            </div>
+      </div>
+      
+      <div v-if="trendingSeriesList.length > 0">
+      <div class="upcoming-series-container" v-for="series in paginatedTrendingSeries" :key="series.id">
+        <div class="listing__head">
+            <h3 class="listing__title" style="top: 2.5rem; padding-top: 0.5rem;">Latest TV Shows:</h3>
+        </div>
+        <div class="series-header">
+          <div class="series-title-container">
             <div class="series-title" @click="redirectTv(series.id)">
               {{ series.name }}
             </div>
             <span class="series-year">({{ formatYearRange(series.firstAirDate, series.nextEpisode.air_date) }})</span>
-            <div class="pagination-controls">
-              <button @click="nextTrendingPage" :disabled="currentTrendingPage === totalTrendingPages">></button>
-            </div>
           </div>
+        </div>
         
+        <button @click="prevTrendingPage" :disabled="currentTrendingPage === 1" class="calendar-nav calendar-nav--left series-nav-left" style="position: relative; z-index:10 !important; bottom: 0.5rem !important;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"></path>
+          </svg>
+        </button>
+        
+        <button @click="nextTrendingPage" :disabled="currentTrendingPage === totalTrendingPages" class="calendar-nav calendar-nav--right right-arrow series-nav-right" style="z-index:10 !important">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"></path>
+          </svg>
+        </button>
+        <div style="position: relative !important; bottom: 10.8rem !important;">
           <div class="info-header-details">
             <button class="button-details" @click="redirectTv(series.id)">Full Details</button>
           </div>
@@ -243,8 +187,9 @@
           </li>
         </div>
         </div>
-    </section>
-  </main>
+        </div>
+  </section>
+</main>
 </template>
 
   <script>
@@ -309,6 +254,8 @@ async function getUserName(userEmail) {
         filteredSeriesDetails: [],
         trendingSeriesList: [],
         combinedMovies: [],
+        selectedDate: new Date(),
+        selectedDateMovies: [],
         nextActionMovies: [],
         nextAdventureMovies: [],
         nextHorrorMovies: [],
@@ -368,9 +315,10 @@ async function getUserName(userEmail) {
         this.isLoggedIn = accessToken !== null;
         this.userAvatar = await getUserAvatar(this.userEmail);
         await this.fetchUserFirstName();
-        this.fetchUpcomingMovies();
+        await this.fetchUpcomingMovies();
         await this.fetchTrendingTV();
         await this.fetchSeriesDetailsForIds();
+        this.updateSelectedDateMovies();
     },
 
     beforeDestroy() {
@@ -433,8 +381,29 @@ async function getUserName(userEmail) {
       },
     },
     methods: {
+      // Helper function defined first to avoid order issues
+      formatDateToYYYYMMDD(date) {
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      },
+      
       async fetchUpcomingMovies() {
-        const today = new Date().toISOString().split('T')[0];
+        // Get dates for the range we want to show (past 15 days and future 60 days)
+        const today = new Date();
+        const pastDate = new Date(today);
+        pastDate.setDate(today.getDate() - 15);
+        const futureDate = new Date(today);
+        futureDate.setDate(today.getDate() + 60);
+        
+        const todayStr = this.formatDateToYYYYMMDD(today);
+        const pastDateStr = this.formatDateToYYYYMMDD(pastDate);
+        const futureDateStr = this.formatDateToYYYYMMDD(futureDate);
+        
+        console.log("Fetching movies from", pastDateStr, "to", futureDateStr);
+        
         const apiKey = process.env.API_KEY;
         const apiLang = process.env.API_LANG;
 
@@ -468,16 +437,36 @@ async function getUserName(userEmail) {
         };
 
         const fetchMoviesByGenre = async (genreId) => {
-          const moviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=${apiLang}&page=1&primary_release_date.gte=${today}&sort_by=popularity.desc&with_genres=${genreId}`;
+          // Fetch both current and upcoming movies for this genre
+          const currentMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=${apiLang}&page=1&primary_release_date.gte=${pastDateStr}&primary_release_date.lte=${todayStr}&sort_by=primary_release_date.desc&with_genres=${genreId}`;
+          const upcomingMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=${apiLang}&page=1&primary_release_date.gte=${todayStr}&primary_release_date.lte=${futureDateStr}&sort_by=primary_release_date.asc&with_genres=${genreId}`;
+          
           try {
-            const movieResponse = await fetch(moviesUrl, movieOptions);
-            if (!movieResponse.ok) {
+            const [currentResponse, upcomingResponse] = await Promise.all([
+              fetch(currentMoviesUrl, movieOptions),
+              fetch(upcomingMoviesUrl, movieOptions)
+            ]);
+            
+            if (!currentResponse.ok || !upcomingResponse.ok) {
               throw new Error(`Error en la respuesta de la API de películas para género ${genreId}`);
             }
-            const movieData = await movieResponse.json();
-            return movieData.results || [];
+            
+            const currentData = await currentResponse.json();
+            const upcomingData = await upcomingResponse.json();
+            
+            // Combine current and upcoming movies
+            const allMovies = [
+              ...(currentData.results || []),
+              ...(upcomingData.results || [])
+            ];
+            
+            // Log the dates we have for this genre
+            const dates = allMovies.map(m => m.release_date);
+            console.log(`Genre ${genreId} has movies on dates:`, [...new Set(dates)]);
+            
+            return allMovies;
           } catch (error) {
-            console.error(`Error al obtener próximas películas para género ${genreId}:`, error);
+            console.error(`Error al obtener películas para género ${genreId}:`, error);
             return [];
           }
         };
@@ -506,10 +495,11 @@ async function getUserName(userEmail) {
 
         this.combinedMovies = Object.values(this.movies).flat();
         this.sortMoviesByReleaseDate();
+        this.updateSelectedDateMovies();
 
         setTimeout(() => {
           this.imagesLoaded = true;
-        }, 1000);
+        }, 800);
       },
 
       formatDate(date) {
@@ -519,33 +509,73 @@ async function getUserName(userEmail) {
         },
 
       sortMoviesByReleaseDate() {
-          const today = new Date();
-          this.combinedMovies.sort((a, b) => {
+          // Make sure we have a proper selectedDate
+          if (!this.selectedDate) {
+            this.selectedDate = new Date();
+          }
+          
+          // Filter out movies without release dates and deduplicate by ID
+          const uniqueMovies = {};
+          this.combinedMovies.forEach(movie => {
+            if (movie.release_date && movie.id) {
+              uniqueMovies[movie.id] = movie;
+            }
+          });
+          
+          // Convert back to array and sort by release date
+          this.combinedMovies = Object.values(uniqueMovies).sort((a, b) => {
             const dateA = new Date(a.release_date);
             const dateB = new Date(b.release_date);
-            return Math.abs(today - dateA) - Math.abs(today - dateB);
+            return dateA - dateB; // Chronological order
           });
+          
+          console.log("Sorted movies by release date, total count:", this.combinedMovies.length);
       },
 
       formatTitle(title) {
         return title.length > 28 ? title.substring(0, 25) + '...' : title;
       },
 
-      prevSlide(event, genreName) {
-        const carousel = event.target.closest('.carousel').querySelector('.carousel__items');
-        const slideWidth = carousel.clientWidth;
-        carousel.scrollBy({
-          left: -slideWidth,
-          behavior: 'smooth'
-        });
+      prevDate() {
+        const newDate = new Date(this.selectedDate);
+        newDate.setDate(newDate.getDate() - 1);
+        this.selectedDate = newDate;
+        this.updateSelectedDateMovies();
       },
-      nextSlide(event, genreName) {
-        const carousel = event.target.closest('.carousel').querySelector('.carousel__items');
-        const slideWidth = carousel.clientWidth;
-        carousel.scrollBy({
-          left: slideWidth,
-          behavior: 'smooth'
-        });
+      nextDate() {
+        const newDate = new Date(this.selectedDate);
+        newDate.setDate(newDate.getDate() + 1);
+        this.selectedDate = newDate;
+        this.updateSelectedDateMovies();
+      },
+      resetToToday() {
+        this.selectedDate = new Date();
+        this.updateSelectedDateMovies();
+      },
+      updateSelectedDateMovies() {
+        if (!this.selectedDate || !this.combinedMovies || this.combinedMovies.length === 0) {
+          this.selectedDateMovies = [];
+          return;
+        }
+        
+        const selectedDateStr = this.formatDateToYYYYMMDD(this.selectedDate);
+        console.log("Selected date: ", selectedDateStr);
+        console.log("Total movies: ", this.combinedMovies.length);
+        
+        // Debug info
+        const movieDates = this.combinedMovies.map(m => m.release_date);
+        console.log("Available dates: ", [...new Set(movieDates)]);
+        
+        this.selectedDateMovies = this.combinedMovies.filter(movie => 
+          movie.release_date === selectedDateStr
+        );
+        
+        console.log("Found movies for this date: ", this.selectedDateMovies.length);
+      },
+      formatDateForDisplay(date) {
+        if (!date) return '';
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(date).toLocaleDateString('en-US', options);
       },
       updateItemsPerPage() {
         this.itemsPerPage = window.innerWidth <= 1024 ? 20 : 20;
@@ -878,21 +908,59 @@ body {
   z-index: 9999;
 }
 
-.spinner {
-  border: 8px solid rgba(129, 216, 234, 0.658);
-  border-left-color: #000;
-  border-radius: 50%;
-  width: 64px;
-  height: 64px;
-  animation: spin 1s linear infinite;
+.modern-spinner {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
 }
-
-@keyframes spin {
+.modern-spinner div {
+  position: absolute;
+  top: 33px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #8BE9FD;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.modern-spinner div:nth-child(1) {
+  left: 8px;
+  animation: modern-spinner1 0.6s infinite;
+}
+.modern-spinner div:nth-child(2) {
+  left: 8px;
+  animation: modern-spinner2 0.6s infinite;
+}
+.modern-spinner div:nth-child(3) {
+  left: 32px;
+  animation: modern-spinner2 0.6s infinite;
+}
+.modern-spinner div:nth-child(4) {
+  left: 56px;
+  animation: modern-spinner3 0.6s infinite;
+}
+@keyframes modern-spinner1 {
   0% {
-    transform: rotate(0deg);
+    transform: scale(0);
   }
   100% {
-    transform: rotate(360deg);
+    transform: scale(1);
+  }
+}
+@keyframes modern-spinner3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes modern-spinner2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
   }
 }
 
@@ -1006,10 +1074,9 @@ body {
 }
 
 .upcoming-series-container {
-  max-width: 70%;
+  max-width: 90%;
   margin: 0 auto;
   position: relative;
-  top: -20px;
 }
 
 .info-header {
@@ -1034,6 +1101,7 @@ body {
     -webkit-backdrop-filter: blur(16px);
     justify-content: center;
     height: 20px;
+    width:100%;
 }
 
 
@@ -1052,30 +1120,32 @@ body {
     /* box-shadow: 0 8px 32px 0 rgba(56, 134, 167, 0.37); */
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    padding: 10px;
+    padding: 15px;
+    position: relative;
     justify-content: center;
 }
 
 .arrows-header {
-    display: flex;
-    align-items: baseline;
-    text-align: center;
-    background: black;
-    font-size: 13px;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    padding: 10px;
-    align-content: center;
-    flex-wrap: wrap;
-    font-size: 12px;
-    letter-spacing: 1px;
-    flex-direction: row;
-    justify-content: space-around;
+  display: flex;
+  align-items: baseline;
+  text-align: center;
+  background: black;
+  font-size: 13px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 10px;
+  align-content: center;
+  flex-wrap: wrap;
+  font-size: 12px;
+  letter-spacing: 1px;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
 }
 
 .series-year {
   font-style: italic;
-  margin-left: 0.4rem;
+  margin: 0 auto !important;
   font-size: 12px;
 }
 
@@ -2003,17 +2073,40 @@ h3 {
 @media screen and (min-width: 1025px) {
   .movie-card {
     flex: 1 0 25%;
-    height: 400px;
-  }
-
-  .movie-image {
-    height: 70%;
+    height: auto;
+    max-height: 350px;
   }
 
   .movie-title,
   .movie-info {
     font-size: 1rem;
   }
+}
+
+.movie-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1 0 50%;
+  margin: 10px;
+  box-sizing: border-box;
+  text-align: center;
+  height: auto;
+}
+
+.movie-poster {
+  width: 100%;
+  height: auto;
+  padding: 2%;
+  border-radius: 10px;
+}
+
+.movie-poster img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  display: block;
+  object-fit: cover;
 }
 
 .movie-image {
@@ -2032,5 +2125,159 @@ h3 {
   border: none;
   font-size: 2rem;
   cursor: pointer;
+}
+
+/* Calendar styles */
+.calendar-container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 10px;
+  background: rgba(4, 14, 21, 0.07);
+  background-color: rgba(4, 14, 21, 0.07);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  position: relative;
+  bottom: 1.3rem;
+}
+
+.calendar-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.calendar-title {
+  font-size: 1.2rem;
+  color: #8BE9FD;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.calendar-nav {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 1rem;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.calendar-nav:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.day-movies {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.day-title {
+  color: #8BE9FD;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.movie-card {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  background: rgba(10, 25, 41, 0.7);
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 10px;
+}
+
+.movie-card:hover {
+  transform: translateY(-5px);
+}
+
+.movie-poster {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+.movie-poster img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+.movie-title {
+  font-size: 1.2rem;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.no-movies-message {
+  padding: 20px;
+  color: #8BE9FD;
+  font-size: 1rem;
+  text-align: center;
+  margin-top: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+}
+
+.reset-button {
+  padding: 8px 16px;
+  background: #8BE9FD;
+  color: #000;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  margin: 0 auto;
+  top: 1rem;
+  position: relative;
+}
+
+.reset-button:hover {
+  background: #5ad9ff;
+}
+
+.right-arrow {
+  float: right;
+  position: relative;
+  bottom: 6rem;
+}
+
+.series-title-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.series-title {
+  font-size: 12px;
+  color: #8BE9FD;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.series-year {
+  font-style: italic;
+  font-size: 12px;
+  text-align: center;
+  display: block;
+  margin: 0 auto;
 }
 </style>
