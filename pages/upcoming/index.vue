@@ -67,7 +67,7 @@
         </div>
         <div class="listing" style="position:relative; top: -20px;">
           <div class="listing__head">
-            <h3 class="listing__title" style="z-index: 10 !important; padding: 15px !important;">Latest Movies:</h3>
+            <h3 class="listing__title" style="z-index: 3 !important; padding: 15px !important;">Latest Movies:</h3>
           </div>
           <div v-if="combinedMovies && combinedMovies.length" class="calendar-container" style="background-color: black !important;">
             <div class="calendar-controls">
@@ -120,13 +120,13 @@
           </div>
         </div>
         
-        <button @click="prevTrendingPage" :disabled="currentTrendingPage === 1" class="calendar-nav calendar-nav--left series-nav-left" style="position: relative; z-index:10 !important; bottom: 0.5rem !important;">
+        <button @click="prevTrendingPage" :disabled="currentTrendingPage === 1" class="calendar-nav calendar-nav--left series-nav-left" style="position: relative; z-index:3 !important; bottom: 0.5rem !important;">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
             <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"></path>
           </svg>
         </button>
         
-        <button @click="nextTrendingPage" :disabled="currentTrendingPage === totalTrendingPages" class="calendar-nav calendar-nav--right right-arrow series-nav-right" style="z-index:10 !important">
+        <button @click="nextTrendingPage" :disabled="currentTrendingPage === totalTrendingPages" class="calendar-nav calendar-nav--right right-arrow series-nav-right" style="z-index:3 !important">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
             <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"></path>
           </svg>
