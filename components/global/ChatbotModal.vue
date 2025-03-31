@@ -132,8 +132,8 @@ export default {
       chatId: null,
       tmdbApiKey: process.env.API_KEY,
       baseUrl: typeof window !== 'undefined'
-               ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://entercinema.com')
-               : 'https://entercinema.com',
+               ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://es.entercinema.com')
+               : 'https://es.entercinema.com',
        apiUrl: typeof window !== 'undefined'
               ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:8000/chat' : 'https://entercinema-assistant.vercel.app/chat')
               : 'https://entercinema-search-api.vercel.app/chat'
