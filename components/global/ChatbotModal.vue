@@ -135,8 +135,8 @@ export default {
                ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://es.entercinema.com')
                : 'https://es.entercinema.com',
        apiUrl: typeof window !== 'undefined'
-              ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:8000/chat' : 'https://entercinema-assistant.vercel.app/chat')
-              : 'https://entercinema-search-api.vercel.app/chat'
+              ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:8000/chat' : 'https://entercinema-assistant-es.vercel.app/chat')
+              : 'https://entercinema-assitant-es.vercel.app/chat'
     };
   },
   watch: {
