@@ -78,84 +78,102 @@
       </li>
 
     </ul>
+  
+    <ChatbotModal ref="chatbotModalRef" />
+
   </nav>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import ChatbotModal from './ChatbotModal.vue';
 
 export default {
+  components: {
+    ChatbotModal
+  },
   data() {
     return {
       authToken: null,
       authInterval: null
     };
   },
-  
+
   computed: {
     ...mapState('search', ['searchOpen']),
     isLoggedIn() {
+
       return this.authToken !== null;
     }
   },
 
   mounted() {
     this.checkAuthStatus();
-    this.authInterval = setInterval(this.checkAuthStatus, 100);
-    window.addEventListener('storage', this.handleStorageChange);
-    window.addEventListener('auth-changed', this.checkAuthStatus);
-    
-    if (window.location.pathname.includes('auth-success')) {
-      this.forceUpdateNavIcons();
+
+    this.authInterval = setInterval(this.checkAuthStatus, 500);
+    if (typeof window !== 'undefined') {
+        window.addEventListener('storage', this.handleStorageChange);
+        window.addEventListener('auth-changed', this.checkAuthStatus); 
+
+        if (window.location.pathname.includes('auth-success')) {
+           this.forceUpdateNavIcons();
+        }
     }
   },
-  
+
   beforeDestroy() {
     if (this.authInterval) {
       clearInterval(this.authInterval);
     }
-    window.removeEventListener('storage', this.handleStorageChange);
-    window.removeEventListener('auth-changed', this.checkAuthStatus);
+     if (typeof window !== 'undefined') {
+        window.removeEventListener('storage', this.handleStorageChange);
+        window.removeEventListener('auth-changed', this.checkAuthStatus);
+     }
   },
 
   methods: {
     checkAuthStatus() {
-      const token = localStorage.getItem('access_token');
+      const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
       if (token !== this.authToken) {
         this.authToken = token;
-        this.$forceUpdate();
       }
     },
-    
+
     forceUpdateNavIcons() {
-      const token = localStorage.getItem('access_token');
+
+      const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
       this.authToken = token;
-      this.$forceUpdate();
-      
-      for (let i = 0; i < 3; i++) {
-        setTimeout(() => {
-          this.authToken = localStorage.getItem('access_token');
-          this.$forceUpdate();
-        }, 150 * (i + 1));
-      }
+      this.$forceUpdate(); 
+
     },
-    
+
     handleStorageChange(event) {
+
       if (event.key === 'access_token') {
         this.authToken = event.newValue;
-        this.$forceUpdate();
       }
     },
-    
+
     clearSearchBeforeNavigate() {
       this.$root.$emit('clear-search');
+      if (this.$refs.chatbotModalRef && this.$refs.chatbotModalRef.chatBotOpen) {
+          this.$refs.chatbotModalRef.close();
+      }
     },
-    
+
     toggleSearch() {
       if (this.$route.name !== 'search') {
         this.$store.commit('search/toggleSearch');
       }
     },
+
+    openAiChat() {
+      if (this.$refs.chatbotModalRef) {
+        this.$refs.chatbotModalRef.open();
+      } else {
+        console.error('ChatbotModal ref not found!');
+      }
+    }
   },
 };
 </script>
@@ -172,7 +190,7 @@ export default {
   height: 4.5rem;
   background-color: #000;
 
-  @media (min-width: $breakpoint-large) {
+  @media (min-width: $breakpoint-large) { 
     top: 0;
     right: auto;
     width: 10rem;
@@ -183,24 +201,22 @@ export default {
   ul {
     display: flex;
     height: 100%;
+    padding: 0;
+    margin: 0;
 
     @media (min-width: $breakpoint-large) {
       flex-direction: column;
-
     }
 
     li {
-      flex: 1 1 auto;
+      flex: 1 1 auto; 
       height: 100%;
+      list-style-type: none; 
 
-    span {
-      margin-left: 3.6rem;
-      margin-bottom: 2rem;
-    }
 
-      @media (min-width: $breakpoint-large) {
-        flex: 0 1 auto;
-        height: 10rem;
+      @media (min-width: $breakpoint-large) { 
+        flex: 0 1 auto; 
+        height: 10rem; 
       }
     }
   }
@@ -209,21 +225,24 @@ export default {
     padding: 0;
     margin: 0;
     background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit; 
   }
 
   a,
   button {
     display: flex;
-    align-items: center;
+    align-items: center; 
     justify-content: center;
-    width: 100%;
-    height: 100%;
-    outline: 0;
-    transition: all 0.2s;
+    width: 100%; 
+    height: 100%; 
+    outline: 0; 
+    transition: opacity 0.2s;
 
     &:hover,
     &:focus {
-      opacity: 0.8;
+      opacity: 0.8; 
     }
   }
 }
@@ -232,14 +251,16 @@ export default {
 <style lang="scss" scoped>
 @import '~/assets/css/utilities/_variables.scss';
 
+
 a.nuxt-link-active {
   &:hover,
   &:focus {
     opacity: 1;
   }
 
-  svg g {
-    stroke: $primary-color;
+  svg g { 
+    stroke: $primary-color; 
   }
 }
+
 </style>
