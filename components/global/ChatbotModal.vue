@@ -17,7 +17,7 @@
               <h5>Try asking:</h5>
               <div class="example-item">"Who directed The Matrix?"</div>
               <div class="example-item">"Who starred in the movie Pulp Fiction?"</div>
-              <div class="example-item">"What is the plot summary for The Mandalorian?"</div>
+              <div class="example-item">"What was the name of the actress of Queen's Gambit?"</div>
             </div>
           </div>
   
