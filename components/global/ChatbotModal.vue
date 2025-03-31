@@ -14,8 +14,9 @@
           </div>
           <div class="examples-section">
             <h5>Prueba preguntar:</h5>
+            <div class="example-item">"¿Quién dirigió The Matrix?"</div>
             <div class="example-item">"¿Quiénes actuaron en la película Pulp Fiction?"</div>
-            <div class="example-item">"¿Cuál es el resumen de la trama de The Mandalorian?"</div>
+            <div class="example-item">"¿Quién fue la actriz de Gambito de Dama?"</div>
           </div>
         </div>
 
