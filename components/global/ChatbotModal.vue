@@ -1,6 +1,6 @@
 <template>
     <div v-if="chatBotOpen" class="chatbot-modal" @click.self="closeChatBot">
-      <div class="chatbot-container">
+      <div class="chatbot-container" style="z-index: 6 !important;">
         <div class="chatbot-header">
           <h3>Ask AI</h3>
           <button @click="closeChatBot" class="close-button">×</button>
@@ -388,7 +388,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 99999999;
+    
     animation: fadeIn 0.3s ease;
   }
   
@@ -1021,7 +1021,7 @@
 @media screen and (max-width: 768px) {
   .chatbot-modal {
     align-items: flex-start;
-    padding-top: 20px;
+    padding-top: 50px;
     padding-bottom: 0;
   }
 
