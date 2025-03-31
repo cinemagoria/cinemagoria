@@ -1018,7 +1018,7 @@
   color: #ffffff;
 }
 
-@media screen and (max-width: 576px) {
+@media screen and (max-width: 768px) {
   .chatbot-modal {
     align-items: flex-start;
     padding-top: 20px;
