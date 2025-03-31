@@ -8,20 +8,14 @@
 
       <div class="chatbot-messages" ref="chatbotMessagesContainer">
         <div v-if="!chatBotResponse && chatBotResults.length === 0 && !chatBotLoading" class="chatbot-welcome">
-          <div class="welcome-main">
-            <h4>Asistente de Películas y Series</h4>
-            <p>Pregúntame cualquier cosa sobre películas, series, actores, directores...</p>
+          <div class="beta-notice">
+            <div class="beta-badge">BETA</div>
+            <p>Esta función está en desarrollo. Las respuestas de IA pueden ser imprecisas. Si encuentras algún problema, por favor <a href="https://github.com/imprvhub/entercinema/issues/new" target="_blank" rel="noopener noreferrer">repórtalo aquí.</a></p>
           </div>
-          
           <div class="examples-section">
             <h5>Prueba preguntar:</h5>
             <div class="example-item">"¿Quiénes actuaron en la película Pulp Fiction?"</div>
             <div class="example-item">"¿Cuál es el resumen de la trama de The Mandalorian?"</div>
-          </div>
-          
-          <div class="beta-notice">
-            <div class="beta-badge">BETA</div>
-            <p>Esta función está en desarrollo. Las respuestas de IA pueden ser imprecisas. Si encuentras algún problema, por favor <a href="https://github.com/imprvhub/entercinema/issues/new" target="_blank" rel="noopener noreferrer">repórtalo aquí.</a></p>
           </div>
         </div>
 
