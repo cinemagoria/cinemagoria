@@ -388,7 +388,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 99999999;
     animation: fadeIn 0.3s ease;
   }
   
