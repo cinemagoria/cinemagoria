@@ -1017,4 +1017,29 @@
 .beta-notice a:hover {
   color: #ffffff;
 }
+
+@media screen and (max-width: 576px) {
+  .chatbot-modal {
+    align-items: flex-start;
+    padding-top: 20px;
+    padding-bottom: 0;
+  }
+
+  .chatbot-container {
+    height: auto;
+    max-height: 65vh;
+
+    margin-top: 0; 
+    margin-bottom: 20px; 
+  }
+
+   .chatbot-messages {
+     flex-grow: 1;
+     overflow-y: auto;
+   }
+
+   .chatbot-input {
+     flex-shrink: 0;
+   }
+}
 </style>
