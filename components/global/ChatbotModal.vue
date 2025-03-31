@@ -8,9 +8,9 @@
   
         <div class="chatbot-messages" ref="chatbotMessagesContainer">
           <div v-if="!chatBotResponse && chatBotResults.length === 0 && !chatBotLoading" class="chatbot-welcome">
-            <div class="welcome-main">
-              <h4>Movie & TV Show Assistant</h4>
-              <p>Ask me anything about movies, TV shows, actors, directors...</p>
+            <div class="beta-notice">
+              <div class="beta-badge">BETA</div>
+              <p>This feature is in development. AI responses may be inaccurate. If you encounter any issues, please <a href="https://github.com/imprvhub/entercinema/issues/new" target="_blank" rel="noopener noreferrer">report them here.</a></p>
             </div>
             
             <div class="examples-section">
@@ -18,11 +18,6 @@
               <div class="example-item">"Who directed The Matrix?"</div>
               <div class="example-item">"Who starred in the movie Pulp Fiction?"</div>
               <div class="example-item">"What is the plot summary for The Mandalorian?"</div>
-            </div>
-            
-            <div class="beta-notice">
-              <div class="beta-badge">BETA</div>
-              <p>This feature is in development. AI responses may be inaccurate. If you encounter any issues, please <a href="https://github.com/imprvhub/entercinema/issues/new" target="_blank" rel="noopener noreferrer">report them here.</a></p>
             </div>
           </div>
   
