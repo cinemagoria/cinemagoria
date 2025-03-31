@@ -401,8 +401,7 @@ async function getUserName(userEmail) {
         const todayStr = this.formatDateToYYYYMMDD(today);
         const pastDateStr = this.formatDateToYYYYMMDD(pastDate);
         const futureDateStr = this.formatDateToYYYYMMDD(futureDate);
-        
-        console.log("Fetching movies from", pastDateStr, "to", futureDateStr);
+
         
         const apiKey = process.env.API_KEY;
         const apiLang = process.env.API_LANG;
@@ -453,17 +452,14 @@ async function getUserName(userEmail) {
             
             const currentData = await currentResponse.json();
             const upcomingData = await upcomingResponse.json();
-            
-            // Combine current and upcoming movies
+
             const allMovies = [
               ...(currentData.results || []),
               ...(upcomingData.results || [])
             ];
             
-            // Log the dates we have for this genre
             const dates = allMovies.map(m => m.release_date);
-            console.log(`Genre ${genreId} has movies on dates:`, [...new Set(dates)]);
-            
+          
             return allMovies;
           } catch (error) {
             console.error(`Error al obtener películas para género ${genreId}:`, error);
@@ -521,15 +517,12 @@ async function getUserName(userEmail) {
               uniqueMovies[movie.id] = movie;
             }
           });
-          
-          // Convert back to array and sort by release date
+
           this.combinedMovies = Object.values(uniqueMovies).sort((a, b) => {
             const dateA = new Date(a.release_date);
             const dateB = new Date(b.release_date);
             return dateA - dateB; // Chronological order
           });
-          
-          console.log("Sorted movies by release date, total count:", this.combinedMovies.length);
       },
 
       formatTitle(title) {
@@ -559,18 +552,12 @@ async function getUserName(userEmail) {
         }
         
         const selectedDateStr = this.formatDateToYYYYMMDD(this.selectedDate);
-        console.log("Selected date: ", selectedDateStr);
-        console.log("Total movies: ", this.combinedMovies.length);
-        
-        // Debug info
+
         const movieDates = this.combinedMovies.map(m => m.release_date);
-        console.log("Available dates: ", [...new Set(movieDates)]);
-        
+
         this.selectedDateMovies = this.combinedMovies.filter(movie => 
           movie.release_date === selectedDateStr
         );
-        
-        console.log("Found movies for this date: ", this.selectedDateMovies.length);
       },
       formatDateForDisplay(date) {
         if (!date) return '';

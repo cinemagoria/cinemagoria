@@ -220,7 +220,6 @@
   
           const mediaReferences = response.data.media_references;
           if (mediaReferences && mediaReferences.length > 0) {
-            console.log('Backend References:', mediaReferences);
             await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
           } else {
             this.chatBotResults = [];
@@ -357,7 +356,6 @@
   
   
           this.chatBotResults = results.slice(0, 10);
-          console.log('Final chatBotResults:', this.chatBotResults);
   
           if (results.length === 0 && references.some(ref => ref.name && ref.type)) {
                this.chatBotResponse += "<br><small style='color: orange;'>Could not fetch details for the related results.</small>";
