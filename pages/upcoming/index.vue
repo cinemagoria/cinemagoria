@@ -517,8 +517,6 @@ async function getUserName(userEmail) {
             const dateB = new Date(b.release_date);
             return dateA - dateB;
           });
-          
-          console.log("Sorted movies by release date, total count:", this.combinedMovies.length);
       },
 
       formatTitle(title) {

@@ -15,7 +15,6 @@
           
           <div class="examples-section">
             <h5>Prueba preguntar:</h5>
-            <div class="example-item">"¿Quién dirigió Matrix?"</div>
             <div class="example-item">"¿Quiénes actuaron en la película Pulp Fiction?"</div>
             <div class="example-item">"¿Cuál es el resumen de la trama de The Mandalorian?"</div>
           </div>
@@ -220,7 +219,6 @@ export default {
 
         const mediaReferences = response.data.media_references;
         if (mediaReferences && mediaReferences.length > 0) {
-          console.log('Referencias del Backend:', mediaReferences);
           await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
         } else {
           this.chatBotResults = [];
@@ -357,7 +355,6 @@ export default {
 
 
         this.chatBotResults = results.slice(0, 10);
-        console.log('chatBotResults finales:', this.chatBotResults);
 
         if (results.length === 0 && references.some(ref => ref.name && ref.type)) {
              this.chatBotResponse += "<br><small style='color: orange;'>No se pudieron obtener detalles para los resultados relacionados.</small>";
