@@ -138,7 +138,7 @@
                  : 'https://entercinema.com',
          apiUrl: typeof window !== 'undefined'
                 ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:8000/chat' : 'https://entercinema-assistant.vercel.app/chat')
-                : 'https://entercinema-search-api.vercel.app/chat'
+                : 'https://entercinema-assistant.vercel.app/chat'
       };
     },
     watch: {
