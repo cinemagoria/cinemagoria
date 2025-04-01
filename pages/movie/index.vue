@@ -3,6 +3,7 @@
     <Hero
       :item="featured" />
 
+    <br>
     <CustomListingCategoriesMovies
       :title="'Explorar por Categorías'"
       :view-all-url="null"/>
