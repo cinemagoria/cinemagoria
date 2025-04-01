@@ -20,6 +20,10 @@
           </div>
         </div>
 
+        <div v-if="chatBotLoading && !chatBotResponse && chatBotResults.length === 0" class="reasoning-indicator">
+          Razonando...
+        </div>
+
         <div v-if="chatBotResponse" class="chatbot-response">
           <p v-html="chatBotResponse"></p>
         </div>
@@ -689,6 +693,25 @@ export default {
   margin: 0;
   font-size: 11px;
   color: #7FDBF1;
+}
+
+.reasoning-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  color: #7FDBF1;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background: rgba(127, 219, 241, 0.06);
+  border-radius: 12px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 
 .carousel-nav {
