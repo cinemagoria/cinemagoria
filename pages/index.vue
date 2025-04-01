@@ -73,13 +73,6 @@
       :view-all-url="trendingTvUrl"
       :items="trendingTv" />
 
-      <CustomListingCategoriesMovies
-    :title="'Categories Movies'"
-    :view-all-url="null"/>
-
-    <CustomListingCategoriesSeries
-    :title="'Categories Series'"
-    :view-all-url="null"/>
 
   </main>
 </template>
@@ -89,8 +82,6 @@ import { getTrending, getMovie, getTvShow, getListItem } from '~/api';
 import Hero from '~/components/Hero';
 import ListingCarousel from '~/components/ListingCarousel';
 import FeatureDescription from '~/components/FeatureDescription';
-import CustomListingCategoriesMovies from '~/components/CustomListingCategoriesMovies';
-import CustomListingCategoriesSeries from '~/components/CustomListingCategoriesSeries';
 import supabase from '@/services/supabase';
 
 async function getUserAvatar(userEmail) {
@@ -165,8 +156,6 @@ export default {
     FeatureDescription,
     Hero,
     ListingCarousel,
-    CustomListingCategoriesMovies,
-    CustomListingCategoriesSeries,
   },
 
   methods: {

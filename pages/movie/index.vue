@@ -3,6 +3,10 @@
     <Hero
       :item="featured" />
 
+    <CustomListingCategoriesMovies
+      :title="'Explorar por Categorías'"
+      :view-all-url="null"/>
+
     <ListingCarousel
       v-if="popular && popular.results.length"
       :title="popularTitle"
@@ -33,11 +37,13 @@
 import { getMovies, getMovie, getListItem } from '~/api';
 import Hero from '~/components/Hero';
 import ListingCarousel from '~/components/ListingCarousel';
+import CustomListingCategoriesMovies from '~/components/CustomListingCategoriesMovies';
 
 export default {
   components: {
     Hero,
     ListingCarousel,
+    CustomListingCategoriesMovies,
   },
 
   head () {
