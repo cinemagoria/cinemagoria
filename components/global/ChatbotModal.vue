@@ -20,8 +20,8 @@
           </div>
         </div>
 
-        <div v-if="chatBotLoading && !chatBotResponse && chatBotResults.length === 0" class="reasoning-indicator">
-          Razonando...
+        <div v-if="chatBotLoading && !chatBotResponse && chatBotResults.length === 0" class="reasoning-container">
+          <div class="reasoning-indicator">Razonando</div>
         </div>
 
         <div v-if="chatBotResponse" class="chatbot-response">
@@ -492,6 +492,53 @@ export default {
     opacity: 0.8;
 }
 
+.reasoning-container {
+  width: 100%;
+  padding: 30px 0;
+  text-align: center;
+  position: relative;
+}
+
+.reasoning-indicator {
+  display: inline-block;
+  position: relative;
+  color: #7FDBF1;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  background: linear-gradient(90deg, #7FDBF1, #3a95b3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: pulse 2s infinite;
+}
+
+.reasoning-indicator::before, 
+.reasoning-indicator::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  height: 2px;
+  width: 60px;
+  transform: translateY(-50%);
+}
+
+.reasoning-indicator::before {
+  right: 100%;
+  margin-right: 20px;
+  background: linear-gradient(to right, rgba(127, 219, 241, 0), rgba(127, 219, 241, 0.7));
+}
+
+.reasoning-indicator::after {
+  left: 100%;
+  margin-left: 20px;
+  background: linear-gradient(to left, rgba(127, 219, 241, 0), rgba(127, 219, 241, 0.7));
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 0.6; }
+}
 
 .chatbot-response {
   background: rgba(127, 219, 241, 0.06);
@@ -695,25 +742,6 @@ export default {
   color: #7FDBF1;
 }
 
-.reasoning-indicator {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 30px 20px;
-  color: #7FDBF1;
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  background: rgba(127, 219, 241, 0.06);
-  border-radius: 12px;
-  animation: pulse 1.5s infinite ease-in-out;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
-}
-
 .carousel-nav {
   background: rgba(20, 20, 20, 0.7);
   color: white;
@@ -738,6 +766,7 @@ export default {
     background: rgba(127, 219, 241, 0.3);
     border-color: rgba(127, 219, 241, 0.5);
 }
+
 
 .chatbot-input {
   display: flex;
