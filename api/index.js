@@ -247,14 +247,19 @@ export function getMovie(id) {
       },
     }).then(async (response) => {
       const responseData = response.data;
+      
       try {
         const providers = await getMovieProviders(id);
         responseData.providers = providers;
+      } catch (error) {
+        responseData.providers = [];
+      }
+      
+      try {
         const reviews = await getMovieReviews(id);
         responseData.reviews = reviews;
       } catch (error) {
-        console.error("Error fetching movie providers:", error);
-        console.error("Error fetching movie reviews:", error);
+        responseData.reviews = [];
       }
 
       const movieData = {
@@ -299,7 +304,6 @@ export function getMovieProviders(id) {
         }
       }
     }).catch((error) => {
-      console.error("Error fetching movie providers:", error);
       reject(error);
     });
   });
@@ -342,7 +346,6 @@ export function getMovieReviews(id) {
         reject(new Error("No reviews found for this movie"));
       }
     }).catch((error) => {
-      console.error("Error fetching movie reviews:", error);
       reject(error);
     });
   });
@@ -360,9 +363,8 @@ export function translateReview(reviewContent) {
       }
     };
 
-    // Configuración de timeout más alto para traducciones largas
     const config = {
-      timeout: 60000, // 60 segundos
+      timeout: 60000,
       headers: {
         'Content-Type': 'application/json'
       }
@@ -417,7 +419,7 @@ export function getTvShow(id) {
         const providers = await getTVShowProviders(id);
         responseData.providers = providers;
       } catch (error) {
-        console.error("Error fetching movie providers:", error);
+        responseData.providers = [];
       }
 
       const tvShowData = {
@@ -477,7 +479,6 @@ export function getTvShowReviews(id) {
         reject(new Error("No reviews found for this tv show."));
       }
     }).catch((error) => {
-      console.error("Error fetching tv show reviews:", error);
       reject(error);
     });
   });
