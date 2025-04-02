@@ -277,7 +277,6 @@ export function getMovie(id) {
       };
       resolve(responseData); 
     }).catch((error) => {
-      console.error("Error fetching movie data:", error);
       reject(error);
     });
   });
@@ -437,7 +436,6 @@ export function getTvShow(id) {
       };
       resolve(responseData); 
     }).catch((error) => {
-      console.error("Error fetching TV show data:", error);
       reject(error);
     });
   });
