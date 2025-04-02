@@ -262,7 +262,6 @@ export default {
       this.$set(review, 'translatedContent', translatedContent);
       this.$set(review, 'isTranslating', false);
     } catch (error) {
-      console.error('Error translating review:', error);
       this.$set(review, 'isTranslating', false);
       this.showTranslations = false;
 
@@ -315,7 +314,7 @@ export default {
       const providers = await getMovieProviders(this.item.id);
       this.providers = providers;
     } catch (error) {
-      console.error("Error fetching movie providers:", error);
+      this.providers = [];
     }
   },
   async fetchReviews() {
@@ -323,7 +322,7 @@ export default {
       const reviews = await getMovieReviews(this.item.id);
       this.reviews = reviews;
     } catch (error) {
-      console.error("Error fetching movie reviews:", error);
+      this.reviews = [];
     }
   },
   redirectToUrl(url) {
