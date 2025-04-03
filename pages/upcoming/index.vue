@@ -57,8 +57,8 @@
         </div>
       </div>
       <br>
-      <h1 class="navbar-welcome">Próximos Estrenos</h1>
-        <h2 class="subtitle">Información sobre próximas películas y episodios de series de TV.</h2>
+      <h1 class="navbar-welcome">Cronología de Estrenos</h1>
+        <h2 class="subtitle">Mantente informado sobre todos los estrenos de películas y nuevos episodios de series.</h2>
       <div>
         <div class="loader" v-if="!imagesLoaded">
           <div class="modern-spinner">
@@ -67,7 +67,7 @@
         </div>
         <div class="listing" style="position:relative; top: -20px;">
           <div class="listing__head">
-            <h3 class="listing__title" style="z-index: 3 !important; padding: 15px !important;">Últimos Estrenos de Películas:</h3>
+            <h3 class="listing__title" style="z-index: 3 !important; padding: 15px !important;">Estrenos de Películas:</h3>
           </div>
           <div v-if="combinedMovies && combinedMovies.length" class="calendar-container" style="background-color: black !important;">
             <div class="calendar-controls">
@@ -85,15 +85,37 @@
             </div>
             
             <div v-if="selectedDateMovies.length > 0" class="day-movies">
-              <div class="movies-grid">
-                <div v-for="movie in selectedDateMovies" :key="movie.id" class="movie-card" @click="redirectMovie(movie.id)">
-                  <div class="movie-poster">
-                    <img v-if="movie.poster_path" :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" />
-                    <img v-else src="~/static/image_not_found_yet.png" alt="Image Not Found" />
+              <div class="movies-carousel">
+                <button 
+                  v-if="selectedDateMovies.length > 8"
+                  class="carousel-button carousel-button--left" 
+                  @click="scrollMoviesLeft">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"></path>
+                  </svg>
+                </button>
+                
+                <div ref="moviesCarouselContent" class="movies-carousel-content">
+                  <div v-for="movie in selectedDateMovies" :key="movie.id" class="movie-card" @click="redirectMovie(movie.id)">
+                    <div class="movie-poster">
+                      <img v-if="movie.poster_path" :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" />
+                      <img v-else src="~/static/image_not_found_yet.png" alt="Image Not Found" />
+                    </div>
+                    <h2 class="movie-title">{{ formatTitle(movie.title) }}</h2>
                   </div>
-                  <h2 class="movie-title">{{ formatTitle(movie.title) }}</h2>
                 </div>
+                
+                <button 
+                  v-if="selectedDateMovies.length > 8"
+                  class="carousel-button carousel-button--right" 
+                  @click="scrollMoviesRight">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"></path>
+                  </svg>
+                </button>
               </div>
+              
+              <!-- Remove pagination info -->
             </div>
             <div v-else class="no-movies-message">
               <p>No hay estrenos programados para {{ formatDateForDisplay(selectedDate) }}.</p>
@@ -109,7 +131,7 @@
       <div v-if="trendingSeriesList.length > 0">
       <div class="upcoming-series-container" v-for="series in paginatedTrendingSeries" :key="series.id">
         <div class="listing__head">
-            <h3 class="listing__title" style="top: 2.5rem; padding-top: 0.5rem;">Últimos de Series de TV:</h3>
+            <h3 class="listing__title" style="top: 2.5rem; padding-top: 0.5rem;">Estrenos de Series:</h3>
         </div>
         <div class="series-header">
           <div class="series-title-container">
@@ -240,6 +262,8 @@ async function getUserName(userEmail) {
         imagesLoaded: false,
         currentPage: 1,
         currentTrendingPage: 1,
+        currentMoviePage: 1,
+        moviesPerPage: 8,
         showLanguageMenu: false,
         selectedLanguage: 'english',
         userEmail: '',
@@ -344,6 +368,14 @@ async function getUserName(userEmail) {
         nextMysteryMovies: this.nextMysteryMovies
       };
       },
+      paginatedMovies() {
+        const start = (this.currentMoviePage - 1) * this.moviesPerPage;
+        const end = start + this.moviesPerPage;
+        return this.selectedDateMovies.slice(start, end);
+      },
+      totalMoviePages() {
+        return Math.ceil(this.selectedDateMovies.length / this.moviesPerPage);
+      },
       paginatedSeries() {
         const start = (this.currentPage - 1) * 1;
         const end = start + 1;
@@ -392,9 +424,9 @@ async function getUserName(userEmail) {
       async fetchUpcomingMovies() {
         const today = new Date();
         const pastDate = new Date(today);
-        pastDate.setDate(today.getDate() - 15);
+        pastDate.setDate(today.getDate() - 180);
         const futureDate = new Date(today);
-        futureDate.setDate(today.getDate() + 60);
+        futureDate.setDate(today.getDate() + 180);
         
         const todayStr = this.formatDateToYYYYMMDD(today);
         const pastDateStr = this.formatDateToYYYYMMDD(pastDate);
@@ -527,17 +559,32 @@ async function getUserName(userEmail) {
         const newDate = new Date(this.selectedDate);
         newDate.setDate(newDate.getDate() - 1);
         this.selectedDate = newDate;
+        this.currentMoviePage = 1;
         this.updateSelectedDateMovies();
       },
       nextDate() {
         const newDate = new Date(this.selectedDate);
         newDate.setDate(newDate.getDate() + 1);
         this.selectedDate = newDate;
+        this.currentMoviePage = 1;
         this.updateSelectedDateMovies();
       },
       resetToToday() {
         this.selectedDate = new Date();
+        this.currentMoviePage = 1;
         this.updateSelectedDateMovies();
+      },
+      scrollMoviesLeft() {
+        if (this.$refs.moviesCarouselContent) {
+          const container = this.$refs.moviesCarouselContent;
+          container.scrollBy({ left: -500, behavior: 'smooth' });
+        }
+      },
+      scrollMoviesRight() {
+        if (this.$refs.moviesCarouselContent) {
+          const container = this.$refs.moviesCarouselContent;
+          container.scrollBy({ left: 500, behavior: 'smooth' });
+        }
       },
       updateSelectedDateMovies() {
         if (!this.selectedDate || !this.combinedMovies || this.combinedMovies.length === 0) {
@@ -558,10 +605,20 @@ async function getUserName(userEmail) {
       formatDateForDisplay(date) {
         if (!date) return '';
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        return new Date(date).toLocaleDateString('en-US', options);
+        const formattedDate = new Date(date).toLocaleDateString('es-ES', options);
+        // Capitalize first letter and format "DE" month and year
+        return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
       },
       updateItemsPerPage() {
         this.itemsPerPage = window.innerWidth <= 1024 ? 20 : 20;
+        // Set the number of movies to show per page based on screen width
+        if (window.innerWidth <= 576) {
+          this.moviesPerPage = 4;
+        } else if (window.innerWidth <= 992) {
+          this.moviesPerPage = 6;
+        } else {
+          this.moviesPerPage = 8;
+        }
       },
 
       async fetchTrendingTV() {
@@ -2167,6 +2224,7 @@ h3 {
   padding: 15px;
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.5);
+  max-height: 400px;
 }
 
 .day-title {
@@ -2176,10 +2234,68 @@ h3 {
   letter-spacing: 1px;
 }
 
-.movies-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+.movies-carousel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-height: 350px;
+  position: relative;
+}
+
+.movies-carousel-content {
+  display: flex;
+  flex-wrap: nowrap;
   gap: 15px;
+  overflow-x: auto;
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Edge */
+  padding: 10px 5px;
+  max-height: 340px;
+  flex: 1;
+}
+
+.movies-carousel-content::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari */
+}
+
+.carousel-button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  z-index: 5;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.carousel-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+.pagination-info {
+  text-align: center;
+  margin-top: 10px;
+  color: #8BE9FD;
+  font-size: 14px;
+}
+
+@media screen and (max-width: 600px) {
+  .movies-carousel-content {
+    max-height: 280px;
+  }
+  
+  .movie-card {
+    max-width: 120px;
+  }
 }
 
 .movie-card {
@@ -2189,6 +2305,8 @@ h3 {
   border-radius: 8px;
   overflow: hidden;
   padding: 10px;
+  flex: 0 0 auto;
+  width: 150px;
 }
 
 .movie-card:hover {
