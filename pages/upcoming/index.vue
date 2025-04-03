@@ -132,7 +132,7 @@
       <div v-if="trendingSeriesList.length > 0">
       <div class="upcoming-series-container" v-for="series in paginatedTrendingSeries" :key="series.id">
         <div class="listing__head">
-            <h3 class="listing__title" style="top: 2.5rem; padding-top: 1.5rem;">TV Show Releases:</h3>
+            <h3 class="listing__title" style="top: 2.5rem; padding-top: 1rem;">TV Show Releases:</h3>
         </div>
         <div class="series-header">
           <div class="series-title-container">
@@ -212,6 +212,7 @@
         </div>
         </div>
   </section>
+  <div style="margin-bottom: -4rem;"></div>
 </main>
 </template>
 
