@@ -2297,17 +2297,63 @@ h3 {
   letter-spacing: 1px;
 }
 
-.movies-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 15px;
+.movies-carousel-content {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  overflow-x: auto;
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Edge */
+  padding: 10px 5px;
+  max-height: 410px;
+  flex: 1;
+}
+
+.movies-carousel-content::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari */
+}
+
+.carousel-button {
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  cursor: pointer;
+  z-index: 5;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.carousel-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.carousel-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+@media screen and (max-width: 600px) {
+  .movies-carousel-content {
+    max-height: 410px;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  
+  .carousel-button {
+    margin: 0 -5px;
+  }
 }
 
 .movie-card {
   cursor: pointer;
   transition: transform 0.3s ease;
-  background: rgba(10, 25, 41, 0.7);
-  border-radius: 8px;
+  background: black;
+  border-radius: 15px;
   overflow: hidden;
   padding: 10px;
   flex: 0 0 auto;
@@ -2327,13 +2373,16 @@ h3 {
 .movie-poster img {
   width: 100%;
   height: auto;
-  border-radius: 6px;
+  border-radius: 15px;
 }
 
 .movie-title {
-  font-size: 1.2rem;
+  font-size: 14px;
   margin-top: 10px;
   text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .no-movies-message {
