@@ -58,7 +58,7 @@
       </div>
       <br>
       <h1 class="navbar-welcome">Cronología de Estrenos</h1>
-        <h2 class="subtitle">Mantente informado sobre todos los estrenos de películas y nuevos episodios de series.</h2>
+        <h2 class="subtitle">Explora todos los estrenos de películas y nuevos episodios de series.</h2>
       <div>
         <div class="loader" v-if="!imagesLoaded">
           <div class="modern-spinner">
