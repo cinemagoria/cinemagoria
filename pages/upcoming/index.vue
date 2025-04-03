@@ -72,14 +72,16 @@
           <div v-if="combinedMovies && combinedMovies.length" class="calendar-container" style="background-color: black !important;">
             <div class="calendar-controls">
               <button @click="prevDate" class="calendar-nav calendar-nav--left">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                  <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"></path>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                  <path fill="none" stroke="#8BE9FD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"></path>
                 </svg>
+                <span class="nav-label">Día Anterior</span>
               </button>
-              <h4 class="calendar-title">PARA {{ formatDateForDisplay(selectedDate) }}</h4>
+              <h4 class="calendar-title">{{ formatDateForDisplay(selectedDate) }}</h4>
               <button @click="nextDate" class="calendar-nav calendar-nav--right">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                  <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"></path>
+                <span class="nav-label">Día Siguiente</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                  <path fill="none" stroke="#8BE9FD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"></path>
                 </svg>
               </button>
             </div>
@@ -131,7 +133,7 @@
       <div v-if="trendingSeriesList.length > 0">
       <div class="upcoming-series-container" v-for="series in paginatedTrendingSeries" :key="series.id">
         <div class="listing__head">
-            <h3 class="listing__title" style="top: 2.5rem; padding-top: 0.5rem;">Estrenos de Series:</h3>
+            <h3 class="listing__title" style="top: 2.5rem; padding-top: 1.5rem;">Estrenos de Series:</h3>
         </div>
         <div class="series-header">
           <div class="series-title-container">
@@ -142,7 +144,7 @@
           </div>
         </div>
         
-        <button @click="prevTrendingPage" :disabled="currentTrendingPage === 1" class="calendar-nav calendar-nav--left series-nav-left" style="position: relative; z-index:3 !important; bottom: 0.5rem !important;">
+        <button @click="prevTrendingPage" :disabled="currentTrendingPage === 1" class="calendar-nav calendar-nav--left series-nav-left" style="position: relative; z-index:3 !important; bottom: 0.5rem !important; margin-left:1rem !important;">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
             <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"></path>
           </svg>
@@ -153,7 +155,7 @@
             <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"></path>
           </svg>
         </button>
-        <div style="position: relative !important; bottom: 10.8rem !important;">
+        <div style="position: relative !important; bottom: 13.8rem !important;">
           <div class="info-header-details">
             <button class="button-details" @click="redirectTv(series.id)">Más Información</button>
           </div>
@@ -604,9 +606,8 @@ async function getUserName(userEmail) {
       },
       formatDateForDisplay(date) {
         if (!date) return '';
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
         const formattedDate = new Date(date).toLocaleDateString('es-ES', options);
-        // Capitalize first letter and format "DE" month and year
         return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
       },
       updateItemsPerPage() {
@@ -1125,6 +1126,7 @@ body {
   position: relative;
 }
 
+
 .info-header {
     display: flex;
     align-items: center;
@@ -1166,7 +1168,7 @@ body {
     /* box-shadow: 0 8px 32px 0 rgba(56, 134, 167, 0.37); */
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    padding: 15px;
+    padding: 40px;
     position: relative;
     justify-content: center;
 }
@@ -2193,6 +2195,12 @@ h3 {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 10px;
+  padding: 10px 15px;
+  position: relative;
+  top: 1.8rem;
 }
 
 .calendar-title {
@@ -2203,14 +2211,28 @@ h3 {
 }
 
 .calendar-nav {
-  background: transparent;
-  border: none;
+  background: rgba(139, 233, 253, 0.1);
+  border: 1px solid rgba(139, 233, 253, 0.5);
+  border-radius: 8px;
   color: #fff;
   cursor: pointer;
-  padding: 5px;
+  padding: 8px 12px;
   font-size: 1rem;
-  opacity: 0.8;
+  opacity: 0.9;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  bottom: 1rem;
+}
+
+.nav-label {
+  font-size: 1.2rem;
+  color: #8BE9FD;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 .calendar-nav:hover {
@@ -2258,8 +2280,8 @@ h3 {
 }
 
 .carousel-button {
-  background: transparent;
-  border: none;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: #fff;
   cursor: pointer;
   z-index: 5;
@@ -2268,6 +2290,7 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
 }
 
 .carousel-button:disabled {
@@ -2362,7 +2385,8 @@ h3 {
 .right-arrow {
   float: right;
   position: relative;
-  bottom: 6rem;
+  bottom: 6.7rem;
+  margin-right: 1rem;
 }
 
 .series-title-container {
