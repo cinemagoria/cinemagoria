@@ -609,7 +609,7 @@ async function getUserName(userEmail) {
       updateItemsPerPage() {
         this.itemsPerPage = window.innerWidth <= 1024 ? 20 : 20;
         if (window.innerWidth <= 576) {
-          this.moviesPerPage = 4;
+          this.moviesPerPage = 1;
         } else if (window.innerWidth <= 992) {
           this.moviesPerPage = 6;
         } else {
@@ -1925,7 +1925,7 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    max-height: 350px;
+    max-height: 420px;
     position: relative;
   }
   
@@ -1937,7 +1937,7 @@ body {
     scrollbar-width: none; /* For Firefox */
     -ms-overflow-style: none; /* For Edge */
     padding: 10px 5px;
-    max-height: 340px;
+    max-height: 410px;
     flex: 1;
   }
   
@@ -1977,11 +1977,12 @@ body {
   
   @media screen and (max-width: 600px) {
     .movies-carousel-content {
-      max-height: 280px;
+      max-height: 410px;
     }
     
     .movie-card {
-      max-width: 120px;
+      max-width: 180px;
+      width: 180px;
     }
   }
 
@@ -2262,7 +2263,7 @@ h3 {
   padding: 15px;
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.5);
-  max-height: 400px;
+  max-height: 450px;
 }
 
 .day-title {
@@ -2286,7 +2287,7 @@ h3 {
   overflow: hidden;
   padding: 10px;
   flex: 0 0 auto;
-  width: 150px;
+  width: 200px;
 }
 
 .movie-card:hover {
