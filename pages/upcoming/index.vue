@@ -57,8 +57,8 @@
         </div>
       </div>
       <br>
-      <h1 class="navbar-welcome">Upcoming Releases</h1>
-      <h2 class="subtitle">Stay Informed About Upcoming Movies and New TV Shows Episodes.</h2>
+      <h1 class="navbar-welcome">Releases Timeline</h1>
+      <h2 class="subtitle">Stay Informed About All Movies and New TV Shows Episodes Releases.</h2>
       <div>
         <div class="loader" v-if="!imagesLoaded">
           <div class="modern-spinner">
@@ -67,7 +67,7 @@
         </div>
         <div class="listing" style="position:relative; top: -20px;">
           <div class="listing__head">
-            <h3 class="listing__title" style="z-index: 3 !important; padding: 15px !important;">Latest Movies:</h3>
+            <h3 class="listing__title" style="z-index: 3 !important; padding: 15px !important;">Movie Releases:</h3>
           </div>
           <div v-if="combinedMovies && combinedMovies.length" class="calendar-container" style="background-color: black !important;">
             <div class="calendar-controls">
@@ -85,15 +85,36 @@
             </div>
             
             <div v-if="selectedDateMovies.length > 0" class="day-movies">
-              <div class="movies-grid">
-                <div v-for="movie in selectedDateMovies" :key="movie.id" class="movie-card" @click="redirectMovie(movie.id)">
-                  <div class="movie-poster">
-                    <img v-if="movie.poster_path" :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" />
-                    <img v-else src="~/static/image_not_found_yet.png" alt="Image Not Found" />
+              <div class="movies-carousel">
+                <button 
+                  v-if="selectedDateMovies.length > 8"
+                  class="carousel-button carousel-button--left" 
+                  @click="scrollMoviesLeft">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"></path>
+                  </svg>
+                </button>
+                
+                <div ref="moviesCarouselContent" class="movies-carousel-content">
+                  <div v-for="movie in selectedDateMovies" :key="movie.id" class="movie-card" @click="redirectMovie(movie.id)">
+                    <div class="movie-poster">
+                      <img v-if="movie.poster_path" :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" />
+                      <img v-else src="~/static/image_not_found_yet.png" alt="Image Not Found" />
+                    </div>
+                    <h2 class="movie-title">{{ formatTitle(movie.title) }}</h2>
                   </div>
-                  <h2 class="movie-title">{{ formatTitle(movie.title) }}</h2>
                 </div>
+                
+                <button 
+                  v-if="selectedDateMovies.length > 8"
+                  class="carousel-button carousel-button--right" 
+                  @click="scrollMoviesRight">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"></path>
+                  </svg>
+                </button>
               </div>
+
             </div>
             <div v-else class="no-movies-message">
               <p>No movies scheduled for release on {{ formatDateForDisplay(selectedDate) }}.</p>
@@ -109,7 +130,7 @@
       <div v-if="trendingSeriesList.length > 0">
       <div class="upcoming-series-container" v-for="series in paginatedTrendingSeries" :key="series.id">
         <div class="listing__head">
-            <h3 class="listing__title" style="top: 2.5rem; padding-top: 0.5rem;">Latest TV Shows:</h3>
+            <h3 class="listing__title" style="top: 2.5rem; padding-top: 0.5rem;">TV Show Releases:</h3>
         </div>
         <div class="series-header">
           <div class="series-title-container">
@@ -240,6 +261,8 @@ async function getUserName(userEmail) {
         imagesLoaded: false,
         currentPage: 1,
         currentTrendingPage: 1,
+        currentMoviePage: 1,
+        moviesPerPage: 8,
         showLanguageMenu: false,
         selectedLanguage: 'english',
         userEmail: '',
@@ -344,6 +367,14 @@ async function getUserName(userEmail) {
         nextMysteryMovies: this.nextMysteryMovies
       };
       },
+      paginatedMovies() {
+        const start = (this.currentMoviePage - 1) * this.moviesPerPage;
+        const end = start + this.moviesPerPage;
+        return this.selectedDateMovies.slice(start, end);
+      },
+      totalMoviePages() {
+        return Math.ceil(this.selectedDateMovies.length / this.moviesPerPage);
+      },
       paginatedSeries() {
         const start = (this.currentPage - 1) * 1;
         const end = start + 1;
@@ -391,12 +422,11 @@ async function getUserName(userEmail) {
       },
       
       async fetchUpcomingMovies() {
-        // Get dates for the range we want to show (past 15 days and future 60 days)
         const today = new Date();
         const pastDate = new Date(today);
-        pastDate.setDate(today.getDate() - 15);
+        pastDate.setDate(today.getDate() - 180);
         const futureDate = new Date(today);
-        futureDate.setDate(today.getDate() + 60);
+        futureDate.setDate(today.getDate() + 180);
         
         const todayStr = this.formatDateToYYYYMMDD(today);
         const pastDateStr = this.formatDateToYYYYMMDD(pastDate);
@@ -436,7 +466,6 @@ async function getUserName(userEmail) {
         };
 
         const fetchMoviesByGenre = async (genreId) => {
-          // Fetch both current and upcoming movies for this genre
           const currentMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=${apiLang}&page=1&primary_release_date.gte=${pastDateStr}&primary_release_date.lte=${todayStr}&sort_by=primary_release_date.desc&with_genres=${genreId}`;
           const upcomingMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=${apiLang}&page=1&primary_release_date.gte=${todayStr}&primary_release_date.lte=${futureDateStr}&sort_by=primary_release_date.asc&with_genres=${genreId}`;
           
@@ -505,12 +534,10 @@ async function getUserName(userEmail) {
         },
 
       sortMoviesByReleaseDate() {
-          // Make sure we have a proper selectedDate
           if (!this.selectedDate) {
             this.selectedDate = new Date();
           }
           
-          // Filter out movies without release dates and deduplicate by ID
           const uniqueMovies = {};
           this.combinedMovies.forEach(movie => {
             if (movie.release_date && movie.id) {
@@ -521,7 +548,7 @@ async function getUserName(userEmail) {
           this.combinedMovies = Object.values(uniqueMovies).sort((a, b) => {
             const dateA = new Date(a.release_date);
             const dateB = new Date(b.release_date);
-            return dateA - dateB; // Chronological order
+            return dateA - dateB;
           });
       },
 
@@ -533,17 +560,32 @@ async function getUserName(userEmail) {
         const newDate = new Date(this.selectedDate);
         newDate.setDate(newDate.getDate() - 1);
         this.selectedDate = newDate;
+        this.currentMoviePage = 1;
         this.updateSelectedDateMovies();
       },
       nextDate() {
         const newDate = new Date(this.selectedDate);
         newDate.setDate(newDate.getDate() + 1);
         this.selectedDate = newDate;
+        this.currentMoviePage = 1;
         this.updateSelectedDateMovies();
       },
       resetToToday() {
         this.selectedDate = new Date();
+        this.currentMoviePage = 1;
         this.updateSelectedDateMovies();
+      },
+      scrollMoviesLeft() {
+        if (this.$refs.moviesCarouselContent) {
+          const container = this.$refs.moviesCarouselContent;
+          container.scrollBy({ left: -500, behavior: 'smooth' });
+        }
+      },
+      scrollMoviesRight() {
+        if (this.$refs.moviesCarouselContent) {
+          const container = this.$refs.moviesCarouselContent;
+          container.scrollBy({ left: 500, behavior: 'smooth' });
+        }
       },
       updateSelectedDateMovies() {
         if (!this.selectedDate || !this.combinedMovies || this.combinedMovies.length === 0) {
@@ -566,6 +608,13 @@ async function getUserName(userEmail) {
       },
       updateItemsPerPage() {
         this.itemsPerPage = window.innerWidth <= 1024 ? 20 : 20;
+        if (window.innerWidth <= 576) {
+          this.moviesPerPage = 4;
+        } else if (window.innerWidth <= 992) {
+          this.moviesPerPage = 6;
+        } else {
+          this.moviesPerPage = 8;
+        }
       },
 
       async fetchTrendingTV() {
@@ -1872,20 +1921,69 @@ body {
     text-align: center;
   }
 
-  .movie-grid,
-  .tv-show-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
+  .movies-carousel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-height: 350px;
+    position: relative;
+  }
+  
+  .movies-carousel-content {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 15px;
+    overflow-x: auto;
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For Edge */
+    padding: 10px 5px;
+    max-height: 340px;
+    flex: 1;
+  }
+  
+  .movies-carousel-content::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari */
+  }
+  
+  .carousel-button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    z-index: 5;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
     justify-content: center;
   }
-
-  @media screen and (max-width: 600px) {
-  .movie-grid,
-  .tv-show-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  
+  .carousel-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
-}
+  
+  .carousel-button svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .pagination-info {
+    text-align: center;
+    margin-top: 10px;
+    color: #8BE9FD;
+    font-size: 14px;
+  }
+  
+  @media screen and (max-width: 600px) {
+    .movies-carousel-content {
+      max-height: 280px;
+    }
+    
+    .movie-card {
+      max-width: 120px;
+    }
+  }
 
 @media screen and (min-width: 601px) {
   .movie-grid,
@@ -2164,6 +2262,7 @@ h3 {
   padding: 15px;
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.5);
+  max-height: 400px;
 }
 
 .day-title {
@@ -2186,6 +2285,8 @@ h3 {
   border-radius: 8px;
   overflow: hidden;
   padding: 10px;
+  flex: 0 0 auto;
+  width: 150px;
 }
 
 .movie-card:hover {
