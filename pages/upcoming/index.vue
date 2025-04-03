@@ -2267,7 +2267,7 @@ h3 {
 .movies-carousel-content {
   display: flex;
   flex-wrap: nowrap;
-  gap: 15px;
+  gap: 20px;
   overflow-x: auto;
   scrollbar-width: none; /* For Firefox */
   -ms-overflow-style: none; /* For Edge */
@@ -2281,7 +2281,7 @@ h3 {
 }
 
 .carousel-button {
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #fff;
   cursor: pointer;
@@ -2314,6 +2314,12 @@ h3 {
 @media screen and (max-width: 600px) {
   .movies-carousel-content {
     max-height: 410px;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  
+  .carousel-button {
+    margin: 0 -5px;
   }
   
   .movie-card {
@@ -2325,8 +2331,8 @@ h3 {
 .movie-card {
   cursor: pointer;
   transition: transform 0.3s ease;
-  background: rgba(10, 25, 41, 0.7);
-  border-radius: 8px;
+  background: black;
+  border-radius: 15px;
   overflow: hidden;
   padding: 10px;
   flex: 0 0 auto;
@@ -2346,13 +2352,16 @@ h3 {
 .movie-poster img {
   width: 100%;
   height: auto;
-  border-radius: 6px;
+  border-radius: 15px;
 }
 
 .movie-title {
-  font-size: 1.2rem;
+  font-size: 14px;
   margin-top: 10px;
   text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .no-movies-message {
