@@ -100,7 +100,7 @@
                     />
                   </svg>
                 </span>
-                <span class="txt">{{ isFavorite ? 'Remove from Watchlist' : 'Add To Watchlist' }}</span>
+                <span class="txt">{{ isFavorite ? 'Borrar de Mi Lista' : 'Añadir a Mi Lista' }}</span>
               </button>
               
               <button
@@ -123,7 +123,7 @@
                     />
                   </svg>
                 </span>
-                <span class="txt" style="position:relative; top:1.3px;">{{ hasUserRating ? userRatingForDb : 'Rate' }}</span>
+                <span class="txt" style="position:relative; top:1.3px;">{{ hasUserRating ? userRatingForDb : 'Valorar' }}</span>
                 <span v-if="hasUserRating" style="position: absolute; bottom: -5px; left: 0; width: 100%; height: 3px; background-color: #8BE9FD;"></span>
               </button>
 
