@@ -96,10 +96,10 @@
             <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
             <button @click="prevPage" :disabled="currentPage === 1"><<</button>
             <span>
-              <label for="page" style="font-size:13px;">Page</label>
+              <label for="page" style="font-size:13px;">Pág.</label>
               <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
             </span>
-            <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
+            <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">de {{ totalPages }}</span>
             <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
             <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
           </div>
@@ -134,7 +134,7 @@
                   </div>
                   <div class="card___rating">
                     <p v-if="item.details.starsForDb">{{ formatRating(item.details.starsForDb) }}</p>
-                    <p v-else>Not specified.</p>
+                    <p v-else>No especificado.</p>
                   </div>
                 </div>
 

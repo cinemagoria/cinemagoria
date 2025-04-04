@@ -180,9 +180,9 @@
                 <p class="episode-name episode-name-last">{{ series.lastEpisode.episode_number }}. {{ series.lastEpisode.name }}</p>
               </div>
               <div class="additional-details">
-                <p>Duración: {{ series.lastEpisode.runtime ? series.lastEpisode.runtime + ' mins.' : 'Not specified.' }}</p>
+                <p>Duración: {{ series.lastEpisode.runtime ? series.lastEpisode.runtime + ' mins.' : 'No especificado.' }}</p>
                 <p>Fecha de estreno: {{ formatDate(series.lastEpisode.air_date) }}</p>
-                <p>Sinopsis: {{ series.lastEpisode.overview ? series.lastEpisode.overview : 'Not specified.' }}</p>
+                <p>Sinopsis: {{ series.lastEpisode.overview ? series.lastEpisode.overview : 'No especificado.' }}</p>
               </div>
             </div>
             <div class="series-divider"></div>
@@ -531,7 +531,7 @@ async function getUserName(userEmail) {
       },
 
       formatDate(date) {
-          if (!date) return 'Not specified.';
+          if (!date) return 'No especificado.';
           const [year, month, day] = date.split('-');
           return `${day}-${month}-${year}`;
         },
