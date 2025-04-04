@@ -214,7 +214,7 @@
                 class="save-btn"
                 :disabled="selectedRating === 0"
               >
-                <span style="position:relative; margin:0 auto;">Save</span>
+                <span style="position:relative; margin:0 auto;">Guardar</span>
               </button>
             </div>
           </div>
