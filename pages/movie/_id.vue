@@ -10,7 +10,7 @@
       @clicked="navClicked" />
 
     <template v-if="activeMenu === 'overview'">
-      <MovieInfo :item="item" :reviews-prop="reviews" />
+      <MovieInfo :item="item" :reviews-prop="reviews" :providers="providers" />
 
       <Credits
         v-if="showCredits"
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { apiImgUrl, getMovie, getMovieRecommended } from '~/api';
+import { apiImgUrl, getMovie, getMovieRecommended, getMovieReviews } from '~/api';
 import { name, yearStart } from '~/mixins/Details';
 import TopNav from '~/components/global/TopNav';
 import Hero from '~/components/Hero';
@@ -93,6 +93,8 @@ export default {
       menu: [],
       activeMenu: 'overview',
       recommended: null,
+      reviews: [], // Añadido reviews array
+      providers: [], // Añadido providers array
     };
   },
 
@@ -154,6 +156,7 @@ export default {
   created () {
     this.createMenu();
     this.initRecommended();
+    this.fetchReviews(); // Añadido método para obtener reseñas
   },
 
   methods: {
@@ -183,6 +186,16 @@ export default {
       getMovieRecommended(this.$route.params.id).then((response) => {
         this.recommended = response;
       });
+    },
+
+    async fetchReviews() {
+      try {
+        const reviews = await getMovieReviews(this.$route.params.id);
+        this.reviews = Array.isArray(reviews) ? reviews : [];
+      } catch (error) {
+        console.error('Error al obtener reseñas:', error);
+        this.reviews = [];
+      }
     },
   },
 };

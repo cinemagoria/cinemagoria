@@ -205,6 +205,8 @@ export default {
           chat_id: this.chatId
         }, { timeout: 45000 });
 
+       
+
         this.chatId = response.data.chat_id;
 
         let cleanResponse = response.data.result || '';

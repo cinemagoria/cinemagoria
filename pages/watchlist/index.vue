@@ -25,6 +25,12 @@
               <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10" stroke-linejoin="round"><path d="M8.5 23.2H1.3V9L12 .8 22.7 9v14.2h-7.2v-5c0-1.9-1.6-3.4-3.5-3.4s-3.5 1.5-3.5 3.4v5z"/></g></svg>
               <span class="menu-label1">Inicio</span>
             </div>
+            <div class="menu-item" @click="showRatedItems">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                </svg>
+                <span class="menu-label1" style="margin-left: 4px; margin-top: 1px;">VALORACIONES</span>
+            </div>
             <div class="menu-item" @click="goToSettings">
               <img src="~/static/icon-settings.png" alt="Settings Icon" class="settings-icon">
               <span class="menu-label1">Ajustes</span>
@@ -61,7 +67,6 @@
       <nav class="navbar" style="margin-top: 2rem;">
         <h1 class="navbar-welcome">Mi Lista</h1>
       </nav>
-      <!-- <h2 class="text-center" style="color: #acafb5; font-size: 16px; margin-top: 10px; position: relative; text-transform: none; left: -2px; top: -23px;">{{ userFirstName }}</h2> -->
       <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
         <div class="column">
           <h2 class="text-center" style="color: #acafb5; font-size: 16px;">{{ filterText }} Favoritas</h2>
@@ -98,29 +103,41 @@
             <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
             <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
           </div>
-          <div class="movie-grid" style="position: relative; margin-top: 0.3rem;">
-            <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
-              <div class="card-background">
-              <a :href="getLink(item)">
-                <img :src="item.details.posterForDb" alt="Poster" class="poster" />
-                <h3>{{ item.details.nameForDb }}</h3>
-              </a>
-              <p>
-                {{
-                  item.details.yearStartForDb === item.details.yearEndForDb
-                  ? item.details.yearEndForDb
-                  : (item.details.yearStartForDb + (item.details.yearEndForDb ? `-${item.details.yearEndForDb}` : ''))
-                }}
-              </p>
-              <div class="card__content">
-                <div v-if="item.details.starsForDb" class="card__stars">
-                  <div :style="{ width: `${calculateStarsWidth(formatRating(item.details.starsForDb))}%` }"></div>
+          <div class="movie-grid">
+              <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
+                <div class="card-background">
+                  <div class="user-rating-badge" v-if="item.details && item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
+                    @click.stop="showRatedItems"
+                    :class="{ 'has-review': item.details.userReview }" 
+                    :title="item.details.userReview ? 'Has Review' : ''">
+                    {{ item.details.userRatingForDb }}
+                    <span v-if="item.details.userReview" class="review-indicator"></span>
+                  </div>
+                  <div class="user-rating-badge empty" @click.stop="openRatingModal(item)" v-else> 
+                    <span style="font-size: 20px; position: relative; bottom: 2px;">★</span>
+                  </div>
+                  <a :href="getLink(item)" class="item-link">
+                    <img :src="item.details.posterForDb" alt="Poster" class="poster" />
+                    <h3>{{ item.details.nameForDb }}</h3>
+                  </a>
+                <p>
+                  {{
+                    item.details.yearStartForDb === item.details.yearEndForDb
+                    ? item.details.yearEndForDb
+                    : (item.details.yearStartForDb + (item.details.yearEndForDb ? `-${item.details.yearEndForDb}` : ''))
+                  }}
+                </p>
+
+                <div class="card__content">
+                  <div v-if="item.details.starsForDb" class="card__stars">
+                    <div :style="{ width: `${calculateStarsWidth(formatRating(item.details.starsForDb))}%` }"></div>
+                  </div>
+                  <div class="card___rating">
+                    <p v-if="item.details.starsForDb">{{ formatRating(item.details.starsForDb) }}</p>
+                    <p v-else>Not specified.</p>
+                  </div>
                 </div>
-                <div class="card___rating">
-                  <p v-if="item.details.starsForDb">{{ formatRating(item.details.starsForDb) }}</p>
-                  <p v-else>No especificado.</p>
-                </div>
-              </div>
+
               <svg fill="84E1F6" height="26px" width="26px" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 446.04" @click="removeFavorite(item)" class="delete-icon">
                   <defs>
                       <style>
@@ -154,7 +171,149 @@
             <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
           </div>
       <br>
+      <div v-if="ratingModalVisible" class="modal-overlay">
+          <div class="rating-modal">
+            <div class="modal-header">
+              <h3>Valorar '{{ currentRatingItem?.details?.nameForDb }}'</h3>
+              <button class="close-btn" @click="closeRatingModal">×</button>
+            </div>
+
+            <div class="rating-content">
+              <div class="rating-selector">
+                <div class="rating-numbers">
+                  <button
+                    v-for="n in 10"
+                    :key="n"
+                    @click="setRating(n)"
+                    @mouseover="previewRating(n)"
+                    @mouseout="resetPreview()"
+                    :class="[
+                      'rating-btn',
+                      { 'rating-btn-active': n <= (hoverRating || selectedRating) }
+                    ]"
+                  >
+                    {{ n }}
+                  </button>
+                </div>
+              </div>
+
+              <div class="review-section">
+                <textarea
+                  v-model="userReview"
+                  :placeholder="selectedRating > 0 ? 
+                    ratingDescriptions[selectedRating - 1] : 'Selecciona una valoración primero'"
+                  class="review-textarea"
+                  maxlength="500"
+                  :disabled="selectedRating === 0"
+                ></textarea>
+                <div class="char-count">{{ userReview.length }}/500</div>
+              </div>
+
+              <button
+                @click="saveRatingAndReview"
+                class="save-btn"
+                :disabled="selectedRating === 0"
+              >
+                <span style="position:relative; margin:0 auto;">Save</span>
+              </button>
+            </div>
+          </div>
+        </div>
     </section>
+    
+    <!-- Modal para valoraciones -->
+    <div class="modal-overlay" v-if="ratedItemsModalVisible">
+      <div class="rated-items-modal">
+        <div class="modal-header">
+          <h3>Mis Valoraciones</h3>
+          <button class="close-btn" @click="closeRatedItemsModal">&times;</button>
+        </div>
+        <div class="tab-controls">
+          <button 
+            class="tab-btn" 
+            :class="{ active: ratedItemsTab === 'movies' }" 
+            @click="ratedItemsTab = 'movies'"
+          >
+            Películas
+          </button>
+          <button 
+            class="tab-btn" 
+            :class="{ active: ratedItemsTab === 'tv' }" 
+            @click="ratedItemsTab = 'tv'"
+          >
+            Series
+          </button>
+        </div>
+        <div class="rated-items-content">
+          <div v-if="filteredRatedItems.length === 0" class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+            </svg>
+            <p>No has valorado ningún {{ ratedItemsTab === 'movies' ? 'película' : 'serie' }} todavía.</p>
+          </div>
+          <div v-else class="rated-items-list">
+            <div v-for="(item, index) in filteredRatedItems" :key="index" class="rated-item">
+              <img :src="item.details.posterForDb" alt="Poster" class="rated-item-poster">
+              <div class="rated-item-info">
+                <h4 class="rated-item-title">{{ item.details.nameForDb }}</h4>
+                <div class="rated-item-meta">
+                  <span>{{ item.details.yearStartForDb }}</span>
+                  <div class="rated-item-rating">
+                    <template v-if="editingRating === index">
+                      <div class="rating-edit-controls">
+                        <select v-model="tempRating" class="rating-select">
+                          <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
+                        </select>
+                        <button @click="saveRating(item)" class="edit-btn save-btn" title="Guardar">✓</button>
+                        <button @click="cancelEditRating" class="edit-btn cancel-btn" title="Cancelar">×</button>
+                      </div>
+                    </template>
+                    <template v-else>
+                      <div 
+                        class="rating-badge editable" 
+                        @click="startEditRating(index, item)"
+                        :title="ratingDescriptions[item.details.userRatingForDb - 1]"
+                      >
+                        {{ item.details.userRatingForDb }}
+                      </div>
+                    </template>
+                  </div>
+                </div>
+                
+                <div class="rated-item-review-container">
+                  <template v-if="editingReview === index">
+                    <div class="review-edit-container">
+                      <textarea 
+                        v-model="tempReview" 
+                        class="review-textarea" 
+                        rows="4"
+                        maxlength="500"
+                        placeholder="Escribe tu reseña aquí..."
+                      ></textarea>
+                      <div class="review-btn-container">
+                        <button @click="saveReview(item)" class="edit-btn-rvw save-btn">Guardar</button>
+                        <button @click="cancelEditReview" class="edit-btn-rvw cancel-btn">Cancelar</button>
+                      </div>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div v-if="item.details.userReview" class="rated-item-review">
+                      {{ item.details.userReview }}
+                    </div>
+                    <div v-else class="rated-item-review" style="font-style: italic; opacity: 0.7;">
+                      No has escrito una reseña todavía.
+                    </div>
+                    <button @click="startEditReview(index, item)" class="edit-review-btn">
+                      {{ item.details.userReview ? 'Editar' : 'Añadir' }}
+                    </button>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 </template>
 
@@ -172,7 +331,7 @@ async function getUserAvatar(userEmail) {
       throw new Error('Error fetching user avatar:', error.message);
     }
 
-    const userAvatar = data[0]?.avatar || '/avatars/avatar-ss0.png';
+    const userAvatar = data && data.length > 0 ? data[0]?.avatar : '/avatars/avatar-ss0.png';
     return userAvatar;
     
   } catch (error) {
@@ -192,18 +351,16 @@ async function getUserName(userEmail) {
       throw new Error('Error fetching user first name:', error.message);
     }
 
-    const userName = data[0]?.first_name|| '';
+    const userName = data && data.length > 0 ? data[0]?.first_name || '' : '';
     return userName;
     
   } catch (error) {
     console.error('Error fetching user first_name:', error);
+    return '';
   }
 }
 
 export default {
-  props: {
-    item: Object,
-  },
   data() {
     return {
       showLanguageMenu: false,
@@ -227,6 +384,31 @@ export default {
       genres: [],
       years: [],
       resizeObserver: null,
+      ratedItemsModalVisible: false,
+      ratedItemsTab: 'movies',
+      editingRating: null,
+      editingReview: null,
+      tempRating: 1,
+      tempReview: '',
+      currentEditItem: null,
+      ratingModalVisible: false,
+      currentRatingItem: null,
+      selectedRating: 0,
+      hoverRating: 0,
+      userReview: '',
+      ratingDescriptions: [
+        'Terrible, una completa pérdida de tiempo',
+        'Muy mala, difícil de ver',
+        'Mala, poco interesante',
+        'Mediocre, apenas pasable',
+        'Regular, tiene sus momentos',
+        'Decente, entrenenida pero olvidable',
+        'Buena, vale la pena mirar',
+        'Muy buena, recomendable',
+        'Excelente, una gran experiencia',
+        'Impresionante, obligatorio ver'
+      ],
+      filteredSeriesDetails: []
     };
   },
   async mounted() {
@@ -239,14 +421,13 @@ export default {
     this.isLoggedIn = accessToken !== null;
     this.authProvider = authProvider;
 
-    this.checkData();
+    await this.checkData();
     this.userAvatar = await getUserAvatar(this.userEmail);
     this.userName = await getUserName(this.userEmail);
 
     if (authProvider === 'native') {
       await this.fetchUserFirstName();
     } 
-    
 
     this.$nextTick(() => {
       this.calculateItemsPerRow();
@@ -262,88 +443,7 @@ export default {
       }
     });
 
-    const detailsArray = this.tvFetched.map(({ details }) => details);
-    const currentYear = new Date().getFullYear();
-    const pastYearsLimit = currentYear - 5;
-
-    const filteredArray = detailsArray.filter(item => item.yearEndForDb >= pastYearsLimit);
-
-    const additionalSeries = detailsArray.filter(item => item.nextEpisode !== null && item.nextEpisode !== undefined);
-
-    const uniqueSeries = [...new Set([...filteredArray, ...additionalSeries])];
-
-    const seriesIds = uniqueSeries.map(item => item.idForDb);
-
-    async function fetchSeriesDetails(seriesId) {
-        const apiKey = process.env.API_KEY;
-        const apiLang = process.env.API_LANG;
-        const url = `https://api.themoviedb.org/3/tv/${seriesId}?api_key=${apiKey}&language=${apiLang}`;
-        const options = {
-            method: 'GET',
-            headers: {
-                accept: 'application/json',
-                Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
-            }
-        };
-
-        try {
-            const response = await fetch(url, options);
-            if (!response.ok) {
-                throw new Error('Error en la respuesta de la API');
-            }
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error al obtener detalles de la serie:', error);
-            return null;
-        }
-    }
-
-    async function fetchSeriesDetailsForIds(seriesIds) {
-        const seriesPromises = seriesIds.map(async id => await fetchSeriesDetails(id));
-        const seriesDetails = await Promise.all(seriesPromises);
-
-        function filterSeriesDetails(seriesDetails) {
-            return seriesDetails
-                .map(series => ({
-                    name: series.name,
-                    genres: series.genres.map(genre => ({ id: genre.id, name: genre.name })),
-                    nextEpisode: series.next_episode_to_air,
-                    stillPath: series.still_path,
-                    numberOfEpisodes: series.number_of_episodes,
-                    numberOfSeasons: series.number_of_seasons,
-                    firstAirDate: series.first_air_date,
-                    lastEpisode: series.last_episode_to_air
-                }))
-                .filter(series => series.nextEpisode !== undefined && series.nextEpisode !== null);
-        }
-
-        return filterSeriesDetails(seriesDetails);
-    }
-
-    const filteredSeriesDetails = await fetchSeriesDetailsForIds(seriesIds).catch(err => {
-        console.error('Error al obtener y filtrar detalles de las series:', err);
-        return [];
-    });
-
-    this.filteredSeriesDetails = filteredSeriesDetails;
-
-    try {
-      const { data, error } = await supabase
-        .from('notifications') 
-        .upsert([{
-          user_email: this.userEmail,
-          series_releases_details: this.filteredSeriesDetails, 
-        }], { 
-          onConflict: ['user_email'], 
-        });
-
-      if (error) {
-        throw new Error('Error al guardar en la base de datos: ' + error.message);
-      }
-    } catch (error) {
-      console.error('Error al guardar en la base de datos:', error.message);
-    }
+    await this.fetchAndStoreSeriesDetails();
   },
 
   beforeDestroy() {
@@ -355,6 +455,327 @@ export default {
   },
   
   methods: {
+    openRatingModal(item) {
+      this.currentRatingItem = item;
+      this.selectedRating = 0;
+      this.hoverRating = 0;
+      this.userReview = '';
+      this.ratingModalVisible = true;
+    },
+
+    closeRatingModal() {
+      this.ratingModalVisible = false;
+      this.currentRatingItem = null;
+      this.selectedRating = 0;
+      this.hoverRating = 0;
+      this.userReview = '';
+    },
+
+    setRating(rating) {
+      this.selectedRating = rating;
+    },
+
+    previewRating(rating) {
+      this.hoverRating = rating;
+    },
+
+    resetPreview() {
+      this.hoverRating = 0;
+    },
+
+    async saveRatingAndReview() {
+      if (this.selectedRating === 0) {
+        alert('Please select a rating between 1 and 10');
+        return;
+      }
+
+      if (!this.userReview.trim()) {
+        this.userReview = this.ratingDescriptions[this.selectedRating - 1];
+      }
+
+      try {
+        const item = this.currentRatingItem;
+        const { typeForDb, idForDb } = item.details;
+        const itemKey = `${typeForDb}/${idForDb}`;
+
+        const { data: favoritesData, error } = await supabase
+          .from('favorites')
+          .select('favorites_json')
+          .eq('user_email', this.userEmail);
+        
+        if (error) {
+          throw new Error('Error fetching favorites: ' + error.message);
+        }
+        
+        if (!favoritesData || !favoritesData.length) {
+          throw new Error('No favorites found for user');
+        }
+        
+        const favoritesObject = favoritesData[0].favorites_json || {};
+        const itemType = typeForDb === 'tv' ? 'tv' : 'movies';
+        
+        if (!favoritesObject[itemType]) {
+          throw new Error(`No favorites of type ${itemType} found`);
+        }
+        
+        const updatedItems = favoritesObject[itemType].map(favItem => {
+          const favItemKey = Object.keys(favItem)[0];
+          if (favItemKey === itemKey) {
+            favItem[favItemKey].details.userRatingForDb = this.selectedRating.toString();
+            favItem[favItemKey].details.userReview = this.userReview.trim();
+          }
+          return favItem;
+        });
+        
+        favoritesObject[itemType] = updatedItems;
+        
+        const { error: updateError } = await supabase
+          .from('favorites')
+          .update({ favorites_json: favoritesObject })
+          .eq('user_email', this.userEmail);
+        
+        if (updateError) {
+          throw new Error('Error updating rating: ' + updateError.message);
+        }
+        
+        item.details.userRatingForDb = this.selectedRating.toString();
+        item.details.userReview = this.userReview.trim();
+        
+        this.closeRatingModal();
+        await this.checkData();
+        
+      } catch (error) {
+        console.error('Error saving rating and review:', error);
+        alert('There was an error saving your rating. Please try again.');
+      }
+    },
+    async fetchAndStoreSeriesDetails() {
+      try {
+        if (!this.tvFetched || this.tvFetched.length === 0) return;
+        
+        const detailsArray = this.tvFetched.map(({ details }) => details).filter(Boolean);
+        const currentYear = new Date().getFullYear();
+        const pastYearsLimit = currentYear - 5;
+
+        const filteredArray = detailsArray.filter(item => 
+          item && item.yearEndForDb && item.yearEndForDb >= pastYearsLimit
+        );
+
+        const additionalSeries = detailsArray.filter(item => 
+          item && item.nextEpisode !== null && item.nextEpisode !== undefined
+        );
+
+        const uniqueSeries = [...new Set([...filteredArray, ...additionalSeries])];
+        const seriesIds = uniqueSeries.map(item => item.idForDb).filter(Boolean);
+
+        if (seriesIds.length === 0) return;
+
+        const seriesDetails = await this.fetchSeriesDetailsForIds(seriesIds);
+        this.filteredSeriesDetails = seriesDetails;
+
+        if (this.userEmail) {
+          await this.storeSeriesDetailsInDatabase();
+        }
+      } catch (error) {
+        console.error('Error en fetchAndStoreSeriesDetails:', error);
+      }
+    },
+
+    async fetchSeriesDetails(seriesId) {
+      try {
+        const apiKey = process.env.API_KEY;
+        const apiLang = process.env.API_LANG;
+        const url = `https://api.themoviedb.org/3/tv/${seriesId}?api_key=${apiKey}&language=${apiLang}`;
+        const options = {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+          }
+        };
+
+        const response = await fetch(url, options);
+        if (!response.ok) {
+          throw new Error('Error en la respuesta de la API');
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error('Error al obtener detalles de la serie:', error);
+        return null;
+      }
+    },
+
+    async fetchSeriesDetailsForIds(seriesIds) {
+      try {
+        const seriesPromises = seriesIds.map(id => this.fetchSeriesDetails(id));
+        const seriesDetails = await Promise.all(seriesPromises);
+
+        return seriesDetails
+          .filter(Boolean)
+          .map(series => ({
+            name: series.name,
+            genres: series.genres ? series.genres.map(genre => ({ id: genre.id, name: genre.name })) : [],
+            nextEpisode: series.next_episode_to_air,
+            stillPath: series.still_path,
+            numberOfEpisodes: series.number_of_episodes,
+            numberOfSeasons: series.number_of_seasons,
+            firstAirDate: series.first_air_date,
+            lastEpisode: series.last_episode_to_air
+          }))
+          .filter(series => series.nextEpisode !== undefined && series.nextEpisode !== null);
+      } catch (error) {
+        console.error('Error al obtener y filtrar detalles de las series:', error);
+        return [];
+      }
+    },
+
+    async storeSeriesDetailsInDatabase() {
+      try {
+        const { error } = await supabase
+          .from('notifications')
+          .upsert([{
+            user_email: this.userEmail,
+            series_releases_details: this.filteredSeriesDetails,
+          }], { 
+            onConflict: ['user_email'],
+          });
+
+        if (error) {
+          throw new Error('Error al guardar en la base de datos: ' + error.message);
+        }
+      } catch (error) {
+        console.error('Error al guardar en la base de datos:', error.message);
+      }
+    },
+
+    showRatedItems() {
+      this.ratedItemsModalVisible = true;
+    },
+    
+    closeRatedItemsModal() {
+      this.ratedItemsModalVisible = false;
+      this.cancelEditRating();
+      this.cancelEditReview();
+    },
+    
+    startEditRating(index, item) {
+      if (!item || !item.details) return;
+      
+      this.editingRating = index;
+      this.currentEditItem = item;
+      this.tempRating = parseInt(item.details.userRatingForDb) || 1;
+    },
+    
+    cancelEditRating() {
+      this.editingRating = null;
+      this.currentEditItem = null;
+      this.tempRating = 1;
+    },
+    
+    async saveRating(item) {
+      if (!item || !item.details) return;
+      
+      try {
+        const { typeForDb, idForDb } = item.details;
+        const itemKey = `${typeForDb}/${idForDb}`;
+
+        const { data: favoritesData, error } = await supabase
+          .from('favorites')
+          .select('favorites_json')
+          .eq('user_email', this.userEmail);
+          
+        if (error) throw new Error('Error fetching favorites: ' + error.message);
+        if (!favoritesData || !favoritesData.length) return;
+        
+        const favoritesObject = favoritesData[0].favorites_json || {};
+        const itemType = typeForDb === 'tv' ? 'tv' : 'movies';
+        
+        if (!favoritesObject[itemType]) return;
+
+        const updatedItems = favoritesObject[itemType].map(favItem => {
+          const favItemKey = Object.keys(favItem)[0];
+          if (favItemKey === itemKey) {
+            favItem[favItemKey].details.userRatingForDb = this.tempRating.toString();
+          }
+          return favItem;
+        });
+        
+        favoritesObject[itemType] = updatedItems;
+
+        const { error: updateError } = await supabase
+          .from('favorites')
+          .update({ favorites_json: favoritesObject })
+          .eq('user_email', this.userEmail);
+          
+        if (updateError) throw new Error('Error updating rating: ' + updateError.message);
+
+        item.details.userRatingForDb = this.tempRating.toString();
+        this.cancelEditRating();
+
+        await this.checkData();
+      } catch(error) {
+        console.error('Error saving rating:', error);
+      }
+    },
+    
+    startEditReview(index, item) {
+      this.editingReview = index;
+      this.currentEditItem = item;
+      this.tempReview = item.details.userReview || '';
+    },
+    
+    cancelEditReview() {
+      this.editingReview = null;
+      this.currentEditItem = null;
+      this.tempReview = '';
+    },
+    
+    async saveReview(item) {
+      if (!item || !item.details) return;
+      
+      try {
+        const { typeForDb, idForDb } = item.details;
+        const itemKey = `${typeForDb}/${idForDb}`;
+
+        const { data: favoritesData, error } = await supabase
+          .from('favorites')
+          .select('favorites_json')
+          .eq('user_email', this.userEmail);
+          
+        if (error) throw new Error('Error fetching favorites: ' + error.message);
+        if (!favoritesData || !favoritesData.length) return;
+        
+        const favoritesObject = favoritesData[0].favorites_json || {};
+        const itemType = typeForDb === 'tv' ? 'tv' : 'movies';
+        
+        if (!favoritesObject[itemType]) return;
+
+        const updatedItems = favoritesObject[itemType].map(favItem => {
+          const favItemKey = Object.keys(favItem)[0];
+          if (favItemKey === itemKey) {
+            favItem[favItemKey].details.userReview = this.tempReview.trim();
+          }
+          return favItem;
+        });
+        
+        favoritesObject[itemType] = updatedItems;
+
+        const { error: updateError } = await supabase
+          .from('favorites')
+          .update({ favorites_json: favoritesObject })
+          .eq('user_email', this.userEmail);
+          
+        if (updateError) throw new Error('Error updating review: ' + updateError.message);
+
+        item.details.userReview = this.tempReview.trim();
+        this.cancelEditReview();
+        
+        await this.checkData();
+      } catch(error) {
+        console.error('Error saving review:', error);
+      }
+    },
     handleResize() {
       this.calculateItemsPerRow();
       this.adjustItemsPerPage();
@@ -602,7 +1023,7 @@ export default {
       if (item.details.typeForDb === 'movie') {
         return `https://es.entercinema.com/movie/${item.details.idForDb}`;
       } else if (item.details.typeForDb === 'tv') {
-        return `https://es.entercinema.com/tv/${item.details.idForDb}`;
+        return `https://es.entercinema.com.com/tv/${item.details.idForDb}`;
       } else {
         return '#'; 
       }
@@ -626,13 +1047,32 @@ export default {
   },
   
   computed: {
+    filteredRatedItems() {
+      const items = this.ratedItemsTab === 'movies' ? this.moviesFetched : this.tvFetched;
+      if (!items) return [];
+      return items.filter(item => 
+        item && item.details && 
+        item.details.userRatingForDb && 
+        item.details.userRatingForDb !== '-' && 
+        parseInt(item.details.userRatingForDb) > 0
+      );
+    },
+
     filteredItems() {
       const items = this.filter === 'movies' ? this.moviesFetched : this.tvFetched;
+      if (!items) return [];
       return items.filter(item => {
-        const matchesGenre = this.selectedGenre === '' || item.details.genresForDb.includes(this.selectedGenre);
-        const matchesYear = this.selectedYearRange === '' || (item.details.yearStartForDb >= this.selectedYearRange.split('-')[0] && item.details.yearStartForDb <= this.selectedYearRange.split('-')[1]);
+        if (!item || !item.details) return false;
+        const matchesGenre = this.selectedGenre === '' || (item.details.genresForDb && item.details.genresForDb.includes(this.selectedGenre));
+        const matchesYear = this.selectedYearRange === '' || 
+          (item.details.yearStartForDb && 
+           this.selectedYearRange.split('-')[0] && 
+           this.selectedYearRange.split('-')[1] && 
+           item.details.yearStartForDb >= this.selectedYearRange.split('-')[0] && 
+           item.details.yearStartForDb <= this.selectedYearRange.split('-')[1]);
         return matchesGenre && matchesYear;
       }).sort((a, b) => {
+        if (!a.addedAt || !b.addedAt) return 0;
         return this.orderText === 'Order Asc' ? new Date(a.addedAt) - new Date(b.addedAt) : new Date(b.addedAt) - new Date(a.addedAt);
       });
     },
@@ -644,7 +1084,7 @@ export default {
         '1980-2000',
         '2000-2010',
         '2010-2020',
-        '2020-2024',
+        '2020-2025',
       ];
     },
     uniqueGenres() {
@@ -1385,6 +1825,75 @@ export default {
     padding-right: 1rem;
   }
 
+  .card-background {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    background: black;
+    position: relative;
+  }
+  
+  .user-rating-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #000;
+    color: #88E9FD;
+    border: 3px solid;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    z-index: 4;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .user-rating-badge:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(139, 233, 253, 0.5);
+  }
+  
+  .user-rating-badge.has-review {
+    overflow: visible;
+  }
+  
+  .review-indicator {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 10px;
+    height: 10px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 2px solid #041019;
+  }
+  
+  .user-rating-badge.empty {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #000;
+    color: #88E9FD;
+    border: 3px solid;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    z-index: 4;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
   .movie-card img,
   .tv-show-card img {
     width: 60%; 
@@ -1395,6 +1904,426 @@ export default {
     backdrop-filter: blur( 16px );
     -webkit-backdrop-filter: blur( 16px );
     border: 1px solid rgba( 255, 255, 255, 0.18 );
+  }
+
+  .item-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    text-align: center;
+    transition: transform 0.2s ease;
+  }
+  
+  .item-link:hover {
+    transform: translateY(-5px);
+  }
+  
+  /* Rated Items Modal */
+  .rated-items-btn {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-radius: 30px;
+    padding: 8px 15px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: absolute;
+    bottom: -65px;
+    right: 40%;
+    transition: all 0.2s ease;
+  }
+  
+  .rated-items-btn:hover {
+    background: rgba(139, 233, 253, 0.2);
+    border-color: #8BE9FD;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .rated-items-btn svg {
+    fill: #8BE9FD;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    font-family: 'Roboto', 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
+  }
+  
+  .rated-items-modal {
+    width: 100%;
+    max-width: 850px;
+    height: auto;
+    max-height: 90vh;
+    background: linear-gradient(to bottom right, #092739, #061720);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .modal-header h3 {
+    margin: 0;
+    color: #8BE9FD;
+    font-size: 1.6rem;
+    font-weight: 500;
+    text-align: center;
+    flex: 1;
+  }
+  
+  .close-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 4rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: all 0.2s ease;
+    padding: 0;
+    margin: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .close-btn:hover {
+    color: #fff;
+    transform: rotate(90deg);
+  }
+  
+  .tab-controls {
+    display: flex;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+    position: relative;
+    padding-left: 10px;
+  
+  }
+  
+  .tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.4rem;
+    padding: 12px 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    text-align: center;
+  }
+  
+  .tab-btn.active {
+    color: #8BE9FD;
+  }
+  
+  .tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #8BE9FD;
+  }
+  
+  .rated-items-content {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  
+  .rated-items-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 10px 0;
+  }
+  
+  .rated-item {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+    position: relative;
+  }
+  
+  .rated-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .rated-item-poster {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+  }
+  
+  .rated-item-info {
+    padding: 12px;
+  }
+  
+  .rated-item-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .rated-item-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .rated-item-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .rating-badge {
+    background: #8BE9FD;
+    color: #000;
+    font-size: 12px;
+    font-weight: bold;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .rated-item-review-container {
+    position: relative;
+    margin-top: 10px;
+  }
+  
+  .rated-item-review {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+    max-height: 80px;
+    overflow-y: auto;
+    padding-right: 5px;
+    line-height: 1.4;
+  }
+  
+  .edit-review-btn {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    border: none;
+    color: #8BE9FD;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 3px 6px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  
+  .rated-item-review-container:hover .edit-review-btn {
+    opacity: 1;
+  }
+  
+  .review-edit-container {
+    margin-top: 10px;
+  }
+  
+  .review-textarea {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 1.2rem;
+    resize: vertical;
+  }
+  
+  .review-btn-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+    gap: 8px;
+  }
+  
+  .rating-badge.editable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .rating-badge.editable:hover {
+    background: #66deff;
+    transform: scale(1.1);
+  }
+  
+  .rating-edit-controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .rating-select {
+    background: #041019;
+    color: white;
+    border: 1px solid #8BE9FD;
+    border-radius: 4px;
+    padding: 3px;
+    width: 40px;
+  }
+  
+  .edit-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    bottom: 9px;
+    position: relative;
+  }
+
+  .edit-btn-rvw {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 15 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 20px;
+    border-radius: 15px;
+    gap: 20px;
+    bottom: 9px;
+    position: relative;
+  }
+  
+  .save-btn {
+    background: #8BE9FD;
+    color: #000;
+  }
+  
+  .save-btn:hover {
+    background: #518692
+
+  }
+  
+  .cancel-btn {
+    background: rgba(255, 0, 0, 0.2);
+  }
+  
+  .cancel-btn:hover {
+    background: rgba(255, 0, 0, 0.4);
+  }
+  
+  .rated-item-review::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .rated-item-review::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  .rated-item-review::-webkit-scrollbar-thumb {
+    background: rgba(139, 233, 253, 0.5);
+    border-radius: 2px;
+  }
+  
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 20px;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+  }
+  
+  .empty-state svg {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+  
+  .empty-state p {
+    font-size: 1.4rem;
+    margin: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .rated-items-modal {
+      max-width: 100%;
+      height: 90vh;
+    }
+    
+    .rated-items-list {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .rated-item-title {
+      font-size: 1.3rem;
+    }
+    
+    .rated-items-btn {
+      right: 30%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .rated-items-btn {
+      right: 15%;
+      font-size: 1.1rem;
+      padding: 6px 12px;
+    }
+    
+    .modal-header h3 {
+      font-size: 1.4rem;
+    }
+    
+    .tab-btn {
+      font-size: 1.3rem;
+    }
   }
 
   @media screen and (max-width: 600px) {
@@ -1432,6 +2361,214 @@ export default {
   .tv-show-card img {
     width: 100%; 
     max-width: none; 
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
+}
+
+.rating-modal {
+  width: 100%;
+  max-width: 360px;
+  background: linear-gradient(to bottom right, #092739, #061720);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #8BE9FD;
+  font-size: 1.6rem;
+  font-weight: 500;
+  text-align: center;
+  flex: 1;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 3rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: all 0.2s ease;
+  padding: 0;
+  margin: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+.rating-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rating-selector {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.rating-numbers {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.rating-numbers::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.07);
+  transform: translateY(-50%);
+  z-index: 0;
+}
+
+.rating-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: #041019;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  z-index: 2;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rating-btn-active {
+  background: #8BE9FD;
+  color: #000;
+  transform: scale(1.15);
+  box-shadow: 0 0 10px rgba(139, 233, 253, 0.5);
+}
+
+.rating-btn:hover {
+  transform: scale(1.15);
+}
+
+.review-section {
+  width: 100%;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.review-textarea {
+  width: 100%;
+  height: 100px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  color: #fff;
+  font-size: 1.3rem;
+  resize: none;
+  transition: border-color 0.2s ease;
+}
+
+.review-textarea:focus {
+  outline: none;
+  border-color: rgba(139, 233, 253, 0.5);
+}
+
+.review-textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.char-count {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.save-btn {
+  background: #8BE9FD;
+  color: #000;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 30px;
+  width: 120px;
+  text-align: center;
+}
+
+.save-btn:hover {
+  background: #7AD6E9;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(139, 233, 253, 0.3);
+}
+
+.save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 400px) {
+  .rating-modal {
+    max-width: 300px;
+  }
+
+  .rating-btn {
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+  }
+
+  .modal-header h3 {
+    font-size: 1.4rem;
+  }
+
+  .review-textarea {
+    font-size: 1.2rem;
   }
 }
 </style>

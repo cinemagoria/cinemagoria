@@ -109,12 +109,12 @@
             </div>
           </li>
 
-          <li v-if="providers && providers.length">
+          <li v-if="localProviders && localProviders.length">
             <div :class="$style.label">
               Ver en
             </div>
             <div :class="$style.value">
-              {{ providers.join(', ') }}
+              {{ localProviders.join(', ') }}
             </div>
           </li>
           <br>
@@ -125,7 +125,7 @@
         <ExternalLinks
           :links="item.external_ids" />
       </div>
-      <div v-if="reviews && reviews.length" class="reviews-container">
+      <div v-if="localReviews && localReviews.length" class="reviews-container">
         <br>
         <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reseñas ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px;  color: #2897bc;" @click="toggleFullReviews"> ADVERTENCIA: PUEDEN CONTENER SPOILERS</span></strong>
         <div v-if="showFullReviews" style="text-align: right; margin-top: 1rem;">
@@ -134,7 +134,7 @@
           </button>
         </div>
         <ul class="nolist" v-show="showFullReviews">
-            <li v-for="(review, index) in reviews" :key="index" style="margin-top: 3rem;">
+            <li v-for="(review, index) in localReviews" :key="index" style="margin-top: 3rem;">
                 <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">
                     <strong style="letter-spacing: 2px; font-size: 14px;">Autor:</strong> <a style="cursor: pointer; letter-spacing: 2px; font-size: 14px;" @click="redirectToUrl(review.url)">{{ review.authorName }}</a><br>
                     <strong style="letter-spacing: 2px; font-size: 14px;">Fecha:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ formatCreatedAt(review.createdAt) }}</span><br>
@@ -154,7 +154,7 @@
                     </span>
                     
                     <br>
-                    <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #2897bc; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Leer más].</span>
+                    <span v-if="!review.showFullContent && review.content && review.content.split(' ').length > 200" style="cursor: pointer; color: #2897bc; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Leer más].</span>
                 </p>
             </li>
         </ul>
@@ -185,7 +185,10 @@ export default {
       type: Object,
       required: true,
     },
-    reviewsProp: Array,
+    reviewsProp: {
+      type: Array,
+      default: () => []
+    },
     providers: {
       type: Array,
       default: () => [],
@@ -195,14 +198,15 @@ export default {
   data() {
     return {
       showFullReviews: false,
-      reviews: [],
+      localReviews: [], // Cambiado de reviews a localReviews
+      localProviders: [], // Añadido para evitar mutación directa de props
       showTranslations: false
     };
   },
 
   computed: {
     reviewCount() {
-      return this.reviews.length;
+      return this.localReviews.length;
     },
     poster () {
       if (this.item.poster_path) {
@@ -213,123 +217,159 @@ export default {
     },
   },
 
+  watch: {
+    reviewsProp: {
+      immediate: true,
+      handler(newReviews) {
+        // Hacer una copia local de reviewsProp
+        this.localReviews = Array.isArray(newReviews) ? [...newReviews] : [];
+      }
+    },
+    providers: {
+      immediate: true,
+      handler(newProviders) {
+        // Hacer una copia local de providers
+        this.localProviders = Array.isArray(newProviders) ? [...newProviders] : [];
+      }
+    }
+  },
+
   created () {
     if (this.item.homepage) {
       this.item.external_ids.homepage = this.item.homepage;
     }
-    this.fetchProviders();
-    this.fetchReviews();
-    this.reviews = this.reviewsProp || [];
+    // Solo llamar a estos métodos si la propiedad está vacía
+    if (!this.providers || this.providers.length === 0) {
+      this.fetchProviders();
+    } else {
+      this.localProviders = [...this.providers];
+    }
+    
+    if (!this.reviewsProp || this.reviewsProp.length === 0) {
+      this.fetchReviews();
+    } else {
+      this.localReviews = [...this.reviewsProp];
+    }
   },
 
   methods: {
-  toggleFullReviews() {
-    this.showFullReviews = !this.showFullReviews;
-    
-    if (this.showFullReviews) {
-      this.showTranslations = true;
-      this.translateAllReviews();
-    }
-  },
-  
-  toggleLanguage() {
-    this.showTranslations = !this.showTranslations;
-    
-    if (this.showTranslations) {
-      this.translateAllReviews();
-    }
-  },
-  
-  async translateAllReviews() {
-    for (let i = 0; i < this.reviews.length; i++) {
-      const review = this.reviews[i];
-      if (!review.translatedContent && !review.isTranslating) {
-        await this.translateReviewContent(review, i);
+    toggleFullReviews() {
+      this.showFullReviews = !this.showFullReviews;
+      
+      if (this.showFullReviews && this.localReviews.length > 0) {
+        this.showTranslations = true;
+        this.translateAllReviews();
       }
-    }
-  },
-  
-  async translateReviewContent(review, index) {
-    if (review.translatedContent || review.isTranslating) return;
+    },
     
-    this.$set(review, 'isTranslating', true);
-    
-    try {
-      const { translateReview } = require('~/api');
-
-      const translatedContent = await translateReview(review.content);
-
-      this.$set(review, 'translatedContent', translatedContent);
-      this.$set(review, 'isTranslating', false);
-    } catch (error) {
-      this.$set(review, 'isTranslating', false);
-      this.showTranslations = false;
-
-      if (index === 0) { 
-        this.$set(review, 'translationError', true);
-        setTimeout(() => {
-          this.$set(review, 'translationError', false);
-        }, 5000);
+    toggleLanguage() {
+      this.showTranslations = !this.showTranslations;
+      
+      if (this.showTranslations && this.localReviews.length > 0) {
+        this.translateAllReviews();
       }
-    }
-  },
-  
-  formatGenres(genres) {
-    return genres.map(genre => `<a href="/genre/${genre.id}/movie">${genre.name}</a>`).join(', ');
-  },
-  
-  toggleReadMore(review) {
-    this.$set(review, 'showFullContent', !review.showFullContent);
-  },
-
-  formatContent(content, index, showFullContent) {
-    if (!content) return '';
-
-    content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    content = content.replace(/_([^_]+)_/g, (match, p1) => p1.toUpperCase());
+    },
     
-    if (showFullContent) {
+    async translateAllReviews() {
+      for (let i = 0; i < this.localReviews.length; i++) {
+        const review = this.localReviews[i];
+        if (review && !review.translatedContent && !review.isTranslating) {
+          await this.translateReviewContent(review, i);
+        }
+      }
+    },
+    
+    async translateReviewContent(review, index) {
+      if (!review || review.translatedContent || review.isTranslating) return;
+      if (!review.content) return;
+      
+      this.$set(review, 'isTranslating', true);
+      
+      try {
+        const { translateReview } = require('~/api');
+        const translatedContent = await translateReview(review.content);
+        this.$set(review, 'translatedContent', translatedContent);
+        this.$set(review, 'isTranslating', false);
+      } catch (error) {
+        console.error('Error al traducir la reseña:', error);
+        this.$set(review, 'isTranslating', false);
+        this.showTranslations = false;
+
+        if (index === 0) { 
+          this.$set(review, 'translationError', true);
+          setTimeout(() => {
+            this.$set(review, 'translationError', false);
+          }, 5000);
+        }
+      }
+    },
+    
+    formatGenres(genres) {
+      if (!genres || !Array.isArray(genres)) return '';
+      return genres.map(genre => `<a href="/genre/${genre.id}/movie">${genre.name}</a>`).join(', ');
+    },
+    
+    toggleReadMore(review) {
+      if (!review) return;
+      this.$set(review, 'showFullContent', !review.showFullContent);
+    },
+
+    formatContent(content, index, showFullContent) {
+      if (!content) return '';
+
+      content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      content = content.replace(/_([^_]+)_/g, (match, p1) => p1.toUpperCase());
+      
+      if (showFullContent) {
         return content; 
-    } else {
+      } else {
         const words = content.split(' ');
         if (words.length > 200) {
-            content = words.slice(0, 200).join(' ');
+          content = words.slice(0, 200).join(' ');
         }
         return content;
-    }
-  },
+      }
+    },
 
-  formatCreatedAt(createdAt) {
-    if (!createdAt) return '';
-    return new Date(createdAt).toLocaleString('es-ES', {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  },
-  async fetchProviders() {
-    try {
-      const providers = await getMovieProviders(this.item.id);
-      this.providers = providers;
-    } catch (error) {
-      this.providers = [];
-    }
-  },
-  async fetchReviews() {
-    try {
-      const reviews = await getMovieReviews(this.item.id);
-      this.reviews = reviews;
-    } catch (error) {
-      this.reviews = [];
-    }
-  },
-  redirectToUrl(url) {
-    window.open(url, '_blank');
-  },
-}
-}
+    formatCreatedAt(createdAt) {
+      if (!createdAt) return '';
+      return new Date(createdAt).toLocaleString('es-ES', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    },
+    
+    async fetchProviders() {
+      try {
+        const providersList = await getMovieProviders(this.item.id);
+        // Actualizar la copia local, no la prop directamente
+        this.localProviders = Array.isArray(providersList) ? providersList : [];
+      } catch (error) {
+        console.error('Error al obtener proveedores:', error);
+        this.localProviders = [];
+      }
+    },
+    
+    async fetchReviews() {
+      try {
+        const reviewsList = await getMovieReviews(this.item.id);
+        // Actualizar la copia local, no la prop directamente
+        this.localReviews = Array.isArray(reviewsList) ? reviewsList : [];
+      } catch (error) {
+        console.error('Error al obtener reseñas:', error);
+        this.localReviews = [];
+      }
+    },
+    
+    redirectToUrl(url) {
+      if (!url) return;
+      window.open(url, '_blank');
+    },
+  }
+};
 </script>
 
 
