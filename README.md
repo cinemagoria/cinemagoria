@@ -8,30 +8,27 @@
 
 ## What's New:
 
-### Google OAuth Authentication
+### ASK AI Chatbot Assistant (Beta)
+Introducing our intelligent chatbot assistant that helps users discover content based on their preferences. Users can ask for movie and TV show recommendations using natural language, get information about actors, directors, and much more. The AI assistant provides personalized suggestions and enhances the overall content discovery experience.
 
+### Rating Functionality in Watchlist
+Users can now rate and review items directly from their watchlist. A dedicated rating modal allows users to easily assign ratings and write reviews without leaving the watchlist page, providing a more streamlined user experience.
+
+### Rated Items Modal with Edit Functionality
+A new centralized modal displays all rated movies and TV shows with tabs for easy navigation between content types. Users can access this modal from both the Hero section and Watchlist page, and can edit their ratings and reviews directly within the modal.
+
+### Revamped Upcoming Releases Section
+The "Upcoming Releases" section has been transformed with a new carousel display for improved visual appeal. The date range for upcoming movies has been expanded to 180 days, providing users with a broader view of future releases. Section titles have been updated for clarity: "Upcoming Releases" is now "Releases Timeline" and "Latest Movies" is now "Movie Releases".
+
+### Google OAuth Authentication
 Users can now sign in using their Google accounts in addition to the existing authentication system. The existing DRF-based authentication remains available as an alternative option.
 
 ### *** Integration for Direct Content Access
 Introduced direct streaming access through *** platform. Users can now enjoy seamless content viewing via our *** integration.
 
-### Rebranding from Cinemathe.space to EnterCinema.com
-
-The application has been fully rebranded from Cinemathe.space to EnterCinema.com with updated internal references and links.
-
 ### Enhanced Advanced Search with Watch Providers
-
 A new dropdown feature in the advanced search lets users filter TV shows by watch provider (Apple TV+, Disney+, Hulu, Max, Netflix, Prime Video). This option is available only when 'TV Show' is selected.
 
-### Interface and UX Improvements
-
-- Refined navbar icon alignment and padding for improved responsiveness
-- Fixed filtering of Japanese series in the fetchTrendingTv function to ensure more diverse content offerings
-- Corrected language picker alignment in the global footer
-- Updated search function with the include_adult=false parameter
-- Updated terms.vue component
-- Changed minimum search rating from 7 to 6 in advanced search
-- Added pagination controls to the watchlist page footer for better navigation
 
 ## Installation
 
@@ -93,7 +90,7 @@ DB_PORT=<Enter your database port>
 
 4. Apply Migrations:
 ```bash
-python manage.py collectstatic
+python manage.py migrate
 ```
 
 5. Collect static files for deployment:
