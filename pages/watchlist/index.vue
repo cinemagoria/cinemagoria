@@ -2476,7 +2476,6 @@ export default {
   cursor: pointer;
   transition: all 0.2s ease;
   border-radius: 30px;
-  width: 120px;
   text-align: center;
 }
 
