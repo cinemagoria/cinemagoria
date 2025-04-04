@@ -234,14 +234,14 @@
             :class="{ active: ratedItemsTab === 'movies' }" 
             @click="ratedItemsTab = 'movies'"
           >
-            Películas
+            <span style="position:relative; margin :0 auto;">Películas</span>
           </button>
           <button 
             class="tab-btn" 
             :class="{ active: ratedItemsTab === 'tv' }" 
             @click="ratedItemsTab = 'tv'"
           >
-            Series
+          <span style="position:relative; margin :0 auto;">Series de TV</span>
           </button>
         </div>
         <div class="rated-items-content">
