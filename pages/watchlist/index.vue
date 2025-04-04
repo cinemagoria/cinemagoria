@@ -1,165 +1,265 @@
 <template>
-  <main class="main">
-    <section class="watchlist-section">
-      <div v-if="isLoggedIn" class="user-profile">
-        <div class="language-selector" style="position: relative; top: 44px; left: -70px;"> 
-          <div class="selected-language" @click="toggleLanguageMenu" >
-            <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
-            <span class="language">En</span>  
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'english'" style="width: 24px; height: 24px; left: -70px;">
-              <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
-            </svg>
+  <div>
+    <main class="main">
+      <section class="watchlist-section">
+        <div v-if="isLoggedIn" class="user-profile">
+          <div class="language-selector" style="position: relative; top: 44px; left: -70px;"> 
+            <div class="selected-language" @click="toggleLanguageMenu" >
+              <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
+              <span class="language">En</span>  
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'english'" style="width: 24px; height: 24px; left: -70px;">
+                <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
+              </svg>
+            </div>
+            <div ref="languageMenu" class="language-menu">
+              <label class="menu-label1" @click="changeLanguage('spanish')">
+                <span>Español</span>
+              </label>
+            </div>
           </div>
-          <div ref="languageMenu" class="language-menu">
-            <label class="menu-label1" @click="changeLanguage('spanish')">
-              <span>Español</span>
-            </label>
+          
+          <div class="avatar-container" @click="toggleMenu">
+            <span v-if="userEmail !== 'undefined'" class="user-email">{{ userEmail }}</span>
+            <img :src="userAvatar" alt="User Avatar" class="avatar">
+            <div v-if="isMenuOpen" class="dropdown-menu">
+              <div class="menu-item" @click="goToHome">
+                <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10" stroke-linejoin="round"><path d="M8.5 23.2H1.3V9L12 .8 22.7 9v14.2h-7.2v-5c0-1.9-1.6-3.4-3.5-3.4s-3.5 1.5-3.5 3.4v5z"/></g></svg>
+                <span class="menu-label1">Home</span>
+              </div>
+              <div class="menu-item" @click="showRatedItems">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                </svg>
+                <span class="menu-label1" style="margin-left: 4px; margin-top: 1px;">Rated</span>
+              </div>
+              <div class="menu-item" @click="goToSettings">
+                <img src="~/static/icon-settings.png" alt="Settings Icon" class="settings-icon">
+                <span class="menu-label1">Settings</span>
+              </div>
+              <div class="menu-item" @click="signOut">
+                <img src="~/static/icon-logout.png" alt="Logout Icon" class="logout-icon">
+                <span class="menu-label2">Log out</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="avatar-container" @click="toggleMenu">
-          <span v-if="userEmail !== 'undefined'" class="user-email">{{ userEmail }}</span>
-          <img :src="userAvatar" alt="User Avatar" class="avatar">
-          <div v-if="isMenuOpen" class="dropdown-menu">
-            <div class="menu-item" @click="goToHome">
-              <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10" stroke-linejoin="round"><path d="M8.5 23.2H1.3V9L12 .8 22.7 9v14.2h-7.2v-5c0-1.9-1.6-3.4-3.5-3.4s-3.5 1.5-3.5 3.4v5z"/></g></svg>
-              <span class="menu-label1">Home</span>
+        <div v-else class="user-profile-else">
+          <div class="language-selector" style="position: relative;top: -60.2px; left: -57px;">
+            <div class="selected-language" @click="toggleLanguageMenu">
+              <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
+              <span class="language">En</span>  
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" style="width: 24px; height: 24px; left: -70px;">
+                <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
+              </svg>
             </div>
-            <div class="menu-item" @click="goToSettings">
-              <img src="~/static/icon-settings.png" alt="Settings Icon" class="settings-icon">
-              <span class="menu-label1">Settings</span>
+            <div ref="languageMenu" class="language-menu" :style="{ display: showLanguageMenu ? 'block' : 'none' }">
+              <label class="menu-label1" @click="changeLanguage('spanish')">
+                <span>Español</span>
+              </label>
             </div>
-            <div class="menu-item" @click="signOut">
-              <img src="~/static/icon-logout.png" alt="Logout Icon" class="logout-icon">
-              <span class="menu-label2">Log out</span>
-            </div>
+          </div>
+          <div class="avatar-container-else" @click="toggleMenu">
+              <div>
+                <span class="menu-label1" @click="goToLogin">Sign In</span>
+              </div>
           </div>
         </div>
-      </div>
-      <div v-else class="user-profile-else">
-        <div class="language-selector" style="position: relative;top: -60.2px; left: -57px;">
-          <div class="selected-language" @click="toggleLanguageMenu">
-            <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
-            <span class="language">En</span>  
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" style="width: 24px; height: 24px; left: -70px;">
-              <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
-            </svg>
-          </div>
-          <div ref="languageMenu" class="language-menu" :style="{ display: showLanguageMenu ? 'block' : 'none' }">
-            <label class="menu-label1" @click="changeLanguage('spanish')">
-              <span>Español</span>
-            </label>
-          </div>
-        </div>
-        <div class="avatar-container-else" @click="toggleMenu">
-            <div>
-              <span class="menu-label1" @click="goToLogin">Sign In</span>
+        <br>
+        <nav class="navbar">
+          <h1 class="navbar-welcome">Watchlist</h1>
+        </nav>
+        <!-- <h2 class="text-center" style="color: #acafb5; font-size: 16px; margin-top: 10px; position: relative; text-transform: none; left: -2px; top: -23px;">{{ userFirstName }}</h2> -->
+        <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
+          <div class="column">
+            <h2 class="text-center" style="color: #acafb5; font-size: 16px;">Favorite {{ filterText }}</h2>
+              <div class="button-container" style="margin-top: 2rem;">
+                <select @change="toggleFilter" class="filter-select">
+                  <option value="movies">&nbsp;&nbsp;&nbsp;Movies</option>
+                  <option value="tvShows">&nbsp;&nbsp;&nbsp;TV Shows</option>
+                </select>
+                <select @change="toggleOrder" class="order-select">
+                  <option value="asc" :selected="orderText === 'Order Asc'">
+                    <span class="order-word">&nbsp;&nbsp;&nbsp;</span> <span class="order-option">Last Added</span>
+                  </option>
+                  <option value="desc" :selected="orderText === 'Order Desc'">
+                    <span class="order-word">&nbsp;&nbsp;&nbsp;</span> <span class="order-option">First Added</span>
+                  </option>
+                </select>
+                <select @change="filterByGenre" class="genre-select">
+                  <option value="">&nbsp;&nbsp;&nbsp;All Genres</option>
+                  <option v-for="genre in uniqueGenres" :key="genre" :value="genre">&nbsp;&nbsp;&nbsp;{{ genre }}</option>
+                </select>
+                <select @change="filterByYear" class="year-select">
+                  <option value="">&nbsp;&nbsp;&nbsp;All Years</option>
+                  <option v-for="range in yearRanges" :key="range" :value="range">&nbsp;&nbsp;&nbsp;{{ range }}</option>
+                </select>
+                <br>
+              </div>
             </div>
-        </div>
-      </div>
-      <br>
-      <nav class="navbar">
-        <h1 class="navbar-welcome">Watchlist</h1>
-      </nav>
-      <!-- <h2 class="text-center" style="color: #acafb5; font-size: 16px; margin-top: 10px; position: relative; text-transform: none; left: -2px; top: -23px;">{{ userFirstName }}</h2> -->
-      <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
-        <div class="column">
-          <h2 class="text-center" style="color: #acafb5; font-size: 16px;">Favorite {{ filterText }}</h2>
-            <div class="button-container" style="margin-top: 2rem;">
-              <select @change="toggleFilter" class="filter-select">
-                <option value="movies">&nbsp;&nbsp;&nbsp;Movies</option>
-                <option value="tvShows">&nbsp;&nbsp;&nbsp;TV Shows</option>
-              </select>
-              <select @change="toggleOrder" class="order-select">
-                <option value="asc" :selected="orderText === 'Order Asc'">
-                  <span class="order-word">&nbsp;&nbsp;&nbsp;</span> <span class="order-option">Last Added</span>
-                </option>
-                <option value="desc" :selected="orderText === 'Order Desc'">
-                  <span class="order-word">&nbsp;&nbsp;&nbsp;</span> <span class="order-option">First Added</span>
-                </option>
-              </select>
-              <select @change="filterByGenre" class="genre-select">
-                <option value="">&nbsp;&nbsp;&nbsp;All Genres</option>
-                <option v-for="genre in uniqueGenres" :key="genre" :value="genre">&nbsp;&nbsp;&nbsp;{{ genre }}</option>
-              </select>
-              <select @change="filterByYear" class="year-select">
-                <option value="">&nbsp;&nbsp;&nbsp;All Years</option>
-                <option v-for="range in yearRanges" :key="range" :value="range">&nbsp;&nbsp;&nbsp;{{ range }}</option>
-              </select>
-              <br>
+            <div class="pagination" v-if="filteredItems.length > itemsPerPage">
+              <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
+              <button @click="prevPage" :disabled="currentPage === 1"><<</button>
+              <span>
+                <label for="page" style="font-size:13px;">Page</label>
+                <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
+              </span>
+              <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
+              <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
+              <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
             </div>
-          </div>
-          <div class="pagination" v-if="filteredItems.length > itemsPerPage">
-            <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
-            <button @click="prevPage" :disabled="currentPage === 1"><<</button>
-            <span>
-              <label for="page" style="font-size:13px;">Page</label>
-              <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
-            </span>
-            <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
-            <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
-            <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
-          </div>
-          <div class="movie-grid">
-            <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
-              <div class="card-background">
-              <a :href="getLink(item)">
-                <img :src="item.details.posterForDb" alt="Poster" class="poster" />
-                <h3>{{ item.details.nameForDb }}</h3>
-              </a>
-              <p>
-                {{
-                  item.details.yearStartForDb === item.details.yearEndForDb
-                  ? item.details.yearEndForDb
-                  : (item.details.yearStartForDb + (item.details.yearEndForDb ? `-${item.details.yearEndForDb}` : ''))
-                }}
-              </p>
+            <div class="movie-grid">
+              <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
+                <div class="card-background">
+                  <div class="user-rating-badge" v-if="item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
+                    @click.stop="showRatedItems"
+                    :class="{ 'has-review': item.details.userReview }" 
+                    :title="item.details.userReview ? 'Has Review' : ''">
+                    {{ item.details.userRatingForDb }}
+                    <span v-if="item.details.userReview" class="review-indicator"></span>
+                  </div>
+                  <div class="user-rating-badge empty" @click.stop="showRatedItems" v-else>
+                    <span style="font-size: 7px;">Rate</span>
+                  </div>
+                  <a :href="getLink(item)" class="item-link">
+                    <img :src="item.details.posterForDb" alt="Poster" class="poster" />
+                    <h3>{{ item.details.nameForDb }}</h3>
+                  </a>
+                <p>
+                  {{
+                    item.details.yearStartForDb === item.details.yearEndForDb
+                    ? item.details.yearEndForDb
+                    : (item.details.yearStartForDb + (item.details.yearEndForDb ? `-${item.details.yearEndForDb}` : ''))
+                  }}
+                </p>
 
-              <div class="card__content">
-                <div v-if="item.details.starsForDb" class="card__stars">
-                  <div :style="{ width: `${calculateStarsWidth(formatRating(item.details.starsForDb))}%` }"></div>
+                <div class="card__content">
+                  <div v-if="item.details.starsForDb" class="card__stars">
+                    <div :style="{ width: `${calculateStarsWidth(formatRating(item.details.starsForDb))}%` }"></div>
+                  </div>
+                  <div class="card___rating">
+                    <p v-if="item.details.starsForDb">{{ formatRating(item.details.starsForDb) }}</p>
+                    <p v-else>Not specified.</p>
+                  </div>
                 </div>
-                <div class="card___rating">
-                  <p v-if="item.details.starsForDb">{{ formatRating(item.details.starsForDb) }}</p>
-                  <p v-else>Not specified.</p>
+
+                <svg fill="84E1F6" height="26px" width="26px" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 446.04" @click="removeFavorite(item)" class="delete-icon">
+                    <defs>
+                        <style>
+                            .cls-1 {
+                                fill: #84E1F6;
+                                stroke: black;
+                                stroke-width: 4px;
+                            }
+                        </style>
+                    </defs>
+                    <title>Remove from Watchlist.</title>
+                    <path class="cls-1" d="M252.63 71.41C285.88 36.72 309.17 6.75 360.44.86c96.22-11.07 184.7 87.44 136.11 184.43-.43.85-.88 1.71-1.33 2.58-27.38-23.8-63.15-38.22-102.25-38.22-43.06 0-82.07 17.47-110.29 45.7-28.23 28.23-45.7 67.23-45.7 110.29s17.47 82.06 45.7 110.29l.15.15-30.2 29.96-59.71-57.51C121.09 319.33 3.95 232.26.09 124.36-2.62 48.79 57.02.37 125.62 1.27c61.31.8 87.08 31.31 127.01 70.14zm187.32 214.31c5.88-.05 10.08-.59 9.97 6.7l-.28 23.61c.04 7.62-2.37 9.65-9.51 9.56h-94.32c-7.14.09-9.56-1.94-9.51-9.56l-.29-23.61c-.1-7.29 4.1-6.75 9.97-6.7h93.97zm-46.98-99.11c32.87 0 62.63 13.32 84.17 34.86S512 272.77 512 305.64c0 32.88-13.33 62.64-34.86 84.17-21.54 21.54-51.31 34.86-84.17 34.86-32.88 0-62.64-13.32-84.17-34.86-21.54-21.54-34.87-51.3-34.87-84.17 0-32.88 13.33-62.63 34.86-84.17 21.54-21.54 51.31-34.86 84.18-34.86zm71.79 47.23c-18.37-18.37-43.75-29.74-71.79-29.74-28.04 0-53.43 11.37-71.81 29.74-18.37 18.37-29.73 43.76-29.73 71.8s11.36 53.43 29.74 71.8c18.37 18.37 43.75 29.74 71.8 29.74 28.03 0 53.42-11.37 71.8-29.74 18.37-18.37 29.73-43.76 29.73-71.8s-11.36-53.43-29.74-71.8z"/>
+                </svg>
+
+              </div>
+              </div>
+            </div>
+            <br>
+            <div class="pagination-footer" v-if="filteredItems.length > itemsPerPage">
+              <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
+              <button @click="prevPage" :disabled="currentPage === 1"><<</button>
+              <span>
+                <label for="page" style="font-size:13px;">Page</label>
+                <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
+              </span>
+              <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
+              <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
+              <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
+            </div>
+        </div>
+        
+        <div v-else>
+          <p style="text-align: center;">No favorites added yet.</p>
+        </div>
+      </section>
+    </main>
+    <!-- Rated Items Modal -->
+    <div v-if="ratedItemsModalVisible" class="modal-overlay">
+      <div class="rated-items-modal">
+        <div class="modal-header">
+          <h3>Your Rated Picks</h3>
+          <button class="close-btn" @click="closeRatedItemsModal">×</button>
+        </div>
+        
+        <div class="tab-controls">
+          <button 
+            :class="['tab-btn', { active: ratedItemsTab === 'movies' }]" 
+            @click="ratedItemsTab = 'movies'"
+          >
+
+          <span style="position:relative; margin :0 auto;">Movies</span>
+          </button>
+          <button 
+            :class="['tab-btn', { active: ratedItemsTab === 'tv' }]" 
+            @click="ratedItemsTab = 'tv'"
+          >
+            <span style="position:relative; margin :0 auto;">TV Shows</span>
+          </button>
+        </div>
+        
+        <div class="rated-items-content">
+          <div v-if="filteredRatedItems && filteredRatedItems.length > 0" class="rated-items-list">
+            <div v-for="(item, index) in filteredRatedItems" :key="index" class="rated-item">
+              <img :src="item.details.posterForDb" class="rated-item-poster" :alt="item.details.nameForDb">
+              <div class="rated-item-info">
+                <h4 class="rated-item-title">{{ item.details.nameForDb }}</h4>
+                <div class="rated-item-meta">
+                  <span>{{ item.details.yearStartForDb }}</span>
+                  <div class="rated-item-rating">
+                    <span>Rating:</span>
+                    <div v-if="editingRating !== index" @click="startEditRating(index, item)" class="rating-badge editable" :title="'Click to edit rating'">
+                      {{ item.details.userRatingForDb }}
+                    </div>
+                    <div v-else class="rating-edit-controls">
+                      <select v-model="tempRating" class="rating-select">
+                        <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
+                      </select>
+                      <button @click="saveRating(item)" class="edit-btn save-btn"><span style="color:black !important;">✓</span></button>
+                      <button @click="cancelEditRating" class="edit-btn cancel-btn">✕</button>
+                    </div>
+                  </div>
+                </div>
+                <div v-if="editingReview !== index" class="rated-item-review-container">
+                  <div v-if="item.details.userReview" class="rated-item-review">
+                    {{ item.details.userReview }}
+                  </div>
+                  <div v-else class="rated-item-review">
+                    {{ ratingDescriptions[parseInt(item.details.userRatingForDb) - 1] }}
+                  </div>
+                  <br>
+                  <br>
+                  <button @click="startEditReview(index, item)" class="edit-review-btn">
+                    <span v-if="item.details.userReview">Edit review</span>
+                    <span v-else>Add review</span>
+                  </button>
+                </div>
+                <div v-else class="review-edit-container">
+                  <textarea v-model="tempReview" rows="3" class="review-textarea" placeholder="Write your review here..."></textarea>
+                  <div class="review-btn-container">
+                    <button @click="saveReview(item)" class="edit-btn-rvw save-btn">Save</button>
+                    <button @click="cancelEditReview" class="edit-btn-rvw cancel-btn">Cancel</button>
+                  </div>
                 </div>
               </div>
-
-              <svg fill="84E1F6" height="26px" width="26px" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 446.04" @click="removeFavorite(item)" class="delete-icon">
-                  <defs>
-                      <style>
-                          .cls-1 {
-                              fill: #84E1F6;
-                              stroke: black;
-                              stroke-width: 4px;
-                          }
-                      </style>
-                  </defs>
-                  <title>Remove from Watchlist.</title>
-                  <path class="cls-1" d="M252.63 71.41C285.88 36.72 309.17 6.75 360.44.86c96.22-11.07 184.7 87.44 136.11 184.43-.43.85-.88 1.71-1.33 2.58-27.38-23.8-63.15-38.22-102.25-38.22-43.06 0-82.07 17.47-110.29 45.7-28.23 28.23-45.7 67.23-45.7 110.29s17.47 82.06 45.7 110.29l.15.15-30.2 29.96-59.71-57.51C121.09 319.33 3.95 232.26.09 124.36-2.62 48.79 57.02.37 125.62 1.27c61.31.8 87.08 31.31 127.01 70.14zm187.32 214.31c5.88-.05 10.08-.59 9.97 6.7l-.28 23.61c.04 7.62-2.37 9.65-9.51 9.56h-94.32c-7.14.09-9.56-1.94-9.51-9.56l-.29-23.61c-.1-7.29 4.1-6.75 9.97-6.7h93.97zm-46.98-99.11c32.87 0 62.63 13.32 84.17 34.86S512 272.77 512 305.64c0 32.88-13.33 62.64-34.86 84.17-21.54 21.54-51.31 34.86-84.17 34.86-32.88 0-62.64-13.32-84.17-34.86-21.54-21.54-34.87-51.3-34.87-84.17 0-32.88 13.33-62.63 34.86-84.17 21.54-21.54 51.31-34.86 84.18-34.86zm71.79 47.23c-18.37-18.37-43.75-29.74-71.79-29.74-28.04 0-53.43 11.37-71.81 29.74-18.37 18.37-29.73 43.76-29.73 71.8s11.36 53.43 29.74 71.8c18.37 18.37 43.75 29.74 71.8 29.74 28.03 0 53.42-11.37 71.8-29.74 18.37-18.37 29.73-43.76 29.73-71.8s-11.36-53.43-29.74-71.8z"/>
-              </svg>
-
-            </div>
             </div>
           </div>
-          <br>
-          <div class="pagination-footer" v-if="filteredItems.length > itemsPerPage">
-            <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
-            <button @click="prevPage" :disabled="currentPage === 1"><<</button>
-            <span>
-              <label for="page" style="font-size:13px;">Page</label>
-              <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
-            </span>
-            <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
-            <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
-            <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
+          
+          <div v-else class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+            </svg>
+            <p>No rated {{ ratedItemsTab === 'movies' ? 'movies' : 'TV shows' }} yet.</p>
+            <p>Rate some {{ ratedItemsTab === 'movies' ? 'movies' : 'TV shows' }} to see them here!</p>
           </div>
+        </div>
       </div>
-      
-      <div v-else>
-        <p style="text-align: center;">No favorites added yet.</p>
-      </div>
-    </section>
-  </main>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -231,6 +331,25 @@ export default {
       genres: [],
       years: [],
       resizeObserver: null,
+      ratedItemsModalVisible: false,
+      ratedItemsTab: 'movies',
+      editingRating: null,
+      editingReview: null,
+      tempRating: 1,
+      tempReview: '',
+      currentEditItem: null,
+      ratingDescriptions: [
+        'Terrible, a complete waste of time',
+        'Very bad, hard to finish',
+        'Bad, few redeeming qualities',
+        'Mediocre, barely passable',
+        'Average, has its moments',
+        'Decent, entertaining but forgettable',
+        'Good, worth watching',
+        'Very good, recommended',
+        'Excellent, a great experience',
+        'Masterpiece, must-see'
+      ],
     };
   },
   async mounted() {
@@ -349,7 +468,134 @@ export default {
     }
   },
   
+  
   methods: {
+    showRatedItems() {
+      this.ratedItemsModalVisible = true;
+    },
+    
+    closeRatedItemsModal() {
+      this.ratedItemsModalVisible = false;
+      this.cancelEditRating();
+      this.cancelEditReview();
+    },
+    
+    startEditRating(index, item) {
+      this.editingRating = index;
+      this.currentEditItem = item;
+      this.tempRating = parseInt(item.details.userRatingForDb) || 1;
+    },
+    
+    cancelEditRating() {
+      this.editingRating = null;
+      this.currentEditItem = null;
+      this.tempRating = 1;
+    },
+    
+    async saveRating(item) {
+      if (!item || !item.details) return;
+      
+      try {
+        const { typeForDb, idForDb } = item.details;
+        const itemKey = `${typeForDb}/${idForDb}`;
+
+        const { data: favoritesData, error } = await supabase
+          .from('favorites')
+          .select('favorites_json')
+          .eq('user_email', this.userEmail);
+          
+        if (error) throw new Error('Error fetching favorites: ' + error.message);
+        if (!favoritesData || !favoritesData.length) return;
+        
+        const favoritesObject = favoritesData[0].favorites_json || {};
+        const itemType = typeForDb === 'tv' ? 'tv' : 'movies';
+        
+        if (!favoritesObject[itemType]) return;
+
+        const updatedItems = favoritesObject[itemType].map(favItem => {
+          const favItemKey = Object.keys(favItem)[0];
+          if (favItemKey === itemKey) {
+            favItem[favItemKey].details.userRatingForDb = this.tempRating.toString();
+          }
+          return favItem;
+        });
+        
+        favoritesObject[itemType] = updatedItems;
+
+        const { error: updateError } = await supabase
+          .from('favorites')
+          .update({ favorites_json: favoritesObject })
+          .eq('user_email', this.userEmail);
+          
+        if (updateError) throw new Error('Error updating rating: ' + updateError.message);
+
+        item.details.userRatingForDb = this.tempRating.toString();
+        this.cancelEditRating();
+
+        await this.checkData();
+      } catch(error) {
+        console.error('Error saving rating:', error);
+      }
+    },
+    
+    startEditReview(index, item) {
+      this.editingReview = index;
+      this.currentEditItem = item;
+      this.tempReview = item.details.userReview || '';
+    },
+    
+    cancelEditReview() {
+      this.editingReview = null;
+      this.currentEditItem = null;
+      this.tempReview = '';
+    },
+    
+    async saveReview(item) {
+      if (!item || !item.details) return;
+      
+      try {
+        const { typeForDb, idForDb } = item.details;
+        const itemKey = `${typeForDb}/${idForDb}`;
+
+        const { data: favoritesData, error } = await supabase
+          .from('favorites')
+          .select('favorites_json')
+          .eq('user_email', this.userEmail);
+          
+        if (error) throw new Error('Error fetching favorites: ' + error.message);
+        if (!favoritesData || !favoritesData.length) return;
+        
+        const favoritesObject = favoritesData[0].favorites_json || {};
+        const itemType = typeForDb === 'tv' ? 'tv' : 'movies';
+        
+        if (!favoritesObject[itemType]) return;
+
+        const updatedItems = favoritesObject[itemType].map(favItem => {
+          const favItemKey = Object.keys(favItem)[0];
+          if (favItemKey === itemKey) {
+            favItem[favItemKey].details.userReview = this.tempReview.trim();
+          }
+          return favItem;
+        });
+        
+        favoritesObject[itemType] = updatedItems;
+
+        const { error: updateError } = await supabase
+          .from('favorites')
+          .update({ favorites_json: favoritesObject })
+          .eq('user_email', this.userEmail);
+          
+        if (updateError) throw new Error('Error updating review: ' + updateError.message);
+
+        item.details.userReview = this.tempReview.trim();
+        this.cancelEditReview();
+        
+        await this.checkData();
+      } catch(error) {
+        console.error('Error saving review:', error);
+      }
+    },
+    
     handleResize() {
       this.calculateItemsPerRow();
       this.adjustItemsPerPage();
@@ -615,13 +861,32 @@ export default {
   },
 
   computed: {
+    filteredRatedItems() {
+      const items = this.ratedItemsTab === 'movies' ? this.moviesFetched : this.tvFetched;
+      if (!items) return [];
+      return items.filter(item => 
+        item && item.details && 
+        item.details.userRatingForDb && 
+        item.details.userRatingForDb !== '-' && 
+        parseInt(item.details.userRatingForDb) > 0
+      );
+    },
+    
     filteredItems() {
       const items = this.filter === 'movies' ? this.moviesFetched : this.tvFetched;
+      if (!items) return [];
       return items.filter(item => {
-        const matchesGenre = this.selectedGenre === '' || item.details.genresForDb.includes(this.selectedGenre);
-        const matchesYear = this.selectedYearRange === '' || (item.details.yearStartForDb >= this.selectedYearRange.split('-')[0] && item.details.yearStartForDb <= this.selectedYearRange.split('-')[1]);
+        if (!item || !item.details) return false;
+        const matchesGenre = this.selectedGenre === '' || (item.details.genresForDb && item.details.genresForDb.includes(this.selectedGenre));
+        const matchesYear = this.selectedYearRange === '' || 
+          (item.details.yearStartForDb && 
+           this.selectedYearRange.split('-')[0] && 
+           this.selectedYearRange.split('-')[1] && 
+           item.details.yearStartForDb >= this.selectedYearRange.split('-')[0] && 
+           item.details.yearStartForDb <= this.selectedYearRange.split('-')[1]);
         return matchesGenre && matchesYear;
       }).sort((a, b) => {
+        if (!a.addedAt || !b.addedAt) return 0;
         return this.orderText === 'Order Asc' ? new Date(a.addedAt) - new Date(b.addedAt) : new Date(b.addedAt) - new Date(a.addedAt);
       });
     },
@@ -1362,6 +1627,62 @@ export default {
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
     background: black;
+    position: relative;
+  }
+  
+  .user-rating-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #000;
+    color: #88E9FD;
+    border: 3px solid;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    z-index: 4;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .user-rating-badge:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(139, 233, 253, 0.5);
+  }
+  
+  .user-rating-badge.has-review {
+    overflow: visible;
+  }
+  
+  .review-indicator {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 10px;
+    height: 10px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 2px solid #041019;
+  }
+  
+  .user-rating-badge.empty {
+    background-color: #000;
+    color: #88E9FD;
+    border: 2px solid;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 9px;
+    text-transform: uppercase;
   }
 
   .movie-card img,
@@ -1374,6 +1695,426 @@ export default {
     backdrop-filter: blur( 16px );
     -webkit-backdrop-filter: blur( 16px );
     border: 1px solid rgba( 255, 255, 255, 0.18 );
+  }
+  
+  .item-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    text-align: center;
+    transition: transform 0.2s ease;
+  }
+  
+  .item-link:hover {
+    transform: translateY(-5px);
+  }
+  
+  /* Rated Items Modal */
+  .rated-items-btn {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-radius: 30px;
+    padding: 8px 15px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: absolute;
+    bottom: -65px;
+    right: 40%;
+    transition: all 0.2s ease;
+  }
+  
+  .rated-items-btn:hover {
+    background: rgba(139, 233, 253, 0.2);
+    border-color: #8BE9FD;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .rated-items-btn svg {
+    fill: #8BE9FD;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    font-family: 'Roboto', 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
+  }
+  
+  .rated-items-modal {
+    width: 100%;
+    max-width: 850px;
+    height: auto;
+    max-height: 90vh;
+    background: linear-gradient(to bottom right, #092739, #061720);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .modal-header h3 {
+    margin: 0;
+    color: #8BE9FD;
+    font-size: 1.6rem;
+    font-weight: 500;
+    text-align: center;
+    flex: 1;
+  }
+  
+  .close-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 4rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: all 0.2s ease;
+    padding: 0;
+    margin: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .close-btn:hover {
+    color: #fff;
+    transform: rotate(90deg);
+  }
+  
+  .tab-controls {
+    display: flex;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+    position: relative;
+    padding-left: 10px;
+  
+  }
+  
+  .tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.4rem;
+    padding: 12px 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    text-align: center;
+  }
+  
+  .tab-btn.active {
+    color: #8BE9FD;
+  }
+  
+  .tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #8BE9FD;
+  }
+  
+  .rated-items-content {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  
+  .rated-items-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 10px 0;
+  }
+  
+  .rated-item {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+    position: relative;
+  }
+  
+  .rated-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .rated-item-poster {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+  }
+  
+  .rated-item-info {
+    padding: 12px;
+  }
+  
+  .rated-item-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .rated-item-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .rated-item-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .rating-badge {
+    background: #8BE9FD;
+    color: #000;
+    font-size: 12px;
+    font-weight: bold;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .rated-item-review-container {
+    position: relative;
+    margin-top: 10px;
+  }
+  
+  .rated-item-review {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+    max-height: 80px;
+    overflow-y: auto;
+    padding-right: 5px;
+    line-height: 1.4;
+  }
+  
+  .edit-review-btn {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    border: none;
+    color: #8BE9FD;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 3px 6px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  
+  .rated-item-review-container:hover .edit-review-btn {
+    opacity: 1;
+  }
+  
+  .review-edit-container {
+    margin-top: 10px;
+  }
+  
+  .review-textarea {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 1.2rem;
+    resize: vertical;
+  }
+  
+  .review-btn-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+    gap: 8px;
+  }
+  
+  .rating-badge.editable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .rating-badge.editable:hover {
+    background: #66deff;
+    transform: scale(1.1);
+  }
+  
+  .rating-edit-controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .rating-select {
+    background: #041019;
+    color: white;
+    border: 1px solid #8BE9FD;
+    border-radius: 4px;
+    padding: 3px;
+    width: 40px;
+  }
+  
+  .edit-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    bottom: 9px;
+    position: relative;
+  }
+
+  .edit-btn-rvw {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 15 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 20px;
+    border-radius: 15px;
+    gap: 20px;
+    bottom: 9px;
+    position: relative;
+  }
+  
+  .save-btn {
+    background: #8BE9FD;
+    color: #000;
+  }
+  
+  .save-btn:hover {
+    background: #518692
+
+  }
+  
+  .cancel-btn {
+    background: rgba(255, 0, 0, 0.2);
+  }
+  
+  .cancel-btn:hover {
+    background: rgba(255, 0, 0, 0.4);
+  }
+  
+  .rated-item-review::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .rated-item-review::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  .rated-item-review::-webkit-scrollbar-thumb {
+    background: rgba(139, 233, 253, 0.5);
+    border-radius: 2px;
+  }
+  
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 20px;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+  }
+  
+  .empty-state svg {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+  
+  .empty-state p {
+    font-size: 1.4rem;
+    margin: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .rated-items-modal {
+      max-width: 100%;
+      height: 90vh;
+    }
+    
+    .rated-items-list {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .rated-item-title {
+      font-size: 1.3rem;
+    }
+    
+    .rated-items-btn {
+      right: 30%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .rated-items-btn {
+      right: 15%;
+      font-size: 1.1rem;
+      padding: 6px 12px;
+    }
+    
+    .modal-header h3 {
+      font-size: 1.4rem;
+    }
+    
+    .tab-btn {
+      font-size: 1.3rem;
+    }
   }
   
 
