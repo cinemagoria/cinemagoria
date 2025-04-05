@@ -300,6 +300,10 @@ async sendDailyPromptRequest() {
     cleanResponse = cleanResponse.replace(/\*(.*?)\*/g, '<em>$1</em>');
     cleanResponse = cleanResponse.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
     cleanResponse = cleanResponse.replace(/\n/g, '<br>');
+    cleanResponse = cleanResponse.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+    cleanResponse = cleanResponse.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+    cleanResponse = cleanResponse.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
+    cleanResponse = cleanResponse.replace(/\n/g, '<br>');
     this.chatBotResponse = cleanResponse;
     
     if (response.data.media_references && response.data.media_references.length > 0) {
@@ -390,7 +394,11 @@ async sendDailyPromptRequest() {
       let cleanResponse = response.data.result || '';
       cleanResponse = cleanResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       cleanResponse = cleanResponse.replace(/\*(.*?)\*/g, '<em>$1</em>');
-      cleanResponse = cleanResponse.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>'); // Modificado
+      cleanResponse = cleanResponse.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+      cleanResponse = cleanResponse.replace(/\n/g, '<br>');
+      cleanResponse = cleanResponse.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+      cleanResponse = cleanResponse.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+      cleanResponse = cleanResponse.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
       cleanResponse = cleanResponse.replace(/\n/g, '<br>');
       this.chatBotResponse = cleanResponse;
 
