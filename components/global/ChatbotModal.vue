@@ -14,22 +14,21 @@
             <div class="example-item">"¿Quiénes actuaron en la película Pulp Fiction?"</div>
             <div class="example-item">"¿Quién fue la actriz de Gambito de Dama?"</div>
           </div>
-        </div>
-
-        <div class="modern-divider">
+          
+          <div class="modern-divider">
             <span class="divider-line"></span>
-            <span class="divider-text">OR</span>
+            <span class="divider-text">O</span>
             <span class="divider-line"></span>
           </div>
 
           <div v-if="currentDailyPrompt" class="daily-prompt-section">
-            <div class="daily-badge">DAILY PROMPT</div>
+            <div class="daily-badge">PREGUNTA DIARIA</div>
               <div class="daily-prompt-content">
               <p>{{ currentDailyPrompt }}</p>
-              <button @click="sendDailyPrompt" class="daily-prompt-button">Learn More</button>
+              <button @click="sendDailyPrompt" class="daily-prompt-button">Saber más</button>
             </div>
           </div>
-
+        </div>
 
         <div v-if="chatBotLoading && !chatBotResponse && chatBotResults.length === 0" class="reasoning-container">
           <div class="reasoning-indicator">Razonando</div>
@@ -227,120 +226,134 @@ export default {
       }
     },
     
-    async sendDailyPromptRequest() {
-      if (!this.currentDailyPrompt || this.chatBotLoading) return;
-      
-      this.inputWidth = 100;
-      this.chatBotLoading = true;
-      this.chatBotResponse = '';
-      this.chatBotResults = [];
+    // No modificar el método sendDailyPrompt
+// Mantener la asignación a chatBotQuery para el fallback
+// sendDailyPrompt() {
+//   if (this.currentPromptIndex !== -1 && !this.chatBotLoading) {
+//     this.chatBotQuery = this.currentDailyPrompt;
+//     this.sendDailyPromptRequest();
+//   }
+// },
+
+// Modificar el método sendDailyPromptRequest para limpiar el input después de una respuesta exitosa
+async sendDailyPromptRequest() {
+  if (!this.currentDailyPrompt || this.chatBotLoading) return;
+  
+  this.inputWidth = 100;
+  this.chatBotLoading = true;
+  this.chatBotResponse = '';
+  this.chatBotResults = [];
+  
+  try {
+    const promptIndex = this.currentPromptIndex;
+ 
+    const payload = {
+      query: this.currentDailyPrompt,
+      chat_id: this.chatId,
+      prompt_id: `daily_prompt_${promptIndex}`
+    };
+        
+    let response;
+    let usedFallback = false;
+    
+    try {
+      response = await axios({
+        method: 'post',
+        url: this.predefinedApiUrl,
+        data: payload,
+        timeout: 45000,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
+    } catch (primaryError) {
+      console.error('Error with predefined API, attempting fallback:', primaryError);
       
       try {
-        const promptIndex = this.currentPromptIndex;
-     
-        const payload = {
+        const fallbackPayload = {
           query: this.currentDailyPrompt,
-          chat_id: this.chatId,
-          prompt_id: `daily_prompt_${promptIndex}`
+          chat_id: this.chatId
         };
-            
-        let response;
-        let usedFallback = false;
         
-        try {
-          response = await axios({
-            method: 'post',
-            url: this.predefinedApiUrl,
-            data: payload,
-            timeout: 45000,
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            }
-          });
-        } catch (primaryError) {
-          console.error('Error with predefined API, attempting fallback:', primaryError);
-          
-          try {
-            const fallbackPayload = {
-              query: this.currentDailyPrompt,
-              chat_id: this.chatId
-            };
-            
-            response = await axios({
-              method: 'post',
-              url: this.apiUrl,
-              data: fallbackPayload,
-              timeout: 45000,
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-              }
-            });
-            usedFallback = true;
-          } catch (fallbackError) {
-            console.error('Both APIs failed for daily prompt:', fallbackError);
-            throw primaryError;
-          }
-        }
-        
-        this.chatId = response.data.chat_id || this.chatId || "session";
-        
-        let cleanResponse = response.data.result || '';
-        cleanResponse = cleanResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        cleanResponse = cleanResponse.replace(/\*(.*?)\*/g, '<em>$1</em>');
-        cleanResponse = cleanResponse.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
-        cleanResponse = cleanResponse.replace(/\n/g, '<br>');
-        this.chatBotResponse = cleanResponse;
-        
-        if (response.data.media_references && response.data.media_references.length > 0) {
-          await this.fetchMediaDetailsFromBackendReferences(response.data.media_references);
-        } else {
-          this.chatBotResults = [];
-        }
-        
-        this.$nextTick(() => {
-          this.scrollToBottom();
-        });
-      } catch (error) {
-        console.error('Error fetching from APIs:', error);
-        console.error('Error details:', JSON.stringify(error, null, 2));
-        
-        let errorMessage = 'An error occurred. Please try again.';
-        if (axios.isCancel(error) || (error.code === 'ECONNABORTED' || (error.message && error.message.includes('timeout')))) {
-            errorMessage = 'The request timed out. The AI might be taking too long to respond. Please try again later or rephrase your query.';
-        } else if (error.response) {
-            console.error('Response error data:', error.response.data);
-            errorMessage = `Error ${error.response.status}: ${error.response.data?.detail || 'Failed to process request.'}`;
-            if (error.response.status === 504) {
-                errorMessage = 'The AI service seems to be unavailable or timed out. Please try again later.';
-            } else if (error.response.status === 404) {
-                errorMessage = 'The AI service is currently unavailable. Our team has been notified.';
-            }
-        } else if (error.request) {
-            console.error('Request error:', error.request);
-            errorMessage = 'Network Error: Could not reach the AI service. Please check your connection.';
-        } else {
-            errorMessage = 'An unexpected error occurred while processing your request.';
-        }
-        this.chatBotResponse = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
-        this.chatBotResults = [];
-        
-        this.$nextTick(() => {
-          this.scrollToBottom();
-        });
-      } finally {
-        this.chatBotLoading = false;
-        setTimeout(() => {
-          this.inputWidth = 0;
-        }, 300);
-        this.$nextTick(() => {
-          if (this.$refs.chatInput) {
-              this.$refs.chatInput.focus();
+        response = await axios({
+          method: 'post',
+          url: this.apiUrl,
+          data: fallbackPayload,
+          timeout: 45000,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
           }
         });
+        usedFallback = true;
+      } catch (fallbackError) {
+        console.error('Both APIs failed for daily prompt:', fallbackError);
+        throw primaryError;
       }
-    },
+    }
+    
+    this.chatId = response.data.chat_id || this.chatId || "session";
+    
+    let cleanResponse = response.data.result || '';
+    cleanResponse = cleanResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    cleanResponse = cleanResponse.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    cleanResponse = cleanResponse.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+    cleanResponse = cleanResponse.replace(/\n/g, '<br>');
+    this.chatBotResponse = cleanResponse;
+    
+    if (response.data.media_references && response.data.media_references.length > 0) {
+      await this.fetchMediaDetailsFromBackendReferences(response.data.media_references);
+    } else {
+      this.chatBotResults = [];
+    }
+
+    this.chatBotQuery = '';
+    
+    this.$nextTick(() => {
+      this.scrollToBottom();
+    });
+  } catch (error) {
+    console.error('Error fetching from APIs:', error);
+    console.error('Error details:', JSON.stringify(error, null, 2));
+    
+    let errorMessage = 'An error occurred. Please try again.';
+    if (axios.isCancel(error) || (error.code === 'ECONNABORTED' || (error.message && error.message.includes('timeout')))) {
+        errorMessage = 'The request timed out. The AI might be taking too long to respond. Please try again later or rephrase your query.';
+    } else if (error.response) {
+        console.error('Response error data:', error.response.data);
+        errorMessage = `Error ${error.response.status}: ${error.response.data?.detail || 'Failed to process request.'}`;
+        if (error.response.status === 504) {
+            errorMessage = 'The AI service seems to be unavailable or timed out. Please try again later.';
+        } else if (error.response.status === 404) {
+            errorMessage = 'The AI service is currently unavailable. Our team has been notified.';
+        }
+    } else if (error.request) {
+        console.error('Request error:', error.request);
+        errorMessage = 'Network Error: Could not reach the AI service. Please check your connection.';
+    } else {
+        errorMessage = 'An unexpected error occurred while processing your request.';
+    }
+    this.chatBotResponse = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
+    this.chatBotResults = [];
+    
+    this.chatBotQuery = '';
+    
+    this.$nextTick(() => {
+      this.scrollToBottom();
+    });
+  } finally {
+    this.chatBotLoading = false;
+    setTimeout(() => {
+      this.inputWidth = 0;
+    }, 300);
+    this.$nextTick(() => {
+      if (this.$refs.chatInput) {
+          this.$refs.chatInput.focus();
+      }
+    });
+  }
+},
 
     scrollCarousel(direction) {
       const carousel = this.$refs.mediaCarousel;
