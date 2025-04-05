@@ -675,6 +675,10 @@ export default {
             console.error('Error updating favorite (removal):', updateError);
             return;
           }
+          this.hasUserRating = false;
+          this.userRatingForDb = '-';
+          this.selectedRating = 0;
+          this.userReview = '';
         } else {
           const updatedFavorites = this.addFavorite(favoritesData, this.favId);
           const { error: updateError } = await supabase
