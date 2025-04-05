@@ -202,6 +202,24 @@ export default {
   created() {
     this.loadDailyPrompt();
   },
+  mounted() {
+    window.addEventListener('resize', this.checkMobileDevice);
+    this.$nextTick(() => {
+      if (this.$refs.chatbotMessagesContainer) {
+        this.$refs.chatbotMessagesContainer.addEventListener('click', (event) => {
+          if (event.target === this.$refs.chatbotMessagesContainer) {
+            if (this.isMobileDevice && this.inputEnabled) {
+              this.inputEnabled = false;
+            }
+          }
+        });
+      }
+    });
+  },
+
+  beforeDestroy() {
+    window.addEventListener('resize', this.checkMobileDevice);
+  },
   methods: {
     checkMobileDevice() {
       this.isMobileDevice = window.innerWidth <= 768 || 
@@ -329,7 +347,9 @@ async sendDailyPromptRequest() {
     } else {
       this.chatBotResults = [];
     }
-
+    if (this.isMobileDevice) {
+      this.inputEnabled = false;
+    }
     this.chatBotQuery = '';
     
     this.$nextTick(() => {
@@ -364,6 +384,9 @@ async sendDailyPromptRequest() {
     this.$nextTick(() => {
       this.scrollToBottom();
     });
+    if (this.isMobileDevice) {
+      this.inputEnabled = false;
+    }
   } finally {
     this.chatBotLoading = false;
     setTimeout(() => {
@@ -430,6 +453,9 @@ async sendDailyPromptRequest() {
       this.$nextTick(() => {
         this.scrollToBottom();
       });
+      if (this.isMobileDevice) {
+      this.inputEnabled = false;
+    }
 
     } catch (error) {
       console.error('Error al obtener respuesta de la API del chatbot:', error);
@@ -451,6 +477,9 @@ async sendDailyPromptRequest() {
       this.$nextTick(() => {
         this.scrollToBottom();
       });
+      if (this.isMobileDevice) {
+      this.inputEnabled = false;
+    }
     } finally {
       this.chatBotLoading = false;
       setTimeout(() => {
@@ -570,6 +599,11 @@ async sendDailyPromptRequest() {
       const container = this.$refs.chatbotMessagesContainer;
               if (container) {
                   container.scrollTop = container.scrollHeight;
+                  if (this.isMobileDevice) {
+                  if (document.activeElement === this.$refs.chatInput) {
+                    this.$refs.chatInput.blur();
+                  }
+                }
               }
            }
         }
