@@ -236,9 +236,7 @@ export default {
       this.checkMobileDevice();
       this.inputEnabled = !this.isMobileDevice;
     },
-    open() {
-      this.chatBotOpen = true;
-    },
+
     close() {
       this.chatBotOpen = false;
     },
