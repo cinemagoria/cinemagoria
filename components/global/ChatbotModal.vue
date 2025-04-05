@@ -225,17 +225,7 @@ export default {
         this.sendDailyPromptRequest();
       }
     },
-    
-    // No modificar el método sendDailyPrompt
-// Mantener la asignación a chatBotQuery para el fallback
-// sendDailyPrompt() {
-//   if (this.currentPromptIndex !== -1 && !this.chatBotLoading) {
-//     this.chatBotQuery = this.currentDailyPrompt;
-//     this.sendDailyPromptRequest();
-//   }
-// },
 
-// Modificar el método sendDailyPromptRequest para limpiar el input después de una respuesta exitosa
 async sendDailyPromptRequest() {
   if (!this.currentDailyPrompt || this.chatBotLoading) return;
   
@@ -1374,5 +1364,24 @@ color: #ffffff;
  .chatbot-input {
    flex-shrink: 0;
  }
+}
+.modern-divider {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+  width: 100%;
+  text-align: center;
+}
+
+.divider-line {
+  flex-grow: 1;
+  height: 1px;
+  background-color: rgba(127, 219, 241, 0.3);
+}
+
+.divider-text {
+  padding: 0 15px;
+  font-size: 14px;
+  color: #7FDBF1;
 }
 </style>
