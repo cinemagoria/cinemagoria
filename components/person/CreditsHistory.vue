@@ -9,6 +9,7 @@
         <select
           id="credits_category"
           v-model="active_category"
+          :class="$style.select"
           :disabled="!categories.length || categories.length === 1"
           @change="filterCredits">
           <option value="all">
@@ -32,6 +33,7 @@
         <select
           id="credits_media"
           v-model="active_media"
+          :class="$style.select"
           @change="getCredits">
           <option value="combined_credits">
             Todos
@@ -257,11 +259,39 @@ export default {
   label {
     margin-right: 1rem;
     font-size: 1.2rem;
+    font-weight: 500;
     letter-spacing: $letter-spacing;
 
     @media (min-width: $breakpoint-large) {
       font-size: 1.4rem;
     }
+  }
+}
+
+.select {
+  appearance: none;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0.8rem 3rem 0.8rem 1.2rem;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  
+  &:hover, &:focus {
+    border-color: #aaa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    outline: none;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: #f5f5f5;
   }
 }
 
