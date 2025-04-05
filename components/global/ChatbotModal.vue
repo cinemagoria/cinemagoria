@@ -22,10 +22,10 @@
           </div>
 
           <div v-if="currentDailyPrompt" class="daily-prompt-section">
-            <div class="daily-badge">PREGUNTA DIARIA</div>
+            <div class="daily-badge">PROMPT DIARIO</div>
               <div class="daily-prompt-content">
               <p>{{ currentDailyPrompt }}</p>
-              <button @click="sendDailyPrompt" class="daily-prompt-button">Saber más</button>
+              <button @click="sendDailyPrompt" class="daily-prompt-button">Preguntar</button>
             </div>
           </div>
         </div>
