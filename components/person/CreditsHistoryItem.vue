@@ -94,7 +94,6 @@ export default {
 
   td {
     padding: 1rem 2rem;
-    border-bottom: 1px solid #141414;
   }
 }
 
