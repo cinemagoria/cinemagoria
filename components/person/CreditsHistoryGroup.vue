@@ -34,8 +34,6 @@ export default {
 <style lang="scss" module>
 @import '~/assets/css/utilities/_variables.scss';
 
-
-
 .row {
   padding: 0;
 }
