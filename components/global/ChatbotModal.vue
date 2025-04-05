@@ -8,16 +8,25 @@
 
       <div class="chatbot-messages" ref="chatbotMessagesContainer">
         <div v-if="!chatBotResponse && chatBotResults.length === 0 && !chatBotLoading" class="chatbot-welcome">
-          <div class="beta-notice">
-            <div class="beta-badge">BETA</div>
-            <p>This feature is in development. AI responses may be inaccurate. If you encounter any issues, please <a href="https://github.com/imprvhub/entercinema/issues/new" target="_blank" rel="noopener noreferrer">report them here.</a></p>
-          </div>
-          
           <div class="examples-section">
             <h5>Try asking:</h5>
             <div class="example-item">"Who directed The Matrix?"</div>
             <div class="example-item">"Who starred in the movie Pulp Fiction?"</div>
             <div class="example-item">"What was the name of the actress of Queen's Gambit?"</div>
+          </div>
+
+          <div class="modern-divider">
+            <span class="divider-line"></span>
+            <span class="divider-text">OR</span>
+            <span class="divider-line"></span>
+          </div>
+
+          <div v-if="currentDailyPrompt" class="daily-prompt-section">
+            <div class="daily-badge">DAILY PROMPT</div>
+              <div class="daily-prompt-content">
+              <p>{{ currentDailyPrompt }}</p>
+              <button @click="sendDailyPrompt" class="daily-prompt-button">Learn More</button>
+            </div>
           </div>
         </div>
 
@@ -140,9 +149,28 @@ export default {
       baseUrl: typeof window !== 'undefined'
                ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://entercinema.com')
                : 'https://entercinema.com',
-       apiUrl: typeof window !== 'undefined'
-              ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:8000/chat' : 'https://entercinema-assistant.vercel.app/chat')
-              : 'https://entercinema-assistant.vercel.app/chat'
+      apiUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+              ? 'https://entercinema-assistant.vercel.app/chat' 
+              : 'https://entercinema-assistant.vercel.app/chat', 
+      predefinedApiUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+              ? 'http://localhost:8000/api' 
+              : 'https://entercinema-predefined.vercel.app/api',
+      currentDailyPrompt: '',
+      dailyPrompts: [
+        "What were Stanley Kubrick's most innovative contributions to cinematography?",
+        "How did the Dogme 95 movement challenge conventional filmmaking?",
+        "What are the defining characteristics of Italian Neorealism and its historical context?",
+        "Which actor turned down the role of Neo in 'The Matrix' before it was offered to Keanu Reeves?",
+        "Who were the pioneering female directors in the New Hollywood era of the 1970s and what obstacles did they face compared to their male counterparts?",
+        "Which actress played two different characters in the same film and was nominated for an Oscar for both performances?",
+        "How did Tarkovsky use the long-take technique in 'Stalker' to create a sense of temporal immersion, and what philosophical significance does this aesthetic choice hold?",
+        "Which Best Picture Oscar nominee was filmed entirely using only natural light?",
+        "Could you identify the dark-haired actress who portrayed a chef in a restaurant drama series where everyone yells and also appeared in a recent episode of Black Mirror?",
+        "What was the first film to use a 3D computer-generated imagery system?",
+        "What is the most expensive film ever made?",
+        "How does the visual representation of Gargantua in Interstellar reconcile the complex physics of rotating black holes with cinematic accessibility?"
+      ],
+      currentPromptIndex: -1
     };
   },
   watch: {
@@ -152,10 +180,15 @@ export default {
           if (this.$refs.chatInput) {
             this.$refs.chatInput.focus();
           }
-           this.resetChatState();
+          this.resetChatState();
+          this.loadDailyPrompt();
         });
       }
     }
+  },
+  
+  created() {
+    this.loadDailyPrompt();
   },
   methods: {
     open() {
@@ -175,6 +208,142 @@ export default {
     closeChatBot() {
        this.close();
     },
+    
+    loadDailyPrompt() {
+      if (this.dailyPrompts.length > 0) {
+        const today = new Date();
+        const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+
+        const promptIndex = dayOfYear % this.dailyPrompts.length;
+        this.currentPromptIndex = promptIndex;
+        this.currentDailyPrompt = this.dailyPrompts[promptIndex];
+      }
+    },
+    
+    sendDailyPrompt() {
+      if (this.currentPromptIndex !== -1 && !this.chatBotLoading) {
+        this.chatBotQuery = this.currentDailyPrompt;
+        this.sendDailyPromptRequest();
+      }
+    },
+    
+    async sendDailyPromptRequest() {
+      if (!this.currentDailyPrompt || this.chatBotLoading) return;
+      
+      this.inputWidth = 100;
+      this.chatBotLoading = true;
+      this.chatBotResponse = '';
+      this.chatBotResults = [];
+      
+      try {
+        const promptIndex = this.currentPromptIndex;
+     
+        const payload = {
+          query: this.currentDailyPrompt,
+          chat_id: this.chatId,
+          prompt_id: `daily_prompt_${promptIndex}`
+        };
+            
+        let response;
+        let usedFallback = false;
+        
+        try {
+          response = await axios({
+            method: 'post',
+            url: this.predefinedApiUrl,
+            data: payload,
+            timeout: 45000,
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          });
+        } catch (primaryError) {
+          console.error('Error with predefined API, attempting fallback:', primaryError);
+          
+          try {
+            const fallbackPayload = {
+              query: this.currentDailyPrompt,
+              chat_id: this.chatId
+            };
+            
+            response = await axios({
+              method: 'post',
+              url: this.apiUrl,
+              data: fallbackPayload,
+              timeout: 45000,
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              }
+            });
+            usedFallback = true;
+          } catch (fallbackError) {
+            console.error('Both APIs failed for daily prompt:', fallbackError);
+            throw primaryError;
+          }
+        }
+        
+        this.chatId = response.data.chat_id || this.chatId || "session";
+        
+        let cleanResponse = response.data.result || '';
+        cleanResponse = cleanResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        cleanResponse = cleanResponse.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        cleanResponse = cleanResponse.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>'); // Cambiado
+        // Eliminar estas dos líneas
+        // cleanResponse = cleanResponse.replace(/<li>(.*?)<\/li>/gs, (match, p1) => `<li>${p1.trim()}</li>`);
+        // cleanResponse = cleanResponse.replace(/(<li>.*?<\/li>)+/gs, '<ul>$&</ul>');
+        cleanResponse = cleanResponse.replace(/\n/g, '<br>');
+        this.chatBotResponse = cleanResponse;
+        
+        if (response.data.media_references && response.data.media_references.length > 0) {
+          await this.fetchMediaDetailsFromBackendReferences(response.data.media_references);
+        } else {
+          this.chatBotResults = [];
+        }
+        
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
+      } catch (error) {
+        console.error('Error fetching from APIs:', error);
+        console.error('Error details:', JSON.stringify(error, null, 2));
+        
+        let errorMessage = 'An error occurred. Please try again.';
+        if (axios.isCancel(error) || (error.code === 'ECONNABORTED' || (error.message && error.message.includes('timeout')))) {
+            errorMessage = 'The request timed out. The AI might be taking too long to respond. Please try again later or rephrase your query.';
+        } else if (error.response) {
+            console.error('Response error data:', error.response.data);
+            errorMessage = `Error ${error.response.status}: ${error.response.data?.detail || 'Failed to process request.'}`;
+            if (error.response.status === 504) {
+                errorMessage = 'The AI service seems to be unavailable or timed out. Please try again later.';
+            } else if (error.response.status === 404) {
+                errorMessage = 'The AI service is currently unavailable. Our team has been notified.';
+            }
+        } else if (error.request) {
+            console.error('Request error:', error.request);
+            errorMessage = 'Network Error: Could not reach the AI service. Please check your connection.';
+        } else {
+            errorMessage = 'An unexpected error occurred while processing your request.';
+        }
+        this.chatBotResponse = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
+        this.chatBotResults = [];
+        
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
+      } finally {
+        this.chatBotLoading = false;
+        setTimeout(() => {
+          this.inputWidth = 0;
+        }, 300);
+        this.$nextTick(() => {
+          if (this.$refs.chatInput) {
+              this.$refs.chatInput.focus();
+          }
+        });
+      }
+    },
 
     scrollCarousel(direction) {
       const carousel = this.$refs.mediaCarousel;
@@ -190,189 +359,190 @@ export default {
     },
 
     async sendChatBotQuery() {
-      const queryToSend = this.chatBotQuery.trim();
-      if (!queryToSend || this.chatBotLoading) return;
-
-      this.inputWidth = 100;
-      this.chatBotLoading = true;
-      this.chatBotResponse = '';
-      this.chatBotResults = [];
-      const currentQuery = this.chatBotQuery;
-      this.chatBotQuery = '';
-
-      try {
-        const response = await axios.post(this.apiUrl, {
-          query: queryToSend,
-          chat_id: this.chatId
-        }, { timeout: 45000 });
-
-        this.chatId = response.data.chat_id;
-
-        let cleanResponse = response.data.result || '';
-        cleanResponse = cleanResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        cleanResponse = cleanResponse.replace(/\*(.*?)\*/g, '<em>$1</em>');
-        cleanResponse = cleanResponse.replace(/^\s*[\*\-]\s+(.*)/gm, '<li>$1</li>');
-        cleanResponse = cleanResponse.replace(/<li>(.*?)<\/li>/gs, (match, p1) => `<li>${p1.trim()}</li>`);
-        cleanResponse = cleanResponse.replace(/(<li>.*?<\/li>)+/gs, '<ul>$&</ul>');
-        cleanResponse = cleanResponse.replace(/\n/g, '<br>');
-        this.chatBotResponse = cleanResponse;
-
-        const mediaReferences = response.data.media_references;
-        if (mediaReferences && mediaReferences.length > 0) {
-          await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
-        } else {
-          this.chatBotResults = [];
-        }
-
-        this.$nextTick(() => {
-          this.scrollToBottom();
-        });
-
-      } catch (error) {
-        console.error('Error fetching from chatbot API:', error);
-        let errorMessage = 'An error occurred. Please try again.';
-        if (axios.isCancel(error) || (error.code === 'ECONNABORTED' || (error.message && error.message.includes('timeout')))) {
-            errorMessage = 'The request timed out. The AI might be taking too long to respond. Please try again later or rephrase your query.';
-        } else if (error.response) {
-            errorMessage = `Error ${error.response.status}: ${error.response.data?.detail || 'Failed to process request.'}`;
-            if (error.response.status === 504) {
-                 errorMessage = 'The AI service seems to be unavailable or timed out. Please try again later.';
-            }
-        } else if (error.request) {
-            errorMessage = 'Network Error: Could not reach the AI service. Please check your connection.';
-        } else {
-            errorMessage = 'An unexpected error occurred while processing your request.';
-        }
-        this.chatBotResponse = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
-        this.chatBotResults = [];
-         this.$nextTick(() => {
-          this.scrollToBottom();
-        });
-      } finally {
-        this.chatBotLoading = false;
-        setTimeout(() => {
-          this.inputWidth = 0;
-        }, 300);
-         this.$nextTick(() => {
-            if (this.$refs.chatInput) {
-                this.$refs.chatInput.focus();
-            }
-         });
-      }
-    },
-
-    async fetchMediaDetailsFromBackendReferences(references) {
-        if (!this.tmdbApiKey) {
-            console.error("TMDB API Key (API_KEY) not configured!");
-            this.chatBotResponse += "<br><small style='color: orange;'>Could not fetch related results (API key missing).</small>";
+            const queryToSend = this.chatBotQuery.trim();
+            if (!queryToSend || this.chatBotLoading) return;
+      
+            this.inputWidth = 100;
+            this.chatBotLoading = true;
+            this.chatBotResponse = '';
             this.chatBotResults = [];
-            return;
-        }
-
-        const results = [];
-        const promises = [];
-        const seenIds = new Set();
-
-        for (const ref of references) {
-            if (!ref || typeof ref !== 'object' || !ref.name || !ref.type) {
-                console.warn('Skipping invalid media reference:', ref);
-                continue;
+            const currentQuery = this.chatBotQuery;
+            this.chatBotQuery = '';
+      
+            try {
+              const response = await axios.post(this.apiUrl, {
+                query: queryToSend,
+                chat_id: this.chatId
+              }, { timeout: 45000 });
+      
+              this.chatId = response.data.chat_id;
+      
+              let cleanResponse = response.data.result || '';
+              cleanResponse = cleanResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+              cleanResponse = cleanResponse.replace(/\*(.*?)\*/g, '<em>$1</em>');
+              cleanResponse = cleanResponse.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>'); // Cambiado
+              // Eliminar estas dos líneas
+              // cleanResponse = cleanResponse.replace(/<li>(.*?)<\/li>/gs, (match, p1) => `<li>${p1.trim()}</li>`);
+              // cleanResponse = cleanResponse.replace(/(<li>.*?<\/li>)+/gs, '<ul>$&</ul>');
+              cleanResponse = cleanResponse.replace(/\n/g, '<br>');
+              this.chatBotResponse = cleanResponse;
+      
+              const mediaReferences = response.data.media_references;
+              if (mediaReferences && mediaReferences.length > 0) {
+                await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+              } else {
+                this.chatBotResults = [];
+              }
+      
+              this.$nextTick(() => {
+                this.scrollToBottom();
+              });
+      
+            } catch (error) {
+              console.error('Error fetching from chatbot API:', error);
+              let errorMessage = 'An error occurred. Please try again.';
+              if (axios.isCancel(error) || (error.code === 'ECONNABORTED' || (error.message && error.message.includes('timeout')))) {
+                  errorMessage = 'The request timed out. The AI might be taking too long to respond. Please try again later or rephrase your query.';
+              } else if (error.response) {
+                  errorMessage = `Error ${error.response.status}: ${error.response.data?.detail || 'Failed to process request.'}`;
+                  if (error.response.status === 504) {
+                       errorMessage = 'The AI service seems to be unavailable or timed out. Please try again later.';
+                  }
+              } else if (error.request) {
+                  errorMessage = 'Network Error: Could not reach the AI service. Please check your connection.';
+              } else {
+                  errorMessage = 'An unexpected error occurred while processing your request.';
+              }
+              this.chatBotResponse = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
+              this.chatBotResults = [];
+               this.$nextTick(() => {
+                this.scrollToBottom();
+              });
+            } finally {
+              this.chatBotLoading = false;
+              setTimeout(() => {
+                this.inputWidth = 0;
+              }, 300);
+               this.$nextTick(() => {
+                  if (this.$refs.chatInput) {
+                      this.$refs.chatInput.focus();
+                  }
+               });
             }
-
-            let searchUrl = '';
-            const params = {
-                api_key: this.tmdbApiKey,
-                query: ref.name,
-                language: 'en-US',
-                page: 1,
-                include_adult: false
-            };
-
-            switch (ref.type.toLowerCase()) {
-                case 'movie':
-                    searchUrl = 'https://api.themoviedb.org/3/search/movie';
-                    break;
-                case 'tv':
-                case 'tv_show':
-                case 'series':
-                    searchUrl = 'https://api.themoviedb.org/3/search/tv';
-                    params.first_air_date_year = ref.year || undefined;
-                    break;
-                case 'person':
-                case 'actor':
-                case 'director':
-                    searchUrl = 'https://api.themoviedb.org/3/search/person';
-                    break;
-                default:
-                    console.warn(`Unsupported media type "${ref.type}" for reference:`, ref);
-                    continue;
-            }
-
-            promises.push(
-                axios.get(searchUrl, { params, timeout: 8000 })
-                .then(response => {
-                    if (response.data?.results?.length > 0) {
-                        const item = response.data.results[0];
-                        const uniqueId = `${ref.type}-${item.id}`;
-
-                        if (item.id && !seenIds.has(uniqueId)) {
-                            seenIds.add(uniqueId);
-                            const formattedItem = {
-                                ...item,
-                                id: item.id,
-                                media_type: ref.type,
-                                url: `${this.baseUrl}/${ref.type}/${item.id}`,
-                                title: ref.type === 'movie' ? item.title : undefined,
-                                name: ref.type !== 'movie' ? item.name : undefined,
-                                poster_path: item.poster_path || (ref.type === 'person' ? item.profile_path : undefined),
-                                profile_path: ref.type === 'person' ? item.profile_path : undefined,
-                                release_date: item.release_date,
-                                first_air_date: item.first_air_date,
-                                vote_average: item.vote_average || 0,
-                                known_for_department: item.known_for_department
-                            };
-                            results.push(formattedItem);
-                        }
-                    } else {
-                         console.warn(`No TMDB results found for: ${ref.name} (Type: ${ref.type})`);
-                    }
-                })
-                .catch(error => {
-                    if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
-                        console.error(`Timeout fetching TMDB data for ${ref.name} (${ref.type})`);
-                    } else {
-                        console.error(`Error fetching TMDB data for ${ref.name} (${ref.type}):`, error.message || error);
-                    }
-                })
-            );
+          },
+      
+          async fetchMediaDetailsFromBackendReferences(references) {
+              if (!this.tmdbApiKey) {
+                  console.error("TMDB API Key (API_KEY) not configured!");
+                  this.chatBotResponse += "<br><small style='color: orange;'>Could not fetch related results (API key missing).</small>";
+                  this.chatBotResults = [];
+                  return;
+              }
+      
+              const results = [];
+              const promises = [];
+              const seenIds = new Set();
+      
+              for (const ref of references) {
+                  if (!ref || typeof ref !== 'object' || !ref.name || !ref.type) {
+                      console.warn('Skipping invalid media reference:', ref);
+                      continue;
+                  }
+      
+                  let searchUrl = '';
+                  const params = {
+                      api_key: this.tmdbApiKey,
+                      query: ref.name,
+                      language: 'en-US',
+                      page: 1,
+                      include_adult: false
+                  };
+      
+                  switch (ref.type.toLowerCase()) {
+                      case 'movie':
+                          searchUrl = 'https://api.themoviedb.org/3/search/movie';
+                          break;
+                      case 'tv':
+                      case 'tv_show':
+                      case 'series':
+                          searchUrl = 'https://api.themoviedb.org/3/search/tv';
+                          params.first_air_date_year = ref.year || undefined;
+                          break;
+                      case 'person':
+                      case 'actor':
+                      case 'director':
+                          searchUrl = 'https://api.themoviedb.org/3/search/person';
+                          break;
+                      default:
+                          console.warn(`Unsupported media type "${ref.type}" for reference:`, ref);
+                          continue;
+                  }
+      
+                  promises.push(
+                      axios.get(searchUrl, { params, timeout: 8000 })
+                      .then(response => {
+                          if (response.data?.results?.length > 0) {
+                              const item = response.data.results[0];
+                              const uniqueId = `${ref.type}-${item.id}`;
+      
+                              if (item.id && !seenIds.has(uniqueId)) {
+                                  seenIds.add(uniqueId);
+                                  const formattedItem = {
+                                      ...item,
+                                      id: item.id,
+                                      media_type: ref.type,
+                                      url: `${this.baseUrl}/${ref.type}/${item.id}`,
+                                      title: ref.type === 'movie' ? item.title : undefined,
+                                      name: ref.type !== 'movie' ? item.name : undefined,
+                                      poster_path: item.poster_path || (ref.type === 'person' ? item.profile_path : undefined),
+                                      profile_path: ref.type === 'person' ? item.profile_path : undefined,
+                                      release_date: item.release_date,
+                                      first_air_date: item.first_air_date,
+                                      vote_average: item.vote_average || 0,
+                                      known_for_department: item.known_for_department
+                                  };
+                                  results.push(formattedItem);
+                              }
+                          } else {
+                               console.warn(`No TMDB results found for: ${ref.name} (Type: ${ref.type})`);
+                          }
+                      })
+                      .catch(error => {
+                          if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+                              console.error(`Timeout fetching TMDB data for ${ref.name} (${ref.type})`);
+                          } else {
+                              console.error(`Error fetching TMDB data for ${ref.name} (${ref.type}):`, error.message || error);
+                          }
+                      })
+                  );
+              }
+      
+              try {
+                  await Promise.all(promises);
+              } catch (e) {
+                   console.error("Error occurred during Promise.all for TMDB fetches:", e);
+              }
+      
+      
+              this.chatBotResults = results.slice(0, 10);
+      
+              if (results.length === 0 && references.some(ref => ref.name && ref.type)) {
+                   this.chatBotResponse += "<br><small style='color: orange;'>Could not fetch details for the related results.</small>";
+              }
+               this.$nextTick(() => {
+                 this.scrollToBottom();
+               });
+          },
+      
+           scrollToBottom() {
+              const container = this.$refs.chatbotMessagesContainer;
+              if (container) {
+                  container.scrollTop = container.scrollHeight;
+              }
+           }
         }
-
-        try {
-            await Promise.all(promises);
-        } catch (e) {
-             console.error("Error occurred during Promise.all for TMDB fetches:", e);
-        }
-
-
-        this.chatBotResults = results.slice(0, 10);
-
-        if (results.length === 0 && references.some(ref => ref.name && ref.type)) {
-             this.chatBotResponse += "<br><small style='color: orange;'>Could not fetch details for the related results.</small>";
-        }
-         this.$nextTick(() => {
-           this.scrollToBottom();
-         });
-    },
-
-     scrollToBottom() {
-        const container = this.$refs.chatbotMessagesContainer;
-        if (container) {
-            container.scrollTop = container.scrollHeight;
-        }
-     }
-  }
-}
-</script>
+      }
+      </script>
 
 <style scoped>
 .chatbot-modal {
@@ -941,6 +1111,23 @@ export default {
       .media-type { padding: 1px 5px; font-size: 8px;}
       .chatbot-welcome p { font-size: 14px; }
       .chatbot-welcome p:last-child { font-size: 12px; }
+      
+      .daily-prompt-section {
+        padding: 15px;
+      }
+      
+      .daily-prompt-section h5 {
+        font-size: 14px;
+      }
+      
+      .daily-prompt-content p {
+        font-size: 13px;
+      }
+      
+      .daily-prompt-button {
+        font-size: 12px;
+        padding: 6px 12px;
+      }
   }
   .chatbot-header {
   display: flex;
@@ -1045,6 +1232,31 @@ export default {
   margin-top: 2px;
 }
 
+.daily-notice {
+  position: relative;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  padding: 16px 20px 16px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  border-left: 3px solid #7FDBF1;
+}
+
+.daily-badge {
+  background-color: #295668;
+  color: white;
+  font-weight: bold;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-size: 10px;
+  text-transform: uppercase;
+  display: inline-block;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
 .beta-notice p {
   margin: 0;
   font-size: 13px;
@@ -1064,6 +1276,67 @@ export default {
 
 .beta-notice a:hover {
   color: #ffffff;
+}
+
+.daily-prompt-section {
+  background: rgba(13, 27, 42, 0.5);
+  border-radius: 10px;
+  padding: 18px;
+  border-left: 3px solid #7FDBF1;
+  border-bottom: 1px solid rgba(127, 219, 241, 0.2);
+  animation: fadeIn 0.5s ease;
+}
+
+.daily-prompt-section h5 {
+  display: flex;
+  align-items: center;
+  margin: 0 0 12px 0;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.new-badge {
+  background-color: #7FDBF1;
+  color: #0D1B2A;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.daily-prompt-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.daily-prompt-content p {
+  color: #e0e0e0;
+  margin-bottom: 15px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.daily-prompt-button {
+  align-self: flex-start;
+  background: linear-gradient(135deg, rgba(127, 219, 241, 0.3) 0%, rgba(0, 136, 204, 0.3) 100%);
+  color: #fff;
+  border: 1px solid rgba(127, 219, 241, 0.5);
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  max-width: 200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.daily-prompt-button:hover {
+  background: linear-gradient(135deg, rgba(127, 219, 241, 0.5) 0%, rgba(0, 136, 204, 0.5) 100%);
+  transform: translateY(-1px);
 }
 
 @media screen and (max-width: 768px) {
@@ -1089,5 +1362,24 @@ export default {
    .chatbot-input {
      flex-shrink: 0;
    }
+}
+.modern-divider {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+  width: 100%;
+  text-align: center;
+}
+
+.divider-line {
+  flex-grow: 1;
+  height: 1px;
+  background-color: #a8d8f0;
+}
+
+.divider-text {
+  padding: 0 15px;
+  font-size: 14px;
+  color: #7FDBF1;
 }
 </style>
