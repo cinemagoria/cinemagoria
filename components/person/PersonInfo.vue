@@ -34,7 +34,7 @@
         <ul class="nolist">
           <li v-if="person.known_for_department">
             <div :class="$style.label">
-              Known For
+              Profesión
             </div>
 
             <div :class="$style.value">
@@ -43,7 +43,7 @@
           </li>
           <li v-if="person.birthday">
             <div :class="$style.label">
-              Born
+              Fecha de Nacimiento
             </div>
 
             <div :class="$style.value">
@@ -53,7 +53,7 @@
           </li>
           <li v-if="person.place_of_birth">
             <div :class="$style.label">
-              Place of Birth
+              Lugar de Nacimiento
             </div>
 
             <div :class="$style.value">
@@ -62,7 +62,7 @@
           </li>
           <li v-if="person.deathday">
             <div :class="$style.label">
-              Died
+              Fallecido
             </div>
 
             <div :class="$style.value">

@@ -3,7 +3,7 @@
     <div :class="$style.head">
       <div :class="$style.filter">
         <label for="credits_category">
-          Department
+          Rol
         </label>
 
         <select
@@ -12,7 +12,7 @@
           :disabled="!categories.length || categories.length === 1"
           @change="filterCredits">
           <option value="all">
-            All
+            Todos
           </option>
 
           <option
@@ -26,7 +26,7 @@
 
       <div :class="$style.filter">
         <label for="credits_media">
-          Media
+          Medio
         </label>
 
         <select
@@ -34,13 +34,13 @@
           v-model="active_media"
           @change="getCredits">
           <option value="combined_credits">
-            All
+            Todos
           </option>
           <option value="movie_credits">
-            Movies
+            Películas
           </option>
           <option value="tv_credits">
-            TV Shows
+            Series de TV
           </option>
         </select>
       </div>

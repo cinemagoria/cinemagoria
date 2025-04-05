@@ -9,7 +9,7 @@
           v-for="season in seasons"
           :key="`season-${season.season}`"
           :value="season.season">
-          Season {{ season.season }}
+          Temporada {{ season.season }}
         </option>
       </select>
 
