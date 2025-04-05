@@ -108,11 +108,19 @@
       <div class="chatbot-input">
         <div class="input-wrapper">
           <input
+            v-if="inputEnabled || !isMobileDevice"
             v-model="chatBotQuery"
             placeholder="Ask about movies, series, actors..."
             @keyup.enter="sendChatBotQuery"
             ref="chatInput"
           >
+            <div 
+              v-else-if="isMobileDevice && !inputEnabled"
+              class="fake-input"
+              @click="enableInput"
+            >
+            Ask about movies, series, actors...
+            </div>
           <div class="input-backdrop" :style="{ width: inputWidth + '%' }"></div>
         </div>
         <button @click="sendChatBotQuery" :disabled="chatBotLoading || !chatBotQuery.trim()" class="send-button">
@@ -138,6 +146,8 @@ export default {
   name: 'ChatbotModal',
   data() {
     return {
+      inputEnabled: false, 
+      isMobileDevice: false,
       chatBotOpen: false,
       chatBotQuery: '',
       chatBotResponse: '',
@@ -190,10 +200,43 @@ export default {
   created() {
     this.loadDailyPrompt();
   },
+  mounted() {
+    window.addEventListener('resize', this.checkMobileDevice);
+    this.$nextTick(() => {
+      if (this.$refs.chatbotMessagesContainer) {
+        this.$refs.chatbotMessagesContainer.addEventListener('click', (event) => {
+          if (event.target === this.$refs.chatbotMessagesContainer) {
+            if (this.isMobileDevice && this.inputEnabled) {
+              this.inputEnabled = false;
+            }
+          }
+        });
+      }
+    });
+  },
+
+  beforeDestroy() {
+    window.addEventListener('resize', this.checkMobileDevice);
+  },
   methods: {
+      checkMobileDevice() {
+        this.isMobileDevice = window.innerWidth <= 768 || 
+          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      },
+      enableInput() {
+      this.inputEnabled = true;
+      this.$nextTick(() => {
+        if (this.$refs.chatInput) {
+          this.$refs.chatInput.focus();
+        }
+      });
+    },
     open() {
       this.chatBotOpen = true;
+      this.checkMobileDevice();
+      this.inputEnabled = !this.isMobileDevice;
     },
+
     close() {
       this.chatBotOpen = false;
     },
@@ -302,7 +345,9 @@ export default {
       } else {
         this.chatBotResults = [];
       }
-
+      if (this.isMobileDevice) {
+        this.inputEnabled = false;
+      }
       this.chatBotQuery = '';
       
       this.$nextTick(() => {
@@ -337,6 +382,9 @@ export default {
       this.$nextTick(() => {
         this.scrollToBottom();
       });
+      if (this.isMobileDevice) {
+        this.inputEnabled = false;
+      }
     } finally {
       this.chatBotLoading = false;
       setTimeout(() => {
@@ -403,6 +451,9 @@ export default {
               this.$nextTick(() => {
                 this.scrollToBottom();
               });
+              if (this.isMobileDevice) {
+                this.inputEnabled = false;
+              }
       
             } catch (error) {
               console.error('Error fetching from chatbot API:', error);
@@ -424,6 +475,9 @@ export default {
                this.$nextTick(() => {
                 this.scrollToBottom();
               });
+              if (this.isMobileDevice) {
+                this.inputEnabled = false;
+              }
             } finally {
               this.chatBotLoading = false;
               setTimeout(() => {
@@ -540,15 +594,20 @@ export default {
                });
           },
       
-           scrollToBottom() {
-              const container = this.$refs.chatbotMessagesContainer;
-              if (container) {
-                  container.scrollTop = container.scrollHeight;
+          scrollToBottom() {
+            const container = this.$refs.chatbotMessagesContainer;
+                    if (container) {
+                        container.scrollTop = container.scrollHeight;
+                        if (this.isMobileDevice) {
+                        if (document.activeElement === this.$refs.chatInput) {
+                          this.$refs.chatInput.blur();
+                        }
+                      }
+                    }
+                }
               }
-           }
-        }
-      }
-      </script>
+            }
+</script>
 
 <style scoped>
 .chatbot-modal {
@@ -1347,27 +1406,34 @@ export default {
 
 @media screen and (max-width: 768px) {
   .chatbot-modal {
-    align-items: flex-start;
-    padding-top: 50px;
+    align-items: center;
+    padding-top: 0;
     padding-bottom: 0;
+    position: fixed;
+    overflow-y: auto;
   }
 
   .chatbot-container {
+    width: 95%;
     height: auto;
-    max-height: 65vh;
-
-    margin-top: 0; 
-    margin-bottom: 20px; 
+    max-height: 80vh;
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
   }
 
-   .chatbot-messages {
-     flex-grow: 1;
-     overflow-y: auto;
-   }
+  .chatbot-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 15px; 
+  }
 
-   .chatbot-input {
-     flex-shrink: 0;
-   }
+  .chatbot-input {
+    position: sticky;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 10;
+  }
 }
 .modern-divider {
   display: flex;
@@ -1387,5 +1453,69 @@ export default {
   padding: 0 15px;
   font-size: 14px;
   color: #7FDBF1;
+}
+.fake-input {
+  flex: 1;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(127, 219, 241, 0.3);
+  border-radius: 8px;
+  padding: 14px 20px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 15px;
+  outline: none;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  height: 48px;
+  box-sizing: border-box;
+  cursor: text;
+  display: flex;
+  align-items: center;
+}
+
+.fake-input:hover {
+  border-color: rgba(127, 219, 241, 0.7);
+  box-shadow: 0 0 0 1px rgba(127, 219, 241, 0.3);
+}
+
+@media screen and (max-width: 768px) {
+  .chatbot-modal {
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: 0;
+    position: fixed;
+    overflow-y: auto;
+  }
+
+  .chatbot-container {
+    width: 95%;
+    height: auto;
+    max-height: 80vh;
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chatbot-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 15px; 
+  }
+
+  .chatbot-input {
+    position: sticky;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 10;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .fake-input {
+    padding: 12px 15px;
+    font-size: 14px;
+    height: 42px;
+  }
 }
 </style>
