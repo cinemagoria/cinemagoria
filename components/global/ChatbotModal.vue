@@ -291,6 +291,10 @@ export default {
       cleanResponse = cleanResponse.replace(/\*(.*?)\*/g, '<em>$1</em>');
       cleanResponse = cleanResponse.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
       cleanResponse = cleanResponse.replace(/\n/g, '<br>');
+      cleanResponse = cleanResponse.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+      cleanResponse = cleanResponse.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+      cleanResponse = cleanResponse.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
+      cleanResponse = cleanResponse.replace(/\n/g, '<br>');
       this.chatBotResponse = cleanResponse;
       
       if (response.data.media_references && response.data.media_references.length > 0) {
@@ -381,10 +385,11 @@ export default {
               let cleanResponse = response.data.result || '';
               cleanResponse = cleanResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
               cleanResponse = cleanResponse.replace(/\*(.*?)\*/g, '<em>$1</em>');
-              cleanResponse = cleanResponse.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>'); // Cambiado
-              // Eliminar estas dos líneas
-              // cleanResponse = cleanResponse.replace(/<li>(.*?)<\/li>/gs, (match, p1) => `<li>${p1.trim()}</li>`);
-              // cleanResponse = cleanResponse.replace(/(<li>.*?<\/li>)+/gs, '<ul>$&</ul>');
+              cleanResponse = cleanResponse.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+              cleanResponse = cleanResponse.replace(/\n/g, '<br>');
+              cleanResponse = cleanResponse.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+              cleanResponse = cleanResponse.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+              cleanResponse = cleanResponse.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
               cleanResponse = cleanResponse.replace(/\n/g, '<br>');
               this.chatBotResponse = cleanResponse;
       
