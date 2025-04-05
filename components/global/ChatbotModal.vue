@@ -31,7 +31,14 @@
         </div>
 
         <div v-if="chatBotLoading && !chatBotResponse && chatBotResults.length === 0" class="reasoning-container">
-          <div class="reasoning-indicator">Reasoning</div>
+          <div class="reasoning-indicator">
+            Reasoning
+            <div class="dots-container">
+              <span class="dot" :class="{ active: dotIndex === 0 }"></span>
+              <span class="dot" :class="{ active: dotIndex === 1 }"></span>
+              <span class="dot" :class="{ active: dotIndex === 2 }"></span>
+            </div>
+          </div>
         </div>
 
         <div v-if="chatBotResponse" class="chatbot-response">
@@ -148,6 +155,7 @@ export default {
     return {
       inputEnabled: false, 
       isMobileDevice: false,
+      dotIndex: 0,
       chatBotOpen: false,
       chatBotQuery: '',
       chatBotResponse: '',
@@ -216,7 +224,11 @@ export default {
   },
 
   beforeDestroy() {
-    window.addEventListener('resize', this.checkMobileDevice);
+    window.removeEventListener('resize', this.checkMobileDevice);
+    if (this.dotAnimationInterval) {
+      clearInterval(this.dotAnimationInterval);
+      this.dotAnimationInterval = null;
+    }
   },
   methods: {
       checkMobileDevice() {
@@ -239,6 +251,16 @@ export default {
 
     close() {
       this.chatBotOpen = false;
+    },
+    startDotAnimation() {
+      if (this.dotAnimationInterval) {
+        clearInterval(this.dotAnimationInterval);
+      }
+      
+      this.dotIndex = 0;
+      this.dotAnimationInterval = setInterval(() => {
+        this.dotIndex = (this.dotIndex + 1) % 3;
+      }, 500);
     },
     resetChatState() {
         this.chatBotQuery = '';
@@ -275,6 +297,7 @@ export default {
     
     this.inputWidth = 100;
     this.chatBotLoading = true;
+    this.startDotAnimation();
     this.chatBotResponse = '';
     this.chatBotResults = [];
     
@@ -386,6 +409,10 @@ export default {
         this.inputEnabled = false;
       }
     } finally {
+      if (this.dotAnimationInterval) {
+        clearInterval(this.dotAnimationInterval);
+        this.dotAnimationInterval = null;
+      }
       this.chatBotLoading = false;
       setTimeout(() => {
         this.inputWidth = 0;
@@ -417,6 +444,7 @@ export default {
       
             this.inputWidth = 100;
             this.chatBotLoading = true;
+            this.startDotAnimation();
             this.chatBotResponse = '';
             this.chatBotResults = [];
             const currentQuery = this.chatBotQuery;
@@ -479,6 +507,10 @@ export default {
                 this.inputEnabled = false;
               }
             } finally {
+              if (this.dotAnimationInterval) {
+                clearInterval(this.dotAnimationInterval);
+                this.dotAnimationInterval = null;
+              }
               this.chatBotLoading = false;
               setTimeout(() => {
                 this.inputWidth = 0;
@@ -733,45 +765,88 @@ export default {
 
 .reasoning-container {
   width: 100%;
-  padding: 30px 0;
-  text-align: center;
-  position: relative;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
+
+
 
 .reasoning-indicator {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  background: rgba(13, 27, 42, 0.7);
+  border: 1px solid rgba(127, 219, 241, 0.4);
+  border-radius: 30px;
+  padding: 12px 25px;
   position: relative;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   color: #7FDBF1;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 500;
-  letter-spacing: 0.8px;
-  background: linear-gradient(90deg, #7FDBF1, #3a95b3);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: pulse 2s infinite;
+  letter-spacing: 1px;
 }
 
-.reasoning-indicator::before, 
-.reasoning-indicator::after {
-  content: "";
-  position: absolute;
-  top: 50%;
+.dots-container {
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+  height: 20px;
+  position: relative;
+  top: 4px;
+}
+
+.dot {
+  width: 2px;
   height: 2px;
-  width: 60px;
-  transform: translateY(-50%);
+  margin: 0 1.5px;
+  border-radius: 50%;
+  background-color: rgba(127, 219, 241, 0.3);
+  display: inline-block;
 }
 
-.reasoning-indicator::before {
-  right: 100%;
-  margin-right: 20px;
-  background: linear-gradient(to right, rgba(127, 219, 241, 0), rgba(127, 219, 241, 0.7));
+.dot.active {
+  background-color: #7FDBF1;
+  animation: pulse 1.4s infinite;
 }
 
-.reasoning-indicator::after {
-  left: 100%;
-  margin-left: 20px;
-  background: linear-gradient(to left, rgba(127, 219, 241, 0), rgba(127, 219, 241, 0.7));
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.8; }
+}
+
+@media screen and (max-width: 768px) {
+  .reasoning-indicator {
+    padding: 10px 20px;
+    font-size: 15px;
+  }
+  
+  .dot {
+    width: 5px;
+    height: 5px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .reasoning-container {
+    padding: 30px 0;
+  }
+  
+  .reasoning-indicator {
+    padding: 8px 18px;
+    font-size: 14px;
+  }
+  
+  .dot {
+    width: 4px;
+    height: 4px;
+  }
 }
 
 @keyframes pulse {
@@ -1122,7 +1197,9 @@ export default {
           max-height: 90vh;
       }
       .chatbot-messages {
-          padding: 15px;
+        padding: 15px;
+        min-height: 200px;
+        padding-bottom: 15px; 
       }
       .chatbot-input {
           padding: 15px;
@@ -1516,6 +1593,11 @@ export default {
     padding: 12px 15px;
     font-size: 14px;
     height: 42px;
+  }
+}
+@media screen and (max-width: 576px) {
+  .chatbot-messages {
+    min-height: 150px;
   }
 }
 </style>
