@@ -2422,4 +2422,25 @@ h3 {
   display: block;
   margin: 0 auto;
 }
+
+@media screen and (max-width: 768px) {
+  .calendar-nav .nav-label {
+    display: none;
+  }
+  
+  .calendar-nav {
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .calendar-controls {
+    padding: 10px;
+  }
+  
+  .calendar-title {
+    font-size: 1rem;
+    padding: 0 5px;
+  }
+}
 </style>
