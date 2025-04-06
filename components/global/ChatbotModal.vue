@@ -7,7 +7,7 @@
       </div>
 
       <div class="chatbot-messages" ref="chatbotMessagesContainer">
-        <div v-if="!chatBotResponse && chatBotResults.length === 0 && !chatBotLoading" class="chatbot-welcome" style="top: 30px; position:relative;">
+        <div v-if="!chatBotResponse && chatBotResults.length === 0 && !chatBotLoading" class="chatbot-welcome" style="top: 5px; position:relative;">
           <div class="examples-section">
             <h5>Prueba preguntar:</h5>
             <div class="example-item">"¿Quién dirigió The Matrix?"</div>
