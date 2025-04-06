@@ -146,6 +146,16 @@
         </button>
       </div>
     </div>
+    <div v-if="spoilerModalOpen" class="spoiler-modal">
+          <div class="spoiler-content">
+            <h3>Alerta de Spoiler</h3>
+            <p>La respuesta podría contener spoilers sobre el plot, twists, finales o otros elementos narrativos.</p>
+            <div class="spoiler-actions">
+              <button @click="showSpoilerContent" class="spoiler-button accept">Puedo con la verdad</button>
+              <button @click="cancelSpoilerContent" class="spoiler-button cancel">Cancelar</button>
+            </div>
+        </div>
+    </div>
   </div>
 </template>
 
@@ -158,6 +168,10 @@ export default {
     return {
       inputEnabled: false, 
       isMobileDevice: false,
+      spoilerModalOpen: false,
+      spoilerResponse: '',
+      pendingSpoilerResponse: null,
+      pendingSpoilerMediaReferences: null,
       dotIndex: 0,
       chatBotOpen: false,
       chatBotQuery: '',
@@ -275,6 +289,40 @@ export default {
        this.close();
     },
 
+    showSpoilerContent() {
+      this.chatBotResponse = this.pendingSpoilerResponse;
+      
+      if (this.pendingSpoilerMediaReferences && this.pendingSpoilerMediaReferences.length > 0) {
+        this.fetchMediaDetailsFromBackendReferences(this.pendingSpoilerMediaReferences);
+      } else {
+        this.chatBotResults = [];
+      }
+      
+      this.pendingSpoilerResponse = null;
+      this.pendingSpoilerMediaReferences = null;
+      this.spoilerModalOpen = false;
+      
+      this.$nextTick(() => {
+        this.scrollToBottom();
+      });
+      
+      if (this.isMobileDevice) {
+        this.inputEnabled = false;
+      }
+    },
+
+    cancelSpoilerContent() {
+      this.pendingSpoilerResponse = null;
+      this.pendingSpoilerMediaReferences = null;
+      this.spoilerModalOpen = false;
+      this.chatBotQuery = '';
+      this.chatBotLoading = false;
+      
+      if (this.$refs.chatInput) {
+        this.$refs.chatInput.focus();
+      }
+    },
+
     loadDailyPrompt() {
       if (this.dailyPrompts.length > 0) {
         const today = new Date();
@@ -363,20 +411,28 @@ async sendDailyPromptRequest() {
     cleanResponse = cleanResponse.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
     cleanResponse = cleanResponse.replace(/\n/g, '<br>');
     this.chatBotResponse = cleanResponse;
-    
-    if (response.data.media_references && response.data.media_references.length > 0) {
-      await this.fetchMediaDetailsFromBackendReferences(response.data.media_references);
-    } else {
-      this.chatBotResults = [];
-    }
-    if (this.isMobileDevice) {
-      this.inputEnabled = false;
-    }
-    this.chatBotQuery = '';
-    
-    this.$nextTick(() => {
-      this.scrollToBottom();
-    });
+      
+    if (response.data.spoilerStatus === "spoiler") {
+        this.pendingSpoilerResponse = cleanResponse;
+        this.pendingSpoilerMediaReferences = response.data.media_references || [];
+        this.spoilerModalOpen = true;
+      } else {
+        this.chatBotResponse = cleanResponse;
+        
+        if (response.data.media_references && response.data.media_references.length > 0) {
+          await this.fetchMediaDetailsFromBackendReferences(response.data.media_references);
+        } else {
+          this.chatBotResults = [];
+        }
+        if (this.isMobileDevice) {
+          this.inputEnabled = false;
+        }
+        this.chatBotQuery = '';
+        
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
+      }
   } catch (error) {
     console.error('Error fetching from APIs:', error);
     console.error('Error details:', JSON.stringify(error, null, 2));
@@ -468,21 +524,27 @@ async sendDailyPromptRequest() {
       cleanResponse = cleanResponse.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
       cleanResponse = cleanResponse.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
       cleanResponse = cleanResponse.replace(/\n/g, '<br>');
-      this.chatBotResponse = cleanResponse;
-
-      const mediaReferences = response.data.media_references;
-      if (mediaReferences && mediaReferences.length > 0) {
-        await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+      if (response.data.spoilerStatus === "spoiler") {
+        this.pendingSpoilerResponse = cleanResponse;
+        this.pendingSpoilerMediaReferences = response.data.media_references || [];
+        this.spoilerModalOpen = true;
       } else {
+        this.chatBotResponse = cleanResponse;
+        const mediaReferences = response.data.media_references;
+        if (mediaReferences && mediaReferences.length > 0) {
+        await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+        } else {
         this.chatBotResults = [];
-      }
-
-      this.$nextTick(() => {
+        }
+                          
+        this.$nextTick(() => {
         this.scrollToBottom();
-      });
-      if (this.isMobileDevice) {
-      this.inputEnabled = false;
+        });
+        if (this.isMobileDevice) {
+        this.inputEnabled = false;
+      }
     }
+                
 
     } catch (error) {
       console.error('Error al obtener respuesta de la API del chatbot:', error);
@@ -1600,4 +1662,113 @@ async sendDailyPromptRequest() {
     min-height: 150px;
   }
 }
+.spoiler-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  animation: fadeIn 0.3s ease;
+}
+
+.spoiler-content {
+  width: 90%;
+  max-width: 500px;
+  background: linear-gradient(135deg, rgba(6, 45, 61, 0.9) 0%, rgba(80, 0, 0, 0.95) 100%);
+  box-shadow: 0 12px 40px 0 rgba(255, 0, 0, 0.3);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 102, 102, 0.5);
+  padding: 25px;
+  text-align: center;
+  transform: translateY(0);
+  animation: slideUp 0.4s ease;
+}
+
+.spoiler-content h3 {
+  color: #fff;
+  margin: 0 0 15px 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.spoiler-content p {
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 25px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.spoiler-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  align-items: stretch;
+}
+
+.spoiler-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px; /* Altura mínima para ambos botones */
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  flex: 1; /* Hace que ambos botones ocupen el mismo espacio */
+  max-width: 45%; /* Evita que los botones se expandan demasiado */
+  white-space: normal; /* Permite que el texto se envuelva en múltiples líneas */
+}
+
+.spoiler-button.accept {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.spoiler-button.accept:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.spoiler-button.cancel {
+  background: rgba(0, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.spoiler-button.cancel:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+@media screen and (max-width: 768px) {
+  .spoiler-content {
+    width: 85%;
+    padding: 20px;
+  }
+  
+  .spoiler-content h3 {
+    font-size: 18px;
+  }
+  
+  .spoiler-content p {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  
+  .spoiler-button {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}
 </style>
+
