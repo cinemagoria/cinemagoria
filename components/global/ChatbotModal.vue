@@ -6,7 +6,7 @@
         <button @click="closeChatBot" class="close-button">×</button>
       </div>
       <div class="chatbot-messages" ref="chatbotMessagesContainer">
-        <div v-if="!chatBotResponse && chatBotResults.length === 0 && !chatBotLoading" class="chatbot-welcome" style="top: 30px; position:relative;">
+        <div v-if="!chatBotResponse && chatBotResults.length === 0 && !chatBotLoading" class="chatbot-welcome" style="top: 5px; position:relative;">
           <div class="examples-section">
             <h5>Try asking:</h5>
             <div class="example-item">"Who directed The Matrix?"</div>
