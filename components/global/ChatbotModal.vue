@@ -149,7 +149,7 @@
     <div v-if="spoilerModalOpen" class="spoiler-modal">
           <div class="spoiler-content">
             <h3>Alerta de Spoiler</h3>
-            <p>La respuesta podría contener spoilers sobre el plot, twists, finales o otros elementos narrativos.</p>
+            <p>La respuesta podría contener spoilers sobre el plot, twists, finales u otros elementos narrativos.</p>
             <div class="spoiler-actions">
               <button @click="showSpoilerContent" class="spoiler-button accept">Puedo con la verdad</button>
               <button @click="cancelSpoilerContent" class="spoiler-button cancel">Cancelar</button>
