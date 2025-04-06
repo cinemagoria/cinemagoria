@@ -17,7 +17,7 @@
           :to="{ name: 'movie' }"
           aria-label="Movies"
           @click.native="clearSearchBeforeNavigate">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <svg xmlns="http://www.w3.org/2000/svg" :class="$style.navIcon" viewBox="0 0 24 24">
             <g fill="none" stroke="#fff" stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round" stroke-linecap="round">
               <path d="M3.2 12.8h19.6v9.5c0 .5-.4.9-1 .9H4.1c-.5 0-1-.4-1-.9v-9.5"/>
               <path d="M3.3 13.1l-2-4.4c-.2-.5 0-1 .5-1.2L18 .8c.5-.2 1.1 0 1.3.5l1.8 4-17.5 7.3"/>
@@ -32,7 +32,7 @@
           :to="{ name: 'advancedsearch' }"
           aria-label="Advanced Search"
           @click.native="clearSearchBeforeNavigate">
-          <img :src="require('~/static/icon-advancedsearch.png')" alt="Advanced Search" style="width: 24px; height: 24px; margin-top: 3px;" />
+          <img :src="require('~/static/icon-advancedsearch.png')" alt="Advanced Search" :class="$style.navIcon" />
         </nuxt-link>
       </li>
       
@@ -42,17 +42,15 @@
           :to="{ name: 'upcoming' }"
           aria-label="upcoming"
           @click.native="clearSearchBeforeNavigate">
-          <img :src="require('~/static/icon-upcoming.png')" alt="Upcoming" style="width: 24px; height: 24px; margin-top: 2px;" />
+          <img :src="require('~/static/icon-upcoming.png')" alt="Upcoming" :class="$style.navIcon" />
         </nuxt-link>
       </li>
       <!-- Ask AI Link -->
       <li>
         <button @click="openAiChat" aria-label="Ask AI" title="Ask AI Assistant">
-          <span class="spark-icon" style="cursor: pointer; display: inline-block; vertical-align: middle; position: relative;">
-            <!-- Beta Tag -->
-            <span style="position: absolute; top: -4px; right: -8px; background-color: #FF5252; color: white; font-size: 8px; padding: 1px 3px; border-radius: 4px; font-weight: bold;">BETA</span>
+          <span :class="$style.sparkIconWrapper">
             <!-- SVG Spark Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6" style="width: 24px; height: 24px; color: white;">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" :class="[$style.navIcon, 'size-6']">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
             </svg>
           </span>
@@ -61,12 +59,12 @@
       <!-- Login/Watchlist Links -->
       <li v-if="!isLoggedIn">
         <nuxt-link exact to="/login" aria-label="Sign In" @click.native="clearSearchBeforeNavigate">
-          <img :src="require('~/static/icon-login.png')" alt="Login" style="width: 24px; height: 24px; margin-top: 2px;" />
+          <img :src="require('~/static/icon-login.png')" alt="Login" :class="$style.navIcon" />
         </nuxt-link>
       </li>
       <li v-else>
         <nuxt-link exact to="/watchlist" aria-label="Watchlist" @click.native="clearSearchBeforeNavigate">
-          <img :src="require('~/static/icon-watchlist.png')" alt="Watchlist" style="width: 24px; height: 24px; margin-top: 2px;" />
+          <img :src="require('~/static/icon-watchlist.png')" alt="Watchlist" :class="$style.navIcon" />
         </nuxt-link>
       </li>
     </ul>
@@ -188,6 +186,10 @@ export default {
     width: 10rem;
     height: 100%;
     border-right: 1px solid $secondary-color;
+    padding: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
   }
 
   ul {
@@ -203,12 +205,15 @@ export default {
     li {
       flex: 1 1 auto; 
       height: 100%;
-      list-style-type: none; 
-
+      list-style-type: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       @media (min-width: $breakpoint-large) { 
-        flex: 0 1 auto; 
-        height: 10rem; 
+        flex: 0 0 auto; 
+        height: 8rem; 
+        margin: 1rem 0;
       }
     }
   }
@@ -220,6 +225,46 @@ export default {
     border: none;
     cursor: pointer;
     color: inherit; 
+  }
+
+  .navIcon {
+    width: 24px;
+    height: 24px;
+    color: white;
+    transition: all 0.2s ease;
+    display: block;
+
+    @media (min-width: $breakpoint-large) {
+      width: 28px;
+      height: 28px;
+      margin: 0 auto;
+    }
+  }
+  
+  .sparkIconWrapper {
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+  }
+  
+  .betaBadge {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background-color: #FF5252;
+    color: white;
+    font-size: 7px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-weight: bold;
+    z-index: 1;
+    
+    @media (min-width: $breakpoint-large) {
+      top: -6px;
+      right: -8px;
+      font-size: 9px;
+    }
   }
 
   a,
