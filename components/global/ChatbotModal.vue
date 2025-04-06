@@ -5,9 +5,8 @@
         <h3>Ask AI</h3>
         <button @click="closeChatBot" class="close-button">×</button>
       </div>
-
       <div class="chatbot-messages" ref="chatbotMessagesContainer">
-        <div v-if="!chatBotResponse && chatBotResults.length === 0 && !chatBotLoading" class="chatbot-welcome">
+        <div v-if="!chatBotResponse && chatBotResults.length === 0 && !chatBotLoading" class="chatbot-welcome" style="top: 30px; position:relative;">
           <div class="examples-section">
             <h5>Try asking:</h5>
             <div class="example-item">"Who directed The Matrix?"</div>
@@ -30,19 +29,34 @@
           </div>
         </div>
 
-        <div v-if="chatBotLoading && !chatBotResponse && chatBotResults.length === 0" class="reasoning-container">
-          <div class="reasoning-indicator">
-            Reasoning
-            <div class="dots-container">
-              <span class="dot" :class="{ active: dotIndex === 0 }"></span>
-              <span class="dot" :class="{ active: dotIndex === 1 }"></span>
-              <span class="dot" :class="{ active: dotIndex === 2 }"></span>
+        <div v-if="chatMessages.length > 0" class="conversation-container">
+          <div v-for="(message, index) in chatMessages" :key="index" class="message-wrapper">
+            <div v-if="message.role === 'user'" class="user-message">
+              <div class="message-content">
+                <p>{{ message.content }}</p>
+              </div>
+            </div>
+            <div v-else-if="message.role === 'assistant'" class="assistant-message">
+              <div class="message-content">
+                <p v-html="message.content"></p>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div v-if="chatBotResponse" class="chatbot-response">
-          <p v-html="chatBotResponse"></p>
+          
+          <div v-if="chatBotLoading && messageWaitingForResponse" class="message-wrapper">
+            <div class="assistant-message">
+              <div class="message-content reasoning-content">
+                <div class="reasoning-indicator">
+                  Reasoning
+                  <div class="dots-container">
+                    <span class="dot" :class="{ active: dotIndex === 0 }"></span>
+                    <span class="dot" :class="{ active: dotIndex === 1 }"></span>
+                    <span class="dot" :class="{ active: dotIndex === 2 }"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div v-if="chatBotResults.length > 0" class="media-carousel">
@@ -175,6 +189,8 @@ export default {
       chatBotResponse: '',
       chatBotLoading: false,
       chatBotResults: [],
+      chatMessages: [],
+      messageWaitingForResponse: false,
       inputWidth: 0,
       chatId: null,
       tmdbApiKey: process.env.API_KEY,
@@ -281,6 +297,8 @@ export default {
         this.chatBotResponse = '';
         this.chatBotResults = [];
         this.chatBotLoading = false;
+        this.chatMessages = [];
+        this.messageWaitingForResponse = false;
         this.inputWidth = 0;
     },
 
@@ -290,6 +308,11 @@ export default {
 
     showSpoilerContent() {
       this.chatBotResponse = this.pendingSpoilerResponse;
+      
+      this.chatMessages.push({
+        role: 'assistant',
+        content: this.pendingSpoilerResponse
+      });
       
       if (this.pendingSpoilerMediaReferences && this.pendingSpoilerMediaReferences.length > 0) {
         this.fetchMediaDetailsFromBackendReferences(this.pendingSpoilerMediaReferences);
@@ -316,6 +339,7 @@ export default {
       this.spoilerModalOpen = false;
       this.chatBotQuery = '';
       this.chatBotLoading = false;
+      this.messageWaitingForResponse = false;
       
       if (this.$refs.chatInput) {
         this.$refs.chatInput.focus();
@@ -345,9 +369,19 @@ export default {
     
     this.inputWidth = 100;
     this.chatBotLoading = true;
+    this.messageWaitingForResponse = true;
     this.startDotAnimation();
     this.chatBotResponse = '';
     this.chatBotResults = [];
+    
+    this.chatMessages.push({
+      role: 'user',
+      content: this.currentDailyPrompt
+    });
+    
+    this.$nextTick(() => {
+      this.scrollToBottom();
+    });
     
     try {
       const promptIndex = this.currentPromptIndex;
@@ -400,6 +434,28 @@ export default {
       
       this.chatId = response.data.chat_id || this.chatId || "session";
       
+      if (response.data.conversation_history && response.data.conversation_history.length > 0) {
+        this.chatMessages = [];
+        response.data.conversation_history.forEach(message => {
+          let formattedContent = message.content || '';
+          if (message.role === 'assistant') {
+            formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+            formattedContent = formattedContent.replace(/\n/g, '<br>');
+            formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+            formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+            formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
+            formattedContent = formattedContent.replace(/\n/g, '<br>');
+          }
+          
+          this.chatMessages.push({
+            role: message.role,
+            content: formattedContent
+          });
+        });
+      }
+      
       let cleanResponse = response.data.result || '';
       cleanResponse = cleanResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       cleanResponse = cleanResponse.replace(/\*(.*?)\*/g, '<em>$1</em>');
@@ -417,6 +473,12 @@ export default {
         this.spoilerModalOpen = true;
       } else {
         this.chatBotResponse = cleanResponse;
+        if (!response.data.conversation_history || response.data.conversation_history.length === 0) {
+          this.chatMessages.push({
+            role: 'assistant',
+            content: cleanResponse
+          });
+        }
         
         if (response.data.media_references && response.data.media_references.length > 0) {
           await this.fetchMediaDetailsFromBackendReferences(response.data.media_references);
@@ -453,7 +515,22 @@ export default {
       } else {
           errorMessage = 'An unexpected error occurred while processing your request.';
       }
-      this.chatBotResponse = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
+      const formattedErrorMessage = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
+      this.chatBotResponse = formattedErrorMessage;
+      if (this.chatMessages.length === 0 || this.chatMessages[this.chatMessages.length - 1].role !== 'user') {
+        const userQuery = typeof queryToSend !== 'undefined' ? queryToSend : this.currentDailyPrompt;
+        
+        this.chatMessages.push({
+          role: 'user',
+          content: userQuery
+        });
+      }
+      
+      this.chatMessages.push({
+        role: 'assistant',
+        content: formattedErrorMessage
+      });
+      
       this.chatBotResults = [];
 
       this.chatBotQuery = '';
@@ -470,6 +547,7 @@ export default {
         this.dotAnimationInterval = null;
       }
       this.chatBotLoading = false;
+      this.messageWaitingForResponse = false;
       setTimeout(() => {
         this.inputWidth = 0;
       }, 300);
@@ -500,11 +578,22 @@ export default {
       
             this.inputWidth = 100;
             this.chatBotLoading = true;
+            this.messageWaitingForResponse = true;
             this.startDotAnimation();
             this.chatBotResponse = '';
             this.chatBotResults = [];
             const currentQuery = this.chatBotQuery;
+
+            this.chatMessages.push({
+              role: 'user',
+              content: queryToSend
+            });
+            
             this.chatBotQuery = '';
+            
+            this.$nextTick(() => {
+              this.scrollToBottom();
+            });
       
             try {
               const response = await axios.post(this.apiUrl, {
@@ -513,6 +602,29 @@ export default {
               }, { timeout: 45000 });
       
               this.chatId = response.data.chat_id;
+
+              if (response.data.conversation_history && response.data.conversation_history.length > 0) {
+                this.chatMessages = [];
+                
+                response.data.conversation_history.forEach(message => {
+                  let formattedContent = message.content || '';
+                  if (message.role === 'assistant') {
+                    formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                    formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+                    formattedContent = formattedContent.replace(/\n/g, '<br>');
+                    formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+                    formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+                    formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
+                    formattedContent = formattedContent.replace(/\n/g, '<br>');
+                  }
+                  
+                  this.chatMessages.push({
+                    role: message.role,
+                    content: formattedContent
+                  });
+                });
+              }
       
               let cleanResponse = response.data.result || '';
                 cleanResponse = cleanResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -530,6 +642,12 @@ export default {
                   this.spoilerModalOpen = true;
                 } else {
                   this.chatBotResponse = cleanResponse;
+                  if (!response.data.conversation_history || response.data.conversation_history.length === 0) {
+                    this.chatMessages.push({
+                      role: 'assistant',
+                      content: cleanResponse
+                    });
+                  }
                   
                   const mediaReferences = response.data.media_references;
                   if (mediaReferences && mediaReferences.length > 0) {
@@ -561,7 +679,14 @@ export default {
               } else {
                   errorMessage = 'An unexpected error occurred while processing your request.';
               }
-              this.chatBotResponse = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
+              const formattedErrorMessage = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
+              this.chatBotResponse = formattedErrorMessage;
+
+              this.chatMessages.push({
+                role: 'assistant',
+                content: formattedErrorMessage
+              });
+              
               this.chatBotResults = [];
                this.$nextTick(() => {
                 this.scrollToBottom();
@@ -575,6 +700,7 @@ export default {
                 this.dotAnimationInterval = null;
               }
               this.chatBotLoading = false;
+              this.messageWaitingForResponse = false;
               setTimeout(() => {
                 this.inputWidth = 0;
               }, 300);
@@ -826,34 +952,26 @@ export default {
     opacity: 0.8;
 }
 
-.reasoning-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+.reasoning-content {
+  background: rgba(13, 27, 42, 0.7) !important;
+  border: 1px solid rgba(127, 219, 241, 0.4) !important;
+  border-left: 3px solid rgba(127, 219, 241, 0.4) !important;
+  padding: 0 !important;
+  min-height: auto !important;
 }
-
-
 
 .reasoning-indicator {
   display: flex;
   align-items: center;
-  background: rgba(13, 27, 42, 0.7);
-  border: 1px solid rgba(127, 219, 241, 0.4);
-  border-radius: 30px;
+  background: transparent;
+  border-radius: 12px;
   padding: 12px 25px;
   position: relative;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   color: #7FDBF1;
   font-size: 16px;
   font-weight: 500;
   letter-spacing: 1px;
+  justify-content: center;
 }
 
 .dots-container {
@@ -1717,7 +1835,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px; /* Altura mínima para ambos botones */
+  min-height: 54px;
   padding: 12px 20px;
   border-radius: 8px;
   font-size: 14px;
@@ -1725,9 +1843,9 @@ export default {
   cursor: pointer;
   transition: all 0.3s ease;
   border: none;
-  flex: 1; /* Hace que ambos botones ocupen el mismo espacio */
-  max-width: 45%; /* Evita que los botones se expandan demasiado */
-  white-space: normal; /* Permite que el texto se envuelva en múltiples líneas */
+  flex: 1; 
+  max-width: 45%;
+  white-space: normal;
 }
 
 .spoiler-button.accept {
@@ -1768,6 +1886,103 @@ export default {
   
   .spoiler-button {
     padding: 10px 16px;
+    font-size: 13px;
+  }
+}
+.conversation-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.message-wrapper {
+  display: flex;
+  flex-direction: column;
+  animation: fadeInMessage 0.3s ease;
+}
+
+@keyframes fadeInMessage {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.user-message {
+  align-self: flex-end;
+}
+
+.assistant-message {
+  align-self: flex-start;
+}
+
+.message-content {
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-message .message-content {
+  background: linear-gradient(135deg, rgba(0, 136, 204, 0.3) 0%, rgba(127, 219, 241, 0.3) 100%);
+  border: 1px solid rgba(127, 219, 241, 0.4);
+  color: #fff;
+  border-top-right-radius: 4px;
+}
+
+.assistant-message .message-content {
+  background: rgba(13, 27, 42, 0.5);
+  border: 1px solid rgba(127, 219, 241, 0.2);
+  border-left: 3px solid rgba(127, 219, 241, 0.4);
+  color: #e0e0e0;
+  border-top-left-radius: 4px;
+}
+
+.message-content p {
+  margin: 0;
+  line-height: 1.5;
+  font-size: 15px;
+  word-wrap: break-word;
+}
+
+.assistant-message .message-content p ::v-deep(strong) {
+  color: #7FDBF1;
+  font-weight: 600;
+}
+
+.assistant-message .message-content p ::v-deep(em) {
+  font-style: italic;
+  color: #a8d8e4;
+}
+
+.assistant-message .message-content p ::v-deep(br) {
+  content: "";
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+@media screen and (max-width: 768px) {
+  .user-message, .assistant-message {
+    max-width: 85%;
+  }
+  
+  .message-content {
+    padding: 10px 14px;
+  }
+  
+  .message-content p {
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .user-message, .assistant-message {
+    max-width: 90%;
+  }
+  
+  .message-content {
+    padding: 8px 12px;
+  }
+  
+  .message-content p {
     font-size: 13px;
   }
 }
