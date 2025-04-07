@@ -156,78 +156,72 @@
     </div>
 
     <!-- Share Modal -->
-    <div v-if="shareModalVisible" class="modal-overlay">
-      <div class="share-modal-content">
-        <button class="close-button" @click="closeShareModal" type="button">X</button>
-        <h2 style="position:relative; bottom:2rem;">Link:</h2>
-        <div style="display: flex; position: relative; margin-bottom: 1rem; justify-content: center; align-items: center; flex-wrap: wrap;">
-          <label :value="shareUrl" readonly ref="shareUrlInput" style="background-color: transparent; color: white; text-align: left; padding: 1rem; margin-top: 1rem; margin-bottom: 1rem; margin: 0; box-sizing: border-box; font-size: 1.4rem !important; line-height: 1.6; flex-shrink: 1; display: inline-block;">
-            {{ shareUrl }}
-          </label>
-          <button @click="copyToClipboard" 
-            type="button"
-            style="background: rgb(8, 45, 62);
-                  color: rgb(255, 255, 255);
-                  border: medium;
-                  padding: 0.5rem 1rem;
-                  border-radius: 1rem;
-                  cursor: pointer;
-                  transition: background 0.3s;
-                  font-size: 1.3rem;
-                  margin-left: 0.5rem;
-                  height: 4rem;
-                  flex-shrink: 0;
-                  bottom: 1rem;
-                  position: relative;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
-            </svg>
-          </button>
-        </div>
-        <div style="margin-top: 1rem; margin-bottom: 1rem;">
-          <h3>Title:</h3>
-          <input type="text" v-model="customTitle" style="background-color: transparent; color:white; width: 100%; padding: 1rem; margin-top: 0.4rem; margin-bottom: 0.4rem; border: 1px solid #ccc; border-radius: 0.5rem; box-sizing: border-box; font-size: 1.6rem; line-height: 1.6;">
-        </div>
-        <div style="margin-top: 1rem; margin-bottom: 1rem;">
-          <h3>Message:</h3>
-          <textarea v-model="customMessage" style="background-color: transparent; color:white; width: 100%; height: 20rem; padding: 1rem; margin-top: 0.4rem; margin-bottom: 0.4rem; border: 1px solid #ccc; border-radius: 0.5rem; box-sizing: border-box; font-size: 1.6rem; line-height: 1.6;"></textarea>
-        </div>
-        <div class="share-buttons" style="margin-top: 2rem;">
-          <h3 style="margin-bottom: 0.4rem;">Share on:</h3>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.8rem; width: 100%;">
-            <button @click="shareTo('whatsapp')" style="background: #082D3E; color: #fff; border: none; padding: 0.5rem; border-radius: 0.5rem; cursor: pointer; transition: background 0.3s ease; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; height: 36px;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
-                <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+      <div v-if="shareModalVisible" class="modal-overlay">
+        <div class="share-modal-content">
+          <div class="share-modal-header">
+            <h2>Share This Content</h2>
+            <button class="close-button" @click="closeShareModal" type="button" aria-label="Close">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
               </svg>
-              <span style="margin-left: 0.4rem;">WhatsApp</span>
-            </button>
-
-            <button @click="shareTo('telegram')" style="background: #082D3E; color: #fff; border: none; padding: 0.5rem; border-radius: 0.5rem; cursor: pointer; transition: background 0.3s ease; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; height: 36px;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-              </svg>
-              <span style="margin-left: 0.4rem;">Telegram</span>
-            </button>
-
-            <button @click="shareTo('twitter')" style="background: #082D3E; color: #fff; border: none; padding: 0.5rem; border-radius: 0.5rem; cursor: pointer; transition: background 0.3s ease; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; height: 36px;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">
-                <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
-              </svg>
-              <span style="margin-left: 0.4rem;">Twitter</span>
-            </button>
-            
-            <button @click="shareTo('email')" style="background: #082D3E; color: #fff; border: none; padding: 0.5rem; border-radius: 0.5rem; cursor: pointer; transition: background 0.3s ease; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; height: 36px;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
-                <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
-              </svg>
-              <span style="margin-left: 0.4rem;">Email</span>
             </button>
           </div>
+          
+          <div class="share-url-container">
+            <label for="share-url" class="share-label">Link</label>
+            <div class="share-url-field">
+              <input id="share-url" type="text" :value="shareUrl" readonly class="share-url-input">
+              <button @click="copyToClipboard" type="button" class="copy-button" aria-label="Copy to clipboard">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <div class="share-field-container">
+            <label for="share-title" class="share-label">Title</label>
+            <input id="share-title" type="text" v-model="customTitle" class="share-input">
+          </div>
+          
+          <div class="share-field-container">
+            <label for="share-message" class="share-label">Message</label>
+            <textarea id="share-message" v-model="customMessage" class="share-textarea"></textarea>
+          </div>
+          
+          <div class="share-buttons-container">
+            <label class="share-label">Share On</label>
+            <div class="share-buttons">
+              <button @click="shareTo('whatsapp')" class="share-icon-button" aria-label="Share on WhatsApp" title="WhatsApp">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+              </button>
+              
+              <button @click="shareTo('telegram')" class="share-icon-button" aria-label="Share on Telegram" title="Telegram">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                </svg>
+              </button>
+              
+              <button @click="shareTo('twitter')" class="share-icon-button" aria-label="Share on Twitter" title="Twitter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </button>
+              
+              <button @click="shareTo('email')" class="share-icon-button" aria-label="Share via Email" title="Email">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z"/>
+                  <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
-      
       </div>
-    </div>
-
     <Modal
       v-if="modalVisible"
       :data="trailer"
@@ -1191,39 +1185,174 @@ export default {
 
 .share-modal-content {
   width: 100%;
-  max-width: 600px;
+  max-width: 480px;
   background: linear-gradient(to bottom right, #092739, #061720);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 0;
+}
+
+.share-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.share-modal-header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: #fff;
 }
 
 .close-button {
   background: none;
   border: none;
   color: rgba(255, 255, 255, 0.6);
-  font-size: 2.4rem;
-  font-weight: 300;
   cursor: pointer;
-  line-height: 1;
-  align-self: flex-end;
-  z-index: 1010;
-  position: relative;
-  padding: 8px;
-  width: 40px;
-  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  padding: 0;
+  margin-top: -1px;
 }
 
 .close-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
   color: #fff;
-  transform: rotate(360deg);
+}
+
+.share-url-container,
+.share-field-container,
+.share-buttons-container {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.share-label {
+  display: block;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 8px;
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.share-url-field {
+  display: flex;
+  align-items: stretch;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.share-url-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #fff;
+  padding: 10px 12px;
+  font-size: 1.4rem;
+  outline: none;
+  height: 100%;
+}
+
+.copy-button {
+  border: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 0;
+  width: 40px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 100%;
+}
+
+.copy-button:hover {
+  color: #fff;
+}
+
+.share-input,
+.share-textarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  padding: 10px 12px;
+  font-size: 1.4rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.share-input:focus,
+.share-textarea:focus {
+  border-color: rgba(139, 233, 253, 0.5);
+}
+
+.share-textarea {
+  height: 120px;
+  resize: none;
+}
+
+.share-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.share-icon-button {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.share-icon-button:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+@media screen and (max-width: 480px) {
+  .share-modal-content {
+    max-width: 100%;
+  }
+  
+  .share-buttons {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .share-url-input, 
+  .share-input, 
+  .share-textarea {
+    font-size: 1.3rem;
+  }
+  
+  .share-icon-button {
+    height: 44px;
+  }
 }
 
 .rating-modal {
