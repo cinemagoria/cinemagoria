@@ -160,7 +160,7 @@
       <div v-if="spoilerModalOpen" class="spoiler-modal">
         <div class="spoiler-content">
           <h3>Spoiler Detected</h3>
-          <p>The answer may contain spoilers about the plot, twists, endings, or other narrative elements.</p>
+          <p>The answer may contain spoilers about plot twists, endings, or other narrative elements.</p>
           <div class="spoiler-actions">
             <button @click="showSpoilerContent" class="spoiler-button accept">I can handle the truth</button>
             <button @click="cancelSpoilerContent" class="spoiler-button cancel">Cancel</button>
