@@ -178,7 +178,7 @@
                       <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
                     </svg>
                   </button>
-                  <span v-if="copySuccess" class="copy-success">Copied!</span>
+                  <span v-if="copySuccess" class="copy-success">Copiado!</span>
                 </div>
             </div>
           </div>
