@@ -308,11 +308,17 @@ export default {
 
     showSpoilerContent() {
       this.chatBotResponse = this.pendingSpoilerResponse;
+
+      const messageExists = this.chatMessages.some(
+        msg => msg.role === 'assistant' && msg.content === this.pendingSpoilerResponse
+      );
       
-      this.chatMessages.push({
-        role: 'assistant',
-        content: this.pendingSpoilerResponse
-      });
+      if (!messageExists) {
+        this.chatMessages.push({
+          role: 'assistant',
+          content: this.pendingSpoilerResponse
+        });
+      }
       
       if (this.pendingSpoilerMediaReferences && this.pendingSpoilerMediaReferences.length > 0) {
         this.fetchMediaDetailsFromBackendReferences(this.pendingSpoilerMediaReferences);
