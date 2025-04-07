@@ -172,12 +172,15 @@
             <label for="share-url" class="share-label">Link</label>
             <div class="share-url-field">
               <input id="share-url" type="text" :value="shareUrl" readonly class="share-url-input">
-              <button @click="copyToClipboard" type="button" class="copy-button" aria-label="Copy to clipboard">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
-                </svg>
-              </button>
+              <div class="copy-button-container">
+                <button @click="copyToClipboard" type="button" class="copy-button" aria-label="Copy to clipboard">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
+                  </svg>
+                </button>
+                <span v-if="copySuccess" class="copy-success">Copied!</span>
+              </div>
             </div>
           </div>
           
@@ -315,6 +318,7 @@ export default {
     return {
       isSingle: this.item.id === this.$route.params.id,
       modalVisible: false,
+      copySuccess: false,
       ratingModalVisible: false,
       isFavorite: false,
       hasAccessToken: false,
@@ -479,8 +483,7 @@ export default {
                   this.hasUserRating = this.userRatingForDb !== '-';
                   this.selectedRating = this.hasUserRating ? parseInt(this.userRatingForDb) : 0;
                 }
-                
-                // Load user review if exists
+
                 if (item[itemKey].details.userReview) {
                   this.userReview = item[itemKey].details.userReview;
                 }
@@ -617,7 +620,10 @@ export default {
     async copyToClipboard() {
       try {
         await navigator.clipboard.writeText(this.shareUrl);
-        alert('URL copied to clipboard!');
+        this.copySuccess = true;
+        setTimeout(() => {
+          this.copySuccess = false;
+        }, 2000);
       } catch (err) {
         console.error('Error copying to clipboard:', err);
       }
@@ -1266,6 +1272,12 @@ export default {
   height: 100%;
 }
 
+.copy-button-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 .copy-button {
   border: none;
   border-left: 1px solid rgba(255, 255, 255, 0.1);
@@ -1279,6 +1291,35 @@ export default {
   cursor: pointer;
   transition: all 0.2s ease;
   min-height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  position: relative;
+  top: -8px;
+}
+
+.copy-success {
+  position: absolute;
+  right: 50px;
+  color: #8BE9FD;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  animation: fadeInOut 2s ease;
+  white-space: nowrap;
+  
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@media screen and (max-width: 480px) {
+  .copy-success {
+    right: auto;
+    top: -30px;
+  }
 }
 
 .copy-button:hover {
