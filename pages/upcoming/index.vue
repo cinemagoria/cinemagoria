@@ -2032,7 +2032,6 @@ body {
     display: block;
     text-align: center;
     background: black;
-    box-shadow: 0 8px 32px 0 rgba(42, 133, 171, 0.37);
     backdrop-filter: blur(16px);
     padding: 10px;
     height: 45px;

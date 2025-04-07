@@ -117,7 +117,12 @@
                     <span style="font-size: 20px; position: relative; bottom: 2px;">★</span>
                   </div>
                   <a :href="getLink(item)" class="item-link">
-                    <img :src="item.details.posterForDb" alt="Poster" class="poster" />
+                    <img 
+                      :src="item.details.posterForDb || fallbackImageUrl" 
+                      :onerror="handleImageError" 
+                      alt="Poster" 
+                      class="poster" 
+                    />
                     <h3>{{ item.details.nameForDb }}</h3>
                   </a>
                 <p>
@@ -365,6 +370,8 @@ export default {
     return {
       showLanguageMenu: false,
       selectedLanguage: 'español',
+      fallbackImageUrl: "https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.png?raw=true",
+      handleImageError: "this.src='https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.png?raw=true'",
       userEmail: '',
       accessToken: '',
       isLoggedIn: false,
@@ -2569,6 +2576,18 @@ export default {
   .review-textarea {
     font-size: 1.2rem;
   }
+}
+.poster {
+  width: 60%; 
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  text-align: center;
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  min-height: 200px;
+  object-fit: cover;
 }
 </style>
 
