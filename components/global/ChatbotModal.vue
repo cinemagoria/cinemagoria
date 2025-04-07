@@ -48,7 +48,7 @@
             <div class="assistant-message">
               <div class="message-content reasoning-content">
                 <div class="reasoning-indicator">
-                  Reasoning
+                  Razonando
                   <div class="dots-container">
                     <span class="dot" :class="{ active: dotIndex === 0 }"></span>
                     <span class="dot" :class="{ active: dotIndex === 1 }"></span>
