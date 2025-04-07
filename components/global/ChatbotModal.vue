@@ -341,11 +341,13 @@ export default {
       this.chatBotLoading = false;
       this.messageWaitingForResponse = false;
       
-      if (this.$refs.chatInput) {
+      if (this.isMobileDevice) {
+        this.inputEnabled = false;
+      } else if (this.$refs.chatInput) {
         this.$refs.chatInput.focus();
       }
     },
-    
+        
     loadDailyPrompt() {
       if (this.dailyPrompts.length > 0) {
         const today = new Date();
@@ -468,32 +470,39 @@ export default {
       this.chatBotResponse = cleanResponse;
       
       if (response.data.spoilerStatus === "spoiler") {
-        this.pendingSpoilerResponse = cleanResponse;
-        this.pendingSpoilerMediaReferences = response.data.media_references || [];
-        this.spoilerModalOpen = true;
-      } else {
-        this.chatBotResponse = cleanResponse;
-        if (!response.data.conversation_history || response.data.conversation_history.length === 0) {
-          this.chatMessages.push({
-            role: 'assistant',
-            content: cleanResponse
-          });
+      this.pendingSpoilerResponse = cleanResponse;
+      this.pendingSpoilerMediaReferences = response.data.media_references || [];
+      this.spoilerModalOpen = true;
+      
+      if (this.isMobileDevice) {
+        this.inputEnabled = false;
+        if (this.$refs.chatInput && document.activeElement === this.$refs.chatInput) {
+          this.$refs.chatInput.blur();
         }
-        
-        if (response.data.media_references && response.data.media_references.length > 0) {
-          await this.fetchMediaDetailsFromBackendReferences(response.data.media_references);
-        } else {
-          this.chatBotResults = [];
-        }
-        if (this.isMobileDevice) {
-          this.inputEnabled = false;
-        }
-        this.chatBotQuery = '';
-        
-        this.$nextTick(() => {
-          this.scrollToBottom();
+      }
+    } else {
+      this.chatBotResponse = cleanResponse;
+      if (!response.data.conversation_history || response.data.conversation_history.length === 0) {
+        this.chatMessages.push({
+          role: 'assistant',
+          content: cleanResponse
         });
       }
+      
+      if (response.data.media_references && response.data.media_references.length > 0) {
+        await this.fetchMediaDetailsFromBackendReferences(response.data.media_references);
+      } else {
+        this.chatBotResults = [];
+      }
+      if (this.isMobileDevice) {
+        this.inputEnabled = false;
+      }
+      this.chatBotQuery = '';
+      
+      this.$nextTick(() => {
+        this.scrollToBottom();
+      });
+    }
     } catch (error) {
       console.error('Error fetching from APIs:', error);
       console.error('Error details:', JSON.stringify(error, null, 2));
@@ -640,6 +649,13 @@ export default {
                   this.pendingSpoilerResponse = cleanResponse;
                   this.pendingSpoilerMediaReferences = response.data.media_references || [];
                   this.spoilerModalOpen = true;
+                  
+                  if (this.isMobileDevice) {
+                    this.inputEnabled = false;
+                    if (this.$refs.chatInput && document.activeElement === this.$refs.chatInput) {
+                      this.$refs.chatInput.blur();
+                    }
+                  }
                 } else {
                   this.chatBotResponse = cleanResponse;
                   if (!response.data.conversation_history || response.data.conversation_history.length === 0) {
@@ -648,7 +664,7 @@ export default {
                       content: cleanResponse
                     });
                   }
-                  
+  
                   const mediaReferences = response.data.media_references;
                   if (mediaReferences && mediaReferences.length > 0) {
                     await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
