@@ -741,26 +741,32 @@ export default {
                   this.chatBotResults = [];
                   return;
               }
-      
+
               const results = [];
               const promises = [];
               const seenIds = new Set();
-      
+              const priorityTypes = {
+                  'person': 1,
+                  'movie': 2,
+                  'tv': 3
+              };
+
               for (const ref of references) {
                   if (!ref || typeof ref !== 'object' || !ref.name || !ref.type) {
                       console.warn('Skipping invalid media reference:', ref);
                       continue;
                   }
-      
+
                   let searchUrl = '';
                   const params = {
                       api_key: this.tmdbApiKey,
                       query: ref.name,
                       language: 'en-US',
                       page: 1,
-                      include_adult: false
+                      include_adult: false,
+                      sort_by: 'popularity.desc'
                   };
-      
+
                   switch (ref.type.toLowerCase()) {
                       case 'movie':
                           searchUrl = 'https://api.themoviedb.org/3/search/movie';
@@ -780,14 +786,18 @@ export default {
                           console.warn(`Unsupported media type "${ref.type}" for reference:`, ref);
                           continue;
                   }
-      
+
                   promises.push(
                       axios.get(searchUrl, { params, timeout: 8000 })
                       .then(response => {
                           if (response.data?.results?.length > 0) {
-                              const item = response.data.results[0];
+                              const sortedResults = response.data.results.sort((a, b) => 
+                                  (b.popularity || 0) - (a.popularity || 0)
+                              );
+                              
+                              const item = sortedResults[0];
                               const uniqueId = `${ref.type}-${item.id}`;
-      
+
                               if (item.id && !seenIds.has(uniqueId)) {
                                   seenIds.add(uniqueId);
                                   const formattedItem = {
@@ -802,12 +812,14 @@ export default {
                                       release_date: item.release_date,
                                       first_air_date: item.first_air_date,
                                       vote_average: item.vote_average || 0,
-                                      known_for_department: item.known_for_department
+                                      known_for_department: item.known_for_department,
+                                      priority: priorityTypes[ref.type.toLowerCase()] || 99,
+                                      popularity: item.popularity || 0
                                   };
                                   results.push(formattedItem);
                               }
                           } else {
-                               console.warn(`No TMDB results found for: ${ref.name} (Type: ${ref.type})`);
+                              console.warn(`No TMDB results found for: ${ref.name} (Type: ${ref.type})`);
                           }
                       })
                       .catch(error => {
@@ -819,22 +831,28 @@ export default {
                       })
                   );
               }
-      
+
               try {
                   await Promise.all(promises);
               } catch (e) {
-                   console.error("Error occurred during Promise.all for TMDB fetches:", e);
+                  console.error("Error occurred during Promise.all for TMDB fetches:", e);
               }
-      
-      
-              this.chatBotResults = results.slice(0, 10);
-      
+
+              const sortedResults = results.sort((a, b) => {
+                  if (a.priority !== b.priority) {
+                      return a.priority - b.priority;
+                  }
+                  return b.popularity - a.popularity;
+              }).slice(0, 10);
+
+              this.chatBotResults = sortedResults;
+
               if (results.length === 0 && references.some(ref => ref.name && ref.type)) {
-                   this.chatBotResponse += "<br><small style='color: orange;'>Could not fetch details for the related results.</small>";
+                  this.chatBotResponse += "<br><small style='color: orange;'>Could not fetch details for the related results.</small>";
               }
-               this.$nextTick(() => {
-                 this.scrollToBottom();
-               });
+              this.$nextTick(() => {
+                  this.scrollToBottom();
+              });
           },
       
           scrollToBottom() {
