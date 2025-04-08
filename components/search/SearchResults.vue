@@ -32,10 +32,7 @@
       <div v-if="suggestedCorrection" class="suggestion">
         <p>Did you mean: <a href="#" @click.prevent="useCorrection">{{ suggestedCorrection }}</a>?</p>
         <p class="discover-more">Or <span class="highlight"><a href="#" @click.prevent="openAiChat" class="discovery-link">Ask AI</a></span> about movies, series, actors and more.</p>
-  </span>
-</p>
       </div>
-      
     </div>
 
     <div class="listing__items">
