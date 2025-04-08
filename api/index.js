@@ -1,6 +1,7 @@
 import axios from 'axios';
 const apiUrl = 'https://api.themoviedb.org/3';
 export const apiImgUrl = 'https://image.tmdb.org/t/p';
+const EXCLUDED_TV_IDS = [276880];
 const lists = {
   movie: [
     { title: 'Relevant Movies', query: 'trending' },
@@ -392,7 +393,7 @@ export function getMovieRecommended (id, page = 1) {
   });
 };
 
-export function getTvShows (query, page = 1) {
+export function getTvShows(query, page = 1) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/tv/${query}`, {
       params: {
@@ -401,6 +402,8 @@ export function getTvShows (query, page = 1) {
         page,
       },
     }).then((response) => {
+      response.data.results = response.data.results.filter(item => !EXCLUDED_TV_IDS.includes(item.id));
+      
       response.data.results.forEach(item => {
         item.vote_average = parseFloat(item.vote_average).toFixed(1);
       });
@@ -527,7 +530,7 @@ export function getTvShowEpisodes (id, season) {
   });
 };
 
-export function getTrending (media, page = 1) {
+export function getTrending(media, page = 1) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/trending/${media}/week`, {
       params: {
@@ -536,6 +539,10 @@ export function getTrending (media, page = 1) {
         page,
       },
     }).then((response) => {
+      if (media === 'tv') {
+        response.data.results = response.data.results.filter(item => !EXCLUDED_TV_IDS.includes(item.id));
+      }
+      
       response.data.results.forEach(item => {
         item.vote_average = parseFloat(item.vote_average).toFixed(1);
       });
