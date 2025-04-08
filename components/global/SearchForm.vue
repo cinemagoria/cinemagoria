@@ -153,27 +153,40 @@ export default {
     },
     ...mapState('search', ['fromPage']),
   },
+
   async mounted() {
-    this.goToRoute = debounce(this.goToRoute, 1000);
-    this.$refs.input.focus();
-    this.showLanguageMenu = false;
-    const email = localStorage.getItem('email');
-    const accessToken = localStorage.getItem('access_token');
-    this.userEmail = email || '';
-    this.hasAccessToken = accessToken !== null;
-    this.isLoggedIn = accessToken !== null;
+  this.goToRoute = debounce(this.goToRoute, 1000);
+  this.$refs.input.focus();
+  this.showLanguageMenu = false;
+  const email = localStorage.getItem('email');
+  const accessToken = localStorage.getItem('access_token');
+  this.userEmail = email || '';
+  this.hasAccessToken = accessToken !== null;
+  this.isLoggedIn = accessToken !== null;
+  this.userAvatar = await getUserAvatar(this.userEmail);
+  this.userName = await getUserName(this.userEmail);
+
+  if (this.isLoggedIn) {
     this.userAvatar = await getUserAvatar(this.userEmail);
     this.userName = await getUserName(this.userEmail);
+  }
+  this.$root.$on('clear-search', this.clearSearch);
+  this.$root.$on('update-search-query', this.updateSearchQuery);
+},
 
-    if (this.isLoggedIn) {
-      this.userAvatar = await getUserAvatar(this.userEmail);
-      this.userName = await getUserName(this.userEmail);
+updateSearchQuery(newQuery) {
+  this.query = newQuery;
+  this.$nextTick(() => {
+    if (this.$refs.input) {
+      this.$refs.input.focus();
     }
-    this.$root.$on('clear-search', this.clearSearch);
-  },
-  beforeDestroy() {
-    this.$root.$off('clear-search', this.clearSearch);
-  },
+  });
+},
+
+beforeDestroy() {
+  this.$root.$off('clear-search', this.clearSearch);
+  this.$root.$off('update-search-query', this.updateSearchQuery);
+},
   methods: {
     toggleLanguageMenu() {
       this.showLanguageMenu = !this.showLanguageMenu;
@@ -228,6 +241,15 @@ export default {
     },
     clearSearch() {
       this.query = '';
+    },
+    
+    updateSearchQuery(newQuery) {
+      this.query = newQuery;
+      this.$nextTick(() => {
+        if (this.$refs.input) {
+          this.$refs.input.focus();
+        }
+      });
     },
 
     goBack() {

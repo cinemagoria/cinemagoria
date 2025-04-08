@@ -5,7 +5,15 @@
       :title="title"
       :items="items"
       :loading="loading"
+      :searchQuery="query"
       @loadMore="loadMore" />
+    
+    <div v-else-if="items && items.results && !items.results.length && !loading" class="no-results-container">
+      <SearchResults
+        :items="{results: [], page: 1, total_pages: 0}"
+        :loading="loading"
+        :searchQuery="query" />
+    </div>
   </main>
 </template>
 
@@ -96,7 +104,12 @@ export default {
       const data = await search(this.query);
 
       if (!data.total_results) {
-        this.items = null;
+        this.items = {
+          results: [],
+          page: 1,
+          total_pages: 0,
+          total_results: 0
+        };
         return;
       }
 
@@ -127,5 +140,12 @@ export default {
   @media (min-width: $breakpoint-large) {
     padding-top: 8rem;
   }
+}
+
+.no-results-container {
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 </style>

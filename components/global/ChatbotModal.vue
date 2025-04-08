@@ -1174,7 +1174,7 @@ scrollToBottom() {
   display: flex;
   justify-content: center;
   align-items: center;
-  
+  z-index: 999999999999;
   animation: fadeIn 0.3s ease;
 }
 
