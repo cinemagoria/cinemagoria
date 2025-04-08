@@ -139,7 +139,6 @@
           ref="chatInput"
         >
         
-        <!-- Input falso (visual) que solo aparece en móviles cuando inputEnabled es false -->
           <div 
             v-else-if="isMobileDevice && !inputEnabled"
             class="fake-input"
@@ -1178,7 +1177,7 @@ scrollToBottom() {
   display: flex;
   justify-content: center;
   align-items: center;
-  
+  z-index: 999999999999;
   animation: fadeIn 0.3s ease;
 }
 
@@ -1664,6 +1663,7 @@ scrollToBottom() {
     justify-content: center;
     transition: all 0.3s ease;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    
   }
   .send-button:hover:not(:disabled) {
     background: linear-gradient(135deg, rgba(127, 219, 241, 0.5) 0%, rgba(0, 136, 204, 0.5) 100%);
@@ -1676,6 +1676,10 @@ scrollToBottom() {
     transform: none;
     background: rgba(127, 219, 241, 0.1);
     border-color: rgba(127, 219, 241, 0.3);
+    position: relative;
+
+
+    
   }
   .send-button svg {
     width: 20px;

@@ -33,7 +33,7 @@
               v-model.trim="query"
               name="search"
               type="text"
-              placeholder="Buscar.."
+              placeholder="Type to search.."
               @keyup="goToRoute"
               @blur="unFocus"
             >
@@ -59,7 +59,7 @@
       </form>
     </div>
     <div :class="$style.userMenu">
-      <!-- Aquí puedes agregar elementos como el selector de idioma y el menú del usuario -->
+      <!---->
   </div>
   </div>
 </template>
@@ -153,27 +153,40 @@ export default {
     },
     ...mapState('search', ['fromPage']),
   },
+
   async mounted() {
-    this.goToRoute = debounce(this.goToRoute, 1000);
-    this.$refs.input.focus();
-    this.showLanguageMenu = false;
-    const email = localStorage.getItem('email');
-    const accessToken = localStorage.getItem('access_token');
-    this.userEmail = email || '';
-    this.hasAccessToken = accessToken !== null;
-    this.isLoggedIn = accessToken !== null;
+  this.goToRoute = debounce(this.goToRoute, 1000);
+  this.$refs.input.focus();
+  this.showLanguageMenu = false;
+  const email = localStorage.getItem('email');
+  const accessToken = localStorage.getItem('access_token');
+  this.userEmail = email || '';
+  this.hasAccessToken = accessToken !== null;
+  this.isLoggedIn = accessToken !== null;
+  this.userAvatar = await getUserAvatar(this.userEmail);
+  this.userName = await getUserName(this.userEmail);
+
+  if (this.isLoggedIn) {
     this.userAvatar = await getUserAvatar(this.userEmail);
     this.userName = await getUserName(this.userEmail);
-
-    if (this.isLoggedIn) {
-      this.userAvatar = await getUserAvatar(this.userEmail);
-      this.userName = await getUserName(this.userEmail);
-    }
+  }
   this.$root.$on('clear-search', this.clearSearch);
-  },
-  beforeDestroy() {
-    this.$root.$off('clear-search', this.clearSearch);
-  },
+  this.$root.$on('update-search-query', this.updateSearchQuery);
+},
+
+updateSearchQuery(newQuery) {
+  this.query = newQuery;
+  this.$nextTick(() => {
+    if (this.$refs.input) {
+      this.$refs.input.focus();
+    }
+  });
+},
+
+beforeDestroy() {
+  this.$root.$off('clear-search', this.clearSearch);
+  this.$root.$off('update-search-query', this.updateSearchQuery);
+},
   methods: {
     toggleLanguageMenu() {
       this.showLanguageMenu = !this.showLanguageMenu;
@@ -197,7 +210,7 @@ export default {
       this.isMenuOpen = !this.isMenuOpen;
     },
 
-    goTowatchlist() {
+    goToWatchlist() {
       this.$router.push('/watchlist');
     },
 
@@ -212,7 +225,7 @@ export default {
     signOut() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('email');
-      window.location.href = 'https://es.entercinema.com/';
+      window.location.href = 'https://entercinema.com/';
     },
     goToRoute() {
       if (this.query) {
@@ -228,6 +241,15 @@ export default {
     },
     clearSearch() {
       this.query = '';
+    },
+    
+    updateSearchQuery(newQuery) {
+      this.query = newQuery;
+      this.$nextTick(() => {
+        if (this.$refs.input) {
+          this.$refs.input.focus();
+        }
+      });
     },
 
     goBack() {
@@ -469,7 +491,6 @@ button {
     cursor: pointer;
   }
 
-
   .dropdown-menu {
     position: relative; 
     width: 113.574px;
@@ -565,4 +586,6 @@ button {
       margin-top: 30px; 
     }
   }
+
+
 </style>
