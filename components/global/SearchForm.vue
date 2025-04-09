@@ -8,9 +8,9 @@
             <button 
               v-if="!isRootPage"
               type="button" 
-              style="padding: 0; background-color: black; top: -3px; left: 5px; position: relative;"
+              style="padding: 0; background-color: black; top: 1.5rem; left: 5px; position: relative;"
               aria-label="Go Back" 
-              class="button"
+              class="button button-back-search"
               @click="goBack">
               <svg xmlns="http://www.w3.org/2000/svg"
                   width="24" 
@@ -42,7 +42,8 @@
               cursor: pointer; 
               position: absolute;
               right: 2%;
-              margin-left: 2rem;"
+              margin-left: 2rem;
+              top: 2rem !important;"
               v-if="showButton"
               type="button"
               aria-label="Close"
@@ -585,4 +586,6 @@ button {
       margin-top: 30px; 
     }
   }
+
+
 </style>

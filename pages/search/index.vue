@@ -135,7 +135,7 @@ export default {
 @import '~/assets/css/utilities/_variables.scss';
 
 .page-search .main {
-  padding-top: 6rem;
+  padding-top: 3rem;
 
   @media (min-width: $breakpoint-large) {
     padding-top: 8rem;
