@@ -158,7 +158,7 @@
     <div v-if="shareModalVisible" class="modal-overlay">
         <div class="share-modal-content">
           <div class="share-modal-header">
-            <h2>Compartir Contenido</h2>
+            <h2>Compartir</h2>
             <button class="close-button" @click="closeShareModal" type="button" aria-label="Close">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
