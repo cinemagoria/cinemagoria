@@ -329,8 +329,6 @@ button {
   align-items: center;
   padding: 0 1.5rem;
   background: none;
-  margin-top: 20px;
-  
 }
 
 

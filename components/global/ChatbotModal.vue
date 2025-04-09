@@ -1595,11 +1595,12 @@ scrollToBottom() {
     border-color: rgba(127, 219, 241, 0.5);
 }
 
+
 .chatbot-input {
   display: flex;
   padding: 15px 25px;
   border-top: 1px solid rgba(127, 219, 241, 0.2);
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.4);
   position: relative;
   flex-shrink: 0;
 }
@@ -1630,7 +1631,7 @@ scrollToBottom() {
     border-radius: 8px;
     padding: 14px 20px;
     color: #fff;
-    font-size: 15px;
+    font-size: 16px;
     outline: none;
     transition: all 0.3s ease;
     position: relative;
@@ -1638,6 +1639,7 @@ scrollToBottom() {
     height: 48px;
     box-sizing: border-box;
   }
+
   .chatbot-input input:focus {
     border-color: rgba(127, 219, 241, 0.7);
     box-shadow: 0 0 0 1px rgba(127, 219, 241, 0.3);
@@ -1647,7 +1649,7 @@ scrollToBottom() {
   }
   
   .send-button {
-    background: linear-gradient(135deg, rgba(127, 219, 241, 0.3) 0%, rgba(0, 136, 204, 0.3) 100%);
+    background: linear-gradient(135deg, rgba(127, 219, 241, 0.4) 0%, rgba(0, 136, 204, 0.4) 100%);
     color: #fff;
     border: 1px solid rgba(127, 219, 241, 0.5);
     border-radius: 8px;
@@ -1785,6 +1787,15 @@ scrollToBottom() {
         padding: 6px 12px;
       }
   }
+
+  @media screen and (max-width: 768px) {
+  .daily-prompt-button {
+    font-size: 12px;
+    padding: 6px 14px;
+    background: rgba(127, 219, 241, 0.1);
+  }
+}
+
   .chatbot-header {
   display: flex;
   justify-content: space-between;
@@ -1935,10 +1946,10 @@ scrollToBottom() {
 }
 
 .daily-prompt-section {
-  background: rgba(13, 27, 42, 0.5);
+  background: rgba(13, 27, 42, 0.4);
   border-radius: 10px;
   padding: 18px;
-  border-left: 3px solid #7FDBF1;
+  border-left: 3px solid rgba(127, 219, 241, 0.5);
   border-bottom: 1px solid rgba(127, 219, 241, 0.2);
   animation: fadeIn 0.5s ease;
 }
@@ -1977,9 +1988,9 @@ scrollToBottom() {
 
 .daily-prompt-button {
   align-self: flex-start;
-  background: linear-gradient(135deg, rgba(127, 219, 241, 0.3) 0%, rgba(0, 136, 204, 0.3) 100%);
-  color: #fff;
-  border: 1px solid rgba(127, 219, 241, 0.5);
+  background: rgba(127, 219, 241, 0.15);
+  color: #e0e0e0;
+  border: 1px solid rgba(127, 219, 241, 0.3);
   border-radius: 6px;
   padding: 8px 16px;
   font-size: 13px;
@@ -1991,7 +2002,7 @@ scrollToBottom() {
 }
 
 .daily-prompt-button:hover {
-  background: linear-gradient(135deg, rgba(127, 219, 241, 0.5) 0%, rgba(0, 136, 204, 0.5) 100%);
+  background: rgba(127, 219, 241, 0.25);
   transform: translateY(-1px);
 }
 
@@ -2053,7 +2064,7 @@ scrollToBottom() {
   border-radius: 8px;
   padding: 14px 20px;
   color: rgba(255, 255, 255, 0.5);
-  font-size: 15px;
+  font-size: 16px;
   outline: none;
   transition: all 0.3s ease;
   position: relative;
@@ -2064,6 +2075,7 @@ scrollToBottom() {
   display: flex;
   align-items: center;
 }
+
 
 .fake-input:hover {
   border-color: rgba(127, 219, 241, 0.7);
@@ -2317,6 +2329,40 @@ scrollToBottom() {
   
   .message-content p {
     font-size: 13px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .chatbot-input input, .fake-input {
+    font-size: 16px;
+    padding: 12px 15px;
+    height: 46px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .chatbot-input input, .fake-input {
+    font-size: 16px;
+    height: 46px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .send-button {
+    width: 46px;
+    height: 46px;
+  }
+  
+  .daily-prompt-section {
+    padding: 15px;
+    background: rgba(13, 27, 42, 0.3);
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .daily-prompt-content p {
+    font-size: 14px;
+    margin-bottom: 12px;
   }
 }
 </style>
