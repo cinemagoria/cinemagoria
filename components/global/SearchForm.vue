@@ -33,7 +33,7 @@
               v-model.trim="query"
               name="search"
               type="text"
-              placeholder="Type to search.."
+              placeholder="Escribe para buscar.."
               @keyup="goToRoute"
               @blur="unFocus"
             >
