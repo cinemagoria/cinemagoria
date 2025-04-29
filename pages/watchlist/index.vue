@@ -93,6 +93,25 @@
                   <option value="">&nbsp;&nbsp;&nbsp;All Years</option>
                   <option v-for="range in yearRanges" :key="range" :value="range">&nbsp;&nbsp;&nbsp;{{ range }}</option>
                 </select>
+                <select @change="filterByTmdbRating" class="tmdb-rating-select">
+                  <option value="">&nbsp;&nbsp;&nbsp;All TMDB Ratings</option>
+                  <option value="9-10">&nbsp;&nbsp;&nbsp;TMDB: 9+</option>
+                  <option value="8-8.9">&nbsp;&nbsp;&nbsp;TMDB: 8+</option>
+                  <option value="7-7.9">&nbsp;&nbsp;&nbsp;TMDB: 7+</option>
+                  <option value="6-6.9">&nbsp;&nbsp;&nbsp;TMDB: 6+</option>
+                  <option value="5-5.9">&nbsp;&nbsp;&nbsp;TMDB: 5+</option>
+                  <option value="0-4.9">&nbsp;&nbsp;&nbsp;TMDB: < 5</option>
+                </select>
+                <select @change="filterByUserRating" class="user-rating-select">
+                  <option value="">&nbsp;&nbsp;&nbsp;All User Ratings</option>
+                  <option value="10">&nbsp;&nbsp;&nbsp;My Rating: 10</option>
+                  <option value="9">&nbsp;&nbsp;&nbsp;My Rating: 9</option>
+                  <option value="8">&nbsp;&nbsp;&nbsp;My Rating: 8</option>
+                  <option value="7">&nbsp;&nbsp;&nbsp;My Rating: 7</option>
+                  <option value="6">&nbsp;&nbsp;&nbsp;My Rating: 6</option>
+                  <option value="5">&nbsp;&nbsp;&nbsp;My Rating: 5</option>
+                  <option value="1-4">&nbsp;&nbsp;&nbsp;My Rating: < 5</option>
+                </select>
                 <br>
               </div>
             </div>
@@ -410,6 +429,14 @@ export default {
         'Excellent, a great experience',
         'Masterpiece, must-see'
       ],
+      selectedTmdbRating: '',
+      selectedUserRating: '',
+      tmdbRatingRanges: [
+        '9-10', '8-8.9', '7-7.9', '6-6.9', '5-5.9', '0-4.9'
+      ],
+      userRatingRanges: [
+        '10', '9', '8', '7', '6', '5', '1-4'
+      ]
     };
   },
   async mounted() {
@@ -552,6 +579,14 @@ export default {
 
     previewRating(rating) {
       this.hoverRating = rating;
+    },
+
+    filterByTmdbRating(event) {
+      this.selectedTmdbRating = event.target.value;
+    },
+    
+    filterByUserRating(event) {
+      this.selectedUserRating = event.target.value;
     },
 
     resetPreview() {
@@ -1027,23 +1062,54 @@ export default {
     },
     
     filteredItems() {
-      const items = this.filter === 'movies' ? this.moviesFetched : this.tvFetched;
-      if (!items) return [];
-      return items.filter(item => {
-        if (!item || !item.details) return false;
-        const matchesGenre = this.selectedGenre === '' || (item.details.genresForDb && item.details.genresForDb.includes(this.selectedGenre));
-        const matchesYear = this.selectedYearRange === '' || 
-          (item.details.yearStartForDb && 
-           this.selectedYearRange.split('-')[0] && 
-           this.selectedYearRange.split('-')[1] && 
-           item.details.yearStartForDb >= this.selectedYearRange.split('-')[0] && 
-           item.details.yearStartForDb <= this.selectedYearRange.split('-')[1]);
-        return matchesGenre && matchesYear;
-      }).sort((a, b) => {
-        if (!a.addedAt || !b.addedAt) return 0;
-        return this.orderText === 'Order Asc' ? new Date(a.addedAt) - new Date(b.addedAt) : new Date(b.addedAt) - new Date(a.addedAt);
-      });
-    },
+    const items = this.filter === 'movies' ? this.moviesFetched : this.tvFetched;
+    if (!items) return [];
+    return items.filter(item => {
+      if (!item || !item.details) return false;
+
+      const matchesGenre = this.selectedGenre === '' || 
+        (item.details.genresForDb && item.details.genresForDb.includes(this.selectedGenre));
+      
+      const matchesYear = this.selectedYearRange === '' || 
+        (item.details.yearStartForDb && 
+         this.selectedYearRange.split('-')[0] && 
+         this.selectedYearRange.split('-')[1] && 
+         item.details.yearStartForDb >= this.selectedYearRange.split('-')[0] && 
+         item.details.yearStartForDb <= this.selectedYearRange.split('-')[1]);
+
+      let matchesTmdbRating = true;
+      if (this.selectedTmdbRating !== '') {
+        const tmdbRating = this.formatRating(item.details.starsForDb);
+        if (!tmdbRating) {
+          matchesTmdbRating = false;
+        } else {
+          const [min, max] = this.selectedTmdbRating.split('-').map(Number);
+          matchesTmdbRating = tmdbRating >= min && tmdbRating <= max;
+        }
+      }
+      
+      let matchesUserRating = true;
+      if (this.selectedUserRating !== '') {
+        if (!item.details.userRatingForDb || item.details.userRatingForDb === '-') {
+          matchesUserRating = false;
+        } else {
+          const userRating = parseInt(item.details.userRatingForDb);
+          if (this.selectedUserRating.includes('-')) {
+            const [min, max] = this.selectedUserRating.split('-').map(Number);
+            matchesUserRating = userRating >= min && userRating <= max;
+          } else {
+            matchesUserRating = userRating === parseInt(this.selectedUserRating);
+          }
+        }
+      }
+      
+      return matchesGenre && matchesYear && matchesTmdbRating && matchesUserRating;
+    }).sort((a, b) => {
+      if (!a.addedAt || !b.addedAt) return 0;
+      return this.orderText === 'Order Asc' ? new Date(a.addedAt) - new Date(b.addedAt) : new Date(b.addedAt) - new Date(a.addedAt);
+    });
+  },
+
 
     yearRanges() {
       return [
@@ -2527,5 +2593,49 @@ export default {
   border: 1px solid rgba(255, 255, 255, 0.18);
   min-height: 200px;
   object-fit: cover;
+}
+
+.tmdb-rating-select,
+.user-rating-select {
+  width: 165.626px;
+  background: rgba(82, 71, 71, 0);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 5px;
+  text-align: center;
+  margin-right: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  padding: 0.8rem 1.5rem; 
+  cursor: pointer;
+  font-size: 1.3rem;
+}
+
+.tmdb-rating-select:hover,
+.user-rating-select:hover {
+  background-color: #084a66;
+}
+
+select.tmdb-rating-select,
+select.user-rating-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem top 50%;
+  background-size: 0.65rem auto;
+  padding-right: 2.5rem;
+}
+
+@media screen and (max-width: 800px) {
+  .tmdb-rating-select,
+  .user-rating-select {
+    width: 40%;
+    margin: 0.5rem;
+    font-size: 1.1rem;
+    padding: 0.7rem 1.2rem;
+  }
 }
 </style>
