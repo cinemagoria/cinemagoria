@@ -1487,7 +1487,7 @@ export default {
 
 
 
-  @media screen and (max-width: 800px) {
+  @media screen and (max-width: 1024px) {
     .button-container {
       display: flex;
       flex-wrap: wrap;
