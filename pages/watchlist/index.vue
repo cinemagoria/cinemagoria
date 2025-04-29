@@ -2689,7 +2689,7 @@ select.user-rating-select {
   padding-right: 2.5rem;
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 1024px) {
   .tmdb-rating-select,
   .user-rating-select {
     width: 40%;
