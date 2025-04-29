@@ -84,15 +84,15 @@
               </option>
             </select>
             <select @change="filterByGenre" class="genre-select">
-              <option value="">&nbsp;&nbsp;&nbsp;Todos los géneros</option>
+              <option value="">&nbsp;&nbsp;&nbsp;Géneros</option>
               <option v-for="genre in uniqueGenres" :key="genre" :value="genre">&nbsp;&nbsp;&nbsp;{{ genre }}</option>
             </select>
             <select @change="filterByYear" class="year-select">
-              <option value="">&nbsp;&nbsp;&nbsp;Todos los años</option>
+              <option value="">&nbsp;&nbsp;&nbsp;Años</option>
               <option v-for="range in yearRanges" :key="range" :value="range">&nbsp;&nbsp;&nbsp;{{ range }}</option>
             </select>
             <select @change="filterByTmdbRating" class="tmdb-rating-select">
-              <option value="">&nbsp;&nbsp;&nbsp;All TMDB Ratings</option>
+              <option value="">&nbsp;&nbsp;&nbsp;Puntajes TMDB</option>
               <option value="9-10">&nbsp;&nbsp;&nbsp;TMDB: 9+</option>
               <option value="8-8.9">&nbsp;&nbsp;&nbsp;TMDB: 8+</option>
               <option value="7-7.9">&nbsp;&nbsp;&nbsp;TMDB: 7+</option>
@@ -101,14 +101,14 @@
               <option value="0-4.9">&nbsp;&nbsp;&nbsp;TMDB: < 5</option>
             </select>
             <select @change="filterByUserRating" class="user-rating-select">
-              <option value="">&nbsp;&nbsp;&nbsp;All User Ratings</option>
-              <option value="10">&nbsp;&nbsp;&nbsp;My Rating: 10</option>
-              <option value="9">&nbsp;&nbsp;&nbsp;My Rating: 9</option>
-              <option value="8">&nbsp;&nbsp;&nbsp;My Rating: 8</option>
-              <option value="7">&nbsp;&nbsp;&nbsp;My Rating: 7</option>
-              <option value="6">&nbsp;&nbsp;&nbsp;My Rating: 6</option>
-              <option value="5">&nbsp;&nbsp;&nbsp;My Rating: 5</option>
-              <option value="1-4">&nbsp;&nbsp;&nbsp;My Rating: < 5</option>
+              <option value="">&nbsp;&nbsp;&nbsp;Mis Puntajes</option>
+              <option value="10">&nbsp;&nbsp;&nbsp;Mi Puntaje: 10</option>
+              <option value="9">&nbsp;&nbsp;&nbsp;Mi Puntaje: 9</option>
+              <option value="8">&nbsp;&nbsp;&nbsp;Mi Puntaje: 8</option>
+              <option value="7">&nbsp;&nbsp;&nbsp;Mi Puntaje: 7</option>
+              <option value="6">&nbsp;&nbsp;&nbsp;Mi Puntaje: 6</option>
+              <option value="5">&nbsp;&nbsp;&nbsp;Mi Puntaje: 5</option>
+              <option value="1-4">&nbsp;&nbsp;&nbsp;Mi Puntaje: < 5</option>
             </select>
           </div>
           <div class="pagination" v-if="filteredItems.length > itemsPerPage">
