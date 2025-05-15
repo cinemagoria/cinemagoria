@@ -1,7 +1,4 @@
-# Welcome to the [EnterCinema](https://entercinema.com/) Project.
-
-> [!TIP]
-> For backend repository click [here](https://github.com/imprvhub/entercinema-drf)
+## Welcome to the [EnterCinema](https://entercinema.com/) Project.
 
 
 ![Guide GIF](./static/previews/entercinema.png)
