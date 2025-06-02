@@ -2077,4 +2077,35 @@ input:not(:checked):focus ~ #helper-text {
     margin-bottom: 0.5rem;
   }
 }
+
+@media screen and (max-width: 800px) {
+  .search-filters {
+    grid-template-columns: 1fr;
+  }
+  
+  .navbar {
+    left: 0;
+  }
+  
+  .movie-grid,
+  .tv-show-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+  }
+  
+  .movie-card h3,
+  .tv-show-card h3 {
+    font-size: 12px;
+  }
+  
+  .movie-card p,
+  .tv-show-card p {
+    font-size: 10px;
+  }
+  
+  .rating-container {
+    transform: scale(0.9);
+  }
+}
 </style>
+
