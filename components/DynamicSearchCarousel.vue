@@ -236,7 +236,7 @@
   
   .carousel__nav-left {
     left: 0;
-    top: 45% !important;
+    top: 40% !important;
   }
   
   .carousel__nav-right {
