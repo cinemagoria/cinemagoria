@@ -45,13 +45,19 @@
           
           <div v-if="chatBotLoading && messageWaitingForResponse" class="message-wrapper">
             <div class="assistant-message">
-              <div class="message-content reasoning-content">
-                <div class="reasoning-indicator">
-                  Reasoning
-                  <div class="dots-container">
-                    <span class="dot" :class="{ active: dotIndex === 0 }"></span>
-                    <span class="dot" :class="{ active: dotIndex === 1 }"></span>
-                    <span class="dot" :class="{ active: dotIndex === 2 }"></span>
+              <div class="message-content streaming-content">
+                <div v-if="isStreaming" class="streaming-response">
+                  <p v-html="streamingText"></p>
+                  <div class="cursor-indicator">|</div>
+                </div>
+                <div v-else class="reasoning-content">
+                  <div class="reasoning-indicator">
+                    Reasoning
+                    <div class="dots-container">
+                      <span class="dot" :class="{ active: dotIndex === 0 }"></span>
+                      <span class="dot" :class="{ active: dotIndex === 1 }"></span>
+                      <span class="dot" :class="{ active: dotIndex === 2 }"></span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -132,7 +138,7 @@
             v-if="inputEnabled || !isMobileDevice"
             v-model="chatBotQuery"
             placeholder="Ask about movies, series, actors..."
-            @keyup.enter="sendChatBotQuery"
+                        @keyup.enter="handleSendAction"
             ref="chatInput"
           >
             <div 
@@ -144,9 +150,11 @@
             </div>
           <div class="input-backdrop" :style="{ width: inputWidth + '%' }"></div>
         </div>
-        <button @click="sendChatBotQuery" :disabled="chatBotLoading || !chatBotQuery.trim()" class="send-button">
-          <span v-if="chatBotLoading" class="loading-indicator">
-            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <button @click="handleSendAction" :disabled="!chatBotQuery.trim() && !chatBotLoading" class="send-button" :class="{ 'stop-button': chatBotLoading }">
+          <span v-if="chatBotLoading" class="stop-indicator">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <rect x="6" y="6" width="12" height="12" rx="2"></rect>
+            </svg>
           </span>
           <span v-else>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -193,6 +201,9 @@ export default {
       messageWaitingForResponse: false,
       inputWidth: 0,
       chatId: null,
+      streamingText: '',
+      isStreaming: false,
+      abortController: null,
       tmdbApiKey: process.env.API_KEY,
       baseUrl: typeof window !== 'undefined'
                ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://entercinema.com')
@@ -259,12 +270,48 @@ export default {
       clearInterval(this.dotAnimationInterval);
       this.dotAnimationInterval = null;
     }
+    if (this.abortController) {
+      this.abortController.abort();
+      this.abortController = null;
+    }
   },
   methods: {
       checkMobileDevice() {
         this.isMobileDevice = window.innerWidth <= 768 || 
           /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       },
+
+    handleSendAction() {
+      if (this.chatBotLoading) {
+        this.stopStreaming();
+      } else {
+        this.sendChatBotQueryStream();
+      }
+    },
+
+    stopStreaming() {
+      if (this.abortController) {
+        this.abortController.abort();
+        this.abortController = null;
+      }
+      this.chatBotLoading = false;
+      this.messageWaitingForResponse = false;
+      this.isStreaming = false;
+      this.streamingText = '';
+      this.chatBotQuery = '';
+      this.inputWidth = 0;
+      
+      if (this.dotAnimationInterval) {
+        clearInterval(this.dotAnimationInterval);
+        this.dotAnimationInterval = null;
+      }
+      
+      if (this.isMobileDevice) {
+        this.inputEnabled = false;
+      } else if (this.$refs.chatInput) {
+        this.$refs.chatInput.focus();
+      }
+    },
       enableInput() {
       this.inputEnabled = true;
       this.$nextTick(() => {
@@ -346,6 +393,22 @@ export default {
       this.chatBotQuery = '';
       this.chatBotLoading = false;
       this.messageWaitingForResponse = false;
+      this.isStreaming = false;
+      this.streamingText = '';
+      
+      if (this.abortController) {
+        this.abortController.abort();
+        this.abortController = null;
+      }
+      
+      if (this.dotAnimationInterval) {
+        clearInterval(this.dotAnimationInterval);
+        this.dotAnimationInterval = null;
+      }
+      
+      setTimeout(() => {
+        this.inputWidth = 0;
+      }, 300);
       
       if (this.isMobileDevice) {
         this.inputEnabled = false;
@@ -353,7 +416,202 @@ export default {
         this.$refs.chatInput.focus();
       }
     },
+    async sendChatBotQueryStream() {
+      const queryToSend = this.chatBotQuery.trim();
+      if (!queryToSend || this.chatBotLoading) return;
+
+      this.inputWidth = 100;
+      this.chatBotLoading = true;
+      this.messageWaitingForResponse = true;
+      this.startDotAnimation();
+      this.chatBotResponse = '';
+      this.chatBotResults = [];
+      this.streamingText = '';
+      this.isStreaming = false;
+      
+      this.abortController = new AbortController();
+      const currentQuery = this.chatBotQuery;
+
+      this.chatMessages.push({
+        role: 'user',
+        content: queryToSend
+      });
+      
+      this.chatBotQuery = '';
+      
+      this.$nextTick(() => {
+        this.scrollToBottom();
+      });
+
+      try {
+        const streamUrl = this.apiUrl.replace('/chat', '/stream');
         
+        const response = await fetch(streamUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'text/event-stream'
+          },
+          body: JSON.stringify({
+            query: queryToSend,
+            chat_id: this.chatId,
+            stream: true
+          }),
+          signal: this.abortController.signal
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          
+          if (done) break;
+          
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop();
+          
+          for (const line of lines) {
+            if (line.trim() === '') continue;
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6));
+                
+                if (data.type === 'start') {
+                  this.chatId = data.chat_id;
+                  this.isStreaming = true;
+                  if (this.dotAnimationInterval) {
+                    clearInterval(this.dotAnimationInterval);
+                    this.dotAnimationInterval = null;
+                  }
+                } else if (data.type === 'chunk') {
+                  this.streamingText += data.content;
+                  this.$nextTick(() => {
+                    this.scrollToBottom();
+                  });
+                } else if (data.type === 'complete') {
+                  this.isStreaming = false;
+                  this.messageWaitingForResponse = false;
+                  this.chatBotLoading = false;
+                  
+                  if (data.conversation_history && data.conversation_history.length > 0) {
+                    this.chatMessages = [];
+                    data.conversation_history.forEach(message => {
+                      let formattedContent = message.content || '';
+                      if (message.role === 'assistant') {
+                        formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                        formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                        formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+                        formattedContent = formattedContent.replace(/\n/g, '<br>');
+                        formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+                        formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+                        formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
+                        formattedContent = formattedContent.replace(/\n/g, '<br>');
+                      }
+                      
+                      this.chatMessages.push({
+                        role: message.role,
+                        content: formattedContent
+                      });
+                    });
+                  }
+
+                  if (data.spoilerStatus === "spoiler") {
+                    const lastMessage = this.chatMessages[this.chatMessages.length - 1];
+                    this.pendingSpoilerResponse = lastMessage.content;
+                    this.pendingSpoilerMediaReferences = data.media_references || [];
+                    this.spoilerModalOpen = true;
+                    
+                    this.chatMessages.pop();
+                    
+                    if (this.isMobileDevice) {
+                      this.inputEnabled = false;
+                    }
+                  } else {
+                    if (data.media_references && data.media_references.length > 0) {
+                      await this.fetchMediaDetailsFromBackendReferences(data.media_references);
+                    } else {
+                      this.chatBotResults = [];
+                    }
+                    
+                    this.$nextTick(() => {
+                      this.scrollToBottom();
+                    });
+                    if (this.isMobileDevice) {
+                      this.inputEnabled = false;
+                    }
+                  }
+                  
+                  this.streamingText = '';
+                } else if (data.type === 'error') {
+                  throw new Error(data.message || 'An error occurred during streaming');
+                }
+              } catch (parseError) {
+                console.error('Error parsing SSE data:', parseError, 'Raw line:', line);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          console.log('Streaming was cancelled by user');
+          return;
+        }
+        
+        console.error('Error in streaming:', error);
+        
+        let errorMessage = 'An error occurred. Please try again.';
+        if (error.message && error.message.includes('timeout')) {
+          errorMessage = 'The request timed out. Please try again later.';
+        } else if (error.message && error.message.includes('HTTP')) {
+          errorMessage = `Server error: ${error.message}`;
+        } else if (error.message && error.message.includes('network')) {
+          errorMessage = 'Network error. Please check your connection.';
+        }
+        
+        const formattedErrorMessage = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
+        
+        this.chatMessages.push({
+          role: 'assistant',
+          content: formattedErrorMessage
+        });
+        
+        this.chatBotResults = [];
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
+        
+        if (this.isMobileDevice) {
+          this.inputEnabled = false;
+        }
+      } finally {
+        if (this.dotAnimationInterval) {
+          clearInterval(this.dotAnimationInterval);
+          this.dotAnimationInterval = null;
+        }
+        this.chatBotLoading = false;
+        this.messageWaitingForResponse = false;
+        this.isStreaming = false;
+        this.streamingText = '';
+        this.abortController = null;
+        
+        setTimeout(() => {
+          this.inputWidth = 0;
+        }, 300);
+        
+        this.$nextTick(() => {
+          if (this.$refs.chatInput) {
+            this.$refs.chatInput.focus();
+          }
+        });
+      }
+    },
     loadDailyPrompt() {
       if (this.dailyPrompts.length > 0) {
         const today = new Date();
@@ -974,7 +1232,6 @@ export default {
               console.error("Error occurred during Promise.all for TMDB fetches:", e);
           }
 
-          // Separar resultados por tipo (personas y medios)
           const personResults = results
               .filter(item => item.media_type.toLowerCase() === 'person')
               .sort((a, b) => b.popularity - a.popularity);
@@ -1291,6 +1548,40 @@ scrollToBottom() {
   border-left: 3px solid rgba(127, 219, 241, 0.4) !important;
   padding: 0 !important;
   min-height: auto !important;
+}
+
+.streaming-content {
+  background: rgba(13, 27, 42, 0.5) !important;
+  border: 1px solid rgba(127, 219, 241, 0.2) !important;
+  border-left: 3px solid rgba(127, 219, 241, 0.4) !important;
+  color: #e0e0e0 !important;
+  border-top-left-radius: 4px !important;
+  padding: 12px 16px !important;
+  min-height: auto !important;
+}
+
+.streaming-response {
+  position: relative;
+  line-height: 1.5;
+}
+
+.streaming-response p {
+  margin: 0;
+  color: #e0e0e0;
+  font-size: 15px;
+  word-wrap: break-word;
+}
+
+.cursor-indicator {
+  display: inline-block;
+  animation: blink 1s infinite;
+  color: #7FDBF1;
+  font-weight: bold;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
 }
 
 .reasoning-indicator {
@@ -1674,6 +1965,30 @@ scrollToBottom() {
     transform: none;
     background: rgba(127, 219, 241, 0.1);
     border-color: rgba(127, 219, 241, 0.3);
+  }
+  
+  .send-button.stop-button {
+    background: linear-gradient(135deg, rgba(255, 82, 82, 0.4) 0%, rgba(139, 0, 0, 0.4) 100%);
+    border-color: rgba(255, 82, 82, 0.5);
+  }
+  
+  .send-button.stop-button:hover {
+    background: linear-gradient(135deg, rgba(255, 82, 82, 0.6) 0%, rgba(139, 0, 0, 0.6) 100%);
+    border-color: rgba(255, 82, 82, 0.8);
+  }
+  
+  .stop-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .stop-indicator svg {
+    width: 16px;
+    height: 16px;
+    fill: white;
   }
   .send-button svg {
     width: 20px;
