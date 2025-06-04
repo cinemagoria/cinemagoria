@@ -1672,10 +1672,10 @@ input:not(:checked):focus ~ #helper-text {
     transform: scale(0.9);
   }
 
-  .column {
+.column {
     padding: 0 10px;
-  }
 }
+
 
 .language-menu {
   position: absolute;
