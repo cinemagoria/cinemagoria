@@ -10,9 +10,12 @@
           <br>
           <h1 class="text-white text-center"><b>¡Bienvenid@ Nuevamente!</b></h1>
           <h3 class="text-white text-center"><b>Inicia sesión con tu cuenta:</b></h3>
-          <br>
           <div class="form">
             <form @submit.prevent="login">
+              <GoogleLogin buttonText="Iniciar sesión con Google" />
+              <div class="divider">
+                <span>o</span>
+              </div>
               <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" v-model="email" style="transform: translate(11.2765px, 0px);" placeholder="juanperez@email.com" required>
@@ -37,11 +40,6 @@
                 <br>
               </div>
               
-              <div class="divider">
-                <span>o</span>
-              </div>
-              
-              <GoogleLogin buttonText="Iniciar sesión con Google" />
             </form>
             <br>
             <br>
