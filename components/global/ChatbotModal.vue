@@ -1584,7 +1584,6 @@ scrollToBottom() {
 
 .reasoning-content {
   background: rgba(13, 27, 42, 0.7) !important;
-  border: 1px solid rgba(127, 219, 241, 0.4) !important;
   border-left: 3px solid rgba(127, 219, 241, 0.4) !important;
   padding: 0 !important;
   min-height: auto !important;
