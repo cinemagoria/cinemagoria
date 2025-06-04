@@ -284,84 +284,35 @@
       </div>  
       </div>
       <div class="column">
-      <br>
-      <div v-if="movies.length > 0">
         <br>
-        <h3 style="width: 90%; margin: 0 auto;">{{ moviesTitle }}</h3>
-        <br>
-        <div class="movie-grid" style="width: 90%; margin: 0 auto;">
-          <router-link v-for="movie in movies" :key="movie.id" :to="'/movie/' + movie.id" target="_blank">
-            <div class="movie-card">
-              <div v-if="movie.backdrop_path" class="movie-image-container">
-                <img :src="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path" :alt="movie.title" class="movie-image">
-                
-                  <div class="details-container">
-                    <div class="card-background">
-                      <h3>{{ truncateTitle(movie.title) }}</h3>
-                      <p>{{ extractYear(movie.release_date) }}</p>
-                      <p v-if="movieRatings[movie.id]">Puntaje: {{ movieRatings[movie.id].toFixed(1) }}</p>
-                    </div>
-                  </div>
-               
-              </div>
-              <div v-else class="movie-card">
-                <img src="~/static/image_not_found.png" :alt="movie.title" class="movie-image">
-                
-                  <div class="details-container">
-                    <div class="card-background">
-                      <h3>{{ truncateTitle(movie.title) }}</h3>
-                      <p>{{ extractYear(movie.release_date) }}</p>
-                      <p v-if="movieRatings[movie.id]">Puntaje: {{ movieRatings[movie.id].toFixed(1) }}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-          </router-link>
+
+        <DynamicSearchCarousel
+          v-if="movies.length > 0"
+          :title="moviesTitle"
+          :items="movies"
+          type="movie"
+        />
+
+        <DynamicSearchCarousel
+          v-if="tvShows.length > 0"
+          :title="tvShowsTitle"
+          :items="tvShows"
+          type="tv"
+        />
+
+        <div v-else>
+          <p style="text-align: center; font-size: 13px; padding: 4rem; color: #7FDBF1;" v-if="searchPerformed && movies.length === 0 && tvShows.length === 0">
+            No hay resultados disponibles. Intente refinar los parámetros de búsqueda.
+          </p>
         </div>
       </div>
-
-      <div v-if="tvShows.length > 0">
-        <br>
-        <h3 style="width: 90%; margin: 0 auto;">{{ tvShowsTitle }}</h3>
-        <br>
-        <div class="tv-show-grid" style="width: 90%; margin: 0 auto;">
-          <router-link v-for="tvShow in tvShows" :key="tvShow.id" :to="'/tv/' + tvShow.id" target="_blank">
-            <div class="tv-show-card">
-              <div v-if="tvShow.backdrop_path" class="movie-image-container">
-                <img :src="'https://image.tmdb.org/t/p/w500' + tvShow.backdrop_path" :alt="tvShow.name" class="tv-show-image">
-                <div class="card-background">
-                  <div class="details-container">
-                    <h3>{{ truncateTitle(tvShow.name) }}</h3>
-                    <p>{{ extractYear(tvShow.first_air_date) }}</p>
-                    <p v-if="tvShowRatings[tvShow.id]">Puntaje: {{ tvShowRatings[tvShow.id].toFixed(1) }}</p>
-                  </div>
-                </div>
-              </div>
-              <div v-else class="tv-show-card">
-                <img src="~/static/image_not_found.png" :alt="tvShow.name" class="tv-show-image">
-                <div class="card-background">
-                  <div class="details-container">
-                    <h3>{{ truncateTitle(tvShow.name) }}</h3>
-                    <p>{{ extractYear(tvShow.first_air_date) }}</p>
-                    <p v-if="tvShowRatings[tvShow.id]">Puntaje: {{ tvShowRatings[tvShow.id].toFixed(1) }}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </router-link>
-        </div>
-      </div>
-
-      <div v-else>
-        <p style="text-align: center; font-size: 13px; padding: 4rem; color: #7FDBF1;" v-if="searchPerformed && movies.length === 0 && tvShows.length === 0">No se encontraron resultados para estos parámetros de búsqueda. Intenta refinar tu búsqueda.</p>
-      </div>
-    </div>
   </main>
 </template>
 
 <script>
 import DatePicker from 'vue2-datepicker';
 import supabase from '@/services/supabase';
+import DynamicSearchCarousel from '@/components/DynamicSearchCarousel.vue';
 import 'vue2-datepicker/index.css';
 import '@/assets/css/components/_datepicker.scss';
 
@@ -406,7 +357,8 @@ async function getUserName(userEmail) {
 
 export default {
   components: {
-    DatePicker
+    DatePicker,
+    DynamicSearchCarousel
   },
   data() {
     return {
@@ -500,419 +452,415 @@ export default {
 
   methods: {
     updateGenres() {
-    this.selectedSearchGenre = '';
-  },
+        this.selectedSearchGenre = '';
+      },
 
-  async searchMovies() {
-    this.searchPerformed = false; 
-    this.loading = true;
-    this.movies = [];
-    const apiKey = process.env.API_KEY;
-    const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : this.releaseYear; 
-    let baseUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&include_adult=false&include_video=false&language=es-ES&sort_by=${this.selectedSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}&primary_release_year=${year}`;
-    if (this.selectedMinRating) {
-      baseUrl += `&vote_average.gte=${this.selectedMinRating}`;
-    }
-    if (this.selectedOriginCountry) {
-      baseUrl += `&with_origin_country=${this.selectedOriginCountry}`;
-    }
+      async searchMovies() {
+        this.searchPerformed = false; 
+        this.loading = true;
+        this.movies = [];
+        const apiKey = process.env.API_KEY;
+        const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : this.releaseYear; 
+        let baseUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&include_adult=false&include_video=false&language=en-US&sort_by=${this.selectedSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}&primary_release_year=${year}`;
+        if (this.selectedMinRating) {
+          baseUrl += `&vote_average.gte=${this.selectedMinRating}`;
+        }
+        if (this.selectedOriginCountry) {
+          baseUrl += `&with_origin_country=${this.selectedOriginCountry}`;
+        }
 
-    try {
-      const responses = await Promise.all([
-        fetch(`${baseUrl}&page=1`),
-        fetch(`${baseUrl}&page=2`),
-        fetch(`${baseUrl}&page=3`),
-        fetch(`${baseUrl}&page=4`),
-      ]);
-      const data1 = await responses[0].json();
-      const data2 = await responses[1].json();
-      const data3 = await responses[2].json();
-      const data4 = await responses[3].json();
-      this.movies = [...data1.results, ...data2.results, ...data3.results, ...data4.results];
-      this.movies.forEach(movie => {
-        this.$set(this.movieRatings, movie.id, movie.vote_average);
-      });   
-      this.loading = false;
-      this.searchPerformed = true; 
-    } catch (error) {
-      console.error('Error fetching movies:', error);
-    }
-  },
+        try {
+          const responses = await Promise.all([
+            fetch(`${baseUrl}&page=1`),
+            fetch(`${baseUrl}&page=2`),
+            fetch(`${baseUrl}&page=3`),
+            fetch(`${baseUrl}&page=4`),
+          ]);
+          const data1 = await responses[0].json();
+          const data2 = await responses[1].json();
+          const data3 = await responses[2].json();
+          const data4 = await responses[3].json();
+          this.movies = [...data1.results, ...data2.results, ...data3.results, ...data4.results];
+          this.movies.forEach(movie => {
+            this.$set(this.movieRatings, movie.id, movie.vote_average);
+          });   
+          this.loading = false;
+          this.searchPerformed = true; 
+        } catch (error) {
+          console.error('Error fetching movies:', error);
+        }
+      },
 
-  async searchTv() {
-    this.searchPerformed = false; 
-    this.loading = true;
-    this.tvShows = [];
-    const apiKey = process.env.API_KEY;
-    const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : this.releaseYear;
-    let baseUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&include_adult=false&include_video=false&language=es-ES&sort_by=${this.selectedSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}&first_air_date_year=${year}`;
-    if (this.selectedMinRating) {
-      baseUrl += `&vote_average.gte=${this.selectedMinRating}`;
-    }
-    if (this.selectedOriginCountry) {
-      baseUrl += `&with_origin_country=${this.selectedOriginCountry}`;
-    }
-    if (this.selectedWatchProvider) {
-      baseUrl += `&with_networks=${this.selectedWatchProvider}`;
-    }
+      async searchTv() {
+        this.searchPerformed = false; 
+        this.loading = true;
+        this.tvShows = [];
+        const apiKey = process.env.API_KEY;
+        const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : this.releaseYear;
+        let baseUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&include_adult=false&include_video=false&language=en-US&sort_by=${this.selectedSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}&first_air_date_year=${year}`;
+        if (this.selectedMinRating) {
+          baseUrl += `&vote_average.gte=${this.selectedMinRating}`;
+        }
+        if (this.selectedOriginCountry) {
+          baseUrl += `&with_origin_country=${this.selectedOriginCountry}`;
+        }
+        if (this.selectedWatchProvider) {
+          baseUrl += `&with_networks=${this.selectedWatchProvider}`;
+        }
 
-    try {
-      const responses = await Promise.all([
-        fetch(`${baseUrl}&page=1`),
-        fetch(`${baseUrl}&page=2`)
-      ]);
-      const data1 = await responses[0].json();
-      const data2 = await responses[1].json();
-      this.tvShows = [...data1.results, ...data2.results];
-      
-      this.tvShows.forEach(tvShow => {
-        this.$set(this.tvShowRatings, tvShow.id, tvShow.vote_average);
-      });
-      this.loading = false;
-      this.searchPerformed = true; 
-    } catch (error) {
-      console.error('Error fetching TV shows:', error);
-    }
-  },
- 
-  disabledFutureDates(date) {
-    const currentYear = new Date().getFullYear();
-    const firstMovieYear = 1888;
-    return date > new Date() || date.getFullYear() < firstMovieYear || date.getFullYear() > currentYear;
-  },
+        try {
+          const responses = await Promise.all([
+            fetch(`${baseUrl}&page=1`),
+            fetch(`${baseUrl}&page=2`)
+          ]);
+          const data1 = await responses[0].json();
+          const data2 = await responses[1].json();
+          this.tvShows = [...data1.results, ...data2.results];
+          
+          this.tvShows.forEach(tvShow => {
+            this.$set(this.tvShowRatings, tvShow.id, tvShow.vote_average);
+          });
+          this.loading = false;
+          this.searchPerformed = true; 
+        } catch (error) {
+          console.error('Error fetching TV shows:', error);
+        }
+      },
+   
+      disabledFutureDates(date) {
+        const currentYear = new Date().getFullYear();
+        const firstMovieYear = 1888;
+        return date > new Date() || date.getFullYear() < firstMovieYear || date.getFullYear() > currentYear;
+      },
 
-  async searchContent() {
-    this.movies = [];
-    this.tvShows = [];
-    if (this.selectedSearchType === 'movie') {
-      this.searchMovies();
-    } else if (this.selectedSearchType === 'tv') {
-      this.searchTv();
-    } else {
-      alert('Please select a type (Movie or TV Show) first.');
-    }
-  },
-      
-  async checkData() {
-    try {
-      const { data, error } = await supabase
-        .from('favorites')
-        .select('*')
-        .eq('user_email', this.userEmail);
+      async searchContent() {
+        this.movies = [];
+        this.tvShows = [];
+        if (this.selectedSearchType === 'movie') {
+          this.searchMovies();
+        } else if (this.selectedSearchType === 'tv') {
+          this.searchTv();
+        } else {
+          alert('Please select a type (Movie or TV Show) first.');
+        }
+      },
+          
+      async checkData() {
+        try {
+          const { data, error } = await supabase
+            .from('favorites')
+            .select('*')
+            .eq('user_email', this.userEmail);
 
-      if (error) {
-        throw new Error('Error al conectar con la base de datos: ' + error.message);
+          if (error) {
+            throw new Error('Error al conectar con la base de datos: ' + error.message);
+          }
+        } catch (error) {
+          console.error(error.message);
+        }
+      },
+
+      toggleLanguageMenu() {
+        this.showLanguageMenu = !this.showLanguageMenu;
+      },
+        
+      changeLanguage(language) {
+        const currentPath = this.$route.path;
+        const currentOrigin = window.location.origin;
+        const spanishUrl = `${currentOrigin.replace(
+          '://',
+          '://es.'
+        )}${currentPath}`;
+        window.location.href = spanishUrl; 
+      },
+
+      toggleMenu() {
+        this.isMenuOpen = !this.isMenuOpen;
+      },
+
+      goToWatchlist() {
+        this.$router.push('/watchlist');
+      },
+
+      goToSettings() {
+        this.$router.push('/settings');
+      },
+
+      goToLogin() {
+        this.$router.push('/login');
+      },
+
+      signOut() {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('email');
+        window.location.href = 'https://entercinema.com/';
+      },
+
+      toggleOrder(event) {
+        this.orderText = event.target.value === 'asc' ? 'Order Asc' : 'Order Desc';
+        if (this.orderText === 'Order Asc') {
+          this.moviesFetched.reverse();
+          this.tvFetched.reverse();
+        } else {
+          this.moviesFetched.reverse();
+          this.tvFetched.reverse();
+        }
+      },
+
+      filterByGenre(event) {
+        this.selectedSearchGenre = event.target.value;
+      },
+        
+      filterByYear(event) {
+        this.selectedYearRange = event.target.value;
+      },
+
+      toggleFilter(event) {
+        this.filter = event.target.value;
+        this.currentPage = 1;
+      },
+
+      formatRating(stars) {
+        return (stars / 10).toFixed(1);
+      },
+
+      goToFirst() {
+        this.currentPage = 1;
+      },
+
+      prevPage() {
+        if (this.currentPage > 1) {
+          this.currentPage--;
+        }
+      },
+
+      nextPage() {
+        if (this.currentPage < this.totalPages) {
+          this.currentPage++;
+        }
+      },
+
+      goToLast() {
+        this.currentPage = this.totalPages;
+      },
+
+      goBack() {
+        this.$router.go(-1);
+      },
+
+      getLink(item) {
+        if (item.details.typeForDb === 'movie') {
+          return `https://entercinema.com/movie/${item.details.idForDb}`;
+        } else if (item.details.typeForDb === 'tv') {
+          return `https://entercinema.com/tv/${item.details.idForDb}`;
+        } else {
+          return '#'; 
+        }
+      },
+        
+      async fetchUserFirstName() {
+        try {
+          const { data, error } = await supabase
+            .from('auth_user')
+            .select('first_name')
+            .eq('email', this.userEmail);
+          
+          if (error) {
+            throw new Error('Error connecting to the database: ' + error.message);
+          }
+          
+          this.userFirstName = data.length > 0 ? data[0].first_name : null;
+        } catch (error) {
+          console.error('Error fetching user first name:', error);
+        }
+      },
+
+      formatGenreNames(genreIds, genreList) {
+        return genreIds.map(id => {
+          const genre = genreList.find(genre => genre.id === id);
+          return genre ? genre.name : '';
+        }).filter(Boolean).join(', ');
+      },
+
+      extractYear(date) {
+        return date ? date.split('-')[0] : '';
+      },
+
+      truncateTitle(title) {
+        return title.length > 28 ? title.slice(0, 28) + '...' : title;
+      },
+        
+      updateRating(value) {
+        this.selectedMinRating = value.toString();
+        this.MinRatingForLabel = this.selectedMinRating;
+        localStorage.setItem('selectedMinRating', this.selectedMinRating);
+      },
+        
+      formattedGenre(genreId) {
+        const genres = {
+          28: 'Action',
+          12: 'Adventure',
+          16: 'Animation',
+          35: 'Comedy',
+          80: 'Crime',
+          99: 'Documentary',
+          18: 'Drama',
+          10751: 'Family',
+          14: 'Fantasy',
+          36: 'History',
+          27: 'Horror',
+          10402: 'Music',
+          9648: 'Mystery',
+          10749: 'Romance',
+          878: 'Science Fiction',
+          10770: 'TV Movie',
+          53: 'Thriller',
+          10752: 'War',
+          37: 'Western',
+          10759: 'Action & Adventure',
+          10765: 'Sci-Fi and Fantasy',
+          10767: 'Talk Show'
+        };
+        return genres[genreId] || '';
+      },
+
+      formattedCountry(countryCode) {
+        const countries = {
+          AL: 'Albania',
+          AM: 'Armenia',
+          AR: 'Argentina',
+          AT: 'Austria',
+          AU: 'Australia',
+          BE: 'Belgium',
+          BO: 'Bolivia',
+          BR: 'Brazil',
+          BG: 'Bulgaria',
+          CA: 'Canada',
+          CN: 'China',
+          CO: 'Colombia',
+          CR: 'Costa Rica',
+          HR: 'Croatia',
+          CZ: 'Czech Republic',
+          DK: 'Denmark',
+          EC: 'Ecuador',
+          EG: 'Egypt',
+          FI: 'Finland',
+          FR: 'France',
+          DE: 'Germany',
+          GR: 'Greece',
+          HK: 'Hong Kong',
+          HU: 'Hungary',
+          IN: 'India',
+          IR: 'Iran',
+          IQ: 'Iraq',
+          IE: 'Ireland',
+          IL: 'Israel',
+          IT: 'Italy',
+          JM: 'Jamaica',
+          JP: 'Japan',
+          KR: 'South Korea',
+          MX: 'Mexico',
+          MA: 'Morocco',
+          NL: 'Netherlands',
+          NZ: 'New Zealand',
+          NG: 'Nigeria',
+          NO: 'Norway',
+          PL: 'Poland',
+          PT: 'Portugal',
+          RO: 'Romania',
+          RU: 'Russia',
+          ZA: 'South Africa',
+          ES: 'Spain',
+          SE: 'Sweden',
+          CH: 'Switzerland',
+          TW: 'Taiwan',
+          TH: 'Thailand',
+          TR: 'Turkey',
+          UA: 'Ukraine',
+          GB: 'United Kingdom',
+          US: 'United States',
+          UY: 'Uruguay',
+          VE: 'Venezuela',
+          VN: 'Vietnam'
+        };
+        return countries[countryCode] || '';
       }
-    } catch (error) {
-      console.error(error.message);
-    }
-  },
+    },
+    computed: {
+      showDefaultMessage() {
+        return this.MinRatingForLabel === 0;
+      },
+        
+      formattedReleaseYear() {
+        if (!this.releaseYear) return ''; 
+        return this.releaseYear instanceof Date ? this.releaseYear.getFullYear().toString() : this.releaseYear.toString();
+      },
+        
+      moviesTitle() {
+        const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : 'ALL YEARS';
+        const genre = this.formattedGenre(this.selectedSearchGenre) || 'ALL GENRES';
+        const country = this.formattedCountry(this.selectedOriginCountry) || 'ALL COUNTRIES';
+        const count = this.movies.length;
+        const minRating = this.selectedMinRating;
 
-  toggleLanguageMenu() {
-    this.showLanguageMenu = !this.showLanguageMenu;
-  },
-    
-  changeLanguage(language) {
-    const currentPath = this.$route.path;
-    const currentOrigin = window.location.origin;
-    const isSpanish = currentOrigin.includes('es.');
+        return `Results (${count}) for Movies of ${genre} from ${country} released in ${year} with a minimum rating of ${minRating}/10:`;
+      },
+        
+      tvShowsTitle() {
+        const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : 'ALL YEARS';
+        const genre = this.formattedGenre(this.selectedSearchGenre) || 'ALL GENRES';
+        const country = this.formattedCountry(this.selectedOriginCountry) || 'ALL COUNTRIES';
+        const count = this.tvShows.length;
+        const minRating = this.selectedMinRating;
 
-    if (isSpanish) {
-      const newOrigin = currentOrigin.replace('es.', '');
-      const newUrl = `${newOrigin}${currentPath}`;
-      window.location.href = newUrl;
-    } else {
-      console.log("La URL no tiene el prefijo 'es.', no se necesita ninguna acción.");
-    }
-  },
+        return `Results (${count}) for Tv Shows of ${genre} from ${country} released in ${year} with a minimum rating of ${minRating}/10:`;
+      },
 
-  toggleMenu() {
-    this.isMenuOpen = !this.isMenuOpen;
-  },
+      filteredGenres() {
+        return this.selectedSearchType === 'movie' ? this.movieGenres : this.tvGenres;
+      },
+        
+      filteredItems() {
+        const items = this.filter === 'movies' ? this.moviesFetched : this.tvFetched;
+        return items.filter(item => {
+          const matchesGenre = this.selectedSearchGenre === '' || item.details.genresForDb.includes(this.selectedSearchGenre);
+          const matchesYear = this.selectedYearRange === '' || (item.details.yearStartForDb >= this.selectedYearRange.split('-')[0] && item.details.yearStartForDb <= this.selectedYearRange.split('-')[1]);
+          return matchesGenre && matchesYear;
+        }).sort((a, b) => {
+          return this.orderText === 'Order Asc' ? new Date(a.addedAt) - new Date(b.addedAt) : new Date(b.addedAt) - new Date(a.addedAt);
+        });
+      },
 
-  goTowatchlist() {
-    this.$router.push('/watchlist');
-  },
-
-  goToSettings() {
-    this.$router.push('/settings');
-  },
-
-  goToLogin() {
-    this.$router.push('/login');
-  },
-
-  signOut() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('email');
-    window.location.href = 'https://es.entercinema.com/';
-  },
-
-  toggleOrder(event) {
-    this.orderText = event.target.value === 'asc' ? 'Order Asc' : 'Order Desc';
-    if (this.orderText === 'Order Asc') {
-      this.moviesFetched.reverse();
-      this.tvFetched.reverse();
-    } else {
-      this.moviesFetched.reverse();
-      this.tvFetched.reverse();
-    }
-  },
-
-  filterByGenre(event) {
-    this.selectedSearchGenre = event.target.value;
-  },
-    
-  filterByYear(event) {
-    this.selectedYearRange = event.target.value;
-  },
-
-  toggleFilter(event) {
-    this.filter = event.target.value;
-    this.currentPage = 1;
-  },
-
-  formatRating(stars) {
-    return (stars / 10).toFixed(1);
-  },
-
-  goToFirst() {
-    this.currentPage = 1;
-  },
-
-  prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
-  },
-
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-    }
-  },
-
-  goToLast() {
-    this.currentPage = this.totalPages;
-  },
-
-  goBack() {
-    this.$router.go(-1);
-  },
-
-  getLink(item) {
-    if (item.details.typeForDb === 'movie') {
-      return `https://es.entercinema.com/movie/${item.details.idForDb}`;
-    } else if (item.details.typeForDb === 'tv') {
-      return `https://es.entercinema.com/tv/${item.details.idForDb}`;
-    } else {
-      return '#'; 
-    }
-  },
-    
-  async fetchUserFirstName() {
-    try {
-      const { data, error } = await supabase
-        .from('auth_user')
-        .select('first_name')
-        .eq('email', this.userEmail);
+      yearRanges() {
+        return [
+          '1888-1960',
+          '1960-1980',
+          '1980-2000',
+          '2000-2010',
+          '2010-2020',
+          '2020-2025',
+        ];
+      },
+        
+      uniqueGenres() {
+        return Array.from(new Set(this.genres));
+      },
       
-      if (error) {
-        throw new Error('Error connecting to the database: ' + error.message);
+      totalPages() {
+        return Math.ceil(this.filteredItems.length / this.itemsPerPage);
+      },
+
+      itemsToShow() {
+        const start = (this.currentPage - 1) * this.itemsPerPage;
+        const end = start + this.itemsPerPage;
+        return this.filteredItems.slice(start, end);
+      },
+
+      filterText() {
+        return this.filter === 'tvShows' ? 'TV Shows' : 'Movies';
       }
-      
-      this.userFirstName = data.length > 0 ? data[0].first_name : null;
-    } catch (error) {
-      console.error('Error fetching user first name:', error);
-    }
-  },
-
-  formatGenreNames(genreIds, genreList) {
-    return genreIds.map(id => {
-      const genre = genreList.find(genre => genre.id === id);
-      return genre ? genre.name : '';
-    }).filter(Boolean).join(', ');
-  },
-
-  extractYear(date) {
-    return date ? date.split('-')[0] : '';
-  },
-
-  truncateTitle(title) {
-    return title.length > 28 ? title.slice(0, 28) + '...' : title;
-  },
-    
-  updateRating(value) {
-    this.selectedMinRating = value.toString();
-    this.MinRatingForLabel = this.selectedMinRating;
-    localStorage.setItem('selectedMinRating', this.selectedMinRating);
-  },
-    
-  formattedGenre(genreId) {
-    const genres = {
-      28: 'Action',
-      12: 'Adventure',
-      16: 'Animation',
-      35: 'Comedy',
-      80: 'Crime',
-      99: 'Documentary',
-      18: 'Drama',
-      10751: 'Family',
-      14: 'Fantasy',
-      36: 'History',
-      27: 'Horror',
-      10402: 'Music',
-      9648: 'Mystery',
-      10749: 'Romance',
-      878: 'Science Fiction',
-      10770: 'TV Movie',
-      53: 'Thriller',
-      10752: 'War',
-      37: 'Western',
-      10759: 'Action & Adventure',
-      10765: 'Sci-Fi and Fantasy',
-      10767: 'Talk Show'
-    };
-    return genres[genreId] || '';
-  },
-
-  formattedCountry(countryCode) {
-    const countries = {
-      AL: 'Albania',
-      AM: 'Armenia',
-      AR: 'Argentina',
-      AT: 'Austria',
-      AU: 'Australia',
-      BE: 'Bélgica',
-      BO: 'Bolivia',
-      BR: 'Brasil',
-      BG: 'Bulgaria',
-      CA: 'Canadá',
-      CN: 'China',
-      CO: 'Colombia',
-      CR: 'Costa Rica',
-      HR: 'Croacia',
-      CZ: 'República Checa',
-      DK: 'Dinamarca',
-      EC: 'Ecuador',
-      EG: 'Egipto',
-      FI: 'Finlandia',
-      FR: 'Francia',
-      DE: 'Alemania',
-      GR: 'Grecia',
-      HK: 'Hong Kong',
-      HU: 'Hungría',
-      IN: 'India',
-      IR: 'Irán',
-      IQ: 'Iraq',
-      IE: 'Irlanda',
-      IL: 'Israel',
-      IT: 'Italia',
-      JM: 'Jamaica',
-      JP: 'Japón',
-      KR: 'Corea del Sur',
-      MX: 'México',
-      MA: 'Marruecos',
-      NL: 'Países Bajos',
-      NZ: 'Nueva Zelanda',
-      NG: 'Nigeria',
-      NO: 'Noruega',
-      PL: 'Polonia',
-      PT: 'Portugal',
-      RO: 'Rumania',
-      RU: 'Rusia',
-      ZA: 'Sudáfrica',
-      ES: 'España',
-      SE: 'Suecia',
-      CH: 'Suiza',
-      TW: 'Taiwán',
-      TH: 'Tailandia',
-      TR: 'Turquía',
-      UA: 'Ucrania',
-      GB: 'Reino Unido',
-      US: 'Estados Unidos',
-      UY: 'Uruguay',
-      VE: 'Venezuela',
-      VN: 'Vietnam'
-    };
-    return countries[countryCode] || '';
-  }
-},
-computed: {
-  showDefaultMessage() {
-    return this.MinRatingForLabel === 0;
-  },
-    
-  formattedReleaseYear() {
-    if (!this.releaseYear) return ''; 
-    return this.releaseYear instanceof Date ? this.releaseYear.getFullYear().toString() : this.releaseYear.toString();
-  },
-    
-  moviesTitle() {
-    const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : 'TODOS LOS AÑOS';
-    const genre = this.formattedGenre(this.selectedSearchGenre) || 'TODOS LOS GÉNEROS';
-    const country = this.formattedCountry(this.selectedOriginCountry) || 'TODOS LOS PAÍSES';
-    const count = this.movies.length;
-    const minRating = this.selectedMinRating;
-
-    return `Resultados (${count}) para Películas de ${genre} de ${country} lanzadas en ${year} con una calificación mínima de ${minRating}/10:`;
-  },
-    
-  tvShowsTitle() {
-    const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : 'TODOS LOS AÑOS';
-    const genre = this.formattedGenre(this.selectedSearchGenre) || 'TODOS LOS GÉNEROS';
-    const country = this.formattedCountry(this.selectedOriginCountry) || 'TODOS LOS PAÍSES';
-    const count = this.tvShows.length;
-    const minRating = this.selectedMinRating;
-
-    return `Resultados (${count}) para Series de Televisión de ${genre} de ${country} lanzadas en ${year} con una calificación mínima de ${minRating}/10:`;
-  },
-
-  filteredGenres() {
-    return this.selectedSearchType === 'movie' ? this.movieGenres : this.tvGenres;
-  },
-    
-  filteredItems() {
-    const items = this.filter === 'movies' ? this.moviesFetched : this.tvFetched;
-    return items.filter(item => {
-      const matchesGenre = this.selectedSearchGenre === '' || item.details.genresForDb.includes(this.selectedSearchGenre);
-      const matchesYear = this.selectedYearRange === '' || (item.details.yearStartForDb >= this.selectedYearRange.split('-')[0] && item.details.yearStartForDb <= this.selectedYearRange.split('-')[1]);
-      return matchesGenre && matchesYear;
-    }).sort((a, b) => {
-      return this.orderText === 'Order Asc' ? new Date(a.addedAt) - new Date(b.addedAt) : new Date(b.addedAt) - new Date(a.addedAt);
-    });
-  },
-
-  yearRanges() {
-    return [
-      '1888-1960',
-      '1960-1980',
-      '1980-2000',
-      '2000-2010',
-      '2010-2020',
-      '2020-2025',
-    ];
-  },
-    
-  uniqueGenres() {
-    return Array.from(new Set(this.genres));
-  },
-  
-  totalPages() {
-    return Math.ceil(this.filteredItems.length / this.itemsPerPage);
-  },
-
-  itemsToShow() {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    const end = start + this.itemsPerPage;
-    return this.filteredItems.slice(start, end);
-  },
-
-  filterText() {
-    return this.filter === 'tvShows' ? 'TV Shows' : 'Movies';
-  }
-},
-};
+    },
+  };
 </script>
 
 <style scoped>
@@ -1468,6 +1416,13 @@ a {
   box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
 }
 
+.column {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
 body {
   display: flex;
   align-items: center;
@@ -1684,6 +1639,373 @@ input:not(:checked):focus ~ #helper-text {
 }
 
 @media screen and (max-width: 576px) {
+  .search-filters {
+    grid-template-columns: 1fr;
+  }
+  
+  .navbar {
+    left: 0;
+  }
+  
+  .movie-grid,
+  .tv-show-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+  }
+  
+  .movie-card h3,
+  .tv-show-card h3 {
+    font-size: 12px;
+  }
+  
+  .movie-card p,
+  .tv-show-card p {
+    font-size: 10px;
+  }
+  
+  .rating-container {
+    transform: scale(0.9);
+  }
+}
+
+.rating-container {
+    transform: scale(0.9);
+  }
+
+  .column {
+    padding: 0 10px;
+  }
+}
+
+.language-menu {
+  position: absolute;
+  background: rgba(82, 71, 71, 0);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  z-index: 1000;
+  display: none;
+}
+
+.language-menu label {
+  display: block;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.language-menu.active {
+  display: block;
+}
+
+.adv-search-section {
+  background: rgba(6, 47, 64, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(31, 97, 135, 0.37);
+  backdrop-filter: blur(13.5px);
+  -webkit-backdrop-filter: blur(13.5px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 30px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.search-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.search-filters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-item label {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #acafb5;
+  letter-spacing: 0.5px;
+}
+
+.custom-select {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select select {
+  appearance: none;
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(8, 45, 62, 0.3);
+  border: 1px solid rgba(127, 219, 241, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  height: 45px;
+}
+
+.custom-select select:hover {
+  background: rgba(8, 45, 62, 0.5);
+  border-color: rgba(127, 219, 241, 0.5);
+}
+
+.custom-select select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(127, 219, 241, 0.2);
+  border-color: #7FDBF1;
+}
+
+.select-arrow {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #7FDBF1;
+  pointer-events: none;
+}
+
+.date-picker-custom {
+  width: 100% !important;
+  position: relative;
+}
+
+.date-picker-custom /deep/ input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(8, 45, 62, 0.3);
+  border: 1px solid rgba(127, 219, 241, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  height: 45px !important;
+  box-sizing: border-box;
+  line-height: 21px;
+}
+
+.date-picker-custom /deep/ .mx-datepicker-popup {
+  min-width: 100% !important;
+  width: 100% !important;
+  max-width: none !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+.date-picker-custom /deep/ .mx-calendar-panel-year {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+.date-picker-custom /deep/ .mx-calendar {
+  width: 100% !important;
+}
+
+.date-picker-custom /deep/ .mx-calendar-content {
+  width: 100% !important;
+}
+
+.date-picker-custom /deep/ .mx-calendar-panel-date table {
+  width: 100% !important;
+}
+
+.date-picker-custom /deep/ .mx-calendar-panel-year .mx-calendar-content {
+  height: auto !important;
+  padding: 10px !important;
+}
+
+.date-picker-custom /deep/ .mx-datepicker {
+  width: 100% !important;
+}
+
+.date-picker-custom /deep/ .mx-datepicker-popup {
+  top: 45px !important;
+  position: absolute !important;
+}
+
+.date-picker-custom /deep/ input:hover {
+  background: rgba(8, 45, 62, 0.5);
+  border-color: rgba(127, 219, 241, 0.5);
+}
+
+.date-picker-custom /deep/ input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(127, 219, 241, 0.2);
+  border-color: #7FDBF1;
+}
+
+.date-picker-custom /deep/ .mx-input-wrapper {
+  height: 45px !important;
+}
+
+.date-picker-custom /deep/ .mx-input {
+  height: 45px !important;
+}
+
+.date-picker-custom {
+  width: 100% !important;
+}
+
+.date-picker-input {
+  width: 3rem !important;
+  padding: 12px 16px !important;
+  background: rgba(8, 45, 62, 0.3) !important;
+  border: 1px solid rgba(127, 219, 241, 0.3) !important;
+  border-radius: 8px !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  height: 45px !important;
+  box-sizing: border-box !important;
+}
+
+.date-picker-input:hover {
+  background: rgba(8, 45, 62, 0.5) !important;
+  border-color: rgba(127, 219, 241, 0.5) !important;
+}
+
+.date-picker-input:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(127, 219, 241, 0.2) !important;
+  border-color: #7FDBF1 !important;
+}
+
+.rating-filter {
+  margin-top: 0;
+}
+
+.custom-rating-container {
+  width: 100%;
+  height: 45px;
+  background: rgba(8, 45, 62, 0.3);
+  border: 1px solid rgba(127, 219, 241, 0.3);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-rating-container:hover {
+  background: rgba(8, 45, 62, 0.5);
+  border-color: rgba(127, 219, 241, 0.5);
+}
+
+.rating-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rating-container svg {
+  transform: scale(1.1) !important;
+  margin: 0 !important;
+  position: static !important;
+}
+
+.rating {
+  transform: scale(1) !important;
+  margin: 0 !important;
+  position: static !important;
+}
+
+.default-rating-note {
+  text-align: center;
+  font-size: 13px;
+  color: #acafb5;
+  margin-top: 20px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.button {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.button--back {
+  background: rgba(8, 45, 62, 0.6);
+  color: #fff;
+}
+
+.button--back:hover {
+  background: rgba(8, 45, 62, 0.8);
+}
+
+.button--search {
+  background: rgba(127, 219, 241, 0.2);
+  color: #fff;
+  border: 1px solid rgba(127, 219, 241, 0.6);
+}
+
+.button--search:hover {
+  background: rgba(127, 219, 241, 0.3);
+}
+
+.button--search:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.navbar-welcome {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-top: 7rem;
+  text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
+  font-family: 'Roboto', sans-serif;
+}
+
+.text-center {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
+  font-family: 'Roboto', sans-serif;
+}
+
+.avatar-container {
+  position: relative;
+  bottom: 87px;
+  cursor: pointer;
+}
+
+.avatar-container-else {
+  position: relative;
+  top: -56.5px;
+  font-size: 11.5px;
+  left: 10px;
+}
+
+@media screen and (max-width: 800px) {
   .search-filters {
     grid-template-columns: 1fr;
   }

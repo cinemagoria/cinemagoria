@@ -87,38 +87,13 @@
             </div>
             
             <div v-if="selectedDateMovies.length > 0" class="day-movies">
-              <div class="movies-carousel">
-                <button 
-                  v-if="selectedDateMovies.length > 8"
-                  class="carousel-button carousel-button--left" 
-                  @click="scrollMoviesLeft">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                    <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"></path>
-                  </svg>
-                </button>
-                
-                <div ref="moviesCarouselContent" class="movies-carousel-content">
-                  <div v-for="movie in selectedDateMovies" :key="movie.id" class="movie-card" @click="redirectMovie(movie.id)">
-                    <div class="movie-poster">
-                      <img v-if="movie.poster_path" :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" />
-                      <img v-else src="~/static/image_not_found_yet.png" alt="Image Not Found" />
-                    </div>
-                    <h2 class="movie-title">{{ formatTitle(movie.title) }}</h2>
-                  </div>
-                </div>
-                
-                <button 
-                  v-if="selectedDateMovies.length > 8"
-                  class="carousel-button carousel-button--right" 
-                  @click="scrollMoviesRight">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                    <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"></path>
-                  </svg>
-                </button>
-              </div>
-              
-              <!-- Remove pagination info -->
+              <UpcomingMoviesCarousel 
+                :movies="selectedDateMovies" 
+                @movie-click="redirectMovie"
+              />
             </div>
+       
+
             <div v-else class="no-movies-message">
               <p>No hay estrenos programados para {{ formatDateForDisplay(selectedDate) }}.</p>
               <button @click="resetToToday" class="reset-button">Volver a Hoy.</button>
@@ -219,6 +194,7 @@
 
   <script>
   import supabase from '@/services/supabase';
+  import UpcomingMoviesCarousel from '~/components/UpcomingMoviesCarousel.vue'
 
   async function getUserAvatar(userEmail) {
   try {
@@ -350,6 +326,10 @@ async function getUserName(userEmail) {
 
     beforeDestroy() {
       window.removeEventListener('resize', this.updateItemsPerPage);
+    },
+
+    components: {
+      UpcomingMoviesCarousel,
     },
 
     computed: {
@@ -576,18 +556,6 @@ async function getUserName(userEmail) {
         this.selectedDate = new Date();
         this.currentMoviePage = 1;
         this.updateSelectedDateMovies();
-      },
-      scrollMoviesLeft() {
-        if (this.$refs.moviesCarouselContent) {
-          const container = this.$refs.moviesCarouselContent;
-          container.scrollBy({ left: -500, behavior: 'smooth' });
-        }
-      },
-      scrollMoviesRight() {
-        if (this.$refs.moviesCarouselContent) {
-          const container = this.$refs.moviesCarouselContent;
-          container.scrollBy({ left: 500, behavior: 'smooth' });
-        }
       },
       updateSelectedDateMovies() {
         if (!this.selectedDate || !this.combinedMovies || this.combinedMovies.length === 0) {
