@@ -1,6 +1,6 @@
 <template>
   <div class="google-login-container">
-    <button @click="handleGoogleLogin" class="google-login-button">
+    <button type="button" @click="handleGoogleLogin" class="google-login-button">
       <img src="/google-icon.svg" alt="Google" class="google-icon">
       <span>{{ buttonText }}</span>
     </button>
