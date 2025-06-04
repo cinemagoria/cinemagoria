@@ -12,34 +12,53 @@
           <h3 class="text-white text-center"><b>Inicia sesión con tu cuenta:</b></h3>
           <div class="form">
             <form @submit.prevent="login">
-              <GoogleLogin buttonText="Iniciar sesión con Google" />
+              <GoogleLogin 
+                buttonText="Iniciar sesión con Google" 
+                @google-login-start="handleGoogleLoginStart"
+                @google-login-error="handleGoogleLoginError"
+              />
               <div class="divider">
                 <span>o</span>
               </div>
               <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" id="email" v-model="email" style="transform: translate(11.2765px, 0px);" placeholder="juanperez@email.com" required>
+                <input 
+                  type="email" 
+                  id="email" 
+                  v-model="email" 
+                  placeholder="juanperez@email.com" 
+                  required
+                  :disabled="googleLoginInProgress"
+                >
               </div>
               <br>
               <div class="form-group">
                 <label for="password">Contraseña:</label>
-                <input type="password" id="password" v-model="password" placeholder="Ingrese su contraseña" required>
+                <input 
+                  type="password" 
+                  id="password" 
+                  v-model="password" 
+                  placeholder="Ingrese su contraseña" 
+                  required
+                  :disabled="googleLoginInProgress"
+                >
               </div>
               <br>
               <br>
               <div class="error-message" v-if="errorMessage">{{ errorMessage }}</div>
               <div class="button-container">
                 <button type="button" class="button button--icon" @click.prevent="goBack">
-                  <!-- eslint-disable-next-line -->
                   <span class="txt">Volver</span>
                 </button>
-                <button type="submit" class="button button--icon" style="width: 161.886px;">
+                <button 
+                  type="submit" 
+                  class="button button--icon" 
+                >
                   <span v-if="loading" class="spinner"></span>
-                  <span id="submitText" style="margin-left:5px; padding-left:3px; "class="txt">{{ loading ? 'Iniciando sesión' : 'Iniciar sesión' }}</span>
+                  <span class="txt">{{ loading ? 'Iniciando sesión' : 'Iniciar sesión' }}</span>
                 </button>
                 <br>
               </div>
-              
             </form>
             <br>
             <br>
@@ -65,7 +84,8 @@ export default {
       email: '',
       password: '',
       errorMessage: '', 
-      loading: false 
+      loading: false,
+      googleLoginInProgress: false
     };
   },
   mounted() {
@@ -77,6 +97,14 @@ export default {
       if (token) {
         this.redirectToHome();
       }
+    },
+    
+    handleGoogleLoginStart() {
+      this.googleLoginInProgress = true;
+    },
+    
+    handleGoogleLoginError() {
+      this.googleLoginInProgress = false;
     },
     
     async login() {
@@ -99,7 +127,7 @@ export default {
         if (error.response && error.response.status === 401) {
           this.errorMessage = 'Credenciales inválidas.';
         } else {
-          this.errorMessage = 'Ha ocurrido un error. Por favor intente más tarde.';
+          this.errorMessage = '';
         }
       }
       this.loading = false;
@@ -149,7 +177,6 @@ export default {
   display: flex;
   justify-content: center;
   margin-top: 20px;
-  font-size: 9px;
 }
 
 .tab {
@@ -192,6 +219,43 @@ export default {
 .form {
   display: flex;
   justify-content: center;
+  width: 100%;
+}
+
+.form form {
+  width: 100%;
+  max-width: 500px;
+}
+
+.form-group {
+  width: 90%;
+  max-width: 320px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-group label {
+  align-self: flex-start;
+  margin-bottom: 5px;
+  margin-left: 25px;
+}
+
+.form-group input {
+  width: 240px;
+  margin: 0 auto;
+  border-radius: 10px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  display: block;
+}
+
+.form-group input:disabled {
+  background-color: #f5f5f5;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .button-container {
@@ -202,10 +266,10 @@ export default {
 
 .button {
   border-radius: 10px;
-  font-size: 1rem;
+  font-size: 1.3rem;
   margin: 3px;
   position: relative;
-  width: 130px; 
+  width: 140px; 
   display: flex;
   align-items: center; 
   justify-content: center;
@@ -248,6 +312,13 @@ export default {
   color: red;
   text-align: center;
   margin-bottom: 10px;
+  transition: all 0.3s ease; 
+}
+
+.error-message p {
+  max-width: 70%; 
+  margin: 0 auto;
+  word-wrap: break-word;
 }
 
 a {
@@ -268,7 +339,7 @@ h3 {
 }
 
 h2 {
-  text-align: justify;
+  text-align: center;
   letter-spacing: 2px;
   font-size: 11px;
   text-transform: uppercase;
@@ -279,67 +350,6 @@ h2 {
 
 .custom-center {
   text-align: center;
-}
-
-.form-group {
-  margin-left: 3rem;
-}
-
-.form-group input[type="email"],
-.form-group input[type="password"] {
-  border-radius: 10px;
-  padding: 10px;
-  border: 1px solid #ccc;
-}
-
-.form-group input[type="email"] {
-  margin-left: 30px;
-}
-
-.form-group input[type="password"] {
-  margin-left: 8px;
-}
-
-@media (max-width: 400px) {
-  .button {
-    width: 80px;
-    height: 40px;
-  }
-
-  .form-group input[type="email"] {
-  margin-left: -8px;
-}
-.form-group input[type="password"] {
-  margin-left: -1px;
-}
-
-.tabs {
-  width: 5%;
-  height: 3%;
-  justify-content: unset;
-  left: 5%;
-  margin-left: 3rem;
-}
-
-.tab.active {
-  max-width: 105px;
-}
-
-.tab:not(.active) {
-  flex-wrap: wrap;
-  max-width: 105px;
-  margin: 0 auto;
-  text-align: center;
-  display:flex; 
-  justify-content: center;
-  align-content: space-around;
-}
-
-.spinner {
-  left: 3px;
-  padding: 2px;
-  margin-right: 3px;
-}
 }
 
 .divider {
@@ -360,5 +370,98 @@ h2 {
   padding: 0 10px;
   color: #acafb5;
   font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .form-group input {
+    width: 260px;
+  }
+  
+  .button {
+    width: 120px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container-section {
+    margin: 5px;
+    padding: 10px;
+  }
+  
+  .form-group input {
+    width: 220px;
+  }
+  
+  .form-group label {
+    margin-left: 15px;
+  }
+  
+  .button {
+    width: 100px;
+    height: 40px;
+    font-size: 0.9rem;
+  }
+
+  .tabs {
+    margin-left: 0;
+    justify-content: center;
+  }
+
+  .tab {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+
+  .spinner {
+    left: 10px;
+    width: 12px;
+    height: 12px;
+  }
+}
+
+@media (max-width: 320px) {
+  .container-section {
+    margin: 2px;
+    padding: 8px;
+  }
+  
+  .form-group input {
+    width: 180px;
+    padding: 10px;
+  }
+  
+  .form-group label {
+    margin-left: 5px;
+    font-size: 0.9rem;
+  }
+  
+  .button {
+    width: 80px;
+    height: 35px;
+    font-size: 0.8rem;
+  }
+  
+  .tab {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+  
+  h1 {
+    font-size: 1.3rem;
+  }
+  
+  h3 {
+    font-size: 1rem;
+  }
+  
+  h2 {
+    font-size: 0.8rem;
+  }
+}
+
+.form-group input[type="password"] {
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>

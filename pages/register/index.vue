@@ -7,71 +7,101 @@
       </div>
       <div class="auth-container">
         <div class="container-section">
-          <br>
           <h1 class="text-white text-center"><b>Bienvenid@ a EnterCinema!</b></h1>
-          <div v-if="!showVerificationModal">
-            <h3 class="text-white text-center"><b>Crear una nueva cuenta:</b></h3>
-            <div class="form">
-              <form @submit.prevent="register">
-                <div class="form-group">
-                  <label for="name">Nombre:</label>
-                  <input type="name" id="name" v-model="name" placeholder="Juan Pérez" required>
-                </div>
-                <br>
-                <div class="form-group">
-                  <label for="email">Email:</label>
-                  <input type="email" id="email" v-model="email" style="transform: translate(11.2765px, 0px);" placeholder="juanperez@email.com" required>
-                </div>
-                <br>
-                <div class="form-group">
-                  <label for="password">Contraseña:</label>
-                  <input type="password" id="password" v-model="password" placeholder="Ingrese su contraseña" required @input="checkPassword">
-                  <br>
-                  <div class="password-requirements">
-                    <ul>
-                      <label class="pass-req-label">Requisitos de la contraseña:</label>
-                      <br>
-                      <li :class="{ 'text-success': hasMinLength }"><span v-if="hasMinLength">&#10003;</span><span v-else>&#9898;</span> Mínimo 8 caracteres</li>
-                      <li :class="{ 'text-success': hasUpperCase }"><span v-if="hasUpperCase">&#10003;</span><span v-else>&#9898;</span> Una letra mayúscula</li>
-                      <li :class="{ 'text-success': hasLowerCase }"><span v-if="hasLowerCase">&#10003;</span><span v-else>&#9898;</span> Una letra minúscula</li>
-                      <li :class="{ 'text-success': hasNumber }"><span v-if="hasNumber">&#10003;</span><span v-else>&#9898;</span> Un número</li>
-                      <li :class="{ 'text-success': hasSymbol }"><span v-if="hasSymbol">&#10003;</span><span v-else>&#9898;</span> Un símbolo</li>
-                    </ul>
+            <div v-if="!showVerificationModal">
+              <div class="form">
+                <form @submit.prevent="register">
+                  <GoogleLogin 
+                    buttonText="Accede con Google" 
+                    @google-login-start="handleGoogleLoginStart"
+                    @google-login-error="handleGoogleLoginError"
+                  />
+                  <div class="divider">
+                    <span>o</span>
                   </div>
-                </div>
-                <div class="error-message" v-if="errorMessage" :style="{ height: errorMessage ? 'auto' : '0', margin: errorMessage ? '10px auto' : '0 auto', overflow: errorMessage ? 'visible' : 'hidden' }">
-                  <p>{{ errorMessage }}</p>
-                </div>
-                <div class="button-container">
-                  <button type="button" class="button button--icon" @click="redirectToHome">
-                    <span class="txt">Volver</span>
-                  </button>
-                  <button type="submit" class="button button--icon" :disabled="!isFormValid || !isPasswordValid">
-                    <span v-if="loading" class="spinner"></span>
-                    <span id="submitText" style="margin-left:5px; padding-left:3px; "class="txt">{{ loading ? 'Registrando' : 'Registrarse' }}</span>
-                  </button>
-                </div>
-              </form>
+                  <h3 class="text-white text-center"><b>Crear una nueva cuenta:</b></h3>
+                  <div class="form-group">
+                    <label for="name">Nombre:</label>
+                    <input 
+                      type="name" 
+                      id="name" 
+                      v-model="name" 
+                      placeholder="Juan Pérez" 
+                      required
+                      :disabled="googleLoginInProgress"
+                    >
+                  </div>
+                  <br>
+                  <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input 
+                      type="email" 
+                      id="email" 
+                      v-model="email" 
+                      placeholder="juanperez@email.com" 
+                      required
+                      :disabled="googleLoginInProgress"
+                    >
+                  </div>
+                  <br>
+                  <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <input 
+                      type="password" 
+                      id="password" 
+                      v-model="password" 
+                      placeholder="Ingrese su contraseña" 
+                      required 
+                      @input="checkPassword"
+                      :disabled="googleLoginInProgress"
+                    >
+                    <br>
+                    <div class="password-requirements">
+                      <ul>
+                        <label class="pass-req-label">Requisitos de la contraseña:</label>
+                        <br>
+                        <li :class="{ 'text-success': hasMinLength }"><span v-if="hasMinLength">&#10003;</span><span v-else>&#9898;</span> Mínimo 8 caracteres</li>
+                        <li :class="{ 'text-success': hasUpperCase }"><span v-if="hasUpperCase">&#10003;</span><span v-else>&#9898;</span> Una letra mayúscula</li>
+                        <li :class="{ 'text-success': hasLowerCase }"><span v-if="hasLowerCase">&#10003;</span><span v-else>&#9898;</span> Una letra minúscula</li>
+                        <li :class="{ 'text-success': hasNumber }"><span v-if="hasNumber">&#10003;</span><span v-else>&#9898;</span> Un número</li>
+                        <li :class="{ 'text-success': hasSymbol }"><span v-if="hasSymbol">&#10003;</span><span v-else>&#9898;</span> Un símbolo</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="error-message" v-if="errorMessage" :style="{ height: errorMessage ? 'auto' : '0', margin: errorMessage ? '10px auto' : '0 auto', overflow: errorMessage ? 'visible' : 'hidden' }">
+                    <p>{{ errorMessage }}</p>
+                  </div>
+                  <div class="button-container">
+                    <button type="button" class="button button--icon" @click="redirectToHome">
+                      <span class="txt">Volver</span>
+                    </button>
+                    <button type="submit" class="button button--icon" :disabled="!isFormValid || !isPasswordValid">
+                      <span v-if="loading" class="spinner"></span>
+                      <span class="txt">{{ loading ? 'Registrando' : 'Registrarse' }}</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
-          </div>
-          <div v-if="showVerificationModal" class="text-center custom-center" style="max-width: 250px; text-align: center; margin: 0 auto;">
-            <p class="text-center custom-center">¡Gracias, {{ name }}, por registrarte! Se ha creado la cuenta con el correo electrónico {{ email }}. ¡Disfrute de su experiencia en EnterCinema!</p>
-          </div>
-          <div v-if="showVerificationModal" class="button-container">
-            <button class="button button--icon" @click="redirectToHome">
-              <span class="txt">Volver</span>
-            </button>
-          </div>
-          <br>
-          <h3 class="text-center custom-center"><strong>¿Ya tiene una cuenta? <router-link :to="{ name: 'login' }">Iniciar sesión</router-link></strong></h3>
+            <div v-if="showVerificationModal" class="text-center custom-center" style="max-width: 250px; text-align: center; margin: 0 auto;">
+              <p class="text-center custom-center">¡Gracias, {{ name }}, por registrarte! Se ha creado la cuenta con el correo electrónico {{ email }}. ¡Disfrute de su experiencia en EnterCinema!</p>
+            </div>
+            <div v-if="showVerificationModal" class="button-container">
+              <button class="button button--icon" @click="redirectToHome">
+                <span class="txt">Volver</span>
+              </button>
+            </div>
+            <br>
+            <h3 class="text-center custom-center"><strong>¿Ya tiene una cuenta? <router-link :to="{ name: 'login' }">Iniciar sesión</router-link></strong></h3>
       </div>
-    </div>
+      </div>
     </section>
   </main>
 </template>
 
 <script>
 import axios from 'axios';
+import GoogleLogin from '@/components/global/GoogleLogin.vue';
 
 export default {
   data() {
@@ -86,7 +116,8 @@ export default {
       hasNumber: false,
       hasSymbol: false,
       hasMinLength: false,
-      loading: false
+      loading: false,
+      googleLoginInProgress: false
     };
   },
   computed: {
@@ -98,6 +129,14 @@ export default {
     }
   },
   methods: {
+    handleGoogleLoginStart() {
+      this.googleLoginInProgress = true;
+    },
+    
+    handleGoogleLoginError() {
+      this.googleLoginInProgress = false;
+    },
+    
     async register() {
       this.loading = true;
       try {
@@ -106,13 +145,13 @@ export default {
           email: this.email,
           password: this.password
         });
-        this.showVerificationModal = true; 
+        this.showVerificationModal = true;
       } catch (error) {
         console.error(error);
         if (error.response && error.response.status === 500) {
-          this.errorMessage = 'Failed to sign up: A user with this email already exists.'; 
+          this.errorMessage = 'Error al registrarse: Ya existe un usuario con este email.';
         } else {
-          this.errorMessage = 'An error occurred. Please try again later.';
+          this.errorMessage = '';
         }
       }
       this.loading = false;
@@ -122,7 +161,7 @@ export default {
     },
     checkPassword() {
       this.hasUpperCase = /[A-Z]/.test(this.password);
-      this.hasLowerCase = /[a-z]+/.test(this.password); 
+      this.hasLowerCase = /[a-z]+/.test(this.password);
       this.hasNumber = /\d/.test(this.password);
       this.hasSymbol = /[!@#$%^&*()_+]/.test(this.password);
       this.hasMinLength = this.password.length >= 8;
@@ -163,7 +202,6 @@ export default {
   display: flex;
   justify-content: center;
   margin-top: 20px;
-  font-size: 9px;
 }
 
 .tab {
@@ -252,10 +290,25 @@ h3 {
 .form {
     display: flex;
     justify-content: center;
+    width: 100%;
+}
+
+.form form {
+    width: 100%;
+    max-width: 500px;
 }
 
 .input {
     border-radius: 18px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+}
+
+.section {
+    padding: 10px;
 }
 
 .button-container {
@@ -266,10 +319,10 @@ h3 {
 
 .button {
   border-radius: 10px;
-  font-size: 1rem;
+  font-size: 1.3rem;
   margin: 3px;
   position: relative;
-  width: 130px; 
+  width: 140px; 
   display: flex;
   align-items: center; 
   justify-content: center;
@@ -308,49 +361,44 @@ h3 {
   80%, 100% { border-top-color: #aaa; }
 }
 
-.section {
-    padding: 10px;
-}
-
-.button {
-    border-radius: 10px;
-    margin: 3px;
-}
-
 .form-group {
-    width: 300px;
-    margin: 0 auto; 
-    margin-left: calc(50% - 150px + 30px); 
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    margin-left: 15px;
+}
+
+.form-group input {
+    width: 280px;
+    margin: 0 auto;
+    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.form-group input:disabled {
+    background-color: #f5f5f5;
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .password-requirements {
-    width: 300px;
-    margin: 0 auto; 
-    margin-left: calc(50% - 150px + 90px); 
+    width: 280px;
+    margin: 10px auto 0;
+    text-align: center;
 }
 
 .pass-req-label {
-  position: relative; 
-  left: -14px; 
-  top: -1px; 
-  transition: none 0s ease 0s; 
-}
-
-.form-group input[type="name"],
-.form-group input[type="email"],
-.form-group input[type="password"] {
-    border-radius: 10px;
-    padding: 10px; 
-    border: 1px solid #ccc;
-}
-
-.form-group input[type="name"],
-.form-group input[type="email"]{
-    margin-left: 30px;
-}
-
-.form-group input[type="password"] {
-    margin-left: 8px;
+    display: block;
+    margin-bottom: 8px;
 }
 
 .text-danger {
@@ -376,69 +424,124 @@ h3 {
 }
 
 .password-requirements li {
-    margin-left: -20px; 
+    margin-left: 0;
+    text-align: center;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 768px) {
+  .form-group input {
+    width: 260px;
+  }
+  
+  .password-requirements {
+    width: 260px;
+  }
+  
+  .button {
+    width: 120px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container-section {
+    margin: 5px;
+    padding: 10px;
+  }
+  
+  .form-group input {
+    width: 220px;
+  }
+  
+  .password-requirements {
+    width: 220px;
+  }
+  
+  .form-group label {
+    margin-left: 10px;
+  }
+  
+  .button {
+    width: 100px;
+    height: 40px;
+    font-size: 0.9rem;
+  }
+
+  .tabs {
+    margin-left: 0;
+    justify-content: center;
+  }
+
+  .tab {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+
+  .spinner {
+    left: 10px;
+    width: 12px;
+    height: 12px;
+  }
+}
+
+@media (max-width: 320px) {
+  .container-section {
+    margin: 2px;
+    padding: 8px;
+  }
+  
+  .form-group input {
+    width: 180px;
+    padding: 10px;
+  }
+  
+  .password-requirements {
+    width: 180px;
+    font-size: 0.9rem;
+  }
+  
+  .form-group label {
+    margin-left: 5px;
+    font-size: 0.9rem;
+  }
+  
   .button {
     width: 80px;
-    height: 40px;
-    font-size: 9px;
+    height: 35px;
+    font-size: 0.8rem;
   }
-
-  .form-group {
-    margin-left: 13rem;
+  
+  .tab {
+    padding: 6px 10px;
+    font-size: 0.8rem;
   }
-
-  .password-requirements {
-    margin-left: 4rem;
+  
+  h1 {
+    font-size: 1.3rem;
   }
-
-  .form-group input[type="email"] {
-  margin-left: 20px;
-  max-width: 100px;
-}
-.form-group input[type="password"] {
-  margin-left: -1px;
-  max-width: 100px;
+  
+  h3 {
+    font-size: 1rem;
+  }
 }
 
-.form-group input[type="text"] {
-  margin-left: 20px;
-  max-width: 100px;
-}
-
-.tabs {
-  width: 5%;
-  height: 3%;
-  justify-content: unset;
-  left: 5%;
-  margin-left: 3rem;
-}
-
-.tab.active {
-  max-width: 105px;
+.divider {
   display: flex;
-  justify-content: center;
-  align-content: center;
-  flex-wrap: wrap;
-  flex-direction: column-reverse;      
-}
-
-.tab:not(.active) {
-  flex-wrap: wrap;
-  max-width: 105px;
-  margin: 0 auto;
+  align-items: center;
   text-align: center;
-  display:flex; 
-  justify-content: center;
+  margin: 20px 0;
 }
 
-.spinner {
-  left: 3px;
-  padding: 2px;
-  margin-right: 3px;
-}
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
+.divider span {
+  padding: 0 10px;
+  color: #acafb5;
+  font-size: 12px;
+}
 </style>
