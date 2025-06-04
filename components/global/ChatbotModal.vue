@@ -201,6 +201,7 @@ export default {
       messageWaitingForResponse: false,
       inputWidth: 0,
       chatId: null,
+      sessionKey: 'entercinema_chat_session',
       streamingText: '',
       isStreaming: false,
       abortController: null,
@@ -251,6 +252,7 @@ export default {
   },
   mounted() {
     window.addEventListener('resize', this.checkMobileDevice);
+    this.loadChatSession();
     this.$nextTick(() => {
       if (this.$refs.chatbotMessagesContainer) {
         this.$refs.chatbotMessagesContainer.addEventListener('click', (event) => {
@@ -276,6 +278,47 @@ export default {
     }
   },
   methods: {
+    loadChatSession() {
+      try {
+        if (typeof localStorage !== 'undefined') {
+          const sessionData = localStorage.getItem(this.sessionKey);
+          if (sessionData) {
+            const parsed = JSON.parse(sessionData);
+            this.chatId = parsed.chatId;
+            console.log('Loaded existing chat session:', this.chatId);
+          }
+        }
+      } catch (error) {
+        console.warn('Error loading chat session:', error);
+      }
+    },
+    
+    saveChatSession() {
+      try {
+        if (typeof localStorage !== 'undefined' && this.chatId) {
+          const sessionData = {
+            chatId: this.chatId,
+            timestamp: Date.now()
+          };
+          localStorage.setItem(this.sessionKey, JSON.stringify(sessionData));
+          console.log('Saved chat session:', this.chatId);
+        }
+      } catch (error) {
+        console.warn('Error saving chat session:', error);
+      }
+    },
+    
+    clearChatSession() {
+      try {
+        if (typeof localStorage !== 'undefined') {
+          localStorage.removeItem(this.sessionKey);
+          console.log('Cleared chat session');
+        }
+      } catch (error) {
+        console.warn('Error clearing chat session:', error);
+      }
+    },
+
       checkMobileDevice() {
         this.isMobileDevice = window.innerWidth <= 768 || 
           /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -324,6 +367,7 @@ export default {
       this.chatBotOpen = true;
       this.checkMobileDevice();
       this.inputEnabled = !this.isMobileDevice;
+      this.loadChatSession();
     },
 
     close() {
@@ -347,6 +391,8 @@ export default {
         this.chatMessages = [];
         this.messageWaitingForResponse = false;
         this.inputWidth = 0;
+        this.clearChatSession();
+        this.chatId = null;
     },
 
     closeChatBot() {
@@ -485,6 +531,7 @@ export default {
                 
                 if (data.type === 'start') {
                   this.chatId = data.chat_id;
+                  this.saveChatSession();
                   this.isStreaming = true;
                   if (this.dotAnimationInterval) {
                     clearInterval(this.dotAnimationInterval);
@@ -699,6 +746,7 @@ export default {
       }
       
       this.chatId = response.data.chat_id || this.chatId || "session";
+      this.saveChatSession();
       
       if (response.data.conversation_history && response.data.conversation_history.length > 0) {
         this.chatMessages = [];
@@ -875,6 +923,7 @@ export default {
               }, { timeout: 45000 });
       
               this.chatId = response.data.chat_id;
+      this.saveChatSession();
 
               if (response.data.conversation_history && response.data.conversation_history.length > 0) {
                 this.chatMessages = [];
@@ -1544,7 +1593,6 @@ scrollToBottom() {
 
 .reasoning-content {
   background: rgba(13, 27, 42, 0.7) !important;
-  border: 1px solid rgba(127, 219, 241, 0.4) !important;
   border-left: 3px solid rgba(127, 219, 241, 0.4) !important;
   padding: 0 !important;
   min-height: auto !important;
@@ -1576,6 +1624,7 @@ scrollToBottom() {
   display: inline-block;
   animation: blink 1s infinite;
   color: #7FDBF1;
+  font-size: 19px;
   font-weight: bold;
 }
 
@@ -1604,12 +1653,12 @@ scrollToBottom() {
   margin-left: 8px;
   height: 20px;
   position: relative;
-  top: 4px;
+  top: 5px;
 }
 
 .dot {
-  width: 2px;
-  height: 2px;
+  width: 1px;
+  height: 1px;
   margin: 0 1.5px;
   border-radius: 50%;
   background-color: rgba(127, 219, 241, 0.3);
@@ -1633,8 +1682,8 @@ scrollToBottom() {
   }
   
   .dot {
-    width: 5px;
-    height: 5px;
+    width: 4px;
+    height: 4px;
   }
 }
 
@@ -1649,8 +1698,8 @@ scrollToBottom() {
   }
   
   .dot {
-    width: 4px;
-    height: 4px;
+    width: 3px;
+    height: 3px;
   }
 }
 
@@ -2005,8 +2054,8 @@ scrollToBottom() {
       height: 100%;
   }
   .dot {
-      width: 6px;
-      height: 6px;
+      width: 4px;
+      height: 4px;
       background: white;
       border-radius: 50%;
       display: inline-block;
