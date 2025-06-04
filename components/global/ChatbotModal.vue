@@ -288,7 +288,6 @@ export default {
           if (sessionData) {
             const parsed = JSON.parse(sessionData);
             this.chatId = parsed.chatId;
-            console.log('Loaded existing chat session:', this.chatId);
           }
         }
       } catch (error) {
@@ -304,7 +303,6 @@ export default {
             timestamp: Date.now()
           };
           localStorage.setItem(this.sessionKey, JSON.stringify(sessionData));
-          console.log('Saved chat session:', this.chatId);
         }
       } catch (error) {
         console.warn('Error saving chat session:', error);
@@ -315,7 +313,6 @@ export default {
       try {
         if (typeof localStorage !== 'undefined') {
           localStorage.removeItem(this.sessionKey);
-          console.log('Cleared chat session');
         }
       } catch (error) {
         console.warn('Error clearing chat session:', error);
@@ -1062,14 +1059,12 @@ async sendDailyPromptRequest() {
           let effectiveMainObject = null;
 
           if (mainObject && mainObject.name && mainObject.type) {
-              console.log(`Main object from backend: ${mainObject.name} (${mainObject.type})`);
               effectiveMainObject = mainObject;
           } 
           else {
               if (references && references.length > 0) {
                   const firstRef = references[0];
                   if (firstRef && firstRef.name && firstRef.type) {
-                      console.log(`Using first reference as main object: ${firstRef.name} (${firstRef.type})`);
                       effectiveMainObject = {
                           name: firstRef.name,
                           type: firstRef.type
@@ -1147,7 +1142,6 @@ async sendDailyPromptRequest() {
                           }
                           
                           mainObjectResult.push(formattedMainItem);
-                          console.log(`Main object found in TMDB: ${mainItem.title || mainItem.name}`);
                       } else {
                           console.warn(`No TMDB results found for main object: ${effectiveMainObject.name}`);
 
@@ -1303,8 +1297,6 @@ async sendDailyPromptRequest() {
                       );
 
                       if (!isRelated) {
-                          console.log(`ATENCIÓN: Objeto principal "${mainObjectMediaItem.title || mainObjectMediaItem.name}" no tiene relación con las personas mencionadas`);
-
                           try {
                               const betterMatchResponse = await axios.get(`https://api.themoviedb.org/3/search/${mainObjectMediaItem.media_type}`, {
                                   params: {
@@ -1328,8 +1320,6 @@ async sendDailyPromptRequest() {
                                       );
                                       
                                       if (isAlternativeRelated) {
-                                          console.log(`Encontrada alternativa mejor para "${mainObjectMediaItem.title || mainObjectMediaItem.name}" que SÍ tiene relación con las personas: "${alternativeItem.title || alternativeItem.name}"`);
-                                          
                                           const mediaType = mainObjectMediaItem.media_type;
                                           const alternativeMainItem = {
                                               ...alternativeItem,
