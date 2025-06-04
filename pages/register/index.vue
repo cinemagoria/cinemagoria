@@ -10,26 +10,51 @@
           <h1 class="text-white text-center"><b>Get started</b></h1>
             <div v-if="!showVerificationModal">
               <div class="form">
-
                 <form @submit.prevent="register">
-                  <GoogleLogin buttonText="Access with Google" />
+                  <GoogleLogin 
+                    buttonText="Access with Google" 
+                    @google-login-start="handleGoogleLoginStart"
+                    @google-login-error="handleGoogleLoginError"
+                  />
                   <div class="divider">
                     <span>or</span>
                   </div>
                   <h3 class="text-white text-center"><b>Create a new account:</b></h3>
                   <div class="form-group">
                     <label for="name">Name:</label>
-                    <input type="name" id="name" v-model="name" placeholder="John Doe" required>
+                    <input 
+                      type="name" 
+                      id="name" 
+                      v-model="name" 
+                      placeholder="John Doe" 
+                      required
+                      :disabled="googleLoginInProgress"
+                    >
                   </div>
                   <br>
                   <div class="form-group">
                     <label for="email">Email:</label>
-                    <input type="email" id="email" v-model="email" placeholder="johndoe@example.com" required>
+                    <input 
+                      type="email" 
+                      id="email" 
+                      v-model="email" 
+                      placeholder="johndoe@email.com" 
+                      required
+                      :disabled="googleLoginInProgress"
+                    >
                   </div>
                   <br>
                   <div class="form-group">
                     <label for="password">Password:</label>
-                    <input type="password" id="password" v-model="password" placeholder="Enter your password" required @input="checkPassword">
+                    <input 
+                      type="password" 
+                      id="password" 
+                      v-model="password" 
+                      placeholder="Enter your password" 
+                      required 
+                      @input="checkPassword"
+                      :disabled="googleLoginInProgress"
+                    >
                     <br>
                     <div class="password-requirements">
                       <ul>
@@ -91,7 +116,8 @@ export default {
       hasNumber: false,
       hasSymbol: false,
       hasMinLength: false,
-      loading: false
+      loading: false,
+      googleLoginInProgress: false
     };
   },
   computed: {
@@ -103,6 +129,14 @@ export default {
     }
   },
   methods: {
+    handleGoogleLoginStart() {
+      this.googleLoginInProgress = true;
+    },
+    
+    handleGoogleLoginError() {
+      this.googleLoginInProgress = false;
+    },
+    
     async register() {
       this.loading = true;
       try {
@@ -115,9 +149,9 @@ export default {
       } catch (error) {
         console.error(error);
         if (error.response && error.response.status === 500) {
-          this.errorMessage = 'Failed to sign up: A user with this email already exists.';
+          this.errorMessage = 'Error al registrarse: Ya existe un usuario con este email.';
         } else {
-          this.errorMessage = 'An error occurred. Please try again later.';
+          this.errorMessage = '';
         }
       }
       this.loading = false;
@@ -256,6 +290,12 @@ h3 {
 .form {
     display: flex;
     justify-content: center;
+    width: 100%;
+}
+
+.form form {
+    width: 100%;
+    max-width: 500px;
 }
 
 .input {
@@ -322,40 +362,43 @@ h3 {
 }
 
 .form-group {
-    width: 300px;
-    margin: 0 auto; 
-    margin-left: calc(50% - 150px + 30px); 
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    margin-left: 15px;
+}
+
+.form-group input {
+    width: 280px;
+    margin: 0 auto;
+    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.form-group input:disabled {
+    background-color: #f5f5f5;
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .password-requirements {
-    width: 300px;
-    margin: 0 auto; 
-    margin-left: calc(50% - 150px + 90px); 
+    width: 280px;
+    margin: 10px auto 0;
+    text-align: center;
 }
 
 .pass-req-label {
-  position: relative; 
-  left: -14px; 
-  top: -1px; 
-  transition: none 0s ease 0s; 
-}
-
-.form-group input[type="name"],
-.form-group input[type="email"],
-.form-group input[type="password"] {
-    border-radius: 10px;
-    padding: 10px; 
-    border: 1px solid #ccc;
-}
-
-
-.form-group input[type="name"],
-.form-group input[type="email"]{
-    margin-left: 30px;
-}
-
-.form-group input[type="password"] {
-    margin-left: 8px;
+    display: block;
+    margin-bottom: 8px;
 }
 
 .text-danger {
@@ -381,69 +424,105 @@ h3 {
 }
 
 .password-requirements li {
-    margin-left: -20px; 
+    margin-left: 0;
+    text-align: center;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 768px) {
+  .form-group input {
+    width: 260px;
+  }
+  
+  .password-requirements {
+    width: 260px;
+  }
+  
+  .button {
+    width: 120px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container-section {
+    margin: 5px;
+    padding: 10px;
+  }
+  
+  .form-group input {
+    width: 220px;
+  }
+  
+  .password-requirements {
+    width: 220px;
+  }
+  
+  .form-group label {
+    margin-left: 10px;
+  }
+  
+  .button {
+    width: 100px;
+    height: 40px;
+    font-size: 0.9rem;
+  }
+
+  .tabs {
+    margin-left: 0;
+    justify-content: center;
+  }
+
+  .tab {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+
+  .spinner {
+    left: 10px;
+    width: 12px;
+    height: 12px;
+  }
+}
+
+@media (max-width: 320px) {
+  .container-section {
+    margin: 2px;
+    padding: 8px;
+  }
+  
+  .form-group input {
+    width: 180px;
+    padding: 10px;
+  }
+  
+  .password-requirements {
+    width: 180px;
+    font-size: 0.9rem;
+  }
+  
+  .form-group label {
+    margin-left: 5px;
+    font-size: 0.9rem;
+  }
+  
   .button {
     width: 80px;
-    height: 40px;
-    font-size: 9px;
+    height: 35px;
+    font-size: 0.8rem;
   }
-
-  .form-group {
-    margin-left: 13rem;
+  
+  .tab {
+    padding: 6px 10px;
+    font-size: 0.8rem;
   }
-
-  .password-requirements {
-    margin-left: 4rem;
+  
+  h1 {
+    font-size: 1.3rem;
   }
-
-  .form-group input[type="email"] {
-  margin-left: 20px;
-  max-width: 100px;
-}
-.form-group input[type="password"] {
-  margin-left: -1px;
-  max-width: 100px;
-}
-
-.form-group input[type="text"] {
-  margin-left: 20px;
-  max-width: 100px;
-}
-
-.tabs {
-  width: 5%;
-  height: 3%;
-  justify-content: unset;
-  left: 5%;
-  margin-left: 3rem;
-}
-
-.tab.active {
-  max-width: 105px;
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  flex-wrap: wrap;
-  flex-direction: column-reverse;      
-}
-
-.tab:not(.active) {
-  flex-wrap: wrap;
-  max-width: 105px;
-  margin: 0 auto;
-  text-align: center;
-  display:flex; 
-  justify-content: center;
-}
-
-.spinner {
-  left: 3px;
-  padding: 2px;
-  margin-right: 3px;
-}
+  
+  h3 {
+    font-size: 1rem;
+  }
 }
 
 .divider {

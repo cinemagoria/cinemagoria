@@ -17,29 +17,33 @@ export default {
   },
   data() {
     return {
-      isLoading: false,
-      error: null
+      isLoading: false
     }
   },
   methods: {
     async handleGoogleLogin() {
       this.isLoading = true;
-      this.error = null;
+      let redirecting = false;
+      
+      this.$emit('google-login-start');
       
       try {
         const response = await fetch(`${process.env.API_URL}/auth/google/`);
         const data = await response.json();
         
         if (data && data.login_url) {
+          redirecting = true;
           window.location.href = data.login_url;
         } else {
-          this.error = 'Error signing in with Google';
+          this.$emit('google-login-error');
         }
       } catch (error) {
         console.error('Google login error:', error);
-        this.error = 'Error connecting to authentication service';
+        this.$emit('google-login-error');
       } finally {
-        this.isLoading = false;
+        if (!redirecting) {
+          this.isLoading = false;
+        }
       }
     }
   }
