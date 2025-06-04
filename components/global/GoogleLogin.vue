@@ -1,8 +1,15 @@
 <template>
   <div class="google-login-container">
-    <button type="button" @click="handleGoogleLogin" class="google-login-button">
-      <img src="/google-icon.svg" alt="Google" class="google-icon">
-      <span>{{ buttonText }}</span>
+    <button 
+      type="button" 
+      @click="handleGoogleLogin" 
+      class="google-login-button"
+      :class="{ 'loading': isLoading }"
+      :disabled="isLoading"
+    >
+      <div v-if="isLoading" class="loading-spinner"></div>
+      <img v-else src="/google-icon.svg" alt="Google" class="google-icon">
+      <span>{{ isLoading ? 'Accediendo...' : buttonText }}</span>
     </button>
   </div>
 </template>
@@ -70,12 +77,18 @@ export default {
   transition: all 0.3s ease;
   width: 100%;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  position: relative;
 }
 
-.google-login-button:hover {
+.google-login-button:hover:not(.loading) {
   background-color: #f8f9fa;
   color: #111;
   box-shadow: 0 2px 4px rgba(0,0,0,0.18);
+}
+
+.google-login-button.loading {
+  cursor: not-allowed;
+  opacity: 0.8;
 }
 
 .google-icon {
@@ -84,13 +97,29 @@ export default {
   margin-right: 10px;
 }
 
+.loading-spinner {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 @media (max-width: 600px) {
   .google-login-button {
     font-size: 12px;
     padding: 8px 15px;
   }
   
-  .google-icon {
+  .google-icon,
+  .loading-spinner {
     width: 16px;
     height: 16px;
   }
