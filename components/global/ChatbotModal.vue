@@ -174,8 +174,8 @@
           <h3>Alerta de Spoiler</h3>
           <p>La respuesta podría contener spoilers sobre plot twists, finales u otros elementos narrativos.</p>
           <div class="spoiler-actions">
-            <button @click="showSpoilerContent" class="spoiler-button accept">I can handle the truth</button>
-            <button @click="cancelSpoilerContent" class="spoiler-button cancel">Cancel</button>
+            <button @click="showSpoilerContent" class="spoiler-button accept">Puedo con la verdad</button>
+            <button @click="cancelSpoilerContent" class="spoiler-button cancel">Cancelar</button>
           </div>
       </div>
   </div>
