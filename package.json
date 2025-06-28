@@ -19,7 +19,7 @@
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/dotenv": "^1.4.2",
     "@nuxtjs/pwa": "^3.3.5",
-    "@supabase/supabase-js": "^2.49.3",
+    "@supabase/supabase-js": "^2.50.2",
     "axios": "^1.6.7",
     "braces": "^3.0.3",
     "consola": "^3.4.2",
