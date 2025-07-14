@@ -75,7 +75,8 @@ export default {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: 100%;
+  width: 60%;
+  margin: 0 auto;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12);
   position: relative;
 }

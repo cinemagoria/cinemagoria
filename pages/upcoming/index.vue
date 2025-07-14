@@ -1274,7 +1274,7 @@ body {
 
 .avatar-container-else {
     position: relative;
-    top: -66.5px;
+    top: -67.5px;
     font-size: 11.5px;
     left: 10px;
     cursor: pointer;

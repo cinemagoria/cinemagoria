@@ -1985,7 +1985,7 @@ input:not(:checked):focus ~ #helper-text {
 
 .avatar-container-else {
   position: relative;
-  top: -56.5px;
+  top: -57.5px;
   font-size: 11.5px;
   left: 10px;
 }
