@@ -2252,6 +2252,7 @@ h3 {
 
 .day-movies {
   margin-top: 20px;
+  margin-bottom: 40px;
   padding: 15px;
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.5);
