@@ -105,88 +105,11 @@
         </div>
       </div>
       
-      <div v-if="trendingSeriesList.length > 0">
-      <div class="upcoming-series-container" v-for="series in paginatedTrendingSeries" :key="series.id">
-        <div class="listing__head">
-            <h3 class="listing__title" style="top: 2.5rem; padding-top: 1rem;">Estrenos de Series:</h3>
-        </div>
-        <div class="series-header">
-          <div class="series-title-container">
-            <div class="series-title" @click="redirectTv(series.id)">
-              {{ series.name }}
-            </div>
-            <span class="series-year">({{ formatYearRange(series.firstAirDate, series.nextEpisode.air_date) }})</span>
-          </div>
-        </div>
-        
-        <button @click="prevTrendingPage" :disabled="currentTrendingPage === 1" class="calendar-nav calendar-nav--left series-nav-left" style="position: relative; z-index:3 !important; bottom: 0.5rem !important; margin-left:1rem !important;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"></path>
-          </svg>
-        </button>
-        
-        <button @click="nextTrendingPage" :disabled="currentTrendingPage === totalTrendingPages" class="calendar-nav calendar-nav--right right-arrow series-nav-right" style="z-index:3 !important">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"></path>
-          </svg>
-        </button>
-        <div style="position: relative !important; bottom: 13.8rem !important;">
-          <div class="info-header-details">
-            <button class="button-details" @click="redirectTv(series.id)">Más Información</button>
-          </div>
-          <div class="previos-episode-label" style="color: #8BE9FD; text-align: center; background: black; width: 100%;">
-              TEMPORADA {{ series.numberOfSeasons }}
-          </div>
-          <div class="arrows-header">
-            <div class="previous-episode-label">
-              Episodio Anterior:
-            </div>
-            <div class="upcoming-episode-label">
-              Próximo Episodio:
-            </div>
-          </div>
-          <li class="series-item">
-            <div class="series-details-left">
-              <div class="series-image series-image-last">
-                <img v-if="series.lastEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.lastEpisode.still_path}`" alt="Series Last Episode Image">
-                <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
-              </div>
-              <div class="episode-details">
-                <p class="episode-name episode-name-last">{{ series.lastEpisode.episode_number }}. {{ series.lastEpisode.name }}</p>
-              </div>
-              <div class="additional-details">
-                <p>Duración: {{ series.lastEpisode.runtime ? series.lastEpisode.runtime + ' mins.' : 'No especificado.' }}</p>
-                <p>Fecha de estreno: {{ formatDate(series.lastEpisode.air_date) }}</p>
-                <p>Sinopsis: {{ series.lastEpisode.overview ? series.lastEpisode.overview : 'No especificado.' }}</p>
-              </div>
-            </div>
-            <div class="series-divider"></div>
-            <div class="series-details-right">
-              <div class="arrows-header-mobile">
-                <div class="previous-episode-label">
-                  Episodio Anterior:
-                </div>
-                <div class="upcoming-episode-label">
-                  Próximo Episodio:
-                </div>
-              </div>
-              <div class="series-image series-image-next">
-                <img v-if="series.nextEpisode.still_path" :src="`https://image.tmdb.org/t/p/w400${series.nextEpisode.still_path}`" alt="Series Next Episode Image">
-                <img v-else src="~/static/image_not_found.png" alt="Image Not Found">
-              </div>
-              <div class="episode-details">
-                <p class="episode-name episode-name-next">{{ series.nextEpisode.episode_number }}. {{ series.nextEpisode.name }}</p>
-              </div>
-              <div class="additional-details">
-                <p>Duración: {{ series.nextEpisode.runtime ? series.nextEpisode.runtime + ' mins.' : 'No especificado.' }}</p>
-                <p>Fecha de estreno: {{ formatDate(series.nextEpisode.air_date) }}</p>
-                <p>Sinopsis: {{ series.nextEpisode.overview ? series.nextEpisode.overview : 'No especificado.' }}</p>
-              </div>
-            </div>
-          </li>
-        </div>
-        </div>
-        </div>
+      <TvShowReleasesCarousel
+        v-if="trendingSeriesList.length > 0"
+        title="Estrenos de Series:"
+        :items="trendingSeriesList"
+      />
   </section>
   <div style="margin-bottom: -4rem;"></div>
 </main>
@@ -194,7 +117,8 @@
 
   <script>
   import supabase from '@/services/supabase';
-  import UpcomingMoviesCarousel from '~/components/UpcomingMoviesCarousel.vue'
+  import UpcomingMoviesCarousel from '~/components/UpcomingMoviesCarousel.vue';
+  import TvShowReleasesCarousel from '~/components/TvShowReleasesCarousel.vue';
 
   async function getUserAvatar(userEmail) {
   try {
@@ -330,6 +254,7 @@ async function getUserName(userEmail) {
 
     components: {
       UpcomingMoviesCarousel,
+      TvShowReleasesCarousel,
     },
 
     computed: {
@@ -665,6 +590,8 @@ async function getUserName(userEmail) {
               .map(series => ({
                   id: series.id,
                   name: series.name,
+                  poster_path: series.poster_path,
+                  vote_average: series.vote_average,
                   genres: series.genres.map(genre => ({ id: genre.id, name: genre.name })),
                   nextEpisode: series.next_episode_to_air,
                   stillPath: series.still_path,
