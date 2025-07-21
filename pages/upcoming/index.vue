@@ -556,7 +556,7 @@ async function getUserName(userEmail) {
 
       async fetchSeriesDetails(seriesId) {
           const apiKey = process.env.API_KEY;
-          const apiLang = 'en-US';
+          const apiLang = 'es-ES';
           const url = `https://api.themoviedb.org/3/tv/${seriesId}?api_key=${apiKey}&language=${apiLang}`;
           const options = {
               method: 'GET',

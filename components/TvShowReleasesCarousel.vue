@@ -1,7 +1,7 @@
 <template>
   <div class="tv-releases-carousel">
     <div class="carousel">
-      <div v-if="title" class="listing__head">
+      <div v-if="title" class="listing__head" style="margin: 0 auto; letter-spacing: 1.5px;">
         <h3 class="listing__title">{{ title }}</h3>
       </div>
       <div style="top: 1rem; position:relative;">
@@ -281,7 +281,6 @@ export default {
   color: #fff;
   margin: 0;
   font-size: 1.8rem;
-  font-weight: 600;
 }
 
 @media (min-width: 300px) {
