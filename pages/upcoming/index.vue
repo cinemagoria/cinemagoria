@@ -242,10 +242,17 @@ async function getUserName(userEmail) {
         this.isLoggedIn = accessToken !== null;
         this.userAvatar = await getUserAvatar(this.userEmail);
         await this.fetchUserFirstName();
-        await this.fetchUpcomingMovies();
-        await this.fetchTrendingTV();
-        await this.fetchSeriesDetailsForIds();
+        
+        await Promise.all([
+            this.fetchUpcomingMovies(),
+            this.fetchTrendingTVAndSeries()
+        ]);
+        
         this.updateSelectedDateMovies();
+        
+        setTimeout(() => {
+            this.imagesLoaded = true;
+        }, 800);
     },
 
     beforeDestroy() {
@@ -429,10 +436,6 @@ async function getUserName(userEmail) {
         this.combinedMovies = Object.values(this.movies).flat();
         this.sortMoviesByReleaseDate();
         this.updateSelectedDateMovies();
-
-        setTimeout(() => {
-          this.imagesLoaded = true;
-        }, 800);
       },
 
       formatDate(date) {
@@ -605,6 +608,11 @@ async function getUserName(userEmail) {
 
           this.filteredSeriesDetails = filteredSeriesDetails;
           this.trendingSeriesList = this.filteredSeriesDetails;
+      },
+
+      async fetchTrendingTVAndSeries() {
+          await this.fetchTrendingTV();
+          await this.fetchSeriesDetailsForIds();
       },
 
 
