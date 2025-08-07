@@ -20,7 +20,7 @@
         <div class="chatbot-main" :class="{ 'sidebar-open': sidebarOpen }">
           <div v-if="sidebarOpen" class="conversations-sidebar">
             <div class="sidebar-header">
-              <button @click="createNewConversation" class="new-conversation-btn" title="New conversation">
+              <button @click="createNewConversation" class="new-conversation-btn" title="New chat">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 5v14M5 12h14"/>
                 </svg>
@@ -3507,5 +3507,131 @@ scrollToBottom() {
 
 .delete-conversation:hover {
   color: #ff4757;
+}
+
+
+@media screen and (max-width: 768px) {
+  .conversations-sidebar {
+    width: 140px !important; 
+  }
+  
+  .sidebar-header {
+    padding: 12px 10px;
+  }
+  
+  .new-conversation-btn {
+    padding: 8px 6px;
+    font-size: 11px;
+    gap: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+    height: auto;
+    min-height: 32px;
+  }
+  
+  .new-conversation-btn svg {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+  }
+  
+  .conversation-item {
+    padding: 10px 8px;
+    margin-bottom: 4px;
+  }
+  
+  .conversation-title {
+    font-size: 12px;
+    max-width: 100px;
+    line-height: 1.3;
+  }
+  
+  .conversation-time {
+    font-size: 10px;
+  }
+  
+  .conversation-content {
+    margin-right: 6px;
+  }
+  
+  .delete-conversation {
+    width: 16px;
+    height: 16px;
+    margin-left: 6px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .conversations-sidebar {
+    width: 120px !important;
+  }
+  
+  .sidebar-header {
+    padding: 8px 6px;
+  }
+  
+  .new-conversation-btn {
+    padding: 6px 4px;
+    font-size: 10px;
+    gap: 2px;
+    word-wrap: break-word;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.1;
+    height: auto;
+    min-height: 28px;
+  }
+  
+  .new-conversation-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .conversation-item {
+    padding: 8px 6px;
+    margin-bottom: 3px;
+  }
+  
+  .conversation-title {
+    font-size: 11px;
+    max-width: 80px;
+    line-height: 1.2;
+  }
+  
+  .conversation-time {
+    font-size: 9px;
+  }
+  
+  .conversation-content {
+    margin-right: 4px;
+  }
+}
+
+
+@media screen and (max-width: 480px) {
+  .conversations-sidebar {
+    width: 100px !important;
+  }
+  
+  .new-conversation-btn {
+    font-size: 9px;
+    padding: 4px 2px;
+    word-wrap: break-word;
+    white-space: normal;
+    line-height: 1;
+    height: auto;
+    min-height: 24px;
+  }
+  
+  .conversation-title {
+    max-width: 70px;
+    font-size: 10px;
+  }
+  
+  .conversation-time {
+    display: none;
+  }
 }
 </style>
