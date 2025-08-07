@@ -27,7 +27,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 5v14M5 12h14"/>
                 </svg>
-                Nueva conversación
+                Nuevo chat
               </button>
             </div>
             
@@ -3281,16 +3281,16 @@ scrollToBottom() {
   transform: scale(1.05);
 }
 
-/* --- Estilos para la Barra Lateral y Layout Principal --- */
 
-/* 1. Layout Principal con Flexbox */
+
+
 .chatbot-main {
   display: flex;
-  flex: 1; /* Permite que el contenedor principal crezca */
-  overflow: hidden; /* Evita desbordamientos */
+  flex: 1; 
+  overflow: hidden; 
 }
 
-/* El contenido del chat debe crecer para ocupar el espacio disponible */
+
 .chat-content {
   flex-grow: 1;
   display: flex;
@@ -3298,18 +3298,18 @@ scrollToBottom() {
   overflow: hidden;
 }
 
-/* 2. Contenedor de la Barra Lateral */
+
 .conversations-sidebar {
-  width: 260px; /* Ancho fijo para la barra lateral */
-  background: rgba(0, 0, 0, 0.2); /* Fondo sutil y oscuro */
-  border-right: 1px solid rgba(127, 219, 241, 0.2); /* Borde divisor */
+  width: 260px; 
+  background: rgba(0, 0, 0, 0.2); 
+  border-right: 1px solid rgba(127, 219, 241, 0.2); 
   display: flex;
   flex-direction: column;
-  flex-shrink: 0; /* Evita que la barra se encoja */
-  transition: width 0.3s ease; /* Animación suave */
+  flex-shrink: 0; 
+  transition: width 0.3s ease; 
 }
 
-/* 3. Botón para alternar la visibilidad de la barra lateral */
+
 .sidebar-toggle {
   background: none;
   border: none;
@@ -3334,13 +3334,12 @@ scrollToBottom() {
   align-items: center;
 }
 
-/* 4. Encabezado de la Barra Lateral */
 .sidebar-header {
   padding: 18px 15px;
   border-bottom: 1px solid rgba(127, 219, 241, 0.2);
 }
 
-/* 5. Botón "Nueva Conversación" */
+
 .new-conversation-btn {
   width: 100%;
   padding: 10px;
@@ -3352,7 +3351,7 @@ scrollToBottom() {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px; /* Espacio entre el ícono y el texto */
+  gap: 8px; 
   font-size: 14px;
   font-weight: 500;
   transition: all 0.2s ease;
@@ -3364,13 +3363,13 @@ scrollToBottom() {
   color: #fff;
 }
 
-/* 6. Lista de Conversaciones */
+
 .conversations-list {
-  flex-grow: 1; /* Ocupa el espacio restante */
+  flex-grow: 1; 
   overflow-y: auto;
   padding: 10px;
 }
-/* Estilo del scrollbar */
+
 .conversations-list::-webkit-scrollbar {
   width: 6px;
 }
@@ -3382,7 +3381,6 @@ scrollToBottom() {
   background: transparent;
 }
 
-/* 7. Elemento Individual de Conversación */
 .conversation-item {
   display: flex;
   justify-content: space-between;
@@ -3397,17 +3395,15 @@ scrollToBottom() {
   box-sizing: border-box;
 }
 
-/* Efecto hover */
 .conversation-item:hover {
   background-color: rgba(127, 219, 241, 0.1);
 }
 
-/* Estilo para la conversación activa */
+
 .conversation-item.active {
   background-color: rgba(127, 219, 241, 0.25);
 }
 
-/* 8. Contenido del item (título y fecha) */
 .conversation-content {
   display: flex;
   flex-direction: column;
@@ -3422,7 +3418,7 @@ scrollToBottom() {
   font-size: 14px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Añade "..." si el título es muy largo */
+  text-overflow: ellipsis;
 }
 
 .conversation-time {
@@ -3458,6 +3454,131 @@ scrollToBottom() {
 
 .delete-conversation:hover {
   color: #ff4757;
+}
+
+@media screen and (max-width: 768px) {
+  .conversations-sidebar {
+    width: 140px !important; 
+  }
+  
+  .sidebar-header {
+    padding: 12px 10px;
+  }
+  
+  .new-conversation-btn {
+    padding: 8px 6px;
+    font-size: 11px;
+    gap: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+    height: auto;
+    min-height: 32px;
+  }
+  
+  .new-conversation-btn svg {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+  }
+  
+  .conversation-item {
+    padding: 10px 8px;
+    margin-bottom: 4px;
+  }
+  
+  .conversation-title {
+    font-size: 12px;
+    max-width: 100px;
+    line-height: 1.3;
+  }
+  
+  .conversation-time {
+    font-size: 10px;
+  }
+  
+  .conversation-content {
+    margin-right: 6px;
+  }
+  
+  .delete-conversation {
+    width: 16px;
+    height: 16px;
+    margin-left: 6px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .conversations-sidebar {
+    width: 120px !important;
+  }
+  
+  .sidebar-header {
+    padding: 8px 6px;
+  }
+  
+  .new-conversation-btn {
+    padding: 6px 4px;
+    font-size: 10px;
+    gap: 2px;
+    word-wrap: break-word;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.1;
+    height: auto;
+    min-height: 28px;
+  }
+  
+  .new-conversation-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .conversation-item {
+    padding: 8px 6px;
+    margin-bottom: 3px;
+  }
+  
+  .conversation-title {
+    font-size: 11px;
+    max-width: 80px;
+    line-height: 1.2;
+  }
+  
+  .conversation-time {
+    font-size: 9px;
+  }
+  
+  .conversation-content {
+    margin-right: 4px;
+  }
+}
+
+
+@media screen and (max-width: 480px) {
+  .conversations-sidebar {
+    width: 100px !important;
+  }
+  
+  .new-conversation-btn {
+    font-size: 9px;
+    padding: 4px 2px;
+    word-wrap: break-word;
+    white-space: normal;
+    line-height: 1;
+    height: auto;
+    min-height: 24px;
+  }
+  
+  .conversation-title {
+    max-width: 70px;
+    font-size: 10px;
+  }
+  
+  .conversation-time {
+    display: none;
+  }
 }
 </style>
 
