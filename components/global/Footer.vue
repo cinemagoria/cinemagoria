@@ -86,7 +86,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import '~/assets/css/utilities/_variables.scss';
+@use '~/assets/css/utilities/variables' as *;
 
 .footer {
   font-size: 11px;

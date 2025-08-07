@@ -272,7 +272,7 @@ beforeDestroy() {
 </script>
 
 <style lang="scss" module>
-@import '~/assets/css/utilities/_variables.scss';
+@use '~/assets/css/utilities/variables' as *;
 body {
   font-family: 'Roboto', sans-serif;
 }
