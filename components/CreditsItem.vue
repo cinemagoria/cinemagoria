@@ -53,7 +53,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~/assets/css/utilities/_variables.scss';
+@use '~/assets/css/utilities/variables' as *;
 
 .credits-item {
   margin-bottom: 2rem;

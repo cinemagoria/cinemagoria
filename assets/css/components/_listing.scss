@@ -1,4 +1,4 @@
-@import '~/assets/css/utilities/_variables.scss';
+@use '~/assets/css/utilities/variables' as *;
 
 .listing {
   margin: 2.5rem 1.5rem;

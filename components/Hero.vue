@@ -875,7 +875,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import '~/assets/css/utilities/_variables.scss';
+@use '~/assets/css/utilities/variables' as *;
 .hero {
   display: flex;
   flex-direction: column;
