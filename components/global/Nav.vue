@@ -45,10 +45,13 @@
           <img :src="require('~/static/icon-upcoming.png')" alt="Upcoming" :class="$style.navIcon" />
         </nuxt-link>
       </li>
+      
       <!-- Ask AI Link -->
       <li>
         <button @click="openAiChat" aria-label="Ask AI" title="Ask AI Assistant">
           <span :class="$style.sparkIconWrapper">
+            <div v-if="hasMinimizedConversations" :class="$style.conversationIndicator"></div>
+            
             <!-- SVG Spark Icon -->
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" :class="[$style.navIcon, 'size-6']">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
@@ -56,6 +59,7 @@
           </span>
         </button>
       </li>
+      
       <!-- Login/Watchlist Links -->
       <li v-if="!isLoggedIn">
         <nuxt-link exact to="/login" aria-label="Sign In" @click.native="clearSearchBeforeNavigate">
@@ -70,7 +74,6 @@
     </ul>
 
     <ChatbotModal ref="chatbotModalRef" />
-
   </nav>
 </template>
 
@@ -85,40 +88,47 @@ export default {
   data() {
     return {
       authToken: null,
-      authInterval: null
+      authInterval: null,
+      hasMinimizedConversations: false
     };
   },
 
   computed: {
     ...mapState('search', ['searchOpen']),
     isLoggedIn() {
-
       return this.authToken !== null;
     }
   },
 
   mounted() {
     this.checkAuthStatus();
+    this.checkMinimizedConversations();
 
     this.authInterval = setInterval(this.checkAuthStatus, 500);
+    
     if (typeof window !== 'undefined') {
-        window.addEventListener('storage', this.handleStorageChange);
-        window.addEventListener('auth-changed', this.checkAuthStatus); 
+      window.addEventListener('storage', this.handleStorageChange);
+      window.addEventListener('auth-changed', this.checkAuthStatus); 
 
-        if (window.location.pathname.includes('auth-success')) {
-           this.forceUpdateNavIcons();
-        }
+      if (window.location.pathname.includes('auth-success')) {
+        this.forceUpdateNavIcons();
+      }
     }
+
+    this.$root.$on('chatbot-conversations-updated', (hasConversations) => {
+      this.hasMinimizedConversations = hasConversations;
+    });
   },
 
   beforeDestroy() {
     if (this.authInterval) {
       clearInterval(this.authInterval);
     }
-     if (typeof window !== 'undefined') {
-        window.removeEventListener('storage', this.handleStorageChange);
-        window.removeEventListener('auth-changed', this.checkAuthStatus);
-     }
+    
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('storage', this.handleStorageChange);
+      window.removeEventListener('auth-changed', this.checkAuthStatus);
+    }
   },
 
   methods: {
@@ -129,25 +139,36 @@ export default {
       }
     },
 
-    forceUpdateNavIcons() {
+    checkMinimizedConversations() {
+      try {
+        if (typeof localStorage !== 'undefined') {
+          const conversations = JSON.parse(localStorage.getItem('entercinema_chat_conversations') || '{}');
+          this.hasMinimizedConversations = Object.keys(conversations).length > 0 && 
+            Object.values(conversations).some(conv => conv.messages && conv.messages.length > 0);
+        }
+      } catch (error) {
+        console.warn('Error checking conversations:', error);
+      }
+    },
 
+    forceUpdateNavIcons() {
       const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
       this.authToken = token;
       this.$forceUpdate(); 
-
     },
 
     handleStorageChange(event) {
-
       if (event.key === 'access_token') {
         this.authToken = event.newValue;
+      } else if (event.key === 'entercinema_chat_conversations') {
+        this.checkMinimizedConversations();
       }
     },
 
     clearSearchBeforeNavigate() {
       this.$root.$emit('clear-search');
       if (this.$refs.chatbotModalRef && this.$refs.chatbotModalRef.chatBotOpen) {
-          this.$refs.chatbotModalRef.close();
+        this.$refs.chatbotModalRef.minimizeChatBot();
       }
     },
 
@@ -160,11 +181,12 @@ export default {
     openAiChat() {
       if (this.$refs.chatbotModalRef) {
         this.$refs.chatbotModalRef.open();
+        this.hasMinimizedConversations = false;
       } else {
         console.error('ChatbotModal ref not found!');
       }
     }
-  },
+  }
 };
 </script>
 
@@ -248,6 +270,31 @@ export default {
     position: relative;
   }
   
+  .conversationIndicator {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    background: #ff4757;
+    border-radius: 50%;
+    border: 2px solid #000;
+    z-index: 1;
+    animation: pulse-indicator 2s infinite;
+    
+    @media (min-width: $breakpoint-large) {
+      width: 14px;
+      height: 14px;
+      top: -3px;
+      right: -3px;
+    }
+  }
+
+  @keyframes pulse-indicator {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
+  }
+  
   .betaBadge {
     position: absolute;
     top: -6px;
@@ -288,7 +335,6 @@ export default {
 <style lang="scss" scoped>
 @import '~/assets/css/utilities/_variables.scss';
 
-
 a.nuxt-link-active {
   &:hover,
   &:focus {
@@ -299,5 +345,4 @@ a.nuxt-link-active {
     stroke: $primary-color; 
   }
 }
-
 </style>
