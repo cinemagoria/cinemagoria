@@ -1,184 +1,248 @@
 <template>
-  <div v-if="chatBotOpen" class="chatbot-modal" @click.self="closeChatBot">
-    <div class="chatbot-container" style="z-index: 6 !important;">
-      <div class="chatbot-header">
-        <h3>Preguntar a IA</h3>
-        <button @click="closeChatBot" class="close-button">×</button>
-      </div>
-
-      <div class="chatbot-messages" ref="chatbotMessagesContainer">
-        <div v-if="!chatBotResponse && chatBotResults.length === 0 && !chatBotLoading" class="chatbot-welcome" style="top: 5px; position:relative;">
-          <div class="examples-section">
-            <h5>Prueba preguntar:</h5>
-            <div class="example-item">"¿Quién dirigió The Matrix?"</div>
-            <div class="example-item">"¿Quiénes actuaron en la película Pulp Fiction?"</div>
-            <div class="example-item">"¿Quién fue la actriz de Gambito de Dama?"</div>
+  <div>
+    <div v-if="chatBotOpen" class="chatbot-modal" @click.self="closeChatBot">
+      <div class="chatbot-container" style="z-index: 6 !important;">
+        <!-- Header -->
+        <div class="chatbot-header">
+          <div class="header-left">
+            <button @click="toggleSidebar" class="sidebar-toggle" title="Toggle conversations">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-panel-left-icon lucide-panel-left">
+                <rect width="18" height="18" x="3" y="3" rx="2"/>
+                <path d="M9 3v18"/>
+              </svg>
+            </button>
+            <h3>Preguntar a IA</h3>
           </div>
           
-          <div class="modern-divider">
-            <span class="divider-line"></span>
-            <span class="divider-text">O</span>
-            <span class="divider-line"></span>
-          </div>
-
-          <div v-if="currentDailyPrompt" class="daily-prompt-section">
-            <div class="daily-badge">PROMPT DIARIO</div>
-              <div class="daily-prompt-content">
-              <p>{{ currentDailyPrompt }}</p>
-              <button @click="sendDailyPrompt" class="daily-prompt-button">Preguntar</button>
-            </div>
+          <div class="header-buttons">
+            <button @click="closeChatBot" class="close-button">×</button>
           </div>
         </div>
 
-        <div v-if="chatMessages.length > 0" class="conversation-container">
-          <div v-for="(message, index) in chatMessages" :key="index" class="message-wrapper">
-            <div v-if="message.role === 'user'" class="user-message">
-              <div class="message-content">
-                <p>{{ message.content }}</p>
-              </div>
+        <!-- Main Content Area -->
+          <div class="chatbot-main" :class="{ 'sidebar-open': sidebarOpen }">
+          <div v-if="sidebarOpen" class="conversations-sidebar">
+            <div class="sidebar-header">
+              <button @click="createNewConversation" class="new-conversation-btn" title="Nueva conversación">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Nueva conversación
+              </button>
             </div>
-            <div v-else-if="message.role === 'assistant'" class="assistant-message">
-              <div class="message-content">
-                <p v-html="message.content"></p>
-              </div>
-            </div>
-          </div>
-          
-          <div v-if="chatBotLoading && messageWaitingForResponse" class="message-wrapper">
-            <div class="assistant-message">
-              <div class="message-content streaming-content">
-                <div v-if="isStreaming" class="streaming-response">
-                  <p v-html="streamingText"></p>
-                  <div class="cursor-indicator">|</div>
+            
+            <div class="conversations-list">
+              <div 
+                v-for="conv in conversations" 
+                :key="conv.id"
+                :class="['conversation-item', { active: activeConversationId === conv.id }]"
+                @click="switchConversation(conv.id)"
+                :title="conv.title">
+                
+                <div class="conversation-content">
+                  <span class="conversation-title">{{ conv.title }}</span>
+                  <span class="conversation-time">{{ formatConversationTime(conv.createdAt) }}</span>
                 </div>
-                <div v-else class="reasoning-content">
-                  <div class="reasoning-indicator">
-                    Razonando
-                    <div class="dots-container">
-                      <span class="dot" :class="{ active: dotIndex === 0 }"></span>
-                      <span class="dot" :class="{ active: dotIndex === 1 }"></span>
-                      <span class="dot" :class="{ active: dotIndex === 2 }"></span>
-                    </div>
-                  </div>
-                </div>
+
+                <button 
+                  v-if="conversations.length > 1"
+                  @click.stop="closeConversation(conv.id)"
+                  class="delete-conversation"
+                  title="Eliminar conversación">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
-        </div>
- 
 
-        <div v-if="chatBotResults.length > 0" class="media-carousel">
-          <h3 class="carousel-title">Resultados Relacionados</h3>
-          <div class="carousel-container">
-            <button @click="scrollCarousel('left')" class="carousel-nav carousel-prev">❮</button>
-            <div class="carousel-content" ref="mediaCarousel">
-              <div v-for="item in chatBotResults" :key="item.id + '-' + item.media_type" class="carousel-item">
-
-                <a v-if="item.media_type === 'movie'"
-                   :href="item.url"
-                   class="media-link"
-                   target="_blank">
-                  <div class="poster-wrapper">
-                    <img v-if="item.poster_path" :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" :alt="item.title || 'Póster de Película'">
-                    <img v-else src="/static/image_not_found.png" :alt="item.title || 'Póster de Película No Encontrado'">
-                    <div class="media-type">Película</div>
-                    <div class="movie-rating" v-if="item.vote_average > 0">
-                      {{ (item.vote_average).toFixed(1) }}
-                      <span class="star">★</span>
-                    </div>
-                  </div>
-                  <div class="media-info">
-                    <h4>{{ item.title }}</h4>
-                    <p>{{ item.release_date ? item.release_date.substring(0, 4) : 'N/D' }}</p>
-                  </div>
-                </a>
-
-                <a v-else-if="item.media_type === 'tv'"
-                   :href="item.url"
-                   class="media-link"
-                   target="_blank">
-                  <div class="poster-wrapper">
-                    <img v-if="item.poster_path" :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" :alt="item.name || 'Póster de Serie'">
-                    <img v-else src="/static/image_not_found.png" :alt="item.name || 'Póster de Serie No Encontrado'">
-                    <div class="media-type">Serie</div>
-
-                    <div class="movie-rating" v-if="item.vote_average > 0">
-                      {{ (item.vote_average).toFixed(1) }}
-                      <span class="star">★</span>
-                    </div>
-                  </div>
-                  <div class="media-info">
-                    <h4>{{ item.name }}</h4>
-                    <p>{{ item.first_air_date ? item.first_air_date.substring(0, 4) : 'N/D' }}</p>
-                  </div>
-                </a>
-
-                <a v-else-if="item.media_type === 'person'"
-                   :href="item.url"
-                   class="media-link"
-                   target="_blank">
-                  <div class="profile-wrapper">
-                    <img v-if="item.profile_path" :src="'https://image.tmdb.org/t/p/w342' + item.profile_path" :alt="item.name || 'Perfil de Persona'">
-                    <img v-else src="/static/image_not_found.png" :alt="item.name || 'Perfil de Persona No Encontrado'">
-                    <div class="media-type">Persona</div>
-                  </div>
-                  <div class="media-info">
-                    <h4>{{ item.name }}</h4>
-                    <p>{{ item.known_for_department || '' }}</p>
-                  </div>
-                </a>
-              </div>
-            </div>
-            <button @click="scrollCarousel('right')" class="carousel-nav carousel-next">❯</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="chatbot-input">
-        <div class="input-wrapper">
-         <!-- Input real automáticamente visible en desktop, o cuando se activa en móvil -->
-        <input
-          v-if="inputEnabled || !isMobileDevice"
-          v-model="chatBotQuery"
-          placeholder="Pregunta sobre películas, series, actores..."
-          @keyup.enter="handleSendAction"
-          ref="chatInput"
-        >
+          <!-- Chat Content -->
+          <div class="chat-content">
         
-          <div 
-            v-else-if="isMobileDevice && !inputEnabled"
-            class="fake-input"
-            @click="enableInput"
-          >
-            Pregunta sobre películas, series, actores...
+            <div class="chatbot-messages" ref="chatbotMessagesContainer">
+          <div v-if="!chatBotResponse && chatBotResults.length === 0 && !chatBotLoading" class="chatbot-welcome" style="top: 5px; position:relative;">
+            <div class="examples-section">
+              <h5>Prueba preguntar:</h5>
+              <div class="example-item">"¿Quién dirigió The Matrix?"</div>
+              <div class="example-item">"¿Quiénes actuaron en la película Pulp Fiction?"</div>
+              <div class="example-item">"¿Quién fue la actriz de Gambito de Dama?"</div>
+            </div>
+            
+            <div class="modern-divider">
+              <span class="divider-line"></span>
+              <span class="divider-text">O</span>
+              <span class="divider-line"></span>
+            </div>
+
+            <div v-if="currentDailyPrompt" class="daily-prompt-section">
+              <div class="daily-badge">PROMPT DIARIO</div>
+                <div class="daily-prompt-content">
+                <p>{{ currentDailyPrompt }}</p>
+                <button @click="sendDailyPrompt" class="daily-prompt-button">Preguntar</button>
+              </div>
+            </div>
           </div>
-          <div class="input-backdrop" :style="{ width: inputWidth + '%' }"></div>
+
+          <div v-if="chatMessages.length > 0" class="conversation-container">
+            <div v-for="(message, index) in chatMessages" :key="index" class="message-wrapper">
+              <div v-if="message.role === 'user'" class="user-message">
+                <div class="message-content">
+                  <p>{{ message.content }}</p>
+                </div>
+              </div>
+              <div v-else-if="message.role === 'assistant'" class="assistant-message">
+                <div class="message-content">
+                  <p v-html="message.content"></p>
+                </div>
+              </div>
+            </div>
+            
+            <div v-if="chatBotLoading && messageWaitingForResponse" class="message-wrapper">
+              <div class="assistant-message">
+                <div class="message-content streaming-content">
+                  <div v-if="isStreaming" class="streaming-response">
+                    <p v-html="streamingText"></p>
+                    <div class="cursor-indicator">|</div>
+                  </div>
+                  <div v-else class="reasoning-content">
+                    <div class="reasoning-indicator">
+                      Razonando
+                      <div class="dots-container">
+                        <span class="dot" :class="{ active: dotIndex === 0 }"></span>
+                        <span class="dot" :class="{ active: dotIndex === 1 }"></span>
+                        <span class="dot" :class="{ active: dotIndex === 2 }"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+   
+
+          <div v-if="chatBotResults.length > 0" class="media-carousel">
+            <h3 class="carousel-title">Resultados Relacionados</h3>
+            <div class="carousel-container">
+              <button @click="scrollCarousel('left')" class="carousel-nav carousel-prev">❮</button>
+              <div class="carousel-content" ref="mediaCarousel">
+                <div v-for="item in chatBotResults" :key="item.id + '-' + item.media_type" class="carousel-item">
+
+                  <a v-if="item.media_type === 'movie'"
+                     :href="item.url"
+                     class="media-link"
+                     target="_blank">
+                    <div class="poster-wrapper">
+                      <img v-if="item.poster_path" :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" :alt="item.title || 'Póster de Película'">
+                      <img v-else src="/static/image_not_found.png" :alt="item.title || 'Póster de Película No Encontrado'">
+                      <div class="media-type">Película</div>
+                      <div class="movie-rating" v-if="item.vote_average > 0">
+                        {{ (item.vote_average).toFixed(1) }}
+                        <span class="star">★</span>
+                      </div>
+                    </div>
+                    <div class="media-info">
+                      <h4>{{ item.title }}</h4>
+                      <p>{{ item.release_date ? item.release_date.substring(0, 4) : 'N/D' }}</p>
+                    </div>
+                  </a>
+
+                  <a v-else-if="item.media_type === 'tv'"
+                     :href="item.url"
+                     class="media-link"
+                     target="_blank">
+                    <div class="poster-wrapper">
+                      <img v-if="item.poster_path" :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" :alt="item.name || 'Póster de Serie'">
+                      <img v-else src="/static/image_not_found.png" :alt="item.name || 'Póster de Serie No Encontrado'">
+                      <div class="media-type">Serie</div>
+
+                      <div class="movie-rating" v-if="item.vote_average > 0">
+                        {{ (item.vote_average).toFixed(1) }}
+                        <span class="star">★</span>
+                      </div>
+                    </div>
+                    <div class="media-info">
+                      <h4>{{ item.name }}</h4>
+                      <p>{{ item.first_air_date ? item.first_air_date.substring(0, 4) : 'N/D' }}</p>
+                    </div>
+                  </a>
+
+                  <a v-else-if="item.media_type === 'person'"
+                     :href="item.url"
+                     class="media-link"
+                     target="_blank">
+                    <div class="profile-wrapper">
+                      <img v-if="item.profile_path" :src="'https://image.tmdb.org/t/p/w342' + item.profile_path" :alt="item.name || 'Perfil de Persona'">
+                      <img v-else src="/static/image_not_found.png" :alt="item.name || 'Perfil de Persona No Encontrado'">
+                      <div class="media-type">Persona</div>
+                    </div>
+                    <div class="media-info">
+                      <h4>{{ item.name }}</h4>
+                      <p>{{ item.known_for_department || '' }}</p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+              <button @click="scrollCarousel('right')" class="carousel-nav carousel-next">❯</button>
+            </div>
+          </div>
+            </div>
+
+            <div class="chatbot-input">
+          <div class="input-wrapper">
+          <input
+            v-if="inputEnabled || !isMobileDevice"
+            v-model="chatBotQuery"
+            placeholder="Pregunta sobre películas, series, actores..."
+            @keyup.enter="handleSendAction"
+            ref="chatInput"
+          >
+          
+            <div 
+              v-else-if="isMobileDevice && !inputEnabled"
+              class="fake-input"
+              @click="enableInput"
+            >
+              Pregunta sobre películas, series, actores...
+            </div>
+            <div class="input-backdrop" :style="{ width: inputWidth + '%' }"></div>
+          </div>
+          <button @click="handleSendAction" :disabled="!chatBotQuery.trim() && !chatBotLoading" class="send-button" :class="{ 'stop-button': chatBotLoading }">
+            <span v-if="chatBotLoading" class="stop-indicator">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <rect x="6" y="6" width="12" height="12" rx="2"></rect>
+              </svg>
+            </span>
+            <span v-else>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </span>
+          </button>
+            </div>
+          </div>
         </div>
-        <button @click="handleSendAction" :disabled="!chatBotQuery.trim() && !chatBotLoading" class="send-button" :class="{ 'stop-button': chatBotLoading }">
-          <span v-if="chatBotLoading" class="stop-indicator">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-              <rect x="6" y="6" width="12" height="12" rx="2"></rect>
-            </svg>
-          </span>
-          <span v-else>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-          </span>
-        </button>
+      </div>
+      
+      <div v-if="spoilerModalOpen" class="spoiler-modal">
+          <div class="spoiler-content">
+            <h3>Alerta de Spoiler</h3>
+            <p>La respuesta podría contener spoilers sobre plot twists, finales u otros elementos narrativos.</p>
+            <div class="spoiler-actions">
+              <button @click="showSpoilerContent" class="spoiler-button accept">Puedo con la verdad</button>
+              <button @click="cancelSpoilerContent" class="spoiler-button cancel">Cancelar</button>
+            </div>
+          </div>
       </div>
     </div>
-      <div v-if="spoilerModalOpen" class="spoiler-modal">
-        <div class="spoiler-content">
-          <h3>Alerta de Spoiler</h3>
-          <p>La respuesta podría contener spoilers sobre plot twists, finales u otros elementos narrativos.</p>
-          <div class="spoiler-actions">
-            <button @click="showSpoilerContent" class="spoiler-button accept">Puedo con la verdad</button>
-            <button @click="cancelSpoilerContent" class="spoiler-button cancel">Cancelar</button>
-          </div>
-      </div>
-  </div>
+    
+    <div v-if="chatBotMinimized" class="minimized-chatbot" @click="maximizeChatBot">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+        </svg>
+        <div v-if="hasConversation" class="notification-dot"></div>
+    </div>
   </div>
 </template>
 
@@ -213,9 +277,12 @@ export default {
       baseUrl: typeof window !== 'undefined'
                ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://es.entercinema.com')
                : 'https://es.entercinema.com',
-      apiUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+               apiUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
               ? 'https://entercinema-assistant-es.vercel.app/chat' 
-              : 'https://entercinema-assistant-es.vercel.app/chat', 
+              : 'https://entercinema-assistant-es.vercel.app/chat',
+      titleGenerationUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+              ? 'https://entercinema-assistant-es.vercel.app/chat' 
+              : 'https://entercinema-assistant-es.vercel.app/chat',
       predefinedApiUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
               ? 'http://localhost:8000/api' 
               : 'https://entercinema-predefined-es.vercel.app/api',
@@ -234,8 +301,21 @@ export default {
         "¿Cuál es la película más cara jamás realizada?",
         "¿Cómo reconcilia la representación visual de Gargantúa en Interestelar la compleja física de los agujeros negros giratorios con la accesibilidad cinematográfica?"
       ],
-      currentPromptIndex: -1
+      currentPromptIndex: -1,
+      chatBotMinimized: false,
+      sessionMinimizedKey: 'entercinema_chat_minimized',
+      conversations: [],
+      activeConversationId: null,
+      conversationsStorageKey: 'entercinema_chat_conversations',
+      sidebarOpen: false,
+      titleGenerationInterval: null,
+      conversationIndex: 0
     };
+  },
+  computed: {
+    hasConversation() {
+      return this.chatMessages.length > 0;
+    }
   },
   watch: {
     chatBotOpen(isOpen) {
@@ -244,7 +324,6 @@ export default {
           if (this.$refs.chatInput) {
             this.$refs.chatInput.focus();
           }
-          this.resetChatState();
           this.loadDailyPrompt();
         });
       }
@@ -267,20 +346,336 @@ export default {
         });
       }
     });
+    this.loadMinimizedState();
+    this.loadConversations();
+    this.initializeFirstConversation();
+    window.chatbotDebug = () => {
+      console.log('chatBotMinimized:', this.chatBotMinimized);
+      console.log('chatBotOpen:', this.chatBotOpen);
+      console.log('hasConversation:', this.hasConversation);
+    };
+    this.$root.$on('chatbot-maximized', () => {
+      this.chatBotMinimized = false;
+    });
   },
 
   beforeDestroy() {
+    this.saveCurrentConversation();
+    this.saveConversations();
     window.removeEventListener('resize', this.checkMobileDevice);
     if (this.dotAnimationInterval) {
       clearInterval(this.dotAnimationInterval);
       this.dotAnimationInterval = null;
     }
+    if (this.titleGenerationInterval) {
+      clearInterval(this.titleGenerationInterval);
+      this.titleGenerationInterval = null;
+    }
     if (this.abortController) {
       this.abortController.abort();
       this.abortController = null;
     }
+    this.clearMinimizedState();
   },
   methods: {
+    loadConversations() {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        const saved = localStorage.getItem(this.conversationsStorageKey);
+        if (saved) {
+          this.conversations = JSON.parse(saved);
+        }
+      }
+    } catch (error) {
+      console.warn('Error loading conversations:', error);
+    }
+  },
+  
+  saveConversations() {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(this.conversationsStorageKey, JSON.stringify(this.conversations));
+        
+        // Notificar al navbar
+        const hasConversations = this.conversations.some(conv => conv.messages.length > 0);
+        this.$root.$emit('chatbot-conversations-updated', hasConversations);
+      }
+    } catch (error) {
+      console.warn('Error saving conversations:', error);
+    }
+  },
+  
+  initializeFirstConversation() {
+    if (this.conversations.length === 0) {
+      this.createNewConversation();
+    } else {
+      this.activeConversationId = this.conversations[0].id;
+      this.loadActiveConversation();
+    }
+    
+    // Start title generation interval
+    this.startTitleGenerationInterval();
+  },
+  
+  createNewConversation() {
+    // PRIMERO guardar la conversación actual
+    this.saveCurrentConversation();
+    this.saveConversations();
+    
+    const newId = Date.now().toString();
+    this.conversationIndex++;
+    const now = new Date();
+    const utcTime = now.toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
+    
+    const newConversation = {
+      id: newId,
+      title: `${this.conversationIndex} - ${utcTime}`,
+      messages: [],
+      results: [],
+      chatId: null,
+      createdAt: now.toISOString(),
+      titleGenerated: false
+    };
+    
+    this.conversations.unshift(newConversation);
+    this.activeConversationId = newId;
+    this.loadActiveConversation();
+    this.saveConversations();
+    
+    this.$nextTick(() => {
+      this.$forceUpdate();
+    });
+  },
+    
+  switchConversation(conversationId) {
+    if (conversationId !== this.activeConversationId) {
+      this.saveCurrentConversation();
+      this.saveConversations();
+      this.activeConversationId = conversationId;
+      this.loadActiveConversation();
+    }
+  },
+  closeConversation(conversationId) {
+    const index = this.conversations.findIndex(conv => conv.id === conversationId);
+    if (index !== -1) {
+      this.conversations.splice(index, 1);
+      
+      if (this.activeConversationId === conversationId) {
+        if (this.conversations.length > 0) {
+          this.activeConversationId = this.conversations[0].id;
+          this.loadActiveConversation();
+        } else {
+          this.createNewConversation();
+        }
+      }
+      
+      this.saveConversations();
+    }
+  },
+  
+  // En tus methods
+
+  loadActiveConversation() {
+    const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+    if (activeConv) {
+      this.chatMessages = [...activeConv.messages];
+      this.chatId = activeConv.chatId;
+      this.chatBotResults = activeConv.results ? [...activeConv.results] : [];
+    } else {
+      this.chatMessages = [];
+      this.chatId = null;
+      this.chatBotResults = [];
+    }
+  },
+
+  saveCurrentConversation() {
+    const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+    if (activeConv) {
+      activeConv.messages = [...this.chatMessages];
+      activeConv.chatId = this.chatId;
+      activeConv.results = [...this.chatBotResults];
+      activeConv.updatedAt = new Date().toISOString();
+    }
+  },
+
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+  },
+
+  formatConversationTime(createdAt) {
+    if (!createdAt) return '';
+    const date = new Date(createdAt);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Ahora';
+    if (diffMins < 60) return `${diffMins}m`;
+    if (diffHours < 24) return `${diffHours}h`;
+    if (diffDays < 7) return `${diffDays}d`;
+    return date.toLocaleDateString();
+  },
+
+  startTitleGenerationInterval() {
+    if (this.titleGenerationInterval) {
+      clearInterval(this.titleGenerationInterval);
+    }
+
+    this.titleGenerationInterval = setInterval(() => {
+      this.generateConversationTitles();
+    }, 10000);
+
+    setTimeout(() => {
+      this.generateConversationTitles();
+    }, 5000);
+  },
+
+  async generateConversationTitles() {
+    for (const conversation of this.conversations) {
+      if (conversation.titleGenerated || conversation.messages.length === 0) {
+        continue;
+      }
+
+      const placeholderPattern = /^\d+ - \d{4}-\d{2}-\d{2} \d{2}:\d{2} UTC$/;
+      if (!placeholderPattern.test(conversation.title)) {
+        continue;
+      }
+
+      try {
+        const conversationText = conversation.messages
+          .map(msg => `${msg.role}: ${msg.content}`)
+          .join('\n');
+
+        const language = this.detectLanguage(conversationText);
+        
+        const response = await this.generateTitleWithAI(conversationText, language);
+        
+        if (response && response.trim()) {
+          conversation.title = response.trim();
+          conversation.titleGenerated = true;
+          this.saveConversations();
+        }
+      } catch (error) {
+        console.warn('Error generating title for conversation:', error);
+      }
+    }
+  },
+
+  detectLanguage(text) {
+    const spanishWords = ['el', 'la', 'de', 'que', 'y', 'en', 'un', 'es', 'se', 'no', 'te', 'lo', 'le', 'da', 'su', 'por', 'son', 'con', 'para', 'al', 'del', 'los', 'las', 'una', 'como', 'pero', 'sus', 'han', 'había', 'película', 'serie', 'actor', 'actriz', 'director', 'cine'];
+    const englishWords = ['the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'i', 'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at', 'this', 'but', 'his', 'by', 'from', 'movie', 'film', 'series', 'actor', 'actress', 'director', 'cinema'];
+    
+    const words = text.toLowerCase().split(/\s+/);
+    let spanishCount = 0;
+    let englishCount = 0;
+    
+    words.forEach(word => {
+      if (spanishWords.includes(word)) spanishCount++;
+      if (englishWords.includes(word)) englishCount++;
+    });
+    
+    return spanishCount > englishCount ? 'es' : 'en';
+  },
+
+  async generateTitleWithAI(conversationText, language) {
+    const prompt = language === 'es' 
+      ? `Genera un título corto y descriptivo (máximo 40 caracteres) para esta conversación sobre cine/series. Responde solo con el título, sin comillas ni explicaciones:\n\n${conversationText}`
+      : `Generate a short and descriptive title (maximum 40 characters) for this conversation about movies/TV shows. Respond only with the title, no quotes or explanations:\n\n${conversationText}`;
+
+    try {
+      const response = await fetch(this.titleGenerationUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: prompt,
+          chat_id: null
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data.result ? data.result.substring(0, 40) : null;
+      }
+    } catch (error) {
+      console.warn('Error calling title generation API:', error);
+    }
+
+    const firstUserMessage = conversationText.split('\n').find(line => line.startsWith('user:'));
+    if (firstUserMessage) {
+      const content = firstUserMessage.replace('user:', '').trim();
+      return content.length > 40 ? content.substring(0, 37) + '...' : content;
+    }
+
+    return null;
+  },
+  
+  minimizeChatBot() {
+    this.saveCurrentConversation();
+    this.saveConversations();
+    this.chatBotOpen = false;
+    this.chatBotMinimized = true;
+    this.saveMinimizedState();
+  },
+
+    maximizeChatBot() {
+      this.chatBotOpen = true;
+      this.clearMinimizedState();
+      
+      // Emit al componente padre
+      this.$root.$emit('chatbot-maximized');
+      
+      this.$nextTick(() => {
+        if (this.$refs.chatInput) {
+          this.$refs.chatInput.focus();
+        }
+      });
+    },
+
+
+    saveMinimizedState() {
+      try {
+        if (typeof localStorage !== 'undefined') {
+          const minimizedData = {
+            minimized: true,
+            timestamp: Date.now()
+          };
+          localStorage.setItem(this.sessionMinimizedKey, JSON.stringify(minimizedData));
+        }
+      } catch (error) {
+        console.warn('Error saving minimized state:', error);
+      }
+    },
+
+    clearMinimizedState() {
+      try {
+        if (typeof localStorage !== 'undefined') {
+          localStorage.removeItem(this.sessionMinimizedKey);
+        }
+      } catch (error) {
+        console.warn('Error clearing minimized state:', error);
+      }
+    },
+
+    loadMinimizedState() {
+      try {
+        if (typeof localStorage !== 'undefined') {
+          const minimizedData = localStorage.getItem(this.sessionMinimizedKey);
+          if (minimizedData) {
+            const parsed = JSON.parse(minimizedData);
+            if (parsed.minimized) {
+              this.chatBotMinimized = true;
+              this.chatBotOpen = false;
+            }
+          }
+        }
+      } catch (error) {
+        console.warn('Error loading minimized state:', error);
+      }
+    },
     loadChatSession() {
       try {
         if (typeof localStorage !== 'undefined') {
@@ -364,12 +759,15 @@ export default {
   },
   open() {
     this.chatBotOpen = true;
+    this.chatBotMinimized = false;
+    this.clearMinimizedState();
     this.checkMobileDevice();
     this.inputEnabled = !this.isMobileDevice;
-    this.loadChatSession();
-  },
+    },
     close() {
       this.chatBotOpen = false;
+      this.clearMinimizedState();
+      this.$root.$emit('chatbot-closed');
     },
     startDotAnimation() {
       if (this.dotAnimationInterval) {
@@ -382,19 +780,17 @@ export default {
       }, 500);
     },
     resetChatState() {
-        this.chatBotQuery = '';
-        this.chatBotResponse = '';
-        this.chatBotResults = [];
-        this.chatBotLoading = false;
-        this.chatMessages = [];
-        this.messageWaitingForResponse = false;
-        this.inputWidth = 0;
-        this.clearChatSession();
-        this.chatId = null;
+      this.chatBotQuery = '';
+      this.chatBotResponse = '';
+      this.chatBotResults = [];
+      this.chatBotLoading = false;
+      this.inputWidth = 0;
     },
 
     closeChatBot() {
-       this.close();
+      this.chatBotMinimized = false;
+      this.clearMinimizedState();
+      this.close();
     },
 
     showSpoilerContent() {
@@ -428,6 +824,8 @@ export default {
       if (this.isMobileDevice) {
         this.inputEnabled = false;
       }
+      this.saveCurrentConversation();
+      this.saveConversations();
     },
 
 
@@ -485,6 +883,7 @@ export default {
       
       this.$nextTick(() => {
         this.scrollToBottom();
+      
       });
 
       try {
@@ -635,11 +1034,13 @@ export default {
         if (this.isMobileDevice) {
           this.inputEnabled = false;
         }
+        
       } finally {
         if (this.dotAnimationInterval) {
           clearInterval(this.dotAnimationInterval);
           this.dotAnimationInterval = null;
         }
+
         this.chatBotLoading = false;
         this.messageWaitingForResponse = false;
         this.isStreaming = false;
@@ -656,6 +1057,9 @@ export default {
           }
         });
       }
+      this.updateConversationTitle();
+      this.saveCurrentConversation();
+      this.saveConversations();
     },
     loadDailyPrompt() {
       if (this.dailyPrompts.length > 0) {
@@ -667,7 +1071,18 @@ export default {
         this.currentDailyPrompt = this.dailyPrompts[promptIndex];
       }
     },
-    
+    updateConversationTitle() {
+      const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+      if (activeConv && activeConv.title.startsWith('Chat ') && this.chatMessages.length > 0) {
+        const firstUserMessage = this.chatMessages.find(msg => msg.role === 'user');
+        if (firstUserMessage) {
+          activeConv.title = firstUserMessage.content.substring(0, 20) + '...';
+          this.saveConversations();
+        }
+      }
+      this.saveCurrentConversation();
+      this.saveConversations();
+    },
     sendDailyPrompt() {
       if (this.currentPromptIndex !== -1 && !this.chatBotLoading) {
         this.chatBotQuery = this.currentDailyPrompt;
@@ -1486,6 +1901,7 @@ scrollToBottom() {
   height: 85vh;
   max-height: 700px;
   background: linear-gradient(135deg, rgba(6, 47, 64, 0.98) 0%, rgba(10, 30, 40, 0.99) 100%);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 28' width='56' height='28'%3E%3Cpath fill='%237ed2e3' fill-opacity='0.1' d='M56 26v2h-7.75c2.3-1.27 4.94-2 7.75-2zm-26 2a2 2 0 1 0-4 0h-4.09A25.98 25.98 0 0 0 0 16v-2c.67 0 1.34.02 2 .07V14a2 2 0 0 0-2-2v-2a4 4 0 0 1 3.98 3.6 28.09 28.09 0 0 1 2.8-3.86A8 8 0 0 0 0 6V4a9.99 9.99 0 0 1 8.17 4.23c.94-.95 1.96-1.83 3.03-2.63A13.98 13.98 0 0 0 0 0h7.75c2 1.1 3.73 2.63 5.1 4.45 1.12-.72 2.3-1.37 3.53-1.93A20.1 20.1 0 0 0 14.28 0h2.7c.45.56.88 1.14 1.29 1.74 1.3-.48 2.63-.87 4-1.15-.11-.2-.23-.4-.36-.59H26v.07a28.4 28.4 0 0 1 4 0V0h4.09l-.37.59c1.38.28 2.72.67 4.01 1.15.4-.6.84-1.18 1.3-1.74h2.69a20.1 20.1 0 0 0-2.1 2.52c1.23.56 2.41 1.2 3.54 1.93A16.08 16.08 0 0 1 48.25 0H56c-4.58 0-8.65 2.2-11.2 5.6 1.07.8 2.09 1.68 3.03 2.63A9.99 9.99 0 0 1 56 4v2a8 8 0 0 0-6.77 3.74c1.03 1.2 1.97 2.5 2.79 3.86A4 4 0 0 1 56 10v2a2 2 0 0 0-2 2.07 28.4 28.4 0 0 1 2-.07v2c-9.2 0-17.3 4.78-21.91 12H30zM7.75 28H0v-2c2.81 0 5.46.73 7.75 2zM56 20v2c-5.6 0-10.65 2.3-14.28 6h-2.7c4.04-4.89 10.15-8 16.98-8zm-39.03 8h-2.69C10.65 24.3 5.6 22 0 22v-2c6.83 0 12.94 3.11 16.97 8zm15.01-.4a28.09 28.09 0 0 1 2.8-3.86 8 8 0 0 0-13.55 0c1.03 1.2 1.97 2.5 2.79 3.86a4 4 0 0 1 7.96 0zm14.29-11.86c1.3-.48 2.63-.87 4-1.15a25.99 25.99 0 0 0-44.55 0c1.38.28 2.72.67 4.01 1.15a21.98 21.98 0 0 1 36.54 0zm-5.43 2.71c1.13-.72 2.3-1.37 3.54-1.93a19.98 19.98 0 0 0-32.76 0c1.23.56 2.41 1.2 3.54 1.93a15.98 15.98 0 0 1 25.68 0zm-4.67 3.78c.94-.95 1.96-1.83 3.03-2.63a13.98 13.98 0 0 0-22.4 0c1.07.8 2.09 1.68 3.03 2.63a9.99 9.99 0 0 1 16.34 0z'%3E%3C/path%3E%3C/svg%3E");
   box-shadow: 0 12px 40px 0 rgba(31, 104, 135, 0.6);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
@@ -1521,6 +1937,7 @@ scrollToBottom() {
   letter-spacing: 0.5px;
   display: flex;
   align-items: center;
+  white-space: nowrap;
 }
 
 .spark-logo {
@@ -2678,6 +3095,369 @@ scrollToBottom() {
   .message-content p {
     font-size: 13px;
   }
+}
+.header-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.minimize-button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 28px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 0.8;
+  transition: all 0.2s ease;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 300;
+}
+
+.minimize-button:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.minimized-chatbot {
+  position: fixed !important;
+  bottom: 25px !important;
+  right: 25px !important;
+  width: 65px !important;
+  height: 65px !important;
+  background: linear-gradient(135deg, rgba(0, 136, 204, 0.9) 0%, rgba(127, 219, 241, 0.9) 100%) !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 999999999999 !important;
+  color: white !important;
+  cursor: pointer !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  box-shadow: 0 4px 20px rgba(0, 122, 204, 0.4), 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+  animation: float 3s ease-in-out infinite !important;
+}
+
+.minimized-chatbot {
+  display: block !important;
+}
+
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px);
+    box-shadow: 0 4px 20px rgba(0, 122, 204, 0.4), 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+  50% { 
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 122, 204, 0.6), 0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.minimized-chatbot:hover {
+  transform: translateY(-8px) scale(1.1) !important;
+  box-shadow: 0 12px 30px rgba(0, 122, 204, 0.6), 0 6px 20px rgba(0, 0, 0, 0.3) !important;
+  animation: none !important;
+}
+
+.minimized-chatbot svg {
+  width: 28px !important;
+  height: 28px !important;
+  stroke: white !important;
+  fill: none !important;
+}
+
+.notification-dot {
+  position: absolute !important;
+  top: 5px !important;
+  right: 5px !important;
+  width: 16px !important;
+  height: 16px !important;
+  background: #ff4757 !important;
+  border-radius: 50% !important;
+  border: 3px solid white !important;
+  animation: pulse-notification 2s infinite !important;
+}
+
+@keyframes pulse-notification {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@media screen and (max-width: 768px) {
+  .minimized-chatbot {
+    bottom: 20px !important;
+    right: 20px !important;
+    width: 60px !important;
+    height: 60px !important;
+  }
+  
+  .minimized-chatbot svg {
+    width: 24px !important;
+    height: 24px !important;
+  }
+  
+  .notification-dot {
+    width: 14px !important;
+    height: 14px !important;
+    top: 4px !important;
+    right: 4px !important;
+    border: 2px solid white !important;
+  }
+}
+.conversation-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 70%;
+  overflow-x: auto;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: 80px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.tab.active {
+  background: rgba(127, 219, 241, 0.3);
+  color: #7FDBF1;
+}
+
+.tab-title {
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.close-tab {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+}
+
+.close-tab:hover {
+  color: #fff;
+}
+
+.new-tab-button {
+  background: rgba(127, 219, 241, 0.2);
+  border: 1px solid rgba(127, 219, 241, 0.5);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #7FDBF1;
+  font-size: 16px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.new-tab-button:hover {
+  background: rgba(127, 219, 241, 0.4);
+  transform: scale(1.05);
+}
+
+/* --- Estilos para la Barra Lateral y Layout Principal --- */
+
+/* 1. Layout Principal con Flexbox */
+.chatbot-main {
+  display: flex;
+  flex: 1; /* Permite que el contenedor principal crezca */
+  overflow: hidden; /* Evita desbordamientos */
+}
+
+/* El contenido del chat debe crecer para ocupar el espacio disponible */
+.chat-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 2. Contenedor de la Barra Lateral */
+.conversations-sidebar {
+  width: 260px; /* Ancho fijo para la barra lateral */
+  background: rgba(0, 0, 0, 0.2); /* Fondo sutil y oscuro */
+  border-right: 1px solid rgba(127, 219, 241, 0.2); /* Borde divisor */
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0; /* Evita que la barra se encoja */
+  transition: width 0.3s ease; /* Animación suave */
+}
+
+/* 3. Botón para alternar la visibilidad de la barra lateral */
+.sidebar-toggle {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  padding: 5px;
+  margin-right: 15px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+/* 4. Encabezado de la Barra Lateral */
+.sidebar-header {
+  padding: 18px 15px;
+  border-bottom: 1px solid rgba(127, 219, 241, 0.2);
+}
+
+/* 5. Botón "Nueva Conversación" */
+.new-conversation-btn {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid rgba(127, 219, 241, 0.4);
+  color: #cceef7;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Espacio entre el ícono y el texto */
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.new-conversation-btn:hover {
+  background: rgba(127, 219, 241, 0.15);
+  border-color: rgba(127, 219, 241, 0.7);
+  color: #fff;
+}
+
+/* 6. Lista de Conversaciones */
+.conversations-list {
+  flex-grow: 1; /* Ocupa el espacio restante */
+  overflow-y: auto;
+  padding: 10px;
+}
+/* Estilo del scrollbar */
+.conversations-list::-webkit-scrollbar {
+  width: 6px;
+}
+.conversations-list::-webkit-scrollbar-thumb {
+  background-color: rgba(127, 219, 241, 0.3);
+  border-radius: 3px;
+}
+.conversations-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 7. Elemento Individual de Conversación */
+.conversation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  margin-bottom: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Efecto hover */
+.conversation-item:hover {
+  background-color: rgba(127, 219, 241, 0.1);
+}
+
+/* Estilo para la conversación activa */
+.conversation-item.active {
+  background-color: rgba(127, 219, 241, 0.25);
+}
+
+/* 8. Contenido del item (título y fecha) */
+.conversation-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-grow: 1;
+  min-width: 0;
+  margin-right: 8px;
+}
+
+.conversation-title {
+  color: #e0e0e0;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Añade "..." si el título es muy largo */
+}
+
+.conversation-time {
+  font-size: 11px;
+  color: #a8d8e4;
+  opacity: 0.8;
+}
+
+
+.delete-conversation {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 3px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+}
+
+.conversation-item:hover .delete-conversation {
+  opacity: 1;
+  visibility: visible;
+}
+
+.delete-conversation:hover {
+  color: #ff4757;
 }
 </style>
 
