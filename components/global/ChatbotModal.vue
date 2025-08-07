@@ -23,7 +23,7 @@
           <div class="chatbot-main" :class="{ 'sidebar-open': sidebarOpen }">
           <div v-if="sidebarOpen" class="conversations-sidebar">
             <div class="sidebar-header">
-              <button @click="createNewConversation" class="new-conversation-btn" title="Nueva conversación">
+              <button @click="createNewConversation" class="new-conversation-btn" title="Nuevo chat">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 5v14M5 12h14"/>
                 </svg>
