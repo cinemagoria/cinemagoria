@@ -1208,7 +1208,7 @@ export default {
       if (item.details.typeForDb === 'movie') {
         return `https://es.entercinema.com/movie/${item.details.idForDb}`;
       } else if (item.details.typeForDb === 'tv') {
-        return `https://es.entercinema.com.com/tv/${item.details.idForDb}`;
+        return `https://es.entercinema.com/tv/${item.details.idForDb}`;
       } else {
         return '#'; 
       }
