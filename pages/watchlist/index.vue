@@ -72,47 +72,39 @@
         <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
           <div class="column">
             <h2 class="text-center" style="color: #acafb5; font-size: 16px;">Favorite {{ filterText }}</h2>
-              <div class="button-container" style="margin-top: 2rem;">
-                <select @change="toggleFilter" class="filter-select">
-                  <option value="movies">&nbsp;&nbsp;&nbsp;Movies</option>
-                  <option value="tvShows">&nbsp;&nbsp;&nbsp;TV Shows</option>
-                </select>
-                <select @change="toggleOrder" class="order-select">
-                  <option value="asc" :selected="orderText === 'Order Asc'">
-                    <span class="order-word">&nbsp;&nbsp;&nbsp;</span> <span class="order-option">Last Added</span>
-                  </option>
-                  <option value="desc" :selected="orderText === 'Order Desc'">
-                    <span class="order-word">&nbsp;&nbsp;&nbsp;</span> <span class="order-option">First Added</span>
-                  </option>
-                </select>
-                <select @change="filterByGenre" class="genre-select">
-                  <option value="">&nbsp;&nbsp;&nbsp;All Genres</option>
-                  <option v-for="genre in uniqueGenres" :key="genre" :value="genre">&nbsp;&nbsp;&nbsp;{{ genre }}</option>
-                </select>
-                <select @change="filterByYear" class="year-select">
-                  <option value="">&nbsp;&nbsp;&nbsp;All Years</option>
-                  <option v-for="range in yearRanges" :key="range" :value="range">&nbsp;&nbsp;&nbsp;{{ range }}</option>
-                </select>
-                <select @change="filterByTmdbRating" class="tmdb-rating-select">
-                  <option value="">&nbsp;&nbsp;&nbsp;All TMDB Ratings</option>
-                  <option value="9-10">&nbsp;&nbsp;&nbsp;TMDB: 9+</option>
-                  <option value="8-8.9">&nbsp;&nbsp;&nbsp;TMDB: 8+</option>
-                  <option value="7-7.9">&nbsp;&nbsp;&nbsp;TMDB: 7+</option>
-                  <option value="6-6.9">&nbsp;&nbsp;&nbsp;TMDB: 6+</option>
-                  <option value="5-5.9">&nbsp;&nbsp;&nbsp;TMDB: 5+</option>
-                  <option value="0-4.9">&nbsp;&nbsp;&nbsp;TMDB: < 5</option>
-                </select>
-                <select @change="filterByUserRating" class="user-rating-select">
-                  <option value="">&nbsp;&nbsp;&nbsp;All User Ratings</option>
-                  <option value="10">&nbsp;&nbsp;&nbsp;My Rating: 10</option>
-                  <option value="9">&nbsp;&nbsp;&nbsp;My Rating: 9</option>
-                  <option value="8">&nbsp;&nbsp;&nbsp;My Rating: 8</option>
-                  <option value="7">&nbsp;&nbsp;&nbsp;My Rating: 7</option>
-                  <option value="6">&nbsp;&nbsp;&nbsp;My Rating: 6</option>
-                  <option value="5">&nbsp;&nbsp;&nbsp;My Rating: 5</option>
-                  <option value="1-4">&nbsp;&nbsp;&nbsp;My Rating: < 5</option>
-                </select>
-                <br>
+              <div class="new-controls-container" style="margin-top: 3rem;">
+              <label class="switch">
+                <input type="checkbox" :checked="filter === 'tvShows'" @change="toggleFilterType">
+                <span>Movies</span>
+                <span>TV Shows</span>
+              </label>
+              
+              <div class="action-buttons">
+                <button class="control-btn" @click="openFiltersModal">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
+                  </svg>
+                  <span class="btn-label">Filters</span>
+                </button>
+
+                <button class="control-btn" @click="toggleOrderMode">
+                  <svg v-if="orderText === 'Order Asc'" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m3 16 4 4 4-4"/>
+                    <path d="M7 20V4"/>
+                    <path d="M17 10V4h-2"/>
+                    <path d="M15 10h4"/>
+                    <rect x="15" y="14" width="4" height="6" ry="2"/>
+                  </svg>
+                  <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m3 16 4 4 4-4"/>
+                    <path d="M7 20V4"/>
+                    <rect x="15" y="4" width="4" height="6" ry="2"/>
+                    <path d="M17 20v-6h-2"/>
+                    <path d="M15 20h4"/>
+                  </svg>
+                  <span class="btn-label">{{ orderText === 'Order Asc' ? 'Latest' : 'Earliest' }}</span>
+                </button>
+              </div>
               </div>
             </div>
             <div class="pagination" v-if="filteredItems.length > itemsPerPage">
@@ -250,87 +242,244 @@
         </div>
       </section>
     </main>
-    <!-- Rated Items Modal -->
-    <div v-if="ratedItemsModalVisible" class="modal-overlay">
-      <div class="rated-items-modal">
-        <div class="modal-header">
-          <h3>Your Rated Picks</h3>
-          <button class="close-btn" @click="closeRatedItemsModal">×</button>
-        </div>
-        
-        <div class="tab-controls">
-          <button 
-            :class="['tab-btn', { active: ratedItemsTab === 'movies' }]" 
-            @click="ratedItemsTab = 'movies'"
-          >
+    <!-- Rating Modal -->
+<div v-if="ratingModalVisible" class="modal-overlay">
+  <div class="rating-modal">
+    <div class="modal-header">
+      <h3>Rate '{{ currentRatingItem?.details?.nameForDb }}'</h3>
+      <button class="close-btn" @click="closeRatingModal">×</button>
+    </div>
 
-          <span style="position:relative; margin :0 auto;">Movies</span>
-          </button>
-          <button 
-            :class="['tab-btn', { active: ratedItemsTab === 'tv' }]" 
-            @click="ratedItemsTab = 'tv'"
+    <div class="rating-content">
+      <div class="rating-selector">
+        <div class="rating-numbers">
+          <button
+            v-for="n in 10"
+            :key="n"
+            @click="setRating(n)"
+            @mouseover="previewRating(n)"
+            @mouseout="resetPreview()"
+            :class="[
+              'rating-btn',
+              { 'rating-btn-active': n <= (hoverRating || selectedRating) }
+            ]"
           >
-            <span style="position:relative; margin :0 auto;">TV Shows</span>
+            {{ n }}
           </button>
         </div>
-        
-        <div class="rated-items-content">
-          <div v-if="filteredRatedItems && filteredRatedItems.length > 0" class="rated-items-list">
-            <div v-for="(item, index) in filteredRatedItems" :key="index" class="rated-item">
-              <img :src="item.details.posterForDb" class="rated-item-poster" :alt="item.details.nameForDb">
-              <div class="rated-item-info">
-                <h4 class="rated-item-title">{{ item.details.nameForDb }}</h4>
-                <div class="rated-item-meta">
-                  <span>{{ item.details.yearStartForDb }}</span>
-                  <div class="rated-item-rating">
-                    <span>Rating:</span>
-                    <div v-if="editingRating !== index" @click="startEditRating(index, item)" class="rating-badge editable" :title="'Click to edit rating'">
-                      {{ item.details.userRatingForDb }}
-                    </div>
-                    <div v-else class="rating-edit-controls">
-                      <select v-model="tempRating" class="rating-select">
-                        <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-                      </select>
-                      <button @click="saveRating(item)" class="edit-btn save-btn"><span style="color:black !important;">✓</span></button>
-                      <button @click="cancelEditRating" class="edit-btn cancel-btn">✕</button>
-                    </div>
-                  </div>
+      </div>
+
+      <div class="review-section">
+        <textarea
+          v-model="userReview"
+          :placeholder="selectedRating > 0 ? 
+            ratingDescriptions[selectedRating - 1] : 'Select a rating first'"
+          class="review-textarea"
+          maxlength="500"
+          :disabled="selectedRating === 0"
+        ></textarea>
+        <div class="char-count">{{ userReview.length }}/500</div>
+      </div>
+
+      <button
+        @click="saveRatingAndReview"
+        class="save-btn"
+        :disabled="selectedRating === 0"
+      >
+        <span style="position:relative; margin:0 auto;">Save</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Rated Items Modal -->
+<div v-if="ratedItemsModalVisible" class="modal-overlay">
+  <div class="rated-items-modal">
+    <div class="modal-header">
+      <h3>Your Rated Picks</h3>
+      <button class="close-btn" @click="closeRatedItemsModal">×</button>
+    </div>
+    
+    <div class="tab-controls">
+      <button 
+        :class="['tab-btn', { active: ratedItemsTab === 'movies' }]" 
+        @click="ratedItemsTab = 'movies'"
+      >
+        <span style="position:relative; margin :0 auto;">Movies</span>
+      </button>
+      <button 
+        :class="['tab-btn', { active: ratedItemsTab === 'tv' }]" 
+        @click="ratedItemsTab = 'tv'"
+      >
+        <span style="position:relative; margin :0 auto;">TV Shows</span>
+      </button>
+    </div>
+    
+    <div class="rated-items-content">
+      <div v-if="filteredRatedItems && filteredRatedItems.length > 0" class="rated-items-list">
+        <div v-for="(item, index) in filteredRatedItems" :key="index" class="rated-item">
+          <img :src="item.details.posterForDb" class="rated-item-poster" :alt="item.details.nameForDb">
+          <div class="rated-item-info">
+            <h4 class="rated-item-title">{{ item.details.nameForDb }}</h4>
+            <div class="rated-item-meta">
+              <span>{{ item.details.yearStartForDb }}</span>
+              <div class="rated-item-rating">
+                <span>Rating:</span>
+                <div v-if="editingRating !== index" @click="startEditRating(index, item)" class="rating-badge editable" :title="'Click to edit rating'">
+                  {{ item.details.userRatingForDb }}
                 </div>
-                <div v-if="editingReview !== index" class="rated-item-review-container">
-                  <div v-if="item.details.userReview" class="rated-item-review">
-                    {{ item.details.userReview }}
-                  </div>
-                  <div v-else class="rated-item-review">
-                    {{ ratingDescriptions[parseInt(item.details.userRatingForDb) - 1] }}
-                  </div>
-                  <br>
-                  <br>
-                  <button @click="startEditReview(index, item)" class="edit-review-btn">
-                    <span v-if="item.details.userReview">Edit review</span>
-                    <span v-else>Add review</span>
-                  </button>
-                </div>
-                <div v-else class="review-edit-container">
-                  <textarea v-model="tempReview" rows="3" class="review-textarea" placeholder="Write your review here..."></textarea>
-                  <div class="review-btn-container">
-                    <button @click="saveReview(item)" class="edit-btn-rvw save-btn">Save</button>
-                    <button @click="cancelEditReview" class="edit-btn-rvw cancel-btn">Cancel</button>
-                  </div>
+                <div v-else class="rating-edit-controls">
+                  <select v-model="tempRating" class="rating-select">
+                    <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
+                  </select>
+                  <button @click="saveRating(item)" class="edit-btn save-btn"><span style="color:black !important;">✓</span></button>
+                  <button @click="cancelEditRating" class="edit-btn cancel-btn">✕</button>
                 </div>
               </div>
             </div>
-          </div>
-          
-          <div v-else class="empty-state">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-            </svg>
-            <p>No rated {{ ratedItemsTab === 'movies' ? 'movies' : 'TV shows' }} yet.</p>
-            <p>Rate some {{ ratedItemsTab === 'movies' ? 'movies' : 'TV shows' }} to see them here!</p>
+            <div v-if="editingReview !== index" class="rated-item-review-container">
+              <div v-if="item.details.userReview" class="rated-item-review">
+                {{ item.details.userReview }}
+              </div>
+              <div v-else class="rated-item-review">
+                {{ ratingDescriptions[parseInt(item.details.userRatingForDb) - 1] }}
+              </div>
+              <br>
+              <br>
+              <button @click="startEditReview(index, item)" class="edit-review-btn">
+                <span v-if="item.details.userReview">Edit review</span>
+                <span v-else>Add review</span>
+              </button>
+            </div>
+            <div v-else class="review-edit-container">
+              <textarea v-model="tempReview" rows="3" class="review-textarea" placeholder="Write your review here..."></textarea>
+              <div class="review-btn-container">
+                <button @click="saveReview(item)" class="edit-btn-rvw save-btn">Save</button>
+                <button @click="cancelEditReview" class="edit-btn-rvw cancel-btn">Cancel</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      
+      <div v-else class="empty-state">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        </svg>
+        <p>No rated {{ ratedItemsTab === 'movies' ? 'movies' : 'TV shows' }} yet.</p>
+        <p>Rate some {{ ratedItemsTab === 'movies' ? 'movies' : 'TV shows' }} to see them here!</p>
+      </div>
     </div>
+  </div>
+</div>
+
+<!-- Filters Modal -->
+<div v-if="filtersModalVisible" class="modal-overlay" @click="closeFiltersModal">
+  <div class="filters-modal" @click.stop>
+    <div class="modal-header">
+      <h3>Filters</h3>
+      <button class="close-btn" @click="closeFiltersModal">×</button>
+    </div>
+    
+    <div class="filters-content">
+      <div class="filter-group">
+        <label class="filter-label">Genre</label>
+        <div class="custom-select" @click="toggleGenreDropdown">
+          <div class="select-display">
+            <span>{{ selectedGenre || 'All genres' }}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" :class="{ 'rotate-180': genreDropdownOpen }">
+              <path d="M7 10l5 5 5-5z"/>
+            </svg>
+          </div>
+          <div v-if="genreDropdownOpen" class="dropdown-options">
+            <div 
+              class="dropdown-option" 
+              :class="{ selected: selectedGenre === '' }"
+              @click.stop="selectGenre('')"
+            >
+              All genres
+            </div>
+            <div 
+              v-for="genre in uniqueGenres" 
+              :key="genre" 
+              class="dropdown-option"
+              :class="{ selected: selectedGenre === genre }"
+              @click.stop="selectGenre(genre)"
+            >
+              {{ genre }}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="filter-group">
+        <label class="filter-label">Years</label>
+        <div class="year-inputs">
+          <input 
+            type="number" 
+            v-model.number="customYearStart" 
+            :min="1880" 
+            :max="currentYear"
+            placeholder="From"
+            class="year-input"
+          >
+          <span class="year-separator">-</span>
+          <input 
+            type="number" 
+            v-model.number="customYearEnd" 
+            :min="1880" 
+            :max="currentYear"
+            placeholder="To"
+            class="year-input"
+          >
+        </div>
+        <div class="quick-year-options">
+          <button 
+            v-for="range in yearRanges" 
+            :key="range" 
+            @click="setYearRange(range)"
+            class="year-quick-btn"
+          >
+            {{ range }}
+          </button>
+        </div>
+      </div>
+      
+      <div class="filter-group">
+        <label class="filter-label">TMDB Rating</label>
+        <select v-model="selectedTmdbRating" class="filter-input">
+          <option value="">All ratings</option>
+          <option value="9-10">TMDB: 9+</option>
+          <option value="8-8.9">TMDB: 8+</option>
+          <option value="7-7.9">TMDB: 7+</option>
+          <option value="6-6.9">TMDB: 6+</option>
+          <option value="5-5.9">TMDB: 5+</option>
+          <option value="0-4.9">TMDB: < 5</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label class="filter-label">My Rating</label>
+        <select v-model="selectedUserRating" class="filter-input">
+          <option value="">All my ratings</option>
+          <option value="10">My Rating: 10</option>
+          <option value="9">My Rating: 9</option>
+          <option value="8">My Rating: 8</option>
+          <option value="7">My Rating: 7</option>
+          <option value="6">My Rating: 6</option>
+          <option value="5">My Rating: 5</option>
+          <option value="1-4">My Rating: < 5</option>
+        </select>
+      </div>
+      
+      <div class="filter-actions">
+        <button @click="clearAllFilters" class="clear-btn">Clear</button>
+        <button @click="closeFiltersModal" class="apply-btn">Apply</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
   </div>
 </template>
 
@@ -382,6 +531,12 @@ export default {
   },
   data() {
     return {
+      genreDropdownOpen: false,
+      filteredSeriesDetails: [],
+      filtersModalVisible: false,
+      customYearStart: null,
+      customYearEnd: null,
+      currentYear: new Date().getFullYear(),
       showLanguageMenu: false,
       selectedLanguage: 'english',
       fallbackImageUrl: "https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.png?raw=true",
@@ -557,6 +712,45 @@ export default {
   
   
   methods: {
+    toggleFilterType(event) {
+      this.filter = event.target.checked ? 'tvShows' : 'movies';
+      this.currentPage = 1;
+    },
+    toggleGenreDropdown() {
+      this.genreDropdownOpen = !this.genreDropdownOpen;
+    },
+
+    selectGenre(genre) {
+      this.selectedGenre = genre;
+      this.genreDropdownOpen = false;
+    },
+    openFiltersModal() {
+      this.filtersModalVisible = true;
+    },
+
+    closeFiltersModal() {
+      this.filtersModalVisible = false;
+    },
+
+    toggleOrderMode() {
+      this.orderText = this.orderText === 'Order Asc' ? 'Order Desc' : 'Order Asc';
+      this.moviesFetched.reverse();
+      this.tvFetched.reverse();
+    },
+
+    setYearRange(range) {
+      const [start, end] = range.split('-').map(Number);
+      this.customYearStart = start;
+      this.customYearEnd = end;
+    },
+
+    clearAllFilters() {
+      this.selectedGenre = '';
+      this.selectedTmdbRating = '';
+      this.selectedUserRating = '';
+      this.customYearStart = null;
+      this.customYearEnd = null;
+    },
     openRatingModal(item) {
       this.currentRatingItem = item;
       this.selectedRating = 0;
@@ -1070,12 +1264,10 @@ export default {
       const matchesGenre = this.selectedGenre === '' || 
         (item.details.genresForDb && item.details.genresForDb.includes(this.selectedGenre));
       
-      const matchesYear = this.selectedYearRange === '' || 
+      const matchesYear = (!this.customYearStart && !this.customYearEnd) || 
         (item.details.yearStartForDb && 
-         this.selectedYearRange.split('-')[0] && 
-         this.selectedYearRange.split('-')[1] && 
-         item.details.yearStartForDb >= this.selectedYearRange.split('-')[0] && 
-         item.details.yearStartForDb <= this.selectedYearRange.split('-')[1]);
+        item.details.yearStartForDb >= (this.customYearStart || 1880) && 
+        item.details.yearStartForDb <= (this.customYearEnd || this.currentYear));
 
       let matchesTmdbRating = true;
       if (this.selectedTmdbRating !== '') {
@@ -2636,6 +2828,438 @@ select.user-rating-select {
     margin: 0.5rem;
     font-size: 1.1rem;
     padding: 0.7rem 1.2rem;
+  }
+}
+
+
+.new-controls-container {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ gap: 20px;
+ flex-wrap: wrap;
+ margin-top: 3rem;
+ min-height: 50px;
+}
+
+.content-type-switch {
+ display: flex;
+ background: rgba(0, 0, 0, 0.2);
+ border-radius: 25px;
+ padding: 2px;
+ border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.switch {
+  --_switch-bg-clr: rgba(0, 0, 0, 0);
+  --_switch-padding: 3px;
+  --_slider-bg-clr: rgba(31, 104, 135, 0.4);
+  --_slider-bg-clr-on: #8BE9FD;
+  --_slider-txt-clr: #ffffff;
+  --_label-padding: 10px 20px;
+  --_switch-easing: cubic-bezier(0.47, 1.64, 0.41, 0.8);
+  
+  color: rgba(255, 255, 255, 0.7);
+  width: fit-content;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  position: relative;
+  isolation: isolate;
+  border-radius: 25px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  font-size: 1.3rem;
+  align-self: center;
+  margin: 0;
+}
+
+.switch input[type="checkbox"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.switch > span {
+  display: grid;
+  place-content: center;
+  transition: all 300ms ease-in-out;
+  padding: var(--_label-padding);
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.switch::before,
+.switch::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+  transition: inset 150ms ease-in-out;
+}
+
+.switch::before {
+  background-color: var(--_slider-bg-clr-on);
+  inset: var(--_switch-padding) 50% var(--_switch-padding) var(--_switch-padding);
+  transition: inset 500ms var(--_switch-easing), background-color 500ms ease-in-out;
+  z-index: 0;
+  border-radius: 22px;
+}
+
+.switch::after {
+  background-color: var(--_switch-bg-clr);
+  inset: 0;
+  z-index: -1;
+}
+
+.switch:hover {
+  transform: translateY(-1px);
+}
+
+.switch:has(input:checked)::before {
+  background-color: var(--_slider-bg-clr-on);
+  inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding) 50%;
+}
+
+.switch > span:first-of-type {
+  opacity: 1;
+  color: #000;
+  font-weight: 500;
+}
+
+.switch > span:last-of-type {
+  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.switch:has(input:checked) > span:first-of-type {
+  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: normal;
+}
+
+.switch:has(input:checked) > span:last-of-type {
+  color: #000;
+  opacity: 1;
+  font-weight: 500;
+}
+
+.switch-btn {
+ background: transparent;
+ border: none;
+ color: rgba(255, 255, 255, 0.7);
+ border-radius: 23px;
+ cursor: pointer;
+ transition: all 0.3s ease;
+ font-size: 1.3rem;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ white-space: nowrap;
+ flex: 1;
+ padding: 8px 16px;
+}
+
+.switch-btn.active {
+  background: #8BE9FD;
+  color: #000;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.control-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  background: rgba(82, 71, 71, 0);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 25px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.3rem;
+  align-self: center;
+  margin: 0;
+}
+
+.control-btn:hover {
+  background-color: #084a66;
+}
+
+.filters-modal {
+  width: 100%;
+  max-width: 500px;
+  background: linear-gradient(to bottom right, #092739, #061720);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.filters-content {
+  padding: 20px;
+}
+
+.filter-group {
+  margin-bottom: 20px;
+}
+
+.filter-label {
+  display: block;
+  color: #8BE9FD;
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.filter-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1.3rem;
+}
+
+.year-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.year-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1.3rem;
+}
+
+.year-separator {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: bold;
+}
+
+.quick-year-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.year-quick-btn {
+  padding: 5px 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+}
+
+.year-quick-btn:hover {
+  background: rgba(139, 233, 253, 0.2);
+  border-color: #8BE9FD;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.clear-btn, .apply-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1.3rem;
+  transition: all 0.2s ease;
+}
+
+.clear-btn {
+  background: rgba(255, 0, 0, 0.2);
+  color: #fff;
+}
+
+.apply-btn {
+  background: #8BE9FD;
+  color: #000;
+}
+
+@media (max-width: 768px) {
+  .new-controls-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .control-btn {
+    justify-content: center;
+  }
+}
+.custom-select {
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+}
+
+.select-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1.3rem;
+  transition: all 0.2s ease;
+}
+
+.select-display:hover {
+  border-color: rgba(139, 233, 253, 0.5);
+}
+
+.dropdown-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #092739;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  margin-top: 2px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.dropdown-option {
+  padding: 10px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 1.3rem;
+}
+
+.dropdown-option:hover {
+  background: rgba(139, 233, 253, 0.1);
+}
+
+.dropdown-option.selected {
+  background: rgba(139, 233, 253, 0.2);
+  color: #8BE9FD;
+}
+
+.year-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1.3rem;
+  transition: border-color 0.2s ease;
+}
+
+.year-input:focus {
+  outline: none;
+  border-color: rgba(139, 233, 253, 0.5);
+}
+
+.year-input::-webkit-outer-spin-button,
+.year-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.year-input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.dropdown-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-options::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dropdown-options::-webkit-scrollbar-thumb {
+  background: rgba(139, 233, 253, 0.3);
+  border-radius: 3px;
+}
+
+.dropdown-options::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 233, 253, 0.5);
+}
+
+.new-controls-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  margin: 3rem auto 0 auto;
+  min-height: 50px;
+  width: fit-content;
+}
+
+@media (max-width: 800px) {
+  .new-controls-container {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    margin: 3rem auto 0 auto;
+    width: fit-content;
+    gap: 15px;
+  }
+  
+  .action-buttons {
+    flex-direction: row;
+    gap: 15px;
+  }
+  
+  .control-btn span {
+    display: none;
+  }
+  
+  .control-btn {
+    padding: 12px;
+    min-width: 44px;
+    height: 44px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .control-btn svg {
+    margin: 0;
+    width: 18px;
+    height: 18px;
+  }
+  .btn-label {
+    display: none;
   }
 }
 </style>
