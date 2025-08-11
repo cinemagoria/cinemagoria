@@ -70,46 +70,39 @@
       <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
         <div class="column">
           <h2 class="text-center" style="color: #acafb5; font-size: 16px;">{{ filterText }} Favoritas</h2>
-          <div class="button-container" style="margin-top: 3rem;">
-            <select @change="toggleFilter" class="filter-select">
-              <option value="movies">&nbsp;&nbsp;&nbsp;Películas</option>
-              <option value="tvShows">&nbsp;&nbsp;&nbsp;Series de TV</option>
-            </select>
-            <select @change="toggleOrder" class="order-select">
-              <option value="asc" :selected="orderText === 'Order Asc'">
-                <span class="order-word"></span> <span class="order-option">&nbsp;&nbsp;&nbsp;Últimas adiciones</span>
-              </option>
-              <option value="desc" :selected="orderText === 'Order Desc'">
-                <span class="order-word"></span> <span class="order-option">&nbsp;&nbsp;&nbsp;Primeras adiciones</span>
-              </option>
-            </select>
-            <select @change="filterByGenre" class="genre-select">
-              <option value="">&nbsp;&nbsp;&nbsp;Géneros</option>
-              <option v-for="genre in uniqueGenres" :key="genre" :value="genre">&nbsp;&nbsp;&nbsp;{{ genre }}</option>
-            </select>
-            <select @change="filterByYear" class="year-select">
-              <option value="">&nbsp;&nbsp;&nbsp;Años</option>
-              <option v-for="range in yearRanges" :key="range" :value="range">&nbsp;&nbsp;&nbsp;{{ range }}</option>
-            </select>
-            <select @change="filterByTmdbRating" class="tmdb-rating-select">
-              <option value="">&nbsp;&nbsp;&nbsp;Puntajes TMDB</option>
-              <option value="9-10">&nbsp;&nbsp;&nbsp;TMDB: 9+</option>
-              <option value="8-8.9">&nbsp;&nbsp;&nbsp;TMDB: 8+</option>
-              <option value="7-7.9">&nbsp;&nbsp;&nbsp;TMDB: 7+</option>
-              <option value="6-6.9">&nbsp;&nbsp;&nbsp;TMDB: 6+</option>
-              <option value="5-5.9">&nbsp;&nbsp;&nbsp;TMDB: 5+</option>
-              <option value="0-4.9">&nbsp;&nbsp;&nbsp;TMDB: < 5</option>
-            </select>
-            <select @change="filterByUserRating" class="user-rating-select">
-              <option value="">&nbsp;&nbsp;&nbsp;Mis Puntajes</option>
-              <option value="10">&nbsp;&nbsp;&nbsp;Mi Puntaje: 10</option>
-              <option value="9">&nbsp;&nbsp;&nbsp;Mi Puntaje: 9</option>
-              <option value="8">&nbsp;&nbsp;&nbsp;Mi Puntaje: 8</option>
-              <option value="7">&nbsp;&nbsp;&nbsp;Mi Puntaje: 7</option>
-              <option value="6">&nbsp;&nbsp;&nbsp;Mi Puntaje: 6</option>
-              <option value="5">&nbsp;&nbsp;&nbsp;Mi Puntaje: 5</option>
-              <option value="1-4">&nbsp;&nbsp;&nbsp;Mi Puntaje: < 5</option>
-            </select>
+          <div class="new-controls-container" style="margin-top: 3rem;">
+            <label class="switch">
+              <input type="checkbox" :checked="filter === 'tvShows'" @change="toggleFilterType">
+              <span>Películas</span>
+              <span>Series TV</span>
+            </label>
+            
+            <div class="action-buttons">
+              <button class="control-btn" @click="openFiltersModal">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
+                </svg>
+                <span class="btn-label">Filtros</span>
+              </button>
+
+              <button class="control-btn" @click="toggleOrderMode">
+                <svg v-if="orderText === 'Order Asc'" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m3 16 4 4 4-4"/>
+                  <path d="M7 20V4"/>
+                  <path d="M17 10V4h-2"/>
+                  <path d="M15 10h4"/>
+                  <rect x="15" y="14" width="4" height="6" ry="2"/>
+                </svg>
+                <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m3 16 4 4 4-4"/>
+                  <path d="M7 20V4"/>
+                  <rect x="15" y="4" width="4" height="6" ry="2"/>
+                  <path d="M17 20v-6h-2"/>
+                  <path d="M15 20h4"/>
+                </svg>
+                <span class="btn-label">{{ orderText === 'Order Asc' ? 'Recientes' : 'Antiguos' }}</span>
+              </button>
+            </div>
           </div>
           <div class="pagination" v-if="filteredItems.length > itemsPerPage">
             <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
@@ -338,6 +331,112 @@
         </div>
       </div>
     </div>
+
+    <div v-if="filtersModalVisible" class="modal-overlay" @click="closeFiltersModal">
+      <div class="filters-modal" @click.stop>
+        <div class="modal-header">
+          <h3>Filtros</h3>
+          <button class="close-btn" @click="closeFiltersModal">×</button>
+        </div>
+        
+        <div class="filters-content">
+          <div class="filter-group">
+            <label class="filter-label">Género</label>
+            <div class="custom-select" @click="toggleGenreDropdown">
+              <div class="select-display">
+                <span>{{ selectedGenre || 'Todos los géneros' }}</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" :class="{ 'rotate-180': genreDropdownOpen }">
+                  <path d="M7 10l5 5 5-5z"/>
+                </svg>
+              </div>
+              <div v-if="genreDropdownOpen" class="dropdown-options">
+                <div 
+                  class="dropdown-option" 
+                  :class="{ selected: selectedGenre === '' }"
+                  @click.stop="selectGenre('')"
+                >
+                  Todos los géneros
+                </div>
+                <div 
+                  v-for="genre in uniqueGenres" 
+                  :key="genre" 
+                  class="dropdown-option"
+                  :class="{ selected: selectedGenre === genre }"
+                  @click.stop="selectGenre(genre)"
+                >
+                  {{ genre }}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label">Años</label>
+            <div class="year-inputs">
+              <input 
+                type="number" 
+                v-model.number="customYearStart" 
+                :min="1880" 
+                :max="currentYear"
+                placeholder="Desde"
+                class="year-input"
+              >
+              <span class="year-separator">-</span>
+              <input 
+                type="number" 
+                v-model.number="customYearEnd" 
+                :min="1880" 
+                :max="currentYear"
+                placeholder="Hasta"
+                class="year-input"
+              >
+            </div>
+            <div class="quick-year-options">
+              <button 
+                v-for="range in yearRanges" 
+                :key="range" 
+                @click="setYearRange(range)"
+                class="year-quick-btn"
+              >
+                {{ range }}
+              </button>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label">Puntaje TMDB</label>
+            <select v-model="selectedTmdbRating" class="filter-input">
+              <option value="">Todos los puntajes</option>
+              <option value="9-10">TMDB: 9+</option>
+              <option value="8-8.9">TMDB: 8+</option>
+              <option value="7-7.9">TMDB: 7+</option>
+              <option value="6-6.9">TMDB: 6+</option>
+              <option value="5-5.9">TMDB: 5+</option>
+              <option value="0-4.9">TMDB: < 5</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label">Mi Puntaje</label>
+            <select v-model="selectedUserRating" class="filter-input">
+              <option value="">Todos mis puntajes</option>
+              <option value="10">Mi Puntaje: 10</option>
+              <option value="9">Mi Puntaje: 9</option>
+              <option value="8">Mi Puntaje: 8</option>
+              <option value="7">Mi Puntaje: 7</option>
+              <option value="6">Mi Puntaje: 6</option>
+              <option value="5">Mi Puntaje: 5</option>
+              <option value="1-4">Mi Puntaje: < 5</option>
+            </select>
+          </div>
+          
+          <div class="filter-actions">
+            <button @click="clearAllFilters" class="clear-btn">Limpiar</button>
+            <button @click="closeFiltersModal" class="apply-btn">Aplicar</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 </template>
 
@@ -387,6 +486,7 @@ async function getUserName(userEmail) {
 export default {
   data() {
     return {
+      genreDropdownOpen: false,
       showLanguageMenu: false,
       selectedLanguage: 'español',
       fallbackImageUrl: "https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.png?raw=true",
@@ -442,7 +542,11 @@ export default {
       userRatingRanges: [
         '10', '9', '8', '7', '6', '5', '1-4'
       ],
-      filteredSeriesDetails: []
+      filteredSeriesDetails: [],
+      filtersModalVisible: false,
+      customYearStart: null,
+      customYearEnd: null,
+      currentYear: new Date().getFullYear(),
     };
   },
   async mounted() {
@@ -489,6 +593,45 @@ export default {
   },
   
   methods: {
+    toggleFilterType(event) {
+      this.filter = event.target.checked ? 'tvShows' : 'movies';
+      this.currentPage = 1;
+    },
+    toggleGenreDropdown() {
+      this.genreDropdownOpen = !this.genreDropdownOpen;
+    },
+
+    selectGenre(genre) {
+      this.selectedGenre = genre;
+      this.genreDropdownOpen = false;
+    },
+    openFiltersModal() {
+      this.filtersModalVisible = true;
+    },
+
+    closeFiltersModal() {
+      this.filtersModalVisible = false;
+    },
+
+    toggleOrderMode() {
+      this.orderText = this.orderText === 'Order Asc' ? 'Order Desc' : 'Order Asc';
+      this.moviesFetched.reverse();
+      this.tvFetched.reverse();
+    },
+
+    setYearRange(range) {
+      const [start, end] = range.split('-').map(Number);
+      this.customYearStart = start;
+      this.customYearEnd = end;
+    },
+
+    clearAllFilters() {
+      this.selectedGenre = '';
+      this.selectedTmdbRating = '';
+      this.selectedUserRating = '';
+      this.customYearStart = null;
+      this.customYearEnd = null;
+    },
     openRatingModal(item) {
       this.currentRatingItem = item;
       this.selectedRating = 0;
@@ -1109,12 +1252,10 @@ export default {
         const matchesGenre = this.selectedGenre === '' || 
           (item.details.genresForDb && item.details.genresForDb.includes(this.selectedGenre));
         
-        const matchesYear = this.selectedYearRange === '' || 
+        const matchesYear = (!this.customYearStart && !this.customYearEnd) || 
           (item.details.yearStartForDb && 
-          this.selectedYearRange.split('-')[0] && 
-          this.selectedYearRange.split('-')[1] && 
-          item.details.yearStartForDb >= this.selectedYearRange.split('-')[0] && 
-          item.details.yearStartForDb <= this.selectedYearRange.split('-')[1]);
+          item.details.yearStartForDb >= (this.customYearStart || 1880) && 
+          item.details.yearStartForDb <= (this.customYearEnd || this.currentYear));
 
         let matchesTmdbRating = true;
         if (this.selectedTmdbRating !== '') {
@@ -2696,6 +2837,437 @@ select.user-rating-select {
     margin: 0.5rem;
     font-size: 1.1rem;
     padding: 0.7rem 1.2rem;
+  }
+}
+
+.new-controls-container {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ gap: 20px;
+ flex-wrap: wrap;
+ margin-top: 3rem;
+ min-height: 50px;
+}
+
+.content-type-switch {
+ display: flex;
+ background: rgba(0, 0, 0, 0.2);
+ border-radius: 25px;
+ padding: 2px;
+ border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.switch {
+  --_switch-bg-clr: rgba(0, 0, 0, 0);
+  --_switch-padding: 3px;
+  --_slider-bg-clr: rgba(31, 104, 135, 0.4);
+  --_slider-bg-clr-on: #8BE9FD;
+  --_slider-txt-clr: #ffffff;
+  --_label-padding: 10px 20px;
+  --_switch-easing: cubic-bezier(0.47, 1.64, 0.41, 0.8);
+  
+  color: rgba(255, 255, 255, 0.7);
+  width: fit-content;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  position: relative;
+  isolation: isolate;
+  border-radius: 25px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  font-size: 1.3rem;
+  align-self: center;
+  margin: 0;
+}
+
+.switch input[type="checkbox"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.switch > span {
+  display: grid;
+  place-content: center;
+  transition: all 300ms ease-in-out;
+  padding: var(--_label-padding);
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.switch::before,
+.switch::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+  transition: inset 150ms ease-in-out;
+}
+
+.switch::before {
+  background-color: var(--_slider-bg-clr-on);
+  inset: var(--_switch-padding) 50% var(--_switch-padding) var(--_switch-padding);
+  transition: inset 500ms var(--_switch-easing), background-color 500ms ease-in-out;
+  z-index: 0;
+  border-radius: 22px;
+}
+
+.switch::after {
+  background-color: var(--_switch-bg-clr);
+  inset: 0;
+  z-index: -1;
+}
+
+.switch:hover {
+  transform: translateY(-1px);
+}
+
+.switch:has(input:checked)::before {
+  background-color: var(--_slider-bg-clr-on);
+  inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding) 50%;
+}
+
+.switch > span:first-of-type {
+  opacity: 1;
+  color: #000;
+  font-weight: 500;
+}
+
+.switch > span:last-of-type {
+  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.switch:has(input:checked) > span:first-of-type {
+  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: normal;
+}
+
+.switch:has(input:checked) > span:last-of-type {
+  color: #000;
+  opacity: 1;
+  font-weight: 500;
+}
+
+.switch-btn {
+ background: transparent;
+ border: none;
+ color: rgba(255, 255, 255, 0.7);
+ border-radius: 23px;
+ cursor: pointer;
+ transition: all 0.3s ease;
+ font-size: 1.3rem;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ white-space: nowrap;
+ flex: 1;
+ padding: 8px 16px;
+}
+
+.switch-btn.active {
+  background: #8BE9FD;
+  color: #000;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.control-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  background: rgba(82, 71, 71, 0);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 25px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.3rem;
+  align-self: center;
+  margin: 0;
+}
+
+.control-btn:hover {
+  background-color: #084a66;
+}
+
+.filters-modal {
+  width: 100%;
+  max-width: 500px;
+  background: linear-gradient(to bottom right, #092739, #061720);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.filters-content {
+  padding: 20px;
+}
+
+.filter-group {
+  margin-bottom: 20px;
+}
+
+.filter-label {
+  display: block;
+  color: #8BE9FD;
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.filter-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1.3rem;
+}
+
+.year-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.year-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1.3rem;
+}
+
+.year-separator {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: bold;
+}
+
+.quick-year-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.year-quick-btn {
+  padding: 5px 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+}
+
+.year-quick-btn:hover {
+  background: rgba(139, 233, 253, 0.2);
+  border-color: #8BE9FD;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.clear-btn, .apply-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1.3rem;
+  transition: all 0.2s ease;
+}
+
+.clear-btn {
+  background: rgba(255, 0, 0, 0.2);
+  color: #fff;
+}
+
+.apply-btn {
+  background: #8BE9FD;
+  color: #000;
+}
+
+@media (max-width: 768px) {
+  .new-controls-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .control-btn {
+    justify-content: center;
+  }
+}
+.custom-select {
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+}
+
+.select-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1.3rem;
+  transition: all 0.2s ease;
+}
+
+.select-display:hover {
+  border-color: rgba(139, 233, 253, 0.5);
+}
+
+.dropdown-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #092739;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  margin-top: 2px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.dropdown-option {
+  padding: 10px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 1.3rem;
+}
+
+.dropdown-option:hover {
+  background: rgba(139, 233, 253, 0.1);
+}
+
+.dropdown-option.selected {
+  background: rgba(139, 233, 253, 0.2);
+  color: #8BE9FD;
+}
+
+.year-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1.3rem;
+  transition: border-color 0.2s ease;
+}
+
+.year-input:focus {
+  outline: none;
+  border-color: rgba(139, 233, 253, 0.5);
+}
+
+.year-input::-webkit-outer-spin-button,
+.year-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.year-input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.dropdown-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-options::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dropdown-options::-webkit-scrollbar-thumb {
+  background: rgba(139, 233, 253, 0.3);
+  border-radius: 3px;
+}
+
+.dropdown-options::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 233, 253, 0.5);
+}
+
+.new-controls-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  margin: 3rem auto 0 auto;
+  min-height: 50px;
+  width: fit-content;
+}
+
+@media (max-width: 800px) {
+  .new-controls-container {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    margin: 3rem auto 0 auto;
+    width: fit-content;
+    gap: 15px;
+  }
+  
+  .action-buttons {
+    flex-direction: row;
+    gap: 15px;
+  }
+  
+  .control-btn span {
+    display: none;
+  }
+  
+  .control-btn {
+    padding: 12px;
+    min-width: 44px;
+    height: 44px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .control-btn svg {
+    margin: 0;
+    width: 18px;
+    height: 18px;
+  }
+  .btn-label {
+    display: none;
   }
 }
 </style>
