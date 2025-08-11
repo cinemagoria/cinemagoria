@@ -45,6 +45,12 @@ export default {
         href: "//fonts.googleapis.com/css?family=Roboto:300,400,500",
       },
     ],
+    script: [
+      {
+        src: "https://peekvisor.vercel.app/peekvisor.js",
+        "data-peekvisor": "cc4d1913-15e1-4c1a-b524-3b97cb19f8ec"
+      }
+    ],
   },
 
   // Global CSS
