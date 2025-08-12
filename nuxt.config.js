@@ -48,7 +48,7 @@ export default {
     script: [
       {
         src: "https://peekvisor.vercel.app/peekvisor.js",
-        "data-peekvisor": "cc4d1913-15e1-4c1a-b524-3b97cb19f8ec"
+        "data-peekvisor": "39e539c2-2661-498c-b3de-dcb432a901e1"
       }
     ],
   },
