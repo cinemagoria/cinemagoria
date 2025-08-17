@@ -8,7 +8,8 @@
       <div class="auth-container">
         <div class="container-section">
           <br>
-          <h1 class="text-white text-center"><b>¡Welcome Back</b></h1>
+          <h1 class="text-white text-center"><b>¡Welcome Back!
+          </b></h1>
           <h3 class="text-white text-center"><b>Sign in to your account:</b></h3>
           <div class="form">
             <form @submit.prevent="login">
