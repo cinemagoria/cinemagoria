@@ -758,6 +758,11 @@ export default {
     });
   },
   open() {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+    if (!token) {
+      this.$router.push('/login');
+      return;
+    }
     this.chatBotOpen = true;
     this.chatBotMinimized = false;
     this.clearMinimizedState();

@@ -179,11 +179,15 @@ export default {
     },
 
     openAiChat() {
-      if (this.$refs.chatbotModalRef) {
-        this.$refs.chatbotModalRef.open();
-        this.hasMinimizedConversations = false;
+      if (this.isLoggedIn) {
+        if (this.$refs.chatbotModalRef) {
+          this.$refs.chatbotModalRef.open();
+          this.hasMinimizedConversations = false;
+        } else {
+          console.error('ChatbotModal ref not found!');
+        }
       } else {
-        console.error('ChatbotModal ref not found!');
+        this.$router.push('/login');
       }
     }
   }
