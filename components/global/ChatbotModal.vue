@@ -499,8 +499,11 @@ export default {
   },
 
   toggleSidebar() {
-    this.sidebarOpen = !this.sidebarOpen;
-  },
+      this.sidebarOpen = !this.sidebarOpen;
+      this.$nextTick(() => {
+        this.$forceUpdate();
+      });
+    },
 
   formatConversationTime(createdAt) {
     if (!createdAt) return '';
@@ -3585,6 +3588,43 @@ scrollToBottom() {
   .conversation-time {
     display: none;
   }
+}
+
+.conversations-sidebar {
+  transform: translateX(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chatbot-main.sidebar-open .conversations-sidebar {
+  transform: translateX(0);
+}
+
+.chatbot-main:not(.sidebar-open) .conversations-sidebar {
+  transform: translateX(-100%);
+}
+
+.sidebar-toggle {
+  transition: transform 0.2s ease;
+}
+
+.chatbot-main.sidebar-open .sidebar-toggle {
+  transform: rotate(180deg);
+}
+
+.chatbot-main:not(.sidebar-open) .sidebar-toggle {
+  transform: rotate(0deg);
+}
+
+.chat-content {
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chatbot-main.sidebar-open .chat-content {
+  margin-left: 0;
+}
+
+.chatbot-main:not(.sidebar-open) .chat-content {
+  margin-left: 0;
 }
 </style>
 
