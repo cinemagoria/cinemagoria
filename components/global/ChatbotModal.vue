@@ -1991,7 +1991,7 @@ scrollToBottom() {
     text-align: center;
     padding: 30px 20px;
     color: #a8d8e4;
-    font-size: 15px;
+    font-size: 12px;
     line-height: 1.6;
 }
 
@@ -2001,7 +2001,7 @@ scrollToBottom() {
 
 .chatbot-welcome p:last-child {
     margin-bottom: 0;
-    font-size: 13px;
+    font-size: 12px;
     color: #7fdbf1;
     opacity: 0.8;
 }
@@ -2525,19 +2525,19 @@ scrollToBottom() {
       .movie-rating { padding: 1px 4px; font-size: 9px;}
       .star { font-size: 10px;}
       .media-type { padding: 1px 5px; font-size: 8px;}
-      .chatbot-welcome p { font-size: 14px; }
+      .chatbot-welcome p { font-size: 12px; }
       .chatbot-welcome p:last-child { font-size: 12px; }
       
       .daily-prompt-section {
-        padding: 15px;
+        padding: 12px;
       }
       
       .daily-prompt-section h5 {
-        font-size: 14px;
+        font-size: 12px;
       }
       
       .daily-prompt-content p {
-        font-size: 13px;
+        font-size: 12px;
       }
       
       .daily-prompt-button {
@@ -2889,7 +2889,7 @@ scrollToBottom() {
 @media screen and (max-width: 576px) {
   .fake-input {
     padding: 12px 15px;
-    font-size: 14px;
+    font-size: 12px;
     height: 42px;
   }
 }
@@ -3473,7 +3473,7 @@ scrollToBottom() {
   }
   
   .new-conversation-btn {
-    padding: 8px 6px;
+    padding: 14px 6px;
     font-size: 11px;
     gap: 4px;
     overflow: hidden;
@@ -3525,7 +3525,7 @@ scrollToBottom() {
   }
   
   .new-conversation-btn {
-    padding: 6px 4px;
+    padding: 14px 4px;
     font-size: 10px;
     gap: 2px;
     word-wrap: break-word;
@@ -3568,8 +3568,8 @@ scrollToBottom() {
   }
   
   .new-conversation-btn {
-    font-size: 9px;
-    padding: 4px 2px;
+    font-size: 10px;
+    padding: 14px 2px;
     word-wrap: break-word;
     white-space: normal;
     line-height: 1;
