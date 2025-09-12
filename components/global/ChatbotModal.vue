@@ -757,17 +757,19 @@ export default {
       }
     });
   },
-  open() {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
-    if (!token) {
-      this.$router.push('/login');
-      return;
-    }
-    this.chatBotOpen = true;
-    this.chatBotMinimized = false;
-    this.clearMinimizedState();
-    this.checkMobileDevice();
-    this.inputEnabled = !this.isMobileDevice;
+    open() {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+      if (!token) {
+        this.$router.push('/login');
+        return;
+      }
+      this.chatBotOpen = true;
+      this.chatBotMinimized = false;
+      this.clearMinimizedState();
+      this.checkMobileDevice();
+      this.inputEnabled = !this.isMobileDevice;
+      
+      this.createNewConversation();
     },
     close() {
       this.chatBotOpen = false;
@@ -3463,7 +3465,7 @@ scrollToBottom() {
 
 @media screen and (max-width: 768px) {
   .conversations-sidebar {
-    width: 140px !important; 
+    width: 160px !important;
   }
   
   .sidebar-header {
@@ -3474,7 +3476,6 @@ scrollToBottom() {
     padding: 8px 6px;
     font-size: 11px;
     gap: 4px;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 1.2;
@@ -3495,7 +3496,7 @@ scrollToBottom() {
   
   .conversation-title {
     font-size: 12px;
-    max-width: 100px;
+    max-width: 120px;
     line-height: 1.3;
   }
   
