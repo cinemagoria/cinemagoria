@@ -2,6 +2,40 @@
   <div class="external-links-container">
     <h4 class="section-title">Links Externos</h4>
     <div class="links-grid">
+      <div v-if="tomatoMeter.found && (currentPageType === 'movie' || currentPageType === 'tv')" class="link-item">
+        <a
+          :href="tomatoMeter.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Rotten Tomatoes"
+        >
+          <img
+            src="/rotten-tomatoes.svg"
+            alt="***"
+            class="link-icon rotten-tomatoes"
+            width="23"
+            height="23"
+          />
+          <span class="label-style">{{ tomatoMeter.score }}% Tomatometer</span>
+        </a>
+      </div>
+      <div v-if="***Url && currentPageType === 'movie'" class="link-item">
+        <a
+          :href="***Url"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Visit ***"
+        >
+          <img
+            src="/***-logo.svg"
+            alt="***"
+            class="link-icon ***-logo"
+            width="23"
+            height="23"
+          />
+          <span class="label-style">Watch on ***</span>
+        </a>
+      </div>
       <div v-if="links.imdb_id && (currentPageType === 'movie' || currentPageType === 'tv')" class="link-item">
         <a
           :href="***Link"
@@ -181,6 +215,8 @@
 </template>
 
 <script>
+import { get***MovieByImdb, getMDBListRatings } from '@/api/index';
+
 export default {
   props: {
     media: {
@@ -192,6 +228,17 @@ export default {
       type: Object,
       required: true,
     },
+  },
+
+  data() {
+    return {
+      ***Url: null,
+      tomatoMeter: {
+        found: false,
+        score: null,
+        url: ''
+      }
+    };
   },
 
   computed: {
@@ -212,6 +259,48 @@ export default {
       return `***://detail/${contentType}/${this.links.imdb_id}`;
     },
   },
+  mounted() {
+    if (this.links.imdb_id && this.currentPageType === 'movie') {
+      this.fetch***Url();
+    }
+    if (this.links.imdb_id && (this.currentPageType === 'movie' || this.currentPageType === 'tv')) {
+      this.fetchTomatoMeter();
+    }
+  },
+
+  methods: {
+    async fetch***Url() {
+      try {
+        const result = await get***MovieByImdb(this.links.imdb_id);
+        if (result.found) {
+          this.***Url = result.url;
+        }
+      } catch (error) {
+        console.error('Error fetching *** URL:', error);
+      }
+    },
+    async fetchTomatoMeter() {
+      try {
+        const result = await getMDBListRatings(this.links.imdb_id, this.currentPageType);
+        if (result.found) {
+          this.tomatoMeter = result;
+        }
+      } catch (error) {
+        console.error('Error fetching Tomato Meter:', error);
+      }
+    }
+  },
+
+  watch: {
+    'links.imdb_id': function(newVal) {
+      if (newVal && this.currentPageType === 'movie') {
+        this.fetch***Url();
+      }
+      if (newVal && (this.currentPageType === 'movie' || this.currentPageType === 'tv')) {
+        this.fetchTomatoMeter();
+      }
+    }
+  }
 };
 </script>
 
@@ -293,5 +382,20 @@ export default {
 .***-icon {
   width: 28px !important;
   height: 28px !important;
+}
+
+.***-logo {
+  filter: brightness(0) invert(1);
+  width: 23px !important;
+  height: 23px !important;
+}
+
+.rotten-tomatoes {
+  width: 23px !important;
+  height: 23px !important;
+}
+
+.tomato-icon {
+  color: #FA320A;
 }
 </style>
