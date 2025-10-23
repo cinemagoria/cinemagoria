@@ -16,7 +16,7 @@
             width="23"
             height="23"
           />
-          <span class="label-style">{{ tomatoMeter.score }}% Tomatometer</span>
+          <span class="label-style">{{ tomatoMeter.score }}% Tomatómetro</span>
         </a>
       </div>
       <div v-if="***Url && currentPageType === 'movie'" class="link-item">
@@ -33,7 +33,7 @@
             width="23"
             height="23"
           />
-          <span class="label-style">Watch on ***</span>
+          <span class="label-style">Ver en ***</span>
         </a>
       </div>
       <div v-if="links.imdb_id && (currentPageType === 'movie' || currentPageType === 'tv')" class="link-item">
