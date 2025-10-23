@@ -35,8 +35,11 @@
                     <div class="search-card__info">
                     <h3 class="search-card__title">{{ truncateTitle(getTitle(item)) }}</h3>
                     <p class="search-card__year">{{ extractYear(getDate(item)) }}</p>
-                    <p v-if="item.vote_average" class="search-card__rating">
-                        Puntaje: {{ formatRating(item.vote_average) }}
+                    <p v-if="item.rating_source === 'imdb' && item.imdb_rating" class="search-card__rating">
+                      ⭐ {{ formatRating(item.imdb_rating) }} IMDb
+                    </p>
+                    <p v-else-if="item.vote_average" class="search-card__rating">
+                      ⭐ {{ formatRating(item.vote_average) }} TMDB
                     </p>
                     </div>
                 </div>

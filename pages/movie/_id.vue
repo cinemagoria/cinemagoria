@@ -93,8 +93,9 @@ export default {
       menu: [],
       activeMenu: 'overview',
       recommended: null,
-      reviews: [], // Añadido reviews array
-      providers: [], // Añadido providers array
+      reviews: null,
+      reviews: [],
+      providers: [],
     };
   },
 

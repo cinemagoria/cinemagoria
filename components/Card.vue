@@ -30,9 +30,14 @@
         </div>
 
         <div
-          v-if="item.vote_average"
+          v-if="item.rating_source === 'imdb' && item.imdb_rating"
           class="card__vote">
-          {{ item.vote_average | rating }}
+          {{ item.imdb_rating.toFixed(1) }}
+        </div>
+        <div
+          v-else-if="item.vote_average"
+          class="card__vote">
+          {{ parseFloat(item.vote_average).toFixed(1) }}
         </div>
       </div>
     </nuxt-link>

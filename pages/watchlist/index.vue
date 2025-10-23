@@ -146,11 +146,16 @@
                 </p>
 
                 <div class="card__content">
-                  <div v-if="item.details.starsForDb" class="card__stars">
-                    <div :style="{ width: `${calculateStarsWidth(formatRating(item.details.starsForDb))}%` }"></div>
+                  <div v-if="item.details.imdb_rating || item.details.starsForDb" class="card__stars">
+                    <div :style="{ width: `${calculateStarsWidth(item.details.imdb_rating ? item.details.imdb_rating : formatRating(item.details.starsForDb))}%` }"></div>
                   </div>
                   <div class="card___rating">
-                    <p v-if="item.details.starsForDb">{{ formatRating(item.details.starsForDb) }}</p>
+                    <p v-if="item.details.rating_source === 'imdb' && item.details.imdb_rating">
+                      {{ item.details.imdb_rating.toFixed(1) }} IMDb
+                    </p>
+                    <p v-else-if="item.details.starsForDb">
+                      {{ formatRating(item.details.starsForDb) }} TMDB
+                    </p>
                     <p v-else>No especificado.</p>
                   </div>
                 </div>
@@ -404,15 +409,15 @@
           </div>
           
           <div class="filter-group">
-            <label class="filter-label">Puntaje TMDB</label>
+            <label class="filter-label">Puntaje</label>
             <select v-model="selectedTmdbRating" class="filter-input">
               <option value="">Todos los puntajes</option>
-              <option value="9-10">TMDB: 9+</option>
-              <option value="8-8.9">TMDB: 8+</option>
-              <option value="7-7.9">TMDB: 7+</option>
-              <option value="6-6.9">TMDB: 6+</option>
-              <option value="5-5.9">TMDB: 5+</option>
-              <option value="0-4.9">TMDB: < 5</option>
+              <option value="9-10">9+</option>
+              <option value="8-8.9">8+</option>
+              <option value="7-7.9">7+</option>
+              <option value="6-6.9">6+</option>
+              <option value="5-5.9">5+</option>
+              <option value="0-4.9">< 5</option>
             </select>
           </div>
           
@@ -658,6 +663,95 @@ export default {
 
     resetPreview() {
       this.hoverRating = 0;
+    },
+
+    async checkData() {
+      try {
+        const { data, error } = await supabase
+          .from('favorites')
+          .select('*')
+          .eq('user_email', this.userEmail);
+
+        if (error) {
+          throw new Error('Error al conectar con la base de datos: ' + error.message);
+        }
+
+        const moviesFetched = [];
+        const tvFetched = [];
+        const genres = new Set();
+        const years = new Set();
+        
+        for (const row of data) {
+          if (row.favorites_json.movies) {
+            for (const movie of row.favorites_json.movies) {
+              const movieKey = Object.keys(movie)[0];
+              const movieData = movie[movieKey];
+              
+              if (movieData.details.external_ids?.imdb_id) {
+                try {
+                  const response = await fetch(`/api/imdb-rating/${movieData.details.external_ids.imdb_id}`);
+                  const imdbData = await response.json();
+                  
+                  if (imdbData.found) {
+                    movieData.details.imdb_rating = imdbData.score;
+                    movieData.details.imdb_votes = imdbData.votes;
+                    movieData.details.rating_source = 'imdb';
+                  } else {
+                    movieData.details.rating_source = 'tmdb';
+                  }
+                } catch (err) {
+                  console.error('Error fetching IMDb rating:', err);
+                  movieData.details.rating_source = 'tmdb';
+                }
+              } else {
+                movieData.details.rating_source = 'tmdb';
+              }
+              
+              moviesFetched.push(movieData);
+              genres.add(...movieData.details.genresForDb.split(', '));
+              years.add(movieData.details.yearStartForDb);
+            }
+          }
+
+          if (row.favorites_json.tv) {
+            for (const tvShow of row.favorites_json.tv) {
+              const tvKey = Object.keys(tvShow)[0];
+              const tvData = tvShow[tvKey];
+              
+              if (tvData.details.external_ids?.imdb_id) {
+                try {
+                  const response = await fetch(`/api/imdb-rating/${tvData.details.external_ids.imdb_id}`);
+                  const imdbData = await response.json();
+                  
+                  if (imdbData.found) {
+                    tvData.details.imdb_rating = imdbData.score;
+                    tvData.details.imdb_votes = imdbData.votes;
+                    tvData.details.rating_source = 'imdb';
+                  } else {
+                    tvData.details.rating_source = 'tmdb';
+                  }
+                } catch (err) {
+                  console.error('Error fetching IMDb rating:', err);
+                  tvData.details.rating_source = 'tmdb';
+                }
+              } else {
+                tvData.details.rating_source = 'tmdb';
+              }
+              
+              tvFetched.push(tvData);
+              genres.add(...tvData.details.genresForDb.split(', '));
+              years.add(tvData.details.yearStartForDb);
+            }
+          }
+        }
+        
+        this.moviesFetched = moviesFetched.reverse();
+        this.tvFetched = tvFetched.reverse();
+        this.genres = Array.from(genres);
+        this.years = Array.from(years).sort();
+      } catch (error) {
+        console.error(error.message);
+      }
     },
 
     async saveRatingAndReview() {
@@ -1259,12 +1353,18 @@ export default {
 
         let matchesTmdbRating = true;
         if (this.selectedTmdbRating !== '') {
-          const tmdbRating = this.formatRating(item.details.starsForDb);
-          if (!tmdbRating) {
+          let rating;
+          if (item.details.rating_source === 'imdb' && item.details.imdb_rating) {
+            rating = item.details.imdb_rating;
+          } else if (item.details.starsForDb) {
+            rating = this.formatRating(item.details.starsForDb);
+          }
+          
+          if (!rating) {
             matchesTmdbRating = false;
           } else {
             const [min, max] = this.selectedTmdbRating.split('-').map(Number);
-            matchesTmdbRating = tmdbRating >= min && tmdbRating <= max;
+            matchesTmdbRating = rating >= min && rating <= max;
           }
         }
         

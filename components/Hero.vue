@@ -46,8 +46,11 @@
                   <div :style="{ width: `${stars}%` }" />
                 </div>
 
-                <div v-if="item.vote_count > 0">
-                  {{ item.vote_count | numberWithCommas }} Reviews
+                <div v-if="item.rating_source === 'imdb' && item.imdb_rating">
+                  {{ item.imdb_rating.toFixed(1) }}/10 · {{ (item.imdb_votes || 0).toLocaleString() }} votos (vía: IMDb)
+                </div>
+                <div v-else-if="item.vote_average">
+                  {{ item.vote_average.toFixed(1) }}/10 · {{ (item.vote_count || 0).toLocaleString() }} reseñas (vía: TMDB)
                 </div>
               </div>
 
@@ -712,6 +715,54 @@ export default {
       }
       
       return updatedFavorites;
+    },
+
+    updateFavoritesData(favoritesJson, fullId) {
+      const { type, id } = this.parseFavId(fullId);
+      const category = type === 'movie' ? 'movies' : 'tv';
+
+      if (!favoritesJson[category]) {
+        favoritesJson[category] = [];
+      }
+
+      const index = favoritesJson[category].findIndex(item => item === fullId);
+
+      const favoriteDetails = {
+        nameForDb: this.nameForDb,
+        starsForDb: this.starsForDb,
+        yearStartForDb: this.yearStartForDb,
+        yearEndForDb: this.yearEndForDb,
+        posterForDb: this.posterForDb,
+        idForDb: this.id,
+        genresForDb: this.genresForDb,
+        typeForDb: this.typeForDb,
+        addedAt: this.addedAt,
+        external_ids: this.item.external_ids,
+        rating_source: this.item.rating_source || 'tmdb',
+        imdb_rating: this.item.imdb_rating,
+        imdb_votes: this.item.imdb_votes
+      };
+
+      if (index !== -1) {
+        if (!Array.isArray(favoritesJson[category][index])) {
+          favoritesJson[category][index] = {
+            [fullId]: { details: favoriteDetails }
+          };
+        } else {
+          const existingItem = favoritesJson[category][index].find(item => Object.keys(item)[0] === fullId);
+          if (existingItem) {
+            existingItem[fullId].details = favoriteDetails;
+          } else {
+            favoritesJson[category][index].push({
+              [fullId]: { details: favoriteDetails }
+            });
+          }
+        }
+      } else {
+        favoritesJson[category].push({
+          [fullId]: { details: favoriteDetails }
+        });
+      }
     },
 
     addFavorite(favoritesJson, favId) {
