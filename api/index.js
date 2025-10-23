@@ -1,3 +1,4 @@
+/* eslint-disable quote-props */
 import axios from 'axios';
 const apiUrl = 'https://api.themoviedb.org/3';
 export const apiImgUrl = 'https://image.tmdb.org/t/p';
@@ -651,6 +652,70 @@ export function search (query, page = 1) {
       });
   });
 };
+
+export function get***MovieByImdb(imdbId) {
+  return new Promise((resolve, reject) => {
+    axios.get('https://***.mx/api/v2/list_movies.json', {
+      params: {
+        query_term: imdbId,
+        limit: 1,
+      },
+    }).then((response) => {
+      if (response.data.status === 'ok' && response.data.data.movie_count > 0) {
+        const movie = response.data.data.movies[0];
+        const title = movie.title_long
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-');
+        
+        resolve({
+          slug: `${title}`,
+          url: `https://***.mx/movies/${title}`,
+          found: true
+        });
+      } else {
+        resolve({ found: false });
+      }
+    }).catch((error) => {
+      console.error("Error fetching *** movie:", error);
+      reject(error);
+    });
+  });
+}
+
+export function getMDBListRatings(imdbId, type) {
+  return new Promise((resolve, reject) => {
+    const endpoint = type === 'movie' ? 'movie' : 'show';
+    
+    axios.get(`https://api.mdblist.com/imdb/${endpoint}/${imdbId}`, {
+      params: {
+        apikey: process.env.MDBLIST_API,
+      },
+    }).then((response) => {
+      const ratings = response.data.ratings;
+      const tomatoesRating = ratings?.find(r => r.source === 'tomatoes');
+      
+      if (tomatoesRating && tomatoesRating.value) {
+        let url = '';
+        if (tomatoesRating.url) {
+          url = `https://www.rottentomatoes.com${tomatoesRating.url}`;
+        }
+        
+        resolve({
+          found: true,
+          score: tomatoesRating.value,
+          url: url
+        });
+      } else {
+        resolve({ found: false });
+      }
+    }).catch((error) => {
+      console.error("Error fetching MDBLIST ratings:", error);
+      resolve({ found: false });
+    });
+  });
+}
 
 export function getYouTubeVideo (id) {
   return new Promise((resolve, reject) => {
