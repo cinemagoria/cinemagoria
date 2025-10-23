@@ -109,6 +109,7 @@ export default {
   },
 
   env: {
+    MDBLIST_API: process.env.MDBLIST_API,
     FRONTEND_URL: process.env.FRONTEND_URL || "https://entercinema.com",
     API_URL: process.env.API_URL || "https://entercinema-drf.vercel.app",
     API_KEY: process.env.API_KEY || "",
