@@ -482,14 +482,56 @@
           const data2 = await responses[1].json();
           const data3 = await responses[2].json();
           const data4 = await responses[3].json();
-          this.movies = [...data1.results, ...data2.results, ...data3.results, ...data4.results];
+          
+          let allMovies = [...data1.results, ...data2.results, ...data3.results, ...data4.results];
+          
+          const enrichedMovies = await Promise.all(
+            allMovies.map(async (movie) => {
+              const detailsResponse = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}&append_to_response=external_ids`);
+              const details = await detailsResponse.json();
+              
+              if (details.external_ids?.imdb_id) {
+                try {
+                  const imdbResponse = await fetch(`/api/imdb-rating/${details.external_ids.imdb_id}`);
+                  const imdbData = await imdbResponse.json();
+                  
+                  if (imdbData.found) {
+                    movie.imdb_rating = imdbData.score;
+                    movie.imdb_votes = imdbData.votes;
+                    movie.rating_source = 'imdb';
+                  } else {
+                    movie.rating_source = 'tmdb';
+                  }
+                } catch (err) {
+                  movie.rating_source = 'tmdb';
+                }
+              } else {
+                movie.rating_source = 'tmdb';
+              }
+              
+              return movie;
+            })
+          );
+          
+          if (this.selectedMinRating) {
+            this.movies = enrichedMovies.filter(movie => {
+              const rating = movie.rating_source === 'imdb' ? movie.imdb_rating : parseFloat(movie.vote_average);
+              return rating >= parseFloat(this.selectedMinRating);
+            });
+          } else {
+            this.movies = enrichedMovies;
+          }
+          
           this.movies.forEach(movie => {
-            this.$set(this.movieRatings, movie.id, movie.vote_average);
-          });   
+            const rating = movie.rating_source === 'imdb' ? movie.imdb_rating : movie.vote_average;
+            this.$set(this.movieRatings, movie.id, rating);
+          });
+          
           this.loading = false;
-          this.searchPerformed = true; 
+          this.searchPerformed = true;
         } catch (error) {
           console.error('Error fetching movies:', error);
+          this.loading = false;
         }
       },
 
@@ -517,15 +559,56 @@
           ]);
           const data1 = await responses[0].json();
           const data2 = await responses[1].json();
-          this.tvShows = [...data1.results, ...data2.results];
+          
+          let allTvShows = [...data1.results, ...data2.results];
+          
+          const enrichedTvShows = await Promise.all(
+            allTvShows.map(async (tvShow) => {
+              const detailsResponse = await fetch(`https://api.themoviedb.org/3/tv/${tvShow.id}?api_key=${apiKey}&append_to_response=external_ids`);
+              const details = await detailsResponse.json();
+              
+              if (details.external_ids?.imdb_id) {
+                try {
+                  const imdbResponse = await fetch(`/api/imdb-rating/${details.external_ids.imdb_id}`);
+                  const imdbData = await imdbResponse.json();
+                  
+                  if (imdbData.found) {
+                    tvShow.imdb_rating = imdbData.score;
+                    tvShow.imdb_votes = imdbData.votes;
+                    tvShow.rating_source = 'imdb';
+                  } else {
+                    tvShow.rating_source = 'tmdb';
+                  }
+                } catch (err) {
+                  tvShow.rating_source = 'tmdb';
+                }
+              } else {
+                tvShow.rating_source = 'tmdb';
+              }
+              
+              return tvShow;
+            })
+          );
+          
+          if (this.selectedMinRating) {
+            this.tvShows = enrichedTvShows.filter(tvShow => {
+              const rating = tvShow.rating_source === 'imdb' ? tvShow.imdb_rating : parseFloat(tvShow.vote_average);
+              return rating >= parseFloat(this.selectedMinRating);
+            });
+          } else {
+            this.tvShows = enrichedTvShows;
+          }
           
           this.tvShows.forEach(tvShow => {
-            this.$set(this.tvShowRatings, tvShow.id, tvShow.vote_average);
+            const rating = tvShow.rating_source === 'imdb' ? tvShow.imdb_rating : tvShow.vote_average;
+            this.$set(this.tvShowRatings, tvShow.id, rating);
           });
+          
           this.loading = false;
-          this.searchPerformed = true; 
+          this.searchPerformed = true;
         } catch (error) {
           console.error('Error fetching TV shows:', error);
+          this.loading = false;
         }
       },
    
