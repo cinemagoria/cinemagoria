@@ -755,7 +755,7 @@ export default {
           let needsUpdate = false;
           
           if (favoritesObject.movies) {
-            favoritesObject.movies = moviesFetched.reverse().map((movieData, index) => {
+            favoritesObject.movies = moviesFetched.map((movieData, index) => {
               const originalMovie = favoritesObject.movies[index];
               if (originalMovie) {
                 const movieKey = Object.keys(originalMovie)[0];
@@ -775,7 +775,7 @@ export default {
           }
           
           if (favoritesObject.tv) {
-            favoritesObject.tv = tvFetched.reverse().map((tvData, index) => {
+            favoritesObject.tv = tvFetched.map((tvData, index) => { 
               const originalTv = favoritesObject.tv[index];
               if (originalTv) {
                 const tvKey = Object.keys(originalTv)[0];
