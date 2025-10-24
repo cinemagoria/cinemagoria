@@ -93,6 +93,7 @@ export default {
       menu: [],
       activeMenu: 'overview',
       recommended: null,
+      reviews: null,
     };
   },
 
