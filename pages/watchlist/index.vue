@@ -757,7 +757,6 @@ export default {
               } else if (!tvData.details.rating_source) {
                 tvData.details.rating_source = 'tmdb';
               }
-              
               tvFetched.push(tvData);
               
               if (tvData.details.genresForDb) {
@@ -776,6 +775,72 @@ export default {
         this.tvFetched = tvFetched.reverse();
         this.genres = Array.from(genres);
         this.years = Array.from(years).sort();
+
+        if (data.length > 0) {
+          const favoritesObject = { ...data[0].favorites_json };
+          let needsUpdate = false;
+          
+          if (favoritesObject.movies && moviesFetched.length > 0) {
+            const moviesReversed = [...moviesFetched].reverse();
+            
+            favoritesObject.movies = favoritesObject.movies.map((originalMovie, index) => {
+              const movieKey = Object.keys(originalMovie)[0];
+              const matchingMovie = moviesReversed.find((m, i) => {
+                const mKey = Object.keys(favoritesObject.movies[i] || {})[0];
+                return mKey === movieKey;
+              });
+              
+              if (matchingMovie) {
+                const oldRatingSource = originalMovie[movieKey].details.rating_source;
+                const newRatingSource = matchingMovie.details.rating_source;
+                
+                if (oldRatingSource !== newRatingSource) {
+                  needsUpdate = true;
+                }
+                
+                return {
+                  [movieKey]: matchingMovie
+                };
+              }
+              
+              return originalMovie;
+            });
+          }
+          
+          if (favoritesObject.tv && tvFetched.length > 0) {
+            const tvReversed = [...tvFetched].reverse();
+            
+            favoritesObject.tv = favoritesObject.tv.map((originalTv, index) => {
+              const tvKey = Object.keys(originalTv)[0];
+              const matchingTv = tvReversed.find((t, i) => {
+                const tKey = Object.keys(favoritesObject.tv[i] || {})[0];
+                return tKey === tvKey;
+              });
+              
+              if (matchingTv) {
+                const oldRatingSource = originalTv[tvKey].details.rating_source;
+                const newRatingSource = matchingTv.details.rating_source;
+                
+                if (oldRatingSource !== newRatingSource) {
+                  needsUpdate = true;
+                }
+                
+                return {
+                  [tvKey]: matchingTv
+                };
+              }
+              
+              return originalTv;
+            });
+          }
+          
+          if (needsUpdate) {
+            await supabase
+              .from('favorites')
+              .update({ favorites_json: favoritesObject })
+              .eq('user_email', this.userEmail);
+          }
+        }
       } catch (error) {
         console.error(error.message);
       }
