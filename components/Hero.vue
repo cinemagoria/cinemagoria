@@ -388,7 +388,7 @@ export default {
       await this.checkUserRating();
     }
     
-    this.posterForDb = this.poster;
+    this.posterForDb = this.poster_path;
     this.nameForDb = this.name;
     this.starsForDb = this.stars;
     this.yearStartForDb = this.yearStart;

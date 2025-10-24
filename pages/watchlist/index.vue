@@ -749,6 +749,58 @@ export default {
         this.tvFetched = tvFetched.reverse();
         this.genres = Array.from(genres);
         this.years = Array.from(years).sort();
+
+        if (data.length > 0) {
+          const favoritesObject = data[0].favorites_json;
+          let needsUpdate = false;
+          
+          if (favoritesObject.movies) {
+            favoritesObject.movies = moviesFetched.reverse().map((movieData, index) => {
+              const originalMovie = favoritesObject.movies[index];
+              if (originalMovie) {
+                const movieKey = Object.keys(originalMovie)[0];
+                const oldRatingSource = originalMovie[movieKey].details.rating_source;
+                const newRatingSource = movieData.details.rating_source;
+                
+                if (oldRatingSource !== newRatingSource) {
+                  needsUpdate = true;
+                }
+                
+                return {
+                  [movieKey]: movieData
+                };
+              }
+              return originalMovie;
+            }).reverse();
+          }
+          
+          if (favoritesObject.tv) {
+            favoritesObject.tv = tvFetched.reverse().map((tvData, index) => {
+              const originalTv = favoritesObject.tv[index];
+              if (originalTv) {
+                const tvKey = Object.keys(originalTv)[0];
+                const oldRatingSource = originalTv[tvKey].details.rating_source;
+                const newRatingSource = tvData.details.rating_source;
+                
+                if (oldRatingSource !== newRatingSource) {
+                  needsUpdate = true;
+                }
+                
+                return {
+                  [tvKey]: tvData
+                };
+              }
+              return originalTv;
+            }).reverse();
+          }
+          
+          if (needsUpdate) {
+            await supabase
+              .from('favorites')
+              .update({ favorites_json: favoritesObject })
+              .eq('user_email', this.userEmail);
+          }
+        }
       } catch (error) {
         console.error(error.message);
       }
@@ -1078,49 +1130,6 @@ export default {
         if (this.currentPage > this.totalPages && this.totalPages > 0) {
           this.currentPage = this.totalPages;
         }
-      }
-    },
-    
-    async checkData() {
-      try {
-        const { data, error } = await supabase
-          .from('favorites')
-          .select('*')
-          .eq('user_email', this.userEmail);
-
-        if (error) {
-          throw new Error('Error al conectar con la base de datos: ' + error.message);
-        }
-
-        const moviesFetched = [];
-        const tvFetched = [];
-        const genres = new Set();
-        const years = new Set();
-        data.forEach((row) => {
-          if (row.favorites_json.movies) {
-            row.favorites_json.movies.forEach((movie) => {
-              const movieKey = Object.keys(movie)[0];
-              moviesFetched.push(movie[movieKey]);
-              genres.add(...movie[movieKey].details.genresForDb.split(', '));
-              years.add(movie[movieKey].details.yearStartForDb);
-            });
-          }
-
-          if (row.favorites_json.tv) {
-            row.favorites_json.tv.forEach((tvShow) => {
-              const tvKey = Object.keys(tvShow)[0];
-              tvFetched.push(tvShow[tvKey]);
-              genres.add(...tvShow[tvKey].details.genresForDb.split(', '));
-              years.add(tvShow[tvKey].details.yearStartForDb);
-            });
-          }
-        });
-        this.moviesFetched = moviesFetched.reverse();
-        this.tvFetched = tvFetched.reverse();
-        this.genres = Array.from(genres);
-        this.years = Array.from(years).sort();
-      } catch (error) {
-        console.error(error.message);
       }
     },
 
