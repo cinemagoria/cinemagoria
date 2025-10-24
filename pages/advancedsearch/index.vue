@@ -269,11 +269,13 @@
           </button>
           <button
             class="button button--search"
-            :disabled="!selectedSearchType"
-            :style="{ 'pointer-events': !selectedSearchType ? 'none' : 'auto', 'opacity': !selectedSearchType ? '0.5' : '1' }"
+            :disabled="!selectedSearchType || loading"
+            :style="{ 'pointer-events': (!selectedSearchType || loading) ? 'none' : 'auto', 'opacity': (!selectedSearchType || loading) ? '0.5' : '1' }"
             @click="searchContent"
           >
+            <div v-if="loading" class="spinner"></div>
             <span
+              v-else
               :class="{ 'txt': true, 'disabled-color': !selectedSearchType, 'active-color': selectedSearchType }"
             >See Results</span>
           </button>
@@ -2189,6 +2191,21 @@ input:not(:checked):focus ~ #helper-text {
   .rating-container {
     transform: scale(0.9);
   }
+}
+
+.spinner {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid #fff;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>
 
