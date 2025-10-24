@@ -139,7 +139,7 @@ export default {
     },
     
     redirectToHome() {
-      window.location.href = 'https://entercinema.com';
+      window.location.href = 'http://localhost:3000';
     },
     
     goToRegister() {

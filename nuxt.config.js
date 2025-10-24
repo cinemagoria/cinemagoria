@@ -79,7 +79,9 @@ export default {
     baseURL: "/",
   },
 
-
+  serverMiddleware: [
+    { path: '/api/imdb-rating', handler: '~/api/imdb-rating.js' }
+  ],
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
@@ -109,6 +111,8 @@ export default {
   },
 
   env: {
+    IMDB_DB_URL: process.env.IMDB_DB_URL,
+    IMDB_DB_TOKEN: process.env.IMDB_DB_TOKEN,
     MDBLIST_API: process.env.MDBLIST_API,
     FRONTEND_URL: process.env.FRONTEND_URL || "https://entercinema.com",
     API_URL: process.env.API_URL || "https://entercinema-drf.vercel.app",

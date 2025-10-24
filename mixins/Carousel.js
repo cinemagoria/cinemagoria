@@ -27,6 +27,10 @@ export default {
 
   methods: {
     calculateState (numberOfItems) {
+      if (!this.$refs.carouselElement || !this.$refs.carouselElement.firstChild) {
+        return;
+      }
+      
       let unusableVisibleWidth = 72;
       const elementWidth = this.$refs.carouselElement.firstChild.getBoundingClientRect().width;
       const carouselWidth = numberOfItems * elementWidth;
