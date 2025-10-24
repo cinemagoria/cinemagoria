@@ -343,11 +343,6 @@ export default {
     this.loadMinimizedState();
     this.loadConversations();
     this.initializeFirstConversation();
-    window.chatbotDebug = () => {
-      console.log('chatBotMinimized:', this.chatBotMinimized);
-      console.log('chatBotOpen:', this.chatBotOpen);
-      console.log('hasConversation:', this.hasConversation);
-    };
     this.$root.$on('chatbot-maximized', () => {
       this.chatBotMinimized = false;
     });
@@ -1483,14 +1478,12 @@ export default {
           let effectiveMainObject = null;
 
           if (mainObject && mainObject.name && mainObject.type) {
-              console.log(`Main object from backend: ${mainObject.name} (${mainObject.type})`);
               effectiveMainObject = mainObject;
           } 
           else {
               if (references && references.length > 0) {
                   const firstRef = references[0];
                   if (firstRef && firstRef.name && firstRef.type) {
-                      console.log(`Using first reference as main object: ${firstRef.name} (${firstRef.type})`);
                       effectiveMainObject = {
                           name: firstRef.name,
                           type: firstRef.type
@@ -1568,7 +1561,6 @@ export default {
                           }
                           
                           mainObjectResult.push(formattedMainItem);
-                          console.log(`Main object found in TMDB: ${mainItem.title || mainItem.name}`);
                       } else {
                           console.warn(`No TMDB results found for main object: ${effectiveMainObject.name}`);
 
@@ -1723,8 +1715,6 @@ export default {
                       );
 
                       if (!isRelated) {
-                          console.log(`ATENCIÓN: Objeto principal "${mainObjectMediaItem.title || mainObjectMediaItem.name}" no tiene relación con las personas mencionadas`);
-
                           try {
                               const betterMatchResponse = await axios.get(`https://api.themoviedb.org/3/search/${mainObjectMediaItem.media_type}`, {
                                   params: {
@@ -1748,8 +1738,6 @@ export default {
                                       );
                                       
                                       if (isAlternativeRelated) {
-                                          console.log(`Encontrada alternativa mejor para "${mainObjectMediaItem.title || mainObjectMediaItem.name}" que SÍ tiene relación con las personas: "${alternativeItem.title || alternativeItem.name}"`);
-                                          
                                           const mediaType = mainObjectMediaItem.media_type;
                                           const alternativeMainItem = {
                                               ...alternativeItem,

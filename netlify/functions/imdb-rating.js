@@ -2,11 +2,6 @@ const { createClient } = require('@libsql/client');
 
 exports.handler = async (event) => {
   const imdbId = event.path.split('/').pop();
-
-  console.log('Netlify Function - IMDb ID:', imdbId);
-  console.log('Netlify Function - URL exists:', !!process.env.IMDB_DB_URL);
-  console.log('Netlify Function - Token exists:', !!process.env.IMDB_DB_TOKEN);
-
   if (!process.env.IMDB_DB_URL || !process.env.IMDB_DB_TOKEN) {
     return {
       statusCode: 500,

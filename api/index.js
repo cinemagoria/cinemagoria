@@ -313,14 +313,9 @@ export function getMovie(id) {
       }
 
       const imdbId = responseData.external_ids ? responseData.external_ids.imdb_id : null;
-
-      console.log('🎬 [getMovie] Movie ID:', id, 'IMDb ID:', imdbId);
-
       if (imdbId) {
         try {
-          console.log('🔍 [getMovie] Fetching IMDb rating for:', imdbId);
           const imdbData = await getIMDbRatingFromDB(imdbId);
-          console.log('📊 [getMovie] IMDb data received:', imdbData);
           
           if (imdbData.found) {
             responseData.imdb_rating = imdbData.score;
@@ -530,14 +525,9 @@ export function getTvShow(id) {
 
       const imdbId = responseData.external_ids ? responseData.external_ids.imdb_id : null;
 
-      console.log('📺 [getTvShow] TV Show ID:', id, 'IMDb ID:', imdbId);
-
       if (imdbId) {
         try {
-          console.log('🔍 [getTvShow] Fetching IMDb rating for:', imdbId);
-          const imdbData = await getIMDbRatingFromDB(imdbId);
-          console.log('📊 [getTvShow] IMDb data received:', imdbData);
-          
+          const imdbData = await getIMDbRatingFromDB(imdbId);  
           if (imdbData.found) {
             responseData.imdb_rating = imdbData.score;
             responseData.imdb_votes = imdbData.votes;
