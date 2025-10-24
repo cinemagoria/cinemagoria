@@ -2,7 +2,7 @@
   <div
     v-if="isOpen"
     class="alert alert--alt alert--bottom"> 
-    <p>Utilizamos cookies y otras tecnologías de seguimiento para mejorar tu experiencia de navegación. Al utilizar este sitio web, aceptas el uso de cookies y otras tecnologías de seguimiento. <a target="_blank" href="/terms" rel="noopener">Más información</a>.</p>
+    <p>Utilizamos cookies y otras tecnologías de seguimiento para mejorar tu experiencia de navegación. Al utilizar este sitio web, aceptas el uso de cookies y otras tecnologías de seguimiento. <a target="_blank" href="/usage-policies" rel="noopener">Más información</a>.</p>
 
     <div>
       <button
