@@ -1033,29 +1033,165 @@ export default {
         const tvFetched = [];
         const genres = new Set();
         const years = new Set();
-        data.forEach((row) => {
+        
+        for (const row of data) {
           if (row.favorites_json.movies) {
-            row.favorites_json.movies.forEach((movie) => {
+            for (const movie of row.favorites_json.movies) {
               const movieKey = Object.keys(movie)[0];
-              moviesFetched.push(movie[movieKey]);
-              genres.add(...movie[movieKey].details.genresForDb.split(', '));
-              years.add(movie[movieKey].details.yearStartForDb);
-            });
+              const movieData = movie[movieKey];
+              
+              if (!movieData || !movieData.details) {
+                console.warn('Skipping invalid movie entry:', movie);
+                continue;
+              }
+              
+              if (movieData.details.external_ids?.imdb_id && !movieData.details.rating_source) {
+                try {
+                  const response = await fetch(`/api/imdb-rating/${movieData.details.external_ids.imdb_id}`);
+                  const imdbData = await response.json();
+                  
+                  if (imdbData.found) {
+                    movieData.details.imdb_rating = imdbData.score;
+                    movieData.details.imdb_votes = imdbData.votes;
+                    movieData.details.rating_source = 'imdb';
+                  } else {
+                    movieData.details.rating_source = 'tmdb';
+                  }
+                } catch (err) {
+                  console.error('Error fetching IMDb rating:', err);
+                  movieData.details.rating_source = 'tmdb';
+                }
+              } else if (!movieData.details.rating_source) {
+                movieData.details.rating_source = movieData.details.imdb_rating ? 'imdb' : 'tmdb';
+              }
+              
+              moviesFetched.push(movieData);
+              
+              if (movieData.details.genresForDb) {
+                const genresList = movieData.details.genresForDb.split(', ');
+                genresList.forEach(g => genres.add(g));
+              }
+              
+              if (movieData.details.yearStartForDb) {
+                years.add(movieData.details.yearStartForDb);
+              }
+            }
           }
 
           if (row.favorites_json.tv) {
-            row.favorites_json.tv.forEach((tvShow) => {
+            for (const tvShow of row.favorites_json.tv) {
               const tvKey = Object.keys(tvShow)[0];
-              tvFetched.push(tvShow[tvKey]);
-              genres.add(...tvShow[tvKey].details.genresForDb.split(', '));
-              years.add(tvShow[tvKey].details.yearStartForDb);
-            });
+              const tvData = tvShow[tvKey];
+              
+              if (!tvData || !tvData.details) {
+                console.warn('Skipping invalid TV entry:', tvShow);
+                continue;
+              }
+              
+              if (tvData.details.external_ids?.imdb_id && !tvData.details.rating_source) {
+                try {
+                  const response = await fetch(`/api/imdb-rating/${tvData.details.external_ids.imdb_id}`);
+                  const imdbData = await response.json();
+                  
+                  if (imdbData.found) {
+                    tvData.details.imdb_rating = imdbData.score;
+                    tvData.details.imdb_votes = imdbData.votes;
+                    tvData.details.rating_source = 'imdb';
+                  } else {
+                    tvData.details.rating_source = 'tmdb';
+                  }
+                } catch (err) {
+                  console.error('Error fetching IMDb rating:', err);
+                  tvData.details.rating_source = 'tmdb';
+                }
+              } else if (!tvData.details.rating_source) {
+                tvData.details.rating_source = tvData.details.imdb_rating ? 'imdb' : 'tmdb';
+              }
+              
+              tvFetched.push(tvData);
+              
+              if (tvData.details.genresForDb) {
+                const genresList = tvData.details.genresForDb.split(', ');
+                genresList.forEach(g => genres.add(g));
+              }
+              
+              if (tvData.details.yearStartForDb) {
+                years.add(tvData.details.yearStartForDb);
+              }
+            }
           }
-        });
+        }
+        
         this.moviesFetched = moviesFetched.reverse();
         this.tvFetched = tvFetched.reverse();
         this.genres = Array.from(genres);
         this.years = Array.from(years).sort();
+
+        if (data.length > 0) {
+          const favoritesObject = { ...data[0].favorites_json };
+          let needsUpdate = false;
+          
+          if (favoritesObject.movies && moviesFetched.length > 0) {
+            const moviesReversed = [...moviesFetched].reverse();
+            
+            favoritesObject.movies = favoritesObject.movies.map((originalMovie, index) => {
+              const movieKey = Object.keys(originalMovie)[0];
+              const matchingMovie = moviesReversed.find((m, i) => {
+                const mKey = Object.keys(favoritesObject.movies[i] || {})[0];
+                return mKey === movieKey;
+              });
+              
+              if (matchingMovie) {
+                const oldRatingSource = originalMovie[movieKey].details.rating_source;
+                const newRatingSource = matchingMovie.details.rating_source;
+                
+                if (oldRatingSource !== newRatingSource) {
+                  needsUpdate = true;
+                }
+                
+                return {
+                  [movieKey]: matchingMovie
+                };
+              }
+              
+              return originalMovie;
+            });
+          }
+          
+          if (favoritesObject.tv && tvFetched.length > 0) {
+            const tvReversed = [...tvFetched].reverse();
+            
+            favoritesObject.tv = favoritesObject.tv.map((originalTv, index) => {
+              const tvKey = Object.keys(originalTv)[0];
+              const matchingTv = tvReversed.find((t, i) => {
+                const tKey = Object.keys(favoritesObject.tv[i] || {})[0];
+                return tKey === tvKey;
+              });
+              
+              if (matchingTv) {
+                const oldRatingSource = originalTv[tvKey].details.rating_source;
+                const newRatingSource = matchingTv.details.rating_source;
+                
+                if (oldRatingSource !== newRatingSource) {
+                  needsUpdate = true;
+                }
+                
+                return {
+                  [tvKey]: matchingTv
+                };
+              }
+              
+              return originalTv;
+            });
+          }
+          
+          if (needsUpdate) {
+            await supabase
+              .from('favorites')
+              .update({ favorites_json: favoritesObject })
+              .eq('user_email', this.userEmail);
+          }
+        }
       } catch (error) {
         console.error(error.message);
       }
@@ -1231,94 +1367,7 @@ export default {
       }
     },
 
-    async checkData() {
-      try {
-        const { data, error } = await supabase
-          .from('favorites')
-          .select('*')
-          .eq('user_email', this.userEmail);
-
-        if (error) {
-          throw new Error('Error al conectar con la base de datos: ' + error.message);
-        }
-
-        const moviesFetched = [];
-        const tvFetched = [];
-        const genres = new Set();
-        const years = new Set();
-        
-        for (const row of data) {
-          if (row.favorites_json.movies) {
-            for (const movie of row.favorites_json.movies) {
-              const movieKey = Object.keys(movie)[0];
-              const movieData = movie[movieKey];
-              
-              if (movieData.details.external_ids?.imdb_id) {
-                try {
-                  const response = await fetch(`/api/imdb-rating/${movieData.details.external_ids.imdb_id}`);
-                  const imdbData = await response.json();
-                  
-                  if (imdbData.found) {
-                    movieData.details.imdb_rating = imdbData.score;
-                    movieData.details.imdb_votes = imdbData.votes;
-                    movieData.details.rating_source = 'imdb';
-                  } else {
-                    movieData.details.rating_source = 'tmdb';
-                  }
-                } catch (err) {
-                  console.error('Error fetching IMDb rating:', err);
-                  movieData.details.rating_source = 'tmdb';
-                }
-              } else {
-                movieData.details.rating_source = 'tmdb';
-              }
-              
-              moviesFetched.push(movieData);
-              genres.add(...movieData.details.genresForDb.split(', '));
-              years.add(movieData.details.yearStartForDb);
-            }
-          }
-
-          if (row.favorites_json.tv) {
-            for (const tvShow of row.favorites_json.tv) {
-              const tvKey = Object.keys(tvShow)[0];
-              const tvData = tvShow[tvKey];
-              
-              if (tvData.details.external_ids?.imdb_id) {
-                try {
-                  const response = await fetch(`/api/imdb-rating/${tvData.details.external_ids.imdb_id}`);
-                  const imdbData = await response.json();
-                  
-                  if (imdbData.found) {
-                    tvData.details.imdb_rating = imdbData.score;
-                    tvData.details.imdb_votes = imdbData.votes;
-                    tvData.details.rating_source = 'imdb';
-                  } else {
-                    tvData.details.rating_source = 'tmdb';
-                  }
-                } catch (err) {
-                  console.error('Error fetching IMDb rating:', err);
-                  tvData.details.rating_source = 'tmdb';
-                }
-              } else {
-                tvData.details.rating_source = 'tmdb';
-              }
-              
-              tvFetched.push(tvData);
-              genres.add(...tvData.details.genresForDb.split(', '));
-              years.add(tvData.details.yearStartForDb);
-            }
-          }
-        }
-        
-        this.moviesFetched = moviesFetched.reverse();
-        this.tvFetched = tvFetched.reverse();
-        this.genres = Array.from(genres);
-        this.years = Array.from(years).sort();
-      } catch (error) {
-        console.error(error.message);
-      }
-    },
+    
     async fetchUserFirstName() {
       try {
         const { data, error } = await supabase
