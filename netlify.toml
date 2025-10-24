@@ -1,0 +1,9 @@
+[build]
+  command = "npm run generate"
+  functions = "netlify/functions"
+  publish = "dist"
+
+[[redirects]]
+  from = "/api/imdb-rating/*"
+  to = "/.netlify/functions/imdb-rating/:splat"
+  status = 200
