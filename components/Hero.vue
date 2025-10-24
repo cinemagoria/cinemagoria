@@ -785,7 +785,11 @@ export default {
             genresForDb: this.genresForDb,
             typeForDb: this.typeForDb,
             userRatingForDb: this.userRatingForDb || '-',
-            addedAt: new Date().toISOString()
+            addedAt: new Date().toISOString(),
+            external_ids: this.item.external_ids,           // AGREGAR
+            rating_source: this.item.rating_source || 'tmdb', // AGREGAR
+            imdb_rating: this.item.imdb_rating,              // AGREGAR
+            imdb_votes: this.item.imdb_votes                 // AGREGAR
           }
         }
       });
