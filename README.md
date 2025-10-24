@@ -1,112 +1,155 @@
-## Welcome to the [EnterCinema](https://entercinema.com/) Project.
+## EnterCinema
 
+A **comprehensive entertainment platform** for discovering, tracking, and managing movies and TV shows. **EnterCinema** aggregates data from multiple sources to provide **intelligent search**, **personalized watchlists**, and **AI-driven recommendations**.
+
+### Overview
+
+**EnterCinema** is a **Progressive Web Application (PWA)** that streamlines entertainment discovery and management.  
+The platform integrates data from **TMDB**, **MDBList**, and **JustWatch** to deliver up-to-date information on thousands of movies and TV shows — including **streaming availability**, **release schedules**, and **detailed metadata**.
 
 ![Guide GIF](./static/previews/entercinema.png)
 
-## What's New:
+---
 
-### ASK AI Chatbot Assistant (Beta)
-Introducing our intelligent chatbot assistant that helps users discover content based on their preferences. Users can ask for movie and TV show recommendations using natural language, get information about actors, directors, and much more. The AI assistant provides personalized suggestions and enhances the overall content discovery experience.
+### Key Features
 
-### Rating Functionality in Watchlist
-Users can now rate and review items directly from their watchlist. A dedicated rating modal allows users to easily assign ratings and write reviews without leaving the watchlist page, providing a more streamlined user experience.
+#### Intelligent Search & Discovery
 
-### Rated Items Modal with Edit Functionality
-A new centralized modal displays all rated movies and TV shows with tabs for easy navigation between content types. Users can access this modal from both the Hero section and Watchlist page, and can edit their ratings and reviews directly within the modal.
+* **Advanced search** with typo correction and autocomplete  
+* **Multi-category results** (movies, TV shows, actors)  
+* **Genre-based browsing** with visual category cards  
+* **Trending and popular content** sections  
+* **Advanced filtering** by type, genre, year, country, and rating  
 
-### Revamped Upcoming Releases Section
-The "Upcoming Releases" section has been transformed with a new carousel display for improved visual appeal. The date range for upcoming movies has been expanded to 180 days, providing users with a broader view of future releases. Section titles have been updated for clarity: "Upcoming Releases" is now "Releases Timeline" and "Latest Movies" is now "Movie Releases".
+#### Content Management
 
-### Google OAuth Authentication
-Users can now sign in using their Google accounts in addition to the existing authentication system. The existing DRF-based authentication remains available as an alternative option.
+* **Personal watchlist** with unlimited capacity  
+* **Star rating system** with written reviews  
+* **Filter by genre, release year, user ratings, and community ratings**  
+* **Pagination** for large collections  
+* **Quick add/remove** functionality  
 
-### *** Integration for Direct Content Access
-Introduced direct streaming access through *** platform. Users can now enjoy seamless content viewing via our *** integration.
+#### Release Tracking
 
-### Enhanced Advanced Search with Watch Providers
-A new dropdown feature in the advanced search lets users filter TV shows by watch provider (Apple TV+, Disney+, Hulu, Max, Netflix, Prime Video). This option is available only when 'TV Show' is selected.
+* **Daily movie release calendar** with navigation  
+* **TV show episode tracking** with air dates  
+* **Next episode notifications** for followed series  
+* **Season and episode information**
 
+#### AI Assistant
 
-## Installation
+* **Conversational entertainment recommendations**  
+* **Context-aware suggestions** based on query  
+* **Daily curated prompts** for discovery  
+* **Spoiler detection system**  
 
-### Vue.js Frontend:
-To run this project locally, follow these steps:
+#### Detailed Information Pages
 
-1. Clone the repository to your local machine:
-```bash
-git clone https://github.com/imprvhub/entercinema.git
-```
-2. Install the necessary dependencies:
-```bash
-yarn install
-```
-3. Before running the project, you need to set up your environment variables in a .env file. Here's how:
-```bash
-FRONTEND_URL=<Specify the URL where your frontend will be hosted, e.g., 'https://localhost:3000' or your custom domain.>
-API_KEY=<Provide your TMDB API key here>
-SUPABASE_URL=<Enter the URL for your database, e.g., your Supabase database URL>
-SUPABASE_ANON_KEY=<Enter the anonymous key for your database, e.g., your Supabase anonymous key>    
-```
-  By default, EnterCinema is configured to work with Supabase as the backend DRF database. However, you can use another database if needed. Simply replace DATABASE_URL and DATABASE_ANON_KEY with the appropriate values based on your database configuration.
+* **Comprehensive metadata** (cast, crew, budget, runtime)  
+* **Streaming platform availability** via JustWatch  
+* **External platform links** (IMDb, Rotten Tomatoes, Trakt)  
+* **Community reviews** with spoiler warnings  
+* **Related content recommendations**  
+* **Trailers and photo galleries**
 
-4. Run the project:
-  ```bash
-  yarn dev
-  ```
-  The project should be accesible at, e.g., 'http://localhost:3000'
+#### User System
 
-<hr>
+* **Dual authentication** (native registration and Google OAuth)  
+* **Profile customization**  
+* **Rating history tracking**  
+* **Account activity monitoring**
 
-### Django Rest Framework Backend:
-To set up the Django Rest Framework backend for EnterCinema, follow these steps:
+---
 
-### Prerequisites:
-[Python 3.9](https://www.python.org/downloads/release/python-390/)
+### Tech Stack
 
-1. Clone the backend repository to your local machine:
-```bash
-git clone https://github.com/imprvhub/entercinema-drf.git
-```
+**Frontend**
 
-2. Install Dependencies:
-Navigate to the project directory and install the necessary dependencies using pip:
-```bash
-cd entercinema-drf
-pip install -r requirements.txt
-```
+* **Vue.js**  
+* **Nuxt.js**
 
-3. Set Up Environment Variables.
-Create a .env file in the project directory and define the following variables:
-```bash
-DB_NAME=<Enter your database name>
-DB_USER=<Enter your database username>
-DB_PASSWORD=<Enter your database password>
-DB_HOST=<Enter your database host, e.g., localhost>
-DB_PORT=<Enter your database port>
-```
+**Backend**
 
-4. Apply Migrations:
-```bash
-python manage.py migrate
-```
+* **Django REST Framework**
 
-5. Collect static files for deployment:
-```bash
-python manage.py collectstatic
-```
+**Database**
 
-6. Run the server:
-```bash
-python manage.py runserver
-```
+* **Turso**  
+* **Supabase**
 
-### Feedback:
-Your feedback is valuable! If you encounter any issues or have suggestions for improvements, please create a new issue in the [GitHub repository](https://github.com/imprvhub/entercinema/issues/new).
+**APIs**
+
+* **TMDB API**  
+* **MDBList API**  
+* **JustWatch API**
+
+---
+
+### Authentication
+
+EnterCinema supports two authentication methods:
+
+* **Native registration** via Django REST Framework  
+* **Google OAuth 2.0** for single sign-on
+
+---
+
+### Core Functionality
+
+#### Search System
+
+The search engine processes queries with **intelligent typo correction**.  
+When users enter misspelled terms, the system displays a **“Did you mean?” suggestion** with the corrected query — ensuring seamless discovery.
+
+#### Watchlist Management
+
+Users can organize content into **separate movie and TV show collections** with filters by **genre**, **release year range**, **community ratings**, and **personal ratings**.  
+A **pagination system** ensures smooth handling of large libraries.
+
+#### Advanced Search
+
+**Multi-criteria filtering** allows users to narrow results by **type**, **genre**, **release year**, **origin country**, **minimum rating**, and **sorting algorithms**.
+
+#### AI Recommendations
+
+The **AI assistant** operates in two modes:  
+* **Free-form chat** for natural language recommendations  
+* **Daily prompts** for curated discovery  
+
+Results include **contextual carousels** of related content.
+
+#### Release Calendar
+
+An interactive **timeline interface** displays **upcoming movie releases** and **TV episode air dates**.  
+Users can browse **day-by-day** to plan their viewing schedule.
+
+---
+
+### User Interface
+
+The platform features a **responsive design** optimized for **desktop and mobile**.  
+Navigation is handled through a **persistent bottom bar** with sections for **Home**, **Movies**, **Advanced Search**, **Upcoming**, **AI Assistant**, and **Watchlist**.  
+A **global search bar** and **user menu** are accessible from the header.
+
+---
 
 ### Attributions
 
-The foundational inspiration for this project is derived from the [TasteJS](https://github.com/tastejs/nuxt-movies) repository, and I extend my gratitude for their pioneering work.
+EnterCinema integrates and displays data from several third-party sources:
 
-Data concerning movies and TV shows are sourced from [TMDB](https://www.themoviedb.org/), while information on streaming providers, networks, and platforms is obtained from [JustWatch](https://www.justwatch.com/).
+* [**TMDB**](https://www.themoviedb.org/) — Core entertainment metadata, cast, and assets  
+* [**MDBList**](https://mdblist.com/) — Enhanced metadata and curated lists  
+* [**JustWatch**](https://www.justwatch.com/) — Real-time streaming platform availability  
 
-For further details, please refer to these [Terms and Conditions](https://entercinema.com/terms/).
+The foundational inspiration for this project comes from the [**TasteJS**](https://github.com/tastejs/nuxt-movies) repository — special thanks for their pioneering work.
+
+For more information, see the [**Terms and Conditions**](https://entercinema.com/usage-policies/).
+
+---
+
+### Feedback
+
+Your feedback is valuable!  
+If you encounter any issues or have suggestions for improvements, please create a new issue in this [**GitHub repository**](https://github.com/imprvhub/entercinema/issues/new).
+
+---
