@@ -778,6 +778,10 @@ export default {
         return itemKey === favId;
       });
       
+      if (existingIndex !== -1) {
+        updatedFavorites[favoriteType].splice(existingIndex, 1);
+      }
+      
       const favoriteData = {
         [favId]: {
           details: {
@@ -799,15 +803,10 @@ export default {
         }
       };
       
-      if (existingIndex !== -1) {
-        updatedFavorites[favoriteType][existingIndex] = favoriteData;
-      } else {
-        updatedFavorites[favoriteType].push(favoriteData);
-      }
+      updatedFavorites[favoriteType].push(favoriteData);
 
       return updatedFavorites;
     },
-
     parseFavId(favId) {
       const [type, id] = favId.split('/');
       return { type, id };
