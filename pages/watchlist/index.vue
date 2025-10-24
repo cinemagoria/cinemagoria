@@ -691,24 +691,26 @@ export default {
                 continue;
               }
               
-              if (movieData.details.external_ids?.imdb_id && !movieData.details.rating_source) {
-                try {
-                  const response = await fetch(`/api/imdb-rating/${movieData.details.external_ids.imdb_id}`);
-                  const imdbData = await response.json();
-                  
-                  if (imdbData.found) {
-                    movieData.details.imdb_rating = imdbData.score;
-                    movieData.details.imdb_votes = imdbData.votes;
-                    movieData.details.rating_source = 'imdb';
-                  } else {
+              if (movieData.details.external_ids?.imdb_id) {
+                if (!movieData.details.imdb_rating || movieData.details.rating_source !== 'imdb') {
+                  try {
+                    const response = await fetch(`/api/imdb-rating/${movieData.details.external_ids.imdb_id}`);
+                    const imdbData = await response.json();
+                    
+                    if (imdbData.found) {
+                      movieData.details.imdb_rating = imdbData.score;
+                      movieData.details.imdb_votes = imdbData.votes;
+                      movieData.details.rating_source = 'imdb';
+                    } else {
+                      movieData.details.rating_source = 'tmdb';
+                    }
+                  } catch (err) {
+                    console.error('Error fetching IMDb rating:', err);
                     movieData.details.rating_source = 'tmdb';
                   }
-                } catch (err) {
-                  console.error('Error fetching IMDb rating:', err);
-                  movieData.details.rating_source = 'tmdb';
                 }
               } else if (!movieData.details.rating_source) {
-                movieData.details.rating_source = movieData.details.imdb_rating ? 'imdb' : 'tmdb';
+                movieData.details.rating_source = 'tmdb';
               }
               
               moviesFetched.push(movieData);
@@ -734,26 +736,27 @@ export default {
                 continue;
               }
               
-              if (tvData.details.external_ids?.imdb_id && !tvData.details.rating_source) {
-                try {
-                  const response = await fetch(`/api/imdb-rating/${tvData.details.external_ids.imdb_id}`);
-                  const imdbData = await response.json();
-                  
-                  if (imdbData.found) {
-                    tvData.details.imdb_rating = imdbData.score;
-                    tvData.details.imdb_votes = imdbData.votes;
-                    tvData.details.rating_source = 'imdb';
-                  } else {
+              if (tvData.details.external_ids?.imdb_id) {
+                if (!tvData.details.imdb_rating || tvData.details.rating_source !== 'imdb') {
+                  try {
+                    const response = await fetch(`/api/imdb-rating/${tvData.details.external_ids.imdb_id}`);
+                    const imdbData = await response.json();
+                    
+                    if (imdbData.found) {
+                      tvData.details.imdb_rating = imdbData.score;
+                      tvData.details.imdb_votes = imdbData.votes;
+                      tvData.details.rating_source = 'imdb';
+                    } else {
+                      tvData.details.rating_source = 'tmdb';
+                    }
+                  } catch (err) {
+                    console.error('Error fetching IMDb rating:', err);
                     tvData.details.rating_source = 'tmdb';
                   }
-                } catch (err) {
-                  console.error('Error fetching IMDb rating:', err);
-                  tvData.details.rating_source = 'tmdb';
                 }
               } else if (!tvData.details.rating_source) {
-                tvData.details.rating_source = tvData.details.imdb_rating ? 'imdb' : 'tmdb';
+                tvData.details.rating_source = 'tmdb';
               }
-              
               tvFetched.push(tvData);
               
               if (tvData.details.genresForDb) {
