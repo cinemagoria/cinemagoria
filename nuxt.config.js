@@ -13,7 +13,7 @@ export default {
 
   // Headers of the page
   head: {
-    title: "EnterCinema: Fast-track your entertainment picks",
+    title: "EnterCinema: Your Portal to Entertainment Discovery",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
