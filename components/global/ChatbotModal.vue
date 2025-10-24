@@ -349,11 +349,6 @@ export default {
     this.loadMinimizedState();
     this.loadConversations();
     this.initializeFirstConversation();
-    window.chatbotDebug = () => {
-      console.log('chatBotMinimized:', this.chatBotMinimized);
-      console.log('chatBotOpen:', this.chatBotOpen);
-      console.log('hasConversation:', this.hasConversation);
-    };
     this.$root.$on('chatbot-maximized', () => {
       this.chatBotMinimized = false;
     });
@@ -1014,7 +1009,6 @@ export default {
         }
       } catch (error) {
         if (error.name === 'AbortError') {
-          console.log('Streaming was cancelled by user');
           return;
         }
         
