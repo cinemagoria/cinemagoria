@@ -765,7 +765,7 @@ export default {
       }
     },
 
-    addFavorite(favoritesJson, favId) {
+   addFavorite(favoritesJson, favId) {
       const updatedFavorites = { ...favoritesJson };
       const favoriteType = this.type === 'movie' ? 'movies' : 'tv';
 
@@ -773,7 +773,12 @@ export default {
         updatedFavorites[favoriteType] = [];
       }
       
-      updatedFavorites[favoriteType].push({
+      const existingIndex = updatedFavorites[favoriteType].findIndex(item => {
+        const itemKey = Object.keys(item)[0];
+        return itemKey === favId;
+      });
+      
+      const favoriteData = {
         [favId]: {
           details: {
             nameForDb: this.nameForDb,
@@ -786,13 +791,19 @@ export default {
             typeForDb: this.typeForDb,
             userRatingForDb: this.userRatingForDb || '-',
             addedAt: new Date().toISOString(),
-            external_ids: this.item.external_ids,           // AGREGAR
-            rating_source: this.item.rating_source || 'tmdb', // AGREGAR
-            imdb_rating: this.item.imdb_rating,              // AGREGAR
-            imdb_votes: this.item.imdb_votes                 // AGREGAR
+            external_ids: this.item.external_ids,
+            rating_source: this.item.rating_source || 'tmdb',
+            imdb_rating: this.item.imdb_rating,
+            imdb_votes: this.item.imdb_votes
           }
         }
-      });
+      };
+      
+      if (existingIndex !== -1) {
+        updatedFavorites[favoriteType][existingIndex] = favoriteData;
+      } else {
+        updatedFavorites[favoriteType].push(favoriteData);
+      }
 
       return updatedFavorites;
     },
