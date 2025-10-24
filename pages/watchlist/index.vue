@@ -664,7 +664,6 @@ export default {
     resetPreview() {
       this.hoverRating = 0;
     },
-
     async checkData() {
       try {
         const { data, error } = await supabase
@@ -687,7 +686,12 @@ export default {
               const movieKey = Object.keys(movie)[0];
               const movieData = movie[movieKey];
               
-              if (movieData.details.external_ids?.imdb_id) {
+              if (!movieData || !movieData.details) {
+                console.warn('Skipping invalid movie entry:', movie);
+                continue;
+              }
+              
+              if (movieData.details.external_ids?.imdb_id && !movieData.details.rating_source) {
                 try {
                   const response = await fetch(`/api/imdb-rating/${movieData.details.external_ids.imdb_id}`);
                   const imdbData = await response.json();
@@ -703,13 +707,20 @@ export default {
                   console.error('Error fetching IMDb rating:', err);
                   movieData.details.rating_source = 'tmdb';
                 }
-              } else {
-                movieData.details.rating_source = 'tmdb';
+              } else if (!movieData.details.rating_source) {
+                movieData.details.rating_source = movieData.details.imdb_rating ? 'imdb' : 'tmdb';
               }
               
               moviesFetched.push(movieData);
-              genres.add(...movieData.details.genresForDb.split(', '));
-              years.add(movieData.details.yearStartForDb);
+              
+              if (movieData.details.genresForDb) {
+                const genresList = movieData.details.genresForDb.split(', ');
+                genresList.forEach(g => genres.add(g));
+              }
+              
+              if (movieData.details.yearStartForDb) {
+                years.add(movieData.details.yearStartForDb);
+              }
             }
           }
 
@@ -718,7 +729,12 @@ export default {
               const tvKey = Object.keys(tvShow)[0];
               const tvData = tvShow[tvKey];
               
-              if (tvData.details.external_ids?.imdb_id) {
+              if (!tvData || !tvData.details) {
+                console.warn('Skipping invalid TV entry:', tvShow);
+                continue;
+              }
+              
+              if (tvData.details.external_ids?.imdb_id && !tvData.details.rating_source) {
                 try {
                   const response = await fetch(`/api/imdb-rating/${tvData.details.external_ids.imdb_id}`);
                   const imdbData = await response.json();
@@ -734,13 +750,20 @@ export default {
                   console.error('Error fetching IMDb rating:', err);
                   tvData.details.rating_source = 'tmdb';
                 }
-              } else {
-                tvData.details.rating_source = 'tmdb';
+              } else if (!tvData.details.rating_source) {
+                tvData.details.rating_source = tvData.details.imdb_rating ? 'imdb' : 'tmdb';
               }
               
               tvFetched.push(tvData);
-              genres.add(...tvData.details.genresForDb.split(', '));
-              years.add(tvData.details.yearStartForDb);
+              
+              if (tvData.details.genresForDb) {
+                const genresList = tvData.details.genresForDb.split(', ');
+                genresList.forEach(g => genres.add(g));
+              }
+              
+              if (tvData.details.yearStartForDb) {
+                years.add(tvData.details.yearStartForDb);
+              }
             }
           }
         }
@@ -751,47 +774,61 @@ export default {
         this.years = Array.from(years).sort();
 
         if (data.length > 0) {
-          const favoritesObject = data[0].favorites_json;
+          const favoritesObject = { ...data[0].favorites_json };
           let needsUpdate = false;
           
-          if (favoritesObject.movies) {
-            favoritesObject.movies = moviesFetched.map((movieData, index) => {
-              const originalMovie = favoritesObject.movies[index];
-              if (originalMovie) {
-                const movieKey = Object.keys(originalMovie)[0];
+          if (favoritesObject.movies && moviesFetched.length > 0) {
+            const moviesReversed = [...moviesFetched].reverse();
+            
+            favoritesObject.movies = favoritesObject.movies.map((originalMovie, index) => {
+              const movieKey = Object.keys(originalMovie)[0];
+              const matchingMovie = moviesReversed.find((m, i) => {
+                const mKey = Object.keys(favoritesObject.movies[i] || {})[0];
+                return mKey === movieKey;
+              });
+              
+              if (matchingMovie) {
                 const oldRatingSource = originalMovie[movieKey].details.rating_source;
-                const newRatingSource = movieData.details.rating_source;
+                const newRatingSource = matchingMovie.details.rating_source;
                 
                 if (oldRatingSource !== newRatingSource) {
                   needsUpdate = true;
                 }
                 
                 return {
-                  [movieKey]: movieData
+                  [movieKey]: matchingMovie
                 };
               }
+              
               return originalMovie;
-            }).reverse();
+            });
           }
           
-          if (favoritesObject.tv) {
-            favoritesObject.tv = tvFetched.map((tvData, index) => { 
-              const originalTv = favoritesObject.tv[index];
-              if (originalTv) {
-                const tvKey = Object.keys(originalTv)[0];
+          if (favoritesObject.tv && tvFetched.length > 0) {
+            const tvReversed = [...tvFetched].reverse();
+            
+            favoritesObject.tv = favoritesObject.tv.map((originalTv, index) => {
+              const tvKey = Object.keys(originalTv)[0];
+              const matchingTv = tvReversed.find((t, i) => {
+                const tKey = Object.keys(favoritesObject.tv[i] || {})[0];
+                return tKey === tvKey;
+              });
+              
+              if (matchingTv) {
                 const oldRatingSource = originalTv[tvKey].details.rating_source;
-                const newRatingSource = tvData.details.rating_source;
+                const newRatingSource = matchingTv.details.rating_source;
                 
                 if (oldRatingSource !== newRatingSource) {
                   needsUpdate = true;
                 }
                 
                 return {
-                  [tvKey]: tvData
+                  [tvKey]: matchingTv
                 };
               }
+              
               return originalTv;
-            }).reverse();
+            });
           }
           
           if (needsUpdate) {
