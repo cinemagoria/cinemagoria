@@ -205,13 +205,17 @@ export default {
   z-index: 5;
   height: 4.5rem;
   background-color: #000;
+  border: 1px solid #ffffffac;
+  border-radius:10px;
 
   @media (min-width: $breakpoint-large) { 
     top: 0;
     right: auto;
-    width: 10rem;
+    width: 9rem;
     height: 100%;
-    border-right: 1px solid $secondary-color;
+    border-radius:10px;
+    border: 1px solid #ffffffac;
+    border-right: 1px solid #ffffffac;
     padding: 1.5rem 0;
     display: flex;
     flex-direction: column;
