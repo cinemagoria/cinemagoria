@@ -205,7 +205,7 @@ export default {
   z-index: 5;
   height: 4.5rem;
   background-color: #000;
-  border: 1.5px solid rgba(34, 98, 121, 0.782);
+  border: 1.5px solid #2A474D;
   border-radius:9px;
 
   @media (min-width: $breakpoint-large) { 
@@ -214,8 +214,8 @@ export default {
     width: 9rem;
     height: 100%;
     border-radius:10px;
-    border: 1.5px solid rgba(34, 98, 121, 0.782);
-    border-right: 1.5px solid rgba(34, 98, 121, 0.782);
+    border: 1.5px solid #2A474D;
+    border-right: 1.5px solid #2A474D;
     padding: 1.5rem 0;
     display: flex;
     flex-direction: column;
