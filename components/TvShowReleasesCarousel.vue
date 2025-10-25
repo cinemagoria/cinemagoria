@@ -357,11 +357,12 @@ export default {
   width: 320px;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 7px 10px 0 rgba(31, 104, 135, .37);
 }
 
 .tv-release-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 8px 25px rgba(31, 97, 135, 0.4), 0 0 40px rgba(127, 219, 241, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 5px 5px rgba(22, 63, 87, 0.4), 0 0 20px rgba(75, 128, 141, 0.3);
 }
 
 .tv-release-card__image {
