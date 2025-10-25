@@ -407,6 +407,8 @@ export default {
     border: 1px solid rgba( 255, 255, 255, 0.18 );
     z-index: 100;
     display: none;
+    border: 1px solid #ffffffac;
+    margin-top: 1px;
   }
 
   .dropdown-menu {

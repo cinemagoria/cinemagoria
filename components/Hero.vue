@@ -1045,11 +1045,6 @@ export default {
 
 .meta {
   font-size: 1.4rem;
-
-  @media (min-width: $breakpoint-small) {
-    display: flex;
-  }
-
   @media (min-width: 1650px) {
     font-size: 0.9vw;
   }

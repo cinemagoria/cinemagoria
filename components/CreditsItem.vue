@@ -58,13 +58,16 @@ export default {
 .credits-item {
   margin-bottom: 2rem;
   line-height: $base-line-height;
+  border-radius: 10px;
+  padding-bottom: 0.5rem;
+  position: relative;
 }
 
 .credits-item__img {
   position: relative;
   height: 0;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   padding-top: 150.27%;
   overflow: hidden;
   background-color: $secondary-color;

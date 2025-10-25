@@ -126,7 +126,7 @@
                     <span v-if="item.details.userReview" class="review-indicator"></span>
                   </div>
                   <div class="user-rating-badge empty" @click.stop="openRatingModal(item)" v-else> 
-                    <span style="font-size: 20px; position: relative; bottom: 2px;">★</span>
+                    <span style="font-size: 18px; position: relative;">★</span>
                   </div>
                   <a :href="getLink(item)" class="item-link">
                     <img 
@@ -181,7 +181,7 @@
       <div v-else>
         <p style="text-align: center;">No hay favoritos agregados todavía.</p>
       </div>
-      <div class="pagination" v-if="filteredItems.length > itemsPerPage">
+      <div class="pagination-footer" v-if="filteredItems.length > itemsPerPage">
             <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
             <button @click="prevPage" :disabled="currentPage === 1"><<</button>
             <span>
@@ -1921,7 +1921,7 @@ export default {
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
     /* border-radius: 15px; */
-    width: 90% !important;
+    width: 97% !important;
     margin: 0 auto;
     background: rgba(82, 71, 71, 0);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
@@ -1933,10 +1933,9 @@ export default {
     border: 0.5px #31414C solid;
     /* left: -10px; */
     /* top: 40px; */
-    margin-top: 1rem;
+    top: 3px;
     position: relative;
-    bottom: 0.7rem;
-    position: relative;
+    margin-bottom: 0.5rem;
 }
 
 .pagination-footer {
@@ -1948,21 +1947,20 @@ export default {
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
     /* border-radius: 15px; */
-    width: 90% !important;
+    width: 97% !important;
     margin: 0 auto;
-    background: rgba(82, 71, 71, 0);
+    background: rgba(16, 20, 33, 0.3);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur(16px);
     padding: 8px;
     /* width: 80%; */
+    top: 1.6px;
     /* position: relative; */
     gap: 0.5rem;
     border: 0.5px #31414C solid;
     /* left: -10px; */
-    /* top: 40px; */
     position: relative;
 }
-
 
 .pagination button {
   padding: 0.5rem 1rem;
@@ -2182,8 +2180,14 @@ export default {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
     gap: 20px;
+    background-color: black;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+    backdrop-filter: blur(16px);
     justify-content: center;
     padding-left: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
     padding-right: 1rem;
   }
 

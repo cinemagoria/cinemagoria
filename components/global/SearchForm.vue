@@ -8,7 +8,7 @@
             <button 
               v-if="!isRootPage"
               type="button" 
-              style="padding: 0; background-color: black; top: -3px; left: 5px; position: relative;"
+              style="padding: 0; background-color: black; top: -4px; left: 5px; position: relative;"
               aria-label="Go Back" 
               class="button"
               @click="goBack">
@@ -299,6 +299,11 @@ body {
   justify-content: flex-end;
   align-items: center;
   padding: 1rem;
+  border-bottom: 1px solid #d0d0d0ac;
+  border-right: 1px solid #ffffffac;
+  border-top: 1px solid #ffffffac;
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .field-wrapper {
@@ -310,15 +315,21 @@ body {
   display: flex;
   align-items: flex-start;
   background-color: black;
+  border-bottom: 1px solid #d0d0d0ac;
+  border-left: 1px solid #ffffffac;
+  border-top: 1px solid #ffffffac;
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
 }
 
 input[type='text'] {
   flex: 1;
   height: 5rem;
   padding: 2.1rem 1.5rem;
-  margin-top: 3px;
+  margin-top: 2px;
   font-size: 1.6rem;
-  color: #fff;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #79cddf;
   background: none;
   border: 0;
   outline: 0;
