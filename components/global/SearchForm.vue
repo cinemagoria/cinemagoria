@@ -299,13 +299,12 @@ body {
   justify-content: flex-end;
   align-items: center;
   padding: 1rem;
-  border-bottom: 1px solid #d0d0d0ac;
-  border-right: 1px solid #ffffffac;
-  border-top: 1px solid #ffffffac;
-  border-bottom-right-radius: 10px;
-  border-top-right-radius: 10px;
+  border-bottom: 1.5px solid rgba(28, 79, 97, 0.782);
+  border-right: 1.5px solid rgba(34, 98, 121, 0.782);
+  border-top: 1.5px solid rgba(34, 98, 121, 0.782);
+  border-bottom-right-radius: 9px;
+  border-top-right-radius: 9px;
 }
-
 .field-wrapper {
   display: flex;
   flex-direction: column;
@@ -315,11 +314,11 @@ body {
   display: flex;
   align-items: flex-start;
   background-color: black;
-  border-bottom: 1px solid #d0d0d0ac;
-  border-left: 1px solid #ffffffac;
-  border-top: 1px solid #ffffffac;
-  border-bottom-left-radius: 10px;
-  border-top-left-radius: 10px;
+  border-bottom: 1.5px solid rgba(28, 79, 97, 0.782);
+  border-left: 1.5px solid rgba(28, 79, 97, 0.782);
+  border-top: 1.5px solid rgba(34, 98, 121, 0.782);
+  border-bottom-left-radius: 9px;
+  border-top-left-radius: 9px;
 }
 
 input[type='text'] {
