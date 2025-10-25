@@ -299,9 +299,9 @@ body {
   justify-content: flex-end;
   align-items: center;
   padding: 1rem;
-  border-bottom: 1.5px solid #2A474D;
-  border-right: 1.5px solid #2A474D;
-  border-top: 1.5px solid #2A474D;
+  border-bottom: 1.5px solid rgba(28, 79, 97, 0.782);
+  border-right: 1.5px solid rgba(34, 98, 121, 0.782);
+  border-top: 1.5px solid rgba(34, 98, 121, 0.782);
   border-bottom-right-radius: 9px;
   border-top-right-radius: 9px;
 }
@@ -314,9 +314,9 @@ body {
   display: flex;
   align-items: flex-start;
   background-color: black;
-  border-bottom: 1.5px solid #2A474D;
-  border-left: 1.5px solid #2A474D;
-  border-top: 1.5px solid #2A474D;
+  border-bottom: 1.5px solid rgba(28, 79, 97, 0.782);
+  border-left: 1.5px solid rgba(28, 79, 97, 0.782);
+  border-top: 1.5px solid rgba(34, 98, 121, 0.782);
   border-bottom-left-radius: 9px;
   border-top-left-radius: 9px;
 }
