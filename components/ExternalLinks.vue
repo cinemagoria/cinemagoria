@@ -2,61 +2,6 @@
   <div class="external-links-container">
     <h4 class="section-title">External Links</h4>
     <div class="links-grid">
-      <div v-if="tomatoMeter.found && (currentPageType === 'movie' || currentPageType === 'tv')" class="link-item">
-        <a
-          :href="tomatoMeter.url"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Rotten Tomatoes"
-        >
-          <img
-            src="/rotten-tomatoes.svg"
-            alt="***"
-            class="link-icon rotten-tomatoes"
-            width="23"
-            height="23"
-          />
-          <span class="label-style">{{ tomatoMeter.score }}% Tomatometer</span>
-        </a>
-      </div>
-      <div v-if="***Url && currentPageType === 'movie'" class="link-item">
-        <a
-          :href="***Url"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Visit ***"
-        >
-          <img
-            src="/***-logo.svg"
-            alt="***"
-            class="link-icon ***-logo"
-            width="23"
-            height="23"
-          />
-          <span class="label-style">Watch on ***</span>
-        </a>
-      </div>
-
-      <div v-if="links.imdb_id && (currentPageType === 'movie' || currentPageType === 'tv')" class="link-item">
-        <a
-          :href="***Link"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Watch on ***"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
-            viewBox="0 0 192 192"
-            fill="currentColor"
-            class="link-icon ***-icon"
-          >
-            <path d="M100.242 23.743a6 6 0 0 0-8.485 0L23.743 91.757a6 6 0 0 0 0 8.485l68.014 68.015a6 6 0 0 0 8.485 0l68.015-68.015a6 6 0 0 0 0-8.485l-68.015-68.014ZM80 71.83c0-2.44 2.758-3.86 4.744-2.442l33.838 24.17a3 3 0 0 1 0 4.883l-33.838 24.171C82.758 124.03 80 122.611 80 120.17V71.83Z"/>
-          </svg>
-          <span class="label-style">Watch on ***</span>
-        </a>
-      </div>
 
       <div v-if="links.imdb_id" class="link-item">
         <a
@@ -112,8 +57,24 @@
           <span class="label-style">Letterboxd</span>
         </a>
       </div>
-
-
+      <div v-if="tomatoMeter.found && (currentPageType === 'movie' || currentPageType === 'tv')" class="link-item">
+        <a
+          :href="tomatoMeter.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Rotten Tomatoes"
+        >
+          <img
+            src="/rotten-tomatoes.svg"
+            alt="***"
+            class="link-icon rotten-tomatoes"
+            width="23"
+            height="23"
+          />
+          <span class="label-style">{{ tomatoMeter.score }}% Tomatometer</span>
+        </a>
+      </div>
+      
       <div v-if="links.imdb_id" class="link-item">
         <a
           :href="`https://trakt.tv/search/imdb?query=${links.imdb_id}`"
@@ -142,6 +103,45 @@
             </g>
           </svg>
           <span class="label-style">Trakt</span>
+        </a>
+      </div>
+
+      <div v-if="links.imdb_id && (currentPageType === 'movie' || currentPageType === 'tv')" class="link-item">
+        <a
+          :href="***Link"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Watch on ***"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 192 192"
+            fill="currentColor"
+            class="link-icon ***-icon"
+          >
+            <path d="M100.242 23.743a6 6 0 0 0-8.485 0L23.743 91.757a6 6 0 0 0 0 8.485l68.014 68.015a6 6 0 0 0 8.485 0l68.015-68.015a6 6 0 0 0 0-8.485l-68.015-68.014ZM80 71.83c0-2.44 2.758-3.86 4.744-2.442l33.838 24.17a3 3 0 0 1 0 4.883l-33.838 24.171C82.758 124.03 80 122.611 80 120.17V71.83Z"/>
+          </svg>
+          <span class="label-style">Watch on ***</span>
+        </a>
+      </div>
+
+      <div v-if="***Url && currentPageType === 'movie'" class="link-item">
+        <a
+          :href="***Url"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Visit ***"
+        >
+          <img
+            src="/***-logo.svg"
+            alt="***"
+            class="link-icon ***-logo"
+            width="23"
+            height="23"
+          />
+          <span class="label-style">Watch on ***</span>
         </a>
       </div>
       
