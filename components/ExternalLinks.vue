@@ -372,6 +372,10 @@ export default {
   text-overflow: ellipsis;
 }
 
+.label-style:hover {
+  color: #8AE8FC;
+}
+
 @media (max-width: 480px) {
   .links-grid {
     grid-template-columns: 1fr 1fr;
