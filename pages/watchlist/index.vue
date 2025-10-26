@@ -118,8 +118,8 @@
           <div class="movie-grid">
               <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
                 <div class="card-background">
-                  <div class="user-rating-badge" v-if="item.details && item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
-                    @click.stop="showRatedItems"
+                  <div class="user-rating-badge" v-if="item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
+                    @click.stop="openRatingModal(item)"
                     :class="{ 'has-review': item.details.userReview }" 
                     :title="item.details.userReview ? 'Has Review' : ''">
                     {{ item.details.userRatingForDb }}
@@ -231,13 +231,23 @@
                 <div class="char-count">{{ userReview.length }}/500</div>
               </div>
 
-              <button
-                @click="saveRatingAndReview"
-                class="save-btn"
-                :disabled="selectedRating === 0"
-              >
-                <span style="position:relative; margin:0 auto;">Guardar</span>
-              </button>
+              <div class="rating-modal-buttons">
+                <button 
+                  v-if="currentRatingItem && currentRatingItem.details.userRatingForDb && currentRatingItem.details.userRatingForDb !== '-'"
+                  @click="removeRating" 
+                  class="remove-rating-btn"
+                >
+                  <span style="position:relative; margin:0 auto;">Remove Rating</span>
+                </button>
+                
+                <button 
+                  @click="saveRatingAndReview" 
+                  class="save-btn"
+                  :disabled="selectedRating === 0"
+                >
+                  <span style="position:relative; margin:0 auto;">Save</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -639,9 +649,16 @@ export default {
     },
     openRatingModal(item) {
       this.currentRatingItem = item;
-      this.selectedRating = 0;
+      
+      if (item.details.userRatingForDb && item.details.userRatingForDb !== '-') {
+        this.selectedRating = parseInt(item.details.userRatingForDb);
+        this.userReview = item.details.userReview || '';
+      } else {
+        this.selectedRating = 0;
+        this.userReview = '';
+      }
+      
       this.hoverRating = 0;
-      this.userReview = '';
       this.ratingModalVisible = true;
     },
 
@@ -910,6 +927,55 @@ export default {
       } catch (error) {
         console.error('Error saving rating and review:', error);
         alert('There was an error saving your rating. Please try again.');
+      }
+    },
+
+    async removeRating() {
+      try {
+        const item = this.currentRatingItem;
+        const { typeForDb, idForDb } = item.details;
+        const itemKey = `${typeForDb}/${idForDb}`;
+
+        const { data: favoritesData, error } = await supabase
+          .from('favorites')
+          .select('favorites_json')
+          .eq('user_email', this.userEmail);
+        
+        if (error) throw new Error('Error fetching favorites: ' + error.message);
+        if (!favoritesData || !favoritesData.length) return;
+        
+        const favoritesObject = favoritesData[0].favorites_json || {};
+        const itemType = typeForDb === 'tv' ? 'tv' : 'movies';
+        
+        if (!favoritesObject[itemType]) return;
+
+        const updatedItems = favoritesObject[itemType].map(favItem => {
+          const favItemKey = Object.keys(favItem)[0];
+          if (favItemKey === itemKey) {
+            delete favItem[favItemKey].details.userRatingForDb;
+            delete favItem[favItemKey].details.userReview;
+          }
+          return favItem;
+        });
+        
+        favoritesObject[itemType] = updatedItems;
+        
+        const { error: updateError } = await supabase
+          .from('favorites')
+          .update({ favorites_json: favoritesObject })
+          .eq('user_email', this.userEmail);
+        
+        if (updateError) throw new Error('Error removing rating: ' + updateError.message);
+        
+        item.details.userRatingForDb = '-';
+        item.details.userReview = '';
+        
+        this.closeRatingModal();
+        await this.checkData();
+        
+      } catch (error) {
+        console.error('Error removing rating:', error);
+        alert('There was an error removing your rating. Please try again.');
       }
     },
     async fetchAndStoreSeriesDetails() {
@@ -2333,7 +2399,7 @@ export default {
     max-width: 850px;
     height: auto;
     max-height: 90vh;
-    background: linear-gradient(to bottom right, #092739, #061720);
+    background: linear-gradient(to bottom right, #092739, #000000);
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
@@ -2431,8 +2497,9 @@ export default {
   
   .rated-item {
     background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
+    border-radius: 15px;
     overflow: hidden;
+    border: 0.5px solid #8AE8FC;
     transition: transform 0.2s ease;
     position: relative;
   }
@@ -3421,6 +3488,51 @@ select.user-rating-select {
   }
   .btn-label {
     display: none;
+  }
+}
+
+.rating-modal-buttons {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
+}
+
+.rating-modal-buttons .save-btn {
+  flex: 1;
+  max-width: 120px;
+}
+
+.remove-rating-btn {
+  background: rgba(255, 0, 0, 0.2);
+  color: #fff;
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 30px;
+  flex: 1;
+  max-width: 120px;
+  text-align: center;
+}
+
+.remove-rating-btn:hover {
+  background: rgba(255, 0, 0, 0.4);
+  border-color: rgba(255, 0, 0, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+}
+
+@media (max-width: 400px) {
+  .rating-modal-buttons {
+    flex-direction: column;
+  }
+  
+  .rating-modal-buttons .save-btn,
+  .remove-rating-btn {
+    max-width: 100%;
   }
 }
 </style>
