@@ -126,7 +126,7 @@
       </div>
       <div v-if="reviews && reviews.length" class="reviews-container">
         <br>
-          <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reseñas ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px; color: #2897bc;" @click="toggleFullReviews"> ADVERTENCIA: PUEDEN CONTENER SPOILERS</span></strong>
+          <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reseñas ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px; color: #8AE8FC;" @click="toggleFullReviews"> ADVERTENCIA: PUEDEN CONTENER SPOILERS</span></strong>
           <div v-if="showFullReviews" style="text-align: right; margin-top: 1rem;">
             <button @click="toggleLanguage" class="button" style="display: flex !important; position: relative !important; border-radius: 10px !important;">
               {{ showTranslations ? 'Ver en inglés original' : 'Ver en español' }}
@@ -150,11 +150,11 @@
                       </span>
                       
                       <span v-else style="font-size: 1.5rem; color: #B1BABF; font-style: italic;">
-                        <span @click="translateReviewContent(review, index)" style="cursor: pointer; color: #2897bc;">Click para traducir esta reseña al español</span>
+                        <span @click="translateReviewContent(review, index)" style="cursor: pointer; color: #8AE8FC;">Click para traducir esta reseña al español</span>
                       </span>
                       
                       <br>
-                      <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #2897bc; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Leer más].</span>
+                      <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #8AE8FC; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Leer más].</span>
                   </p>
               </li>
           </ul>
@@ -339,6 +339,16 @@ export default {
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
 
+.info { 
+  background-color: rgba(0, 0, 0, 0.307);
+  border-radius: 10px;
+  padding-bottom: 4rem;
+}
+
+.right {
+  padding-top: 1rem;
+}
+
 .info {
   @media (min-width: $breakpoint-medium) {
     display: flex;
@@ -444,7 +454,7 @@ export default {
   }
 
   a {
-    color: #2897bc;
+    color: #8AE8FC;
     text-decoration: none;
   }
 }
@@ -484,7 +494,7 @@ export default {
     &:hover,
     &:focus {
       svg {
-        fill: $primary-color;
+        fill: $fourth-color;
       }
     }
   }

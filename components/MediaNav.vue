@@ -45,8 +45,8 @@ export default {
 
   @media (min-width: $breakpoint-large) {
     justify-content: center;
-    margin-top: 2.5rem;
-    background: none;
+    margin-bottom: 0.5rem;
+    background: black;
   }
 }
 
@@ -57,8 +57,9 @@ export default {
   margin: 0 0 -0.2rem;
   font-size: 1.4rem;
   font-weight: 500;
-  color: #585858;
+  color: #737373;
   text-transform: uppercase;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   letter-spacing: $letter-spacing;
   background: none;
   border-right: 1px solid $base-bg;
@@ -68,7 +69,7 @@ export default {
   @media (min-width: $breakpoint-large) {
     width: auto;
     margin: 0 3rem;
-    font-size: 2rem;
+    font-size: 1.5rem;
     border-bottom: 2px solid transparent;
   }
 
@@ -78,7 +79,7 @@ export default {
 
   &:hover,
   &:focus {
-    color: #fff;
+    color: #8AE8FC;
   }
 }
 
