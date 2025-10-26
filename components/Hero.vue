@@ -1259,7 +1259,6 @@ export default {
   min-height: 100%;
   background: rgba(0, 0, 0, 0.2);
   position: relative;
-  top: -8px;
 }
 
 .copy-success {

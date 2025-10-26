@@ -127,7 +127,7 @@
       </div>
       <div v-if="reviews && reviews.length" class="reviews-container">
         <br>
-        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reviews ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px; color: #2897bc;" @click="toggleFullReviews"> WARNING: MAY CONTAIN SPOILERS</span></strong>
+        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reviews ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px; color: #8AE8FC;" @click="toggleFullReviews"> WARNING: MAY CONTAIN SPOILERS</span></strong>
         <ul class="nolist" v-show="showFullReviews">
             <li v-for="(review, index) in reviews" :key="index" style="margin-top: 3rem;">
                 <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">
@@ -135,7 +135,7 @@
                     <strong style="letter-spacing: 2px; font-size: 14px;">Date:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ formatCreatedAt(review.createdAt) }}</span><br>
                     <strong style="letter-spacing: 2px; font-size: 14px;">Rating:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ review.authorRating }}</span><br>
                     <span style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.content, index, review.showFullContent)"></span><br>
-                    <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #2897bc; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Read More].</span>
+                    <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #8AE8FC; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Read More].</span>
                 </p>
             </li>
         </ul>
@@ -268,6 +268,12 @@ export default {
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
 
+.info { 
+  background-color: rgba(0, 0, 0, 0.307);
+  border-radius: 10px;
+  padding-bottom: 4rem;
+}
+
 .info {
   @media (min-width: $breakpoint-medium) {
     display: flex;
@@ -290,10 +296,15 @@ export default {
 }
 
 .right {
+  padding-top: 1rem;
+}
+
+.right {
   @media (min-width: $breakpoint-medium) {
     flex: 1;
   }
 }
+
 
 .poster {
   position: relative;
@@ -373,7 +384,7 @@ export default {
   }
 
   a {
-    color: #2897bc;
+    color: #8AE8FC;
     text-decoration: none;
   }
 }
@@ -413,7 +424,7 @@ export default {
     &:hover,
     &:focus {
       svg {
-        fill: $primary-color;
+        fill: $fourth-color;
       }
     }
   }

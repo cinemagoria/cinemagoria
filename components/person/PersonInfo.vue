@@ -159,6 +159,12 @@ export default {
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
 
+.info { 
+  background-color: rgba(0, 0, 0, 0.307);
+  border-radius: 10px;
+  padding-bottom: 4rem;
+}
+
 .info {
   @media (min-width: $breakpoint-medium) {
     display: flex;
@@ -178,6 +184,10 @@ export default {
   @media (min-width: $breakpoint-large) {
     padding-right: 5rem;
   }
+}
+
+.right {
+  padding-top: 1rem;
 }
 
 .right {
@@ -275,7 +285,7 @@ export default {
   }
 
   a {
-    color: #2897bc;
+    color: #8AE8FC;
     text-decoration: none;
   }
 }
@@ -315,7 +325,7 @@ export default {
     &:hover,
     &:focus {
       svg {
-        fill: $primary-color;
+        fill: $fourth-color;
       }
     }
   }
