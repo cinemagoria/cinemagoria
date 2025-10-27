@@ -2,7 +2,6 @@
   <div>
     <div v-if="chatBotOpen" class="chatbot-modal" @click.self="closeChatBot">
       <div class="chatbot-container" style="z-index: 6 !important;">
-        <!-- Header -->
         <div class="chatbot-header">
           <div class="header-left">
             <button @click="toggleSidebar" class="sidebar-toggle" title="Toggle conversations">
@@ -18,9 +17,7 @@
             <button @click="closeChatBot" class="close-button">×</button>
           </div>
         </div>
-
-        <!-- Main Content Area -->
-          <div class="chatbot-main" :class="{ 'sidebar-open': sidebarOpen }">
+        <div class="chatbot-main" :class="{ 'sidebar-open': sidebarOpen }">
           <div v-if="sidebarOpen" class="conversations-sidebar">
             <div class="sidebar-header">
               <button @click="createNewConversation" class="new-conversation-btn" title="Nuevo chat">
@@ -57,169 +54,160 @@
             </div>
           </div>
 
-          <!-- Chat Content -->
           <div class="chat-content">
-        
             <div class="chatbot-messages" ref="chatbotMessagesContainer">
-          <div v-if="!chatBotResponse && chatBotResults.length === 0 && !chatBotLoading" class="chatbot-welcome" style="top: 5px; position:relative;">
-            <div class="examples-section">
-              <h5>Prueba preguntar:</h5>
-              <div class="example-item">"¿Quién dirigió The Matrix?"</div>
-              <div class="example-item">"¿Quiénes actuaron en la película Pulp Fiction?"</div>
-              <div class="example-item">"¿Quién fue la actriz de Gambito de Dama?"</div>
-            </div>
-            
-            <div class="modern-divider">
-              <span class="divider-line"></span>
-              <span class="divider-text">O</span>
-              <span class="divider-line"></span>
-            </div>
-
-            <div v-if="currentDailyPrompt" class="daily-prompt-section">
-              <div class="daily-badge">PROMPT DIARIO</div>
-                <div class="daily-prompt-content">
-                <p>{{ currentDailyPrompt }}</p>
-                <button @click="sendDailyPrompt" class="daily-prompt-button">Preguntar</button>
-              </div>
-            </div>
-          </div>
-
-          <div v-if="chatMessages.length > 0" class="conversation-container">
-            <div v-for="(message, index) in chatMessages" :key="index" class="message-wrapper">
-              <div v-if="message.role === 'user'" class="user-message">
-                <div class="message-content">
-                  <p>{{ message.content }}</p>
+              <div v-if="!chatBotResponse && chatBotResults.length === 0 && !chatBotLoading" class="chatbot-welcome" style="top: 5px; position:relative;">
+                <div class="examples-section">
+                  <h5>Prueba preguntar:</h5>
+                  <div class="example-item">"¿Quién dirigió The Matrix?"</div>
+                  <div class="example-item">"¿Quiénes actuaron en la película Pulp Fiction?"</div>
+                  <div class="example-item">"¿Quién fue la actriz de Gambito de Dama?"</div>
                 </div>
-              </div>
-              <div v-else-if="message.role === 'assistant'" class="assistant-message">
-                <div class="message-content">
-                  <p v-html="message.content"></p>
+
+                <div class="modern-divider">
+                  <span class="divider-line"></span>
+                  <span class="divider-text">O</span>
+                  <span class="divider-line"></span>
                 </div>
-              </div>
-            </div>
-            
-            <div v-if="chatBotLoading && messageWaitingForResponse" class="message-wrapper">
-              <div class="assistant-message">
-                <div class="message-content streaming-content">
-                  <div v-if="isStreaming" class="streaming-response">
-                    <p v-html="streamingText"></p>
-                    <div class="cursor-indicator">|</div>
+
+                <div v-if="currentDailyPrompt" class="daily-prompt-section">
+                  <div class="daily-badge">PROMPT DIARIO</div>
+                  <div class="daily-prompt-content">
+                    <p>{{ currentDailyPrompt }}</p>
+                    <button @click="sendDailyPrompt" class="daily-prompt-button">Preguntar</button>
                   </div>
-                  <div v-else class="reasoning-content">
-                    <div class="reasoning-indicator">
-                      Razonando
-                      <div class="dots-container">
-                        <span class="dot" :class="{ active: dotIndex === 0 }"></span>
-                        <span class="dot" :class="{ active: dotIndex === 1 }"></span>
-                        <span class="dot" :class="{ active: dotIndex === 2 }"></span>
+                </div>
+              </div>
+
+              <div v-if="chatMessages.length > 0" class="conversation-container">
+                <div v-for="(message, index) in chatMessages" :key="index" class="message-wrapper">
+                  <div v-if="message.role === 'user'" class="user-message">
+                    <div class="message-content">
+                      <p>{{ message.content }}</p>
+                    </div>
+                  </div>
+                  <div v-else-if="message.role === 'assistant'" class="assistant-message">
+                    <div class="message-content">
+                      <p v-html="message.content"></p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div v-if="chatBotLoading && messageWaitingForResponse" class="message-wrapper">
+                  <div class="assistant-message">
+                    <div class="message-content reasoning-content">
+                      <div class="reasoning-indicator">
+                        Razonando
+                        <div class="dots-container">
+                          <span class="dot" :class="{ active: dotIndex === 0 }"></span>
+                          <span class="dot" :class="{ active: dotIndex === 1 }"></span>
+                          <span class="dot" :class="{ active: dotIndex === 2 }"></span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-   
 
-          <div v-if="chatBotResults.length > 0" class="media-carousel">
-            <h3 class="carousel-title">Resultados Relacionados</h3>
-            <div class="carousel-container">
-              <button @click="scrollCarousel('left')" class="carousel-nav carousel-prev">❮</button>
-              <div class="carousel-content" ref="mediaCarousel">
-                <div v-for="item in chatBotResults" :key="item.id + '-' + item.media_type" class="carousel-item">
+              <div v-if="chatBotResults.length > 0" class="media-carousel">
+                <h3 class="carousel-title">Resultados Relacionados</h3>
+                <div class="carousel-container">
+                  <button @click="scrollCarousel('left')" class="carousel-nav carousel-prev">❮</button>
+                  <div class="carousel-content" ref="mediaCarousel">
+                    <div v-for="item in chatBotResults" :key="item.id + '-' + item.media_type" class="carousel-item">
 
-                  <a v-if="item.media_type === 'movie'"
-                     :href="item.url"
-                     class="media-link"
-                     target="_blank">
-                    <div class="poster-wrapper">
-                      <img v-if="item.poster_path" :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" :alt="item.title || 'Póster de Película'">
-                      <img v-else src="/static/image_not_found.png" :alt="item.title || 'Póster de Película No Encontrado'">
-                      <div class="media-type">Película</div>
-                      <div class="movie-rating" v-if="item.vote_average > 0">
-                        {{ (item.vote_average).toFixed(1) }}
-                        <span class="star">★</span>
-                      </div>
-                    </div>
-                    <div class="media-info">
-                      <h4>{{ item.title }}</h4>
-                      <p>{{ item.release_date ? item.release_date.substring(0, 4) : 'N/D' }}</p>
-                    </div>
-                  </a>
+                      <a v-if="item.media_type === 'movie'"
+                         :href="item.url"
+                         class="media-link"
+                         target="_blank">
+                        <div class="poster-wrapper">
+                          <img v-if="item.poster_path" :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" :alt="item.title || 'Movie Poster'">
+                          <img v-else src="/static/image_not_found.png" :alt="item.title || 'Movie Poster Not Found'">
+                          <div class="media-type">Película</div>
+                          <div class="movie-rating" v-if="item.vote_average > 0">
+                            {{ (item.vote_average).toFixed(1) }}
+                            <span class="star">★</span>
+                          </div>
+                        </div>
+                        <div class="media-info">
+                          <h4>{{ item.title }}</h4>
+                          <p>{{ item.release_date ? item.release_date.substring(0, 4) : 'N/D' }}</p>
+                        </div>
+                      </a>
 
-                  <a v-else-if="item.media_type === 'tv'"
-                     :href="item.url"
-                     class="media-link"
-                     target="_blank">
-                    <div class="poster-wrapper">
-                      <img v-if="item.poster_path" :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" :alt="item.name || 'Póster de Serie'">
-                      <img v-else src="/static/image_not_found.png" :alt="item.name || 'Póster de Serie No Encontrado'">
-                      <div class="media-type">Serie</div>
+                      <a v-else-if="item.media_type === 'tv'"
+                         :href="item.url"
+                         class="media-link"
+                         target="_blank">
+                        <div class="poster-wrapper">
+                          <img v-if="item.poster_path" :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" :alt="item.name || 'TV Show Poster'">
+                          <img v-else src="/static/image_not_found.png" :alt="item.name || 'TV Show Poster Not Found'">
+                          <div class="media-type">Serie</div>
 
-                      <div class="movie-rating" v-if="item.vote_average > 0">
-                        {{ (item.vote_average).toFixed(1) }}
-                        <span class="star">★</span>
-                      </div>
-                    </div>
-                    <div class="media-info">
-                      <h4>{{ item.name }}</h4>
-                      <p>{{ item.first_air_date ? item.first_air_date.substring(0, 4) : 'N/D' }}</p>
-                    </div>
-                  </a>
+                          <div class="movie-rating" v-if="item.vote_average > 0">
+                            {{ (item.vote_average).toFixed(1) }}
+                            <span class="star">★</span>
+                          </div>
+                        </div>
+                        <div class="media-info">
+                          <h4>{{ item.name }}</h4>
+                          <p>{{ item.first_air_date ? item.first_air_date.substring(0, 4) : 'N/D' }}</p>
+                        </div>
+                      </a>
 
-                  <a v-else-if="item.media_type === 'person'"
-                     :href="item.url"
-                     class="media-link"
-                     target="_blank">
-                    <div class="profile-wrapper">
-                      <img v-if="item.profile_path" :src="'https://image.tmdb.org/t/p/w342' + item.profile_path" :alt="item.name || 'Perfil de Persona'">
-                      <img v-else src="/static/image_not_found.png" :alt="item.name || 'Perfil de Persona No Encontrado'">
-                      <div class="media-type">Persona</div>
+                      <a v-else-if="item.media_type === 'person'"
+                         :href="item.url"
+                         class="media-link"
+                         target="_blank">
+                        <div class="profile-wrapper">
+                          <img v-if="item.profile_path" :src="'https://image.tmdb.org/t/p/w342' + item.profile_path" :alt="item.name || 'Person Profile'">
+                          <img v-else src="/static/image_not_found.png" :alt="item.name || 'Person Profile Not Found'">
+                          <div class="media-type">Persona</div>
+                        </div>
+                        <div class="media-info">
+                          <h4>{{ item.name }}</h4>
+                          <p>{{ item.known_for_department || '' }}</p>
+                        </div>
+                      </a>
                     </div>
-                    <div class="media-info">
-                      <h4>{{ item.name }}</h4>
-                      <p>{{ item.known_for_department || '' }}</p>
-                    </div>
-                  </a>
+                  </div>
+                  <button @click="scrollCarousel('right')" class="carousel-nav carousel-next">❯</button>
                 </div>
               </div>
-              <button @click="scrollCarousel('right')" class="carousel-nav carousel-next">❯</button>
-            </div>
-          </div>
             </div>
 
             <div class="chatbot-input">
-          <div class="input-wrapper">
-          <input
-            v-if="inputEnabled || !isMobileDevice"
-            v-model="chatBotQuery"
-            placeholder="Pregunta sobre películas, series, actores..."
-            @keyup.enter="handleSendAction"
-            ref="chatInput"
-          >
-          
-            <div 
-              v-else-if="isMobileDevice && !inputEnabled"
-              class="fake-input"
-              @click="enableInput"
-            >
-              Pregunta sobre películas, series, actores...
-            </div>
-            <div class="input-backdrop" :style="{ width: inputWidth + '%' }"></div>
-          </div>
-          <button @click="handleSendAction" :disabled="!chatBotQuery.trim() && !chatBotLoading" class="send-button" :class="{ 'stop-button': chatBotLoading }">
-            <span v-if="chatBotLoading" class="stop-indicator">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                <rect x="6" y="6" width="12" height="12" rx="2"></rect>
-              </svg>
-            </span>
-            <span v-else>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="22" y1="2" x2="11" y2="13"></line>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-              </svg>
-            </span>
-          </button>
+              <div class="input-wrapper">
+                <input
+                  v-if="inputEnabled || !isMobileDevice"
+                  v-model="chatBotQuery"
+                  placeholder="Pregunta sobre películas, series, actores..."
+                  @keyup.enter="handleSendAction"
+                  ref="chatInput"
+                >
+                
+                <div 
+                  v-else-if="isMobileDevice && !inputEnabled"
+                  class="fake-input"
+                  @click="enableInput"
+                >
+                   Pregunta sobre películas, series, actores...
+                </div>
+                <div class="input-backdrop" :style="{ width: inputWidth + '%' }"></div>
+              </div>
+              <button @click="handleSendAction" :disabled="!chatBotQuery.trim() && !chatBotLoading" class="send-button" :class="{ 'stop-button': chatBotLoading }">
+                <span v-if="chatBotLoading" class="stop-indicator">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                    <rect x="6" y="6" width="12" height="12" rx="2"></rect>
+                  </svg>
+                </span>
+                <span v-else>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -270,19 +258,16 @@ export default {
       inputWidth: 0,
       chatId: null,
       sessionKey: 'entercinema_chat_session',
-      streamingText: '',
-      isStreaming: false,
-      abortController: null,
       tmdbApiKey: process.env.API_KEY,
       baseUrl: typeof window !== 'undefined'
-               ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://es.entercinema.com')
-               : 'https://es.entercinema.com',
-               apiUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-              ? 'https://entercinema-assistant-es.vercel.app/chat' 
-              : 'https://entercinema-assistant-es.vercel.app/chat',
+               ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://entercinema.com')
+               : 'https://entercinema.com',
+      apiUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'https://entercinema-assistant-rust.vercel.app/api/gemini' 
+        : 'https://entercinema-assistant-rust.vercel.app/api/gemini',
       titleGenerationUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-              ? 'https://entercinema-assistant-es.vercel.app/chat' 
-              : 'https://entercinema-assistant-es.vercel.app/chat',
+        ? 'https://entercinema-assistant-rust.vercel.app/api/gemini' 
+        : 'https://entercinema-assistant-rust.vercel.app/api/gemini',
       predefinedApiUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
               ? 'http://localhost:8000/api' 
               : 'https://entercinema-predefined-es.vercel.app/api',
@@ -374,256 +359,251 @@ export default {
   },
   methods: {
     loadConversations() {
-    try {
-      if (typeof localStorage !== 'undefined') {
-        const saved = localStorage.getItem(this.conversationsStorageKey);
-        if (saved) {
-          this.conversations = JSON.parse(saved);
+      try {
+        if (typeof localStorage !== 'undefined') {
+          const saved = localStorage.getItem(this.conversationsStorageKey);
+          if (saved) {
+            this.conversations = JSON.parse(saved);
+          }
         }
+      } catch (error) {
+        console.warn('Error loading conversations:', error);
       }
-    } catch (error) {
-      console.warn('Error loading conversations:', error);
-    }
-  },
-  
-  saveConversations() {
-    try {
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem(this.conversationsStorageKey, JSON.stringify(this.conversations));
-        
-        // Notificar al navbar
-        const hasConversations = this.conversations.some(conv => conv.messages.length > 0);
-        this.$root.$emit('chatbot-conversations-updated', hasConversations);
+    },
+    
+    saveConversations() {
+      try {
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem(this.conversationsStorageKey, JSON.stringify(this.conversations));
+          const hasConversations = this.conversations.some(conv => conv.messages.length > 0);
+          this.$root.$emit('chatbot-conversations-updated', hasConversations);
+        }
+      } catch (error) {
+        console.warn('Error saving conversations:', error);
       }
-    } catch (error) {
-      console.warn('Error saving conversations:', error);
-    }
-  },
-  
-  initializeFirstConversation() {
-    if (this.conversations.length === 0) {
-      this.createNewConversation();
-    } else {
-      this.activeConversationId = this.conversations[0].id;
-      this.loadActiveConversation();
-    }
+    },
     
-    // Start title generation interval
-    this.startTitleGenerationInterval();
-  },
-  
-  createNewConversation() {
-    // PRIMERO guardar la conversación actual
-    this.saveCurrentConversation();
-    this.saveConversations();
+    initializeFirstConversation() {
+      if (this.conversations.length === 0) {
+        this.createNewConversation();
+      } else {
+        this.activeConversationId = this.conversations[0].id;
+        this.loadActiveConversation();
+      }
+      this.startTitleGenerationInterval();
+    },
     
-    const newId = Date.now().toString();
-    this.conversationIndex++;
-    const now = new Date();
-    const utcTime = now.toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
-    
-    const newConversation = {
-      id: newId,
-      title: `${this.conversationIndex} - ${utcTime}`,
-      messages: [],
-      results: [],
-      chatId: null,
-      createdAt: now.toISOString(),
-      titleGenerated: false
-    };
-    
-    this.conversations.unshift(newConversation);
-    this.activeConversationId = newId;
-    this.loadActiveConversation();
-    this.saveConversations();
-    
-    this.$nextTick(() => {
-      this.$forceUpdate();
-    });
-  },
-    
-  switchConversation(conversationId) {
-    if (conversationId !== this.activeConversationId) {
+    createNewConversation() {
       this.saveCurrentConversation();
       this.saveConversations();
-      this.activeConversationId = conversationId;
+      
+      const newId = Date.now().toString();
+      this.conversationIndex++;
+      const now = new Date();
+      const utcTime = now.toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
+      
+      const newConversation = {
+        id: newId,
+        title: `${this.conversationIndex} - ${utcTime}`,
+        messages: [],
+        results: [],
+        chatId: null,
+        createdAt: now.toISOString(),
+        titleGenerated: false
+      };
+      
+      this.conversations.unshift(newConversation);
+      this.activeConversationId = newId;
       this.loadActiveConversation();
-    }
-  },
-  closeConversation(conversationId) {
-    const index = this.conversations.findIndex(conv => conv.id === conversationId);
-    if (index !== -1) {
-      this.conversations.splice(index, 1);
-      
-      if (this.activeConversationId === conversationId) {
-        if (this.conversations.length > 0) {
-          this.activeConversationId = this.conversations[0].id;
-          this.loadActiveConversation();
-        } else {
-          this.createNewConversation();
-        }
-      }
-      
       this.saveConversations();
-    }
-  },
-  
-  // En tus methods
+      
+      this.$nextTick(() => {
+        this.$forceUpdate();
+      });
+    },
+      
+    switchConversation(conversationId) {
+      if (conversationId !== this.activeConversationId) {
+        this.saveCurrentConversation();
+        this.saveConversations();
+        this.activeConversationId = conversationId;
+        this.loadActiveConversation();
+      }
+    },
+    
+    closeConversation(conversationId) {
+      const index = this.conversations.findIndex(conv => conv.id === conversationId);
+      if (index !== -1) {
+        this.conversations.splice(index, 1);
+        
+        if (this.activeConversationId === conversationId) {
+          if (this.conversations.length > 0) {
+            this.activeConversationId = this.conversations[0].id;
+            this.loadActiveConversation();
+          } else {
+            this.createNewConversation();
+          }
+        }
+        
+        this.saveConversations();
+      }
+    },
+    
+    loadActiveConversation() {
+      const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+      if (activeConv) {
+        this.chatMessages = [...activeConv.messages];
+        this.chatId = activeConv.chatId;
+        this.chatBotResults = activeConv.results ? [...activeConv.results] : [];
+      } else {
+        this.chatMessages = [];
+        this.chatId = null;
+        this.chatBotResults = [];
+      }
+    },
 
-  loadActiveConversation() {
-    const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
-    if (activeConv) {
-      this.chatMessages = [...activeConv.messages];
-      this.chatId = activeConv.chatId;
-      this.chatBotResults = activeConv.results ? [...activeConv.results] : [];
-    } else {
-      this.chatMessages = [];
-      this.chatId = null;
-      this.chatBotResults = [];
-    }
-  },
+    saveCurrentConversation() {
+      const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+      if (activeConv) {
+        activeConv.messages = [...this.chatMessages];
+        activeConv.chatId = this.chatId;
+        activeConv.results = [...this.chatBotResults];
+        activeConv.updatedAt = new Date().toISOString();
+      }
+    },
 
-  saveCurrentConversation() {
-    const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
-    if (activeConv) {
-      activeConv.messages = [...this.chatMessages];
-      activeConv.chatId = this.chatId;
-      activeConv.results = [...this.chatBotResults];
-      activeConv.updatedAt = new Date().toISOString();
-    }
-  },
-
-  toggleSidebar() {
+    toggleSidebar() {
       this.sidebarOpen = !this.sidebarOpen;
       this.$nextTick(() => {
         this.$forceUpdate();
       });
     },
 
-  formatConversationTime(createdAt) {
-    if (!createdAt) return '';
-    const date = new Date(createdAt);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
+    formatConversationTime(createdAt) {
+      if (!createdAt) return '';
+      const date = new Date(createdAt);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 1) return 'Ahora';
-    if (diffMins < 60) return `${diffMins}m`;
-    if (diffHours < 24) return `${diffHours}h`;
-    if (diffDays < 7) return `${diffDays}d`;
-    return date.toLocaleDateString();
-  },
+      if (diffMins < 1) return 'Ahora';
+      if (diffMins < 60) return `${diffMins}m`;
+      if (diffHours < 24) return `${diffHours}h`;
+      if (diffDays < 7) return `${diffDays}d`;
+      return date.toLocaleDateString();
+    },
 
-  startTitleGenerationInterval() {
-    if (this.titleGenerationInterval) {
-      clearInterval(this.titleGenerationInterval);
-    }
-
-    this.titleGenerationInterval = setInterval(() => {
-      this.generateConversationTitles();
-    }, 10000);
-
-    setTimeout(() => {
-      this.generateConversationTitles();
-    }, 5000);
-  },
-
-  async generateConversationTitles() {
-    for (const conversation of this.conversations) {
-      if (conversation.titleGenerated || conversation.messages.length === 0) {
-        continue;
+    startTitleGenerationInterval() {
+      if (this.titleGenerationInterval) {
+        clearInterval(this.titleGenerationInterval);
       }
 
-      const placeholderPattern = /^\d+ - \d{4}-\d{2}-\d{2} \d{2}:\d{2} UTC$/;
-      if (!placeholderPattern.test(conversation.title)) {
-        continue;
+      this.titleGenerationInterval = setInterval(() => {
+        this.generateConversationTitles();
+      }, 10000);
+
+      setTimeout(() => {
+        this.generateConversationTitles();
+      }, 5000);
+    },
+
+    async generateConversationTitles() {
+      for (const conversation of this.conversations) {
+        if (conversation.titleGenerated || conversation.messages.length === 0) {
+          continue;
+        }
+
+        const placeholderPattern = /^\d+ - \d{4}-\d{2}-\d{2} \d{2}:\d{2} UTC$/;
+        if (!placeholderPattern.test(conversation.title)) {
+          continue;
+        }
+
+        try {
+          const conversationText = conversation.messages
+            .map(msg => `${msg.role}: ${msg.content}`)
+            .join('\n');
+
+          const language = this.detectLanguage(conversationText);
+          
+          const response = await this.generateTitleWithAI(conversationText, language);
+          
+          if (response && response.trim()) {
+            conversation.title = response.trim();
+            conversation.titleGenerated = true;
+            this.saveConversations();
+          }
+        } catch (error) {
+          console.warn('Error generating title for conversation:', error);
+        }
       }
+    },
+
+    detectLanguage(text) {
+      const spanishWords = ['el', 'la', 'de', 'que', 'y', 'en', 'un', 'es', 'se', 'no', 'te', 'lo', 'le', 'da', 'su', 'por', 'son', 'con', 'para', 'al', 'del', 'los', 'las', 'una', 'como', 'pero', 'sus', 'han', 'había', 'película', 'serie', 'actor', 'actriz', 'director', 'cine'];
+      const englishWords = ['the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'i', 'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at', 'this', 'but', 'his', 'by', 'from', 'movie', 'film', 'series', 'actor', 'actress', 'director', 'cinema'];
+      
+      const words = text.toLowerCase().split(/\s+/);
+      let spanishCount = 0;
+      let englishCount = 0;
+      
+      words.forEach(word => {
+        if (spanishWords.includes(word)) spanishCount++;
+        if (englishWords.includes(word)) englishCount++;
+      });
+      
+      return spanishCount > englishCount ? 'es' : 'en';
+    },
+
+    async generateTitleWithAI(conversationText, language) {
+      const prompt = language === 'es' 
+        ? `Genera un título corto y descriptivo (máximo 40 caracteres) para esta conversación sobre cine/series. Responde solo con el título, sin comillas ni explicaciones:\n\n${conversationText}`
+        : `Generate a short and descriptive title (maximum 40 characters) for this conversation about movies/TV shows. Respond only with the title, no quotes or explanations:\n\n${conversationText}`;
+      ;
+
 
       try {
-        const conversationText = conversation.messages
-          .map(msg => `${msg.role}: ${msg.content}`)
-          .join('\n');
+        const response = await fetch(this.titleGenerationUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: prompt,
+            chat_id: null
+          })
+        });
 
-        const language = this.detectLanguage(conversationText);
-        
-        const response = await this.generateTitleWithAI(conversationText, language);
-        
-        if (response && response.trim()) {
-          conversation.title = response.trim();
-          conversation.titleGenerated = true;
-          this.saveConversations();
+        if (response.ok) {
+          const data = await response.json();
+          return data.result ? data.result.substring(0, 40) : null;
         }
       } catch (error) {
-        console.warn('Error generating title for conversation:', error);
+        console.warn('Error calling title generation API:', error);
       }
-    }
-  },
 
-  detectLanguage(text) {
-    const spanishWords = ['el', 'la', 'de', 'que', 'y', 'en', 'un', 'es', 'se', 'no', 'te', 'lo', 'le', 'da', 'su', 'por', 'son', 'con', 'para', 'al', 'del', 'los', 'las', 'una', 'como', 'pero', 'sus', 'han', 'había', 'película', 'serie', 'actor', 'actriz', 'director', 'cine'];
-    const englishWords = ['the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'i', 'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at', 'this', 'but', 'his', 'by', 'from', 'movie', 'film', 'series', 'actor', 'actress', 'director', 'cinema'];
-    
-    const words = text.toLowerCase().split(/\s+/);
-    let spanishCount = 0;
-    let englishCount = 0;
-    
-    words.forEach(word => {
-      if (spanishWords.includes(word)) spanishCount++;
-      if (englishWords.includes(word)) englishCount++;
-    });
-    
-    return spanishCount > englishCount ? 'es' : 'en';
-  },
-
-  async generateTitleWithAI(conversationText, language) {
-    const prompt = language === 'es' 
-      ? `Genera un título corto y descriptivo (máximo 40 caracteres) para esta conversación sobre cine/series. Responde solo con el título, sin comillas ni explicaciones:\n\n${conversationText}`
-      : `Generate a short and descriptive title (maximum 40 characters) for this conversation about movies/TV shows. Respond only with the title, no quotes or explanations:\n\n${conversationText}`;
-
-    try {
-      const response = await fetch(this.titleGenerationUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: prompt,
-          chat_id: null
-        })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        return data.result ? data.result.substring(0, 40) : null;
+      const firstUserMessage = conversationText.split('\n').find(line => line.startsWith('user:'));
+      if (firstUserMessage) {
+        const content = firstUserMessage.replace('user:', '').trim();
+        return content.length > 40 ? content.substring(0, 37) + '...' : content;
       }
-    } catch (error) {
-      console.warn('Error calling title generation API:', error);
-    }
 
-    const firstUserMessage = conversationText.split('\n').find(line => line.startsWith('user:'));
-    if (firstUserMessage) {
-      const content = firstUserMessage.replace('user:', '').trim();
-      return content.length > 40 ? content.substring(0, 37) + '...' : content;
-    }
-
-    return null;
-  },
-  
-  minimizeChatBot() {
-    this.saveCurrentConversation();
-    this.saveConversations();
-    this.chatBotOpen = false;
-    this.chatBotMinimized = true;
-    this.saveMinimizedState();
-  },
+      return null;
+    },
+    
+    minimizeChatBot() {
+      this.saveCurrentConversation();
+      this.saveConversations();
+      this.chatBotOpen = false;
+      this.chatBotMinimized = true;
+      this.saveMinimizedState();
+    },
 
     maximizeChatBot() {
       this.chatBotOpen = true;
       this.clearMinimizedState();
-      
-      // Emit al componente padre
+
       this.$root.$emit('chatbot-maximized');
       
       this.$nextTick(() => {
@@ -632,7 +612,6 @@ export default {
         }
       });
     },
-
 
     saveMinimizedState() {
       try {
@@ -674,6 +653,7 @@ export default {
         console.warn('Error loading minimized state:', error);
       }
     },
+
     loadChatSession() {
       try {
         if (typeof localStorage !== 'undefined') {
@@ -711,9 +691,10 @@ export default {
         console.warn('Error clearing chat session:', error);
       }
     },
+
     checkMobileDevice() {
-        this.isMobileDevice = window.innerWidth <= 768 || 
-          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      this.isMobileDevice = window.innerWidth <= 768 || 
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     },
 
     handleSendAction() {
@@ -725,14 +706,8 @@ export default {
     },
 
     stopStreaming() {
-      if (this.abortController) {
-        this.abortController.abort();
-        this.abortController = null;
-      }
       this.chatBotLoading = false;
       this.messageWaitingForResponse = false;
-      this.isStreaming = false;
-      this.streamingText = '';
       this.chatBotQuery = '';
       this.inputWidth = 0;
       
@@ -747,14 +722,16 @@ export default {
         this.$refs.chatInput.focus();
       }
     },
+
     enableInput() {
-    this.inputEnabled = true;
-    this.$nextTick(() => {
-      if (this.$refs.chatInput) {
-        this.$refs.chatInput.focus();
-      }
-    });
-  },
+      this.inputEnabled = true;
+      this.$nextTick(() => {
+        if (this.$refs.chatInput) {
+          this.$refs.chatInput.focus();
+        }
+      });
+    },
+
     open() {
       const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
       if (!token) {
@@ -769,11 +746,13 @@ export default {
       
       this.createNewConversation();
     },
+
     close() {
       this.chatBotOpen = false;
       this.clearMinimizedState();
       this.$root.$emit('chatbot-closed');
     },
+
     startDotAnimation() {
       if (this.dotAnimationInterval) {
         clearInterval(this.dotAnimationInterval);
@@ -784,6 +763,7 @@ export default {
         this.dotIndex = (this.dotIndex + 1) % 3;
       }, 500);
     },
+
     resetChatState() {
       this.chatBotQuery = '';
       this.chatBotResponse = '';
@@ -833,7 +813,6 @@ export default {
       this.saveConversations();
     },
 
-
     cancelSpoilerContent() {
       this.pendingSpoilerResponse = null;
       this.pendingSpoilerMediaReferences = null;
@@ -863,6 +842,7 @@ export default {
         this.$refs.chatInput.focus();
       }
     },
+
     async sendChatBotQueryStream() {
       const queryToSend = this.chatBotQuery.trim();
       if (!queryToSend || this.chatBotLoading) return;
@@ -873,11 +853,6 @@ export default {
       this.startDotAnimation();
       this.chatBotResponse = '';
       this.chatBotResults = [];
-      this.streamingText = '';
-      this.isStreaming = false;
-      
-      this.abortController = new AbortController();
-      const currentQuery = this.chatBotQuery;
 
       this.chatMessages.push({
         role: 'user',
@@ -888,131 +863,89 @@ export default {
       
       this.$nextTick(() => {
         this.scrollToBottom();
-      
       });
 
       try {
-        const streamUrl = this.apiUrl.replace('/chat', '/stream');
-        
-        const response = await fetch(streamUrl, {
+        const response = await fetch(this.apiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Accept': 'text/event-stream'
           },
           body: JSON.stringify({
             query: queryToSend,
-            chat_id: this.chatId,
-            stream: true
-          }),
-          signal: this.abortController.signal
+            chat_id: this.chatId
+          })
         });
 
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = '';
+        const data = await response.json();
+        
+        this.chatId = data.chat_id;
+        this.saveChatSession();
 
-        while (true) {
-          const { done, value } = await reader.read();
-          
-          if (done) break;
-          
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split('\n');
-          buffer = lines.pop();
-          
-          for (const line of lines) {
-            if (line.trim() === '') continue;
-            if (line.startsWith('data: ')) {
-              try {
-                const data = JSON.parse(line.slice(6));
-                
-                if (data.type === 'start') {
-                  this.chatId = data.chat_id;
-                  this.saveChatSession();
-                  this.isStreaming = true;
-                  if (this.dotAnimationInterval) {
-                    clearInterval(this.dotAnimationInterval);
-                    this.dotAnimationInterval = null;
-                  }
-                } else if (data.type === 'chunk') {
-                  this.streamingText += data.content;
-                  this.$nextTick(() => {
-                    this.scrollToBottom();
-                  });
-                } else if (data.type === 'complete') {
-                  this.isStreaming = false;
-                  this.messageWaitingForResponse = false;
-                  this.chatBotLoading = false;
-                  
-                  if (data.conversation_history && data.conversation_history.length > 0) {
-                    this.chatMessages = [];
-                    data.conversation_history.forEach(message => {
-                      let formattedContent = message.content || '';
-                      if (message.role === 'assistant') {
-                        formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                        formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
-                        formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
-                        formattedContent = formattedContent.replace(/\n/g, '<br>');
-                        formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
-                        formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
-                        formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
-                        formattedContent = formattedContent.replace(/\n/g, '<br>');
-                      }
-                      
-                      this.chatMessages.push({
-                        role: message.role,
-                        content: formattedContent
-                      });
-                    });
-                  }
-
-                  if (data.spoilerStatus === "spoiler") {
-                    const lastMessage = this.chatMessages[this.chatMessages.length - 1];
-                    this.pendingSpoilerResponse = lastMessage.content;
-                    this.pendingSpoilerMediaReferences = data.media_references || [];
-                    this.spoilerModalOpen = true;
-                    
-                    this.chatMessages.pop();
-                    
-                    if (this.isMobileDevice) {
-                      this.inputEnabled = false;
-                    }
-                  } else {
-                    if (data.media_references && data.media_references.length > 0) {
-                      await this.fetchMediaDetailsFromBackendReferences(data.media_references);
-                    } else {
-                      this.chatBotResults = [];
-                    }
-                    
-                    this.$nextTick(() => {
-                      this.scrollToBottom();
-                    });
-                    if (this.isMobileDevice) {
-                      this.inputEnabled = false;
-                    }
-                  }
-                  
-                  this.streamingText = '';
-                } else if (data.type === 'error') {
-                  throw new Error(data.message || 'An error occurred during streaming');
-                }
-              } catch (parseError) {
-                console.error('Error parsing SSE data:', parseError, 'Raw line:', line);
-              }
+        if (data.conversation_history && data.conversation_history.length > 0) {
+          this.chatMessages = [];
+          data.conversation_history.forEach(message => {
+            let formattedContent = message.content || '';
+            if (message.role === 'assistant') {
+              formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+              formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+              formattedContent = formattedContent.replace(/\n/g, '<br>');
+              formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
             }
+            
+            this.chatMessages.push({
+              role: message.role,
+              content: formattedContent
+            });
+          });
+        }
+
+        let cleanResponse = data.result || '';
+        cleanResponse = cleanResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        cleanResponse = cleanResponse.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        cleanResponse = cleanResponse.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+        cleanResponse = cleanResponse.replace(/\n/g, '<br>');
+        cleanResponse = cleanResponse.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+        cleanResponse = cleanResponse.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+        cleanResponse = cleanResponse.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
+
+        if (data.spoilerStatus === "spoiler") {
+          this.pendingSpoilerResponse = cleanResponse;
+          this.pendingSpoilerMediaReferences = data.media_references || [];
+          this.spoilerModalOpen = true;
+          
+          this.chatMessages.pop();
+          
+          if (this.isMobileDevice) {
+            this.inputEnabled = false;
+          }
+        } else {
+          if (data.media_references && data.media_references.length > 0) {
+            await this.fetchMediaDetailsFromBackendReferences(data.media_references);
+          } else {
+            this.chatBotResults = [];
+          }
+          
+          this.$nextTick(() => {
+            this.scrollToBottom();
+          });
+          if (this.isMobileDevice) {
+            this.inputEnabled = false;
           }
         }
+
+        this.chatBotLoading = false;
+        this.messageWaitingForResponse = false;
+
       } catch (error) {
-        if (error.name === 'AbortError') {
-          return;
-        }
-        
-        console.error('Error in streaming:', error);
+        console.error('Error in API call:', error);
         
         let errorMessage = 'An error occurred. Please try again.';
         if (error.message && error.message.includes('timeout')) {
@@ -1047,9 +980,6 @@ export default {
 
         this.chatBotLoading = false;
         this.messageWaitingForResponse = false;
-        this.isStreaming = false;
-        this.streamingText = '';
-        this.abortController = null;
         
         setTimeout(() => {
           this.inputWidth = 0;
@@ -1061,10 +991,12 @@ export default {
           }
         });
       }
+      
       this.updateConversationTitle();
       this.saveCurrentConversation();
       this.saveConversations();
     },
+
     loadDailyPrompt() {
       if (this.dailyPrompts.length > 0) {
         const today = new Date();
@@ -1075,6 +1007,7 @@ export default {
         this.currentDailyPrompt = this.dailyPrompts[promptIndex];
       }
     },
+
     updateConversationTitle() {
       const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
       if (activeConv && activeConv.title.startsWith('Chat ') && this.chatMessages.length > 0) {
@@ -1087,6 +1020,7 @@ export default {
       this.saveCurrentConversation();
       this.saveConversations();
     },
+
     sendDailyPrompt() {
       if (this.currentPromptIndex !== -1 && !this.chatBotLoading) {
         this.chatBotQuery = this.currentDailyPrompt;
@@ -1094,210 +1028,210 @@ export default {
       }
     },
 
-async sendDailyPromptRequest() {
-  if (!this.currentDailyPrompt || this.chatBotLoading) return;
-  
-  this.inputWidth = 100;
-  this.chatBotLoading = true;
-  this.messageWaitingForResponse = true;
-  this.startDotAnimation();
-  this.chatBotResponse = '';
-  this.chatBotResults = [];
+    async sendDailyPromptRequest() {
+      if (!this.currentDailyPrompt || this.chatBotLoading) return;
+      
+      this.inputWidth = 100;
+      this.chatBotLoading = true;
+      this.messageWaitingForResponse = true;
+      this.startDotAnimation();
+      this.chatBotResponse = '';
+      this.chatBotResults = [];
 
-  this.chatMessages.push({
-      role: 'user',
-      content: this.currentDailyPrompt
-    });
-    
-    this.$nextTick(() => {
-      this.scrollToBottom();
-    });
-  
-  try {
-    const promptIndex = this.currentPromptIndex;
- 
-    const payload = {
-      query: this.currentDailyPrompt,
-      chat_id: this.chatId,
-      prompt_id: `daily_prompt_${promptIndex}`
-    };
+      this.chatMessages.push({
+          role: 'user',
+          content: this.currentDailyPrompt
+        });
         
-    let response;
-    let usedFallback = false;
-    
-    try {
-      response = await axios({
-        method: 'post',
-        url: this.predefinedApiUrl,
-        data: payload,
-        timeout: 45000,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      });
-    } catch (primaryError) {
-      console.error('Error with predefined API, attempting fallback:', primaryError);
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
       
       try {
-        const fallbackPayload = {
+        const promptIndex = this.currentPromptIndex;
+     
+        const payload = {
           query: this.currentDailyPrompt,
-          chat_id: this.chatId
+          chat_id: this.chatId,
+          prompt_id: `daily_prompt_${promptIndex}`
         };
+            
+        let response;
+        let usedFallback = false;
         
-        response = await axios({
-          method: 'post',
-          url: this.apiUrl,
-          data: fallbackPayload,
-          timeout: 45000,
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
+        try {
+          response = await axios({
+            method: 'post',
+            url: this.predefinedApiUrl,
+            data: payload,
+            timeout: 45000,
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          });
+        } catch (primaryError) {
+          console.error('Error with predefined API, attempting fallback:', primaryError);
+          
+          try {
+            const fallbackPayload = {
+              query: this.currentDailyPrompt,
+              chat_id: this.chatId
+            };
+            
+            response = await axios({
+              method: 'post',
+              url: this.apiUrl,
+              data: fallbackPayload,
+              timeout: 45000,
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              }
+            });
+            usedFallback = true;
+          } catch (fallbackError) {
+            console.error('Both APIs failed for daily prompt:', fallbackError);
+            throw primaryError;
           }
-        });
-        usedFallback = true;
-      } catch (fallbackError) {
-        console.error('Both APIs failed for daily prompt:', fallbackError);
-        throw primaryError;
-      }
-    }
-    
-    this.chatId = response.data.chat_id || this.chatId || "session";
-    this.saveChatSession();
+        }
+        
+        this.chatId = response.data.chat_id || this.chatId || "session";
+        this.saveChatSession();
 
-    if (response.data.conversation_history && response.data.conversation_history.length > 0) {
-        this.chatMessages = [];
-        response.data.conversation_history.forEach(message => {
-          let formattedContent = message.content || '';
-          if (message.role === 'assistant') {
-            formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
-            formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
-            formattedContent = formattedContent.replace(/\n/g, '<br>');
-            formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
-            formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
-            formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
-            formattedContent = formattedContent.replace(/\n/g, '<br>');
+        if (response.data.conversation_history && response.data.conversation_history.length > 0) {
+            this.chatMessages = [];
+            response.data.conversation_history.forEach(message => {
+              let formattedContent = message.content || '';
+              if (message.role === 'assistant') {
+                formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+                formattedContent = formattedContent.replace(/\n/g, '<br>');
+                formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+                formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+                formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
+                formattedContent = formattedContent.replace(/\n/g, '<br>');
+              }
+              
+              this.chatMessages.push({
+                role: message.role,
+                content: formattedContent
+              });
+            });
+        }
+        
+        let cleanResponse = response.data.result || '';
+        cleanResponse = cleanResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        cleanResponse = cleanResponse.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        cleanResponse = cleanResponse.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+        cleanResponse = cleanResponse.replace(/\n/g, '<br>');
+        cleanResponse = cleanResponse.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+        cleanResponse = cleanResponse.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+        cleanResponse = cleanResponse.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
+        cleanResponse = cleanResponse.replace(/\n/g, '<br>');
+        this.chatBotResponse = cleanResponse;
+          
+        if (response.data.spoilerStatus === "spoiler") {
+          this.pendingSpoilerResponse = cleanResponse;
+          this.pendingSpoilerMediaReferences = response.data.media_references || [];
+          this.spoilerModalOpen = true;
+          
+          if (this.isMobileDevice) {
+            this.inputEnabled = false;
+            if (this.$refs.chatInput && document.activeElement === this.$refs.chatInput) {
+              this.$refs.chatInput.blur();
+            }
+          }
+        } else {
+          this.chatBotResponse = cleanResponse;
+
+          if (!response.data.conversation_history || response.data.conversation_history.length === 0) {
+            this.chatMessages.push({
+              role: 'assistant',
+              content: cleanResponse
+            });
+          }
+          
+          if (response.data.media_references && response.data.media_references.length > 0) {
+            await this.fetchMediaDetailsFromBackendReferences(response.data.media_references);
+          } else {
+            this.chatBotResults = [];
+          }
+          if (this.isMobileDevice) {
+            this.inputEnabled = false;
+          }
+          this.chatBotQuery = '';
+          
+          this.$nextTick(() => {
+            this.scrollToBottom();
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching from APIs:', error);
+        console.error('Error details:', JSON.stringify(error, null, 2));
+        
+        let errorMessage = 'An error occurred. Please try again.';
+        if (axios.isCancel(error) || (error.code === 'ECONNABORTED' || (error.message && error.message.includes('timeout')))) {
+            errorMessage = 'The request timed out. The AI might be taking too long to respond. Please try again later or rephrase your query.';
+        } else if (error.response) {
+            console.error('Response error data:', error.response.data);
+            errorMessage = `Error ${error.response.status}: ${error.response.data?.detail || 'Failed to process request.'}`;
+            if (error.response.status === 504) {
+                errorMessage = 'The AI service seems to be unavailable or timed out. Please try again later.';
+            } else if (error.response.status === 404) {
+                errorMessage = 'The AI service is currently unavailable. Our team has been notified.';
+            }
+        } else if (error.request) {
+            console.error('Request error:', error.request);
+            errorMessage = 'Network Error: Could not reach the AI service. Please check your connection.';
+        } else {
+            errorMessage = 'An unexpected error occurred while processing your request.';
+        }
+
+      const formattedErrorMessage = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
+          this.chatBotResponse = formattedErrorMessage;
+          if (this.chatMessages.length === 0 || this.chatMessages[this.chatMessages.length - 1].role !== 'user') {
+            const userQuery = typeof queryToSend !== 'undefined' ? queryToSend : this.currentDailyPrompt;
+            
+            this.chatMessages.push({
+              role: 'user',
+              content: userQuery
+            });
           }
           
           this.chatMessages.push({
-            role: message.role,
-            content: formattedContent
-          });
+            role: 'assistant',
+            content: formattedErrorMessage
         });
-    }
-    
-    let cleanResponse = response.data.result || '';
-    cleanResponse = cleanResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    cleanResponse = cleanResponse.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    cleanResponse = cleanResponse.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
-    cleanResponse = cleanResponse.replace(/\n/g, '<br>');
-    cleanResponse = cleanResponse.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
-    cleanResponse = cleanResponse.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
-    cleanResponse = cleanResponse.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
-    cleanResponse = cleanResponse.replace(/\n/g, '<br>');
-    this.chatBotResponse = cleanResponse;
-      
-    if (response.data.spoilerStatus === "spoiler") {
-      this.pendingSpoilerResponse = cleanResponse;
-      this.pendingSpoilerMediaReferences = response.data.media_references || [];
-      this.spoilerModalOpen = true;
-      
-      if (this.isMobileDevice) {
-        this.inputEnabled = false;
-        if (this.$refs.chatInput && document.activeElement === this.$refs.chatInput) {
-          this.$refs.chatInput.blur();
-        }
-      }
-    } else {
-      this.chatBotResponse = cleanResponse;
-
-      if (!response.data.conversation_history || response.data.conversation_history.length === 0) {
-        this.chatMessages.push({
-          role: 'assistant',
-          content: cleanResponse
-        });
-      }
-      
-      if (response.data.media_references && response.data.media_references.length > 0) {
-        await this.fetchMediaDetailsFromBackendReferences(response.data.media_references);
-      } else {
+        this.chatBotResponse = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
         this.chatBotResults = [];
-      }
-      if (this.isMobileDevice) {
-        this.inputEnabled = false;
-      }
-      this.chatBotQuery = '';
-      
-      this.$nextTick(() => {
-        this.scrollToBottom();
-      });
-    }
-  } catch (error) {
-    console.error('Error fetching from APIs:', error);
-    console.error('Error details:', JSON.stringify(error, null, 2));
-    
-    let errorMessage = 'An error occurred. Please try again.';
-    if (axios.isCancel(error) || (error.code === 'ECONNABORTED' || (error.message && error.message.includes('timeout')))) {
-        errorMessage = 'The request timed out. The AI might be taking too long to respond. Please try again later or rephrase your query.';
-    } else if (error.response) {
-        console.error('Response error data:', error.response.data);
-        errorMessage = `Error ${error.response.status}: ${error.response.data?.detail || 'Failed to process request.'}`;
-        if (error.response.status === 504) {
-            errorMessage = 'The AI service seems to be unavailable or timed out. Please try again later.';
-        } else if (error.response.status === 404) {
-            errorMessage = 'The AI service is currently unavailable. Our team has been notified.';
-        }
-    } else if (error.request) {
-        console.error('Request error:', error.request);
-        errorMessage = 'Network Error: Could not reach the AI service. Please check your connection.';
-    } else {
-        errorMessage = 'An unexpected error occurred while processing your request.';
-    }
-
-  const formattedErrorMessage = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
-      this.chatBotResponse = formattedErrorMessage;
-      if (this.chatMessages.length === 0 || this.chatMessages[this.chatMessages.length - 1].role !== 'user') {
-        const userQuery = typeof queryToSend !== 'undefined' ? queryToSend : this.currentDailyPrompt;
         
-        this.chatMessages.push({
-          role: 'user',
-          content: userQuery
+        this.chatBotQuery = '';
+        
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
+        if (this.isMobileDevice) {
+          this.inputEnabled = false;
+        }
+      } finally {
+        if (this.dotAnimationInterval) {
+            clearInterval(this.dotAnimationInterval);
+            this.dotAnimationInterval = null;
+          }
+        this.chatBotLoading = false;
+        this.messageWaitingForResponse = false;
+        setTimeout(() => {
+          this.inputWidth = 0;
+        }, 300);
+        this.$nextTick(() => {
+          if (this.$refs.chatInput) {
+              this.$refs.chatInput.focus();
+          }
         });
       }
-      
-      this.chatMessages.push({
-        role: 'assistant',
-        content: formattedErrorMessage
-    });
-    this.chatBotResponse = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
-    this.chatBotResults = [];
-    
-    this.chatBotQuery = '';
-    
-    this.$nextTick(() => {
-      this.scrollToBottom();
-    });
-    if (this.isMobileDevice) {
-      this.inputEnabled = false;
-    }
-  } finally {
-    if (this.dotAnimationInterval) {
-        clearInterval(this.dotAnimationInterval);
-        this.dotAnimationInterval = null;
-      }
-    this.chatBotLoading = false;
-    this.messageWaitingForResponse = false;
-    setTimeout(() => {
-      this.inputWidth = 0;
-    }, 300);
-    this.$nextTick(() => {
-      if (this.$refs.chatInput) {
-          this.$refs.chatInput.focus();
-      }
-    });
-  }
-},
+    },
 
     scrollCarousel(direction) {
       const carousel = this.$refs.mediaCarousel;
@@ -1313,151 +1247,153 @@ async sendDailyPromptRequest() {
     },
 
     async sendChatBotQuery() {
-    const queryToSend = this.chatBotQuery.trim();
-    if (!queryToSend || this.chatBotLoading) return;
+      const queryToSend = this.chatBotQuery.trim();
+      if (!queryToSend || this.chatBotLoading) return;
 
-    this.inputWidth = 100;
-    this.chatBotLoading = true;
-    this.messageWaitingForResponse = true;
-    this.startDotAnimation();
-    this.chatBotResponse = '';
-    this.chatBotResults = [];
-    const currentQuery = this.chatBotQuery;
-    this.chatBotQuery = '';
-
-    this.chatMessages.push({
-      role: 'user',
-      content: queryToSend
-    });
-            
-    this.chatBotQuery = '';
-    this.$nextTick(() => {
-      this.scrollToBottom();
-    });
-
-    try {
-      const response = await axios.post(this.apiUrl, {
-        query: queryToSend,
-        chat_id: this.chatId
-      }, { timeout: 45000 });
-
-      this.chatId = response.data.chat_id;
-      this.saveChatSession();
-    
-      if (response.data.conversation_history && response.data.conversation_history.length > 0) {
-                this.chatMessages = [];
-                
-                response.data.conversation_history.forEach(message => {
-                  let formattedContent = message.content || '';
-                  if (message.role === 'assistant') {
-                    formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                    formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
-                    formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
-                    formattedContent = formattedContent.replace(/\n/g, '<br>');
-                    formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
-                    formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
-                    formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
-                    formattedContent = formattedContent.replace(/\n/g, '<br>');
-                  }
-                  
-                  this.chatMessages.push({
-                    role: message.role,
-                    content: formattedContent
-                  });
-                });
-      }
-
-      let cleanResponse = response.data.result || '';
-      cleanResponse = cleanResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      cleanResponse = cleanResponse.replace(/\*(.*?)\*/g, '<em>$1</em>');
-      cleanResponse = cleanResponse.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
-      cleanResponse = cleanResponse.replace(/\n/g, '<br>');
-      cleanResponse = cleanResponse.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
-      cleanResponse = cleanResponse.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
-      cleanResponse = cleanResponse.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
-      cleanResponse = cleanResponse.replace(/\n/g, '<br>');
-      if (response.data.spoilerStatus === "spoiler") {
-        this.pendingSpoilerResponse = cleanResponse;
-        this.pendingSpoilerMediaReferences = response.data.media_references || [];
-        this.spoilerModalOpen = true;
-        if (this.isMobileDevice) {
-                    this.inputEnabled = false;
-                    if (this.$refs.chatInput && document.activeElement === this.$refs.chatInput) {
-                      this.$refs.chatInput.blur();
-                    }
-                  }
-      } else {
-        this.chatBotResponse = cleanResponse;
-        if (!response.data.conversation_history || response.data.conversation_history.length === 0) {
-                    this.chatMessages.push({
-                      role: 'assistant',
-                      content: cleanResponse
-                    });
-                  }
-        const mediaReferences = response.data.media_references;
-        if (mediaReferences && mediaReferences.length > 0) {
-        await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
-        } else {
-        this.chatBotResults = [];
-        }
-                          
-        this.$nextTick(() => {
-        this.scrollToBottom();
-        });
-        if (this.isMobileDevice) {
-        this.inputEnabled = false;
-      }
-    }
-                
-
-    } catch (error) {
-      console.error('Error al obtener respuesta de la API del chatbot:', error);
-      let errorMessage = 'Ocurrió un error. Por favor, inténtalo de nuevo.';
-      if (axios.isCancel(error) || (error.code === 'ECONNABORTED' || (error.message && error.message.includes('timeout')))) {
-        errorMessage = 'La solicitud agotó el tiempo de espera. La IA podría estar tardando demasiado en responder. Por favor, inténtalo más tarde o reformula tu consulta.';
-      } else if (error.response) {
-        errorMessage = `Error ${error.response.status}: ${error.response.data?.detail || 'No se pudo procesar la solicitud.'}`;
-        if (error.response.status === 504) {
-          errorMessage = 'El servicio de IA parece no estar disponible o agotó el tiempo de espera. Por favor, inténtalo más tarde.';
-        }
-      } else if (error.request) {
-        errorMessage = 'Error de red: No se pudo contactar con el servicio de IA. Por favor, verifica tu conexión.';
-      } else {
-        errorMessage = 'Ocurrió un error inesperado al procesar tu solicitud.';
-      }
-      const formattedErrorMessage = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
-        this.chatBotResponse = formattedErrorMessage;
-        this.chatMessages.push({
-          role: 'assistant',
-          content: formattedErrorMessage
-      });
-      this.chatBotResponse = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
+      this.inputWidth = 100;
+      this.chatBotLoading = true;
+      this.messageWaitingForResponse = true;
+      this.startDotAnimation();
+      this.chatBotResponse = '';
       this.chatBotResults = [];
+      const currentQuery = this.chatBotQuery;
+      this.chatBotQuery = '';
+
+      this.chatMessages.push({
+        role: 'user',
+        content: queryToSend
+      });
+              
+      this.chatBotQuery = '';
       this.$nextTick(() => {
         this.scrollToBottom();
       });
-      if (this.isMobileDevice) {
-      this.inputEnabled = false;
-    }
-    } finally {
-      if (this.dotAnimationInterval) {
-        clearInterval(this.dotAnimationInterval);
-        this.dotAnimationInterval = null;
-      }
-      this.chatBotLoading = false;
-      this.messageWaitingForResponse = false;
-      setTimeout(() => {
-        this.inputWidth = 0;
-      }, 300);
-      this.$nextTick(() => {
-        if (this.$refs.chatInput) {
-          this.$refs.chatInput.focus();
-        }
-      });
-    }
-  },
 
-  async fetchMediaDetailsFromBackendReferences(references, mainObject = null) {
+      try {
+        const response = await axios.post(this.apiUrl, {
+          query: queryToSend,
+          chat_id: this.chatId
+        }, { timeout: 45000 });
+
+        this.chatId = response.data.chat_id;
+        this.saveChatSession();
+      
+        if (response.data.conversation_history && response.data.conversation_history.length > 0) {
+                  this.chatMessages = [];
+                  
+                  response.data.conversation_history.forEach(message => {
+                    let formattedContent = message.content || '';
+                    if (message.role === 'assistant') {
+                      formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                      formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                      formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+                      formattedContent = formattedContent.replace(/\n/g, '<br>');
+                      formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+                      formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+                      formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
+                      formattedContent = formattedContent.replace(/\n/g, '<br>');
+                    }
+                    
+                    this.chatMessages.push({
+                      role: message.role,
+                      content: formattedContent
+                    });
+                  });
+        }
+
+        let cleanResponse = response.data.result || '';
+        cleanResponse = cleanResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        cleanResponse = cleanResponse.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        cleanResponse = cleanResponse.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+        cleanResponse = cleanResponse.replace(/\n/g, '<br>');
+        cleanResponse = cleanResponse.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+        cleanResponse = cleanResponse.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+        cleanResponse = cleanResponse.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
+        cleanResponse = cleanResponse.replace(/\n/g, '<br>');
+        if (response.data.spoilerStatus === "spoiler") {
+          this.pendingSpoilerResponse = cleanResponse;
+          this.pendingSpoilerMediaReferences = response.data.media_references || [];
+          this.spoilerModalOpen = true;
+          if (this.isMobileDevice) {
+                      this.inputEnabled = false;
+                      if (this.$refs.chatInput && document.activeElement === this.$refs.chatInput) {
+                        this.$refs.chatInput.blur();
+                      }
+                    }
+        } else {
+          this.chatBotResponse = cleanResponse;
+          if (!response.data.conversation_history || response.data.conversation_history.length === 0) {
+                      this.chatMessages.push({
+                        role: 'assistant',
+                        content: cleanResponse
+                      });
+                    }
+          const mediaReferences = response.data.media_references;
+          if (mediaReferences && mediaReferences.length > 0) {
+          await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+          } else {
+          this.chatBotResults = [];
+          }
+                            
+          this.$nextTick(() => {
+          this.scrollToBottom();
+          });
+          if (this.isMobileDevice) {
+          this.inputEnabled = false;
+        }
+      }
+                  
+
+      } catch (error) {
+        console.error('Error fetching from chatbot API:', error);
+        let errorMessage = 'An error occurred. Please try again.';
+        if (axios.isCancel(error) || (error.code === 'ECONNABORTED' || (error.message && error.message.includes('timeout')))) {
+          errorMessage = 'The request timed out. The AI might be taking too long to respond. Please try again later or rephrase your query.';
+        } else if (error.response) {
+        } else if (error.response) {
+                  errorMessage = `Error ${error.response.status}: ${error.response.data?.detail || 'Failed to process request.'}`;
+                  if (error.response.status === 504) {
+                       errorMessage = 'The AI service seems to be unavailable or timed out. Please try again later.';
+                  }
+              } else if (error.request) {
+                  errorMessage = 'Network Error: Could not reach the AI service. Please check your connection.';
+              } else {
+                  errorMessage = 'An unexpected error occurred while processing your request.';
+              }
+              const formattedErrorMessage = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
+              this.chatBotResponse = formattedErrorMessage;
+
+              this.chatMessages.push({
+                role: 'assistant',
+                content: formattedErrorMessage
+              });
+              
+              this.chatBotResults = [];
+               this.$nextTick(() => {
+                this.scrollToBottom();
+              });
+              if (this.isMobileDevice) {
+                this.inputEnabled = false;
+              }
+            } finally {
+              if (this.dotAnimationInterval) {
+                clearInterval(this.dotAnimationInterval);
+                this.dotAnimationInterval = null;
+              }
+              this.chatBotLoading = false;
+              this.messageWaitingForResponse = false;
+              setTimeout(() => {
+                this.inputWidth = 0;
+              }, 300);
+               this.$nextTick(() => {
+                  if (this.$refs.chatInput) {
+                      this.$refs.chatInput.focus();
+                  }
+               });
+            }
+          },
+      
+          async fetchMediaDetailsFromBackendReferences(references, mainObject = null) {
           if (!this.tmdbApiKey) {
               console.error("TMDB API Key (API_KEY) not configured!");
               this.chatBotResponse += "<br><small style='color: orange;'>Could not fetch related results (API key missing).</small>";
@@ -1694,7 +1630,6 @@ async sendDailyPromptRequest() {
               console.error("Error occurred during Promise.all for TMDB fetches:", e);
           }
 
-          // Separar resultados por tipo (personas y medios)
           const personResults = results
               .filter(item => item.media_type.toLowerCase() === 'person')
               .sort((a, b) => b.popularity - a.popularity);
