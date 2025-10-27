@@ -95,19 +95,13 @@
                 
                 <div v-if="chatBotLoading && messageWaitingForResponse" class="message-wrapper">
                   <div class="assistant-message">
-                    <div class="message-content streaming-content">
-                      <div v-if="isStreaming" class="streaming-response">
-                        <p v-html="streamingText"></p>
-                        <div class="cursor-indicator">|</div>
-                      </div>
-                      <div v-else class="reasoning-content">
-                        <div class="reasoning-indicator">
-                          Reasoning
-                          <div class="dots-container">
-                            <span class="dot" :class="{ active: dotIndex === 0 }"></span>
-                            <span class="dot" :class="{ active: dotIndex === 1 }"></span>
-                            <span class="dot" :class="{ active: dotIndex === 2 }"></span>
-                          </div>
+                    <div class="message-content reasoning-content">
+                      <div class="reasoning-indicator">
+                        Reasoning
+                        <div class="dots-container">
+                          <span class="dot" :class="{ active: dotIndex === 0 }"></span>
+                          <span class="dot" :class="{ active: dotIndex === 1 }"></span>
+                          <span class="dot" :class="{ active: dotIndex === 2 }"></span>
                         </div>
                       </div>
                     </div>
@@ -264,19 +258,16 @@ export default {
       inputWidth: 0,
       chatId: null,
       sessionKey: 'entercinema_chat_session',
-      streamingText: '',
-      isStreaming: false,
-      abortController: null,
       tmdbApiKey: process.env.API_KEY,
       baseUrl: typeof window !== 'undefined'
                ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://entercinema.com')
                : 'https://entercinema.com',
       apiUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-              ? 'https://entercinema-assistant.vercel.app/chat' 
-              : 'https://entercinema-assistant.vercel.app/chat',
+        ? 'https://entercinema-assistant-rust.vercel.app/api/gemini' 
+        : 'https://entercinema-assistant-rust.vercel.app/api/gemini',
       titleGenerationUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-              ? 'https://entercinema-assistant.vercel.app/chat' 
-              : 'https://entercinema-assistant.vercel.app/chat',
+        ? 'https://entercinema-assistant-rust.vercel.app/api/gemini' 
+        : 'https://entercinema-assistant-rust.vercel.app/api/gemini',
       predefinedApiUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
               ? 'http://localhost:8000/api' 
               : 'https://entercinema-predefined.vercel.app/api',
@@ -715,14 +706,8 @@ export default {
     },
 
     stopStreaming() {
-      if (this.abortController) {
-        this.abortController.abort();
-        this.abortController = null;
-      }
       this.chatBotLoading = false;
       this.messageWaitingForResponse = false;
-      this.isStreaming = false;
-      this.streamingText = '';
       this.chatBotQuery = '';
       this.inputWidth = 0;
       
@@ -868,11 +853,6 @@ export default {
       this.startDotAnimation();
       this.chatBotResponse = '';
       this.chatBotResults = [];
-      this.streamingText = '';
-      this.isStreaming = false;
-      
-      this.abortController = new AbortController();
-      const currentQuery = this.chatBotQuery;
 
       this.chatMessages.push({
         role: 'user',
@@ -886,128 +866,86 @@ export default {
       });
 
       try {
-        const streamUrl = this.apiUrl.replace('/chat', '/stream');
-        
-        const response = await fetch(streamUrl, {
+        const response = await fetch(this.apiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Accept': 'text/event-stream'
           },
           body: JSON.stringify({
             query: queryToSend,
-            chat_id: this.chatId,
-            stream: true
-          }),
-          signal: this.abortController.signal
+            chat_id: this.chatId
+          })
         });
 
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = '';
+        const data = await response.json();
+        
+        this.chatId = data.chat_id;
+        this.saveChatSession();
 
-        while (true) {
-          const { done, value } = await reader.read();
-          
-          if (done) break;
-          
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split('\n');
-          buffer = lines.pop();
-          
-          for (const line of lines) {
-            if (line.trim() === '') continue;
-            if (line.startsWith('data: ')) {
-              try {
-                const data = JSON.parse(line.slice(6));
-                
-                if (data.type === 'start') {
-                  this.chatId = data.chat_id;
-                  this.saveChatSession();
-                  this.isStreaming = true;
-                  if (this.dotAnimationInterval) {
-                    clearInterval(this.dotAnimationInterval);
-                    this.dotAnimationInterval = null;
-                  }
-                } else if (data.type === 'chunk') {
-                  this.streamingText += data.content;
-                  this.$nextTick(() => {
-                    this.scrollToBottom();
-                  });
-                } else if (data.type === 'complete') {
-                  this.isStreaming = false;
-                  this.messageWaitingForResponse = false;
-                  this.chatBotLoading = false;
-                  
-                  if (data.conversation_history && data.conversation_history.length > 0) {
-                    this.chatMessages = [];
-                    data.conversation_history.forEach(message => {
-                      let formattedContent = message.content || '';
-                      if (message.role === 'assistant') {
-                        formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                        formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
-                        formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
-                        formattedContent = formattedContent.replace(/\n/g, '<br>');
-                        formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
-                        formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
-                        formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
-                        formattedContent = formattedContent.replace(/\n/g, '<br>');
-                      }
-                      
-                      this.chatMessages.push({
-                        role: message.role,
-                        content: formattedContent
-                      });
-                    });
-                  }
-
-                  if (data.spoilerStatus === "spoiler") {
-                    const lastMessage = this.chatMessages[this.chatMessages.length - 1];
-                    this.pendingSpoilerResponse = lastMessage.content;
-                    this.pendingSpoilerMediaReferences = data.media_references || [];
-                    this.spoilerModalOpen = true;
-                    
-                    this.chatMessages.pop();
-                    
-                    if (this.isMobileDevice) {
-                      this.inputEnabled = false;
-                    }
-                  } else {
-                    if (data.media_references && data.media_references.length > 0) {
-                      await this.fetchMediaDetailsFromBackendReferences(data.media_references);
-                    } else {
-                      this.chatBotResults = [];
-                    }
-                    
-                    this.$nextTick(() => {
-                      this.scrollToBottom();
-                    });
-                    if (this.isMobileDevice) {
-                      this.inputEnabled = false;
-                    }
-                  }
-                  
-                  this.streamingText = '';
-                } else if (data.type === 'error') {
-                  throw new Error(data.message || 'An error occurred during streaming');
-                }
-              } catch (parseError) {
-                console.error('Error parsing SSE data:', parseError, 'Raw line:', line);
-              }
+        if (data.conversation_history && data.conversation_history.length > 0) {
+          this.chatMessages = [];
+          data.conversation_history.forEach(message => {
+            let formattedContent = message.content || '';
+            if (message.role === 'assistant') {
+              formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+              formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+              formattedContent = formattedContent.replace(/\n/g, '<br>');
+              formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
             }
+            
+            this.chatMessages.push({
+              role: message.role,
+              content: formattedContent
+            });
+          });
+        }
+
+        let cleanResponse = data.result || '';
+        cleanResponse = cleanResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        cleanResponse = cleanResponse.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        cleanResponse = cleanResponse.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+        cleanResponse = cleanResponse.replace(/\n/g, '<br>');
+        cleanResponse = cleanResponse.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+        cleanResponse = cleanResponse.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+        cleanResponse = cleanResponse.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
+
+        if (data.spoilerStatus === "spoiler") {
+          this.pendingSpoilerResponse = cleanResponse;
+          this.pendingSpoilerMediaReferences = data.media_references || [];
+          this.spoilerModalOpen = true;
+          
+          this.chatMessages.pop();
+          
+          if (this.isMobileDevice) {
+            this.inputEnabled = false;
+          }
+        } else {
+          if (data.media_references && data.media_references.length > 0) {
+            await this.fetchMediaDetailsFromBackendReferences(data.media_references);
+          } else {
+            this.chatBotResults = [];
+          }
+          
+          this.$nextTick(() => {
+            this.scrollToBottom();
+          });
+          if (this.isMobileDevice) {
+            this.inputEnabled = false;
           }
         }
+
+        this.chatBotLoading = false;
+        this.messageWaitingForResponse = false;
+
       } catch (error) {
-        if (error.name === 'AbortError') {
-          console.log('Streaming was cancelled by user');
-          return;
-        }
-        
-        console.error('Error in streaming:', error);
+        console.error('Error in API call:', error);
         
         let errorMessage = 'An error occurred. Please try again.';
         if (error.message && error.message.includes('timeout')) {
@@ -1042,9 +980,6 @@ export default {
 
         this.chatBotLoading = false;
         this.messageWaitingForResponse = false;
-        this.isStreaming = false;
-        this.streamingText = '';
-        this.abortController = null;
         
         setTimeout(() => {
           this.inputWidth = 0;
@@ -1056,6 +991,7 @@ export default {
           }
         });
       }
+      
       this.updateConversationTitle();
       this.saveCurrentConversation();
       this.saveConversations();
