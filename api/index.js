@@ -409,7 +409,7 @@ export function getMovieReviews(id) {
 
 export function translateReview(reviewContent) {
   return new Promise((resolve, reject) => {
-    const translationUrl = 'https://entercinema-review-translation.vercel.app/process';
+    const translationUrl = 'https://entercinema-translator-rust.vercel.app/process';
     const data = {
       input: reviewContent,
       options: {
