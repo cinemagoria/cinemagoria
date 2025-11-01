@@ -799,13 +799,21 @@ export default {
           content: this.pendingSpoilerResponse
         });
       }
+
+      const isDailyPrompt = this.pendingSpoilerMediaReferences && 
+                            this.pendingSpoilerMediaReferences.length > 0 &&
+                            this.pendingSpoilerMediaReferences.every(ref => ref.tmdb_id);
       
       if (this.pendingSpoilerMediaReferences && this.pendingSpoilerMediaReferences.length > 0) {
-        this.fetchMediaDetailsFromBackendReferences(this.pendingSpoilerMediaReferences);
+        if (isDailyPrompt) {
+          this.fetchPredefinedMediaReferences(this.pendingSpoilerMediaReferences);
+        } else {
+          this.fetchMediaDetailsFromBackendReferences(this.pendingSpoilerMediaReferences);
+        }
       } else {
         this.chatBotResults = [];
       }
-      
+          
       this.pendingSpoilerResponse = null;
       this.pendingSpoilerMediaReferences = null;
       this.spoilerModalOpen = false;
@@ -1160,12 +1168,12 @@ export default {
               content: cleanResponse
             });
           }
-          
           if (response.data.media_references && response.data.media_references.length > 0) {
-            await this.fetchMediaDetailsFromBackendReferences(response.data.media_references);
+            await this.fetchPredefinedMediaReferences(response.data.media_references);
           } else {
             this.chatBotResults = [];
           }
+          
           if (this.isMobileDevice) {
             this.inputEnabled = false;
           }
@@ -1779,6 +1787,88 @@ export default {
           this.$nextTick(() => {
               this.scrollToBottom();
           });
+    },
+
+    async fetchPredefinedMediaReferences(references) {
+      if (!this.tmdbApiKey) {
+        console.error("TMDB API Key (API_KEY) not configured!");
+        this.chatBotResults = [];
+        return;
+      }
+
+      const results = [];
+      const promises = [];
+      const seenIds = new Set();
+
+      for (const ref of references) {
+        if (!ref || !ref.name || !ref.type || !ref.tmdb_id) {
+          console.warn("Skipping invalid reference:", ref);
+          continue;
+        }
+
+        let mediaType = ref.type.toLowerCase();
+        
+        if (mediaType === 'tv_show' || mediaType === 'series') {
+          mediaType = 'tv';
+        } else if (mediaType === 'actor' || mediaType === 'director') {
+          mediaType = 'person';
+        }
+
+        const uniqueId = `${mediaType}-${ref.tmdb_id}`;
+        
+        if (seenIds.has(uniqueId)) {
+          continue;
+        }
+        
+        seenIds.add(uniqueId);
+
+        const detailsUrl = `https://api.themoviedb.org/3/${mediaType}/${ref.tmdb_id}`;
+        
+        promises.push(
+          axios.get(detailsUrl, {
+            params: {
+              api_key: this.tmdbApiKey,
+              language: 'en-US'
+            },
+            timeout: 8000
+          })
+          .then(response => {
+            const item = response.data;
+            const formattedItem = {
+              ...item,
+              id: item.id,
+              media_type: mediaType,
+              url: `${this.baseUrl}/${mediaType}/${item.id}`,
+              title: mediaType === 'movie' ? item.title : undefined,
+              name: mediaType !== 'movie' ? item.name : undefined,
+              poster_path: item.poster_path || (mediaType === 'person' ? item.profile_path : undefined),
+              profile_path: mediaType === 'person' ? item.profile_path : undefined,
+              release_date: item.release_date,
+              first_air_date: item.first_air_date,
+              vote_average: item.vote_average || 0,
+              known_for_department: item.known_for_department,
+              popularity: item.popularity || 0,
+              originalName: ref.name
+            };
+            results.push(formattedItem);
+          })
+          .catch(error => {
+            console.error(`Error fetching predefined media for ${ref.name} (ID: ${ref.tmdb_id}):`, error.message || error);
+          })
+        );
+      }
+
+      try {
+        await Promise.all(promises);
+      } catch (e) {
+        console.error("Error fetching predefined media references:", e);
+      }
+
+      this.chatBotResults = results;
+      
+      this.$nextTick(() => {
+        this.scrollToBottom();
+      });
     },
 
     async verifyMediaPersonRelationship(mediaType, mediaId, persons, apiKey) {
