@@ -124,9 +124,15 @@
                           <img v-if="item.poster_path" :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" :alt="item.title || 'Movie Poster'">
                           <img v-else src="/static/image_not_found.png" :alt="item.title || 'Movie Poster Not Found'">
                           <div class="media-type">Película</div>
-                          <div class="movie-rating" v-if="item.vote_average > 0">
-                            {{ (item.vote_average).toFixed(1) }}
-                            <span class="star">★</span>
+                          <div class="movie-rating" v-if="item.imdb_rating || item.vote_average > 0">
+                            <template v-if="item.rating_source === 'imdb' && item.imdb_rating">
+                              {{ item.imdb_rating.toFixed(1) }}
+                              <span class="star">★</span>
+                            </template>
+                            <template v-else-if="item.vote_average">
+                              {{ item.vote_average.toFixed(1) }}
+                              <span class="star">★</span>
+                            </template>
                           </div>
                         </div>
                         <div class="media-info">
@@ -144,9 +150,15 @@
                           <img v-else src="/static/image_not_found.png" :alt="item.name || 'TV Show Poster Not Found'">
                           <div class="media-type">Serie</div>
 
-                          <div class="movie-rating" v-if="item.vote_average > 0">
-                            {{ (item.vote_average).toFixed(1) }}
-                            <span class="star">★</span>
+                          <div class="movie-rating" v-if="item.imdb_rating || item.vote_average > 0">
+                            <template v-if="item.rating_source === 'imdb' && item.imdb_rating">
+                              {{ item.imdb_rating.toFixed(1) }}
+                              <span class="star">★</span>
+                            </template>
+                            <template v-else-if="item.vote_average">
+                              {{ item.vote_average.toFixed(1) }}
+                              <span class="star">★</span>
+                            </template>
                           </div>
                         </div>
                         <div class="media-info">
@@ -366,6 +378,15 @@ export default {
     this.clearMinimizedState();
   },
   methods: {
+    async getIMDbRatingFromDB(imdbId) {
+      try {
+        const response = await axios.get(`/api/imdb-rating/${imdbId}`);
+        return response.data;
+      } catch (error) {
+        console.error('Error fetching IMDb rating:', error);
+        return { found: false };
+      }
+    },
     loadConversations() {
       try {
         if (typeof localStorage !== 'undefined') {
@@ -1410,21 +1431,44 @@ export default {
           },
       
           async fetchMediaDetailsFromBackendReferences(references, mainObject = null) {
-          if (!this.tmdbApiKey) {
-              console.error("TMDB API Key (API_KEY) not configured!");
-              this.chatBotResponse += "<br><small style='color: orange;'>Could not fetch related results (API key missing).</small>";
-              this.chatBotResults = [];
-              return;
-          }
+            if (!this.tmdbApiKey) {
+                console.error("TMDB API Key (API_KEY) not configured!");
+                this.chatBotResponse += "<br><small style='color: orange;'>Could not fetch related results (API key missing).</small>";
+                this.chatBotResults = [];
+                return;
+            }
 
-          const results = [];
-          const mainObjectResult = [];
-          const promises = [];
-          const seenIds = new Set();
-          const priorityTypes = {
-              'person': 1,
-              'movie': 2,
-              'tv': 3
+            const results = [];
+            const mainObjectResult = [];
+            const promises = [];
+            const seenIds = new Set();
+            const priorityTypes = {
+                'person': 1,
+                'movie': 2,
+                'tv': 3
+            };
+
+            const enrichWithIMDb = async (item, mediaType) => {
+              if (mediaType === 'person') return item;
+              
+              const imdbId = item.external_ids?.imdb_id || item.imdb_id;
+              if (imdbId) {
+                try {
+                  const imdbData = await this.getIMDbRatingFromDB(imdbId);
+                  if (imdbData.found) {
+                    item.imdb_rating = imdbData.score;
+                    item.imdb_votes = imdbData.votes;
+                    item.rating_source = 'imdb';
+                  } else {
+                    item.rating_source = 'tmdb';
+                  }
+                } catch (error) {
+                  item.rating_source = 'tmdb';
+                }
+              } else {
+                item.rating_source = 'tmdb';
+              }
+              return item;
           };
 
           let effectiveMainObject = null;
@@ -1482,37 +1526,54 @@ export default {
                           },
                           timeout: 8000
                       });
+
+                      if (mainObjectResponse.data?.results?.length > 0 && (mediaType === 'movie' || mediaType === 'tv')) {
+                          const mainItemId = mainObjectResponse.data.results[0].id;
+                          try {
+                              const detailsResponse = await axios.get(`https://api.themoviedb.org/3/${mediaType}/${mainItemId}`, {
+                                  params: {
+                                      api_key: this.tmdbApiKey,
+                                      append_to_response: 'external_ids'
+                                  },
+                                  timeout: 5000
+                              });
+                              mainObjectResponse.data.results[0].external_ids = detailsResponse.data.external_ids;
+                          } catch (error) {
+                              console.error(`Error fetching external_ids for main object:`, error);
+                          }
+                      }
                       
                       if (mainObjectResponse.data?.results?.length > 0) {
-                          const mainItem = mainObjectResponse.data.results[0];
-                          const mainUniqueId = `${mediaType}-${mainItem.id}`;
-                          
-                          seenIds.add(mainUniqueId);
-                          
-                          const formattedMainItem = {
-                              ...mainItem,
-                              id: mainItem.id,
-                              media_type: mediaType,
-                              url: `${this.baseUrl}/${mediaType}/${mainItem.id}`,
-                              title: mediaType === 'movie' ? mainItem.title : undefined,
-                              name: mediaType !== 'movie' ? mainItem.name : undefined,
-                              poster_path: mainItem.poster_path || (mediaType === 'person' ? mainItem.profile_path : undefined),
-                              profile_path: mediaType === 'person' ? mainItem.profile_path : undefined,
-                              release_date: mainItem.release_date,
-                              first_air_date: mainItem.first_air_date,
-                              vote_average: mainItem.vote_average || 0,
-                              known_for_department: mainItem.known_for_department,
-                              priority: 0,
-                              popularity: 10000,
-                              originalName: effectiveMainObject.name,
-                              isMainObject: true
-                          };
-                          
-                          if (mediaType === 'movie' || mediaType === 'tv') {
-                              mainObjectMediaItem = formattedMainItem;
-                          }
-                          
-                          mainObjectResult.push(formattedMainItem);
+                        const mainItem = mainObjectResponse.data.results[0];
+                        const mainUniqueId = `${mediaType}-${mainItem.id}`;
+                        
+                        seenIds.add(mainUniqueId);
+                        
+                        const formattedMainItem = {
+                            ...mainItem,
+                            id: mainItem.id,
+                            media_type: mediaType,
+                            url: `${this.baseUrl}/${mediaType}/${mainItem.id}`,
+                            title: mediaType === 'movie' ? mainItem.title : undefined,
+                            name: mediaType !== 'movie' ? mainItem.name : undefined,
+                            poster_path: mainItem.poster_path || (mediaType === 'person' ? mainItem.profile_path : undefined),
+                            profile_path: mediaType === 'person' ? mainItem.profile_path : undefined,
+                            release_date: mainItem.release_date,
+                            first_air_date: mainItem.first_air_date,
+                            vote_average: mainItem.vote_average || 0,
+                            known_for_department: mainItem.known_for_department,
+                            priority: 0,
+                            popularity: 10000,
+                            originalName: effectiveMainObject.name,
+                            isMainObject: true
+                        };
+                        
+                        if (mediaType === 'movie' || mediaType === 'tv') {
+                            await enrichWithIMDb(formattedMainItem, mediaType);
+                            mainObjectMediaItem = formattedMainItem;
+                        }
+                        
+                        mainObjectResult.push(formattedMainItem);
                       } else {
                           console.warn(`No TMDB results found for main object: ${effectiveMainObject.name}`);
 
@@ -1595,41 +1656,56 @@ export default {
               }
 
               promises.push(
-                  axios.get(searchUrl, { params, timeout: 8000 })
-                  .then(response => {
-                      if (response.data?.results?.length > 0) {
-                          const sortedResults = response.data.results.sort((a, b) => 
-                              (b.popularity || 0) - (a.popularity || 0)
-                          );
-                          
-                          const item = sortedResults[0];
-                          const uniqueId = `${mediaType}-${item.id}`;
+                axios.get(searchUrl, { params, timeout: 8000 })
+                .then(async response => {
+                    if (response.data?.results?.length > 0) {
+                        const sortedResults = response.data.results.sort((a, b) => 
+                            (b.popularity || 0) - (a.popularity || 0)
+                        );
+                        
+                        const item = sortedResults[0];
+                        const uniqueId = `${mediaType}-${item.id}`;
 
-                          if (item.id && !seenIds.has(uniqueId)) {
-                              seenIds.add(uniqueId);
-                              const formattedItem = {
-                                  ...item,
-                                  id: item.id,
-                                  media_type: mediaType,
-                                  url: `${this.baseUrl}/${mediaType}/${item.id}`,
-                                  title: mediaType === 'movie' ? item.title : undefined,
-                                  name: mediaType !== 'movie' ? item.name : undefined,
-                                  poster_path: item.poster_path || (mediaType === 'person' ? item.profile_path : undefined),
-                                  profile_path: mediaType === 'person' ? item.profile_path : undefined,
-                                  release_date: item.release_date,
-                                  first_air_date: item.first_air_date,
-                                  vote_average: item.vote_average || 0,
-                                  known_for_department: item.known_for_department,
-                                  priority: priorityTypes[mediaType] || 99,
-                                  popularity: item.popularity || 0,
-                                  originalName: ref.name
-                              };
-                              results.push(formattedItem);
-                          }
-                      } else {
-                          console.warn(`No TMDB results found for: ${ref.name} (Type: ${ref.type})`);
-                      }
-                  })
+                        if (item.id && !seenIds.has(uniqueId)) {
+                            seenIds.add(uniqueId);
+                            
+                            let detailsResponse;
+                            try {
+                                detailsResponse = await axios.get(`https://api.themoviedb.org/3/${mediaType}/${item.id}`, {
+                                    params: {
+                                        api_key: this.tmdbApiKey,
+                                        append_to_response: 'external_ids'
+                                    },
+                                    timeout: 5000
+                                });
+                                item.external_ids = detailsResponse.data.external_ids;
+                            } catch (error) {
+                                console.error(`Error fetching external_ids for ${item.id}:`, error);
+                            }
+                            
+                            const formattedItem = {
+                                ...item,
+                                id: item.id,
+                                media_type: mediaType,
+                                url: `${this.baseUrl}/${mediaType}/${item.id}`,
+                                title: mediaType === 'movie' ? item.title : undefined,
+                                name: mediaType !== 'movie' ? item.name : undefined,
+                                poster_path: item.poster_path || (mediaType === 'person' ? item.profile_path : undefined),
+                                profile_path: mediaType === 'person' ? item.profile_path : undefined,
+                                release_date: item.release_date,
+                                first_air_date: item.first_air_date,
+                                vote_average: item.vote_average || 0,
+                                known_for_department: item.known_for_department,
+                                priority: priorityTypes[mediaType] || 99,
+                                popularity: item.popularity || 0,
+                                originalName: ref.name,
+                                external_ids: item.external_ids
+                            };
+                            
+                            await enrichWithIMDb(formattedItem, mediaType);
+                            results.push(formattedItem);
+                        }
+                    })
                   .catch(error => {
                       if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
                           console.error(`Timeout fetching TMDB data for ${ref.name} (${ref.type})`);
@@ -1681,38 +1757,54 @@ export default {
                               
                               if (betterMatchResponse.data?.results?.length > 1) { 
                                   for (let i = 1; i < Math.min(5, betterMatchResponse.data.results.length); i++) {
-                                      const alternativeItem = betterMatchResponse.data.results[i];
-                                      const isAlternativeRelated = await this.verifyMediaPersonRelationship(
-                                          mainObjectMediaItem.media_type,
-                                          alternativeItem.id,
-                                          limitedPersonResults,
-                                          this.tmdbApiKey
-                                      );
-                                      
-                                      if (isAlternativeRelated) {
-                                          const mediaType = mainObjectMediaItem.media_type;
-                                          const alternativeMainItem = {
-                                              ...alternativeItem,
-                                              id: alternativeItem.id,
-                                              media_type: mediaType,
-                                              url: `${this.baseUrl}/${mediaType}/${alternativeItem.id}`,
-                                              title: mediaType === 'movie' ? alternativeItem.title : undefined,
-                                              name: mediaType !== 'movie' ? alternativeItem.name : undefined,
-                                              poster_path: alternativeItem.poster_path,
-                                              release_date: alternativeItem.release_date,
-                                              first_air_date: alternativeItem.first_air_date,
-                                              vote_average: alternativeItem.vote_average || 0,
-                                              priority: 0,
-                                              popularity: 10000,
-                                              originalName: effectiveMainObject.name,
-                                              isMainObject: true,
-                                              alternativeFound: true
-                                          };
+                                    const alternativeItem = betterMatchResponse.data.results[i];
+                                    
+                                    try {
+                                        const altDetailsResponse = await axios.get(`https://api.themoviedb.org/3/${mainObjectMediaItem.media_type}/${alternativeItem.id}`, {
+                                            params: {
+                                                api_key: this.tmdbApiKey,
+                                                append_to_response: 'external_ids'
+                                            },
+                                            timeout: 5000
+                                        });
+                                        alternativeItem.external_ids = altDetailsResponse.data.external_ids;
+                                    } catch (error) {
+                                        console.error(`Error fetching external_ids for alternative:`, error);
+                                    }
+                                    
+                                    const isAlternativeRelated = await this.verifyMediaPersonRelationship(
+                                        mainObjectMediaItem.media_type,
+                                        alternativeItem.id,
+                                        limitedPersonResults,
+                                        this.tmdbApiKey
+                                    );
+                                    
+                                    if (isAlternativeRelated) {
+                                        const mediaType = mainObjectMediaItem.media_type;
+                                        const alternativeMainItem = {
+                                            ...alternativeItem,
+                                            id: alternativeItem.id,
+                                            media_type: mediaType,
+                                            url: `${this.baseUrl}/${mediaType}/${alternativeItem.id}`,
+                                            title: mediaType === 'movie' ? alternativeItem.title : undefined,
+                                            name: mediaType !== 'movie' ? alternativeItem.name : undefined,
+                                            poster_path: alternativeItem.poster_path,
+                                            release_date: alternativeItem.release_date,
+                                            first_air_date: alternativeItem.first_air_date,
+                                            vote_average: alternativeItem.vote_average || 0,
+                                            priority: 0,
+                                            popularity: 10000,
+                                            originalName: effectiveMainObject.name,
+                                            isMainObject: true,
+                                            alternativeFound: true,
+                                            external_ids: alternativeItem.external_ids
+                                        };
 
-                                          mainObjectResult.splice(0, 1, alternativeMainItem);
-                                          break;
-                                      }
-                                  }
+                                        await enrichWithIMDb(alternativeMainItem, mediaType);
+                                        mainObjectResult.splice(0, 1, alternativeMainItem);
+                                        break;
+                                    }
+                                }
                               }
                           } catch (error) {
                               console.error(`Error buscando alternativas para el objeto principal: ${error}`);
@@ -1828,12 +1920,14 @@ export default {
           axios.get(detailsUrl, {
             params: {
               api_key: this.tmdbApiKey,
-              language: 'en-US'
+              language: 'en-US',
+              append_to_response: 'external_ids'
             },
             timeout: 8000
           })
-          .then(response => {
+          .then(async response => {
             const item = response.data;
+            
             const formattedItem = {
               ...item,
               id: item.id,
@@ -1848,8 +1942,28 @@ export default {
               vote_average: item.vote_average || 0,
               known_for_department: item.known_for_department,
               popularity: item.popularity || 0,
-              originalName: ref.name
+              originalName: ref.name,
+              external_ids: item.external_ids
             };
+            
+            const imdbId = item.external_ids?.imdb_id;
+            if (imdbId && mediaType !== 'person') {
+              try {
+                const imdbData = await this.getIMDbRatingFromDB(imdbId);
+                if (imdbData.found) {
+                  formattedItem.imdb_rating = imdbData.score;
+                  formattedItem.imdb_votes = imdbData.votes;
+                  formattedItem.rating_source = 'imdb';
+                } else {
+                  formattedItem.rating_source = 'tmdb';
+                }
+              } catch (error) {
+                formattedItem.rating_source = 'tmdb';
+              }
+            } else {
+              formattedItem.rating_source = 'tmdb';
+            }
+            
             results.push(formattedItem);
           })
           .catch(error => {
@@ -2275,7 +2389,7 @@ scrollToBottom() {
     align-items: center;
 }
 .star {
-    color: #FFC107;
+    color: #7FDBF1;
     margin-left: 3px;
     font-size: 12px;
 }
