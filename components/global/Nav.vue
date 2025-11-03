@@ -179,15 +179,19 @@ export default {
     },
 
     openAiChat() {
-      if (this.isLoggedIn) {
-        if (this.$refs.chatbotModalRef) {
+      if (this.$refs.chatbotModalRef) {
+        const isAuthenticated = typeof window !== 'undefined' && localStorage.getItem('access_token');
+        
+        if (isAuthenticated) {
           this.$refs.chatbotModalRef.open();
-          this.hasMinimizedConversations = false;
         } else {
-          console.error('ChatbotModal ref not found!');
+          this.$refs.chatbotModalRef.chatBotOpen = true;
+          this.$refs.chatbotModalRef.chatBotMinimized = false;
+          this.$refs.chatbotModalRef.clearMinimizedState();
+          this.$refs.chatbotModalRef.checkMobileDevice();
         }
-      } else {
-        this.$router.push('/login');
+        
+        this.hasMinimizedConversations = false;
       }
     }
   }
