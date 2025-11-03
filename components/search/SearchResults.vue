@@ -142,7 +142,16 @@ export default {
 
     openAiChat() {
       if (this.$refs.chatbotModalRef) {
-        this.$refs.chatbotModalRef.open();
+        const isAuthenticated = typeof window !== 'undefined' && localStorage.getItem('access_token');
+        
+        if (isAuthenticated) {
+          this.$refs.chatbotModalRef.open();
+        } else {
+          this.$refs.chatbotModalRef.chatBotOpen = true;
+          this.$refs.chatbotModalRef.chatBotMinimized = false;
+          this.$refs.chatbotModalRef.clearMinimizedState();
+          this.$refs.chatbotModalRef.checkMobileDevice();
+        }
       } else {
         console.error('ChatbotModal ref not found!');
       }
