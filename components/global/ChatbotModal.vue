@@ -243,6 +243,7 @@
         </svg>
         <div v-if="hasConversation" class="notification-dot"></div>
     </div>
+    <AuthModal ref="authModal" />
   </div>
 </template>
 
@@ -728,6 +729,13 @@ export default {
     },
 
     handleSendAction() {
+      if (!this.checkAuth()) {
+        this.$refs.authModal.open(() => {
+          this.sendChatBotQueryStream();
+        });
+        return;
+      }
+      
       if (this.chatBotLoading) {
         this.stopStreaming();
       } else {
@@ -762,18 +770,22 @@ export default {
       });
     },
 
-    open() {
+    checkAuth() {
       const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
-      if (!token) {
-        this.$router.push('/login');
+      return token !== null;
+    },
+
+    open() {
+      const isAuthenticated = this.checkAuth();
+      if (!isAuthenticated) {
         return;
       }
+      
       this.chatBotOpen = true;
       this.chatBotMinimized = false;
       this.clearMinimizedState();
       this.checkMobileDevice();
       this.inputEnabled = !this.isMobileDevice;
-      
       this.createNewConversation();
     },
 
@@ -1060,10 +1072,20 @@ export default {
     },
 
     sendDailyPrompt() {
-      if (this.currentPromptIndex !== -1 && !this.chatBotLoading) {
-        this.chatBotQuery = this.currentDailyPrompt;
-        this.sendDailyPromptRequest();
-      }
+        if (!this.checkAuth()) {
+          this.$refs.authModal.open(() => {
+            if (this.currentPromptIndex !== -1 && !this.chatBotLoading) {
+              this.chatBotQuery = this.currentDailyPrompt;
+              this.sendDailyPromptRequest();
+            }
+          });
+          return;
+        }
+        
+        if (this.currentPromptIndex !== -1 && !this.chatBotLoading) {
+          this.chatBotQuery = this.currentDailyPrompt;
+          this.sendDailyPromptRequest();
+        }
     },
 
     async sendDailyPromptRequest() {
