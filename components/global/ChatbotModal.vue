@@ -1705,7 +1705,8 @@ export default {
                             await enrichWithIMDb(formattedItem, mediaType);
                             results.push(formattedItem);
                         }
-                    })
+                    }
+                  })
                   .catch(error => {
                       if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
                           console.error(`Timeout fetching TMDB data for ${ref.name} (${ref.type})`);
