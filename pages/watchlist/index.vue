@@ -68,7 +68,6 @@
         <nav class="navbar">
           <h1 class="navbar-welcome">Watchlist</h1>
         </nav>
-        <!-- <h2 class="text-center" style="color: #acafb5; font-size: 16px; margin-top: 10px; position: relative; text-transform: none; left: -2px; top: -23px;">{{ userFirstName }}</h2> -->
         <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
           <div class="column">
             <h2 class="text-center" style="color: #acafb5; font-size: 16px;">Favorite {{ filterText }}</h2>
@@ -107,96 +106,107 @@
               </div>
               </div>
             </div>
-            <div class="pagination" v-if="filteredItems.length > itemsPerPage">
-              <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
-              <button @click="prevPage" :disabled="currentPage === 1"><<</button>
-              <span>
-                <label for="page" style="font-size:13px;">Page</label>
-                <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
-              </span>
-              <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
-              <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
-              <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
+            
+            <div v-if="filteredItems.length === 0 && (selectedGenre || selectedTmdbRating || selectedUserRating || customYearStart || customYearEnd)" class="no-results-state">
+              <img src="~/static/cinema-popcorn.svg" alt="No results" class="no-results-icon">
+              <h3>No Results Found</h3>
+              <p>We couldn't find any content matching your current filters.</p>
+              <p class="suggestion">Try adjusting or clearing some filters to see more results.</p>
+              <button @click="clearAllFilters" class="refine-filters-btn">Clear All Filters</button>
             </div>
-            <div class="movie-grid">
-              <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
-                <div class="card-background">
-                  <div class="user-rating-badge" v-if="item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
-                    @click.stop="openRatingModal(item)"
-                    :class="{ 'has-review': item.details.userReview }" 
-                    :title="item.details.userReview ? 'Has Review' : ''">
-                    {{ item.details.userRatingForDb }}
-                    <span v-if="item.details.userReview" class="review-indicator"></span>
-                  </div>
-                  <div class="user-rating-badge empty" @click.stop="openRatingModal(item)" v-else> 
-                    <span style="font-size: 7px;">Rate</span>
-                  </div>
-                  <a :href="getLink(item)" class="item-link">
-                    <img 
-                      :src="item.details.posterForDb || fallbackImageUrl" 
-                      :onerror="handleImageError" 
-                      alt="Poster" 
-                      class="poster" 
-                    />
-                    <h3>{{ item.details.nameForDb }}</h3>
-                  </a>
-                <p>
-                  {{
-                    item.details.yearStartForDb === item.details.yearEndForDb
-                    ? item.details.yearEndForDb
-                    : (item.details.yearStartForDb + (item.details.yearEndForDb ? `-${item.details.yearEndForDb}` : ''))
-                  }}
-                </p>
+            
+            <div v-else>
+              <div class="pagination" v-if="filteredItems.length > itemsPerPage">
+                <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
+                <button @click="prevPage" :disabled="currentPage === 1"><<</button>
+                <span>
+                  <label for="page" style="font-size:13px;">Page</label>
+                  <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
+                </span>
+                <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
+                <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
+                <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
+              </div>
+              <div class="movie-grid">
+                <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
+                  <div class="card-background">
+                    <div class="user-rating-badge" v-if="item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
+                      @click.stop="openRatingModal(item)"
+                      :class="{ 'has-review': item.details.userReview }" 
+                      :title="item.details.userReview ? 'Has Review' : ''">
+                      {{ item.details.userRatingForDb }}
+                      <span v-if="item.details.userReview" class="review-indicator"></span>
+                    </div>
+                    <div class="user-rating-badge empty" @click.stop="openRatingModal(item)" v-else> 
+                      <span style="font-size: 7px;">Rate</span>
+                    </div>
+                    <a :href="getLink(item)" class="item-link">
+                      <img 
+                        :src="item.details.posterForDb || fallbackImageUrl" 
+                        :onerror="handleImageError" 
+                        alt="Poster" 
+                        class="poster" 
+                      />
+                      <h3>{{ item.details.nameForDb }}</h3>
+                    </a>
+                  <p>
+                    {{
+                      item.details.yearStartForDb === item.details.yearEndForDb
+                      ? item.details.yearEndForDb
+                      : (item.details.yearStartForDb + (item.details.yearEndForDb ? `-${item.details.yearEndForDb}` : ''))
+                    }}
+                  </p>
 
-                <div class="card__content">
-                  <div v-if="item.details.imdb_rating || item.details.starsForDb" class="card__stars">
-                    <div :style="{ width: `${calculateStarsWidth(item.details.imdb_rating ? item.details.imdb_rating : formatRating(item.details.starsForDb))}%` }"></div>
+                  <div class="card__content">
+                    <div v-if="item.details.imdb_rating || item.details.starsForDb" class="card__stars">
+                      <div :style="{ width: `${calculateStarsWidth(item.details.imdb_rating ? item.details.imdb_rating : formatRating(item.details.starsForDb))}%` }"></div>
+                    </div>
+                    <div class="card___rating">
+                      <p v-if="item.details.rating_source === 'imdb' && item.details.imdb_rating">
+                        {{ item.details.imdb_rating.toFixed(1) }} IMDb
+                      </p>
+                      <p v-else-if="item.details.starsForDb">
+                        {{ formatRating(item.details.starsForDb) }} TMDB
+                      </p>
+                      <p v-else>Not specified.</p>
+                    </div>
                   </div>
-                  <div class="card___rating">
-                    <p v-if="item.details.rating_source === 'imdb' && item.details.imdb_rating">
-                      {{ item.details.imdb_rating.toFixed(1) }} IMDb
-                    </p>
-                    <p v-else-if="item.details.starsForDb">
-                      {{ formatRating(item.details.starsForDb) }} TMDB
-                    </p>
-                    <p v-else>Not specified.</p>
-                  </div>
+
+                  <svg fill="84E1F6" height="26px" width="26px" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 446.04" @click="removeFavorite(item)" class="delete-icon">
+                      <defs>
+                          <style>
+                              .cls-1 {
+                                  fill: #84E1F6;
+                                  stroke: black;
+                                  stroke-width: 4px;
+                              }
+                          </style>
+                      </defs>
+                      <title>Remove from Watchlist.</title>
+                      <path class="cls-1" d="M252.63 71.41C285.88 36.72 309.17 6.75 360.44.86c96.22-11.07 184.7 87.44 136.11 184.43-.43.85-.88 1.71-1.33 2.58-27.38-23.8-63.15-38.22-102.25-38.22-43.06 0-82.07 17.47-110.29 45.7-28.23 28.23-45.7 67.23-45.7 110.29s17.47 82.06 45.7 110.29l.15.15-30.2 29.96-59.71-57.51C121.09 319.33 3.95 232.26.09 124.36-2.62 48.79 57.02.37 125.62 1.27c61.31.8 87.08 31.31 127.01 70.14zm187.32 214.31c5.88-.05 10.08-.59 9.97 6.7l-.28 23.61c.04 7.62-2.37 9.65-9.51 9.56h-94.32c-7.14.09-9.56-1.94-9.51-9.56l-.29-23.61c-.1-7.29 4.1-6.75 9.97-6.7h93.97zm-46.98-99.11c32.87 0 62.63 13.32 84.17 34.86S512 272.77 512 305.64c0 32.88-13.33 62.64-34.86 84.17-21.54 21.54-51.31 34.86-84.17 34.86-32.88 0-62.64-13.32-84.17-34.86-21.54-21.54-34.87-51.3-34.87-84.17 0-32.88 13.33-62.63 34.86-84.17 21.54-21.54 51.31-34.86 84.18-34.86zm71.79 47.23c-18.37-18.37-43.75-29.74-71.79-29.74-28.04 0-53.43 11.37-71.81 29.74-18.37 18.37-29.73 43.76-29.73 71.8s11.36 53.43 29.74 71.8c18.37 18.37 43.75 29.74 71.8 29.74 28.03 0 53.42-11.37 71.8-29.74 18.37-18.37 29.73-43.76 29.73-71.8s-11.36-53.43-29.74-71.8z"/>
+                  </svg>
                 </div>
-
-                <svg fill="84E1F6" height="26px" width="26px" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 446.04" @click="removeFavorite(item)" class="delete-icon">
-                    <defs>
-                        <style>
-                            .cls-1 {
-                                fill: #84E1F6;
-                                stroke: black;
-                                stroke-width: 4px;
-                            }
-                        </style>
-                    </defs>
-                    <title>Remove from Watchlist.</title>
-                    <path class="cls-1" d="M252.63 71.41C285.88 36.72 309.17 6.75 360.44.86c96.22-11.07 184.7 87.44 136.11 184.43-.43.85-.88 1.71-1.33 2.58-27.38-23.8-63.15-38.22-102.25-38.22-43.06 0-82.07 17.47-110.29 45.7-28.23 28.23-45.7 67.23-45.7 110.29s17.47 82.06 45.7 110.29l.15.15-30.2 29.96-59.71-57.51C121.09 319.33 3.95 232.26.09 124.36-2.62 48.79 57.02.37 125.62 1.27c61.31.8 87.08 31.31 127.01 70.14zm187.32 214.31c5.88-.05 10.08-.59 9.97 6.7l-.28 23.61c.04 7.62-2.37 9.65-9.51 9.56h-94.32c-7.14.09-9.56-1.94-9.51-9.56l-.29-23.61c-.1-7.29 4.1-6.75 9.97-6.7h93.97zm-46.98-99.11c32.87 0 62.63 13.32 84.17 34.86S512 272.77 512 305.64c0 32.88-13.33 62.64-34.86 84.17-21.54 21.54-51.31 34.86-84.17 34.86-32.88 0-62.64-13.32-84.17-34.86-21.54-21.54-34.87-51.3-34.87-84.17 0-32.88 13.33-62.63 34.86-84.17 21.54-21.54 51.31-34.86 84.18-34.86zm71.79 47.23c-18.37-18.37-43.75-29.74-71.79-29.74-28.04 0-53.43 11.37-71.81 29.74-18.37 18.37-29.73 43.76-29.73 71.8s11.36 53.43 29.74 71.8c18.37 18.37 43.75 29.74 71.8 29.74 28.03 0 53.42-11.37 71.8-29.74 18.37-18.37 29.73-43.76 29.73-71.8s-11.36-53.43-29.74-71.8z"/>
-                </svg>
-
+                </div>
               </div>
+              <br>
+              <div class="pagination-footer" v-if="filteredItems.length > itemsPerPage">
+                <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
+                <button @click="prevPage" :disabled="currentPage === 1"><<</button>
+                <span>
+                  <label for="page" style="font-size:13px;">Page</label>
+                  <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
+                </span>
+                <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
+                <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
+                <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
               </div>
-            </div>
-            <br>
-            <div class="pagination-footer" v-if="filteredItems.length > itemsPerPage">
-              <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
-              <button @click="prevPage" :disabled="currentPage === 1"><<</button>
-              <span>
-                <label for="page" style="font-size:13px;">Page</label>
-                <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
-              </span>
-              <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
-              <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
-              <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
             </div>
         </div>
         
         <div v-else>
           <p style="text-align: center;">No favorites added yet.</p>
         </div>
+        
         <div v-if="ratingModalVisible" class="modal-overlay">
           <div class="rating-modal">
             <div class="modal-header">
@@ -235,79 +245,27 @@
                 <div class="char-count">{{ userReview.length }}/500</div>
               </div>
 
-              <button
-                @click="saveRatingAndReview"
-                class="save-btn"
-                :disabled="selectedRating === 0"
-              >
-                <span style="position:relative; margin:0 auto;">Save</span>
-              </button>
+              <div class="rating-modal-buttons">
+                <button 
+                  v-if="currentRatingItem && currentRatingItem.details.userRatingForDb && currentRatingItem.details.userRatingForDb !== '-'"
+                  @click="removeRating" 
+                  class="remove-rating-btn"
+                >
+                  <span style="position:relative; margin:0 auto;">Remove Rating</span>
+                </button>
+                
+                <button 
+                  @click="saveRatingAndReview" 
+                  class="save-btn"
+                  :disabled="selectedRating === 0"
+                >
+                  <span style="position:relative; margin:0 auto;">Save</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </section>
-    </main>
-    <!-- Rating Modal -->
-<div v-if="ratingModalVisible" class="modal-overlay">
-  <div class="rating-modal">
-    <div class="modal-header">
-      <h3>Rate '{{ currentRatingItem?.details?.nameForDb }}'</h3>
-      <button class="close-btn" @click="closeRatingModal">×</button>
-    </div>
 
-    <div class="rating-content">
-      <div class="rating-selector">
-        <div class="rating-numbers">
-          <button
-            v-for="n in 10"
-            :key="n"
-            @click="setRating(n)"
-            @mouseover="previewRating(n)"
-            @mouseout="resetPreview()"
-            :class="[
-              'rating-btn',
-              { 'rating-btn-active': n <= (hoverRating || selectedRating) }
-            ]"
-          >
-            {{ n }}
-          </button>
-        </div>
-      </div>
-
-      <div class="review-section">
-        <textarea
-          v-model="userReview"
-          :placeholder="selectedRating > 0 ? 
-            ratingDescriptions[selectedRating - 1] : 'Select a rating first'"
-          class="review-textarea"
-          maxlength="500"
-          :disabled="selectedRating === 0"
-        ></textarea>
-        <div class="char-count">{{ userReview.length }}/500</div>
-      </div>
-
-      <div class="rating-modal-buttons">
-        <button 
-          v-if="currentRatingItem && currentRatingItem.details.userRatingForDb && currentRatingItem.details.userRatingForDb !== '-'"
-          @click="removeRating" 
-          class="remove-rating-btn"
-        >
-          <span style="position:relative; margin:0 auto;">Remove Rating</span>
-        </button>
-        
-        <button 
-          @click="saveRatingAndReview" 
-          class="save-btn"
-          :disabled="selectedRating === 0"
-        >
-          <span style="position:relative; margin:0 auto;">Save</span>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Rated Items Modal -->
 <div v-if="ratedItemsModalVisible" class="modal-overlay">
   <div class="rated-items-modal">
     <div class="modal-header">
@@ -388,7 +346,6 @@
   </div>
 </div>
 
-<!-- Filters Modal -->
 <div v-if="filtersModalVisible" class="modal-overlay" @click="closeFiltersModal">
   <div class="filters-modal" @click.stop>
     <div class="modal-header">
@@ -484,6 +441,7 @@
           <option value="6">My Rating: 6</option>
           <option value="5">My Rating: 5</option>
           <option value="1-4">My Rating: < 5</option>
+          <option value="not-rated">Not Rated</option>
         </select>
       </div>
       
@@ -494,10 +452,10 @@
     </div>
   </div>
 </div>
-  
+      </section>
+    </main>
   </div>
 </template>
-
 <script>
 import supabase from '@/services/supabase';
 
@@ -1497,15 +1455,20 @@ export default {
       
       let matchesUserRating = true;
       if (this.selectedUserRating !== '') {
-        if (!item.details.userRatingForDb || item.details.userRatingForDb === '-') {
-          matchesUserRating = false;
+        if (this.selectedUserRating === 'not-rated') {
+          matchesUserRating = !item.details.userRatingForDb || 
+                            item.details.userRatingForDb === '-';
         } else {
-          const userRating = parseInt(item.details.userRatingForDb);
-          if (this.selectedUserRating.includes('-')) {
-            const [min, max] = this.selectedUserRating.split('-').map(Number);
-            matchesUserRating = userRating >= min && userRating <= max;
+          if (!item.details.userRatingForDb || item.details.userRatingForDb === '-') {
+            matchesUserRating = false;
           } else {
-            matchesUserRating = userRating === parseInt(this.selectedUserRating);
+            const userRating = parseInt(item.details.userRatingForDb);
+            if (this.selectedUserRating.includes('-')) {
+              const [min, max] = this.selectedUserRating.split('-').map(Number);
+              matchesUserRating = userRating >= min && userRating <= max;
+            } else {
+              matchesUserRating = userRating === parseInt(this.selectedUserRating);
+            }
           }
         }
       }
@@ -3526,6 +3489,91 @@ select.user-rating-select {
   .rating-modal-buttons .save-btn,
   .remove-rating-btn {
     max-width: 100%;
+  }
+}
+
+.no-results-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  min-height: 400px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  margin: 20px auto;
+  max-width: 600px;
+}
+
+.no-results-icon {
+  width: 240px;
+  height: 240px;
+  margin-bottom: 25px;
+  opacity: 0.7;
+}
+
+.no-results-state h3 {
+  color: #8BE9FD;
+  font-size: 2rem;
+  margin: 0 auto 15px;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.no-results-state p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.4rem;
+  margin: 8px auto;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.no-results-state .suggestion {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.3rem;
+  margin: 15px auto 0;
+  font-style: italic;
+  text-align: center;
+}
+
+.refine-filters-btn {
+  margin: 25px auto 0;
+  padding: 12px 30px;
+  background: rgba(139, 233, 253, 0.1);
+  border: 1px solid #8BE9FD;
+  border-radius: 25px;
+  color: #8BE9FD;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: block;
+}
+
+.refine-filters-btn:hover {
+  background: rgba(139, 233, 253, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(139, 233, 253, 0.3);
+}
+
+@media (max-width: 768px) {
+  .no-results-state {
+    padding: 40px 15px;
+    min-height: 300px;
+  }
+  
+  .no-results-icon {
+    width: 192px;
+    height: 192px;
+  }
+  
+  .no-results-state h3 {
+    font-size: 1.6rem;
+  }
+  
+  .no-results-state p {
+    font-size: 1.2rem;
   }
 }
 </style>
