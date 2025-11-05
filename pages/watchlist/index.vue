@@ -104,6 +104,17 @@
               </button>
             </div>
           </div>
+        </div>
+        
+        <div v-if="filteredItems.length === 0 && (selectedGenre || selectedTmdbRating || selectedUserRating || customYearStart || customYearEnd)" class="no-results-state">
+          <img src="~/static/cinema-popcorn.svg" alt="Sin resultados" class="no-results-icon">
+          <h3>No se encontraron resultados</h3>
+          <p>No pudimos encontrar contenido que coincida con tus filtros actuales.</p>
+          <p class="suggestion">Intenta ajustar o limpiar algunos filtros para ver más resultados.</p>
+          <button @click="clearAllFilters" class="refine-filters-btn">Limpiar Todos los Filtros</button>
+        </div>
+        
+        <div v-else>
           <div class="pagination" v-if="filteredItems.length > itemsPerPage">
             <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
             <button @click="prevPage" :disabled="currentPage === 1"><<</button>
@@ -175,13 +186,9 @@
               </svg>
             </div>
           </div>
-          </div>          
-        </div>
-      </div>
-      <div v-else>
-        <p style="text-align: center;">No hay favoritos agregados todavía.</p>
-      </div>
-      <div class="pagination-footer" v-if="filteredItems.length > itemsPerPage">
+          </div>
+          <br>
+          <div class="pagination-footer" v-if="filteredItems.length > itemsPerPage">
             <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
             <button @click="prevPage" :disabled="currentPage === 1"><<</button>
             <span>
@@ -192,7 +199,12 @@
             <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
             <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
           </div>
-      <br>
+        </div>
+      </div>
+      <div v-else>
+        <p style="text-align: center;">No hay favoritos agregados todavía.</p>
+      </div>
+      
       <div v-if="ratingModalVisible" class="modal-overlay">
           <div class="rating-modal">
             <div class="modal-header">
@@ -253,7 +265,6 @@
         </div>
     </section>
     
-    <!-- Modal para valoraciones -->
     <div class="modal-overlay" v-if="ratedItemsModalVisible">
       <div class="rated-items-modal">
         <div class="modal-header">
@@ -442,6 +453,7 @@
               <option value="6">Mi Puntaje: 6</option>
               <option value="5">Mi Puntaje: 5</option>
               <option value="1-4">Mi Puntaje: < 5</option>
+              <option value="not-rated">Sin Valorar</option>
             </select>
           </div>
           
@@ -1485,15 +1497,20 @@ export default {
         
         let matchesUserRating = true;
         if (this.selectedUserRating !== '') {
-          if (!item.details.userRatingForDb || item.details.userRatingForDb === '-') {
-            matchesUserRating = false;
+          if (this.selectedUserRating === 'not-rated') {
+            matchesUserRating = !item.details.userRatingForDb || 
+                              item.details.userRatingForDb === '-';
           } else {
-            const userRating = parseInt(item.details.userRatingForDb);
-            if (this.selectedUserRating.includes('-')) {
-              const [min, max] = this.selectedUserRating.split('-').map(Number);
-              matchesUserRating = userRating >= min && userRating <= max;
+            if (!item.details.userRatingForDb || item.details.userRatingForDb === '-') {
+              matchesUserRating = false;
             } else {
-              matchesUserRating = userRating === parseInt(this.selectedUserRating);
+              const userRating = parseInt(item.details.userRatingForDb);
+              if (this.selectedUserRating.includes('-')) {
+                const [min, max] = this.selectedUserRating.split('-').map(Number);
+                matchesUserRating = userRating >= min && userRating <= max;
+              } else {
+                matchesUserRating = userRating === parseInt(this.selectedUserRating);
+              }
             }
           }
         }
@@ -3533,6 +3550,91 @@ select.user-rating-select {
   .rating-modal-buttons .save-btn,
   .remove-rating-btn {
     max-width: 100%;
+  }
+}
+
+.no-results-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  min-height: 400px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  margin: 20px auto;
+  max-width: 600px;
+}
+
+.no-results-icon {
+  width: 240px;
+  height: 240px;
+  margin-bottom: 25px;
+  opacity: 0.7;
+}
+
+.no-results-state h3 {
+  color: #8BE9FD;
+  font-size: 2rem;
+  margin: 0 auto 15px;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.no-results-state p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.4rem;
+  margin: 8px auto;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.no-results-state .suggestion {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.3rem;
+  margin: 15px auto 0;
+  font-style: italic;
+  text-align: center;
+}
+
+.refine-filters-btn {
+  margin: 25px auto 0;
+  padding: 12px 30px;
+  background: rgba(139, 233, 253, 0.1);
+  border: 1px solid #8BE9FD;
+  border-radius: 25px;
+  color: #8BE9FD;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: block;
+}
+
+.refine-filters-btn:hover {
+  background: rgba(139, 233, 253, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(139, 233, 253, 0.3);
+}
+
+@media (max-width: 768px) {
+  .no-results-state {
+    padding: 40px 15px;
+    min-height: 300px;
+  }
+  
+  .no-results-icon {
+    width: 192px;
+    height: 192px;
+  }
+  
+  .no-results-state h3 {
+    font-size: 1.6rem;
+  }
+  
+  .no-results-state p {
+    font-size: 1.2rem;
   }
 }
 </style>
