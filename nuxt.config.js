@@ -58,7 +58,12 @@ export default {
         rel: "stylesheet",
         href: "//fonts.googleapis.com/css?family=Roboto:300,400,500",
       },
-    ]
+    ],
+    script: [
+      {
+        src: "https://script.peekvisor.com/hello.js",
+      }
+    ],
   },
   css: ["@/assets/css/global.scss"],
   plugins: [
