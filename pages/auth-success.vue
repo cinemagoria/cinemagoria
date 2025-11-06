@@ -6,6 +6,7 @@
       <div v-else>
         <p v-if="error" class="error">{{ error }}</p>
         <p class="welcome-label" v-else>Welcome, {{ name }}!</p>
+        <img src="~/static/auth-success.svg" alt="Authentication Success" class="success-icon">
         <div class="redirect-message">
           <p>You will be automatically redirected in {{ countdown }} seconds...</p>
         </div>
@@ -74,9 +75,22 @@ export default {
     }
   },
   methods: {
-    redirect() {
+   redirect() {
       this.forceNavUpdate();
-      window.location.href = '/';
+      
+      const returnUrl = localStorage.getItem('auth_return_url');
+      
+      if (returnUrl) {
+        localStorage.removeItem('auth_return_url');
+        
+        if (returnUrl.includes('/login') || returnUrl.includes('/register')) {
+          window.location.href = '/';
+        } else {
+          window.location.href = returnUrl;
+        }
+      } else {
+        window.location.href = '/';
+      }
     },
     
     forceNavUpdate() {
@@ -153,5 +167,11 @@ p {
 
 .welcome-label {
   font-size: 16px !important
+}
+
+.success-icon {
+  width: 204px;
+  height: 204px;
+  opacity: 0.7;
 }
 </style>

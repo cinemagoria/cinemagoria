@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isOpen" class="auth-modal-overlay" @click.self="closeModal">
+  <div v-if="isOpen" class="auth-modal-overlay">
     <div class="auth-modal-container">
       <div class="auth-modal-header">
         <h2>Sign in to continue</h2>
@@ -23,7 +23,7 @@
         </div>
 
         <div v-if="activeTab === 'login'" class="form-container">
-          <p class="modal-description">Please sign in to use the AI assistant</p>
+          <p class="modal-description">Please sign in to access to more features</p>
           
           <form @submit.prevent="handleLogin">
             <GoogleLogin 
@@ -191,10 +191,17 @@ export default {
   components: {
     GoogleLogin
   },
+  props: {
+  initialTab: {
+    type: String,
+    default: 'login',
+    validator: (value) => ['login', 'register'].includes(value)
+  }
+  },
   data() {
     return {
       isOpen: false,
-      activeTab: 'login',
+      activeTab: this.initialTab,
       loginEmail: '',
       loginPassword: '',
       registerName: '',
@@ -221,6 +228,11 @@ export default {
       return this.hasUpperCase && this.hasLowerCase && this.hasNumber && this.hasSymbol && this.hasMinLength;
     }
   },
+  watch: {
+    initialTab(newTab) {
+      this.activeTab = newTab;
+    }
+  },
   methods: {
     open(action = null) {
       this.isOpen = true;
@@ -235,7 +247,11 @@ export default {
     },
     
     closeModal() {
-      this.close();
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = '/';
+      }
     },
     
     resetForm() {
@@ -251,8 +267,9 @@ export default {
       this.hasNumber = false;
       this.hasSymbol = false;
       this.hasMinLength = false;
+      this.activeTab = this.initialTab;
     },
-    
+        
     handleGoogleLoginStart() {
       this.googleLoginInProgress = true;
     },
@@ -271,19 +288,12 @@ export default {
           password: this.loginPassword
         });
 
-        localStorage.setItem('email', response.data.email);
-        localStorage.setItem('access_token', response.data.access_token);
-        localStorage.setItem('auth_provider', 'native');
+        const returnUrl = window.location.pathname + window.location.search;
+        localStorage.setItem('auth_return_url', returnUrl);
 
-        window.dispatchEvent(new Event('auth-changed'));
+        const successUrl = `/auth-success?token=${encodeURIComponent(response.data.access_token)}&email=${encodeURIComponent(response.data.email)}&name=${encodeURIComponent(response.data.name || response.data.email)}&auth_provider=native`;
         
-        this.close();
-        
-        if (this.pendingAction) {
-          this.$nextTick(() => {
-            this.pendingAction();
-          });
-        }
+        window.location.href = successUrl;
       } catch (error) {
         if (error.response && error.response.status === 401) {
           this.errorMessage = 'Invalid login credentials.';
@@ -577,6 +587,7 @@ export default {
   display: flex;
   justify-content: center;
   margin-top: 20px;
+  width: 100%;
 }
 
 .requirements-grid {
@@ -636,6 +647,7 @@ export default {
   justify-content: center;
   gap: 10px;
   min-width: 140px;
+  margin: 0 auto;
 }
 
 .submit-button:hover:not(:disabled) {
