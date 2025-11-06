@@ -21,7 +21,7 @@
       </h2>
 
       <div
-        v-if="media !== 'person' && (stars || item.vote_average)"
+        v-if="media !== 'person' && (stars || item.vote_average || item.imdb_rating)"
         class="card__rating">
         <div
           v-if="stars"
