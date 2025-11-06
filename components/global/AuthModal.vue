@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isOpen" class="auth-modal-overlay" @click.self="closeModal">
+  <div v-if="isOpen" class="auth-modal-overlay">
     <div class="auth-modal-container">
       <div class="auth-modal-header">
         <h2>Inicia sesión para continuar</h2>
@@ -23,7 +23,7 @@
         </div>
 
         <div v-if="activeTab === 'login'" class="form-container">
-          <p class="modal-description">Inicia sesión para usar el asistente de IA</p>
+          <p class="modal-description">Inicia sesión para acceder a más funcionalidades</p>
           
           <form @submit.prevent="handleLogin">
             <GoogleLogin 
@@ -71,13 +71,13 @@
           </form>
 
           <p class="switch-link">
-            ¿No tienes cuenta? 
-            <a @click.prevent="activeTab = 'register'">Regístrate</a>
+            ¿No tiene cuenta? 
+            <a @click.prevent="activeTab = 'register'">Regístrese</a>
           </p>
         </div>
 
         <div v-if="activeTab === 'register'" class="form-container">
-          <p class="modal-description">Crea una cuenta para acceder a funciones de IA</p>
+          <p class="modal-description">Cree una cuenta para acceder a mas funcionalidades</p>
           
           <form @submit.prevent="handleRegister">
             <GoogleLogin 
@@ -130,7 +130,7 @@
                     <div class="requirements-grid">
                     <span :class="['req-item', { valid: hasMinLength }]">
                         <span class="check-icon">{{ hasMinLength ? '✓' : '○' }}</span>
-                        Mín. 8 carac.
+                        Min. 8 carac.
                     </span>
                     <span :class="['req-item', { valid: hasUpperCase }]">
                         <span class="check-icon">{{ hasUpperCase ? '✓' : '○' }}</span>
@@ -167,7 +167,7 @@
           </form>
 
           <p class="switch-link">
-            ¿Ya tienes cuenta? 
+            ¿Ya tiene una cuenta? 
             <a @click.prevent="activeTab = 'login'">Inicia Sesión</a>
           </p>
         </div>
@@ -191,10 +191,17 @@ export default {
   components: {
     GoogleLogin
   },
+  props: {
+  initialTab: {
+    type: String,
+    default: 'login',
+    validator: (value) => ['login', 'register'].includes(value)
+  }
+  },
   data() {
     return {
       isOpen: false,
-      activeTab: 'login',
+      activeTab: this.initialTab,
       loginEmail: '',
       loginPassword: '',
       registerName: '',
@@ -221,6 +228,11 @@ export default {
       return this.hasUpperCase && this.hasLowerCase && this.hasNumber && this.hasSymbol && this.hasMinLength;
     }
   },
+  watch: {
+    initialTab(newTab) {
+      this.activeTab = newTab;
+    }
+  },
   methods: {
     open(action = null) {
       this.isOpen = true;
@@ -235,7 +247,11 @@ export default {
     },
     
     closeModal() {
-      this.close();
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = '/';
+      }
     },
     
     resetForm() {
@@ -251,8 +267,9 @@ export default {
       this.hasNumber = false;
       this.hasSymbol = false;
       this.hasMinLength = false;
+      this.activeTab = this.initialTab;
     },
-    
+        
     handleGoogleLoginStart() {
       this.googleLoginInProgress = true;
     },
@@ -271,19 +288,12 @@ export default {
           password: this.loginPassword
         });
 
-        localStorage.setItem('email', response.data.email);
-        localStorage.setItem('access_token', response.data.access_token);
-        localStorage.setItem('auth_provider', 'native');
+        const returnUrl = window.location.pathname + window.location.search;
+        localStorage.setItem('auth_return_url', returnUrl);
 
-        window.dispatchEvent(new Event('auth-changed'));
+        const successUrl = `/auth-success?token=${encodeURIComponent(response.data.access_token)}&email=${encodeURIComponent(response.data.email)}&name=${encodeURIComponent(response.data.name || response.data.email)}&auth_provider=native`;
         
-        this.close();
-        
-        if (this.pendingAction) {
-          this.$nextTick(() => {
-            this.pendingAction();
-          });
-        }
+        window.location.href = successUrl;
       } catch (error) {
         if (error.response && error.response.status === 401) {
           this.errorMessage = 'Credenciales inválidas.';
@@ -435,7 +445,7 @@ export default {
 }
 
 .tab {
-  padding: 10px 24px;
+  padding: 10px 30px;
   cursor: pointer;
   color: rgba(255, 255, 255, 0.6);
   background: rgba(11, 75, 103, 0.15);
@@ -443,8 +453,8 @@ export default {
   -webkit-backdrop-filter: blur(13.5px);
   border-radius: 8px;
   text-transform: uppercase;
-  letter-spacing: 1.2px;
-  font-size: 12px;
+  letter-spacing: 1.5px;
+  font-size: 13px;
   transition: all 0.3s ease;
   border: 1px solid transparent;
 }
@@ -510,29 +520,37 @@ export default {
   border: 1px solid rgba(127, 219, 241, 0.2);
 }
 
-.requirements-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
-  gap: 8px;
+
+.pass-req-label {
+  display: block;
+  color: #a8d8e4;
+  font-size: 12px;
+  margin-bottom: 8px;
+  font-weight: 500;
 }
 
-.req-item {
+.password-requirements ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.password-requirements li {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  margin-bottom: 6px;
   display: flex;
   align-items: center;
-  gap: 4px;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 11px;
-  transition: color 0.2s ease;
+  gap: 6px;
 }
 
-.req-item.valid {
+.password-requirements li.text-success {
   color: #7FDBF1;
 }
 
-.check-icon {
-  font-size: 12px;
+.password-requirements li span:first-child {
+  font-size: 14px;
   font-weight: bold;
-  min-width: 14px;
 }
 
 .divider {
@@ -569,6 +587,49 @@ export default {
   display: flex;
   justify-content: center;
   margin-top: 20px;
+  width: 100%;
+}
+
+.requirements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 8px;
+}
+
+.req-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  transition: color 0.2s ease;
+}
+
+.req-item.valid {
+  color: #7FDBF1;
+}
+
+.check-icon {
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 14px;
+}
+
+
+@media screen and (max-width: 576px) {
+  .requirements-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  
+  .req-item {
+    font-size: 10px;
+  }
+  
+  .check-icon {
+    font-size: 11px;
+    min-width: 12px;
+  }
 }
 
 .submit-button {
@@ -586,6 +647,7 @@ export default {
   justify-content: center;
   gap: 10px;
   min-width: 140px;
+  margin: 0 auto;
 }
 
 .submit-button:hover:not(:disabled) {
@@ -668,8 +730,8 @@ export default {
   }
   
   .tab {
-    padding: 8px 16px;
-    font-size: 11px;
+    padding: 8px 20px;
+    font-size: 12px;
   }
   
   .form-group input {
@@ -680,20 +742,6 @@ export default {
   .submit-button {
     padding: 10px 30px;
     font-size: 14px;
-  }
-  
-  .requirements-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
-  }
-  
-  .req-item {
-    font-size: 10px;
-  }
-  
-  .check-icon {
-    font-size: 11px;
-    min-width: 12px;
   }
 }
 </style>
