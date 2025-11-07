@@ -339,8 +339,11 @@ export default {
     this.loadDailyPrompt();
   },
   mounted() {
+    console.log('[ChatBot] Component mounted');
     window.addEventListener('resize', this.checkMobileDevice);
     this.loadChatSession();
+    this.loadMinimizedState();
+    console.log('[ChatBot] Calling loadUserConversations...');
     this.loadUserConversations();
     this.$nextTick(() => {
       if (this.$refs.chatbotMessagesContainer) {
@@ -354,7 +357,7 @@ export default {
       }
     });
     this.loadMinimizedState();
-    this.loadConversations();
+    this.loadUserConversations();
     this.initializeFirstConversation();
     this.$root.$on('chatbot-maximized', () => {
       this.chatBotMinimized = false;
@@ -380,6 +383,7 @@ export default {
     this.clearMinimizedState();
   },
   methods: {
+    
     async getIMDbRatingFromDB(imdbId) {
       try {
         const response = await axios.get(`/api/imdb-rating/${imdbId}`);
@@ -389,28 +393,17 @@ export default {
         return { found: false };
       }
     },
-    loadConversations() {
-      try {
-        if (typeof localStorage !== 'undefined') {
-          const saved = localStorage.getItem(this.conversationsStorageKey);
-          if (saved) {
-            this.conversations = JSON.parse(saved);
-          }
-        }
-      } catch (error) {
-        console.warn('Error loading conversations:', error);
-      }
-    },
-    
+
     saveConversations() {
       try {
         if (typeof localStorage !== 'undefined') {
+          console.log('[ChatBot] Saving to localStorage:', this.conversations.length, 'conversations');
           localStorage.setItem(this.conversationsStorageKey, JSON.stringify(this.conversations));
           const hasConversations = this.conversations.some(conv => conv.messages.length > 0);
           this.$root.$emit('chatbot-conversations-updated', hasConversations);
         }
       } catch (error) {
-        console.warn('Error saving conversations:', error);
+        console.warn('[ChatBot] Error saving conversations:', error);
       }
     },
     
@@ -778,29 +771,66 @@ export default {
     getUserEmail() {
       try {
         const token = localStorage.getItem('access_token');
-        if (!token) return null;
+        if (!token) {
+          console.log('[ChatBot] No access token found');
+          return null;
+        }
         
         const payload = JSON.parse(atob(token.split('.')[1]));
-        return payload.email || payload.sub || null;
+        const email = payload.email || payload.sub || null;
+        console.log('[ChatBot] User email extracted:', email);
+        return email;
       } catch (error) {
-        console.warn('Error extracting user email:', error);
+        console.warn('[ChatBot] Error extracting user email:', error);
+        return null;
+      }
+    },
+
+    getUserId() {
+      try {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+          console.log('[ChatBot] No access token found');
+          return null;
+        }
+        
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const userId = payload.user_id ? String(payload.user_id) : null;
+        console.log('[ChatBot] User ID extracted:', userId);
+        return userId;
+      } catch (error) {
+        console.warn('[ChatBot] Error extracting user ID:', error);
         return null;
       }
     },
 
     async loadUserConversations() {
-      const userEmail = this.getUserEmail();
-      if (!userEmail) return;
+      console.log('[ChatBot] === loadUserConversations START ===');
+      const userId = this.getUserId();
+      console.log('[ChatBot] User ID:', userId);
+      
+      if (!userId) {
+        console.log('[ChatBot] No user ID, initializing empty conversation');
+        this.conversations = [];
+        this.initializeFirstConversation();
+        return;
+      }
+
+      const conversationsUrl = `${this.baseUrl}/api/user-conversations`;
+      console.log('[ChatBot] Fetching from URL:', conversationsUrl);
 
       try {
-        const conversationsUrl = `${this.baseUrl}/api/user-conversations`;
-
         const response = await axios.get(conversationsUrl, {
-          params: { user_email: userEmail },
+          params: { user_id: userId },
           timeout: 8000
         });
 
-        if (response.data && response.data.success && response.data.conversations) {
+        console.log('[ChatBot] API Response status:', response.status);
+        console.log('[ChatBot] API Response data:', JSON.stringify(response.data));
+
+        if (response.data && response.data.success && response.data.conversations && response.data.conversations.length > 0) {
+          console.log('[ChatBot] Found', response.data.conversations.length, 'conversations in DB');
+          
           const dbConversations = response.data.conversations.map(conv => ({
             id: conv.chat_id,
             title: conv.chat_id,
@@ -811,11 +841,20 @@ export default {
             titleGenerated: false
           }));
 
-          this.conversations = [...dbConversations];
+          console.log('[ChatBot] Setting conversations from DB:', dbConversations.length);
+          this.conversations = dbConversations;
           this.saveConversations();
+          this.initializeFirstConversation();
+        } else {
+          console.log('[ChatBot] No conversations in DB, creating new one');
+          this.conversations = [];
+          this.initializeFirstConversation();
         }
       } catch (error) {
-        console.warn('Error loading user conversations:', error);
+        console.error('[ChatBot] ERROR loading conversations:', error);
+        console.error('[ChatBot] Error details:', error.response?.data || error.message);
+        this.conversations = [];
+        this.initializeFirstConversation();
       }
     },
 
@@ -960,7 +999,9 @@ export default {
       });
 
       try {
-        const userEmail = this.getUserEmail();
+        const userId = this.getUserId();
+        console.log('[ChatBot] Sending query with user_id:', userId, 'chat_id:', this.chatId);
+        
         const response = await fetch(this.apiUrl, {
           method: 'POST',
           headers: {
@@ -969,7 +1010,7 @@ export default {
           body: JSON.stringify({
             query: queryToSend,
             chat_id: this.chatId,
-            user_email: userEmail
+            user_id: userId
           })
         });
 
@@ -1156,11 +1197,11 @@ export default {
       try {
         const promptIndex = this.currentPromptIndex;
      
-        const userEmail = this.getUserEmail();
+        const userId = this.getUserId();
         const payload = {
           query: this.currentDailyPrompt,
           chat_id: this.chatId,
-          user_email: userEmail,
+          user_id: userId,
           prompt_id: `daily_prompt_${promptIndex}`
         };
             
@@ -1378,11 +1419,11 @@ export default {
       });
 
       try {
-        const userEmail = this.getUserEmail();
+        const userId = this.getUserId();
         const response = await axios.post(this.apiUrl, {
           query: queryToSend,
           chat_id: this.chatId,
-          user_email: userEmail
+          user_id: userId
         }, { timeout: 45000 });
 
         this.chatId = response.data.chat_id;

@@ -17,11 +17,13 @@ module.exports = async (req, res) => {
   }
 
   const url = new URL(req.url, `http://${req.headers.host}`);
-  const userEmail = url.searchParams.get('user_email');
+  const userId = url.searchParams.get('user_id');
 
-  if (!userEmail) {
+  console.log('[API] user-conversations called with user_id:', userId);
+
+  if (!userId) {
     res.statusCode = 400;
-    return res.end(JSON.stringify({ error: 'user_email parameter required' }));
+    return res.end(JSON.stringify({ error: 'user_id parameter required' }));
   }
 
   if (!chatDbClient) {
@@ -33,11 +35,11 @@ module.exports = async (req, res) => {
     const result = await chatDbClient.execute({
       sql: `SELECT DISTINCT chat_id, MAX(created_at) as last_message 
             FROM chat_interactions 
-            WHERE user_email = ? 
+            WHERE user_id = ? 
             GROUP BY chat_id 
             ORDER BY last_message DESC 
             LIMIT 50`,
-      args: [userEmail]
+      args: [userId]
     });
 
     const conversations = result.rows.map(row => ({
