@@ -1,4 +1,4 @@
-const { tursoClient } = require('../services/turso');
+const tursoClient = require('../services/turso');
 
 module.exports = async (req, res) => {
   const imdbId = req.url.split('/').pop();
