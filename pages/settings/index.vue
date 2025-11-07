@@ -1,7 +1,7 @@
 <template>
   <main class="main">
     <section class="section">
-      <h1 class="text-white text-center"><b>Account Settings</b></h1>
+      <h1 class="title-primary text-center" style="font-size:20px; padding-bottom: 20px;"><b>Account Settings</b></h1>
       <br>
       <div class="user-info">
         <div class="avatar-container">

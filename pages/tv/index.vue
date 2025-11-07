@@ -2,10 +2,10 @@
   <main class="main">
     <div class="tab-controls">
       <button class="tab-btn" @click="navigateToMovies">
-        <span>Movies</span>
+        <span class="title-primary" style="font-size:16px;">Movies</span>
       </button>
       <button class="tab-btn active">
-        <span>TV Shows</span>
+        <span class="title-primary" style="font-size:16px;">TV Shows</span>
       </button>
     </div>
 

@@ -56,9 +56,9 @@
         </div>
       </div>
 
-      <nav class="navbar">
-        <h1 class="navbar-welcome" style="position: relative; top: 23px;">Advanced Search</h1>
-        <h2 class="text-center" style="color: rgb(172, 175, 181); font-size: 14px; margin-top: 30px; position: relative; text-transform: none; left: -2px; top: -6px;">
+      <nav class="navbar navbar-welcome">
+        <h1 class="title-primary" style="position: relative; color: #7FDBF1 !important; top: 23px;">Advanced Search</h1>
+        <h2 class="title-secondary" style="color: rgb(172, 175, 181); font-size: 14px; margin-top: 40px; position: relative; text-transform: none; left: -2px; top: -6px;">
         Refine your search criteria for more precise results.
       </h2>
       </nav>
@@ -282,7 +282,7 @@
         </div>
         
         <div v-if="MinRatingForLabel === 0" class="default-rating-note">
-          *For optimal results, the default minimum rating is set to 6/10, with up to 40 results per search.
+          <span class="title-secondary" style="font-size:12px;">*For optimal results, the default minimum rating is set to 6/10, with up to 40 results per search.</span>
         </div>
       </div>  
       </div>
@@ -1015,6 +1015,8 @@
   border: 1px solid rgba(255, 255, 255, 0.18);
   padding: 30px;
   width: 90%;
+  margin-top: 30px !important;
+  position:relative;
   margin: 0 auto;
 }
 
@@ -1287,8 +1289,6 @@
   -webkit-background-clip: text;
   color: transparent;
   margin-top: 7rem;
-  text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
-  font-family: 'Roboto', sans-serif;
 }
 
 .text-center {
