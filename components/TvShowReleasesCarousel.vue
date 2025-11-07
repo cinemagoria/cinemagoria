@@ -339,7 +339,6 @@ export default {
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  z-index: 10;
 }
 
 .carousel__nav:hover:not(:disabled) {

@@ -2162,7 +2162,6 @@ export default {
 
   @media screen and (max-width: 800px) {
   .navbar {
-    left: 68px;
     top: 8px;
     transition: none 0s ease 0s;
   } 

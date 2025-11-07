@@ -793,12 +793,14 @@ export default {
       if (!userEmail) return;
 
       try {
-        const response = await axios.get(`${this.apiUrl}/conversations`, {
+        const conversationsUrl = `${this.baseUrl}/api/user-conversations`;
+
+        const response = await axios.get(conversationsUrl, {
           params: { user_email: userEmail },
-          timeout: 5000
+          timeout: 8000
         });
 
-        if (response.data && response.data.conversations) {
+        if (response.data && response.data.success && response.data.conversations) {
           const dbConversations = response.data.conversations.map(conv => ({
             id: conv.chat_id,
             title: conv.chat_id,
