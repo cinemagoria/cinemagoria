@@ -64,12 +64,12 @@
         </div>
       </div>
       <br>
-      <nav class="navbar" style="margin-top: 2rem;">
-        <h1 class="navbar-welcome">Mi Lista</h1>
+      <nav class="navbar">
+        <h1 class="title-primary">Mi Lista</h1>
       </nav>
       <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
         <div class="column">
-          <h2 class="text-center" style="color: #acafb5; font-size: 16px;">{{ filterText }} Favoritas</h2>
+          <h2 class="title-secondary" style="color: #acafb5;  font-size: 16px;">{{ filterText }} Favoritas</h2>
           <div class="new-controls-container" style="margin-top: 3rem;">
             <label class="switch">
               <input type="checkbox" :checked="filter === 'tvShows'" @change="toggleFilterType">
@@ -268,7 +268,7 @@
     <div class="modal-overlay" v-if="ratedItemsModalVisible">
       <div class="rated-items-modal">
         <div class="modal-header">
-          <h3>Mis Valoraciones</h3>
+          <h3 class="title-primary">Mis Valoraciones</h3>
           <button class="close-btn" @click="closeRatedItemsModal">&times;</button>
         </div>
         <div class="tab-controls">
@@ -1812,11 +1812,12 @@ export default {
 
 .navbar {
     background-color: transparent;
-    margin-top: 3rem;
+    margin-top: 4rem;
+    top: 1rem;
+    position: relative;
     text-align: center;
     max-width: 800px; 
     margin: 0 auto; 
-    left: 68px;
     top: 8px;
     transition: none 0s ease 0s;
   } 
@@ -2434,10 +2435,18 @@ export default {
   
   .modal-header h3 {
     margin: 0;
-    color: #8BE9FD;
     font-size: 1.6rem;
     font-weight: 500;
     text-align: center;
+    font-family: 'GrandCru', 'Roboto', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    color: #8BE9FD;
+    text-shadow: 
+        0 1px 2px rgba(255, 255, 255, 0.3),
+        0 2px 8px rgba(255, 255, 255, 0.2),
+        0 4px 16px rgba(139, 233, 253, 0.15);
     flex: 1;
   }
   
@@ -2460,7 +2469,6 @@ export default {
   
   .close-btn:hover {
     color: #fff;
-    transform: rotate(90deg);
   }
   
   .tab-controls {
@@ -2483,7 +2491,15 @@ export default {
     transition: all 0.2s ease;
     position: relative;
     text-align: center;
-  }
+    font-family: 'GrandCru', 'Roboto', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    text-shadow: 
+        0 1px 2px rgba(255, 255, 255, 0.3),
+        0 2px 8px rgba(255, 255, 255, 0.2),
+        0 4px 16px rgba(139, 233, 253, 0.15);
+    }
   
   .tab-btn.active {
     color: #8BE9FD;
@@ -2876,7 +2892,6 @@ export default {
 
 .close-btn:hover {
   color: #fff;
-  transform: rotate(90deg);
 }
 
 .rating-content {

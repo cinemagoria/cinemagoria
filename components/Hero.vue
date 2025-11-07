@@ -1397,7 +1397,6 @@ export default {
 
 .close-btn:hover {
   color: #fff;
-  transform: rotate(90deg);
 }
 
 .rating-content {

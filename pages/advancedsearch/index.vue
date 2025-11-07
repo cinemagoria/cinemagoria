@@ -55,9 +55,9 @@
             </div>
         </div>
       </div>
-      <nav class="navbar">
-        <h1 class="navbar-welcome" style="position: relative; top: 23px;">Búsqueda Avanzada</h1>
-        <h2 class="text-center" style="color: rgb(172, 175, 181); font-size: 14px; margin-top: 30px; position: relative; text-transform: none; left: -2px; top: -6px;">
+      <nav class="navbar navbar-welcome">
+        <h1 class="title-primary" style="position: relative; color: #7FDBF1 !important; top: 23px;">Búsqueda Avanzada</h1>
+        <h2 class="title-secondary" style="color: rgb(172, 175, 181); font-size: 14px; margin-top: 40px; position: relative; text-transform: none; left: -2px; top: -6px;">
         Refina tus criterios de búsqueda para obtener resultados más precisos.
       </h2>
       </nav>
@@ -281,7 +281,7 @@
         </div>
         
         <div v-if="MinRatingForLabel === 0" class="default-rating-note">
-          *Para obtener los mejores resultados, el valor de calificación mínimo predeterminado es 6/10, con un máximo de 40 resultados por búsqueda.
+          <span class="title-secondary" style="font-size:12px;">*Para obtener los mejores resultados, el valor de calificación mínimo predeterminado es 6/10, con un máximo de 40 resultados por búsqueda.</span>
         </div>
       </div>  
       </div>
@@ -1285,8 +1285,6 @@ export default {
   -webkit-background-clip: text;
   color: transparent;
   margin-top: 7rem;
-  text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
-  font-family: 'Roboto', sans-serif;
 }
 
 .text-center {
@@ -1793,6 +1791,8 @@ input:not(:checked):focus ~ #helper-text {
   border: 1px solid rgba(255, 255, 255, 0.18);
   padding: 30px;
   width: 90%;
+  margin-top: 30px !important;
+  position:relative;
   margin: 0 auto;
 }
 
@@ -2065,8 +2065,6 @@ input:not(:checked):focus ~ #helper-text {
   -webkit-background-clip: text;
   color: transparent;
   margin-top: 7rem;
-  text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
-  font-family: 'Roboto', sans-serif;
 }
 
 .text-center {

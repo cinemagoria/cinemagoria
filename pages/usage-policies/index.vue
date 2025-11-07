@@ -18,11 +18,10 @@
         </div>
       </div> 
       <br>
-      <h1 class="text-white text-center"><b>Políticas de Uso y Acuerdo de Privacidad</b></h1>
+      <h1 class="title-primary text-center" style="font-size: 20px; margin-top: 10px;"><b>Políticas de Uso y Acuerdo de Privacidad</b></h1>
       <br>
       <div>
-        <h2 class="text-center custom-center"><strong>Fecha de entrada en vigor:</strong> 27 de marzo de 2024</h2>
-        <h2 class="text-center custom-center"><strong>Última actualización:</strong> 24 de octubre de 2025</h2>
+        <h2 class="title-secondary custom-center" style="font-size: 12px; position:relative; bottom:15px;"><strong>Fecha de entrada en vigor:</strong> 27 de marzo de 2024</h2>
         <h2 class="text-center custom-center"><strong>1. INTRODUCCIÓN</strong></h2>
         <h2 class="text-center">ESTA PLATAFORMA TÉCNICA DEMOSTRATIVA, PROPORCIONADA SIN NINGÚN TIPO DE GARANTÍA, ESTÁ DESTINADA ÚNICAMENTE AL USO PERSONAL EN LÍNEA, CON FINES NO COMERCIALES Y SIN ÁNIMO DE LUCRO. LEA COMPLETAMENTE ESTE ACUERDO ANTES DE UTILIZAR LA PLATAFORMA. AL ACCEDER O UTILIZAR ESTA PLATAFORMA —INCLUIDOS SU DOMINIO, CONTENIDO O CUALQUIER INTERACCIÓN (COMO HACER CLIC EN ENLACES)— USTED RECONOCE Y DECLARA QUE ACEPTA ESTE ACUERDO DE USUARIO Y QUE TIENE 18 AÑOS DE EDAD O MÁS. SU ACCESO Y USO IMPLICAN LA ACEPTACIÓN PLENA Y SIN MODIFICACIONES DE TODOS LOS TÉRMINOS Y CONDICIONES AQUÍ ESTABLECIDOS, LOS CUALES ENTRAN EN VIGOR DE INMEDIATO.</h2>
         <h2 class="text-center">Si no está de acuerdo con estos términos, simplemente absténgase de utilizar la plataforma y cierre todas sus ventanas. No podrá acceder ni utilizar esta plataforma si usted (o su tutor legal) no puede celebrar un contrato vinculante, o en cualquier jurisdicción donde este acuerdo no sea exigible. Al permitir el acceso a la plataforma desde su dispositivo o red, usted manifiesta su conformidad con las presentes Políticas de Uso.</h2>
@@ -50,6 +49,7 @@
         <h2 class="text-center">AL UTILIZAR NUESTRO SITIO WEB, USTED ACEPTA EL USO DE COOKIES. NUESTRA POLÍTICA DE COOKIES PROPORCIONA DETALLES SOBRE QUÉ SON LAS COOKIES, CÓMO LAS UTILIZAMOS, LA PARTICIPACIÓN DE SOCIOS DE TERCEROS, SUS OPCIONES DE COOKIES Y INFORMACIÓN ADICIONAL. LAS COOKIES SON PEQUEÑOS FRAGMENTOS DE TEXTO ENVIADOS A SU NAVEGADOR WEB DESDE UN SITIO WEB VISITADO. SE ALMACENAN EN SU NAVEGADOR, PERMITIENDO QUE EL SITIO WEB O TERCEROS LO RECONOZCAN, SIMPLIFICANDO SUS VISITAS SUBSECUENTES Y MEJORANDO LA UTILIDAD DEL SITIO WEB. DURANTE SU USO DEL SITIO WEB, PODEMOS COLOCAR VARIOS ARCHIVOS DE COOKIES EN SU NAVEGADOR WEB, QUE SIRVEN PARA FINES ESENCIALES Y ANALÍTICOS. ADEMÁS DE LOS NUESTROS, PODEMOS UTILIZAR COOKIES DE TERCEROS PARA INFORMAR ESTADÍSTICAS DE USO DEL SITIO WEB, ENTREGAR ANUNCIOS, ETC. SI DESEA ELIMINAR O RECHAZAR LAS COOKIES, CONSULTE LAS PÁGINAS DE AYUDA DE SU NAVEGADOR. TENGA EN CUENTA QUE TALES ACCIONES PUEDEN LIMITAR FUNCIONES, ALMACENAMIENTO DE PREFERENCIAS Y VISUALIZACIÓN DE PÁGINAS. PARA NAVEGADORES POPULARES COMO GOOGLE CHROME, OPERA, MOZILLA FIREFOX Y SAFARI, PUEDE ENCONTRAR INSTRUCCIONES ESPECÍFICAS EN SUS RESPECTIVAS PÁGINAS DE SOPORTE. EXPLORE <a href="https://allaboutcookies.org" target="_blank">ALLABOUTCOOKIES.ORG</a> Y <a href="https://networkadvertising.org" target="_blank">NETWORKADVERTISING.ORG</a> PARA OBTENER INFORMACIÓN COMPRENSIVA.</h2>
         <h2 class="text-center custom-center"><strong>8. CONTACTO</strong></h2>
         <h2 class="text-center">PARA CUALQUIER CONSULTA O DUDA SOBRE ESTE ACUERDO DE USUARIO, TÉRMINOS Y CONDICIONES O POLÍTICAS DE PRIVACIDAD, POR FAVOR ENVÍE UN CORREO ELECTRÓNICO A <strong>hello@entercinema.com.</strong></h2>
+        <h2 class="title-secondary custom-center" style="font-size: 12px; margin-top:20px;"><strong>Última actualización:</strong> 24 de octubre de 2025</h2>
       </div>
       <br>
       <div class="button-container">

@@ -341,6 +341,7 @@ export default {
   mounted() {
     window.addEventListener('resize', this.checkMobileDevice);
     this.loadChatSession();
+    this.loadUserConversations();
     this.$nextTick(() => {
       if (this.$refs.chatbotMessagesContainer) {
         this.$refs.chatbotMessagesContainer.addEventListener('click', (event) => {
@@ -774,6 +775,48 @@ export default {
       return token !== null;
     },
 
+    getUserEmail() {
+      try {
+        const token = localStorage.getItem('access_token');
+        if (!token) return null;
+        
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.email || payload.sub || null;
+      } catch (error) {
+        console.warn('Error extracting user email:', error);
+        return null;
+      }
+    },
+
+    async loadUserConversations() {
+      const userEmail = this.getUserEmail();
+      if (!userEmail) return;
+
+      try {
+        const response = await axios.get(`${this.apiUrl}/conversations`, {
+          params: { user_email: userEmail },
+          timeout: 5000
+        });
+
+        if (response.data && response.data.conversations) {
+          const dbConversations = response.data.conversations.map(conv => ({
+            id: conv.chat_id,
+            title: conv.chat_id,
+            messages: [],
+            results: [],
+            chatId: conv.chat_id,
+            createdAt: new Date(conv.last_message * 1000).toISOString(),
+            titleGenerated: false
+          }));
+
+          this.conversations = [...dbConversations];
+          this.saveConversations();
+        }
+      } catch (error) {
+        console.warn('Error loading user conversations:', error);
+      }
+    },
+
     open() {
       const isAuthenticated = this.checkAuth();
       if (!isAuthenticated) {
@@ -915,6 +958,7 @@ export default {
       });
 
       try {
+        const userEmail = this.getUserEmail();
         const response = await fetch(this.apiUrl, {
           method: 'POST',
           headers: {
@@ -922,7 +966,8 @@ export default {
           },
           body: JSON.stringify({
             query: queryToSend,
-            chat_id: this.chatId
+            chat_id: this.chatId,
+            user_email: userEmail
           })
         });
 
@@ -1109,9 +1154,11 @@ export default {
       try {
         const promptIndex = this.currentPromptIndex;
      
+        const userEmail = this.getUserEmail();
         const payload = {
           query: this.currentDailyPrompt,
           chat_id: this.chatId,
+          user_email: userEmail,
           prompt_id: `daily_prompt_${promptIndex}`
         };
             
@@ -1329,9 +1376,11 @@ export default {
       });
 
       try {
+        const userEmail = this.getUserEmail();
         const response = await axios.post(this.apiUrl, {
           query: queryToSend,
-          chat_id: this.chatId
+          chat_id: this.chatId,
+          user_email: userEmail
         }, { timeout: 45000 });
 
         this.chatId = response.data.chat_id;
