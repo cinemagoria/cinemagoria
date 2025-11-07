@@ -19,11 +19,10 @@
         </div>
       </div> 
       <br>
-      <h1 class="text-white text-center"><b>Usage Policies & Privacy Agreement</b></h1>
+      <h1 class="title-primary text-center" style="font-size: 20px; margin-top: 10px;"><b>Usage Policies & Privacy Agreement</b></h1>
       <br>
       <div>
-        <h2 class="text-center custom-center"><strong>Effective Date:</strong> March 27, 2024</h2>
-        <h2 class="text-center custom-center"><strong>Last Updated:</strong> October 24, 2025</h2>
+        <h2 class="title-secondary custom-center" style="font-size: 12px;"><strong>Effective Date:</strong> March 27, 2024</h2>
         <h2 class="text-center custom-center"><strong>1. INTRODUCTION</strong></h2>
         <h2 class="text-center">THIS DEMONSTRATIVE TECHNICAL PLATFORM, PROVIDED WITHOUT ANY WARRANTY, IS INTENDED SOLELY FOR IMMEDIATE PERSONAL ONLINE VIEWING, FOR NON-COMMERCIAL AND NONPROFIT PURPOSES. PLEASE READ THIS ENTIRE AGREEMENT BEFORE USING THIS PLATFORM. BY ACCESSING OR USING THIS PLATFORM, INCLUDING ITS DOMAIN NAME(S), CONTENT, OR ANY INTERACTION (SUCH AS CLICKING ON LINKS), YOU ACKNOWLEDGE AND DECLARE THAT YOU ACCEPT THIS USER AGREEMENT AND THAT YOU ARE 18 YEARS OF AGE OR OLDER. YOUR ACCESS AND USE INDICATE YOUR ACKNOWLEDGMENT, ACCEPTANCE, AND UNCONDITIONAL AGREEMENT TO ALL THE TERMS AND CONDITIONS SET FORTH HEREIN WITHOUT MODIFICATION, AND THIS AGREEMENT TAKES EFFECT IMMEDIATELY.</h2>
         <h2 class="text-center">To reject these terms, simply refrain from using the platform and close all its windows. You may not access or use this platform if you (or your legal guardian) cannot enter into a binding contract, or in any jurisdiction where this agreement is not enforceable. By allowing access to this platform through your device or network, you consent and agree to be bound by these Usage Policies.</h2>
@@ -51,6 +50,7 @@
         <h2 class="text-center">BY USING OUR WEBSITE, YOU CONSENT TO THE USE OF COOKIES. OUR COOKIE POLICY PROVIDES DETAILS ON WHAT COOKIES ARE, HOW WE USE THEM, THIRD-PARTY INVOLVEMENT, YOUR COOKIE CHOICES, AND ADDITIONAL INFORMATION. COOKIES ARE SMALL TEXT FILES SENT TO YOUR WEB BROWSER FROM A VISITED WEBSITE. THEY ARE STORED IN YOUR BROWSER, ALLOWING THE WEBSITE OR THIRD PARTIES TO RECOGNIZE YOU, SIMPLIFYING SUBSEQUENT VISITS AND ENHANCING WEBSITE UTILITY. DURING YOUR USE OF THE WEBSITE, WE MAY PLACE VARIOUS COOKIE FILES IN YOUR WEB BROWSER, SERVING ESSENTIAL AND ANALYTICAL PURPOSES. IN ADDITION TO OURS, WE MAY USE THIRD-PARTY COOKIES TO REPORT WEBSITE USAGE STATISTICS, DELIVER ADVERTISEMENTS, ETC. IF YOU WISH TO DELETE OR REJECT COOKIES, CONSULT YOUR BROWSER'S HELP PAGES. PLEASE NOTE THAT SUCH ACTIONS MAY LIMIT FEATURES, PREFERENCE STORAGE, AND PAGE VIEWING. FOR POPULAR BROWSERS SUCH AS GOOGLE CHROME, OPERA, MOZILLA FIREFOX, AND SAFARI, YOU CAN FIND SPECIFIC INSTRUCTIONS ON THEIR RESPECTIVE SUPPORT PAGES. EXPLORE <a href="https://allaboutcookies.org" target="_blank">ALLABOUTCOOKIES.ORG</a> AND <a href="https://networkadvertising.org" target="_blank">NETWORKADVERTISING.ORG</a> FOR COMPREHENSIVE INFORMATION.</h2>
         <h2 class="text-center custom-center"><strong>8. CONTACT</strong></h2>
         <h2 class="text-center">FOR ANY INQUIRIES OR CONCERNS REGARDING THIS USER AGREEMENT, TERMS AND CONDITIONS, OR PRIVACY POLICIES, PLEASE EMAIL <strong>hello@entercinema.com.</strong></h2>
+        <h2 class="title-secondary custom-center" style="font-size: 12px; margin-top:20px;"><strong>Last Updated:</strong> October 24, 2025</h2>
       </div>
       <br>
       <div class="button-container">

@@ -57,8 +57,8 @@
         </div>
       </div>
       <br>
-      <h1 class="navbar-welcome">Releases Timeline</h1>
-      <h2 class="subtitle">Stay Informed About All Movies and New TV Shows Episodes Releases.</h2>
+      <h1 class="title-primary">Releases Timeline</h1>
+      <h2 class="title-secondary" style="font-size: 14px;">Stay Informed About All Movies and New TV Shows Episodes Releases.</h2>
       <div>
         <div class="loader" v-if="!imagesLoaded">
           <div class="modern-spinner">
