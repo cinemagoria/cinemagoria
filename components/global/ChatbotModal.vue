@@ -338,7 +338,7 @@ export default {
   created() {
     this.loadDailyPrompt();
   },
-  mounted() {
+  async mounted() {
     window.addEventListener('resize', this.checkMobileDevice);
     
     this.$nextTick(() => {
@@ -352,15 +352,24 @@ export default {
         });
       }
     });
+    
     this.loadMinimizedState();
-    this.initializeFirstConversation();
+    
+    const userEmail = this.getUserEmail();
+    if (userEmail) {
+      console.log('[ChatbotModal] Initializing with authenticated user');
+      await this.initializeFirstConversation();
+    } else {
+      console.log('[ChatbotModal] Initializing without authentication');
+      this.initializeFirstConversation();
+    }
+    
     this.$root.$on('chatbot-maximized', () => {
       this.chatBotMinimized = false;
     });
   },
 
   beforeDestroy() {
-    
     window.removeEventListener('resize', this.checkMobileDevice);
     if (this.dotAnimationInterval) {
       clearInterval(this.dotAnimationInterval);
@@ -392,20 +401,72 @@ export default {
       }
     },
 
-    initializeFirstConversation() {
-      if (this.conversations.length === 0) {
-        this.createNewConversation();
+    async initializeFirstConversation() {
+      const userEmail = this.getUserEmail();
+      
+      if (userEmail) {
+        console.log('[ChatbotModal] User authenticated, loading conversations from backend');
+        await this.loadConversationsFromBackend();
       } else {
-        this.activeConversationId = this.conversations[0].id;
-        this.loadActiveConversation();
+        console.log('[ChatbotModal] No user authenticated, creating local conversation');
+        this.createNewConversation();
       }
+      
       this.startTitleGenerationInterval();
+    },
+
+    async loadConversationsFromBackend() {
+      const userEmail = this.getUserEmail();
+      if (!userEmail) {
+        console.log('[ChatbotModal] No user email, skipping conversation load');
+        return;
+      }
+
+      console.log('[ChatbotModal] Loading conversations for user:', userEmail);
+
+      try {
+        const response = await fetch(`${this.apiUrl}?user_email=${encodeURIComponent(userEmail)}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('[ChatbotModal] Loaded conversations from backend:', data.conversations);
+
+        this.conversations = data.conversations.map(conv => ({
+          id: conv.chat_id,
+          title: conv.title,
+          messages: [],
+          results: [],
+          chatId: conv.chat_id,
+          createdAt: new Date(conv.created_at * 1000).toISOString(),
+          updatedAt: new Date(conv.updated_at * 1000).toISOString(),
+          titleGenerated: true
+        }));
+
+        console.log('[ChatbotModal] Mapped conversations:', this.conversations);
+
+        if (this.conversations.length > 0) {
+          this.activeConversationId = this.conversations[0].id;
+          this.chatId = this.conversations[0].chatId;
+        } else {
+          console.log('[ChatbotModal] No conversations found, creating new one');
+          this.createNewConversation();
+        }
+
+      } catch (error) {
+        console.error('[ChatbotModal] Error loading conversations:', error);
+        this.createNewConversation();
+      }
     },
     
     createNewConversation() {
-      
-      
-      
       const newId = Date.now().toString();
       this.conversationIndex++;
       const now = new Date();
