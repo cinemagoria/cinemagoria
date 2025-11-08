@@ -529,43 +529,51 @@ export default {
     },
       
    async switchConversation(conversationId) {
-      if (conversationId !== this.activeConversationId) {
-        console.log('[ChatbotModal] Switching to conversation:', conversationId);
+    if (conversationId !== this.activeConversationId) {
+      console.log('[ChatbotModal] Switching to conversation:', conversationId);
+      
+      this.activeConversationId = conversationId;
+      const activeConv = this.conversations.find(conv => conv.id === conversationId);
+      
+      if (activeConv) {
+        this.chatId = activeConv.chatId;
         
-        this.activeConversationId = conversationId;
-        const activeConv = this.conversations.find(conv => conv.id === conversationId);
-        
-        if (activeConv) {
-          this.chatId = activeConv.chatId;
+        if (activeConv.messages.length === 0 && activeConv.chatId) {
+          console.log('[ChatbotModal] Loading messages from backend for:', activeConv.chatId);
+          const { messages, mediaReferences } = await this.loadConversationMessages(activeConv.chatId);
           
-          if (activeConv.messages.length === 0) {
-            console.log('[ChatbotModal] Loading messages from backend for:', activeConv.chatId);
-            const { messages, mediaReferences } = await this.loadConversationMessages(activeConv.chatId);
-            
-            activeConv.messages = messages.map(msg => ({
-              role: msg.role,
-              content: msg.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                                  .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                                  .replace(/\n/g, '<br>')
-            }));
-            
-            if (mediaReferences && mediaReferences.length > 0) {
-              console.log('[ChatbotModal] Fetching media details for loaded conversation');
-              await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+          activeConv.messages = messages.map(msg => {
+            let content = msg.content;
+            if (msg.role === 'assistant') {
+              content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                              .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                              .replace(/\n/g, '<br>');
             }
-          }
-          
-          this.chatMessages = [...activeConv.messages];
-          this.chatBotResults = activeConv.results ? [...activeConv.results] : [];
-          
-          console.log('[ChatbotModal] Loaded chat messages:', this.chatMessages.length);
-          
-          this.$nextTick(() => {
-            this.scrollToBottom();
+            return {
+              role: msg.role,
+              content: content
+            };
           });
+          
+          if (mediaReferences && mediaReferences.length > 0) {
+            console.log('[ChatbotModal] Fetching media details for:', mediaReferences);
+            await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+          } else {
+            this.chatBotResults = [];
+          }
         }
+        
+        this.chatMessages = [...activeConv.messages];
+        
+        console.log('[ChatbotModal] Loaded chat messages:', this.chatMessages.length);
+        console.log('[ChatbotModal] Loaded media results:', this.chatBotResults.length);
+        
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
       }
-    },
+    }
+  },
     
     closeConversation(conversationId) {
       const index = this.conversations.findIndex(conv => conv.id === conversationId);
@@ -594,24 +602,32 @@ export default {
           console.log('[ChatbotModal] Messages empty, fetching from backend');
           const { messages, mediaReferences } = await this.loadConversationMessages(activeConv.chatId);
           
-          activeConv.messages = messages.map(msg => ({
-            role: msg.role,
-            content: msg.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                                .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                                .replace(/\n/g, '<br>')
-          }));
+          activeConv.messages = messages.map(msg => {
+            let content = msg.content;
+            if (msg.role === 'assistant') {
+              content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                              .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                              .replace(/\n/g, '<br>');
+            }
+            return {
+              role: msg.role,
+              content: content
+            };
+          });
           
           if (mediaReferences && mediaReferences.length > 0) {
             console.log('[ChatbotModal] Fetching media details for active conversation');
             await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+          } else {
+            this.chatBotResults = [];
           }
         }
         
         this.chatMessages = [...activeConv.messages];
         this.chatId = activeConv.chatId;
-        this.chatBotResults = activeConv.results ? [...activeConv.results] : [];
         
         console.log('[ChatbotModal] Active conversation loaded with', this.chatMessages.length, 'messages');
+        console.log('[ChatbotModal] Active conversation media results:', this.chatBotResults.length);
       } else {
         this.chatMessages = [];
         this.chatId = null;
