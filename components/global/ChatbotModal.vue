@@ -56,7 +56,7 @@
 
           <div class="chat-content">
             <div class="chatbot-messages" ref="chatbotMessagesContainer">
-              <div v-if="!chatBotResponse && chatBotResults.length === 0 && !chatBotLoading" class="chatbot-welcome" style="top: 5px; position:relative;">
+              <div v-if="chatMessages.length === 0 && !chatBotLoading" class="chatbot-welcome" style="top: 5px; position:relative;">
                 <div class="examples-section">
                   <h5>Prueba preguntar:</h5>
                   <div class="example-item">"¿Quién dirigió The Matrix?"</div>
@@ -505,6 +505,23 @@ export default {
     createNewConversation() {
       const newId = Date.now().toString();
       this.conversationIndex++;
+      const currentActiveConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+      if (currentActiveConv && this.chatMessages.length > 0) {
+        currentActiveConv.messages = [...this.chatMessages];
+        currentActiveConv.results = [...this.chatBotResults];
+      }
+      
+      const emptyConversations = this.conversations.filter(conv => 
+        conv.messages.length === 0 && 
+        conv.id !== this.activeConversationId
+      );
+
+      emptyConversations.forEach(conv => {
+        const index = this.conversations.findIndex(c => c.id === conv.id);
+        if (index !== -1) {
+          this.conversations.splice(index, 1);
+        }
+      });
       const now = new Date();
       const utcTime = now.toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
       
@@ -520,6 +537,10 @@ export default {
       
       this.conversations.unshift(newConversation);
       this.activeConversationId = newId;
+      this.chatBotResults = [];
+      this.chatMessages = [];
+      this.chatBotResponse = '';
+      
       this.loadActiveConversation();
       
       
@@ -529,11 +550,17 @@ export default {
     },
       
    async switchConversation(conversationId) {
-    if (conversationId !== this.activeConversationId) {
-      console.log('[ChatbotModal] Switching to conversation:', conversationId);
-      
-      this.activeConversationId = conversationId;
-      const activeConv = this.conversations.find(conv => conv.id === conversationId);
+      if (conversationId !== this.activeConversationId) {
+        console.log('[ChatbotModal] Switching to conversation:', conversationId);
+        
+        const previousConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+        if (previousConv && this.chatMessages.length > 0) {
+          previousConv.messages = [...this.chatMessages];
+          previousConv.results = [...this.chatBotResults];
+        }
+        
+        this.activeConversationId = conversationId;
+        const activeConv = this.conversations.find(conv => conv.id === conversationId);
       
       if (activeConv) {
         this.chatId = activeConv.chatId;
@@ -558,8 +585,9 @@ export default {
           if (mediaReferences && mediaReferences.length > 0) {
             console.log('[ChatbotModal] Fetching media details for:', mediaReferences);
             await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+            activeConv.results = [...this.chatBotResults];
           } else {
-            this.chatBotResults = [];
+            this.chatBotResults = activeConv.results || [];
           }
         }
         
@@ -594,6 +622,7 @@ export default {
     },
     
     async loadActiveConversation() {
+      this.chatBotResults = [];
       const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
       if (activeConv) {
         console.log('[ChatbotModal] Loading active conversation:', activeConv.chatId);
@@ -618,8 +647,9 @@ export default {
           if (mediaReferences && mediaReferences.length > 0) {
             console.log('[ChatbotModal] Fetching media details for active conversation');
             await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+          
           } else {
-            this.chatBotResults = [];
+            this.chatBotResults = activeConv.results || [];
           }
         }
         
@@ -880,6 +910,11 @@ export default {
       this.clearMinimizedState();
       this.checkMobileDevice();
       this.inputEnabled = !this.isMobileDevice;
+      
+      this.chatBotResults = [];
+      this.chatMessages = [];
+      this.chatBotResponse = '';
+      
       this.createNewConversation();
     },
 
@@ -1079,6 +1114,21 @@ export default {
             await this.fetchMediaDetailsFromBackendReferences(data.media_references);
           } else {
             this.chatBotResults = [];
+          }
+
+          if (data.media_references && data.media_references.length > 0) {
+            await this.fetchMediaDetailsFromBackendReferences(data.media_references);
+            const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+            if (activeConv) {
+              activeConv.results = [...this.chatBotResults];
+              activeConv.messages = [...this.chatMessages];
+            }
+          } else {
+            this.chatBotResults = [];
+            const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+            if (activeConv) {
+              activeConv.messages = [...this.chatMessages];
+            }
           }
           
           this.$nextTick(() => {
@@ -1320,7 +1370,20 @@ export default {
           } else {
             this.chatBotResults = [];
           }
-          
+
+          if (response.data.media_references && response.data.media_references.length > 0) {
+            await this.fetchPredefinedMediaReferences(response.data.media_references);
+            const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+            if (activeConv) {
+              activeConv.results = [...this.chatBotResults];
+            }
+          } else {
+            this.chatBotResults = [];
+            const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+            if (activeConv) {
+              activeConv.messages = [...this.chatMessages];
+            }
+          }
           if (this.isMobileDevice) {
             this.inputEnabled = false;
           }
@@ -1984,6 +2047,11 @@ export default {
               }).slice(0, 20);
 
               this.chatBotResults = sortedResults;
+                const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+                if (activeConv) {
+                  activeConv.results = [...this.chatBotResults];
+                }
+                
           } else {
               const finalResults = [...mainObjectResult, ...mediaResults];
               
@@ -1998,6 +2066,10 @@ export default {
               }).slice(0, 20);
 
               this.chatBotResults = sortedResults;
+              const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+              if (activeConv) {
+                activeConv.results = [...this.chatBotResults];
+              }
           }
 
           if (results.length === 0 && filteredReferences.some(ref => ref.name && ref.type) && mainObjectResult.length === 0) {
@@ -2106,7 +2178,10 @@ export default {
       }
 
       this.chatBotResults = results;
-      
+      const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+      if (activeConv) {
+        activeConv.results = [...this.chatBotResults];
+      }
       this.$nextTick(() => {
         this.scrollToBottom();
       });
