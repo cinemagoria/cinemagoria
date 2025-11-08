@@ -505,6 +505,13 @@ export default {
     createNewConversation() {
       const newId = Date.now().toString();
       this.conversationIndex++;
+      
+      const currentActiveConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+      if (currentActiveConv && this.chatMessages.length > 0) {
+        currentActiveConv.messages = [...this.chatMessages];
+        currentActiveConv.results = [...this.chatBotResults];
+      }
+      
       const emptyConversations = this.conversations.filter(conv => 
         conv.messages.length === 0 && 
         conv.id !== this.activeConversationId
@@ -544,11 +551,17 @@ export default {
     },
       
    async switchConversation(conversationId) {
-    if (conversationId !== this.activeConversationId) {
-      console.log('[ChatbotModal] Switching to conversation:', conversationId);
-      
-      this.activeConversationId = conversationId;
-      const activeConv = this.conversations.find(conv => conv.id === conversationId);
+      if (conversationId !== this.activeConversationId) {
+        console.log('[ChatbotModal] Switching to conversation:', conversationId);
+        
+        const previousConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+        if (previousConv && this.chatMessages.length > 0) {
+          previousConv.messages = [...this.chatMessages];
+          previousConv.results = [...this.chatBotResults];
+        }
+        
+        this.activeConversationId = conversationId;
+        const activeConv = this.conversations.find(conv => conv.id === conversationId);
       
       if (activeConv) {
         this.chatId = activeConv.chatId;
@@ -1105,9 +1118,14 @@ export default {
             const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
             if (activeConv) {
               activeConv.results = [...this.chatBotResults];
+              activeConv.messages = [...this.chatMessages];
             }
           } else {
             this.chatBotResults = [];
+            const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+            if (activeConv) {
+              activeConv.messages = [...this.chatMessages];
+            }
           }
           
           this.$nextTick(() => {
@@ -1349,11 +1367,15 @@ export default {
             const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
             if (activeConv) {
               activeConv.results = [...this.chatBotResults];
+              activeConv.messages = [...this.chatMessages];
             }
           } else {
             this.chatBotResults = [];
+            const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+            if (activeConv) {
+              activeConv.messages = [...this.chatMessages];
+            }
           }
-          
           if (this.isMobileDevice) {
             this.inputEnabled = false;
           }
