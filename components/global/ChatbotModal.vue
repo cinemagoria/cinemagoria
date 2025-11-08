@@ -56,7 +56,7 @@
 
           <div class="chat-content">
             <div class="chatbot-messages" ref="chatbotMessagesContainer">
-              <div v-if="!chatBotResponse && chatBotResults.length === 0 && !chatBotLoading" class="chatbot-welcome" style="top: 5px; position:relative;">
+              <div v-if="chatMessages.length === 0 && !chatBotLoading" class="chatbot-welcome" style="top: 5px; position:relative;">
                 <div class="examples-section">
                   <h5>Try asking:</h5>
                   <div class="example-item">"Who directed The Matrix?"</div>
@@ -505,6 +505,17 @@ export default {
     createNewConversation() {
       const newId = Date.now().toString();
       this.conversationIndex++;
+      const emptyConversations = this.conversations.filter(conv => 
+        conv.messages.length === 0 && 
+        conv.id !== this.activeConversationId
+      );
+
+      emptyConversations.forEach(conv => {
+        const index = this.conversations.findIndex(c => c.id === conv.id);
+        if (index !== -1) {
+          this.conversations.splice(index, 1);
+        }
+      });
       const now = new Date();
       const utcTime = now.toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
       
@@ -520,8 +531,12 @@ export default {
       
       this.conversations.unshift(newConversation);
       this.activeConversationId = newId;
-      this.loadActiveConversation();
       
+      this.chatBotResults = [];
+      this.chatMessages = [];
+      this.chatBotResponse = '';
+      
+      this.loadActiveConversation();
       
       this.$nextTick(() => {
         this.$forceUpdate();
@@ -558,8 +573,9 @@ export default {
           if (mediaReferences && mediaReferences.length > 0) {
             console.log('[ChatbotModal] Fetching media details for:', mediaReferences);
             await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+            activeConv.results = [...this.chatBotResults];
           } else {
-            this.chatBotResults = [];
+            this.chatBotResults = activeConv.results || [];
           }
         }
         
@@ -594,6 +610,8 @@ export default {
     },
     
     async loadActiveConversation() {
+      this.chatBotResults = [];
+      
       const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
       if (activeConv) {
         console.log('[ChatbotModal] Loading active conversation:', activeConv.chatId);
@@ -618,11 +636,11 @@ export default {
           if (mediaReferences && mediaReferences.length > 0) {
             console.log('[ChatbotModal] Fetching media details for active conversation');
             await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
-          } else {
-            this.chatBotResults = [];
           }
+        } else {
+          this.chatBotResults = activeConv.results || [];
         }
-        
+
         this.chatMessages = [...activeConv.messages];
         this.chatId = activeConv.chatId;
         
@@ -867,7 +885,7 @@ export default {
       return token !== null;
     },
 
-    open() {
+   open() {
       const isAuthenticated = this.checkAuth();
       if (!isAuthenticated) {
         return;
@@ -878,6 +896,11 @@ export default {
       this.clearMinimizedState();
       this.checkMobileDevice();
       this.inputEnabled = !this.isMobileDevice;
+      
+      this.chatBotResults = [];
+      this.chatMessages = [];
+      this.chatBotResponse = '';
+      
       this.createNewConversation();
     },
 
@@ -1073,6 +1096,16 @@ export default {
         } else {
           if (data.media_references && data.media_references.length > 0) {
             await this.fetchMediaDetailsFromBackendReferences(data.media_references);
+          } else {
+            this.chatBotResults = [];
+          }
+
+          if (data.media_references && data.media_references.length > 0) {
+            await this.fetchMediaDetailsFromBackendReferences(data.media_references);
+            const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+            if (activeConv) {
+              activeConv.results = [...this.chatBotResults];
+            }
           } else {
             this.chatBotResults = [];
           }
@@ -1307,6 +1340,16 @@ export default {
           }
           if (response.data.media_references && response.data.media_references.length > 0) {
             await this.fetchPredefinedMediaReferences(response.data.media_references);
+          } else {
+            this.chatBotResults = [];
+          }
+
+          if (response.data.media_references && response.data.media_references.length > 0) {
+            await this.fetchPredefinedMediaReferences(response.data.media_references);
+            const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+            if (activeConv) {
+              activeConv.results = [...this.chatBotResults];
+            }
           } else {
             this.chatBotResults = [];
           }
@@ -1980,6 +2023,12 @@ export default {
                 })));
 
                 this.chatBotResults = sortedResults;
+                this.chatBotResults = sortedResults;
+                const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+                if (activeConv) {
+                  activeConv.results = [...this.chatBotResults];
+                }
+                
             } else {
                 const finalResults = [...mainObjectResult, ...mediaResults];
                 
@@ -1994,6 +2043,10 @@ export default {
                 }).slice(0, 20);
 
                 this.chatBotResults = sortedResults;
+                const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+                if (activeConv) {
+                  activeConv.results = [...this.chatBotResults];
+                }
             }
 
             if (results.length === 0 && filteredReferences.some(ref => ref.name && ref.type) && mainObjectResult.length === 0) {
@@ -2102,6 +2155,10 @@ export default {
         }
 
         this.chatBotResults = results;
+        const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+        if (activeConv) {
+          activeConv.results = [...this.chatBotResults];
+        }
         
         this.$nextTick(() => {
           this.scrollToBottom();
