@@ -340,7 +340,7 @@ export default {
   },
   mounted() {
     window.addEventListener('resize', this.checkMobileDevice);
-    this.loadChatSession();
+    
     this.$nextTick(() => {
       if (this.$refs.chatbotMessagesContainer) {
         this.$refs.chatbotMessagesContainer.addEventListener('click', (event) => {
@@ -353,7 +353,6 @@ export default {
       }
     });
     this.loadMinimizedState();
-    this.loadConversations();
     this.initializeFirstConversation();
     this.$root.$on('chatbot-maximized', () => {
       this.chatBotMinimized = false;
@@ -361,8 +360,7 @@ export default {
   },
 
   beforeDestroy() {
-    this.saveCurrentConversation();
-    this.saveConversations();
+    
     window.removeEventListener('resize', this.checkMobileDevice);
     if (this.dotAnimationInterval) {
       clearInterval(this.dotAnimationInterval);
@@ -379,6 +377,11 @@ export default {
     this.clearMinimizedState();
   },
   methods: {
+    getUserEmail() {
+      const email = localStorage.getItem('email');
+      console.log('[ChatbotModal] User email from localStorage:', email);
+      return email;
+    },
     async getIMDbRatingFromDB(imdbId) {
       try {
         const response = await axios.get(`/api/imdb-rating/${imdbId}`);
@@ -388,31 +391,7 @@ export default {
         return { found: false };
       }
     },
-    loadConversations() {
-      try {
-        if (typeof localStorage !== 'undefined') {
-          const saved = localStorage.getItem(this.conversationsStorageKey);
-          if (saved) {
-            this.conversations = JSON.parse(saved);
-          }
-        }
-      } catch (error) {
-        console.warn('Error loading conversations:', error);
-      }
-    },
-    
-    saveConversations() {
-      try {
-        if (typeof localStorage !== 'undefined') {
-          localStorage.setItem(this.conversationsStorageKey, JSON.stringify(this.conversations));
-          const hasConversations = this.conversations.some(conv => conv.messages.length > 0);
-          this.$root.$emit('chatbot-conversations-updated', hasConversations);
-        }
-      } catch (error) {
-        console.warn('Error saving conversations:', error);
-      }
-    },
-    
+
     initializeFirstConversation() {
       if (this.conversations.length === 0) {
         this.createNewConversation();
@@ -424,8 +403,8 @@ export default {
     },
     
     createNewConversation() {
-      this.saveCurrentConversation();
-      this.saveConversations();
+      
+      
       
       const newId = Date.now().toString();
       this.conversationIndex++;
@@ -445,7 +424,7 @@ export default {
       this.conversations.unshift(newConversation);
       this.activeConversationId = newId;
       this.loadActiveConversation();
-      this.saveConversations();
+      
       
       this.$nextTick(() => {
         this.$forceUpdate();
@@ -454,8 +433,8 @@ export default {
       
     switchConversation(conversationId) {
       if (conversationId !== this.activeConversationId) {
-        this.saveCurrentConversation();
-        this.saveConversations();
+        
+        
         this.activeConversationId = conversationId;
         this.loadActiveConversation();
       }
@@ -475,7 +454,7 @@ export default {
           }
         }
         
-        this.saveConversations();
+        
       }
     },
     
@@ -489,16 +468,6 @@ export default {
         this.chatMessages = [];
         this.chatId = null;
         this.chatBotResults = [];
-      }
-    },
-
-    saveCurrentConversation() {
-      const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
-      if (activeConv) {
-        activeConv.messages = [...this.chatMessages];
-        activeConv.chatId = this.chatId;
-        activeConv.results = [...this.chatBotResults];
-        activeConv.updatedAt = new Date().toISOString();
       }
     },
 
@@ -562,7 +531,7 @@ export default {
           if (response && response.trim()) {
             conversation.title = response.trim();
             conversation.titleGenerated = true;
-            this.saveConversations();
+            
           }
         } catch (error) {
           console.warn('Error generating title for conversation:', error);
@@ -623,8 +592,8 @@ export default {
     },
     
     minimizeChatBot() {
-      this.saveCurrentConversation();
-      this.saveConversations();
+      
+      
       this.chatBotOpen = false;
       this.chatBotMinimized = true;
       this.saveMinimizedState();
@@ -681,44 +650,6 @@ export default {
         }
       } catch (error) {
         console.warn('Error loading minimized state:', error);
-      }
-    },
-
-    loadChatSession() {
-      try {
-        if (typeof localStorage !== 'undefined') {
-          const sessionData = localStorage.getItem(this.sessionKey);
-          if (sessionData) {
-            const parsed = JSON.parse(sessionData);
-            this.chatId = parsed.chatId;
-          }
-        }
-      } catch (error) {
-        console.warn('Error loading chat session:', error);
-      }
-    },
-    
-    saveChatSession() {
-      try {
-        if (typeof localStorage !== 'undefined' && this.chatId) {
-          const sessionData = {
-            chatId: this.chatId,
-            timestamp: Date.now()
-          };
-          localStorage.setItem(this.sessionKey, JSON.stringify(sessionData));
-        }
-      } catch (error) {
-        console.warn('Error saving chat session:', error);
-      }
-    },
-    
-    clearChatSession() {
-      try {
-        if (typeof localStorage !== 'undefined') {
-          localStorage.removeItem(this.sessionKey);
-        }
-      } catch (error) {
-        console.warn('Error clearing chat session:', error);
       }
     },
 
@@ -858,8 +789,8 @@ export default {
       if (this.isMobileDevice) {
         this.inputEnabled = false;
       }
-      this.saveCurrentConversation();
-      this.saveConversations();
+      
+      
     },
 
     cancelSpoilerContent() {
@@ -915,6 +846,9 @@ export default {
       });
 
       try {
+        const userEmail = this.getUserEmail();
+        console.log('[ChatbotModal] Sending query with user_email:', userEmail);
+
         const response = await fetch(this.apiUrl, {
           method: 'POST',
           headers: {
@@ -922,7 +856,8 @@ export default {
           },
           body: JSON.stringify({
             query: queryToSend,
-            chat_id: this.chatId
+            chat_id: this.chatId,
+            user_email: userEmail
           })
         });
 
@@ -933,7 +868,7 @@ export default {
         const data = await response.json();
         
         this.chatId = data.chat_id;
-        this.saveChatSession();
+        
 
         if (data.conversation_history && data.conversation_history.length > 0) {
           this.chatMessages = [];
@@ -1042,8 +977,8 @@ export default {
       }
       
       this.updateConversationTitle();
-      this.saveCurrentConversation();
-      this.saveConversations();
+      
+      
     },
 
     loadDailyPrompt() {
@@ -1063,11 +998,11 @@ export default {
         const firstUserMessage = this.chatMessages.find(msg => msg.role === 'user');
         if (firstUserMessage) {
           activeConv.title = firstUserMessage.content.substring(0, 20) + '...';
-          this.saveConversations();
+          
         }
       }
-      this.saveCurrentConversation();
-      this.saveConversations();
+      
+      
     },
 
     sendDailyPrompt() {
@@ -1109,10 +1044,14 @@ export default {
       try {
         const promptIndex = this.currentPromptIndex;
      
+        const userEmail = this.getUserEmail();
+        console.log('[ChatbotModal] Sending daily prompt with user_email:', userEmail);
+
         const payload = {
           query: this.currentDailyPrompt,
           chat_id: this.chatId,
-          prompt_id: `daily_prompt_${promptIndex}`
+          prompt_id: `daily_prompt_${promptIndex}`,
+          user_email: userEmail
         };
             
         let response;
@@ -1135,9 +1074,10 @@ export default {
           try {
             const fallbackPayload = {
               query: this.currentDailyPrompt,
-              chat_id: this.chatId
+              chat_id: this.chatId,
+              user_email: userEmail
             };
-            
+                        
             response = await axios({
               method: 'post',
               url: this.apiUrl,
@@ -1156,7 +1096,7 @@ export default {
         }
         
         this.chatId = response.data.chat_id || this.chatId || "session";
-        this.saveChatSession();
+        
 
         if (response.data.conversation_history && response.data.conversation_history.length > 0) {
             this.chatMessages = [];
@@ -1335,7 +1275,7 @@ export default {
         }, { timeout: 45000 });
 
         this.chatId = response.data.chat_id;
-        this.saveChatSession();
+        
       
         if (response.data.conversation_history && response.data.conversation_history.length > 0) {
                   this.chatMessages = [];
