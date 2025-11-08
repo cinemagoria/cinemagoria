@@ -447,7 +447,8 @@ export default {
           chatId: conv.chat_id,
           createdAt: new Date(conv.created_at * 1000).toISOString(),
           updatedAt: new Date(conv.updated_at * 1000).toISOString(),
-          titleGenerated: true
+          titleGenerated: true,
+          persistedInBackend: true
         }));
 
         console.log('[ChatbotModal] Mapped conversations:', this.conversations);
@@ -458,6 +459,18 @@ export default {
         } else {
           console.log('[ChatbotModal] No conversations found, creating new one');
           this.createNewConversation();
+        }
+
+        const storedConversations = this.conversations.map(conv => ({
+          id: conv.id,
+          chatId: conv.chatId,
+          title: conv.title,
+          createdAt: conv.createdAt
+        }));
+        try {
+          localStorage.setItem('entercinema_cached_conversations', JSON.stringify(storedConversations));
+        } catch (e) {
+          console.warn('Failed to cache conversations:', e);
         }
 
       } catch (error) {
@@ -503,26 +516,17 @@ export default {
     },
     
     createNewConversation() {
+      console.log('[ChatbotModal] Creating new conversation. Current conversations:', this.conversations.length);
+      console.log('[ChatbotModal] Conversations with chatId:', this.conversations.filter(c => c.chatId).map(c => ({ id: c.id, chatId: c.chatId, title: c.title })));
+      
       const newId = Date.now().toString();
       this.conversationIndex++;
-      
       const currentActiveConv = this.conversations.find(conv => conv.id === this.activeConversationId);
-      if (currentActiveConv && this.chatMessages.length > 0) {
+      if (currentActiveConv) {
         currentActiveConv.messages = [...this.chatMessages];
         currentActiveConv.results = [...this.chatBotResults];
       }
       
-      const emptyConversations = this.conversations.filter(conv => 
-        conv.messages.length === 0 && 
-        conv.id !== this.activeConversationId
-      );
-
-      emptyConversations.forEach(conv => {
-        const index = this.conversations.findIndex(c => c.id === conv.id);
-        if (index !== -1) {
-          this.conversations.splice(index, 1);
-        }
-      });
       const now = new Date();
       const utcTime = now.toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
       
@@ -533,7 +537,8 @@ export default {
         results: [],
         chatId: null,
         createdAt: now.toISOString(),
-        titleGenerated: false
+        titleGenerated: false,
+        persistedInBackend: false
       };
       
       this.conversations.unshift(newConversation);
@@ -550,61 +555,74 @@ export default {
       });
     },
       
-   async switchConversation(conversationId) {
+    async switchConversation(conversationId) {
       if (conversationId !== this.activeConversationId) {
         console.log('[ChatbotModal] Switching to conversation:', conversationId);
         
         const previousConv = this.conversations.find(conv => conv.id === this.activeConversationId);
-        if (previousConv && this.chatMessages.length > 0) {
+        if (previousConv) {
           previousConv.messages = [...this.chatMessages];
           previousConv.results = [...this.chatBotResults];
         }
         
+        this.chatBotResults = [];
+        this.chatMessages = [];
+        
         this.activeConversationId = conversationId;
         const activeConv = this.conversations.find(conv => conv.id === conversationId);
-      
-      if (activeConv) {
-        this.chatId = activeConv.chatId;
         
-        if (activeConv.messages.length === 0 && activeConv.chatId) {
-          console.log('[ChatbotModal] Loading messages from backend for:', activeConv.chatId);
-          const { messages, mediaReferences } = await this.loadConversationMessages(activeConv.chatId);
+        if (activeConv) {
+          this.chatId = activeConv.chatId;
           
-          activeConv.messages = messages.map(msg => {
-            let content = msg.content;
-            if (msg.role === 'assistant') {
-              content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                              .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                              .replace(/\n/g, '<br>');
+          if (activeConv.chatId && (!activeConv.messages || activeConv.messages.length === 0)) {
+            console.log('[ChatbotModal] Loading messages from backend for:', activeConv.chatId);
+            const { messages, mediaReferences } = await this.loadConversationMessages(activeConv.chatId);
+            
+            if (messages && messages.length > 0) {
+              activeConv.messages = messages.map(msg => {
+                let content = msg.content;
+                if (msg.role === 'assistant') {
+                  content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                  .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                                  .replace(/\n/g, '<br>');
+                }
+                return {
+                  role: msg.role,
+                  content: content
+                };
+              });
+              
+              if (mediaReferences && mediaReferences.length > 0) {
+                console.log('[ChatbotModal] Fetching media details for:', mediaReferences);
+                await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+                activeConv.results = [...this.chatBotResults];
+              } else {
+                activeConv.results = [];
+              }
             }
-            return {
-              role: msg.role,
-              content: content
-            };
-          });
-          
-          if (mediaReferences && mediaReferences.length > 0) {
-            console.log('[ChatbotModal] Fetching media details for:', mediaReferences);
-            await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
-            activeConv.results = [...this.chatBotResults];
-          } else {
-            this.chatBotResults = activeConv.results || [];
           }
+
+          this.chatMessages = activeConv.messages ? [...activeConv.messages] : [];
+          this.chatBotResults = activeConv.results ? [...activeConv.results] : [];
+          
+          console.log('[ChatbotModal] Loaded chat messages:', this.chatMessages.length);
+          console.log('[ChatbotModal] Loaded media results:', this.chatBotResults.length);
+          
+          this.$nextTick(() => {
+            this.scrollToBottom();
+          });
         }
-        
-        this.chatMessages = [...activeConv.messages];
-        
-        console.log('[ChatbotModal] Loaded chat messages:', this.chatMessages.length);
-        console.log('[ChatbotModal] Loaded media results:', this.chatBotResults.length);
-        
-        this.$nextTick(() => {
-          this.scrollToBottom();
-        });
       }
-    }
-  },
+    },
     
     closeConversation(conversationId) {
+      const convToDelete = this.conversations.find(conv => conv.id === conversationId);
+      
+      if (convToDelete && convToDelete.persistedInBackend) {
+        console.warn('[ChatbotModal] Cannot delete persisted conversation:', conversationId);
+        return;
+      }
+      
       const index = this.conversations.findIndex(conv => conv.id === conversationId);
       if (index !== -1) {
         this.conversations.splice(index, 1);
@@ -617,46 +635,46 @@ export default {
             this.createNewConversation();
           }
         }
-        
-        
       }
     },
     
     async loadActiveConversation() {
-      this.chatBotResults = [];
-      
       const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
       if (activeConv) {
         console.log('[ChatbotModal] Loading active conversation:', activeConv.chatId);
         
-        if (activeConv.messages.length === 0 && activeConv.chatId) {
+        if (activeConv.chatId && (!activeConv.messages || activeConv.messages.length === 0)) {
           console.log('[ChatbotModal] Messages empty, fetching from backend');
           const { messages, mediaReferences } = await this.loadConversationMessages(activeConv.chatId);
           
-          activeConv.messages = messages.map(msg => {
-            let content = msg.content;
-            if (msg.role === 'assistant') {
-              content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                              .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                              .replace(/\n/g, '<br>');
+          if (messages && messages.length > 0) {
+            activeConv.messages = messages.map(msg => {
+              let content = msg.content;
+              if (msg.role === 'assistant') {
+                content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                                .replace(/\n/g, '<br>');
+              }
+              return {
+                role: msg.role,
+                content: content
+              };
+            });
+            
+            if (mediaReferences && mediaReferences.length > 0) {
+              console.log('[ChatbotModal] Fetching media details for active conversation');
+              await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+              activeConv.results = [...this.chatBotResults];
+            } else {
+              activeConv.results = [];
             }
-            return {
-              role: msg.role,
-              content: content
-            };
-          });
-          
-          if (mediaReferences && mediaReferences.length > 0) {
-            console.log('[ChatbotModal] Fetching media details for active conversation');
-            await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
           }
-        } else {
-          this.chatBotResults = activeConv.results || [];
         }
-
-        this.chatMessages = [...activeConv.messages];
-        this.chatId = activeConv.chatId;
         
+        this.chatMessages = activeConv.messages ? [...activeConv.messages] : [];
+        this.chatBotResults = activeConv.results ? [...activeConv.results] : [];
+        this.chatId = activeConv.chatId;
+            
         console.log('[ChatbotModal] Active conversation loaded with', this.chatMessages.length, 'messages');
         console.log('[ChatbotModal] Active conversation media results:', this.chatBotResults.length);
       } else {
@@ -726,7 +744,6 @@ export default {
           if (response && response.trim()) {
             conversation.title = response.trim();
             conversation.titleGenerated = true;
-            
           }
         } catch (error) {
           console.warn('Error generating title for conversation:', error);
@@ -753,9 +770,7 @@ export default {
     async generateTitleWithAI(conversationText, language) {
       const prompt = language === 'en' 
         ? `Generate a short and descriptive title (maximum 40 characters) for this conversation about movies/TV shows. Respond only with the title, no quotes or explanations:\n\n${conversationText}`
-        : `Generate a short and descriptive title (maximum 40 characters) for this conversation about movies/TV shows. Respond only with the title, no quotes or explanations:\n\n${conversationText}`
-      ;
-
+        : `Generate a short and descriptive title (maximum 40 characters) for this conversation about movies/TV shows. Respond only with the title, no quotes or explanations:\n\n${conversationText}`;
 
       try {
         const response = await fetch(this.titleGenerationUrl, {
@@ -898,7 +913,7 @@ export default {
       return token !== null;
     },
 
-   open() {
+    open() {
       const isAuthenticated = this.checkAuth();
       if (!isAuthenticated) {
         return;
@@ -1041,8 +1056,7 @@ export default {
         this.scrollToBottom();
       });
 
-      try {
-        const userEmail = this.getUserEmail();
+      try {const userEmail = this.getUserEmail();
         console.log('[ChatbotModal] Sending query with user_email:', userEmail);
 
         const response = await fetch(this.apiUrl, {
@@ -1065,6 +1079,11 @@ export default {
         
         this.chatId = data.chat_id;
         
+        const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+        if (activeConv && !activeConv.chatId) {
+          activeConv.chatId = data.chat_id;
+          activeConv.persistedInBackend = true;
+        }
 
         if (data.conversation_history && data.conversation_history.length > 0) {
           this.chatMessages = [];
@@ -1107,12 +1126,6 @@ export default {
             this.inputEnabled = false;
           }
         } else {
-          if (data.media_references && data.media_references.length > 0) {
-            await this.fetchMediaDetailsFromBackendReferences(data.media_references);
-          } else {
-            this.chatBotResults = [];
-          }
-
           if (data.media_references && data.media_references.length > 0) {
             await this.fetchMediaDetailsFromBackendReferences(data.media_references);
             const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
@@ -1206,27 +1219,25 @@ export default {
         const firstUserMessage = this.chatMessages.find(msg => msg.role === 'user');
         if (firstUserMessage) {
           activeConv.title = firstUserMessage.content.substring(0, 20) + '...';
-          
         }
       }
     },
 
-
     sendDailyPrompt() {
-        if (!this.checkAuth()) {
-          this.$refs.authModal.open(() => {
-            if (this.currentPromptIndex !== -1 && !this.chatBotLoading) {
-              this.chatBotQuery = this.currentDailyPrompt;
-              this.sendDailyPromptRequest();
-            }
-          });
-          return;
-        }
-        
-        if (this.currentPromptIndex !== -1 && !this.chatBotLoading) {
-          this.chatBotQuery = this.currentDailyPrompt;
-          this.sendDailyPromptRequest();
-        }
+      if (!this.checkAuth()) {
+        this.$refs.authModal.open(() => {
+          if (this.currentPromptIndex !== -1 && !this.chatBotLoading) {
+            this.chatBotQuery = this.currentDailyPrompt;
+            this.sendDailyPromptRequest();
+          }
+        });
+        return;
+      }
+      
+      if (this.currentPromptIndex !== -1 && !this.chatBotLoading) {
+        this.chatBotQuery = this.currentDailyPrompt;
+        this.sendDailyPromptRequest();
+      }
     },
 
     async sendDailyPromptRequest() {
@@ -1240,13 +1251,13 @@ export default {
       this.chatBotResults = [];
 
       this.chatMessages.push({
-          role: 'user',
-          content: this.currentDailyPrompt
-        });
+        role: 'user',
+        content: this.currentDailyPrompt
+      });
         
-        this.$nextTick(() => {
-          this.scrollToBottom();
-        });
+      this.$nextTick(() => {
+        this.scrollToBottom();
+      });
       
       try {
         const promptIndex = this.currentPromptIndex;
@@ -1281,7 +1292,8 @@ export default {
           try {
             const fallbackPayload = {
               query: this.currentDailyPrompt,
-              chat_id: this.chatId
+              chat_id: this.chatId,
+              user_email: userEmail
             };
             
             response = await axios({
@@ -1302,27 +1314,33 @@ export default {
         }
         
         this.chatId = response.data.chat_id || this.chatId || "session";
+        
+        const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+        if (activeConv && !activeConv.chatId) {
+          activeConv.chatId = response.data.chat_id;
+          activeConv.persistedInBackend = true;
+        }
 
         if (response.data.conversation_history && response.data.conversation_history.length > 0) {
-            this.chatMessages = [];
-            response.data.conversation_history.forEach(message => {
-              let formattedContent = message.content || '';
-              if (message.role === 'assistant') {
-                formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
-                formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
-                formattedContent = formattedContent.replace(/\n/g, '<br>');
-                formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
-                formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
-                formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
-                formattedContent = formattedContent.replace(/\n/g, '<br>');
-              }
-              
-              this.chatMessages.push({
-                role: message.role,
-                content: formattedContent
-              });
+          this.chatMessages = [];
+          response.data.conversation_history.forEach(message => {
+            let formattedContent = message.content || '';
+            if (message.role === 'assistant') {
+              formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+              formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+              formattedContent = formattedContent.replace(/\n/g, '<br>');
+              formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
+              formattedContent = formattedContent.replace(/\n/g, '<br>');
+            }
+            
+            this.chatMessages.push({
+              role: message.role,
+              content: formattedContent
             });
+          });
         }
         
         let cleanResponse = response.data.result || '';
@@ -1336,7 +1354,7 @@ export default {
         cleanResponse = cleanResponse.replace(/\n/g, '<br>');
         this.chatBotResponse = cleanResponse;
           
-         if (response.data.spoilerStatus === "spoiler") {
+        if (response.data.spoilerStatus === "spoiler") {
           this.pendingSpoilerResponse = cleanResponse;
           this.pendingSpoilerMediaReferences = response.data.media_references || [];
           this.spoilerModalOpen = true;
@@ -1356,12 +1374,7 @@ export default {
               content: cleanResponse
             });
           }
-          if (response.data.media_references && response.data.media_references.length > 0) {
-            await this.fetchPredefinedMediaReferences(response.data.media_references);
-          } else {
-            this.chatBotResults = [];
-          }
-
+          
           if (response.data.media_references && response.data.media_references.length > 0) {
             await this.fetchPredefinedMediaReferences(response.data.media_references);
             const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
@@ -1376,6 +1389,7 @@ export default {
               activeConv.messages = [...this.chatMessages];
             }
           }
+          
           if (this.isMobileDevice) {
             this.inputEnabled = false;
           }
@@ -1391,36 +1405,37 @@ export default {
         
         let errorMessage = 'An error occurred. Please try again.';
         if (axios.isCancel(error) || (error.code === 'ECONNABORTED' || (error.message && error.message.includes('timeout')))) {
-            errorMessage = 'The request timed out. The AI might be taking too long to respond. Please try again later or rephrase your query.';
+          errorMessage = 'The request timed out. The AI might be taking too long to respond. Please try again later or rephrase your query.';
         } else if (error.response) {
-            console.error('Response error data:', error.response.data);
-            errorMessage = `Error ${error.response.status}: ${error.response.data?.detail || 'Failed to process request.'}`;
-            if (error.response.status === 504) {
-                errorMessage = 'The AI service seems to be unavailable or timed out. Please try again later.';
-            } else if (error.response.status === 404) {
-                errorMessage = 'The AI service is currently unavailable. Our team has been notified.';
-            }
+          console.error('Response error data:', error.response.data);
+          errorMessage = `Error ${error.response.status}: ${error.response.data?.detail || 'Failed to process request.'}`;
+          if (error.response.status === 504) {
+            errorMessage = 'The AI service seems to be unavailable or timed out. Please try again later.';
+          } else if (error.response.status === 404) {
+            errorMessage = 'The AI service is currently unavailable. Our team has been notified.';
+          }
         } else if (error.request) {
-            console.error('Request error:', error.request);
-            errorMessage = 'Network Error: Could not reach the AI service. Please check your connection.';
+          console.error('Request error:', error.request);
+          errorMessage = 'Network Error: Could not reach the AI service. Please check your connection.';
         } else {
-            errorMessage = 'An unexpected error occurred while processing your request.';
+          errorMessage = 'An unexpected error occurred while processing your request.';
         }
 
-      const formattedErrorMessage = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
-          this.chatBotResponse = formattedErrorMessage;
-          if (this.chatMessages.length === 0 || this.chatMessages[this.chatMessages.length - 1].role !== 'user') {
-            const userQuery = typeof queryToSend !== 'undefined' ? queryToSend : this.currentDailyPrompt;
-            
-            this.chatMessages.push({
-              role: 'user',
-              content: userQuery
-            });
-          }
+        const formattedErrorMessage = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
+        this.chatBotResponse = formattedErrorMessage;
+        
+        if (this.chatMessages.length === 0 || this.chatMessages[this.chatMessages.length - 1].role !== 'user') {
+          const userQuery = typeof queryToSend !== 'undefined' ? queryToSend : this.currentDailyPrompt;
           
           this.chatMessages.push({
-            role: 'assistant',
-            content: formattedErrorMessage
+            role: 'user',
+            content: userQuery
+          });
+        }
+        
+        this.chatMessages.push({
+          role: 'assistant',
+          content: formattedErrorMessage
         });
         this.chatBotResponse = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
         this.chatBotResults = [];
@@ -1435,9 +1450,9 @@ export default {
         }
       } finally {
         if (this.dotAnimationInterval) {
-            clearInterval(this.dotAnimationInterval);
-            this.dotAnimationInterval = null;
-          }
+          clearInterval(this.dotAnimationInterval);
+          this.dotAnimationInterval = null;
+        }
         this.chatBotLoading = false;
         this.messageWaitingForResponse = false;
         setTimeout(() => {
@@ -1445,7 +1460,7 @@ export default {
         }, 300);
         this.$nextTick(() => {
           if (this.$refs.chatInput) {
-              this.$refs.chatInput.focus();
+            this.$refs.chatInput.focus();
           }
         });
       }
@@ -1494,28 +1509,34 @@ export default {
         }, { timeout: 45000 });
 
         this.chatId = response.data.chat_id;
+        
+        const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+        if (activeConv && !activeConv.chatId) {
+          activeConv.chatId = response.data.chat_id;
+          activeConv.persistedInBackend = true;
+        }
 
         if (response.data.conversation_history && response.data.conversation_history.length > 0) {
-                  this.chatMessages = [];
-                  
-                  response.data.conversation_history.forEach(message => {
-                    let formattedContent = message.content || '';
-                    if (message.role === 'assistant') {
-                      formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                      formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
-                      formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
-                      formattedContent = formattedContent.replace(/\n/g, '<br>');
-                      formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
-                      formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
-                      formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
-                      formattedContent = formattedContent.replace(/\n/g, '<br>');
-                    }
-                    
-                    this.chatMessages.push({
-                      role: message.role,
-                      content: formattedContent
-                    });
-                  });
+          this.chatMessages = [];
+          
+          response.data.conversation_history.forEach(message => {
+            let formattedContent = message.content || '';
+            if (message.role === 'assistant') {
+              formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+              formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+              formattedContent = formattedContent.replace(/\n/g, '<br>');
+              formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
+              formattedContent = formattedContent.replace(/\n/g, '<br>');
+            }
+            
+            this.chatMessages.push({
+              role: message.role,
+              content: formattedContent
+            });
+          });
         }
 
         let cleanResponse = response.data.result || '';
@@ -1527,39 +1548,39 @@ export default {
         cleanResponse = cleanResponse.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
         cleanResponse = cleanResponse.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
         cleanResponse = cleanResponse.replace(/\n/g, '<br>');
+        
         if (response.data.spoilerStatus === "spoiler") {
           this.pendingSpoilerResponse = cleanResponse;
           this.pendingSpoilerMediaReferences = response.data.media_references || [];
           this.spoilerModalOpen = true;
           if (this.isMobileDevice) {
-                      this.inputEnabled = false;
-                      if (this.$refs.chatInput && document.activeElement === this.$refs.chatInput) {
-                        this.$refs.chatInput.blur();
-                      }
-                    }
+            this.inputEnabled = false;
+            if (this.$refs.chatInput && document.activeElement === this.$refs.chatInput) {
+              this.$refs.chatInput.blur();
+            }
+          }
         } else {
           this.chatBotResponse = cleanResponse;
           if (!response.data.conversation_history || response.data.conversation_history.length === 0) {
-                      this.chatMessages.push({
-                        role: 'assistant',
-                        content: cleanResponse
-                      });
-                    }
+            this.chatMessages.push({
+              role: 'assistant',
+              content: cleanResponse
+            });
+          }
           const mediaReferences = response.data.media_references;
           if (mediaReferences && mediaReferences.length > 0) {
-          await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+            await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
           } else {
-          this.chatBotResults = [];
+            this.chatBotResults = [];
           }
                             
           this.$nextTick(() => {
-          this.scrollToBottom();
+            this.scrollToBottom();
           });
           if (this.isMobileDevice) {
-          this.inputEnabled = false;
+            this.inputEnabled = false;
+          }
         }
-      }
-                  
 
       } catch (error) {
         console.error('Error fetching from chatbot API:', error);
@@ -1567,48 +1588,47 @@ export default {
         if (axios.isCancel(error) || (error.code === 'ECONNABORTED' || (error.message && error.message.includes('timeout')))) {
           errorMessage = 'The request timed out. The AI might be taking too long to respond. Please try again later or rephrase your query.';
         } else if (error.response) {
-        } else if (error.response) {
-                  errorMessage = `Error ${error.response.status}: ${error.response.data?.detail || 'Failed to process request.'}`;
-                  if (error.response.status === 504) {
-                       errorMessage = 'The AI service seems to be unavailable or timed out. Please try again later.';
-                  }
-              } else if (error.request) {
-                  errorMessage = 'Network Error: Could not reach the AI service. Please check your connection.';
-              } else {
-                  errorMessage = 'An unexpected error occurred while processing your request.';
-              }
-              const formattedErrorMessage = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
-              this.chatBotResponse = formattedErrorMessage;
+          errorMessage = `Error ${error.response.status}: ${error.response.data?.detail || 'Failed to process request.'}`;
+          if (error.response.status === 504) {
+            errorMessage = 'The AI service seems to be unavailable or timed out. Please try again later.';
+          }
+        } else if (error.request) {
+          errorMessage = 'Network Error: Could not reach the AI service. Please check your connection.';
+        } else {
+          errorMessage = 'An unexpected error occurred while processing your request.';
+        }
+        const formattedErrorMessage = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
+        this.chatBotResponse = formattedErrorMessage;
 
-              this.chatMessages.push({
-                role: 'assistant',
-                content: formattedErrorMessage
-              });
-              
-              this.chatBotResults = [];
-               this.$nextTick(() => {
-                this.scrollToBottom();
-              });
-              if (this.isMobileDevice) {
-                this.inputEnabled = false;
-              }
-            } finally {
-              if (this.dotAnimationInterval) {
-                clearInterval(this.dotAnimationInterval);
-                this.dotAnimationInterval = null;
-              }
-              this.chatBotLoading = false;
-              this.messageWaitingForResponse = false;
-              setTimeout(() => {
-                this.inputWidth = 0;
-              }, 300);
-               this.$nextTick(() => {
-                  if (this.$refs.chatInput) {
-                      this.$refs.chatInput.focus();
-                  }
-               });
-            }
-          },
+        this.chatMessages.push({
+          role: 'assistant',
+          content: formattedErrorMessage
+        });
+        
+        this.chatBotResults = [];
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
+        if (this.isMobileDevice) {
+          this.inputEnabled = false;
+        }
+      } finally {
+        if (this.dotAnimationInterval) {
+          clearInterval(this.dotAnimationInterval);
+          this.dotAnimationInterval = null;
+        }
+        this.chatBotLoading = false;
+        this.messageWaitingForResponse = false;
+        setTimeout(() => {
+          this.inputWidth = 0;
+        }, 300);
+        this.$nextTick(() => {
+          if (this.$refs.chatInput) {
+            this.$refs.chatInput.focus();
+          }
+        });
+      }
+    },
       
     async fetchMediaDetailsFromBackendReferences(references, mainObject = null) {
           if (!this.tmdbApiKey) {
