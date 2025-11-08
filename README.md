@@ -151,5 +151,3 @@ For more information, see the [**Terms and Conditions**](https://entercinema.com
 
 Your feedback is valuable!  
 If you encounter any issues or have suggestions for improvements, please create a new issue in this [**GitHub repository**](https://github.com/imprvhub/entercinema/issues/new).
-
----
