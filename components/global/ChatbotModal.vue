@@ -465,6 +465,38 @@ export default {
         this.createNewConversation();
       }
     },
+
+    async loadConversationMessages(chatId) {
+      const userEmail = this.getUserEmail();
+      if (!userEmail || !chatId) {
+        console.log('[ChatbotModal] Missing email or chatId for loading messages');
+        return [];
+      }
+
+      console.log('[ChatbotModal] Loading messages for chat_id:', chatId);
+
+      try {
+        const response = await fetch(`${this.apiUrl}?user_email=${encodeURIComponent(userEmail)}&chat_id=${encodeURIComponent(chatId)}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('[ChatbotModal] Loaded messages:', data.messages);
+
+        return data.messages || [];
+
+      } catch (error) {
+        console.error('[ChatbotModal] Error loading messages:', error);
+        return [];
+      }
+    },
     
     createNewConversation() {
       const newId = Date.now().toString();
@@ -492,12 +524,37 @@ export default {
       });
     },
       
-    switchConversation(conversationId) {
+   async switchConversation(conversationId) {
       if (conversationId !== this.activeConversationId) {
-        
+        console.log('[ChatbotModal] Switching to conversation:', conversationId);
         
         this.activeConversationId = conversationId;
-        this.loadActiveConversation();
+        const activeConv = this.conversations.find(conv => conv.id === conversationId);
+        
+        if (activeConv) {
+          this.chatId = activeConv.chatId;
+          
+          if (activeConv.messages.length === 0) {
+            console.log('[ChatbotModal] Loading messages from backend for:', activeConv.chatId);
+            const messages = await this.loadConversationMessages(activeConv.chatId);
+            
+            activeConv.messages = messages.map(msg => ({
+              role: msg.role,
+              content: msg.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                  .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                                  .replace(/\n/g, '<br>')
+            }));
+          }
+          
+          this.chatMessages = [...activeConv.messages];
+          this.chatBotResults = activeConv.results ? [...activeConv.results] : [];
+          
+          console.log('[ChatbotModal] Loaded chat messages:', this.chatMessages.length);
+          
+          this.$nextTick(() => {
+            this.scrollToBottom();
+          });
+        }
       }
     },
     
@@ -519,12 +576,28 @@ export default {
       }
     },
     
-    loadActiveConversation() {
+    async loadActiveConversation() {
       const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
       if (activeConv) {
+        console.log('[ChatbotModal] Loading active conversation:', activeConv.chatId);
+        
+        if (activeConv.messages.length === 0 && activeConv.chatId) {
+          console.log('[ChatbotModal] Messages empty, fetching from backend');
+          const messages = await this.loadConversationMessages(activeConv.chatId);
+          
+          activeConv.messages = messages.map(msg => ({
+            role: msg.role,
+            content: msg.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                                .replace(/\n/g, '<br>')
+          }));
+        }
+        
         this.chatMessages = [...activeConv.messages];
         this.chatId = activeConv.chatId;
         this.chatBotResults = activeConv.results ? [...activeConv.results] : [];
+        
+        console.log('[ChatbotModal] Active conversation loaded with', this.chatMessages.length, 'messages');
       } else {
         this.chatMessages = [];
         this.chatId = null;
