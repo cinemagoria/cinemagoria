@@ -470,7 +470,7 @@ export default {
       const userEmail = this.getUserEmail();
       if (!userEmail || !chatId) {
         console.log('[ChatbotModal] Missing email or chatId for loading messages');
-        return [];
+        return { messages: [], mediaReferences: [] };
       }
 
       console.log('[ChatbotModal] Loading messages for chat_id:', chatId);
@@ -490,11 +490,15 @@ export default {
         const data = await response.json();
         console.log('[ChatbotModal] Loaded messages:', data.messages);
 
-        return data.messages || [];
+        const messages = data.messages || [];
+        const lastAssistantMessage = messages.filter(m => m.role === 'assistant').pop();
+        const mediaReferences = lastAssistantMessage?.media_references || [];
+
+        return { messages, mediaReferences };
 
       } catch (error) {
         console.error('[ChatbotModal] Error loading messages:', error);
-        return [];
+        return { messages: [], mediaReferences: [] };
       }
     },
     
@@ -536,7 +540,7 @@ export default {
           
           if (activeConv.messages.length === 0) {
             console.log('[ChatbotModal] Loading messages from backend for:', activeConv.chatId);
-            const messages = await this.loadConversationMessages(activeConv.chatId);
+            const { messages, mediaReferences } = await this.loadConversationMessages(activeConv.chatId);
             
             activeConv.messages = messages.map(msg => ({
               role: msg.role,
@@ -544,6 +548,11 @@ export default {
                                   .replace(/\*(.*?)\*/g, '<em>$1</em>')
                                   .replace(/\n/g, '<br>')
             }));
+            
+            if (mediaReferences && mediaReferences.length > 0) {
+              console.log('[ChatbotModal] Fetching media details for loaded conversation');
+              await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+            }
           }
           
           this.chatMessages = [...activeConv.messages];
@@ -583,7 +592,7 @@ export default {
         
         if (activeConv.messages.length === 0 && activeConv.chatId) {
           console.log('[ChatbotModal] Messages empty, fetching from backend');
-          const messages = await this.loadConversationMessages(activeConv.chatId);
+          const { messages, mediaReferences } = await this.loadConversationMessages(activeConv.chatId);
           
           activeConv.messages = messages.map(msg => ({
             role: msg.role,
@@ -591,6 +600,11 @@ export default {
                                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
                                 .replace(/\n/g, '<br>')
           }));
+          
+          if (mediaReferences && mediaReferences.length > 0) {
+            console.log('[ChatbotModal] Fetching media details for active conversation');
+            await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+          }
         }
         
         this.chatMessages = [...activeConv.messages];
