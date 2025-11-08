@@ -447,7 +447,8 @@ export default {
           chatId: conv.chat_id,
           createdAt: new Date(conv.created_at * 1000).toISOString(),
           updatedAt: new Date(conv.updated_at * 1000).toISOString(),
-          titleGenerated: true
+          titleGenerated: true,
+          persistedInBackend: true
         }));
 
         console.log('[ChatbotModal] Mapped conversations:', this.conversations);
@@ -458,6 +459,18 @@ export default {
         } else {
           console.log('[ChatbotModal] No conversations found, creating new one');
           this.createNewConversation();
+        }
+
+        const storedConversations = this.conversations.map(conv => ({
+          id: conv.id,
+          chatId: conv.chatId,
+          title: conv.title,
+          createdAt: conv.createdAt
+        }));
+        try {
+          localStorage.setItem('entercinema_cached_conversations', JSON.stringify(storedConversations));
+        } catch (e) {
+          console.warn('Failed to cache conversations:', e);
         }
 
       } catch (error) {
@@ -503,25 +516,17 @@ export default {
     },
     
     createNewConversation() {
+      console.log('[ChatbotModal] Creating new conversation. Current conversations:', this.conversations.length);
+      console.log('[ChatbotModal] Conversations with chatId:', this.conversations.filter(c => c.chatId).map(c => ({ id: c.id, chatId: c.chatId, title: c.title })));
+      
       const newId = Date.now().toString();
       this.conversationIndex++;
       const currentActiveConv = this.conversations.find(conv => conv.id === this.activeConversationId);
-      if (currentActiveConv && this.chatMessages.length > 0) {
+      if (currentActiveConv) {
         currentActiveConv.messages = [...this.chatMessages];
         currentActiveConv.results = [...this.chatBotResults];
       }
       
-      const emptyConversations = this.conversations.filter(conv => 
-        conv.messages.length === 0 && 
-        conv.id !== this.activeConversationId
-      );
-
-      emptyConversations.forEach(conv => {
-        const index = this.conversations.findIndex(c => c.id === conv.id);
-        if (index !== -1) {
-          this.conversations.splice(index, 1);
-        }
-      });
       const now = new Date();
       const utcTime = now.toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
       
@@ -532,78 +537,92 @@ export default {
         results: [],
         chatId: null,
         createdAt: now.toISOString(),
-        titleGenerated: false
+        titleGenerated: false,
+        persistedInBackend: false
       };
       
       this.conversations.unshift(newConversation);
       this.activeConversationId = newId;
+      
       this.chatBotResults = [];
       this.chatMessages = [];
       this.chatBotResponse = '';
       
       this.loadActiveConversation();
       
-      
       this.$nextTick(() => {
         this.$forceUpdate();
       });
     },
       
-   async switchConversation(conversationId) {
+    async switchConversation(conversationId) {
       if (conversationId !== this.activeConversationId) {
         console.log('[ChatbotModal] Switching to conversation:', conversationId);
         
         const previousConv = this.conversations.find(conv => conv.id === this.activeConversationId);
-        if (previousConv && this.chatMessages.length > 0) {
+        if (previousConv) {
           previousConv.messages = [...this.chatMessages];
           previousConv.results = [...this.chatBotResults];
         }
         
+        this.chatBotResults = [];
+        this.chatMessages = [];
+        
         this.activeConversationId = conversationId;
         const activeConv = this.conversations.find(conv => conv.id === conversationId);
-      
-      if (activeConv) {
-        this.chatId = activeConv.chatId;
         
-        if (activeConv.messages.length === 0 && activeConv.chatId) {
-          console.log('[ChatbotModal] Loading messages from backend for:', activeConv.chatId);
-          const { messages, mediaReferences } = await this.loadConversationMessages(activeConv.chatId);
+        if (activeConv) {
+          this.chatId = activeConv.chatId;
           
-          activeConv.messages = messages.map(msg => {
-            let content = msg.content;
-            if (msg.role === 'assistant') {
-              content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                              .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                              .replace(/\n/g, '<br>');
+          if (activeConv.chatId && (!activeConv.messages || activeConv.messages.length === 0)) {
+            console.log('[ChatbotModal] Loading messages from backend for:', activeConv.chatId);
+            const { messages, mediaReferences } = await this.loadConversationMessages(activeConv.chatId);
+            
+            if (messages && messages.length > 0) {
+              activeConv.messages = messages.map(msg => {
+                let content = msg.content;
+                if (msg.role === 'assistant') {
+                  content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                  .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                                  .replace(/\n/g, '<br>');
+                }
+                return {
+                  role: msg.role,
+                  content: content
+                };
+              });
+              
+              if (mediaReferences && mediaReferences.length > 0) {
+                console.log('[ChatbotModal] Fetching media details for:', mediaReferences);
+                await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+                activeConv.results = [...this.chatBotResults];
+              } else {
+                activeConv.results = [];
+              }
             }
-            return {
-              role: msg.role,
-              content: content
-            };
-          });
-          
-          if (mediaReferences && mediaReferences.length > 0) {
-            console.log('[ChatbotModal] Fetching media details for:', mediaReferences);
-            await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
-            activeConv.results = [...this.chatBotResults];
-          } else {
-            this.chatBotResults = activeConv.results || [];
           }
+
+          this.chatMessages = activeConv.messages ? [...activeConv.messages] : [];
+          this.chatBotResults = activeConv.results ? [...activeConv.results] : [];
+          
+          console.log('[ChatbotModal] Loaded chat messages:', this.chatMessages.length);
+          console.log('[ChatbotModal] Loaded media results:', this.chatBotResults.length);
+          
+          this.$nextTick(() => {
+            this.scrollToBottom();
+          });
         }
-        
-        this.chatMessages = [...activeConv.messages];
-        
-        console.log('[ChatbotModal] Loaded chat messages:', this.chatMessages.length);
-        console.log('[ChatbotModal] Loaded media results:', this.chatBotResults.length);
-        
-        this.$nextTick(() => {
-          this.scrollToBottom();
-        });
       }
-    }
-  },
+    },
     
     closeConversation(conversationId) {
+      const convToDelete = this.conversations.find(conv => conv.id === conversationId);
+      
+      if (convToDelete && convToDelete.persistedInBackend) {
+        console.warn('[ChatbotModal] Cannot delete persisted conversation:', conversationId);
+        return;
+      }
+      
       const index = this.conversations.findIndex(conv => conv.id === conversationId);
       if (index !== -1) {
         this.conversations.splice(index, 1);
@@ -616,46 +635,46 @@ export default {
             this.createNewConversation();
           }
         }
-        
-        
       }
     },
     
     async loadActiveConversation() {
-      this.chatBotResults = [];
       const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
       if (activeConv) {
         console.log('[ChatbotModal] Loading active conversation:', activeConv.chatId);
         
-        if (activeConv.messages.length === 0 && activeConv.chatId) {
+        if (activeConv.chatId && (!activeConv.messages || activeConv.messages.length === 0)) {
           console.log('[ChatbotModal] Messages empty, fetching from backend');
           const { messages, mediaReferences } = await this.loadConversationMessages(activeConv.chatId);
           
-          activeConv.messages = messages.map(msg => {
-            let content = msg.content;
-            if (msg.role === 'assistant') {
-              content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                              .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                              .replace(/\n/g, '<br>');
+          if (messages && messages.length > 0) {
+            activeConv.messages = messages.map(msg => {
+              let content = msg.content;
+              if (msg.role === 'assistant') {
+                content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                                .replace(/\n/g, '<br>');
+              }
+              return {
+                role: msg.role,
+                content: content
+              };
+            });
+            
+            if (mediaReferences && mediaReferences.length > 0) {
+              console.log('[ChatbotModal] Fetching media details for active conversation');
+              await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+              activeConv.results = [...this.chatBotResults];
+            } else {
+              activeConv.results = [];
             }
-            return {
-              role: msg.role,
-              content: content
-            };
-          });
-          
-          if (mediaReferences && mediaReferences.length > 0) {
-            console.log('[ChatbotModal] Fetching media details for active conversation');
-            await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
-          
-          } else {
-            this.chatBotResults = activeConv.results || [];
           }
         }
         
-        this.chatMessages = [...activeConv.messages];
+        this.chatMessages = activeConv.messages ? [...activeConv.messages] : [];
+        this.chatBotResults = activeConv.results ? [...activeConv.results] : [];
         this.chatId = activeConv.chatId;
-        
+            
         console.log('[ChatbotModal] Active conversation loaded with', this.chatMessages.length, 'messages');
         console.log('[ChatbotModal] Active conversation media results:', this.chatBotResults.length);
       } else {
@@ -725,7 +744,6 @@ export default {
           if (response && response.trim()) {
             conversation.title = response.trim();
             conversation.titleGenerated = true;
-            
           }
         } catch (error) {
           console.warn('Error generating title for conversation:', error);
@@ -750,11 +768,9 @@ export default {
     },
 
     async generateTitleWithAI(conversationText, language) {
-      const prompt = language === 'es' 
-        ? `Genera un título corto y descriptivo (máximo 40 caracteres) para esta conversación sobre cine/series. Responde solo con el título, sin comillas ni explicaciones:\n\n${conversationText}`
+      const prompt = language === 'en' 
+        ? `Generate a short and descriptive title (maximum 40 characters) for this conversation about movies/TV shows. Respond only with the title, no quotes or explanations:\n\n${conversationText}`
         : `Generate a short and descriptive title (maximum 40 characters) for this conversation about movies/TV shows. Respond only with the title, no quotes or explanations:\n\n${conversationText}`;
-      ;
-
 
       try {
         const response = await fetch(this.titleGenerationUrl, {
@@ -786,8 +802,6 @@ export default {
     },
     
     minimizeChatBot() {
-      
-      
       this.chatBotOpen = false;
       this.chatBotMinimized = true;
       this.saveMinimizedState();
@@ -846,7 +860,7 @@ export default {
         console.warn('Error loading minimized state:', error);
       }
     },
-
+        
     checkMobileDevice() {
       this.isMobileDevice = window.innerWidth <= 768 || 
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -976,7 +990,7 @@ export default {
       } else {
         this.chatBotResults = [];
       }
-          
+      
       this.pendingSpoilerResponse = null;
       this.pendingSpoilerMediaReferences = null;
       this.spoilerModalOpen = false;
@@ -988,8 +1002,6 @@ export default {
       if (this.isMobileDevice) {
         this.inputEnabled = false;
       }
-      
-      
     },
 
     cancelSpoilerContent() {
@@ -1044,8 +1056,7 @@ export default {
         this.scrollToBottom();
       });
 
-      try {
-        const userEmail = this.getUserEmail();
+      try {const userEmail = this.getUserEmail();
         console.log('[ChatbotModal] Sending query with user_email:', userEmail);
 
         const response = await fetch(this.apiUrl, {
@@ -1068,6 +1079,11 @@ export default {
         
         this.chatId = data.chat_id;
         
+        const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+        if (activeConv && !activeConv.chatId) {
+          activeConv.chatId = data.chat_id;
+          activeConv.persistedInBackend = true;
+        }
 
         if (data.conversation_history && data.conversation_history.length > 0) {
           this.chatMessages = [];
@@ -1110,12 +1126,6 @@ export default {
             this.inputEnabled = false;
           }
         } else {
-          if (data.media_references && data.media_references.length > 0) {
-            await this.fetchMediaDetailsFromBackendReferences(data.media_references);
-          } else {
-            this.chatBotResults = [];
-          }
-
           if (data.media_references && data.media_references.length > 0) {
             await this.fetchMediaDetailsFromBackendReferences(data.media_references);
             const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
@@ -1191,15 +1201,12 @@ export default {
       }
       
       this.updateConversationTitle();
-      
-      
     },
 
     loadDailyPrompt() {
       if (this.dailyPrompts.length > 0) {
         const today = new Date();
         const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-
         const promptIndex = dayOfYear % this.dailyPrompts.length;
         this.currentPromptIndex = promptIndex;
         this.currentDailyPrompt = this.dailyPrompts[promptIndex];
@@ -1212,11 +1219,8 @@ export default {
         const firstUserMessage = this.chatMessages.find(msg => msg.role === 'user');
         if (firstUserMessage) {
           activeConv.title = firstUserMessage.content.substring(0, 20) + '...';
-          
         }
       }
-      
-      
     },
 
     sendDailyPrompt() {
@@ -1247,13 +1251,13 @@ export default {
       this.chatBotResults = [];
 
       this.chatMessages.push({
-          role: 'user',
-          content: this.currentDailyPrompt
-        });
+        role: 'user',
+        content: this.currentDailyPrompt
+      });
         
-        this.$nextTick(() => {
-          this.scrollToBottom();
-        });
+      this.$nextTick(() => {
+        this.scrollToBottom();
+      });
       
       try {
         const promptIndex = this.currentPromptIndex;
@@ -1291,7 +1295,7 @@ export default {
               chat_id: this.chatId,
               user_email: userEmail
             };
-                        
+            
             response = await axios({
               method: 'post',
               url: this.apiUrl,
@@ -1311,27 +1315,32 @@ export default {
         
         this.chatId = response.data.chat_id || this.chatId || "session";
         
+        const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+        if (activeConv && !activeConv.chatId) {
+          activeConv.chatId = response.data.chat_id;
+          activeConv.persistedInBackend = true;
+        }
 
         if (response.data.conversation_history && response.data.conversation_history.length > 0) {
-            this.chatMessages = [];
-            response.data.conversation_history.forEach(message => {
-              let formattedContent = message.content || '';
-              if (message.role === 'assistant') {
-                formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
-                formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
-                formattedContent = formattedContent.replace(/\n/g, '<br>');
-                formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
-                formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
-                formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
-                formattedContent = formattedContent.replace(/\n/g, '<br>');
-              }
-              
-              this.chatMessages.push({
-                role: message.role,
-                content: formattedContent
-              });
+          this.chatMessages = [];
+          response.data.conversation_history.forEach(message => {
+            let formattedContent = message.content || '';
+            if (message.role === 'assistant') {
+              formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+              formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+              formattedContent = formattedContent.replace(/\n/g, '<br>');
+              formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
+              formattedContent = formattedContent.replace(/\n/g, '<br>');
+            }
+            
+            this.chatMessages.push({
+              role: message.role,
+              content: formattedContent
             });
+          });
         }
         
         let cleanResponse = response.data.result || '';
@@ -1365,17 +1374,13 @@ export default {
               content: cleanResponse
             });
           }
-          if (response.data.media_references && response.data.media_references.length > 0) {
-            await this.fetchPredefinedMediaReferences(response.data.media_references);
-          } else {
-            this.chatBotResults = [];
-          }
-
+          
           if (response.data.media_references && response.data.media_references.length > 0) {
             await this.fetchPredefinedMediaReferences(response.data.media_references);
             const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
             if (activeConv) {
               activeConv.results = [...this.chatBotResults];
+              activeConv.messages = [...this.chatMessages];
             }
           } else {
             this.chatBotResults = [];
@@ -1384,6 +1389,7 @@ export default {
               activeConv.messages = [...this.chatMessages];
             }
           }
+          
           if (this.isMobileDevice) {
             this.inputEnabled = false;
           }
@@ -1399,36 +1405,37 @@ export default {
         
         let errorMessage = 'An error occurred. Please try again.';
         if (axios.isCancel(error) || (error.code === 'ECONNABORTED' || (error.message && error.message.includes('timeout')))) {
-            errorMessage = 'The request timed out. The AI might be taking too long to respond. Please try again later or rephrase your query.';
+          errorMessage = 'The request timed out. The AI might be taking too long to respond. Please try again later or rephrase your query.';
         } else if (error.response) {
-            console.error('Response error data:', error.response.data);
-            errorMessage = `Error ${error.response.status}: ${error.response.data?.detail || 'Failed to process request.'}`;
-            if (error.response.status === 504) {
-                errorMessage = 'The AI service seems to be unavailable or timed out. Please try again later.';
-            } else if (error.response.status === 404) {
-                errorMessage = 'The AI service is currently unavailable. Our team has been notified.';
-            }
+          console.error('Response error data:', error.response.data);
+          errorMessage = `Error ${error.response.status}: ${error.response.data?.detail || 'Failed to process request.'}`;
+          if (error.response.status === 504) {
+            errorMessage = 'The AI service seems to be unavailable or timed out. Please try again later.';
+          } else if (error.response.status === 404) {
+            errorMessage = 'The AI service is currently unavailable. Our team has been notified.';
+          }
         } else if (error.request) {
-            console.error('Request error:', error.request);
-            errorMessage = 'Network Error: Could not reach the AI service. Please check your connection.';
+          console.error('Request error:', error.request);
+          errorMessage = 'Network Error: Could not reach the AI service. Please check your connection.';
         } else {
-            errorMessage = 'An unexpected error occurred while processing your request.';
+          errorMessage = 'An unexpected error occurred while processing your request.';
         }
 
-      const formattedErrorMessage = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
-          this.chatBotResponse = formattedErrorMessage;
-          if (this.chatMessages.length === 0 || this.chatMessages[this.chatMessages.length - 1].role !== 'user') {
-            const userQuery = typeof queryToSend !== 'undefined' ? queryToSend : this.currentDailyPrompt;
-            
-            this.chatMessages.push({
-              role: 'user',
-              content: userQuery
-            });
-          }
+        const formattedErrorMessage = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
+        this.chatBotResponse = formattedErrorMessage;
+        
+        if (this.chatMessages.length === 0 || this.chatMessages[this.chatMessages.length - 1].role !== 'user') {
+          const userQuery = typeof queryToSend !== 'undefined' ? queryToSend : this.currentDailyPrompt;
           
           this.chatMessages.push({
-            role: 'assistant',
-            content: formattedErrorMessage
+            role: 'user',
+            content: userQuery
+          });
+        }
+        
+        this.chatMessages.push({
+          role: 'assistant',
+          content: formattedErrorMessage
         });
         this.chatBotResponse = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
         this.chatBotResults = [];
@@ -1443,9 +1450,9 @@ export default {
         }
       } finally {
         if (this.dotAnimationInterval) {
-            clearInterval(this.dotAnimationInterval);
-            this.dotAnimationInterval = null;
-          }
+          clearInterval(this.dotAnimationInterval);
+          this.dotAnimationInterval = null;
+        }
         this.chatBotLoading = false;
         this.messageWaitingForResponse = false;
         setTimeout(() => {
@@ -1453,7 +1460,7 @@ export default {
         }, 300);
         this.$nextTick(() => {
           if (this.$refs.chatInput) {
-              this.$refs.chatInput.focus();
+            this.$refs.chatInput.focus();
           }
         });
       }
@@ -1503,28 +1510,33 @@ export default {
 
         this.chatId = response.data.chat_id;
         
-      
+        const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+        if (activeConv && !activeConv.chatId) {
+          activeConv.chatId = response.data.chat_id;
+          activeConv.persistedInBackend = true;
+        }
+
         if (response.data.conversation_history && response.data.conversation_history.length > 0) {
-                  this.chatMessages = [];
-                  
-                  response.data.conversation_history.forEach(message => {
-                    let formattedContent = message.content || '';
-                    if (message.role === 'assistant') {
-                      formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                      formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
-                      formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
-                      formattedContent = formattedContent.replace(/\n/g, '<br>');
-                      formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
-                      formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
-                      formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
-                      formattedContent = formattedContent.replace(/\n/g, '<br>');
-                    }
-                    
-                    this.chatMessages.push({
-                      role: message.role,
-                      content: formattedContent
-                    });
-                  });
+          this.chatMessages = [];
+          
+          response.data.conversation_history.forEach(message => {
+            let formattedContent = message.content || '';
+            if (message.role === 'assistant') {
+              formattedContent = formattedContent.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/\*(.*?)\*/g, '<em>$1</em>');
+              formattedContent = formattedContent.replace(/^\s*[\*\-]\s+(.*)/gm, '$1<br>');
+              formattedContent = formattedContent.replace(/\n/g, '<br>');
+              formattedContent = formattedContent.replace(/_{3}(.*?)_{3}/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
+              formattedContent = formattedContent.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
+              formattedContent = formattedContent.replace(/\n/g, '<br>');
+            }
+            
+            this.chatMessages.push({
+              role: message.role,
+              content: formattedContent
+            });
+          });
         }
 
         let cleanResponse = response.data.result || '';
@@ -1536,39 +1548,39 @@ export default {
         cleanResponse = cleanResponse.replace(/_{2}(.*?)_{2}/g, '<strong>$1</strong>');
         cleanResponse = cleanResponse.replace(/_{1}([^_]+)_{1}/g, '<em>$1</em>');
         cleanResponse = cleanResponse.replace(/\n/g, '<br>');
+        
         if (response.data.spoilerStatus === "spoiler") {
           this.pendingSpoilerResponse = cleanResponse;
           this.pendingSpoilerMediaReferences = response.data.media_references || [];
           this.spoilerModalOpen = true;
           if (this.isMobileDevice) {
-                      this.inputEnabled = false;
-                      if (this.$refs.chatInput && document.activeElement === this.$refs.chatInput) {
-                        this.$refs.chatInput.blur();
-                      }
-                    }
+            this.inputEnabled = false;
+            if (this.$refs.chatInput && document.activeElement === this.$refs.chatInput) {
+              this.$refs.chatInput.blur();
+            }
+          }
         } else {
           this.chatBotResponse = cleanResponse;
           if (!response.data.conversation_history || response.data.conversation_history.length === 0) {
-                      this.chatMessages.push({
-                        role: 'assistant',
-                        content: cleanResponse
-                      });
-                    }
+            this.chatMessages.push({
+              role: 'assistant',
+              content: cleanResponse
+            });
+          }
           const mediaReferences = response.data.media_references;
           if (mediaReferences && mediaReferences.length > 0) {
-          await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
+            await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
           } else {
-          this.chatBotResults = [];
+            this.chatBotResults = [];
           }
                             
           this.$nextTick(() => {
-          this.scrollToBottom();
+            this.scrollToBottom();
           });
           if (this.isMobileDevice) {
-          this.inputEnabled = false;
+            this.inputEnabled = false;
+          }
         }
-      }
-                  
 
       } catch (error) {
         console.error('Error fetching from chatbot API:', error);
@@ -1576,656 +1588,664 @@ export default {
         if (axios.isCancel(error) || (error.code === 'ECONNABORTED' || (error.message && error.message.includes('timeout')))) {
           errorMessage = 'The request timed out. The AI might be taking too long to respond. Please try again later or rephrase your query.';
         } else if (error.response) {
-        } else if (error.response) {
-                  errorMessage = `Error ${error.response.status}: ${error.response.data?.detail || 'Failed to process request.'}`;
-                  if (error.response.status === 504) {
-                       errorMessage = 'The AI service seems to be unavailable or timed out. Please try again later.';
-                  }
-              } else if (error.request) {
-                  errorMessage = 'Network Error: Could not reach the AI service. Please check your connection.';
-              } else {
-                  errorMessage = 'An unexpected error occurred while processing your request.';
-              }
-              const formattedErrorMessage = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
-              this.chatBotResponse = formattedErrorMessage;
+          errorMessage = `Error ${error.response.status}: ${error.response.data?.detail || 'Failed to process request.'}`;
+          if (error.response.status === 504) {
+            errorMessage = 'The AI service seems to be unavailable or timed out. Please try again later.';
+          }
+        } else if (error.request) {
+          errorMessage = 'Network Error: Could not reach the AI service. Please check your connection.';
+        } else {
+          errorMessage = 'An unexpected error occurred while processing your request.';
+        }
+        const formattedErrorMessage = `<span style="color: #ff8c8c;">${errorMessage}</span>`;
+        this.chatBotResponse = formattedErrorMessage;
 
-              this.chatMessages.push({
-                role: 'assistant',
-                content: formattedErrorMessage
-              });
-              
-              this.chatBotResults = [];
-               this.$nextTick(() => {
-                this.scrollToBottom();
-              });
-              if (this.isMobileDevice) {
-                this.inputEnabled = false;
-              }
-            } finally {
-              if (this.dotAnimationInterval) {
-                clearInterval(this.dotAnimationInterval);
-                this.dotAnimationInterval = null;
-              }
-              this.chatBotLoading = false;
-              this.messageWaitingForResponse = false;
-              setTimeout(() => {
-                this.inputWidth = 0;
-              }, 300);
-               this.$nextTick(() => {
-                  if (this.$refs.chatInput) {
-                      this.$refs.chatInput.focus();
-                  }
-               });
-            }
-          },
+        this.chatMessages.push({
+          role: 'assistant',
+          content: formattedErrorMessage
+        });
+        
+        this.chatBotResults = [];
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
+        if (this.isMobileDevice) {
+          this.inputEnabled = false;
+        }
+      } finally {
+        if (this.dotAnimationInterval) {
+          clearInterval(this.dotAnimationInterval);
+          this.dotAnimationInterval = null;
+        }
+        this.chatBotLoading = false;
+        this.messageWaitingForResponse = false;
+        setTimeout(() => {
+          this.inputWidth = 0;
+        }, 300);
+        this.$nextTick(() => {
+          if (this.$refs.chatInput) {
+            this.$refs.chatInput.focus();
+          }
+        });
+      }
+    },
       
-          async fetchMediaDetailsFromBackendReferences(references, mainObject = null) {
-            if (!this.tmdbApiKey) {
-                console.error("TMDB API Key (API_KEY) not configured!");
-                this.chatBotResponse += "<br><small style='color: orange;'>Could not fetch related results (API key missing).</small>";
-                this.chatBotResults = [];
-                return;
-            }
+    async fetchMediaDetailsFromBackendReferences(references, mainObject = null) {
+          if (!this.tmdbApiKey) {
+              console.error("TMDB API Key (API_KEY) not configured!");
+              this.chatBotResponse += "<br><small style='color: orange;'>Could not fetch related results (API key missing).</small>";
+              this.chatBotResults = [];
+              return;
+          }
 
-            const results = [];
-            const mainObjectResult = [];
-            const promises = [];
-            const seenIds = new Set();
-            const priorityTypes = {
-                'person': 1,
-                'movie': 2,
-                'tv': 3
-            };
+          const results = [];
+          const mainObjectResult = [];
+          const promises = [];
+          const seenIds = new Set();
+          const priorityTypes = {
+              'person': 1,
+              'movie': 2,
+              'tv': 3
+          };
 
-            const enrichWithIMDb = async (item, mediaType) => {
-              if (mediaType === 'person') return item;
-              
-              const imdbId = item.external_ids?.imdb_id || item.imdb_id;
-              if (imdbId) {
-                try {
-                  const imdbData = await this.getIMDbRatingFromDB(imdbId);
-                  if (imdbData.found) {
-                    item.imdb_rating = imdbData.score;
-                    item.imdb_votes = imdbData.votes;
-                    item.rating_source = 'imdb';
-                  } else {
-                    item.rating_source = 'tmdb';
-                  }
-                } catch (error) {
+          const enrichWithIMDb = async (item, mediaType) => {
+            if (mediaType === 'person') return item;
+            
+            const imdbId = item.external_ids?.imdb_id || item.imdb_id;
+            if (imdbId) {
+              try {
+                const imdbData = await this.getIMDbRatingFromDB(imdbId);
+                if (imdbData.found) {
+                  item.imdb_rating = imdbData.score;
+                  item.imdb_votes = imdbData.votes;
+                  item.rating_source = 'imdb';
+                } else {
                   item.rating_source = 'tmdb';
                 }
-              } else {
+              } catch (error) {
                 item.rating_source = 'tmdb';
               }
-              return item;
+            } else {
+              item.rating_source = 'tmdb';
+            }
+            return item;
           };
 
           let effectiveMainObject = null;
 
-          if (mainObject && mainObject.name && mainObject.type) {
-              effectiveMainObject = mainObject;
-          } 
-          else {
-              if (references && references.length > 0) {
-                  const firstRef = references[0];
-                  if (firstRef && firstRef.name && firstRef.type) {
-                      effectiveMainObject = {
-                          name: firstRef.name,
-                          type: firstRef.type
-                      };
-                  }
-              }
-          }
-
-          let mainObjectMediaItem = null;
-
-          if (effectiveMainObject) {
-              try {
-                  let searchUrl = '';
-                  let mediaType = effectiveMainObject.type.toLowerCase();
-
-                  if (mediaType === 'tv_show' || mediaType === 'series') {
-                      mediaType = 'tv';
-                  } else if (mediaType === 'actor' || mediaType === 'director') {
-                      mediaType = 'person';
-                  }
-                  
-                  switch (mediaType) {
-                      case 'movie':
-                          searchUrl = 'https://api.themoviedb.org/3/search/movie';
-                          break;
-                      case 'tv':
-                          searchUrl = 'https://api.themoviedb.org/3/search/tv';
-                          break;
-                      case 'person':
-                          searchUrl = 'https://api.themoviedb.org/3/search/person';
-                          break;
-                      default:
-                          searchUrl = '';
-                  }
-                  
-                  if (searchUrl) {
-                      const mainObjectResponse = await axios.get(searchUrl, {
-                          params: {
-                              api_key: this.tmdbApiKey,
-                              query: effectiveMainObject.name,
-                              language: 'en-US',
-                              page: 1,
-                              include_adult: false
-                          },
-                          timeout: 8000
-                      });
-
-                      if (mainObjectResponse.data?.results?.length > 0 && (mediaType === 'movie' || mediaType === 'tv')) {
-                          const mainItemId = mainObjectResponse.data.results[0].id;
-                          try {
-                              const detailsResponse = await axios.get(`https://api.themoviedb.org/3/${mediaType}/${mainItemId}`, {
-                                  params: {
-                                      api_key: this.tmdbApiKey,
-                                      append_to_response: 'external_ids'
-                                  },
-                                  timeout: 5000
-                              });
-                              mainObjectResponse.data.results[0].external_ids = detailsResponse.data.external_ids;
-                          } catch (error) {
-                              console.error(`Error fetching external_ids for main object:`, error);
-                          }
-                      }
-                      
-                      if (mainObjectResponse.data?.results?.length > 0) {
-                        const mainItem = mainObjectResponse.data.results[0];
-                        const mainUniqueId = `${mediaType}-${mainItem.id}`;
-                        
-                        seenIds.add(mainUniqueId);
-                        
-                        const formattedMainItem = {
-                            ...mainItem,
-                            id: mainItem.id,
-                            media_type: mediaType,
-                            url: `${this.baseUrl}/${mediaType}/${mainItem.id}`,
-                            title: mediaType === 'movie' ? mainItem.title : undefined,
-                            name: mediaType !== 'movie' ? mainItem.name : undefined,
-                            poster_path: mainItem.poster_path || (mediaType === 'person' ? mainItem.profile_path : undefined),
-                            profile_path: mediaType === 'person' ? mainItem.profile_path : undefined,
-                            release_date: mainItem.release_date,
-                            first_air_date: mainItem.first_air_date,
-                            vote_average: mainItem.vote_average || 0,
-                            known_for_department: mainItem.known_for_department,
-                            priority: 0,
-                            popularity: 10000,
-                            originalName: effectiveMainObject.name,
-                            isMainObject: true
+            if (mainObject && mainObject.name && mainObject.type) {
+                effectiveMainObject = mainObject;
+            } 
+            else {
+                if (references && references.length > 0) {
+                    const firstRef = references[0];
+                    if (firstRef && firstRef.name && firstRef.type) {
+                        effectiveMainObject = {
+                            name: firstRef.name,
+                            type: firstRef.type
                         };
-                        
-                        if (mediaType === 'movie' || mediaType === 'tv') {
-                            await enrichWithIMDb(formattedMainItem, mediaType);
-                            mainObjectMediaItem = formattedMainItem;
-                        }
-                        
-                        mainObjectResult.push(formattedMainItem);
-                      } else {
-                          console.warn(`No TMDB results found for main object: ${effectiveMainObject.name}`);
+                    }
+                }
+            }
 
-                          if (effectiveMainObject.name) {
-                              const placeholderItem = {
-                                  id: 0,
-                                  media_type: mediaType,
-                                  url: `${this.baseUrl}/search?query=${encodeURIComponent(effectiveMainObject.name)}`,
-                                  title: mediaType === 'movie' ? effectiveMainObject.name : undefined,
-                                  name: mediaType !== 'movie' ? effectiveMainObject.name : undefined,
-                                  poster_path: null,
-                                  profile_path: null,
-                                  release_date: null,
-                                  first_air_date: null,
-                                  vote_average: 0,
-                                  priority: 0,
-                                  popularity: 10000,
-                                  originalName: effectiveMainObject.name,
-                                  isMainObject: true,
-                                  noResult: true
-                              };
-                              mainObjectResult.push(placeholderItem);
-                          }
-                      }
-                  }
-              } catch (error) {
-                  console.error(`Error fetching main object: ${error}`);
-              }
-          }
+            let mainObjectMediaItem = null;
 
-          const seenNames = new Set(mainObjectResult.map(item => item.originalName?.toLowerCase()));
+            if (effectiveMainObject) {
+                try {
+                    let searchUrl = '';
+                    let mediaType = effectiveMainObject.type.toLowerCase();
 
-          const filteredReferences = references.filter(ref => {
-              if (!ref || typeof ref !== 'object' || !ref.name || !ref.type) {
-                  return false;
-              }
-              const refNameLowercase = ref.name.toLowerCase();
+                    if (mediaType === 'tv_show' || mediaType === 'series') {
+                        mediaType = 'tv';
+                    } else if (mediaType === 'actor' || mediaType === 'director') {
+                        mediaType = 'person';
+                    }
+                    
+                    switch (mediaType) {
+                        case 'movie':
+                            searchUrl = 'https://api.themoviedb.org/3/search/movie';
+                            break;
+                        case 'tv':
+                            searchUrl = 'https://api.themoviedb.org/3/search/tv';
+                            break;
+                        case 'person':
+                            searchUrl = 'https://api.themoviedb.org/3/search/person';
+                            break;
+                        default:
+                            searchUrl = '';
+                    }
+                    
+                    if (searchUrl) {
+                        const mainObjectResponse = await axios.get(searchUrl, {
+                            params: {
+                                api_key: this.tmdbApiKey,
+                                query: effectiveMainObject.name,
+                                language: 'en-US',
+                                page: 1,
+                                include_adult: false
+                            },
+                            timeout: 8000
+                        });
 
-              if (seenNames.has(refNameLowercase)) {
-                  return false;
-              }
-              
-              seenNames.add(refNameLowercase);
-              return true;
-          });
-
-          for (const ref of filteredReferences) {
-              let searchUrl = '';
-              let mediaType = ref.type.toLowerCase();
-              
-              const params = {
-                  api_key: this.tmdbApiKey,
-                  query: ref.name,
-                  language: 'en-US',
-                  page: 1,
-                  include_adult: false,
-                  sort_by: 'popularity.desc'
-              };
-
-              switch (mediaType) {
-                  case 'movie':
-                      searchUrl = 'https://api.themoviedb.org/3/search/movie';
-                      break;
-                  case 'tv':
-                  case 'tv_show':
-                  case 'series':
-                      searchUrl = 'https://api.themoviedb.org/3/search/tv';
-                      mediaType = 'tv';
-                      params.first_air_date_year = ref.year || undefined;
-                      break;
-                  case 'person':
-                  case 'actor':
-                  case 'director':
-                      searchUrl = 'https://api.themoviedb.org/3/search/person';
-                      mediaType = 'person';
-                      break;
-                  default:
-                      console.warn(`Unsupported media type "${ref.type}" for reference:`, ref);
-                      continue;
-              }
-
-              promises.push(
-                axios.get(searchUrl, { params, timeout: 8000 })
-                .then(async response => {
-                    if (response.data?.results?.length > 0) {
-                        const sortedResults = response.data.results.sort((a, b) => 
-                            (b.popularity || 0) - (a.popularity || 0)
-                        );
-                        
-                        const item = sortedResults[0];
-                        const uniqueId = `${mediaType}-${item.id}`;
-
-                        if (item.id && !seenIds.has(uniqueId)) {
-                            seenIds.add(uniqueId);
-                            
-                            let detailsResponse;
+                        if (mainObjectResponse.data?.results?.length > 0 && (mediaType === 'movie' || mediaType === 'tv')) {
+                            const mainItemId = mainObjectResponse.data.results[0].id;
                             try {
-                                detailsResponse = await axios.get(`https://api.themoviedb.org/3/${mediaType}/${item.id}`, {
+                                const detailsResponse = await axios.get(`https://api.themoviedb.org/3/${mediaType}/${mainItemId}`, {
                                     params: {
                                         api_key: this.tmdbApiKey,
                                         append_to_response: 'external_ids'
                                     },
                                     timeout: 5000
                                 });
-                                item.external_ids = detailsResponse.data.external_ids;
+                                mainObjectResponse.data.results[0].external_ids = detailsResponse.data.external_ids;
                             } catch (error) {
-                                console.error(`Error fetching external_ids for ${item.id}:`, error);
+                                console.error(`Error fetching external_ids for main object:`, error);
                             }
-                            
-                            const formattedItem = {
-                                ...item,
-                                id: item.id,
-                                media_type: mediaType,
-                                url: `${this.baseUrl}/${mediaType}/${item.id}`,
-                                title: mediaType === 'movie' ? item.title : undefined,
-                                name: mediaType !== 'movie' ? item.name : undefined,
-                                poster_path: item.poster_path || (mediaType === 'person' ? item.profile_path : undefined),
-                                profile_path: mediaType === 'person' ? item.profile_path : undefined,
-                                release_date: item.release_date,
-                                first_air_date: item.first_air_date,
-                                vote_average: item.vote_average || 0,
-                                known_for_department: item.known_for_department,
-                                priority: priorityTypes[mediaType] || 99,
-                                popularity: item.popularity || 0,
-                                originalName: ref.name,
-                                external_ids: item.external_ids
-                            };
-                            
-                            await enrichWithIMDb(formattedItem, mediaType);
-                            results.push(formattedItem);
+                        }
+                        if (mainObjectResponse.data?.results?.length > 0) {
+                          const mainItem = mainObjectResponse.data.results[0];
+                          const mainUniqueId = `${mediaType}-${mainItem.id}`;
+                          
+                          seenIds.add(mainUniqueId);
+                          
+                          const formattedMainItem = {
+                              ...mainItem,
+                              id: mainItem.id,
+                              media_type: mediaType,
+                              url: `${this.baseUrl}/${mediaType}/${mainItem.id}`,
+                              title: mediaType === 'movie' ? mainItem.title : undefined,
+                              name: mediaType !== 'movie' ? mainItem.name : undefined,
+                              poster_path: mainItem.poster_path || (mediaType === 'person' ? mainItem.profile_path : undefined),
+                              profile_path: mediaType === 'person' ? mainItem.profile_path : undefined,
+                              release_date: mainItem.release_date,
+                              first_air_date: mainItem.first_air_date,
+                              vote_average: mainItem.vote_average || 0,
+                              known_for_department: mainItem.known_for_department,
+                              priority: 0,
+                              popularity: 10000,
+                              originalName: effectiveMainObject.name,
+                              isMainObject: true
+                          };
+                          
+                          if (mediaType === 'movie' || mediaType === 'tv') {
+                              await enrichWithIMDb(formattedMainItem, mediaType);
+                              mainObjectMediaItem = formattedMainItem;
+                          }
+                          
+                          mainObjectResult.push(formattedMainItem);
+                        } else {
+                            console.warn(`No TMDB results found for main object: ${effectiveMainObject.name}`);
+
+                            if (effectiveMainObject.name) {
+                                const placeholderItem = {
+                                    id: 0,
+                                    media_type: mediaType,
+                                    url: `${this.baseUrl}/search?query=${encodeURIComponent(effectiveMainObject.name)}`,
+                                    title: mediaType === 'movie' ? effectiveMainObject.name : undefined,
+                                    name: mediaType !== 'movie' ? effectiveMainObject.name : undefined,
+                                    poster_path: null,
+                                    profile_path: null,
+                                    release_date: null,
+                                    first_air_date: null,
+                                    vote_average: 0,
+                                    priority: 0,
+                                    popularity: 10000,
+                                    originalName: effectiveMainObject.name,
+                                    isMainObject: true,
+                                    noResult: true
+                                };
+                                mainObjectResult.push(placeholderItem);
+                            }
                         }
                     }
-                  })
-                  .catch(error => {
-                      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
-                          console.error(`Timeout fetching TMDB data for ${ref.name} (${ref.type})`);
-                      } else {
-                          console.error(`Error fetching TMDB data for ${ref.name} (${ref.type}):`, error.message || error);
-                      }
-                  })
-              );
-          }
+                } catch (error) {
+                    console.error(`Error fetching main object: ${error}`);
+                }
+            }
 
-          try {
-              await Promise.all(promises);
-          } catch (e) {
-              console.error("Error occurred during Promise.all for TMDB fetches:", e);
-          }
+            const seenNames = new Set(mainObjectResult.map(item => item.originalName?.toLowerCase()));
 
-          const personResults = results
-              .filter(item => item.media_type.toLowerCase() === 'person')
-              .sort((a, b) => b.popularity - a.popularity);
-          
-          const mediaResults = results
-              .filter(item => item.media_type.toLowerCase() !== 'person')
-              .sort((a, b) => b.popularity - a.popularity);
+            const filteredReferences = references.filter(ref => {
+                if (!ref || typeof ref !== 'object' || !ref.name || !ref.type) {
+                    return false;
+                }
+                const refNameLowercase = ref.name.toLowerCase();
 
-          const limitedPersonResults = personResults.slice(0, 5);
-
-          if (limitedPersonResults.length > 0) {
-              if (mainObjectMediaItem && mainObjectMediaItem.id && (mainObjectMediaItem.media_type === 'movie' || mainObjectMediaItem.media_type === 'tv')) {
-                  try {
-                      const isRelated = await this.verifyMediaPersonRelationship(
-                          mainObjectMediaItem.media_type,
-                          mainObjectMediaItem.id,
-                          limitedPersonResults,
-                          this.tmdbApiKey
-                      );
-
-                      if (!isRelated) {
-                          try {
-                              const betterMatchResponse = await axios.get(`https://api.themoviedb.org/3/search/${mainObjectMediaItem.media_type}`, {
-                                  params: {
-                                      api_key: this.tmdbApiKey,
-                                      query: effectiveMainObject.name,
-                                      language: 'en-US',
-                                      page: 1,
-                                      include_adult: false
-                                  },
-                                  timeout: 8000
-                              });
-                              
-                              if (betterMatchResponse.data?.results?.length > 1) { 
-                                  for (let i = 1; i < Math.min(5, betterMatchResponse.data.results.length); i++) {
-                                    const alternativeItem = betterMatchResponse.data.results[i];
-                                    
-                                    try {
-                                        const altDetailsResponse = await axios.get(`https://api.themoviedb.org/3/${mainObjectMediaItem.media_type}/${alternativeItem.id}`, {
-                                            params: {
-                                                api_key: this.tmdbApiKey,
-                                                append_to_response: 'external_ids'
-                                            },
-                                            timeout: 5000
-                                        });
-                                        alternativeItem.external_ids = altDetailsResponse.data.external_ids;
-                                    } catch (error) {
-                                        console.error(`Error fetching external_ids for alternative:`, error);
-                                    }
-                                    
-                                    const isAlternativeRelated = await this.verifyMediaPersonRelationship(
-                                        mainObjectMediaItem.media_type,
-                                        alternativeItem.id,
-                                        limitedPersonResults,
-                                        this.tmdbApiKey
-                                    );
-                                    
-                                    if (isAlternativeRelated) {
-                                        const mediaType = mainObjectMediaItem.media_type;
-                                        const alternativeMainItem = {
-                                            ...alternativeItem,
-                                            id: alternativeItem.id,
-                                            media_type: mediaType,
-                                            url: `${this.baseUrl}/${mediaType}/${alternativeItem.id}`,
-                                            title: mediaType === 'movie' ? alternativeItem.title : undefined,
-                                            name: mediaType !== 'movie' ? alternativeItem.name : undefined,
-                                            poster_path: alternativeItem.poster_path,
-                                            release_date: alternativeItem.release_date,
-                                            first_air_date: alternativeItem.first_air_date,
-                                            vote_average: alternativeItem.vote_average || 0,
-                                            priority: 0,
-                                            popularity: 10000,
-                                            originalName: effectiveMainObject.name,
-                                            isMainObject: true,
-                                            alternativeFound: true,
-                                            external_ids: alternativeItem.external_ids
-                                        };
-
-                                        await enrichWithIMDb(alternativeMainItem, mediaType);
-                                        mainObjectResult.splice(0, 1, alternativeMainItem);
-                                        break;
-                                    }
-                                }
-                              }
-                          } catch (error) {
-                              console.error(`Error buscando alternativas para el objeto principal: ${error}`);
-                          }
-                      }
-                  } catch (error) {
-                      console.error(`Error verificando si el objeto principal está relacionado con las personas: ${error}`);
-                  }
-              }
-
-              const verifiedMediaPromises = [];
-              const verifiedMediaResults = [];
-
-              for (const mediaItem of mediaResults) {
-                  let mediaType = mediaItem.media_type.toLowerCase();
-                  let mediaId = mediaItem.id;
+                if (seenNames.has(refNameLowercase)) {
+                    return false;
+                }
                 
-                  const creditsPromise = this.verifyMediaPersonRelationship(mediaType, mediaId, limitedPersonResults, this.tmdbApiKey)
-                      .then(isRelated => {
-                          if (isRelated) {
-                              verifiedMediaResults.push(mediaItem);
-                          } else {
-                              console.log(`Media "${mediaItem.title || mediaItem.name}" descartado por no tener relación con las personas`);
+                seenNames.add(refNameLowercase);
+                return true;
+            });
+
+            for (const ref of filteredReferences) {
+                let searchUrl = '';
+                let mediaType = ref.type.toLowerCase();
+                
+                const params = {
+                    api_key: this.tmdbApiKey,
+                    query: ref.name,
+                    language: 'en-US',
+                    page: 1,
+                    include_adult: false,
+                    sort_by: 'popularity.desc'
+                };
+
+                switch (mediaType) {
+                    case 'movie':
+                        searchUrl = 'https://api.themoviedb.org/3/search/movie';
+                        break;
+                    case 'tv':
+                    case 'tv_show':
+                    case 'series':
+                        searchUrl = 'https://api.themoviedb.org/3/search/tv';
+                        mediaType = 'tv';
+                        params.first_air_date_year = ref.year || undefined;
+                        break;
+                    case 'person':
+                    case 'actor':
+                    case 'director':
+                        searchUrl = 'https://api.themoviedb.org/3/search/person';
+                        mediaType = 'person';
+                        break;
+                    default:
+                        console.warn(`Unsupported media type "${ref.type}" for reference:`, ref);
+                        continue;
+                }
+
+                promises.push(
+                  axios.get(searchUrl, { params, timeout: 8000 })
+                  .then(async response => {
+                      if (response.data?.results?.length > 0) {
+                          const sortedResults = response.data.results.sort((a, b) => 
+                              (b.popularity || 0) - (a.popularity || 0)
+                          );
+                          
+                          const item = sortedResults[0];
+                          const uniqueId = `${mediaType}-${item.id}`;
+
+                          if (item.id && !seenIds.has(uniqueId)) {
+                              seenIds.add(uniqueId);
+                              
+                              let detailsResponse;
+                              try {
+                                  detailsResponse = await axios.get(`https://api.themoviedb.org/3/${mediaType}/${item.id}`, {
+                                      params: {
+                                          api_key: this.tmdbApiKey,
+                                          append_to_response: 'external_ids'
+                                      },
+                                      timeout: 5000
+                                  });
+                                  item.external_ids = detailsResponse.data.external_ids;
+                              } catch (error) {
+                                  console.error(`Error fetching external_ids for ${item.id}:`, error);
+                              }
+                              
+                              const formattedItem = {
+                                  ...item,
+                                  id: item.id,
+                                  media_type: mediaType,
+                                  url: `${this.baseUrl}/${mediaType}/${item.id}`,
+                                  title: mediaType === 'movie' ? item.title : undefined,
+                                  name: mediaType !== 'movie' ? item.name : undefined,
+                                  poster_path: item.poster_path || (mediaType === 'person' ? item.profile_path : undefined),
+                                  profile_path: mediaType === 'person' ? item.profile_path : undefined,
+                                  release_date: item.release_date,
+                                  first_air_date: item.first_air_date,
+                                  vote_average: item.vote_average || 0,
+                                  known_for_department: item.known_for_department,
+                                  priority: priorityTypes[mediaType] || 99,
+                                  popularity: item.popularity || 0,
+                                  originalName: ref.name,
+                                  external_ids: item.external_ids
+                              };
+                              
+                              await enrichWithIMDb(formattedItem, mediaType);
+                              results.push(formattedItem);
                           }
-                      })
-                      .catch(error => {
-                          console.error(`Error verificando relación para ${mediaItem.title || mediaItem.name}:`, error);
-                          verifiedMediaResults.push(mediaItem);
-                      });
+                      } else {
+                            console.warn(`No TMDB results found for: ${ref.name} (Type: ${ref.type})`);
+                        }
+                    })
+                    .catch(error => {
+                        if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+                            console.error(`Timeout fetching TMDB data for ${ref.name} (${ref.type})`);
+                        } else {
+                            console.error(`Error fetching TMDB data for ${ref.name} (${ref.type}):`, error.message || error);
+                        }
+                    })
+                );
+            }
+
+            try {
+                await Promise.all(promises);
+            } catch (e) {
+                console.error("Error occurred during Promise.all for TMDB fetches:", e);
+            }
+
+            const personResults = results
+                .filter(item => item.media_type.toLowerCase() === 'person')
+                .sort((a, b) => b.popularity - a.popularity);
+            
+            const mediaResults = results
+                .filter(item => item.media_type.toLowerCase() !== 'person')
+                .sort((a, b) => b.popularity - a.popularity);
+
+            const limitedPersonResults = personResults.slice(0, 5);
+
+            if (limitedPersonResults.length > 0) {
+                if (mainObjectMediaItem && mainObjectMediaItem.id && (mainObjectMediaItem.media_type === 'movie' || mainObjectMediaItem.media_type === 'tv')) {
+                    try {
+                        const isRelated = await this.verifyMediaPersonRelationship(
+                            mainObjectMediaItem.media_type,
+                            mainObjectMediaItem.id,
+                            limitedPersonResults,
+                            this.tmdbApiKey
+                        );
+
+                        if (!isRelated) {
+                            try {
+                                const betterMatchResponse = await axios.get(`https://api.themoviedb.org/3/search/${mainObjectMediaItem.media_type}`, {
+                                    params: {
+                                        api_key: this.tmdbApiKey,
+                                        query: effectiveMainObject.name,
+                                        language: 'en-US',
+                                        page: 1,
+                                        include_adult: false
+                                    },
+                                    timeout: 8000
+                                });
+                                
+                                if (betterMatchResponse.data?.results?.length > 1) { 
+                                    for (let i = 1; i < Math.min(5, betterMatchResponse.data.results.length); i++) {
+                                      const alternativeItem = betterMatchResponse.data.results[i];
+                                      
+                                      try {
+                                          const altDetailsResponse = await axios.get(`https://api.themoviedb.org/3/${mainObjectMediaItem.media_type}/${alternativeItem.id}`, {
+                                              params: {
+                                                  api_key: this.tmdbApiKey,
+                                                  append_to_response: 'external_ids'
+                                              },
+                                              timeout: 5000
+                                          });
+                                          alternativeItem.external_ids = altDetailsResponse.data.external_ids;
+                                      } catch (error) {
+                                          console.error(`Error fetching external_ids for alternative:`, error);
+                                      }
+                                      
+                                      const isAlternativeRelated = await this.verifyMediaPersonRelationship(
+                                          mainObjectMediaItem.media_type,
+                                          alternativeItem.id,
+                                          limitedPersonResults,
+                                          this.tmdbApiKey
+                                      );
+                                      
+                                      if (isAlternativeRelated) {
+                                          const mediaType = mainObjectMediaItem.media_type;
+                                          const alternativeMainItem = {
+                                              ...alternativeItem,
+                                              id: alternativeItem.id,
+                                              media_type: mediaType,
+                                              url: `${this.baseUrl}/${mediaType}/${alternativeItem.id}`,
+                                              title: mediaType === 'movie' ? alternativeItem.title : undefined,
+                                              name: mediaType !== 'movie' ? alternativeItem.name : undefined,
+                                              poster_path: alternativeItem.poster_path,
+                                              release_date: alternativeItem.release_date,
+                                              first_air_date: alternativeItem.first_air_date,
+                                              vote_average: alternativeItem.vote_average || 0,
+                                              priority: 0,
+                                              popularity: 10000,
+                                              originalName: effectiveMainObject.name,
+                                              isMainObject: true,
+                                              alternativeFound: true,
+                                              external_ids: alternativeItem.external_ids
+                                          };
+
+                                          await enrichWithIMDb(alternativeMainItem, mediaType);
+                                          mainObjectResult.splice(0, 1, alternativeMainItem);
+                                          break;
+                                      }
+                                  }
+                                }
+                            } catch (error) {
+                                console.error(`Error buscando alternativas para el objeto principal: ${error}`);
+                            }
+                        }
+                    } catch (error) {
+                        console.error(`Error verificando si el objeto principal está relacionado con las personas: ${error}`);
+                    }
+                }
+
+                const verifiedMediaPromises = [];
+                const verifiedMediaResults = [];
+
+                for (const mediaItem of mediaResults) {
+                    let mediaType = mediaItem.media_type.toLowerCase();
+                    let mediaId = mediaItem.id;
                   
-                  verifiedMediaPromises.push(creditsPromise);
-              }
-              
-              try {
-                  await Promise.all(verifiedMediaPromises);
-              } catch (e) {
-                  console.error("Error verificando relaciones entre medios y personas:", e);
-              }
+                    const creditsPromise = this.verifyMediaPersonRelationship(mediaType, mediaId, limitedPersonResults, this.tmdbApiKey)
+                        .then(isRelated => {
+                            if (isRelated) {
+                                verifiedMediaResults.push(mediaItem);
+                            } else {
+                                console.log(`Media "${mediaItem.title || mediaItem.name}" descartado por no tener relación con las personas`);
+                            }
+                        })
+                        .catch(error => {
+                            console.error(`Error verificando relación para ${mediaItem.title || mediaItem.name}:`, error);
+                            verifiedMediaResults.push(mediaItem);
+                        });
+                    
+                    verifiedMediaPromises.push(creditsPromise);
+                }
+                
+                try {
+                    await Promise.all(verifiedMediaPromises);
+                } catch (e) {
+                    console.error("Error verificando relaciones entre medios y personas:", e);
+                }
 
-              const finalResults = [...mainObjectResult, ...limitedPersonResults, ...verifiedMediaResults];
+                const finalResults = [...mainObjectResult, ...limitedPersonResults, ...verifiedMediaResults];
 
-              const sortedResults = finalResults.sort((a, b) => {
-                  if (a.isMainObject && !b.isMainObject) return -1;
-                  if (!a.isMainObject && b.isMainObject) return 1;
-                  if (a.priority !== b.priority) {
-                      return a.priority - b.priority;
-                  }
-                  
-                  return b.popularity - a.popularity;
-              }).slice(0, 20);
+                const sortedResults = finalResults.sort((a, b) => {
+                    if (a.isMainObject && !b.isMainObject) return -1;
+                    if (!a.isMainObject && b.isMainObject) return 1;
+                    if (a.priority !== b.priority) {
+                        return a.priority - b.priority;
+                    }
+                    
+                    return b.popularity - a.popularity;
+                }).slice(0, 20);
+                console.log('Final results with ratings:', sortedResults.map(r => ({
+                    title: r.title || r.name,
+                    rating_source: r.rating_source,
+                    imdb_rating: r.imdb_rating,
+                    vote_average: r.vote_average
+                })));
 
-              this.chatBotResults = sortedResults;
+                this.chatBotResults = sortedResults;
+                this.chatBotResults = sortedResults;
                 const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
                 if (activeConv) {
                   activeConv.results = [...this.chatBotResults];
                 }
                 
-          } else {
-              const finalResults = [...mainObjectResult, ...mediaResults];
+            } else {
+                const finalResults = [...mainObjectResult, ...mediaResults];
+                
+                const sortedResults = finalResults.sort((a, b) => {
+                    if (a.isMainObject && !b.isMainObject) return -1;
+                    if (!a.isMainObject && b.isMainObject) return 1;
+                    if (a.priority !== b.priority) {
+                        return a.priority - b.priority;
+                    }
+                    
+                    return b.popularity - a.popularity;
+                }).slice(0, 20);
+
+                this.chatBotResults = sortedResults;
+                const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+                if (activeConv) {
+                  activeConv.results = [...this.chatBotResults];
+                }
+            }
+
+            if (results.length === 0 && filteredReferences.some(ref => ref.name && ref.type) && mainObjectResult.length === 0) {
+                this.chatBotResponse += "<br><small style='color: orange;'>Could not fetch details for the related results.</small>";
+            }
+            this.$nextTick(() => {
+                this.scrollToBottom();
+            });
+      },
+
+      async fetchPredefinedMediaReferences(references) {
+        if (!this.tmdbApiKey) {
+          console.error("TMDB API Key (API_KEY) not configured!");
+          this.chatBotResults = [];
+          return;
+        }
+
+        const results = [];
+        const promises = [];
+        const seenIds = new Set();
+
+        for (const ref of references) {
+          if (!ref || !ref.name || !ref.type || !ref.tmdb_id) {
+            console.warn("Skipping invalid reference:", ref);
+            continue;
+          }
+
+          let mediaType = ref.type.toLowerCase();
+          
+          if (mediaType === 'tv_show' || mediaType === 'series') {
+            mediaType = 'tv';
+          } else if (mediaType === 'actor' || mediaType === 'director') {
+            mediaType = 'person';
+          }
+
+          const uniqueId = `${mediaType}-${ref.tmdb_id}`;
+          
+          if (seenIds.has(uniqueId)) {
+            continue;
+          }
+          
+          seenIds.add(uniqueId);
+
+          const detailsUrl = `https://api.themoviedb.org/3/${mediaType}/${ref.tmdb_id}`;
+          
+          promises.push(
+            axios.get(detailsUrl, {
+              params: {
+                api_key: this.tmdbApiKey,
+                language: 'en-US',
+                append_to_response: 'external_ids'
+              },
+              timeout: 8000
+            })
+            .then(async response => {
+              const item = response.data;
               
-              const sortedResults = finalResults.sort((a, b) => {
-                  if (a.isMainObject && !b.isMainObject) return -1;
-                  if (!a.isMainObject && b.isMainObject) return 1;
-                  if (a.priority !== b.priority) {
-                      return a.priority - b.priority;
+              const formattedItem = {
+                ...item,
+                id: item.id,
+                media_type: mediaType,
+                url: `${this.baseUrl}/${mediaType}/${item.id}`,
+                title: mediaType === 'movie' ? item.title : undefined,
+                name: mediaType !== 'movie' ? item.name : undefined,
+                poster_path: item.poster_path || (mediaType === 'person' ? item.profile_path : undefined),
+                profile_path: mediaType === 'person' ? item.profile_path : undefined,
+                release_date: item.release_date,
+                first_air_date: item.first_air_date,
+                vote_average: item.vote_average || 0,
+                known_for_department: item.known_for_department,
+                popularity: item.popularity || 0,
+                originalName: ref.name,
+                external_ids: item.external_ids
+              };
+              
+              const imdbId = item.external_ids?.imdb_id;
+              if (imdbId && mediaType !== 'person') {
+                try {
+                  const imdbData = await this.getIMDbRatingFromDB(imdbId);
+                  if (imdbData.found) {
+                    formattedItem.imdb_rating = imdbData.score;
+                    formattedItem.imdb_votes = imdbData.votes;
+                    formattedItem.rating_source = 'imdb';
+                  } else {
+                    formattedItem.rating_source = 'tmdb';
                   }
-                  
-                  return b.popularity - a.popularity;
-              }).slice(0, 20);
-
-              this.chatBotResults = sortedResults;
-              const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
-              if (activeConv) {
-                activeConv.results = [...this.chatBotResults];
-              }
-          }
-
-          if (results.length === 0 && filteredReferences.some(ref => ref.name && ref.type) && mainObjectResult.length === 0) {
-              this.chatBotResponse += "<br><small style='color: orange;'>Could not fetch details for the related results.</small>";
-          }
-          this.$nextTick(() => {
-              this.scrollToBottom();
-          });
-    },
-
-    async fetchPredefinedMediaReferences(references) {
-      if (!this.tmdbApiKey) {
-        console.error("TMDB API Key (API_KEY) not configured!");
-        this.chatBotResults = [];
-        return;
-      }
-
-      const results = [];
-      const promises = [];
-      const seenIds = new Set();
-
-      for (const ref of references) {
-        if (!ref || !ref.name || !ref.type || !ref.tmdb_id) {
-          console.warn("Skipping invalid reference:", ref);
-          continue;
-        }
-
-        let mediaType = ref.type.toLowerCase();
-        
-        if (mediaType === 'tv_show' || mediaType === 'series') {
-          mediaType = 'tv';
-        } else if (mediaType === 'actor' || mediaType === 'director') {
-          mediaType = 'person';
-        }
-
-        const uniqueId = `${mediaType}-${ref.tmdb_id}`;
-        
-        if (seenIds.has(uniqueId)) {
-          continue;
-        }
-        
-        seenIds.add(uniqueId);
-
-        const detailsUrl = `https://api.themoviedb.org/3/${mediaType}/${ref.tmdb_id}`;
-        
-        promises.push(
-          axios.get(detailsUrl, {
-            params: {
-              api_key: this.tmdbApiKey,
-              language: 'en-US',
-              append_to_response: 'external_ids'
-            },
-            timeout: 8000
-          })
-          .then(async response => {
-            const item = response.data;
-            
-            const formattedItem = {
-              ...item,
-              id: item.id,
-              media_type: mediaType,
-              url: `${this.baseUrl}/${mediaType}/${item.id}`,
-              title: mediaType === 'movie' ? item.title : undefined,
-              name: mediaType !== 'movie' ? item.name : undefined,
-              poster_path: item.poster_path || (mediaType === 'person' ? item.profile_path : undefined),
-              profile_path: mediaType === 'person' ? item.profile_path : undefined,
-              release_date: item.release_date,
-              first_air_date: item.first_air_date,
-              vote_average: item.vote_average || 0,
-              known_for_department: item.known_for_department,
-              popularity: item.popularity || 0,
-              originalName: ref.name,
-              external_ids: item.external_ids
-            };
-            
-            const imdbId = item.external_ids?.imdb_id;
-            if (imdbId && mediaType !== 'person') {
-              try {
-                const imdbData = await this.getIMDbRatingFromDB(imdbId);
-                if (imdbData.found) {
-                  formattedItem.imdb_rating = imdbData.score;
-                  formattedItem.imdb_votes = imdbData.votes;
-                  formattedItem.rating_source = 'imdb';
-                } else {
+                } catch (error) {
                   formattedItem.rating_source = 'tmdb';
                 }
-              } catch (error) {
+              } else {
                 formattedItem.rating_source = 'tmdb';
               }
-            } else {
-              formattedItem.rating_source = 'tmdb';
-            }
-            
-            results.push(formattedItem);
-          })
-          .catch(error => {
-            console.error(`Error fetching predefined media for ${ref.name} (ID: ${ref.tmdb_id}):`, error.message || error);
-          })
-        );
-      }
+              
+              results.push(formattedItem);
+            })
+            .catch(error => {
+              console.error(`Error fetching predefined media for ${ref.name} (ID: ${ref.tmdb_id}):`, error.message || error);
+            })
+          );
+        }
 
-      try {
-        await Promise.all(promises);
-      } catch (e) {
-        console.error("Error fetching predefined media references:", e);
-      }
+        try {
+          await Promise.all(promises);
+        } catch (e) {
+          console.error("Error fetching predefined media references:", e);
+        }
 
-      this.chatBotResults = results;
-      const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
-      if (activeConv) {
-        activeConv.results = [...this.chatBotResults];
-      }
-      this.$nextTick(() => {
-        this.scrollToBottom();
-      });
-    },
-
-    async verifyMediaPersonRelationship(mediaType, mediaId, persons, apiKey) {
-        if (!persons || persons.length === 0) {
-            return true;
+        this.chatBotResults = results;
+        const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+        if (activeConv) {
+          activeConv.results = [...this.chatBotResults];
         }
         
-        try {
-            const creditsUrl = `https://api.themoviedb.org/3/${mediaType}/${mediaId}/credits`;
-            const response = await axios.get(creditsUrl, {
-                params: { api_key: apiKey },
-                timeout: 5000
-            });
-            
-            if (!response.data || (!response.data.cast && !response.data.crew)) {
-                return false;
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
+      },
+
+      async verifyMediaPersonRelationship(mediaType, mediaId, persons, apiKey) {
+          if (!persons || persons.length === 0) {
+              return true;
+          }
+          
+          try {
+              const creditsUrl = `https://api.themoviedb.org/3/${mediaType}/${mediaId}/credits`;
+              const response = await axios.get(creditsUrl, {
+                  params: { api_key: apiKey },
+                  timeout: 5000
+              });
+              
+              if (!response.data || (!response.data.cast && !response.data.crew)) {
+                  return false;
+              }
+              const castIds = (response.data.cast || []).map(person => person.id);
+              const crewIds = (response.data.crew || []).map(person => person.id);
+              const allIds = [...new Set([...castIds, ...crewIds])];
+              
+              return persons.some(person => allIds.includes(person.id));
+          } catch (error) {
+              console.error(`Error obteniendo créditos para ${mediaType} ${mediaId}:`, error);
+              return true;
+          }
+  },
+        
+  scrollToBottom() {
+    const container = this.$refs.chatbotMessagesContainer;
+      if (container) {
+        container.scrollTop = container.scrollHeight;
+            if (this.isMobileDevice) {
+            if (document.activeElement === this.$refs.chatInput) {
+            this.$refs.chatInput.blur();
             }
-            const castIds = (response.data.cast || []).map(person => person.id);
-            const crewIds = (response.data.crew || []).map(person => person.id);
-            const allIds = [...new Set([...castIds, ...crewIds])];
-            
-            return persons.some(person => allIds.includes(person.id));
-        } catch (error) {
-            console.error(`Error obteniendo créditos para ${mediaType} ${mediaId}:`, error);
-            return true;
-        }
-},
-      
-scrollToBottom() {
-  const container = this.$refs.chatbotMessagesContainer;
-    if (container) {
-      container.scrollTop = container.scrollHeight;
-          if (this.isMobileDevice) {
-          if (document.activeElement === this.$refs.chatInput) {
-          this.$refs.chatInput.blur();
           }
         }
       }
     }
   }
-}
 </script>
 
 <style scoped>
