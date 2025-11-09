@@ -327,23 +327,31 @@ async function getUserName(userEmail) {
         });
       },
     },
-    methods: {
+  methods: {
   hasTranslation(title) {
     if (!title) return false;
     
-    const nonSpanishEnglishPattern = /[\u0E00-\u0E7F\u3040-\u309F\u30A0-\u30FF\u3400-\u4DBF\u4E00-\u9FFF\uAC00-\uD7AF\uF900-\uFAFF\u0900-\u097F\u0980-\u09FF\u0A00-\u0A7F\u0A80-\u0AFF\u0B00-\u0B7F\u0B80-\u0BFF\u0C00-\u0C7F\u0C80-\u0CFF\u0D00-\u0D7F\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u0FB50-\u0FDFF\u0FE70-\u0FEFF\u1000-\u109F\u1780-\u17FF\u0E80-\u0EFF\u1800-\u18AF\u0590-\u05FF\u0400-\u04FF\u0500-\u052F\u0370-\u03FF\u1F00-\u1FFF\u0530-\u058F\u10A0-\u10FF\u1200-\u137F\u1380-\u139F\u2D80-\u0300-\u036F]/;
+    const nonLatinPattern = /[\u0E00-\u0E7F\u3040-\u309F\u30A0-\u30FF\u3400-\u4DBF\u4E00-\u9FFF\uAC00-\uD7AF\uF900-\uFAFF\u0900-\u097F\u0980-\u09FF\u0A00-\u0A7F\u0A80-\u0AFF\u0B00-\u0B7F\u0B80-\u0BFF\u0C00-\u0C7F\u0C80-\u0CFF\u0D00-\u0D7F\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u0FB50-\u0FDFF\u0FE70-\u0FEFF\u1000-\u109F\u1780-\u17FF\u0E80-\u0EFF\u1800-\u18AF\u0590-\u05FF\u0400-\u04FF\u0500-\u052F\u0370-\u03FF\u1F00-\u1FFF\u0530-\u058F\u10A0-\u10FF\u1200-\u137F\u1380-\u139F\u2D80-\u2DDF\u0300-\u036F]/;
     
-    return !nonSpanishEnglishPattern.test(title);
+    return nonLatinPattern.test(title);
   },
 
   async getTranslatedTitle(id, type, originalTitle) {
     try {
       const apiKey = process.env.API_KEY;
       const endpoint = type === 'movie' ? 'movie' : 'tv';
-      const response = await fetch(`https://api.themoviedb.org/3/${endpoint}/${id}?api_key=${apiKey}&language=en-US`);
-      const data = await response.json();
       
-      const englishTitle = type === 'movie' ? data.title : data.name;
+      const responseES = await fetch(`https://api.themoviedb.org/3/${endpoint}/${id}?api_key=${apiKey}&language=es-ES`);
+      const dataES = await responseES.json();
+      const spanishTitle = type === 'movie' ? dataES.title : dataES.name;
+      
+      if (spanishTitle && spanishTitle !== originalTitle) {
+        return spanishTitle;
+      }
+      
+      const responseEN = await fetch(`https://api.themoviedb.org/3/${endpoint}/${id}?api_key=${apiKey}&language=en-US`);
+      const dataEN = await responseEN.json();
+      const englishTitle = type === 'movie' ? dataEN.title : dataEN.name;
       
       if (englishTitle && englishTitle !== originalTitle) {
         return englishTitle;
@@ -351,7 +359,7 @@ async function getUserName(userEmail) {
       
       return originalTitle;
     } catch (error) {
-      console.error('Error fetching English title:', error);
+      console.error('Error fetching translated title:', error);
       return originalTitle;
     }
   },
