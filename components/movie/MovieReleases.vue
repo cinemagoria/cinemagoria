@@ -4,11 +4,11 @@
       <h2 :class="$style.title">Información de Estrenos</h2>
       
       <div v-if="loading" :class="$style.loading">
-         <p>Cargando fechas de estrenos...</p>
+        <p>Cargando fechas de estrenos...</p>
       </div>
 
       <div v-else-if="groupedReleases.length === 0" :class="$style.noData">
-         <p>No hay información de estrenos disponible para esta película.</p>
+        <p>No hay información de estrenos disponible para esta película.</p>
       </div>
 
       <div v-else :class="$style.releaseList">

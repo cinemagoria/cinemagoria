@@ -163,7 +163,7 @@ export default {
   created () {
     this.createMenu();
     this.initRecommended();
-    this.fetchReviews();
+    this.fetchReviews(); // Añadido método para obtener reseñas
   },
 
   methods: {
@@ -174,13 +174,12 @@ export default {
     createMenu () {
       const menu = [];
 
-      menu.push('Ficha Técnica');
-
-      menu.push('Estrenos');
+      menu.push('Overview');
+      menu.push("Releases")
 
       if (this.showVideos) menu.push('Videos');
 
-      if (this.showImages) menu.push('Fotos');
+      if (this.showImages) menu.push('Photos');
 
       this.menu = menu;
     },
