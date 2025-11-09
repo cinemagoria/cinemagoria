@@ -168,7 +168,7 @@ export default {
         this.typoCheckInProgress = true;
         this.suggestedCorrection = null;
 
-        const response = await axios.post('https://entercinema-assistant.vercel.app/check-typos', {
+        const response = await axios.post('https://entercinema-assistant-rust.vercel.app/api/typo', {
           query: this.searchQuery
         });
         
