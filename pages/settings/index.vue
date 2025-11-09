@@ -170,11 +170,6 @@ export default {
       throw new Error('Error al buscar solicitudes existentes:', requestError.message);
     }
 
-    if (existingRequests.length > 0) {
-      console.log('Ya existe una solicitud pendiente para este usuario.');
-      return;
-    }
-
     const { data, error } = await supabase
       .from('requests')
       .insert([

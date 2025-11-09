@@ -703,8 +703,6 @@ async function getUserName(userEmail) {
             const newOrigin = currentOrigin.replace('es.', '');
             const newUrl = `${newOrigin}${currentPath}`;
             window.location.href = newUrl;
-          } else {
-            console.log("La URL no tiene el prefijo 'es.', no se necesita ninguna acción.");
           }
       },
 

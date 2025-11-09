@@ -27,6 +27,15 @@
 
       <div :class="$style.stats">
         <ul class="nolist">
+          <li v-if="showOriginalTitle">
+            <div :class="$style.label">
+              Título Original
+            </div>
+
+            <div :class="$style.value">
+              {{ item.original_title }}
+            </div>
+          </li>
           <li v-if="item.release_date">
             <div :class="$style.label">
               Lanzamiento
@@ -214,6 +223,12 @@ export default {
       } else {
         return false;
       }
+    },
+    showOriginalTitle() {
+      const localizedTitle = this.item.title;
+      const originalTitle = this.item.original_title;
+      
+      return localizedTitle && originalTitle && localizedTitle !== originalTitle;
     },
   },
 

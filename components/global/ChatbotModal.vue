@@ -357,10 +357,8 @@ export default {
     
     const userEmail = this.getUserEmail();
     if (userEmail) {
-      console.log('[ChatbotModal] Initializing with authenticated user');
       await this.initializeFirstConversation();
     } else {
-      console.log('[ChatbotModal] Initializing without authentication');
       this.initializeFirstConversation();
     }
     
@@ -388,7 +386,6 @@ export default {
   methods: {
     getUserEmail() {
       const email = localStorage.getItem('email');
-      console.log('[ChatbotModal] User email from localStorage:', email);
       return email;
     },
     async getIMDbRatingFromDB(imdbId) {
@@ -405,10 +402,8 @@ export default {
       const userEmail = this.getUserEmail();
       
       if (userEmail) {
-        console.log('[ChatbotModal] User authenticated, loading conversations from backend');
         await this.loadConversationsFromBackend();
       } else {
-        console.log('[ChatbotModal] No user authenticated, creating local conversation');
         this.createNewConversation();
       }
       
@@ -417,13 +412,6 @@ export default {
 
     async loadConversationsFromBackend() {
       const userEmail = this.getUserEmail();
-      if (!userEmail) {
-        console.log('[ChatbotModal] No user email, skipping conversation load');
-        return;
-      }
-
-      console.log('[ChatbotModal] Loading conversations for user:', userEmail);
-
       try {
         const response = await fetch(`${this.apiUrl}?user_email=${encodeURIComponent(userEmail)}`, {
           method: 'GET',
@@ -437,8 +425,6 @@ export default {
         }
 
         const data = await response.json();
-        console.log('[ChatbotModal] Loaded conversations from backend:', data.conversations);
-
         this.conversations = data.conversations.map(conv => ({
           id: conv.chat_id,
           title: conv.title,
@@ -451,13 +437,10 @@ export default {
           persistedInBackend: true
         }));
 
-        console.log('[ChatbotModal] Mapped conversations:', this.conversations);
-
         if (this.conversations.length > 0) {
           this.activeConversationId = this.conversations[0].id;
           this.chatId = this.conversations[0].chatId;
         } else {
-          console.log('[ChatbotModal] No conversations found, creating new one');
           this.createNewConversation();
         }
 
@@ -482,11 +465,8 @@ export default {
     async loadConversationMessages(chatId) {
       const userEmail = this.getUserEmail();
       if (!userEmail || !chatId) {
-        console.log('[ChatbotModal] Missing email or chatId for loading messages');
         return { messages: [], mediaReferences: [] };
       }
-
-      console.log('[ChatbotModal] Loading messages for chat_id:', chatId);
 
       try {
         const response = await fetch(`${this.apiUrl}?user_email=${encodeURIComponent(userEmail)}&chat_id=${encodeURIComponent(chatId)}`, {
@@ -501,8 +481,6 @@ export default {
         }
 
         const data = await response.json();
-        console.log('[ChatbotModal] Loaded messages:', data.messages);
-
         const messages = data.messages || [];
         const lastAssistantMessage = messages.filter(m => m.role === 'assistant').pop();
         const mediaReferences = lastAssistantMessage?.media_references || [];
@@ -516,9 +494,6 @@ export default {
     },
     
     createNewConversation() {
-      console.log('[ChatbotModal] Creating new conversation. Current conversations:', this.conversations.length);
-      console.log('[ChatbotModal] Conversations with chatId:', this.conversations.filter(c => c.chatId).map(c => ({ id: c.id, chatId: c.chatId, title: c.title })));
-      
       const newId = Date.now().toString();
       this.conversationIndex++;
       const currentActiveConv = this.conversations.find(conv => conv.id === this.activeConversationId);
@@ -557,8 +532,6 @@ export default {
       
     async switchConversation(conversationId) {
       if (conversationId !== this.activeConversationId) {
-        console.log('[ChatbotModal] Switching to conversation:', conversationId);
-        
         const previousConv = this.conversations.find(conv => conv.id === this.activeConversationId);
         if (previousConv) {
           previousConv.messages = [...this.chatMessages];
@@ -575,7 +548,6 @@ export default {
           this.chatId = activeConv.chatId;
           
           if (activeConv.chatId && (!activeConv.messages || activeConv.messages.length === 0)) {
-            console.log('[ChatbotModal] Loading messages from backend for:', activeConv.chatId);
             const { messages, mediaReferences } = await this.loadConversationMessages(activeConv.chatId);
             
             if (messages && messages.length > 0) {
@@ -593,7 +565,6 @@ export default {
               });
               
               if (mediaReferences && mediaReferences.length > 0) {
-                console.log('[ChatbotModal] Fetching media details for:', mediaReferences);
                 await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
                 activeConv.results = [...this.chatBotResults];
               } else {
@@ -604,10 +575,6 @@ export default {
 
           this.chatMessages = activeConv.messages ? [...activeConv.messages] : [];
           this.chatBotResults = activeConv.results ? [...activeConv.results] : [];
-          
-          console.log('[ChatbotModal] Loaded chat messages:', this.chatMessages.length);
-          console.log('[ChatbotModal] Loaded media results:', this.chatBotResults.length);
-          
           this.$nextTick(() => {
             this.scrollToBottom();
           });
@@ -641,10 +608,7 @@ export default {
     async loadActiveConversation() {
       const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
       if (activeConv) {
-        console.log('[ChatbotModal] Loading active conversation:', activeConv.chatId);
-        
         if (activeConv.chatId && (!activeConv.messages || activeConv.messages.length === 0)) {
-          console.log('[ChatbotModal] Messages empty, fetching from backend');
           const { messages, mediaReferences } = await this.loadConversationMessages(activeConv.chatId);
           
           if (messages && messages.length > 0) {
@@ -662,7 +626,6 @@ export default {
             });
             
             if (mediaReferences && mediaReferences.length > 0) {
-              console.log('[ChatbotModal] Fetching media details for active conversation');
               await this.fetchMediaDetailsFromBackendReferences(mediaReferences);
               activeConv.results = [...this.chatBotResults];
             } else {
@@ -674,9 +637,6 @@ export default {
         this.chatMessages = activeConv.messages ? [...activeConv.messages] : [];
         this.chatBotResults = activeConv.results ? [...activeConv.results] : [];
         this.chatId = activeConv.chatId;
-            
-        console.log('[ChatbotModal] Active conversation loaded with', this.chatMessages.length, 'messages');
-        console.log('[ChatbotModal] Active conversation media results:', this.chatBotResults.length);
       } else {
         this.chatMessages = [];
         this.chatId = null;
@@ -1057,8 +1017,6 @@ export default {
       });
 
       try {const userEmail = this.getUserEmail();
-        console.log('[ChatbotModal] Sending query with user_email:', userEmail);
-
         const response = await fetch(this.apiUrl, {
           method: 'POST',
           headers: {
@@ -1263,8 +1221,6 @@ export default {
         const promptIndex = this.currentPromptIndex;
      
         const userEmail = this.getUserEmail();
-        console.log('[ChatbotModal] Sending daily prompt with user_email:', userEmail);
-
         const payload = {
           query: this.currentDailyPrompt,
           chat_id: this.chatId,
@@ -2025,17 +1981,14 @@ export default {
                     let mediaId = mediaItem.id;
                   
                     const creditsPromise = this.verifyMediaPersonRelationship(mediaType, mediaId, limitedPersonResults, this.tmdbApiKey)
-                        .then(isRelated => {
-                            if (isRelated) {
-                                verifiedMediaResults.push(mediaItem);
-                            } else {
-                                console.log(`Media "${mediaItem.title || mediaItem.name}" descartado por no tener relación con las personas`);
-                            }
-                        })
-                        .catch(error => {
-                            console.error(`Error verificando relación para ${mediaItem.title || mediaItem.name}:`, error);
-                            verifiedMediaResults.push(mediaItem);
-                        });
+                      .then(isRelated => {
+                          if (isRelated) {
+                              verifiedMediaResults.push(mediaItem);
+                          }
+                      })
+                      .catch(error => {
+                          verifiedMediaResults.push(mediaItem);
+                      });
                     
                     verifiedMediaPromises.push(creditsPromise);
                 }
@@ -2057,12 +2010,6 @@ export default {
                     
                     return b.popularity - a.popularity;
                 }).slice(0, 20);
-                console.log('Final results with ratings:', sortedResults.map(r => ({
-                    title: r.title || r.name,
-                    rating_source: r.rating_source,
-                    imdb_rating: r.imdb_rating,
-                    vote_average: r.vote_average
-                })));
 
                 this.chatBotResults = sortedResults;
                 this.chatBotResults = sortedResults;
