@@ -190,13 +190,15 @@
 
             <div class="chatbot-input">
               <div class="input-wrapper">
-                <input
+                <textarea
                   v-if="inputEnabled || !isMobileDevice"
                   v-model="chatBotQuery"
                   placeholder="Ask about movies, series, actors..."
-                  @keyup.enter="handleSendAction"
+                  @keydown.enter.exact="handleSendAction"
+                  @input="adjustTextareaHeight"
                   ref="chatInput"
-                >
+                  rows="1"
+                ></textarea>
                 
                 <div 
                   v-else-if="isMobileDevice && !inputEnabled"
@@ -847,6 +849,11 @@ export default {
       this.chatBotLoading = false;
       this.messageWaitingForResponse = false;
       this.chatBotQuery = '';
+      this.$nextTick(() => {
+        if (this.$refs.chatInput) {
+          this.$refs.chatInput.style.height = 'auto';
+        }
+      });
       this.inputWidth = 0;
       
       if (this.dotAnimationInterval) {
@@ -868,6 +875,15 @@ export default {
           this.$refs.chatInput.focus();
         }
       });
+    },
+
+    adjustTextareaHeight() {
+      const textarea = this.$refs.chatInput;
+      if (!textarea) return;
+      
+      textarea.style.height = 'auto';
+      const newHeight = Math.min(textarea.scrollHeight, 120);
+      textarea.style.height = newHeight + 'px';
     },
 
     checkAuth() {
@@ -2299,6 +2315,7 @@ export default {
   padding: 25px;
   overflow-y: auto;
   scroll-behavior: smooth;
+  min-height: 300px;
 }
 
 .chatbot-welcome {
@@ -2321,12 +2338,9 @@ export default {
 }
 
 .reasoning-content {
-  /*
-   background: rgba(13, 27, 42, 0.7) !important;
-  */
   border-left: 3px solid rgba(127, 219, 241, 0.4) !important;
   padding: 0 !important;
-  min-height: auto !important;
+  min-height: 60px !important;
 }
 
 .streaming-content {
@@ -2694,7 +2708,7 @@ export default {
     pointer-events: none;
   }
   
-  .chatbot-input input {
+  .chatbot-input textarea {
     flex: 1;
     width: 100%;
     background: rgba(0, 0, 0, 0.2);
@@ -2704,20 +2718,26 @@ export default {
     color: #fff;
     font-size: 16px;
     outline: none;
-    transition: all 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
     position: relative;
     z-index: 1;
+    min-height: 48px;
+    max-height: 120px;
     height: 48px;
     box-sizing: border-box;
+    resize: none;
+    overflow-y: auto;
+    line-height: 1.5;
+    font-family: inherit;
   }
 
-  .chatbot-input input:focus {
+  .chatbot-input textarea:focus {
     border-color: rgba(127, 219, 241, 0.7);
     box-shadow: 0 0 0 1px rgba(127, 219, 241, 0.3);
   }
-  .chatbot-input input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-  }
+  .chatbot-input textarea::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
   
   .send-button {
     background: linear-gradient(135deg, rgba(127, 219, 241, 0.4) 0%, rgba(0, 136, 204, 0.4) 100%);
@@ -2809,7 +2829,7 @@ export default {
       }
       .chatbot-messages {
         padding: 15px;
-        min-height: 200px;
+        min-height: 250px;
         padding-bottom: 15px; 
       }
       .chatbot-input {
@@ -3428,17 +3448,17 @@ export default {
 }
 
 @media screen and (max-width: 768px) {
-  .chatbot-input input, .fake-input {
+  .chatbot-input textarea, .fake-input {
     font-size: 16px;
     padding: 12px 15px;
-    height: 46px;
+    min-height: 46px;
   }
 }
 
 @media screen and (max-width: 576px) {
-  .chatbot-input input, .fake-input {
-    font-size: 12px;
-    height: 46px;
+  .chatbot-input textarea, .fake-input {
+    font-size: 16px;
+    min-height: 46px;
   }
 }
 
