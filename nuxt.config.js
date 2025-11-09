@@ -16,7 +16,7 @@ export default {
         content: "Your Portal to Entertainment Discovery.",
       },
       { hid: "author", name: "author", content: "ivanluna.dev" },
-      { hid: "og:locale", property: "og:locale", content: "en_GB" },
+      { hid: "og:locale", property: "og:locale", content: "es_ES" },
       { hid: "og:title", property: "og:title", content: "EnterCinema" },
       {
         hid: "og:description",
@@ -82,10 +82,10 @@ export default {
   ],
   pwa: {
     manifest: {
-      lang: "en",
+      lang: "es",
       name: "EnterCinema",
       short_name: "EnterCinema",
-      description: "Your Portal to Entertainment Discovery.",
+      description: "Descubre al instante tus películas y series favoritas.",
       theme_color: "#03496B",
       background_color: "#ffffff",
       display: "standalone",
@@ -141,8 +141,8 @@ export default {
     FRONTEND_URL: process.env.FRONTEND_URL || "https://es.entercinema.com",
     API_URL: process.env.API_URL || "https://entercinema-drf.vercel.app",
     API_KEY: process.env.API_KEY || "",
-    API_LANG: process.env.API_LANG || "es",
-    API_COUNTRY: process.env.API_COUNTRY || "es",
+    API_LANG: "es-ES",
+    API_COUNTRY: "es-ES",
     SUPABASE_URL: process.env.SUPABASE_URL || "https://lamskoiorahedpvfkvav.supabase.co",
     SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || "",
     API_YOUTUBE_KEY: process.env.API_YOUTUBE_KEY || "",

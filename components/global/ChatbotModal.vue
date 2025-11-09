@@ -273,8 +273,8 @@ export default {
       sessionKey: 'entercinema_chat_session',
       tmdbApiKey: process.env.API_KEY,
       baseUrl: typeof window !== 'undefined'
-               ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://entercinema.com')
-               : 'https://entercinema.com',
+               ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://es.entercinema.com')
+               : 'https://es.entercinema.com',
       apiUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
         ? 'https://entercinema-assistant-rust.vercel.app/api/gemini' 
         : 'https://entercinema-assistant-rust.vercel.app/api/gemini',
@@ -1676,7 +1676,7 @@ export default {
                             params: {
                                 api_key: this.tmdbApiKey,
                                 query: effectiveMainObject.name,
-                                language: 'en-US',
+                                language: 'es-ES',
                                 page: 1,
                                 include_adult: false
                             },
@@ -1782,7 +1782,7 @@ export default {
                 const params = {
                     api_key: this.tmdbApiKey,
                     query: ref.name,
-                    language: 'en-US',
+                    language: 'es-ES',
                     page: 1,
                     include_adult: false,
                     sort_by: 'popularity.desc'
@@ -1906,7 +1906,7 @@ export default {
                                     params: {
                                         api_key: this.tmdbApiKey,
                                         query: effectiveMainObject.name,
-                                        language: 'en-US',
+                                        language: 'es-ES',
                                         page: 1,
                                         include_adult: false
                                     },
@@ -2085,7 +2085,7 @@ export default {
             axios.get(detailsUrl, {
               params: {
                 api_key: this.tmdbApiKey,
-                language: 'en-US',
+                language: 'es-ES',
                 append_to_response: 'external_ids'
               },
               timeout: 8000

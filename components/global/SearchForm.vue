@@ -225,7 +225,7 @@ beforeDestroy() {
     signOut() {
       localStorage.removeItem('access_token');
       localStorage.removeItem('email');
-      window.location.href = 'https://entercinema.com/';
+      window.location.href = 'https://es.entercinema.com/';
     },
     goToRoute() {
       if (this.query) {

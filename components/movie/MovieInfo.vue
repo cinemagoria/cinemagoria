@@ -360,7 +360,6 @@ export default {
     async fetchProviders() {
       try {
         const providersList = await getMovieProviders(this.item.id);
-        // Actualizar la copia local, no la prop directamente
         this.localProviders = Array.isArray(providersList) ? providersList : [];
       } catch (error) {
         console.error('Error al obtener proveedores:', error);
@@ -371,7 +370,6 @@ export default {
     async fetchReviews() {
       try {
         const reviewsList = await getMovieReviews(this.item.id);
-        // Actualizar la copia local, no la prop directamente
         this.localReviews = Array.isArray(reviewsList) ? reviewsList : [];
       } catch (error) {
         console.error('Error al obtener reseñas:', error);

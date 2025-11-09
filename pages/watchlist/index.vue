@@ -1025,7 +1025,7 @@ export default {
     async fetchSeriesDetails(seriesId) {
       try {
         const apiKey = process.env.API_KEY;
-        const apiLang = process.env.API_LANG;
+        const apiLang = 'es-ES';
         const url = `https://api.themoviedb.org/3/tv/${seriesId}?api_key=${apiKey}&language=${apiLang}`;
         const options = {
           method: 'GET',

@@ -20,6 +20,7 @@ const lists = {
     { title: 'Series de TV que se Emiten Hoy', query: 'airing_today' },
   ],
 };
+
 export const languages = [
   { 'iso_639_1': 'xx', 'english_name': 'No Language' },
   { 'iso_639_1': 'aa', 'english_name': 'Afar' },
@@ -216,7 +217,7 @@ export function getListItem (type, query) {
   } else if (type === 'tv') {
     return lists.tv.find(list => list.query === query);
   }
-};
+}
 
 export function getIMDbRatingFromDB(imdbId) {
   return new Promise(async (resolve, reject) => {
@@ -228,6 +229,37 @@ export function getIMDbRatingFromDB(imdbId) {
       resolve({ found: false });
     }
   });
+}
+
+function hasTranslation(title) {
+  if (!title) return false;
+  
+  const nonSpanishEnglishPattern = /[\u0E00-\u0E7F\u3040-\u309F\u30A0-\u30FF\u3400-\u4DBF\u4E00-\u9FFF\uAC00-\uD7AF\uF900-\uFAFF\u0900-\u097F\u0980-\u09FF\u0A00-\u0A7F\u0A80-\u0AFF\u0B00-\u0B7F\u0B80-\u0BFF\u0C00-\u0C7F\u0C80-\u0CFF\u0D00-\u0D7F\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u0FB50-\u0FDFF\u0FE70-\u0FEFF\u1000-\u109F\u1780-\u17FF\u0E80-\u0EFF\u1800-\u18AF\u0590-\u05FF\u0400-\u04FF\u0500-\u052F\u0370-\u03FF\u1F00-\u1FFF\u0530-\u058F\u10A0-\u10FF\u1200-\u137F\u1380-\u139F\u2D80-\u2DDFœŒæÆäöüÄÖÜßãÃõÕåÅøØðÐþÞąćęłńśźżĄĆĘŁŃŚŹŻčďěňřšťůžČĎĚŇŘŠŤŮŽăâîșțĂÂÎȘȚğıİşĞİŞőűŐŰơưăĂƠƯ\u0300-\u036F]/;
+  
+  return !nonSpanishEnglishPattern.test(title);
+}
+
+async function getTranslatedTitle(id, type, originalTitle) {
+  try {
+    const endpoint = type === 'movie' ? 'movie' : 'tv';
+    const response = await axios.get(`${apiUrl}/${endpoint}/${id}`, {
+      params: {
+        api_key: process.env.API_KEY,
+        language: 'en-US'
+      }
+    });
+    
+    const englishTitle = type === 'movie' ? response.data.title : response.data.name;
+    
+    if (englishTitle && englishTitle !== originalTitle) {
+      return englishTitle;
+    }
+    
+    return originalTitle;
+  } catch (error) {
+    console.error('Error fetching English title:', error);
+    return originalTitle;
+  }
 }
 
 async function enrichWithIMDbRating(item) {
@@ -260,7 +292,7 @@ export function getMovies (query, page = 1) {
     axios.get(`${apiUrl}/movie/${query}`, {
       params: {
         api_key: process.env.API_KEY,
-        language: process.env.API_LANG,
+        language: 'es-ES',
         page,
       },
     }).then(async (response) => {
@@ -270,9 +302,14 @@ export function getMovies (query, page = 1) {
 
       const enrichedResults = await Promise.all(
         response.data.results.map(async (item) => {
+          if (!hasTranslation(item.title)) {
+            item.title = await getTranslatedTitle(item.id, 'movie', item.title);
+          }
+          
           const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}`, {
             params: {
               api_key: process.env.API_KEY,
+              language: 'es-ES',
               append_to_response: 'external_ids'
             }
           });
@@ -288,19 +325,24 @@ export function getMovies (query, page = 1) {
         reject(error);
       });
   });
-};
+}
 
 export function getMovie(id) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/movie/${id}`, {
       params: {
         api_key: process.env.API_KEY,
-        language: process.env.API_LANG,
+        language: 'es-ES',
         append_to_response: 'videos,credits,images,external_ids,release_dates',
-        include_image_language: 'en',
+        include_image_language: 'es',
       },
     }).then(async (response) => {
       const responseData = response.data;
+      
+      if (!hasTranslation(responseData.title)) {
+        responseData.title = await getTranslatedTitle(id, 'movie', responseData.title);
+      }
+      
       try {
         const providers = await getMovieProviders(id);
         responseData.providers = providers;
@@ -337,7 +379,7 @@ export function getMovie(id) {
       reject(error);
     });
   });
-};
+}
 
 export function getMovieProviders(id) {
   return new Promise((resolve, reject) => {
@@ -363,18 +405,16 @@ export function getMovieProviders(id) {
       reject(error);
     });
   });
-};
-
+}
 
 export function getMovieReviews(id) {
   return new Promise((resolve, reject) => {
-    axios.get(`${apiUrl}/movie/${id}/reviews?language=en-US&page=1`, {
+    axios.get(`${apiUrl}/movie/${id}/reviews?language=es-ES&page=1`, {
       params: {
         api_key: process.env.API_KEY,
       },
     }).then((response) => {
       const reviews = response.data.results;
-      const totalResults = response.data.total_results;
 
       if (reviews && reviews.length > 0) {
         const reviewsData = reviews.map(review => {
@@ -405,7 +445,7 @@ export function getMovieReviews(id) {
       reject(error);
     });
   });
-};
+}
 
 export function translateReview(reviewContent) {
   return new Promise((resolve, reject) => {
@@ -456,7 +496,7 @@ export function translateReview(reviewContent) {
 
     attemptRequest();
   });
-};
+}
 
 export function getTVShowProviders(id) {
   return new Promise((resolve, reject) => {
@@ -483,14 +523,14 @@ export function getTVShowProviders(id) {
       reject(error);
     });
   });
-};
+}
 
 export function getMovieRecommended (id, page = 1) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/movie/${id}/recommendations`, {
       params: {
         api_key: process.env.API_KEY,
-        language: process.env.API_LANG,
+        language: 'es-ES',
         page,
       },
       }).then(async (response) => {
@@ -500,9 +540,14 @@ export function getMovieRecommended (id, page = 1) {
 
         const enrichedResults = await Promise.all(
           response.data.results.map(async (item) => {
+            if (!hasTranslation(item.title)) {
+              item.title = await getTranslatedTitle(item.id, 'movie', item.title);
+            }
+            
             const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}`, {
               params: {
                 api_key: process.env.API_KEY,
+                language: 'es-ES',
                 append_to_response: 'external_ids'
               }
             });
@@ -518,14 +563,14 @@ export function getMovieRecommended (id, page = 1) {
         reject(error);
       });
   });
-};
+}
 
 export function getTvShows(query, page = 1) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/tv/${query}`, {
       params: {
         api_key: process.env.API_KEY,
-        language: process.env.API_LANG,
+        language: 'es-ES',
         page,
       },
     }).then(async (response) => {
@@ -537,9 +582,14 @@ export function getTvShows(query, page = 1) {
 
       const enrichedResults = await Promise.all(
         response.data.results.map(async (item) => {
+          if (!hasTranslation(item.name)) {
+            item.name = await getTranslatedTitle(item.id, 'tv', item.name);
+          }
+          
           const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}`, {
             params: {
               api_key: process.env.API_KEY,
+              language: 'es-ES',
               append_to_response: 'external_ids'
             }
           });
@@ -555,19 +605,24 @@ export function getTvShows(query, page = 1) {
         reject(error);
       });
   });
-};
+}
 
 export function getTvShow(id) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/tv/${id}`, {
       params: {
         api_key: process.env.API_KEY,
-        language: process.env.API_LANG,
+        language: 'es-ES',
         append_to_response: 'videos,credits,images,external_ids,content_ratings',
-        include_image_language: 'en',
+        include_image_language: 'es',
       },
     }).then(async (response) => {
       const responseData = response.data;
+      
+      if (!hasTranslation(responseData.name)) {
+        responseData.name = await getTranslatedTitle(id, 'tv', responseData.name);
+      }
+      
       try {
         const providers = await getTVShowProviders(id);
         responseData.providers = providers;
@@ -601,11 +656,11 @@ export function getTvShow(id) {
       reject(error);
     });
   });
-};
+}
 
 export function getTvShowReviews(id) {
   return new Promise((resolve, reject) => {
-    axios.get(`${apiUrl}/tv/${id}/reviews?language=en-US&page=1`, {
+    axios.get(`${apiUrl}/tv/${id}/reviews?language=es-ES&page=1`, {
       params: {
         api_key: process.env.API_KEY,
       },
@@ -640,14 +695,14 @@ export function getTvShowReviews(id) {
       reject(error);
     });
   });
-};
+}
 
 export function getTvShowRecommended (id, page = 1) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/tv/${id}/recommendations`, {
       params: {
         api_key: process.env.API_KEY,
-        language: process.env.API_LANG,
+        language: 'es-ES',
         page,
       },
       }).then(async (response) => {
@@ -657,9 +712,14 @@ export function getTvShowRecommended (id, page = 1) {
 
         const enrichedResults = await Promise.all(
           response.data.results.map(async (item) => {
+            if (!hasTranslation(item.name)) {
+              item.name = await getTranslatedTitle(item.id, 'tv', item.name);
+            }
+            
             const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}`, {
               params: {
                 api_key: process.env.API_KEY,
+                language: 'es-ES',
                 append_to_response: 'external_ids'
               }
             });
@@ -675,14 +735,14 @@ export function getTvShowRecommended (id, page = 1) {
         reject(error);
       });
   });
-};
+}
 
 export function getTvShowEpisodes (id, season) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/tv/${id}/season/${season}`, {
       params: {
         api_key: process.env.API_KEY,
-        language: process.env.API_LANG,
+        language: 'es-ES',
       },
     }).then((response) => {
       resolve(response.data);
@@ -691,14 +751,14 @@ export function getTvShowEpisodes (id, season) {
         reject(error);
       });
   });
-};
+}
 
 export function getTrending(media, page = 1) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/trending/${media}/week`, {
       params: {
         api_key: process.env.API_KEY,
-        language: process.env.API_LANG,
+        language: 'es-ES',
         page,
       },
     }).then(async (response) => {
@@ -712,10 +772,17 @@ export function getTrending(media, page = 1) {
 
       const enrichedResults = await Promise.all(
         response.data.results.map(async (item) => {
+          const titleField = media === 'movie' ? 'title' : 'name';
+          
+          if (!hasTranslation(item[titleField])) {
+            item[titleField] = await getTranslatedTitle(item.id, media, item[titleField]);
+          }
+          
           const endpoint = media === 'movie' ? 'movie' : 'tv';
           const detailsResponse = await axios.get(`${apiUrl}/${endpoint}/${item.id}`, {
             params: {
               api_key: process.env.API_KEY,
+              language: 'es-ES',
               append_to_response: 'external_ids'
             }
           });
@@ -731,14 +798,14 @@ export function getTrending(media, page = 1) {
         reject(error);
       });
   });
-};
+}
 
 export function getMediaByGenre (media, genre, page = 1) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/discover/${media}`, {
       params: {
         api_key: process.env.API_KEY,
-        language: process.env.API_LANG,
+        language: 'es-ES',
         with_genres: genre,
         page,
       },
@@ -749,9 +816,16 @@ export function getMediaByGenre (media, genre, page = 1) {
 
         const enrichedResults = await Promise.all(
           response.data.results.map(async (item) => {
+            const titleField = media === 'movie' ? 'title' : 'name';
+            
+            if (!hasTranslation(item[titleField])) {
+              item[titleField] = await getTranslatedTitle(item.id, media, item[titleField]);
+            }
+            
             const detailsResponse = await axios.get(`${apiUrl}/${media}/${item.id}`, {
               params: {
                 api_key: process.env.API_KEY,
+                language: 'es-ES',
                 append_to_response: 'external_ids'
               }
             });
@@ -767,14 +841,14 @@ export function getMediaByGenre (media, genre, page = 1) {
         reject(error);
       });
   });
-};
+}
 
 export function getCredits (id, type) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/person/${id}/${type}`, {
       params: {
         api_key: process.env.API_KEY,
-        language: process.env.API_LANG,
+        language: 'es-ES',
       },
     }).then((response) => {
       resolve(response.data);
@@ -783,7 +857,7 @@ export function getCredits (id, type) {
         reject(error);
       });
   });
-};
+}
 
 export function getGenreList (media) {
   return new Promise((resolve, reject) => {
@@ -798,16 +872,16 @@ export function getGenreList (media) {
         reject(error);
       });
   });
-};
+}
 
 export function getPerson (id) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/person/${id}`, {
       params: {
         api_key: process.env.API_KEY,
-        language: process.env.API_LANG,
+        language: 'es-ES',
         append_to_response: 'images,combined_credits,external_ids',
-        include_image_language: 'en',
+        include_image_language: 'es',
       },
     }).then((response) => {
       response.data.combined_credits.cast.forEach(role => {
@@ -821,14 +895,14 @@ export function getPerson (id) {
         reject(error);
       });
   });
-};
+}
 
 export function search (query, page = 1) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/search/multi?include_adult=false`, {
       params: {
         api_key: process.env.API_KEY,
-        language: process.env.API_LANG,
+        language: 'es-ES',
         query,
         page,
       },
@@ -840,10 +914,17 @@ export function search (query, page = 1) {
       const enrichedResults = await Promise.all(
         response.data.results.map(async (item) => {
           if (item.media_type === 'movie' || item.media_type === 'tv') {
+            const titleField = item.media_type === 'movie' ? 'title' : 'name';
+            
+            if (!hasTranslation(item[titleField])) {
+              item[titleField] = await getTranslatedTitle(item.id, item.media_type, item[titleField]);
+            }
+            
             const endpoint = item.media_type === 'movie' ? 'movie' : 'tv';
             const detailsResponse = await axios.get(`${apiUrl}/${endpoint}/${item.id}`, {
               params: {
                 api_key: process.env.API_KEY,
+                language: 'es-ES',
                 append_to_response: 'external_ids'
               }
             });
@@ -861,7 +942,7 @@ export function search (query, page = 1) {
         reject(error);
       });
   });
-};
+}
 
 export function get***MovieByImdb(imdbId) {
   return new Promise((resolve, reject) => {
@@ -942,4 +1023,4 @@ export function getYouTubeVideo (id) {
         reject(error);
       });
   });
-};
+}

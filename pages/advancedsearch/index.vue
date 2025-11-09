@@ -452,26 +452,54 @@ export default {
     }
   },
 
-  methods: {
-    updateGenres() {
-        this.selectedSearchGenre = '';
-      },
+    methods: {
+    hasTranslation(title) {
+      if (!title) return false;
+      
+      const nonSpanishEnglishPattern = /[\u0E00-\u0E7F\u3040-\u309F\u30A0-\u30FF\u3400-\u4DBF\u4E00-\u9FFF\uAC00-\uD7AF\uF900-\uFAFF\u0900-\u097F\u0980-\u09FF\u0A00-\u0A7F\u0A80-\u0AFF\u0B00-\u0B7F\u0B80-\u0BFF\u0C00-\u0C7F\u0C80-\u0CFF\u0D00-\u0D7F\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u0FB50-\u0FDFF\u0FE70-\u0FEFF\u1000-\u109F\u1780-\u17FF\u0E80-\u0EFF\u1800-\u18AF\u0590-\u05FF\u0400-\u04FF\u0500-\u052F\u0370-\u03FF\u1F00-\u1FFF\u0530-\u058F\u10A0-\u10FF\u1200-\u137F\u1380-\u139F\u2D80-\u2DDFœŒæÆäöüÄÖÜßãÃõÕåÅøØðÐþÞąćęłńśźżĄĆĘŁŃŚŹŻčďěňřšťůžČĎĚŇŘŠŤŮŽăâîșțĂÂÎȘȚğıİşĞİŞőűŐŰơưăĂƠƯ\u0300-\u036F]/;
+      
+      return !nonSpanishEnglishPattern.test(title);
+    },
 
-      async searchMovies() {
-        this.searchPerformed = false; 
-        this.loading = true;
-        this.movies = [];
+    async getTranslatedTitle(id, type, originalTitle) {
+      try {
         const apiKey = process.env.API_KEY;
-        const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : this.releaseYear; 
-        let baseUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&include_adult=false&include_video=false&language=en-US&sort_by=${this.selectedSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}&primary_release_year=${year}`;
-        if (this.selectedMinRating) {
-          baseUrl += `&vote_average.gte=${this.selectedMinRating}`;
+        const endpoint = type === 'movie' ? 'movie' : 'tv';
+        const response = await fetch(`https://api.themoviedb.org/3/${endpoint}/${id}?api_key=${apiKey}&language=en-US`);
+        const data = await response.json();
+        
+        const englishTitle = type === 'movie' ? data.title : data.name;
+        
+        if (englishTitle && englishTitle !== originalTitle) {
+          return englishTitle;
         }
-        if (this.selectedOriginCountry) {
-          baseUrl += `&with_origin_country=${this.selectedOriginCountry}`;
-        }
+        
+        return originalTitle;
+      } catch (error) {
+        console.error('Error fetching English title:', error);
+        return originalTitle;
+      }
+    },
 
-       try {
+    updateGenres() {
+      this.selectedSearchGenre = '';
+    },
+
+    async searchMovies() {
+      this.searchPerformed = false; 
+      this.loading = true;
+      this.movies = [];
+      const apiKey = process.env.API_KEY;
+      const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : this.releaseYear; 
+      let baseUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&include_adult=false&include_video=false&language=es-ES&sort_by=${this.selectedSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}&primary_release_year=${year}`;
+      if (this.selectedMinRating) {
+        baseUrl += `&vote_average.gte=${this.selectedMinRating}`;
+      }
+      if (this.selectedOriginCountry) {
+        baseUrl += `&with_origin_country=${this.selectedOriginCountry}`;
+      }
+
+      try {
         const responses = await Promise.all([
           fetch(`${baseUrl}&page=1`),
           fetch(`${baseUrl}&page=2`),
@@ -487,7 +515,11 @@ export default {
         
         const enrichedMovies = await Promise.all(
           allMovies.map(async (movie) => {
-            const detailsResponse = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}&append_to_response=external_ids`);
+            if (!this.hasTranslation(movie.title)) {
+              movie.title = await this.getTranslatedTitle(movie.id, 'movie', movie.title);
+            }
+            
+            const detailsResponse = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}&language=es-ES&append_to_response=external_ids`);
             const details = await detailsResponse.json();
             
             if (details.external_ids?.imdb_id) {
@@ -533,344 +565,345 @@ export default {
         console.error('Error fetching movies:', error);
         this.loading = false;
       }
-      },
+    },
 
-      async searchTv() {
-        this.searchPerformed = false; 
-        this.loading = true;
-        this.tvShows = [];
-        const apiKey = process.env.API_KEY;
-        const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : this.releaseYear;
-        let baseUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&include_adult=false&include_video=false&language=en-US&sort_by=${this.selectedSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}&first_air_date_year=${year}`;
-        if (this.selectedMinRating) {
-          baseUrl += `&vote_average.gte=${this.selectedMinRating}`;
-        }
-        if (this.selectedOriginCountry) {
-          baseUrl += `&with_origin_country=${this.selectedOriginCountry}`;
-        }
-        if (this.selectedWatchProvider) {
-          baseUrl += `&with_networks=${this.selectedWatchProvider}`;
-        }
+    async searchTv() {
+      this.searchPerformed = false; 
+      this.loading = true;
+      this.tvShows = [];
+      const apiKey = process.env.API_KEY;
+      const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : this.releaseYear;
+      let baseUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&include_adult=false&include_video=false&language=es-ES&sort_by=${this.selectedSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}&first_air_date_year=${year}`;
+      if (this.selectedMinRating) {
+        baseUrl += `&vote_average.gte=${this.selectedMinRating}`;
+      }
+      if (this.selectedOriginCountry) {
+        baseUrl += `&with_origin_country=${this.selectedOriginCountry}`;
+      }
+      if (this.selectedWatchProvider) {
+        baseUrl += `&with_networks=${this.selectedWatchProvider}`;
+      }
 
-        try {
-          const responses = await Promise.all([
-            fetch(`${baseUrl}&page=1`),
-            fetch(`${baseUrl}&page=2`)
-          ]);
-          const data1 = await responses[0].json();
-          const data2 = await responses[1].json();
-          
-          let allTvShows = [...data1.results, ...data2.results];
-          
-          const enrichedTvShows = await Promise.all(
-            allTvShows.map(async (tvShow) => {
-              const detailsResponse = await fetch(`https://api.themoviedb.org/3/tv/${tvShow.id}?api_key=${apiKey}&append_to_response=external_ids`);
-              const details = await detailsResponse.json();
-              
-              if (details.external_ids?.imdb_id) {
-                try {
-                  const imdbResponse = await fetch(`/api/imdb-rating/${details.external_ids.imdb_id}`);
-                  const imdbData = await imdbResponse.json();
-                  
-                  if (imdbData.found) {
-                    tvShow.imdb_rating = imdbData.score;
-                    tvShow.imdb_votes = imdbData.votes;
-                    tvShow.rating_source = 'imdb';
-                  } else {
-                    tvShow.rating_source = 'tmdb';
-                  }
-                } catch (err) {
+      try {
+        const responses = await Promise.all([
+          fetch(`${baseUrl}&page=1`),
+          fetch(`${baseUrl}&page=2`)
+        ]);
+        const data1 = await responses[0].json();
+        const data2 = await responses[1].json();
+        
+        let allTvShows = [...data1.results, ...data2.results];
+        
+        const enrichedTvShows = await Promise.all(
+          allTvShows.map(async (tvShow) => {
+            if (!this.hasTranslation(tvShow.name)) {
+              tvShow.name = await this.getTranslatedTitle(tvShow.id, 'tv', tvShow.name);
+            }
+            
+            const detailsResponse = await fetch(`https://api.themoviedb.org/3/tv/${tvShow.id}?api_key=${apiKey}&language=es-ES&append_to_response=external_ids`);
+            const details = await detailsResponse.json();
+            
+            if (details.external_ids?.imdb_id) {
+              try {
+                const imdbResponse = await fetch(`/api/imdb-rating/${details.external_ids.imdb_id}`);
+                const imdbData = await imdbResponse.json();
+                
+                if (imdbData.found) {
+                  tvShow.imdb_rating = imdbData.score;
+                  tvShow.imdb_votes = imdbData.votes;
+                  tvShow.rating_source = 'imdb';
+                } else {
                   tvShow.rating_source = 'tmdb';
                 }
-              } else {
+              } catch (err) {
                 tvShow.rating_source = 'tmdb';
               }
-              
-              return tvShow;
-            })
-          );
-          
-          if (this.selectedMinRating) {
-            this.tvShows = enrichedTvShows.filter(tvShow => {
-              const rating = tvShow.rating_source === 'imdb' ? tvShow.imdb_rating : parseFloat(tvShow.vote_average);
-              return rating >= parseFloat(this.selectedMinRating);
-            });
-          } else {
-            this.tvShows = enrichedTvShows;
-          }
-          
-          this.tvShows.forEach(tvShow => {
-            const rating = tvShow.rating_source === 'imdb' ? tvShow.imdb_rating : tvShow.vote_average;
-            this.$set(this.tvShowRatings, tvShow.id, rating);
+            } else {
+              tvShow.rating_source = 'tmdb';
+            }
+            
+            return tvShow;
+          })
+        );
+        
+        if (this.selectedMinRating) {
+          this.tvShows = enrichedTvShows.filter(tvShow => {
+            const rating = tvShow.rating_source === 'imdb' ? tvShow.imdb_rating : parseFloat(tvShow.vote_average);
+            return rating >= parseFloat(this.selectedMinRating);
           });
-          
-          this.loading = false;
-          this.searchPerformed = true;
-        } catch (error) {
-          console.error('Error fetching TV shows:', error);
-          this.loading = false;
-        }
-      },
-   
-      disabledFutureDates(date) {
-        const currentYear = new Date().getFullYear();
-        const firstMovieYear = 1888;
-        return date > new Date() || date.getFullYear() < firstMovieYear || date.getFullYear() > currentYear;
-      },
-
-      async searchContent() {
-        this.movies = [];
-        this.tvShows = [];
-        if (this.selectedSearchType === 'movie') {
-          this.searchMovies();
-        } else if (this.selectedSearchType === 'tv') {
-          this.searchTv();
         } else {
-          alert('Please select a type (Movie or TV Show) first.');
+          this.tvShows = enrichedTvShows;
         }
-      },
-          
-      async checkData() {
-        try {
-          const { data, error } = await supabase
-            .from('favorites')
-            .select('*')
-            .eq('user_email', this.userEmail);
-
-          if (error) {
-            throw new Error('Error al conectar con la base de datos: ' + error.message);
-          }
-        } catch (error) {
-          console.error(error.message);
-        }
-      },
-
-      toggleLanguageMenu() {
-        this.showLanguageMenu = !this.showLanguageMenu;
-      },
         
-      changeLanguage(language) {
-        const currentPath = this.$route.path;
-        const currentOrigin = window.location.origin;
-        const spanishUrl = `${currentOrigin.replace(
-          '://',
-          '://es.'
-        )}${currentPath}`;
-        window.location.href = spanishUrl; 
-      },
-
-      toggleMenu() {
-        this.isMenuOpen = !this.isMenuOpen;
-      },
-
-      goToWatchlist() {
-        this.$router.push('/watchlist');
-      },
-
-      goToSettings() {
-        this.$router.push('/settings');
-      },
-
-      goToLogin() {
-        this.$router.push('/login');
-      },
-
-      signOut() {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('email');
-        window.location.href = 'https://entercinema.com/';
-      },
-
-      toggleOrder(event) {
-        this.orderText = event.target.value === 'asc' ? 'Order Asc' : 'Order Desc';
-        if (this.orderText === 'Order Asc') {
-          this.moviesFetched.reverse();
-          this.tvFetched.reverse();
-        } else {
-          this.moviesFetched.reverse();
-          this.tvFetched.reverse();
-        }
-      },
-
-      filterByGenre(event) {
-        this.selectedSearchGenre = event.target.value;
-      },
+        this.tvShows.forEach(tvShow => {
+          const rating = tvShow.rating_source === 'imdb' ? tvShow.imdb_rating : tvShow.vote_average;
+          this.$set(this.tvShowRatings, tvShow.id, rating);
+        });
         
-      filterByYear(event) {
-        this.selectedYearRange = event.target.value;
-      },
-
-      toggleFilter(event) {
-        this.filter = event.target.value;
-        this.currentPage = 1;
-      },
-
-      formatRating(stars) {
-        return (stars / 10).toFixed(1);
-      },
-
-      goToFirst() {
-        this.currentPage = 1;
-      },
-
-      prevPage() {
-        if (this.currentPage > 1) {
-          this.currentPage--;
-        }
-      },
-
-      nextPage() {
-        if (this.currentPage < this.totalPages) {
-          this.currentPage++;
-        }
-      },
-
-      goToLast() {
-        this.currentPage = this.totalPages;
-      },
-
-      goBack() {
-        this.$router.go(-1);
-      },
-
-      getLink(item) {
-        if (item.details.typeForDb === 'movie') {
-          return `https://entercinema.com/movie/${item.details.idForDb}`;
-        } else if (item.details.typeForDb === 'tv') {
-          return `https://entercinema.com/tv/${item.details.idForDb}`;
-        } else {
-          return '#'; 
-        }
-      },
-        
-      async fetchUserFirstName() {
-        try {
-          const { data, error } = await supabase
-            .from('auth_user')
-            .select('first_name')
-            .eq('email', this.userEmail);
-          
-          if (error) {
-            throw new Error('Error connecting to the database: ' + error.message);
-          }
-          
-          this.userFirstName = data.length > 0 ? data[0].first_name : null;
-        } catch (error) {
-          console.error('Error fetching user first name:', error);
-        }
-      },
-
-      formatGenreNames(genreIds, genreList) {
-        return genreIds.map(id => {
-          const genre = genreList.find(genre => genre.id === id);
-          return genre ? genre.name : '';
-        }).filter(Boolean).join(', ');
-      },
-
-      extractYear(date) {
-        return date ? date.split('-')[0] : '';
-      },
-
-      truncateTitle(title) {
-        return title.length > 28 ? title.slice(0, 28) + '...' : title;
-      },
-        
-      updateRating(value) {
-        this.selectedMinRating = value.toString();
-        this.MinRatingForLabel = this.selectedMinRating;
-        localStorage.setItem('selectedMinRating', this.selectedMinRating);
-      },
-        
-      formattedGenre(genreId) {
-        const genres = {
-          28: 'Action',
-          12: 'Adventure',
-          16: 'Animation',
-          35: 'Comedy',
-          80: 'Crime',
-          99: 'Documentary',
-          18: 'Drama',
-          10751: 'Family',
-          14: 'Fantasy',
-          36: 'History',
-          27: 'Horror',
-          10402: 'Music',
-          9648: 'Mystery',
-          10749: 'Romance',
-          878: 'Science Fiction',
-          10770: 'TV Movie',
-          53: 'Thriller',
-          10752: 'War',
-          37: 'Western',
-          10759: 'Action & Adventure',
-          10765: 'Sci-Fi and Fantasy',
-          10767: 'Talk Show'
-        };
-        return genres[genreId] || '';
-      },
-
-      formattedCountry(countryCode) {
-        const countries = {
-          AL: 'Albania',
-          AM: 'Armenia',
-          AR: 'Argentina',
-          AT: 'Austria',
-          AU: 'Australia',
-          BE: 'Belgium',
-          BO: 'Bolivia',
-          BR: 'Brazil',
-          BG: 'Bulgaria',
-          CA: 'Canada',
-          CN: 'China',
-          CO: 'Colombia',
-          CR: 'Costa Rica',
-          HR: 'Croatia',
-          CZ: 'Czech Republic',
-          DK: 'Denmark',
-          EC: 'Ecuador',
-          EG: 'Egypt',
-          FI: 'Finland',
-          FR: 'France',
-          DE: 'Germany',
-          GR: 'Greece',
-          HK: 'Hong Kong',
-          HU: 'Hungary',
-          IN: 'India',
-          IR: 'Iran',
-          IQ: 'Iraq',
-          IE: 'Ireland',
-          IL: 'Israel',
-          IT: 'Italy',
-          JM: 'Jamaica',
-          JP: 'Japan',
-          KR: 'South Korea',
-          MX: 'Mexico',
-          MA: 'Morocco',
-          NL: 'Netherlands',
-          NZ: 'New Zealand',
-          NG: 'Nigeria',
-          NO: 'Norway',
-          PL: 'Poland',
-          PT: 'Portugal',
-          RO: 'Romania',
-          RU: 'Russia',
-          ZA: 'South Africa',
-          ES: 'Spain',
-          SE: 'Sweden',
-          CH: 'Switzerland',
-          TW: 'Taiwan',
-          TH: 'Thailand',
-          TR: 'Turkey',
-          UA: 'Ukraine',
-          GB: 'United Kingdom',
-          US: 'United States',
-          UY: 'Uruguay',
-          VE: 'Venezuela',
-          VN: 'Vietnam'
-        };
-        return countries[countryCode] || '';
+        this.loading = false;
+        this.searchPerformed = true;
+      } catch (error) {
+        console.error('Error fetching TV shows:', error);
+        this.loading = false;
       }
     },
+
+    disabledFutureDates(date) {
+      const currentYear = new Date().getFullYear();
+      const firstMovieYear = 1888;
+      return date > new Date() || date.getFullYear() < firstMovieYear || date.getFullYear() > currentYear;
+    },
+
+    async searchContent() {
+      this.movies = [];
+      this.tvShows = [];
+      if (this.selectedSearchType === 'movie') {
+        this.searchMovies();
+      } else if (this.selectedSearchType === 'tv') {
+        this.searchTv();
+      } else {
+        alert('Por favor selecciona un tipo (Película o Serie de TV) primero.');
+      }
+    },
+
+    async checkData() {
+      try {
+        const { data, error } = await supabase
+          .from('favorites')
+          .select('*')
+          .eq('user_email', this.userEmail);
+
+        if (error) {
+          throw new Error('Error al conectar con la base de datos: ' + error.message);
+        }
+      } catch (error) {
+        console.error(error.message);
+      }
+    },
+
+    toggleLanguageMenu() {
+      this.showLanguageMenu = !this.showLanguageMenu;
+    },
+
+    changeLanguage(language) {
+      const currentPath = this.$route.path;
+      const currentOrigin = window.location.origin;
+      const englishUrl = currentOrigin.replace('://es.', '://') + currentPath;
+      window.location.href = englishUrl;
+    },
+
+    toggleMenu() {
+      this.isMenuOpen = !this.isMenuOpen;
+    },
+
+    goToWatchlist() {
+      this.$router.push('/watchlist');
+    },
+
+    goToSettings() {
+      this.$router.push('/settings');
+    },
+
+    goToLogin() {
+      this.$router.push('/login');
+    },
+
+    signOut() {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('email');
+      window.location.href = 'https://es.entercinema.com/';
+    },
+
+    toggleOrder(event) {
+      this.orderText = event.target.value === 'asc' ? 'Order Asc' : 'Order Desc';
+      if (this.orderText === 'Order Asc') {
+        this.moviesFetched.reverse();
+        this.tvFetched.reverse();
+      } else {
+        this.moviesFetched.reverse();
+        this.tvFetched.reverse();
+      }
+    },
+
+    filterByGenre(event) {
+      this.selectedSearchGenre = event.target.value;
+    },
+
+    filterByYear(event) {
+      this.selectedYearRange = event.target.value;
+    },
+
+    toggleFilter(event) {
+      this.filter = event.target.value;
+      this.currentPage = 1;
+    },
+
+    formatRating(stars) {
+      return (stars / 10).toFixed(1);
+    },
+
+    goToFirst() {
+      this.currentPage = 1;
+    },
+
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
+    },
+
+    goToLast() {
+      this.currentPage = this.totalPages;
+    },
+
+    goBack() {
+      this.$router.go(-1);
+    },
+
+    getLink(item) {
+      if (item.details.typeForDb === 'movie') {
+        return `https://es.entercinema.com/movie/${item.details.idForDb}`;
+      } else if (item.details.typeForDb === 'tv') {
+        return `https://es.entercinema.com/tv/${item.details.idForDb}`;
+      } else {
+        return '#';
+      }
+    },
+
+    async fetchUserFirstName() {
+      try {
+        const { data, error } = await supabase
+          .from('auth_user')
+          .select('first_name')
+          .eq('email', this.userEmail);
+
+        if (error) {
+          throw new Error('Error connecting to the database: ' + error.message);
+        }
+
+        this.userFirstName = data.length > 0 ? data[0].first_name : null;
+      } catch (error) {
+        console.error('Error fetching user first name:', error);
+      }
+    },
+
+    formatGenreNames(genreIds, genreList) {
+      return genreIds.map(id => {
+        const genre = genreList.find(genre => genre.id === id);
+        return genre ? genre.name : '';
+      }).filter(Boolean).join(', ');
+    },
+
+    extractYear(date) {
+      return date ? date.split('-')[0] : '';
+    },
+
+    truncateTitle(title) {
+      return title.length > 28 ? title.slice(0, 28) + '...' : title;
+    },
+
+    updateRating(value) {
+      this.selectedMinRating = value.toString();
+      this.MinRatingForLabel = this.selectedMinRating;
+      localStorage.setItem('selectedMinRating', this.selectedMinRating);
+    },
+
+    formattedGenre(genreId) {
+      const genres = {
+        28: 'Action',
+        12: 'Adventure',
+        16: 'Animation',
+        35: 'Comedy',
+        80: 'Crime',
+        99: 'Documentary',
+        18: 'Drama',
+        10751: 'Family',
+        14: 'Fantasy',
+        36: 'History',
+        27: 'Horror',
+        10402: 'Music',
+        9648: 'Mystery',
+        10749: 'Romance',
+        878: 'Science Fiction',
+        10770: 'TV Movie',
+        53: 'Thriller',
+        10752: 'War',
+        37: 'Western',
+        10759: 'Action & Adventure',
+        10765: 'Sci-Fi and Fantasy',
+        10767: 'Talk Show'
+      };
+      return genres[genreId] || '';
+    },
+
+    formattedCountry(countryCode) {
+      const countries = {
+        AL: 'Albania',
+        AM: 'Armenia',
+        AR: 'Argentina',
+        AT: 'Austria',
+        AU: 'Australia',
+        BE: 'Bélgica',
+        BO: 'Bolivia',
+        BR: 'Brasil',
+        BG: 'Bulgaria',
+        CA: 'Canadá',
+        CN: 'China',
+        CO: 'Colombia',
+        CR: 'Costa Rica',
+        HR: 'Croacia',
+        CZ: 'República Checa',
+        DK: 'Dinamarca',
+        EC: 'Ecuador',
+        EG: 'Egipto',
+        FI: 'Finlandia',
+        FR: 'Francia',
+        DE: 'Alemania',
+        GR: 'Grecia',
+        HK: 'Hong Kong',
+        HU: 'Hungría',
+        IN: 'India',
+        IR: 'Irán',
+        IQ: 'Iraq',
+        IE: 'Irlanda',
+        IL: 'Israel',
+        IT: 'Italia',
+        JM: 'Jamaica',
+        JP: 'Japón',
+        KR: 'Corea del Sur',
+        MX: 'México',
+        MA: 'Marruecos',
+        NL: 'Países Bajos',
+        NZ: 'Nueva Zelanda',
+        NG: 'Nigeria',
+        NO: 'Noruega',
+        PL: 'Polonia',
+        PT: 'Portugal',
+        RO: 'Rumania',
+        RU: 'Rusia',
+        ZA: 'Sudáfrica',
+        ES: 'España',
+        SE: 'Suecia',
+        CH: 'Suiza',
+        TW: 'Taiwán',
+        TH: 'Tailandia',
+        TR: 'Turquía',
+        UA: 'Ucrania',
+        GB: 'Reino Unido',
+        US: 'Estados Unidos',
+        UY: 'Uruguay',
+        VE: 'Venezuela',
+        VN: 'Vietnam'
+      };
+      return countries[countryCode] || '';
+    }
+  },
     computed: {
       showDefaultMessage() {
         return this.MinRatingForLabel === 0;

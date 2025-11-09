@@ -328,511 +328,536 @@ async function getUserName(userEmail) {
       },
     },
     methods: {
-      formatDateToYYYYMMDD(date) {
-        const d = new Date(date);
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-      },
+  hasTranslation(title) {
+    if (!title) return false;
+    
+    const nonSpanishEnglishPattern = /[\u0E00-\u0E7F\u3040-\u309F\u30A0-\u30FF\u3400-\u4DBF\u4E00-\u9FFF\uAC00-\uD7AF\uF900-\uFAFF\u0900-\u097F\u0980-\u09FF\u0A00-\u0A7F\u0A80-\u0AFF\u0B00-\u0B7F\u0B80-\u0BFF\u0C00-\u0C7F\u0C80-\u0CFF\u0D00-\u0D7F\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u0FB50-\u0FDFF\u0FE70-\u0FEFF\u1000-\u109F\u1780-\u17FF\u0E80-\u0EFF\u1800-\u18AF\u0590-\u05FF\u0400-\u04FF\u0500-\u052F\u0370-\u03FF\u1F00-\u1FFF\u0530-\u058F\u10A0-\u10FF\u1200-\u137F\u1380-\u139F\u2D80-\u2DDFœŒæÆäöüÄÖÜßãÃõÕåÅøØðÐþÞąćęłńśźżĄĆĘŁŃŚŹŻčďěňřšťůžČĎĚŇŘŠŤŮŽăâîșțĂÂÎȘȚğıİşĞİŞőűŐŰơưăĂƠƯ\u0300-\u036F]/;
+    
+    return !nonSpanishEnglishPattern.test(title);
+  },
+
+  async getTranslatedTitle(id, type, originalTitle) {
+    try {
+      const apiKey = process.env.API_KEY;
+      const endpoint = type === 'movie' ? 'movie' : 'tv';
+      const response = await fetch(`https://api.themoviedb.org/3/${endpoint}/${id}?api_key=${apiKey}&language=en-US`);
+      const data = await response.json();
       
-      async fetchUpcomingMovies() {
-        const today = new Date();
-        const pastDate = new Date(today);
-        pastDate.setDate(today.getDate() - 180);
-        const futureDate = new Date(today);
-        futureDate.setDate(today.getDate() + 180);
-        
-        const todayStr = this.formatDateToYYYYMMDD(today);
-        const pastDateStr = this.formatDateToYYYYMMDD(pastDate);
-        const futureDateStr = this.formatDateToYYYYMMDD(futureDate);
-        
-        
-        const apiKey = process.env.API_KEY;
-        const apiLang = process.env.API_LANG;
-
-        const genres = {
-          horror: 27,
-          adventure: 12,
-          scienceFiction: 878,
-          action: 28,
-          comedy: 35,
-          crime: 80,
-          documentary: 99,
-          drama: 18,
-          history: 36,
-          romance: 10749,
-          thriller: 53,
-          western: 37,
-          war: 10752,
-          mystery: 9648
-        };
-
-        const genreIdMap = Object.fromEntries(
-          Object.entries(genres).map(([name, id]) => [id, `next${name.charAt(0).toUpperCase() + name.slice(1)}Movies`])
-        );
-
-        const movieOptions = {
-          method: 'GET',
-          headers: {
-            accept: 'application/json',
-            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
-          }
-        };
-
-        const fetchMoviesByGenre = async (genreId) => {
-          const currentMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=${apiLang}&page=1&primary_release_date.gte=${pastDateStr}&primary_release_date.lte=${todayStr}&sort_by=primary_release_date.desc&with_genres=${genreId}`;
-          const upcomingMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=${apiLang}&page=1&primary_release_date.gte=${todayStr}&primary_release_date.lte=${futureDateStr}&sort_by=primary_release_date.asc&with_genres=${genreId}`;
-          
-          try {
-            const [currentResponse, upcomingResponse] = await Promise.all([
-              fetch(currentMoviesUrl, movieOptions),
-              fetch(upcomingMoviesUrl, movieOptions)
-            ]);
-            
-            if (!currentResponse.ok || !upcomingResponse.ok) {
-              throw new Error(`Error en la respuesta de la API de películas para género ${genreId}`);
-            }
-            
-            const currentData = await currentResponse.json();
-            const upcomingData = await upcomingResponse.json();
-            
-            const allMovies = [
-              ...(currentData.results || []),
-              ...(upcomingData.results || [])
-            ];
-            
-            const dates = allMovies.map(m => m.release_date);
-
-            return allMovies;
-          } catch (error) {
-            console.error(`Error al obtener películas para género ${genreId}:`, error);
-            return [];
-          }
-        };
-
-        const allMovies = [];
-
-        for (const genreId of Object.values(genres)) {
-          const movies = await fetchMoviesByGenre(genreId);
-          allMovies.push(...movies);
-        }
-
-        allMovies.forEach(movie => {
-          if (movie.genre_ids && movie.genre_ids.length > 0) {
-            const primaryGenreId = movie.genre_ids[0];
-            const genreListName = genreIdMap[primaryGenreId];
-            if (genreListName && !this.addedMovieIds.has(movie.id)) {
-              if (this[genreListName]) {
-                this[genreListName].push(movie);
-                this.addedMovieIds.add(movie.id);
-              } else {
-                console.error(`La lista de géneros ${genreListName} no existe.`);
-              }
-            }
-          }
-        });
-
-        this.combinedMovies = Object.values(this.movies).flat();
-        this.sortMoviesByReleaseDate();
-        this.updateSelectedDateMovies();
-      },
-
-      formatDate(date) {
-          if (!date) return 'No especificado.';
-          const [year, month, day] = date.split('-');
-          return `${day}-${month}-${year}`;
-        },
-
-      sortMoviesByReleaseDate() {
-          if (!this.selectedDate) {
-            this.selectedDate = new Date();
-          }
-          
-          const uniqueMovies = {};
-          this.combinedMovies.forEach(movie => {
-            if (movie.release_date && movie.id) {
-              uniqueMovies[movie.id] = movie;
-            }
-          });
-          this.combinedMovies = Object.values(uniqueMovies).sort((a, b) => {
-            const dateA = new Date(a.release_date);
-            const dateB = new Date(b.release_date);
-            return dateA - dateB;
-          });
-      },
-
-      formatTitle(title) {
-        return title.length > 28 ? title.substring(0, 25) + '...' : title;
-      },
-
-      prevDate() {
-        const newDate = new Date(this.selectedDate);
-        newDate.setDate(newDate.getDate() - 1);
-        this.selectedDate = newDate;
-        this.currentMoviePage = 1;
-        this.updateSelectedDateMovies();
-      },
-      nextDate() {
-        const newDate = new Date(this.selectedDate);
-        newDate.setDate(newDate.getDate() + 1);
-        this.selectedDate = newDate;
-        this.currentMoviePage = 1;
-        this.updateSelectedDateMovies();
-      },
-      resetToToday() {
-        this.selectedDate = new Date();
-        this.currentMoviePage = 1;
-        this.updateSelectedDateMovies();
-      },
-      updateSelectedDateMovies() {
-        if (!this.selectedDate || !this.combinedMovies || this.combinedMovies.length === 0) {
-          this.selectedDateMovies = [];
-          return;
-        }
-        
-        const selectedDateStr = this.formatDateToYYYYMMDD(this.selectedDate);
-
-        const movieDates = this.combinedMovies.map(m => m.release_date);
-
-        
-        this.selectedDateMovies = this.combinedMovies.filter(movie => 
-          movie.release_date === selectedDateStr
-        );
-
-      },
-      formatDateForDisplay(date) {
-        if (!date) return '';
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        const formattedDate = new Date(date).toLocaleDateString('es-ES', options);
-        return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
-      },
-      updateItemsPerPage() {
-        this.itemsPerPage = window.innerWidth <= 1024 ? 20 : 20;
-        if (window.innerWidth <= 576) {
-          this.moviesPerPage = 1;
-        } else if (window.innerWidth <= 992) {
-          this.moviesPerPage = 6;
-        } else {
-          this.moviesPerPage = 8;
-        }
-      },
-
-      async fetchTrendingTV() {
-        const apiKey = process.env.API_KEY;
-        const apiLang = 'en-US';
-        const baseUrl = `https://api.themoviedb.org/3/trending/tv/week?api_key=${apiKey}&language=${apiLang}`;
-        const options = {
-            method: 'GET',
-            headers: {
-                accept: 'application/json',
-                Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
-            }
-        };
-
-        try {
-            const pages = [1, 2, 3, 4, 5];
-            const fetchPromises = pages.map(page => {
-                const url = `${baseUrl}&page=${page}`;
-                return fetch(url, options);
-            });
-
-            const responses = await Promise.all(fetchPromises);
-            const dataPromises = responses.map(response => {
-                if (!response.ok) {
-                    throw new Error('Error en la respuesta de la API');
-                }
-                return response.json();
-            });
-
-            const allData = await Promise.all(dataPromises);
-            const allResults = allData.flatMap(data => data.results);
-
-            this.trendingTVShows = allResults;
-            const filteredResults = allResults.filter(show => !show.genre_ids.includes(16));
-            this.trendingTVIds = filteredResults.map(show => show.id);
-        } catch (error) {
-            console.error('Error al obtener series en tendencia:', error);
-        }
-      },
-
-
-      async fetchSeriesDetails(seriesId) {
-          const apiKey = process.env.API_KEY;
-          const apiLang = 'es-ES';
-          const url = `https://api.themoviedb.org/3/tv/${seriesId}?api_key=${apiKey}&language=${apiLang}`;
-          const options = {
-              method: 'GET',
-              headers: {
-                  accept: 'application/json',
-                  Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
-              }
-          };
-
-          try {
-              const response = await fetch(url, options);
-              if (!response.ok) {
-                  throw new Error('Error en la respuesta de la API');
-              }
-              const data = await response.json();
-              return data;
-          } catch (error) {
-              console.error('Error al obtener detalles de la serie:', error);
-              return null;
-          }
-      },
-
-      async fetchSeriesDetailsForIds() {
-          const seriesPromises = this.trendingTVIds.map(id => this.fetchSeriesDetails(id));
-          const seriesDetails = await Promise.all(seriesPromises);
-          const currentYear = new Date().getFullYear();
-          const pastYearsLimit = currentYear - 5;
-
-          const filteredSeriesDetails = seriesDetails
-              .filter(series => series !== null)
-              .map(series => ({
-                  id: series.id,
-                  name: series.name,
-                  poster_path: series.poster_path,
-                  vote_average: series.vote_average,
-                  genres: series.genres.map(genre => ({ id: genre.id, name: genre.name })),
-                  nextEpisode: series.next_episode_to_air,
-                  stillPath: series.still_path,
-                  numberOfEpisodes: series.number_of_episodes,
-                  numberOfSeasons: series.number_of_seasons,
-                  firstAirDate: series.first_air_date,
-                  lastEpisode: series.last_episode_to_air,
-                  yearEndForDb: series.last_episode_to_air ? new Date(series.last_episode_to_air.air_date).getFullYear() : null
-              }))
-              .filter(series => series.yearEndForDb >= pastYearsLimit && series.nextEpisode !== undefined && series.nextEpisode !== null);
-
-          this.filteredSeriesDetails = filteredSeriesDetails;
-          this.trendingSeriesList = this.filteredSeriesDetails;
-      },
-
-      async fetchTrendingTVAndSeries() {
-          await this.fetchTrendingTV();
-          await this.fetchSeriesDetailsForIds();
-      },
-
-
-      async fetchFavoriteSeries() {
-        try {
-          const { data, error } = await supabase
-            .from('notifications')
-            .select('series_releases_details')
-            .eq('user_email', localStorage.getItem('email'));
-
-          if (error) {
-            throw new Error('Error al obtener los datos de la base de datos: ' + error.message);
-          }
-          this.seriesList = data[0].series_releases_details || [];
-
-        } catch (error) {
-          console.error('Error al obtener los datos de la base de datos:', error.message);
-        }
-      },
-      constructImagePath(stillPath) {
-            if (stillPath) {
-                return `https://image.tmdb.org/t/p/w400${stillPath}`;
-            } else {
-                return '/static/image_not_found.png';
-            }
-      },
-
-      nextPage() {
-        if (this.currentPage < this.totalPages) {
-          this.currentPage++;
-        }
-      },
-      prevPage() {
-        if (this.currentPage > 1) {
-          this.currentPage--;
-        }
-      },
-
-      nextTrendingPage() {
-        if (this.currentTrendingPage < this.totalTrendingPages) {
-          this.currentTrendingPage++;
-        }
-      },
-      prevTrendingPage() {
-        if (this.currentTrendingPage > 1) {
-          this.currentTrendingPage--;
-        }
-      },
-
-
-      prevTrendingPage() {
-        if (this.currentTrendingPage > 1) {
-            this.currentTrendingPage--;
-        }
-      },
-
-      nextTrendingPage() {
-        if (this.currentTrendingPage < this.totalTrendingPages) {
-            this.currentTrendingPage++;
-        }
-      },
-
-
-
-      redirectTv(showId) {
-      const url = `https://es.entercinema.com/tv/${showId}`;
-      window.open(url, '_blank');
-    },
-
-    redirectMovie(id) {
-      const url = `https://es.entercinema.com/movie/${id}`;
-      window.open(url, '_blank');
-    },
-
-    toggleLanguageMenu() {
-      this.showLanguageMenu = !this.showLanguageMenu;
-      const menu = this.$refs.languageMenu;
-      if (menu) {
-          menu.style.display = this.showLanguageMenu ? 'block' : 'none';
+      const englishTitle = type === 'movie' ? data.title : data.name;
+      
+      if (englishTitle && englishTitle !== originalTitle) {
+        return englishTitle;
       }
-      },
-      changeLanguage(language) {
-          const currentPath = this.$route.path;
-          const currentOrigin = window.location.origin;
-          const isSpanish = currentOrigin.includes('es.');
-
-          if (isSpanish) {
-            const newOrigin = currentOrigin.replace('es.', '');
-            const newUrl = `${newOrigin}${currentPath}`;
-            window.location.href = newUrl;
-          }
-      },
-
-
-        toggleMenu() {
-        this.isMenuOpen = !this.isMenuOpen;
-        },
-
-        formatDateYear(date) {
-          if (!date) return '';
-          const [year] = date.split('-');
-          return `${year}`;
-        },
-        formatYearRange(firstAirDate, nextEpisodeDate) {
-          const firstYear = this.formatDateYear(firstAirDate);
-          const nextYear = this.formatDateYear(nextEpisodeDate);
-          return firstYear === nextYear ? firstYear : `${firstYear}-${nextYear}`;
-        },
-
-        goToHome() {
-        this.$router.push({ path: '/' });
-        },
-
-        goToSettings() {
-        this.$router.push({ path: '/settings' });
-        },
-
-        signOut() {
-        localStorage.removeItem('email');
-        localStorage.removeItem('access_token');
-        this.$router.push({ path: '/login' });
-        },
-
-        toggleOrder(event) {
-        this.orderText = event.target.value === 'asc' ? 'Order Asc' : 'Order Desc';
-        if (this.orderText === 'Order Asc') {
-            this.moviesFetched.reverse();
-            this.tvFetched.reverse();
-        } else {
-            this.moviesFetched.reverse();
-            this.tvFetched.reverse();
-        }
-        },
-
-        
-
-        filterByGenre(event) {
-        this.selectedGenre = event.target.value;
-        },
-        filterByYear(event) {
-        this.selectedYearRange = event.target.value;
-        },
-
-        toggleFilter(event) {
-        this.filter = event.target.value;
-        this.currentPage = 1;
-        },
-
-        getVisibleMovies(genreName) {
-          const currentIndex = this.currentIndexes[genreName];
-          return this.movies[genreName].slice(currentIndex, currentIndex + this.itemsPerPage);
-        },
-
-        formatRating(stars) {
-        return (stars / 10).toFixed(1);
-        },
-        calculateStarsWidth(rating) {
-        const maxRating = 10;
-        const starWidth = 100 / maxRating;
-        const ratingInteger = Math.floor(rating);
-        const ratingDecimal = rating - ratingInteger;
-        let width = ratingInteger * starWidth;
-        if (ratingDecimal > 0) {
-            width += starWidth * ratingDecimal;
-        }
-        return width;
-        },
-
-        goToFirst() {
-        this.currentPage = 1;
-        },
-
-        prevPage() {
-        if (this.currentPage > 1) {
-            this.currentPage--;
-        }
-        },
-
-        nextPage() {
-        if (this.currentPage < this.totalPages) {
-            this.currentPage++;
-        }
-        },
-
-        goToLast() {
-        this.currentPage = this.totalPages;
-        },
-
-        goToLogin() {
-            this.$router.push('/login');
-        },
-        goTowatchlist() {
-        this.$router.push('/watchlist');
-      },
-
-      getLink(item) {
-      if (item.details.typeForDb === 'movie') {
-          return `https://es.entercinema.com/movie/${item.details.idForDb}`;
-      } else if (item.details.typeForDb === 'tv') {
-          return `https://es.entercinema.com/tv/${item.details.idForDb}`;
-      } else {
-          return '#';
-      }
-      },
-        async fetchUserFirstName() {
-        try {
-            const { data, error } = await supabase
-            .from('auth_user')
-            .select('first_name')
-            .eq('email', this.userEmail);
-
-            if (error) {
-            throw new Error('Error connecting to the database: ' + error.message);
-            }
-
-            this.userFirstName = data.length > 0 ? data[0].first_name : null;
-        } catch (error) {
-            console.error('Error fetching user first name:', error);
-        }
+      
+      return originalTitle;
+    } catch (error) {
+      console.error('Error fetching English title:', error);
+      return originalTitle;
     }
+  },
+
+  formatDateToYYYYMMDD(date) {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  },
+  
+  async fetchUpcomingMovies() {
+    const today = new Date();
+    const pastDate = new Date(today);
+    pastDate.setDate(today.getDate() - 180);
+    const futureDate = new Date(today);
+    futureDate.setDate(today.getDate() + 180);
+    
+    const todayStr = this.formatDateToYYYYMMDD(today);
+    const pastDateStr = this.formatDateToYYYYMMDD(pastDate);
+    const futureDateStr = this.formatDateToYYYYMMDD(futureDate);
+    
+    const apiKey = process.env.API_KEY;
+    const apiLang = 'es-ES';
+
+    const genres = {
+      horror: 27,
+      adventure: 12,
+      scienceFiction: 878,
+      action: 28,
+      comedy: 35,
+      crime: 80,
+      documentary: 99,
+      drama: 18,
+      history: 36,
+      romance: 10749,
+      thriller: 53,
+      western: 37,
+      war: 10752,
+      mystery: 9648
+    };
+
+    const genreIdMap = Object.fromEntries(
+      Object.entries(genres).map(([name, id]) => [id, `next${name.charAt(0).toUpperCase() + name.slice(1)}Movies`])
+    );
+
+    const movieOptions = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+      }
+    };
+
+    const fetchMoviesByGenre = async (genreId) => {
+      const currentMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=${apiLang}&page=1&primary_release_date.gte=${pastDateStr}&primary_release_date.lte=${todayStr}&sort_by=primary_release_date.desc&with_genres=${genreId}`;
+      const upcomingMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=${apiLang}&page=1&primary_release_date.gte=${todayStr}&primary_release_date.lte=${futureDateStr}&sort_by=primary_release_date.asc&with_genres=${genreId}`;
+      
+      try {
+        const [currentResponse, upcomingResponse] = await Promise.all([
+          fetch(currentMoviesUrl, movieOptions),
+          fetch(upcomingMoviesUrl, movieOptions)
+        ]);
+        
+        if (!currentResponse.ok || !upcomingResponse.ok) {
+          throw new Error(`Error en la respuesta de la API de películas para género ${genreId}`);
+        }
+        
+        const currentData = await currentResponse.json();
+        const upcomingData = await upcomingResponse.json();
+        
+        let allMovies = [
+          ...(currentData.results || []),
+          ...(upcomingData.results || [])
+        ];
+
+        const enrichedMovies = await Promise.all(
+          allMovies.map(async (movie) => {
+            if (!this.hasTranslation(movie.title)) {
+              movie.title = await this.getTranslatedTitle(movie.id, 'movie', movie.title);
+            }
+            return movie;
+          })
+        );
+        
+        return enrichedMovies;
+      } catch (error) {
+        console.error(`Error al obtener películas para género ${genreId}:`, error);
+        return [];
+      }
+    };
+
+    const allMovies = [];
+
+    for (const genreId of Object.values(genres)) {
+      const movies = await fetchMoviesByGenre(genreId);
+      allMovies.push(...movies);
+    }
+
+    allMovies.forEach(movie => {
+      if (movie.genre_ids && movie.genre_ids.length > 0) {
+        const primaryGenreId = movie.genre_ids[0];
+        const genreListName = genreIdMap[primaryGenreId];
+        if (genreListName && !this.addedMovieIds.has(movie.id)) {
+          if (this[genreListName]) {
+            this[genreListName].push(movie);
+            this.addedMovieIds.add(movie.id);
+          } else {
+            console.error(`La lista de géneros ${genreListName} no existe.`);
+          }
+        }
+      }
+    });
+
+    this.combinedMovies = Object.values(this.movies).flat();
+    this.sortMoviesByReleaseDate();
+    this.updateSelectedDateMovies();
+  },
+
+  formatDate(date) {
+    if (!date) return 'No especificado.';
+    const [year, month, day] = date.split('-');
+    return `${day}-${month}-${year}`;
+  },
+
+  sortMoviesByReleaseDate() {
+    if (!this.selectedDate) {
+      this.selectedDate = new Date();
+    }
+    
+    const uniqueMovies = {};
+    this.combinedMovies.forEach(movie => {
+      if (movie.release_date && movie.id) {
+        uniqueMovies[movie.id] = movie;
+      }
+    });
+    this.combinedMovies = Object.values(uniqueMovies).sort((a, b) => {
+      const dateA = new Date(a.release_date);
+      const dateB = new Date(b.release_date);
+      return dateA - dateB;
+    });
+  },
+
+  formatTitle(title) {
+    return title.length > 28 ? title.substring(0, 25) + '...' : title;
+  },
+
+  prevDate() {
+    const newDate = new Date(this.selectedDate);
+    newDate.setDate(newDate.getDate() - 1);
+    this.selectedDate = newDate;
+    this.currentMoviePage = 1;
+    this.updateSelectedDateMovies();
+  },
+
+  nextDate() {
+    const newDate = new Date(this.selectedDate);
+    newDate.setDate(newDate.getDate() + 1);
+    this.selectedDate = newDate;
+    this.currentMoviePage = 1;
+    this.updateSelectedDateMovies();
+  },
+
+  resetToToday() {
+    this.selectedDate = new Date();
+    this.currentMoviePage = 1;
+    this.updateSelectedDateMovies();
+  },
+
+  updateSelectedDateMovies() {
+    if (!this.selectedDate || !this.combinedMovies || this.combinedMovies.length === 0) {
+      this.selectedDateMovies = [];
+      return;
+    }
+    
+    const selectedDateStr = this.formatDateToYYYYMMDD(this.selectedDate);
+    
+    this.selectedDateMovies = this.combinedMovies.filter(movie => 
+      movie.release_date === selectedDateStr
+    );
+  },
+
+  formatDateForDisplay(date) {
+    if (!date) return '';
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    const formattedDate = new Date(date).toLocaleDateString('es-ES', options);
+    return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+  },
+
+  updateItemsPerPage() {
+    this.itemsPerPage = window.innerWidth <= 1024 ? 20 : 20;
+    if (window.innerWidth <= 576) {
+      this.moviesPerPage = 1;
+    } else if (window.innerWidth <= 992) {
+      this.moviesPerPage = 6;
+    } else {
+      this.moviesPerPage = 8;
+    }
+  },
+
+  async fetchTrendingTV() {
+    const apiKey = process.env.API_KEY;
+    const apiLang = 'es-ES';
+    const baseUrl = `https://api.themoviedb.org/3/trending/tv/week?api_key=${apiKey}&language=${apiLang}`;
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+      }
+    };
+
+    try {
+      const pages = [1, 2, 3, 4, 5];
+      const fetchPromises = pages.map(page => {
+        const url = `${baseUrl}&page=${page}`;
+        return fetch(url, options);
+      });
+
+      const responses = await Promise.all(fetchPromises);
+      const dataPromises = responses.map(response => {
+        if (!response.ok) {
+          throw new Error('Error en la respuesta de la API');
+        }
+        return response.json();
+      });
+
+      const allData = await Promise.all(dataPromises);
+      let allResults = allData.flatMap(data => data.results);
+
+      const enrichedResults = await Promise.all(
+        allResults.map(async (show) => {
+          if (!this.hasTranslation(show.name)) {
+            show.name = await this.getTranslatedTitle(show.id, 'tv', show.name);
+          }
+          return show;
+        })
+      );
+
+      this.trendingTVShows = enrichedResults;
+      const filteredResults = enrichedResults.filter(show => !show.genre_ids.includes(16));
+      this.trendingTVIds = filteredResults.map(show => show.id);
+    } catch (error) {
+      console.error('Error al obtener series en tendencia:', error);
+    }
+  },
+
+  async fetchSeriesDetails(seriesId) {
+    const apiKey = process.env.API_KEY;
+    const apiLang = 'es-ES';
+    const url = `https://api.themoviedb.org/3/tv/${seriesId}?api_key=${apiKey}&language=${apiLang}`;
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+      }
+    };
+
+    try {
+      const response = await fetch(url, options);
+      if (!response.ok) {
+        throw new Error('Error en la respuesta de la API');
+      }
+      const data = await response.json();
+      
+      if (!this.hasTranslation(data.name)) {
+        data.name = await this.getTranslatedTitle(data.id, 'tv', data.name);
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Error al obtener detalles de la serie:', error);
+      return null;
+    }
+  },
+
+  async fetchSeriesDetailsForIds() {
+    const seriesPromises = this.trendingTVIds.map(id => this.fetchSeriesDetails(id));
+    const seriesDetails = await Promise.all(seriesPromises);
+    const currentYear = new Date().getFullYear();
+    const pastYearsLimit = currentYear - 5;
+
+    const filteredSeriesDetails = seriesDetails
+      .filter(series => series !== null)
+      .map(series => ({
+        id: series.id,
+        name: series.name,
+        poster_path: series.poster_path,
+        vote_average: series.vote_average,
+        genres: series.genres.map(genre => ({ id: genre.id, name: genre.name })),
+        nextEpisode: series.next_episode_to_air,
+        stillPath: series.still_path,
+        numberOfEpisodes: series.number_of_episodes,
+        numberOfSeasons: series.number_of_seasons,
+        firstAirDate: series.first_air_date,
+        lastEpisode: series.last_episode_to_air,
+        yearEndForDb: series.last_episode_to_air ? new Date(series.last_episode_to_air.air_date).getFullYear() : null
+      }))
+      .filter(series => series.yearEndForDb >= pastYearsLimit && series.nextEpisode !== undefined && series.nextEpisode !== null);
+
+    this.filteredSeriesDetails = filteredSeriesDetails;
+    this.trendingSeriesList = this.filteredSeriesDetails;
+  },
+
+  async fetchTrendingTVAndSeries() {
+    await this.fetchTrendingTV();
+    await this.fetchSeriesDetailsForIds();
+  },
+
+  async fetchFavoriteSeries() {
+    try {
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('series_releases_details')
+        .eq('user_email', localStorage.getItem('email'));
+
+      if (error) {
+        throw new Error('Error al obtener los datos de la base de datos: ' + error.message);
+      }
+      this.seriesList = data[0].series_releases_details || [];
+    } catch (error) {
+      console.error('Error al obtener los datos de la base de datos:', error.message);
+    }
+  },
+
+  constructImagePath(stillPath) {
+    if (stillPath) {
+      return `https://image.tmdb.org/t/p/w400${stillPath}`;
+    } else {
+      return '/static/image_not_found.png';
+    }
+  },
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  },
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  },
+
+  nextTrendingPage() {
+    if (this.currentTrendingPage < this.totalTrendingPages) {
+      this.currentTrendingPage++;
+    }
+  },
+
+  prevTrendingPage() {
+    if (this.currentTrendingPage > 1) {
+      this.currentTrendingPage--;
+    }
+  },
+
+  redirectTv(showId) {
+    const url = `https://es.entercinema.com/tv/${showId}`;
+    window.open(url, '_blank');
+  },
+
+  redirectMovie(id) {
+    const url = `https://es.entercinema.com/movie/${id}`;
+    window.open(url, '_blank');
+  },
+
+  toggleLanguageMenu() {
+    this.showLanguageMenu = !this.showLanguageMenu;
+    const menu = this.$refs.languageMenu;
+    if (menu) {
+      menu.style.display = this.showLanguageMenu ? 'block' : 'none';
+    }
+  },
+
+  changeLanguage(language) {
+    const currentPath = this.$route.path;
+    const currentOrigin = window.location.origin;
+    const isSpanish = currentOrigin.includes('es.');
+
+    if (isSpanish) {
+      const newOrigin = currentOrigin.replace('es.', '');
+      const newUrl = `${newOrigin}${currentPath}`;
+      window.location.href = newUrl;
+    }
+  },
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  },
+
+  formatDateYear(date) {
+    if (!date) return '';
+    const [year] = date.split('-');
+    return `${year}`;
+  },
+
+  formatYearRange(firstAirDate, nextEpisodeDate) {
+    const firstYear = this.formatDateYear(firstAirDate);
+    const nextYear = this.formatDateYear(nextEpisodeDate);
+    return firstYear === nextYear ? firstYear : `${firstYear}-${nextYear}`;
+  },
+
+  goToHome() {
+    this.$router.push({ path: '/' });
+  },
+
+  goToSettings() {
+    this.$router.push({ path: '/settings' });
+  },
+
+  signOut() {
+    localStorage.removeItem('email');
+    localStorage.removeItem('access_token');
+    this.$router.push({ path: '/login' });
+  },
+
+  toggleOrder(event) {
+    this.orderText = event.target.value === 'asc' ? 'Order Asc' : 'Order Desc';
+    if (this.orderText === 'Order Asc') {
+      this.moviesFetched.reverse();
+      this.tvFetched.reverse();
+    } else {
+      this.moviesFetched.reverse();
+      this.tvFetched.reverse();
+    }
+  },
+
+  filterByGenre(event) {
+    this.selectedGenre = event.target.value;
+  },
+
+  filterByYear(event) {
+    this.selectedYearRange = event.target.value;
+  },
+
+  toggleFilter(event) {
+    this.filter = event.target.value;
+    this.currentPage = 1;
+  },
+
+  getVisibleMovies(genreName) {
+    const currentIndex = this.currentIndexes[genreName];
+    return this.movies[genreName].slice(currentIndex, currentIndex + this.itemsPerPage);
+  },
+
+  formatRating(stars) {
+    return (stars / 10).toFixed(1);
+  },
+
+  calculateStarsWidth(rating) {
+    const maxRating = 10;
+    const starWidth = 100 / maxRating;
+    const ratingInteger = Math.floor(rating);
+    const ratingDecimal = rating - ratingInteger;
+    let width = ratingInteger * starWidth;
+    if (ratingDecimal > 0) {
+      width += starWidth * ratingDecimal;
+    }
+    return width;
+  },
+
+  goToFirst() {
+    this.currentPage = 1;
+  },
+
+  goToLast() {
+    this.currentPage = this.totalPages;
+  },
+
+  goToLogin() {
+    this.$router.push('/login');
+  },
+
+  goTowatchlist() {
+    this.$router.push('/watchlist');
+  },
+
+  getLink(item) {
+    if (item.details.typeForDb === 'movie') {
+      return `https://es.entercinema.com/movie/${item.details.idForDb}`;
+    } else if (item.details.typeForDb === 'tv') {
+      return `https://es.entercinema.com/tv/${item.details.idForDb}`;
+    } else {
+      return '#';
+    }
+  },
+
+  async fetchUserFirstName() {
+    try {
+      const { data, error } = await supabase
+        .from('auth_user')
+        .select('first_name')
+        .eq('email', this.userEmail);
+
+      if (error) {
+        throw new Error('Error connecting to the database: ' + error.message);
+      }
+
+      this.userFirstName = data.length > 0 ? data[0].first_name : null;
+    } catch (error) {
+      console.error('Error fetching user first name:', error);
+    }
+  }
 }
 };
 </script>
