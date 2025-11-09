@@ -171,11 +171,6 @@ export default {
       throw new Error('Error fetching existing requests:', requestError.message);
     }
 
-    if (existingRequests.length > 0) {
-      console.log('There is already a pending request for this user.');
-      return;
-    }
-
     const { data, error } = await supabase
       .from('requests')
       .insert([
