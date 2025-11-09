@@ -325,7 +325,6 @@ async function getUserName(userEmail) {
       },
     },
     methods: {
-      // Helper function defined first to avoid order issues
       formatDateToYYYYMMDD(date) {
         const d = new Date(date);
         const year = d.getFullYear();

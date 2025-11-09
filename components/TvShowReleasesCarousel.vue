@@ -119,7 +119,6 @@ export default {
         ...item,
         nextEpisode: item.nextEpisode,
         status: item.status || 'Unknown',
-        // Convert the data structure to match what we expect
         id: item.id,
         name: item.name,
         poster_path: item.poster_path,
@@ -127,7 +126,6 @@ export default {
         first_air_date: item.firstAirDate,
       }));
 
-      // Sort by next episode air date (closest first)
       return mapped.sort((a, b) => {
         if (!a.nextEpisode || !a.nextEpisode.air_date) return 1;
         if (!b.nextEpisode || !b.nextEpisode.air_date) return -1;
@@ -135,7 +133,7 @@ export default {
         const dateA = new Date(a.nextEpisode.air_date);
         const dateB = new Date(b.nextEpisode.air_date);
         
-        return dateA - dateB; // Ascending order (closest dates first)
+        return dateA - dateB;
       });
     }
   },
@@ -164,7 +162,6 @@ export default {
   methods: {
 
     getEpisodeImageUrl(item) {
-      // Priority: Episode still_path > Series poster_path > fallback
       if (item.nextEpisode && item.nextEpisode.still_path) {
         return `https://image.tmdb.org/t/p/w500${item.nextEpisode.still_path}`;
       }
@@ -186,7 +183,6 @@ export default {
     },
 
     shouldShowToggle(text) {
-      // Check if text would be truncated (roughly 2 lines at ~40 chars per line)
       return text && text.length > 120;
     },
 

@@ -417,7 +417,7 @@ export default {
     
     closeRatingModal() {
       this.ratingModalVisible = false;
-      this.activeTab = 'rating'; // Reset to rating tab when closing
+      this.activeTab = 'rating';
     },
     
     setRating(rating) {
