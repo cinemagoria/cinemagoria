@@ -340,6 +340,21 @@ export function getMovie(id) {
   });
 };
 
+export function getMovieReleaseDates(id) {
+  return new Promise((resolve, reject) => {
+    axios.get(`${apiUrl}/movie/${id}/release_dates`, {
+      params: {
+        api_key: process.env.API_KEY,
+      },
+    }).then((response) => {
+      resolve(response.data.results);
+    }).catch((error) => {
+      console.error("Error fetching movie release dates:", error);
+      reject(error);
+    });
+  });
+}
+
 export function getMovieReviews(id) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/movie/${id}/reviews?language=en-US&page=1`, {
