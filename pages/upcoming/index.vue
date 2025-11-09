@@ -439,7 +439,7 @@ async function getUserName(userEmail) {
 
         const enrichedMovies = await Promise.all(
           allMovies.map(async (movie) => {
-            if (!this.hasTranslation(movie.title)) {
+            if (this.hasTranslation(movie.title)) {
               movie.title = await this.getTranslatedTitle(movie.id, 'movie', movie.title);
             }
             return movie;
@@ -593,7 +593,7 @@ async function getUserName(userEmail) {
 
       const enrichedResults = await Promise.all(
         allResults.map(async (show) => {
-          if (!this.hasTranslation(show.name)) {
+          if (this.hasTranslation(show.name)) {
             show.name = await this.getTranslatedTitle(show.id, 'tv', show.name);
           }
           return show;
@@ -626,11 +626,11 @@ async function getUserName(userEmail) {
         throw new Error('Error en la respuesta de la API');
       }
       const data = await response.json();
-      
-      if (!this.hasTranslation(data.name)) {
+
+      if (this.hasTranslation(data.name)) {
         data.name = await this.getTranslatedTitle(data.id, 'tv', data.name);
       }
-      
+
       return data;
     } catch (error) {
       console.error('Error al obtener detalles de la serie:', error);

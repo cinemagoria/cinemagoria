@@ -523,7 +523,7 @@ export default {
         
         const enrichedMovies = await Promise.all(
           allMovies.map(async (movie) => {
-            if (!this.hasTranslation(movie.title)) {
+            if (this.hasTranslation(movie.title)) {
               movie.title = await this.getTranslatedTitle(movie.id, 'movie', movie.title);
             }
             
@@ -604,7 +604,7 @@ export default {
         
         const enrichedTvShows = await Promise.all(
           allTvShows.map(async (tvShow) => {
-            if (!this.hasTranslation(tvShow.name)) {
+            if (this.hasTranslation(tvShow.name)) {
               tvShow.name = await this.getTranslatedTitle(tvShow.id, 'tv', tvShow.name);
             }
             
