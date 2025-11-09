@@ -2,32 +2,32 @@
   <div class="spacing" :class="$style.releases">
     <div :class="$style.container">
       <h2 :class="$style.title">Información de Estrenos</h2>
-
+      
       <div v-if="loading" :class="$style.loading">
-        <p>Cargando fechas de estrenos...</p>
+         <p>Cargando fechas de estrenos...</p>
       </div>
 
       <div v-else-if="groupedReleases.length === 0" :class="$style.noData">
-        <p>No hay información de estrenos disponible para esta película.</p>
+         <p>No hay información de estrenos disponible para esta película.</p>
       </div>
 
       <div v-else :class="$style.releaseList">
-        <div
-          v-for="(release, index) in groupedReleases"
+        <div 
+          v-for="(release, index) in groupedReleases" 
           :key="index"
-          :class="$style.releaseCard"
-        >
+          :class="$style.releaseCard">
+          
           <div :class="$style.countryHeader">
             <span :class="$style.flag">{{ getCountryFlag(release.country) }}</span>
             <span :class="$style.countryName">{{ getCountryName(release.country) }}</span>
           </div>
 
           <div :class="$style.releaseDetails">
-            <div
-              v-for="(date, dateIndex) in release.dates"
+            <div 
+              v-for="(date, dateIndex) in release.dates" 
               :key="dateIndex"
-              :class="$style.releaseItem"
-            >
+              :class="$style.releaseItem">
+              
               <div :class="$style.releaseType">
                 <span :class="$style.typeBadge">{{ getReleaseTypeName(date.type) }}</span>
                 <span v-if="date.certification" :class="$style.certification">
@@ -319,10 +319,10 @@ export default {
       },
       releaseTypeNames: {
         1: 'Premiere',
-        2: 'Teatral (Limitada)',
-        3: 'Teatral',
+        2: 'Theatrical (Limited)',
+        3: 'Theatrical',
         4: 'Digital',
-        5: 'Físico',
+        5: 'Physical',
         6: 'TV',
       },
     };
@@ -331,18 +331,18 @@ export default {
   computed: {
     groupedReleases() {
       const grouped = {};
-
-      this.releases.forEach((release) => {
+      
+      this.releases.forEach(release => {
         const country = release.iso_3166_1;
-
+        
         if (!grouped[country]) {
           grouped[country] = {
             country: country,
-            dates: [],
+            dates: []
           };
         }
-
-        release.release_dates.forEach((date) => {
+        
+        release.release_dates.forEach(date => {
           grouped[country].dates.push({
             date: date.release_date,
             type: date.type,
@@ -352,7 +352,7 @@ export default {
         });
       });
 
-      Object.values(grouped).forEach((release) => {
+      Object.values(grouped).forEach(release => {
         release.dates.sort((a, b) => new Date(a.date) - new Date(b.date));
       });
 
@@ -378,7 +378,7 @@ export default {
         const releases = await getMovieReleaseDates(this.item.id);
         this.releases = releases;
       } catch (error) {
-        console.error('Error al cargar fechas de estreno:', error);
+        console.error('Error fetching release dates:', error);
         this.releases = [];
       } finally {
         this.loading = false;
@@ -389,7 +389,7 @@ export default {
       const codePoints = countryCode
         .toUpperCase()
         .split('')
-        .map((char) => 127397 + char.charCodeAt());
+        .map(char => 127397 + char.charCodeAt());
       return String.fromCodePoint(...codePoints);
     },
 
@@ -398,14 +398,22 @@ export default {
     },
 
     getReleaseTypeName(type) {
-      return this.releaseTypeNames[type] || 'Desconocido';
+      return this.releaseTypeNames[type] || 'Unknown';
     },
 
     formatReleaseDate(dateString) {
       const date = new Date(dateString);
-      if (isNaN(date.getTime())) return dateString;
 
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      if (isNaN(date.getTime())) {
+        return dateString;
+      }
+
+      const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+      };
+
       return date.toLocaleDateString('es-ES', options);
     },
   },
@@ -447,7 +455,7 @@ export default {
 .releaseList {
   display: grid;
   gap: 2rem;
-
+  
   @media (min-width: $breakpoint-medium) {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -516,7 +524,7 @@ export default {
   font-size: 1.2rem;
   font-weight: 600;
   color: #000;
-  background: #8ae8fc;
+  background: #8AE8FC;
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
