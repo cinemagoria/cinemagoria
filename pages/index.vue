@@ -215,16 +215,37 @@ export default {
     try {
       const trendingMovies = await getTrending('movie');
       const trendingTv = await getTrending('tv');
+      
+      const filterRecentYears = (items) => {
+        const currentYear = new Date().getFullYear();
+        const previousYear = currentYear - 1;
+        
+        return items.filter(item => {
+          const dateField = item.release_date || item.first_air_date;
+          if (!dateField) return false;
+          
+          const year = new Date(dateField).getFullYear();
+          return year === currentYear || year === previousYear;
+        });
+      };
+      
+      trendingMovies.results = filterRecentYears(trendingMovies.results);
+      trendingTv.results = filterRecentYears(trendingTv.results);
+      
+      const recentItems = [...trendingMovies.results, ...trendingTv.results];
+      
       let featured;
-
-      const items = [...trendingMovies.results, ...trendingTv.results];
-      const randomItem = items[Math.floor(Math.random() * items.length)];
-      const media = randomItem.title ? 'movie' : 'tv';
-
-      if (media === 'movie') {
-        featured = await getMovie(randomItem.id);
+      if (recentItems.length > 0) {
+        const randomItem = recentItems[Math.floor(Math.random() * recentItems.length)];
+        const media = randomItem.title ? 'movie' : 'tv';
+        
+        if (media === 'movie') {
+          featured = await getMovie(randomItem.id);
+        } else {
+          featured = await getTvShow(randomItem.id);
+        }
       } else {
-        featured = await getTvShow(randomItem.id);
+        error({ statusCode: 504, message: 'No recent content available' });
       }
 
       return { trendingMovies, trendingTv, featured };
