@@ -207,8 +207,8 @@ export default {
   data() {
     return {
       showFullReviews: false,
-      localReviews: [], // Cambiado de reviews a localReviews
-      localProviders: [], // Añadido para evitar mutación directa de props
+      localReviews: [],
+      localProviders: [],
       showTranslations: false
     };
   },
@@ -236,14 +236,12 @@ export default {
     reviewsProp: {
       immediate: true,
       handler(newReviews) {
-        // Hacer una copia local de reviewsProp
         this.localReviews = Array.isArray(newReviews) ? [...newReviews] : [];
       }
     },
     providers: {
       immediate: true,
       handler(newProviders) {
-        // Hacer una copia local de providers
         this.localProviders = Array.isArray(newProviders) ? [...newProviders] : [];
       }
     }
@@ -253,7 +251,6 @@ export default {
     if (this.item.homepage) {
       this.item.external_ids.homepage = this.item.homepage;
     }
-    // Solo llamar a estos métodos si la propiedad está vacía
     if (!this.providers || this.providers.length === 0) {
       this.fetchProviders();
     } else {

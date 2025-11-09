@@ -17,6 +17,10 @@
         :people="item.credits.cast" />
     </template>
 
+    <template v-if="activeMenu === 'releases'">
+      <MovieReleases :item="item" />
+    </template>
+
     <template v-if="activeMenu === 'videos' && showVideos">
       <Videos
         :videos="item.videos.results" />
@@ -50,6 +54,7 @@ import TopNav from '~/components/global/TopNav';
 import Hero from '~/components/Hero';
 import MediaNav from '~/components/MediaNav';
 import MovieInfo from '~/components/movie/MovieInfo';
+import MovieReleases from '~/components/movie/MovieReleases';
 import Videos from '~/components/Videos';
 import Images from '~/components/Images';
 import Credits from '~/components/Credits';
@@ -61,6 +66,7 @@ export default {
     Hero,
     MediaNav,
     MovieInfo,
+    MovieReleases,
     Videos,
     Images,
     Credits,
@@ -157,7 +163,7 @@ export default {
   created () {
     this.createMenu();
     this.initRecommended();
-    this.fetchReviews(); // Añadido método para obtener reseñas
+    this.fetchReviews();
   },
 
   methods: {
@@ -168,11 +174,13 @@ export default {
     createMenu () {
       const menu = [];
 
-      menu.push('Overview');
+      menu.push('Ficha Técnica');
+
+      menu.push('Estrenos');
 
       if (this.showVideos) menu.push('Videos');
 
-      if (this.showImages) menu.push('Photos');
+      if (this.showImages) menu.push('Fotos');
 
       this.menu = menu;
     },
