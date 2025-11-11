@@ -146,7 +146,7 @@
                 </div>
                 
                 <div v-if="notification.character" class="notification-character">
-                  como {{ notification.character }}
+                  <span style="color:#d0d0d0 !important;">como </span>{{ notification.character }}
                 </div>
                  <div class="notification-meta">
                   <span class="media-badge">
@@ -920,6 +920,7 @@ button {
   width: 48px;
   height: 48px;
   border-radius: 50%;
+  border: solid 1px #8BE9FD;
   background: rgba(139, 233, 253, 0.2);
   display: flex;
   align-items: center;
@@ -994,7 +995,7 @@ button {
 .notification-character {
   font-size: 1.4rem;
   position: relative;
-  margin-top: 5px; 
+  margin-bottom: 5px; 
   color: #8BE9FD;
   font-style: italic;
   margin-bottom: 0.5rem;
@@ -1172,6 +1173,7 @@ button {
   
   .notification-character {
     font-size: 1.3rem;
+    margin-top: 8px;
   }
   
   .notification-overview {
