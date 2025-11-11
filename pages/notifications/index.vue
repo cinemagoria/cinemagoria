@@ -1205,7 +1205,7 @@ button {
   }
 }
 
-@media (max-width: 576px) {  
+@media (max-width: 576px) {
   .notification-item {
     grid-template-columns: 40px 1fr;
     padding: 1.2rem;
@@ -1215,7 +1215,8 @@ button {
   .notification-icon {
     width: 47px;
     height: 47px;
-    margin-right: 0.8rem;
+    position:relative;
+    margin-left: 0.5rem;
   }
   
   .notification-icon svg {
@@ -1225,23 +1226,28 @@ button {
   
   .notification-title {
     font-size: 1.3rem;
+    margin-left: 1.5rem;
   }
   
   .notification-media {
     font-size: 1.68rem;
+    margin-left: 1.5rem;
   }
   
   .notification-character {
     font-size: 1.1rem;
+    margin-left: 1.5rem;
   }
   
   .notification-overview {
     font-size: 1.1rem;
+    margin-left: 1.5rem;
   }
   
   .notification-meta {
     font-size: 1.1rem;
     gap: 0.8rem;
+    margin-left: 1.5rem;
   }
   
   .media-badge {
@@ -1250,6 +1256,7 @@ button {
   
   .notification-poster {
     max-width: 200px;
+    margin-left: 1.5rem;
   }
   
   .mark-read-button,
