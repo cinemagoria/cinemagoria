@@ -288,7 +288,12 @@ export default {
     },
 
     handleNotificationClick(notification) {
-      const url = `/${notification.media_type}/${notification.media_id}`;
+      let url;
+      if (notification.media_type === 'episode') {
+        url = `/tv/${notification.person_id}`;
+      } else {
+        url = `/${notification.media_type}/${notification.media_id}`;
+      }
       this.$router.push(url);
     },
 
