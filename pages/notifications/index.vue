@@ -61,20 +61,10 @@
             <div class="secondary-actions">
               <button 
                 @click="toggleFilter" 
-                :class="['filter-button', { active: showUnreadOnly }]">
-                <svg v-if="!showUnreadOnly" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-                <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="8" y1="6" x2="21" y2="6"/>
-                  <line x1="8" y1="12" x2="21" y2="12"/>
-                  <line x1="8" y1="18" x2="21" y2="18"/>
-                  <line x1="3" y1="6" x2="3.01" y2="6"/>
-                  <line x1="3" y1="12" x2="3.01" y2="12"/>
-                  <line x1="3" y1="18" x2="3.01" y2="18"/>
-                </svg>
-                <span>{{ showUnreadOnly ? 'Show All' : 'Unread Only' }}</span>
+                :class="['filter-button', { active: !showUnreadOnly }]">
+                <svg v-if="showUnreadOnly" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-todo-icon lucide-list-todo"><path d="M13 5h8"/><path d="M13 12h8"/><path d="M13 19h8"/><path d="m3 17 2 2 4-4"/><rect x="3" y="4" width="6" height="6" rx="1"/></svg>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell-dot-icon lucide-bell-dot"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M13.916 2.314A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.74 7.327A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673 9 9 0 0 1-.585-.665"/><circle cx="18" cy="8" r="3"/></svg>
+                <span>{{ showUnreadOnly ? 'Show All' : 'Only Not Readed' }}</span>
               </button>
               <button 
                 v-if="unreadCount > 0"
@@ -167,10 +157,24 @@
             <button 
               v-if="!notification.read"
               @click.stop="markAsRead(notification.id)"
+              :disabled="animatingRead === notification.id"
               class="mark-read-button">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="20 6 9 17 4 12"/>
+              <svg 
+                v-if="animatingRead === notification.id"
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                stroke-width="3"
+                class="checkmark-svg">
+                <polyline points="20 6 9 17 4 12" class="checkmark-path"/>
               </svg>
+            </button>
+
+            <button 
+              v-if="notification.read && !showUnreadOnly"
+              @click.stop="markAsUnread(notification.id)"
+              class="mark-unread-button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
             </button>
           </div>
         </div>
@@ -196,10 +200,11 @@ export default {
       showLanguageMenu: false,
       notifications: [],
       loading: true,
-      showUnreadOnly: false,
+      showUnreadOnly: true,
       followsApiUrl: 'https://entercinema-follows-rust.vercel.app',
       showFollowingModal: false,
-      totalFollowingCount: 0
+      totalFollowingCount: 0,
+      animatingRead: null,
     };
   },
 
@@ -266,45 +271,6 @@ export default {
         console.error('Error fetching notifications:', error);
       } finally {
         this.loading = false;
-      }
-    },
-
-    async markAsRead(notificationId) {
-      try {
-        const response = await fetch(`${this.followsApiUrl}/notifications/mark-read`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user_email: this.userEmail,
-            notification_id: notificationId
-          })
-        });
-
-        if (response.ok) {
-          const notification = this.notifications.find(n => n.id === notificationId);
-          if (notification) notification.read = true;
-        }
-      } catch (error) {
-        console.error('Error marking as read:', error);
-      }
-    },
-
-    async markAllAsRead() {
-      try {
-        const response = await fetch(`${this.followsApiUrl}/notifications/mark-read`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user_email: this.userEmail,
-            mark_all: true
-          })
-        });
-
-        if (response.ok) {
-          this.notifications.forEach(n => n.read = true);
-        }
-      } catch (error) {
-        console.error('Error marking all as read:', error);
       }
     },
 
@@ -413,6 +379,10 @@ export default {
       },
 
       async markAsRead(notificationId) {
+        this.animatingRead = notificationId;
+        
+        await new Promise(resolve => setTimeout(resolve, 600));
+        
         try {
           const response = await fetch(`${this.followsApiUrl}/notifications/mark-read`, {
             method: 'POST',
@@ -425,7 +395,15 @@ export default {
 
           if (response.ok) {
             const notification = this.notifications.find(n => n.id === notificationId);
-            if (notification) notification.read = true;
+            if (notification) {
+              notification.read = true;
+              
+              if (this.showUnreadOnly) {
+                setTimeout(() => {
+                  this.notifications = this.notifications.filter(n => n.id !== notificationId);
+                }, 200);
+              }
+            }
             
             if (typeof window !== 'undefined') {
               window.dispatchEvent(new Event('notifications-updated'));
@@ -433,6 +411,40 @@ export default {
           }
         } catch (error) {
           console.error('Error marking as read:', error);
+        } finally {
+          this.animatingRead = null;
+        }
+      },
+
+      async markAsUnread(notificationId) {
+        try {
+          const response = await fetch(`${this.followsApiUrl}/notifications/mark-unread`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_email: this.userEmail,
+              notification_id: notificationId
+            })
+          });
+
+          if (response.ok) {
+            const notification = this.notifications.find(n => n.id === notificationId);
+            if (notification) {
+              notification.read = false;
+              
+              if (this.showUnreadOnly) {
+                setTimeout(() => {
+                  this.notifications = this.notifications.filter(n => n.id !== notificationId);
+                }, 200);
+              }
+            }
+            
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new Event('notifications-updated'));
+            }
+          }
+        } catch (error) {
+          console.error('Error marking as unread:', error);
         }
       },
 
@@ -818,7 +830,7 @@ button {
 }
 
 .title-secondary {
-  font-size: 1.5rem;
+  font-size: 16px;
   color: rgba(255, 255, 255, 0.7);
   margin-top: 15px;
   line-height: 1.5;
@@ -920,8 +932,8 @@ button {
 }
 
 .notification-icon {
-  width: 48px;
-  height: 48px;
+  width: 62px;
+  height: 62px;
   border-radius: 50%;
   border: solid 1px #8BE9FD;
   background: rgba(139, 233, 253, 0.2);
@@ -930,6 +942,7 @@ button {
   justify-content: center;
   color: #8BE9FD;
   flex-shrink: 0;
+  margin-right: 1rem;
 }
 
 .person-profile-image {
@@ -992,9 +1005,10 @@ button {
 }
 
 .notification-media {
-  font-size: 1.5rem;
+  font-size: 2.1rem;
   color: #8BE9FD;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
+  padding-right: 1rem;
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
@@ -1039,7 +1053,7 @@ button {
 
 .mark-read-button {
   padding: 0.8rem;
-  background: rgba(139, 233, 253, 0.1);
+  background: rgba(255, 255, 255, 0.15);
   border: 1px solid #8BE9FD;
   border-radius: 50%;
   color: #8BE9FD;
@@ -1056,6 +1070,11 @@ button {
 }
 
 .mark-read-button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.1);
+}
+
+.mark-read-button:active {
   background: #8BE9FD;
   color: #000;
 }
@@ -1119,8 +1138,9 @@ button {
   .notification-icon {
     grid-column: 1;
     grid-row: 1;
-    width: 40px;
-    height: 40px;
+    width: 52px;
+    height: 52px;
+    margin-right: 1rem;
   }
   
   .notification-text {
@@ -1140,7 +1160,8 @@ button {
     box-shadow: 0 -4px 12px rgba(139, 233, 253, 0.3), 0 4px 12px rgba(0, 0, 0, 0.3);
   }
   
-  .mark-read-button {
+  .mark-read-button,
+  .mark-unread-button {
     right: 1.5rem;
     top: 1.5rem;
   }
@@ -1148,7 +1169,6 @@ button {
 
 @media (max-width: 768px) {  
   .title-secondary {
-    font-size: 1.3rem;
     word-wrap: break-word;
   }
   
@@ -1156,7 +1176,6 @@ button {
   .filter-button,
   .mark-all-button {
     padding: 0.7rem 1.4rem;
-    font-size: 1.3rem;
   }
   
   .notification-item {
@@ -1172,7 +1191,7 @@ button {
   }
   
   .notification-media {
-    font-size: 1.4rem;
+    font-size: 1.96rem;
   }
   
   .notification-character {
@@ -1186,10 +1205,6 @@ button {
 }
 
 @media (max-width: 576px) {
-  .title-secondary {
-    font-size: 1.1rem;
-  }
-    
   .notification-item {
     grid-template-columns: 40px 1fr;
     padding: 1.2rem;
@@ -1197,8 +1212,9 @@ button {
   }
   
   .notification-icon {
-    width: 36px;
-    height: 36px;
+    width: 47px;
+    height: 47px;
+    margin-right: 0.8rem;
   }
   
   .notification-icon svg {
@@ -1211,7 +1227,7 @@ button {
   }
   
   .notification-media {
-    font-size: 1.2rem;
+    font-size: 1.68rem;
   }
   
   .notification-character {
@@ -1235,24 +1251,22 @@ button {
     max-width: 200px;
   }
   
-  .mark-read-button {
+  .mark-read-button,
+  .mark-unread-button {
     right: 1rem;
     top: 1rem;
     width: 28px;
     height: 28px;
   }
   
-  .mark-read-button svg {
+  .mark-read-button svg,
+  .mark-unread-button svg {
     width: 14px;
     height: 14px;
   }
 }
 
 @media (max-width: 400px) {
-  .title-secondary {
-    font-size: 1rem;
-  }
-  
   .header-actions {
     flex-direction: column;
     align-items: center;
@@ -1285,7 +1299,7 @@ button {
   }
   
   .notification-media {
-    font-size: 1.1rem;
+    font-size: 1.54rem;
   }
   
   .notification-overview {
@@ -1366,5 +1380,50 @@ button {
     display: inline-block;
     align-self: start;
   }
+}
+
+.checkmark-svg {
+  width: 20px;
+  height: 20px;
+}
+
+.checkmark-path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: drawCheck 0.6s ease-out forwards;
+}
+
+@keyframes drawCheck {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.mark-unread-button {
+  padding: 0.8rem;
+  background: #8BE9FD;
+  border: 1px solid #19729F;
+  border-radius: 50%;
+  color: #000000;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 2rem;
+  top: 2rem;
+  width: 32px;
+  height: 32px;
+}
+
+.mark-unread-button:hover {
+  background: rgba(255, 193, 7, 0.25);
+  transform: scale(1.1);
+}
+
+.mark-unread-button:active {
+  background: #FFC107;
+  color: #000;
 }
 </style>
