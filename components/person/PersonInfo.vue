@@ -16,15 +16,33 @@
 
     <div :class="$style.right">
       <div :class="$style.overview">
-        <h2 :class="$style.title">
-          {{ person.name }}
-        </h2>
+        <div :class="$style.headerRow">
+          <h2 :class="$style.title">
+            {{ person.name }}
+          </h2>
+
+          <div :class="$style.followSection">
+            <button 
+              v-if="hasAccessToken && isActorOrDirector"
+              @click="toggleFollow" 
+              :class="[$style.followButton, { [$style.following]: isFollowing }]"
+              :disabled="followLoading">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path v-if="!isFollowing" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle v-if="!isFollowing" cx="9" cy="7" r="4"/>
+                <line v-if="!isFollowing" x1="19" y1="8" x2="19" y2="14"/>
+                <line v-if="!isFollowing" x1="22" y1="11" x2="16" y2="11"/>
+                <path v-if="isFollowing" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle v-if="isFollowing" cx="9" cy="7" r="4"/>
+                <polyline v-if="isFollowing" points="16 11 18 13 22 9"/>
+              </svg>
+              {{ isFollowing ? 'Siguiendo' : 'Seguir' }}
+            </button>
+          </div>
+        </div>
 
         <div v-if="person.biography">
-          <img
-            v-if="avatar"
-            :src="avatar"
-            :alt="person.name">
+          <img v-if="avatar" :src="avatar" :alt="person.name">
 
           <div v-html="formatContent(person.biography)" />
         </div>
@@ -87,15 +105,16 @@ import { apiImgUrl } from '~/api';
 import ExternalLinks from '~/components/ExternalLinks';
 
 export default {
-  components: {
-    ExternalLinks,
-  },
-
-  props: {
-    person: {
-      type: Object,
-      required: true,
-    },
+  components: { ExternalLinks },
+  props: { person: { type: Object, required: true } },
+  data() {
+    return {
+      hasAccessToken: false,
+      isFollowing: false,
+      followLoading: false,
+      userEmail: null,
+      followsApiUrl: 'https://entercinema-follows-rust.vercel.app'
+    };
   },
 
   computed: {
@@ -107,17 +126,16 @@ export default {
       }
     },
 
-    age () {
+    age() {
       const born = this.person.birthday;
       const died = this.person.deathday;
-
-      if (born && !died) {
-        return this.getAge(born);
-      } else if (born && died) {
-        return this.getAge(born, died);
-      } else {
-        return false;
-      }
+      if (born && !died) return this.getAge(born);
+      else if (born && died) return this.getAge(born, died);
+      else return false;
+    },
+    isActorOrDirector() {
+      const dept = this.person.known_for_department;
+      return dept === 'Acting' || dept === 'Directing' || dept === 'Writing';
     },
   },
 
@@ -127,30 +145,69 @@ export default {
     }
   },
 
+  mounted() {
+    this.userEmail = localStorage.getItem('email');
+    this.hasAccessToken = localStorage.getItem('access_token') !== null;
+    if (this.hasAccessToken && this.isActorOrDirector) {
+      this.checkIfFollowing();
+    }
+  },
+
   methods: {
-    formatContent (string) {
+    formatContent(string) {
       return string.split('\n').filter(section => section !== '').map(section => `<p>${section}</p>`).join('');
     },
-
-    getAge (born, died) {
+    getAge(born, died) {
       const startDate = new Date(born);
-      let endDate;
-      let age;
-
-      if (!died) {
-        endDate = new Date();
-      } else {
-        endDate = new Date(died);
-      }
-
+      let endDate = died ? new Date(died) : new Date();
+      let age = endDate.getFullYear() - startDate.getFullYear();
       const month = endDate.getMonth() - startDate.getMonth();
-      age = endDate.getFullYear() - startDate.getFullYear();
-
-      if (month < 0 || (month === 0 && endDate.getDate() < startDate.getDate())) {
-        age--;
-      }
-
+      if (month < 0 || (month === 0 && endDate.getDate() < startDate.getDate())) age--;
       return age;
+    },
+    async checkIfFollowing() {
+      if (!this.userEmail) return;
+      try {
+        const response = await fetch(`${this.followsApiUrl}/follows/list?user_email=${encodeURIComponent(this.userEmail)}`);
+        if (!response.ok) return;
+        const data = await response.json();
+        if (data.success && data.follows) {
+          this.isFollowing = data.follows.some(f => f.person_id === this.person.id);
+        }
+      } catch (error) {
+        console.error('Error checking follow status:', error);
+      }
+    },
+    async toggleFollow() {
+      if (!this.userEmail || this.followLoading) return;
+      this.followLoading = true;
+      try {
+        if (this.isFollowing) {
+          const response = await fetch(`${this.followsApiUrl}/follows/remove?user_email=${encodeURIComponent(this.userEmail)}&person_id=${this.person.id}`, { method: 'DELETE' });
+          if (response.ok) this.isFollowing = false;
+        } else {
+          let personType = 'actor';
+          if (this.person.known_for_department === 'Directing') personType = 'director';
+          else if (this.person.known_for_department === 'Writing') personType = 'writer';
+          
+          const response = await fetch(`https://entercinema-follows-rust.vercel.app/follows/add`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_email: this.userEmail,
+              person_id: this.person.id,
+              person_name: this.person.name,
+              person_type: personType,
+              profile_path: this.person.profile_path || null
+            })
+          });
+          if (response.ok) this.isFollowing = true;
+        }
+      } catch (error) {
+        console.error('Error toggling follow:', error);
+      } finally {
+        this.followLoading = false;
+      }
     },
   },
 };
@@ -163,9 +220,6 @@ export default {
   background-color: rgba(0, 0, 0, 0.307);
   border-radius: 10px;
   padding-bottom: 4rem;
-}
-
-.info {
   @media (min-width: $breakpoint-medium) {
     display: flex;
   }
@@ -244,8 +298,24 @@ export default {
   }
 }
 
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  .title {
+    margin-bottom: 0;
+  }
+  .followSection {
+    margin-top: 1rem;
+    @media (min-width: $breakpoint-medium) {
+      margin-top: 0;
+    }
+  }
+}
+
 .title {
-  margin-bottom: 1rem;
+  margin-top: 10px;
   font-size: 1.8rem;
   color: #fff;
   letter-spacing: $letter-spacing;
@@ -328,6 +398,46 @@ export default {
         fill: $fourth-color;
       }
     }
+  }
+}
+
+.followButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 2rem;
+  background: rgba(139, 233, 253, 0.1);
+  border: 2px solid #8BE9FD;
+  border-radius: 8px;
+  color: #8BE9FD;
+  font-size: 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  @media (min-width: $breakpoint-large) {
+    font-size: 1.6rem;
+  }
+  &:hover {
+    background: rgba(139, 233, 253, 0.2);
+    transform: translateY(-2px);
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.following {
+  padding: 10px;
+  position: relative;
+  margin-right: 10px;
+  background: #8BE9FD;
+  color: #000;
+  &:hover {
+    background: #7AD6E9;
   }
 }
 </style>

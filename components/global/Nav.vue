@@ -36,16 +36,6 @@
         </nuxt-link>
       </li>
       
-      <!-- Upcoming Link -->
-      <li>
-        <nuxt-link
-          :to="{ name: 'upcoming' }"
-          aria-label="upcoming"
-          @click.native="clearSearchBeforeNavigate">
-          <img :src="require('~/static/icon-upcoming.png')" alt="Upcoming" :class="$style.navIcon" />
-        </nuxt-link>
-      </li>
-      
       <!-- Ask AI Link -->
       <li>
         <button @click="openAiChat" aria-label="Ask AI" title="Ask AI Assistant">
@@ -58,6 +48,23 @@
             </svg>
           </span>
         </button>
+      </li>
+
+      <!-- Notifications Link -->
+      <li>
+        <nuxt-link
+          :to="{ name: 'notifications' }"
+          aria-label="notifications"
+          @click.native="clearSearchBeforeNavigate"
+          :class="$style.notificationLink">
+          <div :class="$style.notificationIconWrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" :class="$style.navIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span v-if="unreadCount > 0" :class="$style.notificationBadge">{{ unreadCount }}</span>
+          </div>
+        </nuxt-link>
       </li>
       
       <!-- Login/Watchlist Links -->
@@ -89,7 +96,9 @@ export default {
     return {
       authToken: null,
       authInterval: null,
-      hasMinimizedConversations: false
+      hasMinimizedConversations: false,
+      unreadCount: 0,
+      notificationInterval: null
     };
   },
 
@@ -103,12 +112,15 @@ export default {
   mounted() {
     this.checkAuthStatus();
     this.checkMinimizedConversations();
+    this.fetchUnreadCount();
 
     this.authInterval = setInterval(this.checkAuthStatus, 500);
+    this.notificationInterval = setInterval(this.fetchUnreadCount, 30000);
     
     if (typeof window !== 'undefined') {
       window.addEventListener('storage', this.handleStorageChange);
-      window.addEventListener('auth-changed', this.checkAuthStatus); 
+      window.addEventListener('auth-changed', this.checkAuthStatus);
+      window.addEventListener('notifications-updated', this.fetchUnreadCount);
 
       if (window.location.pathname.includes('auth-success')) {
         this.forceUpdateNavIcons();
@@ -124,14 +136,35 @@ export default {
     if (this.authInterval) {
       clearInterval(this.authInterval);
     }
+    if (this.notificationInterval) {
+      clearInterval(this.notificationInterval);
+    }
     
     if (typeof window !== 'undefined') {
       window.removeEventListener('storage', this.handleStorageChange);
       window.removeEventListener('auth-changed', this.checkAuthStatus);
+      window.removeEventListener('notifications-updated', this.fetchUnreadCount);
     }
   },
 
   methods: {
+    async fetchUnreadCount() {
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail) {
+        this.unreadCount = 0;
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://entercinema-follows-rust.vercel.app/notifications/unread-count?user_email=${encodeURIComponent(userEmail)}`);
+        if (response.ok) {
+          const data = await response.json();
+          this.unreadCount = data.unread_count || 0;
+        }
+      } catch (error) {
+        console.error('Error fetching unread count:', error);
+      }
+    },
     checkAuthStatus() {
       const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
       if (token !== this.authToken) {
@@ -340,6 +373,41 @@ export default {
     &:focus {
       opacity: 0.8; 
     }
+  }
+}
+
+.notificationLink {
+  position: relative;
+}
+
+.notificationIconWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.notificationBadge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #FF5252;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #000;
+  
+  @media (min-width: $breakpoint-large) {
+    top: -6px;
+    right: -6px;
+    font-size: 12px;
+    min-width: 20px;
+    height: 20px;
   }
 }
 </style>
