@@ -13,6 +13,21 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd" fill="#999"><path d="M24 22h-24v-20h24v20zm-1-19h-22v18h22v-18zm-1 16h-19l4-7.492 3 3.048 5.013-7.556 6.987 12zm-11.848-2.865l-2.91-2.956-2.574 4.821h15.593l-5.303-9.108-4.806 7.243zm-4.652-11.135c1.38 0 2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5-2.5-1.12-2.5-2.5 1.12-2.5 2.5-2.5zm0 1c.828 0 1.5.672 1.5 1.5s-.672 1.5-1.5 1.5-1.5-.672-1.5-1.5.672-1.5 1.5-1.5z"/></svg>
         </span>
       </div>
+       <div style="position: relative; top: 20px; margin: 0 auto; justify-self: center;" v-if="isLoggedIn" :class="$style.followSection">
+          <button 
+            @click="toggleFollowTv" 
+            :class="[$style.followButton, { [$style.following]: isFollowingTv }]"
+            :disabled="followTvLoading">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path v-if="!isFollowingTv" d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path v-if="!isFollowingTv" d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              <path v-if="isFollowingTv" d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path v-if="isFollowingTv" d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              <polyline v-if="isFollowingTv" points="9 11 12 14 22 4" stroke-width="3"/>
+            </svg>
+            {{ isFollowingTv ? 'Following' : 'Follow Episodes' }}
+          </button>
+      </div>
     </div>
 
     <div :class="$style.right">
@@ -131,6 +146,8 @@
         </ul>
       </div>
 
+     
+
       <div :class="$style.external">
         <ExternalLinks
           :links="item.external_ids" />
@@ -187,12 +204,17 @@ export default {
     return {
       showFullReviews: false,
       reviews: [], 
+      isFollowingTv: false,
+      followTvLoading: false,
     };
   },
 
   computed: {
     reviewCount() {
       return this.reviews.length;
+    },
+    isLoggedIn() {
+      return localStorage.getItem('access_token') !== null;
     },
     poster () {
       if (this.item.poster_path) {
@@ -218,8 +240,62 @@ export default {
     this.reviews = this.reviewsProp || [];
   },
 
+  mounted() {
+    if (this.isLoggedIn) {
+      this.checkIfFollowingTv();
+    }
+  },
 
   methods: {
+    async checkIfFollowingTv() {
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail) return;
+      
+      try {
+        const response = await fetch(`https://entercinema-follows-rust.vercel.app/tv-follows/list?user_email=${encodeURIComponent(userEmail)}`);
+        if (!response.ok) return;
+        
+        const data = await response.json();
+        if (data.success && data.tv_follows) {
+          this.isFollowingTv = data.tv_follows.some(f => f.tv_id === this.item.id);
+        }
+      } catch (error) {
+        console.error('Error checking TV follow status:', error);
+      }
+    },
+
+    async toggleFollowTv() {
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail || this.followTvLoading) return;
+      
+      this.followTvLoading = true;
+      
+      try {
+        if (this.isFollowingTv) {
+          const response = await fetch(`https://entercinema-follows-rust.vercel.app/tv-follows/remove?user_email=${encodeURIComponent(userEmail)}&tv_id=${this.item.id}`, { method: 'DELETE' });
+          if (response.ok) this.isFollowingTv = false;
+        } else {
+          const response = await fetch(`https://entercinema-follows-rust.vercel.app/tv-follows/add`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_email: userEmail,
+              tv_id: this.item.id,
+              tv_name: this.item.name,
+              poster_path: this.item.poster_path || null,
+              overview: this.item.overview || null,
+              vote_average: this.item.vote_average || null,
+              status: this.item.status || null
+            })
+          });
+          if (response.ok) this.isFollowingTv = true;
+        }
+      } catch (error) {
+        console.error('Error toggling TV follow:', error);
+      } finally {
+        this.followTvLoading = false;
+      }
+    },
     toggleFullReviews() {
     this.showFullReviews = !this.showFullReviews;
     },
@@ -445,6 +521,52 @@ export default {
         fill: $fourth-color;
       }
     }
+  }
+}
+
+.followSection {
+  margin-bottom: 1.5rem;
+}
+
+.followButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 2rem;
+  background: rgba(139, 233, 253, 0.1);
+  border: 2px solid #8BE9FD;
+  border-radius: 8px;
+  color: #8BE9FD;
+  font-size: 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  @media (min-width: $breakpoint-large) {
+    font-size: 1.6rem;
+  }
+  
+  &:hover {
+    background: rgba(139, 233, 253, 0.2);
+    transform: translateY(-2px);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.following {
+  background: #8BE9FD;
+  color: #000;
+  
+  &:hover {
+    background: #7AD6E9;
   }
 }
 </style>
