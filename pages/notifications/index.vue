@@ -50,20 +50,41 @@
             <button 
               @click="openFollowingModal" 
               class="following-button-primary">
-              Following ({{ totalFollowingCount }})
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <polyline points="16 11 18 13 22 9"/>
+              </svg>
+              <span>Following ({{ totalFollowingCount }})</span>
             </button>
 
             <div class="secondary-actions">
               <button 
                 @click="toggleFilter" 
                 :class="['filter-button', { active: showUnreadOnly }]">
-                {{ showUnreadOnly ? 'Show All' : 'Unread Only' }}
+                <svg v-if="!showUnreadOnly" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="8" y1="6" x2="21" y2="6"/>
+                  <line x1="8" y1="12" x2="21" y2="12"/>
+                  <line x1="8" y1="18" x2="21" y2="18"/>
+                  <line x1="3" y1="6" x2="3.01" y2="6"/>
+                  <line x1="3" y1="12" x2="3.01" y2="12"/>
+                  <line x1="3" y1="18" x2="3.01" y2="18"/>
+                </svg>
+                <span>{{ showUnreadOnly ? 'Show All' : 'Unread Only' }}</span>
               </button>
               <button 
                 v-if="unreadCount > 0"
                 @click="markAllAsRead" 
                 class="mark-all-button">
-                Mark All Read
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 11 12 14 22 4"/>
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                </svg>
+                <span>Mark All Read</span>
               </button>
             </div>
           </div>
@@ -98,7 +119,12 @@
             @click="handleNotificationClick(notification)">
             
             <div class="notification-icon">
-              <svg v-if="notification.media_type === 'movie'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <img 
+                v-if="notification.person_id && notification.profile_path" 
+                :src="`https://image.tmdb.org/t/p/w185${notification.profile_path}`" 
+                :alt="notification.person_name"
+                class="person-profile-image">
+              <svg v-else-if="notification.media_type === 'movie'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>
               </svg>
               <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -132,7 +158,7 @@
                   </div>
                 </div>
                 <div v-if="notification.overview && notification.overview.length > 0" class="notification-overview">
-                  {{ notification.overview.substring(0, 100) }}{{ notification.overview.length > 100 ? '...' : '' }}
+                  {{ notification.overview }}
                 </div>
                
               </div>
@@ -787,17 +813,10 @@ button {
   max-width: 700px;
 }
 
-.title-primary {
-  font-size: 2.8rem;
-  color: #8BE9FD;
-  margin: 0 0 1rem 0;
-  font-weight: 600;
-}
-
 .title-secondary {
   font-size: 1.5rem;
   color: rgba(255, 255, 255, 0.7);
-  margin: 0;
+  margin-top: 15px;
   line-height: 1.5;
 }
 
@@ -823,7 +842,9 @@ button {
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(139, 233, 253, 0.3);
   white-space: nowrap;
-  /* QUITAR margin-right: auto */
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
 }
 
 .following-button-primary:hover {
@@ -848,6 +869,9 @@ button {
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
 }
 
 
@@ -903,6 +927,13 @@ button {
   flex-shrink: 0;
 }
 
+.person-profile-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .notification-content {
   display: contents;
 }
@@ -928,6 +959,10 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.notification-poster + .notification-meta {
+  margin-top: 5px;
 }
 
 .notification-item:hover .notification-poster {
@@ -1106,12 +1141,7 @@ button {
   }
 }
 
-@media (max-width: 768px) {
-  .title-primary {
-    font-size: 2.4rem;
-    word-wrap: break-word;
-  }
-  
+@media (max-width: 768px) {  
   .title-secondary {
     font-size: 1.3rem;
     word-wrap: break-word;
@@ -1150,10 +1180,6 @@ button {
 }
 
 @media (max-width: 576px) {
-  .title-primary {
-    font-size: 2rem;
-  }
-  
   .title-secondary {
     font-size: 1.1rem;
   }
@@ -1217,10 +1243,6 @@ button {
 }
 
 @media (max-width: 400px) {
-  .title-primary {
-    font-size: 1.8rem;
-  }
-  
   .title-secondary {
     font-size: 1rem;
   }
@@ -1285,5 +1307,58 @@ button {
 
 .has-release {
   color: rgba(255, 255, 255, 0.7);
+}
+
+@media (min-width: 768px) {
+  .notification-text {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 0 2rem;
+    grid-column: 2;
+    padding-right: 4rem;
+    align-items: start;
+  }
+  
+  .notification-poster {
+    grid-column: 1;
+    grid-row: 1 / span 5;
+    align-self: start;
+  }
+  
+  .notification-title {
+    grid-column: 2;
+    grid-row: 1;
+    margin-bottom: 0;
+  }
+  
+  .notification-media {
+    grid-column: 2;
+    grid-row: 2;
+    margin-bottom: 0;
+  }
+  
+  .notification-character {
+    grid-column: 2;
+    grid-row: 3;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  
+  .notification-meta {
+    grid-column: 2;
+    grid-row: 4;
+    margin-top: 0.5rem;
+  }
+  
+  .notification-overview {
+    grid-column: 2;
+    grid-row: 5;
+    margin-top: 0;
+  }
+  
+  .media-badge {
+    display: inline-block;
+    align-self: start;
+  }
 }
 </style>
