@@ -25,7 +25,7 @@
               <path v-if="isFollowingTv" d="M13.73 21a2 2 0 0 1-3.46 0"/>
               <polyline v-if="isFollowingTv" points="9 11 12 14 22 4" stroke-width="3"/>
             </svg>
-            {{ isFollowingTv ? 'Following' : 'Follow Episodes' }}
+            {{ isFollowingTv ? 'Siguiendo' : 'Seguir Episodios' }}
           </button>
       </div>
     </div>

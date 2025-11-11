@@ -87,7 +87,7 @@
             <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
           </svg>
           <p>{{ showUnreadOnly ? 'No hay notificaciones no leídas' : 'Aún no hay notificaciones' }}</p>
-          <p class="sub-text">Sigue actores y directores para recibir notificaciones sobre sus nuevos lanzamientos</p>
+          <p class="sub-text">Sigue actores, directores o Series de TV para recibir notificaciones sobre sus nuevos lanzamientos</p>
         </div>
 
         <div v-else class="notifications-list">
