@@ -393,14 +393,15 @@ export default {
   color: white;
   font-size: 11px;
   font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 50%;
+  padding: 2px 5px;
+  border-radius: 10px;
   min-width: 18px;
   height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 2px solid #000;
+  white-space: nowrap;
   
   @media (min-width: $breakpoint-large) {
     top: -6px;
@@ -408,6 +409,7 @@ export default {
     font-size: 12px;
     min-width: 20px;
     height: 20px;
+    padding: 2px 6px;
   }
 }
 </style>
