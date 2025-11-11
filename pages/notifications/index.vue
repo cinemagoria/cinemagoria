@@ -463,6 +463,10 @@ export default {
 </script>
 
 <style scoped>
+.title-primary {
+  margin-top: 20px;
+}
+
 .language-selector {
   position: relative;
   font-family: 'Roboto';
