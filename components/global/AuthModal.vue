@@ -23,7 +23,7 @@
         </div>
 
         <div v-if="activeTab === 'login'" class="form-container">
-          <p class="modal-description">Please sign in to access to more features</p>
+          <p class="modal-description">Please sign in to access more features</p>
           
           <form @submit.prevent="handleLogin">
             <GoogleLogin 
@@ -77,7 +77,7 @@
         </div>
 
         <div v-if="activeTab === 'register'" class="form-container">
-          <p class="modal-description">Create an account to access AI features</p>
+          <p class="modal-description">Create an account to access more features</p>
           
           <form @submit.prevent="handleRegister">
             <GoogleLogin 
