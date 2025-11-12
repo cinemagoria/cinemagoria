@@ -2,22 +2,7 @@
 <template>
   <main class="main">
     <section class="terms-section">
-      <div class="user-profile">
-        <div class="language-selector" style="position: relative; top: 43px;"> 
-          <div class="selected-language" @click="toggleLanguageMenu">
-            <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-right: 4px; width: 13px; height: 13px; margin-right: 4px;">
-            <span class="language">En</span>  
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'english'" style="width: 24px; height: 24px; left: -70px;">
-              <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
-            </svg>
-          </div>
-          <div ref="languageMenu" class="language-menu">
-            <label class="menu-label1" @click="changeLanguage('spanish')">
-              <span>Español</span>
-            </label>
-          </div>
-        </div>
-      </div> 
+      <UserNav @show-rated-modal="showRatedItems" />
       <br>
       <h1 class="title-primary text-center" style="font-size: 20px; margin-top: 10px;"><b>Usage Policies & Privacy Agreement</b></h1>
       <br>
@@ -62,38 +47,18 @@
   </main>  
 </template>
 <script>
+import UserNav from '@/components/global/UserNav';
+
 export default {
-  data() {
-    return {
-      showLanguageMenu: false,
-      selectedLanguage: 'english',
-    };
+  components: {
+    UserNav,
   },
   methods: {
     redirectToHome() {
-      window.location.href = 'https://EnterCinema.com';
+      this.$router.push('/');
     },
-
-    toggleLanguageMenu() {
-      this.showLanguageMenu = !this.showLanguageMenu;
-      const menu = this.$refs.languageMenu;
-      if (menu) {
-        menu.style.display = this.showLanguageMenu ? 'block' : 'none';
-      }
-    },
-    changeLanguage(language) {
-      this.selectedLanguage = language;
-      const currentPath = this.$route.path;
-      const currentOrigin = window.location.origin;
-      const spanishUrl = `${currentOrigin.replace(
-        '://',
-        '://es.'
-      )}${currentPath}`;
-      window.location.href = spanishUrl;
-    },
-
-    toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen;
+    showRatedItems() {
+      this.ratedItemsModalVisible = true;
     },
   },
 };
@@ -143,71 +108,4 @@ export default {
   .custom-center {
     text-align: center;
   }
-
-  .user-profile {
-    position: absolute;
-    right: 5%;
-    top: -30px;
-  }
-
-  .language-selector {
-    position: relative;
-    cursor: pointer;
-  }
-
-  .selected-language {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem;
-    border-radius: 5px;
-  }
-
-.language {
-    margin-right: 0.5rem;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
-    -webkit-background-clip: text;
-    color: transparent;
-    text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
-    font-family: 'Roboto', sans-serif;
-    font-size: 11px; 
-    text-transform: uppercase;
-    border-radius: 15px;
-    color: #94999d;
-    position: relative;
-    top: 1px;
-  }
-
-  .language-menu {
-    position: absolute;
-    background: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
-    backdrop-filter: blur( 16px );
-    -webkit-backdrop-filter: blur( 16px );
-    border-radius: 5px;
-    z-index: 1000;
-    display: none;
-  }
-
-    .language-menu label {
-      display: block;
-      padding: 0.5rem;
-      cursor: pointer;
-    }
-
-    .language-menu.active {
-      display: block;
-    }
-
-    .menu-label1 {
-  color: #94999d;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  position: relative; 
-  top: 1px;
-}
-
-.menu-label1:hover {
-  color: #ffffff;
-}
 </style>

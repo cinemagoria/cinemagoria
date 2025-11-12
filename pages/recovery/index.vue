@@ -54,8 +54,8 @@ export default {
       this.confirmationMessage = true;
     },
     redirectToHome() {
-      window.location.href = 'https://entercinema.com';
-    }
+      this.$router.push('/');
+    },
   }
 };
 </script>
