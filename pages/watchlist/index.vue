@@ -377,6 +377,7 @@ export default {
       resizeObserver: null,
       ratingModalVisible: false,
       currentRatingItem: null,
+      userReview: '',
       selectedRating: 0,
       hoverRating: 0,
       ratingDescriptions: [
