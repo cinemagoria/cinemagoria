@@ -31,37 +31,17 @@
                 <span>{{ item.details.yearStartForDb }}</span>
                 <div class="rated-item-rating">
                   <span>Valoración:</span>
-                  <div v-if="editingRating !== index" @click="startEditRating(index, item)" class="rating-badge editable" :title="'Clic para editar valoración'">
+                  <div @click="openRatingModal(item)" class="rating-badge editable" :title="'Clic para editar valoración'">
                     {{ item.details.userRatingForDb }}
-                  </div>
-                  <div v-else class="rating-edit-controls">
-                    <select v-model="tempRating" class="rating-select">
-                      <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-                    </select>
-                    <button @click="saveRating(item)" class="edit-btn save-btn"><span style="color:black !important;">✓</span></button>
-                    <button @click="cancelEditRating" class="edit-btn cancel-btn">✕</button>
                   </div>
                 </div>
               </div>
-              <div v-if="editingReview !== index" class="rated-item-review-container">
+              <div class="rated-item-review-container">
                 <div v-if="item.details.userReview" class="rated-item-review">
                   {{ item.details.userReview }}
                 </div>
                 <div v-else class="rated-item-review">
                   {{ ratingDescriptions[parseInt(item.details.userRatingForDb) - 1] }}
-                </div>
-                <br>
-                <br>
-                <button @click="startEditReview(index, item)" class="edit-review-btn">
-                  <span v-if="item.details.userReview">Editar reseña</span>
-                  <span v-else>Añadir reseña</span>
-                </button>
-              </div>
-              <div v-else class="review-edit-container">
-                <textarea v-model="tempReview" rows="3" class="review-textarea" placeholder="Escribe tu reseña aquí..."></textarea>
-                <div class="review-btn-container">
-                  <button @click="saveReview(item)" class="edit-btn-rvw save-btn">Guardar</button>
-                  <button @click="cancelEditReview" class="edit-btn-rvw cancel-btn">Cancelar</button>
                 </div>
               </div>
             </div>
@@ -74,6 +54,65 @@
           </svg>
           <p>Aún no hay {{ currentTab === 'movies' ? 'películas' : 'series' }} valoradas.</p>
           <p>¡Valora algunas {{ currentTab === 'movies' ? 'películas' : 'series' }} para verlas aquí!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rating Modal -->
+    <div v-if="ratingModalVisible" class="rating-modal-overlay" @click="closeRatingModal">
+      <div class="rating-modal" @click.stop>
+        <div class="modal-header">
+          <h3>Valorar '{{ currentRatingItem?.details?.nameForDb }}'</h3>
+          <button class="close-btn" @click="closeRatingModal">×</button>
+        </div>
+        
+        <div class="rating-content">
+          <div class="rating-selector">
+            <div class="rating-numbers">
+              <button 
+                v-for="n in 10" 
+                :key="n" 
+                @click="setRating(n)"
+                @mouseover="previewRating(n)"
+                @mouseout="resetPreview()"
+                :class="[
+                  'rating-btn', 
+                  { 'rating-btn-active': n <= (hoverRating || selectedRating) }
+                ]"
+              >
+                {{ n }}
+              </button>
+            </div>
+          </div>
+          
+          <div class="review-section">
+            <textarea
+              v-model="userReview"
+              :placeholder="selectedRating > 0 ? ratingDescriptions[selectedRating - 1] : 'Selecciona una valoración primero'"
+              class="review-textarea"
+              maxlength="500"
+              :disabled="selectedRating === 0"
+            ></textarea>
+            <div class="char-count">{{ userReview.length }}/500</div>
+          </div>
+          
+          <div class="rating-modal-buttons">
+            <button 
+              v-if="currentRatingItem && currentRatingItem.details.userRatingForDb && currentRatingItem.details.userRatingForDb !== '-'"
+              @click="removeRating" 
+              class="remove-rating-btn"
+            >
+              <span style="position:relative; margin:0 auto;">Eliminar Valoración</span>
+            </button>
+            
+            <button 
+              @click="saveRatingAndReview" 
+              class="save-btn"
+              :disabled="selectedRating === 0"
+            >
+              <span style="position:relative; margin:0 auto;">Guardar</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -92,11 +131,6 @@ export default {
       currentTab: 'movies',
       moviesFetched: [],
       tvFetched: [],
-      editingRating: null,
-      editingReview: null,
-      tempRating: 1,
-      tempReview: '',
-      currentEditItem: null,
       userEmail: '',
       ratingDescriptions: [
         'Terrible, una completa pérdida de tiempo',
@@ -109,7 +143,13 @@ export default {
         'Muy buena, recomendada',
         'Excelente, una gran experiencia',
         'Obra maestra, imprescindible'
-      ]
+      ],
+      // Rating modal state
+      ratingModalVisible: false,
+      currentRatingItem: null,
+      selectedRating: 0,
+      hoverRating: 0,
+      userReview: ''
     };
   },
   
@@ -127,7 +167,6 @@ export default {
   },
   
   mounted() {
-    // Escuchar el evento global para abrir el modal
     this.$root.$on('show-rated-modal', this.show);
     
     const email = localStorage.getItem('email');
@@ -135,7 +174,6 @@ export default {
   },
   
   beforeDestroy() {
-    // Limpiar el listener
     this.$root.$off('show-rated-modal', this.show);
   },
   
@@ -147,8 +185,6 @@ export default {
     
     close() {
       this.visible = false;
-      this.cancelEditRating();
-      this.cancelEditReview();
     },
     
     async fetchRatedItems() {
@@ -171,7 +207,6 @@ export default {
               
               if (!movieData || !movieData.details) continue;
               
-              // Fetch IMDb rating if needed
               if (movieData.details.external_ids?.imdb_id && !movieData.details.rating_source) {
                 try {
                   const response = await fetch(`/api/imdb-rating/${movieData.details.external_ids.imdb_id}`);
@@ -233,22 +268,54 @@ export default {
       }
     },
     
-    startEditRating(index, item) {
-      this.editingRating = index;
-      this.currentEditItem = item;
-      this.tempRating = parseInt(item.details.userRatingForDb) || 1;
-    },
-    
-    cancelEditRating() {
-      this.editingRating = null;
-      this.currentEditItem = null;
-      this.tempRating = 1;
-    },
-    
-    async saveRating(item) {
-      if (!item || !item.details) return;
+    // Rating modal methods
+    openRatingModal(item) {
+      this.currentRatingItem = item;
       
+      if (item.details.userRatingForDb && item.details.userRatingForDb !== '-') {
+        this.selectedRating = parseInt(item.details.userRatingForDb);
+        this.userReview = item.details.userReview || '';
+      } else {
+        this.selectedRating = 0;
+        this.userReview = '';
+      }
+      
+      this.hoverRating = 0;
+      this.ratingModalVisible = true;
+    },
+
+    closeRatingModal() {
+      this.ratingModalVisible = false;
+      this.currentRatingItem = null;
+      this.selectedRating = 0;
+      this.hoverRating = 0;
+      this.userReview = '';
+    },
+
+    setRating(rating) {
+      this.selectedRating = rating;
+    },
+
+    previewRating(rating) {
+      this.hoverRating = rating;
+    },
+
+    resetPreview() {
+      this.hoverRating = 0;
+    },
+
+    async saveRatingAndReview() {
+      if (this.selectedRating === 0) {
+        alert('Por favor selecciona una valoración entre 1 y 10');
+        return;
+      }
+
+      if (!this.userReview.trim()) {
+        this.userReview = this.ratingDescriptions[this.selectedRating - 1];
+      }
+
       try {
+        const item = this.currentRatingItem;
         const { typeForDb, idForDb } = item.details;
         const itemKey = `${typeForDb}/${idForDb}`;
 
@@ -256,58 +323,58 @@ export default {
           .from('favorites')
           .select('favorites_json')
           .eq('user_email', this.userEmail);
-          
-        if (error) throw new Error('Error al obtener favoritos: ' + error.message);
-        if (!favoritesData || !favoritesData.length) return;
+        
+        if (error) {
+          throw new Error('Error al obtener favoritos: ' + error.message);
+        }
+        
+        if (!favoritesData || !favoritesData.length) {
+          throw new Error('No se encontraron favoritos para el usuario');
+        }
         
         const favoritesObject = favoritesData[0].favorites_json || {};
         const itemType = typeForDb === 'tv' ? 'tv' : 'movies';
         
-        if (!favoritesObject[itemType]) return;
-
+        if (!favoritesObject[itemType]) {
+          throw new Error(`No se encontraron favoritos de tipo ${itemType}`);
+        }
+        
         const updatedItems = favoritesObject[itemType].map(favItem => {
           const favItemKey = Object.keys(favItem)[0];
           if (favItemKey === itemKey) {
-            favItem[favItemKey].details.userRatingForDb = this.tempRating.toString();
+            favItem[favItemKey].details.userRatingForDb = this.selectedRating.toString();
+            favItem[favItemKey].details.userReview = this.userReview.trim();
           }
           return favItem;
         });
         
         favoritesObject[itemType] = updatedItems;
-
+        
         const { error: updateError } = await supabase
           .from('favorites')
           .update({ favorites_json: favoritesObject })
           .eq('user_email', this.userEmail);
-          
-        if (updateError) throw new Error('Error al actualizar valoración: ' + updateError.message);
-
-        item.details.userRatingForDb = this.tempRating.toString();
-        this.cancelEditRating();
         
-        // Emitir evento para que otras páginas actualicen sus datos
+        if (updateError) {
+          throw new Error('Error al actualizar valoración: ' + updateError.message);
+        }
+        
+        item.details.userRatingForDb = this.selectedRating.toString();
+        item.details.userReview = this.userReview.trim();
+        
+        this.closeRatingModal();
+        await this.fetchRatedItems();
         this.$root.$emit('rated-items-updated');
-      } catch(error) {
-        console.error('Error al guardar valoración:', error);
+        
+      } catch (error) {
+        console.error('Error al guardar valoración y reseña:', error);
+        alert('Hubo un error al guardar tu valoración. Por favor intenta de nuevo.');
       }
     },
-    
-    startEditReview(index, item) {
-      this.editingReview = index;
-      this.currentEditItem = item;
-      this.tempReview = item.details.userReview || '';
-    },
-    
-    cancelEditReview() {
-      this.editingReview = null;
-      this.currentEditItem = null;
-      this.tempReview = '';
-    },
-    
-    async saveReview(item) {
-      if (!item || !item.details) return;
-      
+
+    async removeRating() {
       try {
+        const item = this.currentRatingItem;
         const { typeForDb, idForDb } = item.details;
         const itemKey = `${typeForDb}/${idForDb}`;
 
@@ -315,7 +382,7 @@ export default {
           .from('favorites')
           .select('favorites_json')
           .eq('user_email', this.userEmail);
-          
+        
         if (error) throw new Error('Error al obtener favoritos: ' + error.message);
         if (!favoritesData || !favoritesData.length) return;
         
@@ -327,27 +394,31 @@ export default {
         const updatedItems = favoritesObject[itemType].map(favItem => {
           const favItemKey = Object.keys(favItem)[0];
           if (favItemKey === itemKey) {
-            favItem[favItemKey].details.userReview = this.tempReview.trim();
+            delete favItem[favItemKey].details.userRatingForDb;
+            delete favItem[favItemKey].details.userReview;
           }
           return favItem;
         });
         
         favoritesObject[itemType] = updatedItems;
-
+        
         const { error: updateError } = await supabase
           .from('favorites')
           .update({ favorites_json: favoritesObject })
           .eq('user_email', this.userEmail);
-          
-        if (updateError) throw new Error('Error al actualizar reseña: ' + updateError.message);
-
-        item.details.userReview = this.tempReview.trim();
-        this.cancelEditReview();
         
-        // Emitir evento para que otras páginas actualicen sus datos
+        if (updateError) throw new Error('Error al eliminar valoración: ' + updateError.message);
+        
+        item.details.userRatingForDb = '-';
+        item.details.userReview = '';
+        
+        this.closeRatingModal();
+        await this.fetchRatedItems();
         this.$root.$emit('rated-items-updated');
-      } catch(error) {
-        console.error('Error al guardar reseña:', error);
+        
+      } catch (error) {
+        console.error('Error al eliminar valoración:', error);
+        alert('Hubo un error al eliminar tu valoración. Por favor intenta de nuevo.');
       }
     }
   }
@@ -561,46 +632,6 @@ export default {
   line-height: 1.4;
 }
 
-.edit-review-btn {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  background: transparent;
-  border: none;
-  color: #8BE9FD;
-  font-size: 1.1rem;
-  cursor: pointer;
-  padding: 3px 6px;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.rated-item-review-container:hover .edit-review-btn {
-  opacity: 1;
-}
-
-.review-edit-container {
-  margin-top: 10px;
-}
-
-.review-textarea {
-  width: 100%;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  border-radius: 4px;
-  padding: 8px;
-  font-size: 1.2rem;
-  resize: vertical;
-}
-
-.review-btn-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 8px;
-  gap: 8px;
-}
-
 .rating-badge.editable {
   cursor: pointer;
   transition: all 0.2s ease;
@@ -609,71 +640,6 @@ export default {
 .rating-badge.editable:hover {
   background: #66deff;
   transform: scale(1.1);
-}
-
-.rating-edit-controls {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.rating-select {
-  background: #041019;
-  color: white;
-  border: 1px solid #8BE9FD;
-  border-radius: 4px;
-  padding: 3px;
-  width: 40px;
-}
-
-.edit-btn {
-  background: transparent;
-  border: none;
-  color: white;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 0 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  position: relative;
-}
-
-.edit-btn-rvw {
-  background: transparent;
-  border: none;
-  color: white;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 15 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 60px;
-  height: 20px;
-  border-radius: 15px;
-  gap: 20px;
-  position: relative;
-}
-
-.save-btn {
-  background: #8BE9FD;
-  color: #000;
-}
-
-.save-btn:hover {
-  background: #518692;
-}
-
-.cancel-btn {
-  background: rgba(255, 0, 0, 0.2);
-}
-
-.cancel-btn:hover {
-  background: rgba(255, 0, 0, 0.4);
 }
 
 .rated-item-review::-webkit-scrollbar {
@@ -723,6 +689,214 @@ export default {
   
   .rated-item-title {
     font-size: 1.3rem;
+  }
+}
+
+/* Rating Modal Styles */
+.rating-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  padding: 20px;
+}
+
+.rating-modal {
+  width: 100%;
+  max-width: 360px;
+  background: linear-gradient(to bottom right, #092739, #061720);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.rating-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rating-selector {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.rating-numbers {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.rating-numbers::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.07);
+  transform: translateY(-50%);
+  z-index: 0;
+}
+
+.rating-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: #041019;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  z-index: 2;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rating-btn-active {
+  background: #8BE9FD;
+  color: #000;
+  transform: scale(1.15);
+  box-shadow: 0 0 10px rgba(139, 233, 253, 0.5);
+}
+
+.rating-btn:hover {
+  transform: scale(1.15);
+}
+
+.review-section {
+  width: 100%;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.review-textarea {
+  width: 100%;
+  height: 100px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  color: #fff;
+  font-size: 1.3rem;
+  resize: none;
+  transition: border-color 0.2s ease;
+}
+
+.review-textarea:focus {
+  outline: none;
+  border-color: rgba(139, 233, 253, 0.5);
+}
+
+.review-textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.char-count {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.rating-modal-buttons {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
+}
+
+.save-btn {
+  background: #8BE9FD;
+  color: #000;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 30px;
+  flex: 1;
+  max-width: 120px;
+  text-align: center;
+}
+
+.save-btn:hover {
+  background: #7AD6E9;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(139, 233, 253, 0.3);
+}
+
+.save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.remove-rating-btn {
+  background: rgba(255, 0, 0, 0.2);
+  color: #fff;
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 30px;
+  flex: 1;
+  max-width: 120px;
+  text-align: center;
+}
+
+.remove-rating-btn:hover {
+  background: rgba(255, 0, 0, 0.4);
+  border-color: rgba(255, 0, 0, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+}
+
+@media (max-width: 400px) {
+  .rating-modal {
+    max-width: 300px;
+  }
+  
+  .rating-btn {
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+  }
+  
+  .modal-header h3 {
+    font-size: 1.4rem;
+  }
+  
+  .review-textarea {
+    font-size: 1.2rem;
+  }
+  
+  .rating-modal-buttons {
+    flex-direction: column;
+  }
+  
+  .rating-modal-buttons .save-btn,
+  .remove-rating-btn {
+    max-width: 100%;
   }
 }
 </style>
