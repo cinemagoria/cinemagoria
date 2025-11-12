@@ -1,5 +1,6 @@
 <template>
   <main class="main">
+    <UserNav @show-rated-modal="showRatedItems" />
     <TopNav
       :title="metaTitle" />
 
@@ -48,6 +49,7 @@
 </template>
 
 <script>
+import UserNav from '@/components/global/UserNav';
 import { apiImgUrl, getMovie, getMovieRecommended } from '~/api';
 import { name, yearStart } from '~/mixins/Details';
 import TopNav from '~/components/global/TopNav';
@@ -62,6 +64,7 @@ import ListingCarousel from '~/components/ListingCarousel';
 
 export default {
   components: {
+    UserNav,
     TopNav,
     Hero,
     MediaNav,
@@ -164,6 +167,9 @@ export default {
   },
 
   methods: {
+    showRatedItems() {
+      this.ratedItemsModalVisible = true;
+    },
     truncate (string, length) {
       return this.$options.filters.truncate(string, length);
     },
