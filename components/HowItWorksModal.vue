@@ -22,7 +22,7 @@
             <h4>Following People</h4>
             <p>Navigate to any actor, director, writer, or creator profile and click the "Follow" button to start receiving notifications. You'll be instantly notified about their recent work from the past 30 days, plus all upcoming projects scheduled for release within the next 5 years. Our notification system runs automated checks every 6 hours to ensure you never miss an announcement.</p>
             <div :class="$style.guideImage">
-              <img src="~/static/add-person.gif" alt="Follow person guide">
+              <img src="~/static/add-person.png" alt="Follow person guide">
             </div>
           </div>
 
@@ -30,7 +30,7 @@
             <h4>Following TV Shows</h4>
             <p>Access any TV series page and click the "Follow Episodes" button to subscribe to episode notifications. You'll receive timely alerts for episodes airing within a 7-day window before and after their scheduled release date. This feature is ideal for staying current with ongoing series without missing new episodes. The system performs automatic updates every 6 hours to keep your notifications fresh.</p>
             <div :class="$style.guideImage">
-              <img src="~/static/add-tv-show.gif" alt="Follow TV show guide">
+              <img src="~/static/add-tv-show.png" alt="Follow TV show guide">
             </div>
           </div>
         </div>
