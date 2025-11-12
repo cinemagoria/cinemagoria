@@ -48,7 +48,7 @@
         <!-- Language Switcher -->
         <div class="menu-item language-switch" @click="toggleLanguage">
           <img src="~static/langpicker-icon.png" alt="Language Icon" class="menu-icon">
-          <span class="menu-label">{{ currentLanguage === 'en' ? 'English' : 'EspaÃ±ol' }}</span>
+          <span class="menu-label">{{ currentLanguage === 'en' ? 'English' : 'Español' }}</span>
           <div class="switch-container">
             <div class="switch" :class="{ active: currentLanguage === 'es' }">
               <div class="switch-handle"></div>
