@@ -355,7 +355,7 @@ export default {
 }
 
 .switch.active {
-  background: #4CAF50;
+  background: #8BE9FD;
 }
 
 .switch-handle {
