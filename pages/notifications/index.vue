@@ -176,6 +176,37 @@
               class="mark-unread-button">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
             </button>
+           <button 
+              @click.stop="openDeleteModal(notification.id)"
+              class="delete-button"
+              title="Delete">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div v-if="deleteModalVisible" class="modal-overlay" @click.self="closeDeleteModal">
+          <div class="delete-modal">
+            <div class="modal-header">
+              <h3>Delete Notification</h3>
+              <button class="close-btn" @click="closeDeleteModal" type="button" aria-label="Close">×</button>
+            </div>
+            
+            <div class="delete-modal-content">
+              <div class="exclamation-svg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-alert-icon lucide-circle-alert"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+              </div>
+              <p class="delete-message">Are you sure you want to permanently delete this notification?</p>
+              <p class="delete-warning">This action cannot be undone.</p>
+              
+              <div class="delete-actions">
+                <button @click="closeDeleteModal" class="cancel-btn" type="button"><span class="label-button-modal">Cancel</span></button>
+                <button @click="confirmDeleteNotification" class="confirm-delete-btn" type="button"><span class="label-button-modal">Delete</span></button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -229,7 +260,9 @@ export default {
       perPage: 50,
       totalPages: 1,
       totalNotifications: 0,
-      isLoadingPage: false
+      isLoadingPage: false,
+      deleteModalVisible: false,
+      notificationToDelete: null,
     };
   },
 
@@ -513,6 +546,43 @@ export default {
           }
         } catch (error) {
           console.error('Error marking as unread:', error);
+        }
+      },
+
+      openDeleteModal(notificationId) {
+        this.notificationToDelete = notificationId;
+        this.deleteModalVisible = true;
+      },
+
+      closeDeleteModal() {
+        this.deleteModalVisible = false;
+        this.notificationToDelete = null;
+      },
+
+      async confirmDeleteNotification() {
+        if (!this.notificationToDelete) return;
+        
+        try {
+          const response = await fetch(`${this.followsApiUrl}/notifications/delete`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_email: this.userEmail,
+              notification_id: this.notificationToDelete
+            })
+          });
+
+          if (response.ok) {
+            this.notifications = this.notifications.filter(n => n.id !== this.notificationToDelete);
+            
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new Event('notifications-updated'));
+            }
+            
+            this.closeDeleteModal();
+          }
+        } catch (error) {
+          console.error('Error deleting notification:', error);
         }
       },
 
@@ -1226,12 +1296,6 @@ button {
     border-top: 3px solid #8BE9FD;
     box-shadow: 0 -4px 12px rgba(139, 233, 253, 0.3), 0 4px 12px rgba(0, 0, 0, 0.3);
   }
-  
-  .mark-read-button,
-  .mark-unread-button {
-    right: 1.5rem;
-    top: 1.5rem;
-  }
 }
 
 @media (max-width: 768px) {  
@@ -1329,8 +1393,6 @@ button {
   .mark-unread-button {
     right: 1rem;
     top: 1rem;
-    width: 28px;
-    height: 28px;
   }
   
   .mark-read-button svg,
@@ -1338,10 +1400,8 @@ button {
     width: 14px;
     height: 14px;
   }
-}
 
-@media (max-width: 400px) {
-  .header-actions {
+    .header-actions {
     flex-direction: column;
     align-items: center;
   }
@@ -1363,7 +1423,9 @@ button {
   .mark-all-button {
     width: 100%;
   }
-  
+}
+
+@media (max-width: 400px) {  
   .notification-item {
     padding: 1rem;
   }
@@ -1549,5 +1611,165 @@ button {
 .pagination-footer button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+.delete-button {
+  padding: 0.8rem;
+  background: rgba(255, 107, 107, 0.15);
+  border: 1px solid #FF6B6B;
+  border-radius: 50%;
+  color: #FF6B6B;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 6rem;
+  top: 2rem;
+  width: 32px;
+  height: 32px;
+}
+
+.delete-button:hover {
+  background: rgba(255, 107, 107, 0.25);
+  transform: scale(1.1);
+}
+
+.delete-button:active {
+  background: #FF6B6B;
+  color: #000;
+}
+
+@media (max-width: 768px) {
+  .delete-button {
+    right: 6rem;
+    top: 19px;
+  }
+}
+
+@media (max-width: 576px) {
+  .delete-button {
+    right: 6rem;
+    top: 9px;
+  }
+}
+
+.delete-modal {
+  width: 100%;
+  max-width: 380px;
+  background: linear-gradient(to bottom right, #092739, #061720);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.delete-modal-content {
+  padding: 30px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.warning-icon {
+  margin-bottom: 20px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.delete-message {
+  color: #fff;
+  font-size: 1.5rem;
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+}
+
+.delete-warning {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.3rem;
+  margin: 0 0 25px 0;
+}
+
+.delete-actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  justify-content: center;
+}
+
+.cancel-btn,
+.confirm-delete-btn {
+  flex: 1;
+  max-width: 120px;
+  padding: 10px 0;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.cancel-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.confirm-delete-btn {
+  background: #8BE9FD;
+  color: #000
+}
+
+.confirm-delete-btn:hover {
+  background: #FF5252;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+}
+
+@media (max-width: 400px) {
+  .delete-modal {
+    max-width: 320px;
+  }
+  
+  .delete-message {
+    font-size: 1.4rem;
+  }
+  
+  .delete-warning {
+    font-size: 1.2rem;
+  }
+  
+  .cancel-btn,
+  .confirm-delete-btn {
+    font-size: 1.3rem;
+    max-width: 100px;
+  }
+}
+
+.exclamation-svg {
+  position: relative;
+  bottom: 1.5rem;
+}
+
+.label-button-modal {
+  margin: 0 auto !important;
+  position: relative !important;
 }
 </style>
