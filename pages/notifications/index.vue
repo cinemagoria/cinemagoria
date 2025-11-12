@@ -178,6 +178,24 @@
             </button>
           </div>
         </div>
+        <div v-if="totalPages > 1" class="pagination-footer">
+          <button @click="goToFirst" :disabled="currentPage === 1 || isLoadingPage">|<</button>
+          <button @click="previousPage" :disabled="currentPage === 1 || isLoadingPage"><<</button>
+          <span>
+            <label for="page" style="font-size:13px;">Page</label>
+            <input 
+              type="number" 
+              id="page" 
+              style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" 
+              v-model.number="currentPage" 
+              min="1" 
+              :max="totalPages"
+              :disabled="isLoadingPage">
+          </span>
+          <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
+          <button @click="nextPage" :disabled="currentPage === totalPages || isLoadingPage">>></button>
+          <button @click="goToLast" :disabled="currentPage === totalPages || isLoadingPage">>|</button>
+        </div>
       </div>
     </section>
   </main>
@@ -205,6 +223,11 @@ export default {
       showFollowingModal: false,
       totalFollowingCount: 0,
       animatingRead: null,
+      currentPage: 1,
+      perPage: 50,
+      totalPages: 1,
+      totalNotifications: 0,
+      isLoadingPage: false
     };
   },
 
@@ -254,11 +277,9 @@ export default {
     },
 
     async fetchNotifications() {
-      if (!this.userEmail) return;
-
       this.loading = true;
       try {
-        const url = `${this.followsApiUrl}/notifications?user_email=${encodeURIComponent(this.userEmail)}${this.showUnreadOnly ? '&unread_only=true' : ''}`;
+        const url = `${this.followsApiUrl}/notifications?user_email=${encodeURIComponent(this.userEmail)}${this.showUnreadOnly ? '&unread_only=true' : ''}&page=${this.currentPage}&per_page=${this.perPage}`;
         const response = await fetch(url);
         
         if (!response.ok) throw new Error('Failed to fetch notifications');
@@ -266,6 +287,12 @@ export default {
         const data = await response.json();
         if (data.success) {
           this.notifications = data.notifications;
+          if (data.pagination) {
+            this.currentPage = data.pagination.current_page;
+            this.perPage = data.pagination.per_page;
+            this.totalPages = data.pagination.total_pages;
+            this.totalNotifications = data.pagination.total_notifications;
+          }
         }
       } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -276,8 +303,46 @@ export default {
 
 
     toggleFilter() {
-      this.showUnreadOnly = !this.showUnreadOnly;
+    this.showUnreadOnly = !this.showUnreadOnly;
+    this.currentPage = 1;
+    this.fetchNotifications();
+    },
+
+    goToPage(pageNumber) {
+      if (pageNumber < 1 || pageNumber > this.totalPages || this.isLoadingPage) return;
+      this.currentPage = pageNumber;
+      this.isLoadingPage = true;
+      
+      setTimeout(() => {
+        this.isLoadingPage = false;
+      }, 5000);
+      
       this.fetchNotifications();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.goToPage(this.currentPage + 1);
+      }
+    },
+
+    previousPage() {
+      if (this.currentPage > 1) {
+        this.goToPage(this.currentPage - 1);
+      }
+    },
+
+    goToFirst() {
+      if (this.currentPage !== 1 && !this.isLoadingPage) {
+        this.goToPage(1);
+      }
+    },
+
+    goToLast() {
+      if (this.currentPage !== this.totalPages && !this.isLoadingPage) {
+        this.goToPage(this.totalPages);
+      }
     },
 
     handleNotificationClick(notification) {
@@ -1433,5 +1498,55 @@ button {
 .mark-unread-button:active {
   background: #FFC107;
   color: #000;
+}
+
+.pagination-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fff;
+  font-size: 1.4rem;
+}
+
+.total-count {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.pagination-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  width: 100% !important;
+  margin: 0 auto;
+  background: rgba(16, 20, 33, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  padding: 8px;
+  gap: 0.5rem;
+  top: 3px;
+  border: 0.5px #31414C solid;
+  position: relative;
+}
+
+.pagination-footer button {
+  padding: 0.5rem 1rem;
+  background: rgba(82, 71, 71, 0);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.pagination-footer button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>
