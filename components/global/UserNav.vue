@@ -167,7 +167,7 @@ export default {
     },
 
     showRatedModal() {
-      this.$emit('show-rated-modal');
+      this.$root.$emit('show-rated-modal');
       this.isMenuOpen = false;
     },
 
