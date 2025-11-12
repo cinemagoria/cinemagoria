@@ -122,37 +122,56 @@
               </div>
             </div>
 
-            <button 
-              v-if="!notification.read"
-              @click.stop="markAsRead(notification.id)"
-              :disabled="animatingRead === notification.id"
-              class="mark-read-button">
-              <svg 
-                v-if="animatingRead === notification.id"
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                stroke-width="3"
-                class="checkmark-svg">
-                <polyline points="20 6 9 17 4 12" class="checkmark-path"/>
-              </svg>
-            </button>
+            <div class="notification-tabs">
+              <button 
+                @click.stop="openDeleteModal(notification.id)"
+                class="tab-delete-btn"
+                title="Delete">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 11v6"/>
+                  <path d="M14 11v6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                  <path d="M3 6h18"/>
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+              </button>
 
-            <button 
-              v-if="notification.read && !showUnreadOnly"
-              @click.stop="markAsUnread(notification.id)"
-              class="mark-unread-button">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
-            </button>
-           <button 
-              @click.stop="openDeleteModal(notification.id)"
-              class="delete-button"
-              title="Delete">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="3 6 5 6 21 6"/>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-              </svg>
-            </button>
+              <button 
+                v-if="!notification.read"
+                @click.stop="markAsRead(notification.id)"
+                :disabled="animatingRead === notification.id"
+                class="tab-check-btn">
+                <svg 
+                  v-if="animatingRead === notification.id"
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  stroke-width="3"
+                  class="checkmark-svg">
+                  <polyline points="20 6 9 17 4 12" class="checkmark-path"/>
+                </svg>
+                <svg 
+                  v-else
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="16" 
+                  height="16" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  stroke-width="2">
+                  <circle cx="12" cy="12" r="9"/>
+                </svg>
+              </button>
+
+              <button 
+                v-if="notification.read && !showUnreadOnly"
+                @click.stop="markAsUnread(notification.id)"
+                class="tab-check-btn active">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6 9 17l-5-5"/>
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -769,8 +788,11 @@ button {
   grid-template-columns: 60px 1fr 250px;
   gap: 2rem;
   padding: 2rem;
+  margin-top:30px;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  border-top-left-radius: 12px;
   border-left: 4px solid transparent;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -908,34 +930,6 @@ button {
   text-transform: uppercase;
 }
 
-.mark-read-button {
-  padding: 0.8rem;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid #8BE9FD;
-  border-radius: 50%;
-  color: #8BE9FD;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  right: 2rem;
-  top: 2rem;
-  width: 32px;
-  height: 32px;
-}
-
-.mark-read-button:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: scale(1.1);
-}
-
-.mark-read-button:active {
-  background: #8BE9FD;
-  color: #000;
-}
-
 .no-notifications {
   text-align: center;
   padding: 6rem 2rem;
@@ -972,6 +966,16 @@ button {
   font-size: 1.6rem;
   font-weight: 500;
   cursor: pointer;
+}
+
+.notification-tabs {
+  position: absolute;
+  top: 0;
+  right: 0.3rem;
+  display: flex;
+  gap: 0;
+  z-index: 10;
+  transform: translateY(-100%);
 }
 
 @media (max-width: 1024px) {
@@ -1019,6 +1023,16 @@ button {
 }
 
 @media (max-width: 768px) {  
+  .notification-tabs {
+    top: -2px;
+    right: 0.3rem;
+  }
+  
+  .tab-check-btn,
+  .tab-delete-btn {
+    width: 42px;
+    height: 32px;
+  }
   .title-secondary {
     word-wrap: break-word;
   }
@@ -1056,6 +1070,22 @@ button {
 }
 
 @media (max-width: 576px) {
+  .notification-tabs {
+    top: -2px;
+    right: 0.3rem;
+  }
+  
+  .tab-check-btn,
+  .tab-delete-btn {
+    width: 42px;
+    height: 32px;
+  }
+  
+  .tab-check-btn svg,
+  .tab-delete-btn svg {
+    width: 14px;
+    height: 14px;
+  }
   .notification-item {
     grid-template-columns: 40px 1fr;
     padding: 1.2rem;
@@ -1108,20 +1138,8 @@ button {
     max-width: 200px;
     margin-left: 1.5rem;
   }
-  
-  .mark-read-button,
-  .mark-unread-button {
-    right: 1rem;
-    top: 1rem;
-  }
-  
-  .mark-read-button svg,
-  .mark-unread-button svg {
-    width: 14px;
-    height: 14px;
-  }
 
-    .header-actions {
+  .header-actions {
     flex-direction: column;
     align-items: center;
   }
@@ -1142,6 +1160,8 @@ button {
   .filter-button,
   .mark-all-button {
     width: 100%;
+    justify-content: center;
+    align-items: center;
   }
 }
 
@@ -1255,34 +1275,6 @@ button {
   }
 }
 
-.mark-unread-button {
-  padding: 0.8rem;
-  background: #8BE9FD;
-  border: 1px solid #19729F;
-  border-radius: 50%;
-  color: #000000;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  right: 2rem;
-  top: 2rem;
-  width: 32px;
-  height: 32px;
-}
-
-.mark-unread-button:hover {
-  background: rgba(255, 193, 7, 0.25);
-  transform: scale(1.1);
-}
-
-.mark-unread-button:active {
-  background: #FFC107;
-  color: #000;
-}
-
 .pagination-info {
   display: flex;
   flex-direction: column;
@@ -1331,47 +1323,6 @@ button {
 .pagination-footer button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-.delete-button {
-  padding: 0.8rem;
-  background: rgba(255, 107, 107, 0.15);
-  border: 1px solid #FF6B6B;
-  border-radius: 50%;
-  color: #FF6B6B;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  right: 6rem;
-  top: 2rem;
-  width: 32px;
-  height: 32px;
-}
-
-.delete-button:hover {
-  background: rgba(255, 107, 107, 0.25);
-  transform: scale(1.1);
-}
-
-.delete-button:active {
-  background: #FF6B6B;
-  color: #000;
-}
-
-@media (max-width: 768px) {
-  .delete-button {
-    right: 6rem;
-    top: 19px;
-  }
-}
-
-@media (max-width: 576px) {
-  .delete-button {
-    right: 6rem;
-    top: 9px;
-  }
 }
 
 .delete-modal {
@@ -1523,5 +1474,63 @@ button {
 
 .help-icon-button svg {
   display: block;
+}
+
+
+.tab-check-btn,
+.tab-delete-btn {
+  width: 44px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(9, 39, 57, 0.95);
+  border: 2px solid #8BE9FD;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #8BE9FD;
+  padding: 0;
+  flex-shrink: 0;
+  border-bottom: none;
+}
+
+.tab-delete-btn {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: 1px solid rgba(139, 233, 253, 0.3);
+}
+
+.tab-check-btn {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.tab-check-btn:hover,
+.tab-delete-btn:hover {
+  background: rgba(139, 233, 253, 0.25);
+  transform: translateY(-2px);
+}
+
+.tab-check-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.tab-check-btn.active {
+  background: #8BE9FD;
+  color: #000;
+}
+
+.tab-delete-btn:hover {
+  background: rgba(139, 233, 253, 0.25);
+  transform: translateY(-2px);
+}
+
+.tab-delete-btn:active {
+  background: #FF6B6B;
+  color: #fff;
 }
 </style>
