@@ -6,7 +6,7 @@
     <transition name="slidedown">
       <SearchForm />
     </transition>
-
+    <RatedModal />
     <Nav />
     <nuxt />
     <Footer />
@@ -20,6 +20,7 @@ import InstallPrompt from '~/components/global/InstallPrompt';
 import SearchForm from '~/components/global/SearchForm';
 import Nav from '~/components/global/Nav';
 import Footer from '~/components/global/Footer';
+import RatedModal from '@/components/global/RatedModal';
 
 export default {
   components: {
@@ -28,6 +29,7 @@ export default {
     SearchForm,
     Nav,
     Footer,
+    RatedModal, // ← AGREGAR ESTO
   },
 
   computed: {
