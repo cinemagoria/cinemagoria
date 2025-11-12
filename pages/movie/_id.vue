@@ -166,7 +166,7 @@ export default {
   created () {
     this.createMenu();
     this.initRecommended();
-    this.fetchReviews(); // Añadido método para obtener reseñas
+    this.fetchReviews();
   },
 
   methods: {
@@ -215,3 +215,14 @@ export default {
   },
 };
 </script>
+<style>
+@media (max-width: 1200px) {
+  .user-nav-container {
+    top: 7px !important;
+  }
+
+.container {
+  bottom: 10px !important;
+}
+}
+</style>
