@@ -231,7 +231,6 @@ export default {
         }
         
         this.userData = data[0];
-        this.userAvatar = await getUserAvatar(this.userEmail);
         this.createOrUpdateUserData();
       } catch (error) {
         console.error('Error al conectar con la base de datos:', error);
@@ -330,23 +329,9 @@ export default {
   align-items: center;
 }
 
-.avatar-container {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
 .avatar-wrapper {
   position: relative;
   display: inline-block;
-}
-
-.avatar {
-  width: 120px;
-  border: 2px solid rgba( 255, 255, 255, 0.18 );
-  height: 120px;
-  box-shadow: 0 5px 32px 0 rgba(31, 97, 135, 0.37);
-  border-radius: 50%;
-  object-fit: cover;
 }
 
 .change-avatar-button {

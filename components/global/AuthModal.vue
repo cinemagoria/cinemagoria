@@ -235,25 +235,27 @@ export default {
   },
   methods: {
     open(action = null) {
-      this.isOpen = true;
-      this.pendingAction = action;
-      this.resetForm();
+    this.isOpen = true;
+    this.pendingAction = action;
+    this.resetForm();
     },
     
     close() {
       this.isOpen = false;
       this.pendingAction = null;
       this.resetForm();
+      this.$emit('close'); 
     },
     
     closeModal() {
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
+      const currentPath = this.$route?.path || window.location.pathname;
+      
+      if (currentPath === '/login' || currentPath === '/register') {
         window.location.href = '/';
+      } else {
+        this.close();
       }
     },
-    
     resetForm() {
       this.loginEmail = '';
       this.loginPassword = '';

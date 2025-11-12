@@ -53,8 +53,8 @@ export default {
       this.confirmationMessage = true;
     },
     redirectToHome() {
-      window.location.href = 'https://es.entercinema.com';
-    }
+      this.$router.push('/');
+    },
   }
 };
 </script>

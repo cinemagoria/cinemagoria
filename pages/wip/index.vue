@@ -23,8 +23,8 @@
   export default {
     methods: {
       redirectToHome() {
-        window.location.href = 'https://es.entercinema.com';
-      }
+        this.$router.push('/');
+      },
     }
   };
   </script>
