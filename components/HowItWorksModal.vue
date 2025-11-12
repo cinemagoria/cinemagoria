@@ -27,10 +27,24 @@
           </div>
 
           <div :class="$style.guideCard">
+            <p>Get real-time alerts whenever someone you follow releases a new movie or project.</p>
+            <div :class="$style.guideImage">
+              <img src="~/static/push-person.png" alt="Push notifications for people guide">
+            </div>
+          </div>
+
+          <div :class="$style.guideCard">
             <h4>Following TV Shows</h4>
             <p>Access any TV series page and click the "Follow Episodes" button to subscribe to episode notifications. You'll receive timely alerts for episodes airing within a 7-day window before and after their scheduled release date. This feature is ideal for staying current with ongoing series without missing new episodes. The system performs automatic updates every 6 hours to keep your notifications fresh.</p>
             <div :class="$style.guideImage">
               <img src="~/static/add-tv-show.png" alt="Follow TV show guide">
+            </div>
+          </div>
+
+          <div :class="$style.guideCard">
+            <p>Receive timely notifications when new episodes or seasons of your followed series are released. Stay up to date with airing schedules and never miss the latest from your favorite shows.</p>
+            <div :class="$style.guideImage">
+              <img src="~/static/push-tv-show.png" alt="Push notifications for TV shows guide">
             </div>
           </div>
         </div>
@@ -139,10 +153,6 @@ export default {
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
-
-  @media (min-width: $breakpoint-medium) {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
 .guideCard {
