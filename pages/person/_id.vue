@@ -1,5 +1,6 @@
 <template>
   <main class="main">
+    <UserNav @show-rated-modal="showRatedItems" />
     <TopNav
       :title="metaTitle" />
 
@@ -32,6 +33,7 @@
 </template>
 
 <script>
+import UserNav from '@/components/global/UserNav';
 import { apiImgUrl, getPerson } from '~/api';
 import TopNav from '~/components/global/TopNav';
 import PersonInfo from '~/components/person/PersonInfo';
@@ -42,6 +44,7 @@ import Listing from '~/components/Listing';
 
 export default {
   components: {
+    UserNav,
     TopNav,
     PersonInfo,
     MediaNav,
@@ -121,6 +124,9 @@ export default {
   },
 
   methods: {
+    showRatedItems() {
+      this.ratedItemsModalVisible = true;
+    },
     async enrichWithIMDbRatings(items) {
       if (!items || !items.length) return items;
       
