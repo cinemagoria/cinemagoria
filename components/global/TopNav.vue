@@ -23,7 +23,7 @@ export default {
 
 @media (max-width: $breakpoint-large - 1) {
   .topnav-active {
-    padding-top: 4.5rem;
+    padding-top: 5.5rem;
   }
 }
 </style>
@@ -40,7 +40,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 4.5rem;
+  height: 5.5rem;
   padding: 0 5.5rem;
   background-color: #000;
 
