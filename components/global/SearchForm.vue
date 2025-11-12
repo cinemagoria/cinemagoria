@@ -113,12 +113,9 @@ export default {
   data() {
     return {
       query: this.$route.query.q ? this.$route.query.q : '',
-      showLanguageMenu: false,
-      selectedLanguage: 'english',
       userEmail: '',
       accessToken: '',
       isLoggedIn: false,
-      userAvatar: '/avatars/avatar-ss0.png',
       userName: '',
       isMenuOpen: false,
       languageMenuStyle: { position: 'absolute' },
@@ -164,11 +161,9 @@ export default {
   this.userEmail = email || '';
   this.hasAccessToken = accessToken !== null;
   this.isLoggedIn = accessToken !== null;
-  this.userAvatar = await getUserAvatar(this.userEmail);
   this.userName = await getUserName(this.userEmail);
 
   if (this.isLoggedIn) {
-    this.userAvatar = await getUserAvatar(this.userEmail);
     this.userName = await getUserName(this.userEmail);
   }
   this.$root.$on('clear-search', this.clearSearch);
@@ -189,45 +184,6 @@ beforeDestroy() {
   this.$root.$off('update-search-query', this.updateSearchQuery);
 },
   methods: {
-    toggleLanguageMenu() {
-      this.showLanguageMenu = !this.showLanguageMenu;
-      const menu = this.$refs.languageMenu;
-      if (menu) {
-        menu.style.display = this.showLanguageMenu ? 'block' : 'none';
-        this.languageMenuStyle = this.showLanguageMenu ? { position: 'fixed' } : { position: 'absolute' };
-      }
-    },
-    changeLanguage(language) {
-      this.selectedLanguage = language;
-      const currentPath = this.$route.path;
-      const currentOrigin = window.location.origin;
-      const spanishUrl = `${currentOrigin.replace(
-        '://',
-        '://es.'
-      )}${currentPath}`;
-      window.location.href = spanishUrl;
-    },
-    toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen;
-    },
-
-    goToWatchlist() {
-      this.$router.push('/watchlist');
-    },
-
-    goToSettings() {
-      this.$router.push('/settings');
-    },
-
-    goToLogin() {
-      this.$router.push('/login');
-    },
-
-    signOut() {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('email');
-      window.location.href = 'https://entercinema.com/';
-    },
     goToRoute() {
       if (this.query) {
         this.$router.push({
@@ -276,11 +232,6 @@ beforeDestroy() {
 @use '~/assets/css/utilities/variables' as *;
 body {
   font-family: 'Roboto', sans-serif;
-}
-.language-selector {
-  position: relative;
-  font-family: 'Roboto';
-  text-transform: uppercase;
 }
 
 .container {
@@ -342,248 +293,9 @@ button {
   background: none;
 }
 
-
-.avatar-container {
-    position: relative;
-    top: -53.4px;
-    cursor: pointer;
-  }
-
-  .language-selector,
-  .avatar-container-else {
-    width: 50%;
-  }
-
-  .world-icon {
-    width: 13px;
-    height: 13px;
-    font-weight: 600;
-    position: relative;
-    top: 1px;
-    left: 2px;
-  }
-
-  .language {
-    margin-right: 0.5rem;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
-    -webkit-background-clip: text;
-    color: transparent;
-    text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
-    font-family: 'Roboto', sans-serif;
-    font-size: 11px; 
-    text-transform: uppercase;
-    border-radius: 15px;
-    color: #94999d;
-    position: relative;
-    top: 1px;
-  }
-
-  .arrow-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  .language-selector {
-    position: relative;
-    cursor: pointer;
-  }
-
-  .language-menu {
-    position: absolute;
-    background: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
-    backdrop-filter: blur( 16px );
-    -webkit-backdrop-filter: blur( 16px );
-    border-radius: 5px;
-    border: 1px solid rgba( 255, 255, 255, 0.18 );
-    z-index: 1000;
-    display: none;
-  }
-
-    .language-menu label {
-      display: block;
-      padding: 0.5rem;
-      cursor: pointer;
-    }
-
-    .language-menu.active {
-      display: block;
-    }
-
-
-  .user-email {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
-    -webkit-background-clip: text;
-    color: transparent;
-    text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
-    font-family: 'Roboto', sans-serif;
-    font-size: 13px; 
-    border-radius: 15px;
-    margin-top: 2rem;
-    margin-left: 13px;
-    color: #94999d;
-    text-align: center;
-  }
-
-  .user-profile {
-    position: absolute;
-    right: 3%; 
-    margin-left: 2rem;
-  }
-
-  .user-profile-else {
-    width: 25%;
-  }
-
-  .profile-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .button-logout {
-    background-color: #062F40;
-    color: #fff;
-    border: none;
-    margin-left: 8px;
-    padding: 1rem 1.5rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: color 0.3s, background-color 0.3s;
-    font-weight: bold; 
-    font-size: 13px; 
-    border-radius: 15px;
-  }
-
-  .button-logout:hover {
-    background-color: #B22727;
-  }
-
-  .logout-icon {
-    width: 15px;
-    height: 15px;
-    margin-right: 5px;
-  }
-
-  .settings-icon {
-    width: 15px;
-    height: 15px;
-    margin-right: 5px;
-  }
-
-  .login-icon {
-    width: 15px;
-    height: 15px;
-    margin-right: 5px;
-  }
-
-  .avatar {
-    width: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.654);
-    height: 40px;
-    box-shadow: 0 5px 32px 0 rgba(31, 97, 135, 0.37);
-    border-radius: 50%;
-    margin-left: 8px;
-    margin-bottom: 5px;
-    cursor: pointer;
-  }
-
-  .avatar-else {
-    width: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.654);
-    height: 40px;
-    box-shadow: 0 5px 32px 0 rgba(31, 97, 135, 0.37);
-    border-radius: 50%;
-    margin-left: 50px;
-    margin-bottom: 5px;
-    cursor: pointer;
-  }
-
-
-  .dropdown-menu {
-    position: relative; 
-    width: 113.574px;
-    top: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
-    backdrop-filter: blur( 16px );
-    -webkit-backdrop-filter: blur( 16px );
-    border-radius: 5px;
-    border: 1px solid rgba( 255, 255, 255, 0.18 );
-    z-index: 100;
-    display: none;
-  }
-
-  .dropdown-menu {
-    display: block;
-    margin-left: 6.5rem;
-  }
-
-  .dropdown-menu-else {
-    position: relative; 
-    top: 100%;
-    height: 38px;
-    background: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
-    backdrop-filter: blur( 16px );
-    -webkit-backdrop-filter: blur( 16px );
-    border-radius: 5px;
-    border: 1px solid rgba( 255, 255, 255, 0.18 );
-    z-index: 100;
-    display: none;
-  }
-
-  .dropdown-menu-else.block + .avatar-else {
-    margin-left: 20px;
-  }
-
-  .dropdown-menu-else {
-    display: block;
-    left: 5px;
-    top: 2px;
-  }
-
-  .menu-item {
-    padding: 8px 12px;
-    cursor: pointer;
-  }
-
-  .menu-label1 {
-    color: #94999d;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    position: relative; 
-    top: 1px;
-  }
-
-  .menu-label1:hover {
-    color: #ffffff;
-  }
-
-  .menu-label2 {
-    color: #94999d;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-top: 3px;
-  }
-
-  .menu-label2:hover {
-    color: #ffffff;
-  }
-
-  @media screen and (max-width: 600px) {
+@media screen and (max-width: 600px) {
   .navbar-title {
     font-size: 12px; 
-  }
-
-  
-  .button-logout {
-    align-items: flex-start;
-    display: inline-block;
-    line-height: 16.1px;
-    right: 1;
-    text-align: center;
   }
 
   .navbar-title {
