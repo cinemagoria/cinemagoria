@@ -1,44 +1,7 @@
 <template>
   <main class="main">
     <section class="notifications-section">
-      <div v-if="isLoggedIn" class="user-profile">
-        <div class="language-selector" style="position: relative; top: -55.4px; left: -56px;">
-          <div class="selected-language" @click="toggleLanguageMenu">
-            <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
-            <span class="language">En</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" style="width: 24px; height: 24px; left: -70px;">
-              <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
-            </svg>
-          </div>
-          <div ref="languageMenu" class="language-menu" :style="{ display: showLanguageMenu ? 'block' : 'none' }">
-            <label class="menu-label1" @click="changeLanguage('spanish')">
-              <span>Español</span>
-            </label>
-          </div>
-        </div>
-        <div class="avatar-container" @click="toggleMenu">
-          <span v-if="userEmail !== 'undefined'" class="user-email">{{ userEmail }}</span>
-          <img :src="userAvatar" alt="User Avatar" class="avatar">
-          <div v-if="isMenuOpen" class="dropdown-menu">
-            <div class="menu-item" @click="goToHome">
-              <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10" stroke-linejoin="round"><path d="M8.5 23.2H1.3V9L12 .8 22.7 9v14.2h-7.2v-5c0-1.9-1.6-3.4-3.5-3.4s-3.5 1.5-3.5 3.4v5z"/></g></svg>
-              <span class="menu-label1">Home</span>
-            </div>
-            <div class="menu-item" @click="goToSettings">
-              <img src="~/static/icon-settings.png" alt="Settings Icon" class="settings-icon">
-              <span class="menu-label1">Settings</span>
-            </div>
-            <div class="menu-item" @click="signOut">
-              <img src="~/static/icon-logout.png" alt="Logout Icon" class="logout-icon">
-              <span class="menu-label2">Log out</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <div v-else class="auth-required">
-      </div>
-
+      <UserNav @show-rated-modal="showRatedItems" />
       <div v-if="isLoggedIn" class="notifications-container">
         <div class="notifications-header">
           <div class="header-top" style="display: flex; align-items: center;">
@@ -241,12 +204,14 @@
 </template>
 
 <script>
+import UserNav from '@/components/global/UserNav';
 import supabase from '@/services/supabase';
 import FollowingModal from '~/components/FollowingModal.vue';
 import HowItWorksModal from '~/components/HowItWorksModal.vue';
 
 export default {
   components: {
+    UserNav,
     FollowingModal,
     HowItWorksModal
   },
@@ -254,9 +219,7 @@ export default {
     return {
       isLoggedIn: false,
       userEmail: null,
-      userAvatar: '/avatars/avatar-ss0.png',
       isMenuOpen: false,
-      showLanguageMenu: false,
       notifications: [],
       loading: true,
       showUnreadOnly: true,
@@ -305,6 +268,9 @@ export default {
   },
 
   methods: {
+    showRatedItems() {
+      this.ratedItemsModalVisible = true;
+    },
     async getUserAvatar() {
       try {
         const { data, error } = await supabase
@@ -419,38 +385,6 @@ export default {
       return `${Math.floor(diff / 604800)}w ago`;
     },
 
-    toggleLanguageMenu() {
-      this.showLanguageMenu = !this.showLanguageMenu;
-    },
-
-    changeLanguage(language) {
-      const currentPath = this.$route.path;
-      const currentOrigin = window.location.origin;
-      const spanishUrl = `${currentOrigin.replace('://', '://es.')}${currentPath}`;
-      window.location.href = spanishUrl;
-    },
-
-    toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen;
-    },
-
-    goToHome() {
-      this.$router.push('/');
-    },
-
-    goToSettings() {
-      this.$router.push('/settings');
-    },
-
-    goToLogin() {
-      this.$router.push('/login');
-    },
-
-    signOut() {
-      localStorage.removeItem('email');
-      localStorage.removeItem('access_token');
-      this.$router.push('/login');
-    },
     async fetchFollowingCount() {
         if (!this.userEmail) return;
 
@@ -630,12 +564,6 @@ export default {
   margin-top: 20px;
 }
 
-.language-selector {
-  position: relative;
-  font-family: 'Roboto';
-  text-transform: uppercase;
-}
-
 .container {
   display: flex;
   width: 100%;
@@ -694,228 +622,6 @@ button {
   padding: 0 1.5rem;
   background: none;
 }
-
-.avatar-container {
-    position: relative;
-    top: -89.2px;
-    cursor: pointer;
-  }
-
-  .language-selector,
-  .avatar-container-else {
-    width: 50%;
-  }
-
-  .world-icon {
-    width: 13px;
-    height: 13px;
-    font-weight: 600;
-    position: relative;
-    top: 1px;
-    left: 2px;
-  }
-
-  .language {
-    margin-right: 0.5rem;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
-    -webkit-background-clip: text;
-    color: transparent;
-    text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
-    font-family: 'Roboto', sans-serif;
-    font-size: 11px; 
-    text-transform: uppercase;
-    border-radius: 15px;
-    color: #94999d;
-    position: relative;
-    top: 1px;
-  }
-
-  .arrow-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  .language-menu {
-    position: absolute;
-    background: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
-    backdrop-filter: blur( 16px );
-    -webkit-backdrop-filter: blur( 16px );
-    border-radius: 5px;
-    border: 1px solid rgba( 255, 255, 255, 0.18 );
-    z-index: 1000;
-    display: none;
-  }
-
-    .language-menu label {
-      display: block;
-      padding: 0.5rem;
-      cursor: pointer;
-    }
-
-    .language-menu.active {
-      display: block;
-    }
-
-  .user-email {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
-    -webkit-background-clip: text;
-    color: transparent;
-    text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
-    font-family: 'Roboto', sans-serif;
-    font-size: 13px; 
-    border-radius: 15px;
-    margin-top: 2rem;
-    margin-left: 13px;
-    color: #94999d;
-    text-align: center;
-  }
-
-  .user-profile {
-    position: absolute;
-    right: 3%; 
-    margin-left: 2rem;
-  }
-
-  .user-profile-else {
-    width: 25%;
-  }
-
-  .profile-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .button-logout {
-    background-color: #062F40;
-    color: #fff;
-    border: none;
-    margin-left: 8px;
-    padding: 1rem 1.5rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: color 0.3s, background-color 0.3s;
-    font-weight: bold; 
-    font-size: 13px; 
-    border-radius: 15px;
-  }
-
-  .button-logout:hover {
-    background-color: #B22727;
-  }
-
-  .logout-icon {
-    width: 15px;
-    height: 15px;
-    margin-right: 5px;
-  }
-
-  .settings-icon {
-    width: 15px;
-    height: 15px;
-    margin-right: 5px;
-  }
-
-  .login-icon {
-    width: 15px;
-    height: 15px;
-    margin-right: 5px;
-  }
-
-  .avatar {
-    width: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.654);
-    height: 40px;
-    box-shadow: 0 5px 32px 0 rgba(31, 97, 135, 0.37);
-    border-radius: 50%;
-    margin-left: 8px;
-    margin-bottom: 5px;
-    cursor: pointer;
-  }
-
-  .avatar-else {
-    width: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.654);
-    height: 40px;
-    box-shadow: 0 5px 32px 0 rgba(31, 97, 135, 0.37);
-    border-radius: 50%;
-    margin-left: 50px;
-    margin-bottom: 5px;
-    cursor: pointer;
-  }
-
-  .dropdown-menu {
-    position: relative; 
-    width: 113.574px;
-    top: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
-    backdrop-filter: blur( 16px );
-    -webkit-backdrop-filter: blur( 16px );
-    border-radius: 5px;
-    border: 1px solid rgba( 255, 255, 255, 0.18 );
-    z-index: 100;
-    display: none;
-  }
-
-  .dropdown-menu {
-    display: block;
-    margin-left: 6.5rem;
-  }
-
-  .dropdown-menu-else {
-    position: relative; 
-    top: 100%;
-    height: 38px;
-    background: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
-    backdrop-filter: blur( 16px );
-    -webkit-backdrop-filter: blur( 16px );
-    border-radius: 5px;
-    border: 1px solid rgba( 255, 255, 255, 0.18 );
-    z-index: 100;
-    display: none;
-  }
-
-  .dropdown-menu-else.block + .avatar-else {
-    margin-left: 20px;
-  }
-
-  .dropdown-menu-else {
-    display: block;
-    left: 5px;
-    top: 2px;
-  }
-
-  .menu-item {
-    padding: 8px 12px;
-    cursor: pointer;
-  }
-
-  .menu-label1 {
-    color: #94999d;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    position: relative; 
-    top: 1px;
-  }
-
-  .menu-label1:hover {
-    color: #ffffff;
-  }
-
-  .menu-label2 {
-    color: #94999d;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-top: 3px;
-  }
-
-  .menu-label2:hover {
-    color: #ffffff;
-  }
 
   @media screen and (max-width: 600px) {
   .navbar-title {
