@@ -29,7 +29,7 @@ export default {
     SearchForm,
     Nav,
     Footer,
-    RatedModal, // ← AGREGAR ESTO
+    RatedModal,
   },
 
   computed: {

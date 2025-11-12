@@ -127,7 +127,6 @@ export default {
   },
   
   mounted() {
-    // Escuchar el evento global para abrir el modal
     this.$root.$on('show-rated-modal', this.show);
     
     const email = localStorage.getItem('email');
@@ -135,7 +134,6 @@ export default {
   },
   
   beforeDestroy() {
-    // Limpiar el listener
     this.$root.$off('show-rated-modal', this.show);
   },
   
@@ -171,7 +169,6 @@ export default {
               
               if (!movieData || !movieData.details) continue;
               
-              // Fetch IMDb rating if needed
               if (movieData.details.external_ids?.imdb_id && !movieData.details.rating_source) {
                 try {
                   const response = await fetch(`/api/imdb-rating/${movieData.details.external_ids.imdb_id}`);
@@ -284,8 +281,6 @@ export default {
 
         item.details.userRatingForDb = this.tempRating.toString();
         this.cancelEditRating();
-        
-        // Emitir evento para que otras páginas actualicen sus datos
         this.$root.$emit('rated-items-updated');
       } catch(error) {
         console.error('Error saving rating:', error);
@@ -343,8 +338,6 @@ export default {
 
         item.details.userReview = this.tempReview.trim();
         this.cancelEditReview();
-        
-        // Emitir evento para que otras páginas actualicen sus datos
         this.$root.$emit('rated-items-updated');
       } catch(error) {
         console.error('Error saving review:', error);
