@@ -191,7 +191,7 @@
         <div v-if="deleteModalVisible" class="modal-overlay" @click.self="closeDeleteModal">
           <div class="delete-modal">
             <div class="modal-header">
-              <h3>Delete Notification</h3>
+              <h3>Borrar Notificación</h3>
               <button class="close-btn" @click="closeDeleteModal" type="button" aria-label="Close">×</button>
             </div>
             
@@ -199,12 +199,12 @@
               <div class="exclamation-svg">
                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-alert-icon lucide-circle-alert"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
               </div>
-              <p class="delete-message">Are you sure you want to permanently delete this notification?</p>
-              <p class="delete-warning">This action cannot be undone.</p>
+              <p class="delete-message">¿Quieres borrar la notificación?</p>
+              <p class="delete-warning">Esta acción no se puede deshacer.</p>
               
               <div class="delete-actions">
-                <button @click="closeDeleteModal" class="cancel-btn" type="button"><span class="label-button-modal">Cancel</span></button>
-                <button @click="confirmDeleteNotification" class="confirm-delete-btn" type="button"><span class="label-button-modal">Delete</span></button>
+                <button @click="closeDeleteModal" class="cancel-btn" type="button"><span class="label-button-modal">Cancelar</span></button>
+                <button @click="confirmDeleteNotification" class="confirm-delete-btn" type="button"><span class="label-button-modal">Borrar</span></button>
               </div>
             </div>
           </div>
