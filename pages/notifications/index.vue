@@ -41,11 +41,14 @@
 
       <div v-if="isLoggedIn" class="notifications-container">
         <div class="notifications-header">
-          <div class="header-top">
-            <h1 class="title-primary">Notifications</h1>
-            <p class="title-secondary">Stay informed about new content from the people and shows you follow.</p>
+          <div class="header-top" style="display: flex; align-items: center;">
+            <h1 class="title-primary" style="margin: 0;">Notifications</h1>
           </div>
-          
+
+          <p class="title-secondary">
+            Stay informed about new content from the people and shows you follow.<button @click="openHowItWorksModal" class="help-icon-button"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg></button>
+          </p>
+
           <div class="header-actions">
             <button 
               @click="openFollowingModal" 
@@ -84,6 +87,9 @@
           v-if="showFollowingModal" 
           @close="showFollowingModal = false"
           @unfollow-updated="handleUnfollowUpdated" />
+        <HowItWorksModal 
+          v-if="showHowItWorksModal" 
+          @close="showHowItWorksModal = false" />
         </div>
 
         <div v-if="loading" class="loader">
@@ -125,7 +131,7 @@
             <div class="notification-content">
               <div class="notification-text">
                 <div class="notification-title">
-                  <strong>{{ notification.person_name }}</strong> <span class="has-release">has a new release</span>
+                  <strong>{{ notification.person_name }}</strong> <span class="has-release">has a new release </span>
                 </div>
                 <div class="notification-media">
                   {{ notification.media_title }}
@@ -237,10 +243,12 @@
 <script>
 import supabase from '@/services/supabase';
 import FollowingModal from '~/components/FollowingModal.vue';
+import HowItWorksModal from '~/components/HowItWorksModal.vue';
 
 export default {
   components: {
-    FollowingModal
+    FollowingModal,
+    HowItWorksModal
   },
   data() {
     return {
@@ -255,6 +263,7 @@ export default {
       followsApiUrl: 'https://entercinema-follows-rust.vercel.app',
       showFollowingModal: false,
       totalFollowingCount: 0,
+      showHowItWorksModal: false,
       animatingRead: null,
       currentPage: 1,
       perPage: 50,
@@ -472,6 +481,10 @@ export default {
 
       openFollowingModal() {
         this.showFollowingModal = true;
+      },
+
+      openHowItWorksModal() {
+        this.showHowItWorksModal = true;
       },
 
       handleUnfollowUpdated() {
@@ -1771,5 +1784,36 @@ button {
 .label-button-modal {
   margin: 0 auto !important;
   position: relative !important;
+}
+
+.header-subtitle {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+}
+
+.help-icon-button {
+  background: none;
+  border: none;
+  padding: 0 0.3rem;
+  margin: 0 0.2rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  position: relative;
+  top: -1px;
+}
+
+.help-icon-button:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+.help-icon-button svg {
+  display: block;
 }
 </style>
