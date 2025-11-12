@@ -22,7 +22,7 @@
             <h4>Seguir a personas</h4>
             <p>Navega al perfil de cualquier actor, director, guionista o creador y haz clic en el botón "Seguir" para comenzar a recibir notificaciones. Se te notificará al instante sobre su trabajo reciente de los últimos 30 días, además de todos los próximos proyectos programados para estrenarse en los próximos 5 años. Nuestro sistema de notificaciones realiza comprobaciones automáticas cada 6 horas para asegurarse de que nunca te pierdas un anuncio.</p>
             <div :class="$style.guideImage">
-              <img src="~/static/add-person.gif" alt="Guía para seguir a una persona">
+              <img src="~/static/add-person.png" alt="Guía para seguir a una persona">
             </div>
           </div>
 
@@ -30,7 +30,7 @@
             <h4>Seguir series de TV</h4>
             <p>Accede a la página de cualquier serie de TV y haz clic en el botón "Seguir episodios" para suscribirte a las notificaciones de episodios. Recibirás alertas oportunas de los episodios que se emitan dentro de un período de 7 días antes y después de su fecha de estreno programada. Esta función es ideal para mantenerse al día con las series en emisión sin perderse nuevos episodios. El sistema realiza actualizaciones automáticas cada 6 horas para mantener tus notificaciones al día.</p>
             <div :class="$style.guideImage">
-              <img src="~/static/add-tv-show.gif" alt="Guía para seguir una serie de TV">
+              <img src="~/static/add-tv-show.png" alt="Guía para seguir una serie de TV">
             </div>
           </div>
         </div>
