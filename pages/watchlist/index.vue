@@ -204,99 +204,6 @@
           </div>
         </div>
     </section>
-    
-    <div class="modal-overlay" v-if="ratedItemsModalVisible">
-      <div class="rated-items-modal">
-        <div class="modal-header">
-          <h3 class="title-primary">Mis Valoraciones</h3>
-          <button class="close-btn" @click="closeRatedItemsModal">&times;</button>
-        </div>
-        <div class="tab-controls">
-          <button 
-            class="tab-btn" 
-            :class="{ active: ratedItemsTab === 'movies' }" 
-            @click="ratedItemsTab = 'movies'"
-          >
-            <span style="position:relative; margin :0 auto;">Películas</span>
-          </button>
-          <button 
-            class="tab-btn" 
-            :class="{ active: ratedItemsTab === 'tv' }" 
-            @click="ratedItemsTab = 'tv'"
-          >
-          <span style="position:relative; margin :0 auto;">Series de TV</span>
-          </button>
-        </div>
-        <div class="rated-items-content">
-          <div v-if="filteredRatedItems.length === 0" class="empty-state">
-            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-            </svg>
-            <p>No has valorado ningún {{ ratedItemsTab === 'movies' ? 'película' : 'serie' }} todavía.</p>
-          </div>
-          <div v-else class="rated-items-list">
-            <div v-for="(item, index) in filteredRatedItems" :key="index" class="rated-item">
-              <img :src="item.details.posterForDb" alt="Poster" class="rated-item-poster">
-              <div class="rated-item-info">
-                <h4 class="rated-item-title">{{ item.details.nameForDb }}</h4>
-                <div class="rated-item-meta">
-                  <span>{{ item.details.yearStartForDb }}</span>
-                  <div class="rated-item-rating">
-                    <template v-if="editingRating === index">
-                      <div class="rating-edit-controls">
-                        <select v-model="tempRating" class="rating-select">
-                          <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-                        </select>
-                        <button @click="saveRating(item)" class="edit-btn save-btn" title="Guardar">✓</button>
-                        <button @click="cancelEditRating" class="edit-btn cancel-btn" title="Cancelar">×</button>
-                      </div>
-                    </template>
-                    <template v-else>
-                      <div 
-                        class="rating-badge editable" 
-                        @click="startEditRating(index, item)"
-                        :title="ratingDescriptions[item.details.userRatingForDb - 1]"
-                      >
-                        {{ item.details.userRatingForDb }}
-                      </div>
-                    </template>
-                  </div>
-                </div>
-                
-                <div class="rated-item-review-container">
-                  <template v-if="editingReview === index">
-                    <div class="review-edit-container">
-                      <textarea 
-                        v-model="tempReview" 
-                        class="review-textarea" 
-                        rows="4"
-                        maxlength="500"
-                        placeholder="Escribe tu reseña aquí..."
-                      ></textarea>
-                      <div class="review-btn-container">
-                        <button @click="saveReview(item)" class="edit-btn-rvw save-btn">Guardar</button>
-                        <button @click="cancelEditReview" class="edit-btn-rvw cancel-btn">Cancelar</button>
-                      </div>
-                    </div>
-                  </template>
-                  <template v-else>
-                    <div v-if="item.details.userReview" class="rated-item-review">
-                      {{ item.details.userReview }}
-                    </div>
-                    <div v-else class="rated-item-review" style="font-style: italic; opacity: 0.7;">
-                      No has escrito una reseña todavía.
-                    </div>
-                    <button @click="startEditReview(index, item)" class="edit-review-btn">
-                      {{ item.details.userReview ? 'Editar' : 'Añadir' }}
-                    </button>
-                  </template>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <div v-if="filtersModalVisible" class="modal-overlay" @click="closeFiltersModal">
       <div class="filters-modal" @click.stop>
@@ -479,18 +386,8 @@ export default {
       genres: [],
       years: [],
       resizeObserver: null,
-      ratedItemsModalVisible: false,
-      ratedItemsTab: 'movies',
-      editingRating: null,
-      editingReview: null,
-      tempRating: 1,
-      tempReview: '',
-      currentEditItem: null,
-      ratingModalVisible: false,
-      currentRatingItem: null,
       selectedRating: 0,
       hoverRating: 0,
-      userReview: '',
       ratingDescriptions: [
         'Terrible, una completa pérdida de tiempo',
         'Muy mala, difícil de ver',
@@ -548,7 +445,7 @@ export default {
         window.addEventListener('resize', this.handleResize);
       }
     });
-
+    this.$root.$on('rated-items-updated', this.checkData);
     await this.fetchAndStoreSeriesDetails();
   },
 
@@ -558,6 +455,7 @@ export default {
     } else {
       window.removeEventListener('resize', this.handleResize);
     }
+    this.$root.$off('rated-items-updated', this.checkData);
   },
   
   methods: {
@@ -1032,132 +930,9 @@ export default {
     },
 
     showRatedItems() {
-      this.ratedItemsModalVisible = true;
+      this.$root.$emit('show-rated-modal');
     },
     
-    closeRatedItemsModal() {
-      this.ratedItemsModalVisible = false;
-      this.cancelEditRating();
-      this.cancelEditReview();
-    },
-    
-    startEditRating(index, item) {
-      if (!item || !item.details) return;
-      
-      this.editingRating = index;
-      this.currentEditItem = item;
-      this.tempRating = parseInt(item.details.userRatingForDb) || 1;
-    },
-    
-    cancelEditRating() {
-      this.editingRating = null;
-      this.currentEditItem = null;
-      this.tempRating = 1;
-    },
-    
-    async saveRating(item) {
-      if (!item || !item.details) return;
-      
-      try {
-        const { typeForDb, idForDb } = item.details;
-        const itemKey = `${typeForDb}/${idForDb}`;
-
-        const { data: favoritesData, error } = await supabase
-          .from('favorites')
-          .select('favorites_json')
-          .eq('user_email', this.userEmail);
-          
-        if (error) throw new Error('Error fetching favorites: ' + error.message);
-        if (!favoritesData || !favoritesData.length) return;
-        
-        const favoritesObject = favoritesData[0].favorites_json || {};
-        const itemType = typeForDb === 'tv' ? 'tv' : 'movies';
-        
-        if (!favoritesObject[itemType]) return;
-
-        const updatedItems = favoritesObject[itemType].map(favItem => {
-          const favItemKey = Object.keys(favItem)[0];
-          if (favItemKey === itemKey) {
-            favItem[favItemKey].details.userRatingForDb = this.tempRating.toString();
-          }
-          return favItem;
-        });
-        
-        favoritesObject[itemType] = updatedItems;
-
-        const { error: updateError } = await supabase
-          .from('favorites')
-          .update({ favorites_json: favoritesObject })
-          .eq('user_email', this.userEmail);
-          
-        if (updateError) throw new Error('Error updating rating: ' + updateError.message);
-
-        item.details.userRatingForDb = this.tempRating.toString();
-        this.cancelEditRating();
-
-        await this.checkData();
-      } catch(error) {
-        console.error('Error saving rating:', error);
-      }
-    },
-    
-    startEditReview(index, item) {
-      this.editingReview = index;
-      this.currentEditItem = item;
-      this.tempReview = item.details.userReview || '';
-    },
-    
-    cancelEditReview() {
-      this.editingReview = null;
-      this.currentEditItem = null;
-      this.tempReview = '';
-    },
-    
-    async saveReview(item) {
-      if (!item || !item.details) return;
-      
-      try {
-        const { typeForDb, idForDb } = item.details;
-        const itemKey = `${typeForDb}/${idForDb}`;
-
-        const { data: favoritesData, error } = await supabase
-          .from('favorites')
-          .select('favorites_json')
-          .eq('user_email', this.userEmail);
-          
-        if (error) throw new Error('Error fetching favorites: ' + error.message);
-        if (!favoritesData || !favoritesData.length) return;
-        
-        const favoritesObject = favoritesData[0].favorites_json || {};
-        const itemType = typeForDb === 'tv' ? 'tv' : 'movies';
-        
-        if (!favoritesObject[itemType]) return;
-
-        const updatedItems = favoritesObject[itemType].map(favItem => {
-          const favItemKey = Object.keys(favItem)[0];
-          if (favItemKey === itemKey) {
-            favItem[favItemKey].details.userReview = this.tempReview.trim();
-          }
-          return favItem;
-        });
-        
-        favoritesObject[itemType] = updatedItems;
-
-        const { error: updateError } = await supabase
-          .from('favorites')
-          .update({ favorites_json: favoritesObject })
-          .eq('user_email', this.userEmail);
-          
-        if (updateError) throw new Error('Error updating review: ' + updateError.message);
-
-        item.details.userReview = this.tempReview.trim();
-        this.cancelEditReview();
-        
-        await this.checkData();
-      } catch(error) {
-        console.error('Error saving review:', error);
-      }
-    },
     handleResize() {
       this.calculateItemsPerRow();
       this.adjustItemsPerPage();
@@ -2087,20 +1862,7 @@ export default {
     padding: 20px;
     font-family: 'Roboto', 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
   }
-  
-  .rated-items-modal {
-    width: 100%;
-    max-width: 850px;
-    height: auto;
-    max-height: 90vh;
-    background: linear-gradient(to bottom right, #092739, #000000);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-  }
-  
+
   .modal-header {
     display: flex;
     align-items: center;
@@ -2147,15 +1909,6 @@ export default {
     color: #fff;
   }
   
-  .tab-controls {
-    display: flex;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    text-align: center;
-    position: relative;
-    padding-left: 10px;
-  
-  }
-  
   .tab-btn {
     flex: 1;
     background: transparent;
@@ -2191,68 +1944,6 @@ export default {
     background: #8BE9FD;
   }
   
-  .rated-items-content {
-    padding: 20px;
-    overflow-y: auto;
-    flex: 1;
-  }
-  
-  .rated-items-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 10px 0;
-  }
-  
-  .rated-item {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 15px;
-    overflow: hidden;
-    border: 0.5px solid #8AE8FC;
-    transition: transform 0.2s ease;
-    position: relative;
-  }
-  
-  .rated-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
-  }
-  
-  .rated-item-poster {
-    width: 100%;
-    aspect-ratio: 2/3;
-    object-fit: cover;
-  }
-  
-  .rated-item-info {
-    padding: 12px;
-  }
-  
-  .rated-item-title {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: #fff;
-    margin: 0 0 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  .rated-item-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.7);
-  }
-  
-  .rated-item-rating {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  
   .rating-badge {
     background: #8BE9FD;
     color: #000;
@@ -2264,60 +1955,6 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  
-  .rated-item-review-container {
-    position: relative;
-    margin-top: 10px;
-  }
-  
-  .rated-item-review {
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.8);
-    max-height: 80px;
-    overflow-y: auto;
-    padding-right: 5px;
-    line-height: 1.4;
-  }
-  
-  .edit-review-btn {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    background: transparent;
-    border: none;
-    color: #8BE9FD;
-    font-size: 1.1rem;
-    cursor: pointer;
-    padding: 3px 6px;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
-  
-  .rated-item-review-container:hover .edit-review-btn {
-    opacity: 1;
-  }
-  
-  .review-edit-container {
-    margin-top: 10px;
-  }
-  
-  .review-textarea {
-    width: 100%;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    border-radius: 4px;
-    padding: 8px;
-    font-size: 1.2rem;
-    resize: vertical;
-  }
-  
-  .review-btn-container {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 8px;
-    gap: 8px;
   }
   
   .rating-badge.editable {
@@ -2398,19 +2035,7 @@ export default {
     background: rgba(255, 0, 0, 0.4);
   }
   
-  .rated-item-review::-webkit-scrollbar {
-    width: 4px;
-  }
-  
-  .rated-item-review::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-  }
-  
-  .rated-item-review::-webkit-scrollbar-thumb {
-    background: rgba(139, 233, 253, 0.5);
-    border-radius: 2px;
-  }
-  
+
   .empty-state {
     display: flex;
     flex-direction: column;
@@ -2434,19 +2059,6 @@ export default {
   }
   
   @media (max-width: 768px) {
-    .rated-items-modal {
-      max-width: 100%;
-      height: 90vh;
-    }
-    
-    .rated-items-list {
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-    
-    .rated-item-title {
-      font-size: 1.3rem;
-    }
-    
     .rated-items-btn {
       right: 30%;
     }
