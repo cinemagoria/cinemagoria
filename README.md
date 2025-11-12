@@ -29,6 +29,16 @@ The platform integrates data from **TMDB**, **MDBList**, and **JustWatch** to de
 * **Pagination** for large collections  
 * **Quick add/remove** functionality  
 
+#### Personalized Notifications
+
+* **Real-time updates** about new releases from followed actors, directors, writers, and creators  
+* **Smart filtering** between unread and all notifications  
+* **Rich notifications** with poster images, character information, and release dates  
+* **Following management** with unified view of all followed people and TV shows  
+* **Mark as read/unread** functionality for organizing notifications  
+* **Bulk actions** to mark all notifications as read  
+* **Paginated history** to browse past notifications  
+
 #### Release Tracking
 
 * **Daily movie release calendar** with navigation  
@@ -99,7 +109,7 @@ EnterCinema supports two authentication methods:
 #### Search System
 
 The search engine processes queries with **intelligent typo correction**.  
-When users enter misspelled terms, the system displays a **“Did you mean?” suggestion** with the corrected query — ensuring seamless discovery.
+When users enter misspelled terms, the system displays a **"Did you mean?" suggestion** with the corrected query — ensuring seamless discovery.
 
 #### Watchlist Management
 
@@ -118,6 +128,12 @@ The **AI assistant** operates in two modes:
 
 Results include **contextual carousels** of related content.
 
+#### Notifications System
+
+A **personalized notification feed** keeps users informed about new content from followed actors, directors, writers, and TV show creators.  
+Users can **follow/unfollow** entertainment industry professionals and receive **real-time updates** when they have new movie releases, TV show episodes, or other projects.  
+The system includes **filtering options** to view only unread notifications and **bulk management tools** for efficient organization.
+
 #### Release Calendar
 
 An interactive **timeline interface** displays **upcoming movie releases** and **TV episode air dates**.  
@@ -128,7 +144,7 @@ Users can browse **day-by-day** to plan their viewing schedule.
 ### User Interface
 
 The platform features a **responsive design** optimized for **desktop and mobile**.  
-Navigation is handled through a **persistent bottom bar** with sections for **Home**, **Movies**, **Advanced Search**, **Upcoming**, **AI Assistant**, and **Watchlist**.  
+Navigation is handled through a **persistent bottom bar** with sections for **Home**, **Movies**, **Advanced Search**, **Notifications**, **AI Assistant**, and **Watchlist**.  
 A **global search bar** and **user menu** are accessible from the header.
 
 ---
@@ -151,3 +167,5 @@ For more information, see the [**Terms and Conditions**](https://entercinema.com
 
 Your feedback is valuable!  
 If you encounter any issues or have suggestions for improvements, please create a new issue in this [**GitHub repository**](https://github.com/imprvhub/entercinema/issues/new).
+
+---
