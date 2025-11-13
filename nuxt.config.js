@@ -1,26 +1,19 @@
 export default {
-  // https://nuxtjs.org/deployments/netlify/
   target: "static",
-
   ssr: false,
-
-  // Define the source directory explicitly
   srcDir: __dirname,
-
   generate: {
     fallback: true,
   },
-
-  // Headers of the page
   head: {
-    title: "EnterCinema: Fast-track your entertainment picks",
+    title: "EnterCinema: The moment you discover what to watch.",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
         hid: "description",
         name: "description",
-        content: "Fast-track your entertainment picks.",
+        content: "The moment you discover what to watch.",
       },
       { hid: "author", name: "author", content: "ivanluna.dev" },
       { hid: "og:locale", property: "og:locale", content: "en_GB" },
@@ -28,96 +21,134 @@ export default {
       {
         hid: "og:description",
         property: "og:description",
-        content: "Fast-track your entertainment picks.",
+        content: "The moment you discover what to watch.",
       },
       { hid: "og:type", property: "og:type", content: "website" },
       {
         hid: "og:url",
         property: "og:url",
-        content: "https://ivanluna.dev/",
+        content: "https://entercinema.com/",
       },
-
+      {
+        hid: "og:image",
+        property: "og:image",
+        content: "https://entercinema.com/icon-512x512.png",
+      },
+      { name: "theme-color", content: "#03496B" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+      { name: "apple-mobile-web-app-title", content: "EnterCinema" },
     ],
     link: [
       { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32.png" },
+      { rel: "icon", type: "image/png", sizes: "192x192", href: "/icon-192x192.png" },
+      { rel: "apple-touch-icon", href: "/favicon-180-precomposed.png" },
+      { rel: "apple-touch-icon", sizes: "57x57", href: "/favicon-57.png" },
+      { rel: "apple-touch-icon", sizes: "60x60", href: "/favicon-60.png" },
+      { rel: "apple-touch-icon", sizes: "72x72", href: "/favicon-72.png" },
+      { rel: "apple-touch-icon", sizes: "76x76", href: "/favicon-76.png" },
+      { rel: "apple-touch-icon", sizes: "114x114", href: "/favicon-114-precomposed.png" },
+      { rel: "apple-touch-icon", sizes: "120x120", href: "/favicon-120-precomposed.png" },
+      { rel: "apple-touch-icon", sizes: "144x144", href: "/favicon-144-precomposed.png" },
+      { rel: "apple-touch-icon", sizes: "152x152", href: "/favicon-152-precomposed.png" },
+      { rel: "apple-touch-icon", sizes: "180x180", href: "/favicon-180-precomposed.png" },
+      { rel: "manifest", href: "/manifest.json" },
       {
         rel: "stylesheet",
         href: "//fonts.googleapis.com/css?family=Roboto:300,400,500",
       },
     ],
+    script: [
+      {
+        src: "https://script.peekvisor.com/hello.js",
+      }
+    ],
   },
-
-  // Global CSS
   css: ["@/assets/css/global.scss"],
-
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     "~/plugins/lazyload.js",
     "~/plugins/filters.js",
     { src: "~/plugins/ga.js", ssr: false },
   ],
-
-  // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
-
-  // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
-  buildModules: [
-    // ESLint temporalmente desactivado para permitir hot-reloading
-    // "@nuxtjs/eslint-module",
-  ],
-
+  buildModules: [],
   modules: ["@nuxtjs/dotenv", "@nuxtjs/axios", "@nuxtjs/pwa"],
-
-  // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     baseURL: "/",
   },
-
-
-
-  // PWA module configuration: https://go.nuxtjs.dev/pwa
+  serverMiddleware: [
+    { path: '/api/imdb-rating', handler: '~/api/imdb-rating.js' }
+  ],
   pwa: {
     manifest: {
       lang: "en",
       name: "EnterCinema",
       short_name: "EnterCinema",
-      description: "Fast-track your entertainment picks.",
+      description: "The moment you discover what to watch.",
       theme_color: "#03496B",
-
+      background_color: "#ffffff",
+      display: "standalone",
+      start_url: "/",
+      icons: [
+        {
+          src: "/icon-192x192.png",
+          sizes: "192x192",
+          type: "image/png",
+          purpose: "any"
+        },
+        {
+          src: "/icon-192x192.png",
+          sizes: "192x192",
+          type: "image/png",
+          purpose: "maskable"
+        },
+        {
+          src: "/icon-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "any"
+        },
+        {
+          src: "/icon-512x512.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "maskable"
+        }
+      ]
     },
+    icon: false,
+    workbox: {
+      enabled: false
+    }
   },
-
-  // Build Configuration: https://go.nuxtjs.dev/config-build
   loaders: {
     cssModules: {
       camelCase: true,
       localIdentName: "[local]_[hash:base64:5]",
     },
   },
-
   vue: {
     config: {
       productionTip: false,
       devtools: false,
     },
   },
-
   env: {
+    IMDB_DB_URL: process.env.IMDB_DB_URL,
+    IMDB_DB_TOKEN: process.env.IMDB_DB_TOKEN,
+    MDBLIST_API: process.env.MDBLIST_API,
     FRONTEND_URL: process.env.FRONTEND_URL || "https://entercinema.com",
     API_URL: process.env.API_URL || "https://entercinema-drf.vercel.app",
     API_KEY: process.env.API_KEY || "",
     API_LANG: process.env.API_LANG || "en",
     API_COUNTRY: process.env.API_COUNTRY || "en",
-    SUPABASE_URL: process.env.SUPABASE_URL || "https://lamskoiorahedpvfkvav.supabase.co",
+    SUPABASE_URL: process.env.SUPABASE_URL,
     SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || "",
     API_YOUTUBE_KEY: process.env.API_YOUTUBE_KEY || "",
     GA: process.env.GA || "",
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || "",
   },
-
-
-  // Customize the progress bar color
   loading: {
     color: "#2196f3",
   },

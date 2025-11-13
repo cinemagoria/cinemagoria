@@ -47,8 +47,11 @@
                   <div :style="{ width: `${stars}%` }" />
                 </div>
 
-                <div v-if="item.vote_count > 0">
-                  {{ item.vote_count | numberWithCommas }} Reviews
+                <div v-if="item.rating_source === 'imdb' && item.imdb_rating">
+                  {{ item.imdb_rating.toFixed(1) }}/10 · {{ (item.imdb_votes || 0).toLocaleString() }} votes (source: IMDb)
+                </div>
+                <div v-else-if="item.vote_average">
+                  {{ item.vote_average.toFixed(1) }}/10 · {{ (item.vote_count || 0).toLocaleString() }} reviews (source: TMDB)
                 </div>
               </div>
 
@@ -414,7 +417,7 @@ export default {
     
     closeRatingModal() {
       this.ratingModalVisible = false;
-      this.activeTab = 'rating'; // Reset to rating tab when closing
+      this.activeTab = 'rating';
     },
     
     setRating(rating) {
@@ -796,72 +799,40 @@ export default {
 
       const index = favoritesJson[category].findIndex(item => item === fullId);
 
+      const favoriteDetails = {
+        nameForDb: this.nameForDb,
+        starsForDb: this.starsForDb,
+        yearStartForDb: this.yearStartForDb,
+        yearEndForDb: this.yearEndForDb,
+        posterForDb: this.posterForDb,
+        idForDb: this.id,
+        genresForDb: this.genresForDb,
+        typeForDb: this.typeForDb,
+        addedAt: this.addedAt,
+        external_ids: this.item.external_ids,
+        rating_source: this.item.rating_source || 'tmdb',
+        imdb_rating: this.item.imdb_rating,
+        imdb_votes: this.item.imdb_votes
+      };
+
       if (index !== -1) {
         if (!Array.isArray(favoritesJson[category][index])) {
           favoritesJson[category][index] = {
-            [fullId]: {
-              details: {
-                nameForDb: this.nameForDb,
-                starsForDb: this.starsForDb,
-                yearStartForDb: this.yearStartForDb,
-                yearEndForDb: this.yearEndForDb,
-                posterForDb: this.posterForDb,
-                idForDb: this.id,
-                genresForDb: this.genresForDb,
-                typeForDb: this.typeForDb,
-                addedAt: this.addedAt,
-              }
-            }
+            [fullId]: { details: favoriteDetails }
           };
         } else {
           const existingItem = favoritesJson[category][index].find(item => Object.keys(item)[0] === fullId);
           if (existingItem) {
-            existingItem[fullId].details = {
-              nameForDb: this.nameForDb,
-              starsForDb: this.starsForDb,
-              yearStartForDb: this.yearStartForDb,
-              yearEndForDb: this.yearEndForDb,
-              posterForDb: this.posterForDb,
-              idForDb: this.id,
-              genresForDb: this.genresForDb,
-              typeForDb: this.typeForDb,
-              userRatingForDb: this.userRatingForDb || '-',
-              addedAt: this.addedAt,
-            };
+            existingItem[fullId].details = favoriteDetails;
           } else {
             favoritesJson[category][index].push({
-              [fullId]: {
-                details: {
-                  nameForDb: this.nameForDb,
-                  starsForDb: this.starsForDb,
-                  yearStartForDb: this.yearStartForDb,
-                  yearEndForDb: this.yearEndForDb,
-                  posterForDb: this.posterForDb,
-                  idForDb: this.id,
-                  genresForDb: this.genresForDb,
-                  typeForDb: this.typeForDb,
-                  addedAt: this.addedAt,
-                }
-              }
+              [fullId]: { details: favoriteDetails }
             });
           }
         }
       } else {
         favoritesJson[category].push({
-          [fullId]: {
-            details: {
-              nameForDb: this.nameForDb,
-              starsForDb: this.starsForDb,
-              yearStartForDb: this.yearStartForDb,
-              yearEndForDb: this.yearEndForDb,
-              posterForDb: this.posterForDb,
-              idForDb: this.id,
-              genresForDb: this.genresForDb,
-              typeForDb: this.typeForDb,
-              userRatingForDb: this.userRatingForDb || '-',
-              addedAt: this.addedAt,
-            }
-          }
+          [fullId]: { details: favoriteDetails }
         });
       }
     },
@@ -875,7 +846,7 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import '~/assets/css/utilities/_variables.scss';
+@use '~/assets/css/utilities/variables' as *;
 .hero {
   display: flex;
   flex-direction: column;
@@ -1103,11 +1074,6 @@ export default {
 
 .meta {
   font-size: 1.4rem;
-
-  @media (min-width: $breakpoint-small) {
-    display: flex;
-  }
-
   @media (min-width: 1650px) {
     font-size: 0.9vw;
   }
@@ -1185,7 +1151,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 1001;
   padding: 20px;
 }
 
@@ -1293,7 +1259,6 @@ export default {
   min-height: 100%;
   background: rgba(0, 0, 0, 0.2);
   position: relative;
-  top: -8px;
 }
 
 .copy-success {
@@ -1443,7 +1408,6 @@ export default {
 
 .close-btn:hover {
   color: #fff;
-  transform: rotate(90deg);
 }
 
 .rating-content {

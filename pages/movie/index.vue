@@ -1,11 +1,12 @@
 <template>
   <main class="main">
+    <UserNav @show-rated-modal="showRatedItems" />
     <div class="tab-controls">
       <button class="tab-btn active">
-        <span>Movies</span>
+        <span class="title-primary" style="font-size:16px;">Movies</span>
       </button>
       <button class="tab-btn" @click="navigateToTvShows">
-        <span>TV Shows</span>
+        <span class="title-primary" style="font-size:16px;">TV Shows</span>
       </button>
     </div>
 
@@ -42,6 +43,7 @@
 </template>
 
 <script>
+import UserNav from '@/components/global/UserNav';
 import { getMovies, getMovie, getListItem } from '~/api';
 import Hero from '~/components/Hero';
 import ListingCarousel from '~/components/ListingCarousel';
@@ -49,6 +51,7 @@ import CustomListingCategoriesMovies from '~/components/CustomListingCategoriesM
 
 export default {
   components: {
+    UserNav,
     Hero,
     ListingCarousel,
     CustomListingCategoriesMovies,
@@ -67,7 +70,10 @@ export default {
   methods: {
     navigateToTvShows() {
       this.$router.push({ name: 'tv' });
-    }
+    },
+    showRatedItems() {
+      this.ratedItemsModalVisible = true;
+    },
   },
 
   computed: {

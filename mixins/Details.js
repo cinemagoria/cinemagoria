@@ -38,13 +38,14 @@ export const genres = {
 export const stars = {
   computed: {
     stars () {
-      if (this.item.vote_average) {
+      if (this.item.imdb_rating && this.item.rating_source === 'imdb') {
+        return this.item.imdb_rating * 10;
+      } else if (this.item.vote_average) {
         return this.item.vote_average * 10;
       }
     },
   },
 };
-
 
 
 

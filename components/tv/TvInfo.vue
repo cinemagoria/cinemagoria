@@ -28,6 +28,15 @@
 
       <div :class="$style.stats">
         <ul class="nolist">
+          <li v-if="showOriginalTitle">
+            <div :class="$style.label">
+              Original Title
+            </div>
+
+            <div :class="$style.value">
+              {{ item.original_name }}
+            </div>
+          </li>
           <li v-if="item.first_air_date">
             <div :class="$style.label">
               First Aired
@@ -118,17 +127,32 @@
               {{ providers.join(', ') }}
             </div>
           </li>
-
         </ul>
       </div>
-
+      <div v-if="isLoggedIn" :class="$style.followSection">
+          <h4 style="font-size: 16px; font-weight:800; text-transform: uppercase;" class="section-title">Notifications</h4>
+          <button 
+            @click="toggleFollowTv" 
+            :class="[$style.followButton, { [$style.following]: isFollowingTv }]"
+            :disabled="followTvLoading">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path v-if="!isFollowingTv" d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path v-if="!isFollowingTv" d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              <path v-if="isFollowingTv" d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path v-if="isFollowingTv" d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              <polyline v-if="isFollowingTv" points="9 11 12 14 22 4" stroke-width="3"/>
+            </svg>
+            {{ isFollowingTv ? 'Following' : 'Follow Episodes' }}
+          </button>
+      </div>
       <div :class="$style.external">
+        
         <ExternalLinks
           :links="item.external_ids" />
       </div>
       <div v-if="reviews && reviews.length" class="reviews-container">
         <br>
-        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reviews ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px;  color: #2897bc;" @click="toggleFullReviews"> WARNING: MAY CONTAIN SPOILERS</span></strong>
+        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reviews ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px;  color: #8AE8FC;" @click="toggleFullReviews"> WARNING: MAY CONTAIN SPOILERS</span></strong>
         <ul class="nolist" v-show="showFullReviews">
             <li v-for="(review, index) in reviews" :key="index" style="margin-top: 3rem;">
                 <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">
@@ -136,12 +160,13 @@
                     <strong style="letter-spacing: 2px; font-size: 14px;">Date:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ formatCreatedAt(review.createdAt) }}</span><br>
                     <strong style="letter-spacing: 2px; font-size: 14px;">Rating:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ review.authorRating }}</span><br>
                     <span style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.content, index, review.showFullContent)"></span><br>
-                    <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #2897bc; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Read More].</span>
+                    <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #8AE8FC; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Read More].</span>
                 </p>
             </li>
         </ul>
     </div>
     </div>
+    
   </div>
 </template>
 
@@ -178,6 +203,8 @@ export default {
     return {
       showFullReviews: false,
       reviews: [], 
+      isFollowingTv: false,
+      followTvLoading: false,
     };
   },
 
@@ -185,12 +212,21 @@ export default {
     reviewCount() {
       return this.reviews.length;
     },
+    isLoggedIn() {
+      return localStorage.getItem('access_token') !== null;
+    },
     poster () {
       if (this.item.poster_path) {
         return `${apiImgUrl}/w370_and_h556_bestv2${this.item.poster_path}`;
       } else {
         return false;
       }
+    },
+    showOriginalTitle() {
+      const localizedTitle = this.item.name;
+      const originalTitle = this.item.original_name;
+      
+      return localizedTitle && originalTitle && localizedTitle !== originalTitle;
     },
   },
 
@@ -203,8 +239,62 @@ export default {
     this.reviews = this.reviewsProp || [];
   },
 
+  mounted() {
+    if (this.isLoggedIn) {
+      this.checkIfFollowingTv();
+    }
+  },
 
   methods: {
+    async checkIfFollowingTv() {
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail) return;
+      
+      try {
+        const response = await fetch(`https://entercinema-follows-rust.vercel.app/tv-follows/list?user_email=${encodeURIComponent(userEmail)}`);
+        if (!response.ok) return;
+        
+        const data = await response.json();
+        if (data.success && data.tv_follows) {
+          this.isFollowingTv = data.tv_follows.some(f => f.tv_id === this.item.id);
+        }
+      } catch (error) {
+        console.error('Error checking TV follow status:', error);
+      }
+    },
+
+    async toggleFollowTv() {
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail || this.followTvLoading) return;
+      
+      this.followTvLoading = true;
+      
+      try {
+        if (this.isFollowingTv) {
+          const response = await fetch(`https://entercinema-follows-rust.vercel.app/tv-follows/remove?user_email=${encodeURIComponent(userEmail)}&tv_id=${this.item.id}`, { method: 'DELETE' });
+          if (response.ok) this.isFollowingTv = false;
+        } else {
+          const response = await fetch(`https://entercinema-follows-rust.vercel.app/tv-follows/add`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_email: userEmail,
+              tv_id: this.item.id,
+              tv_name: this.item.name,
+              poster_path: this.item.poster_path || null,
+              overview: this.item.overview || null,
+              vote_average: this.item.vote_average || null,
+              status: this.item.status || null
+            })
+          });
+          if (response.ok) this.isFollowingTv = true;
+        }
+      } catch (error) {
+        console.error('Error toggling TV follow:', error);
+      } finally {
+        this.followTvLoading = false;
+      }
+    },
     toggleFullReviews() {
     this.showFullReviews = !this.showFullReviews;
     },
@@ -270,7 +360,13 @@ export default {
 </script>
 
 <style lang="scss" module>
-@import '~/assets/css/utilities/_variables.scss';
+@use '~/assets/css/utilities/variables' as *;
+
+.info { 
+  background-color: rgba(0, 0, 0, 0.307);
+  border-radius: 10px;
+  padding-bottom: 4rem;
+}
 
 .info {
   @media (min-width: $breakpoint-medium) {
@@ -291,6 +387,10 @@ export default {
   @media (min-width: $breakpoint-large) {
     padding-right: 5rem;
   }
+}
+
+.right {
+  padding-top: 1rem;
 }
 
 .right {
@@ -377,7 +477,7 @@ export default {
   }
 
   a {
-    color: #2897bc;
+    color: #8AE8FC;
     text-decoration: none;
   }
 }
@@ -417,9 +517,53 @@ export default {
     &:hover,
     &:focus {
       svg {
-        fill: $primary-color;
+        fill: $fourth-color;
       }
     }
+  }
+}
+
+.followButton {
+  display: flex;
+  justify-self: start;
+  right:250px;;
+  margin-top: 1rem;
+  gap: 0.8rem;
+  padding: 1rem 2rem;
+  background: rgba(139, 233, 253, 0.1);
+  border: 2px solid #8BE9FD;
+  border-radius: 8px;
+  color: #8BE9FD;
+  font-size: 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  @media (min-width: $breakpoint-large) {
+    font-size: 1.6rem;
+  }
+  
+  &:hover {
+    background: rgba(139, 233, 253, 0.2);
+    transform: translateY(-2px);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.following {
+  background: #8BE9FD;
+  color: #000;
+  
+  &:hover {
+    background: #7AD6E9;
   }
 }
 </style>

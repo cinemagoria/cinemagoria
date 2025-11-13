@@ -1,7 +1,9 @@
 import axios from 'axios';
+
 const apiUrl = 'https://api.themoviedb.org/3';
 export const apiImgUrl = 'https://image.tmdb.org/t/p';
 const EXCLUDED_TV_IDS = [276880];
+
 const lists = {
   movie: [
     { title: 'Relevant Movies', query: 'trending' },
@@ -217,6 +219,43 @@ export function getListItem (type, query) {
   }
 };
 
+export function getIMDbRatingFromDB(imdbId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.get(`/api/imdb-rating/${imdbId}`);
+      resolve(response.data);
+    } catch (error) {
+      console.error('Error fetching IMDb rating:', error);
+      resolve({ found: false });
+    }
+  });
+}
+
+async function enrichWithIMDbRating(item) {
+  if (!item.imdb_id && !item.external_ids?.imdb_id) {
+    item.rating_source = 'tmdb';
+    return item;
+  }
+
+  const imdbId = item.imdb_id || item.external_ids?.imdb_id;
+  
+  try {
+    const imdbData = await getIMDbRatingFromDB(imdbId);
+    if (imdbData.found) {
+      item.imdb_rating = imdbData.score;
+      item.imdb_votes = imdbData.votes;
+      item.rating_source = 'imdb';
+    } else {
+      item.rating_source = 'tmdb';
+    }
+  } catch (error) {
+    console.error("Error enriching with IMDb rating:", error);
+    item.rating_source = 'tmdb';
+  }
+  
+  return item;
+}
+
 export function getMovies (query, page = 1) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/movie/${query}`, {
@@ -225,10 +264,25 @@ export function getMovies (query, page = 1) {
         language: process.env.API_LANG,
         page,
       },
-    }).then((response) => {
+    }).then(async (response) => {
       response.data.results.forEach(item => {
         item.vote_average = parseFloat(item.vote_average).toFixed(1);
       });
+
+      const enrichedResults = await Promise.all(
+        response.data.results.map(async (item) => {
+          const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}`, {
+            params: {
+              api_key: process.env.API_KEY,
+              append_to_response: 'external_ids'
+            }
+          });
+          item.external_ids = detailsResponse.data.external_ids;
+          return enrichWithIMDbRating(item);
+        })
+      );
+
+      response.data.results = enrichedResults;
       resolve(response.data);
     })
       .catch((error) => {
@@ -258,26 +312,48 @@ export function getMovie(id) {
         console.error("Error fetching movie reviews:", error);
       }
 
-      const movieData = {
-        id: responseData.id,
-        original_title: responseData.original_title,
-        poster_path: responseData.poster_path,
-        overview: responseData.overview,
-        genres: responseData.genres,
-        networks: responseData.networks ? responseData.networks : [],
-        release_date: responseData.release_date,
-        status: responseData.status,
-        runtime: responseData.runtime,
-        imdb_id: responseData.external_ids ? responseData.external_ids.imdb_id : null,
-        vote_average: responseData.vote_average,
-      };
-      resolve(responseData); 
+      const imdbId = responseData.external_ids ? responseData.external_ids.imdb_id : null;
+      if (imdbId) {
+        try {
+          const imdbData = await getIMDbRatingFromDB(imdbId);
+          
+          if (imdbData.found) {
+            responseData.imdb_rating = imdbData.score;
+            responseData.imdb_votes = imdbData.votes;
+            responseData.rating_source = 'imdb';
+          } else {
+            responseData.rating_source = 'tmdb';
+          }
+        } catch (error) {
+          console.error("Error fetching IMDb rating:", error);
+          responseData.rating_source = 'tmdb';
+        }
+      } else {
+        responseData.rating_source = 'tmdb';
+      }
+
+      resolve(responseData);
     }).catch((error) => {
       console.error("Error fetching movie data:", error);
       reject(error);
     });
   });
 };
+
+export function getMovieReleaseDates(id) {
+  return new Promise((resolve, reject) => {
+    axios.get(`${apiUrl}/movie/${id}/release_dates`, {
+      params: {
+        api_key: process.env.API_KEY,
+      },
+    }).then((response) => {
+      resolve(response.data.results);
+    }).catch((error) => {
+      console.error("Error fetching movie release dates:", error);
+      reject(error);
+    });
+  });
+}
 
 export function getMovieReviews(id) {
   return new Promise((resolve, reject) => {
@@ -287,7 +363,6 @@ export function getMovieReviews(id) {
       },
     }).then((response) => {
       const reviews = response.data.results;
-      const totalResults = response.data.total_results;
 
       if (reviews && reviews.length > 0) {
         const reviewsData = reviews.map(review => {
@@ -381,10 +456,25 @@ export function getMovieRecommended (id, page = 1) {
         language: process.env.API_LANG,
         page,
       },
-      }).then((response) => {
+      }).then(async (response) => {
         response.data.results.forEach(item => {
           item.vote_average = parseFloat(item.vote_average).toFixed(1);
         });
+
+        const enrichedResults = await Promise.all(
+          response.data.results.map(async (item) => {
+            const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}`, {
+              params: {
+                api_key: process.env.API_KEY,
+                append_to_response: 'external_ids'
+              }
+            });
+            item.external_ids = detailsResponse.data.external_ids;
+            return enrichWithIMDbRating(item);
+          })
+        );
+
+        response.data.results = enrichedResults;
         resolve(response.data);
       })
       .catch((error) => {
@@ -401,12 +491,27 @@ export function getTvShows(query, page = 1) {
         language: process.env.API_LANG,
         page,
       },
-    }).then((response) => {
+    }).then(async (response) => {
       response.data.results = response.data.results.filter(item => !EXCLUDED_TV_IDS.includes(item.id));
       
       response.data.results.forEach(item => {
         item.vote_average = parseFloat(item.vote_average).toFixed(1);
       });
+
+      const enrichedResults = await Promise.all(
+        response.data.results.map(async (item) => {
+          const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}`, {
+            params: {
+              api_key: process.env.API_KEY,
+              append_to_response: 'external_ids'
+            }
+          });
+          item.external_ids = detailsResponse.data.external_ids;
+          return enrichWithIMDbRating(item);
+        })
+      );
+
+      response.data.results = enrichedResults;
       resolve(response.data);
     })
       .catch((error) => {
@@ -433,20 +538,27 @@ export function getTvShow(id) {
         console.error("Error fetching movie providers:", error);
       }
 
-      const tvShowData = {
-        id: responseData.id,
-        original_title: responseData.original_title,
-        poster_path: responseData.poster_path,
-        overview: responseData.overview,
-        release_date: responseData.release_date,
-        genres: responseData.genres,
-        networks: responseData.networks ? responseData.networks : [],
-        status: responseData.status,
-        runtime: responseData.runtime,
-        imdb_id: responseData.external_ids ? responseData.external_ids.imdb_id : null,
-        vote_average: responseData.vote_average,
-      };
-      resolve(responseData); 
+      const imdbId = responseData.external_ids ? responseData.external_ids.imdb_id : null;
+
+      if (imdbId) {
+        try {
+          const imdbData = await getIMDbRatingFromDB(imdbId);  
+          if (imdbData.found) {
+            responseData.imdb_rating = imdbData.score;
+            responseData.imdb_votes = imdbData.votes;
+            responseData.rating_source = 'imdb';
+          } else {
+            responseData.rating_source = 'tmdb';
+          }
+        } catch (error) {
+          console.error("Error fetching IMDb rating:", error);
+          responseData.rating_source = 'tmdb';
+        }
+      } else {
+        responseData.rating_source = 'tmdb';
+      }
+
+      resolve(responseData);
     }).catch((error) => {
       console.error("Error fetching TV show data:", error);
       reject(error);
@@ -462,7 +574,6 @@ export function getTvShowReviews(id) {
       },
     }).then((response) => {
       const reviews = response.data.results;
-      const totalResults = response.data.total_results;
 
       if (reviews && reviews.length > 0) {
         const reviewsData = reviews.map(review => {
@@ -502,10 +613,25 @@ export function getTvShowRecommended (id, page = 1) {
         language: process.env.API_LANG,
         page,
       },
-      }).then((response) => {
+      }).then(async (response) => {
         response.data.results.forEach(item => {
           item.vote_average = parseFloat(item.vote_average).toFixed(1);
         });
+
+        const enrichedResults = await Promise.all(
+          response.data.results.map(async (item) => {
+            const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}`, {
+              params: {
+                api_key: process.env.API_KEY,
+                append_to_response: 'external_ids'
+              }
+            });
+            item.external_ids = detailsResponse.data.external_ids;
+            return enrichWithIMDbRating(item);
+          })
+        );
+
+        response.data.results = enrichedResults;
         resolve(response.data);
       })
       .catch((error) => {
@@ -538,7 +664,7 @@ export function getTrending(media, page = 1) {
         language: process.env.API_LANG,
         page,
       },
-    }).then((response) => {
+    }).then(async (response) => {
       if (media === 'tv') {
         response.data.results = response.data.results.filter(item => !EXCLUDED_TV_IDS.includes(item.id));
       }
@@ -547,6 +673,21 @@ export function getTrending(media, page = 1) {
         item.vote_average = parseFloat(item.vote_average).toFixed(1);
       });
 
+      const enrichedResults = await Promise.all(
+        response.data.results.map(async (item) => {
+          const endpoint = media === 'movie' ? 'movie' : 'tv';
+          const detailsResponse = await axios.get(`${apiUrl}/${endpoint}/${item.id}`, {
+            params: {
+              api_key: process.env.API_KEY,
+              append_to_response: 'external_ids'
+            }
+          });
+          item.external_ids = detailsResponse.data.external_ids;
+          return enrichWithIMDbRating(item);
+        })
+      );
+
+      response.data.results = enrichedResults;
       resolve(response.data);
     })
       .catch((error) => {
@@ -554,7 +695,6 @@ export function getTrending(media, page = 1) {
       });
   });
 };
-
 
 export function getMediaByGenre (media, genre, page = 1) {
   return new Promise((resolve, reject) => {
@@ -565,10 +705,25 @@ export function getMediaByGenre (media, genre, page = 1) {
         with_genres: genre,
         page,
       },
-      }).then((response) => {
+      }).then(async (response) => {
         response.data.results.forEach(item => {
           item.vote_average = parseFloat(item.vote_average).toFixed(1);
         });
+
+        const enrichedResults = await Promise.all(
+          response.data.results.map(async (item) => {
+            const detailsResponse = await axios.get(`${apiUrl}/${media}/${item.id}`, {
+              params: {
+                api_key: process.env.API_KEY,
+                append_to_response: 'external_ids'
+              }
+            });
+            item.external_ids = detailsResponse.data.external_ids;
+            return enrichWithIMDbRating(item);
+          })
+        );
+
+        response.data.results = enrichedResults;
         resolve(response.data);
       })
       .catch((error) => {
@@ -640,10 +795,29 @@ export function search (query, page = 1) {
         query,
         page,
       },
-    }).then((response) => {
+    }).then(async (response) => {
       response.data.results.forEach(item => {
         item.vote_average = parseFloat(item.vote_average).toFixed(1);
       });
+
+      const enrichedResults = await Promise.all(
+        response.data.results.map(async (item) => {
+          if (item.media_type === 'movie' || item.media_type === 'tv') {
+            const endpoint = item.media_type === 'movie' ? 'movie' : 'tv';
+            const detailsResponse = await axios.get(`${apiUrl}/${endpoint}/${item.id}`, {
+              params: {
+                api_key: process.env.API_KEY,
+                append_to_response: 'external_ids'
+              }
+            });
+            item.external_ids = detailsResponse.data.external_ids;
+            return enrichWithIMDbRating(item);
+          }
+          return item;
+        })
+      );
+
+      response.data.results = enrichedResults;
       resolve(response.data);
     })
       .catch((error) => {
@@ -651,6 +825,70 @@ export function search (query, page = 1) {
       });
   });
 };
+
+export function get***MovieByImdb(imdbId) {
+  return new Promise((resolve, reject) => {
+    axios.get('https://***.mx/api/v2/list_movies.json', {
+      params: {
+        query_term: imdbId,
+        limit: 1,
+      },
+    }).then((response) => {
+      if (response.data.status === 'ok' && response.data.data.movie_count > 0) {
+        const movie = response.data.data.movies[0];
+        const title = movie.title_long
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-');
+        
+        resolve({
+          slug: `${title}`,
+          url: `https://***.mx/movies/${title}`,
+          found: true
+        });
+      } else {
+        resolve({ found: false });
+      }
+    }).catch((error) => {
+      console.error("Error fetching *** movie:", error);
+      reject(error);
+    });
+  });
+}
+
+export function getMDBListRatings(imdbId, type) {
+  return new Promise((resolve, reject) => {
+    const endpoint = type === 'movie' ? 'movie' : 'show';
+    
+    axios.get(`https://api.mdblist.com/imdb/${endpoint}/${imdbId}`, {
+      params: {
+        apikey: process.env.MDBLIST_API,
+      },
+    }).then((response) => {
+      const ratings = response.data.ratings;
+      const tomatoesRating = ratings?.find(r => r.source === 'tomatoes');
+      
+      if (tomatoesRating && tomatoesRating.value) {
+        let url = '';
+        if (tomatoesRating.url) {
+          url = `https://www.rottentomatoes.com${tomatoesRating.url}`;
+        }
+        
+        resolve({
+          found: true,
+          score: tomatoesRating.value,
+          url: url
+        });
+      } else {
+        resolve({ found: false });
+      }
+    }).catch((error) => {
+      console.error("Error fetching MDBLIST ratings:", error);
+      resolve({ found: false });
+    });
+  });
+}
 
 export function getYouTubeVideo (id) {
   return new Promise((resolve, reject) => {
@@ -668,4 +906,3 @@ export function getYouTubeVideo (id) {
       });
   });
 };
-

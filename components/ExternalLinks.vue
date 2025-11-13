@@ -2,26 +2,6 @@
   <div class="external-links-container">
     <h4 class="section-title">External Links</h4>
     <div class="links-grid">
-      <div v-if="links.imdb_id && (currentPageType === 'movie' || currentPageType === 'tv')" class="link-item">
-        <a
-          :href="***Link"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Watch on ***"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
-            viewBox="0 0 192 192"
-            fill="currentColor"
-            class="link-icon ***-icon"
-          >
-            <path d="M100.242 23.743a6 6 0 0 0-8.485 0L23.743 91.757a6 6 0 0 0 0 8.485l68.014 68.015a6 6 0 0 0 8.485 0l68.015-68.015a6 6 0 0 0 0-8.485l-68.015-68.014ZM80 71.83c0-2.44 2.758-3.86 4.744-2.442l33.838 24.17a3 3 0 0 1 0 4.883l-33.838 24.171C82.758 124.03 80 122.611 80 120.17V71.83Z"/>
-          </svg>
-          <span class="label-style">Watch on ***</span>
-        </a>
-      </div>
 
       <div v-if="links.imdb_id" class="link-item">
         <a
@@ -45,7 +25,7 @@
               d="M22.416 0H1.62C.742.06.06.744 0 1.596V22.38c.06.874.712 1.542 1.555 1.617.015.003.03.003.045.003h20.845A1.727 1.727 0 0 0 24 22.29V1.71C24 .82 23.305.07 22.416 0zM4.792 15.626H2.887V8.26h1.905v7.366zm6.54-.002H9.67v-4.97L9 15.623H7.812l-.698-4.86-.007 4.86H5.44V8.26h2.468c.083.523.16 1.048.23 1.574l.27 1.87.442-3.444h2.483v7.364zm4.977-2.18c0 .655-.044 1.094-.104 1.32-.062.22-.17.4-.326.52-.15.13-.34.218-.57.266-.223.045-.57.075-1.02.075l-.004-.002H11.98V8.26h1.426c.914 0 1.45.047 1.77.128.325.09.575.225.745.42.165.18.273.404.313.645.05.235.076.705.076 1.402v2.588zm4.944.475c0 .45-.045.764-.09.99-.06.224-.195.404-.405.568-.226.166-.48.24-.78.24-.22 0-.5-.06-.68-.136a1.586 1.586 0 0 1-.515-.427l-.116.47H16.95V8.26l-.02-.003h1.8v2.4c.15-.175.315-.31.51-.4.196-.083.466-.127.69-.127.226-.003.45.036.66.115.17.07.32.185.436.33.09.125.15.27.18.42.03.138.044.43.044.87v2.054z"
             />
             <path
-              d="M19.08 11.205c-.12 0-.194.04-.225.12-.03.08-.06.29-.06.624v1.946c0 .324.03.533.06.623.04.086.13.14.226.134.12 0 .272-.047.3-.14.03-.097.046-.32.046-.674l.03-.002v-1.89c0-.303-.015-.508-.060-.603-.044-.1-.195-.14-.315-.14z"
+              d="M19.08 11.205c-.12 0-.194.04-.225.12-.03.08-.06.29-.06.624v1.946c0 .324.03.533.06.623.04.086.13.14.226.134.12 0 .272-.047.3-.14.03-.097.046-.32.046-.674l.03-.002v-1.89c0-.303-.015-.508-.06-.603-.044-.1-.195-.14-.315-.14z"
             />
           </svg>
           <span class="label-style">IMDb</span>
@@ -77,7 +57,24 @@
           <span class="label-style">Letterboxd</span>
         </a>
       </div>
-
+      <div v-if="tomatoMeter.found && (currentPageType === 'movie' || currentPageType === 'tv')" class="link-item">
+        <a
+          :href="tomatoMeter.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Rotten Tomatoes"
+        >
+          <img
+            src="/rotten-tomatoes.svg"
+            alt="***"
+            class="link-icon rotten-tomatoes"
+            width="23"
+            height="23"
+          />
+          <span class="label-style">{{ tomatoMeter.score }}% Tomatometer</span>
+        </a>
+      </div>
+      
       <div v-if="links.imdb_id" class="link-item">
         <a
           :href="`https://trakt.tv/search/imdb?query=${links.imdb_id}`"
@@ -106,6 +103,45 @@
             </g>
           </svg>
           <span class="label-style">Trakt</span>
+        </a>
+      </div>
+
+      <div v-if="links.imdb_id && (currentPageType === 'movie' || currentPageType === 'tv')" class="link-item">
+        <a
+          :href="***Link"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Watch on ***"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 192 192"
+            fill="currentColor"
+            class="link-icon ***-icon"
+          >
+            <path d="M100.242 23.743a6 6 0 0 0-8.485 0L23.743 91.757a6 6 0 0 0 0 8.485l68.014 68.015a6 6 0 0 0 8.485 0l68.015-68.015a6 6 0 0 0 0-8.485l-68.015-68.014ZM80 71.83c0-2.44 2.758-3.86 4.744-2.442l33.838 24.17a3 3 0 0 1 0 4.883l-33.838 24.171C82.758 124.03 80 122.611 80 120.17V71.83Z"/>
+          </svg>
+          <span class="label-style">Watch on ***</span>
+        </a>
+      </div>
+
+      <div v-if="***Url && currentPageType === 'movie'" class="link-item">
+        <a
+          :href="***Url"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Visit ***"
+        >
+          <img
+            src="/***-logo.svg"
+            alt="***"
+            class="link-icon ***-logo"
+            width="23"
+            height="23"
+          />
+          <span class="label-style">Watch on ***</span>
         </a>
       </div>
       
@@ -181,6 +217,8 @@
 </template>
 
 <script>
+import { get***MovieByImdb, getMDBListRatings } from '@/api/index';
+
 export default {
   props: {
     media: {
@@ -192,6 +230,17 @@ export default {
       type: Object,
       required: true,
     },
+  },
+
+  data() {
+    return {
+      ***Url: null,
+      tomatoMeter: {
+        found: false,
+        score: null,
+        url: ''
+      }
+    };
   },
 
   computed: {
@@ -212,6 +261,49 @@ export default {
       return `***://detail/${contentType}/${this.links.imdb_id}`;
     },
   },
+
+  mounted() {
+    if (this.links.imdb_id && this.currentPageType === 'movie') {
+      this.fetch***Url();
+    }
+    if (this.links.imdb_id && (this.currentPageType === 'movie' || this.currentPageType === 'tv')) {
+      this.fetchTomatoMeter();
+    }
+  },
+
+  methods: {
+    async fetch***Url() {
+      try {
+        const result = await get***MovieByImdb(this.links.imdb_id);
+        if (result.found) {
+          this.***Url = result.url;
+        }
+      } catch (error) {
+        console.error('Error fetching *** URL:', error);
+      }
+    },
+    async fetchTomatoMeter() {
+      try {
+        const result = await getMDBListRatings(this.links.imdb_id, this.currentPageType);
+        if (result.found) {
+          this.tomatoMeter = result;
+        }
+      } catch (error) {
+        console.error('Error fetching Tomato Meter:', error);
+      }
+    }
+  },
+
+  watch: {
+    'links.imdb_id': function(newVal) {
+      if (newVal && this.currentPageType === 'movie') {
+        this.fetch***Url();
+      }
+      if (newVal && (this.currentPageType === 'movie' || this.currentPageType === 'tv')) {
+        this.fetchTomatoMeter();
+      }
+    }
+  }
 };
 </script>
 
@@ -280,6 +372,10 @@ export default {
   text-overflow: ellipsis;
 }
 
+.label-style:hover {
+  color: #8AE8FC;
+}
+
 @media (max-width: 480px) {
   .links-grid {
     grid-template-columns: 1fr 1fr;
@@ -293,5 +389,20 @@ export default {
 .***-icon {
   width: 28px !important;
   height: 28px !important;
+}
+
+.***-logo {
+  filter: brightness(0) invert(1);
+  width: 23px !important;
+  height: 23px !important;
+}
+
+.rotten-tomatoes {
+  width: 23px !important;
+  height: 23px !important;
+}
+
+.tomato-icon {
+  color: #FA320A;
 }
 </style>

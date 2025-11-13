@@ -1,4 +1,4 @@
-@import '~/assets/css/utilities/_variables.scss';
+@use '~/assets/css/utilities/variables' as *;
 
 .button,
 a.button {
@@ -16,7 +16,7 @@ a.button {
   &:hover,
   &:focus {
     background-color: #18729f;
-
+    border: 0.5px solid #8AE8FC;
   }
 
   &:disabled,

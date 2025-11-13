@@ -1,19 +1,5 @@
 <template>
   <footer :class="$style.footer">
-    <div class="language-selector" style="position: relative; margin: 0 auto;">
-          <div class="selected-language" @click="toggleLanguageMenu">
-            <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="width: 16px; height: 16px; margin-bottom: 3px; margin-right: 4px;">
-            <span class="language">English</span>  
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" style="width: 24px; height: 24px; left: -70px;">
-              <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
-            </svg>
-          </div>
-          <div ref="languageMenu" class="language-menu" :style="{ display: showLanguageMenu ? 'block' : 'none' }">
-            <label class="menu-label1" @click="changeLanguage('spanish')">
-              <span>Español</span>
-            </label>
-          </div>
-    </div>
     <br>
     <p>All Data is provided by 
         <a target="_blank" href="https://www.themoviedb.org/" rel="noopener">
@@ -22,7 +8,7 @@
         and 
         <a target="_blank" href="https://www.justwatch.com/" rel="noopener" style="margin-top: 2px;">JustWatch</a>.
     </p>
-    <p> By using this site you agree to and accept our <strong><a href="/terms">User Agreement and Terms</a></strong>.</p>
+    <p> By using this site you agree to and accept our <strong><a href="/usage-policies">Usage Policies & Privacy Agreement</a></strong>.</p>
     <p>&copy; {{ new Date().getFullYear() }}<a target="_blank" href="mailto:hello@entercinema.com" rel="noopener"> ENTERCINEMA.COM</a> </p>
 
     <ul class="nolist">
@@ -56,34 +42,8 @@
   </footer>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      showLanguageMenu: false,
-      selectedLanguage: 'english',
-    };
-  },
-  methods: {
-    toggleLanguageMenu() {
-      this.showLanguageMenu = !this.showLanguageMenu;
-    },
-    changeLanguage() {
-      const currentPath = this.$route.path;
-      const currentOrigin = window.location.origin;
-      const spanishUrl = `${currentOrigin.replace(
-        '://',
-        '://es.'
-      )}${currentPath}`;
-      window.location.href = spanishUrl;
-    }
-
-    },
-};
-</script>
-
 <style lang="scss" module>
-@import '~/assets/css/utilities/_variables.scss';
+@use '~/assets/css/utilities/variables' as *;
 
 .footer {
   font-size: 11px;
@@ -142,60 +102,6 @@ export default {
     }
   }
 }
-.language-selector {
-  position: relative;
-  cursor: pointer;
-}
 
-
-.selected-language {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.world-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 0.5rem;
-}
-
-.language {
-  margin-right: 0.5rem;
-}
-
-.arrow-icon {
-  width: 16px;
-  height: 16px;
-  margin-left: 0.5rem;
-}
-
-.language-menu {
-  left: 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-top: none;
-  border-radius: 0 0 5px 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  display: none;
-}
-
-.language-menu label {
-  display: block;
-  padding: 0.5rem;
-  cursor: pointer;
-}
-
-.language-menu label:hover {
-  background-color: #f5f5f5;
-}
-
-.language-menu.active {
-  display: block;
-}
 </style>
 

@@ -1,5 +1,6 @@
 <template>
   <main class="main">
+    <UserNav @show-rated-modal="showRatedItems" />
     <TopNav
       :title="metaTitle" />
 
@@ -15,6 +16,10 @@
       <Credits
         v-if="showCredits"
         :people="item.credits.cast" />
+    </template>
+
+    <template v-if="activeMenu === 'releases'">
+      <MovieReleases :item="item" />
     </template>
 
     <template v-if="activeMenu === 'videos' && showVideos">
@@ -44,12 +49,14 @@
 </template>
 
 <script>
+import UserNav from '@/components/global/UserNav';
 import { apiImgUrl, getMovie, getMovieRecommended } from '~/api';
 import { name, yearStart } from '~/mixins/Details';
 import TopNav from '~/components/global/TopNav';
 import Hero from '~/components/Hero';
 import MediaNav from '~/components/MediaNav';
 import MovieInfo from '~/components/movie/MovieInfo';
+import MovieReleases from '~/components/movie/MovieReleases';
 import Videos from '~/components/Videos';
 import Images from '~/components/Images';
 import Credits from '~/components/Credits';
@@ -57,10 +64,12 @@ import ListingCarousel from '~/components/ListingCarousel';
 
 export default {
   components: {
+    UserNav,
     TopNav,
     Hero,
     MediaNav,
     MovieInfo,
+    MovieReleases,
     Videos,
     Images,
     Credits,
@@ -93,6 +102,7 @@ export default {
       menu: [],
       activeMenu: 'overview',
       recommended: null,
+      reviews: null,
     };
   },
 
@@ -157,6 +167,9 @@ export default {
   },
 
   methods: {
+    showRatedItems() {
+      this.ratedItemsModalVisible = true;
+    },
     truncate (string, length) {
       return this.$options.filters.truncate(string, length);
     },
@@ -165,6 +178,8 @@ export default {
       const menu = [];
 
       menu.push('Overview');
+
+      menu.push('Releases');
 
       if (this.showVideos) menu.push('Videos');
 
@@ -187,3 +202,14 @@ export default {
   },
 };
 </script>
+<style>
+@media (max-width: 1200px) {
+  .user-nav-container {
+    top: 7px !important;
+  }
+
+.container {
+  bottom: 10px !important;
+}
+}
+</style>
