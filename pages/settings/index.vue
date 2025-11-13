@@ -57,7 +57,7 @@
                   <line x1="8" y1="2" x2="8" y2="6"/>
                   <line x1="3" y1="10" x2="21" y2="10"/>
                 </svg>
-                <span>Fecha de Registro</span>
+                <span>Fecha de registro</span>
               </div>
               <div class="detail-value">{{ joinedDate }}</div>
             </div>
@@ -69,7 +69,7 @@
                   <polyline points="10 17 15 12 10 7"/>
                   <line x1="15" y1="12" x2="3" y2="12"/>
                 </svg>
-                <span>Último Login</span>
+                <span>Último inicio de sesión</span>
               </div>
               <div class="detail-value">{{ lastLoginDate }}</div>
             </div>
