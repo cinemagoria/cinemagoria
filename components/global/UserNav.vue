@@ -1,5 +1,14 @@
 <template>
   <div class="user-nav-container">
+    <button 
+      @click="openAiChat" 
+      class="ask-ai-button" 
+      :aria-label="currentLanguage === 'es' ? 'Preguntar a IA' : 'Ask AI'" 
+      :title="currentLanguage === 'es' ? 'Preguntar a IA' : 'Ask AI'">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="spark-icon">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+      </svg>
+    </button>
     <div v-if="isLoggedIn" class="user-nav-logged-in">
       <div class="avatar-container" @click="toggleMenu">
         <img :src="userAvatar" alt="User Avatar" class="avatar">
@@ -67,27 +76,32 @@
     </div>
 
     <div v-else class="user-nav-logged-out">
-      <div class="sign-in-container">
-        <span class="menu-label sign-in-label" @click="goToLogin">Iniciar Sesión</span>
-        <img src="~/static/icon-login.png" alt="Login Icon" class="sign-in-icon" @click="goToLogin">
-      </div>
+      <button class="sign-in-button" @click="goToLogin" aria-label="Sign In">
+        <img src="~/static/icon-login.png" alt="Login Icon" class="sign-in-icon">
+        <span class="sign-in-label">Iniciar Sesión</span>
+      </button>
     </div>
+
+    <ChatbotModal ref="chatbotModalRef" />
   </div>
 </template>
 
 <script>
 import supabase from '@/services/supabase';
+import ChatbotModal from './ChatbotModal.vue';
 
 export default {
   name: 'UserNav',
-  
+  components: {
+    ChatbotModal
+  },
   data() {
     return {
       isLoggedIn: false,
       userEmail: '',
       userAvatar: '/avatars/avatar-ss0.png',
       isMenuOpen: false,
-      currentLanguage: 'en',
+      currentLanguage: 'es',
     };
   },
 
@@ -202,8 +216,23 @@ export default {
     signOut() {
       localStorage.removeItem('email');
       localStorage.removeItem('access_token');
-      window.location.href = 'https://entercinema.com/';
+      window.location.href = '/';
     },
+
+    openAiChat() {
+      if (this.$refs.chatbotModalRef) {
+        const isAuthenticated = typeof window !== 'undefined' && localStorage.getItem('access_token');
+        
+        if (isAuthenticated) {
+          this.$refs.chatbotModalRef.open();
+        } else {
+          this.$refs.chatbotModalRef.chatBotOpen = true;
+          this.$refs.chatbotModalRef.chatBotMinimized = false;
+          this.$refs.chatbotModalRef.clearMinimizedState();
+          this.$refs.chatbotModalRef.checkMobileDevice();
+        }
+      }
+    }
   },
 };
 </script>
@@ -214,6 +243,57 @@ export default {
   top: 7px;
   right: 3%;
   z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  top: -13px;
+}
+
+.ask-ai-button {
+  background: linear-gradient(135deg, #000000 0%, #14232A 100%);
+  border: 1px solid #8BE9FD;
+  cursor: pointer;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 14px;
+  transition: all 0.3s ease;
+  height: 40px;
+}
+
+.ask-ai-button:hover {
+  background: linear-gradient(135deg, #0a1419 0%, #1a2f3a 100%);
+  border-color: #8BE9FD;
+  box-shadow: 0 0 15px rgba(139, 233, 253, 0.3);
+  transform: scale(1.05);
+}
+
+.ask-ai-button:hover .spark-icon,
+.ask-ai-button:hover .ai-label {
+  color: #8BE9FD;
+  stroke: #8BE9FD;
+  transform: scale(1.15);
+}
+
+.spark-icon {
+  width: 18px;
+  height: 18px;
+  color: white;
+  stroke: white;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.ai-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: white;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .user-nav-logged-in,
@@ -229,8 +309,8 @@ export default {
 .avatar {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.654);
+  border-radius: 14px;
+  border: 1px solid #8BE9FD;
   box-shadow: 0 5px 32px 0 rgba(31, 97, 135, 0.37);
   object-fit: cover;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -241,31 +321,54 @@ export default {
   box-shadow: 0 8px 40px 0 rgba(31, 97, 135, 0.5);
 }
 
-.sign-in-container {
-  cursor: pointer;
-  padding: 8px 15px;
-  border-radius: 5px;
-  position: relative;
+.sign-in-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 40px;
+  height: 40px;
   top: 6px;
-  transition: background-color 0.2s ease;
+  border-radius: 14px;
+  border: 1px solid #8BE9FD;
+  box-shadow: 0 5px 32px 0 rgba(31, 97, 135, 0.37);
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 0;
 }
 
-.sign-in-container:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+.sign-in-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 40px 0 rgba(31, 97, 135, 0.5);
 }
 
-/* Sign In Label - visible on desktop */
-.sign-in-label {
-  display: inline-block;
-}
-
-/* Sign In Icon - hidden on desktop */
 .sign-in-icon {
-  display: none;
   width: 20px;
   height: 20px;
-  position: relative;
   bottom: 2px;
+}
+
+.sign-in-label {
+  display: none;
+  margin-top: 2px;
+  color: #ffffff;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+@media screen and (min-width: 769px) {
+  .sign-in-button {
+    width: auto;
+    padding: 0 15px;
+  }
+
+  .sign-in-label {
+    display: inline-block;
+  }
 }
 
 .dropdown-menu {
@@ -354,7 +457,6 @@ export default {
   color: #ff6b6b;
 }
 
-/* Language Switch Styles */
 .language-switch {
   position: relative;
 }
@@ -397,14 +499,23 @@ export default {
     width: 200px;
   }
 
-  /* Hide label on mobile */
-  .sign-in-label {
-    display: none;
+  .spark-icon {
+    width: 16px;
+    height: 16px;
   }
 
-  /* Show icon on mobile */
-  .sign-in-icon {
-    display: inline-block;
+  .ai-label {
+    font-size: 10px;
+  }
+}
+
+@media screen and (min-width: 1201px) {
+  .ask-ai-button {
+    margin-top: 20px;
+  }
+
+  .avatar {
+    margin-top: 20px;
   }
 }
 </style>

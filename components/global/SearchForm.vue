@@ -8,7 +8,7 @@
             <button 
               v-if="!isRootPage"
               type="button" 
-              style="padding: 0; background-color: black; top: -4px; left: 5px; position: relative;"
+              style="padding: 0; background-color: black; margin-top: 15px; left: 5px; position: relative;"
               aria-label="Go Back" 
               class="button"
               @click="goBack">
@@ -292,9 +292,7 @@ button {
   display: flex;
   align-items: center;
   padding: 0 1.5rem;
-  background: none;
-  margin-top: 20px;
-  
+  background: none;  
 }
 
 @media screen and (max-width: 600px) {
