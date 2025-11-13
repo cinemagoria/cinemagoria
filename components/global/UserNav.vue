@@ -118,9 +118,28 @@ export default {
     if (this.isLoggedIn && email) {
       await this.fetchUserAvatar(email);
     }
+
+    this.$nextTick(() => {
+      document.addEventListener('click', this.handleClickOutside);
+    });
+  },
+
+  beforeDestroy() {
+    document.removeEventListener('click', this.handleClickOutside);
   },
 
   methods: {
+    handleClickOutside(event) {
+      const dropdownMenu = this.$el.querySelector('.dropdown-menu');
+      const avatarContainer = this.$el.querySelector('.avatar-container');
+      
+      if (this.isMenuOpen && 
+          dropdownMenu && 
+          !dropdownMenu.contains(event.target) && 
+          !avatarContainer.contains(event.target)) {
+        this.isMenuOpen = false;
+      }
+    },
     async fetchUserAvatar(email) {
       try {
         const { data, error } = await supabase
