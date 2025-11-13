@@ -13,21 +13,6 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd" fill="#999"><path d="M24 22h-24v-20h24v20zm-1-19h-22v18h22v-18zm-1 16h-19l4-7.492 3 3.048 5.013-7.556 6.987 12zm-11.848-2.865l-2.91-2.956-2.574 4.821h15.593l-5.303-9.108-4.806 7.243zm-4.652-11.135c1.38 0 2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5-2.5-1.12-2.5-2.5 1.12-2.5 2.5-2.5zm0 1c.828 0 1.5.672 1.5 1.5s-.672 1.5-1.5 1.5-1.5-.672-1.5-1.5.672-1.5 1.5-1.5z"/></svg>
         </span>
       </div>
-      <div style="position: relative; top: 20px; margin: 0 auto; justify-self: center;" v-if="isLoggedIn" :class="$style.followSection">
-          <button 
-            @click="toggleFollowTv" 
-            :class="[$style.followButton, { [$style.following]: isFollowingTv }]"
-            :disabled="followTvLoading">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path v-if="!isFollowingTv" d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-              <path v-if="!isFollowingTv" d="M13.73 21a2 2 0 0 1-3.46 0"/>
-              <path v-if="isFollowingTv" d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-              <path v-if="isFollowingTv" d="M13.73 21a2 2 0 0 1-3.46 0"/>
-              <polyline v-if="isFollowingTv" points="9 11 12 14 22 4" stroke-width="3"/>
-            </svg>
-            {{ isFollowingTv ? 'Siguiendo' : 'Seguir Episodios' }}
-          </button>
-      </div>
     </div>
 
     <div :class="$style.right">
@@ -144,7 +129,24 @@
           </li>
         </ul>
       </div>
+      <div v-if="isLoggedIn" :class="$style.followSection">
+          <h4 style="font-size: 16px; font-weight:800; text-transform: uppercase;" class="section-title">Notificaciones</h4>
+          <button 
+            @click="toggleFollowTv" 
+            :class="[$style.followButton, { [$style.following]: isFollowingTv }]"
+            :disabled="followTvLoading">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path v-if="!isFollowingTv" d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path v-if="!isFollowingTv" d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              <path v-if="isFollowingTv" d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path v-if="isFollowingTv" d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              <polyline v-if="isFollowingTv" points="9 11 12 14 22 4" stroke-width="3"/>
+            </svg>
+            {{ isFollowingTv ? 'Siguiendo' : 'Seguir Episodios' }}
+          </button>
+      </div>
       <div :class="$style.external">
+        
         <ExternalLinks
           :links="item.external_ids" />
       </div>
@@ -184,6 +186,7 @@
           </ul>
       </div>
     </div>
+    
   </div>
 </template>
 
@@ -606,13 +609,11 @@ export default {
   display: relative !important;
 }
 
-.followSection {
-  margin-bottom: 1.5rem;
-}
-
 .followButton {
-  display: inline-flex;
-  align-items: center;
+  display: flex;
+  justify-self: start;
+  right:250px;;
+  margin-bottom: 4rem;
   gap: 0.8rem;
   padding: 1rem 2rem;
   background: rgba(139, 233, 253, 0.1);
