@@ -1,7 +1,6 @@
 <template>
   <nav :class="$style.nav">
     <ul class="nolist">
-      <!-- Home Link -->
       <li>
         <nuxt-link
           exact
@@ -11,7 +10,6 @@
           <img src="~static/icon-medium.png" alt="Home" style="width: 32px; height: 32px;" />
         </nuxt-link>
       </li>
-      <!-- Movies Link -->
       <li>
         <nuxt-link
           :to="{ name: 'movie' }"
@@ -26,7 +24,6 @@
           </svg>
         </nuxt-link>
       </li>
-      <!-- Advanced Search Link -->
       <li>
         <nuxt-link
           :to="{ name: 'advancedsearch' }"
@@ -35,22 +32,6 @@
           <img :src="require('~/static/icon-advancedsearch.png')" alt="Advanced Search" :class="$style.navIcon" />
         </nuxt-link>
       </li>
-      
-      <!-- Ask AI Link -->
-      <li>
-        <button @click="openAiChat" aria-label="Ask AI" title="Ask AI Assistant">
-          <span :class="$style.sparkIconWrapper">
-            <div v-if="hasMinimizedConversations" :class="$style.conversationIndicator"></div>
-            
-            <!-- SVG Spark Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" :class="[$style.navIcon, 'size-6']">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
-            </svg>
-          </span>
-        </button>
-      </li>
-
-      <!-- Notifications Link -->
       <li>
         <nuxt-link
           :to="{ name: 'notifications' }"
@@ -66,8 +47,6 @@
           </div>
         </nuxt-link>
       </li>
-      
-      <!-- Login/Watchlist Links -->
       <li v-if="!isLoggedIn">
         <nuxt-link exact to="/login" aria-label="Sign In" @click.native="clearSearchBeforeNavigate">
           <img :src="require('~/static/icon-login.png')" alt="Login" :class="$style.navIcon" />
@@ -93,14 +72,14 @@ export default {
     ChatbotModal
   },
   data() {
-  return {
-    authToken: null,
-    authInterval: null,
-    hasMinimizedConversations: false,
-    unreadCount: 0,
-    notificationInterval: null
-  };
-},
+    return {
+      authToken: null,
+      authInterval: null,
+      hasMinimizedConversations: false,
+      unreadCount: 0,
+      notificationInterval: null
+    };
+  },
 
   computed: {
     ...mapState('search', ['searchOpen']),
@@ -424,7 +403,16 @@ a.nuxt-link-active {
   }
 
   svg g { 
-    stroke: $primary-color; 
+    stroke: #8BE9FD; 
+  }
+
+  svg {
+    color: #8BE9FD;
+    stroke: #8BE9FD;
+  }
+
+  img { 
+    filter: brightness(0) saturate(100%) invert(85%) sepia(37%) saturate(300%) hue-rotate(145deg) brightness(105%) contrast(98%);
   }
 }
 </style>
