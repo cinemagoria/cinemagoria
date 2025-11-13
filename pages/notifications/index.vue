@@ -99,8 +99,8 @@
                   {{ notification.media_title }}
                 </div>
                 
-                <div v-if="notification.poster_path" class="notification-poster">
-                  <img :src="`https://image.tmdb.org/t/p/w185${notification.poster_path}`" :alt="notification.media_title">
+                <div v-if="getFallbackImageUrl(notification)" class="notification-poster">
+                  <img :src="getFallbackImageUrl(notification)" :alt="notification.media_title">
                 </div>
                 
                 <div v-if="notification.character" class="notification-character">
@@ -251,6 +251,7 @@ export default {
       isLoadingPage: false,
       deleteModalVisible: false,
       notificationToDelete: null,
+      tvFollowsCache: [],
     };
   },
 
@@ -269,6 +270,7 @@ export default {
       this.userAvatar = await this.getUserAvatar();
       await this.fetchNotifications();
       await this.fetchFollowingCount();
+      await this.fetchTvFollowsForCache();
     } else {
       this.loading = false;
       const hasAttemptedLogin = sessionStorage.getItem('notifications_login_attempted');
@@ -284,6 +286,20 @@ export default {
   },
 
   methods: {
+    async fetchTvFollowsForCache() {
+      if (!this.userEmail) return;
+      
+      try {
+        const response = await fetch(`${this.followsApiUrl}/tv-follows/list?user_email=${encodeURIComponent(this.userEmail)}`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          this.tvFollowsCache = data.tv_follows || [];
+        }
+      } catch (error) {
+        console.error('Error fetching TV follows for cache:', error);
+      }
+    },
     showRatedItems() {
       this.ratedItemsModalVisible = true;
     },
@@ -405,6 +421,30 @@ export default {
       return `hace ${Math.floor(diff / 604800)}sem`;
     },
 
+    getFallbackImageUrl(notification) {
+      if (notification.poster_path) {
+        return `https://image.tmdb.org/t/p/w185${notification.poster_path}`;
+      }
+      
+      if (notification.media_type === 'episode' && notification.person_id) {
+        return this.getSeriesPosterUrl(notification.person_id);
+      }
+      
+      if (notification.profile_path) {
+        return `https://image.tmdb.org/t/p/w185${notification.profile_path}`;
+      }
+      
+      return null;
+    },
+
+    getSeriesPosterUrl(tvId) {
+      const tvFollow = this.tvFollowsCache.find(f => f.tv_id === tvId);
+      if (tvFollow && tvFollow.poster_path) {
+        return `https://image.tmdb.org/t/p/w185${tvFollow.poster_path}`;
+      }
+      return null;
+    },
+
     async fetchFollowingCount() {
         if (!this.userEmail) return;
 
@@ -444,6 +484,7 @@ export default {
       handleUnfollowUpdated() {
         this.fetchFollowingCount();
         this.fetchNotifications();
+        this.fetchTvFollowsForCache();
       },
 
       async markAsRead(notificationId) {
