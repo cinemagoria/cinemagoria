@@ -7,7 +7,7 @@
           :to="{ name: 'index' }"
           aria-label="Home"
           @click.native="clearSearchBeforeNavigate">
-          <img src="~static/icon-medium.png" alt="Home" style="width: 32px; height: 32px;" />
+          <img src="~static/icon-medium.png" alt="Home" style="width: 32px; height: 32px;" class="home-icon" />
         </nuxt-link>
       </li>
       <li>
@@ -411,7 +411,7 @@ a.nuxt-link-active {
     stroke: #8BE9FD;
   }
 
-  img { 
+  img:not(.home-icon) { 
     filter: brightness(0) saturate(100%) invert(85%) sepia(37%) saturate(300%) hue-rotate(145deg) brightness(105%) contrast(98%);
   }
 }
