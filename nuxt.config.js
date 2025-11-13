@@ -6,7 +6,7 @@ export default {
     fallback: true,
   },
   head: {
-    title: "EnterCinema: Your Portal to Entertainment Discovery",
+    title: "EnterCinema: The moment you discover what to watch.",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -143,7 +143,7 @@ export default {
     API_KEY: process.env.API_KEY || "",
     API_LANG: process.env.API_LANG || "en",
     API_COUNTRY: process.env.API_COUNTRY || "en",
-    SUPABASE_URL: process.env.SUPABASE_URL || "https://lamskoiorahedpvfkvav.supabase.co",
+    SUPABASE_URL: process.env.SUPABASE_URL,
     SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || "",
     API_YOUTUBE_KEY: process.env.API_YOUTUBE_KEY || "",
     GA: process.env.GA || "",

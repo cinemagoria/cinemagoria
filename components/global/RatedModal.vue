@@ -144,7 +144,6 @@ export default {
         'Excellent, a great experience',
         'Masterpiece, must-see'
       ],
-      // Rating modal state
       ratingModalVisible: false,
       currentRatingItem: null,
       selectedRating: 0,
@@ -268,7 +267,6 @@ export default {
       }
     },
     
-    // Rating modal methods
     openRatingModal(item) {
       this.currentRatingItem = item;
       
