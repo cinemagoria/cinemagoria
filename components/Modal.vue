@@ -292,7 +292,7 @@ body.modal-open {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 999;
+  z-index: 1001;
   overflow-x: hidden;
   overflow-y: auto;
   cursor: pointer;
