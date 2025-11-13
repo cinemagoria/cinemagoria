@@ -13,7 +13,7 @@ export default {
       {
         hid: "description",
         name: "description",
-        content: "Your Portal to Entertainment Discovery.",
+        content: "The moment you discover what to watch.",
       },
       { hid: "author", name: "author", content: "ivanluna.dev" },
       { hid: "og:locale", property: "og:locale", content: "en_GB" },
@@ -21,7 +21,7 @@ export default {
       {
         hid: "og:description",
         property: "og:description",
-        content: "Your Portal to Entertainment Discovery.",
+        content: "The moment you discover what to watch.",
       },
       { hid: "og:type", property: "og:type", content: "website" },
       {
@@ -85,7 +85,7 @@ export default {
       lang: "en",
       name: "EnterCinema",
       short_name: "EnterCinema",
-      description: "Your Portal to Entertainment Discovery.",
+      description: "The moment you discover what to watch.",
       theme_color: "#03496B",
       background_color: "#ffffff",
       display: "standalone",
