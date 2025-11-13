@@ -1426,25 +1426,18 @@ export default {
 
   .pagination {
     display: flex;
-    /* background: black; */
     justify-content: center;
     align-items: center;
-    /* border-radius: 15px; */
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
-    /* border-radius: 15px; */
     width: 97% !important;
     margin: 0 auto;
     background: rgba(82, 71, 71, 0);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur(16px);
     padding: 8px;
-    /* width: 80%; */
-    /* position: relative; */
     gap: 0.5rem;
     border: 0.5px #31414C solid;
-    /* left: -10px; */
-    /* top: 40px; */
     top: 2px;
     position: relative;
     margin-bottom: 0.5rem;
@@ -1452,24 +1445,18 @@ export default {
 
 .pagination-footer {
     display: flex;
-    /* background: black; */
     justify-content: center;
     align-items: center;
-    /* border-radius: 15px; */
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
-    /* border-radius: 15px; */
     width: 97% !important;
     margin: 0 auto;
     background: rgba(16, 20, 33, 0.3);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur(16px);
     padding: 8px;
-    /* width: 80%; */
-    /* position: relative; */
     gap: 0.5rem;
     border: 0.5px #31414C solid;
-    /* left: -10px; */
     top: -10px;
     position: relative;
 }

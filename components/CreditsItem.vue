@@ -117,7 +117,6 @@ export default {
 
 .credits-item__character {
     font-size: 1.2rem;
-    /* margin: 0 auto; */
     position: relative;
     color: #80868b;
     letter-spacing: 0.4px;
