@@ -443,6 +443,11 @@ export default {
       return null;
     },
 
+    goToLogin() {
+        this.$router.push('/login');
+    },
+
+
     async fetchFollowingCount() {
         if (!this.userEmail) return;
 

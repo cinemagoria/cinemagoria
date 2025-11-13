@@ -412,7 +412,7 @@ a.nuxt-link-active {
   }
 
   img:not(.home-icon) { 
-    filter: brightness(0) saturate(100%) invert(85%) sepia(37%) saturate(300%) hue-rotate(145deg) brightness(105%) contrast(98%);
+    filter: brightness(0) saturate(100%) invert(83%) sepia(76%) saturate(618%) hue-rotate(164deg) brightness(96%) contrast(108%);
   }
 }
 </style>
