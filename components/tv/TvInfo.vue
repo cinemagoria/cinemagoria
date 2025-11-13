@@ -613,7 +613,7 @@ export default {
   display: flex;
   justify-self: start;
   right:250px;;
-  margin-bottom: 4rem;
+  margin-top: 1rem;
   gap: 0.8rem;
   padding: 1rem 2rem;
   background: rgba(139, 233, 253, 0.1);
