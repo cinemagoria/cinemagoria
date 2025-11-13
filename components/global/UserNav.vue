@@ -513,8 +513,11 @@ export default {
   .ask-ai-button {
     margin-top: 20px;
   }
-
   .avatar {
+    margin-top: 20px;
+  }
+
+  .user-nav-logged-out {
     margin-top: 20px;
   }
 }
