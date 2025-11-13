@@ -1,4 +1,4 @@
-@import '~/assets/css/utilities/_variables.scss';
+@use '~/assets/css/utilities/variables' as *;
 
 @media (min-width: $breakpoint-large) {
   body {
@@ -14,6 +14,6 @@
   }
 
   @media (min-width: $breakpoint-large) {
-    margin: 5rem;
+    margin: 2rem;
   }
 }

@@ -53,18 +53,22 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~/assets/css/utilities/_variables.scss';
+@use '~/assets/css/utilities/variables' as *;
 
 .credits-item {
   margin-bottom: 2rem;
   line-height: $base-line-height;
+
+  border-radius: 10px;
+  padding-bottom: 0.5rem;
+  position: relative;
 }
 
 .credits-item__img {
   position: relative;
   height: 0;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   padding-top: 150.27%;
   overflow: hidden;
   background-color: $secondary-color;
@@ -113,7 +117,6 @@ export default {
 
 .credits-item__character {
     font-size: 1.2rem;
-    /* margin: 0 auto; */
     position: relative;
     color: #80868b;
     letter-spacing: 0.4px;

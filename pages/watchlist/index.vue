@@ -2,204 +2,150 @@
   <div>
     <main class="main">
       <section class="watchlist-section">
-        <div v-if="isLoggedIn" class="user-profile">
-          <div class="language-selector" style="position: relative; top: 44px; left: -70px;"> 
-            <div class="selected-language" @click="toggleLanguageMenu" >
-              <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
-              <span class="language">En</span>  
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" v-show="showLanguageMenu || selectedLanguage === 'english'" style="width: 24px; height: 24px; left: -70px;">
-                <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
-              </svg>
-            </div>
-            <div ref="languageMenu" class="language-menu">
-              <label class="menu-label1" @click="changeLanguage('spanish')">
-                <span>Español</span>
-              </label>
-            </div>
-          </div>
-          
-          <div class="avatar-container" @click="toggleMenu">
-            <span v-if="userEmail !== 'undefined'" class="user-email">{{ userEmail }}</span>
-            <img :src="userAvatar" alt="User Avatar" class="avatar">
-            <div v-if="isMenuOpen" class="dropdown-menu">
-              <div class="menu-item" @click="goToHome">
-                <svg class="settings-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10" stroke-linejoin="round"><path d="M8.5 23.2H1.3V9L12 .8 22.7 9v14.2h-7.2v-5c0-1.9-1.6-3.4-3.5-3.4s-3.5 1.5-3.5 3.4v5z"/></g></svg>
-                <span class="menu-label1">Home</span>
-              </div>
-              <div class="menu-item" @click="showRatedItems">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                </svg>
-                <span class="menu-label1" style="margin-left: 4px; margin-top: 1px;">Rated</span>
-              </div>
-              <div class="menu-item" @click="goToSettings">
-                <img src="~/static/icon-settings.png" alt="Settings Icon" class="settings-icon">
-                <span class="menu-label1">Settings</span>
-              </div>
-              <div class="menu-item" @click="signOut">
-                <img src="~/static/icon-logout.png" alt="Logout Icon" class="logout-icon">
-                <span class="menu-label2">Log out</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-else class="user-profile-else">
-          <div class="language-selector" style="position: relative;top: -60.2px; left: -57px;">
-            <div class="selected-language" @click="toggleLanguageMenu">
-              <img src="~static/langpicker-icon.png" alt="World icon" class="world-icon" style="margin-bottom: 3px; margin-right: 4px;">
-              <span class="language">En</span>  
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#585858" class="arrow-icon" style="width: 24px; height: 24px; left: -70px;">
-                <path d="M7 10l5 5 5-5z" style="transform: translate(-8px); z-index: 1000;" />
-              </svg>
-            </div>
-            <div ref="languageMenu" class="language-menu" :style="{ display: showLanguageMenu ? 'block' : 'none' }">
-              <label class="menu-label1" @click="changeLanguage('spanish')">
-                <span>Español</span>
-              </label>
-            </div>
-          </div>
-          <div class="avatar-container-else" @click="toggleMenu">
-              <div>
-                <span class="menu-label1" @click="goToLogin">Sign In</span>
-              </div>
-          </div>
-        </div>
+        <UserNav @show-rated-modal="showRatedItems" />
         <br>
         <nav class="navbar">
-          <h1 class="navbar-welcome">Watchlist</h1>
+          <h1 class="title-primary">Watchlist</h1>
         </nav>
-        <!-- <h2 class="text-center" style="color: #acafb5; font-size: 16px; margin-top: 10px; position: relative; text-transform: none; left: -2px; top: -23px;">{{ userFirstName }}</h2> -->
         <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
           <div class="column">
-            <h2 class="text-center" style="color: #acafb5; font-size: 16px;">Favorite {{ filterText }}</h2>
-              <div class="button-container" style="margin-top: 2rem;">
-                <select @change="toggleFilter" class="filter-select">
-                  <option value="movies">&nbsp;&nbsp;&nbsp;Movies</option>
-                  <option value="tvShows">&nbsp;&nbsp;&nbsp;TV Shows</option>
-                </select>
-                <select @change="toggleOrder" class="order-select">
-                  <option value="asc" :selected="orderText === 'Order Asc'">
-                    <span class="order-word">&nbsp;&nbsp;&nbsp;</span> <span class="order-option">Last Added</span>
-                  </option>
-                  <option value="desc" :selected="orderText === 'Order Desc'">
-                    <span class="order-word">&nbsp;&nbsp;&nbsp;</span> <span class="order-option">First Added</span>
-                  </option>
-                </select>
-                <select @change="filterByGenre" class="genre-select">
-                  <option value="">&nbsp;&nbsp;&nbsp;All Genres</option>
-                  <option v-for="genre in uniqueGenres" :key="genre" :value="genre">&nbsp;&nbsp;&nbsp;{{ genre }}</option>
-                </select>
-                <select @change="filterByYear" class="year-select">
-                  <option value="">&nbsp;&nbsp;&nbsp;All Years</option>
-                  <option v-for="range in yearRanges" :key="range" :value="range">&nbsp;&nbsp;&nbsp;{{ range }}</option>
-                </select>
-                <select @change="filterByTmdbRating" class="tmdb-rating-select">
-                  <option value="">&nbsp;&nbsp;&nbsp;All TMDB Ratings</option>
-                  <option value="9-10">&nbsp;&nbsp;&nbsp;TMDB: 9+</option>
-                  <option value="8-8.9">&nbsp;&nbsp;&nbsp;TMDB: 8+</option>
-                  <option value="7-7.9">&nbsp;&nbsp;&nbsp;TMDB: 7+</option>
-                  <option value="6-6.9">&nbsp;&nbsp;&nbsp;TMDB: 6+</option>
-                  <option value="5-5.9">&nbsp;&nbsp;&nbsp;TMDB: 5+</option>
-                  <option value="0-4.9">&nbsp;&nbsp;&nbsp;TMDB: < 5</option>
-                </select>
-                <select @change="filterByUserRating" class="user-rating-select">
-                  <option value="">&nbsp;&nbsp;&nbsp;All User Ratings</option>
-                  <option value="10">&nbsp;&nbsp;&nbsp;My Rating: 10</option>
-                  <option value="9">&nbsp;&nbsp;&nbsp;My Rating: 9</option>
-                  <option value="8">&nbsp;&nbsp;&nbsp;My Rating: 8</option>
-                  <option value="7">&nbsp;&nbsp;&nbsp;My Rating: 7</option>
-                  <option value="6">&nbsp;&nbsp;&nbsp;My Rating: 6</option>
-                  <option value="5">&nbsp;&nbsp;&nbsp;My Rating: 5</option>
-                  <option value="1-4">&nbsp;&nbsp;&nbsp;My Rating: < 5</option>
-                </select>
-                <br>
+            <h2 class="title-secondary" style="color: #acafb5;  font-size: 16px;">Favorite {{ filterText }}</h2>
+              <div class="new-controls-container" style="margin-top: 3rem;">
+              <label class="switch">
+                <input type="checkbox" :checked="filter === 'tvShows'" @change="toggleFilterType">
+                <span>Movies</span>
+                <span>TV Shows</span>
+              </label>
+              
+              <div class="action-buttons">
+                <button class="control-btn" @click="openFiltersModal">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
+                  </svg>
+                  <span class="btn-label">Filters</span>
+                </button>
+
+                <button class="control-btn" @click="toggleOrderMode">
+                  <svg v-if="orderText === 'Order Asc'" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m3 16 4 4 4-4"/>
+                    <path d="M7 20V4"/>
+                    <path d="M17 10V4h-2"/>
+                    <path d="M15 10h4"/>
+                    <rect x="15" y="14" width="4" height="6" ry="2"/>
+                  </svg>
+                  <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m3 16 4 4 4-4"/>
+                    <path d="M7 20V4"/>
+                    <rect x="15" y="4" width="4" height="6" ry="2"/>
+                    <path d="M17 20v-6h-2"/>
+                    <path d="M15 20h4"/>
+                  </svg>
+                  <span class="btn-label">{{ orderText === 'Order Asc' ? 'Latest' : 'Earliest' }}</span>
+                </button>
+              </div>
               </div>
             </div>
-            <div class="pagination" v-if="filteredItems.length > itemsPerPage">
-              <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
-              <button @click="prevPage" :disabled="currentPage === 1"><<</button>
-              <span>
-                <label for="page" style="font-size:13px;">Page</label>
-                <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
-              </span>
-              <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
-              <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
-              <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
+            
+            <div v-if="filteredItems.length === 0 && (selectedGenre || selectedTmdbRating || selectedUserRating || customYearStart || customYearEnd)" class="no-results-state">
+              <img src="~/static/cinema-popcorn.svg" alt="No results" class="no-results-icon">
+              <h3>No Results Found</h3>
+              <p>We couldn't find any content matching your current filters.</p>
+              <p class="suggestion">Try adjusting or clearing some filters to see more results.</p>
+              <button @click="clearAllFilters" class="refine-filters-btn">Clear All Filters</button>
             </div>
-            <div class="movie-grid">
-              <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
-                <div class="card-background">
-                  <div class="user-rating-badge" v-if="item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
-                    @click.stop="showRatedItems"
-                    :class="{ 'has-review': item.details.userReview }" 
-                    :title="item.details.userReview ? 'Has Review' : ''">
-                    {{ item.details.userRatingForDb }}
-                    <span v-if="item.details.userReview" class="review-indicator"></span>
-                  </div>
-                  <div class="user-rating-badge empty" @click.stop="openRatingModal(item)" v-else> 
-                    <span style="font-size: 7px;">Rate</span>
-                  </div>
-                  <a :href="getLink(item)" class="item-link">
-                    <img 
-                      :src="item.details.posterForDb || fallbackImageUrl" 
-                      :onerror="handleImageError" 
-                      alt="Poster" 
-                      class="poster" 
-                    />
-                    <h3>{{ item.details.nameForDb }}</h3>
-                  </a>
-                <p>
-                  {{
-                    item.details.yearStartForDb === item.details.yearEndForDb
-                    ? item.details.yearEndForDb
-                    : (item.details.yearStartForDb + (item.details.yearEndForDb ? `-${item.details.yearEndForDb}` : ''))
-                  }}
-                </p>
+            
+            <div v-else>
+              <div class="pagination" v-if="filteredItems.length > itemsPerPage">
+                <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
+                <button @click="prevPage" :disabled="currentPage === 1"><<</button>
+                <span>
+                  <label for="page" style="font-size:13px;">Page</label>
+                  <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
+                </span>
+                <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
+                <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
+                <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
+              </div>
+              <div class="movie-grid">
+                <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
+                  <div class="card-background">
+                    <div class="user-rating-badge" v-if="item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
+                      @click.stop="openRatingModal(item)"
+                      :class="{ 'has-review': item.details.userReview }" 
+                      :title="item.details.userReview ? 'Has Review' : ''">
+                      {{ item.details.userRatingForDb }}
+                      <span v-if="item.details.userReview" class="review-indicator"></span>
+                    </div>
+                    <div class="user-rating-badge empty" @click.stop="openRatingModal(item)" v-else> 
+                      <span style="font-size: 7px;">Rate</span>
+                    </div>
+                    <a :href="getLink(item)" class="item-link">
+                      <img 
+                        :src="item.details.posterForDb || fallbackImageUrl" 
+                        :onerror="handleImageError" 
+                        alt="Poster" 
+                        class="poster" 
+                      />
+                      <h3>{{ item.details.nameForDb }}</h3>
+                    </a>
+                  <p>
+                    {{
+                      item.details.yearStartForDb === item.details.yearEndForDb
+                      ? item.details.yearEndForDb
+                      : (item.details.yearStartForDb + (item.details.yearEndForDb ? `-${item.details.yearEndForDb}` : ''))
+                    }}
+                  </p>
 
-                <div class="card__content">
-                  <div v-if="item.details.starsForDb" class="card__stars">
-                    <div :style="{ width: `${calculateStarsWidth(formatRating(item.details.starsForDb))}%` }"></div>
+                  <div class="card__content">
+                    <div v-if="item.details.imdb_rating || item.details.starsForDb" class="card__stars">
+                      <div :style="{ width: `${calculateStarsWidth(item.details.imdb_rating ? item.details.imdb_rating : formatRating(item.details.starsForDb))}%` }"></div>
+                    </div>
+                    <div class="card___rating">
+                      <p v-if="item.details.rating_source === 'imdb' && item.details.imdb_rating">
+                        {{ item.details.imdb_rating.toFixed(1) }} IMDb
+                      </p>
+                      <p v-else-if="item.details.starsForDb">
+                        {{ formatRating(item.details.starsForDb) }} TMDB
+                      </p>
+                      <p v-else>Not specified.</p>
+                    </div>
                   </div>
-                  <div class="card___rating">
-                    <p v-if="item.details.starsForDb">{{ formatRating(item.details.starsForDb) }}</p>
-                    <p v-else>Not specified.</p>
-                  </div>
+
+                  <svg fill="84E1F6" height="26px" width="26px" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 446.04" @click="removeFavorite(item)" class="delete-icon">
+                      <defs>
+                          <style>
+                              .cls-1 {
+                                  fill: #84E1F6;
+                                  stroke: black;
+                                  stroke-width: 4px;
+                              }
+                          </style>
+                      </defs>
+                      <title>Remove from Watchlist.</title>
+                      <path class="cls-1" d="M252.63 71.41C285.88 36.72 309.17 6.75 360.44.86c96.22-11.07 184.7 87.44 136.11 184.43-.43.85-.88 1.71-1.33 2.58-27.38-23.8-63.15-38.22-102.25-38.22-43.06 0-82.07 17.47-110.29 45.7-28.23 28.23-45.7 67.23-45.7 110.29s17.47 82.06 45.7 110.29l.15.15-30.2 29.96-59.71-57.51C121.09 319.33 3.95 232.26.09 124.36-2.62 48.79 57.02.37 125.62 1.27c61.31.8 87.08 31.31 127.01 70.14zm187.32 214.31c5.88-.05 10.08-.59 9.97 6.7l-.28 23.61c.04 7.62-2.37 9.65-9.51 9.56h-94.32c-7.14.09-9.56-1.94-9.51-9.56l-.29-23.61c-.1-7.29 4.1-6.75 9.97-6.7h93.97zm-46.98-99.11c32.87 0 62.63 13.32 84.17 34.86S512 272.77 512 305.64c0 32.88-13.33 62.64-34.86 84.17-21.54 21.54-51.31 34.86-84.17 34.86-32.88 0-62.64-13.32-84.17-34.86-21.54-21.54-34.87-51.3-34.87-84.17 0-32.88 13.33-62.63 34.86-84.17 21.54-21.54 51.31-34.86 84.18-34.86zm71.79 47.23c-18.37-18.37-43.75-29.74-71.79-29.74-28.04 0-53.43 11.37-71.81 29.74-18.37 18.37-29.73 43.76-29.73 71.8s11.36 53.43 29.74 71.8c18.37 18.37 43.75 29.74 71.8 29.74 28.03 0 53.42-11.37 71.8-29.74 18.37-18.37 29.73-43.76 29.73-71.8s-11.36-53.43-29.74-71.8z"/>
+                  </svg>
                 </div>
-
-                <svg fill="84E1F6" height="26px" width="26px" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 446.04" @click="removeFavorite(item)" class="delete-icon">
-                    <defs>
-                        <style>
-                            .cls-1 {
-                                fill: #84E1F6;
-                                stroke: black;
-                                stroke-width: 4px;
-                            }
-                        </style>
-                    </defs>
-                    <title>Remove from Watchlist.</title>
-                    <path class="cls-1" d="M252.63 71.41C285.88 36.72 309.17 6.75 360.44.86c96.22-11.07 184.7 87.44 136.11 184.43-.43.85-.88 1.71-1.33 2.58-27.38-23.8-63.15-38.22-102.25-38.22-43.06 0-82.07 17.47-110.29 45.7-28.23 28.23-45.7 67.23-45.7 110.29s17.47 82.06 45.7 110.29l.15.15-30.2 29.96-59.71-57.51C121.09 319.33 3.95 232.26.09 124.36-2.62 48.79 57.02.37 125.62 1.27c61.31.8 87.08 31.31 127.01 70.14zm187.32 214.31c5.88-.05 10.08-.59 9.97 6.7l-.28 23.61c.04 7.62-2.37 9.65-9.51 9.56h-94.32c-7.14.09-9.56-1.94-9.51-9.56l-.29-23.61c-.1-7.29 4.1-6.75 9.97-6.7h93.97zm-46.98-99.11c32.87 0 62.63 13.32 84.17 34.86S512 272.77 512 305.64c0 32.88-13.33 62.64-34.86 84.17-21.54 21.54-51.31 34.86-84.17 34.86-32.88 0-62.64-13.32-84.17-34.86-21.54-21.54-34.87-51.3-34.87-84.17 0-32.88 13.33-62.63 34.86-84.17 21.54-21.54 51.31-34.86 84.18-34.86zm71.79 47.23c-18.37-18.37-43.75-29.74-71.79-29.74-28.04 0-53.43 11.37-71.81 29.74-18.37 18.37-29.73 43.76-29.73 71.8s11.36 53.43 29.74 71.8c18.37 18.37 43.75 29.74 71.8 29.74 28.03 0 53.42-11.37 71.8-29.74 18.37-18.37 29.73-43.76 29.73-71.8s-11.36-53.43-29.74-71.8z"/>
-                </svg>
-
+                </div>
               </div>
+              <br>
+              <div class="pagination-footer" v-if="filteredItems.length > itemsPerPage">
+                <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
+                <button @click="prevPage" :disabled="currentPage === 1"><<</button>
+                <span>
+                  <label for="page" style="font-size:13px;">Page</label>
+                  <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
+                </span>
+                <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
+                <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
+                <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
               </div>
-            </div>
-            <br>
-            <div class="pagination-footer" v-if="filteredItems.length > itemsPerPage">
-              <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
-              <button @click="prevPage" :disabled="currentPage === 1"><<</button>
-              <span>
-                <label for="page" style="font-size:13px;">Page</label>
-                <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
-              </span>
-              <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
-              <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
-              <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
             </div>
         </div>
         
         <div v-else>
           <p style="text-align: center;">No favorites added yet.</p>
         </div>
+        
         <div v-if="ratingModalVisible" class="modal-overlay">
           <div class="rating-modal">
             <div class="modal-header">
@@ -238,124 +184,141 @@
                 <div class="char-count">{{ userReview.length }}/500</div>
               </div>
 
-              <button
-                @click="saveRatingAndReview"
-                class="save-btn"
-                :disabled="selectedRating === 0"
-              >
-                <span style="position:relative; margin:0 auto;">Save</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-    <!-- Rated Items Modal -->
-    <div v-if="ratedItemsModalVisible" class="modal-overlay">
-      <div class="rated-items-modal">
-        <div class="modal-header">
-          <h3>Your Rated Picks</h3>
-          <button class="close-btn" @click="closeRatedItemsModal">×</button>
-        </div>
-        
-        <div class="tab-controls">
-          <button 
-            :class="['tab-btn', { active: ratedItemsTab === 'movies' }]" 
-            @click="ratedItemsTab = 'movies'"
-          >
-
-          <span style="position:relative; margin :0 auto;">Movies</span>
-          </button>
-          <button 
-            :class="['tab-btn', { active: ratedItemsTab === 'tv' }]" 
-            @click="ratedItemsTab = 'tv'"
-          >
-            <span style="position:relative; margin :0 auto;">TV Shows</span>
-          </button>
-        </div>
-        
-        <div class="rated-items-content">
-          <div v-if="filteredRatedItems && filteredRatedItems.length > 0" class="rated-items-list">
-            <div v-for="(item, index) in filteredRatedItems" :key="index" class="rated-item">
-              <img :src="item.details.posterForDb" class="rated-item-poster" :alt="item.details.nameForDb">
-              <div class="rated-item-info">
-                <h4 class="rated-item-title">{{ item.details.nameForDb }}</h4>
-                <div class="rated-item-meta">
-                  <span>{{ item.details.yearStartForDb }}</span>
-                  <div class="rated-item-rating">
-                    <span>Rating:</span>
-                    <div v-if="editingRating !== index" @click="startEditRating(index, item)" class="rating-badge editable" :title="'Click to edit rating'">
-                      {{ item.details.userRatingForDb }}
-                    </div>
-                    <div v-else class="rating-edit-controls">
-                      <select v-model="tempRating" class="rating-select">
-                        <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-                      </select>
-                      <button @click="saveRating(item)" class="edit-btn save-btn"><span style="color:black !important;">✓</span></button>
-                      <button @click="cancelEditRating" class="edit-btn cancel-btn">✕</button>
-                    </div>
-                  </div>
-                </div>
-                <div v-if="editingReview !== index" class="rated-item-review-container">
-                  <div v-if="item.details.userReview" class="rated-item-review">
-                    {{ item.details.userReview }}
-                  </div>
-                  <div v-else class="rated-item-review">
-                    {{ ratingDescriptions[parseInt(item.details.userRatingForDb) - 1] }}
-                  </div>
-                  <br>
-                  <br>
-                  <button @click="startEditReview(index, item)" class="edit-review-btn">
-                    <span v-if="item.details.userReview">Edit review</span>
-                    <span v-else>Add review</span>
-                  </button>
-                </div>
-                <div v-else class="review-edit-container">
-                  <textarea v-model="tempReview" rows="3" class="review-textarea" placeholder="Write your review here..."></textarea>
-                  <div class="review-btn-container">
-                    <button @click="saveReview(item)" class="edit-btn-rvw save-btn">Save</button>
-                    <button @click="cancelEditReview" class="edit-btn-rvw cancel-btn">Cancel</button>
-                  </div>
-                </div>
+              <div class="rating-modal-buttons">
+                <button 
+                  v-if="currentRatingItem && currentRatingItem.details.userRatingForDb && currentRatingItem.details.userRatingForDb !== '-'"
+                  @click="removeRating" 
+                  class="remove-rating-btn"
+                >
+                  <span style="position:relative; margin:0 auto;">Remove Rating</span>
+                </button>
+                
+                <button 
+                  @click="saveRatingAndReview" 
+                  class="save-btn"
+                  :disabled="selectedRating === 0"
+                >
+                  <span style="position:relative; margin:0 auto;">Save</span>
+                </button>
               </div>
             </div>
           </div>
-          
-          <div v-else class="empty-state">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        </div>
+
+<div v-if="filtersModalVisible" class="modal-overlay" @click="closeFiltersModal">
+  <div class="filters-modal" @click.stop>
+    <div class="modal-header">
+      <h3>Filters</h3>
+      <button class="close-btn" @click="closeFiltersModal">×</button>
+    </div>
+    
+    <div class="filters-content">
+      <div class="filter-group">
+        <label class="filter-label">Genre</label>
+        <div class="custom-select" @click="toggleGenreDropdown">
+          <div class="select-display">
+            <span>{{ selectedGenre || 'All genres' }}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" :class="{ 'rotate-180': genreDropdownOpen }">
+              <path d="M7 10l5 5 5-5z"/>
             </svg>
-            <p>No rated {{ ratedItemsTab === 'movies' ? 'movies' : 'TV shows' }} yet.</p>
-            <p>Rate some {{ ratedItemsTab === 'movies' ? 'movies' : 'TV shows' }} to see them here!</p>
+          </div>
+          <div v-if="genreDropdownOpen" class="dropdown-options">
+            <div 
+              class="dropdown-option" 
+              :class="{ selected: selectedGenre === '' }"
+              @click.stop="selectGenre('')"
+            >
+              All genres
+            </div>
+            <div 
+              v-for="genre in uniqueGenres" 
+              :key="genre" 
+              class="dropdown-option"
+              :class="{ selected: selectedGenre === genre }"
+              @click.stop="selectGenre(genre)"
+            >
+              {{ genre }}
+            </div>
           </div>
         </div>
       </div>
+      
+      <div class="filter-group">
+        <label class="filter-label">Years</label>
+        <div class="year-inputs">
+          <input 
+            type="number" 
+            v-model.number="customYearStart" 
+            :min="1880" 
+            :max="currentYear"
+            placeholder="From"
+            class="year-input"
+          >
+          <span class="year-separator">-</span>
+          <input 
+            type="number" 
+            v-model.number="customYearEnd" 
+            :min="1880" 
+            :max="currentYear"
+            placeholder="To"
+            class="year-input"
+          >
+        </div>
+        <div class="quick-year-options">
+          <button 
+            v-for="range in yearRanges" 
+            :key="range" 
+            @click="setYearRange(range)"
+            class="year-quick-btn"
+          >
+            {{ range }}
+          </button>
+        </div>
+      </div>
+      
+      <div class="filter-group">
+        <label class="filter-label">Rating</label>
+        <select v-model="selectedTmdbRating" class="filter-input">
+          <option value="">All ratings</option>
+          <option value="9-10">9+</option>
+          <option value="8-8.9">8+</option>
+          <option value="7-7.9">7+</option>
+          <option value="6-6.9">6+</option>
+          <option value="5-5.9">5+</option>
+          <option value="0-4.9">< 5</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label class="filter-label">My Rating</label>
+        <select v-model="selectedUserRating" class="filter-input">
+          <option value="">All my ratings</option>
+          <option value="10">My Rating: 10</option>
+          <option value="9">My Rating: 9</option>
+          <option value="8">My Rating: 8</option>
+          <option value="7">My Rating: 7</option>
+          <option value="6">My Rating: 6</option>
+          <option value="5">My Rating: 5</option>
+          <option value="1-4">My Rating: < 5</option>
+          <option value="not-rated">Not Rated</option>
+        </select>
+      </div>
+      
+      <div class="filter-actions">
+        <button @click="clearAllFilters" class="clear-btn">Clear</button>
+        <button @click="closeFiltersModal" class="apply-btn">Apply</button>
+      </div>
     </div>
   </div>
+</div>
+      </section>
+    </main>
+  </div>
 </template>
-
 <script>
 import supabase from '@/services/supabase';
+import UserNav from '@/components/global/UserNav';
 
-async function getUserAvatar(userEmail) {
-  try {
-    const { data, error } = await supabase
-      .from('user_data')
-      .select('avatar')
-      .eq('email', userEmail);
-      
-    if (error) {
-      throw new Error('Error fetching user avatar:', error.message);
-    }
-
-    const userAvatar = data[0]?.avatar || '/avatars/avatar-ss0.png';
-    return userAvatar;
-    
-  } catch (error) {
-    console.error('Error fetching user avatar:', error);
-    return '/avatars/avatar-ss0.png';
-  }
-}
 
 async function getUserName(userEmail) {
   try {
@@ -377,12 +340,20 @@ async function getUserName(userEmail) {
 }
 
 export default {
+  components: {
+    UserNav,
+  },
   props: {
     item: Object,
   },
   data() {
     return {
-      showLanguageMenu: false,
+      genreDropdownOpen: false,
+      filteredSeriesDetails: [],
+      filtersModalVisible: false,
+      customYearStart: null,
+      customYearEnd: null,
+      currentYear: new Date().getFullYear(),
       selectedLanguage: 'english',
       fallbackImageUrl: "https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.png?raw=true",
       handleImageError: "this.src='https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.png?raw=true'",
@@ -396,7 +367,6 @@ export default {
       currentPage: 1,
       itemsPerPage: 20,
       itemsPerRow: 4,
-      userAvatar: '/avatars/avatar-ss0.png',
       userFirstName: '', 
       isMenuOpen: false,
       filter: 'movies',
@@ -405,18 +375,11 @@ export default {
       genres: [],
       years: [],
       resizeObserver: null,
-      ratedItemsModalVisible: false,
-      ratedItemsTab: 'movies',
-      editingRating: null,
-      editingReview: null,
-      tempRating: 1,
-      tempReview: '',
-      currentEditItem: null,
       ratingModalVisible: false,
       currentRatingItem: null,
+      userReview: '',
       selectedRating: 0,
       hoverRating: 0,
-      userReview: '',
       ratingDescriptions: [
         'Terrible, a complete waste of time',
         'Very bad, hard to finish',
@@ -446,7 +409,6 @@ export default {
     this.hasAccessToken = accessToken !== null;
     this.isLoggedIn = accessToken !== null;
     this.checkData();
-    this.userAvatar = await getUserAvatar(this.userEmail);
     await this.fetchUserFirstName();
     
     this.$nextTick(() => {
@@ -545,6 +507,7 @@ export default {
     } catch (error) {
       console.error('Error al guardar en la base de datos:', error.message);
     }
+    this.$root.$on('rated-items-updated', this.checkData);
 },
 
   beforeDestroy() {
@@ -553,15 +516,62 @@ export default {
     } else {
       window.removeEventListener('resize', this.handleResize);
     }
+    this.$root.$off('rated-items-updated', this.checkData);
   },
   
   
   methods: {
+    toggleFilterType(event) {
+      this.filter = event.target.checked ? 'tvShows' : 'movies';
+      this.currentPage = 1;
+    },
+    toggleGenreDropdown() {
+      this.genreDropdownOpen = !this.genreDropdownOpen;
+    },
+
+    selectGenre(genre) {
+      this.selectedGenre = genre;
+      this.genreDropdownOpen = false;
+    },
+    openFiltersModal() {
+      this.filtersModalVisible = true;
+    },
+
+    closeFiltersModal() {
+      this.filtersModalVisible = false;
+    },
+
+    toggleOrderMode() {
+      this.orderText = this.orderText === 'Order Asc' ? 'Order Desc' : 'Order Asc';
+      this.moviesFetched.reverse();
+      this.tvFetched.reverse();
+    },
+
+    setYearRange(range) {
+      const [start, end] = range.split('-').map(Number);
+      this.customYearStart = start;
+      this.customYearEnd = end;
+    },
+
+    clearAllFilters() {
+      this.selectedGenre = '';
+      this.selectedTmdbRating = '';
+      this.selectedUserRating = '';
+      this.customYearStart = null;
+      this.customYearEnd = null;
+    },
     openRatingModal(item) {
       this.currentRatingItem = item;
-      this.selectedRating = 0;
+      
+      if (item.details.userRatingForDb && item.details.userRatingForDb !== '-') {
+        this.selectedRating = parseInt(item.details.userRatingForDb);
+        this.userReview = item.details.userReview || '';
+      } else {
+        this.selectedRating = 0;
+        this.userReview = '';
+      }
+      
       this.hoverRating = 0;
-      this.userReview = '';
       this.ratingModalVisible = true;
     },
 
@@ -659,132 +669,59 @@ export default {
         alert('There was an error saving your rating. Please try again.');
       }
     },
+
+    async removeRating() {
+      try {
+        const item = this.currentRatingItem;
+        const { typeForDb, idForDb } = item.details;
+        const itemKey = `${typeForDb}/${idForDb}`;
+
+        const { data: favoritesData, error } = await supabase
+          .from('favorites')
+          .select('favorites_json')
+          .eq('user_email', this.userEmail);
+        
+        if (error) throw new Error('Error fetching favorites: ' + error.message);
+        if (!favoritesData || !favoritesData.length) return;
+        
+        const favoritesObject = favoritesData[0].favorites_json || {};
+        const itemType = typeForDb === 'tv' ? 'tv' : 'movies';
+        
+        if (!favoritesObject[itemType]) return;
+
+        const updatedItems = favoritesObject[itemType].map(favItem => {
+          const favItemKey = Object.keys(favItem)[0];
+          if (favItemKey === itemKey) {
+            delete favItem[favItemKey].details.userRatingForDb;
+            delete favItem[favItemKey].details.userReview;
+          }
+          return favItem;
+        });
+        
+        favoritesObject[itemType] = updatedItems;
+        
+        const { error: updateError } = await supabase
+          .from('favorites')
+          .update({ favorites_json: favoritesObject })
+          .eq('user_email', this.userEmail);
+        
+        if (updateError) throw new Error('Error removing rating: ' + updateError.message);
+        
+        item.details.userRatingForDb = '-';
+        item.details.userReview = '';
+        
+        this.closeRatingModal();
+        await this.checkData();
+        
+      } catch (error) {
+        console.error('Error removing rating:', error);
+        alert('There was an error removing your rating. Please try again.');
+      }
+    },
     showRatedItems() {
-      this.ratedItemsModalVisible = true;
+      this.$root.$emit('show-rated-modal');
     },
-    
-    closeRatedItemsModal() {
-      this.ratedItemsModalVisible = false;
-      this.cancelEditRating();
-      this.cancelEditReview();
-    },
-    
-    startEditRating(index, item) {
-      this.editingRating = index;
-      this.currentEditItem = item;
-      this.tempRating = parseInt(item.details.userRatingForDb) || 1;
-    },
-    
-    cancelEditRating() {
-      this.editingRating = null;
-      this.currentEditItem = null;
-      this.tempRating = 1;
-    },
-    
-    async saveRating(item) {
-      if (!item || !item.details) return;
-      
-      try {
-        const { typeForDb, idForDb } = item.details;
-        const itemKey = `${typeForDb}/${idForDb}`;
 
-        const { data: favoritesData, error } = await supabase
-          .from('favorites')
-          .select('favorites_json')
-          .eq('user_email', this.userEmail);
-          
-        if (error) throw new Error('Error fetching favorites: ' + error.message);
-        if (!favoritesData || !favoritesData.length) return;
-        
-        const favoritesObject = favoritesData[0].favorites_json || {};
-        const itemType = typeForDb === 'tv' ? 'tv' : 'movies';
-        
-        if (!favoritesObject[itemType]) return;
-
-        const updatedItems = favoritesObject[itemType].map(favItem => {
-          const favItemKey = Object.keys(favItem)[0];
-          if (favItemKey === itemKey) {
-            favItem[favItemKey].details.userRatingForDb = this.tempRating.toString();
-          }
-          return favItem;
-        });
-        
-        favoritesObject[itemType] = updatedItems;
-
-        const { error: updateError } = await supabase
-          .from('favorites')
-          .update({ favorites_json: favoritesObject })
-          .eq('user_email', this.userEmail);
-          
-        if (updateError) throw new Error('Error updating rating: ' + updateError.message);
-
-        item.details.userRatingForDb = this.tempRating.toString();
-        this.cancelEditRating();
-
-        await this.checkData();
-      } catch(error) {
-        console.error('Error saving rating:', error);
-      }
-    },
-    
-    startEditReview(index, item) {
-      this.editingReview = index;
-      this.currentEditItem = item;
-      this.tempReview = item.details.userReview || '';
-    },
-    
-    cancelEditReview() {
-      this.editingReview = null;
-      this.currentEditItem = null;
-      this.tempReview = '';
-    },
-    
-    async saveReview(item) {
-      if (!item || !item.details) return;
-      
-      try {
-        const { typeForDb, idForDb } = item.details;
-        const itemKey = `${typeForDb}/${idForDb}`;
-
-        const { data: favoritesData, error } = await supabase
-          .from('favorites')
-          .select('favorites_json')
-          .eq('user_email', this.userEmail);
-          
-        if (error) throw new Error('Error fetching favorites: ' + error.message);
-        if (!favoritesData || !favoritesData.length) return;
-        
-        const favoritesObject = favoritesData[0].favorites_json || {};
-        const itemType = typeForDb === 'tv' ? 'tv' : 'movies';
-        
-        if (!favoritesObject[itemType]) return;
-
-        const updatedItems = favoritesObject[itemType].map(favItem => {
-          const favItemKey = Object.keys(favItem)[0];
-          if (favItemKey === itemKey) {
-            favItem[favItemKey].details.userReview = this.tempReview.trim();
-          }
-          return favItem;
-        });
-        
-        favoritesObject[itemType] = updatedItems;
-
-        const { error: updateError } = await supabase
-          .from('favorites')
-          .update({ favorites_json: favoritesObject })
-          .eq('user_email', this.userEmail);
-          
-        if (updateError) throw new Error('Error updating review: ' + updateError.message);
-
-        item.details.userReview = this.tempReview.trim();
-        this.cancelEditReview();
-        
-        await this.checkData();
-      } catch(error) {
-        console.error('Error saving review:', error);
-      }
-    },
-    
     handleResize() {
       this.calculateItemsPerRow();
       this.adjustItemsPerPage();
@@ -834,29 +771,165 @@ export default {
         const tvFetched = [];
         const genres = new Set();
         const years = new Set();
-        data.forEach((row) => {
+        
+        for (const row of data) {
           if (row.favorites_json.movies) {
-            row.favorites_json.movies.forEach((movie) => {
+            for (const movie of row.favorites_json.movies) {
               const movieKey = Object.keys(movie)[0];
-              moviesFetched.push(movie[movieKey]);
-              genres.add(...movie[movieKey].details.genresForDb.split(', '));
-              years.add(movie[movieKey].details.yearStartForDb);
-            });
+              const movieData = movie[movieKey];
+              
+              if (!movieData || !movieData.details) {
+                console.warn('Skipping invalid movie entry:', movie);
+                continue;
+              }
+              
+              if (movieData.details.external_ids?.imdb_id && !movieData.details.rating_source) {
+                try {
+                  const response = await fetch(`/api/imdb-rating/${movieData.details.external_ids.imdb_id}`);
+                  const imdbData = await response.json();
+                  
+                  if (imdbData.found) {
+                    movieData.details.imdb_rating = imdbData.score;
+                    movieData.details.imdb_votes = imdbData.votes;
+                    movieData.details.rating_source = 'imdb';
+                  } else {
+                    movieData.details.rating_source = 'tmdb';
+                  }
+                } catch (err) {
+                  console.error('Error fetching IMDb rating:', err);
+                  movieData.details.rating_source = 'tmdb';
+                }
+              } else if (!movieData.details.rating_source) {
+                movieData.details.rating_source = movieData.details.imdb_rating ? 'imdb' : 'tmdb';
+              }
+              
+              moviesFetched.push(movieData);
+              
+              if (movieData.details.genresForDb) {
+                const genresList = movieData.details.genresForDb.split(', ');
+                genresList.forEach(g => genres.add(g));
+              }
+              
+              if (movieData.details.yearStartForDb) {
+                years.add(movieData.details.yearStartForDb);
+              }
+            }
           }
 
           if (row.favorites_json.tv) {
-            row.favorites_json.tv.forEach((tvShow) => {
+            for (const tvShow of row.favorites_json.tv) {
               const tvKey = Object.keys(tvShow)[0];
-              tvFetched.push(tvShow[tvKey]);
-              genres.add(...tvShow[tvKey].details.genresForDb.split(', '));
-              years.add(tvShow[tvKey].details.yearStartForDb);
-            });
+              const tvData = tvShow[tvKey];
+              
+              if (!tvData || !tvData.details) {
+                console.warn('Skipping invalid TV entry:', tvShow);
+                continue;
+              }
+              
+              if (tvData.details.external_ids?.imdb_id && !tvData.details.rating_source) {
+                try {
+                  const response = await fetch(`/api/imdb-rating/${tvData.details.external_ids.imdb_id}`);
+                  const imdbData = await response.json();
+                  
+                  if (imdbData.found) {
+                    tvData.details.imdb_rating = imdbData.score;
+                    tvData.details.imdb_votes = imdbData.votes;
+                    tvData.details.rating_source = 'imdb';
+                  } else {
+                    tvData.details.rating_source = 'tmdb';
+                  }
+                } catch (err) {
+                  console.error('Error fetching IMDb rating:', err);
+                  tvData.details.rating_source = 'tmdb';
+                }
+              } else if (!tvData.details.rating_source) {
+                tvData.details.rating_source = tvData.details.imdb_rating ? 'imdb' : 'tmdb';
+              }
+              
+              tvFetched.push(tvData);
+              
+              if (tvData.details.genresForDb) {
+                const genresList = tvData.details.genresForDb.split(', ');
+                genresList.forEach(g => genres.add(g));
+              }
+              
+              if (tvData.details.yearStartForDb) {
+                years.add(tvData.details.yearStartForDb);
+              }
+            }
           }
-        });
+        }
+        
         this.moviesFetched = moviesFetched.reverse();
         this.tvFetched = tvFetched.reverse();
         this.genres = Array.from(genres);
         this.years = Array.from(years).sort();
+
+        if (data.length > 0) {
+          const favoritesObject = { ...data[0].favorites_json };
+          let needsUpdate = false;
+          
+          if (favoritesObject.movies && moviesFetched.length > 0) {
+            const moviesReversed = [...moviesFetched].reverse();
+            
+            favoritesObject.movies = favoritesObject.movies.map((originalMovie, index) => {
+              const movieKey = Object.keys(originalMovie)[0];
+              const matchingMovie = moviesReversed.find((m, i) => {
+                const mKey = Object.keys(favoritesObject.movies[i] || {})[0];
+                return mKey === movieKey;
+              });
+              
+              if (matchingMovie) {
+                const oldRatingSource = originalMovie[movieKey].details.rating_source;
+                const newRatingSource = matchingMovie.details.rating_source;
+                
+                if (oldRatingSource !== newRatingSource) {
+                  needsUpdate = true;
+                }
+                
+                return {
+                  [movieKey]: matchingMovie
+                };
+              }
+              
+              return originalMovie;
+            });
+          }
+          
+          if (favoritesObject.tv && tvFetched.length > 0) {
+            const tvReversed = [...tvFetched].reverse();
+            
+            favoritesObject.tv = favoritesObject.tv.map((originalTv, index) => {
+              const tvKey = Object.keys(originalTv)[0];
+              const matchingTv = tvReversed.find((t, i) => {
+                const tKey = Object.keys(favoritesObject.tv[i] || {})[0];
+                return tKey === tvKey;
+              });
+              
+              if (matchingTv) {
+                const oldRatingSource = originalTv[tvKey].details.rating_source;
+                const newRatingSource = matchingTv.details.rating_source;
+                
+                if (oldRatingSource !== newRatingSource) {
+                  needsUpdate = true;
+                }
+                
+                return {
+                  [tvKey]: matchingTv
+                };
+              }
+              
+              return originalTv;
+            });
+          }
+          
+          if (needsUpdate) {
+            await supabase
+              .from('favorites')
+              .update({ favorites_json: favoritesObject })
+              .eq('user_email', this.userEmail);
+          }
+        }
       } catch (error) {
         console.error(error.message);
       }
@@ -923,42 +996,6 @@ export default {
       return Promise.reject(error); 
     }
   },
-
-  toggleLanguageMenu() {
-      this.showLanguageMenu = !this.showLanguageMenu;
-      const menu = this.$refs.languageMenu;
-      if (menu) {
-        menu.style.display = this.showLanguageMenu ? 'block' : 'none';
-      }
-    },
-    changeLanguage(language) {
-      this.selectedLanguage = language;
-      const currentPath = this.$route.path;
-      const currentOrigin = window.location.origin;
-      const spanishUrl = `${currentOrigin.replace(
-        '://',
-        '://es.'
-      )}${currentPath}`;
-      window.location.href = spanishUrl;
-    },
-
-    toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen;
-    },
-
-    goToHome() {
-      this.$router.push({ path: '/' });
-    },
-
-    goToSettings() {
-      this.$router.push({ path: '/settings' });
-    },
-
-    signOut() {
-      localStorage.removeItem('email');
-      localStorage.removeItem('access_token');
-      this.$router.push({ path: '/login' });
-    },
 
     toggleOrder(event) {
       this.orderText = event.target.value === 'asc' ? 'Order Asc' : 'Order Desc';
@@ -1031,6 +1068,8 @@ export default {
         return '#'; 
       }
     },
+
+    
     async fetchUserFirstName() {
       try {
         const { data, error } = await supabase
@@ -1070,35 +1109,44 @@ export default {
       const matchesGenre = this.selectedGenre === '' || 
         (item.details.genresForDb && item.details.genresForDb.includes(this.selectedGenre));
       
-      const matchesYear = this.selectedYearRange === '' || 
+      const matchesYear = (!this.customYearStart && !this.customYearEnd) || 
         (item.details.yearStartForDb && 
-         this.selectedYearRange.split('-')[0] && 
-         this.selectedYearRange.split('-')[1] && 
-         item.details.yearStartForDb >= this.selectedYearRange.split('-')[0] && 
-         item.details.yearStartForDb <= this.selectedYearRange.split('-')[1]);
+        item.details.yearStartForDb >= (this.customYearStart || 1880) && 
+        item.details.yearStartForDb <= (this.customYearEnd || this.currentYear));
 
       let matchesTmdbRating = true;
       if (this.selectedTmdbRating !== '') {
-        const tmdbRating = this.formatRating(item.details.starsForDb);
-        if (!tmdbRating) {
+        let rating;
+        if (item.details.rating_source === 'imdb' && item.details.imdb_rating) {
+          rating = item.details.imdb_rating;
+        } else if (item.details.starsForDb) {
+          rating = this.formatRating(item.details.starsForDb);
+        }
+        
+        if (!rating) {
           matchesTmdbRating = false;
         } else {
           const [min, max] = this.selectedTmdbRating.split('-').map(Number);
-          matchesTmdbRating = tmdbRating >= min && tmdbRating <= max;
+          matchesTmdbRating = rating >= min && rating <= max;
         }
       }
       
       let matchesUserRating = true;
       if (this.selectedUserRating !== '') {
-        if (!item.details.userRatingForDb || item.details.userRatingForDb === '-') {
-          matchesUserRating = false;
+        if (this.selectedUserRating === 'not-rated') {
+          matchesUserRating = !item.details.userRatingForDb || 
+                            item.details.userRatingForDb === '-';
         } else {
-          const userRating = parseInt(item.details.userRatingForDb);
-          if (this.selectedUserRating.includes('-')) {
-            const [min, max] = this.selectedUserRating.split('-').map(Number);
-            matchesUserRating = userRating >= min && userRating <= max;
+          if (!item.details.userRatingForDb || item.details.userRatingForDb === '-') {
+            matchesUserRating = false;
           } else {
-            matchesUserRating = userRating === parseInt(this.selectedUserRating);
+            const userRating = parseInt(item.details.userRatingForDb);
+            if (this.selectedUserRating.includes('-')) {
+              const [min, max] = this.selectedUserRating.split('-').map(Number);
+              matchesUserRating = userRating >= min && userRating <= max;
+            } else {
+              matchesUserRating = userRating === parseInt(this.selectedUserRating);
+            }
           }
         }
       }
@@ -1181,108 +1229,6 @@ export default {
   top: 1px;
 }
 
-.avatar-container-else {
-    position: relative;
-    top: -81.5px;
-    font-size: 11.5px;
-    left: 10px;
-    cursor: pointer;
-  }
-
- .user-profile-else {
-    position: absolute;
-    right: 4.10%;
-  }
-
-  .avatar-else {
-    width: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.654);
-    height: 40px;
-    box-shadow: 0 5px 32px 0 rgba(31, 97, 135, 0.37);
-    border-radius: 50%;
-    margin-left: 50px;
-    margin-bottom: 5px;
-    cursor: pointer;
-  }
-
-  .dropdown-menu-else {
-    position: relative; 
-    top: 100%;
-    height: 38px;
-    background: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 3px 15px 0 rgba(31, 97, 135, 0.37); 
-    border: 1px solid #acafb5;
-    border-radius: 5px;
-    z-index: 100;
-    display: none;
-  }
-
-  .dropdown-menu-else.block + .avatar-else {
-    margin-left: 20px;
-  }
-
-  .dropdown-menu-else {
-    display: block;
-    left: 5px;
-    top: 2px;
-  }
-
-  .world-icon {
-    width: 13px;
-    height: 13px;
-    position: relative;
-    top: 1px;
-    left: 2px;
-  }
-
-  .language {
-    margin-right: 0.2rem;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
-    -webkit-background-clip: text;
-    color: transparent;
-    text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
-    font-family: 'Roboto', sans-serif;
-    font-size: 11px; 
-    text-transform: uppercase;
-    border-radius: 15px;
-    color: #94999d;
-    position: relative;
-    top: 1px;
-  }
-
-  .arrow-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  .language-selector {
-    position: relative;
-    cursor: pointer;
-  }
-  
-
-  .language-menu {
-    position: absolute;
-    background: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
-    backdrop-filter: blur( 16px );
-    -webkit-backdrop-filter: blur( 16px );
-    border-radius: 5px;
-    border: 1px solid rgba( 255, 255, 255, 0.18 );
-    z-index: 1000;
-    display: none;
-  }
-
-  .language-menu label {
-      display: block;
-      padding: 0.5rem;
-      cursor: pointer;
-  }
-
-  .language-menu.active {
-      display: block;
-  }
-
 .movie-card {
    position: relative;
 }
@@ -1321,62 +1267,6 @@ export default {
   font-family: 'Roboto', sans-serif;
 }
 
-.avatar-container {
-  top: 10.5px;
-  position: relative;
-  cursor: pointer;
-}
-
-.dropdown-menu {
-  position: relative; 
-  left: 27px; 
-  width: 113.574px;
-  top: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
-  backdrop-filter: blur( 16px );
-  -webkit-backdrop-filter: blur( 16px );
-  border-radius: 5px;
-  border: 1px solid rgba( 255, 255, 255, 0.18 );
-  z-index: 100;
-  display: none;
-}
-
-.dropdown-menu {
-  display: block;
-  margin-left: 30px;
-}
-
-.menu-item {
-  padding: 8px 12px;
-  cursor: pointer;
-}
-
-
-.menu-label1 {
-  color: #94999d;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  position: relative; 
-  top: 1px;
-}
-
-.menu-label1:hover {
-  color: #ffffff;
-}
-
-.menu-label2 {
-  color: #94999d;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-top: 3px;
-}
-
-.menu-label2:hover {
-  color: #ffffff;
-}
-
-
 .welcome-text {
     text-align: center;
 }
@@ -1395,11 +1285,12 @@ export default {
 
 .navbar {
     background-color: transparent;
-    margin-top: 3rem;
+    margin-top: 4rem;
+    top: 1rem;
+    position: relative;
     text-align: center;
     max-width: 800px; 
     margin: 0 auto; 
-    left: 68px;
     top: 8px;
     transition: none 0s ease 0s;
   } 
@@ -1409,19 +1300,6 @@ export default {
     margin: 0 auto;
     font-weight: bold;
     font-size: 1.5rem;
-  }
-
-  .user-email {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
-    -webkit-background-clip: text;
-    color: transparent;
-    text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
-    font-family: 'Roboto', sans-serif;
-    font-size: 13px; 
-    border-radius: 15px;
-    margin-top: 2rem;
-    color: #94999d;
-    text-align: center;
   }
 
   .nav-button-container {
@@ -1453,26 +1331,6 @@ export default {
     margin: 0.5rem;
   }
 }
-
-
-  .user-profile {
-    position: absolute;
-    right: 3%; 
-    margin-left: 2rem;
-    top: -26px;
-  }
-
-  .avatar {
-    width: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.654);
-    height: 40px;
-    box-shadow: 0 5px 32px 0 rgba(31, 97, 135, 0.37);
-    border-radius: 50%;
-    margin-left: 8px;
-    margin-bottom: 5px;
-    cursor: pointer;
-  }
-
   .button-logout {
     background-color: #062F40;
     color: #fff;
@@ -1489,18 +1347,6 @@ export default {
 
   .button-logout:hover {
     background-color: #B22727;
-  }
-
-  .logout-icon {
-    width: 15px;
-    height: 15px;
-    margin-right: 5px;
-  }
-
-  .settings-icon {
-    width: 15px;
-    height: 15px;
-    margin-right: 5px;
   }
 
   .order-select {
@@ -1580,50 +1426,38 @@ export default {
 
   .pagination {
     display: flex;
-    /* background: black; */
     justify-content: center;
     align-items: center;
-    /* border-radius: 15px; */
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
-    /* border-radius: 15px; */
-    width: 90% !important;
+    width: 97% !important;
     margin: 0 auto;
     background: rgba(82, 71, 71, 0);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur(16px);
     padding: 8px;
-    /* width: 80%; */
-    /* position: relative; */
     gap: 0.5rem;
     border: 0.5px #31414C solid;
-    /* left: -10px; */
-    /* top: 40px; */
+    top: 2px;
     position: relative;
     margin-bottom: 0.5rem;
 }
 
 .pagination-footer {
     display: flex;
-    /* background: black; */
     justify-content: center;
     align-items: center;
-    /* border-radius: 15px; */
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
-    /* border-radius: 15px; */
-    width: 90% !important;
+    width: 97% !important;
     margin: 0 auto;
-    background: rgba(82, 71, 71, 0);
+    background: rgba(16, 20, 33, 0.3);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur(16px);
     padding: 8px;
-    /* width: 80%; */
-    /* position: relative; */
     gap: 0.5rem;
     border: 0.5px #31414C solid;
-    /* left: -10px; */
-    /* top: 40px; */
+    top: -10px;
     position: relative;
 }
 
@@ -1743,7 +1577,6 @@ export default {
 
   @media screen and (max-width: 800px) {
   .navbar {
-    left: 68px;
     top: 8px;
     transition: none 0s ease 0s;
   } 
@@ -1836,8 +1669,14 @@ export default {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
     gap: 20px;
+    background-color: black;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+    backdrop-filter: blur(16px);
     justify-content: center;
     padding-left: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
     padding-right: 1rem;
   }
 
@@ -1968,22 +1807,9 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 1001;
     padding: 20px;
     font-family: 'Roboto', 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
-  }
-  
-  .rated-items-modal {
-    width: 100%;
-    max-width: 850px;
-    height: auto;
-    max-height: 90vh;
-    background: linear-gradient(to bottom right, #092739, #061720);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
   }
   
   .modal-header {
@@ -1996,10 +1822,18 @@ export default {
   
   .modal-header h3 {
     margin: 0;
-    color: #8BE9FD;
     font-size: 1.6rem;
     font-weight: 500;
     text-align: center;
+    font-family: 'GrandCru', 'Roboto', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    color: #8BE9FD;
+    text-shadow: 
+        0 1px 2px rgba(255, 255, 255, 0.3),
+        0 2px 8px rgba(255, 255, 255, 0.2),
+        0 4px 16px rgba(139, 233, 253, 0.15);
     flex: 1;
   }
   
@@ -2022,16 +1856,6 @@ export default {
   
   .close-btn:hover {
     color: #fff;
-    transform: rotate(90deg);
-  }
-  
-  .tab-controls {
-    display: flex;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    text-align: center;
-    position: relative;
-    padding-left: 10px;
-  
   }
   
   .tab-btn {
@@ -2045,7 +1869,15 @@ export default {
     transition: all 0.2s ease;
     position: relative;
     text-align: center;
-  }
+    font-family: 'GrandCru', 'Roboto', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    text-shadow: 
+        0 1px 2px rgba(255, 255, 255, 0.3),
+        0 2px 8px rgba(255, 255, 255, 0.2),
+        0 4px 16px rgba(139, 233, 253, 0.15);
+    }
   
   .tab-btn.active {
     color: #8BE9FD;
@@ -2060,68 +1892,7 @@ export default {
     height: 2px;
     background: #8BE9FD;
   }
-  
-  .rated-items-content {
-    padding: 20px;
-    overflow-y: auto;
-    flex: 1;
-  }
-  
-  .rated-items-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 10px 0;
-  }
-  
-  .rated-item {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    overflow: hidden;
-    transition: transform 0.2s ease;
-    position: relative;
-  }
-  
-  .rated-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
-  }
-  
-  .rated-item-poster {
-    width: 100%;
-    aspect-ratio: 2/3;
-    object-fit: cover;
-  }
-  
-  .rated-item-info {
-    padding: 12px;
-  }
-  
-  .rated-item-title {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: #fff;
-    margin: 0 0 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  .rated-item-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.7);
-  }
-  
-  .rated-item-rating {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  
+
   .rating-badge {
     background: #8BE9FD;
     color: #000;
@@ -2133,60 +1904,6 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  
-  .rated-item-review-container {
-    position: relative;
-    margin-top: 10px;
-  }
-  
-  .rated-item-review {
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.8);
-    max-height: 80px;
-    overflow-y: auto;
-    padding-right: 5px;
-    line-height: 1.4;
-  }
-  
-  .edit-review-btn {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    background: transparent;
-    border: none;
-    color: #8BE9FD;
-    font-size: 1.1rem;
-    cursor: pointer;
-    padding: 3px 6px;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
-  
-  .rated-item-review-container:hover .edit-review-btn {
-    opacity: 1;
-  }
-  
-  .review-edit-container {
-    margin-top: 10px;
-  }
-  
-  .review-textarea {
-    width: 100%;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    border-radius: 4px;
-    padding: 8px;
-    font-size: 1.2rem;
-    resize: vertical;
-  }
-  
-  .review-btn-container {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 8px;
-    gap: 8px;
   }
   
   .rating-badge.editable {
@@ -2227,7 +1944,6 @@ export default {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    bottom: 9px;
     position: relative;
   }
 
@@ -2245,7 +1961,6 @@ export default {
     height: 20px;
     border-radius: 15px;
     gap: 20px;
-    bottom: 9px;
     position: relative;
   }
   
@@ -2265,19 +1980,6 @@ export default {
   
   .cancel-btn:hover {
     background: rgba(255, 0, 0, 0.4);
-  }
-  
-  .rated-item-review::-webkit-scrollbar {
-    width: 4px;
-  }
-  
-  .rated-item-review::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-  }
-  
-  .rated-item-review::-webkit-scrollbar-thumb {
-    background: rgba(139, 233, 253, 0.5);
-    border-radius: 2px;
   }
   
   .empty-state {
@@ -2303,19 +2005,6 @@ export default {
   }
   
   @media (max-width: 768px) {
-    .rated-items-modal {
-      max-width: 100%;
-      height: 90vh;
-    }
-    
-    .rated-items-list {
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-    
-    .rated-item-title {
-      font-size: 1.3rem;
-    }
-    
     .rated-items-btn {
       right: 30%;
     }
@@ -2375,22 +2064,6 @@ export default {
     max-width: none; 
   }
 }
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 20px;
-  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
-}
-
 .rating-modal {
   width: 100%;
   max-width: 360px;
@@ -2438,7 +2111,6 @@ export default {
 
 .close-btn:hover {
   color: #fff;
-  transform: rotate(90deg);
 }
 
 .rating-content {
@@ -2636,6 +2308,568 @@ select.user-rating-select {
     margin: 0.5rem;
     font-size: 1.1rem;
     padding: 0.7rem 1.2rem;
+  }
+}
+
+
+.new-controls-container {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ gap: 20px;
+ flex-wrap: wrap;
+ margin-top: 3rem;
+ min-height: 50px;
+}
+
+.content-type-switch {
+ display: flex;
+ background: rgba(0, 0, 0, 0.2);
+ border-radius: 25px;
+ padding: 2px;
+ border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.switch {
+  --_switch-bg-clr: rgba(0, 0, 0, 0);
+  --_switch-padding: 3px;
+  --_slider-bg-clr: rgba(31, 104, 135, 0.4);
+  --_slider-bg-clr-on: #8BE9FD;
+  --_slider-txt-clr: #ffffff;
+  --_label-padding: 10px 20px;
+  --_switch-easing: cubic-bezier(0.47, 1.64, 0.41, 0.8);
+  
+  color: rgba(255, 255, 255, 0.7);
+  width: fit-content;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  position: relative;
+  isolation: isolate;
+  border-radius: 25px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  font-size: 1.3rem;
+  align-self: center;
+  margin: 0;
+}
+
+.switch input[type="checkbox"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.switch > span {
+  display: grid;
+  place-content: center;
+  transition: all 300ms ease-in-out;
+  padding: var(--_label-padding);
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.switch::before,
+.switch::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+  transition: inset 150ms ease-in-out;
+}
+
+.switch::before {
+  background-color: var(--_slider-bg-clr-on);
+  inset: var(--_switch-padding) 50% var(--_switch-padding) var(--_switch-padding);
+  transition: inset 500ms var(--_switch-easing), background-color 500ms ease-in-out;
+  z-index: 0;
+  border-radius: 22px;
+}
+
+.switch::after {
+  background-color: var(--_switch-bg-clr);
+  inset: 0;
+  z-index: -1;
+}
+
+.switch:hover {
+  transform: translateY(-1px);
+}
+
+.switch:has(input:checked)::before {
+  background-color: var(--_slider-bg-clr-on);
+  inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding) 50%;
+}
+
+.switch > span:first-of-type {
+  opacity: 1;
+  color: #000;
+  font-weight: 500;
+}
+
+.switch > span:last-of-type {
+  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.switch:has(input:checked) > span:first-of-type {
+  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: normal;
+}
+
+.switch:has(input:checked) > span:last-of-type {
+  color: #000;
+  opacity: 1;
+  font-weight: 500;
+}
+
+.switch-btn {
+ background: transparent;
+ border: none;
+ color: rgba(255, 255, 255, 0.7);
+ border-radius: 23px;
+ cursor: pointer;
+ transition: all 0.3s ease;
+ font-size: 1.3rem;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ white-space: nowrap;
+ flex: 1;
+ padding: 8px 16px;
+}
+
+.switch-btn.active {
+  background: #8BE9FD;
+  color: #000;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.control-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  background: rgba(82, 71, 71, 0);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 25px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.3rem;
+  align-self: center;
+  margin: 0;
+}
+
+.control-btn:hover {
+  background-color: #084a66;
+}
+
+.filters-modal {
+  width: 100%;
+  max-width: 500px;
+  background: linear-gradient(to bottom right, #092739, #061720);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.filters-content {
+  padding: 20px;
+}
+
+.filter-group {
+  margin-bottom: 20px;
+}
+
+.filter-label {
+  display: block;
+  color: #8BE9FD;
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.filter-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1.3rem;
+}
+
+.year-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.year-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1.3rem;
+}
+
+.year-separator {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: bold;
+}
+
+.quick-year-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.year-quick-btn {
+  padding: 5px 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+}
+
+.year-quick-btn:hover {
+  background: rgba(139, 233, 253, 0.2);
+  border-color: #8BE9FD;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.clear-btn, .apply-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1.3rem;
+  transition: all 0.2s ease;
+}
+
+.clear-btn {
+  background: rgba(255, 0, 0, 0.2);
+  color: #fff;
+}
+
+.apply-btn {
+  background: #8BE9FD;
+  color: #000;
+}
+
+@media (max-width: 768px) {
+  .new-controls-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .control-btn {
+    justify-content: center;
+  }
+}
+.custom-select {
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+}
+
+.select-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1.3rem;
+  transition: all 0.2s ease;
+}
+
+.select-display:hover {
+  border-color: rgba(139, 233, 253, 0.5);
+}
+
+.dropdown-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #092739;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  margin-top: 2px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.dropdown-option {
+  padding: 10px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 1.3rem;
+}
+
+.dropdown-option:hover {
+  background: rgba(139, 233, 253, 0.1);
+}
+
+.dropdown-option.selected {
+  background: rgba(139, 233, 253, 0.2);
+  color: #8BE9FD;
+}
+
+.year-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1.3rem;
+  transition: border-color 0.2s ease;
+}
+
+.year-input:focus {
+  outline: none;
+  border-color: rgba(139, 233, 253, 0.5);
+}
+
+.year-input::-webkit-outer-spin-button,
+.year-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.year-input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.dropdown-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-options::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dropdown-options::-webkit-scrollbar-thumb {
+  background: rgba(139, 233, 253, 0.3);
+  border-radius: 3px;
+}
+
+.dropdown-options::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 233, 253, 0.5);
+}
+
+.new-controls-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  margin: 3rem auto 0 auto;
+  min-height: 50px;
+  width: fit-content;
+}
+
+@media (max-width: 800px) {
+  .new-controls-container {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    margin: 3rem auto 0 auto;
+    width: fit-content;
+    gap: 15px;
+  }
+  
+  .action-buttons {
+    flex-direction: row;
+    gap: 15px;
+  }
+  
+  .control-btn span {
+    display: none;
+  }
+  
+  .control-btn {
+    padding: 12px;
+    min-width: 44px;
+    height: 44px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .control-btn svg {
+    margin: 0;
+    width: 18px;
+    height: 18px;
+  }
+  .btn-label {
+    display: none;
+  }
+}
+
+.rating-modal-buttons {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
+}
+
+.rating-modal-buttons .save-btn {
+  flex: 1;
+  max-width: 120px;
+}
+
+.remove-rating-btn {
+  background: rgba(255, 0, 0, 0.2);
+  color: #fff;
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 30px;
+  flex: 1;
+  max-width: 120px;
+  text-align: center;
+}
+
+.remove-rating-btn:hover {
+  background: rgba(255, 0, 0, 0.4);
+  border-color: rgba(255, 0, 0, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+}
+
+@media (max-width: 400px) {
+  .rating-modal-buttons {
+    flex-direction: column;
+  }
+  
+  .rating-modal-buttons .save-btn,
+  .remove-rating-btn {
+    max-width: 100%;
+  }
+}
+
+.no-results-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  min-height: 400px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  margin: 20px auto;
+  max-width: 600px;
+}
+
+.no-results-icon {
+  width: 240px;
+  height: 240px;
+  margin-bottom: 25px;
+  opacity: 0.7;
+}
+
+.no-results-state h3 {
+  color: #8BE9FD;
+  font-size: 2rem;
+  margin: 0 auto 15px;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.no-results-state p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.4rem;
+  margin: 8px auto;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.no-results-state .suggestion {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.3rem;
+  margin: 15px auto 0;
+  font-style: italic;
+  text-align: center;
+}
+
+.refine-filters-btn {
+  margin: 25px auto 0;
+  padding: 12px 30px;
+  background: rgba(139, 233, 253, 0.1);
+  border: 1px solid #8BE9FD;
+  border-radius: 25px;
+  color: #8BE9FD;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: block;
+}
+
+.refine-filters-btn:hover {
+  background: rgba(139, 233, 253, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(139, 233, 253, 0.3);
+}
+
+@media (max-width: 768px) {
+  .no-results-state {
+    padding: 40px 15px;
+    min-height: 300px;
+  }
+  
+  .no-results-icon {
+    width: 192px;
+    height: 192px;
+  }
+  
+  .no-results-state h3 {
+    font-size: 1.6rem;
+  }
+  
+  .no-results-state p {
+    font-size: 1.2rem;
   }
 }
 </style>

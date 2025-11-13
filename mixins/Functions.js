@@ -16,9 +16,6 @@ export const debounce = function (func, delay) {
   };
 };
 
-/**
- * Check if localStorage is supported
- */
 export const supportsLocalStorage = function () {
   let supports = true;
 

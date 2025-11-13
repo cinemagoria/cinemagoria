@@ -1,17 +1,15 @@
 <template>
   <nav :class="$style.nav">
     <ul class="nolist">
-      <!-- Home Link -->
       <li>
         <nuxt-link
           exact
           :to="{ name: 'index' }"
           aria-label="Home"
           @click.native="clearSearchBeforeNavigate">
-          <img src="~static/icon-medium.png" alt="Home" style="width: 32px; height: 32px;" />
+          <img src="~static/icon-medium.png" alt="Home" style="width: 32px; height: 32px;" class="home-icon" />
         </nuxt-link>
       </li>
-      <!-- Movies Link -->
       <li>
         <nuxt-link
           :to="{ name: 'movie' }"
@@ -26,7 +24,6 @@
           </svg>
         </nuxt-link>
       </li>
-      <!-- Advanced Search Link -->
       <li>
         <nuxt-link
           :to="{ name: 'advancedsearch' }"
@@ -35,28 +32,21 @@
           <img :src="require('~/static/icon-advancedsearch.png')" alt="Advanced Search" :class="$style.navIcon" />
         </nuxt-link>
       </li>
-      
-      <!-- Upcoming Link -->
       <li>
         <nuxt-link
-          :to="{ name: 'upcoming' }"
-          aria-label="upcoming"
-          @click.native="clearSearchBeforeNavigate">
-          <img :src="require('~/static/icon-upcoming.png')" alt="Upcoming" :class="$style.navIcon" />
+          :to="{ name: 'notifications' }"
+          aria-label="notifications"
+          @click.native="clearSearchBeforeNavigate"
+          :class="$style.notificationLink">
+          <div :class="$style.notificationIconWrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" :class="$style.navIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span v-if="unreadCount > 0" :class="$style.notificationBadge">{{ unreadCount }}</span>
+          </div>
         </nuxt-link>
       </li>
-      <!-- Ask AI Link -->
-      <li>
-        <button @click="openAiChat" aria-label="Ask AI" title="Ask AI Assistant">
-          <span :class="$style.sparkIconWrapper">
-            <!-- SVG Spark Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" :class="[$style.navIcon, 'size-6']">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
-            </svg>
-          </span>
-        </button>
-      </li>
-      <!-- Login/Watchlist Links -->
       <li v-if="!isLoggedIn">
         <nuxt-link exact to="/login" aria-label="Sign In" @click.native="clearSearchBeforeNavigate">
           <img :src="require('~/static/icon-login.png')" alt="Login" :class="$style.navIcon" />
@@ -70,7 +60,6 @@
     </ul>
 
     <ChatbotModal ref="chatbotModalRef" />
-
   </nav>
 </template>
 
@@ -85,43 +74,76 @@ export default {
   data() {
     return {
       authToken: null,
-      authInterval: null
+      authInterval: null,
+      hasMinimizedConversations: false,
+      unreadCount: 0,
+      notificationInterval: null
     };
   },
 
   computed: {
     ...mapState('search', ['searchOpen']),
     isLoggedIn() {
-
       return this.authToken !== null;
     }
   },
 
   mounted() {
     this.checkAuthStatus();
+    this.checkMinimizedConversations();
+    this.fetchUnreadCount();
 
     this.authInterval = setInterval(this.checkAuthStatus, 500);
+    this.notificationInterval = setInterval(this.fetchUnreadCount, 30000);
+    
     if (typeof window !== 'undefined') {
-        window.addEventListener('storage', this.handleStorageChange);
-        window.addEventListener('auth-changed', this.checkAuthStatus); 
+      window.addEventListener('storage', this.handleStorageChange);
+      window.addEventListener('auth-changed', this.checkAuthStatus);
+      window.addEventListener('notifications-updated', this.fetchUnreadCount);
 
-        if (window.location.pathname.includes('auth-success')) {
-           this.forceUpdateNavIcons();
-        }
+      if (window.location.pathname.includes('auth-success')) {
+        this.forceUpdateNavIcons();
+      }
     }
+
+    this.$root.$on('chatbot-conversations-updated', (hasConversations) => {
+      this.hasMinimizedConversations = hasConversations;
+    });
   },
 
   beforeDestroy() {
     if (this.authInterval) {
       clearInterval(this.authInterval);
     }
-     if (typeof window !== 'undefined') {
-        window.removeEventListener('storage', this.handleStorageChange);
-        window.removeEventListener('auth-changed', this.checkAuthStatus);
-     }
+    if (this.notificationInterval) {
+      clearInterval(this.notificationInterval);
+    }
+    
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('storage', this.handleStorageChange);
+      window.removeEventListener('auth-changed', this.checkAuthStatus);
+      window.removeEventListener('notifications-updated', this.fetchUnreadCount);
+    }
   },
 
   methods: {
+    async fetchUnreadCount() {
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail) {
+        this.unreadCount = 0;
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://entercinema-follows-rust.vercel.app/notifications/unread-count?user_email=${encodeURIComponent(userEmail)}`);
+        if (response.ok) {
+          const data = await response.json();
+          this.unreadCount = data.unread_count || 0;
+        }
+      } catch (error) {
+        console.error('Error fetching unread count:', error);
+      }
+    },
     checkAuthStatus() {
       const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
       if (token !== this.authToken) {
@@ -129,25 +151,36 @@ export default {
       }
     },
 
-    forceUpdateNavIcons() {
+    checkMinimizedConversations() {
+      try {
+        if (typeof localStorage !== 'undefined') {
+          const conversations = JSON.parse(localStorage.getItem('entercinema_chat_conversations') || '{}');
+          this.hasMinimizedConversations = Object.keys(conversations).length > 0 && 
+            Object.values(conversations).some(conv => conv.messages && conv.messages.length > 0);
+        }
+      } catch (error) {
+        console.warn('Error checking conversations:', error);
+      }
+    },
 
+    forceUpdateNavIcons() {
       const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
       this.authToken = token;
       this.$forceUpdate(); 
-
     },
 
     handleStorageChange(event) {
-
       if (event.key === 'access_token') {
         this.authToken = event.newValue;
+      } else if (event.key === 'entercinema_chat_conversations') {
+        this.checkMinimizedConversations();
       }
     },
 
     clearSearchBeforeNavigate() {
       this.$root.$emit('clear-search');
       if (this.$refs.chatbotModalRef && this.$refs.chatbotModalRef.chatBotOpen) {
-          this.$refs.chatbotModalRef.close();
+        this.$refs.chatbotModalRef.minimizeChatBot();
       }
     },
 
@@ -159,17 +192,26 @@ export default {
 
     openAiChat() {
       if (this.$refs.chatbotModalRef) {
-        this.$refs.chatbotModalRef.open();
-      } else {
-        console.error('ChatbotModal ref not found!');
+        const isAuthenticated = typeof window !== 'undefined' && localStorage.getItem('access_token');
+        
+        if (isAuthenticated) {
+          this.$refs.chatbotModalRef.open();
+        } else {
+          this.$refs.chatbotModalRef.chatBotOpen = true;
+          this.$refs.chatbotModalRef.chatBotMinimized = false;
+          this.$refs.chatbotModalRef.clearMinimizedState();
+          this.$refs.chatbotModalRef.checkMobileDevice();
+        }
+        
+        this.hasMinimizedConversations = false;
       }
     }
-  },
+  }
 };
 </script>
 
 <style lang="scss" module>
-@import '~/assets/css/utilities/_variables.scss';
+@use '~/assets/css/utilities/variables' as *;
 
 .nav {
   position: fixed;
@@ -179,13 +221,17 @@ export default {
   z-index: 5;
   height: 4.5rem;
   background-color: #000;
+  border: 1.5px solid rgba(34, 98, 121, 0.782);
+  border-radius:9px;
 
   @media (min-width: $breakpoint-large) { 
     top: 0;
     right: auto;
-    width: 10rem;
+    width: 9rem;
     height: 100%;
-    border-right: 1px solid $secondary-color;
+    border-radius:10px;
+    border: 1.5px solid rgba(34, 98, 121, 0.782);
+    border-right: 1.5px solid rgba(34, 98, 121, 0.782);
     padding: 1.5rem 0;
     display: flex;
     flex-direction: column;
@@ -248,6 +294,31 @@ export default {
     position: relative;
   }
   
+  .conversationIndicator {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    background: #ff4757;
+    border-radius: 50%;
+    border: 2px solid #000;
+    z-index: 1;
+    animation: pulse-indicator 2s infinite;
+    
+    @media (min-width: $breakpoint-large) {
+      width: 14px;
+      height: 14px;
+      top: -3px;
+      right: -3px;
+    }
+  }
+
+  @keyframes pulse-indicator {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
+  }
+  
   .betaBadge {
     position: absolute;
     top: -6px;
@@ -283,11 +354,47 @@ export default {
     }
   }
 }
+
+.notificationLink {
+  position: relative;
+}
+
+.notificationIconWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.notificationBadge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #FF5252;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 5px;
+  border-radius: 10px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #000;
+  white-space: nowrap;
+  
+  @media (min-width: $breakpoint-large) {
+    top: -6px;
+    right: -6px;
+    font-size: 12px;
+    min-width: 20px;
+    height: 20px;
+    padding: 2px 6px;
+  }
+}
 </style>
 
 <style lang="scss" scoped>
-@import '~/assets/css/utilities/_variables.scss';
-
+@use '~/assets/css/utilities/variables' as *;
 
 a.nuxt-link-active {
   &:hover,
@@ -296,8 +403,16 @@ a.nuxt-link-active {
   }
 
   svg g { 
-    stroke: $primary-color; 
+    stroke: #8BE9FD; 
+  }
+
+  svg {
+    color: #8BE9FD;
+    stroke: #8BE9FD;
+  }
+
+  img:not(.home-icon) { 
+    filter: brightness(0) saturate(100%) invert(83%) sepia(76%) saturate(618%) hue-rotate(164deg) brightness(96%) contrast(108%);
   }
 }
-
 </style>

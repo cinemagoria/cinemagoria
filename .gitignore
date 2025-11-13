@@ -14,9 +14,6 @@ dist
 # Environment files
 .env
 
-# @nuxtjs/pwa
-sw.*
-
 #Other
 .eslintcache
 .DS_Store

@@ -68,21 +68,22 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 10px 20px;
-  background-color: #111;
+  background-color: #18729f;
   color: #fff;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: 100%;
+  width: 60%;
+  margin: 0 auto;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12);
   position: relative;
 }
 
 .google-login-button:hover:not(.loading) {
-  background-color: #f8f9fa;
-  color: #111;
+  background-color: #125a7f;
+  color: #fff;
   box-shadow: 0 2px 4px rgba(0,0,0,0.18);
 }
 

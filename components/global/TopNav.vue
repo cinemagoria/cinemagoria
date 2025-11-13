@@ -19,17 +19,17 @@ export default {
 </script>
 
 <style lang="scss">
-@import '~/assets/css/utilities/_variables.scss';
+@use '~/assets/css/utilities/variables' as *;
 
 @media (max-width: $breakpoint-large - 1) {
   .topnav-active {
-    padding-top: 4.5rem;
+    padding-top: 5.5rem;
   }
 }
 </style>
 
 <style lang="scss" module>
-@import '~/assets/css/utilities/_variables.scss';
+@use '~/assets/css/utilities/variables' as *;
 
 .nav {
   position: fixed;
@@ -40,7 +40,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 4.5rem;
+  height: 5.5rem;
   padding: 0 5.5rem;
   background-color: #000;
 

@@ -1,5 +1,6 @@
 <template>
   <main class="main">
+    <UserNav @show-rated-modal="showRatedItems" />
     <TopNav
       :title="metaTitle" />
 
@@ -32,6 +33,7 @@
 </template>
 
 <script>
+import UserNav from '@/components/global/UserNav';
 import { apiImgUrl, getPerson } from '~/api';
 import TopNav from '~/components/global/TopNav';
 import PersonInfo from '~/components/person/PersonInfo';
@@ -42,6 +44,7 @@ import Listing from '~/components/Listing';
 
 export default {
   components: {
+    UserNav,
     TopNav,
     PersonInfo,
     MediaNav,
@@ -121,6 +124,53 @@ export default {
   },
 
   methods: {
+    showRatedItems() {
+      this.ratedItemsModalVisible = true;
+    },
+    async enrichWithIMDbRatings(items) {
+      if (!items || !items.length) return items;
+      
+      const enrichedItems = await Promise.all(
+        items.map(async (item) => {
+          try {
+            const mediaType = item.media_type || (item.title ? 'movie' : 'tv');
+            
+            const detailsResponse = await fetch(
+              `https://api.themoviedb.org/3/${mediaType}/${item.id}?api_key=${process.env.API_KEY}&append_to_response=external_ids`
+            );
+            
+            if (detailsResponse.ok) {
+              const detailsData = await detailsResponse.json();
+              const imdbId = detailsData.external_ids?.imdb_id;
+              
+              if (imdbId) {
+                const imdbResponse = await fetch(`/api/imdb-rating/${imdbId}`);
+                
+                if (imdbResponse.ok) {
+                  const imdbData = await imdbResponse.json();
+                  if (imdbData.found && imdbData.score) {
+                    return {
+                      ...item,
+                      imdb_rating: imdbData.score,
+                      rating_source: 'imdb'
+                    };
+                  }
+                }
+              }
+            }
+          } catch (error) {
+            console.error(`Failed to fetch IMDb rating for ${item.id}`);
+          }
+          
+          return {
+            ...item,
+            rating_source: 'tmdb'
+          };
+        })
+      );
+      
+      return enrichedItems;
+    },
     truncate (string, length) {
       return this.$options.filters.truncate(string, length);
     },
@@ -141,7 +191,7 @@ export default {
       this.activeMenu = label;
     },
 
-    initKnownFor () {
+    async initKnownFor () {
       if (this.knownFor !== null) return;
 
       const department = this.person.known_for_department;
@@ -167,7 +217,7 @@ export default {
       });
 
       results.sort((a, b) => a.vote_count > b.vote_count ? -1 : 1);
-
+      results = await this.enrichWithIMDbRatings(results);
       this.knownFor = {
         page: 1,
         total_pages: 1,

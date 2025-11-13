@@ -2,7 +2,7 @@
   <div
     v-if="isOpen"
     class="alert alert--alt alert--bottom"> 
-    <p>We use cookies and other tracking technologies to enhance your browsing experience. By using this website, you agree to the use of cookies and other tracking technologies. <a target="_blank" href="/terms" rel="noopener">More Information</a>.</p>
+    <p>We use cookies and other tracking technologies to enhance your browsing experience. By using this website, you agree to the use of cookies and other tracking technologies. <a target="_blank" href="/usage-policies" rel="noopener">More Information</a>.</p>
 
     <div>
       <button

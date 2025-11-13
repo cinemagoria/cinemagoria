@@ -1,0 +1,1581 @@
+<template>
+  <main class="main">
+    <section class="notifications-section">
+      <UserNav @show-rated-modal="showRatedItems" />
+      <div v-if="isLoggedIn" class="notifications-container">
+        <div class="notifications-header">
+          <div class="header-top" style="display: flex; align-items: center;">
+            <h1 class="title-primary" style="margin: 0;">Notifications</h1>
+          </div>
+
+          <p class="title-secondary">
+            Stay informed about new content from the people and shows you follow.<button @click="openHowItWorksModal" class="help-icon-button"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg></button>
+          </p>
+
+          <div class="header-actions">
+            <button 
+              @click="openFollowingModal" 
+              class="following-button-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <polyline points="16 11 18 13 22 9"/>
+              </svg>
+              <span>Following ({{ totalFollowingCount }})</span>
+            </button>
+
+            <div class="secondary-actions">
+              <button 
+                @click="toggleFilter" 
+                :class="['filter-button', { active: !showUnreadOnly }]">
+                <svg v-if="showUnreadOnly" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-todo-icon lucide-list-todo"><path d="M13 5h8"/><path d="M13 12h8"/><path d="M13 19h8"/><path d="m3 17 2 2 4-4"/><rect x="3" y="4" width="6" height="6" rx="1"/></svg>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell-dot-icon lucide-bell-dot"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M13.916 2.314A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.74 7.327A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673 9 9 0 0 1-.585-.665"/><circle cx="18" cy="8" r="3"/></svg>
+                <span>{{ showUnreadOnly ? 'Show All' : 'Only Not Readed' }}</span>
+              </button>
+              <button 
+                v-if="unreadCount > 0"
+                @click="markAllAsRead" 
+                class="mark-all-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 11 12 14 22 4"/>
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                </svg>
+                <span>Mark All Read</span>
+              </button>
+            </div>
+          </div>
+ 
+
+        <FollowingModal 
+          v-if="showFollowingModal" 
+          @close="showFollowingModal = false"
+          @unfollow-updated="handleUnfollowUpdated" />
+        <HowItWorksModal 
+          v-if="showHowItWorksModal" 
+          @close="showHowItWorksModal = false" />
+        </div>
+
+        <div v-if="loading" class="loader">
+          <div class="modern-spinner">
+            <div></div><div></div><div></div><div></div>
+          </div>
+        </div>
+
+        <div v-else-if="notifications.length === 0" class="no-notifications">
+          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <p>{{ showUnreadOnly ? 'No unread notifications' : 'No notifications yet' }}</p>
+          <p class="sub-text">Follow actors and directors to get notified about their new releases</p>
+        </div>
+
+        <div v-else class="notifications-list">
+          <div 
+            v-for="notification in notifications" 
+            :key="notification.id"
+            :class="['notification-item', { unread: !notification.read }]"
+            @click="handleNotificationClick(notification)">
+            
+            <div class="notification-icon">
+              <img 
+                v-if="notification.person_id && notification.profile_path" 
+                :src="`https://image.tmdb.org/t/p/w185${notification.profile_path}`" 
+                :alt="notification.person_name"
+                class="person-profile-image">
+              <svg v-else-if="notification.media_type === 'movie'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>
+              </svg>
+              <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .89-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.11-.9-2-2-2zm0 14H3V8h18v12zM9 10v8l7-4z"/>
+              </svg>
+            </div>
+
+            <div class="notification-content">
+              <div class="notification-text">
+                <div class="notification-title">
+                  <strong>{{ notification.person_name }}</strong> <span class="has-release">has a new release </span>
+                </div>
+                <div class="notification-media">
+                  {{ notification.media_title }}
+                </div>
+                
+                <div v-if="getFallbackImageUrl(notification)" class="notification-poster">
+                  <img :src="getFallbackImageUrl(notification)" :alt="notification.media_title">
+                </div>
+                
+                <div v-if="notification.character" class="notification-character">
+                  <span style="color:#d0d0d0 !important;">as </span>{{ notification.character }}
+                </div>
+                 <div class="notification-meta">
+                  <span class="media-badge">
+                    {{ notification.media_type === 'movie' ? 'Movie' : notification.media_type === 'tv' ? 'TV Show' : 'Episode' }}
+                  </span>
+                  <div class="info-container">
+                    <label class="release-date">Release: <span class="only-date">{{ formatDate(notification.release_date) }}</span></label>
+                    <span class="time-ago">{{ getTimeAgo(notification.created_at) }}</span>
+                  </div>
+                </div>
+                <div v-if="notification.overview && notification.overview.length > 0" class="notification-overview">
+                  {{ notification.overview }}
+                </div>
+               
+              </div>
+            </div>
+
+            <div class="notification-tabs">
+              <button 
+                @click.stop="openDeleteModal(notification.id)"
+                class="tab-delete-btn"
+                title="Delete">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 11v6"/>
+                  <path d="M14 11v6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                  <path d="M3 6h18"/>
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+              </button>
+
+              <button 
+                v-if="!notification.read"
+                @click.stop="markAsRead(notification.id)"
+                :disabled="animatingRead === notification.id"
+                class="tab-check-btn">
+                <svg 
+                  v-if="animatingRead === notification.id"
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  stroke-width="3"
+                  class="checkmark-svg">
+                  <polyline points="20 6 9 17 4 12" class="checkmark-path"/>
+                </svg>
+                <svg 
+                  v-else
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="16" 
+                  height="16" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  stroke-width="2">
+                  <circle cx="12" cy="12" r="9"/>
+                </svg>
+              </button>
+
+              <button 
+                v-if="notification.read && !showUnreadOnly"
+                @click.stop="markAsUnread(notification.id)"
+                class="tab-check-btn active">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6 9 17l-5-5"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="deleteModalVisible" class="modal-overlay" @click.self="closeDeleteModal">
+          <div class="delete-modal">
+            <div class="modal-header">
+              <h3>Delete Notification</h3>
+              <button class="close-btn" @click="closeDeleteModal" type="button" aria-label="Close">×</button>
+            </div>
+            
+            <div class="delete-modal-content">
+              <div class="exclamation-svg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-alert-icon lucide-circle-alert"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+              </div>
+              <p class="delete-message">Are you sure you want to permanently delete this notification?</p>
+              <p class="delete-warning">This action cannot be undone.</p>
+              
+              <div class="delete-actions">
+                <button @click="closeDeleteModal" class="cancel-btn" type="button"><span class="label-button-modal">Cancel</span></button>
+                <button @click="confirmDeleteNotification" class="confirm-delete-btn" type="button"><span class="label-button-modal">Delete</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="totalPages > 1" class="pagination-footer">
+          <button @click="goToFirst" :disabled="currentPage === 1 || isLoadingPage">|<</button>
+          <button @click="previousPage" :disabled="currentPage === 1 || isLoadingPage"><<</button>
+          <span>
+            <label for="page" style="font-size:13px;">Page</label>
+            <input 
+              type="number" 
+              id="page" 
+              style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" 
+              v-model.number="currentPage" 
+              min="1" 
+              :max="totalPages"
+              :disabled="isLoadingPage">
+          </span>
+          <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
+          <button @click="nextPage" :disabled="currentPage === totalPages || isLoadingPage">>></button>
+          <button @click="goToLast" :disabled="currentPage === totalPages || isLoadingPage">>|</button>
+        </div>
+
+      </div>
+    </section>
+  </main>
+</template>
+
+<script>
+import UserNav from '@/components/global/UserNav';
+import supabase from '@/services/supabase';
+import FollowingModal from '~/components/FollowingModal.vue';
+import HowItWorksModal from '~/components/HowItWorksModal.vue';
+
+export default {
+  components: {
+    UserNav,
+    FollowingModal,
+    HowItWorksModal
+  },
+  data() {
+    return {
+      isLoggedIn: false,
+      userEmail: null,
+      isMenuOpen: false,
+      notifications: [],
+      loading: true,
+      showUnreadOnly: true,
+      followsApiUrl: 'https://entercinema-follows-rust.vercel.app',
+      showFollowingModal: false,
+      totalFollowingCount: 0,
+      showHowItWorksModal: false,
+      animatingRead: null,
+      currentPage: 1,
+      perPage: 50,
+      totalPages: 1,
+      totalNotifications: 0,
+      isLoadingPage: false,
+      deleteModalVisible: false,
+      notificationToDelete: null,
+      tvFollowsCache: [],
+    };
+  },
+  computed: {
+    unreadCount() {
+      return this.notifications.filter(n => !n.read).length;
+    }
+  },
+
+  async mounted() {
+    this.userEmail = localStorage.getItem('email');
+    const accessToken = localStorage.getItem('access_token');
+    this.isLoggedIn = accessToken !== null;
+
+    if (this.isLoggedIn) {
+      this.userAvatar = await this.getUserAvatar();
+      await this.fetchNotifications();
+      await this.fetchFollowingCount();
+      await this.fetchTvFollowsForCache();
+    } else {
+      this.loading = false;
+      const hasAttemptedLogin = sessionStorage.getItem('notifications_login_attempted');
+      
+      if (hasAttemptedLogin) {
+        sessionStorage.removeItem('notifications_login_attempted');
+        this.$router.push('/');
+      } else {
+        sessionStorage.setItem('notifications_login_attempted', 'true');
+        this.goToLogin();
+      }
+    }
+  },
+
+  methods: {
+    async fetchTvFollowsForCache() {
+      if (!this.userEmail) return;
+      
+      try {
+        const response = await fetch(`${this.followsApiUrl}/tv-follows/list?user_email=${encodeURIComponent(this.userEmail)}`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          this.tvFollowsCache = data.tv_follows || [];
+        }
+      } catch (error) {
+        console.error('Error fetching TV follows for cache:', error);
+      }
+    },
+    showRatedItems() {
+      this.ratedItemsModalVisible = true;
+    },
+    async getUserAvatar() {
+      try {
+        const { data, error } = await supabase
+          .from('user_data')
+          .select('avatar')
+          .eq('email', this.userEmail);
+
+        if (error) throw error;
+        return data[0]?.avatar || '/avatars/avatar-ss0.png';
+      } catch (error) {
+        console.error('Error fetching avatar:', error);
+        return '/avatars/avatar-ss0.png';
+      }
+    },
+
+    async fetchNotifications() {
+      this.loading = true;
+      try {
+        const url = `${this.followsApiUrl}/notifications?user_email=${encodeURIComponent(this.userEmail)}${this.showUnreadOnly ? '&unread_only=true' : ''}&page=${this.currentPage}&per_page=${this.perPage}`;
+        const response = await fetch(url);
+        
+        if (!response.ok) throw new Error('Failed to fetch notifications');
+        
+        const data = await response.json();
+        if (data.success) {
+          this.notifications = data.notifications;
+          if (data.pagination) {
+            this.currentPage = data.pagination.current_page;
+            this.perPage = data.pagination.per_page;
+            this.totalPages = data.pagination.total_pages;
+            this.totalNotifications = data.pagination.total_notifications;
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      } finally {
+        this.loading = false;
+        this.isLoadingPage = false;
+      }
+    },
+
+    toggleFilter() {
+    this.showUnreadOnly = !this.showUnreadOnly;
+    this.currentPage = 1;
+    this.fetchNotifications();
+    },
+
+    goToPage(pageNumber) {
+      if (pageNumber < 1 || pageNumber > this.totalPages || this.isLoadingPage) return;
+      this.currentPage = pageNumber;
+      this.isLoadingPage = true;
+      
+      setTimeout(() => {
+        this.isLoadingPage = false;
+      }, 5000);
+      
+      this.fetchNotifications();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.goToPage(this.currentPage + 1);
+      }
+    },
+
+    previousPage() {
+      if (this.currentPage > 1) {
+        this.goToPage(this.currentPage - 1);
+      }
+    },
+
+    goToFirst() {
+      if (this.currentPage !== 1 && !this.isLoadingPage) {
+        this.goToPage(1);
+      }
+    },
+
+    goToLast() {
+      if (this.currentPage !== this.totalPages && !this.isLoadingPage) {
+        this.goToPage(this.totalPages);
+      }
+    },
+
+    handleNotificationClick(notification) {
+      let url;
+      if (notification.media_type === 'episode') {
+        url = `/tv/${notification.person_id}`;
+      } else {
+        url = `/${notification.media_type}/${notification.media_id}`;
+      }
+      this.$router.push(url);
+    },
+
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      });
+    },
+
+    getTimeAgo(timestamp) {
+      const now = Date.now() / 1000;
+      const diff = now - timestamp;
+
+      if (diff < 60) return 'Just now';
+      if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+      if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+      return `${Math.floor(diff / 604800)}w ago`;
+    },
+
+    getFallbackImageUrl(notification) {
+      if (notification.poster_path) {
+        return `https://image.tmdb.org/t/p/w185${notification.poster_path}`;
+      }
+      
+      if (notification.media_type === 'episode' && notification.person_id) {
+        return this.getSeriesPosterUrl(notification.person_id);
+      }
+      
+      if (notification.secondary_profile_path) {
+        return `https://image.tmdb.org/t/p/w185${notification.secondary_profile_path}`;
+      }
+      
+      if (notification.profile_path) {
+        return `https://image.tmdb.org/t/p/w185${notification.profile_path}`;
+      }
+      
+      return null;
+    },
+
+    getSeriesPosterUrl(tvId) {
+      const tvFollow = this.tvFollowsCache.find(f => f.tv_id === tvId);
+      if (tvFollow && tvFollow.poster_path) {
+        return `https://image.tmdb.org/t/p/w185${tvFollow.poster_path}`;
+      }
+      return null;
+    },
+
+    goToLogin() {
+        this.$router.push('/login');
+    },
+
+
+    async fetchFollowingCount() {
+        if (!this.userEmail) return;
+
+        try {
+          const [peopleResponse, tvResponse] = await Promise.all([
+            fetch(`https://entercinema-follows-rust.vercel.app/follows/list?user_email=${encodeURIComponent(this.userEmail)}`),
+            fetch(`https://entercinema-follows-rust.vercel.app/tv-follows/list?user_email=${encodeURIComponent(this.userEmail)}`)
+          ]);
+
+          let peopleCount = 0;
+          let tvCount = 0;
+
+          if (peopleResponse.ok) {
+            const peopleData = await peopleResponse.json();
+            peopleCount = peopleData.follows?.length || 0;
+          }
+
+          if (tvResponse.ok) {
+            const tvData = await tvResponse.json();
+            tvCount = tvData.tv_follows?.length || 0;
+          }
+
+          this.totalFollowingCount = peopleCount + tvCount;
+        } catch (error) {
+          console.error('Error fetching following count:', error);
+        }
+      },
+
+      openFollowingModal() {
+        this.showFollowingModal = true;
+      },
+
+      openHowItWorksModal() {
+        this.showHowItWorksModal = true;
+      },
+
+      handleUnfollowUpdated() {
+        this.fetchFollowingCount();
+        this.fetchNotifications();
+        this.fetchTvFollowsForCache();
+      },
+
+      async markAsRead(notificationId) {
+        this.animatingRead = notificationId;
+        
+        await new Promise(resolve => setTimeout(resolve, 600));
+        
+        try {
+          const response = await fetch(`${this.followsApiUrl}/notifications/mark-read`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_email: this.userEmail,
+              notification_id: notificationId
+            })
+          });
+
+          if (response.ok) {
+            const notification = this.notifications.find(n => n.id === notificationId);
+            if (notification) {
+              notification.read = true;
+              
+              if (this.showUnreadOnly) {
+                setTimeout(() => {
+                  this.notifications = this.notifications.filter(n => n.id !== notificationId);
+                }, 200);
+              }
+            }
+            
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new Event('notifications-updated'));
+            }
+          }
+        } catch (error) {
+          console.error('Error marking as read:', error);
+        } finally {
+          this.animatingRead = null;
+        }
+      },
+
+      async markAsUnread(notificationId) {
+        try {
+          const response = await fetch(`${this.followsApiUrl}/notifications/mark-unread`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_email: this.userEmail,
+              notification_id: notificationId
+            })
+          });
+
+          if (response.ok) {
+            const notification = this.notifications.find(n => n.id === notificationId);
+            if (notification) {
+              notification.read = false;
+              
+              if (this.showUnreadOnly) {
+                setTimeout(() => {
+                  this.notifications = this.notifications.filter(n => n.id !== notificationId);
+                }, 200);
+              }
+            }
+            
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new Event('notifications-updated'));
+            }
+          }
+        } catch (error) {
+          console.error('Error marking as unread:', error);
+        }
+      },
+
+      openDeleteModal(notificationId) {
+        this.notificationToDelete = notificationId;
+        this.deleteModalVisible = true;
+      },
+
+      closeDeleteModal() {
+        this.deleteModalVisible = false;
+        this.notificationToDelete = null;
+      },
+
+      async confirmDeleteNotification() {
+        if (!this.notificationToDelete) return;
+        
+        try {
+          const response = await fetch(`${this.followsApiUrl}/notifications/delete`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_email: this.userEmail,
+              notification_id: this.notificationToDelete
+            })
+          });
+
+          if (response.ok) {
+            this.notifications = this.notifications.filter(n => n.id !== this.notificationToDelete);
+            
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new Event('notifications-updated'));
+            }
+            
+            this.closeDeleteModal();
+          }
+        } catch (error) {
+          console.error('Error deleting notification:', error);
+        }
+      },
+
+      async markAllAsRead() {
+        try {
+          const response = await fetch(`${this.followsApiUrl}/notifications/mark-read`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_email: this.userEmail,
+              mark_all: true
+            })
+          });
+
+          if (response.ok) {
+            this.notifications.forEach(n => n.read = true);
+            
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new Event('notifications-updated'));
+            }
+          }
+        } catch (error) {
+          console.error('Error marking all as read:', error);
+        }
+      }
+  }
+};
+</script>
+
+<style scoped>
+.title-primary {
+  margin-top: 20px;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+}
+
+.form {
+  width: 50%;
+  background-color: black;
+}
+
+.userMenu {
+  width: 50%;
+  background-color: black;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1.5px solid rgba(28, 79, 97, 0.782);
+  border-right: 1.5px solid rgba(34, 98, 121, 0.782);
+  border-top: 1.5px solid rgba(34, 98, 121, 0.782);
+  border-bottom-right-radius: 9px;
+  border-top-right-radius: 9px;
+}
+.field-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.field {
+  display: flex;
+  align-items: flex-start;
+  background-color: black;
+  border-bottom: 1.5px solid rgba(28, 79, 97, 0.782);
+  border-left: 1.5px solid rgba(28, 79, 97, 0.782);
+  border-top: 1.5px solid rgba(34, 98, 121, 0.782);
+  border-bottom-left-radius: 9px;
+  border-top-left-radius: 9px;
+}
+
+input[type='text'] {
+  flex: 1;
+  height: 5rem;
+  padding: 2.1rem 1.5rem;
+  margin-top: 2px;
+  font-size: 1.6rem;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #79cddf;
+  background: none;
+  border: 0;
+  outline: 0;
+}
+
+button {
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  background: none;
+}
+
+  @media screen and (max-width: 600px) {
+  .navbar-title {
+    font-size: 12px; 
+  }
+
+  .button-logout {
+    align-items: flex-start;
+    display: inline-block;
+    line-height: 16.1px;
+    right: 1;
+    text-align: center;
+  }
+
+  .navbar-title {
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 767px) {
+    .nav-button-container {
+      margin-top: 30px; 
+    }
+  }
+
+.following-button {
+  padding: 0.8rem 1.6rem;
+  border-radius: 8px;
+  border: 2px solid #8F989E;
+  background: rgba(80, 250, 123, 0.1);
+  color: #8F989E;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.following-button:hover {
+  background: rgba(80, 250, 123, 0.2);
+  transform: translateY(-2px);
+}
+
+
+.notifications-section {
+  min-height: 100vh;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.notifications-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3rem;
+  gap: 2rem;
+}
+
+.header-top {
+  text-align: center;
+  max-width: 700px;
+}
+
+.title-secondary {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 15px;
+  line-height: 1.5;
+}
+
+.header-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.following-button-primary {
+  padding: 0.8rem 1.6rem;
+  border-radius: 8px;
+  background: #8BE9FD;
+  color: #000;
+  border: none;
+  font-size: 1.4rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(139, 233, 253, 0.3);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.following-button-primary:hover {
+  background: #7DD4E8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(139, 233, 253, 0.4);
+}
+
+.secondary-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.filter-button,
+.mark-all-button {
+  padding: 0.8rem 1.6rem;
+  border-radius: 8px;
+  border: 2px solid #8BE9FD;
+  background: transparent;
+  color: #8BE9FD;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+
+.filter-button:hover,
+.mark-all-button:hover {
+  background: rgba(139, 233, 253, 0.1);
+}
+
+.filter-button.active {
+  background: #8BE9FD;
+  color: #000;
+}
+
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.notification-item {
+  display: grid;
+  grid-template-columns: 60px 1fr 250px;
+  gap: 2rem;
+  padding: 2rem;
+  margin-top:30px;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  border-top-left-radius: 12px;
+  border-left: 4px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-items: start;
+  position: relative;
+}
+
+.notification-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateX(4px);
+}
+
+.notification-item.unread {
+  border-left-color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.08);
+}
+
+.notification-icon {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  border: solid 1px #8BE9FD;
+  background: rgba(139, 233, 253, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8BE9FD;
+  flex-shrink: 0;
+  margin-right: 1rem;
+}
+
+.person-profile-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.notification-content {
+  display: contents;
+}
+
+.notification-text {
+  grid-column: 2;
+  min-width: 0;
+  padding-right: 4rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.notification-poster {
+  width: 200px;
+  min-width: 200px;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  border-left: 3px solid #8BE9FD;
+  box-shadow: -4px 0 12px rgba(139, 233, 253, 0.3), 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-poster + .notification-meta {
+  margin-top: 5px;
+}
+
+.notification-item:hover .notification-poster {
+  box-shadow: -6px 0 16px rgba(139, 233, 253, 0.5), 0 6px 16px rgba(0, 0, 0, 0.4);
+  transform: translateX(-2px);
+}
+
+.notification-poster img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  max-height: 300px;
+}
+
+.notification-title {
+  font-size: 1.6rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.notification-media {
+  font-size: 2.1rem;
+  color: #8BE9FD;
+  margin-bottom: 1rem;
+  padding-right: 1rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.notification-character {
+  font-size: 1.4rem;
+  position: relative;
+  margin-bottom: 5px; 
+  color: #8BE9FD;
+  font-style: italic;
+  margin-bottom: 0.5rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.notification-overview {
+  font-size: 1.3rem;
+  color: #d0d0d0;
+  margin-top: 0.8rem;
+  margin-bottom: 0.8rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.notification-meta {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.media-badge {
+  padding: 0.2rem 0.8rem;
+  background: rgba(139, 233, 253, 0.2);
+  border-radius: 4px;
+  color: #8BE9FD;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+
+.no-notifications {
+  text-align: center;
+  padding: 6rem 2rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.no-notifications svg {
+  margin-bottom: 2rem;
+  opacity: 0.5;
+}
+
+.no-notifications p {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.sub-text {
+  font-size: 1.4rem !important;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.auth-required {
+  text-align: center;
+  padding: 6rem 2rem;
+}
+
+.sign-in-button {
+  margin-top: 2rem;
+  padding: 1.2rem 3rem;
+  background: #8BE9FD;
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-size: 1.6rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+  .notification-item {
+    grid-template-columns: 60px 1fr 200px;
+  }
+  
+  .notification-poster {
+    width: 200px;
+    min-width: 200px;
+  }
+}
+
+@media (max-width: 900px) {
+  .notification-item {
+    grid-template-columns: 48px 1fr;
+    grid-template-rows: auto auto;
+    gap: 1.5rem;
+  }
+  
+  .notification-icon {
+    grid-column: 1;
+    grid-row: 1;
+    width: 52px;
+    height: 52px;
+    margin-right: 1rem;
+  }
+  
+  .notification-text {
+    grid-column: 2;
+    grid-row: 1;
+    padding-right: 0;
+  }
+  
+  .notification-poster {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    max-width: 200px;
+    justify-self: left;
+    border-left: none;
+    border-top: 3px solid #8BE9FD;
+    box-shadow: 0 -4px 12px rgba(139, 233, 253, 0.3), 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.notification-tabs {
+  position: absolute;
+  top: 0;
+  right: 0.3rem;
+  display: flex;
+  gap: 0;
+  transform: translateY(-100%);
+}
+
+@media (max-width: 768px) {  
+  .notification-tabs {
+    top: -2px;
+    right: 0.3rem;
+  }
+  
+  .tab-check-btn,
+  .tab-delete-btn {
+    width: 42px;
+    height: 32px;
+  }
+  .title-secondary {
+    word-wrap: break-word;
+  }
+  
+
+  .filter-button,
+  .mark-all-button {
+    padding: 0.7rem 1.4rem;
+  }
+  
+  .notification-item {
+    padding: 1.5rem;
+  }
+  
+  .notification-poster {
+    max-width: 240px;
+  }
+  
+  .notification-title {
+    font-size: 1.5rem;
+  }
+  
+  .notification-media {
+    font-size: 1.96rem;
+  }
+  
+  .notification-character {
+    font-size: 1.3rem;
+    margin-top: 8px;
+  }
+  
+  .notification-overview {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .notification-tabs {
+    top: -2px;
+    right: 0.3rem;
+  }
+  
+  .tab-check-btn,
+  .tab-delete-btn {
+    width: 42px;
+    height: 32px;
+  }
+  
+  .tab-check-btn svg,
+  .tab-delete-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+  .notification-item {
+    grid-template-columns: 40px 1fr;
+    padding: 1.2rem;
+    gap: 1rem;
+  }
+  
+  .notification-icon {
+    width: 47px;
+    height: 47px;
+    position:relative;
+    margin-left: 0.5rem;
+  }
+  
+  .notification-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .notification-title {
+    font-size: 1.3rem;
+    margin-left: 1.5rem;
+  }
+  
+  .notification-media {
+    font-size: 1.68rem;
+    margin-left: 1.5rem;
+  }
+  
+  .notification-character {
+    font-size: 1.1rem;
+    margin-left: 1.5rem;
+  }
+  
+  .notification-overview {
+    font-size: 1.1rem;
+    margin-left: 1.5rem;
+  }
+  
+  .notification-meta {
+    font-size: 1.1rem;
+    gap: 0.8rem;
+    margin-left: 1.5rem;
+  }
+  
+  .media-badge {
+    font-size: 1rem;
+  }
+  
+  .notification-poster {
+    max-width: 200px;
+    margin-left: 1.5rem;
+  }
+  
+    .header-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .following-button-primary {
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+    justify-content: center;
+  }
+  
+  .secondary-actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .filter-button,
+  .mark-all-button {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@media (max-width: 400px) {  
+  .notification-item {
+    padding: 1rem;
+  }
+  
+  .notification-title {
+    font-size: 1.2rem;
+  }
+  
+  .notification-media {
+    font-size: 1.54rem;
+  }
+  
+  .notification-overview {
+    font-size: 1rem;
+  }
+  
+  .notification-poster {
+    max-width: 180px;
+  }
+}
+
+.info-container {
+  position: relative;
+  top: 2.6px;
+}
+
+.only-date {
+ color: #8BE9FD;
+}
+
+.time-ago {
+  color: #d0d0d0;
+  top: 1px;
+}
+
+.has-release {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (min-width: 768px) {
+  .notification-text {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 0 2rem;
+    grid-column: 2;
+    padding-right: 4rem;
+    align-items: start;
+  }
+  
+  .notification-poster {
+    grid-column: 1;
+    grid-row: 1 / span 5;
+    align-self: start;
+  }
+  
+  .notification-title {
+    grid-column: 2;
+    grid-row: 1;
+    margin-bottom: 0;
+  }
+  
+  .notification-media {
+    grid-column: 2;
+    grid-row: 2;
+    margin-bottom: 0;
+  }
+  
+  .notification-character {
+    grid-column: 2;
+    grid-row: 3;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  
+  .notification-meta {
+    grid-column: 2;
+    grid-row: 4;
+    margin-top: 0.5rem;
+  }
+  
+  .notification-overview {
+    grid-column: 2;
+    grid-row: 5;
+    margin-top: 0;
+  }
+  
+  .media-badge {
+    display: inline-block;
+    align-self: start;
+  }
+}
+
+.checkmark-svg {
+  width: 20px;
+  height: 20px;
+}
+
+.checkmark-path {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: drawCheck 0.6s ease-out forwards;
+}
+
+@keyframes drawCheck {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.pagination-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fff;
+  font-size: 1.4rem;
+}
+
+.total-count {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.pagination-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  width: 100% !important;
+  margin: 0 auto;
+  background: rgba(16, 20, 33, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  padding: 8px;
+  gap: 0.5rem;
+  top: 3px;
+  border: 0.5px #31414C solid;
+  position: relative;
+}
+
+.pagination-footer button {
+  padding: 0.5rem 1rem;
+  background: rgba(82, 71, 71, 0);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.pagination-footer button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.delete-modal {
+  width: 100%;
+  max-width: 380px;
+  background: linear-gradient(to bottom right, #092739, #061720);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.delete-modal-content {
+  padding: 30px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.warning-icon {
+  margin-bottom: 20px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.delete-message {
+  color: #fff;
+  font-size: 1.5rem;
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+}
+
+.delete-warning {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.3rem;
+  margin: 0 0 25px 0;
+}
+
+.delete-actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  justify-content: center;
+}
+
+.cancel-btn,
+.confirm-delete-btn {
+  flex: 1;
+  max-width: 120px;
+  padding: 10px 0;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.cancel-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.confirm-delete-btn {
+  background: #8BE9FD;
+  color: #000
+}
+
+.confirm-delete-btn:hover {
+  background: #FF5252;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+}
+
+@media (max-width: 400px) {
+  .delete-modal {
+    max-width: 320px;
+  }
+  
+  .delete-message {
+    font-size: 1.4rem;
+  }
+  
+  .delete-warning {
+    font-size: 1.2rem;
+  }
+  
+  .cancel-btn,
+  .confirm-delete-btn {
+    font-size: 1.3rem;
+    max-width: 100px;
+  }
+}
+
+.exclamation-svg {
+  position: relative;
+  bottom: 1.5rem;
+}
+
+.label-button-modal {
+  margin: 0 auto !important;
+  position: relative !important;
+}
+
+.header-subtitle {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+}
+
+.help-icon-button {
+  background: none;
+  border: none;
+  padding: 0 0.3rem;
+  margin: 0 0.2rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  position: relative;
+  top: -1px;
+}
+
+.help-icon-button:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+.help-icon-button svg {
+  display: block;
+}
+
+.tab-check-btn,
+.tab-delete-btn {
+  width: 44px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(9, 39, 57, 0.95);
+  border: 2px solid #8BE9FD;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #8BE9FD;
+  padding: 0;
+  flex-shrink: 0;
+  border-bottom: none;
+}
+
+.tab-delete-btn {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: 1px solid rgba(139, 233, 253, 0.3);
+}
+
+.tab-check-btn {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.tab-check-btn:hover,
+.tab-delete-btn:hover {
+  background: rgba(139, 233, 253, 0.25);
+  transform: translateY(-2px);
+}
+
+.tab-check-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.tab-check-btn.active {
+  background: #8BE9FD;
+  color: #000;
+}
+
+.tab-delete-btn:hover {
+  background: rgba(139, 233, 253, 0.25);
+  transform: translateY(-2px);
+}
+
+.tab-delete-btn:active {
+  background: #FF6B6B;
+  color: #fff;
+}
+</style>
