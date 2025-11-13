@@ -1017,7 +1017,6 @@ button {
   right: 0.3rem;
   display: flex;
   gap: 0;
-  z-index: 10;
   transform: translateY(-100%);
 }
 
