@@ -6,7 +6,7 @@ export default {
     fallback: true,
   },
   head: {
-    title: "EnterCinema: Descubre al instante tus películas y series favoritas",
+    title: "EnterCinema: El instante en que descubrís qué ver",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -85,7 +85,7 @@ export default {
       lang: "es",
       name: "EnterCinema",
       short_name: "EnterCinema",
-      description: "Descubre al instante tus películas y series favoritas.",
+      description: "El instante en que descubrís qué ver.",
       theme_color: "#03496B",
       background_color: "#ffffff",
       display: "standalone",
