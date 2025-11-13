@@ -130,7 +130,7 @@
         </ul>
       </div>
       <div v-if="isLoggedIn" :class="$style.followSection">
-          <h4 style="font-size: 16px; font-weight:800; text-transform: uppercase;" class="section-title">Notificaciones</h4>
+          <h4 style="font-size: 16px; font-weight:800; text-transform: uppercase;" class="section-title">Notifications</h4>
           <button 
             @click="toggleFollowTv" 
             :class="[$style.followButton, { [$style.following]: isFollowingTv }]"
