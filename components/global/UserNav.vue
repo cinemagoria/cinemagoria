@@ -251,7 +251,7 @@ export default {
 
 .ask-ai-button {
   background: linear-gradient(135deg, #000000 0%, #14232A 100%);
-  border: 1px solid #8BE9FD;
+  border: 1px solid #d2d3d3b8;
   cursor: pointer;
   padding: 8px 12px;
   display: flex;
@@ -310,7 +310,7 @@ export default {
   width: 40px;
   height: 40px;
   border-radius: 14px;
-  border: 1px solid #8BE9FD;
+  border: 1px solid #d2d3d3b8;
   box-shadow: 0 5px 32px 0 rgba(31, 97, 135, 0.37);
   object-fit: cover;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -330,7 +330,7 @@ export default {
   height: 40px;
   top: 6px;
   border-radius: 14px;
-  border: 1px solid #8BE9FD;
+  border: 1px solid #d2d3d3b8;
   box-shadow: 0 5px 32px 0 rgba(31, 97, 135, 0.37);
   background: transparent;
   cursor: pointer;

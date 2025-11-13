@@ -253,9 +253,9 @@ body {
   justify-content: flex-end;
   align-items: center;
   padding: 1rem;
-  border-bottom: 1.5px solid rgba(28, 79, 97, 0.782);
-  border-right: 1.5px solid rgba(34, 98, 121, 0.782);
-  border-top: 1.5px solid rgba(34, 98, 121, 0.782);
+  border-bottom: 1.5px solid rgb(38 104 128 / 78%);
+  border-right: 1.5px solid rgb(42 128 159 / 78%);
+  border-top: 1.5px solid rgba(46, 135, 168, 0.78);
   border-bottom-right-radius: 9px;
   border-top-right-radius: 9px;
 }
@@ -268,9 +268,9 @@ body {
   display: flex;
   align-items: flex-start;
   background-color: black;
-  border-bottom: 1.5px solid rgba(28, 79, 97, 0.782);
-  border-left: 1.5px solid rgba(28, 79, 97, 0.782);
-  border-top: 1.5px solid rgba(34, 98, 121, 0.782);
+  border-bottom: 1.5px solid rgb(38 104 128 / 78%);
+  border-left: 1.5px solid rgb(42 128 159 / 78%);
+  border-top: 1.5px solid rgba(46, 135, 168, 0.78);
   border-bottom-left-radius: 9px;
   border-top-left-radius: 9px;
 }

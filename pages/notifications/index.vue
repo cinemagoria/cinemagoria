@@ -437,6 +437,10 @@ export default {
       return null;
     },
 
+    goToLogin() {
+        this.$router.push('/login');
+    },
+
     getSeriesPosterUrl(tvId) {
       const tvFollow = this.tvFollowsCache.find(f => f.tv_id === tvId);
       if (tvFollow && tvFollow.poster_path) {
