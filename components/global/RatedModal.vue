@@ -102,7 +102,7 @@
               @click="removeRating" 
               class="remove-rating-btn"
             >
-              <span style="position:relative; margin:0 auto;">Eliminar Valoración</span>
+              <span style="position:relative; margin:0 auto;">Eliminar</span>
             </button>
             
             <button 
