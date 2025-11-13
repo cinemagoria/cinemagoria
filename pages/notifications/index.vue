@@ -430,6 +430,10 @@ export default {
         return this.getSeriesPosterUrl(notification.person_id);
       }
       
+      if (notification.secondary_profile_path) {
+        return `https://image.tmdb.org/t/p/w185${notification.secondary_profile_path}`;
+      }
+      
       if (notification.profile_path) {
         return `https://image.tmdb.org/t/p/w185${notification.profile_path}`;
       }
