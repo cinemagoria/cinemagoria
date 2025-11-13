@@ -28,6 +28,7 @@
     "cookie": "^0.6.0",
     "core-js": "^3.41.0",
     "follow-redirects": "^1.15.9",
+    "http-proxy-middleware": "^3.0.5",
     "form-data": "4.0.4",
     "http-proxy-middleware": "^2.0.9",
     "nuxt": "^2.18.1",
