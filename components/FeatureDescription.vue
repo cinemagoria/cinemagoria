@@ -1,8 +1,8 @@
 <template>
   <div class="feature-description">
-    <h1 class="metal-gradient">Descubre al instante tus películas y series favoritas.</h1>
+    <h1 class="metal-gradient">El instante en que descubrís qué ver.</h1>
     <p class="feature-description">
-      Descubre exactamente qué ver en segundos, no horas. Explora opciones de streaming, reseñas, tráilers, detalles del elenco, además guarda tus favoritos para después. Todo en un solo lugar.
+      Seguí estrenos y recibí recomendaciones personalizadas — impulsado por datos, reseñas e IA.
     </p>
   </div>
 </template>
@@ -14,6 +14,13 @@ export default {
 </script>
 
 <style scoped>
+@font-face {
+  font-family: 'GrandCru';
+  src: url('@/assets/fonts/GrandCru-LightS.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 .feature-description {
   text-align: center;
   margin-top: 22px;
@@ -23,12 +30,13 @@ export default {
 .metal-gradient {
   padding: 30px;
   font-size: 52px;
-  font-family: 'Tahoma', sans-serif;
+  font-family: 'GrandCru', 'Tahoma', sans-serif;
   font-weight: 800;
   max-width: 800px;
   margin: 0 auto;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(115, 115, 115) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
 }
@@ -40,9 +48,10 @@ export default {
   margin: 0 auto;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(115, 115, 115) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
-  font-family: 'Tahoma', sans-serif;
+  font-family: 'GrandCru', 'Tahoma', sans-serif;
 }
 
 
