@@ -1250,12 +1250,12 @@ export default {
     
     emptyStateMessage() {
       if (this.showEmptyState) {
-        return 'No favorites added yet';
+        return 'No hay favoritos agregados aún';
       }
       if (this.showTabEmptyState) {
         return this.filter === 'movies' 
-          ? 'No movies added yet' 
-          : 'No TV shows added yet';
+          ? 'No hay películas añadidas aún' 
+          : 'No hay series de TV añadidas aún';
       }
       return '';
     },
@@ -1276,11 +1276,11 @@ export default {
       }
       
       if (this.customYearStart) {
-        chips.push({ type: 'year', label: `From ${this.customYearStart}`, value: 'customYearStart' });
+        chips.push({ type: 'year', label: `Desde ${this.customYearStart}`, value: 'customYearStart' });
       }
       
       if (this.customYearEnd) {
-        chips.push({ type: 'year', label: `To ${this.customYearEnd}`, value: 'customYearEnd' });
+        chips.push({ type: 'year', label: `Hasta ${this.customYearEnd}`, value: 'customYearEnd' });
       }
       
       if (this.selectedTmdbRating) {
@@ -1294,22 +1294,22 @@ export default {
         };
         chips.push({ 
           type: 'tmdb', 
-          label: `Rating: ${ratingLabels[this.selectedTmdbRating]}`, 
+          label: `Puntaje IMDB/TMDB: ${ratingLabels[this.selectedTmdbRating]}`, 
           value: 'selectedTmdbRating' 
         });
       }
       
       if (this.selectedUserRating) {
         const label = this.selectedUserRating === 'not-rated' 
-          ? 'Not Rated' 
-          : `My Rating: ${this.selectedUserRating}`;
+          ? 'No puntuadas por mí' 
+          : `Puntuada por mi: ${this.selectedUserRating}`;
         chips.push({ type: 'user', label, value: 'selectedUserRating' });
       }
       
       if (this.orderMode !== 'latest-added') {
         chips.push({ 
           type: 'sort', 
-          label: `Sorted by: ${this.currentSortLabel}`, 
+          label: `Ordenado por: ${this.currentSortLabel}`, 
           value: 'orderMode' 
         });
       }
