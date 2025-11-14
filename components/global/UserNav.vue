@@ -53,9 +53,9 @@
         <div class="menu-item language-switch-container">
           <img src="~static/langpicker-icon.png" alt="Language Icon" class="menu-icon lang-icon">
           <label class="language-switch">
-            <input type="checkbox" :checked="currentLanguage === 'en'" @change="toggleLanguage">
-            <span>Español</span>
+            <input type="checkbox" :checked="currentLanguage === 'es'" @change="toggleLanguage">
             <span>English</span>
+            <span>Español</span>
           </label>
         </div>
 
