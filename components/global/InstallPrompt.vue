@@ -1,11 +1,13 @@
 <template>
   <div
     v-if="isOpen"
+    style="border-radius:12px;"
     class="alert alert--default alert--bottom"> 
     <p>¿Quieres <a href="#" @click.prevent="install">Añadir a 'EnterCinema' en tu pantalla de inicio?</a></p>
 
     <button
       class="alert__close"
+      style="border-radius:12px !important;"
       type="button"
       aria-label="Cerrar"
       @click="close">
@@ -86,7 +88,7 @@ export default {
     left: 50%;
     transform: translateX(-50%);
     z-index: 2000;
-    border-radius: 10px;
+    border-radius: 12px;
 }
 
 .alert__close {

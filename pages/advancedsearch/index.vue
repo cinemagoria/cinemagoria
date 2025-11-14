@@ -305,6 +305,15 @@ async function getUserName(userEmail) {
 }
 
 export default {
+  head () {
+    return {
+      title: 'EnterCinema - Búsqueda avanzada.',
+      meta: [
+        { hid: 'og:title', property: 'og:title', content: 'Búsqueda avanzada' },
+        { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
+      ],
+    };
+  },
   components: {
     UserNav,
     DatePicker,

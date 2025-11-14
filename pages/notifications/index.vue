@@ -226,6 +226,15 @@ import FollowingModal from '~/components/FollowingModal.vue';
 import HowItWorksModal from '~/components/HowItWorksModal.vue';
 
 export default {
+  head () {
+    return {
+      title: 'EnterCinema - Centro de Notificaciones.',
+      meta: [
+        { hid: 'og:title', property: 'og:title', content: 'Centro de Notificaciones' },
+        { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
+      ],
+    };
+  },
   components: {
     UserNav,
     FollowingModal,

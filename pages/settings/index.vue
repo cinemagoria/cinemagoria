@@ -186,6 +186,15 @@ async function getUserAvatar(userEmail) {
 }
 
 export default {
+  head () {
+    return {
+      title: 'EnterCinema - Configuración de cuenta.',
+      meta: [
+        { hid: 'og:title', property: 'og:title', content: 'Configuración de cuenta' },
+        { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
+      ],
+    };
+  },
   data() {
     return {
       userData: null,

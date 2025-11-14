@@ -21,6 +21,15 @@
   
   <script>
   export default {
+    head () {
+      return {
+        title: 'EnterCinema - Trabajo en proceso.',
+        meta: [
+          { hid: 'og:title', property: 'og:title', content: 'Trabajo en proceso' },
+          { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
+        ],
+      };
+    },
     methods: {
       redirectToHome() {
         this.$router.push('/');

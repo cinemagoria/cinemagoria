@@ -60,9 +60,9 @@ export default {
 
   head () {
     return {
-      title: 'TV Shows',
+      title: 'EnterCinema - Series de TV.',
       meta: [
-        { hid: 'og:title', property: 'og:title', content: 'TV Shows' },
+        { hid: 'og:title', property: 'og:title', content: 'Series de TV' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
       ],
     };
