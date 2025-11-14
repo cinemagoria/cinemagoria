@@ -50,6 +50,15 @@
 import UserNav from '@/components/global/UserNav';
 
 export default {
+  head () {
+    return {
+      title: 'EnterCinema - Usage Policies & Privacy Agreement.',
+      meta: [
+        { hid: 'og:title', property: 'og:title', content: 'Usage Policies & Privacy Agreement' },
+        { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
+      ],
+    };
+  },
   components: {
     UserNav,
   },

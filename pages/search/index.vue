@@ -23,6 +23,15 @@ import SearchResults from '~/components/search/SearchResults';
 let fromPage = '/';
 
 export default {
+  head () {
+    return {
+      title: 'EnterCinema - Search.',
+      meta: [
+        { hid: 'og:title', property: 'og:title', content: 'Search' },
+        { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
+      ],
+    };
+  },
   components: {
     SearchResults,
   },

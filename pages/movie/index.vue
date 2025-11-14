@@ -59,7 +59,7 @@ export default {
 
   head () {
     return {
-      title: 'Movies',
+      title: 'EnterCinema - Movies.',
       meta: [
         { hid: 'og:title', property: 'og:title', content: 'Movies' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
