@@ -300,9 +300,10 @@ export default {
     },
 
     showConfirmationMessage() {
+      const locOrigin = window.location.origin;
       localStorage.removeItem('access_token');
       localStorage.removeItem('email');
-      window.location.href = 'https://es.entercinema.com/login'; 
+      window.location.href = `${locOrigin}/login`; 
     },
 
     async selectAvatar(avatar) {
@@ -626,7 +627,7 @@ export default {
 }
 
 .avatar-modal {
-  background: linear-gradient(135deg, rgba(6, 47, 64, 0.98) 0%, rgba(10, 30, 40, 0.99) 100%);
+  background: linear-gradient(135deg, rgba(6, 47, 64, 0.98) 0%, rgba(10, 30, 40, 0.99) 50%);
   border-radius: 16px;
   border: 1px solid rgba(139, 233, 253, 0.3);
   box-shadow: 0 12px 40px 0 rgba(31, 104, 135, 0.6);

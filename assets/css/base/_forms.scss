@@ -10,13 +10,24 @@ a.button {
   color: #fff;
   letter-spacing: 0.05em;
   cursor: pointer;
-  background-color: $third-color;
+  background: linear-gradient(
+  315deg, #0A1E26, #11323F, #1A4453);
   transition: all 0.2s;
 
   &:hover,
   &:focus {
-    background-color: #18729f;
-    border: 0.5px solid #8AE8FC;
+    background: linear-gradient(
+315deg, #0A1E26, #11323F, #35758B);
+    border-color: #8BE9FD;
+    color: #8BE9FD;
+    stroke: #8BE9FD;
+    box-shadow: 0 0 3px rgba(156, 156, 156, 0.269);
+    transform: scale(1.05);
+
+    svg path {
+      stroke: #8BE9FD;
+      fill: #8BE9FD;
+    }
   }
 
   &:disabled,
@@ -34,6 +45,10 @@ a.button {
 .button--icon {
   display: inline-flex;
   align-items: center;
+
+  svg {
+    transition: all 0.2s;
+  }
 }
 
 select {
@@ -71,4 +86,21 @@ button {
   text-align: center;
   border: 0;
   border-radius: 0;
+
+  &.icon {
+    &:hover,
+    &:focus {
+      background: linear-gradient(315deg, #0A1E26, #11323F, #1A4453);
+      border-color: #8BE9FD;
+      color: #8BE9FD;
+      stroke: #8BE9FD;
+      box-shadow: 0 0 3px rgba(156, 156, 156, 0.269);
+      transform: scale(1.05);
+
+      svg path {
+        stroke: #8BE9FD;
+        fill: #8BE9FD;
+      }
+    }
+  }
 }

@@ -1099,14 +1099,16 @@ export default {
     },
 
     getLink(item) {
+      const locOrigin = window.location.origin;
       if (item.details.typeForDb === 'movie') {
-        return `https://es.entercinema.com/movie/${item.details.idForDb}`;
+        return `${locOrigin}/movie/${item.details.idForDb}`;
       } else if (item.details.typeForDb === 'tv') {
-        return `https://es.entercinema.com/tv/${item.details.idForDb}`;
+        return `${locOrigin}/tv/${item.details.idForDb}`;
       } else {
         return '#'; 
       }
     },
+    
     async fetchUserFirstName() {
       try {
         const { data, error } = await supabase
@@ -1393,7 +1395,8 @@ export default {
   }
 
   .order-select:hover{
-    background-color: #084a66; 
+    background: linear-gradient(
+315deg, #0A1E26, #11323F, #1A4453); 
   }
 
   .filter-select {
@@ -1412,7 +1415,8 @@ export default {
   }
 
   .filter-select:hover{
-    background-color: #084a66; 
+    background: linear-gradient(
+315deg, #0A1E26, #11323F, #1A4453); 
   }
 
   .genre-select {
@@ -1428,7 +1432,8 @@ export default {
   }
 
   .genre-select:hover{
-    background-color: #084a66; 
+    background: linear-gradient(
+315deg, #0A1E26, #11323F, #1A4453); 
   }
 
   .year-select {
@@ -1444,11 +1449,13 @@ export default {
   }
 
   .year-select:hover{
-    background-color: #084a66; 
+    background: linear-gradient(
+315deg, #0A1E26, #11323F, #1A4453); 
   }
 
   .button:hover{
-    background-color: #084a66; 
+    background: linear-gradient(
+315deg, #0A1E26, #11323F, #1A4453); 
   }
 
   .pagination {

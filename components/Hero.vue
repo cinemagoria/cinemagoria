@@ -914,9 +914,6 @@ export default {
   }
 }
 
-.favoritesFilled {
-  fill: white;
-}
 
 .actionButton {
   border-radius: 1.0rem;

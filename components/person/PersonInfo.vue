@@ -20,25 +20,6 @@
           <h2 :class="$style.title">
             {{ person.name }}
           </h2>
-
-          <div :class="$style.followSection">
-            <button 
-              v-if="hasAccessToken && isActorOrDirector"
-              @click="toggleFollow" 
-              :class="[$style.followButton, { [$style.following]: isFollowing }]"
-              :disabled="followLoading">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path v-if="!isFollowing" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                <circle v-if="!isFollowing" cx="9" cy="7" r="4"/>
-                <line v-if="!isFollowing" x1="19" y1="8" x2="19" y2="14"/>
-                <line v-if="!isFollowing" x1="22" y1="11" x2="16" y2="11"/>
-                <path v-if="isFollowing" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                <circle v-if="isFollowing" cx="9" cy="7" r="4"/>
-                <polyline v-if="isFollowing" points="16 11 18 13 22 9"/>
-              </svg>
-              {{ isFollowing ? 'Siguiendo' : 'Seguir' }}
-            </button>
-          </div>
         </div>
 
         <div v-if="person.biography">
@@ -89,8 +70,27 @@
             </div>
           </li>
         </ul>
-      </div>
 
+        <div v-if="isLoggedIn" :class="$style.followSection">
+            <h4 style="margin-top:2rem; font-size: 16px; font-weight:800; text-transform: uppercase;" class="section-title">Notificaciones</h4>
+            <button 
+                v-if="hasAccessToken && isActorOrDirector"
+                @click="toggleFollow" 
+                :class="[$style.followButton, { [$style.following]: isFollowing }]"
+                :disabled="followLoading">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path v-if="!isFollowing" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                  <circle v-if="!isFollowing" cx="9" cy="7" r="4"/>
+                  <line v-if="!isFollowing" x1="19" y1="8" x2="19" y2="14"/>
+                  <line v-if="!isFollowing" x1="22" y1="11" x2="16" y2="11"/>
+                  <path v-if="isFollowing" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                  <circle v-if="isFollowing" cx="9" cy="7" r="4"/>
+                  <polyline v-if="isFollowing" points="16 11 18 13 22 9"/>
+                </svg>
+                {{ isFollowing ? 'Siguiendo' : 'Seguir' }}
+              </button>
+        </div>
+      </div>
       <div :class="$style.external">
         <ExternalLinks
           media="person"
@@ -118,6 +118,9 @@ export default {
   },
 
   computed: {
+    isLoggedIn() {
+      return localStorage.getItem('access_token') !== null;
+    },
     avatar () {
       if (this.person.profile_path) {
         return `${apiImgUrl}/w370_and_h556_bestv2${this.person.profile_path}`;
@@ -125,7 +128,6 @@ export default {
         return null;
       }
     },
-
     age() {
       const born = this.person.birthday;
       const died = this.person.deathday;
@@ -138,7 +140,6 @@ export default {
       return dept === 'Acting' || dept === 'Directing' || dept === 'Writing';
     },
   },
-
   created () {
     if (this.person.homepage) {
       this.person.external_ids.homepage = this.person.homepage;
@@ -403,41 +404,68 @@ export default {
 
 .followButton {
   display: inline-flex;
+  margin-top: 1rem;
   align-items: center;
   gap: 0.8rem;
   padding: 1rem 2rem;
-  background: rgba(139, 233, 253, 0.1);
-  border: 2px solid #8BE9FD;
-  border-radius: 8px;
-  color: #8BE9FD;
+  background: linear-gradient(315deg, #0A1E26, #11323F, #1A4453);
+  border-radius: 12px;
+  color: #fff;
+  margin-right: 10px;
   font-size: 1.5rem;
   font-weight: 500;
+  letter-spacing: 0.05em;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s;
+  
   @media (min-width: $breakpoint-large) {
     font-size: 1.6rem;
   }
-  &:hover {
-    background: rgba(139, 233, 253, 0.2);
-    transform: translateY(-2px);
+  
+  &:hover,
+  &:focus {
+    background: linear-gradient(315deg, #0A1E26, #11323F, #35758B);
+    color: #8BE9FD;
+    box-shadow: 0 0 3px rgba(156, 156, 156, 0.269);
+    transform: scale(1.05);
+
+    svg {
+      stroke: #8BE9FD;
+      fill: #8BE9FD;
+    }
   }
+  
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
+  
   svg {
     flex-shrink: 0;
+    transition: all 0.2s;
   }
 }
 
 .following {
-  padding: 10px;
-  position: relative;
-  margin-right: 10px;
   background: #8BE9FD;
   color: #000;
-  &:hover {
-    background: #7AD6E9;
+  
+  svg {
+    stroke: #000;
+    fill: #000;
+  }
+  
+  &:hover,
+  &:focus {
+    background: linear-gradient(315deg, #0A1E26, #11323F, #35758B);
+    color: #8BE9FD;
+    box-shadow: 0 0 3px rgba(156, 156, 156, 0.269);
+    transform: scale(1.05);
+
+    svg {
+      stroke: #8BE9FD;
+      fill: #8BE9FD;
+    }
   }
 }
 </style>

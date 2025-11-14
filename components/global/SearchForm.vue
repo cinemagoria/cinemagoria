@@ -10,7 +10,7 @@
               type="button" 
               style="padding: 0; background-color: black; margin-top: 15px; left: 5px; position: relative;"
               aria-label="Go Back" 
-              class="button"
+              class="button-back-search"
               @click="goBack">
               <svg xmlns="http://www.w3.org/2000/svg"
                   width="24" 

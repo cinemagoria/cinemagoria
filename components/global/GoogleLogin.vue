@@ -68,7 +68,8 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 10px 20px;
-  background-color: #18729f;
+  background: linear-gradient(
+  315deg, #0A1E26, #11323F, #1A4453);
   color: #fff;
   border-radius: 8px;
   font-size: 14px;

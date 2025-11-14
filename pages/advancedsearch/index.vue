@@ -688,12 +688,13 @@ export default {
     },
 
     getLink(item) {
+      const locOrigin = window.location.origin;
       if (item.details.typeForDb === 'movie') {
-        return `https://es.entercinema.com/movie/${item.details.idForDb}`;
+        return `${locOrigin}/movie/${item.details.idForDb}`;
       } else if (item.details.typeForDb === 'tv') {
-        return `https://es.entercinema.com/tv/${item.details.idForDb}`;
+        return `${locOrigin}/tv/${item.details.idForDb}`;
       } else {
-        return '#';
+        return '#'; 
       }
     },
 
