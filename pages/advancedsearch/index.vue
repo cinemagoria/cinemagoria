@@ -306,6 +306,15 @@
   }
   
   export default {
+    head () {
+    return {
+      title: 'EnterCinema - Advanced Search.',
+      meta: [
+        { hid: 'og:title', property: 'og:title', content: 'Advanced Search' },
+        { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
+      ],
+    };
+  },
     components: {
       UserNav,
       DatePicker,
