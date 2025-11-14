@@ -592,17 +592,4 @@ export default {
     padding: 5px 8px;
   }
 }
-
-@media screen and (min-width: 1201px) {
-  .ask-ai-button {
-    margin-top: 20px;
-  }
-  .avatar {
-    margin-top: 20px;
-  }
-
-  .user-nav-logged-out {
-    margin-top: 20px;
-  }
-}
 </style>
