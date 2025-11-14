@@ -3268,6 +3268,7 @@ select.user-rating-select {
   
   .clear-all-inline {
     align-self: center;
+    justify-content: center;
     width: auto;
     min-width: 120px;
   }
