@@ -1,8 +1,8 @@
 <template>
   <div class="feature-description">
-    <h1 class="metal-gradient">El instante en que descubrís qué ver.</h1>
+    <h1 class="metal-gradient">El instante en el que descubres qué ver.</h1>
     <p class="feature-description">
-      Seguí estrenos y recibí recomendaciones personalizadas — impulsado por datos, reseñas e IA.
+      Sigue estrenos y recibe recomendaciones personalizadas — impulsado por datos, reseñas e IA.
     </p>
   </div>
 </template>

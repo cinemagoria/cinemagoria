@@ -85,7 +85,7 @@ export default {
       lang: "es",
       name: "EnterCinema",
       short_name: "EnterCinema",
-      description: "El instante en que descubrís qué ver.",
+      description: "El instante en el que descubres qué ver.",
       theme_color: "#03496B",
       background_color: "#ffffff",
       display: "standalone",
