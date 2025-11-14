@@ -2740,7 +2740,8 @@ export default {
     }
   
   .send-button {
-    background: linear-gradient(135deg, rgba(127, 219, 241, 0.4) 0%, rgba(0, 136, 204, 0.4) 100%);
+    background: linear-gradient(
+    315deg, #0A1E26, #11323F, #1A4453);
     color: #fff;
     border: 1px solid rgba(127, 219, 241, 0.5);
     border-radius: 8px;

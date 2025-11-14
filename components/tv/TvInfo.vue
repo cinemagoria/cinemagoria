@@ -524,28 +524,35 @@ export default {
 }
 
 .followButton {
-  display: flex;
-  justify-self: start;
-  right:250px;;
+  display: inline-flex;
   margin-top: 1rem;
+  align-items: center;
   gap: 0.8rem;
-  padding: 1rem 2rem;
-  background: rgba(139, 233, 253, 0.1);
-  border: 2px solid #8BE9FD;
-  border-radius: 8px;
-  color: #8BE9FD;
+  padding: 1.5rem 2.5rem;
+  background: linear-gradient(315deg, #0A1E26, #11323F, #1A4453);
+  border-radius: 12px;
+  color: #fff;
   font-size: 1.5rem;
   font-weight: 500;
+  letter-spacing: 0.05em;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s;
   
   @media (min-width: $breakpoint-large) {
     font-size: 1.6rem;
   }
   
-  &:hover {
-    background: rgba(139, 233, 253, 0.2);
-    transform: translateY(-2px);
+  &:hover,
+  &:focus {
+    background: linear-gradient(315deg, #0A1E26, #11323F, #35758B);
+    color: #8BE9FD;
+    box-shadow: 0 0 3px rgba(156, 156, 156, 0.269);
+    transform: scale(1.05);
+
+    svg {
+      stroke: #8BE9FD;
+      fill: #8BE9FD;
+    }
   }
   
   &:disabled {
@@ -555,6 +562,7 @@ export default {
   
   svg {
     flex-shrink: 0;
+    transition: all 0.2s;
   }
 }
 
@@ -562,8 +570,22 @@ export default {
   background: #8BE9FD;
   color: #000;
   
-  &:hover {
-    background: #7AD6E9;
+  svg {
+    stroke: #000;
+    fill: #000;
+  }
+  
+  &:hover,
+  &:focus {
+    background: linear-gradient(315deg, #0A1E26, #11323F, #35758B);
+    color: #8BE9FD;
+    box-shadow: 0 0 3px rgba(156, 156, 156, 0.269);
+    transform: scale(1.05);
+
+    svg {
+      stroke: #8BE9FD;
+      fill: #8BE9FD;
+    }
   }
 }
 </style>

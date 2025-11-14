@@ -645,15 +645,15 @@
       },
 
       getLink(item) {
+        const locOrigin = window.location.origin;
         if (item.details.typeForDb === 'movie') {
-          return `https://entercinema.com/movie/${item.details.idForDb}`;
+          return `${locOrigin}/movie/${item.details.idForDb}`;
         } else if (item.details.typeForDb === 'tv') {
-          return `https://entercinema.com/tv/${item.details.idForDb}`;
+          return `${locOrigin}/tv/${item.details.idForDb}`;
         } else {
           return '#'; 
         }
       },
-        
       async fetchUserFirstName() {
         try {
           const { data, error } = await supabase
