@@ -30,10 +30,10 @@
           <img src="~/static/cinema-popcorn.svg" alt="Sin favoritos" class="empty-state-icon">
           <h3>No hay favoritos agregados todavía</h3>
           <p>
-            Comienza a construir tu lista agregando 
-            <nuxt-link to="/movie" class="empty-state-link">Películas</nuxt-link> 
+            Comienza a armar tu lista agregando
+            <nuxt-link to="/movie" class="empty-state-link">películas</nuxt-link> 
             y 
-            <nuxt-link to="/tv" class="empty-state-link">Series de TV</nuxt-link> 
+            <nuxt-link to="/tv" class="empty-state-link">series de TV</nuxt-link> 
             que quieras ver!
           </p>
         </div>
