@@ -1,11 +1,14 @@
 <template>
   <div
     v-if="isOpen"
+    style="border-radius:12px;"
     class="alert alert--default alert--bottom">
+    
     <p>Do you want to <a href="#" @click.prevent="install">Add 'EnterCinema' in your home screen?</a></p>
 
     <button
       class="alert__close"
+      style="border-radius:12px !important;"
       type="button"
       aria-label="Close"
       @click="close">
