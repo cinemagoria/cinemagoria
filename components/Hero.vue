@@ -273,13 +273,23 @@
             <div class="char-count">{{ userReview.length }}/500</div>
           </div>
           
-          <button 
-            @click="saveRatingAndReview" 
-            class="save-btn"
-            :disabled="selectedRating === 0"
-          >
-            <span style="position:relative; margin:0 auto;">Guardar</span>
-          </button>
+          <div class="rating-modal-buttons">
+            <button 
+              v-if="hasUserRating"
+              @click="removeRating" 
+              class="remove-rating-btn"
+            >
+              <span style="position:relative; margin:0 auto;">Remover</span>
+            </button>
+            
+            <button 
+              @click="saveRatingAndReview" 
+              class="save-btn"
+              :disabled="selectedRating === 0"
+            >
+              <span style="position:relative; margin:0 auto;">Guardar</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -461,7 +471,55 @@ export default {
         alert('Hubo un error al guardar tu valoración y reseña. Por favor, inténtalo de nuevo.');
       }
     },
-    
+
+    async removeRating() {
+      try {
+        const { data: favoritesData, error } = await supabase
+          .from('favorites')
+          .select('favorites_json')
+          .eq('user_email', this.userEmail);
+
+        if (error) throw new Error('Error getting favorites:', error.message);
+        if (!favoritesData || favoritesData.length === 0) return;
+        
+        const favoritesObject = favoritesData[0].favorites_json || {};
+        const favoriteType = this.type === 'movie' ? 'movies' : 'tv';
+        
+        if (!favoritesObject[favoriteType]) return;
+        
+        const updatedFavorites = { ...favoritesObject };
+
+        const itemIndex = updatedFavorites[favoriteType].findIndex(item => {
+          const itemKey = Object.keys(item)[0];
+          return itemKey === this.favId;
+        });
+        
+        if (itemIndex !== -1) {
+          const itemKey = Object.keys(updatedFavorites[favoriteType][itemIndex])[0];
+          delete updatedFavorites[favoriteType][itemIndex][itemKey].details.userRatingForDb;
+          delete updatedFavorites[favoriteType][itemIndex][itemKey].details.userReview;
+
+          const { error: updateError } = await supabase
+            .from('favorites')
+            .update({ favorites_json: updatedFavorites })
+            .eq('user_email', this.userEmail);
+
+          if (updateError) throw new Error('Error removing rating:', updateError.message);
+          
+          this.userRatingForDb = '-';
+          this.hasUserRating = false;
+          this.selectedRating = 0;
+          this.userReview = '';
+          
+          this.closeRatingModal();
+          this.$root.$emit('rated-items-updated');
+        }
+      } catch (error) {
+        console.error('Error removing rating:', error);
+        alert('There was an error removing your rating. Please try again.');
+      }
+    },
+        
     async checkUserRating() {
       try {
         const { data, error } = await supabase
@@ -928,6 +986,65 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  :global(.icon) svg path {
+    stroke: #fff;
+  }
+  
+  :global(.txt) {
+    color: #fff;
+  }
+  
+  &:not(.favoritesFilled) {
+    :global(.icon) svg path {
+      fill: none;
+      stroke: #fff;
+    }
+    
+    &:hover {
+      :global(.icon) svg path {
+        stroke: #8BE9FD !important;
+        fill: none !important;
+      }
+      
+      :global(.txt) {
+        color: #8BE9FD !important;
+      }
+    }
+  }
+
+  &.favoritesFilled {
+    :global(.icon) svg path {
+      fill: #fff;
+      stroke: #fff;
+    }
+    
+    &:hover {
+      :global(.icon) svg path {
+        fill: #8BE9FD !important;
+        stroke: #8BE9FD !important;
+      }
+      
+      :global(.txt) {
+        color: #8BE9FD !important;
+      }
+    }
+  }
+
+  &:first-child,
+  &:nth-child(3) {
+    :global(.icon) svg path {
+      fill: #fff !important;
+      stroke: #fff !important;
+    }
+    
+    &:hover {
+      :global(.icon) svg path {
+        fill: #8BE9FD !important;
+        stroke: #8BE9FD !important;
+      }
+    }
+  }
   
   @media (max-width: $breakpoint-small - 1) {
     flex: 0 1 auto;
@@ -1517,6 +1634,51 @@ export default {
 .save-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.rating-modal-buttons {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
+}
+
+.save-btn {
+  flex: 1;
+  max-width: 120px;
+}
+
+.remove-rating-btn {
+  background: rgba(255, 0, 0, 0.2);
+  color: #fff;
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 30px;
+  flex: 1;
+  max-width: 120px;
+  text-align: center;
+}
+
+.remove-rating-btn:hover {
+  background: rgba(255, 0, 0, 0.4);
+  border-color: rgba(255, 0, 0, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+}
+
+@media (max-width: 400px) {
+  .rating-modal-buttons {
+    flex-direction: column;
+  }
+  
+  .rating-modal-buttons .save-btn,
+  .remove-rating-btn {
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 400px) {
