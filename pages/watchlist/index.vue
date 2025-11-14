@@ -7,10 +7,39 @@
         <nav class="navbar">
           <h1 class="title-primary">Watchlist</h1>
         </nav>
-        <div v-if="moviesFetched.length > 0 || tvFetched.length > 0">
+        
+        <div v-if="isLoadingFavorites" class="loading-state">
+          <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44" stroke="#2196f3">
+            <g fill="none" fill-rule="evenodd" stroke-width="2">
+              <circle cx="22" cy="22" r="1">
+                <animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/>
+                <animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="22" cy="22" r="1">
+                <animate attributeName="r" begin="-0.9s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/>
+                <animate attributeName="stroke-opacity" begin="-0.9s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/>
+              </circle>
+            </g>
+          </svg>
+          <p>Loading your favorites...</p>
+        </div>
+
+     <div v-else-if="showEmptyState" class="empty-state-container">
+        <img src="~/static/cinema-popcorn.svg" alt="No favorites" class="empty-state-icon">
+        <h3>No favorites added yet</h3>
+        <p>
+          Start building your watchlist by adding 
+          <nuxt-link to="/movie" class="empty-state-link">Movies</nuxt-link> 
+          and 
+          <nuxt-link to="/tv" class="empty-state-link">TV shows</nuxt-link> 
+          you want to watch!
+        </p>
+      </div>
+        <div v-else>
           <div class="column">
-            <h2 class="title-secondary" style="color: #acafb5;  font-size: 16px;">Favorite {{ filterText }}</h2>
-              <div class="new-controls-container" style="margin-top: 3rem;">
+            <h2 class="title-secondary" style="color: #acafb5; font-size: 16px;">Favorite {{ filterText }}</h2>
+            
+            <div class="new-controls-container" style="margin-top: 3rem;">
               <label class="switch">
                 <input type="checkbox" :checked="filter === 'tvShows'" @change="toggleFilterType">
                 <span>Movies</span>
@@ -25,69 +54,83 @@
                   <span class="btn-label">Filters</span>
                 </button>
 
-                <button class="control-btn" @click="toggleOrderMode">
-                  <svg v-if="orderText === 'Order Asc'" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m3 16 4 4 4-4"/>
+                <button class="control-btn" @click="openSortModal">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="m3 16 4 4 4-4"/>
                     <path d="M7 20V4"/>
                     <path d="M17 10V4h-2"/>
                     <path d="M15 10h4"/>
                     <rect x="15" y="14" width="4" height="6" ry="2"/>
                   </svg>
-                  <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m3 16 4 4 4-4"/>
-                    <path d="M7 20V4"/>
-                    <rect x="15" y="4" width="4" height="6" ry="2"/>
-                    <path d="M17 20v-6h-2"/>
-                    <path d="M15 20h4"/>
-                  </svg>
-                  <span class="btn-label">{{ orderText === 'Order Asc' ? 'Latest' : 'Earliest' }}</span>
+                  <span class="btn-label">Sort</span>
                 </button>
               </div>
+            </div>
+
+            <div v-if="hasActiveFilters" class="active-filters-indicator">
+              <div class="filter-chips">
+                <div 
+                  v-for="(chip, index) in activeFilterChips" 
+                  :key="index" 
+                  class="filter-chip"
+                >
+                  <span>{{ chip.label }}</span>
+                  <button @click="removeFilter(chip.value)" class="chip-remove">×</button>
+                </div>
               </div>
+              <button @click="clearAllFilters" class="clear-all-inline">Clear All</button>
+            </div>
+          </div>
+
+          <div v-if="showTabEmptyState" class="empty-state-container">
+            <img src="~/static/cinema-popcorn.svg" alt="No content" class="empty-state-icon">
+            <h3>{{ emptyStateMessage }}</h3>
+            <p>Switch tabs to see your {{ filter === 'movies' ? 'TV shows' : 'movies' }}!</p>
+          </div>
+          
+          <div v-else-if="filteredItems.length === 0 && (selectedGenre || selectedTmdbRating || selectedUserRating || customYearStart || customYearEnd)" class="no-results-state">
+            <img src="~/static/cinema-popcorn.svg" alt="No results" class="no-results-icon">
+            <h3>No Results Found</h3>
+            <p>We couldn't find any content matching your current filters.</p>
+            <p class="suggestion">Try adjusting or clearing some filters to see more results.</p>
+            <button @click="clearAllFilters" class="refine-filters-btn">Clear All Filters</button>
+          </div>
+          
+          <div v-else>
+            <div class="pagination" v-if="filteredItems.length > itemsPerPage">
+              <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
+              <button @click="prevPage" :disabled="currentPage === 1"><<</button>
+              <span>
+                <label for="page" style="font-size:13px;">Page</label>
+                <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
+              </span>
+              <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
+              <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
+              <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
             </div>
             
-            <div v-if="filteredItems.length === 0 && (selectedGenre || selectedTmdbRating || selectedUserRating || customYearStart || customYearEnd)" class="no-results-state">
-              <img src="~/static/cinema-popcorn.svg" alt="No results" class="no-results-icon">
-              <h3>No Results Found</h3>
-              <p>We couldn't find any content matching your current filters.</p>
-              <p class="suggestion">Try adjusting or clearing some filters to see more results.</p>
-              <button @click="clearAllFilters" class="refine-filters-btn">Clear All Filters</button>
-            </div>
-            
-            <div v-else>
-              <div class="pagination" v-if="filteredItems.length > itemsPerPage">
-                <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
-                <button @click="prevPage" :disabled="currentPage === 1"><<</button>
-                <span>
-                  <label for="page" style="font-size:13px;">Page</label>
-                  <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
-                </span>
-                <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
-                <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
-                <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
-              </div>
-              <div class="movie-grid">
-                <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
-                  <div class="card-background">
-                    <div class="user-rating-badge" v-if="item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
-                      @click.stop="openRatingModal(item)"
-                      :class="{ 'has-review': item.details.userReview }" 
-                      :title="item.details.userReview ? 'Has Review' : ''">
-                      {{ item.details.userRatingForDb }}
-                      <span v-if="item.details.userReview" class="review-indicator"></span>
-                    </div>
-                    <div class="user-rating-badge empty" @click.stop="openRatingModal(item)" v-else> 
-                      <span style="font-size: 7px;">Rate</span>
-                    </div>
-                    <a :href="getLink(item)" class="item-link">
-                      <img 
-                        :src="item.details.posterForDb || fallbackImageUrl" 
-                        :onerror="handleImageError" 
-                        alt="Poster" 
-                        class="poster" 
-                      />
-                      <h3>{{ item.details.nameForDb }}</h3>
-                    </a>
+            <div class="movie-grid">
+              <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
+                <div class="card-background">
+                  <div class="user-rating-badge" v-if="item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
+                    @click.stop="openRatingModal(item)"
+                    :class="{ 'has-review': item.details.userReview }" 
+                    :title="item.details.userReview ? 'Has Review' : ''">
+                    {{ item.details.userRatingForDb }}
+                    <span v-if="item.details.userReview" class="review-indicator"></span>
+                  </div>
+                  <div class="user-rating-badge empty" @click.stop="openRatingModal(item)" v-else> 
+                    <span style="font-size: 7px;">Rate</span>
+                  </div>
+                  <a :href="getLink(item)" class="item-link">
+                    <img 
+                      :src="item.details.posterForDb || fallbackImageUrl" 
+                      :onerror="handleImageError" 
+                      alt="Poster" 
+                      class="poster" 
+                    />
+                    <h3>{{ item.details.nameForDb }}</h3>
+                  </a>
                   <p>
                     {{
                       item.details.yearStartForDb === item.details.yearEndForDb
@@ -112,38 +155,34 @@
                   </div>
 
                   <svg fill="84E1F6" height="26px" width="26px" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 446.04" @click="removeFavorite(item)" class="delete-icon">
-                      <defs>
-                          <style>
-                              .cls-1 {
-                                  fill: #84E1F6;
-                                  stroke: black;
-                                  stroke-width: 4px;
-                              }
-                          </style>
-                      </defs>
-                      <title>Remove from Watchlist.</title>
-                      <path class="cls-1" d="M252.63 71.41C285.88 36.72 309.17 6.75 360.44.86c96.22-11.07 184.7 87.44 136.11 184.43-.43.85-.88 1.71-1.33 2.58-27.38-23.8-63.15-38.22-102.25-38.22-43.06 0-82.07 17.47-110.29 45.7-28.23 28.23-45.7 67.23-45.7 110.29s17.47 82.06 45.7 110.29l.15.15-30.2 29.96-59.71-57.51C121.09 319.33 3.95 232.26.09 124.36-2.62 48.79 57.02.37 125.62 1.27c61.31.8 87.08 31.31 127.01 70.14zm187.32 214.31c5.88-.05 10.08-.59 9.97 6.7l-.28 23.61c.04 7.62-2.37 9.65-9.51 9.56h-94.32c-7.14.09-9.56-1.94-9.51-9.56l-.29-23.61c-.1-7.29 4.1-6.75 9.97-6.7h93.97zm-46.98-99.11c32.87 0 62.63 13.32 84.17 34.86S512 272.77 512 305.64c0 32.88-13.33 62.64-34.86 84.17-21.54 21.54-51.31 34.86-84.17 34.86-32.88 0-62.64-13.32-84.17-34.86-21.54-21.54-34.87-51.3-34.87-84.17 0-32.88 13.33-62.63 34.86-84.17 21.54-21.54 51.31-34.86 84.18-34.86zm71.79 47.23c-18.37-18.37-43.75-29.74-71.79-29.74-28.04 0-53.43 11.37-71.81 29.74-18.37 18.37-29.73 43.76-29.73 71.8s11.36 53.43 29.74 71.8c18.37 18.37 43.75 29.74 71.8 29.74 28.03 0 53.42-11.37 71.8-29.74 18.37-18.37 29.73-43.76 29.73-71.8s-11.36-53.43-29.74-71.8z"/>
+                    <defs>
+                      <style>
+                        .cls-1 {
+                          fill: #84E1F6;
+                          stroke: black;
+                          stroke-width: 4px;
+                        }
+                      </style>
+                    </defs>
+                    <title>Remove from Watchlist.</title>
+                    <path class="cls-1" d="M252.63 71.41C285.88 36.72 309.17 6.75 360.44.86c96.22-11.07 184.7 87.44 136.11 184.43-.43.85-.88 1.71-1.33 2.58-27.38-23.8-63.15-38.22-102.25-38.22-43.06 0-82.07 17.47-110.29 45.7-28.23 28.23-45.7 67.23-45.7 110.29s17.47 82.06 45.7 110.29l.15.15-30.2 29.96-59.71-57.51C121.09 319.33 3.95 232.26.09 124.36-2.62 48.79 57.02.37 125.62 1.27c61.31.8 87.08 31.31 127.01 70.14zm187.32 214.31c5.88-.05 10.08-.59 9.97 6.7l-.28 23.61c.04 7.62-2.37 9.65-9.51 9.56h-94.32c-7.14.09-9.56-1.94-9.51-9.56l-.29-23.61c-.1-7.29 4.1-6.75 9.97-6.7h93.97zm-46.98-99.11c32.87 0 62.63 13.32 84.17 34.86S512 272.77 512 305.64c0 32.88-13.33 62.64-34.86 84.17-21.54 21.54-51.31 34.86-84.17 34.86-32.88 0-62.64-13.32-84.17-34.86-21.54-21.54-34.87-51.3-34.87-84.17 0-32.88 13.33-62.63 34.86-84.17 21.54-21.54 51.31-34.86 84.18-34.86zm71.79 47.23c-18.37-18.37-43.75-29.74-71.79-29.74-28.04 0-53.43 11.37-71.81 29.74-18.37 18.37-29.73 43.76-29.73 71.8s11.36 53.43 29.74 71.8c18.37 18.37 43.75 29.74 71.8 29.74 28.03 0 53.42-11.37 71.8-29.74 18.37-18.37 29.73-43.76 29.73-71.8s-11.36-53.43-29.74-71.8z"/>
                   </svg>
                 </div>
-                </div>
-              </div>
-              <br>
-              <div class="pagination-footer" v-if="filteredItems.length > itemsPerPage">
-                <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
-                <button @click="prevPage" :disabled="currentPage === 1"><<</button>
-                <span>
-                  <label for="page" style="font-size:13px;">Page</label>
-                  <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
-                </span>
-                <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
-                <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
-                <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
               </div>
             </div>
-        </div>
-        
-        <div v-else>
-          <p style="text-align: center;">No favorites added yet.</p>
+            <br>
+            <div class="pagination-footer" v-if="filteredItems.length > itemsPerPage">
+              <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
+              <button @click="prevPage" :disabled="currentPage === 1"><<</button>
+              <span>
+                <label for="page" style="font-size:13px;">Page</label>
+                <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
+              </span>
+              <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
+              <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
+              <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
+            </div>
+          </div>
         </div>
         
         <div v-if="ratingModalVisible" class="modal-overlay">
@@ -205,116 +244,142 @@
           </div>
         </div>
 
-<div v-if="filtersModalVisible" class="modal-overlay" @click="closeFiltersModal">
-  <div class="filters-modal" @click.stop>
-    <div class="modal-header">
-      <h3>Filters</h3>
-      <button class="close-btn" @click="closeFiltersModal">×</button>
-    </div>
-    
-    <div class="filters-content">
-      <div class="filter-group">
-        <label class="filter-label">Genre</label>
-        <div class="custom-select" @click="toggleGenreDropdown">
-          <div class="select-display">
-            <span>{{ selectedGenre || 'All genres' }}</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" :class="{ 'rotate-180': genreDropdownOpen }">
-              <path d="M7 10l5 5 5-5z"/>
-            </svg>
-          </div>
-          <div v-if="genreDropdownOpen" class="dropdown-options">
-            <div 
-              class="dropdown-option" 
-              :class="{ selected: selectedGenre === '' }"
-              @click.stop="selectGenre('')"
-            >
-              All genres
+        <div v-if="filtersModalVisible" class="modal-overlay" @click="closeFiltersModal">
+          <div class="filters-modal" @click.stop>
+            <div class="modal-header">
+              <h3>Filters</h3>
+              <button class="close-btn" @click="closeFiltersModal">×</button>
             </div>
-            <div 
-              v-for="genre in uniqueGenres" 
-              :key="genre" 
-              class="dropdown-option"
-              :class="{ selected: selectedGenre === genre }"
-              @click.stop="selectGenre(genre)"
-            >
-              {{ genre }}
+            
+            <div class="filters-content">
+              <div class="filter-group">
+                <label class="filter-label">Genre</label>
+                <div class="custom-select" @click="toggleGenreDropdown">
+                  <div class="select-display">
+                    <span>{{ selectedGenre || 'All genres' }}</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" :class="{ 'rotate-180': genreDropdownOpen }">
+                      <path d="M7 10l5 5 5-5z"/>
+                    </svg>
+                  </div>
+                  <div v-if="genreDropdownOpen" class="dropdown-options">
+                    <div 
+                      class="dropdown-option" 
+                      :class="{ selected: selectedGenre === '' }"
+                      @click.stop="selectGenre('')"
+                    >
+                      All genres
+                    </div>
+                    <div 
+                      v-for="genre in uniqueGenres" 
+                      :key="genre" 
+                      class="dropdown-option"
+                      :class="{ selected: selectedGenre === genre }"
+                      @click.stop="selectGenre(genre)"
+                    >
+                      {{ genre }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="filter-group">
+                <label class="filter-label">Years</label>
+                <div class="year-inputs">
+                  <input 
+                    type="number" 
+                    v-model.number="customYearStart" 
+                    :min="1880" 
+                    :max="currentYear"
+                    placeholder="From"
+                    class="year-input"
+                  >
+                  <span class="year-separator">-</span>
+                  <input 
+                    type="number" 
+                    v-model.number="customYearEnd" 
+                    :min="1880" 
+                    :max="currentYear"
+                    placeholder="To"
+                    class="year-input"
+                  >
+                </div>
+                <div class="quick-year-options">
+                  <button 
+                    v-for="range in yearRanges" 
+                    :key="range" 
+                    @click="setYearRange(range)"
+                    class="year-quick-btn"
+                  >
+                    {{ range }}
+                  </button>
+                </div>
+              </div>
+              
+              <div class="filter-group">
+                <label class="filter-label">Rating</label>
+                <select v-model="selectedTmdbRating" class="filter-input">
+                  <option value="">All ratings</option>
+                  <option value="9-10">9+</option>
+                  <option value="8-8.9">8+</option>
+                  <option value="7-7.9">7+</option>
+                  <option value="6-6.9">6+</option>
+                  <option value="5-5.9">5+</option>
+                  <option value="0-4.9">< 5</option>
+                </select>
+              </div>
+              
+              <div class="filter-group">
+                <label class="filter-label">My Rating</label>
+                <select v-model="selectedUserRating" class="filter-input">
+                  <option value="">All my ratings</option>
+                  <option value="not-rated">Not Rated</option>
+                  <option value="10">My Rating: 10</option>
+                  <option value="9">My Rating: 9</option>
+                  <option value="8">My Rating: 8</option>
+                  <option value="7">My Rating: 7</option>
+                  <option value="6">My Rating: 6</option>
+                  <option value="5">My Rating: 5</option>
+                  <option value="1-4">My Rating: < 5</option>
+                </select>
+              </div>
+              
+              <div class="filter-actions">
+                <button @click="clearAllFilters" class="clear-btn">Clear</button>
+                <button @click="closeFiltersModal" class="apply-btn">Apply</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      
-      <div class="filter-group">
-        <label class="filter-label">Years</label>
-        <div class="year-inputs">
-          <input 
-            type="number" 
-            v-model.number="customYearStart" 
-            :min="1880" 
-            :max="currentYear"
-            placeholder="From"
-            class="year-input"
-          >
-          <span class="year-separator">-</span>
-          <input 
-            type="number" 
-            v-model.number="customYearEnd" 
-            :min="1880" 
-            :max="currentYear"
-            placeholder="To"
-            class="year-input"
-          >
+
+        <div v-if="sortModalVisible" class="modal-overlay" @click="closeSortModal">
+          <div class="filters-modal" @click.stop>
+            <div class="modal-header">
+              <h3>Sort By</h3>
+              <button class="close-btn" @click="closeSortModal">×</button>
+            </div>
+            
+            <div class="filters-content">
+              <div class="sort-options">
+                <button
+                  v-for="option in sortOptions"
+                  :key="option.value"
+                  @click="selectSort(option.value)"
+                  :class="['sort-option', { active: orderMode === option.value }]"
+                >
+                  <span>{{ option.label }}</span>
+                  <svg v-if="orderMode === option.value" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="quick-year-options">
-          <button 
-            v-for="range in yearRanges" 
-            :key="range" 
-            @click="setYearRange(range)"
-            class="year-quick-btn"
-          >
-            {{ range }}
-          </button>
-        </div>
-      </div>
-      
-      <div class="filter-group">
-        <label class="filter-label">Rating</label>
-        <select v-model="selectedTmdbRating" class="filter-input">
-          <option value="">All ratings</option>
-          <option value="9-10">9+</option>
-          <option value="8-8.9">8+</option>
-          <option value="7-7.9">7+</option>
-          <option value="6-6.9">6+</option>
-          <option value="5-5.9">5+</option>
-          <option value="0-4.9">< 5</option>
-        </select>
-      </div>
-      
-      <div class="filter-group">
-        <label class="filter-label">My Rating</label>
-        <select v-model="selectedUserRating" class="filter-input">
-          <option value="">All my ratings</option>
-          <option value="10">My Rating: 10</option>
-          <option value="9">My Rating: 9</option>
-          <option value="8">My Rating: 8</option>
-          <option value="7">My Rating: 7</option>
-          <option value="6">My Rating: 6</option>
-          <option value="5">My Rating: 5</option>
-          <option value="1-4">My Rating: < 5</option>
-          <option value="not-rated">Not Rated</option>
-        </select>
-      </div>
-      
-      <div class="filter-actions">
-        <button @click="clearAllFilters" class="clear-btn">Clear</button>
-        <button @click="closeFiltersModal" class="apply-btn">Apply</button>
-      </div>
-    </div>
-  </div>
-</div>
       </section>
     </main>
   </div>
 </template>
+
 <script>
 import supabase from '@/services/supabase';
 import UserNav from '@/components/global/UserNav';
@@ -343,11 +408,24 @@ export default {
   components: {
     UserNav,
   },
+
+  head () {
+    return {
+      title: 'EnterCinema - Watchlist.',
+      meta: [
+        { hid: 'og:title', property: 'og:title', content: 'Watchlist' },
+        { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
+      ],
+    };
+  },
   props: {
     item: Object,
   },
   data() {
     return {
+      isLoadingFavorites: false, 
+      orderMode: 'latest-added',
+      sortModalVisible: false,
       genreDropdownOpen: false,
       filteredSeriesDetails: [],
       filtersModalVisible: false,
@@ -363,7 +441,6 @@ export default {
       favorites: [],
       moviesFetched: [],
       tvFetched: [],
-      orderText: 'Order Asc',
       currentPage: 1,
       itemsPerPage: 20,
       itemsPerRow: 4,
@@ -521,6 +598,25 @@ export default {
   
   
   methods: {
+    removeFilter(filterValue) {
+      if (filterValue === 'orderMode') {
+        this.orderMode = 'latest-added';
+      } else {
+        this[filterValue] = filterValue.includes('Year') ? null : '';
+      }
+    },
+    openSortModal() {
+      this.sortModalVisible = true;
+    },
+    
+    closeSortModal() {
+      this.sortModalVisible = false;
+    },
+    
+    selectSort(value) {
+      this.orderMode = value;
+      this.closeSortModal();
+    },
     toggleFilterType(event) {
       this.filter = event.target.checked ? 'tvShows' : 'movies';
       this.currentPage = 1;
@@ -541,12 +637,6 @@ export default {
       this.filtersModalVisible = false;
     },
 
-    toggleOrderMode() {
-      this.orderText = this.orderText === 'Order Asc' ? 'Order Desc' : 'Order Asc';
-      this.moviesFetched.reverse();
-      this.tvFetched.reverse();
-    },
-
     setYearRange(range) {
       const [start, end] = range.split('-').map(Number);
       this.customYearStart = start;
@@ -559,6 +649,7 @@ export default {
       this.selectedUserRating = '';
       this.customYearStart = null;
       this.customYearEnd = null;
+      this.orderMode = 'latest-added';
     },
     openRatingModal(item) {
       this.currentRatingItem = item;
@@ -757,6 +848,7 @@ export default {
     },
     
     async checkData() {
+      this.isLoadingFavorites = true;
       try {
         const { data, error } = await supabase
           .from('favorites')
@@ -804,6 +896,10 @@ export default {
               }
               
               moviesFetched.push(movieData);
+
+              if (!movieData.addedAt) {
+                movieData.addedAt = new Date().toISOString();
+              }
               
               if (movieData.details.genresForDb) {
                 const genresList = movieData.details.genresForDb.split(', ');
@@ -847,6 +943,10 @@ export default {
               }
               
               tvFetched.push(tvData);
+
+              if (!tvData.addedAt) {
+                tvData.addedAt = new Date().toISOString();
+              }
               
               if (tvData.details.genresForDb) {
                 const genresList = tvData.details.genresForDb.split(', ');
@@ -932,6 +1032,8 @@ export default {
         }
       } catch (error) {
         console.error(error.message);
+      } finally {
+        this.isLoadingFavorites = false;
       }
     },
 
@@ -1088,6 +1190,101 @@ export default {
   },
 
   computed: {
+    showEmptyState() {
+      return !this.isLoadingFavorites && 
+            this.moviesFetched.length === 0 && 
+            this.tvFetched.length === 0;
+    },
+    
+    showTabEmptyState() {
+      if (this.isLoadingFavorites) return false;
+      
+      const currentItems = this.filter === 'movies' ? this.moviesFetched : this.tvFetched;
+      
+      return currentItems.length === 0 && (this.moviesFetched.length > 0 || this.tvFetched.length > 0);
+    },
+    
+    emptyStateMessage() {
+      if (this.showEmptyState) {
+        return 'No favorites added yet';
+      }
+      if (this.showTabEmptyState) {
+        return this.filter === 'movies' 
+          ? 'No movies added yet' 
+          : 'No TV shows added yet';
+      }
+      return '';
+    },
+    hasActiveFilters() {
+      return this.selectedGenre !== '' || 
+            this.selectedTmdbRating !== '' || 
+            this.selectedUserRating !== '' || 
+            this.customYearStart !== null || 
+            this.customYearEnd !== null ||
+            this.orderMode !== 'latest-added';
+    },
+    
+    activeFilterChips() {
+      const chips = [];
+      
+      if (this.selectedGenre) {
+        chips.push({ type: 'genre', label: this.selectedGenre, value: 'selectedGenre' });
+      }
+      
+      if (this.customYearStart) {
+        chips.push({ type: 'year', label: `From ${this.customYearStart}`, value: 'customYearStart' });
+      }
+      
+      if (this.customYearEnd) {
+        chips.push({ type: 'year', label: `To ${this.customYearEnd}`, value: 'customYearEnd' });
+      }
+      
+      if (this.selectedTmdbRating) {
+        const ratingLabels = {
+          '9-10': '9+',
+          '8-8.9': '8+',
+          '7-7.9': '7+',
+          '6-6.9': '6+',
+          '5-5.9': '5+',
+          '0-4.9': '< 5'
+        };
+        chips.push({ 
+          type: 'tmdb', 
+          label: `Rating: ${ratingLabels[this.selectedTmdbRating]}`, 
+          value: 'selectedTmdbRating' 
+        });
+      }
+      
+      if (this.selectedUserRating) {
+        const label = this.selectedUserRating === 'not-rated' 
+          ? 'Not Rated' 
+          : `My Rating: ${this.selectedUserRating}`;
+        chips.push({ type: 'user', label, value: 'selectedUserRating' });
+      }
+      
+      if (this.orderMode !== 'latest-added') {
+        chips.push({ 
+          type: 'sort', 
+          label: `Sorted by: ${this.currentSortLabel}`, 
+          value: 'orderMode' 
+        });
+      }
+      
+      return chips;
+    },
+    sortOptions() {
+      return [
+        { value: 'latest-added', label: 'Latest Added' },
+        { value: 'earliest-added', label: 'Earliest Added' },
+        { value: 'newer-releases', label: 'Newer Releases' },
+        { value: 'older-releases', label: 'Older Releases' }
+      ];
+    },
+    
+    currentSortLabel() {
+      const option = this.sortOptions.find(opt => opt.value === this.orderMode);
+      return option ? option.label : 'Latest Added';
+    },
     filteredRatedItems() {
       const items = this.ratedItemsTab === 'movies' ? this.moviesFetched : this.tvFetched;
       if (!items) return [];
@@ -1099,7 +1296,7 @@ export default {
       );
     },
     
-    filteredItems() {
+  filteredItems() {
     const items = this.filter === 'movies' ? this.moviesFetched : this.tvFetched;
     if (!items) return [];
     return items.filter(item => {
@@ -1134,13 +1331,18 @@ export default {
       if (this.selectedUserRating !== '') {
         if (this.selectedUserRating === 'not-rated') {
           matchesUserRating = !item.details.userRatingForDb || 
-                            item.details.userRatingForDb === '-';
+                            item.details.userRatingForDb === '-' ||
+                            item.details.userRatingForDb === undefined;
         } else {
-          if (!item.details.userRatingForDb || item.details.userRatingForDb === '-') {
+          if (!item.details.userRatingForDb || 
+              item.details.userRatingForDb === '-' || 
+              item.details.userRatingForDb === undefined) {
             matchesUserRating = false;
           } else {
             const userRating = parseInt(item.details.userRatingForDb);
-            if (this.selectedUserRating.includes('-')) {
+            if (isNaN(userRating)) {
+              matchesUserRating = false;
+            } else if (this.selectedUserRating.includes('-')) {
               const [min, max] = this.selectedUserRating.split('-').map(Number);
               matchesUserRating = userRating >= min && userRating <= max;
             } else {
@@ -1151,9 +1353,28 @@ export default {
       }
       
       return matchesGenre && matchesYear && matchesTmdbRating && matchesUserRating;
-    }).sort((a, b) => {
-      if (!a.addedAt || !b.addedAt) return 0;
-      return this.orderText === 'Order Asc' ? new Date(a.addedAt) - new Date(b.addedAt) : new Date(b.addedAt) - new Date(a.addedAt);
+      }).sort((a, b) => {
+      const getAddedDate = (item) => {
+        if (item.addedAt) return new Date(item.addedAt);
+        return new Date(0);
+      };
+      
+      const getYear = (item) => {
+        return item.details.yearEndForDb || item.details.yearStartForDb || 0;
+      };
+
+      switch(this.orderMode) {
+        case 'latest-added':
+          return getAddedDate(b) - getAddedDate(a);
+        case 'earliest-added':
+          return getAddedDate(a) - getAddedDate(b);
+        case 'newer-releases':
+          return getYear(b) - getYear(a);
+        case 'older-releases':
+          return getYear(a) - getYear(b);
+        default:
+          return 0;
+      }
     });
   },
 
@@ -2877,5 +3098,190 @@ select.user-rating-select {
   .no-results-state p {
     font-size: 1.2rem;
   }
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  min-height: 400px;
+}
+
+.loading-state p {
+  margin-top: 20px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.4rem;
+}
+
+.empty-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  min-height: 400px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  margin: 20px auto;
+  max-width: 600px;
+}
+
+.empty-state-icon {
+  width: 200px;
+  height: 200px;
+  margin-bottom: 25px;
+  opacity: 0.7;
+}
+
+.empty-state-container h3 {
+  color: #8BE9FD;
+  font-size: 2rem;
+  margin: 0 auto 15px;
+  letter-spacing: 1px;
+}
+
+.empty-state-container p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.4rem;
+  margin: 8px auto;
+  line-height: 1.5;
+}
+
+.active-filters-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: nowrap;
+  margin: 20px auto;
+  padding: 15px 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  max-width: 1200px;
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.filter-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(139, 233, 253, 0.15);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 20px;
+  padding: 6px 12px;
+  color: #8BE9FD;
+  font-size: 1.3rem;
+}
+
+.chip-remove {
+  background: none;
+  border: none;
+  color: #8BE9FD;
+  font-size: 1.8rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.chip-remove:hover {
+  color: #fff;
+}
+
+.clear-all-inline {
+  background: rgba(255, 0, 0, 0.2);
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  color: #fff;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+.clear-all-inline:hover {
+  background: rgba(255, 0, 0, 0.4);
+}
+
+.sort-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sort-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 15px 20px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1.4rem;
+  text-align: left;
+  width: 100%;
+}
+
+.sort-option:hover {
+  background: rgba(139, 233, 253, 0.1);
+  border-color: rgba(139, 233, 253, 0.3);
+}
+
+.sort-option.active {
+  background: rgba(139, 233, 253, 0.2);
+  border-color: #8BE9FD;
+  color: #8BE9FD;
+}
+
+@media (max-width: 768px) {
+  .active-filters-indicator {
+    flex-direction: column;
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+  
+  .filter-chips {
+    justify-content: flex-start;
+  }
+  
+  .clear-all-inline {
+    align-self: center;
+    width: auto;
+    min-width: 120px;
+  }
+}
+.empty-state-link {
+  color: #8BE9FD;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.empty-state-link:hover {
+  color: #fff;
+  border-bottom-color: #8BE9FD;
 }
 </style>

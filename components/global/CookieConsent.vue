@@ -1,12 +1,14 @@
 <template>
   <div
     v-if="isOpen"
+    style="border-radius:12px;"
     class="alert alert--alt alert--bottom"> 
     <p>We use cookies and other tracking technologies to enhance your browsing experience. By using this website, you agree to the use of cookies and other tracking technologies. <a target="_blank" href="/usage-policies" rel="noopener">More Information</a>.</p>
 
     <div>
       <button
         class="alert__btn alert__btn--secondary button"
+        style="border-radius:12px;"
         type="button"
         aria-label="Cerrar"
         @click="decline">
@@ -15,6 +17,7 @@
 
       <button
         class="alert__btn alert__btn--primary button"
+        style="border-radius:12px !important;"
         type="button"
         aria-label="Cerrar"
         @click="accept">
@@ -88,6 +91,6 @@ export default {
     left: 50%;
     transform: translateX(-50%);
     z-index: 2000;
-    border-radius: 10px;
+    border-radius: 12px;
 }
 </style>
