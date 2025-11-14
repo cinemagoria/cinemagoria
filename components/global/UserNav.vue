@@ -55,14 +55,13 @@
         <div class="menu-divider"></div>
 
         <!-- Language Switcher -->
-        <div class="menu-item language-switch" @click="toggleLanguage">
-          <img src="~static/langpicker-icon.png" alt="Language Icon" class="menu-icon">
-          <span class="menu-label">{{ currentLanguage === 'en' ? 'English' : 'Español' }}</span>
-          <div class="switch-container">
-            <div class="switch" :class="{ active: currentLanguage === 'es' }">
-              <div class="switch-handle"></div>
-            </div>
-          </div>
+        <div class="menu-item language-switch-container">
+          <img src="~static/langpicker-icon.png" alt="Language Icon" class="menu-icon lang-icon">
+          <label class="language-switch">
+            <input type="checkbox" :checked="currentLanguage === 'es'" @change="toggleLanguage">
+            <span>English</span>
+            <span>Español</span>
+          </label>
         </div>
 
         <div class="menu-divider"></div>
@@ -457,41 +456,127 @@ export default {
   color: #ff6b6b;
 }
 
+.language-switch-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  cursor: default;
+}
+
+.language-switch-container:hover {
+  background-color: transparent;
+}
+
+.lang-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
 .language-switch {
+  --_switch-bg-clr: rgba(0, 0, 0, 0);
+  --_switch-padding: 2px;
+  --_slider-bg-clr: rgba(31, 104, 135, 0.4);
+  --_slider-bg-clr-on: #8BE9FD;
+  --_slider-txt-clr: #ffffff;
+  --_label-padding: 6px 10px;
+  --_switch-easing: cubic-bezier(0.47, 1.64, 0.41, 0.8);
+  
+  color: rgba(255, 255, 255, 0.7);
+  width: fit-content;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   position: relative;
-}
-
-.switch-container {
-  margin-left: auto;
-}
-
-.switch {
-  width: 42px;
-  height: 22px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 11px;
-  position: relative;
-  transition: background-color 0.3s ease;
+  isolation: isolate;
+  border-radius: 15px;
   cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 16px 0 rgba(31, 104, 135, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 10px;
+  margin: 0;
+  flex: 1;
 }
 
-.switch.active {
-  background: #8BE9FD;
-}
-
-.switch-handle {
-  width: 18px;
-  height: 18px;
-  background: white;
-  border-radius: 50%;
+.language-switch input[type="checkbox"] {
   position: absolute;
-  top: 2px;
-  left: 2px;
-  transition: transform 0.3s ease;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
-.switch.active .switch-handle {
-  transform: translateX(20px);
+.language-switch > span {
+  display: grid;
+  place-content: center;
+  transition: all 300ms ease-in-out;
+  padding: var(--_label-padding);
+  white-space: nowrap;
+  z-index: 1;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.language-switch::before,
+.language-switch::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+  transition: inset 150ms ease-in-out;
+}
+
+.language-switch::before {
+  background-color: var(--_slider-bg-clr-on);
+  inset: var(--_switch-padding) 50% var(--_switch-padding) var(--_switch-padding);
+  transition: inset 500ms var(--_switch-easing), background-color 500ms ease-in-out;
+  z-index: 0;
+  border-radius: 13px;
+}
+
+.language-switch::after {
+  background-color: var(--_switch-bg-clr);
+  inset: 0;
+  z-index: -1;
+}
+
+.language-switch:hover {
+  transform: translateY(-1px);
+}
+
+.language-switch:has(input:checked)::before {
+  background-color: var(--_slider-bg-clr-on);
+  inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding) 50%;
+}
+
+.language-switch > span:first-of-type {
+  opacity: 1;
+  color: #000;
+  font-weight: 600;
+}
+
+.language-switch > span:last-of-type {
+  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.language-switch:has(input:checked) > span:first-of-type {
+  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+.language-switch:has(input:checked) > span:last-of-type {
+  color: #000;
+  opacity: 1;
+  font-weight: 600;
 }
 
 @media screen and (max-width: 768px) {
@@ -506,6 +591,15 @@ export default {
 
   .ai-label {
     font-size: 10px;
+  }
+
+  .language-switch {
+    font-size: 9px;
+  }
+  
+  .language-switch > span {
+    font-size: 9px;
+    padding: 5px 8px;
   }
 }
 
