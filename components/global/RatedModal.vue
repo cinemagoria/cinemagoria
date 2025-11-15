@@ -58,7 +58,6 @@
       </div>
     </div>
 
-    <!-- Rating Modal -->
     <div v-if="ratingModalVisible" class="rating-modal-overlay" @click="closeRatingModal">
       <div class="rating-modal" @click.stop>
         <div class="modal-header">
