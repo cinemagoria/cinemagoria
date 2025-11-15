@@ -443,6 +443,7 @@ export default {
   },
   data() {
     return {
+      tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://entercinema-favorites.vercel.app/api',
       isLoadingFavorites: false, 
       orderMode: 'latest-added',
       sortModalVisible: false,
@@ -824,7 +825,7 @@ export default {
     },
 
     async saveRatingAndReview() {
-      if (this.selectedRating === 0) {
+    if (this.selectedRating === 0) {
         alert('Please select a rating between 1 and 10');
         return;
       }
@@ -836,54 +837,31 @@ export default {
       try {
         const item = this.currentRatingItem;
         const { typeForDb, idForDb } = item.details;
-        const itemKey = `${typeForDb}/${idForDb}`;
 
-        const { data: favoritesData, error } = await supabase
-          .from('favorites')
-          .select('favorites_json')
-          .eq('user_email', this.userEmail);
-        
-        if (error) {
-          throw new Error('Error fetching favorites: ' + error.message);
-        }
-        
-        if (!favoritesData || !favoritesData.length) {
-          throw new Error('No favorites found for user');
-        }
-        
-        const favoritesObject = favoritesData[0].favorites_json || {};
-        const itemType = typeForDb === 'tv' ? 'tv' : 'movies';
-        
-        if (!favoritesObject[itemType]) {
-          throw new Error(`No favorites of type ${itemType} found`);
-        }
-        
-        const updatedItems = favoritesObject[itemType].map(favItem => {
-          const favItemKey = Object.keys(favItem)[0];
-          if (favItemKey === itemKey) {
-            favItem[favItemKey].details.userRatingForDb = this.selectedRating.toString();
-            favItem[favItemKey].details.userReview = this.userReview.trim();
+        const response = await fetch(
+          `${this.tursoBackendUrl}/favorites/rating/${this.userEmail}/${typeForDb}/${idForDb}`,
+          {
+            method: 'PUT',
+            headers: { 
+              'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({
+              rating: this.selectedRating,
+              review: this.userReview.trim()
+            })
           }
-          return favItem;
-        });
-        
-        favoritesObject[itemType] = updatedItems;
-        
-        const { error: updateError } = await supabase
-          .from('favorites')
-          .update({ favorites_json: favoritesObject })
-          .eq('user_email', this.userEmail);
-        
-        if (updateError) {
-          throw new Error('Error updating rating: ' + updateError.message);
+        );
+
+        if (!response.ok) {
+          throw new Error('Error updating rating');
         }
-        
+
         item.details.userRatingForDb = this.selectedRating.toString();
         item.details.userReview = this.userReview.trim();
-        
+
         this.closeRatingModal();
         await this.checkData();
-        
+
       } catch (error) {
         console.error('Error saving rating and review:', error);
         alert('There was an error saving your rating. Please try again.');
@@ -894,50 +872,37 @@ export default {
       try {
         const item = this.currentRatingItem;
         const { typeForDb, idForDb } = item.details;
-        const itemKey = `${typeForDb}/${idForDb}`;
 
-        const { data: favoritesData, error } = await supabase
-          .from('favorites')
-          .select('favorites_json')
-          .eq('user_email', this.userEmail);
-        
-        if (error) throw new Error('Error fetching favorites: ' + error.message);
-        if (!favoritesData || !favoritesData.length) return;
-        
-        const favoritesObject = favoritesData[0].favorites_json || {};
-        const itemType = typeForDb === 'tv' ? 'tv' : 'movies';
-        
-        if (!favoritesObject[itemType]) return;
-
-        const updatedItems = favoritesObject[itemType].map(favItem => {
-          const favItemKey = Object.keys(favItem)[0];
-          if (favItemKey === itemKey) {
-            delete favItem[favItemKey].details.userRatingForDb;
-            delete favItem[favItemKey].details.userReview;
+        const response = await fetch(
+          `${this.tursoBackendUrl}/favorites/rating/${this.userEmail}/${typeForDb}/${idForDb}`,
+          {
+            method: 'PUT',
+            headers: { 
+              'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({ 
+              rating: null, 
+              review: '' 
+            })
           }
-          return favItem;
-        });
-        
-        favoritesObject[itemType] = updatedItems;
-        
-        const { error: updateError } = await supabase
-          .from('favorites')
-          .update({ favorites_json: favoritesObject })
-          .eq('user_email', this.userEmail);
-        
-        if (updateError) throw new Error('Error removing rating: ' + updateError.message);
-        
+        );
+
+        if (!response.ok) {
+          throw new Error('Error removing rating');
+        }
+
         item.details.userRatingForDb = '-';
         item.details.userReview = '';
-        
+
         this.closeRatingModal();
         await this.checkData();
-        
+
       } catch (error) {
         console.error('Error removing rating:', error);
         alert('There was an error removing your rating. Please try again.');
       }
     },
+
     async fetchAndStoreSeriesDetails() {
       try {
         if (!this.tvFetched || this.tvFetched.length === 0) return;
@@ -1041,7 +1006,7 @@ export default {
     showRatedItems() {
       this.$root.$emit('show-rated-modal');
     },
-    
+
     handleResize() {
       this.calculateItemsPerRow();
       this.adjustItemsPerPage();
@@ -1054,9 +1019,9 @@ export default {
       const gridWidth = gridElement.offsetWidth;
       const cardWidth = 200;
       const gap = 20;
-
+      
       const calculatedItemsPerRow = Math.floor(gridWidth / (cardWidth + gap));
-
+      
       this.itemsPerRow = Math.max(1, calculatedItemsPerRow);
       
       this.adjustItemsPerPage();
@@ -1064,15 +1029,137 @@ export default {
 
     adjustItemsPerPage() {
       const rowsToShow = 5;
-      
+
       const newItemsPerPage = this.itemsPerRow * rowsToShow;
 
       if (this.itemsPerPage !== newItemsPerPage) {
         this.itemsPerPage = newItemsPerPage;
-
+        
         if (this.currentPage > this.totalPages && this.totalPages > 0) {
           this.currentPage = this.totalPages;
         }
+      }
+    },
+    
+    async checkData() {
+      this.isLoadingFavorites = true;
+      try {
+        const response = await fetch(`${this.tursoBackendUrl}/favorites/${this.userEmail}`);
+        
+        if (!response.ok) {
+          throw new Error('Error connecting to database: ' + response.statusText);
+        }
+
+        const data = await response.json();
+
+        const moviesFetched = [];
+        const tvFetched = [];
+        const genres = new Set();
+        const years = new Set();
+
+        if (data.favorites_json.movies) {
+          for (const movie of data.favorites_json.movies) {
+            const movieKey = Object.keys(movie)[0];
+            const movieData = movie[movieKey];
+            
+            if (!movieData || !movieData.details) {
+              console.warn('Skipping invalid movie entry:', movie);
+              continue;
+            }
+            
+            if (movieData.details.external_ids?.imdb_id && !movieData.details.rating_source) {
+              try {
+                const imdbResponse = await fetch(`/api/imdb-rating/${movieData.details.external_ids.imdb_id}`);
+                const imdbData = await imdbResponse.json();
+                
+                if (imdbData.found) {
+                  movieData.details.imdb_rating = imdbData.score;
+                  movieData.details.imdb_votes = imdbData.votes;
+                  movieData.details.rating_source = 'imdb';
+                } else {
+                  movieData.details.rating_source = 'tmdb';
+                }
+              } catch (err) {
+                console.error('Error fetching IMDb rating:', err);
+                movieData.details.rating_source = 'tmdb';
+              }
+            } else if (!movieData.details.rating_source) {
+              movieData.details.rating_source = movieData.details.imdb_rating ? 'imdb' : 'tmdb';
+            }
+            
+            moviesFetched.push(movieData);
+
+            if (!movieData.addedAt) {
+              movieData.addedAt = new Date().toISOString();
+            }
+            
+            if (movieData.details.genresForDb) {
+              const genresList = movieData.details.genresForDb.split(', ');
+              genresList.forEach(g => genres.add(g));
+            }
+            
+            if (movieData.details.yearStartForDb) {
+              years.add(movieData.details.yearStartForDb);
+            }
+          }
+        }
+
+        if (data.favorites_json.tv) {
+          for (const tvShow of data.favorites_json.tv) {
+            const tvKey = Object.keys(tvShow)[0];
+            const tvData = tvShow[tvKey];
+            
+            if (!tvData || !tvData.details) {
+              console.warn('Skipping invalid TV entry:', tvShow);
+              continue;
+            }
+            
+            if (tvData.details.external_ids?.imdb_id && !tvData.details.rating_source) {
+              try {
+                const imdbResponse = await fetch(`/api/imdb-rating/${tvData.details.external_ids.imdb_id}`);
+                const imdbData = await imdbResponse.json();
+                
+                if (imdbData.found) {
+                  tvData.details.imdb_rating = imdbData.score;
+                  tvData.details.imdb_votes = imdbData.votes;
+                  tvData.details.rating_source = 'imdb';
+                } else {
+                  tvData.details.rating_source = 'tmdb';
+                }
+              } catch (err) {
+                console.error('Error fetching IMDb rating:', err);
+                tvData.details.rating_source = 'tmdb';
+              }
+            } else if (!tvData.details.rating_source) {
+              tvData.details.rating_source = tvData.details.imdb_rating ? 'imdb' : 'tmdb';
+            }
+            
+            tvFetched.push(tvData);
+
+            if (!tvData.addedAt) {
+              tvData.addedAt = new Date().toISOString();
+            }
+            
+            if (tvData.details.genresForDb) {
+              const genresList = tvData.details.genresForDb.split(', ');
+              genresList.forEach(g => genres.add(g));
+            }
+            
+            if (tvData.details.yearStartForDb) {
+              years.add(tvData.details.yearStartForDb);
+            }
+          }
+        }
+
+        this.moviesFetched = moviesFetched.reverse();
+        this.tvFetched = tvFetched.reverse();
+        this.genres = Array.from(genres);
+        this.years = Array.from(years).sort();
+
+      } catch (error) {
+        console.error(error.message);
+      } finally {
+        this.isLoadingFavorites = false;
       }
     },
 
@@ -1093,47 +1180,28 @@ export default {
 
     async deleteFavorite(keyToDelete) {
       try {
-        const { data: favoritesData, error } = await supabase
-          .from('favorites')
-          .select('favorites_json')
-          .eq('user_email', this.userEmail);
+        const [itemType, itemId] = keyToDelete.split('/');
+        
+        const response = await fetch(
+          `${this.tursoBackendUrl}/favorites/${this.userEmail}/${itemType}/${itemId}`,
+          { 
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
 
-        if (error) {
-          throw new Error('Error al obtener favoritos:', error.message);
-        }
-
-        if (!favoritesData || favoritesData.length === 0) {
-          console.error('No se encontraron favoritos para el usuario:', this.userEmail);
-          return;
-        }
-
-        const favoritesObject = favoritesData[0].favorites_json || {};
-        const favoriteType = keyToDelete.includes('tv') ? 'tv' : 'movies';
-        if (!favoritesObject[favoriteType]) {
-          console.error(`No se encontraron favoritos de tipo ${favoriteType} para el usuario`);
-          return;
-        }
-
-        favoritesObject[favoriteType] = favoritesObject[favoriteType].filter(item => {
-          const itemKey = Object.keys(item)[0];
-          return itemKey !== keyToDelete;
-        });
-
-        const { error: updateError } = await supabase
-          .from('favorites')
-          .update({ favorites_json: favoritesObject })
-          .eq('user_email', this.userEmail);
-
-        if (updateError) {
-          throw new Error('Error al actualizar favoritos:', updateError.message);
+        if (!response.ok) {
+          throw new Error('Error deleting favorite');
         }
 
         await this.checkData();
 
-        return Promise.resolve(); 
+        return Promise.resolve();
       } catch (error) {
-        console.error('Error al eliminar favorito:', error.message);
-        return Promise.reject(error); 
+        console.error('Error deleting favorite:', error.message);
+        return Promise.reject(error);
       }
     },
 
