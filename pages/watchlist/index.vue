@@ -860,10 +860,6 @@ export default {
             }
             
             moviesFetched.push(movieData);
-
-            if (!movieData.addedAt) {
-              movieData.addedAt = new Date().toISOString();
-            }
             
             if (movieData.details.genresForDb) {
               const genresList = movieData.details.genresForDb.split(', ');
@@ -907,10 +903,6 @@ export default {
             }
             
             tvFetched.push(tvData);
-
-            if (!tvData.addedAt) {
-              tvData.addedAt = new Date().toISOString();
-            }
             
             if (tvData.details.genresForDb) {
               const genresList = tvData.details.genresForDb.split(', ');
@@ -923,8 +915,8 @@ export default {
           }
         }
 
-        this.moviesFetched = moviesFetched.reverse();
-        this.tvFetched = tvFetched.reverse();
+        this.moviesFetched = moviesFetched;
+        this.tvFetched = tvFetched;
         this.genres = Array.from(genres);
         this.years = Array.from(years).sort();
 
@@ -1232,28 +1224,29 @@ export default {
       
       return matchesGenre && matchesYear && matchesTmdbRating && matchesUserRating;
       }).sort((a, b) => {
-      const getAddedDate = (item) => {
-        if (item.addedAt) return new Date(item.addedAt);
-        return new Date(0);
-      };
-      
-      const getYear = (item) => {
-        return item.details.yearEndForDb || item.details.yearStartForDb || 0;
-      };
+        const getAddedDate = (item) => {
+          const dateStr = item.details.added_at || item.addedAt || item.details.addedAt;
+          return dateStr ? new Date(dateStr) : new Date(0);
+        };
+        
+        const getYear = (item) => {
+          const year = item.details.yearEndForDb || item.details.yearStartForDb;
+          return year || 9999;
+        };
 
-      switch(this.orderMode) {
-        case 'latest-added':
-          return getAddedDate(b) - getAddedDate(a);
-        case 'earliest-added':
-          return getAddedDate(a) - getAddedDate(b);
-        case 'newer-releases':
-          return getYear(b) - getYear(a);
-        case 'older-releases':
-          return getYear(a) - getYear(b);
-        default:
-          return 0;
-      }
-    });
+        switch(this.orderMode) {
+          case 'latest-added':
+            return getAddedDate(b) - getAddedDate(a);
+          case 'earliest-added':
+            return getAddedDate(a) - getAddedDate(b);
+          case 'newer-releases':
+            return getYear(b) - getYear(a);
+          case 'older-releases':
+            return getYear(a) - getYear(b);
+          default:
+            return 0;
+        }
+      });
   },
 
 
