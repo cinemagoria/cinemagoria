@@ -151,15 +151,6 @@
 
           </div>
         </div>
-        <!-- <div class="carousel-slider-control"> -->
-        <!--   <div class="swiper-button-prev slider-arrow"> -->
-        <!--     <img src="~static/previous.png" alt="Previous Arrow"> -->
-        <!--   </div> -->
-        <!--   <div class="swiper-button-next slider-arrow"> -->
-        <!--     <img src="~static/next.png" alt="Next Arrow"> -->
-        <!--   </div> -->
-        <!--   <div class="swiper-pagination"></div> -->
-        <!-- </div> -->
       </div>
       <div class="container">
         <h2 class="custom-center" style="font-size: 20px; margin-top: 30px;"><router-link to="/tv">Series de TV</router-link></h2>
