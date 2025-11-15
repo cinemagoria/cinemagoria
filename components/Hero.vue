@@ -158,7 +158,6 @@
       </div>
     </div>
 
-    <!-- Share Modal -->
       <div v-if="shareModalVisible" class="modal-overlay">
         <div class="share-modal-content">
           <div class="share-modal-header">
@@ -233,8 +232,7 @@
       :data="trailer"
       type="iframe"
       @close="closeModal" />
-    
-    <!-- Rating Modal -->
+
     <div v-if="ratingModalVisible" class="modal-overlay">
       <div class="rating-modal">
         <div class="modal-header">
