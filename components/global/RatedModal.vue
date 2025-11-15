@@ -261,8 +261,8 @@ export default {
           }
         }
         
-        this.moviesFetched = moviesFetched.reverse();
-        this.tvFetched = tvFetched.reverse();
+        this.moviesFetched = moviesFetched;
+        this.tvFetched = tvFetched;
       } catch (error) {
         console.error('Error al obtener elementos valorados:', error);
       }
