@@ -329,6 +329,7 @@ export default {
 
   data() {
     return {
+      tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://entercinema-favorites.vercel.app/api',
       isSingle: this.item.id === this.$route.params.id,
       modalVisible: false,
       copySuccess: false,
@@ -476,46 +477,31 @@ export default {
     
     async removeRating() {
       try {
-        const { data: favoritesData, error } = await supabase
-          .from('favorites')
-          .select('favorites_json')
-          .eq('user_email', this.userEmail);
+        const response = await fetch(
+          `${this.tursoBackendUrl}/favorites/rating/${this.userEmail}/${this.typeForDb}/${this.id}`,
+          {
+            method: 'PUT',
+            headers: { 
+              'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({ 
+              rating: null, 
+              review: '' 
+            })
+          }
+        );
 
-        if (error) throw new Error('Error getting favorites:', error.message);
-        if (!favoritesData || favoritesData.length === 0) return;
-        
-        const favoritesObject = favoritesData[0].favorites_json || {};
-        const favoriteType = this.type === 'movie' ? 'movies' : 'tv';
-        
-        if (!favoritesObject[favoriteType]) return;
-        
-        const updatedFavorites = { ...favoritesObject };
-
-        const itemIndex = updatedFavorites[favoriteType].findIndex(item => {
-          const itemKey = Object.keys(item)[0];
-          return itemKey === this.favId;
-        });
-        
-        if (itemIndex !== -1) {
-          const itemKey = Object.keys(updatedFavorites[favoriteType][itemIndex])[0];
-          delete updatedFavorites[favoriteType][itemIndex][itemKey].details.userRatingForDb;
-          delete updatedFavorites[favoriteType][itemIndex][itemKey].details.userReview;
-
-          const { error: updateError } = await supabase
-            .from('favorites')
-            .update({ favorites_json: updatedFavorites })
-            .eq('user_email', this.userEmail);
-
-          if (updateError) throw new Error('Error removing rating:', updateError.message);
-          
-          this.userRatingForDb = '-';
-          this.hasUserRating = false;
-          this.selectedRating = 0;
-          this.userReview = '';
-          
-          this.closeRatingModal();
-          this.$root.$emit('rated-items-updated');
+        if (!response.ok) {
+          throw new Error('Error removing rating');
         }
+
+        this.userRatingForDb = '-';
+        this.hasUserRating = false;
+        this.selectedRating = 0;
+        this.userReview = '';
+
+        this.closeRatingModal();
+        this.$root.$emit('rated-items-updated');
       } catch (error) {
         console.error('Error removing rating:', error);
         alert('There was an error removing your rating. Please try again.');
@@ -524,34 +510,32 @@ export default {
         
     async checkUserRating() {
       try {
-        const { data, error } = await supabase
-          .from('favorites')
-          .select('*')
-          .eq('user_email', this.userEmail);
+        const response = await fetch(`${this.tursoBackendUrl}/favorites/${this.userEmail}`);
         
-        if (error) {
+        if (!response.ok) {
           return;
         }
 
-        data.forEach((row) => {
-          const favoriteType = this.type === 'movie' ? 'movies' : 'tv';
-          if (row.favorites_json[favoriteType]) {
-            row.favorites_json[favoriteType].forEach((item) => {
-              const itemKey = Object.keys(item)[0];
-              if (itemKey === this.favId) {
-                if (item[itemKey].details.userRatingForDb) {
-                  this.userRatingForDb = item[itemKey].details.userRatingForDb;
-                  this.hasUserRating = this.userRatingForDb !== '-';
-                  this.selectedRating = this.hasUserRating ? parseInt(this.userRatingForDb) : 0;
-                }
+        const data = await response.json();
 
-                if (item[itemKey].details.userReview) {
-                  this.userReview = item[itemKey].details.userReview;
-                }
+        const favoriteType = this.type === 'movie' ? 'movies' : 'tv';
+        
+        if (data.favorites_json[favoriteType]) {
+          data.favorites_json[favoriteType].forEach(item => {
+            const itemKey = Object.keys(item)[0];
+            if (itemKey === this.favId) {
+              if (item[itemKey].details.userRatingForDb) {
+                this.userRatingForDb = item[itemKey].details.userRatingForDb;
+                this.hasUserRating = this.userRatingForDb !== '-';
+                this.selectedRating = this.hasUserRating ? parseInt(this.userRatingForDb) : 0;
               }
-            });
-          }
-        });
+
+              if (item[itemKey].details.userReview) {
+                this.userReview = item[itemKey].details.userReview;
+              }
+            }
+          });
+        }
       } catch (error) {
         console.error('Error checking user rating:', error);
       }
@@ -567,50 +551,27 @@ export default {
         if (!this.isFavorite) {
           await this.toggleFavorite();
         }
-        
-        const { data: favoritesData, error } = await supabase
-          .from('favorites')
-          .select('favorites_json')
-          .eq('user_email', this.userEmail);
 
-        if (error) {
-          throw new Error('Error getting favorites:', error.message);
-        }
-
-        if (!favoritesData || favoritesData.length === 0) {
-          throw new Error('No favorites found for user');
-        }
-        
-        const favoritesObject = favoritesData[0].favorites_json || {};
-        const favoriteType = this.type === 'movie' ? 'movies' : 'tv';
-        
-        if (!favoritesObject[favoriteType]) {
-          throw new Error(`No favorites of type ${favoriteType} found`);
-        }
-        
-        const updatedFavorites = { ...favoritesObject };
-
-        const itemIndex = updatedFavorites[favoriteType].findIndex(item => {
-          const itemKey = Object.keys(item)[0];
-          return itemKey === this.favId;
-        });
-        
-        if (itemIndex !== -1) {
-          const itemKey = Object.keys(updatedFavorites[favoriteType][itemIndex])[0];
-          updatedFavorites[favoriteType][itemIndex][itemKey].details.userRatingForDb = rating.toString();
-
-          const { error: updateError } = await supabase
-            .from('favorites')
-            .update({ favorites_json: updatedFavorites })
-            .eq('user_email', this.userEmail);
-
-          if (updateError) {
-            throw new Error('Error updating rating:', updateError.message);
+        const response = await fetch(
+          `${this.tursoBackendUrl}/favorites/rating/${this.userEmail}/${this.typeForDb}/${this.id}`,
+          {
+            method: 'PUT',
+            headers: { 
+              'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({
+              rating: rating,
+              review: this.userReview || ''
+            })
           }
-          
-          this.userRatingForDb = rating.toString();
-          this.hasUserRating = true;
+        );
+
+        if (!response.ok) {
+          throw new Error('Error updating rating');
         }
+
+        this.userRatingForDb = rating.toString();
+        this.hasUserRating = true;
       } catch (error) {
         console.error('Error updating rating:', error);
       }
@@ -621,63 +582,39 @@ export default {
         alert('Please login to rate and review.');
         return;
       }
-      
+
       try {
         if (!this.isFavorite) {
           await this.toggleFavorite();
         }
 
-        const { data: favoritesData, error } = await supabase
-          .from('favorites')
-          .select('favorites_json')
-          .eq('user_email', this.userEmail);
-
-        if (error) {
-          throw new Error('Error getting favorites:', error.message);
-        }
-
-        if (!favoritesData || favoritesData.length === 0) {
-          throw new Error('No favorites found for user');
-        }
-
-        const favoritesObject = favoritesData[0].favorites_json || {};
-        const favoriteType = this.type === 'movie' ? 'movies' : 'tv';
-        
-        if (!favoritesObject[favoriteType]) {
-          throw new Error(`No favorites of type ${favoriteType} found`);
-        }
-        
-        const updatedFavorites = { ...favoritesObject };
-
-        const itemIndex = updatedFavorites[favoriteType].findIndex(item => {
-          const itemKey = Object.keys(item)[0];
-          return itemKey === this.favId;
-        });
-        
-        if (itemIndex !== -1) {
-          const itemKey = Object.keys(updatedFavorites[favoriteType][itemIndex])[0];
-
-          updatedFavorites[favoriteType][itemIndex][itemKey].details.userRatingForDb = rating.toString();
-          updatedFavorites[favoriteType][itemIndex][itemKey].details.userReview = review;
-
-          const { error: updateError } = await supabase
-            .from('favorites')
-            .update({ favorites_json: updatedFavorites })
-            .eq('user_email', this.userEmail);
-
-          if (updateError) {
-            throw new Error('Error updating rating and review:', updateError.message);
+        const response = await fetch(
+          `${this.tursoBackendUrl}/favorites/rating/${this.userEmail}/${this.typeForDb}/${this.id}`,
+          {
+            method: 'PUT',
+            headers: { 
+              'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({ 
+              rating, 
+              review 
+            })
           }
+        );
 
-          this.userRatingForDb = rating.toString();
-          this.hasUserRating = true;
-
+        if (!response.ok) {
+          throw new Error('Error updating rating and review');
         }
+
+        this.userRatingForDb = rating.toString();
+        this.hasUserRating = true;
+
       } catch (error) {
         console.error('Error updating rating and review:', error);
         throw error;
       }
     },
+
     async copyToClipboard() {
       try {
         await navigator.clipboard.writeText(this.shareUrl);
@@ -708,85 +645,59 @@ export default {
 
     async checkIfFavorite() {
       try {
-        const { data, error } = await supabase
-          .from('favorites')
-          .select('*')
-          .eq('user_email', this.userEmail); 
+        const response = await fetch(`${this.tursoBackendUrl}/favorites/${this.userEmail}`);
         
-        if (error) {
-          throw new Error('Error al conectar con la base de datos: ' + error.message);
+        if (!response.ok) {
+          throw new Error('Error connecting to database: ' + response.statusText);
         }
 
-        data.forEach((row) => {
-          const moviesFetched = [];
-          if (row.favorites_json.movies) {
-            row.favorites_json.movies.forEach((movie) => {
-              const movieKey = Object.keys(movie)[0];
-              moviesFetched.push(movieKey);
-            });
-          }
+        const data = await response.json();
 
-          const tvFetched = [];
-          if (row.favorites_json.tv) {
-            row.favorites_json.tv.forEach((tvShow) => {
-              const tvKey = Object.keys(tvShow)[0];
-              tvFetched.push(tvKey);
-            });
-          }
-          
-          if (moviesFetched.includes(this.favId) || tvFetched.includes(this.favId)) {
-            this.isFavorite = true;
-          } else {
-            this.isFavorite = false;
-          }
-        });
-        
+        const moviesFetched = [];
+        const tvFetched = [];
+
+        if (data.favorites_json.movies) {
+          data.favorites_json.movies.forEach(movie => {
+            const movieKey = Object.keys(movie)[0];
+            moviesFetched.push(movieKey);
+          });
+        }
+
+        if (data.favorites_json.tv) {
+          data.favorites_json.tv.forEach(tvShow => {
+            const tvKey = Object.keys(tvShow)[0];
+            tvFetched.push(tvKey);
+          });
+        }
+
+        if (moviesFetched.includes(this.favId) || tvFetched.includes(this.favId)) {
+          this.isFavorite = true;
+        } else {
+          this.isFavorite = false;
+        }
+
       } catch (error) {
-        console.error('Error al verificar si el elemento está agregado como favorito:', error.message);
+        console.error('Error checking if favorite:', error.message);
       }
     },
 
     async toggleFavorite() {
       try {
-        let favoritesData;
-        const { data, error } = await supabase
-          .from('favorites')
-          .select('favorites_json')
-          .eq('user_email', this.userEmail);
-
-        if (error) {
-          console.error('Error fetching favorites:', error);
-          return;
-        }
-
-        if (!data.length) {
-          const { data: newData, error: newError } = await supabase
-            .from('favorites')
-            .insert([{ user_email: this.userEmail, favorites_json: {} }])
-            .select(); 
-
-          if (newError) {
-            console.error('Error inserting new favorite record:', newError);
-            return;
-          }
-
-          favoritesData = newData[0].favorites_json;
-        } else {
-          favoritesData = data[0].favorites_json;
-        }
-
-        favoritesData = favoritesData || {};
-
         if (this.isFavorite) {
-          const updatedFavorites = this.removeFavorite(favoritesData, this.favId);
-          const { error: updateError } = await supabase
-            .from('favorites')
-            .update({ favorites_json: updatedFavorites })
-            .eq('user_email', this.userEmail);
+          const [itemType, itemId] = this.favId.split('/');
+          
+          const response = await fetch(
+            `${this.tursoBackendUrl}/favorites/${this.userEmail}/${itemType}/${itemId}`,
+            { 
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            }
+          );
 
-          if (updateError) {
-            console.error('Error updating favorite (removal):', updateError);
-            return;
+          if (!response.ok) {
+            throw new Error('Error removing favorite');
           }
 
           this.hasUserRating = false;
@@ -794,21 +705,39 @@ export default {
           this.selectedRating = 0;
           this.userReview = '';
         } else {
-          const updatedFavorites = this.addFavorite(favoritesData, this.favId);
-          const { error: updateError } = await supabase
-            .from('favorites')
-            .update({ favorites_json: updatedFavorites })
-            .eq('user_email', this.userEmail);
+          const response = await fetch(`${this.tursoBackendUrl}/favorites`, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({
+              userEmail: this.userEmail,
+              item: {
+                nameForDb: this.nameForDb,
+                starsForDb: this.starsForDb,
+                yearStartForDb: this.yearStartForDb,
+                yearEndForDb: this.yearEndForDb,
+                posterForDb: this.posterForDb,
+                idForDb: this.id,
+                genresForDb: this.genresForDb,
+                typeForDb: this.typeForDb,
+                addedAt: this.addedAt,
+                external_ids: this.item.external_ids,
+                rating_source: this.item.rating_source || 'tmdb',
+                imdb_rating: this.item.imdb_rating,
+                imdb_votes: this.item.imdb_votes
+              }
+            })
+          });
 
-          if (updateError) {
-            console.error('Error updating favorite (addition):', updateError);
-            return;
+          if (!response.ok) {
+            throw new Error('Error adding favorite');
           }
         }
 
         this.isFavorite = !this.isFavorite;
       } catch (error) {
-        console.error('Error al cambiar el estado del favorito:', error.message);
+        console.error('Error toggling favorite:', error.message);
       }
     },
 

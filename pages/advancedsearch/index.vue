@@ -322,6 +322,7 @@
     },
     data() {
       return {
+        tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://entercinema-favorites.vercel.app/api',
         searchPerformed: false,
         loading: false,
         releaseYear: '',
@@ -588,14 +589,14 @@
           
       async checkData() {
         try {
-          const { data, error } = await supabase
-            .from('favorites')
-            .select('*')
-            .eq('user_email', this.userEmail);
-
-          if (error) {
-            throw new Error('Error al conectar con la base de datos: ' + error.message);
+          const response = await fetch(`${this.tursoBackendUrl}/favorites/${this.userEmail}`);
+          
+          if (!response.ok) {
+            throw new Error('Error connecting to database: ' + response.statusText);
           }
+
+          const data = await response.json();
+          this.favorites = data.favorites_json;
         } catch (error) {
           console.error(error.message);
         }
