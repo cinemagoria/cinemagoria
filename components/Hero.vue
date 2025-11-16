@@ -858,15 +858,30 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 35rem;
+  height: 52rem;
   color: #999;
   background-color: #000;
 
-  @media (min-width: $breakpoint-xsmall) {
-    height: 50rem;
+  @media (max-width: 397px) {
+  height: 54rem;
+}
+
+  @media (min-width: $breakpoint-xsmall) and (max-width: 767px) {
+    height: 56rem;
   }
 
-  @media (min-width: $breakpoint-medium) {
+  @media (min-width: 768px) and (max-width: 1023px) {
+    height: 70rem;
+  }
+
+  @media (min-width: $breakpoint-medium) and (max-width: 1023px) {
+    position: relative;
+    display: block;
+    height: 0;
+    padding-bottom: 55%;
+  }
+
+  @media (min-width: 1024px) {
     position: relative;
     display: block;
     height: 0;
@@ -880,14 +895,13 @@ export default {
   flex: 1 1 auto;
   min-height: 0;
 
-  @media (min-width: $breakpoint-medium) {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: block;
-    width: 71.1%;
-    height: 100%;
+  @media (max-width: 639px) {
+    min-height: 30rem;
   }
+
+  @media (min-width: 640px) and (max-width: 767px) {
+    min-height: 34rem;
+º}
 
   &::after {
     position: absolute;
@@ -1125,6 +1139,12 @@ export default {
   line-height: 1.1;
   color: #fff;
   letter-spacing: $letter-spacing;
+
+  @media (max-width: 397px) {
+    font-size: 2.4rem;
+    line-height: 1.05;
+    margin-bottom: 1.2rem;
+  }
 
   @media (min-width: $breakpoint-small) {
     margin-bottom: 1.8rem;
