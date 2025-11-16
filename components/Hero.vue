@@ -901,7 +901,7 @@ export default {
 
   @media (min-width: 640px) and (max-width: 767px) {
     min-height: 34rem;
-º}
+  }
 
   &::after {
     position: absolute;
