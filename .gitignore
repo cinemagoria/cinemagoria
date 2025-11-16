@@ -18,3 +18,4 @@ dist
 .eslintcache
 .DS_Store
 Icon?
+static/sw.js
