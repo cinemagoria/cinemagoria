@@ -81,7 +81,7 @@
                   <circle v-if="isFollowing" cx="9" cy="7" r="4"/>
                   <polyline v-if="isFollowing" points="16 11 18 13 22 9"/>
                 </svg>
-                {{ isFollowing ? 'Siguiendo' : 'Seguir' }}
+                {{ isFollowing ? 'Following' : 'Follow' }}
              </button>
         </div>
       </div>
