@@ -316,7 +316,7 @@
               </div>
               
               <div class="filter-group">
-                <label class="filter-label">Rating</label>
+                <label class="filter-label">IMDB Rating</label>
                 <select v-model="selectedTmdbRating" class="filter-input">
                   <option value="">All ratings</option>
                   <option value="9-10">9+</option>
