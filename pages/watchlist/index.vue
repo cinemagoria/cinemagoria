@@ -1147,7 +1147,9 @@ export default {
         { value: 'latest-added', label: 'Latest Added' },
         { value: 'earliest-added', label: 'Earliest Added' },
         { value: 'newer-releases', label: 'Newer Releases' },
-        { value: 'older-releases', label: 'Older Releases' }
+        { value: 'older-releases', label: 'Older Releases' },
+        { value: 'imdb-high', label: 'Highest Rated (IMDB)' },
+        { value: 'imdb-low', label: 'Lowest Rated (IMDB)' }
       ];
     },
     
@@ -1234,6 +1236,16 @@ export default {
           return year || 9999;
         };
 
+        const getRating = (item) => {
+          if (item.details.rating_source === 'imdb' && item.details.imdb_rating) {
+            return item.details.imdb_rating;
+          }
+          if (item.details.starsForDb) {
+            return parseFloat(this.formatRating(item.details.starsForDb));
+          }
+          return -1;
+        };
+
         switch(this.orderMode) {
           case 'latest-added':
             return getAddedDate(b) - getAddedDate(a);
@@ -1243,6 +1255,20 @@ export default {
             return getYear(b) - getYear(a);
           case 'older-releases':
             return getYear(a) - getYear(b);
+          case 'imdb-high':
+          const ratingBHigh = getRating(b);
+          const ratingAHigh = getRating(a);
+          if (ratingAHigh === -1 && ratingBHigh === -1) return 0;
+          if (ratingAHigh === -1) return 1;
+          if (ratingBHigh === -1) return -1;
+          return ratingBHigh - ratingAHigh;
+        case 'imdb-low':
+          const ratingBLow = getRating(b);
+          const ratingALow = getRating(a);
+          if (ratingALow === -1 && ratingBLow === -1) return 0;
+          if (ratingALow === -1) return 1;
+          if (ratingBLow === -1) return -1;
+          return ratingALow - ratingBLow;
           default:
             return 0;
         }
