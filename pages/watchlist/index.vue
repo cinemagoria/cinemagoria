@@ -91,7 +91,7 @@
             <p>¡Cambia de pestaña para ver tus {{ filter === 'movies' ? 'series de TV' : 'películas' }}!</p>
           </div>
           
-          <div v-else-if="filteredItems.length === 0 && (selectedGenre || selectedTmdbRating || selectedUserRating || customYearStart || customYearEnd)" class="no-results-state">
+          <div v-else-if="(filteredItems.length === 0 || itemsToShow.length === 0) && hasActiveFilters" class="no-results-state">
             <img src="~/static/cinema-popcorn.svg" alt="Sin resultados" class="no-results-icon">
             <h3>No se encontraron resultados</h3>
             <p>No pudimos encontrar contenido que coincida con tus filtros actuales.</p>
@@ -542,6 +542,47 @@ export default {
       window.removeEventListener('resize', this.handleResize);
     }
     this.$root.$off('rated-items-updated', this.checkData);
+  },
+
+  watch: {
+    selectedGenre() {
+      this.currentPage = 1;
+    },
+    selectedTmdbRating() {
+      this.currentPage = 1;
+    },
+    selectedUserRating() {
+      this.currentPage = 1;
+    },
+    customYearStart() {
+      this.currentPage = 1;
+    },
+    customYearEnd() {
+      this.currentPage = 1;
+    },
+    orderMode() {
+      this.currentPage = 1;
+    },
+    totalPages(newTotal) {
+      if (newTotal === 0) {
+        this.currentPage = 1;
+      } else if (this.currentPage > newTotal) {
+        this.currentPage = newTotal;
+      }
+    },
+    currentPage(newPage) {
+      if (this.totalPages === 0) {
+        this.currentPage = 1;
+      } else if (newPage > this.totalPages) {
+        this.$nextTick(() => {
+          this.currentPage = this.totalPages;
+        });
+      } else if (newPage < 1) {
+        this.$nextTick(() => {
+          this.currentPage = 1;
+        });
+      }
+    }
   },
   
   methods: {
