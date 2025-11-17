@@ -319,7 +319,7 @@
               </div>
               
               <div class="filter-group">
-                <label class="filter-label">Puntaje</label>
+                <label class="filter-label">Puntaje IMDB</label>
                 <select v-model="selectedTmdbRating" class="filter-input">
                   <option value="">Todos los puntajes</option>
                   <option value="9-10">9+</option>
