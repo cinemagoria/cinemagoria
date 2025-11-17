@@ -1190,7 +1190,9 @@ export default {
         { value: 'latest-added', label: 'Adiciones más recientes' },
         { value: 'earliest-added', label: 'Adiciones más antiguas' },
         { value: 'newer-releases', label: 'Estrenos más recientes' },
-        { value: 'older-releases', label: 'Estrenos más antiguos' }
+        { value: 'older-releases', label: 'Estrenos más antiguos' },
+        { value: 'imdb-high', label: 'Mejores valoraciones (IMDB)' },
+        { value: 'imdb-low', label: 'Peores valoraciones (IMDB)' }
       ];
     },
     
@@ -1267,29 +1269,53 @@ export default {
         
         return matchesGenre && matchesYear && matchesTmdbRating && matchesUserRating;
         }).sort((a, b) => {
-        const getAddedDate = (item) => {
-          const dateStr = item.details.added_at || item.addedAt || item.details.addedAt;
-          return dateStr ? new Date(dateStr) : new Date(0);
-        };
-        
-        const getYear = (item) => {
-          const year = item.details.yearEndForDb || item.details.yearStartForDb;
-          return year || 9999;
-        };
+          const getAddedDate = (item) => {
+            const dateStr = item.details.added_at || item.addedAt || item.details.addedAt;
+            return dateStr ? new Date(dateStr) : new Date(0);
+          };
+          
+          const getYear = (item) => {
+            const year = item.details.yearEndForDb || item.details.yearStartForDb;
+            return year || 9999;
+          };
 
-        switch(this.orderMode) {
-          case 'latest-added':
-            return getAddedDate(b) - getAddedDate(a);
-          case 'earliest-added':
-            return getAddedDate(a) - getAddedDate(b);
-          case 'newer-releases':
-            return getYear(b) - getYear(a);
-          case 'older-releases':
-            return getYear(a) - getYear(b);
-          default:
-            return 0;
-        }
-      });
+          const getRating = (item) => {
+            if (item.details.rating_source === 'imdb' && item.details.imdb_rating) {
+              return item.details.imdb_rating;
+            }
+            if (item.details.starsForDb) {
+              return parseFloat(this.formatRating(item.details.starsForDb));
+            }
+            return -1;
+          };
+
+          switch(this.orderMode) {
+            case 'latest-added':
+              return getAddedDate(b) - getAddedDate(a);
+            case 'earliest-added':
+              return getAddedDate(a) - getAddedDate(b);
+            case 'newer-releases':
+              return getYear(b) - getYear(a);
+            case 'older-releases':
+              return getYear(a) - getYear(b);
+            case 'imdb-high':
+            const ratingBHigh = getRating(b);
+            const ratingAHigh = getRating(a);
+            if (ratingAHigh === -1 && ratingBHigh === -1) return 0;
+            if (ratingAHigh === -1) return 1;
+            if (ratingBHigh === -1) return -1;
+            return ratingBHigh - ratingAHigh;
+          case 'imdb-low':
+            const ratingBLow = getRating(b);
+            const ratingALow = getRating(a);
+            if (ratingALow === -1 && ratingBLow === -1) return 0;
+            if (ratingALow === -1) return 1;
+            if (ratingBLow === -1) return -1;
+            return ratingALow - ratingBLow;
+            default:
+              return 0;
+          }
+        });
     },
 
     yearRanges() {
