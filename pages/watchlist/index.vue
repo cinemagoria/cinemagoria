@@ -88,7 +88,7 @@
             <p>Switch tabs to see your {{ filter === 'movies' ? 'TV shows' : 'movies' }}!</p>
           </div>
           
-          <div v-else-if="filteredItems.length === 0 && (selectedGenre || selectedTmdbRating || selectedUserRating || customYearStart || customYearEnd)" class="no-results-state">
+          <div v-else-if="(filteredItems.length === 0 || itemsToShow.length === 0) && hasActiveFilters" class="no-results-state">
             <img src="~/static/cinema-popcorn.svg" alt="No results" class="no-results-icon">
             <h3>No Results Found</h3>
             <p>We couldn't find any content matching your current filters.</p>
@@ -597,6 +597,46 @@ export default {
     this.$root.$off('rated-items-updated', this.checkData);
   },
   
+  watch: {
+    selectedGenre() {
+      this.currentPage = 1;
+    },
+    selectedTmdbRating() {
+      this.currentPage = 1;
+    },
+    selectedUserRating() {
+      this.currentPage = 1;
+    },
+    customYearStart() {
+      this.currentPage = 1;
+    },
+    customYearEnd() {
+      this.currentPage = 1;
+    },
+    orderMode() {
+      this.currentPage = 1;
+    },
+    totalPages(newTotal) {
+      if (newTotal === 0) {
+        this.currentPage = 1;
+      } else if (this.currentPage > newTotal) {
+        this.currentPage = newTotal;
+      }
+    },
+    currentPage(newPage) {
+      if (this.totalPages === 0) {
+        this.currentPage = 1;
+      } else if (newPage > this.totalPages) {
+        this.$nextTick(() => {
+          this.currentPage = this.totalPages;
+        });
+      } else if (newPage < 1) {
+        this.$nextTick(() => {
+          this.currentPage = 1;
+        });
+      }
+    }
+  },
   
   methods: {
     removeFilter(filterValue) {
