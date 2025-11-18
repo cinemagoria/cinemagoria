@@ -975,7 +975,13 @@ button {
   margin-bottom: 1rem;
   padding-right: 1rem;
   word-wrap: break-word;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
+  line-height: 1.3;
+  max-width: 100%;
+  display: block;
+  hyphens: auto;
 }
 
 .notification-character {
@@ -1142,6 +1148,7 @@ button {
   
   .notification-media {
     font-size: 1.96rem;
+    line-height: 1.3;
   }
   
   .notification-character {
@@ -1197,6 +1204,7 @@ button {
   .notification-media {
     font-size: 1.68rem;
     margin-left: 1.5rem;
+    line-height: 1.3;
   }
   
   .notification-character {
@@ -1261,6 +1269,7 @@ button {
   
   .notification-media {
     font-size: 1.54rem;
+    line-height: 1.3;
   }
   
   .notification-overview {

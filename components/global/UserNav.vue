@@ -1,14 +1,17 @@
 <template>
   <div class="user-nav-container">
-    <button 
-      @click="openAiChat" 
-      class="ask-ai-button" 
-      :aria-label="currentLanguage === 'es' ? 'Preguntar a IA' : 'Ask AI'" 
-      :title="currentLanguage === 'es' ? 'Preguntar a IA' : 'Ask AI'">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="spark-icon">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
-      </svg>
-    </button>
+    <nuxt-link
+      :to="{ name: 'notifications' }"
+      aria-label="notifications"
+      class="notifications-button">
+      <div class="notification-icon-wrapper">
+        <svg xmlns="http://www.w3.org/2000/svg" class="notification-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span v-if="unreadCount > 0" class="notification-badge">{{ unreadCount }}</span>
+      </div>
+    </nuxt-link>
     <div v-if="isLoggedIn" class="user-nav-logged-in">
       <div class="avatar-container" @click="toggleMenu">
         <img :src="userAvatar" alt="User Avatar" class="avatar">
@@ -80,20 +83,14 @@
         <span class="sign-in-label">Iniciar Sesión</span>
       </button>
     </div>
-
-    <ChatbotModal ref="chatbotModalRef" />
   </div>
 </template>
 
 <script>
 import supabase from '@/services/supabase';
-import ChatbotModal from './ChatbotModal.vue';
 
 export default {
   name: 'UserNav',
-  components: {
-    ChatbotModal
-  },
   data() {
     return {
       isLoggedIn: false,
@@ -101,6 +98,8 @@ export default {
       userAvatar: '/avatars/avatar-ss0.png',
       isMenuOpen: false,
       currentLanguage: 'es',
+      unreadCount: 0,
+      notificationInterval: null
     };
   },
 
@@ -118,6 +117,12 @@ export default {
   },
 
   async mounted() {
+    this.fetchUnreadCount();
+    this.notificationInterval = setInterval(this.fetchUnreadCount, 30000);
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('notifications-updated', this.fetchUnreadCount);
+    }
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');
     
@@ -139,9 +144,33 @@ export default {
 
   beforeDestroy() {
     document.removeEventListener('click', this.handleClickOutside);
+    if (this.notificationInterval) {
+      clearInterval(this.notificationInterval);
+    }
+
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('notifications-updated', this.fetchUnreadCount);
+    }
   },
 
   methods: {
+    async fetchUnreadCount() {
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail) {
+        this.unreadCount = 0;
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://entercinema-follows-rust.vercel.app/notifications/unread-count?user_email=${encodeURIComponent(userEmail)}`);
+        if (response.ok) {
+          const data = await response.json();
+          this.unreadCount = data.unread_count || 0;
+        }
+      } catch (error) {
+        console.error('Error fetching unread count:', error);
+      }
+    },
     handleClickOutside(event) {
       const dropdownMenu = this.$el.querySelector('.dropdown-menu');
       const avatarContainer = this.$el.querySelector('.avatar-container');
@@ -217,21 +246,6 @@ export default {
       localStorage.removeItem('access_token');
       window.location.href = '/';
     },
-
-    openAiChat() {
-      if (this.$refs.chatbotModalRef) {
-        const isAuthenticated = typeof window !== 'undefined' && localStorage.getItem('access_token');
-        
-        if (isAuthenticated) {
-          this.$refs.chatbotModalRef.open();
-        } else {
-          this.$refs.chatbotModalRef.chatBotOpen = true;
-          this.$refs.chatbotModalRef.chatBotMinimized = false;
-          this.$refs.chatbotModalRef.clearMinimizedState();
-          this.$refs.chatbotModalRef.checkMobileDevice();
-        }
-      }
-    }
   },
 };
 </script>
@@ -245,10 +259,9 @@ export default {
   display: flex;
   align-items: center;
   gap: 15px;
-  top: -13px;
 }
 
-.ask-ai-button {
+.notifications-button {
   background: linear-gradient(135deg, #000000 0%, #14232A 100%);
   border: 1px solid #d2d3d3b8;
   cursor: pointer;
@@ -256,24 +269,61 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
   border-radius: 14px;
   transition: all 0.3s ease;
   height: 40px;
+  width: 40px;
+  text-decoration: none;
 }
 
-.ask-ai-button:hover {
+
+
+.notifications-button:hover {
   background: linear-gradient(135deg, #0a1419 0%, #1a2f3a 100%);
   border-color: #8BE9FD;
   box-shadow: 0 0 15px rgba(139, 233, 253, 0.3);
   transform: scale(1.05);
 }
 
-.ask-ai-button:hover .spark-icon,
-.ask-ai-button:hover .ai-label {
+.notification-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-icon {
+  width: 20px;
+  height: 20px;
+  color: white;
+  stroke: white;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.notifications-button:hover .notification-icon {
   color: #8BE9FD;
   stroke: #8BE9FD;
   transform: scale(1.15);
+}
+
+.notification-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: #FF5252;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 5px;
+  border-radius: 10px;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #000;
+  white-space: nowrap;
 }
 
 .spark-icon {
@@ -600,19 +650,6 @@ export default {
   .language-switch > span {
     font-size: 9px;
     padding: 5px 8px;
-  }
-}
-
-@media screen and (min-width: 1201px) {
-  .ask-ai-button {
-    margin-top: 20px;
-  }
-  .avatar {
-    margin-top: 20px;
-  }
-
-  .user-nav-logged-out {
-    margin-top: 20px;
   }
 }
 </style>
