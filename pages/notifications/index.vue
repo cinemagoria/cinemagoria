@@ -73,10 +73,11 @@
           <div 
             v-for="notification in notifications" 
             :key="notification.id"
-            :class="['notification-item', { unread: !notification.read }]"
-            @click="handleNotificationClick(notification)">
-            
-            <div class="notification-icon">
+            :class="['notification-item', { unread: !notification.read }]">
+            <div 
+              class="notification-icon" 
+              @click.stop="notification.profile_path ? handlePersonClick(notification) : null"
+              :style="notification.profile_path ? 'cursor: pointer;' : ''">
               <img 
                 v-if="notification.person_id && notification.profile_path" 
                 :src="`https://image.tmdb.org/t/p/w185${notification.profile_path}`" 
@@ -93,25 +94,37 @@
             <div class="notification-content">
               <div class="notification-text">
                 <div class="notification-title">
-                  <strong>{{ notification.person_name }}</strong> <span class="has-release">tiene un nuevo lanzamiento</span>
+                  <strong 
+                    @click.stop="notification.media_type === 'episode' ? handleContentClick(notification) : handlePersonClick(notification)" 
+                    style="cursor: pointer; text-decoration: underline; text-decoration-color: rgba(139, 233, 253, 0.3);">
+                    {{ notification.person_name }}
+                  </strong>
+                  <span class="has-release">has a new release </span>
                 </div>
-                <div class="notification-media">
+                <div 
+                  class="notification-media" 
+                  @click.stop="handleContentClick(notification)"
+                  style="cursor: pointer;">
                   {{ notification.media_title }}
                 </div>
                 
-                <div v-if="getFallbackImageUrl(notification)" class="notification-poster">
+                <div 
+                  v-if="getFallbackImageUrl(notification)" 
+                  class="notification-poster"
+                  @click.stop="handleContentClick(notification)"
+                  style="cursor: pointer;">
                   <img :src="getFallbackImageUrl(notification)" :alt="notification.media_title">
                 </div>
                 
                 <div v-if="notification.character" class="notification-character">
-                  <span style="color:#d0d0d0 !important;">como </span>{{ notification.character }}
+                  <span style="color:#d0d0d0 !important;">as </span>{{ notification.character }}
                 </div>
                  <div class="notification-meta">
                   <span class="media-badge">
-                    {{ notification.media_type === 'movie' ? 'Película' : notification.media_type === 'tv' ? 'Serie de TV' : 'Episodio' }}
+                    {{ notification.media_type === 'movie' ? 'Movie' : notification.media_type === 'tv' ? 'TV Show' : 'Episode' }}
                   </span>
                   <div class="info-container">
-                    <label class="release-date">Estreno: <span class="only-date">{{ formatDate(notification.release_date) }}</span></label>
+                    <label class="release-date">Release: <span class="only-date">{{ formatDate(notification.release_date) }}</span></label>
                     <span class="time-ago">{{ getTimeAgo(notification.created_at) }}</span>
                   </div>
                 </div>
@@ -295,6 +308,21 @@ export default {
   },
 
   methods: {
+    handlePersonClick(notification) {
+      if (notification.person_id) {
+        this.$router.push(`/person/${notification.person_id}`);
+      }
+    },
+
+    handleContentClick(notification) {
+      let url;
+      if (notification.media_type === 'episode') {
+        url = `/tv/${notification.person_id}`;
+      } else {
+        url = `/${notification.media_type}/${notification.media_id}`;
+      }
+      this.$router.push(url);
+    },
     async fetchTvFollowsForCache() {
       if (!this.userEmail) return;
       
