@@ -1,114 +1,116 @@
 <template>
-  <div :class="$style.modalOverlay" @click.self="$emit('close')">
-    <div :class="$style.modalContent">
-      <div :class="$style.modalHeader">
-        <h2>Following</h2>
-        <button @click="$emit('close')" :class="$style.closeButton">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
-      </div>
+  <div v-if="visible" :class="$style.modalOverlay" @click.self="close">
+    <div :class="$style.modalWrapper">
+      <div :class="$style.modalContent">
+        <div :class="$style.modalHeader">
+          <h2>Following</h2>
+          <button @click="close" :class="$style.closeButton">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
 
-      <div :class="$style.tabs">
-        <button 
-          @click="activeTab = 'people'" 
-          :class="[{ [$style.active]: activeTab === 'people' }]">
-          People ({{ peopleCount }})
-        </button>
-        <button 
-          @click="activeTab = 'tv'" 
-          :class="[{ [$style.active]: activeTab === 'tv' }]">
-          TV Series ({{ tvCount }})
-        </button>
-      </div>
+        <div :class="$style.tabs">
+          <button 
+            @click="activeTab = 'people'" 
+            :class="[{ [$style.active]: activeTab === 'people' }]">
+            People ({{ peopleCount }})
+          </button>
+          <button 
+            @click="activeTab = 'tv'" 
+            :class="[{ [$style.active]: activeTab === 'tv' }]">
+            TV Series ({{ tvCount }})
+          </button>
+        </div>
 
-      <div class="undo-bar-container">
-        <div v-if="undoItem" :class="$style.undoBar" style="padding: 10px;">
+        <div class="undo-bar-container">
+          <div v-if="undoItem" :class="$style.undoBar" style="padding: 10px;">
             <span>{{ undoItem.type === 'person' ? undoItem.name : undoItem.tv_name }} unfollowed</span>
             <button @click="handleUndo" :class="$style.undoButton">UNDO</button>
+          </div>
         </div>
-      </div>
 
-      <div v-if="loading" :class="$style.loader">
-        <div class="modern-spinner">
-          <div></div><div></div><div></div><div></div>
+        <div v-if="loading" :class="$style.loader">
+          <div class="modern-spinner">
+            <div></div><div></div><div></div><div></div>
+          </div>
         </div>
-      </div>
 
-      <div v-else :class="$style.modalBody">
-        <div v-if="activeTab === 'people'" :class="$style.peopleTab">
-          <div v-for="(items, department) in groupedPeople" :key="department" :class="$style.departmentGroup">
-            <h3 :class="$style.departmentTitle">{{ formatDepartment(department) }}</h3>
+        <div v-else :class="$style.modalBody">
+          <div v-if="activeTab === 'people'" :class="$style.peopleTab">
+            <div v-for="(items, department) in groupedPeople" :key="department" :class="$style.departmentGroup">
+              <h3 :class="$style.departmentTitle">{{ formatDepartment(department) }}</h3>
+              <div :class="$style.grid">
+                <div 
+                  v-for="person in items" 
+                  :key="person.person_id"
+                  :class="$style.card">
+                  <div 
+                    @click="openPerson(person.person_id)" 
+                    :class="$style.cardImage">
+                    <img 
+                      v-if="person.profile_path" 
+                      :src="`https://image.tmdb.org/t/p/w185${person.profile_path}`" 
+                      :alt="person.person_name">
+                    <div v-else :class="$style.noImage">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <div :class="$style.cardContent">
+                    <h4>{{ person.person_name }}</h4>
+                    <button 
+                      @click="unfollowPerson(person)" 
+                      :class="$style.unfollowButton">
+                      Unfollow
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="Object.keys(groupedPeople).length === 0" :class="$style.emptyState">
+              <p>Not following anyone yet</p>
+            </div>
+          </div>
+
+          <div v-else :class="$style.tvTab">
             <div :class="$style.grid">
               <div 
-                v-for="person in items" 
-                :key="person.person_id"
+                v-for="show in tvShows" 
+                :key="show.tv_id"
                 :class="$style.card">
                 <div 
-                  @click="openPerson(person.person_id)" 
+                  @click="openTvShow(show.tv_id)" 
                   :class="$style.cardImage">
                   <img 
-                    v-if="person.profile_path" 
-                    :src="`https://image.tmdb.org/t/p/w185${person.profile_path}`" 
-                    :alt="person.person_name">
+                    v-if="show.poster_path" 
+                    :src="`https://image.tmdb.org/t/p/w185${show.poster_path}`" 
+                    :alt="show.tv_name">
                   <div v-else :class="$style.noImage">
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                      <path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .89-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.11-.9-2-2-2zm0 14H3V8h18v12zM9 10v8l7-4z"/>
                     </svg>
                   </div>
                 </div>
                 <div :class="$style.cardContent">
-                  <h4>{{ person.person_name }}</h4>
+                  <h4>{{ show.tv_name }}</h4>
+                  <p v-if="show.status" :class="$style.status">{{ show.status }}</p>
                   <button 
-                    @click="unfollowPerson(person)" 
+                    @click="unfollowTv(show)" 
                     :class="$style.unfollowButton">
                     Unfollow
                   </button>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div v-if="Object.keys(groupedPeople).length === 0" :class="$style.emptyState">
-            <p>Not following anyone yet</p>
-          </div>
-        </div>
-
-        <div v-else :class="$style.tvTab">
-          <div :class="$style.grid">
-            <div 
-              v-for="show in tvShows" 
-              :key="show.tv_id"
-              :class="$style.card">
-              <div 
-                @click="openTvShow(show.tv_id)" 
-                :class="$style.cardImage">
-                <img 
-                  v-if="show.poster_path" 
-                  :src="`https://image.tmdb.org/t/p/w185${show.poster_path}`" 
-                  :alt="show.tv_name">
-                <div v-else :class="$style.noImage">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .89-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.11-.9-2-2-2zm0 14H3V8h18v12zM9 10v8l7-4z"/>
-                  </svg>
-                </div>
-              </div>
-              <div :class="$style.cardContent">
-                <h4>{{ show.tv_name }}</h4>
-                <p v-if="show.status" :class="$style.status">{{ show.status }}</p>
-                <button 
-                  @click="unfollowTv(show)" 
-                  :class="$style.unfollowButton">
-                  Unfollow
-                </button>
-              </div>
+            <div v-if="tvShows.length === 0" :class="$style.emptyState">
+              <p>Not following any TV shows yet</p>
             </div>
-          </div>
-
-          <div v-if="tvShows.length === 0" :class="$style.emptyState">
-            <p>Not following any TV shows yet</p>
           </div>
         </div>
       </div>
@@ -120,6 +122,7 @@
 export default {
   data() {
     return {
+      visible: false,
       activeTab: 'people',
       people: [],
       tvShows: [],
@@ -150,18 +153,29 @@ export default {
     }
   },
 
-  async mounted() {
+mounted() {
+  this.$root.$on('show-following-modal', this.show);
+},
+
+beforeDestroy() {
+  this.$root.$off('show-following-modal');
+  
+  if (this.undoTimeout) {
+    clearTimeout(this.undoTimeout);
+  }
+},
+
+methods: {
+  async show() {
+    this.visible = true;
     await this.fetchData();
   },
 
-  beforeDestroy() {
-    if (this.undoTimeout) {
-      clearTimeout(this.undoTimeout);
-    }
+  close() {
+    this.visible = false;
   },
 
-  methods: {
-    async fetchData() {
+  async fetchData() {
       const userEmail = localStorage.getItem('email');
       if (!userEmail) return;
 
@@ -212,6 +226,9 @@ export default {
           method: 'DELETE'
         });
         this.$emit('unfollow-updated');
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('following-updated'));
+        }
       } catch (error) {
         console.error('Error unfollowing:', error);
         this.people.push(person);
@@ -232,6 +249,9 @@ export default {
           method: 'DELETE'
         });
         this.$emit('unfollow-updated');
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('following-updated'));
+        }
       } catch (error) {
         console.error('Error unfollowing TV:', error);
         this.tvShows.push(show);
@@ -289,6 +309,9 @@ export default {
         }
 
         this.$emit('unfollow-updated');
+        if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('following-updated'));
+      }
       } catch (error) {
         console.error('Error undoing:', error);
       }
@@ -555,5 +578,29 @@ export default {
 
 .undo-bar-container {
 padding: 1rem 2rem;
+}
+
+.modalWrapper {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  h2 {
+    font-size: 2.4rem;
+    color: #fff;
+    margin: 0;
+    flex: 1;
+    text-align: center;
+  }
 }
 </style>

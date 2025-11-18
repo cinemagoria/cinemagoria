@@ -44,12 +44,8 @@
               </button>
             </div>
           </div>
- 
+        <FollowingModal ref="followingModal" />
 
-        <FollowingModal 
-          v-if="showFollowingModal" 
-          @close="showFollowingModal = false"
-          @unfollow-updated="handleUnfollowUpdated" />
         <HowItWorksModal 
           v-if="showHowItWorksModal" 
           @close="showHowItWorksModal = false" />
@@ -238,7 +234,7 @@
 <script>
 import UserNav from '@/components/global/UserNav';
 import supabase from '@/services/supabase';
-import FollowingModal from '~/components/FollowingModal.vue';
+import FollowingModal from '~/components/global/FollowingModal.vue';
 import HowItWorksModal from '~/components/HowItWorksModal.vue';
 
 export default {
@@ -306,6 +302,12 @@ export default {
         sessionStorage.setItem('notifications_login_attempted', 'true');
         this.goToLogin();
       }
+    }
+  },
+
+  beforeDestroy() {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('following-updated', this.handleUnfollowUpdated);
     }
   },
 
@@ -518,7 +520,7 @@ export default {
       },
 
       openFollowingModal() {
-        this.showFollowingModal = true;
+        this.$refs.followingModal?.show();
       },
 
       openHowItWorksModal() {
