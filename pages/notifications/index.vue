@@ -43,9 +43,6 @@
               </button>
             </div>
           </div>
- 
-
-        <FollowingModal ref="followingModal" />
         <HowItWorksModal 
           v-if="showHowItWorksModal" 
           @close="showHowItWorksModal = false" />
@@ -522,7 +519,7 @@ export default {
       },
 
       openFollowingModal() {
-        this.$refs.followingModal?.show();
+        this.$root.$emit('show-following-modal');
       },
 
       openHowItWorksModal() {
