@@ -903,6 +903,15 @@ export default {
     min-height: 34rem;
   }
 
+  @media (min-width: $breakpoint-medium) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: block;
+    width: 71.1%;
+    height: 100%;
+  }
+
   &::after {
     position: absolute;
     top: 0;
@@ -964,7 +973,6 @@ export default {
   }
 }
 
-
 .actionButton {
   border-radius: 1.0rem;
   margin-top: 0;
@@ -978,7 +986,7 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-
+  
   :global(.icon) svg path {
     stroke: #fff;
   }
@@ -1320,16 +1328,6 @@ export default {
   outline: none;
   height: 100%;
 }
-
-
-
-@keyframes fadeInOut {
-  0% { opacity: 0; }
-  15% { opacity: 1; }
-  85% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
 @media screen and (max-width: 480px) {
   .copy-success {
     right: auto;
@@ -1341,6 +1339,7 @@ export default {
   position: relative;
   display: flex;
   align-items: center;
+  bottom: 2px;
 }
 
 .copy-button {
@@ -1386,8 +1385,9 @@ export default {
     top: -30px;
   }
 }
-
-
+.copy-button {
+  top: 4px;
+}
 .copy-button:hover {
   color: #fff;
 }
