@@ -45,10 +45,7 @@
           </div>
  
 
-        <FollowingModal 
-          v-if="showFollowingModal" 
-          @close="showFollowingModal = false"
-          @unfollow-updated="handleUnfollowUpdated" />
+        <FollowingModal ref="followingModal" />
         <HowItWorksModal 
           v-if="showHowItWorksModal" 
           @close="showHowItWorksModal = false" />
@@ -65,8 +62,8 @@
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
             <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
           </svg>
-          <p>{{ showUnreadOnly ? 'No hay notificaciones no leídas' : 'Aún no hay notificaciones' }}</p>
-          <p class="sub-text">Sigue actores, directores o Series de TV para recibir notificaciones sobre sus nuevos lanzamientos</p>
+          <p>{{ showUnreadOnly ? 'No hay notificaciones por leer' : 'Aún no hay notificaciones' }}</p>
+          <p class="sub-text">Sigue talentos o Series de TV para recibir notificaciones sobre sus nuevos lanzamientos</p>
         </div>
 
         <div v-else class="notifications-list">
@@ -235,7 +232,7 @@
 <script>
 import UserNav from '@/components/global/UserNav';
 import supabase from '@/services/supabase';
-import FollowingModal from '~/components/FollowingModal.vue';
+import FollowingModal from '~/components/global/FollowingModal.vue';
 import HowItWorksModal from '~/components/HowItWorksModal.vue';
 
 export default {
@@ -304,6 +301,12 @@ export default {
         sessionStorage.setItem('notifications_login_attempted', 'true');
         this.goToLogin();
       }
+    }
+  },
+
+  beforeDestroy() {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('following-updated', this.handleUnfollowUpdated);
     }
   },
 
@@ -519,7 +522,7 @@ export default {
       },
 
       openFollowingModal() {
-        this.showFollowingModal = true;
+        this.$refs.followingModal?.show();
       },
 
       openHowItWorksModal() {

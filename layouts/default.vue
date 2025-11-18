@@ -7,6 +7,7 @@
       <SearchForm />
     </transition>
     <RatedModal />
+    <FollowingModal />
     <Nav />
     <nuxt />
     <Footer />
@@ -21,6 +22,7 @@ import SearchForm from '~/components/global/SearchForm';
 import Nav from '~/components/global/Nav';
 import Footer from '~/components/global/Footer';
 import RatedModal from '@/components/global/RatedModal';
+import FollowingModal from '@/components/global/FollowingModal';
 
 export default {
   components: {
@@ -29,7 +31,8 @@ export default {
     SearchForm,
     Nav,
     Footer,
-    RatedModal, // ← AGREGAR ESTO
+    RatedModal,
+    FollowingModal,
   },
 
   computed: {
