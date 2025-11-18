@@ -302,14 +302,23 @@ export function getMovie(id) {
       },
     }).then(async (response) => {
       const responseData = response.data;
-      try {
-        const providers = await getMovieProviders(id);
-        responseData.providers = providers;
-        const reviews = await getMovieReviews(id);
-        responseData.reviews = reviews;
-      } catch (error) {
-        console.error("Error fetching movie providers:", error);
-        console.error("Error fetching movie reviews:", error);
+      const [providersResult, reviewsResult] = await Promise.allSettled([
+        getMovieProviders(id),
+        getMovieReviews(id)
+      ]);
+
+      if (providersResult.status === 'fulfilled') {
+        responseData.providers = providersResult.value;
+      } else {
+        console.error("Error fetching movie providers:", providersResult.reason);
+        responseData.providers = [];
+      }
+
+      if (reviewsResult.status === 'fulfilled') {
+        responseData.reviews = reviewsResult.value;
+      } else {
+        console.error("Error fetching movie reviews:", reviewsResult.reason);
+        responseData.reviews = [];
       }
 
       const imdbId = responseData.external_ids ? responseData.external_ids.imdb_id : null;
@@ -385,7 +394,7 @@ export function getMovieReviews(id) {
 
         resolve(reviewsData);
       } else {
-        reject(new Error("No reviews found for this movie"));
+        resolve([]);
       }
     }).catch((error) => {
       console.error("Error fetching movie reviews:", error);
@@ -411,7 +420,7 @@ export function getMovieProviders(id) {
           const providerNames = providers.flatrate.map(provider => provider.provider_name);
           resolve(providerNames);
         } else {
-          reject(new Error("Unable to fetch movie providers"));
+          resolve([]);
         }
       }
     }).catch((error) => {
@@ -438,7 +447,7 @@ export function getTVShowProviders(id) {
           const providerNames = providers.flatrate.map(provider => provider.provider_name);
           resolve(providerNames);
         } else {
-          reject(new Error("Unable to fetch TV show providers"));
+          resolve([]);
         }
       }
     }).catch((error) => {
@@ -535,7 +544,8 @@ export function getTvShow(id) {
         const providers = await getTVShowProviders(id);
         responseData.providers = providers;
       } catch (error) {
-        console.error("Error fetching movie providers:", error);
+        console.error("Error fetching TV show providers:", error);
+        responseData.providers = [];
       }
 
       const imdbId = responseData.external_ids ? responseData.external_ids.imdb_id : null;
@@ -596,7 +606,7 @@ export function getTvShowReviews(id) {
 
         resolve(reviewsData);
       } else {
-        reject(new Error("No reviews found for this tv show."));
+        resolve([]);
       }
     }).catch((error) => {
       console.error("Error fetching tv show reviews:", error);

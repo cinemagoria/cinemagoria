@@ -118,12 +118,12 @@
             </div>
           </li>
 
-          <li v-if="providers && providers.length">
+          <li v-if="providersToDisplay && providersToDisplay.length">
             <div :class="$style.label">
               Watch On
             </div>
             <div :class="$style.value">
-              {{ providers.join(', ') }}
+              {{ providersToDisplay.join(', ') }}
             </div>
           </li>
           <br>
@@ -185,7 +185,8 @@ export default {
   data() {
     return {
       showFullReviews: false,
-      reviews: [], 
+      reviews: [],
+      localProviders: null,
     };
   },
 
@@ -206,13 +207,18 @@ export default {
       
       return localizedTitle && originalTitle && localizedTitle !== originalTitle;
     },
+    providersToDisplay() {
+      return this.localProviders !== null ? this.localProviders : this.providers;
+    },
   },
 
   created () {
     if (this.item.homepage) {
       this.item.external_ids.homepage = this.item.homepage;
     }
-    this.fetchProviders();
+    if (!this.providers || this.providers.length === 0) {
+      this.fetchProviders();
+    }
     this.fetchReviews();
     this.reviews = this.reviewsProp || [];
   },
@@ -259,9 +265,10 @@ export default {
   async fetchProviders() {
     try {
       const providers = await getMovieProviders(this.item.id);
-      this.providers = providers;
+      this.localProviders = providers;
     } catch (error) {
       console.error("Error fetching movie providers:", error);
+      this.localProviders = [];
     }
   },
   async fetchReviews() {
