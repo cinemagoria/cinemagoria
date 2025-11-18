@@ -33,19 +33,14 @@
         </nuxt-link>
       </li>
       <li>
-        <nuxt-link
-          :to="{ name: 'notifications' }"
-          aria-label="notifications"
-          @click.native="clearSearchBeforeNavigate"
-          :class="$style.notificationLink">
-          <div :class="$style.notificationIconWrapper">
-            <svg xmlns="http://www.w3.org/2000/svg" :class="$style.navIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-            </svg>
-            <span v-if="unreadCount > 0" :class="$style.notificationBadge">{{ unreadCount }}</span>
-          </div>
-        </nuxt-link>
+        <button 
+          @click="openAiChat" 
+          :aria-label="'Ask AI'"
+          class="ai-button-nav">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" :class="$style.navIcon">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+          </svg>
+        </button>
       </li>
       <li v-if="!isLoggedIn">
         <nuxt-link exact to="/login" aria-label="Sign In" @click.native="clearSearchBeforeNavigate">
@@ -75,9 +70,7 @@ export default {
     return {
       authToken: null,
       authInterval: null,
-      hasMinimizedConversations: false,
-      unreadCount: 0,
-      notificationInterval: null
+      hasMinimizedConversations: false
     };
   },
 
@@ -91,10 +84,8 @@ export default {
   mounted() {
     this.checkAuthStatus();
     this.checkMinimizedConversations();
-    this.fetchUnreadCount();
 
     this.authInterval = setInterval(this.checkAuthStatus, 500);
-    this.notificationInterval = setInterval(this.fetchUnreadCount, 30000);
     
     if (typeof window !== 'undefined') {
       window.addEventListener('storage', this.handleStorageChange);
@@ -115,9 +106,6 @@ export default {
     if (this.authInterval) {
       clearInterval(this.authInterval);
     }
-    if (this.notificationInterval) {
-      clearInterval(this.notificationInterval);
-    }
     
     if (typeof window !== 'undefined') {
       window.removeEventListener('storage', this.handleStorageChange);
@@ -127,30 +115,12 @@ export default {
   },
 
   methods: {
-    async fetchUnreadCount() {
-      const userEmail = localStorage.getItem('email');
-      if (!userEmail) {
-        this.unreadCount = 0;
-        return;
-      }
-
-      try {
-        const response = await fetch(`https://entercinema-follows-rust.vercel.app/notifications/unread-count?user_email=${encodeURIComponent(userEmail)}`);
-        if (response.ok) {
-          const data = await response.json();
-          this.unreadCount = data.unread_count || 0;
-        }
-      } catch (error) {
-        console.error('Error fetching unread count:', error);
-      }
-    },
     checkAuthStatus() {
       const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
       if (token !== this.authToken) {
         this.authToken = token;
       }
     },
-
     checkMinimizedConversations() {
       try {
         if (typeof localStorage !== 'undefined') {
@@ -352,43 +322,6 @@ export default {
     &:focus {
       opacity: 0.8; 
     }
-  }
-}
-
-.notificationLink {
-  position: relative;
-}
-
-.notificationIconWrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.notificationBadge {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background: #FF5252;
-  color: white;
-  font-size: 11px;
-  font-weight: bold;
-  padding: 2px 5px;
-  border-radius: 10px;
-  min-width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid #000;
-  white-space: nowrap;
-  
-  @media (min-width: $breakpoint-large) {
-    top: -6px;
-    right: -6px;
-    font-size: 12px;
-    min-width: 20px;
-    height: 20px;
-    padding: 2px 6px;
   }
 }
 </style>

@@ -1,37 +1,17 @@
-const CACHE_VERSION = 'v2-2025-11';
-const CACHE_NAME = `entercinema-${CACHE_VERSION}`;
+// THIS FILE SHOULD NOT BE VERSION CONTROLLED
 
-self.addEventListener('install', (event) => {
-  self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll([
-        '/icon-192x192.png',
-        '/icon-512x512.png',
-        '/favicon.ico'
-      ]);
+// https://github.com/NekR/self-destroying-sw
+
+self.addEventListener('install', function (e) {
+  self.skipWaiting()
+})
+
+self.addEventListener('activate', function (e) {
+  self.registration.unregister()
+    .then(function () {
+      return self.clients.matchAll()
     })
-  );
-});
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
+    .then(function (clients) {
+      clients.forEach(client => client.navigate(client.url))
     })
-  );
-});
+})
