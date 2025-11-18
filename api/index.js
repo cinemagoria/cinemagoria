@@ -359,11 +359,17 @@ export function getMovie(id) {
       try {
         const providers = await getMovieProviders(id);
         responseData.providers = providers;
+      } catch (error) {
+        console.error("Error fetching movie providers:", error);
+        responseData.providers = [];
+      }
+
+      try {
         const reviews = await getMovieReviews(id);
         responseData.reviews = reviews;
       } catch (error) {
-        console.error("Error fetching movie providers:", error);
         console.error("Error fetching movie reviews:", error);
+        responseData.reviews = [];
       }
 
       const imdbId = responseData.external_ids ? responseData.external_ids.imdb_id : null;
@@ -426,7 +432,7 @@ export function getMovieProviders(id) {
           const providerNames = providers.flatrate.map(provider => provider.provider_name);
           resolve(providerNames);
         } else {
-          reject(new Error("Unable to fetch movie providers"));
+          resolve([]);
         }
       }
     }).catch((error) => {
@@ -467,7 +473,7 @@ export function getMovieReviews(id) {
 
         resolve(reviewsData);
       } else {
-        reject(new Error("No reviews found for this movie"));
+        resolve([]);
       }
     }).catch((error) => {
       reject(error);
@@ -543,7 +549,7 @@ export function getTVShowProviders(id) {
           const providerNames = providers.flatrate.map(provider => provider.provider_name);
           resolve(providerNames);
         } else {
-          reject(new Error("Unable to fetch TV show providers"));
+          resolve([]);
         }
       }
     }).catch((error) => {
@@ -655,7 +661,8 @@ export function getTvShow(id) {
         const providers = await getTVShowProviders(id);
         responseData.providers = providers;
       } catch (error) {
-        console.error("Error fetching movie providers:", error);
+        console.error("Error fetching TV show providers:", error);
+        responseData.providers = [];
       }
 
       const imdbId = responseData.external_ids ? responseData.external_ids.imdb_id : null;
@@ -716,7 +723,7 @@ export function getTvShowReviews(id) {
 
         resolve(reviewsData);
       } else {
-        reject(new Error("No reviews found for this tv show."));
+        resolve([]);
       }
     }).catch((error) => {
       console.error("Error fetching tv show reviews:", error);

@@ -118,12 +118,12 @@
             </div>
           </li>
 
-          <li v-if="localProviders && localProviders.length">
+          <li v-if="providersToDisplay && providersToDisplay.length">
             <div :class="$style.label">
               Ver en
             </div>
             <div :class="$style.value">
-              {{ localProviders.join(', ') }}
+              {{ providersToDisplay.join(', ') }}
             </div>
           </li>
           <br>
@@ -207,9 +207,10 @@ export default {
   data() {
     return {
       showFullReviews: false,
-      localReviews: [],
+      reviews: [],
       localProviders: [],
-      showTranslations: false
+      showTranslations: false,
+      localReviews: [],
     };
   },
 
@@ -229,6 +230,9 @@ export default {
       const originalTitle = this.item.original_title;
       
       return localizedTitle && originalTitle && localizedTitle !== originalTitle;
+    },
+    providersToDisplay() {
+      return this.localProviders.length > 0 ? this.localProviders : this.providers;
     },
   },
 
@@ -356,10 +360,10 @@ export default {
     
     async fetchProviders() {
       try {
-        const providersList = await getMovieProviders(this.item.id);
-        this.localProviders = Array.isArray(providersList) ? providersList : [];
+        const providers = await getMovieProviders(this.item.id);
+        this.localProviders = providers;
       } catch (error) {
-        console.error('Error al obtener proveedores:', error);
+        console.error("Error fetching movie providers:", error);
         this.localProviders = [];
       }
     },
