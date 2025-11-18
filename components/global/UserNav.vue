@@ -46,6 +46,15 @@
           <span class="menu-label">Rated</span>
         </div>
 
+        <div class="menu-item" @click="showFollowingModal">
+          <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m16 11 2 2 4-4"/>
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+          </svg>
+          <span class="menu-label">Following</span>
+        </div>
+
         <div class="menu-item" @click="goToSettings">
           <img src="~/static/icon-settings.png" alt="Settings Icon" class="menu-icon">
           <span class="menu-label">Settings</span>
@@ -220,6 +229,11 @@ export default {
 
     showRatedModal() {
       this.$root.$emit('show-rated-modal');
+      this.isMenuOpen = false;
+    },
+
+    showFollowingModal() {
+      this.$root.$emit('show-following-modal');
       this.isMenuOpen = false;
     },
 
