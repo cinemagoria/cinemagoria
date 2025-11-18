@@ -356,19 +356,22 @@ export function getMovie(id) {
         responseData.title = await getTranslatedTitle(id, 'movie', responseData.title);
       }
       
-      try {
-        const providers = await getMovieProviders(id);
-        responseData.providers = providers;
-      } catch (error) {
-        console.error("Error fetching movie providers:", error);
+      const [providersResult, reviewsResult] = await Promise.allSettled([
+        getMovieProviders(id),
+        getMovieReviews(id)
+      ]);
+
+      if (providersResult.status === 'fulfilled') {
+        responseData.providers = providersResult.value;
+      } else {
+        console.error("Error fetching movie providers:", providersResult.reason);
         responseData.providers = [];
       }
 
-      try {
-        const reviews = await getMovieReviews(id);
-        responseData.reviews = reviews;
-      } catch (error) {
-        console.error("Error fetching movie reviews:", error);
+      if (reviewsResult.status === 'fulfilled') {
+        responseData.reviews = reviewsResult.value;
+      } else {
+        console.error("Error fetching movie reviews:", reviewsResult.reason);
         responseData.reviews = [];
       }
 

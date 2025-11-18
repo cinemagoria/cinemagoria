@@ -208,7 +208,7 @@ export default {
     return {
       showFullReviews: false,
       reviews: [],
-      localProviders: [],
+      localProviders: null,
       showTranslations: false,
       localReviews: [],
     };
@@ -232,23 +232,8 @@ export default {
       return localizedTitle && originalTitle && localizedTitle !== originalTitle;
     },
     providersToDisplay() {
-      return this.localProviders.length > 0 ? this.localProviders : this.providers;
+      return this.localProviders !== null ? this.localProviders : this.providers;
     },
-  },
-
-  watch: {
-    reviewsProp: {
-      immediate: true,
-      handler(newReviews) {
-        this.localReviews = Array.isArray(newReviews) ? [...newReviews] : [];
-      }
-    },
-    providers: {
-      immediate: true,
-      handler(newProviders) {
-        this.localProviders = Array.isArray(newProviders) ? [...newProviders] : [];
-      }
-    }
   },
 
   created () {
@@ -257,8 +242,6 @@ export default {
     }
     if (!this.providers || this.providers.length === 0) {
       this.fetchProviders();
-    } else {
-      this.localProviders = [...this.providers];
     }
     
     if (!this.reviewsProp || this.reviewsProp.length === 0) {
