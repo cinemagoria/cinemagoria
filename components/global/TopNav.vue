@@ -55,6 +55,14 @@ export default {
   font-size: 1.4rem;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+
+@media (max-width: 600px) {
+  position: absolute;
+  left: 1rem;
+  text-align: left;
+  width: calc(100% - 12rem);
+}
 }
 
 .button {
