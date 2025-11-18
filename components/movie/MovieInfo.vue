@@ -186,7 +186,7 @@ export default {
     return {
       showFullReviews: false,
       reviews: [],
-      localProviders: [],
+      localProviders: null,
     };
   },
 
@@ -208,7 +208,7 @@ export default {
       return localizedTitle && originalTitle && localizedTitle !== originalTitle;
     },
     providersToDisplay() {
-      return this.localProviders.length > 0 ? this.localProviders : this.providers;
+      return this.localProviders !== null ? this.localProviders : this.providers;
     },
   },
 
@@ -216,7 +216,9 @@ export default {
     if (this.item.homepage) {
       this.item.external_ids.homepage = this.item.homepage;
     }
-    this.fetchProviders();
+    if (!this.providers || this.providers.length === 0) {
+      this.fetchProviders();
+    }
     this.fetchReviews();
     this.reviews = this.reviewsProp || [];
   },
