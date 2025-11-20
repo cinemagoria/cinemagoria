@@ -1034,7 +1034,10 @@ export default {
         this.scrollToBottom();
       });
 
-      try {const userEmail = this.getUserEmail();
+      try {
+        const userEmail = this.getUserEmail();
+        const detectedLang = this.detectLanguage(queryToSend);
+        
         const response = await fetch(this.apiUrl, {
           method: 'POST',
           headers: {
@@ -1043,7 +1046,8 @@ export default {
           body: JSON.stringify({
             query: queryToSend,
             chat_id: this.chatId,
-            user_email: userEmail
+            user_email: userEmail,
+            language: detectedLang
           })
         });
 
