@@ -701,9 +701,7 @@ export default {
             .map(msg => `${msg.role}: ${msg.content}`)
             .join('\n');
 
-          const language = this.detectLanguage(conversationText);
-          
-          const response = await this.generateTitleWithAI(conversationText, language);
+          const response = await this.generateTitleWithAI(conversationText);
           
           if (response && response.trim()) {
             conversation.title = response.trim();
@@ -715,26 +713,8 @@ export default {
       }
     },
 
-    detectLanguage(text) {
-      const spanishWords = ['el', 'la', 'de', 'que', 'y', 'en', 'un', 'es', 'se', 'no', 'te', 'lo', 'le', 'da', 'su', 'por', 'son', 'con', 'para', 'al', 'del', 'los', 'las', 'una', 'como', 'pero', 'sus', 'han', 'había', 'película', 'serie', 'actor', 'actriz', 'director', 'cine'];
-      const englishWords = ['the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'i', 'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at', 'this', 'but', 'his', 'by', 'from', 'movie', 'film', 'series', 'actor', 'actress', 'director', 'cinema'];
-      
-      const words = text.toLowerCase().split(/\s+/);
-      let spanishCount = 0;
-      let englishCount = 0;
-      
-      words.forEach(word => {
-        if (spanishWords.includes(word)) spanishCount++;
-        if (englishWords.includes(word)) englishCount++;
-      });
-      
-      return spanishCount > englishCount ? 'es' : 'en';
-    },
-
-    async generateTitleWithAI(conversationText, language) {
-      const prompt = language === 'en' 
-        ? `Generate a short and descriptive title (maximum 40 characters) for this conversation about movies/TV shows. Respond only with the title, no quotes or explanations:\n\n${conversationText}`
-        : `Generate a short and descriptive title (maximum 40 characters) for this conversation about movies/TV shows. Respond only with the title, no quotes or explanations:\n\n${conversationText}`;
+    async generateTitleWithAI(conversationText) {
+      const prompt = `Generate a short and descriptive title (maximum 40 characters) for this conversation about movies/TV shows. Respond only with the title, no quotes or explanations. Detect the language of the conversation and generate the title in that same language:\n\n${conversationText}`;
 
       try {
         const response = await fetch(this.titleGenerationUrl, {
@@ -1034,7 +1014,8 @@ export default {
         this.scrollToBottom();
       });
 
-      try {const userEmail = this.getUserEmail();
+      try {
+        const userEmail = this.getUserEmail();
         const response = await fetch(this.apiUrl, {
           method: 'POST',
           headers: {
