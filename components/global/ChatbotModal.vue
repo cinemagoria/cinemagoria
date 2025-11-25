@@ -1011,6 +1011,9 @@ export default {
       this.chatBotQuery = '';
       
       this.$nextTick(() => {
+        if (this.$refs.chatInput) {
+          this.$refs.chatInput.style.height = 'auto';
+        }
         this.scrollToBottom();
       });
 
