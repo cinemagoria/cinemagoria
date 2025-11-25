@@ -49,6 +49,8 @@
                 <option value="vote_average.desc">Highest Rated</option>
                 <option value="primary_release_date.desc">Latest Releases</option>
                 <option value="revenue.desc">Highest Revenue</option>
+                <option value="imdb-high">Highest Rated (IMDb)</option>
+                <option value="imdb-low">Lowest Rated (IMDb)</option>
               </select>
               <div class="select-arrow"></div>
             </div>
@@ -414,13 +416,47 @@
         this.selectedSearchGenre = '';
       },
 
+      getWeightedRating(item) {
+        let R = 0; // Rating
+        let v = 0; // Votes
+
+        if (item.rating_source === 'imdb' && item.imdb_rating) {
+          R = parseFloat(item.imdb_rating);
+          
+          // Safely parse votes
+          const votes = item.imdb_votes;
+          if (typeof votes === 'number') {
+            v = votes;
+          } else if (typeof votes === 'string') {
+            v = parseInt(votes.replace(/,/g, ''), 10);
+          } else {
+            v = 0;
+          }
+        } else {
+          // Fallback to TMDB
+          R = parseFloat(item.vote_average);
+          v = 0; // Assume 0 votes for TMDB fallback to prioritize IMDb
+        }
+
+        const m = 1000; // Minimum votes
+        const C = 7.0;  // Mean vote
+
+        return (v / (v + m)) * R + (m / (v + m)) * C;
+      },
+
       async searchMovies() {
         this.searchPerformed = false; 
         this.loading = true;
         this.movies = [];
         const apiKey = process.env.API_KEY;
         const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : this.releaseYear; 
-        let baseUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&include_adult=false&include_video=false&language=en-US&sort_by=${this.selectedSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}&primary_release_year=${year}`;
+        
+        let apiSortBy = this.selectedSortBy;
+        if (this.selectedSortBy === 'imdb-high' || this.selectedSortBy === 'imdb-low') {
+          apiSortBy = 'vote_average.desc';
+        }
+
+        let baseUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&include_adult=false&include_video=false&language=en-US&sort_by=${apiSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}&primary_release_year=${year}`;
         if (this.selectedMinRating) {
           baseUrl += `&vote_average.gte=${this.selectedMinRating}`;
         }
@@ -478,6 +514,12 @@
           } else {
             this.movies = enrichedMovies;
           }
+
+          if (this.selectedSortBy === 'imdb-high') {
+            this.movies.sort((a, b) => this.getWeightedRating(b) - this.getWeightedRating(a));
+          } else if (this.selectedSortBy === 'imdb-low') {
+            this.movies.sort((a, b) => this.getWeightedRating(a) - this.getWeightedRating(b));
+          }
           
           this.movies.forEach(movie => {
             const rating = movie.rating_source === 'imdb' ? movie.imdb_rating : movie.vote_average;
@@ -498,7 +540,13 @@
         this.tvShows = [];
         const apiKey = process.env.API_KEY;
         const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : this.releaseYear;
-        let baseUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&include_adult=false&include_video=false&language=en-US&sort_by=${this.selectedSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}&first_air_date_year=${year}`;
+
+        let apiSortBy = this.selectedSortBy;
+        if (this.selectedSortBy === 'imdb-high' || this.selectedSortBy === 'imdb-low') {
+          apiSortBy = 'vote_average.desc';
+        }
+
+        let baseUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&include_adult=false&include_video=false&language=en-US&sort_by=${apiSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}&first_air_date_year=${year}`;
         if (this.selectedMinRating) {
           baseUrl += `&vote_average.gte=${this.selectedMinRating}`;
         }
@@ -554,6 +602,12 @@
             });
           } else {
             this.tvShows = enrichedTvShows;
+          }
+
+          if (this.selectedSortBy === 'imdb-high') {
+            this.tvShows.sort((a, b) => this.getWeightedRating(b) - this.getWeightedRating(a));
+          } else if (this.selectedSortBy === 'imdb-low') {
+            this.tvShows.sort((a, b) => this.getWeightedRating(a) - this.getWeightedRating(b));
           }
           
           this.tvShows.forEach(tvShow => {
