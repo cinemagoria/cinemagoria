@@ -211,7 +211,7 @@ export const languages = [
   { 'iso_639_1': 'yo', 'english_name': 'Yoruba' },
 ];
 
-export function getListItem (type, query) {
+export function getListItem(type, query) {
   if (type === 'movie') {
     return lists.movie.find(list => list.query === query);
   } else if (type === 'tv') {
@@ -238,7 +238,7 @@ async function enrichWithIMDbRating(item) {
   }
 
   const imdbId = item.imdb_id || item.external_ids?.imdb_id;
-  
+
   try {
     const imdbData = await getIMDbRatingFromDB(imdbId);
     if (imdbData.found) {
@@ -252,11 +252,11 @@ async function enrichWithIMDbRating(item) {
     console.error("Error enriching with IMDb rating:", error);
     item.rating_source = 'tmdb';
   }
-  
+
   return item;
 }
 
-export function getMovies (query, page = 1) {
+export function getMovies(query, page = 1) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/movie/${query}`, {
       params: {
@@ -325,7 +325,7 @@ export function getMovie(id) {
       if (imdbId) {
         try {
           const imdbData = await getIMDbRatingFromDB(imdbId);
-          
+
           if (imdbData.found) {
             responseData.imdb_rating = imdbData.score;
             responseData.imdb_votes = imdbData.votes;
@@ -410,12 +410,12 @@ export function getMovieProviders(id) {
         api_key: process.env.API_KEY,
       },
     }).then((response) => {
-      let providers = response.data.results.AR; 
+      let providers = response.data.results.AR;
       if (providers && providers.flatrate) {
         const providerNames = providers.flatrate.map(provider => provider.provider_name);
         resolve(providerNames);
       } else {
-        providers = response.data.results.US; 
+        providers = response.data.results.US;
         if (providers && providers.flatrate) {
           const providerNames = providers.flatrate.map(provider => provider.provider_name);
           resolve(providerNames);
@@ -437,7 +437,7 @@ export function getTVShowProviders(id) {
         api_key: process.env.API_KEY,
       },
     }).then((response) => {
-      let providers = response.data.results.AR; 
+      let providers = response.data.results.AR;
       if (providers && providers.flatrate) {
         const providerNames = providers.flatrate.map(provider => provider.provider_name);
         resolve(providerNames);
@@ -457,7 +457,7 @@ export function getTVShowProviders(id) {
   });
 };
 
-export function getMovieRecommended (id, page = 1) {
+export function getMovieRecommended(id, page = 1) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/movie/${id}/recommendations`, {
       params: {
@@ -465,27 +465,27 @@ export function getMovieRecommended (id, page = 1) {
         language: process.env.API_LANG,
         page,
       },
-      }).then(async (response) => {
-        response.data.results.forEach(item => {
-          item.vote_average = parseFloat(item.vote_average).toFixed(1);
-        });
+    }).then(async (response) => {
+      response.data.results.forEach(item => {
+        item.vote_average = parseFloat(item.vote_average).toFixed(1);
+      });
 
-        const enrichedResults = await Promise.all(
-          response.data.results.map(async (item) => {
-            const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}`, {
-              params: {
-                api_key: process.env.API_KEY,
-                append_to_response: 'external_ids'
-              }
-            });
-            item.external_ids = detailsResponse.data.external_ids;
-            return enrichWithIMDbRating(item);
-          })
-        );
+      const enrichedResults = await Promise.all(
+        response.data.results.map(async (item) => {
+          const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}`, {
+            params: {
+              api_key: process.env.API_KEY,
+              append_to_response: 'external_ids'
+            }
+          });
+          item.external_ids = detailsResponse.data.external_ids;
+          return enrichWithIMDbRating(item);
+        })
+      );
 
-        response.data.results = enrichedResults;
-        resolve(response.data);
-      })
+      response.data.results = enrichedResults;
+      resolve(response.data);
+    })
       .catch((error) => {
         reject(error);
       });
@@ -502,7 +502,7 @@ export function getTvShows(query, page = 1) {
       },
     }).then(async (response) => {
       response.data.results = response.data.results.filter(item => !EXCLUDED_TV_IDS.includes(item.id));
-      
+
       response.data.results.forEach(item => {
         item.vote_average = parseFloat(item.vote_average).toFixed(1);
       });
@@ -552,7 +552,7 @@ export function getTvShow(id) {
 
       if (imdbId) {
         try {
-          const imdbData = await getIMDbRatingFromDB(imdbId);  
+          const imdbData = await getIMDbRatingFromDB(imdbId);
           if (imdbData.found) {
             responseData.imdb_rating = imdbData.score;
             responseData.imdb_votes = imdbData.votes;
@@ -615,7 +615,7 @@ export function getTvShowReviews(id) {
   });
 };
 
-export function getTvShowRecommended (id, page = 1) {
+export function getTvShowRecommended(id, page = 1) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/tv/${id}/recommendations`, {
       params: {
@@ -623,34 +623,34 @@ export function getTvShowRecommended (id, page = 1) {
         language: process.env.API_LANG,
         page,
       },
-      }).then(async (response) => {
-        response.data.results.forEach(item => {
-          item.vote_average = parseFloat(item.vote_average).toFixed(1);
-        });
+    }).then(async (response) => {
+      response.data.results.forEach(item => {
+        item.vote_average = parseFloat(item.vote_average).toFixed(1);
+      });
 
-        const enrichedResults = await Promise.all(
-          response.data.results.map(async (item) => {
-            const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}`, {
-              params: {
-                api_key: process.env.API_KEY,
-                append_to_response: 'external_ids'
-              }
-            });
-            item.external_ids = detailsResponse.data.external_ids;
-            return enrichWithIMDbRating(item);
-          })
-        );
+      const enrichedResults = await Promise.all(
+        response.data.results.map(async (item) => {
+          const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}`, {
+            params: {
+              api_key: process.env.API_KEY,
+              append_to_response: 'external_ids'
+            }
+          });
+          item.external_ids = detailsResponse.data.external_ids;
+          return enrichWithIMDbRating(item);
+        })
+      );
 
-        response.data.results = enrichedResults;
-        resolve(response.data);
-      })
+      response.data.results = enrichedResults;
+      resolve(response.data);
+    })
       .catch((error) => {
         reject(error);
       });
   });
 };
 
-export function getTvShowEpisodes (id, season) {
+export function getTvShowEpisodes(id, season) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/tv/${id}/season/${season}`, {
       params: {
@@ -678,7 +678,7 @@ export function getTrending(media, page = 1) {
       if (media === 'tv') {
         response.data.results = response.data.results.filter(item => !EXCLUDED_TV_IDS.includes(item.id));
       }
-      
+
       response.data.results.forEach(item => {
         item.vote_average = parseFloat(item.vote_average).toFixed(1);
       });
@@ -706,7 +706,7 @@ export function getTrending(media, page = 1) {
   });
 };
 
-export function getMediaByGenre (media, genre, page = 1) {
+export function getMediaByGenre(media, genre, page = 1) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/discover/${media}`, {
       params: {
@@ -715,34 +715,34 @@ export function getMediaByGenre (media, genre, page = 1) {
         with_genres: genre,
         page,
       },
-      }).then(async (response) => {
-        response.data.results.forEach(item => {
-          item.vote_average = parseFloat(item.vote_average).toFixed(1);
-        });
+    }).then(async (response) => {
+      response.data.results.forEach(item => {
+        item.vote_average = parseFloat(item.vote_average).toFixed(1);
+      });
 
-        const enrichedResults = await Promise.all(
-          response.data.results.map(async (item) => {
-            const detailsResponse = await axios.get(`${apiUrl}/${media}/${item.id}`, {
-              params: {
-                api_key: process.env.API_KEY,
-                append_to_response: 'external_ids'
-              }
-            });
-            item.external_ids = detailsResponse.data.external_ids;
-            return enrichWithIMDbRating(item);
-          })
-        );
+      const enrichedResults = await Promise.all(
+        response.data.results.map(async (item) => {
+          const detailsResponse = await axios.get(`${apiUrl}/${media}/${item.id}`, {
+            params: {
+              api_key: process.env.API_KEY,
+              append_to_response: 'external_ids'
+            }
+          });
+          item.external_ids = detailsResponse.data.external_ids;
+          return enrichWithIMDbRating(item);
+        })
+      );
 
-        response.data.results = enrichedResults;
-        resolve(response.data);
-      })
+      response.data.results = enrichedResults;
+      resolve(response.data);
+    })
       .catch((error) => {
         reject(error);
       });
   });
 };
 
-export function getCredits (id, type) {
+export function getCredits(id, type) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/person/${id}/${type}`, {
       params: {
@@ -758,7 +758,7 @@ export function getCredits (id, type) {
   });
 };
 
-export function getGenreList (media) {
+export function getGenreList(media) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/genre/${media}/list`, {
       params: {
@@ -773,7 +773,7 @@ export function getGenreList (media) {
   });
 };
 
-export function getPerson (id) {
+export function getPerson(id) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/person/${id}`, {
       params: {
@@ -786,17 +786,17 @@ export function getPerson (id) {
       response.data.combined_credits.cast.forEach(role => {
         role.vote_average = role.vote_average.toFixed(1);
       });
-    
+
       resolve(response.data);
     })
-    
+
       .catch((error) => {
         reject(error);
       });
   });
 };
 
-export function search (query, page = 1) {
+export function search(query, page = 1) {
   return new Promise((resolve, reject) => {
     axios.get(`${apiUrl}/search/multi?include_adult=false`, {
       params: {
@@ -851,7 +851,7 @@ export function get***MovieByImdb(imdbId) {
           .replace(/[^a-z0-9\s-]/g, '')
           .replace(/\s+/g, '-')
           .replace(/-+/g, '-');
-        
+
         resolve({
           slug: `${title}`,
           url: `https://***.mx/movies/${title}`,
@@ -870,7 +870,7 @@ export function get***MovieByImdb(imdbId) {
 export function getMDBListRatings(imdbId, type) {
   return new Promise((resolve, reject) => {
     const endpoint = type === 'movie' ? 'movie' : 'show';
-    
+
     axios.get(`https://api.mdblist.com/imdb/${endpoint}/${imdbId}`, {
       params: {
         apikey: process.env.MDBLIST_API,
@@ -878,13 +878,13 @@ export function getMDBListRatings(imdbId, type) {
     }).then((response) => {
       const ratings = response.data.ratings;
       const tomatoesRating = ratings?.find(r => r.source === 'tomatoes');
-      
+
       if (tomatoesRating && tomatoesRating.value) {
         let url = '';
         if (tomatoesRating.url) {
           url = `https://www.rottentomatoes.com${tomatoesRating.url}`;
         }
-        
+
         resolve({
           found: true,
           score: tomatoesRating.value,
@@ -900,7 +900,81 @@ export function getMDBListRatings(imdbId, type) {
   });
 }
 
-export function getYouTubeVideo (id) {
+export function getMoviesByProductionCompany(companyId, page = 1) {
+  return new Promise((resolve, reject) => {
+    axios.get(`${apiUrl}/discover/movie`, {
+      params: {
+        api_key: process.env.API_KEY,
+        language: process.env.API_LANG,
+        with_companies: companyId,
+        sort_by: 'popularity.desc',
+        page,
+      },
+    }).then(async (response) => {
+      response.data.results.forEach(item => {
+        item.vote_average = parseFloat(item.vote_average).toFixed(1);
+      });
+
+      const enrichedResults = await Promise.all(
+        response.data.results.map(async (item) => {
+          const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}`, {
+            params: {
+              api_key: process.env.API_KEY,
+              append_to_response: 'external_ids'
+            }
+          });
+          item.external_ids = detailsResponse.data.external_ids;
+          return enrichWithIMDbRating(item);
+        })
+      );
+
+      response.data.results = enrichedResults;
+      resolve(response.data);
+    }).catch((error) => {
+      reject(error);
+    });
+  });
+}
+
+export function getTVShowsByProductionCompany(companyId, page = 1) {
+  return new Promise((resolve, reject) => {
+    axios.get(`${apiUrl}/discover/tv`, {
+      params: {
+        api_key: process.env.API_KEY,
+        language: process.env.API_LANG,
+        with_companies: companyId,
+        sort_by: 'popularity.desc',
+        page,
+      },
+    }).then(async (response) => {
+      response.data.results = response.data.results.filter(item => !EXCLUDED_TV_IDS.includes(item.id));
+
+      response.data.results.forEach(item => {
+        item.vote_average = parseFloat(item.vote_average).toFixed(1);
+      });
+
+      const enrichedResults = await Promise.all(
+        response.data.results.map(async (item) => {
+          const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}`, {
+            params: {
+              api_key: process.env.API_KEY,
+              append_to_response: 'external_ids'
+            }
+          });
+          item.external_ids = detailsResponse.data.external_ids;
+          return enrichWithIMDbRating(item);
+        })
+      );
+
+      response.data.results = enrichedResults;
+      resolve(response.data);
+    }).catch((error) => {
+      reject(error);
+    });
+  });
+}
+
+export function getYouTubeVideo(id) {
   return new Promise((resolve, reject) => {
     axios.get(`https://www.googleapis.com/youtube/v3/videos`, {
       params: {
