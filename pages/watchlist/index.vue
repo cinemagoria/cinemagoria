@@ -1276,14 +1276,38 @@ export default {
           return year || 9999;
         };
 
-        const getRating = (item) => {
+        const getWeightedRating = (item) => {
+          let R = 0; // Rating
+          let v = 0; // Votes
+
           if (item.details.rating_source === 'imdb' && item.details.imdb_rating) {
-            return item.details.imdb_rating;
+            R = parseFloat(item.details.imdb_rating);
+            
+            // Safely parse votes
+            const votes = item.details.imdb_votes;
+            if (typeof votes === 'number') {
+              v = votes;
+            } else if (typeof votes === 'string') {
+              v = parseInt(votes.replace(/,/g, ''), 10);
+            } else {
+              v = 0;
+            }
+          } else if (item.details.starsForDb) {
+            // Fallback to TMDB if IMDb not available, treating it as having low confidence/votes if not explicit
+            R = parseFloat(this.formatRating(item.details.starsForDb));
+            v = 0; // Assume 0 votes for TMDB fallback to prioritize IMDb with votes
+          } else {
+            return -1;
           }
-          if (item.details.starsForDb) {
-            return parseFloat(this.formatRating(item.details.starsForDb));
-          }
-          return -1;
+
+          const m = 1000; // Minimum votes required to be listed (threshold)
+          const C = 7.0;  // Mean vote across the whole report
+
+          // Bayesian Average Formula
+          // WR = (v / (v+m)) * R + (m / (v+m)) * C
+          const WR = (v / (v + m)) * R + (m / (v + m)) * C;
+          
+          return WR;
         };
 
         switch(this.orderMode) {
@@ -1296,19 +1320,19 @@ export default {
           case 'older-releases':
             return getYear(a) - getYear(b);
           case 'imdb-high':
-          const ratingBHigh = getRating(b);
-          const ratingAHigh = getRating(a);
-          if (ratingAHigh === -1 && ratingBHigh === -1) return 0;
-          if (ratingAHigh === -1) return 1;
-          if (ratingBHigh === -1) return -1;
-          return ratingBHigh - ratingAHigh;
-        case 'imdb-low':
-          const ratingBLow = getRating(b);
-          const ratingALow = getRating(a);
-          if (ratingALow === -1 && ratingBLow === -1) return 0;
-          if (ratingALow === -1) return 1;
-          if (ratingBLow === -1) return -1;
-          return ratingALow - ratingBLow;
+            const ratingBHigh = getWeightedRating(b);
+            const ratingAHigh = getWeightedRating(a);
+            if (ratingAHigh === -1 && ratingBHigh === -1) return 0;
+            if (ratingAHigh === -1) return 1;
+            if (ratingBHigh === -1) return -1;
+            return ratingBHigh - ratingAHigh;
+          case 'imdb-low':
+            const ratingBLow = getWeightedRating(b);
+            const ratingALow = getWeightedRating(a);
+            if (ratingALow === -1 && ratingBLow === -1) return 0;
+            if (ratingALow === -1) return 1;
+            if (ratingBLow === -1) return -1;
+            return ratingALow - ratingBLow;
           default:
             return 0;
         }
