@@ -113,9 +113,9 @@
               Producción
             </div>
 
-            <div :class="$style.value">
-              {{ item.production_companies | arrayToList }}
-            </div>
+            <div 
+              :class="$style.value"
+              v-html="formatProductionCompanies(item.production_companies)" />
           </li>
 
           <li v-if="providersToDisplay && providersToDisplay.length">
@@ -306,6 +306,17 @@ export default {
     formatGenres(genres) {
       if (!genres || !Array.isArray(genres)) return '';
       return genres.map(genre => `<a href="/genre/${genre.id}/movie">${genre.name}</a>`).join(', ');
+    },
+
+    formatProductionCompanies(companies) {
+      const { getProductionCompanySlug } = require('~/utils/constants');
+      return companies.map(company => {
+        const slug = getProductionCompanySlug(company.id);
+        if (slug) {
+          return `<a href="/production/${slug}">${company.name}</a>`;
+        }
+        return company.name;
+      }).join(', ');
     },
     
     toggleReadMore(review) {
