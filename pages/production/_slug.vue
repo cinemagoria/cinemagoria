@@ -1,57 +1,75 @@
 <template>
   <main class="main">
+    <UserNav @show-rated-modal="showRatedItems" />
     <TopNav
       :title="metaTitle" />
 
+    <ProductionHero
+      v-if="company"
+      :item="company"
+      :backdrop-path="heroBackdrop"
+      title="Production" />
+
+    <div class="switcher-container">
+      <label class="switch">
+        <input type="checkbox" :checked="activeTab === 'tvShows'" @change="toggleTab">
+        <span class="slider"></span>
+        <span class="label-text">Movies</span>
+        <span class="label-text">TV Shows</span>
+      </label>
+    </div>
+
     <section class="spacing">
-      <h2 v-if="companyName" class="section-title">{{ companyName }}</h2>
-      
       <!-- Movies Section -->
-      <div v-if="movies && movies.length" class="content-section">
-        <h3 class="subsection-title">Movies</h3>
-        <Listing
-          :items="{ results: movies }"
-          :loading="moviesLoading"
-          @loadMore="loadMoreMovies" />
+      <div v-if="activeTab === 'movies'" class="content-section">
+        <div v-if="movies && movies.results && movies.results.length">
+          <Listing
+            :items="movies"
+            :loading="moviesLoading"
+            @loadMore="loadMoreMovies" />
+        </div>
+        <div v-else-if="!moviesLoading" class="empty-state">
+          <p>No movies found for this production company.</p>
+        </div>
       </div>
 
       <!-- TV Shows Section -->
-      <div v-if="tvShows && tvShows.length" class="content-section">
-        <h3 class="subsection-title">TV Shows</h3>
-        <Listing
-          :items="{ results: tvShows }"
-          :loading="tvShowsLoading"
-          @loadMore="loadMoreTVShows" />
-      </div>
-
-      <!-- Empty State -->
-      <div v-if="!movies.length && !tvShows.length && !moviesLoading && !tvShowsLoading" class="empty-state">
-        <p>No content found for this production company.</p>
+      <div v-if="activeTab === 'tvShows'" class="content-section">
+        <div v-if="tvShows && tvShows.results && tvShows.results.length">
+          <Listing
+            :items="tvShows"
+            :loading="tvShowsLoading"
+            @loadMore="loadMoreTVShows" />
+        </div>
+        <div v-else-if="!tvShowsLoading" class="empty-state">
+          <p>No TV shows found for this production company.</p>
+        </div>
       </div>
     </section>
   </main>
 </template>
 
 <script>
-import { getMoviesByProductionCompany, getTVShowsByProductionCompany } from '~/api';
+import { getMoviesByProductionCompany, getTVShowsByProductionCompany, getProductionCompanyDetails } from '~/api';
 import { getProductionCompanyBySlug } from '~/utils/constants';
 import TopNav from '~/components/global/TopNav';
 import Listing from '~/components/Listing';
+import ProductionHero from '~/components/ProductionHero';
+import UserNav from '@/components/global/UserNav';
 
 export default {
   components: {
+    UserNav,
     TopNav,
     Listing,
+    ProductionHero,
   },
 
   data() {
     return {
       moviesLoading: false,
       tvShowsLoading: false,
-      moviesPage: 1,
-      tvShowsPage: 1,
-      moviesTotalPages: 1,
-      tvShowsTotalPages: 1,
+      activeTab: 'movies',
     };
   },
 
@@ -70,31 +88,52 @@ export default {
 
   computed: {
     metaTitle() {
-      return this.companyName ? `${this.companyName} - Production Company` : 'Production Company';
+      return this.company && this.company.name ? `${this.company.name} - Production Company` : 'Production Company';
+    },
+    heroBackdrop() {
+      // Use the first movie's backdrop as the hero background
+      if (this.movies && this.movies.results && this.movies.results.length > 0) {
+        return this.movies.results[0].backdrop_path;
+      }
+      return null;
     },
   },
 
   async asyncData({ params, error }) {
-    const slug = params.slug;
-    const company = getProductionCompanyBySlug(slug);
+    // Try to find company by slug first (for predefined ones)
+    let companyId = null;
+    const companyInfo = getProductionCompanyBySlug(params.slug);
+    
+    if (companyInfo) {
+      companyId = companyInfo.id;
+    } else {
+      // If not in constants, assume the slug IS the ID (or we'd need a lookup endpoint)
+      // Based on previous context, we might be using ID directly in URL for some cases?
+      // But let's stick to the existing logic which seemed to work:
+      // If getProductionCompanyBySlug returns null, the previous code errored 404.
+      // However, the user might be navigating to /production/123 directly?
+      // Let's support both: if slug is a number, use it as ID.
+      if (!isNaN(params.slug)) {
+        companyId = params.slug;
+      }
+    }
 
-    if (!company) {
+    if (!companyId) {
       return error({ statusCode: 404, message: 'Production company not found' });
     }
 
     try {
-      const [moviesData, tvShowsData] = await Promise.all([
-        getMoviesByProductionCompany(company.id, 1),
-        getTVShowsByProductionCompany(company.id, 1),
+      const [moviesData, tvShowsData, companyDetails] = await Promise.all([
+        getMoviesByProductionCompany(companyId, 1),
+        getTVShowsByProductionCompany(companyId, 1),
+        getProductionCompanyDetails(companyId),
       ]);
 
       return {
-        companyId: company.id,
-        companyName: company.name,
-        movies: moviesData.results || [],
-        tvShows: tvShowsData.results || [],
-        moviesTotalPages: moviesData.total_pages || 1,
-        tvShowsTotalPages: tvShowsData.total_pages || 1,
+        companyId: companyId,
+        company: companyDetails,
+        movies: moviesData,
+        tvShows: tvShowsData,
       };
     } catch (err) {
       console.error('Error loading production company data:', err);
@@ -103,16 +142,20 @@ export default {
   },
 
   methods: {
+    toggleTab(event) {
+      this.activeTab = event.target.checked ? 'tvShows' : 'movies';
+    },
+
     loadMoreMovies() {
-      if (this.moviesPage >= this.moviesTotalPages || this.moviesLoading) return;
+      if (this.movies.page >= this.movies.total_pages || this.moviesLoading) return;
 
       this.moviesLoading = true;
-      const nextPage = this.moviesPage + 1;
+      const nextPage = this.movies.page + 1;
 
       getMoviesByProductionCompany(this.companyId, nextPage)
         .then((response) => {
-          this.movies = this.movies.concat(response.results || []);
-          this.moviesPage = nextPage;
+          this.movies.results = this.movies.results.concat(response.results || []);
+          this.movies.page = nextPage;
           this.moviesLoading = false;
         })
         .catch(() => {
@@ -121,15 +164,15 @@ export default {
     },
 
     loadMoreTVShows() {
-      if (this.tvShowsPage >= this.tvShowsTotalPages || this.tvShowsLoading) return;
+      if (this.tvShows.page >= this.tvShows.total_pages || this.tvShowsLoading) return;
 
       this.tvShowsLoading = true;
-      const nextPage = this.tvShowsPage + 1;
+      const nextPage = this.tvShows.page + 1;
 
       getTVShowsByProductionCompany(this.companyId, nextPage)
         .then((response) => {
-          this.tvShows = this.tvShows.concat(response.results || []);
-          this.tvShowsPage = nextPage;
+          this.tvShows.results = this.tvShows.results.concat(response.results || []);
+          this.tvShows.page = nextPage;
           this.tvShowsLoading = false;
         })
         .catch(() => {
@@ -140,7 +183,68 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.switcher-container {
+  display: flex;
+  justify-content: center;
+}
+
+.switch {
+  position: relative;
+  display: inline-flex;
+  width: 240px;
+  height: 44px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 22px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  user-select: none;
+  padding: 4px;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
+  background: #8BE9FD;
+  border-radius: 18px;
+  transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  z-index: 1;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  border: none;
+}
+
+.switch input:checked ~ .slider {
+  transform: translateX(100%);
+}
+
+.label-text {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  color: #80868b;
+  font-size: 1.4rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+.switch input:not(:checked) ~ .label-text:nth-of-type(2) {
+  color: #000;
+}
+
+.switch input:checked ~ .label-text:nth-of-type(3) {
+  color: #000;
+}
+
 .section-title {
   font-size: 3rem;
   color: #8BE9FD;

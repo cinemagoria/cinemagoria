@@ -990,3 +990,18 @@ export function getYouTubeVideo(id) {
       });
   });
 };
+
+export function getProductionCompanyDetails(id) {
+  return new Promise((resolve, reject) => {
+    axios.get(`${apiUrl}/company/${id}`, {
+      params: {
+        api_key: process.env.API_KEY,
+      },
+    }).then((response) => {
+      resolve(response.data);
+    }).catch((error) => {
+      console.error("Error fetching production company details:", error);
+      reject(error);
+    });
+  });
+};
