@@ -2,12 +2,13 @@
   <div class="card">
     <nuxt-link
       class="card__link"
-      :to="{ name: `${media}-id`, params: { id: item.id } }">
+      :to="item.media_type === 'production' ? { name: 'production-slug', params: { slug: item.slug } } : { name: `${media}-id`, params: { id: item.id } }">
       <div class="card__img">
         <img
           v-if="poster"
           v-lazyload="poster"
           class="lazyload"
+          :class="{ 'card__img--logo': media === 'production' }"
           :alt="name">
 
         <span v-else>
@@ -67,6 +68,8 @@ export default {
         return `${apiImgUrl}/w500${this.item.poster_path}`;
       } else if (this.item.profile_path) {
         return `${apiImgUrl}/w500${this.item.profile_path}`;
+      } else if (this.item.logo_path) {
+        return `${apiImgUrl}/w500${this.item.logo_path}`;
       } else {
         return false;
       }
@@ -84,3 +87,13 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.card__img--logo {
+  object-fit: contain !important;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+}
+</style>

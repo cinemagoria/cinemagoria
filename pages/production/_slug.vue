@@ -1,6 +1,6 @@
 <template>
   <main class="main">
-    <UserNav @show-rated-modal="showRatedItems" />
+    <UserNav />
     <TopNav
       :title="metaTitle" />
 
@@ -70,6 +70,7 @@ export default {
       moviesLoading: false,
       tvShowsLoading: false,
       activeTab: 'movies',
+      showRatedItems: false,
     };
   },
 
@@ -141,7 +142,14 @@ export default {
     }
   },
 
+  mounted() {
+    this.$root.$on('show-rated-modal', this.handleShowRatedModal);
+  },
+
   methods: {
+    handleShowRatedModal() {
+      this.showRatedItems = true;
+    },
     toggleTab(event) {
       this.activeTab = event.target.checked ? 'tvShows' : 'movies';
     },

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { SUPPORTED_PRODUCTION_COMPANIES } from '../utils/constants';
 
 const apiUrl = 'https://api.themoviedb.org/3';
 export const apiImgUrl = 'https://image.tmdb.org/t/p';
@@ -798,38 +799,71 @@ export function getPerson(id) {
 
 export function search(query, page = 1) {
   return new Promise((resolve, reject) => {
-    axios.get(`${apiUrl}/search/multi?include_adult=false`, {
+    const searchMulti = axios.get(`${apiUrl}/search/multi?include_adult=false`, {
       params: {
         api_key: process.env.API_KEY,
         language: process.env.API_LANG,
         query,
         page,
       },
-    }).then(async (response) => {
-      response.data.results.forEach(item => {
-        item.vote_average = parseFloat(item.vote_average).toFixed(1);
-      });
+    });
 
-      const enrichedResults = await Promise.all(
-        response.data.results.map(async (item) => {
-          if (item.media_type === 'movie' || item.media_type === 'tv') {
-            const endpoint = item.media_type === 'movie' ? 'movie' : 'tv';
-            const detailsResponse = await axios.get(`${apiUrl}/${endpoint}/${item.id}`, {
-              params: {
-                api_key: process.env.API_KEY,
-                append_to_response: 'external_ids'
-              }
-            });
-            item.external_ids = detailsResponse.data.external_ids;
-            return enrichWithIMDbRating(item);
+    const searchCompanies = axios.get(`${apiUrl}/search/company`, {
+      params: {
+        api_key: process.env.API_KEY,
+        query,
+        page,
+      },
+    });
+
+    Promise.all([searchMulti, searchCompanies])
+      .then(async ([multiResponse, companyResponse]) => {
+        multiResponse.data.results.forEach(item => {
+          if (item.vote_average) {
+            item.vote_average = parseFloat(item.vote_average).toFixed(1);
           }
-          return item;
-        })
-      );
+        });
 
-      response.data.results = enrichedResults;
-      resolve(response.data);
-    })
+        const enrichedMultiResults = await Promise.all(
+          multiResponse.data.results.map(async (item) => {
+            if (item.media_type === 'movie' || item.media_type === 'tv') {
+              const endpoint = item.media_type === 'movie' ? 'movie' : 'tv';
+              try {
+                const detailsResponse = await axios.get(`${apiUrl}/${endpoint}/${item.id}`, {
+                  params: {
+                    api_key: process.env.API_KEY,
+                    append_to_response: 'external_ids'
+                  }
+                });
+                item.external_ids = detailsResponse.data.external_ids;
+                return enrichWithIMDbRating(item);
+              } catch (e) {
+                console.error(`Error enriching item ${item.id}:`, e);
+                return item;
+              }
+            }
+            return item;
+          })
+        );
+
+        const companyResults = companyResponse.data.results
+          .filter(company => SUPPORTED_PRODUCTION_COMPANIES.hasOwnProperty(company.id))
+          .map(company => ({
+            ...company,
+            media_type: 'production',
+            slug: SUPPORTED_PRODUCTION_COMPANIES[company.id].slug,
+            name: SUPPORTED_PRODUCTION_COMPANIES[company.id].name
+          }));
+
+        const combinedResults = [...companyResults, ...enrichedMultiResults];
+
+        const finalResponse = {
+          ...multiResponse.data,
+          results: combinedResults
+        };
+
+        resolve(finalResponse);
+      })
       .catch((error) => {
         reject(error);
       });
