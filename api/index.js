@@ -222,10 +222,10 @@ export function getListItem(type, query) {
 export function getIMDbRatingFromDB(imdbId) {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await axios.get(`/api/imdb-rating/${imdbId}`);
+      const response = await axios.get(`/api/imdb-rating/${imdbId}`, { timeout: 1500 });
       resolve(response.data);
     } catch (error) {
-      console.error('Error fetching IMDb rating:', error);
+      // console.error('Error fetching IMDb rating:', error);
       resolve({ found: false });
     }
   });

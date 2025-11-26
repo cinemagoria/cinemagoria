@@ -1,16 +1,16 @@
 import { apiImgUrl } from '~/api';
 
-export const id =  {
+export const id = {
   computed: {
-    id () {
+    id() {
       return this.item.id;
     }
   }
 }
 
-export const type =  {
+export const type = {
   computed: {
-    type () {
+    type() {
       return this.item.type;
     }
   }
@@ -18,7 +18,7 @@ export const type =  {
 
 export const name = {
   computed: {
-    name () {
+    name() {
       return this.item.title ? this.item.title : this.item.name;
     },
   },
@@ -26,10 +26,10 @@ export const name = {
 
 export const genres = {
   computed: {
-    genres (){
+    genres() {
       if (this.item.genres) {
         return this.itemgenres;
-        
+
       }
     }
   }
@@ -37,7 +37,7 @@ export const genres = {
 
 export const stars = {
   computed: {
-    stars () {
+    stars() {
       if (this.item.imdb_rating && this.item.rating_source === 'imdb') {
         return this.item.imdb_rating * 10;
       } else if (this.item.vote_average) {
@@ -51,7 +51,7 @@ export const stars = {
 
 export const yearStart = {
   computed: {
-    yearStart () {
+    yearStart() {
       const date = this.item.release_date ? this.item.release_date : this.item.first_air_date;
 
       if (date) {
@@ -64,7 +64,7 @@ export const yearStart = {
 
 export const yearEnd = {
   computed: {
-    yearEnd () {
+    yearEnd() {
       const date = this.item.last_air_date;
 
       if (date) {
@@ -76,9 +76,9 @@ export const yearEnd = {
 
 export const poster = {
   computed: {
-    poster_path () {
+    poster_path() {
       if (this.item.poster_path) {
-        return `${apiImgUrl}/w370_and_h556_bestv2${this.item.poster_path}`;
+        return `${apiImgUrl}/w500${this.item.poster_path}`;
       }
     },
   },
@@ -86,7 +86,7 @@ export const poster = {
 
 export const backdrop = {
   computed: {
-    backdrop () {
+    backdrop() {
       if (this.item.backdrop_path) {
         return `${apiImgUrl}/original${this.item.backdrop_path}`;
       }
@@ -97,7 +97,7 @@ export const backdrop = {
 
 export const cert = {
   computed: {
-    cert () {
+    cert() {
       if (this.item.release_dates) {
         const releases = this.item.release_dates.results.find(release => release.iso_3166_1 === process.env.API_COUNTRY || release.iso_3166_1 === 'US');
 
@@ -120,7 +120,7 @@ export const cert = {
 
 export const trailer = {
   computed: {
-    trailer () {
+    trailer() {
       let videos = this.item.videos.results;
 
       if (!videos.length) return null;
@@ -140,7 +140,7 @@ export const trailer = {
 
 export const directors = {
   computed: {
-    directors () {
+    directors() {
       const people = this.item.credits.crew;
 
       if (people) {
@@ -153,7 +153,7 @@ export const directors = {
 
 export const creators = {
   computed: {
-    creators () {
+    creators() {
       const people = this.item.created_by;
 
       if (people) {
