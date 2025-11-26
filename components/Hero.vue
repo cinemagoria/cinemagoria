@@ -227,14 +227,7 @@
           </div>
         </div>
       </div>
-    
-    <!-- Trailer Modal -->
-    <Modal
-      v-if="modalVisible"
-      :data="trailer"
-      type="iframe"
-      @close="closeModal" />
-      
+
     <!-- Rating Modal -->
     <div v-if="ratingModalVisible" class="modal-overlay">
       <div class="rating-modal">
@@ -331,7 +324,6 @@ export default {
     return {
       tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://entercinema-favorites.vercel.app/api',
       isSingle: this.item.id === this.$route.params.id,
-      modalVisible: false,
       copySuccess: false,
       ratingModalVisible: false,
       shareModalVisible: false,
@@ -414,13 +406,12 @@ export default {
 
   methods: {
     openModal() {
-      this.modalVisible = true;
+      if (this.trailer && this.trailer[0]) {
+        const videoId = this.trailer[0].src.match(/embed\/([^?]+)/)[1];
+        window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
+      }
     },
-    
-    closeModal() {
-      this.modalVisible = false;
-    },
-    
+
     openShareModal() {
       this.shareModalVisible = true;
     },
