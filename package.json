@@ -28,7 +28,6 @@
     "cookie": "^0.6.0",
     "core-js": "^3.41.0",
     "follow-redirects": "^1.15.9",
-    "http-proxy-middleware": "^3.0.5",
     "form-data": "4.0.4",
     "http-proxy-middleware": "^3.0.5",
     "nuxt": "^2.18.1",
@@ -53,7 +52,7 @@
     "eslint-plugin-vue": "^9.33.0",
     "postcss": "^8.4.36",
     "prettier": "^2.8.8",
-    "sass": "^1.86.0",
+    "sass": "1.77.8",
     "sass-loader": "^10.5.2",
     "webpack": "4"
   },
