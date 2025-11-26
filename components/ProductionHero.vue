@@ -19,18 +19,6 @@
       <div v-if="description" :class="$style.desc">
         {{ description }}
       </div>
-      
-      <div :class="$style.buttonContainer">
-        <a
-          v-if="homepage"
-          :href="homepage"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button button--icon"
-          :class="$style.actionButton">
-          <span class="txt">Visitar Sitio Web</span>
-        </a>
-      </div>
     </div>
   </div>
 </template>

@@ -70,6 +70,7 @@ export default {
       moviesLoading: false,
       tvShowsLoading: false,
       activeTab: 'movies',
+      showRatedItems: false,
     };
   },
 
@@ -91,7 +92,6 @@ export default {
       return this.company && this.company.name ? `${this.company.name} - Productora` : 'Productora';
     },
     heroBackdrop() {
-      // Use the first movie's backdrop as the hero background
       if (this.movies && this.movies.results && this.movies.results.length > 0) {
         return this.movies.results[0].backdrop_path;
       }
@@ -100,19 +100,12 @@ export default {
   },
 
   async asyncData({ params, error }) {
-    // Try to find company by slug first (for predefined ones)
     let companyId = null;
     const companyInfo = getProductionCompanyBySlug(params.slug);
     
     if (companyInfo) {
       companyId = companyInfo.id;
     } else {
-      // If not in constants, assume the slug IS the ID (or we'd need a lookup endpoint)
-      // Based on previous context, we might be using ID directly in URL for some cases?
-      // But let's stick to the existing logic which seemed to work:
-      // If getProductionCompanyBySlug returns null, the previous code errored 404.
-      // However, the user might be navigating to /production/123 directly?
-      // Let's support both: if slug is a number, use it as ID.
       if (!isNaN(params.slug)) {
         companyId = params.slug;
       }
@@ -141,7 +134,14 @@ export default {
     }
   },
 
+  mounted() {
+    this.$root.$on('show-rated-modal', this.handleShowRatedModal);
+  },
+
   methods: {
+    handleShowRatedModal() {
+      this.showRatedItems = true;
+    },
     toggleTab(event) {
       this.activeTab = event.target.checked ? 'tvShows' : 'movies';
     },
