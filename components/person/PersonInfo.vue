@@ -123,7 +123,7 @@ export default {
     },
     avatar () {
       if (this.person.profile_path) {
-        return `${apiImgUrl}/w370_and_h556_bestv2${this.person.profile_path}`;
+        return `${apiImgUrl}/w500${this.person.profile_path}`;
       } else {
         return null;
       }
