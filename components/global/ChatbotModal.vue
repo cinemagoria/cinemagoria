@@ -251,6 +251,7 @@
 
 <script>
 import axios from 'axios';
+import DOMPurify from 'dompurify';
 
 export default {
   name: 'ChatbotModal',
@@ -367,8 +368,60 @@ export default {
     this.$root.$on('chatbot-maximized', () => {
       this.chatBotMinimized = false;
     });
+    
+    this.$root.$on('open-chatbot-with-analysis', async (payload) => {
+      console.log('[ChatbotModal] Received open-chatbot-with-analysis event', payload);
+      
+      try {
+        this.createNewConversation();
+        
+        const unsafeFormattedResponse = payload.aiResponse
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.*?)\*/g, '<em>$1</em>')
+          .replace(/\n/g, '<br>');
+        
+        const formattedResponse = DOMPurify.sanitize(unsafeFormattedResponse);
+        
+        this.chatMessages.push({
+          role: 'user',
+          content: payload.userQuery,
+        });
+        
+        this.chatMessages.push({
+          role: 'assistant',
+          content: formattedResponse,
+        });
+        
+        if (payload.mediaReferences && payload.mediaReferences.length > 0) {
+          console.log('[ChatbotModal] Fetching media details for', payload.mediaReferences.length, 'references');
+          this.chatBotResults = [];
+          await this.fetchMediaDetailsFromBackendReferences(payload.mediaReferences);
+        } else {
+          this.chatBotResults = [];
+        }
+        
+        this.chatBotOpen = true;
+        this.chatBotMinimized = false;
+        this.clearMinimizedState();
+        
+        const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+        if (activeConv) {
+          activeConv.messages = [...this.chatMessages];
+          activeConv.results = [...this.chatBotResults];
+          activeConv.chatId = payload.chatId;
+          activeConv.persistedInBackend = true;
+        }
+      
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
+        
+        console.log('[ChatbotModal] Modal opened successfully');
+      } catch (error) {
+        console.error('[ChatbotModal] Error opening modal with analysis:', error);
+      }
+    });
   },
-
   beforeDestroy() {
     window.removeEventListener('resize', this.checkMobileDevice);
     if (this.dotAnimationInterval) {
@@ -384,6 +437,9 @@ export default {
       this.abortController = null;
     }
     this.clearMinimizedState();
+    this.$root.$off('rated-items-updated', this.checkData);
+    this.$root.$off('chatbot-maximized');
+    this.$root.$off('open-chatbot-with-analysis');
   },
   methods: {
     getUserEmail() {
@@ -558,9 +614,10 @@ export default {
               activeConv.messages = messages.map(msg => {
                 let content = msg.content;
                 if (msg.role === 'assistant') {
-                  content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                  const unsafeContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                                   .replace(/\*(.*?)\*/g, '<em>$1</em>')
                                   .replace(/\n/g, '<br>');
+                  content = DOMPurify.sanitize(unsafeContent);
                 }
                 return {
                   role: msg.role,
@@ -619,9 +676,10 @@ export default {
             activeConv.messages = messages.map(msg => {
               let content = msg.content;
               if (msg.role === 'assistant') {
-                content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                const unsafeContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
                                 .replace(/\n/g, '<br>');
+                content = DOMPurify.sanitize(unsafeContent);
               }
               return {
                 role: msg.role,
