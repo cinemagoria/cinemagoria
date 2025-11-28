@@ -67,6 +67,13 @@
                   </svg>
                   <span class="btn-label">Ordenar</span>
                 </button>
+
+                <button class="control-btn ai-analysis-btn" @click="toggleAiSelectionMode" :class="{ 'active': aiSelectionMode }">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"/>
+                  </svg>
+                  <span class="btn-label">IA</span>
+                </button>
               </div>
             </div>
 
@@ -100,6 +107,47 @@
           </div>
           
           <div v-else>
+            <!-- AI Selection Mode Banner -->
+            <div v-if="aiSelectionMode" class="ai-selection-banner" style="margin-bottom: 0.8rem; margin-top: 0.8rem; border-radius: 15px;">
+              <div class="banner-content">
+                <div class="selection-info">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/>
+                  </svg>
+                  <span>
+                    Seleccionado: {{ selectedMoviesCount }} {{ selectedMoviesCount === 1 ? 'película' : 'películas' }}, {{ selectedTvShowsCount }} {{ selectedTvShowsCount === 1 ? 'serie' : 'series' }}
+                    <span class="limit-text">(máx 10 cada uno)</span>
+                  </span>
+                </div>
+                <div class="banner-actions">
+                  <button @click="cancelSelection" class="banner-btn cancel-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                    Cancelar
+                  </button>
+                  <button 
+                    @click="sendToAI" 
+                    class="banner-btn send-btn" 
+                    :disabled="selectedItems.length === 0 || aiAnalysisLoading"
+                  >
+                    <svg v-if="!aiAnalysisLoading" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                    </svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 44 44" stroke="currentColor">
+                      <g fill="none" fill-rule="evenodd" stroke-width="2">
+                        <circle cx="22" cy="22" r="1">
+                          <animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/>
+                          <animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/>
+                        </circle>
+                      </g>
+                    </svg>
+                    {{ aiAnalysisLoading ? 'Analizando...' : 'Enviar a IA' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <div class="pagination" v-if="filteredItems.length > itemsPerPage">
               <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
               <button @click="prevPage" :disabled="currentPage === 1"><<</button>
@@ -113,16 +161,24 @@
             </div>
             
             <div class="movie-grid">
-              <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
+              <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card" :class="{ 'selection-mode': aiSelectionMode, 'selected': aiSelectionMode && isItemSelected(item), 'disabled': aiSelectionMode && !canSelectItem(item) && !isItemSelected(item) }">
+                <!-- Selection Checkbox (only in AI selection mode) - Top Right -->
+                <div v-if="aiSelectionMode" class="selection-checkbox" @click.stop="toggleItemSelection(item)">
+                  <div class="checkbox-wrapper">
+                    <input type="checkbox" :checked="isItemSelected(item)" :disabled="!canSelectItem(item)" @click.prevent>
+                    <span class="checkmark"></span>
+                  </div>
+                </div>
+
                 <div class="card-background">
-                  <div class="user-rating-badge" v-if="item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
+                  <div class="user-rating-badge" v-if="!aiSelectionMode && item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
                     @click.stop="openRatingModal(item)"
                     :class="{ 'has-review': item.details.userReview }" 
                     :title="item.details.userReview ? 'Tiene Reseña' : ''">
                     {{ item.details.userRatingForDb }}
                     <span v-if="item.details.userReview" class="review-indicator"></span>
                   </div>
-                  <div class="user-rating-badge empty" @click.stop="openRatingModal(item)" v-else> 
+                  <div class="user-rating-badge empty" @click.stop="openRatingModal(item)" v-else-if="!aiSelectionMode"> 
                     <span style="font-size: 7px;">Valorar</span>
                   </div>
                   <a :href="getLink(item)" class="item-link">
@@ -157,7 +213,7 @@
                     </div>
                   </div>
 
-                  <svg fill="84E1F6" height="26px" width="26px" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 446.04" @click="removeFavorite(item)" class="delete-icon">
+                  <svg v-if="!aiSelectionMode" fill="84E1F6" height="26px" width="26px" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 446.04" @click="removeFavorite(item)" class="delete-icon">
                     <defs>
                       <style>
                         .cls-1 {
@@ -378,6 +434,18 @@
             </div>
           </div>
         </div>
+        <div v-if="notificationModalVisible" class="modal-overlay" @click="closeNotificationModal">
+          <div class="rating-modal" @click.stop style="max-width: 400px;">
+            <div class="modal-header">
+              <h3>{{ notificationTitle || 'Notificación' }}</h3>
+              <button class="close-btn" @click="closeNotificationModal">×</button>
+            </div>
+            <div class="rating-content" style="text-align: center; padding: 20px; display: flex; flex-direction: column; align-items: center;">
+              <p style="font-size: 1.2rem; margin-bottom: 20px; color: #fff;">{{ notificationMessage }}</p>
+              <button @click="closeNotificationModal" class="save-btn" style="padding: 10px 30px; width: auto;">OK</button>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
   </div>
@@ -499,6 +567,13 @@ export default {
       customYearStart: null,
       customYearEnd: null,
       currentYear: new Date().getFullYear(),
+      // AI Selection Mode
+      aiSelectionMode: false,
+      selectedItems: [],
+      aiAnalysisLoading: false,
+      notificationModalVisible: false,
+      notificationTitle: '',
+      notificationMessage: '',
     };
   },
   async mounted() {
@@ -1141,6 +1216,127 @@ export default {
         console.error('Error fetching user first name:', error);
       }
     },
+
+    // AI Selection Mode Methods
+    toggleAiSelectionMode() {
+      this.aiSelectionMode = !this.aiSelectionMode;
+      if (!this.aiSelectionMode) {
+        this.selectedItems = [];
+      }
+    },
+    
+    isItemSelected(item) {
+      return this.selectedItems.some(
+        selected => selected.tmdb_id === item.details.idForDb && selected.media_type === item.details.typeForDb
+      );
+    },
+    
+    canSelectItem(item) {
+      if (!this.aiSelectionMode) return true;
+      
+      if (this.isItemSelected(item)) return true;
+      
+      const mediaType = item.details.typeForDb;
+      if (mediaType === 'movie') {
+        return this.selectedMoviesCount < 10;
+      } else if (mediaType === 'tv') {
+        return this.selectedTvShowsCount < 10;
+      }
+      return false;
+    },
+    
+    toggleItemSelection(item) {
+      if (!this.aiSelectionMode) return;
+      
+      if (this.isItemSelected(item)) {
+        this.selectedItems = this.selectedItems.filter(
+          selected => !(selected.tmdb_id === item.details.idForDb && selected.media_type === item.details.typeForDb)
+        );
+      } else {
+        if (this.canSelectItem(item)) {
+          this.selectedItems.push({
+            tmdb_id: item.details.idForDb,
+            media_type: item.details.typeForDb,
+            title: item.details.nameForDb,
+            release_date: item.details.yearStartForDb,
+            poster_path: item.details.posterForDb
+          });
+        }
+      }
+    },
+    
+    cancelSelection() {
+      this.aiSelectionMode = false;
+      this.selectedItems = [];
+    },
+    
+    async sendToAI() {
+      if (this.selectedItems.length === 0) return;
+      
+      this.aiAnalysisLoading = true;
+      
+      const movies = this.selectedItems.filter(item => item.media_type === 'movie');
+      const tvShows = this.selectedItems.filter(item => item.media_type === 'tv');
+      
+      let prompt = "Analiza los siguientes títulos de mi lista de seguimiento:\n\n";
+      
+      if (movies.length > 0) {
+        prompt += "Películas:\n";
+        movies.forEach(m => prompt += `- ${m.title} (${m.release_date})\n`);
+        prompt += "\n";
+      }
+      
+      if (tvShows.length > 0) {
+        prompt += "Series de TV:\n";
+        tvShows.forEach(t => prompt += `- ${t.title} (${t.release_date})\n`);
+        prompt += "\n";
+      }
+      
+      prompt += "Basado en esta selección, ¿qué patrones ves en mis gustos? ¿Qué me recomendarías ver a continuación (dame 3 recomendaciones concretas)?";
+      
+      try {
+        const response = await fetch('https://entercinema-assistant-rust.vercel.app/api/gemini', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: prompt,
+            chat_id: null 
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error('Error al conectar con el asistente de IA');
+        }
+        
+        const data = await response.json();
+        
+        this.$root.$emit('open-chatbot-with-analysis', {
+          userQuery: "Analiza mi selección de la lista de seguimiento",
+          aiResponse: data.result,
+          mediaReferences: data.media_references,
+          chatId: data.chat_id
+        });
+        
+        this.aiSelectionMode = false;
+        this.selectedItems = [];
+        
+      } catch (error) {
+        console.error('Error en análisis de IA:', error);
+        this.notificationTitle = 'Error';
+        this.notificationMessage = 'No se pudo completar el análisis. Por favor, inténtalo de nuevo.';
+        this.notificationModalVisible = true;
+      } finally {
+        this.aiAnalysisLoading = false;
+      }
+    },
+
+    closeNotificationModal() {
+      this.notificationModalVisible = false;
+      this.notificationTitle = '';
+      this.notificationMessage = '';
+    },
   },
   
   computed: {
@@ -1226,6 +1422,15 @@ export default {
       
       return chips;
     },
+
+    selectedMoviesCount() {
+      return this.selectedItems.filter(item => item.media_type === 'movie').length;
+    },
+    
+    selectedTvShowsCount() {
+      return this.selectedItems.filter(item => item.media_type === 'tv').length;
+    },
+
     sortOptions() {
       return [
         { value: 'latest-added', label: 'Adiciones más recientes' },
@@ -3305,5 +3510,242 @@ loading-state {
 .empty-state-link:hover {
   color: #fff;
   border-bottom-color: #8BE9FD;
+}
+
+
+/* AI Selection Mode Styles */
+.ai-analysis-btn {
+  position: relative;
+}
+
+.ai-analysis-btn.active {
+  background: rgba(139, 233, 253, 0.2);
+  border: 1px solid #8BE9FD;
+  color: #8BE9FD;
+}
+
+.ai-selection-banner {
+  background: rgba(139, 233, 253, 0.15);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  width: 97% !important;
+  margin: 0 auto;
+}
+
+.banner-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.selection-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #8BE9FD;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.selection-info svg {
+  flex-shrink: 0;
+  color: #8BE9FD;
+}
+
+.limit-text {
+  opacity: 0.7;
+  font-size: 12px;
+  margin-left: 0.5rem;
+  color: #acafb5;
+}
+
+.banner-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.banner-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+}
+
+.cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.send-btn {
+  background: #8BE9FD;
+  color: #000;
+  border-color: #8BE9FD;
+}
+
+.send-btn:hover:not(:disabled) {
+  background: #a0ecfd;
+  border-color: #a0ecfd;
+}
+
+.send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Movie Card Selection Styles */
+.movie-card.selection-mode {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.movie-card.selection-mode:hover:not(.disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 233, 253, 0.3);
+}
+
+.movie-card.selected {
+  box-shadow: 0 0 15px rgba(139, 233, 253, 0.4);
+}
+
+.movie-card.disabled {
+  opacity: 0.6;
+}
+
+.movie-card.disabled .card-background {
+  pointer-events: none;
+}
+
+.movie-card.disabled .selection-checkbox {
+  cursor: not-allowed;
+}
+
+.selection-checkbox {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 6px;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.checkbox-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox-wrapper input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* AI Selection Mode Styles */
+.movie-card.selection-mode {
+  cursor: pointer;
+}
+
+.movie-card.selection-mode .item-link:hover {
+  transform: translateY(-2px); /* Less aggressive hover */
+}
+
+.movie-card.selection-mode.selected .card-background {
+  box-shadow: 0 0 0 3px #8BE9FD; /* Cyan border */
+  border-radius: 15px; /* Match card border radius */
+  overflow: hidden; /* Ensure content doesn't overflow border */
+}
+
+.movie-card.selection-mode.selected img {
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+.selection-checkbox {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+}
+
+.checkbox-wrapper {
+  width: 24px;
+  height: 24px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid #8BE9FD;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.checkbox-wrapper input {
+  display: none;
+}
+
+.movie-card.selected .checkbox-wrapper {
+  background: #8BE9FD;
+}
+
+.checkmark {
+  display: none;
+  width: 14px;
+  height: 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.movie-card.selected .checkmark {
+  display: block;
+}
+
+.movie-card.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments for AI selection */
+@media (max-width: 768px) {
+  .banner-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .selection-info {
+    justify-content: center;
+  }
+  
+  .banner-actions {
+    justify-content: center;
+  }
+  
+  .selection-checkbox {
+    top: 8px;
+    left: 8px;
+  }
+  
+  .checkbox-wrapper {
+    width: 28px; /* Larger touch target */
+    height: 28px;
+  }
 }
 </style>

@@ -251,6 +251,7 @@
 
 <script>
 import axios from 'axios';
+import DOMPurify from 'dompurify';
 
 export default {
   name: 'ChatbotModal',
@@ -367,6 +368,59 @@ export default {
     this.$root.$on('chatbot-maximized', () => {
       this.chatBotMinimized = false;
     });
+    
+    this.$root.$on('open-chatbot-with-analysis', async (payload) => {
+      console.log('[ChatbotModal] Received open-chatbot-with-analysis event', payload);
+      
+      try {
+        this.createNewConversation();
+        
+        const unsafeFormattedResponse = payload.aiResponse
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.*?)\*/g, '<em>$1</em>')
+          .replace(/\n/g, '<br>');
+        
+        const formattedResponse = DOMPurify.sanitize(unsafeFormattedResponse);
+        
+        this.chatMessages.push({
+          role: 'user',
+          content: payload.userQuery,
+        });
+        
+        this.chatMessages.push({
+          role: 'assistant',
+          content: formattedResponse,
+        });
+        
+        if (payload.mediaReferences && payload.mediaReferences.length > 0) {
+          console.log('[ChatbotModal] Fetching media details for', payload.mediaReferences.length, 'references');
+          this.chatBotResults = [];
+          await this.fetchMediaDetailsFromBackendReferences(payload.mediaReferences);
+        } else {
+          this.chatBotResults = [];
+        }
+        
+        this.chatBotOpen = true;
+        this.chatBotMinimized = false;
+        this.clearMinimizedState();
+        
+        const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+        if (activeConv) {
+          activeConv.messages = [...this.chatMessages];
+          activeConv.results = [...this.chatBotResults];
+          activeConv.chatId = payload.chatId;
+          activeConv.persistedInBackend = true;
+        }
+      
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
+        
+        console.log('[ChatbotModal] Modal opened successfully');
+      } catch (error) {
+        console.error('[ChatbotModal] Error opening modal with analysis:', error);
+      }
+    });
   },
 
   beforeDestroy() {
@@ -384,6 +438,8 @@ export default {
       this.abortController = null;
     }
     this.clearMinimizedState();
+    this.$root.$off('chatbot-maximized');
+    this.$root.$off('open-chatbot-with-analysis');
   },
   methods: {
     getUserEmail() {
@@ -494,6 +550,63 @@ export default {
         return { messages: [], mediaReferences: [] };
       }
     },
+
+    async fetchMediaDetailsFromBackendReferences(references) {
+      if (!references || references.length === 0) return;
+      
+      const uniqueRefs = references.filter((ref, index, self) =>
+        index === self.findIndex((t) => (
+          t.tmdb_id === ref.tmdb_id && t.media_type === ref.media_type
+        ))
+      );
+      
+      const promises = uniqueRefs.map(async (ref) => {
+        try {
+          const mediaType = ref.media_type;
+          const tmdbId = ref.tmdb_id;
+          
+          let url = '';
+          if (mediaType === 'movie') {
+            url = `https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${this.tmdbApiKey}&language=es-ES`;
+          } else if (mediaType === 'tv') {
+            url = `https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${this.tmdbApiKey}&language=es-ES`;
+          } else if (mediaType === 'person') {
+            url = `https://api.themoviedb.org/3/person/${tmdbId}?api_key=${this.tmdbApiKey}&language=es-ES`;
+          }
+          
+          const response = await fetch(url);
+          if (!response.ok) return null;
+          
+          const data = await response.json();
+          
+          let imdbRating = null;
+          if (mediaType === 'movie' || mediaType === 'tv') {
+            const imdbId = data.imdb_id || data.external_ids?.imdb_id;
+            if (imdbId) {
+              const ratingData = await this.getIMDbRatingFromDB(imdbId);
+              if (ratingData && ratingData.found) {
+                imdbRating = ratingData.rating;
+              }
+            }
+          }
+          
+          return {
+            ...data,
+            media_type: mediaType,
+            url: mediaType === 'movie' ? `/movie/${data.id}` : (mediaType === 'tv' ? `/tv/${data.id}` : `/person/${data.id}`),
+            rating_source: imdbRating ? 'imdb' : 'tmdb',
+            imdb_rating: imdbRating,
+            vote_average: data.vote_average
+          };
+        } catch (error) {
+          console.error(`Error fetching details for ${ref.media_type} ${ref.tmdb_id}:`, error);
+          return null;
+        }
+      });
+      
+      const results = await Promise.all(promises);
+      this.chatBotResults = results.filter(item => item !== null);
+    },
     
     createNewConversation() {
       const newId = Date.now().toString();
@@ -556,9 +669,10 @@ export default {
               activeConv.messages = messages.map(msg => {
                 let content = msg.content;
                 if (msg.role === 'assistant') {
-                  content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                  const unsafeContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                                   .replace(/\*(.*?)\*/g, '<em>$1</em>')
                                   .replace(/\n/g, '<br>');
+                  content = DOMPurify.sanitize(unsafeContent);
                 }
                 return {
                   role: msg.role,
@@ -617,9 +731,10 @@ export default {
             activeConv.messages = messages.map(msg => {
               let content = msg.content;
               if (msg.role === 'assistant') {
-                content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                const unsafeContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
                                 .replace(/\n/g, '<br>');
+                content = DOMPurify.sanitize(unsafeContent);
               }
               return {
                 role: msg.role,
