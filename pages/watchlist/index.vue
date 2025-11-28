@@ -432,6 +432,18 @@
             </div>
           </div>
         </div>
+        <div v-if="notificationModalVisible" class="modal-overlay" @click="closeNotificationModal">
+          <div class="rating-modal" @click.stop style="max-width: 400px;">
+            <div class="modal-header">
+              <h3>{{ notificationTitle || 'Notification' }}</h3>
+              <button class="close-btn" @click="closeNotificationModal">×</button>
+            </div>
+            <div class="rating-content" style="text-align: center; padding: 20px; display: flex; flex-direction: column; align-items: center;">
+              <p style="font-size: 1.2rem; margin-bottom: 20px; color: #fff;">{{ notificationMessage }}</p>
+              <button @click="closeNotificationModal" class="save-btn" style="padding: 10px 30px; width: auto;">OK</button>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
   </div>
@@ -498,6 +510,9 @@ export default {
       isLoggedIn: false,
       favorites: [],
       moviesFetched: [],
+      notificationModalVisible: false,
+      notificationTitle: '',
+      notificationMessage: '',
       tvFetched: [],
       currentPage: 1,
       itemsPerPage: 20,
@@ -775,7 +790,6 @@ export default {
       // If already selected, it's always "selectable" (can be deselected)
       if (this.isItemSelected(item)) return true;
       
-      // Check if we can select more of this type
       const mediaType = item.details.typeForDb;
       if (mediaType === 'movie') {
         return this.selectedMoviesCount < 10;
@@ -815,9 +829,17 @@ export default {
       this.selectedItems = [];
     },
     
+    closeNotificationModal() {
+      this.notificationModalVisible = false;
+      this.notificationTitle = '';
+      this.notificationMessage = '';
+    },
+
     async sendToAI() {
       if (this.selectedItems.length === 0) {
-        alert('Please select at least one item');
+        this.notificationTitle = 'Selection Required';
+        this.notificationMessage = 'Please select at least one item';
+        this.notificationModalVisible = true;
         return;
       }
       
@@ -827,21 +849,10 @@ export default {
         const userEmail = localStorage.getItem('email') || '';
         const userLanguage = navigator.language.startsWith('es') ? 'Spanish' : 'English';
         
-        // ⭐ CALCULAR LOS CONTEOS ANTES DE LIMPIAR selectedItems
         const movieCount = this.selectedItems.filter(item => item.media_type === 'movie').length;
         const tvCount = this.selectedItems.filter(item => item.media_type === 'tv').length;
         
-        console.log('[DEBUG] Selected items:', this.selectedItems);
-        console.log('[DEBUG] Movie count:', movieCount, 'TV count:', tvCount);
-        
         const apiUrl = 'https://entercinema-assistant-rust.vercel.app/api/watchlist-analysis';
-        
-        console.log('[DEBUG] Sending request to:', apiUrl);
-        console.log('[DEBUG] Payload:', {
-          user_email: userEmail,
-          user_language: userLanguage,
-          selected_items: this.selectedItems,
-        });
         
         const response = await fetch(apiUrl, {
           method: 'POST',
@@ -856,11 +867,8 @@ export default {
           }),
         });
         
-        console.log('[DEBUG] Response status:', response.status);
-        
         if (!response.ok) {
           const errorText = await response.text();
-          console.error('[DEBUG] Error response:', errorText);
           let errorData;
           try {
             errorData = JSON.parse(errorText);
@@ -871,14 +879,11 @@ export default {
         }
         
         const data = await response.json();
-        console.log('[DEBUG] Success response:', data);
         
         // Close selection mode
         this.aiSelectionMode = false;
         this.selectedItems = [];
-        
-        // ⭐ USAR LOS CONTEOS GUARDADOS EN VEZ DE LOS COMPUTED
-        console.log('[DEBUG] Emitting open-chatbot-with-analysis event');
+
         this.$root.$emit('open-chatbot-with-analysis', {
           userQuery: `Analyze my watchlist: ${movieCount} movies and ${tvCount} TV shows`,
           aiResponse: data.result,
@@ -887,9 +892,10 @@ export default {
         });
         
       } catch (error) {
-        console.error('[DEBUG] Error sending to AI:', error);
-        console.error('[DEBUG] Error stack:', error.stack);
-        alert(`Error: ${error.message || 'Failed to analyze watchlist'}`);
+        console.error('Error sending to AI:', error);
+        this.notificationTitle = 'Analysis Failed';
+        this.notificationMessage = error.message || 'Failed to analyze watchlist';
+        this.notificationModalVisible = true;
       } finally {
         this.aiAnalysisLoading = false;
       }
@@ -1488,13 +1494,12 @@ export default {
         };
 
         const getWeightedRating = (item) => {
-          let R = 0; // Rating
-          let v = 0; // Votes
+          let R = 0;
+          let v = 0;
 
           if (item.details.rating_source === 'imdb' && item.details.imdb_rating) {
             R = parseFloat(item.details.imdb_rating);
             
-            // Safely parse votes
             const votes = item.details.imdb_votes;
             if (typeof votes === 'number') {
               v = votes;
@@ -1504,18 +1509,15 @@ export default {
               v = 0;
             }
           } else if (item.details.starsForDb) {
-            // Fallback to TMDB if IMDb not available, treating it as having low confidence/votes if not explicit
             R = parseFloat(this.formatRating(item.details.starsForDb));
-            v = 0; // Assume 0 votes for TMDB fallback to prioritize IMDb with votes
+            v = 0;
           } else {
             return -1;
           }
 
-          const m = 1000; // Minimum votes required to be listed (threshold)
-          const C = 7.0;  // Mean vote across the whole report
+          const m = 1000;
+          const C = 7.0;
 
-          // Bayesian Average Formula
-          // WR = (v / (v+m)) * R + (m / (v+m)) * C
           const WR = (v / (v + m)) * R + (m / (v + m)) * C;
           
           return WR;

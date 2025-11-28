@@ -251,6 +251,7 @@
 
 <script>
 import axios from 'axios';
+import DOMPurify from 'dompurify';
 
 export default {
   name: 'ChatbotModal',
@@ -374,10 +375,12 @@ export default {
       try {
         this.createNewConversation();
         
-        const formattedResponse = payload.aiResponse
+        const unsafeFormattedResponse = payload.aiResponse
           .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
           .replace(/\*(.*?)\*/g, '<em>$1</em>')
           .replace(/\n/g, '<br>');
+        
+        const formattedResponse = DOMPurify.sanitize(unsafeFormattedResponse);
         
         this.chatMessages.push({
           role: 'user',
@@ -611,9 +614,10 @@ export default {
               activeConv.messages = messages.map(msg => {
                 let content = msg.content;
                 if (msg.role === 'assistant') {
-                  content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                  const unsafeContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                                   .replace(/\*(.*?)\*/g, '<em>$1</em>')
                                   .replace(/\n/g, '<br>');
+                  content = DOMPurify.sanitize(unsafeContent);
                 }
                 return {
                   role: msg.role,
@@ -672,9 +676,10 @@ export default {
             activeConv.messages = messages.map(msg => {
               let content = msg.content;
               if (msg.role === 'assistant') {
-                content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                const unsafeContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
                                 .replace(/\n/g, '<br>');
+                content = DOMPurify.sanitize(unsafeContent);
               }
               return {
                 role: msg.role,
