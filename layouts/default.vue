@@ -10,6 +10,7 @@
     <FollowingModal />
     <Nav />
     <nuxt />
+    <ChatbotModal />
     <Footer />
   </div>
 </template>
@@ -23,12 +24,14 @@ import Nav from '~/components/global/Nav';
 import Footer from '~/components/global/Footer';
 import RatedModal from '@/components/global/RatedModal';
 import FollowingModal from '@/components/global/FollowingModal';
+import ChatbotModal from '@/components/global/ChatbotModal';
 
 export default {
   components: {
     CookieConsent,
     InstallPrompt,
     SearchForm,
+    ChatbotModal,
     Nav,
     Footer,
     RatedModal,
