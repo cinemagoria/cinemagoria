@@ -255,16 +255,8 @@ export default {
     imdb() {
       return this.media === "person" ? "name" : "title";
     },
-    isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    },
     ***Link() {
       const contentType = this.currentPageType === "tv" ? "series" : "movie";
-      
-      if (this.isMobile) {
-        return `https://web.***.com/#/detail/${contentType}/${this.links.imdb_id}`;
-      }
-      
       return `***://detail/${contentType}/${this.links.imdb_id}`;
     },
   },
