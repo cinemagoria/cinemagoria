@@ -57,6 +57,7 @@
           <span class="label-style">Letterboxd</span>
         </a>
       </div>
+
       <div v-if="tomatoMeter.found && (currentPageType === 'movie' || currentPageType === 'tv')" class="link-item">
         <a
           :href="tomatoMeter.url"
@@ -64,13 +65,7 @@
           rel="noopener noreferrer"
           aria-label="Rotten Tomatoes"
         >
-          <img
-            src="/rotten-tomatoes.svg"
-            alt="***"
-            class="link-icon rotten-tomatoes"
-            width="23"
-            height="23"
-          />
+          <div class="link-icon rotten-tomatoes-icon"></div>
           <span class="label-style">{{ tomatoMeter.score }}% Tomatometer</span>
         </a>
       </div>
@@ -108,6 +103,18 @@
 
       <div v-if="links.imdb_id && (currentPageType === 'movie' || currentPageType === 'tv')" class="link-item">
         <a
+          :href="'https://***.to/embed/' + currentPageType + '/' + links.imdb_id"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Watch on ***"
+        >
+          <div class="link-icon ***-logo"></div>
+          <span class="label-style">Watch on ***</span>
+        </a>
+      </div>
+
+      <div v-if="links.imdb_id && (currentPageType === 'movie' || currentPageType === 'tv')" class="link-item">
+        <a
           :href="***Link"
           target="_blank"
           rel="noopener noreferrer"
@@ -134,13 +141,7 @@
           rel="noopener noreferrer"
           aria-label="Visit ***"
         >
-          <img
-            src="/***-logo.svg"
-            alt="***"
-            class="link-icon ***-logo"
-            width="23"
-            height="23"
-          />
+          <div class="link-icon ***-logo"></div>
           <span class="label-style">Watch on ***</span>
         </a>
       </div>
@@ -359,6 +360,7 @@ export default {
 .link-item a:hover {
   background-color: rgba(255, 255, 255, 0.2);
   transform: translateX(4px);
+  color: #8AE8FC;
 }
 
 .link-icon {
@@ -380,10 +382,6 @@ export default {
   text-overflow: ellipsis;
 }
 
-.label-style:hover {
-  color: #8AE8FC;
-}
-
 @media (max-width: 480px) {
   .links-grid {
     grid-template-columns: 1fr 1fr;
@@ -400,17 +398,41 @@ export default {
 }
 
 .***-logo {
-  filter: brightness(0) invert(1);
   width: 23px !important;
   height: 23px !important;
+  background-color: white;
+  -webkit-mask: url('/***-logo.svg') no-repeat center / contain;
+  mask: url('/***-logo.svg') no-repeat center / contain;
+  transition: background-color 0.3s ease;
 }
 
-.rotten-tomatoes {
+.link-item a:hover .***-logo {
+  background-color: #8AE8FC;
+}
+
+.rotten-tomatoes-icon {
   width: 23px !important;
   height: 23px !important;
+  background-color: white;
+  -webkit-mask: url('/rotten-tomatoes.svg') no-repeat center / contain;
+  mask: url('/rotten-tomatoes.svg') no-repeat center / contain;
+  transition: background-color 0.3s ease;
 }
 
-.tomato-icon {
-  color: #FA320A;
+.link-item a:hover .rotten-tomatoes-icon {
+  background-color: #8AE8FC;
+}
+
+.***-logo {
+  width: 23px !important;
+  height: 23px !important;
+  background-color: white;
+  -webkit-mask: url('/***.png') no-repeat center / contain;
+  mask: url('/***.png') no-repeat center / contain;
+  transition: background-color 0.3s ease;
+}
+
+.link-item a:hover .***-logo {
+  background-color: #8AE8FC;
 }
 </style>
