@@ -554,55 +554,179 @@ export default {
     async fetchMediaDetailsFromBackendReferences(references) {
       if (!references || references.length === 0) return;
       
+      // Deduplicate references based on TMDB ID (if present) or Name + Type
       const uniqueRefs = references.filter((ref, index, self) =>
-        index === self.findIndex((t) => (
-          t.tmdb_id === ref.tmdb_id && t.media_type === ref.media_type
-        ))
+        index === self.findIndex((t) => {
+          if (t.tmdb_id && ref.tmdb_id) {
+            return t.tmdb_id === ref.tmdb_id && t.media_type === ref.media_type;
+          }
+          return t.name === ref.name && t.media_type === ref.media_type;
+        })
       );
       
-      const promises = uniqueRefs.map(async (ref) => {
-        try {
-          const mediaType = ref.media_type;
-          const tmdbId = ref.tmdb_id;
-          
+      const promises = [];
+      const seenIds = new Set();
+      const priorityTypes = { 'movie': 1, 'tv': 2, 'person': 3 };
+
+      // Helper to enrich with IMDb
+      const enrichWithIMDb = async (item, mediaType) => {
+        if (mediaType === 'person') return;
+        
+        const imdbId = item.external_ids?.imdb_id || item.imdb_id;
+        if (imdbId) {
+          try {
+            const ratingData = await this.getIMDbRatingFromDB(imdbId);
+            if (ratingData && ratingData.found) {
+              item.imdb_rating = ratingData.rating;
+              item.rating_source = 'imdb';
+            } else {
+              item.rating_source = 'tmdb';
+            }
+          } catch (error) {
+            item.rating_source = 'tmdb';
+          }
+        } else {
+          item.rating_source = 'tmdb';
+        }
+      };
+      
+      for (const ref of uniqueRefs) {
+        // CASE 1: We have a specific TMDB ID (Precise)
+        if (ref.tmdb_id) {
+          let mediaType = ref.media_type;
+          // Normalize media types if needed (though backend usually sends correct ones)
+          if (mediaType === 'tv_show' || mediaType === 'series') mediaType = 'tv';
+          else if (mediaType === 'actor' || mediaType === 'director') mediaType = 'person';
+
           let url = '';
           if (mediaType === 'movie') {
-            url = `https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${this.tmdbApiKey}&language=es-ES`;
+            url = `https://api.themoviedb.org/3/movie/${ref.tmdb_id}?api_key=${this.tmdbApiKey}&language=es-ES&append_to_response=external_ids`;
           } else if (mediaType === 'tv') {
-            url = `https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${this.tmdbApiKey}&language=es-ES`;
+            url = `https://api.themoviedb.org/3/tv/${ref.tmdb_id}?api_key=${this.tmdbApiKey}&language=es-ES&append_to_response=external_ids`;
           } else if (mediaType === 'person') {
-            url = `https://api.themoviedb.org/3/person/${tmdbId}?api_key=${this.tmdbApiKey}&language=es-ES`;
+            url = `https://api.themoviedb.org/3/person/${ref.tmdb_id}?api_key=${this.tmdbApiKey}&language=es-ES`;
           }
-          
-          const response = await fetch(url);
-          if (!response.ok) return null;
-          
-          const data = await response.json();
-          
-          let imdbRating = null;
-          if (mediaType === 'movie' || mediaType === 'tv') {
-            const imdbId = data.imdb_id || data.external_ids?.imdb_id;
-            if (imdbId) {
-              const ratingData = await this.getIMDbRatingFromDB(imdbId);
-              if (ratingData && ratingData.found) {
-                imdbRating = ratingData.rating;
-              }
-            }
+
+          if (url) {
+            promises.push(
+              axios.get(url)
+                .then(async response => {
+                  const item = response.data;
+                  const uniqueId = `${mediaType}-${item.id}`;
+
+                  if (!seenIds.has(uniqueId)) {
+                    seenIds.add(uniqueId);
+                    
+                    const formattedItem = {
+                      ...item,
+                      id: item.id,
+                      media_type: mediaType,
+                      url: mediaType === 'movie' ? `/movie/${item.id}` : (mediaType === 'tv' ? `/tv/${item.id}` : `/person/${item.id}`),
+                      title: mediaType === 'movie' ? item.title : undefined,
+                      name: mediaType !== 'movie' ? item.name : undefined,
+                      poster_path: item.poster_path || (mediaType === 'person' ? item.profile_path : undefined),
+                      profile_path: mediaType === 'person' ? item.profile_path : undefined,
+                      release_date: item.release_date,
+                      first_air_date: item.first_air_date,
+                      vote_average: item.vote_average || 0,
+                      known_for_department: item.known_for_department,
+                      priority: priorityTypes[mediaType] || 99,
+                      popularity: item.popularity || 0,
+                      originalName: ref.name,
+                      external_ids: item.external_ids
+                    };
+                    
+                    await enrichWithIMDb(formattedItem, mediaType);
+                    return formattedItem;
+                  }
+                  return null;
+                })
+                .catch(error => {
+                  console.error(`Error fetching specific media for ${ref.name} (ID: ${ref.tmdb_id}):`, error);
+                  return null;
+                })
+            );
           }
+        } 
+        // CASE 2: No TMDB ID, search by name (Fallback)
+        else {
+          const query = encodeURIComponent(ref.name);
+          let searchUrl = `https://api.themoviedb.org/3/search/multi?api_key=${this.tmdbApiKey}&language=es-ES&query=${query}&page=1`;
           
-          return {
-            ...data,
-            media_type: mediaType,
-            url: mediaType === 'movie' ? `/movie/${data.id}` : (mediaType === 'tv' ? `/tv/${data.id}` : `/person/${data.id}`),
-            rating_source: imdbRating ? 'imdb' : 'tmdb',
-            imdb_rating: imdbRating,
-            vote_average: data.vote_average
-          };
-        } catch (error) {
-          console.error(`Error fetching details for ${ref.media_type} ${ref.tmdb_id}:`, error);
-          return null;
+          promises.push(
+            axios.get(searchUrl)
+              .then(async response => {
+                const results = response.data.results;
+                if (results && results.length > 0) {
+                  // Filter by media type if possible
+                  let bestMatch = results.find(r => r.media_type === ref.media_type);
+                  
+                  // If no exact type match, try loose matching
+                  if (!bestMatch) {
+                     if (ref.media_type === 'movie') bestMatch = results.find(r => r.media_type === 'movie');
+                     else if (ref.media_type === 'tv') bestMatch = results.find(r => r.media_type === 'tv');
+                     else if (ref.media_type === 'person') bestMatch = results.find(r => r.media_type === 'person');
+                  }
+                  
+                  // Fallback to first result if still no match
+                  if (!bestMatch) bestMatch = results[0];
+
+                  if (bestMatch) {
+                    const mediaType = bestMatch.media_type;
+                    const uniqueId = `${mediaType}-${bestMatch.id}`;
+                    
+                    if (!seenIds.has(uniqueId)) {
+                      seenIds.add(uniqueId);
+                      
+                      // Fetch full details to get external_ids for IMDb
+                      let detailsUrl = '';
+                      if (mediaType === 'movie') detailsUrl = `https://api.themoviedb.org/3/movie/${bestMatch.id}?api_key=${this.tmdbApiKey}&language=es-ES&append_to_response=external_ids`;
+                      else if (mediaType === 'tv') detailsUrl = `https://api.themoviedb.org/3/tv/${bestMatch.id}?api_key=${this.tmdbApiKey}&language=es-ES&append_to_response=external_ids`;
+                      else if (mediaType === 'person') detailsUrl = `https://api.themoviedb.org/3/person/${bestMatch.id}?api_key=${this.tmdbApiKey}&language=es-ES`;
+
+                      if (detailsUrl) {
+                        try {
+                          const detailsRes = await axios.get(detailsUrl);
+                          const item = detailsRes.data;
+                          
+                          const formattedItem = {
+                            ...item,
+                            id: item.id,
+                            media_type: mediaType,
+                            url: mediaType === 'movie' ? `/movie/${item.id}` : (mediaType === 'tv' ? `/tv/${item.id}` : `/person/${item.id}`),
+                            title: mediaType === 'movie' ? item.title : undefined,
+                            name: mediaType !== 'movie' ? item.name : undefined,
+                            poster_path: item.poster_path || (mediaType === 'person' ? item.profile_path : undefined),
+                            profile_path: mediaType === 'person' ? item.profile_path : undefined,
+                            release_date: item.release_date,
+                            first_air_date: item.first_air_date,
+                            vote_average: item.vote_average || 0,
+                            known_for_department: item.known_for_department,
+                            priority: priorityTypes[mediaType] || 99,
+                            popularity: item.popularity || 0,
+                            originalName: ref.name,
+                            external_ids: item.external_ids
+                          };
+                          
+                          await enrichWithIMDb(formattedItem, mediaType);
+                          return formattedItem;
+                        } catch (e) {
+                          console.error('Error fetching details for search result:', e);
+                          return null;
+                        }
+                      }
+                    }
+                  }
+                }
+                return null;
+              })
+              .catch(error => {
+                console.error(`Error searching for ${ref.name}:`, error);
+                return null;
+              })
+          );
         }
-      });
+      }
       
       const results = await Promise.all(promises);
       this.chatBotResults = results.filter(item => item !== null);
@@ -1910,6 +2034,60 @@ export default {
             });
 
             for (const ref of filteredReferences) {
+              // If we have a specific TMDB ID, use it directly instead of searching
+                if (ref.tmdb_id) {
+                    let mediaType = ref.type.toLowerCase();
+                    if (mediaType === 'tv_show' || mediaType === 'series') mediaType = 'tv';
+                    else if (mediaType === 'actor' || mediaType === 'director') mediaType = 'person';
+
+                    const detailsUrl = `https://api.themoviedb.org/3/${mediaType}/${ref.tmdb_id}`;
+                    
+                    promises.push(
+                        axios.get(detailsUrl, {
+                            params: {
+                                api_key: this.tmdbApiKey,
+                                language: 'en-US',
+                                append_to_response: 'external_ids'
+                            },
+                            timeout: 8000
+                        })
+                        .then(async response => {
+                            const item = response.data;
+                            const uniqueId = `${mediaType}-${item.id}`;
+
+                            if (!seenIds.has(uniqueId)) {
+                                seenIds.add(uniqueId);
+                                
+                                const formattedItem = {
+                                    ...item,
+                                    id: item.id,
+                                    media_type: mediaType,
+                                    url: `${this.baseUrl}/${mediaType}/${item.id}`,
+                                    title: mediaType === 'movie' ? item.title : undefined,
+                                    name: mediaType !== 'movie' ? item.name : undefined,
+                                    poster_path: item.poster_path || (mediaType === 'person' ? item.profile_path : undefined),
+                                    profile_path: mediaType === 'person' ? item.profile_path : undefined,
+                                    release_date: item.release_date,
+                                    first_air_date: item.first_air_date,
+                                    vote_average: item.vote_average || 0,
+                                    known_for_department: item.known_for_department,
+                                    priority: priorityTypes[mediaType] || 99,
+                                    popularity: item.popularity || 0,
+                                    originalName: ref.name,
+                                    external_ids: item.external_ids
+                                };
+                                
+                                await enrichWithIMDb(formattedItem, mediaType);
+                                results.push(formattedItem);
+                            }
+                        })
+                        .catch(error => {
+                            console.error(`Error fetching specific media for ${ref.name} (ID: ${ref.tmdb_id}):`, error);
+                            // Fallback to search if ID fetch fails? Maybe not needed if ID is from our DB.
+                        })
+                    );
+                    continue;
+                }
                 let searchUrl = '';
                 let mediaType = ref.type.toLowerCase();
                 

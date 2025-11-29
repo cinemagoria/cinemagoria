@@ -1246,22 +1246,28 @@ export default {
     },
     
     toggleItemSelection(item) {
-      if (!this.aiSelectionMode) return;
+      if (!this.canSelectItem(item) && !this.isItemSelected(item)) {
+        return;
+      }
       
-      if (this.isItemSelected(item)) {
-        this.selectedItems = this.selectedItems.filter(
-          selected => !(selected.tmdb_id === item.details.idForDb && selected.media_type === item.details.typeForDb)
-        );
+      const itemIndex = this.selectedItems.findIndex(
+        selected => selected.tmdb_id === item.details.idForDb && selected.media_type === item.details.typeForDb
+      );
+      
+      if (itemIndex > -1) {
+        this.selectedItems.splice(itemIndex, 1);
       } else {
-        if (this.canSelectItem(item)) {
-          this.selectedItems.push({
-            tmdb_id: item.details.idForDb,
-            media_type: item.details.typeForDb,
-            title: item.details.nameForDb,
-            release_date: item.details.yearStartForDb,
-            poster_path: item.details.posterForDb
-          });
-        }
+        this.selectedItems.push({
+          tmdb_id: item.details.idForDb,
+          media_type: item.details.typeForDb,
+          imdb_score: item.details.imdb_rating || null,
+          title: item.details.nameForDb,
+          year: item.details.yearStartForDb,
+          poster_path: item.details.posterForDb,
+          rating_source: item.details.rating_source,
+          tmdb_rating: item.details.starsForDb || null,
+          imdb_votes: item.details.imdb_votes || null
+        });
       }
     },
     
@@ -1271,65 +1277,70 @@ export default {
     },
     
     async sendToAI() {
-      if (this.selectedItems.length === 0) return;
-      
-      this.aiAnalysisLoading = true;
-      
-      const movies = this.selectedItems.filter(item => item.media_type === 'movie');
-      const tvShows = this.selectedItems.filter(item => item.media_type === 'tv');
-      
-      let prompt = "Analiza los siguientes títulos de mi lista de seguimiento:\n\n";
-      
-      if (movies.length > 0) {
-        prompt += "Películas:\n";
-        movies.forEach(m => prompt += `- ${m.title} (${m.release_date})\n`);
-        prompt += "\n";
-      }
-      
-      if (tvShows.length > 0) {
-        prompt += "Series de TV:\n";
-        tvShows.forEach(t => prompt += `- ${t.title} (${t.release_date})\n`);
-        prompt += "\n";
-      }
-      
-      prompt += "Basado en esta selección, ¿qué patrones ves en mis gustos? ¿Qué me recomendarías ver a continuación (dame 3 recomendaciones concretas)?";
-      
+  if (this.selectedItems.length === 0) {
+    this.notificationTitle = 'Selección Requerida';
+    this.notificationMessage = 'Por favor selecciona al menos un elemento';
+    this.notificationModalVisible = true;
+    return;
+  }
+  
+  this.aiAnalysisLoading = true;
+  
+  try {
+    const userEmail = localStorage.getItem('email') || '';
+    // Force Spanish for the ES site
+    const userLanguage = 'Spanish';
+    
+    const movieCount = this.selectedItems.filter(item => item.media_type === 'movie').length;
+    const tvCount = this.selectedItems.filter(item => item.media_type === 'tv').length;
+    
+    const apiUrl = 'https://entercinema-assistant-rust.vercel.app/api/watchlist-analysis';
+    
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        user_email: userEmail,
+        user_language: userLanguage,
+        selected_items: this.selectedItems,
+      }),
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      let errorData;
       try {
-        const response = await fetch('https://entercinema-assistant-rust.vercel.app/api/gemini', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            query: prompt,
-            chat_id: null 
-          })
-        });
-        
-        if (!response.ok) {
-          throw new Error('Error al conectar con el asistente de IA');
-        }
-        
-        const data = await response.json();
-        
-        this.$root.$emit('open-chatbot-with-analysis', {
-          userQuery: "Analiza mi selección de la lista de seguimiento",
-          aiResponse: data.result,
-          mediaReferences: data.media_references,
-          chatId: data.chat_id
-        });
-        
-        this.aiSelectionMode = false;
-        this.selectedItems = [];
-        
-      } catch (error) {
-        console.error('Error en análisis de IA:', error);
-        this.notificationTitle = 'Error';
-        this.notificationMessage = 'No se pudo completar el análisis. Por favor, inténtalo de nuevo.';
-        this.notificationModalVisible = true;
-      } finally {
-        this.aiAnalysisLoading = false;
+        errorData = JSON.parse(errorText);
+      } catch (e) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    
+    // Close selection mode
+    this.aiSelectionMode = false;
+    this.selectedItems = [];
+
+    this.$root.$emit('open-chatbot-with-analysis', {
+      userQuery: `Analiza mi lista de seguimiento: ${movieCount} películas y ${tvCount} series`,
+      aiResponse: data.result,
+      mediaReferences: data.media_references || [],
+      chatId: data.chat_id,
+    });
+    
+  } catch (error) {
+    console.error('Error sending to AI:', error);
+    this.notificationTitle = 'Error en Análisis';
+    this.notificationMessage = error.message || 'No se pudo analizar la lista de seguimiento';
+    this.notificationModalVisible = true;
+  } finally {
+    this.aiAnalysisLoading = false;
+  }
     },
 
     closeNotificationModal() {
