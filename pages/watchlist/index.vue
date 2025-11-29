@@ -819,7 +819,8 @@ export default {
           year: item.details.yearStartForDb,
           poster_path: item.details.posterForDb,
           rating_source: item.details.rating_source,
-          tmdb_rating: item.details.starsForDb || null
+          tmdb_rating: item.details.starsForDb || null,
+          imdb_votes: item.details.imdb_votes || null
         });
       }
     },

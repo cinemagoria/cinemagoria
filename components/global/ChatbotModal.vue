@@ -1836,6 +1836,61 @@ export default {
             });
 
             for (const ref of filteredReferences) {
+                // If we have a specific TMDB ID, use it directly instead of searching
+                if (ref.tmdb_id) {
+                    let mediaType = ref.type.toLowerCase();
+                    if (mediaType === 'tv_show' || mediaType === 'series') mediaType = 'tv';
+                    else if (mediaType === 'actor' || mediaType === 'director') mediaType = 'person';
+
+                    const detailsUrl = `https://api.themoviedb.org/3/${mediaType}/${ref.tmdb_id}`;
+                    
+                    promises.push(
+                        axios.get(detailsUrl, {
+                            params: {
+                                api_key: this.tmdbApiKey,
+                                language: 'en-US',
+                                append_to_response: 'external_ids'
+                            },
+                            timeout: 8000
+                        })
+                        .then(async response => {
+                            const item = response.data;
+                            const uniqueId = `${mediaType}-${item.id}`;
+
+                            if (!seenIds.has(uniqueId)) {
+                                seenIds.add(uniqueId);
+                                
+                                const formattedItem = {
+                                    ...item,
+                                    id: item.id,
+                                    media_type: mediaType,
+                                    url: `${this.baseUrl}/${mediaType}/${item.id}`,
+                                    title: mediaType === 'movie' ? item.title : undefined,
+                                    name: mediaType !== 'movie' ? item.name : undefined,
+                                    poster_path: item.poster_path || (mediaType === 'person' ? item.profile_path : undefined),
+                                    profile_path: mediaType === 'person' ? item.profile_path : undefined,
+                                    release_date: item.release_date,
+                                    first_air_date: item.first_air_date,
+                                    vote_average: item.vote_average || 0,
+                                    known_for_department: item.known_for_department,
+                                    priority: priorityTypes[mediaType] || 99,
+                                    popularity: item.popularity || 0,
+                                    originalName: ref.name,
+                                    external_ids: item.external_ids
+                                };
+                                
+                                await enrichWithIMDb(formattedItem, mediaType);
+                                results.push(formattedItem);
+                            }
+                        })
+                        .catch(error => {
+                            console.error(`Error fetching specific media for ${ref.name} (ID: ${ref.tmdb_id}):`, error);
+                            // Fallback to search if ID fetch fails? Maybe not needed if ID is from our DB.
+                        })
+                    );
+                    continue;
+                }
+
                 let searchUrl = '';
                 let mediaType = ref.type.toLowerCase();
                 
