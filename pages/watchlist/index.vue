@@ -567,7 +567,6 @@ export default {
       customYearStart: null,
       customYearEnd: null,
       currentYear: new Date().getFullYear(),
-      // AI Selection Mode
       aiSelectionMode: false,
       selectedItems: [],
       aiAnalysisLoading: false,
@@ -1217,7 +1216,6 @@ export default {
       }
     },
 
-    // AI Selection Mode Methods
     toggleAiSelectionMode() {
       this.aiSelectionMode = !this.aiSelectionMode;
       if (!this.aiSelectionMode) {
@@ -1288,7 +1286,6 @@ export default {
   
   try {
     const userEmail = localStorage.getItem('email') || '';
-    // Force Spanish for the ES site
     const userLanguage = 'Spanish';
     
     const movieCount = this.selectedItems.filter(item => item.media_type === 'movie').length;
@@ -1322,7 +1319,6 @@ export default {
     
     const data = await response.json();
     
-    // Close selection mode
     this.aiSelectionMode = false;
     this.selectedItems = [];
 
@@ -1537,13 +1533,12 @@ export default {
           };
 
           const getWeightedRating = (item) => {
-            let R = 0; // Rating
-            let v = 0; // Votes
+            let R = 0; 
+            let v = 0; 
 
             if (item.details.rating_source === 'imdb' && item.details.imdb_rating) {
               R = parseFloat(item.details.imdb_rating);
               
-              // Safely parse votes
               const votes = item.details.imdb_votes;
               if (typeof votes === 'number') {
                 v = votes;
@@ -1553,18 +1548,15 @@ export default {
                 v = 0;
               }
             } else if (item.details.starsForDb) {
-              // Fallback to TMDB if IMDb not available, treating it as having low confidence/votes if not explicit
               R = parseFloat(this.formatRating(item.details.starsForDb));
-              v = 0; // Assume 0 votes for TMDB fallback to prioritize IMDb with votes
+              v = 0; 
             } else {
               return -1;
             }
 
-            const m = 1000; // Minimum votes required to be listed (threshold)
-            const C = 7.0;  // Mean vote across the whole report
+            const m = 1000; 
+            const C = 7.0;  
 
-            // Bayesian Average Formula
-            // WR = (v / (v+m)) * R + (m / (v+m)) * C
             const WR = (v / (v + m)) * R + (m / (v + m)) * C;
             
             return WR;

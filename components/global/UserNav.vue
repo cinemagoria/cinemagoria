@@ -138,7 +138,6 @@ export default {
     this.isLoggedIn = !!accessToken;
     this.userEmail = email || '';
 
-    // Detect current language from URL
     const hostname = window.location.hostname;
     this.currentLanguage = hostname.includes('es.') ? 'es' : 'en';
 
@@ -216,11 +215,9 @@ export default {
       const currentOrigin = window.location.origin;
       
       if (this.currentLanguage === 'en') {
-        // Switch to Spanish
         const spanishUrl = `${currentOrigin.replace('://', '://es.')}${currentPath}`;
         window.location.href = spanishUrl;
       } else {
-        // Switch to English
         const englishUrl = currentOrigin.replace('://es.', '://') + currentPath;
         window.location.href = englishUrl;
       }

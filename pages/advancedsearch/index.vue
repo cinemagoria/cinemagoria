@@ -452,13 +452,11 @@ export default {
     },
 
     getWeightedRating(item) {
-      let R = 0; // Rating
-      let v = 0; // Votes
+      let R = 0; 
+      let v = 0; 
 
       if (item.rating_source === 'imdb' && item.imdb_rating) {
         R = parseFloat(item.imdb_rating);
-        
-        // Safely parse votes
         const votes = item.imdb_votes;
         if (typeof votes === 'number') {
           v = votes;
@@ -468,13 +466,12 @@ export default {
           v = 0;
         }
       } else {
-        // Fallback to TMDB
         R = parseFloat(item.vote_average);
-        v = 0; // Assume 0 votes for TMDB fallback to prioritize IMDb
+        v = 0; 
       }
 
-      const m = 1000; // Minimum votes
-      const C = 7.0;  // Mean vote
+      const m = 1000; 
+      const C = 7.0;  
 
       return (v / (v + m)) * R + (m / (v + m)) * C;
     },

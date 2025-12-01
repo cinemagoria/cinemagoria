@@ -226,7 +226,6 @@ export function getIMDbRatingFromDB(imdbId) {
       const response = await axios.get(`/api/imdb-rating/${imdbId}`, { timeout: 1500 });
       resolve(response.data);
     } catch (error) {
-      // console.error('Error fetching IMDb rating:', error);
       resolve({ found: false });
     }
   });
@@ -992,7 +991,6 @@ export function search(query, page = 1) {
           })
         );
 
-        // Process company results
         const companyResults = companyResponse.data.results
           .filter(company => SUPPORTED_PRODUCTION_COMPANIES.hasOwnProperty(company.id))
           .map(company => ({

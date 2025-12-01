@@ -604,7 +604,6 @@ export default {
     async fetchMediaDetailsFromBackendReferences(references) {
       if (!references || references.length === 0) return;
       
-      // Deduplicate references based on TMDB ID (if present) or Name + Type
       const uniqueRefs = references.filter((ref, index, self) =>
         index === self.findIndex((t) => {
           if (t.tmdb_id && ref.tmdb_id) {
@@ -618,7 +617,6 @@ export default {
       const seenIds = new Set();
       const priorityTypes = { 'movie': 1, 'tv': 2, 'person': 3 };
 
-      // Helper to enrich with IMDb
       const enrichWithIMDb = async (item, mediaType) => {
         if (mediaType === 'person') return;
         
@@ -641,10 +639,8 @@ export default {
       };
       
       for (const ref of uniqueRefs) {
-        // CASE 1: We have a specific TMDB ID (Precise)
         if (ref.tmdb_id) {
           let mediaType = ref.media_type;
-          // Normalize media types if needed (though backend usually sends correct ones)
           if (mediaType === 'tv_show' || mediaType === 'series') mediaType = 'tv';
           else if (mediaType === 'actor' || mediaType === 'director') mediaType = 'person';
 
@@ -698,7 +694,6 @@ export default {
             );
           }
         } 
-        // CASE 2: No TMDB ID, search by name (Fallback)
         else {
           const query = encodeURIComponent(ref.name);
           let searchUrl = `https://api.themoviedb.org/3/search/multi?api_key=${this.tmdbApiKey}&language=es-ES&query=${query}&page=1`;
@@ -708,17 +703,14 @@ export default {
               .then(async response => {
                 const results = response.data.results;
                 if (results && results.length > 0) {
-                  // Filter by media type if possible
                   let bestMatch = results.find(r => r.media_type === ref.media_type);
                   
-                  // If no exact type match, try loose matching
                   if (!bestMatch) {
                      if (ref.media_type === 'movie') bestMatch = results.find(r => r.media_type === 'movie');
                      else if (ref.media_type === 'tv') bestMatch = results.find(r => r.media_type === 'tv');
                      else if (ref.media_type === 'person') bestMatch = results.find(r => r.media_type === 'person');
                   }
                   
-                  // Fallback to first result if still no match
                   if (!bestMatch) bestMatch = results[0];
 
                   if (bestMatch) {
@@ -728,7 +720,6 @@ export default {
                     if (!seenIds.has(uniqueId)) {
                       seenIds.add(uniqueId);
                       
-                      // Fetch full details to get external_ids for IMDb
                       let detailsUrl = '';
                       if (mediaType === 'movie') detailsUrl = `https://api.themoviedb.org/3/movie/${bestMatch.id}?api_key=${this.tmdbApiKey}&language=es-ES&append_to_response=external_ids`;
                       else if (mediaType === 'tv') detailsUrl = `https://api.themoviedb.org/3/tv/${bestMatch.id}?api_key=${this.tmdbApiKey}&language=es-ES&append_to_response=external_ids`;
@@ -2084,7 +2075,6 @@ export default {
             });
 
             for (const ref of filteredReferences) {
-              // If we have a specific TMDB ID, use it directly instead of searching
                 if (ref.tmdb_id) {
                     let mediaType = ref.type.toLowerCase();
                     if (mediaType === 'tv_show' || mediaType === 'series') mediaType = 'tv';
@@ -2133,7 +2123,6 @@ export default {
                         })
                         .catch(error => {
                             console.error(`Error fetching specific media for ${ref.name} (ID: ${ref.tmdb_id}):`, error);
-                            // Fallback to search if ID fetch fails? Maybe not needed if ID is from our DB.
                         })
                     );
                     continue;
