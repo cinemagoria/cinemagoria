@@ -1588,7 +1588,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .card__content {
   display: flex;
   justify-content: center; 
@@ -2170,8 +2170,7 @@ export default {
   .item-link:hover {
     transform: translateY(-5px);
   }
-  
-  /* Rated Items Modal */
+
   .rated-items-btn {
     background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -3466,7 +3465,6 @@ select.user-rating-select {
   border-bottom-color: #8BE9FD;
 }
 
-/* AI Selection Mode Styles */
 .ai-analysis-btn {
   position: relative;
 }
@@ -3556,7 +3554,6 @@ select.user-rating-select {
   cursor: not-allowed;
 }
 
-/* Movie Card Selection Styles */
 .movie-card.selection-mode {
   cursor: pointer;
   transition: all 0.3s ease;
@@ -3609,19 +3606,17 @@ select.user-rating-select {
   width: 0;
 }
 
-/* AI Selection Mode Styles */
 .movie-card.selection-mode {
   cursor: pointer;
 }
 
 .movie-card.selection-mode .item-link:hover {
-  transform: translateY(-2px); /* Less aggressive hover */
+  transform: translateY(-2px); 
 }
 
 .movie-card.selection-mode.selected .card-background {
-  box-shadow: 0 0 0 3px #8BE9FD; /* Cyan border */
-  border-radius: 15px; /* Match card border radius */
-  overflow: hidden; /* Ensure content doesn't overflow border */
+  box-shadow: 0 0 0 3px #8BE9FD; 
+  overflow: hidden; 
 }
 
 .movie-card.selection-mode.selected img {
@@ -3676,7 +3671,6 @@ select.user-rating-select {
   cursor: not-allowed;
 }
 
-/* Responsive adjustments for AI selection */
 @media (max-width: 768px) {
   .banner-content {
     flex-direction: column;
@@ -3697,12 +3691,11 @@ select.user-rating-select {
   }
   
   .checkbox-wrapper {
-    width: 28px; /* Larger touch target */
+    width: 28px; 
     height: 28px;
   }
 }
 
-/* Estilo para el icono 'i' */
 .info-icon-wrapper {
   cursor: pointer;
   margin-left: 8px;
@@ -3718,7 +3711,6 @@ select.user-rating-select {
   opacity: 1;
 }
 
-/* AI Info Modal Styles */
 .info-modal {
   width: 90%;
   max-width: 500px;
@@ -3742,7 +3734,7 @@ select.user-rating-select {
 
 .info-intro {
   text-align: center;
-  font-size: 1.1rem; /* Aproximadamente 17px si base es 16px */
+  font-size: 1.1rem; 
   margin-bottom: 25px;
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.9);
@@ -3815,7 +3807,6 @@ select.user-rating-select {
   box-shadow: 0 4px 15px rgba(139, 233, 253, 0.4);
 }
 
-/* Responsive adjust for modal */
 @media (max-width: 600px) {
   .info-options-grid {
     grid-template-columns: 1fr;
