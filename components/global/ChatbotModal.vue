@@ -562,7 +562,7 @@ export default {
         const userEmail = this.getUserEmail();
         const response = await axios.post(this.watchlistAnalysisUrl, {
           user_email: userEmail,
-          user_language: 'english', 
+          user_language: this.getUserLanguage(), 
           selected_items: this.pendingSelectionItems,
           custom_query: customQuery 
         });
@@ -620,6 +620,13 @@ export default {
     getUserEmail() {
       const email = localStorage.getItem('email');
       return email;
+    },
+
+    getUserLanguage() {
+      if (typeof navigator !== 'undefined' && navigator.language) {
+        return navigator.language.startsWith('es') ? 'Spanish' : 'English';
+      }
+      return 'English';
     },
     async getIMDbRatingFromDB(imdbId) {
       try {
