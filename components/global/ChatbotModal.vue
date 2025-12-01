@@ -84,11 +84,29 @@
                   <div v-if="message.role === 'user'" class="user-message">
                     <div class="message-content">
                       <p>{{ message.content }}</p>
+                      <button @click="copyMessage(message.content, index)" class="copy-button" :title="copiedMessageIndex === index ? 'Copied!' : 'Copy message'">
+                        <svg v-if="copiedMessageIndex === index" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                      </button>
                     </div>
                   </div>
                   <div v-else-if="message.role === 'assistant'" class="assistant-message">
                     <div class="message-content">
                       <p v-html="message.content"></p>
+                      <button @click="copyMessage(getPlainTextContent(message.content), index)" class="copy-button" :title="copiedMessageIndex === index ? 'Copied!' : 'Copy message'">
+                        <svg v-if="copiedMessageIndex === index" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -97,8 +115,8 @@
                   <div class="assistant-message">
                     <div class="message-content reasoning-content">
                       <div class="reasoning-indicator">
-                        Reasoning
-                        <div class="dots-container">
+                        <span class="reasoning-text">Reasoning</span>
+                        <div class="dots-container">  
                           <span class="dot" :class="{ active: dotIndex === 0 }"></span>
                           <span class="dot" :class="{ active: dotIndex === 1 }"></span>
                           <span class="dot" :class="{ active: dotIndex === 2 }"></span>
@@ -237,6 +255,12 @@
           </div>
         </div>
       </div>
+      
+      <transition name="slide-down">
+        <div v-if="showCopyNotification" class="copy-notification">
+          Copied!
+        </div>
+      </transition>
     </div>
     
     <div v-if="chatBotMinimized" class="minimized-chatbot" @click="maximizeChatBot">
@@ -318,7 +342,9 @@ export default {
       conversationsStorageKey: 'entercinema_chat_conversations',
       sidebarOpen: false,
       titleGenerationInterval: null,
-      conversationIndex: 0
+      conversationIndex: 0,
+      copiedMessageIndex: null,
+      showCopyNotification: false
     };
   },
   computed: {
@@ -454,6 +480,30 @@ export default {
         console.error('Error fetching IMDb rating:', error);
         return { found: false };
       }
+    },
+
+    async copyMessage(content, index) {
+      try {
+        await navigator.clipboard.writeText(content);
+        this.copiedMessageIndex = index;
+        this.showCopyNotification = true;
+        
+        setTimeout(() => {
+          this.copiedMessageIndex = null;
+        }, 2000);
+        
+        setTimeout(() => {
+          this.showCopyNotification = false;
+        }, 2000);
+      } catch (error) {
+        console.error('Failed to copy message:', error);
+      }
+    },
+
+    getPlainTextContent(htmlContent) {
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = htmlContent;
+      return tempDiv.textContent || tempDiv.innerText || '';
     },
 
     async initializeFirstConversation() {
@@ -2495,7 +2545,7 @@ export default {
   margin-left: 8px;
   height: 20px;
   position: relative;
-  top: 5px;
+  top: 7px;
 }
 
 .dot {
@@ -3474,9 +3524,10 @@ export default {
 }
 
 .message-content {
-  padding: 12px 16px;
+  padding: 12px 46px 12px 16px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 .user-message .message-content {
@@ -3517,17 +3568,111 @@ export default {
   margin-bottom: 0.5em;
 }
 
+.copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0.5;
+  width: 24px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+
+.copy-button svg {
+  stroke: rgba(127, 219, 241, 0.9);
+  transition: stroke 0.2s ease;
+  width: 14px;
+  height: 14px;
+}
+
+.copy-button:hover svg {
+  stroke: #8AE8FC;
+}
+
+.copy-notification {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #8AE8FC;
+  color: #0D1B2A;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 10000;
+  box-shadow: 0 4px 12px rgba(138, 232, 252, 0.3);
+}
+
+.slide-down-enter-active {
+  animation: slideDown 0.3s ease;
+}
+
+.slide-down-leave-active {
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+}
+
 @media screen and (max-width: 768px) {
   .user-message, .assistant-message {
     max-width: 85%;
   }
   
   .message-content {
-    padding: 10px 14px;
+    padding: 10px 40px 10px 14px;
   }
   
   .message-content p {
     font-size: 14px;
+  }
+  
+  .copy-button {
+    top: 8px;
+    right: 8px;
+    padding: 3px;
+    width: 22px;
+    height: 14px;
+  }
+  
+  .copy-button svg {
+    width: 13px;
+    height: 13px;
+  }
+  
+  .copy-notification {
+    font-size: 13px;
+    padding: 8px 16px;
   }
 }
 
@@ -3537,11 +3682,24 @@ export default {
   }
   
   .message-content {
-    padding: 8px 12px;
+    padding: 8px 36px 8px 12px;
   }
   
   .message-content p {
     font-size: 13px;
+  }
+  
+  .copy-button {
+    bottom: 1px;
+    right: 6px;
+    padding: 2px;
+    width: 20px;
+    height: 14px;
+  }
+  
+  .copy-button svg {
+    width: 12px;
+    height: 12px;
   }
 }
 
@@ -4103,5 +4261,19 @@ export default {
 
 .chatbot-main:not(.sidebar-open) .chat-content {
   margin-left: 0;
+}
+
+.reasoning-text {
+  margin-top: 4px;
+}
+
+@media screen and (max-width: 480px) {
+  .reasoning-text {
+    margin-top: 8px;
+  }
+
+  .fake-input {
+   font-size: 12px; 
+  }
 }
 </style>
