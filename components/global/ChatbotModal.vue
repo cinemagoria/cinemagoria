@@ -3781,6 +3781,7 @@ export default {
   height: 14px;
   flex-shrink: 0;
   justify-content: center;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .copy-button:hover {
