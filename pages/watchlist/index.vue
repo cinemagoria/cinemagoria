@@ -3565,7 +3565,6 @@ loading-state {
   cursor: not-allowed;
 }
 
-/* Movie Card Selection Styles */
 .movie-card.selection-mode {
   cursor: pointer;
   transition: all 0.3s ease;
