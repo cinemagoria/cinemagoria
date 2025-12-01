@@ -24,17 +24,18 @@
           <p>Loading your favorites...</p>
         </div>
 
-     <div v-else-if="showEmptyState" class="empty-state-container">
-        <img src="~/static/cinema-popcorn.svg" alt="No favorites" class="empty-state-icon">
-        <h3>No favorites added yet</h3>
-        <p>
-          Start building your watchlist by adding 
-          <nuxt-link to="/movie" class="empty-state-link">Movies</nuxt-link> 
-          and 
-          <nuxt-link to="/tv" class="empty-state-link">TV shows</nuxt-link> 
-          you want to watch!
-        </p>
-      </div>
+        <div v-else-if="showEmptyState" class="empty-state-container">
+          <img src="~/static/cinema-popcorn.svg" alt="No favorites" class="empty-state-icon">
+          <h3>No favorites added yet</h3>
+          <p>
+            Start building your watchlist by adding 
+            <nuxt-link to="/movie" class="empty-state-link">Movies</nuxt-link> 
+            and 
+            <nuxt-link to="/tv" class="empty-state-link">TV shows</nuxt-link> 
+            you want to watch!
+          </p>
+        </div>
+
         <div v-else>
           <div class="column">
             <h2 class="title-secondary" style="color: #acafb5; font-size: 16px;">Favorite {{ filterText }}</h2>
@@ -67,7 +68,7 @@
 
                 <button class="control-btn ai-analysis-btn" @click="toggleAiSelectionMode" :class="{ 'active': aiSelectionMode }">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"/>
+                    <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09 3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423 1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0-1.423 1.423Z"/>
                   </svg>
                   <span class="btn-label">AI</span>
                 </button>
@@ -104,18 +105,25 @@
           </div>
           
           <div v-else>
-            <!-- AI Selection Mode Banner -->
             <div v-if="aiSelectionMode" class="ai-selection-banner" style="margin-bottom: 0.8rem; margin-top: 0.8rem; border-radius: 15px;">
               <div class="banner-content">
                 <div class="selection-info">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/>
+                    <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09 3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/>
                   </svg>
                   <span>
                     Selected: {{ selectedMoviesCount }} {{ selectedMoviesCount === 1 ? 'movie' : 'movies' }}, {{ selectedTvShowsCount }} {{ selectedTvShowsCount === 1 ? 'TV show' : 'TV shows' }}
                     <span class="limit-text">(max 10 each)</span>
                   </span>
-                </div>
+                  
+                  <div class="info-icon-wrapper" @click.stop="toggleSelectionInfo" title="Learn about AI Analysis">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                  </div>
+                  </div>
                 <div class="banner-actions">
                   <button @click="cancelSelection" class="banner-btn cancel-btn">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -159,7 +167,6 @@
             
             <div class="movie-grid">
               <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card" :class="{ 'selection-mode': aiSelectionMode, 'selected': aiSelectionMode && isItemSelected(item), 'disabled': aiSelectionMode && !canSelectItem(item) && !isItemSelected(item) }">
-                <!-- Selection Checkbox (only in AI selection mode) - Top Right -->
                 <div v-if="aiSelectionMode" class="selection-checkbox" @click.stop="toggleItemSelection(item)">
                   <div class="checkbox-wrapper">
                     <input type="checkbox" :checked="isItemSelected(item)" :disabled="!canSelectItem(item)" @click.prevent>
@@ -168,7 +175,6 @@
                 </div>
 
                 <div class="card-background">
-                  <!-- Hide rating badge in selection mode -->
                   <div v-if="!aiSelectionMode" class="user-rating-badge" v-show="item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
                     @click.stop="openRatingModal(item)"
                     :class="{ 'has-review': item.details.userReview }" 
@@ -432,6 +438,7 @@
             </div>
           </div>
         </div>
+
         <div v-if="notificationModalVisible" class="modal-overlay" @click="closeNotificationModal">
           <div class="rating-modal" @click.stop style="max-width: 400px;">
             <div class="modal-header">
@@ -444,6 +451,42 @@
             </div>
           </div>
         </div>
+
+        <div v-if="showSelectionInfo" class="modal-overlay" @click="toggleSelectionInfo">
+          <div class="info-modal" @click.stop>
+            <div class="modal-header">
+              <h3>AI Analysis Guide</h3>
+              <button class="close-btn" @click="toggleSelectionInfo">×</button>
+            </div>
+            
+            <div class="info-modal-content">
+              <p class="info-intro">You've selected items for analysis. Once you click "Send to AI", you'll have two powerful options:</p>
+              
+              <div class="info-options-grid">
+                <div class="info-card">
+                  <div class="info-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  </div>
+                  <h4>General Analysis</h4>
+                  <p>Get a comprehensive breakdown of themes, viewing priorities, and pros/cons of your selection.</p>
+                </div>
+
+                <div class="info-card">
+                  <div class="info-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                  </div>
+                  <h4>Custom Question</h4>
+                  <p>Ask specific things like <em>"Recommend similar movies"</em> or <em>"Compare these styles"</em>.</p>
+                </div>
+              </div>
+
+              <div class="info-footer">
+                <button @click="toggleSelectionInfo" class="got-it-btn">Got it</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </section>
     </main>
   </div>
@@ -550,10 +593,10 @@ export default {
       userRatingRanges: [
         '10', '9', '8', '7', '6', '5', '1-4'
       ],
-      // AI Selection Mode
       aiSelectionMode: false,
       selectedItems: [],
       aiAnalysisLoading: false,
+      showSelectionInfo: false,
     };
   },
   async mounted() {
@@ -715,6 +758,9 @@ export default {
   },
   
   methods: {
+    toggleSelectionInfo() {
+      this.showSelectionInfo = !this.showSelectionInfo;
+    },
     removeFilter(filterValue) {
       if (filterValue === 'orderMode') {
         this.orderMode = 'latest-added';
@@ -769,11 +815,11 @@ export default {
       this.orderMode = 'latest-added';
     },
     
-    // AI Selection Mode Methods
     toggleAiSelectionMode() {
       this.aiSelectionMode = !this.aiSelectionMode;
       if (!this.aiSelectionMode) {
         this.selectedItems = [];
+        this.showSelectionInfo = false;
       }
     },
     
@@ -784,10 +830,8 @@ export default {
     },
     
     canSelectItem(item) {
-      // If not in selection mode, all items are "selectable" (not disabled)
       if (!this.aiSelectionMode) return true;
       
-      // If already selected, it's always "selectable" (can be deselected)
       if (this.isItemSelected(item)) return true;
       
       const mediaType = item.details.typeForDb;
@@ -820,7 +864,8 @@ export default {
           poster_path: item.details.posterForDb,
           rating_source: item.details.rating_source,
           tmdb_rating: item.details.starsForDb || null,
-          imdb_votes: item.details.imdb_votes || null
+          imdb_votes: item.details.imdb_votes || null,
+          user_rating: item.details.userRatingForDb && item.details.userRatingForDb !== '-' ? parseFloat(item.details.userRatingForDb) : null
         });
       }
     },
@@ -828,6 +873,7 @@ export default {
     cancelSelection() {
       this.aiSelectionMode = false;
       this.selectedItems = [];
+      this.showSelectionInfo = false;
     },
     
     closeNotificationModal() {
@@ -844,62 +890,19 @@ export default {
         return;
       }
       
-      this.aiAnalysisLoading = true;
-      
-      try {
-        const userEmail = localStorage.getItem('email') || '';
-        const userLanguage = navigator.language.startsWith('es') ? 'Spanish' : 'English';
-        
-        const movieCount = this.selectedItems.filter(item => item.media_type === 'movie').length;
-        const tvCount = this.selectedItems.filter(item => item.media_type === 'tv').length;
-        
-        const apiUrl = 'https://entercinema-assistant-rust.vercel.app/api/watchlist-analysis';
-        
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: JSON.stringify({
-            user_email: userEmail,
-            user_language: userLanguage,
-            selected_items: this.selectedItems,
-          }),
-        });
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          let errorData;
-          try {
-            errorData = JSON.parse(errorText);
-          } catch (e) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
-          throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        const data = await response.json();
-        
-        // Close selection mode
-        this.aiSelectionMode = false;
-        this.selectedItems = [];
 
-        this.$root.$emit('open-chatbot-with-analysis', {
-          userQuery: `Analyze my watchlist: ${movieCount} movies and ${tvCount} TV shows`,
-          aiResponse: data.result,
-          mediaReferences: data.media_references || [],
-          chatId: data.chat_id,
-        });
-        
-      } catch (error) {
-        console.error('Error sending to AI:', error);
-        this.notificationTitle = 'Analysis Failed';
-        this.notificationMessage = error.message || 'Failed to analyze watchlist';
-        this.notificationModalVisible = true;
-      } finally {
-        this.aiAnalysisLoading = false;
-      }
+      const preparedItems = this.selectedItems.map(item => ({
+        ...item,
+        user_rating: item.user_rating || null
+      }));
+
+      this.$root.$emit('open-chatbot-with-selection', {
+        selectedItems: preparedItems
+      });
+
+      this.aiSelectionMode = false;
+      this.selectedItems = [];
+      this.showSelectionInfo = false;
     },
     
     openRatingModal(item) {
@@ -1585,8 +1588,7 @@ export default {
 };
 </script>
 
-
-<style scoped>
+<style>
 .card__content {
   display: flex;
   justify-content: center; 
@@ -3697,6 +3699,130 @@ select.user-rating-select {
   .checkbox-wrapper {
     width: 28px; /* Larger touch target */
     height: 28px;
+  }
+}
+
+/* Estilo para el icono 'i' */
+.info-icon-wrapper {
+  cursor: pointer;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+  color: #8BE9FD;
+  opacity: 0.8;
+}
+
+.info-icon-wrapper:hover {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+/* AI Info Modal Styles */
+.info-modal {
+  width: 90%;
+  max-width: 500px;
+  background: linear-gradient(to bottom right, #092739, #061720);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(139, 233, 253, 0.1);
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.info-modal-content {
+  padding: 25px;
+  color: #e0e0e0;
+}
+
+.info-intro {
+  text-align: center;
+  font-size: 1.1rem; /* Aproximadamente 17px si base es 16px */
+  margin-bottom: 25px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.info-options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.info-card {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(139, 233, 253, 0.15);
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  transition: background 0.3s ease;
+}
+
+.info-card:hover {
+  background: rgba(139, 233, 253, 0.05);
+}
+
+.info-icon {
+  background: rgba(139, 233, 253, 0.1);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px auto;
+}
+
+.info-card h4 {
+  color: #8BE9FD;
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.info-card p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.info-footer {
+  display: flex;
+  justify-content: center;
+}
+
+.got-it-btn {
+  background: linear-gradient(135deg, #8BE9FD 0%, #00a8cc 100%);
+  color: #000;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.got-it-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(139, 233, 253, 0.4);
+}
+
+/* Responsive adjust for modal */
+@media (max-width: 600px) {
+  .info-options-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .info-modal {
+    max-width: 95%;
   }
 }
 </style>
