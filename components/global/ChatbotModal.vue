@@ -109,6 +109,21 @@
                       </button>
                     </div>
                   </div>
+                  <div v-else-if="message.role === 'system' && awaitingSelectionAction" class="system-selection-ui">
+                    <div class="selection-message-content">
+                      <p>{{ message.content }}</p>
+                      <div class="selection-actions">
+                        <button @click="triggerDefaultAnalysis" class="selection-btn primary">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                          Obtener Análisis de IA
+                        </button>
+                        <button @click="triggerCustomQuestion" class="selection-btn secondary">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                           Hacer Pregunta Personalizada
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 
                 <div v-if="chatBotLoading && messageWaitingForResponse" class="message-wrapper">
@@ -305,6 +320,9 @@ export default {
       apiUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
         ? 'https://entercinema-assistant-rust.vercel.app/api/gemini' 
         : 'https://entercinema-assistant-rust.vercel.app/api/gemini',
+      watchlistAnalysisUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'https://entercinema-assistant-rust.vercel.app/api/watchlist-analysis' 
+        : 'https://entercinema-assistant-rust.vercel.app/api/watchlist-analysis',
       titleGenerationUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
         ? 'https://entercinema-assistant-rust.vercel.app/api/gemini' 
         : 'https://entercinema-assistant-rust.vercel.app/api/gemini',
@@ -344,7 +362,10 @@ export default {
       titleGenerationInterval: null,
       conversationIndex: 0,
       copiedMessageIndex: null,
-      showCopyNotification: false
+      copiedMessageIndex: null,
+      showCopyNotification: false,
+      pendingSelectionItems: [],
+      awaitingSelectionAction: false
     };
   },
   computed: {
@@ -394,6 +415,8 @@ export default {
     this.$root.$on('chatbot-maximized', () => {
       this.chatBotMinimized = false;
     });
+    
+    this.$root.$on('open-chatbot-with-selection', this.handleSelectionInit);
     
     this.$root.$on('open-chatbot-with-analysis', async (payload) => {
       console.log('[ChatbotModal] Received open-chatbot-with-analysis event', payload);
@@ -465,9 +488,140 @@ export default {
     }
     this.clearMinimizedState();
     this.$root.$off('chatbot-maximized');
+    this.$root.$off('open-chatbot-with-selection', this.handleSelectionInit);
     this.$root.$off('open-chatbot-with-analysis');
   },
   methods: {
+    handleSelectionInit(payload) {
+      this.chatBotOpen = true;
+      this.chatBotMinimized = false;
+      this.clearMinimizedState();
+
+      this.createNewConversation();
+
+      this.pendingSelectionItems = payload.selectedItems;
+      this.awaitingSelectionAction = true;
+      
+      const movieCount = this.pendingSelectionItems.filter(i => i.media_type === 'movie').length;
+      const tvCount = this.pendingSelectionItems.filter(i => i.media_type === 'tv').length;
+
+      this.chatMessages.push({
+        role: 'system',
+        content: `Has seleccionado ${movieCount} película${movieCount !== 1 ? 's' : ''} y ${tvCount} serie${tvCount !== 1 ? 's' : ''}. ¿Cómo te gustaría que la IA las analice?`
+      });
+      
+      this.$nextTick(() => {
+        this.scrollToBottom();
+      });
+    },
+
+    triggerDefaultAnalysis() {
+      this.awaitingSelectionAction = false;
+      this.chatBotQuery = ""; 
+      this.sendWatchlistAnalysis(null); 
+    },
+
+    triggerCustomQuestion() {
+      this.awaitingSelectionAction = false;
+      this.chatBotQuery = "@selection ";
+      this.inputEnabled = true;
+      
+      this.$nextTick(() => {
+        if (this.$refs.chatInput) {
+          this.$refs.chatInput.focus();
+        }
+      });
+    },
+
+    async sendWatchlistAnalysis(customQuery) {
+      this.inputWidth = 100;
+      this.chatBotLoading = true;
+      this.messageWaitingForResponse = true;
+      this.startDotAnimation();
+
+      const movieCount = this.pendingSelectionItems.filter(i => i.media_type === 'movie').length;
+      const tvCount = this.pendingSelectionItems.filter(i => i.media_type === 'tv').length;
+      
+      const displayQuery = customQuery 
+        ? customQuery 
+        : `Analiza mi lista de seguimiento: ${movieCount} películas, ${tvCount} series.`;
+
+      this.chatMessages.push({
+        role: 'user',
+        content: displayQuery
+      });
+      
+      this.chatBotQuery = '';
+      this.$nextTick(() => {
+        this.scrollToBottom();
+      });
+      
+      try {
+        const userEmail = this.getUserEmail();
+        const response = await axios.post(this.watchlistAnalysisUrl, {
+          user_email: userEmail,
+          user_language: this.getUserLanguage(), 
+          selected_items: this.pendingSelectionItems,
+          custom_query: customQuery 
+        });
+
+        this.pendingSelectionItems = [];
+
+        const data = response.data;
+        this.chatId = data.chat_id;
+
+        const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+        if (activeConv) {
+          activeConv.chatId = data.chat_id;
+          activeConv.persistedInBackend = true;
+        }
+
+        let cleanResponse = data.result || '';
+        cleanResponse = cleanResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                     .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                                     .replace(/\n/g, '<br>');
+
+        if (data.spoilerStatus === "spoiler") {
+          this.pendingSpoilerResponse = cleanResponse;
+          this.pendingSpoilerMediaReferences = data.media_references || [];
+          this.spoilerModalOpen = true;
+        } else {
+          this.chatMessages.push({ role: 'assistant', content: cleanResponse });
+          
+          if (data.media_references && data.media_references.length > 0) {
+            await this.fetchPredefinedMediaReferences(data.media_references);
+          } else {
+            this.chatBotResults = [];
+          }
+        }
+
+      } catch (error) {
+        console.error('Error analyzing watchlist:', error);
+        this.chatMessages.push({ 
+          role: 'assistant', 
+          content: "<span style='color: #ff8c8c;'>Lo siento, no pude analizar tu lista de seguimiento en este momento. Por favor inténtalo de nuevo.</span>" 
+        });
+      } finally {
+        this.chatBotLoading = false;
+        this.messageWaitingForResponse = false;
+        if (this.dotAnimationInterval) {
+          clearInterval(this.dotAnimationInterval);
+        }
+        this.inputWidth = 0;
+        this.$nextTick(() => {
+          this.scrollToBottom();
+          if (this.$refs.chatInput) this.$refs.chatInput.focus();
+        });
+      }
+    },
+
+    getUserLanguage() {
+      if (typeof navigator !== 'undefined' && navigator.language) {
+        return navigator.language.startsWith('es') ? 'Spanish' : 'English';
+      }
+      return 'Spanish';
+    },
+
     getUserEmail() {
       const email = localStorage.getItem('email');
       return email;
@@ -1113,6 +1267,14 @@ export default {
         this.$refs.authModal.open(() => {
           this.sendChatBotQueryStream();
         });
+        return;
+      }
+
+      if (this.pendingSelectionItems.length > 0 && this.chatBotQuery.includes("@selection")) {
+        const customQuery = this.chatBotQuery.replace("@selection", "").trim();
+        if (!customQuery) return; 
+        
+        this.sendWatchlistAnalysis(customQuery);
         return;
       }
       
@@ -2547,6 +2709,95 @@ export default {
 </script>
 
 <style scoped>
+.system-selection-ui {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  width: 100%;
+  animation: fadeIn 0.4s ease;
+}
+
+.selection-message-content {
+  background: rgba(13, 27, 42, 0.8);
+  border: 1px solid #7FDBF1;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  max-width: 85%;
+  box-shadow: 0 4px 20px rgba(127, 219, 241, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.selection-message-content p {
+  color: #fff;
+  margin: 0 0 20px 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.selection-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.selection-btn {
+  padding: 10px 18px;
+  border-radius: 25px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.selection-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.selection-btn.primary {
+  background: #7FDBF1;
+  color: #0D1B2A;
+  border: 1px solid #7FDBF1;
+  box-shadow: 0 2px 8px rgba(127, 219, 241, 0.3);
+}
+
+.selection-btn.primary:hover {
+  background: #a0ecfd;
+  border-color: #a0ecfd;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(127, 219, 241, 0.4);
+}
+
+.selection-btn.secondary {
+  background: transparent;
+  color: #7FDBF1;
+  border: 1px solid rgba(127, 219, 241, 0.5);
+}
+
+.selection-btn.secondary:hover {
+  background: rgba(127, 219, 241, 0.1);
+  border-color: #7FDBF1;
+  transform: translateY(-2px);
+}
+
+@media screen and (max-width: 576px) {
+  .selection-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .selection-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 .chatbot-modal {
   position: fixed;
   top: 0;

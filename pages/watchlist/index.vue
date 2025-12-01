@@ -1264,7 +1264,8 @@ export default {
           poster_path: item.details.posterForDb,
           rating_source: item.details.rating_source,
           tmdb_rating: item.details.starsForDb || null,
-          imdb_votes: item.details.imdb_votes || null
+          imdb_votes: item.details.imdb_votes || null,
+          user_rating: item.details.userRatingForDb && item.details.userRatingForDb !== '-' ? parseFloat(item.details.userRatingForDb) : null
         });
       }
     },
@@ -1272,71 +1273,29 @@ export default {
     cancelSelection() {
       this.aiSelectionMode = false;
       this.selectedItems = [];
+      this.showSelectionInfo = false;
     },
     
     async sendToAI() {
-  if (this.selectedItems.length === 0) {
-    this.notificationTitle = 'Selección Requerida';
-    this.notificationMessage = 'Por favor selecciona al menos un elemento';
-    this.notificationModalVisible = true;
-    return;
-  }
-  
-  this.aiAnalysisLoading = true;
-  
-  try {
-    const userEmail = localStorage.getItem('email') || '';
-    const userLanguage = 'Spanish';
-    
-    const movieCount = this.selectedItems.filter(item => item.media_type === 'movie').length;
-    const tvCount = this.selectedItems.filter(item => item.media_type === 'tv').length;
-    
-    const apiUrl = 'https://entercinema-assistant-rust.vercel.app/api/watchlist-analysis';
-    
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({
-        user_email: userEmail,
-        user_language: userLanguage,
-        selected_items: this.selectedItems,
-      }),
-    });
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      let errorData;
-      try {
-        errorData = JSON.parse(errorText);
-      } catch (e) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      if (this.selectedItems.length === 0) {
+        this.notificationTitle = 'Selección Requerida';
+        this.notificationMessage = 'Por favor selecciona al menos un elemento';
+        this.notificationModalVisible = true;
+        return;
       }
-      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
-    }
-    
-    const data = await response.json();
-    
-    this.aiSelectionMode = false;
-    this.selectedItems = [];
+      
+      const preparedItems = this.selectedItems.map(item => ({
+        ...item,
+        user_rating: item.user_rating || null
+      }));
 
-    this.$root.$emit('open-chatbot-with-analysis', {
-      userQuery: `Analiza mi lista de seguimiento: ${movieCount} películas y ${tvCount} series`,
-      aiResponse: data.result,
-      mediaReferences: data.media_references || [],
-      chatId: data.chat_id,
-    });
-    
-  } catch (error) {
-    console.error('Error sending to AI:', error);
-    this.notificationTitle = 'Error en Análisis';
-    this.notificationMessage = error.message || 'No se pudo analizar la lista de seguimiento';
-    this.notificationModalVisible = true;
-  } finally {
-    this.aiAnalysisLoading = false;
-  }
+      this.$root.$emit('open-chatbot-with-selection', {
+        selectedItems: preparedItems
+      });
+
+      this.aiSelectionMode = false;
+      this.selectedItems = [];
+      this.showSelectionInfo = false;
     },
 
     closeNotificationModal() {
@@ -3659,19 +3618,18 @@ loading-state {
   width: 0;
 }
 
-/* AI Selection Mode Styles */
 .movie-card.selection-mode {
   cursor: pointer;
 }
 
 .movie-card.selection-mode .item-link:hover {
-  transform: translateY(-2px); /* Less aggressive hover */
+  transform: translateY(-2px);
 }
 
 .movie-card.selection-mode.selected .card-background {
-  box-shadow: 0 0 0 3px #8BE9FD; /* Cyan border */
-  border-radius: 15px; /* Match card border radius */
-  overflow: hidden; /* Ensure content doesn't overflow border */
+  box-shadow: 0 0 0 3px #8BE9FD;
+  border-radius: 15px;
+  overflow: hidden;
 }
 
 .movie-card.selection-mode.selected img {
@@ -3726,7 +3684,6 @@ loading-state {
   cursor: not-allowed;
 }
 
-/* Responsive adjustments for AI selection */
 @media (max-width: 768px) {
   .banner-content {
     flex-direction: column;
@@ -3747,8 +3704,129 @@ loading-state {
   }
   
   .checkbox-wrapper {
-    width: 28px; /* Larger touch target */
+    width: 28px;
     height: 28px;
+  }
+}
+
+.info-icon-wrapper {
+  cursor: pointer;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+  color: #8BE9FD;
+  opacity: 0.8;
+}
+
+.info-icon-wrapper:hover {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+.info-modal {
+  width: 90%;
+  max-width: 500px;
+  background: linear-gradient(to bottom right, #092739, #061720);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(139, 233, 253, 0.1);
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.info-modal-content {
+  padding: 25px;
+  color: #e0e0e0;
+}
+
+.info-intro {
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.info-options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.info-card {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(139, 233, 253, 0.15);
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  transition: background 0.3s ease;
+}
+
+.info-card:hover {
+  background: rgba(139, 233, 253, 0.05);
+}
+
+.info-icon {
+  background: rgba(139, 233, 253, 0.1);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px auto;
+}
+
+.info-card h4 {
+  color: #8BE9FD;
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.info-card p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.info-footer {
+  display: flex;
+  justify-content: center;
+}
+
+.got-it-btn {
+  background: linear-gradient(135deg, #8BE9FD 0%, #00a8cc 100%);
+  color: #000;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.got-it-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(139, 233, 253, 0.4);
+}
+
+@media (max-width: 600px) {
+  .info-options-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .info-modal {
+    max-width: 95%;
   }
 }
 </style>
