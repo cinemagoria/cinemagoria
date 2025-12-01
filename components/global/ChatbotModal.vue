@@ -3585,6 +3585,7 @@ export default {
   width: 24px;
   height: 14px;
   flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 
