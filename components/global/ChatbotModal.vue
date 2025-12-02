@@ -154,9 +154,12 @@
                          class="media-link"
                          target="_blank">
                         <div class="poster-wrapper">
-                          <img v-if="item.poster_path" :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" :alt="item.title || 'Movie Poster'">
-                          <img v-else src="/static/image_not_found.png" :alt="item.title || 'Movie Poster Not Found'">
-                          <div class="media-type">Película</div>
+                          <img v-if="item.poster_path" 
+                               :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" 
+                               :alt="item.title || 'Movie Poster'"
+                               @error="handleImageError">
+                          <img v-else src="https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.png?raw=true" :alt="item.title || 'Movie Poster Not Found'">
+                          <div class="media-type">Movie</div>
                           <div class="movie-rating" v-if="item.imdb_rating || item.vote_average > 0">
                             <template v-if="item.rating_source === 'imdb' && item.imdb_rating">
                               {{ item.imdb_rating.toFixed(1) }}
@@ -170,7 +173,7 @@
                         </div>
                         <div class="media-info">
                           <h4>{{ item.title }}</h4>
-                          <p>{{ item.release_date ? item.release_date.substring(0, 4) : 'N/D' }}</p>
+                          <p>{{ item.release_date ? item.release_date.substring(0, 4) : 'N/A' }}</p>
                         </div>
                       </a>
 
@@ -179,9 +182,12 @@
                          class="media-link"
                          target="_blank">
                         <div class="poster-wrapper">
-                          <img v-if="item.poster_path" :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" :alt="item.name || 'TV Show Poster'">
-                          <img v-else src="/static/image_not_found.png" :alt="item.name || 'TV Show Poster Not Found'">
-                          <div class="media-type">Serie</div>
+                          <img v-if="item.poster_path" 
+                               :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" 
+                               :alt="item.name || 'TV Show Poster'"
+                               @error="handleImageError">
+                          <img v-else src="https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.png?raw=true" :alt="item.name || 'TV Show Poster Not Found'">
+                          <div class="media-type">TV Show</div>
 
                           <div class="movie-rating" v-if="item.imdb_rating || item.vote_average > 0">
                             <template v-if="item.rating_source === 'imdb' && item.imdb_rating">
@@ -196,7 +202,7 @@
                         </div>
                         <div class="media-info">
                           <h4>{{ item.name }}</h4>
-                          <p>{{ item.first_air_date ? item.first_air_date.substring(0, 4) : 'N/D' }}</p>
+                          <p>{{ item.first_air_date ? item.first_air_date.substring(0, 4) : 'N/A' }}</p>
                         </div>
                       </a>
 
@@ -205,9 +211,12 @@
                          class="media-link"
                          target="_blank">
                         <div class="profile-wrapper">
-                          <img v-if="item.profile_path" :src="'https://image.tmdb.org/t/p/w342' + item.profile_path" :alt="item.name || 'Person Profile'">
-                          <img v-else src="/static/image_not_found.png" :alt="item.name || 'Person Profile Not Found'">
-                          <div class="media-type">Persona</div>
+                          <img v-if="item.profile_path" 
+                               :src="'https://image.tmdb.org/t/p/w342' + item.profile_path" 
+                               :alt="item.name || 'Person Profile'"
+                               @error="handleImageError">
+                          <img v-else src="https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.png?raw=true" :alt="item.name || 'Person Profile Not Found'">
+                          <div class="media-type">Person</div>
                         </div>
                         <div class="media-info">
                           <h4>{{ item.name }}</h4>
@@ -492,6 +501,12 @@ export default {
     this.$root.$off('open-chatbot-with-analysis');
   },
   methods: {
+    handleImageError(event) {
+      const fallbackUrl = 'https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.png?raw=true';
+      if (event.target.src !== fallbackUrl) {
+        event.target.src = fallbackUrl;
+      }
+    },
     handleSelectionInit(payload) {
       this.chatBotOpen = true;
       this.chatBotMinimized = false;
@@ -3126,13 +3141,15 @@ export default {
   height: 100%;
   transition: all 0.3s ease;
 }
-.poster-wrapper img[src$="image_not_found.png"],
-.profile-wrapper img[src$="image_not_found.png"] {
-    object-fit: contain;
-    padding: 20px;
-    background-color: #333;
-}
 
+.poster-wrapper img[src*="image_not_found_yet.png"],
+.profile-wrapper img[src*="image_not_found_yet.png"] {
+    object-fit: cover !important;
+    padding: 0 !important;
+    background-color: #333;
+    width: 100%;
+    height: 100%;
+}
 
 .media-type {
     position: absolute;
