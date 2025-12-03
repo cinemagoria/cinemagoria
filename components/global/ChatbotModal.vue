@@ -1973,6 +1973,19 @@ export default {
                         });
 
                         if (mainObjectResponse.data?.results?.length > 0 && (mediaType === 'movie' || mediaType === 'tv')) {
+                            mainObjectResponse.data.results.sort((a, b) => {
+                                const titleA = mediaType === 'movie' ? (a.title || "").toLowerCase() : (a.name || "").toLowerCase();
+                                const titleB = mediaType === 'movie' ? (b.title || "").toLowerCase() : (b.name || "").toLowerCase();
+                                const queryName = effectiveMainObject.name.toLowerCase();
+                                
+                                const exactA = titleA === queryName;
+                                const exactB = titleB === queryName;
+                                
+                                if (exactA && !exactB) return -1;
+                                if (!exactA && exactB) return 1;
+                                
+                                return (b.vote_count || 0) - (a.vote_count || 0);
+                            });
                             const mainItemId = mainObjectResponse.data.results[0].id;
                             try {
                                 const detailsResponse = await axios.get(`https://api.themoviedb.org/3/${mediaType}/${mainItemId}`, {
@@ -2156,9 +2169,19 @@ export default {
                   axios.get(searchUrl, { params, timeout: 8000 })
                   .then(async response => {
                       if (response.data?.results?.length > 0) {
-                          const sortedResults = response.data.results.sort((a, b) => 
-                              (b.popularity || 0) - (a.popularity || 0)
-                          );
+                          const sortedResults = response.data.results.sort((a, b) => {
+                                const titleA = mediaType === 'movie' ? (a.title || "").toLowerCase() : (a.name || "").toLowerCase();
+                                const titleB = mediaType === 'movie' ? (b.title || "").toLowerCase() : (b.name || "").toLowerCase();
+                                const queryName = ref.name.toLowerCase();
+                                
+                                const exactA = titleA === queryName;
+                                const exactB = titleB === queryName;
+                                
+                                if (exactA && !exactB) return -1;
+                                if (!exactA && exactB) return 1;
+
+                                return (b.vote_count || 0) - (a.vote_count || 0);
+                          });
                           
                           const item = sortedResults[0];
                           const uniqueId = `${mediaType}-${item.id}`;
