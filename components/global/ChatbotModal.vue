@@ -2163,10 +2163,14 @@ export default {
                             mainObjectResponse.data.results.sort((a, b) => {
                                 const titleA = mediaType === 'movie' ? (a.title || "").toLowerCase() : (a.name || "").toLowerCase();
                                 const titleB = mediaType === 'movie' ? (b.title || "").toLowerCase() : (b.name || "").toLowerCase();
+                                
+                                const originalA = mediaType === 'movie' ? (a.original_title || "").toLowerCase() : (a.original_name || "").toLowerCase();
+                                const originalB = mediaType === 'movie' ? (b.original_title || "").toLowerCase() : (b.original_name || "").toLowerCase();
+
                                 const queryName = effectiveMainObject.name.toLowerCase();
                                 
-                                const exactA = titleA === queryName;
-                                const exactB = titleB === queryName;
+                                const exactA = (titleA === queryName || originalA === queryName);
+                                const exactB = (titleB === queryName || originalB === queryName);
                                 
                                 if (exactA && !exactB) return -1;
                                 if (!exactA && exactB) return 1;
@@ -2358,10 +2362,14 @@ export default {
                           const sortedResults = response.data.results.sort((a, b) => {
                                 const titleA = mediaType === 'movie' ? (a.title || "").toLowerCase() : (a.name || "").toLowerCase();
                                 const titleB = mediaType === 'movie' ? (b.title || "").toLowerCase() : (b.name || "").toLowerCase();
+
+                                const originalA = mediaType === 'movie' ? (a.original_title || "").toLowerCase() : (a.original_name || "").toLowerCase();
+                                const originalB = mediaType === 'movie' ? (b.original_title || "").toLowerCase() : (b.original_name || "").toLowerCase();
+
                                 const queryName = ref.name.toLowerCase();
                                 
-                                const exactA = titleA === queryName;
-                                const exactB = titleB === queryName;
+                                const exactA = (titleA === queryName || originalA === queryName);
+                                const exactB = (titleB === queryName || originalB === queryName);
                                 
                                 if (exactA && !exactB) return -1;
                                 if (!exactA && exactB) return 1;
