@@ -554,6 +554,8 @@ export default {
       this.messageWaitingForResponse = true;
       this.startDotAnimation();
 
+      const hasUnratedItems = this.pendingSelectionItems.some(item => item.user_rating === null);
+
       const movieCount = this.pendingSelectionItems.filter(i => i.media_type === 'movie').length;
       const tvCount = this.pendingSelectionItems.filter(i => i.media_type === 'tv').length;
       
@@ -596,7 +598,7 @@ export default {
                                      .replace(/\*(.*?)\*/g, '<em>$1</em>')
                                      .replace(/\n/g, '<br>');
 
-        if (data.spoilerStatus === "spoiler") {
+        if (data.spoilerStatus === "spoiler" && hasUnratedItems) {
           this.pendingSpoilerResponse = cleanResponse;
           this.pendingSpoilerMediaReferences = data.media_references || [];
           this.spoilerModalOpen = true;
