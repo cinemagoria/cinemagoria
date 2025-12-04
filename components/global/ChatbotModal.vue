@@ -3323,7 +3323,7 @@ export default {
 @media screen and (max-height: 600px) {
   .chatbot-container {
     /* Baja el modal 20px respecto a su centro */
-    top: 20px;
+    top: 50px;
     
     /* Opcional: Ajusta la altura para aprovechar el espacio reducido */
     height: 85vh; 
