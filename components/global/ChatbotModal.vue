@@ -556,11 +556,11 @@ export default {
       this.messageWaitingForResponse = true;
       this.startDotAnimation();
 
-      const hasUnratedItems = this.pendingSelectionItems.some(item => item.user_rating === null);
+      const hasUnratedItems = this.pendingSelectionItems.some(item => item.user_rating == null);
 
       const movieCount = this.pendingSelectionItems.filter(i => i.media_type === 'movie').length;
       const tvCount = this.pendingSelectionItems.filter(i => i.media_type === 'tv').length;
-      
+
       const displayQuery = customQuery 
         ? customQuery 
         : `Analyze my watchlist: ${movieCount} movies, ${tvCount} TV shows.`;
