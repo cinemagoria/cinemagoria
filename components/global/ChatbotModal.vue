@@ -3320,18 +3320,4 @@ export default {
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .minimized-chatbot { font-size: 16px; position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: linear-gradient(135deg, #0088cc 0%, #7FDBF1 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 9999; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
 .notification-dot { position: absolute; top: 0; right: 0; width: 14px; height: 14px; background: #ff4757; border-radius: 50%; border: 2px solid #fff; }
-@media screen and (max-height: 600px) {
-  .chatbot-container {
-    /* Baja el modal 20px respecto a su centro */
-    top: 50px;
-    
-    /* Opcional: Ajusta la altura para aprovechar el espacio reducido */
-    height: 85vh; 
-  }
-  
-  /* Ajuste opcional para que el input no quede muy pegado */
-  .chatbot-messages {
-    padding-bottom: 10px;
-  }
-}
 </style>
