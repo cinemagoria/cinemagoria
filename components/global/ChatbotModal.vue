@@ -2773,12 +2773,13 @@ export default {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100dvh; 
+  height: 100%; /* % respeta el resize del navegador al abrir teclado */
   background-color: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(5px);
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center; /* Centrado vertical en Desktop */
+  align-items: center;     /* Centrado horizontal */
   z-index: 9999;
   animation: fadeIn 0.3s ease;
 }
@@ -3324,52 +3325,57 @@ export default {
 .notification-dot { position: absolute; top: 0; right: 0; width: 14px; height: 14px; background: #ff4757; border-radius: 50%; border: 2px solid #fff; }
 @media screen and (max-width: 768px) {
   .chatbot-modal {
-    align-items: flex-end; /* Pega el modal al fondo */
+    justify-content: flex-end; /* Alinea el chat al fondo de la pantalla visible */
   }
 
   .chatbot-container {
     width: 100%;
-    /* Altura reducida al 55% para ver la App detrás */
-    height: 55dvh; 
+    /* Altura del 50% para ver navegación y título de la app detrás */
+    height: 50%; 
     max-height: none;
     border-radius: 20px 20px 0 0;
     margin: 0;
     border-bottom: none;
+    /* Aseguramos que el flex interno funcione bien */
+    display: flex;
+    flex-direction: column;
   }
 
-  .conversations-sidebar {
-    position: absolute; top: 0; left: 0; height: 100%; width: 0; max-width: 300px; background: #0d1b2a; box-shadow: none;
-  }
+  /* Ajustes para que el contenido fluya */
+  .chatbot-main { flex: 1; overflow: hidden; }
+  .chat-content { flex: 1; display: flex; flex-direction: column; }
+  
+  /* Sidebar Overlay */
+  .conversations-sidebar { position: absolute; top: 0; left: 0; height: 100%; width: 0; max-width: 300px; background: #0d1b2a; box-shadow: none; z-index: 30; }
   .conversations-sidebar.open { width: 85%; box-shadow: 2px 0 20px rgba(0,0,0,0.5); }
   .sidebar-backdrop { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); z-index: 15; }
   
   .chatbot-messages { padding: 16px; }
   .daily-prompt-card { margin: 10px; padding: 16px; }
-  
   .carousel-content { margin: 0 5px; } .carousel-item { width: 130px; } .poster-wrapper, .profile-wrapper { height: 195px; }
   .media-info { min-height: 55px; } .media-info h4 { font-size: 11px; } .media-info p { font-size: 9px; }
   .carousel-nav { width: 30px; height: 30px; font-size: 16px; top: calc(50% - 15px); } .carousel-prev { left: -5px; } .carousel-next { right: -5px; }
   .spoiler-content { width: 95%; padding: 30px; }
 }
 
-/* 3. FIX TECLADO (Cuando se activa el teclado) */
+/* 3. FIX TECLADO (Cuando la altura visible se reduce drásticamente) */
 @media screen and (max-height: 500px) and (max-width: 768px) {
   .chatbot-container {
-    /* Al abrir teclado, ocupamos el 100% del espacio visible real */
-    height: 100dvh; 
+    /* Al abrir teclado, ocupamos el 100% del espacio visible (que ya es pequeño) */
+    height: 100%; 
     width: 100%;
     border-radius: 0;
   }
 
   .chatbot-input {
-    padding: 8px;
+    padding: 8px; /* Reducir padding para ganar espacio vertical */
   }
   
   .chatbot-header {
-    padding: 8px 16px;
+    padding: 8px 16px; /* Header compacto */
   }
   
-  /* Ocultamos elementos grandes para dar espacio al chat */
+  /* Ocultar elementos decorativos grandes para priorizar el chat */
   .modern-divider, .chatbot-welcome .daily-prompt-card {
     display: none;
   }
