@@ -1673,7 +1673,6 @@ export default {
       if (!this.checkAuth()) {
         this.$refs.authModal.open(() => {
           if (this.currentPromptIndex !== -1 && !this.chatBotLoading) {
-            this.chatBotQuery = this.currentDailyPrompt;
             this.sendDailyPromptRequest();
           }
         });
@@ -1681,7 +1680,6 @@ export default {
       }
       
       if (this.currentPromptIndex !== -1 && !this.chatBotLoading) {
-        this.chatBotQuery = this.currentDailyPrompt;
         this.sendDailyPromptRequest();
       }
     },
@@ -2775,7 +2773,7 @@ export default {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   background-color: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(5px);
   display: flex;
@@ -3324,4 +3322,25 @@ export default {
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .minimized-chatbot { font-size: 16px; position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: linear-gradient(135deg, #0088cc 0%, #7FDBF1 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 9999; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
 .notification-dot { position: absolute; top: 0; right: 0; width: 14px; height: 14px; background: #ff4757; border-radius: 50%; border: 2px solid #fff; }
+@media screen and (max-height: 500px) and (max-width: 768px) {
+  .chatbot-modal {
+    align-items: flex-end;
+  }
+  .chatbot-container {
+    height: 100dvh;
+    width: 100%;
+    border-radius: 0;
+  }
+  .chatbot-input {
+    padding: 10px;
+  }
+  .modern-textarea {
+    padding: 10px;
+    font-size: 14px;
+  }
+  .send-button {
+    width: 40px;
+    height: 40px;
+  }
+}
 </style>
