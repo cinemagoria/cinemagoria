@@ -3315,32 +3315,23 @@ export default {
   .spoiler-content p { font-size: 18px; }
   .selection-message-content p { font-size: 18px; }
 }
-@media screen and (max-height: 600px) and (max-width: 768px) { .chatbot-container { height: 100%; width: 100%; border-radius: 0; margin: 0; } }
-@media screen and (max-height: 500px) and (max-width: 768px) { .chatbot-container { height: 98vh; width: 100%; border-radius: 0; } .chatbot-input { padding: 10px; } .modern-textarea { padding: 10px; font-size: 14px; } .send-button { width: 40px; height: 40px; } }
 
 .copy-notification { position: fixed; top: 140px; left: 50%; transform: translateX(-50%); background: #7FDBF1; color: #000; padding: 16px 32px; border-radius: 20px; font-weight: 600; z-index: 10000; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .minimized-chatbot { font-size: 16px; position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: linear-gradient(135deg, #0088cc 0%, #7FDBF1 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 9999; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
 .notification-dot { position: absolute; top: 0; right: 0; width: 14px; height: 14px; background: #ff4757; border-radius: 50%; border: 2px solid #fff; }
-@media screen and (max-height: 500px) and (max-width: 768px) {
-  .chatbot-modal {
-    align-items: flex-end;
-  }
+@media screen and (max-height: 600px) {
   .chatbot-container {
-    height: 100dvh;
-    width: 100%;
-    border-radius: 0;
+    /* Baja el modal 20px respecto a su centro */
+    top: 20px;
+    
+    /* Opcional: Ajusta la altura para aprovechar el espacio reducido */
+    height: 85vh; 
   }
-  .chatbot-input {
-    padding: 10px;
-  }
-  .modern-textarea {
-    padding: 10px;
-    font-size: 14px;
-  }
-  .send-button {
-    width: 40px;
-    height: 40px;
+  
+  /* Ajuste opcional para que el input no quede muy pegado */
+  .chatbot-messages {
+    padding-bottom: 10px;
   }
 }
 </style>
