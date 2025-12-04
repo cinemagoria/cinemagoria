@@ -2779,7 +2779,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 99999;
   animation: fadeIn 0.3s ease;
 }
 
@@ -3322,17 +3322,25 @@ export default {
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .minimized-chatbot { font-size: 16px; position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: linear-gradient(135deg, #0088cc 0%, #7FDBF1 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 9999; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
 .notification-dot { position: absolute; top: 0; right: 0; width: 14px; height: 14px; background: #ff4757; border-radius: 50%; border: 2px solid #fff; }
-@media screen and (max-height: 320px) and (max-width: 768px) {
+@media screen and (max-height: 500px) and (max-width: 768px) {
   .chatbot-modal {
     align-items: flex-end;
-    height: 100%;
   }
 
   .chatbot-container {
-    height: 100%;
     width: 100%;
+    height: 100%;
+    max-height: 100%;
     border-radius: 0;
     border: none;
+  }
+
+  .chatbot-main {
+    height: 100%;
+  }
+
+  .chat-content {
+    height: 100%;
   }
 
   .chatbot-input {
