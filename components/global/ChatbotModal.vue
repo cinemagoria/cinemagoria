@@ -1486,7 +1486,6 @@ export default {
       if (!this.checkAuth()) {
         this.$refs.authModal.open(() => {
           if (this.currentPromptIndex !== -1 && !this.chatBotLoading) {
-            this.chatBotQuery = this.currentDailyPrompt;
             this.sendDailyPromptRequest();
           }
         });
@@ -1494,7 +1493,6 @@ export default {
       }
       
       if (this.currentPromptIndex !== -1 && !this.chatBotLoading) {
-        this.chatBotQuery = this.currentDailyPrompt;
         this.sendDailyPromptRequest();
       }
     },
@@ -2580,7 +2578,7 @@ export default {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   background-color: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(5px);
   display: flex;
