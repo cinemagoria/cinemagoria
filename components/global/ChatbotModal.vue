@@ -2773,12 +2773,12 @@ export default {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100%; /* El % se adapta si el navegador redimensiona por el teclado */
+  height: 100dvh; 
   background-color: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
-  align-items: flex-end; /* IMPORTANTE: Alinea el modal abajo (estilo hoja) */
+  align-items: center;
   z-index: 9999;
   animation: fadeIn 0.3s ease;
 }
@@ -3323,12 +3323,16 @@ export default {
 .minimized-chatbot { font-size: 16px; position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: linear-gradient(135deg, #0088cc 0%, #7FDBF1 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 9999; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
 .notification-dot { position: absolute; top: 0; right: 0; width: 14px; height: 14px; background: #ff4757; border-radius: 50%; border: 2px solid #fff; }
 @media screen and (max-width: 768px) {
+  .chatbot-modal {
+    align-items: flex-end; /* Pega el modal al fondo */
+  }
+
   .chatbot-container {
     width: 100%;
-    /* Altura reducida al 60% de la pantalla para ver la App detrás */
-    height: 60%; 
+    /* Altura reducida al 55% para ver la App detrás */
+    height: 55dvh; 
     max-height: none;
-    border-radius: 20px 20px 0 0; /* Bordes redondeados solo arriba */
+    border-radius: 20px 20px 0 0;
     margin: 0;
     border-bottom: none;
   }
@@ -3342,31 +3346,30 @@ export default {
   .chatbot-messages { padding: 16px; }
   .daily-prompt-card { margin: 10px; padding: 16px; }
   
-  /* Ajustes Carrusel */
   .carousel-content { margin: 0 5px; } .carousel-item { width: 130px; } .poster-wrapper, .profile-wrapper { height: 195px; }
   .media-info { min-height: 55px; } .media-info h4 { font-size: 11px; } .media-info p { font-size: 9px; }
   .carousel-nav { width: 30px; height: 30px; font-size: 16px; top: calc(50% - 15px); } .carousel-prev { left: -5px; } .carousel-next { right: -5px; }
   .spoiler-content { width: 95%; padding: 30px; }
 }
 
-/* 3. FIX TECLADO (Cuando la altura disponible es poca) */
+/* 3. FIX TECLADO (Cuando se activa el teclado) */
 @media screen and (max-height: 500px) and (max-width: 768px) {
   .chatbot-container {
-    /* Al abrir teclado, ocupamos el 100% del espacio DISPONIBLE (que es pequeño) */
-    height: 100%; 
+    /* Al abrir teclado, ocupamos el 100% del espacio visible real */
+    height: 100dvh; 
     width: 100%;
     border-radius: 0;
   }
 
   .chatbot-input {
-    padding: 8px; /* Menos padding para ganar espacio */
+    padding: 8px;
   }
   
   .chatbot-header {
-    padding: 8px 16px; /* Header más compacto */
+    padding: 8px 16px;
   }
   
-  /* Ocultamos elementos no esenciales si el espacio es crítico */
+  /* Ocultamos elementos grandes para dar espacio al chat */
   .modern-divider, .chatbot-welcome .daily-prompt-card {
     display: none;
   }
