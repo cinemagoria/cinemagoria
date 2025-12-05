@@ -606,10 +606,20 @@ export default {
     selectedGenre() {
       this.currentPage = 1;
     },
-    minImdbRating() {
+    minImdbRating(newVal) {
+      if (newVal !== null && this.maxImdbRating !== null && newVal > this.maxImdbRating) {
+        const temp = this.maxImdbRating;
+        this.maxImdbRating = newVal;
+        this.minImdbRating = temp;
+      }
       this.currentPage = 1;
     },
-    maxImdbRating() {
+    maxImdbRating(newVal) {
+      if (newVal !== null && this.minImdbRating !== null && newVal < this.minImdbRating) {
+        const temp = this.minImdbRating;
+        this.minImdbRating = newVal;
+        this.maxImdbRating = temp;
+      }
       this.currentPage = 1;
     },
     selectedUserRating() {
@@ -1439,7 +1449,7 @@ export default {
           const min = this.minImdbRating !== null ? this.minImdbRating : 0;
           const max = this.maxImdbRating !== null ? this.maxImdbRating : 10;
           
-          matchesTmdbRating = rating >= min && rating < (max + 1);
+          matchesTmdbRating = rating >= min && rating <= max;
         }
       }
         
