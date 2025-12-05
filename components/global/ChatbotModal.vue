@@ -9,36 +9,58 @@
 
           <div class="conversations-sidebar" :class="{ 'open': sidebarOpen }">
             <div class="sidebar-header">
-              <button @click="createNewConversation" class="new-conversation-btn" title="New chat">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 5v14M5 12h14"/>
-                </svg>
-                <span>New Chat</span>
-              </button>
+              <div v-if="!selectionMode" class="default-header-actions">
+                <button @click="createNewConversation" class="new-conversation-btn" title="New chat">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14M5 12h14"/>
+                  </svg>
+                  <span>New Chat</span>
+                </button>
+                <div class="header-right-actions">
+                   <button @click="toggleArchiveView" class="icon-action-btn" :class="{ 'active': showArchived }" :title="showArchived ? 'View Active Chats' : 'View Archived Chats'">
+                    <svg v-if="!showArchived" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                  </button>
+                  <button @click="toggleSelectionMode" class="icon-action-btn" title="Select conversations">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div v-else class="selection-header-actions">
+                <button @click="toggleSelectionMode" class="cancel-selection-btn">Cancel</button>
+                <div class="selection-tools">
+                  <button @click="archiveSelectedConversations" class="tool-btn archive" :disabled="selectedConversations.length === 0" :title="showArchived ? 'Unarchive Selected' : 'Archive Selected'">
+                    <svg v-if="!showArchived" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                  </button>
+                  <button @click="deleteSelectedConversations" class="tool-btn delete" :disabled="selectedConversations.length === 0" title="Delete Selected">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  </button>
+                </div>
+              </div>
             </div>
             
             <div class="conversations-list">
               <div 
                 v-for="conv in conversations" 
                 :key="conv.id"
-                :class="['conversation-item', { active: activeConversationId === conv.id }]"
-                @click="switchConversation(conv.id)"
+                :class="['conversation-item', { active: activeConversationId === conv.id, selected: selectedConversations.includes(conv.id) }]"
+                @click="handleConversationClick(conv)"
                 :title="conv.title">
                 
+                <div v-if="selectionMode" class="checkbox-wrapper">
+                  <div class="custom-checkbox" :class="{ checked: selectedConversations.includes(conv.id) }"></div>
+                </div>
+
                 <div class="conversation-content">
                   <span class="conversation-title">{{ conv.title }}</span>
                   <span class="conversation-time">{{ formatConversationTime(conv.createdAt) }}</span>
                 </div>
 
-                <button 
-                  v-if="conversations.length > 1"
-                  @click.stop="closeConversation(conv.id)"
-                  class="delete-conversation"
-                  title="Delete conversation">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M18 6L6 18M6 6l12 12"/>
-                  </svg>
-                </button>
+              </div>
+              <div v-if="conversations.length === 0" class="empty-state">
+                  <span v-if="showArchived">No archived conversations</span>
+                  <span v-else>No conversations yet</span>
               </div>
             </div>
           </div>
@@ -286,6 +308,17 @@
           </div>
         </div>
       </div>
+
+      <div v-if="confirmDeleteModalOpen" class="spoiler-modal delete-modal">
+        <div class="spoiler-content">
+          <h3>Delete Conversation</h3>
+          <p style="font-size: 16px; color: #ccc; margin-bottom: 25px;">{{deleteConfirmationText}}</p>
+          <div class="spoiler-actions">
+            <button @click="confirmDelete" class="spoiler-button accept" style="background: #ff5252; color: white; border: none;">Delete</button>
+            <button @click="closeDeleteModal" class="spoiler-button cancel">Cancel</button>
+          </div>
+        </div>
+      </div>
       
       <transition name="slide-down">
         <div v-if="showCopyNotification" class="copy-notification">
@@ -379,7 +412,13 @@ export default {
       copiedMessageIndex: null,
       showCopyNotification: false,
       pendingSelectionItems: [],
-      awaitingSelectionAction: false
+      awaitingSelectionAction: false,
+      selectionMode: false,
+      selectedConversations: [],
+      selectedConversations: [],
+      showArchived: false,
+      confirmDeleteModalOpen: false,
+      deleteConfirmationText: 'This conversation will be permanently deleted.'
     };
   },
   computed: {
@@ -697,7 +736,8 @@ export default {
       const userEmail = this.getUserEmail();
 
       try {
-        const response = await fetch(`${this.apiUrl}?user_email=${encodeURIComponent(userEmail)}`, {
+        const url = `${this.apiUrl}?user_email=${encodeURIComponent(userEmail)}&show_archived=${this.showArchived}`;
+        const response = await fetch(url, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -937,20 +977,128 @@ export default {
       });
     },
 
-    formatConversationTime(createdAt) {
-      if (!createdAt) return '';
-      const date = new Date(createdAt);
+    formatConversationTime(dateString) {
+      if (!dateString) return '';
+      const date = new Date(dateString);
       const now = new Date();
       const diffMs = now - date;
       const diffMins = Math.floor(diffMs / 60000);
       const diffHours = Math.floor(diffMs / 3600000);
       const diffDays = Math.floor(diffMs / 86400000);
 
-      if (diffMins < 1) return 'Ahora';
+      if (diffMins < 1) return 'Just now';
       if (diffMins < 60) return `${diffMins}m`;
       if (diffHours < 24) return `${diffHours}h`;
       if (diffDays < 7) return `${diffDays}d`;
       return date.toLocaleDateString();
+    },
+
+    toggleSelectionMode() {
+      this.selectionMode = !this.selectionMode;
+      this.selectedConversations = [];
+    },
+
+    toggleArchiveView() {
+      this.showArchived = !this.showArchived;
+      this.selectionMode = false;
+      this.selectedConversations = [];
+      this.loadConversationsFromBackend();
+    },
+
+    handleConversationClick(conv) {
+      if (this.selectionMode) {
+        this.toggleSelectConversation(conv.id);
+      } else {
+        this.switchConversation(conv.id);
+      }
+    },
+
+    toggleSelectConversation(id) {
+      const index = this.selectedConversations.indexOf(id);
+      if (index === -1) {
+        this.selectedConversations.push(id);
+      } else {
+        this.selectedConversations.splice(index, 1);
+      }
+    },
+
+    async archiveSelectedConversations() {
+      if (this.selectedConversations.length === 0) return;
+      
+      const userEmail = this.getUserEmail();
+      const endpoint = this.showArchived 
+          ? 'https://entercinema-assistant-rust.vercel.app/api/unarchive-conversations'
+          : 'https://entercinema-assistant-rust.vercel.app/api/archive-conversations';
+
+      try {
+        await axios.post(endpoint, {
+          chat_ids: this.selectedConversations,
+          user_email: userEmail
+        });
+        
+        // Refresh
+        await this.loadConversationsFromBackend();
+        this.selectionMode = false;
+        this.selectedConversations = [];
+        
+        // If active conversation was archived
+        if (!this.conversations.find(c => c.id === this.activeConversationId)) {
+            if (this.conversations.length > 0) {
+               this.switchConversation(this.conversations[0].id);
+            } else {
+               this.createNewConversation();
+            }
+        }
+      } catch (e) {
+        console.error("Failed to archive/unarchive", e);
+      }
+    },
+
+    async deleteSelectedConversations() {
+        if (this.selectedConversations.length === 0) return;
+        // this.chatToDeleteId = null; // Removed
+        this.deleteConfirmationText = 'The selected conversations will be permanently deleted.';
+        this.confirmDeleteModalOpen = true;
+    },
+
+    closeDeleteModal() {
+        this.confirmDeleteModalOpen = false;
+        // this.chatToDeleteId = null; // Removed
+    },
+
+    async confirmDelete() {
+        const userEmail = this.getUserEmail();
+        const ids = this.selectedConversations; // simplified
+        
+        try {
+            await axios.post('https://entercinema-assistant-rust.vercel.app/api/delete-conversations', {
+                chat_ids: ids,
+                user_email: userEmail
+            });
+            
+            // Remove locally to be snappy
+            this.conversations = this.conversations.filter(c => !ids.includes(c.id));
+            
+            // If active was deleted
+            if (this.activeConversationId && ids.includes(this.activeConversationId)) {
+                if (this.conversations.length > 0) {
+                    this.switchConversation(this.conversations[0].id);
+                } else {
+                    this.createNewConversation();
+                }
+            }
+            
+            this.selectionMode = false;
+            this.selectedConversations = [];
+            
+            // Background refresh to ensure sync
+            this.loadConversationsFromBackend();
+
+        } catch (e) {
+            console.error("Failed to delete", e);
+        } finally {
+            this.closeDeleteModal();
+        }
     },
 
     startTitleGenerationInterval() {
@@ -3126,4 +3274,35 @@ export default {
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .minimized-chatbot { font-size: 16px; position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: linear-gradient(135deg, #0088cc 0%, #7FDBF1 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 9999; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
 .notification-dot { position: absolute; top: 0; right: 0; width: 14px; height: 14px; background: #ff4757; border-radius: 50%; border: 2px solid #fff; }
+
+/* =========================================
+   10. SELECTION MODE & ACTIONS
+   ========================================= */
+.default-header-actions { display: flex; align-items: center; justify-content: space-between; width: 100%; transition: all 0.3s; gap: 12px; }
+.header-right-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.icon-action-btn { background: transparent; border: 1px solid transparent; color: #7FDBF1; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+.icon-action-btn:hover { background: rgba(127, 219, 241, 0.1); }
+.icon-action-btn.active { background: rgba(127, 219, 241, 0.15); color: #7FDBF1; border-color: rgba(127, 219, 241, 0.3); }
+
+.selection-header-actions { display: flex; align-items: center; justify-content: space-between; width: 100%; animation: fadeIn 0.3s ease; }
+.cancel-selection-btn { background: transparent; border: none; color: #8899a6; font-size: 13px; font-weight: 500; cursor: pointer; padding: 5px 10px; }
+.cancel-selection-btn:hover { color: #fff; text-decoration: underline; }
+
+.selection-tools { display: flex; gap: 8px; }
+.tool-btn { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; }
+.tool-btn.archive { background: transparent; color: #7FDBF1; }
+.tool-btn.archive:hover { background: rgba(127, 219, 241, 0.1); }
+.tool-btn.delete { background: transparent; color: #ff5252; }
+.tool-btn.delete:hover { background: rgba(255, 82, 82, 0.1); }
+.tool-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+
+.checkbox-wrapper { margin-right: 12px; display: flex; align-items: center; }
+.custom-checkbox { width: 18px; height: 18px; border: 2px solid #555; border-radius: 4px; transition: all 0.2s; position: relative; }
+.custom-checkbox.checked { background: #7FDBF1; border-color: #7FDBF1; }
+.custom-checkbox.checked::after { content: ''; position: absolute; top: 45%; left: 50%; width: 5px; height: 9px; border: solid black; border-width: 0 2px 2px 0; transform: translate(-50%, -60%) rotate(45deg); }
+.conversation-item.selected { background: rgba(127, 219, 241, 0.08); border: 1px solid rgba(127, 219, 241, 0.2); }
+
+.empty-state { padding: 30px 20px; text-align: center; color: #666; font-size: 14px; font-style: italic; }
+
+.delete-modal .spoiler-content { border-color: #ff5252; box-shadow: 0 0 30px rgba(255, 82, 82, 0.1); }
 </style>
