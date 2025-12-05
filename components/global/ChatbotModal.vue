@@ -875,11 +875,6 @@ export default {
     closeConversation(conversationId) {
       const convToDelete = this.conversations.find(conv => conv.id === conversationId);
       
-      if (convToDelete && convToDelete.persistedInBackend) {
-        console.warn('[ChatbotModal] Cannot delete persisted conversation:', conversationId);
-        return;
-      }
-      
       const index = this.conversations.findIndex(conv => conv.id === conversationId);
       if (index !== -1) {
         this.conversations.splice(index, 1);
@@ -959,50 +954,12 @@ export default {
     },
 
     startTitleGenerationInterval() {
-      if (this.titleGenerationInterval) {
-        clearInterval(this.titleGenerationInterval);
-      }
-
-      this.titleGenerationInterval = setInterval(() => {
-        this.generateConversationTitles();
-      }, 10000);
-
-      setTimeout(() => {
-        this.generateConversationTitles();
-      }, 5000);
     },
 
     async generateConversationTitles() {
-      for (const conversation of this.conversations) {
-        if (conversation.titleGenerated || conversation.messages.length === 0) {
-          continue;
-        }
-
-        const placeholderPattern = /^\d+ - \d{4}-\d{2}-\d{2} \d{2}:\d{2} UTC$/;
-        if (!placeholderPattern.test(conversation.title)) {
-          continue;
-        }
-
-        try {
-          const conversationText = conversation.messages
-            .map(msg => `${msg.role}: ${msg.content}`)
-            .join('\n');
-
-          const response = await this.generateTitleWithAI(conversationText);
-          
-          if (response && response.trim()) {
-            conversation.title = response.trim();
-            conversation.titleGenerated = true;
-          }
-        } catch (error) {
-          console.warn('Error generating title for conversation:', error);
-        }
-      }
     },
 
     async generateTitleWithAI(conversationText) {
-      const prompt = `Generate a short and descriptive title (maximum 40 characters) for this conversation about movies/TV shows. Respond only with the title, no quotes or explanations. Detect the language of the conversation and generate the title in that same language:\n\n${conversationText}`;
-
       try {
         const response = await fetch(this.titleGenerationUrl, {
           method: 'POST',
@@ -1010,22 +967,42 @@ export default {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            query: prompt,
-            chat_id: null
+            query: conversationText,
+            chat_id: null,
+            is_title_generation: true
           })
         });
 
         if (response.ok) {
           const data = await response.json();
-          return data.result ? data.result.substring(0, 40) : null;
+          const aiTitle = data.result ? data.result.substring(0, 40) : null;
+          if (aiTitle && aiTitle.trim()) {
+            return aiTitle;
+          }
+        } else {
+            console.error('Title generation failed:', response.status, response.statusText);
         }
       } catch (error) {
-        console.warn('Error calling title generation API:', error);
+        console.error('Error calling title generation API:', error);
+      }
+
+      const firstAssistantMessage = conversationText.split('\n').find(line => line.startsWith('assistant:'));
+      if (firstAssistantMessage) {
+          const content = firstAssistantMessage.replace('assistant:', '').trim();
+          const sentenceEnd = content.indexOf('.');
+          let title = sentenceEnd > -1 ? content.substring(0, sentenceEnd) : content;
+          if (title.length > 40) title = title.substring(0, 37) + '...';
+          return title;
       }
 
       const firstUserMessage = conversationText.split('\n').find(line => line.startsWith('user:'));
       if (firstUserMessage) {
-        const content = firstUserMessage.replace('user:', '').trim();
+        let content = firstUserMessage.replace('user:', '').trim();
+        if (this.getUserLanguage() === 'Spanish') {
+          content = content.replace(/^(cuentame|dime|hablame|decime) (sobre|de|el|la|los|las) /i, '');
+        } else {
+          content = content.replace(/^(tell me about|what is|what's|who is|who's|give me info on) /i, '');
+        }
         return content.length > 40 ? content.substring(0, 37) + '...' : content;
       }
 
@@ -1186,7 +1163,13 @@ export default {
       this.chatMessages = [];
       this.chatBotResponse = '';
       
-      this.createNewConversation();
+      const firstConv = this.conversations[0];
+      if (firstConv && firstConv.messages.length === 0 && !firstConv.persistedInBackend) {
+        this.activeConversationId = firstConv.id;
+        this.loadActiveConversation();
+      } else {
+        this.createNewConversation();
+      }
     },
 
     close() {
@@ -1460,6 +1443,25 @@ export default {
       }
       
       this.updateConversationTitle();
+      
+      if (this.chatMessages.length === 2) {
+        const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
+        if (activeConv && !activeConv.titleGenerated) {
+             const conversationText = this.chatMessages
+            .map(msg => {
+              const content = msg.role === 'assistant' ? this.getPlainTextContent(msg.content) : msg.content;
+              return `${msg.role}: ${content}`;
+            })
+            .join('\n');
+            
+            this.generateTitleWithAI(conversationText).then(title => {
+                if (title && title.trim()) {
+                    activeConv.title = title.trim();
+                    activeConv.titleGenerated = true;
+                }
+            });
+        }
+      }
     },
 
     loadDailyPrompt() {
