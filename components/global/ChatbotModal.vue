@@ -2568,7 +2568,6 @@ export default {
     }
   }
 </script>
-
 <style scoped>
 /* =========================================
    1. MODAL & LAYOUT
@@ -3107,7 +3106,7 @@ export default {
    9. RESPONSIVE
    ========================================= */
 @media screen and (max-width: 768px) {
-  .chatbot-container { width: 95%; height: 60vh; max-height: none; border-radius: 16px; margin: 0 auto; }
+  .chatbot-container { width: 95%; height: 75vh; max-height: none; border-radius: 16px; margin: 0 auto; }
   .conversations-sidebar { position: absolute; top: 0; left: 0; height: 100%; width: 0; max-width: 300px; background: #0d1b2a; box-shadow: none; }
   .conversations-sidebar.open { width: 85%; box-shadow: 2px 0 20px rgba(0,0,0,0.5); }
   .sidebar-backdrop { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); z-index: 15; }
@@ -3120,8 +3119,6 @@ export default {
   .spoiler-content p { font-size: 18px; }
   .selection-message-content p { font-size: 18px; }
 }
-@media screen and (max-height: 600px) and (max-width: 768px) { .chatbot-container { height: 100%; width: 100%; border-radius: 0; margin: 0; } }
-@media screen and (max-height: 500px) and (max-width: 768px) { .chatbot-container { height: 98vh; width: 100%; border-radius: 0; } .chatbot-input { padding: 10px; } .modern-textarea { padding: 10px; font-size: 14px; } .send-button { width: 40px; height: 40px; } }
 
 .copy-notification { position: fixed; top: 140px; left: 50%; transform: translateX(-50%); background: #7FDBF1; color: #000; padding: 16px 32px; border-radius: 20px; font-weight: 600; z-index: 10000; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
