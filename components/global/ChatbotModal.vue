@@ -2592,7 +2592,7 @@ export default {
   max-width: 1200px;
   height: 85vh;
   max-height: 800px;
-      background: linear-gradient(135deg, #0f2027 0%, #172c33 50%, #000000 100%);
+  background: linear-gradient(135deg, #010102 0%, #172f37 50%, #000000 100%);
   border-radius: 16px;
   border: 1px solid rgba(127, 219, 241, 0.15);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
