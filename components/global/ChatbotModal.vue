@@ -3302,7 +3302,7 @@ export default {
    9. RESPONSIVE
    ========================================= */
 @media screen and (max-width: 768px) {
-  .chatbot-container { width: 95%; height: 60vh; max-height: none; border-radius: 16px; margin: 0 auto; }
+  .chatbot-container { width: 95%; height: 75vh; max-height: none; border-radius: 16px; margin: 0 auto; }
   .conversations-sidebar { position: absolute; top: 0; left: 0; height: 100%; width: 0; max-width: 300px; background: #0d1b2a; box-shadow: none; }
   .conversations-sidebar.open { width: 85%; box-shadow: 2px 0 20px rgba(0,0,0,0.5); }
   .sidebar-backdrop { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px); z-index: 15; }
