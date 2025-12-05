@@ -975,7 +975,10 @@ export default {
 
         if (response.ok) {
           const data = await response.json();
-          return data.result ? data.result.substring(0, 40) : null;
+          const aiTitle = data.result ? data.result.substring(0, 40) : null;
+          if (aiTitle && aiTitle.trim()) {
+            return aiTitle;
+          }
         } else {
             console.error('Title generation failed:', response.status, response.statusText);
         }
@@ -995,7 +998,11 @@ export default {
       const firstUserMessage = conversationText.split('\n').find(line => line.startsWith('user:'));
       if (firstUserMessage) {
         let content = firstUserMessage.replace('user:', '').trim();
-        content = content.replace(/^(cuentame|dime|hablame|decime) (sobre|de|el|la|los|las) /i, '');
+        if (this.getUserLanguage() === 'Spanish') {
+          content = content.replace(/^(cuentame|dime|hablame|decime) (sobre|de|el|la|los|las) /i, '');
+        } else {
+          content = content.replace(/^(tell me about|what is|what's|who is|who's|give me info on) /i, '');
+        }
         return content.length > 40 ? content.substring(0, 37) + '...' : content;
       }
 
@@ -1441,7 +1448,10 @@ export default {
         const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
         if (activeConv && !activeConv.titleGenerated) {
              const conversationText = this.chatMessages
-            .map(msg => `${msg.role}: ${msg.content}`)
+            .map(msg => {
+              const content = msg.role === 'assistant' ? this.getPlainTextContent(msg.content) : msg.content;
+              return `${msg.role}: ${content}`;
+            })
             .join('\n');
             
             this.generateTitleWithAI(conversationText).then(title => {
