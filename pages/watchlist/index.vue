@@ -55,16 +55,7 @@
                   <span class="btn-label">Filters</span>
                 </button>
 
-                <button class="control-btn" @click="openSortModal">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="m3 16 4 4 4-4"/>
-                    <path d="M7 20V4"/>
-                    <path d="M17 10V4h-2"/>
-                    <path d="M15 10h4"/>
-                    <rect x="15" y="14" width="4" height="6" ry="2"/>
-                  </svg>
-                  <span class="btn-label">Sort</span>
-                </button>
+
 
                 <button class="control-btn ai-analysis-btn" @click="toggleAiSelectionMode" :class="{ 'active': aiSelectionMode }">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -378,18 +369,39 @@
                 </div>
               </div>
               
+                
               <div class="filter-group">
-                <label class="filter-label">IMDB Rating</label>
-                <select v-model="selectedTmdbRating" class="filter-input">
-                  <option value="">All ratings</option>
-                  <option value="9-10">9+</option>
-                  <option value="8-8.9">8+</option>
-                  <option value="7-7.9">7+</option>
-                  <option value="6-6.9">6+</option>
-                  <option value="5-5.9">5+</option>
-                  <option value="0-4.9">< 5</option>
+                <label class="filter-label">IMDB Rating Range</label>
+                <div class="year-inputs">
+                  <input 
+                    type="number" 
+                    v-model.number="minImdbRating" 
+                    min="0" 
+                    max="10"
+                    placeholder="Min"
+                    class="year-input"
+                  >
+                  <span class="year-separator">-</span>
+                  <input 
+                    type="number" 
+                    v-model.number="maxImdbRating" 
+                    min="0" 
+                    max="10"
+                    placeholder="Max"
+                    class="year-input"
+                  >
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <label class="filter-label">Sort By</label>
+                <select v-model="orderMode" class="filter-input">
+                  <option v-for="option in sortOptions" :key="option.value" :value="option.value">
+                    {{ option.label }}
+                  </option>
                 </select>
               </div>
+
               
               <div class="filter-group">
                 <label class="filter-label">My Rating</label>
@@ -414,30 +426,7 @@
           </div>
         </div>
 
-        <div v-if="sortModalVisible" class="modal-overlay" @click="closeSortModal">
-          <div class="filters-modal" @click.stop>
-            <div class="modal-header">
-              <h3>Sort By</h3>
-              <button class="close-btn" @click="closeSortModal">×</button>
-            </div>
-            
-            <div class="filters-content">
-              <div class="sort-options">
-                <button
-                  v-for="option in sortOptions"
-                  :key="option.value"
-                  @click="selectSort(option.value)"
-                  :class="['sort-option', { active: orderMode === option.value }]"
-                >
-                  <span>{{ option.label }}</span>
-                  <svg v-if="orderMode === option.value" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+
 
         <div v-if="notificationModalVisible" class="modal-overlay" @click="closeNotificationModal">
           <div class="rating-modal" @click.stop style="max-width: 400px;">
@@ -538,7 +527,6 @@ export default {
       tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://entercinema-favorites.vercel.app/api',
       isLoadingFavorites: false, 
       orderMode: 'latest-added',
-      sortModalVisible: false,
       genreDropdownOpen: false,
       filteredSeriesDetails: [],
       filtersModalVisible: false,
@@ -585,7 +573,8 @@ export default {
         'Excellent, a great experience',
         'Masterpiece, must-see'
       ],
-      selectedTmdbRating: '',
+      minImdbRating: null,
+      maxImdbRating: null,
       selectedUserRating: '',
       tmdbRatingRanges: [
         '9-10', '8-8.9', '7-7.9', '6-6.9', '5-5.9', '0-4.9'
@@ -720,7 +709,20 @@ export default {
     selectedGenre() {
       this.currentPage = 1;
     },
-    selectedTmdbRating() {
+    minImdbRating(newVal) {
+      if (newVal !== null && this.maxImdbRating !== null && newVal > this.maxImdbRating) {
+        const temp = this.maxImdbRating;
+        this.maxImdbRating = newVal;
+        this.minImdbRating = temp;
+      }
+      this.currentPage = 1;
+    },
+    maxImdbRating(newVal) {
+      if (newVal !== null && this.minImdbRating !== null && newVal < this.minImdbRating) {
+        const temp = this.minImdbRating;
+        this.minImdbRating = newVal;
+        this.maxImdbRating = temp;
+      }
       this.currentPage = 1;
     },
     selectedUserRating() {
@@ -761,25 +763,7 @@ export default {
     toggleSelectionInfo() {
       this.showSelectionInfo = !this.showSelectionInfo;
     },
-    removeFilter(filterValue) {
-      if (filterValue === 'orderMode') {
-        this.orderMode = 'latest-added';
-      } else {
-        this[filterValue] = filterValue.includes('Year') ? null : '';
-      }
-    },
-    openSortModal() {
-      this.sortModalVisible = true;
-    },
-    
-    closeSortModal() {
-      this.sortModalVisible = false;
-    },
-    
-    selectSort(value) {
-      this.orderMode = value;
-      this.closeSortModal();
-    },
+
     toggleFilterType(event) {
       this.filter = event.target.checked ? 'tvShows' : 'movies';
       this.currentPage = 1;
@@ -800,6 +784,17 @@ export default {
       this.filtersModalVisible = false;
     },
 
+    removeFilter(filterValue) {
+      if (filterValue === 'orderMode') {
+        this.orderMode = 'latest-added';
+      } else if (filterValue === 'imdbRating') {
+        this.minImdbRating = null;
+        this.maxImdbRating = null;
+      } else {
+        this[filterValue] = filterValue.includes('Year') ? null : '';
+      }
+    },
+
     setYearRange(range) {
       const [start, end] = range.split('-').map(Number);
       this.customYearStart = start;
@@ -808,7 +803,8 @@ export default {
 
     clearAllFilters() {
       this.selectedGenre = '';
-      this.selectedTmdbRating = '';
+      this.minImdbRating = null;
+      this.maxImdbRating = null;
       this.selectedUserRating = '';
       this.customYearStart = null;
       this.customYearEnd = null;
@@ -1348,7 +1344,8 @@ export default {
     },
     hasActiveFilters() {
       return this.selectedGenre !== '' || 
-            this.selectedTmdbRating !== '' || 
+            this.minImdbRating !== null ||
+            this.maxImdbRating !== null ||
             this.selectedUserRating !== '' || 
             this.customYearStart !== null || 
             this.customYearEnd !== null ||
@@ -1370,19 +1367,24 @@ export default {
         chips.push({ type: 'year', label: `To ${this.customYearEnd}`, value: 'customYearEnd' });
       }
       
-      if (this.selectedTmdbRating) {
-        const ratingLabels = {
-          '9-10': '9+',
-          '8-8.9': '8+',
-          '7-7.9': '7+',
-          '6-6.9': '6+',
-          '5-5.9': '5+',
-          '0-4.9': '< 5'
-        };
+      if (this.minImdbRating !== null || this.maxImdbRating !== null) {
+        let label = '';
+        if (this.minImdbRating !== null && this.maxImdbRating !== null) {
+           if (this.minImdbRating === this.maxImdbRating) {
+             label = `IMDB: ${this.minImdbRating}`;
+           } else {
+             label = `IMDB: ${this.minImdbRating}-${this.maxImdbRating}`;
+           }
+        } else if (this.minImdbRating !== null) {
+          label = `IMDB: ≥ ${this.minImdbRating}`;
+        } else if (this.maxImdbRating !== null) {
+          label = `IMDB: ≤ ${this.maxImdbRating}`;
+        }
+
         chips.push({ 
-          type: 'tmdb', 
-          label: `Rating: ${ratingLabels[this.selectedTmdbRating]}`, 
-          value: 'selectedTmdbRating' 
+          type: 'imdbRating', 
+          label: label, 
+          value: 'imdbRating' 
         });
       }
       
@@ -1444,18 +1446,20 @@ export default {
         item.details.yearStartForDb <= (this.customYearEnd || this.currentYear));
 
       let matchesTmdbRating = true;
-      if (this.selectedTmdbRating !== '') {
+      if (this.minImdbRating !== null || this.maxImdbRating !== null) {
         let rating;
         if (item.details.rating_source === 'imdb' && item.details.imdb_rating) {
           rating = item.details.imdb_rating;
         } else if (item.details.starsForDb) {
-          rating = this.formatRating(item.details.starsForDb);
+          rating = parseFloat(this.formatRating(item.details.starsForDb));
         }
         
-        if (!rating) {
+        if (rating === undefined || rating === null) {
           matchesTmdbRating = false;
         } else {
-          const [min, max] = this.selectedTmdbRating.split('-').map(Number);
+          const min = this.minImdbRating !== null ? this.minImdbRating : 0;
+          const max = this.maxImdbRating !== null ? this.maxImdbRating : 10;
+          
           matchesTmdbRating = rating >= min && rating <= max;
         }
       }
