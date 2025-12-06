@@ -72,15 +72,15 @@
     data() {
       return {
         categories: [
-        { image: "/thumbnails/talkshow-tv-eng.png", link: "/genre/10767/tv", alt: "TalkShow" },
-        { image: "/thumbnails/comedy-tv-eng.png", link: "/genre/35/tv", alt: "Comedy" },
-        { image: "/thumbnails/mistery-tv-eng.png", link: "/genre/9648/tv", alt: "Mistery" },
-        { image: "/thumbnails/sciencefiction-movie-eng.png", link: "/genre/10765/tv", alt: "Sci-Fi & Fantasy" },
-        { image: "/thumbnails/crime-tv-eng.png", link: "/genre/80/tv", alt: "Crime" },
-        { image: "/thumbnails/documentary-tv-eng.png", link: "/genre/99/tv", alt: "Documentaries" },
-        { image: "/thumbnails/action-movie-eng.png", link: "/genre/10759/tv", alt: "Action & Adventures" },
-        { image: "/thumbnails/drama-tv-eng.png", link: "/genre/18/tv", alt: "Drama" }, 
-        { image: "/thumbnails/animation-movie-eng.png", link: "/genre/16/tv", alt: "Animation" },
+        { image: "/thumbnails/talkshow-tv-eng.webp", link: "/genre/10767/tv", alt: "TalkShow" },
+        { image: "/thumbnails/comedy-tv-eng.webp", link: "/genre/35/tv", alt: "Comedy" },
+        { image: "/thumbnails/mistery-tv-eng.webp", link: "/genre/9648/tv", alt: "Mistery" },
+        { image: "/thumbnails/sciencefiction-movie-eng.webp", link: "/genre/10765/tv", alt: "Sci-Fi & Fantasy" },
+        { image: "/thumbnails/crime-tv-eng.webp", link: "/genre/80/tv", alt: "Crime" },
+        { image: "/thumbnails/documentary-tv-eng.webp", link: "/genre/99/tv", alt: "Documentaries" },
+        { image: "/thumbnails/action-movie-eng.webp", link: "/genre/10759/tv", alt: "Action & Adventures" },
+        { image: "/thumbnails/drama-tv-eng.webp", link: "/genre/18/tv", alt: "Drama" }, 
+        { image: "/thumbnails/animation-movie-eng.webp", link: "/genre/16/tv", alt: "Animation" },
         ],
       };
     },
