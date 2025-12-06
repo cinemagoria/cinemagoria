@@ -106,13 +106,13 @@ export default {
         {
           src: "/icon-512x512.webp",
           sizes: "512x512",
-          type: "image/png",
+          type: "image/webp",
           purpose: "any"
         },
         {
           src: "/icon-512x512.webp",
           sizes: "512x512",
-          type: "image/png",
+          type: "image/webp",
           purpose: "maskable"
         }
       ]
