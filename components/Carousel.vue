@@ -15,7 +15,7 @@
                 <!-- Slide-start -->
                 <div class="swiper-slide carousel-slide" @click="redirectToActionMovie">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/action-movie-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/action-movie-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                     <div class="carousel-slide-content-bottom">
@@ -26,7 +26,7 @@
                 <!-- Slide-start -->
                 <div class="swiper-slide carousel-slide" @click="redirectToScienceFictionMovie">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/sciencefiction-movie-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/sciencefiction-movie-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                     
@@ -38,7 +38,7 @@
                 <!-- Slide-start -->
                 <div class="swiper-slide carousel-slide" @click="redirectToMisteryMovie">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/mistery-movie-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/mistery-movie-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                     
@@ -50,7 +50,7 @@
                 <!-- Slide-start -->
                 <div class="swiper-slide carousel-slide" @click="redirectToHorrorMovie">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/horror-movie-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/horror-movie-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                     
@@ -62,7 +62,7 @@
                 <!-- Slide-start -->
                 <div class="swiper-slide carousel-slide" @click="redirectToSuspenseMovie">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/suspense-movie-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/suspense-movie-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                     
@@ -74,7 +74,7 @@
                 <!-- Slide-start -->
                 <div class="swiper-slide carousel-slide" @click="redirectToComedyMovie">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/comedy-movie-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/comedy-movie-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                     
@@ -86,7 +86,7 @@
                 <!-- Slide-start -->
                 <div class="swiper-slide carousel-slide" @click="redirectToAdventureMovie">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/adventure-tv-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/adventure-tv-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                                     <div class="carousel-slide-content-bottom">
@@ -97,7 +97,7 @@
                 <!-- Slide-start -->
               <div class="swiper-slide carousel-slide" @click="redirectToCrimeMovie">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/crime-movie-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/crime-movie-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                                     <div class="carousel-slide-content-bottom">
@@ -108,7 +108,7 @@
               <!-- Slide-start -->
               <div class="swiper-slide carousel-slide" @click="redirectToHistoryMovie">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/history-movie-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/history-movie-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                                     <div class="carousel-slide-content-bottom">
@@ -119,7 +119,7 @@
               <!-- Slide-start -->
               <div class="swiper-slide carousel-slide" @click="redirectToDocumentaryMovie">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/documentary-movie-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/documentary-movie-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                                     <div class="carousel-slide-content-bottom">
@@ -130,7 +130,7 @@
                 <!-- Slide-start -->
               <div class="swiper-slide carousel-slide" @click="redirectToAnimationMovie">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/animation-movie-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/animation-movie-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                                     <div class="carousel-slide-content-bottom">
@@ -140,7 +140,7 @@
                 <!-- Slide-end -->
                 <div class="swiper-slide carousel-slide" @click="redirectToDramaMovie">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/drama-tv-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/drama-tv-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                                     <div class="carousel-slide-content-bottom">
@@ -161,7 +161,7 @@
                 <!-- Slide-start -->
                 <div class="swiper-slide carousel-slide" @click="redirectToComedyTv">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/comedy-tv-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/comedy-tv-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                     
@@ -173,7 +173,7 @@
                 <!-- Slide-start -->
                 <div class="swiper-slide carousel-slide" @click="redirectToDocumentaryTv">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/documentary-tv-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/documentary-tv-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                     
@@ -185,7 +185,7 @@
                 <!-- Slide-start -->
                 <div class="swiper-slide carousel-slide" @click="redirectToActionTv">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/action-movie-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/action-movie-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                     
@@ -197,7 +197,7 @@
                 <!-- Slide-start -->
                 <div class="swiper-slide carousel-slide" @click="redirectToScienceFictionTv">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/sciencefiction-movie-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/sciencefiction-movie-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                     
@@ -209,7 +209,7 @@
                 <!-- Slide-start -->
                 <div class="swiper-slide carousel-slide" @click="redirectToCrimeTv">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/crime-tv-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/crime-tv-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                     
@@ -221,7 +221,7 @@
                 <!-- Slide-start -->
                 <div class="swiper-slide carousel-slide" @click="redirectToDramaTv">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/drama-tv-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/drama-tv-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                     
@@ -233,7 +233,7 @@
                 <!-- Slide-start -->
                 <div class="swiper-slide carousel-slide" @click="redirectToMisteryTv">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/mistery-tv-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/mistery-tv-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                                     <div class="carousel-slide-content-bottom">
@@ -244,7 +244,7 @@
                 <!-- Slide-start -->
               <div class="swiper-slide carousel-slide" @click="redirectToAnimationTv">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/animation-movie-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/animation-movie-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                                     <div class="carousel-slide-content-bottom">
@@ -255,7 +255,7 @@
               <!-- Slide-start -->
               <div class="swiper-slide carousel-slide" @click="redirectToTalkshowTv">
                   <div class="carousel-slide-img">
-                    <img src="~static/thumbnails/talkshow-tv-esp.png" alt="Carousel">
+                    <img src="~static/thumbnails/talkshow-tv-esp.webp" alt="Carousel">
                   </div>
                   <div class="carousel-slide-content">
                                     <div class="carousel-slide-content-bottom">

@@ -32,7 +32,7 @@ export default {
       {
         hid: "og:image",
         property: "og:image",
-        content: "https://es.entercinema.com/icon-512x512.png",
+        content: "https://es.entercinema.com/icon-512x512.webp",
       },
       { name: "theme-color", content: "#03496B" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
@@ -104,13 +104,13 @@ export default {
           purpose: "maskable"
         },
         {
-          src: "/icon-512x512.png",
+          src: "/icon-512x512.webp",
           sizes: "512x512",
           type: "image/png",
           purpose: "any"
         },
         {
-          src: "/icon-512x512.png",
+          src: "/icon-512x512.webp",
           sizes: "512x512",
           type: "image/png",
           purpose: "maskable"
