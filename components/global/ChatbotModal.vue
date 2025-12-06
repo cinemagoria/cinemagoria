@@ -987,6 +987,112 @@ export default {
       this.chatBotResults = results.filter(item => item !== null);
     },
     
+    toggleSelectionMode() {
+      this.selectionMode = !this.selectionMode;
+      this.selectedConversations = [];
+    },
+
+    toggleArchiveView() {
+      this.showArchived = !this.showArchived;
+      this.selectionMode = false;
+      this.selectedConversations = [];
+      this.loadConversationsFromBackend();
+    },
+
+    handleConversationClick(conv) {
+      if (this.selectionMode) {
+        this.toggleSelectConversation(conv.id);
+      } else {
+        this.switchConversation(conv.id);
+      }
+    },
+
+    toggleSelectConversation(id) {
+      const index = this.selectedConversations.indexOf(id);
+      if (index === -1) {
+        this.selectedConversations.push(id);
+      } else {
+        this.selectedConversations.splice(index, 1);
+      }
+    },
+
+    async archiveSelectedConversations() {
+      if (this.selectedConversations.length === 0) return;
+      
+      const userEmail = this.getUserEmail();
+      const endpoint = this.showArchived 
+          ? 'https://entercinema-assistant-rust.vercel.app/api/unarchive-conversations'
+          : 'https://entercinema-assistant-rust.vercel.app/api/archive-conversations';
+
+      try {
+        await axios.post(endpoint, {
+          chat_ids: this.selectedConversations,
+          user_email: userEmail
+        });
+        
+        // Refresh
+        await this.loadConversationsFromBackend();
+        this.selectionMode = false;
+        this.selectedConversations = [];
+        
+        // If active conversation was archived
+        if (!this.conversations.find(c => c.id === this.activeConversationId)) {
+            if (this.conversations.length > 0) {
+               this.switchConversation(this.conversations[0].id);
+            } else {
+               this.createNewConversation();
+            }
+        }
+      } catch (e) {
+        console.error("Failed to archive/unarchive", e);
+      }
+    },
+
+    async deleteSelectedConversations() {
+        if (this.selectedConversations.length === 0) return;
+        this.deleteConfirmationText = 'Las conversaciones seleccionadas se eliminarán permanentemente.';
+        this.confirmDeleteModalOpen = true;
+    },
+
+    closeDeleteModal() {
+        this.confirmDeleteModalOpen = false;
+    },
+
+    async confirmDelete() {
+        const userEmail = this.getUserEmail();
+        const ids = this.selectedConversations; 
+        
+        try {
+            await axios.post('https://entercinema-assistant-rust.vercel.app/api/delete-conversations', {
+                chat_ids: ids,
+                user_email: userEmail
+            });
+            
+            // Remove locally to be snappy
+            this.conversations = this.conversations.filter(c => !ids.includes(c.id));
+            
+            // If active was deleted
+            if (this.activeConversationId && ids.includes(this.activeConversationId)) {
+                if (this.conversations.length > 0) {
+                    this.switchConversation(this.conversations[0].id);
+                } else {
+                    this.createNewConversation();
+                }
+            }
+            
+            this.selectionMode = false;
+            this.selectedConversations = [];
+            
+            // Background refresh to ensure sync
+            this.loadConversationsFromBackend();
+
+        } catch (e) {
+            console.error("Failed to delete", e);
+        } finally {
+            this.closeDeleteModal();
+        }
+    },
+
     createNewConversation() {
       const newId = Date.now().toString();
       this.conversationIndex++;
