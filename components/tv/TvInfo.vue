@@ -19,7 +19,7 @@
         v-if="item.overview"
         :class="$style.overview">
         <h2 :class="$style.title">
-          Storyline
+          Sinopsis
         </h2>
 
         <div v-html="item.overview" />
@@ -29,7 +29,7 @@
         <ul class="nolist">
           <li v-if="showOriginalTitle">
             <div :class="$style.label">
-              Original Title
+              Título Original
             </div>
 
             <div :class="$style.value">
@@ -38,7 +38,7 @@
           </li>
           <li v-if="item.first_air_date">
             <div :class="$style.label">
-              First Aired
+              Primera emisión
             </div>
 
             <div :class="$style.value">
@@ -47,7 +47,7 @@
           </li>
           <li v-if="item.last_air_date">
             <div :class="$style.label">
-              Last Aired
+              Última emisión
             </div>
 
             <div :class="$style.value">
@@ -56,7 +56,7 @@
           </li>
           <li v-if="item.episode_run_time && item.episode_run_time.length">
             <div :class="$style.label">
-              Runtime
+              Duración
             </div>
 
             <div :class="$style.value">
@@ -65,7 +65,7 @@
           </li>
           <li v-if="creators">
             <div :class="$style.label">
-              Creator
+              Creador
             </div>
 
             <div
@@ -74,7 +74,7 @@
           </li>
           <li v-if="item.genres && item.genres.length">
             <div :class="$style.label">
-              Genre
+              Genero
             </div>
 
             <div
@@ -83,7 +83,7 @@
           </li>
           <li v-if="item.number_of_seasons">
             <div :class="$style.label">
-              Seasons
+              Temporadas
             </div>
 
             <div :class="$style.value">
@@ -92,7 +92,7 @@
           </li>
           <li v-if="item.number_of_episodes">
             <div :class="$style.label">
-              Episodes
+              Episodios
             </div>
 
             <div :class="$style.value">
@@ -101,7 +101,7 @@
           </li>
           <li v-if="item.status">
             <div :class="$style.label">
-              Status
+              Estado
             </div>
 
             <div :class="$style.value">
@@ -110,7 +110,7 @@
           </li>
           <li v-if="item.original_language">
             <div :class="$style.label">
-              Language
+              Idioma original
             </div>
 
             <div :class="$style.value">
@@ -129,7 +129,7 @@
       </div>
 
       <div v-if="isLoggedIn" :class="$style.followSection">
-          <h4 style="font-size: 16px; font-weight:800; text-transform: uppercase;" class="section-title">Notifications</h4>
+          <h4 style="font-size: 16px; font-weight:800; text-transform: uppercase;" class="section-title">Notificaciones</h4>
           <button 
             @click="toggleFollowTv" 
             :class="[$style.followButton, { [$style.following]: isFollowingTv }]"
@@ -141,7 +141,7 @@
               <path v-if="isFollowingTv" d="M13.73 21a2 2 0 0 1-3.46 0"/>
               <polyline v-if="isFollowingTv" points="9 11 12 14 22 4" stroke-width="3"/>
             </svg>
-            {{ isFollowingTv ? 'Following' : 'Follow Episodes' }}
+            {{ isFollowingTv ? 'Siguiendo' : 'Seguir episodios' }}
           </button>
       </div>
       <div :class="$style.external">
@@ -151,7 +151,7 @@
       </div>
       <div v-if="reviews && reviews.length" class="reviews-container">
         <br>
-        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reviews ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px;  color: #8AE8FC;" @click="toggleFullReviews"> WARNING: MAY CONTAIN SPOILERS</span></strong>
+        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reseñas ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px;  color: #8AE8FC;" @click="toggleFullReviews"> ADVERTENCIA: PUEDE CONTENER SPOILERS</span></strong>
         <ul class="nolist" v-show="showFullReviews">
             <li v-for="(review, index) in reviews" :key="index" style="margin-top: 3rem;">
                 <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">
@@ -159,7 +159,7 @@
                     <strong style="letter-spacing: 2px; font-size: 14px;">Date:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ formatCreatedAt(review.createdAt) }}</span><br>
                     <strong style="letter-spacing: 2px; font-size: 14px;">Rating:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ review.authorRating }}</span><br>
                     <span style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.content, index, review.showFullContent)"></span><br>
-                    <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #8AE8FC; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Read More].</span>
+                    <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #8AE8FC; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Leer más.</span>
                 </p>
             </li>
         </ul>

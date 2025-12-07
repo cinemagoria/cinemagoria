@@ -135,7 +135,7 @@
       </div>
       <div v-if="reviews && reviews.length" class="reviews-container">
         <br>
-        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reviews ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px; color: #8AE8FC;" @click="toggleFullReviews"> WARNING: MAY CONTAIN SPOILERS</span></strong>
+        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reseñas ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px; color: #8AE8FC;" @click="toggleFullReviews"> ADVERTENCIA: PUEDE CONTENER SPOILERS</span></strong>
         <ul class="nolist" v-show="showFullReviews">
             <li v-for="(review, index) in reviews" :key="index" style="margin-top: 3rem;">
                 <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">

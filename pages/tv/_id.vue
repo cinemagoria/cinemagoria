@@ -33,7 +33,7 @@
     <template v-if="activeMenu === 'photos' && showImages">
       <Images
         v-if="item.images.backdrops.length"
-        title="Backdrops"
+        title="Portadas"
         type="backdrop"
         :images="item.images.backdrops" />
 

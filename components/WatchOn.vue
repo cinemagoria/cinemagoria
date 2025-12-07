@@ -1,6 +1,6 @@
 <template>
   <div class="watch-on-container">
-    <h4 class="section-title">Watch On</h4>
+    <h4 class="section-title">Ver en</h4>
     <div class="links-grid">
       
       <div v-if="imdbId" class="link-item">

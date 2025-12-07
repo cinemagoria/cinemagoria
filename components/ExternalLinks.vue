@@ -1,6 +1,6 @@
 <template>
   <div class="external-links-container">
-    <h4 class="section-title">External Links</h4>
+    <h4 class="section-title">Enlaces Externos</h4>
     <div class="links-grid">
 
       <div v-if="links.imdb_id" class="link-item">

@@ -47,7 +47,7 @@
 
             <div :class="$style.value">
               {{ person.birthday | fullDate }}
-              <span v-if="!person.deathday">(age {{ age }})</span>
+              <span v-if="!person.deathday">({{ age }} años)</span>
             </div>
           </li>
           <li v-if="person.place_of_birth">
@@ -66,7 +66,7 @@
 
             <div :class="$style.value">
               {{ person.deathday | fullDate }}
-              <span v-if="person.birthday">(aged {{ age }})</span>
+              <span v-if="person.birthday">({{ age }} años)</span>
             </div>
           </li>
         </ul>
