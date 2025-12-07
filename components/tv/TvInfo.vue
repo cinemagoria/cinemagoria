@@ -148,8 +148,7 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTvShowRecommended, getPerson, getIMDbRatingFromDB } from '~/api'; 
+import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTvShowRecommended, getPerson, getIMDbRatingFromDB, enrichTVShowWithIMDbRating } from '~/api'; 
 import { name, creators } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
 import WatchOn from '~/components/WatchOn';
@@ -330,20 +329,7 @@ export default {
     },
     async enrichWithIMDbRatings(items) {
       if (!items?.length) return items;
-      return await Promise.all(items.map(async (item) => {
-          if (item.imdb_rating) return item;
-          try {
-            const detailsResponse = await axios.get(`https://api.themoviedb.org/3/tv/${item.id}`, {
-                params: { api_key: process.env.API_KEY, append_to_response: 'external_ids' }
-            });
-            const imdbId = detailsResponse.data.external_ids?.imdb_id;
-            if (imdbId) {
-                const imdbData = await getIMDbRatingFromDB(imdbId);
-                if (imdbData.found) return { ...item, imdb_rating: imdbData.score, rating_source: 'imdb' };
-            }
-          } catch (error) {}
-          return { ...item, rating_source: 'tmdb' };
-      }));
+      return await Promise.all(items.map(item => enrichTVShowWithIMDbRating(item)));
     },
     async checkIfFollowingTv() {
       const userEmail = localStorage.getItem('email');
