@@ -52,9 +52,12 @@
         :key="`prov-${index}`" 
         class="link-item tmdb-provider"
       >
-        <div 
+        <a 
+          :href="provider.link"
+          target="_blank"
+          rel="noopener noreferrer"
           class="provider-content"
-          :title="`Available on ${provider.name}`"
+          :title="`Watch on ${provider.name}`"
         >
           <img 
             v-if="provider.logo_path"
@@ -63,7 +66,7 @@
             class="provider-icon"
           />
           <span class="label-style">{{ provider.name }}</span>
-        </div>
+        </a>
       </div>
     </div>
   </div>
@@ -195,16 +198,6 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.***-logo {
-  width: 23px !important;
-  height: 23px !important;
-  background-image: url('/***-logo.svg');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  transition: transform 0.3s ease;
 }
 
 .link-item a:hover .***-logo {
