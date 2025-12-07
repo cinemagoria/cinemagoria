@@ -9,7 +9,6 @@
           :alt="name">
 
         <span v-else>
-          <!-- eslint-disable-next-line -->
           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd" fill="#999"><path d="M24 22h-24v-20h24v20zm-1-19h-22v18h22v-18zm-1 16h-19l4-7.492 3 3.048 5.013-7.556 6.987 12zm-11.848-2.865l-2.91-2.956-2.574 4.821h15.593l-5.303-9.108-4.806 7.243zm-4.652-11.135c1.38 0 2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5-2.5-1.12-2.5-2.5 1.12-2.5 2.5-2.5zm0 1c.828 0 1.5.672 1.5 1.5s-.672 1.5-1.5 1.5-1.5-.672-1.5-1.5.672-1.5 1.5-1.5z"/></svg>
         </span>
       </div>
@@ -118,17 +117,17 @@
               {{ item.original_language | fullLang }}
             </div>
           </li>
-
-          <li v-if="providersToDisplay && providersToDisplay.length">
-            <div :class="$style.label">
-              Watch On
-            </div>
-            <div :class="$style.value">
-              {{ providersToDisplay.join(', ') }}
-            </div>
-          </li>
         </ul>
       </div>
+
+      <div :class="$style.watchSection">
+        <WatchOn 
+          :providers="providersToDisplay"
+          :imdb-id="item.external_ids.imdb_id"
+          type="tv" 
+        />
+      </div>
+
       <div v-if="isLoggedIn" :class="$style.followSection">
           <h4 style="font-size: 16px; font-weight:800; text-transform: uppercase;" class="section-title">Notifications</h4>
           <button 
@@ -176,10 +175,12 @@ import { getTVShowProviders } from '~/api';
 import { getTvShowReviews } from '~/api'; 
 import { name, creators } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
+import WatchOn from '~/components/WatchOn';
 
 export default {
   components: {
     ExternalLinks,
+    WatchOn,
   },
 
   mixins: [
@@ -347,7 +348,7 @@ export default {
         const providers = await getTVShowProviders(this.item.id);
         this.localProviders = providers;
       } catch (error) {
-        console.error("Error fetching tv show providers:", error);
+        console.error(error);
         this.localProviders = [];
       }
     },
@@ -356,7 +357,7 @@ export default {
         const reviews = await getTvShowReviews(this.item.id);
         this.reviews = reviews;
       } catch (error) {
-        console.error("Error fetching tv show reviews:", error);
+        console.error(error);
       }
     },
     redirectToUrl(url) {
@@ -528,6 +529,10 @@ export default {
       }
     }
   }
+}
+
+.watchSection {
+  margin-bottom: 2rem;
 }
 
 .followButton {
