@@ -74,7 +74,7 @@
           </li>
           <li v-if="item.revenue">
             <div :class="$style.label">
-              Ingresos
+              Recaudación
             </div>
 
             <div :class="$style.value">
@@ -101,7 +101,7 @@
           </li>
           <li v-if="item.original_language">
             <div :class="$style.label">
-              Idioma
+              Idioma Original
             </div>
 
             <div :class="$style.value">
@@ -117,53 +117,33 @@
               :class="$style.value"
               v-html="formatProductionCompanies(item.production_companies)" />
           </li>
-
-          <li v-if="providersToDisplay && providersToDisplay.length">
-            <div :class="$style.label">
-              Ver en
-            </div>
-            <div :class="$style.value">
-              {{ providersToDisplay.join(', ') }}
-            </div>
-          </li>
           <br>
         </ul>
+      </div>
+
+      <div :class="$style.watchSection">
+        <WatchOn 
+          :providers="providersToDisplay"
+          :imdb-id="item.external_ids.imdb_id"
+          type="movie" 
+        />
       </div>
 
       <div :class="$style.external">
         <ExternalLinks
           :links="item.external_ids" />
       </div>
-      <div v-if="localReviews && localReviews.length" class="reviews-container">
+      <div v-if="reviews && reviews.length" class="reviews-container">
         <br>
-        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reseñas ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px;  color: #8AE8FC;" @click="toggleFullReviews"> ADVERTENCIA: PUEDEN CONTENER SPOILERS</span></strong>
-        <div v-if="showFullReviews" style="text-align: right; margin-top: 1rem;">
-          <button @click="toggleLanguage" class="button" style="display: flex !important; position: relative !important; border-radius: 10px !important;">
-            {{ showTranslations ? 'Ver en inglés original' : 'Ver en español' }}
-          </button>
-        </div>
+        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reviews ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px; color: #8AE8FC;" @click="toggleFullReviews"> WARNING: MAY CONTAIN SPOILERS</span></strong>
         <ul class="nolist" v-show="showFullReviews">
-            <li v-for="(review, index) in localReviews" :key="index" style="margin-top: 3rem;">
+            <li v-for="(review, index) in reviews" :key="index" style="margin-top: 3rem;">
                 <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">
-                    <strong style="letter-spacing: 2px; font-size: 14px;">Autor:</strong> <a style="cursor: pointer; letter-spacing: 2px; font-size: 14px;" @click="redirectToUrl(review.url)">{{ review.authorName }}</a><br>
+                    <strong style="letter-spacing: 2px; font-size: 14px;">Escrito por:</strong> <a style="cursor: pointer; letter-spacing: 2px; font-size: 14px;" @click="redirectToUrl(review.url)">{{ review.authorName }}</a><br>
                     <strong style="letter-spacing: 2px; font-size: 14px;">Fecha:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ formatCreatedAt(review.createdAt) }}</span><br>
-                    <strong style="letter-spacing: 2px; font-size: 14px;">Puntuación:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ review.authorRating }}</span><br>
-                    <span v-if="!showTranslations" style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.content, index, review.showFullContent)"></span>
-                    
-                    <span v-else-if="review.translatedContent" style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.translatedContent, index, review.showFullContent)"></span>
-                    
-                    <span v-else-if="review.isTranslating" style="font-size: 1.5rem; color: #B1BABF; font-style: italic;">Traduciendo reseña a español...</span>
-                    
-                    <span v-else-if="review.translationError" style="font-size: 1.5rem; color: #B1BABF; font-style: italic;">
-                      <span style="color: #e74c3c;">Error al traducir. Mostrando reseña en inglés original.</span>
-                    </span>
-                    
-                    <span v-else style="font-size: 1.5rem; color: #B1BABF; font-style: italic;">
-                      <span @click="translateReviewContent(review, index)" style="cursor: pointer; color: #8AE8FC;">Click para traducir esta reseña al español</span>
-                    </span>
-                    
-                    <br>
-                    <span v-if="!review.showFullContent && review.content && review.content.split(' ').length > 200" style="cursor: pointer; color: #8AE8FC; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Leer más].</span>
+                    <strong style="letter-spacing: 2px; font-size: 14px;">Calificación:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ review.authorRating }}</span><br>
+                    <span style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.content, index, review.showFullContent)"></span><br>
+                    <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #8AE8FC; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Read More].</span>
                 </p>
             </li>
         </ul>
@@ -178,10 +158,12 @@ import { getMovieProviders } from '~/api';
 import { getMovieReviews } from '~/api'; 
 import { name, directors } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
+import WatchOn from '~/components/WatchOn';
 
 export default {
   components: {
     ExternalLinks,
+    WatchOn,
   },
 
   mixins: [
@@ -194,10 +176,7 @@ export default {
       type: Object,
       required: true,
     },
-    reviewsProp: {
-      type: Array,
-      default: () => []
-    },
+    reviewsProp: Array,
     providers: {
       type: Array,
       default: () => [],
@@ -209,14 +188,12 @@ export default {
       showFullReviews: false,
       reviews: [],
       localProviders: null,
-      showTranslations: false,
-      localReviews: [],
     };
   },
 
   computed: {
     reviewCount() {
-      return this.localReviews.length;
+      return this.reviews.length;
     },
     poster () {
       if (this.item.poster_path) {
@@ -243,141 +220,82 @@ export default {
     if (!this.providers || this.providers.length === 0) {
       this.fetchProviders();
     }
-    
-    if (!this.reviewsProp || this.reviewsProp.length === 0) {
-      this.fetchReviews();
-    } else {
-      this.localReviews = [...this.reviewsProp];
-    }
+    this.fetchReviews();
+    this.reviews = this.reviewsProp || [];
   },
 
   methods: {
-    toggleFullReviews() {
-      this.showFullReviews = !this.showFullReviews;
-      
-      if (this.showFullReviews && this.localReviews.length > 0) {
-        this.showTranslations = true;
-        this.translateAllReviews();
-      }
-    },
-    
-    toggleLanguage() {
-      this.showTranslations = !this.showTranslations;
-      
-      if (this.showTranslations && this.localReviews.length > 0) {
-        this.translateAllReviews();
-      }
-    },
-    
-    async translateAllReviews() {
-      for (let i = 0; i < this.localReviews.length; i++) {
-        const review = this.localReviews[i];
-        if (review && !review.translatedContent && !review.isTranslating) {
-          await this.translateReviewContent(review, i);
-        }
-      }
-    },
-    
-    async translateReviewContent(review, index) {
-      if (!review || review.translatedContent || review.isTranslating) return;
-      if (!review.content) return;
-      
-      this.$set(review, 'isTranslating', true);
-      
-      try {
-        const { translateReview } = require('~/api');
-        const translatedContent = await translateReview(review.content);
-        this.$set(review, 'translatedContent', translatedContent);
-        this.$set(review, 'isTranslating', false);
-      } catch (error) {
-        console.error('Error al traducir la reseña:', error);
-        this.$set(review, 'isTranslating', false);
-        this.showTranslations = false;
+  toggleFullReviews() {
+    this.showFullReviews = !this.showFullReviews;
+  },
+  formatGenres(genres) {
+    return genres.map(genre => `<a href="/genre/${genre.id}/movie">${genre.name}</a>`).join(', ');
+  },
 
-        if (index === 0) { 
-          this.$set(review, 'translationError', true);
-          setTimeout(() => {
-            this.$set(review, 'translationError', false);
-          }, 5000);
-        }
+  formatProductionCompanies(companies) {
+    const { getProductionCompanySlug } = require('~/utils/constants');
+    return companies.map(company => {
+      const slug = getProductionCompanySlug(company.id);
+      if (slug) {
+        return `<a href="/production/${slug}">${company.name}</a>`;
       }
-    },
+      return company.name;
+    }).join(', ');
+  },
+  
+  toggleReadMore(review) {
+    this.$set(review, 'showFullContent', !review.showFullContent);
+  },
+
+  formatContent(content, index, showFullContent) {
+    if (!content) return '';
+
+    content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    content = content.replace(/_([^_]+)_/g, (match, p1) => p1.toUpperCase());
     
-    formatGenres(genres) {
-      if (!genres || !Array.isArray(genres)) return '';
-      return genres.map(genre => `<a href="/genre/${genre.id}/movie">${genre.name}</a>`).join(', ');
-    },
-
-    formatProductionCompanies(companies) {
-      const { getProductionCompanySlug } = require('~/utils/constants');
-      return companies.map(company => {
-        const slug = getProductionCompanySlug(company.id);
-        if (slug) {
-          return `<a href="/production/${slug}">${company.name}</a>`;
-        }
-        return company.name;
-      }).join(', ');
-    },
-    
-    toggleReadMore(review) {
-      if (!review) return;
-      this.$set(review, 'showFullContent', !review.showFullContent);
-    },
-
-    formatContent(content, index, showFullContent) {
-      if (!content) return '';
-
-      content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      content = content.replace(/_([^_]+)_/g, (match, p1) => p1.toUpperCase());
-      
-      if (showFullContent) {
+    if (showFullContent) {
         return content; 
-      } else {
+    } else {
         const words = content.split(' ');
         if (words.length > 200) {
-          content = words.slice(0, 200).join(' ');
+            content = words.slice(0, 200).join(' ');
         }
         return content;
-      }
-    },
+    }
+  },
 
-    formatCreatedAt(createdAt) {
-      if (!createdAt) return '';
-      return new Date(createdAt).toLocaleString('es-ES', {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    },
-    
-    async fetchProviders() {
-      try {
-        const providers = await getMovieProviders(this.item.id);
-        this.localProviders = providers;
-      } catch (error) {
-        console.error("Error fetching movie providers:", error);
-        this.localProviders = [];
-      }
-    },
-    
-    async fetchReviews() {
-      try {
-        const reviewsList = await getMovieReviews(this.item.id);
-        this.localReviews = Array.isArray(reviewsList) ? reviewsList : [];
-      } catch (error) {
-        console.error('Error al obtener reseñas:', error);
-        this.localReviews = [];
-      }
-    },
-    
-    redirectToUrl(url) {
-      if (!url) return;
-      window.open(url, '_blank');
-    },
-  }
-};
+  formatCreatedAt(createdAt) {
+    if (!createdAt) return '';
+    return new Date(createdAt).toLocaleString('es-ES', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  },
+  async fetchProviders() {
+    try {
+      const providers = await getMovieProviders(this.item.id);
+      this.localProviders = providers;
+    } catch (error) {
+      console.error(error);
+      this.localProviders = [];
+    }
+  },
+  async fetchReviews() {
+    try {
+      const reviews = await getMovieReviews(this.item.id);
+      this.reviews = reviews;
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  redirectToUrl(url) {
+    window.open(url, '_blank');
+  },
+}
+}
 </script>
 
 
@@ -412,10 +330,15 @@ export default {
 }
 
 .right {
+  padding-top: 1rem;
+}
+
+.right {
   @media (min-width: $breakpoint-medium) {
     flex: 1;
   }
 }
+
 
 .poster {
   position: relative;
@@ -515,6 +438,10 @@ export default {
   flex: 2;
 }
 
+.watchSection {
+  margin-bottom: 2rem;
+}
+
 .external {
   ul {
     display: flex;
@@ -539,21 +466,5 @@ export default {
       }
     }
   }
-}
-.button {
-  padding: 1.5rem 2.5rem;
-  font-size: 1.5rem;
-  font-weight: 500;
-  line-height: 1;
-  color: #fff;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  background-color: #092C3D;
-  transition: all 0.2s;
-  border-radius: 10px !important;
-  display: relative !important; 
-}
-.button-icon {
-  display: relative !important;
 }
 </style>

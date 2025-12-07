@@ -9,7 +9,6 @@
           :alt="name">
 
         <span v-else>
-          <!-- eslint-disable-next-line -->
           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd" fill="#999"><path d="M24 22h-24v-20h24v20zm-1-19h-22v18h22v-18zm-1 16h-19l4-7.492 3 3.048 5.013-7.556 6.987 12zm-11.848-2.865l-2.91-2.956-2.574 4.821h15.593l-5.303-9.108-4.806 7.243zm-4.652-11.135c1.38 0 2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5-2.5-1.12-2.5-2.5 1.12-2.5 2.5-2.5zm0 1c.828 0 1.5.672 1.5 1.5s-.672 1.5-1.5 1.5-1.5-.672-1.5-1.5.672-1.5 1.5-1.5z"/></svg>
         </span>
       </div>
@@ -20,7 +19,7 @@
         v-if="item.overview"
         :class="$style.overview">
         <h2 :class="$style.title">
-          Sinopsis
+          Storyline
         </h2>
 
         <div v-html="item.overview" />
@@ -30,7 +29,7 @@
         <ul class="nolist">
           <li v-if="showOriginalTitle">
             <div :class="$style.label">
-              Título Original
+              Original Title
             </div>
 
             <div :class="$style.value">
@@ -39,7 +38,7 @@
           </li>
           <li v-if="item.first_air_date">
             <div :class="$style.label">
-              Primera Emisión
+              First Aired
             </div>
 
             <div :class="$style.value">
@@ -48,7 +47,7 @@
           </li>
           <li v-if="item.last_air_date">
             <div :class="$style.label">
-              Última Emisión
+              Last Aired
             </div>
 
             <div :class="$style.value">
@@ -57,7 +56,7 @@
           </li>
           <li v-if="item.episode_run_time && item.episode_run_time.length">
             <div :class="$style.label">
-              Duración
+              Runtime
             </div>
 
             <div :class="$style.value">
@@ -66,7 +65,7 @@
           </li>
           <li v-if="creators">
             <div :class="$style.label">
-              Creador
+              Creator
             </div>
 
             <div
@@ -75,7 +74,7 @@
           </li>
           <li v-if="item.genres && item.genres.length">
             <div :class="$style.label">
-              Género
+              Genre
             </div>
 
             <div
@@ -84,7 +83,7 @@
           </li>
           <li v-if="item.number_of_seasons">
             <div :class="$style.label">
-              Temporadas
+              Seasons
             </div>
 
             <div :class="$style.value">
@@ -93,7 +92,7 @@
           </li>
           <li v-if="item.number_of_episodes">
             <div :class="$style.label">
-              Episodios
+              Episodes
             </div>
 
             <div :class="$style.value">
@@ -102,7 +101,7 @@
           </li>
           <li v-if="item.status">
             <div :class="$style.label">
-              Estado
+              Status
             </div>
 
             <div :class="$style.value">
@@ -111,26 +110,26 @@
           </li>
           <li v-if="item.original_language">
             <div :class="$style.label">
-              Idioma Original
+              Language
             </div>
 
             <div :class="$style.value">
               {{ item.original_language | fullLang }}
             </div>
           </li>
-
-         <li v-if="providersToDisplay && providersToDisplay.length">
-            <div :class="$style.label">
-              Ver en
-            </div>
-            <div :class="$style.value">
-              {{ providersToDisplay.join(', ') }}
-            </div>
-          </li>
         </ul>
       </div>
+
+      <div :class="$style.watchSection">
+        <WatchOn 
+          :providers="providersToDisplay"
+          :imdb-id="item.external_ids.imdb_id"
+          type="tv" 
+        />
+      </div>
+
       <div v-if="isLoggedIn" :class="$style.followSection">
-          <h4 style="font-size: 16px; font-weight:800; text-transform: uppercase;" class="section-title">Notificaciones</h4>
+          <h4 style="font-size: 16px; font-weight:800; text-transform: uppercase;" class="section-title">Notifications</h4>
           <button 
             @click="toggleFollowTv" 
             :class="[$style.followButton, { [$style.following]: isFollowingTv }]"
@@ -142,7 +141,7 @@
               <path v-if="isFollowingTv" d="M13.73 21a2 2 0 0 1-3.46 0"/>
               <polyline v-if="isFollowingTv" points="9 11 12 14 22 4" stroke-width="3"/>
             </svg>
-            {{ isFollowingTv ? 'Siguiendo' : 'Seguir Episodios' }}
+            {{ isFollowingTv ? 'Following' : 'Follow Episodes' }}
           </button>
       </div>
       <div :class="$style.external">
@@ -152,55 +151,36 @@
       </div>
       <div v-if="reviews && reviews.length" class="reviews-container">
         <br>
-          <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reseñas ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px; color: #8AE8FC;" @click="toggleFullReviews"> ADVERTENCIA: PUEDEN CONTENER SPOILERS</span></strong>
-          <div v-if="showFullReviews" style="text-align: right; margin-top: 1rem;">
-            <button @click="toggleLanguage" class="button" style="display: flex !important; position: relative !important; border-radius: 10px !important;">
-              {{ showTranslations ? 'Ver en inglés original' : 'Ver en español' }}
-            </button>
-          </div>
-          <ul class="nolist" v-show="showFullReviews">
-              <li v-for="(review, index) in reviews" :key="index" style="margin-top: 3rem;">
-                  <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">
-                      <strong style="letter-spacing: 2px; font-size: 14px;">Autor:</strong> <a style="cursor: pointer; letter-spacing: 2px; font-size: 14px;" @click="redirectToUrl(review.url)">{{ review.authorName }}</a><br>
-                      <strong style="letter-spacing: 2px; font-size: 14px;">Fecha:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ formatCreatedAt(review.createdAt) }}</span><br>
-                      <strong style="letter-spacing: 2px; font-size: 14px;">Puntuación:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ review.authorRating }}</span><br>
-                      
-                      <span v-if="!showTranslations" style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.content, index, review.showFullContent)"></span>
-                      
-                      <span v-else-if="review.translatedContent" style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.translatedContent, index, review.showFullContent)"></span>
-                      
-                      <span v-else-if="review.isTranslating" style="font-size: 1.5rem; color: #B1BABF; font-style: italic;">Traduciendo reseña a español...</span>
-                      
-                      <span v-else-if="review.translationError" style="font-size: 1.5rem; color: #B1BABF; font-style: italic;">
-                        <span style="color: #e74c3c;">Error al traducir. Mostrando reseña en inglés original.</span>
-                      </span>
-                      
-                      <span v-else style="font-size: 1.5rem; color: #B1BABF; font-style: italic;">
-                        <span @click="translateReviewContent(review, index)" style="cursor: pointer; color: #8AE8FC;">Click para traducir esta reseña al español</span>
-                      </span>
-                      
-                      <br>
-                      <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #8AE8FC; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Leer más].</span>
-                  </p>
-              </li>
-          </ul>
-      </div>
+        <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reviews ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px;  color: #8AE8FC;" @click="toggleFullReviews"> WARNING: MAY CONTAIN SPOILERS</span></strong>
+        <ul class="nolist" v-show="showFullReviews">
+            <li v-for="(review, index) in reviews" :key="index" style="margin-top: 3rem;">
+                <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">
+                    <strong style="letter-spacing: 2px; font-size: 14px;">Written By:</strong> <a style="cursor: pointer; letter-spacing: 2px; font-size: 14px;" @click="redirectToUrl(review.url)">{{ review.authorName }}</a><br>
+                    <strong style="letter-spacing: 2px; font-size: 14px;">Date:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ formatCreatedAt(review.createdAt) }}</span><br>
+                    <strong style="letter-spacing: 2px; font-size: 14px;">Rating:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ review.authorRating }}</span><br>
+                    <span style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.content, index, review.showFullContent)"></span><br>
+                    <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #8AE8FC; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Read More].</span>
+                </p>
+            </li>
+        </ul>
+    </div>
     </div>
     
   </div>
 </template>
 
-
 <script>
 import { apiImgUrl } from '~/api';
-import { getTVShowProviders } from '~/api';
+import { getTVShowProviders } from '~/api'; 
 import { getTvShowReviews } from '~/api'; 
 import { name, creators } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
+import WatchOn from '~/components/WatchOn';
 
 export default {
   components: {
     ExternalLinks,
+    WatchOn,
   },
 
   mixins: [
@@ -224,7 +204,6 @@ export default {
     return {
       showFullReviews: false,
       reviews: [],
-      showTranslations: false,
       isFollowingTv: false,
       followTvLoading: false,
       localProviders: null,
@@ -325,56 +304,7 @@ export default {
     },
     toggleFullReviews() {
     this.showFullReviews = !this.showFullReviews;
-    
-    if (this.showFullReviews) {
-      this.showTranslations = true;
-      this.translateAllReviews();
-    }
     },
-    
-    toggleLanguage() {
-    this.showTranslations = !this.showTranslations;
-    
-    if (this.showTranslations) {
-      this.translateAllReviews();
-    }
-    },
-  
-    async translateAllReviews() {
-    for (let i = 0; i < this.reviews.length; i++) {
-      const review = this.reviews[i];
-      if (!review.translatedContent && !review.isTranslating) {
-        await this.translateReviewContent(review, i);
-      }
-    }
-    },
-  
-    async translateReviewContent(review, index) {
-    if (review.translatedContent || review.isTranslating) return;
-
-    this.$set(review, 'isTranslating', true);
-    
-    try {
-      const { translateReview } = require('~/api');
-
-      const translatedContent = await translateReview(review.content);
-
-      this.$set(review, 'translatedContent', translatedContent);
-      this.$set(review, 'isTranslating', false);
-    } catch (error) {
-      console.error('Error translating review:', error);
-      this.$set(review, 'isTranslating', false);
-      this.showTranslations = false;
-
-      if (index === 0) {
-        this.$set(review, 'translationError', true);
-        setTimeout(() => {
-          this.$set(review, 'translationError', false);
-        }, 5000);
-      }
-    }
-    },
-    
     formatGenres (genres) {
       return genres.map(genre => `<a href="/genre/${genre.id}/tv">${genre.name}</a>`).join(', ');
     },
@@ -418,7 +348,7 @@ export default {
         const providers = await getTVShowProviders(this.item.id);
         this.localProviders = providers;
       } catch (error) {
-        console.error("Error fetching tv show providers:", error);
+        console.error(error);
         this.localProviders = [];
       }
     },
@@ -427,7 +357,7 @@ export default {
         const reviews = await getTvShowReviews(this.item.id);
         this.reviews = reviews;
       } catch (error) {
-        console.error("Error fetching tv show reviews:", error);
+        console.error(error);
       }
     },
     redirectToUrl(url) {
@@ -436,6 +366,7 @@ export default {
   },
 };
 </script>
+
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
 
@@ -443,10 +374,6 @@ export default {
   background-color: rgba(0, 0, 0, 0.307);
   border-radius: 10px;
   padding-bottom: 4rem;
-}
-
-.right {
-  padding-top: 1rem;
 }
 
 .info {
@@ -468,6 +395,10 @@ export default {
   @media (min-width: $breakpoint-large) {
     padding-right: 5rem;
   }
+}
+
+.right {
+  padding-top: 1rem;
 }
 
 .right {
@@ -599,21 +530,9 @@ export default {
     }
   }
 }
-.button {
-  padding: 1.5rem 2.5rem;
-  font-size: 1.5rem;
-  font-weight: 500;
-  line-height: 1;
-  color: #fff;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  background-color: #092C3D;
-  transition: all 0.2s;
-  border-radius: 10px !important;
-  display: relative !important; 
-}
-.button-icon {
-  display: relative !important;
+
+.watchSection {
+  margin-bottom: 2rem;
 }
 
 .followButton {

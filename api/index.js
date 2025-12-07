@@ -425,24 +425,74 @@ export function getMovieProviders(id) {
         api_key: process.env.API_KEY,
       },
     }).then((response) => {
-      let providers = response.data.results.AR;
-      if (providers && providers.flatrate) {
-        const providerNames = providers.flatrate.map(provider => provider.provider_name);
-        resolve(providerNames);
+      const results = response.data.results;
+      let countryData = results.AR;
+      let flatrate = [];
+      let watchLink = '';
+
+      if (countryData && countryData.flatrate) {
+        flatrate = countryData.flatrate;
+        watchLink = countryData.link;
       } else {
-        providers = response.data.results.US;
-        if (providers && providers.flatrate) {
-          const providerNames = providers.flatrate.map(provider => provider.provider_name);
-          resolve(providerNames);
-        } else {
-          resolve([]);
+        countryData = results.US;
+        if (countryData && countryData.flatrate) {
+          flatrate = countryData.flatrate;
+          watchLink = countryData.link;
         }
       }
+
+      const providerData = flatrate.map(provider => ({
+        name: provider.provider_name,
+        logo_path: provider.logo_path,
+        link: watchLink
+      }));
+
+      resolve(providerData);
+
     }).catch((error) => {
+      console.error(error);
       reject(error);
     });
   });
-}
+};
+
+export function getTVShowProviders(id) {
+  return new Promise((resolve, reject) => {
+    axios.get(`${apiUrl}/tv/${id}/watch/providers`, {
+      params: {
+        api_key: process.env.API_KEY,
+      },
+    }).then((response) => {
+      const results = response.data.results;
+      let countryData = results.AR;
+      let flatrate = [];
+      let watchLink = '';
+
+      if (countryData && countryData.flatrate) {
+        flatrate = countryData.flatrate;
+        watchLink = countryData.link;
+      } else {
+        countryData = results.US;
+        if (countryData && countryData.flatrate) {
+          flatrate = countryData.flatrate;
+          watchLink = countryData.link;
+        }
+      }
+
+      const providerData = flatrate.map(provider => ({
+        name: provider.provider_name,
+        logo_path: provider.logo_path,
+        link: watchLink
+      }));
+
+      resolve(providerData);
+
+    }).catch((error) => {
+      console.error(error);
+      reject(error);
+    });
+  });
+};
 
 export function getMovieReviews(id) {
   return new Promise((resolve, reject) => {
@@ -532,33 +582,6 @@ export function translateReview(reviewContent) {
     };
 
     attemptRequest();
-  });
-}
-
-export function getTVShowProviders(id) {
-  return new Promise((resolve, reject) => {
-    axios.get(`${apiUrl}/tv/${id}/watch/providers`, {
-      params: {
-        api_key: process.env.API_KEY,
-      },
-    }).then((response) => {
-      let providers = response.data.results.AR;
-      if (providers && providers.flatrate) {
-        const providerNames = providers.flatrate.map(provider => provider.provider_name);
-        resolve(providerNames);
-      } else {
-        providers = response.data.results.US;
-        if (providers && providers.flatrate) {
-          const providerNames = providers.flatrate.map(provider => provider.provider_name);
-          resolve(providerNames);
-        } else {
-          resolve([]);
-        }
-      }
-    }).catch((error) => {
-      console.error("Error fetching TV show providers:", error);
-      reject(error);
-    });
   });
 }
 
@@ -1015,8 +1038,8 @@ export function search(query, page = 1) {
 }
 
 export function get***MovieByImdb(imdbId) {
-  return new Promise((resolve, reject) => {
-    axios.get('https://***.mx/api/v2/list_movies.json', {
+  return new Promise((resolve) => {
+    axios.get('https://***.lt/api/v2/list_movies.json', {
       params: {
         query_term: imdbId,
         limit: 1,
@@ -1032,15 +1055,14 @@ export function get***MovieByImdb(imdbId) {
 
         resolve({
           slug: `${title}`,
-          url: `https://***.mx/movies/${title}`,
+          url: `https://***.lt/movies/${title}`,
           found: true
         });
       } else {
         resolve({ found: false });
       }
-    }).catch((error) => {
-      console.error("Error fetching *** movie:", error);
-      reject(error);
+    }).catch(() => {
+      resolve({ found: false });
     });
   });
 }
