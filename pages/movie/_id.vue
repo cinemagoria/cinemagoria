@@ -8,8 +8,11 @@
     <MediaNav :menu="menu" @clicked="navClicked" />
 
     <template v-if="activeMenu === 'overview'">
-      <MovieInfo v-if="item && item.id" :item="item" :reviews-prop="reviews" />
-      <Credits v-if="showCredits" :people="item.credits.cast" />
+      <MovieInfo v-if="item && item.id" :item="item" :reviews-prop="reviews">
+        <template #before-recommendations>
+          <Credits v-if="showCredits" :people="item.credits.cast" />
+        </template>
+      </MovieInfo>
     </template>
 
     <template v-if="activeMenu === 'releases'">
