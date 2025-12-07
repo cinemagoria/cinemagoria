@@ -1,56 +1,35 @@
 <template>
   <main class="main">
     <UserNav @show-rated-modal="showRatedItems" />
-    <TopNav
-      :title="metaTitle" />
+    <TopNav :title="metaTitle" />
 
-    <Hero
-      :item="item" />
-    <MediaNav
-      :menu="menu"
-      @clicked="navClicked" />
+    <Hero v-if="item && item.id" :item="item" />
+    
+    <MediaNav :menu="menu" @clicked="navClicked" />
 
     <template v-if="activeMenu === 'overview'">
-      <MovieInfo :item="item" :reviews-prop="reviews" />
-
-      <Credits
-        v-if="showCredits"
-        :people="item.credits.cast" />
+      <MovieInfo v-if="item && item.id" :item="item" :reviews-prop="reviews" />
+      <Credits v-if="showCredits" :people="item.credits.cast" />
     </template>
 
     <template v-if="activeMenu === 'releases'">
-      <MovieReleases :item="item" />
+      <MovieReleases v-if="item && item.release_dates" :item="item" />
     </template>
 
     <template v-if="activeMenu === 'videos' && showVideos">
-      <Videos
-        :videos="item.videos.results" />
+      <Videos :videos="item.videos.results" />
     </template>
 
     <template v-if="activeMenu === 'photos' && showImages">
-      <Images
-        v-if="item.images.backdrops.length"
-        title="Backdrops"
-        type="backdrop"
-        :images="item.images.backdrops" />
-
-      <Images
-        v-if="item.images.posters.length"
-        title="Posters"
-        type="poster"
-        :images="item.images.posters" />
+      <Images v-if="item.images.backdrops.length" title="Backdrops" type="backdrop" :images="item.images.backdrops" />
+      <Images v-if="item.images.posters.length" title="Posters" type="poster" :images="item.images.posters" />
     </template>
-
-    <ListingCarousel
-      v-if="recommended && recommended.results.length"
-      title="More Like This"
-      :items="recommended" />
   </main>
 </template>
 
 <script>
 import UserNav from '@/components/global/UserNav';
-import { apiImgUrl, getMovie, getMovieRecommended } from '~/api';
+import { apiImgUrl, getMovie } from '~/api';
 import { name, yearStart } from '~/mixins/Details';
 import TopNav from '~/components/global/TopNav';
 import Hero from '~/components/Hero';
@@ -60,7 +39,6 @@ import MovieReleases from '~/components/movie/MovieReleases';
 import Videos from '~/components/Videos';
 import Images from '~/components/Images';
 import Credits from '~/components/Credits';
-import ListingCarousel from '~/components/ListingCarousel';
 
 export default {
   components: {
@@ -73,7 +51,6 @@ export default {
     Videos,
     Images,
     Credits,
-    ListingCarousel,
   },
 
   mixins: [
@@ -99,15 +76,17 @@ export default {
 
   data () {
     return {
+      // FIX CRÍTICO: Inicializamos item para evitar errores de "undefined" al cargar
+      item: {}, 
       menu: [],
       activeMenu: 'overview',
-      recommended: null,
       reviews: null,
     };
   },
 
   computed: {
     metaTitle () {
+      if (!this.item || !this.name) return '';
       if (this.yearStart) {
         return `${this.name} (${this.yearStart})`;
       } else {
@@ -116,7 +95,7 @@ export default {
     },
 
     metaDescription () {
-      if (this.item.overview) {
+      if (this.item && this.item.overview) {
         return this.truncate(this.item.overview, 200);
       } else {
         return '';
@@ -124,7 +103,7 @@ export default {
     },
 
     metaImage () {
-      if (this.item.poster_path) {
+      if (this.item && this.item.poster_path) {
         return `${apiImgUrl}/w500${this.item.poster_path}`;
       } else {
         return '';
@@ -132,17 +111,17 @@ export default {
     },
 
     showCredits () {
-      const credits = this.item.credits;
+      const credits = this.item && this.item.credits;
       return credits && credits.cast && credits.cast.length;
     },
 
     showVideos () {
-      const videos = this.item.videos;
+      const videos = this.item && this.item.videos;
       return videos && videos.results && videos.results.length;
     },
 
     showImages () {
-      const images = this.item.images;
+      const images = this.item && this.item.images;
       return images && ((images.backdrops && images.backdrops.length) || (images.posters && images.posters.length));
     },
   },
@@ -162,8 +141,19 @@ export default {
   },
 
   created () {
-    this.createMenu();
-    this.initRecommended();
+    // Verificamos si item tiene datos antes de crear el menú
+    if (this.item && this.item.id) {
+      this.createMenu();
+    }
+  },
+
+  watch: {
+    // Observamos cambios en item para recrear el menú si asyncData carga después
+    item() {
+      if (this.item && this.item.id) {
+        this.createMenu();
+      }
+    }
   },
 
   methods: {
@@ -176,40 +166,22 @@ export default {
 
     createMenu () {
       const menu = [];
-
       menu.push('Overview');
-
       menu.push('Releases');
-
       if (this.showVideos) menu.push('Videos');
-
       if (this.showImages) menu.push('Photos');
-
       this.menu = menu;
     },
 
     navClicked (label) {
       this.activeMenu = label;
     },
-
-    initRecommended () {
-      if (this.recommended !== null) return;
-
-      getMovieRecommended(this.$route.params.id).then((response) => {
-        this.recommended = response;
-      });
-    },
   },
 };
 </script>
 <style>
 @media (max-width: 1200px) {
-  .user-nav-container {
-    top: 7px !important;
-  }
-
-.container {
-  bottom: 10px !important;
-}
+  .user-nav-container { top: 7px !important; }
+  .container { bottom: 10px !important; }
 }
 </style>

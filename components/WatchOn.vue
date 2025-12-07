@@ -121,11 +121,10 @@ export default {
 
   methods: {
     async fetch***Url() {
-      // Si no hay ID, cortamos ejecución
       if (!this.imdbId) return;
       
       this.***Url = null;
-      // Ya no necesitamos try/catch aquí porque api/index.js maneja el error internamente
+      
       const result = await get***MovieByImdb(this.imdbId);
       if (result.found) {
         this.***Url = result.url;
@@ -173,7 +172,7 @@ export default {
   text-decoration: none;
   transition: background-color 0.3s ease, transform 0.1s ease;
   box-sizing: border-box;
-  height: 100%;
+  height: auto;
   min-height: 44px;
 }
 
@@ -195,9 +194,9 @@ export default {
 .label-style {
   font-size: 14px;
   padding-left: 0.5rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  line-height: 1.2;
+  word-break: break-word;
 }
 
 .link-item a:hover .***-logo {
@@ -217,13 +216,13 @@ export default {
   background-color: #8AE8FC;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .links-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
   
   .label-style {
-    font-size: 12px;
+    font-size: 13px;
   }
 }
 
@@ -237,7 +236,7 @@ export default {
   border-radius: 8px;
   color: #ffffff;
   box-sizing: border-box;
-  height: 100%;
+  height: auto;
   min-height: 44px;
   cursor: default;
   opacity: 0.8;

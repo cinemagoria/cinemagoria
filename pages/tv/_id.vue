@@ -1,59 +1,35 @@
 <template>
   <main class="main">
     <UserNav @show-rated-modal="showRatedItems" />
-    <TopNav
-      :title="metaTitle" />
+    <TopNav :title="metaTitle" />
 
-    <Hero
-      :item="item" />
+    <Hero v-if="item && item.id" :item="item" />
 
-    <MediaNav
-      :menu="menu"
-      @clicked="navClicked" />
+    <MediaNav :menu="menu" @clicked="navClicked" />
 
     <template v-if="activeMenu === 'overview'">
-      <TvInfo
-        :item="item" />
-
-      <Credits
-        v-if="showCredits"
-        :people="item.credits.cast" />
+      <TvInfo v-if="item && item.id" :item="item" />
+      <Credits v-if="showCredits" :people="item.credits.cast" />
     </template>
 
     <template v-if="activeMenu === 'episodes' && showEpisodes">
-      <Episodes
-        :number-of-seasons="item.number_of_seasons" />
+      <Episodes :number-of-seasons="item.number_of_seasons" />
     </template>
 
     <template v-if="activeMenu === 'videos' && showVideos">
-      <Videos
-        :videos="item.videos.results" />
+      <Videos :videos="item.videos.results" />
     </template>
 
     <template v-if="activeMenu === 'photos' && showImages">
-      <Images
-        v-if="item.images.backdrops.length"
-        title="Backdrops"
-        type="backdrop"
-        :images="item.images.backdrops" />
-
-      <Images
-        v-if="item.images.posters.length"
-        title="Posters"
-        type="poster"
-        :images="item.images.posters" />
+      <Images v-if="item.images.backdrops.length" title="Backdrops" type="backdrop" :images="item.images.backdrops" />
+      <Images v-if="item.images.posters.length" title="Posters" type="poster" :images="item.images.posters" />
     </template>
-
-    <ListingCarousel
-      v-if="recommended && recommended.results.length"
-      title="More Like This"
-      :items="recommended" />
   </main>
 </template>
 
 <script>
 import UserNav from '@/components/global/UserNav';
-import { apiImgUrl, getTvShow, getTvShowRecommended } from '~/api';
+import { apiImgUrl, getTvShow } from '~/api';
 import { name, yearStart, yearEnd } from '~/mixins/Details';
 import TopNav from '~/components/global/TopNav';
 import Hero from '~/components/Hero';
@@ -63,7 +39,6 @@ import Videos from '~/components/Videos';
 import Images from '~/components/Images';
 import Credits from '~/components/Credits';
 import Episodes from '~/components/tv/Episodes';
-import ListingCarousel from '~/components/ListingCarousel';
 
 export default {
   components: {
@@ -76,7 +51,6 @@ export default {
     Images,
     Credits,
     Episodes,
-    ListingCarousel,
   },
 
   mixins: [
@@ -103,15 +77,17 @@ export default {
 
   data () {
     return {
+      // FIX CRÍTICO: Inicializamos item
+      item: {},
       menu: [],
       activeMenu: 'overview',
-      recommended: null,
       reviews: null,
     };
   },
 
   computed: {
     metaTitle () {
+      if (!this.item || !this.name) return '';
       if (this.item.status === 'Ended' && this.yearStart && this.yearEnd) {
         return `${this.name} (TV Series ${this.yearStart}-${this.yearEnd})`;
       } else if (this.yearStart) {
@@ -122,7 +98,7 @@ export default {
     },
 
     metaDescription () {
-      if (this.item.overview) {
+      if (this.item && this.item.overview) {
         return this.truncate(this.item.overview, 200);
       } else {
         return '';
@@ -130,7 +106,7 @@ export default {
     },
 
     metaImage () {
-      if (this.item.poster_path) {
+      if (this.item && this.item.poster_path) {
         return `${apiImgUrl}/w500${this.item.poster_path}`;
       } else {
         return '';
@@ -138,21 +114,21 @@ export default {
     },
 
     showCredits () {
-      const credits = this.item.credits;
+      const credits = this.item && this.item.credits;
       return credits && credits.cast && credits.cast.length;
     },
 
     showEpisodes () {
-      return this.item.number_of_seasons;
+      return this.item && this.item.number_of_seasons;
     },
 
     showVideos () {
-      const videos = this.item.videos;
+      const videos = this.item && this.item.videos;
       return videos && videos.results && videos.results.length;
     },
 
     showImages () {
-      const images = this.item.images;
+      const images = this.item && this.item.images;
       return images && ((images.backdrops && images.backdrops.length) || (images.posters && images.posters.length));
     },
   },
@@ -172,8 +148,17 @@ export default {
   },
 
   created () {
-    this.createMenu();
-    this.initRecommended();
+    if (this.item && this.item.id) {
+      this.createMenu();
+    }
+  },
+
+  watch: {
+    item() {
+      if (this.item && this.item.id) {
+        this.createMenu();
+      }
+    }
   },
 
   methods: {
@@ -186,40 +171,22 @@ export default {
 
     createMenu () {
       const menu = [];
-
       menu.push('Overview');
-
       if (this.showEpisodes) menu.push('Episodes');
-
       if (this.showVideos) menu.push('Videos');
-
       if (this.showImages) menu.push('Photos');
-
       this.menu = menu;
     },
 
     navClicked (label) {
       this.activeMenu = label;
     },
-
-    initRecommended () {
-      if (this.recommended !== null) return;
-
-      getTvShowRecommended(this.$route.params.id).then((response) => {
-        this.recommended = response;
-      });
-    },
   },
 };
 </script>
 <style>
 @media (max-width: 1200px) {
-.user-nav-container {
-    top: 7px !important;
-  }
-
-.container {
-  bottom: 10px !important;
-}
+  .user-nav-container { top: 7px !important; }
+  .container { bottom: 10px !important; }
 }
 </style>
