@@ -226,7 +226,6 @@ export function getIMDbRatingFromDB(imdbId) {
       const response = await axios.get(`/api/imdb-rating/${imdbId}`, { timeout: 1500 });
       resolve(response.data);
     } catch (error) {
-      // console.error('Error fetching IMDb rating:', error);
       resolve({ found: false });
     }
   });
