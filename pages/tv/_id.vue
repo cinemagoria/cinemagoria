@@ -13,11 +13,13 @@
 
     <template v-if="activeMenu === 'overview'">
       <TvInfo
-        :item="item" />
-
-      <Credits
-        v-if="showCredits"
-        :people="item.credits.cast" />
+        :item="item">
+        <template #before-recommendations>
+          <Credits
+            v-if="showCredits"
+            :people="item.credits.cast" />
+        </template>
+      </TvInfo>
     </template>
 
     <template v-if="activeMenu === 'episodes' && showEpisodes">

@@ -11,11 +11,13 @@
       @clicked="navClicked" />
 
     <template v-if="activeMenu === 'overview'">
-      <MovieInfo :item="item" :reviews-prop="reviews" :providers="providers" />
-
-      <Credits
-        v-if="showCredits"
-        :people="item.credits.cast" />
+      <MovieInfo :item="item" :reviews-prop="reviews" :providers="providers">
+        <template #before-recommendations>
+          <Credits
+            v-if="showCredits"
+            :people="item.credits.cast" />
+        </template>
+      </MovieInfo>
     </template>
 
     <template v-if="activeMenu === 'releases'">
