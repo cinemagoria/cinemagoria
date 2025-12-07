@@ -177,12 +177,20 @@
                     <span style="font-size: 7px;">Rate</span>
                   </div>
                   <a :href="getLink(item)" class="item-link">
-                    <img 
-                      :src="item.details.posterForDb || fallbackImageUrl" 
-                      :onerror="handleImageError" 
-                      alt="Poster" 
-                      class="poster" 
-                    />
+                    <div class="poster-container">
+                      <div v-show="!imageLoadStates[item.details.idForDb]" class="poster-loader">
+                        <Loader :size="44" />
+                      </div>
+                      <img 
+                        :ref="'poster-' + item.details.idForDb"
+                        :src="item.details.posterForDb || fallbackImageUrl" 
+                        @error="onImageError(item.details.idForDb)" 
+                        alt="Poster" 
+                        class="poster" 
+                        :class="{ 'loaded': imageLoadStates[item.details.idForDb] }"
+                        @load="handleImageLoad(item.details.idForDb)"
+                      />
+                    </div>
                     <h3>{{ item.details.nameForDb }}</h3>
                   </a>
                   <p>
@@ -508,6 +516,7 @@ async function getUserName(userEmail) {
 export default {
   components: {
     UserNav,
+    Loader: () => import('@/components/Loader'),
   },
 
   head () {
@@ -586,6 +595,7 @@ export default {
       selectedItems: [],
       aiAnalysisLoading: false,
       showSelectionInfo: false,
+      imageLoadStates: {},
     };
   },
   async mounted() {
@@ -756,10 +766,45 @@ export default {
           this.currentPage = 1;
         });
       }
+    },
+    itemsToShow: {
+      immediate: true,
+      handler(newItems) {
+        if (newItems && newItems.length) {
+          newItems.forEach(item => {
+            if (item.details && item.details.idForDb) {
+              this.$set(this.imageLoadStates, item.details.idForDb, false);
+            }
+          });
+          
+          this.$nextTick(() => {
+            this.checkAlreadyLoadedImages();
+          });
+        }
+      }
     }
   },
   
   methods: {
+    handleImageLoad(itemId) {
+      this.$set(this.imageLoadStates, itemId, true);
+    },
+
+    onImageError(itemId) {
+      this.$set(this.imageLoadStates, itemId, true);
+    },
+
+    checkAlreadyLoadedImages() {
+      this.itemsToShow.forEach(item => {
+        if (item.details && item.details.idForDb) {
+          const imgRef = this.$refs['poster-' + item.details.idForDb];
+          if (imgRef && imgRef[0] && imgRef[0].complete) {
+            this.$set(this.imageLoadStates, item.details.idForDb, true);
+          }
+        }
+      });
+    },
+
     toggleSelectionInfo() {
       this.showSelectionInfo = !this.showSelectionInfo;
     },
@@ -2660,8 +2705,32 @@ export default {
     font-size: 1.2rem;
   }
 }
+
+.poster-container {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  background: #000;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.poster-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
 .poster {
-  width: 60%; 
+  width: 100%; 
+  height: 100%;
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
   text-align: center;
@@ -2669,8 +2738,16 @@ export default {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.18);
-  min-height: 200px;
   object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.poster.loaded {
+  opacity: 1;
 }
 
 .tmdb-rating-select,
