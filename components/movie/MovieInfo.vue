@@ -65,16 +65,16 @@
           </ul>
         </div>
 
+         <div :class="$style.external">
+          <ExternalLinks :links="item.external_ids" />
+        </div>
+
         <div :class="$style.watchSection">
           <WatchOn 
             :providers="providersToDisplay"
             :imdb-id="item.external_ids.imdb_id"
             type="movie" 
           />
-        </div>
-
-        <div :class="$style.external">
-          <ExternalLinks :links="item.external_ids" />
         </div>
 
         <div v-if="reviews && reviews.length" class="reviews-container">
@@ -132,8 +132,7 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { apiImgUrl, getMovieProviders, getMovieReviews, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB } from '~/api'; 
+import { apiImgUrl, getMovieProviders, getMovieReviews, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating } from '~/api'; 
 import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants'; 
 import { name, directors } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
@@ -362,22 +361,7 @@ export default {
     },
     async enrichWithIMDbRatings(items) {
       if (!items?.length) return items;
-      return await Promise.all(items.map(async (item) => {
-          if (item.imdb_rating) return item;
-          try {
-            const detailsResponse = await axios.get(`https://api.themoviedb.org/3/movie/${item.id}`, {
-                params: { api_key: process.env.API_KEY, append_to_response: 'external_ids' }
-            });
-            const imdbId = detailsResponse.data.external_ids?.imdb_id;
-            if (imdbId) {
-                const imdbData = await getIMDbRatingFromDB(imdbId);
-                if (imdbData.found) {
-                    return { ...item, imdb_rating: imdbData.score, rating_source: 'imdb' };
-                }
-            }
-          } catch (error) {}
-          return { ...item, rating_source: 'tmdb' };
-      }));
+      return await Promise.all(items.map(item => enrichMovieWithIMDbRating(item)));
     },
     toggleFullReviews() { this.showFullReviews = !this.showFullReviews; },
     formatGenres(genres) { return genres.map(genre => `<a href="/genre/${genre.id}/movie">${genre.name}</a>`).join(', '); },
