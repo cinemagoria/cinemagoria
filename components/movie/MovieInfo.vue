@@ -117,17 +117,16 @@
               :class="$style.value"
               v-html="formatProductionCompanies(item.production_companies)" />
           </li>
-
-          <li v-if="providersToDisplay && providersToDisplay.length">
-            <div :class="$style.label">
-              Watch On
-            </div>
-            <div :class="$style.value">
-              {{ providersToDisplay.join(', ') }}
-            </div>
-          </li>
           <br>
         </ul>
+      </div>
+
+      <div :class="$style.watchSection">
+        <WatchOn 
+          :providers="providersToDisplay"
+          :imdb-id="item.external_ids.imdb_id"
+          type="movie" 
+        />
       </div>
 
       <div :class="$style.external">
@@ -159,10 +158,12 @@ import { getMovieProviders } from '~/api';
 import { getMovieReviews } from '~/api'; 
 import { name, directors } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
+import WatchOn from '~/components/WatchOn';
 
 export default {
   components: {
     ExternalLinks,
+    WatchOn,
   },
 
   mixins: [
@@ -278,7 +279,7 @@ export default {
       const providers = await getMovieProviders(this.item.id);
       this.localProviders = providers;
     } catch (error) {
-      console.error("Error fetching movie providers:", error);
+      console.error(error);
       this.localProviders = [];
     }
   },
@@ -287,7 +288,7 @@ export default {
       const reviews = await getMovieReviews(this.item.id);
       this.reviews = reviews;
     } catch (error) {
-      console.error("Error fetching movie reviews:", error);
+      console.error(error);
     }
   },
   redirectToUrl(url) {
@@ -435,6 +436,10 @@ export default {
 
 .value {
   flex: 2;
+}
+
+.watchSection {
+  margin-bottom: 2rem;
 }
 
 .external {
