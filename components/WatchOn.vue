@@ -121,11 +121,9 @@ export default {
 
   methods: {
     async fetch***Url() {
-      // Si no hay ID, cortamos ejecución
       if (!this.imdbId) return;
       
       this.***Url = null;
-      // Ya no necesitamos try/catch aquí porque api/index.js maneja el error internamente
       const result = await get***MovieByImdb(this.imdbId);
       if (result.found) {
         this.***Url = result.url;

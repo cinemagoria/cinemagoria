@@ -145,7 +145,6 @@ export default {
         'Excelente, una gran experiencia',
         'Obra maestra, imprescindible'
       ],
-      // Rating modal state
       ratingModalVisible: false,
       currentRatingItem: null,
       selectedRating: 0,

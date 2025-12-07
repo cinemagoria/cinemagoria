@@ -688,11 +688,9 @@ export default {
     },
 
     onImageError(event, itemId) {
-      // Don't mark as loaded yet - change src to fallback and let @load handle it
       if (event.target.src !== this.fallbackImageUrl) {
         event.target.src = this.fallbackImageUrl;
-      } else {
-        // If fallback also fails, mark as loaded to hide loader
+      } else {  
         this.$set(this.imageLoadStates, itemId, true);
       }
     },

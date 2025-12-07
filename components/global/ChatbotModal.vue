@@ -1030,12 +1030,10 @@ export default {
           user_email: userEmail
         });
         
-        // Refresh
         await this.loadConversationsFromBackend();
         this.selectionMode = false;
         this.selectedConversations = [];
         
-        // If active conversation was archived
         if (!this.conversations.find(c => c.id === this.activeConversationId)) {
             if (this.conversations.length > 0) {
                this.switchConversation(this.conversations[0].id);
@@ -1068,10 +1066,8 @@ export default {
                 user_email: userEmail
             });
             
-            // Remove locally to be snappy
             this.conversations = this.conversations.filter(c => !ids.includes(c.id));
             
-            // If active was deleted
             if (this.activeConversationId && ids.includes(this.activeConversationId)) {
                 if (this.conversations.length > 0) {
                     this.switchConversation(this.conversations[0].id);
@@ -1083,7 +1079,6 @@ export default {
             this.selectionMode = false;
             this.selectedConversations = [];
             
-            // Background refresh to ensure sync
             this.loadConversationsFromBackend();
 
         } catch (e) {
