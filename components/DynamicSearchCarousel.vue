@@ -113,7 +113,7 @@
         if (item.poster_path) {
           return `https://image.tmdb.org/t/p/w500${item.poster_path}`;
         }
-        return '/static/image_not_found.png';
+        return '/static/image_not_found.webp';
       },
   
       getTitle(item) {
@@ -137,7 +137,7 @@
       },
   
       handleImageError(event) {
-        event.target.src = '/static/image_not_found.png';
+        event.target.src = '/static/image_not_found.webp';
       },
   
       redirectToRoute(item) {

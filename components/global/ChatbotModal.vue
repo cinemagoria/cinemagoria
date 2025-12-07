@@ -196,7 +196,7 @@
                                :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" 
                                :alt="item.title || 'Movie Poster'"
                                @error="handleImageError">
-                          <img v-else src="https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.png?raw=true" :alt="item.title || 'Movie Poster Not Found'">
+                          <img v-else src="https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.webp?raw=true" :alt="item.title || 'Movie Poster Not Found'">
                           <div class="media-type">Movie</div>
                           <div class="movie-rating" v-if="item.imdb_rating || item.vote_average > 0">
                             <template v-if="item.rating_source === 'imdb' && item.imdb_rating">
@@ -224,7 +224,7 @@
                                :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" 
                                :alt="item.name || 'TV Show Poster'"
                                @error="handleImageError">
-                          <img v-else src="https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.png?raw=true" :alt="item.name || 'TV Show Poster Not Found'">
+                          <img v-else src="https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.webp?raw=true" :alt="item.name || 'TV Show Poster Not Found'">
                           <div class="media-type">TV Show</div>
 
                           <div class="movie-rating" v-if="item.imdb_rating || item.vote_average > 0">
@@ -253,7 +253,7 @@
                                :src="'https://image.tmdb.org/t/p/w342' + item.profile_path" 
                                :alt="item.name || 'Person Profile'"
                                @error="handleImageError">
-                          <img v-else src="https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.png?raw=true" :alt="item.name || 'Person Profile Not Found'">
+                          <img v-else src="https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.webp?raw=true" :alt="item.name || 'Person Profile Not Found'">
                           <div class="media-type">Person</div>
                         </div>
                         <div class="media-info">
@@ -546,7 +546,7 @@ export default {
   },
   methods: {
     handleImageError(event) {
-      const fallbackUrl = 'https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.png?raw=true';
+      const fallbackUrl = 'https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.webp?raw=true';
       if (event.target.src !== fallbackUrl) {
         event.target.src = fallbackUrl;
       }
