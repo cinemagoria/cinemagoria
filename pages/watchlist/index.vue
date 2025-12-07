@@ -184,11 +184,11 @@
                       <img 
                         :ref="'poster-' + item.details.idForDb"
                         :src="item.details.posterForDb || fallbackImageUrl" 
-                        @error="onImageError(item.details.idForDb)" 
                         alt="Poster" 
                         class="poster" 
                         :class="{ 'loaded': imageLoadStates[item.details.idForDb] }"
                         @load="handleImageLoad(item.details.idForDb)"
+                        @error="onImageError($event, item.details.idForDb)"
                       />
                     </div>
                     <h3>{{ item.details.nameForDb }}</h3>
@@ -790,8 +790,14 @@ export default {
       this.$set(this.imageLoadStates, itemId, true);
     },
 
-    onImageError(itemId) {
-      this.$set(this.imageLoadStates, itemId, true);
+    onImageError(event, itemId) {
+      // Don't mark as loaded yet - change src to fallback and let @load handle it
+      if (event.target.src !== this.fallbackImageUrl) {
+        event.target.src = this.fallbackImageUrl;
+      } else {
+        // If fallback also fails, mark as loaded to hide loader
+        this.$set(this.imageLoadStates, itemId, true);
+      }
     },
 
     checkAlreadyLoadedImages() {
