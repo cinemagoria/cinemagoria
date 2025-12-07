@@ -1060,3 +1060,47 @@ export function getProductionCompanyDetails(id) {
     });
   });
 };
+
+export async function enrichMovieWithIMDbRating(item) {
+  if (item.imdb_rating) return item;
+  try {
+    const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}`, {
+      params: {
+        api_key: process.env.API_KEY,
+        append_to_response: 'external_ids'
+      }
+    });
+    const imdbId = detailsResponse.data.external_ids?.imdb_id;
+    if (imdbId) {
+      const imdbData = await getIMDbRatingFromDB(imdbId);
+      if (imdbData.found) {
+        return { ...item, imdb_rating: imdbData.score, rating_source: 'imdb' };
+      }
+    }
+  } catch (error) {
+    console.error(`Error enriching movie ${item.id}:`, error);
+  }
+  return { ...item, rating_source: 'tmdb' };
+}
+
+export async function enrichTVShowWithIMDbRating(item) {
+  if (item.imdb_rating) return item;
+  try {
+    const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}`, {
+      params: {
+        api_key: process.env.API_KEY,
+        append_to_response: 'external_ids'
+      }
+    });
+    const imdbId = detailsResponse.data.external_ids?.imdb_id;
+    if (imdbId) {
+      const imdbData = await getIMDbRatingFromDB(imdbId);
+      if (imdbData.found) {
+        return { ...item, imdb_rating: imdbData.score, rating_source: 'imdb' };
+      }
+    }
+  } catch (error) {
+    console.error(`Error enriching TV show ${item.id}:`, error);
+  }
+  return { ...item, rating_source: 'tmdb' };
+}
