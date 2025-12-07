@@ -44,10 +44,7 @@
         :images="item.images.posters" />
     </template>
 
-    <ListingCarousel
-      v-if="recommended && recommended.results.length"
-      title="Recomendaciones"
-      :items="recommended" />
+
   </main>
 </template>
 
@@ -63,7 +60,7 @@ import Videos from '~/components/Videos';
 import Images from '~/components/Images';
 import Credits from '~/components/Credits';
 import Episodes from '~/components/tv/Episodes';
-import ListingCarousel from '~/components/ListingCarousel';
+
 
 export default {
   components: {
@@ -76,7 +73,7 @@ export default {
     Images,
     Credits,
     Episodes,
-    ListingCarousel,
+
   },
 
   mixins: [
@@ -103,15 +100,16 @@ export default {
 
   data () {
     return {
+      item: {},
       menu: [],
       activeMenu: 'overview',
-      recommended: null,
       reviews: null,
     };
   },
 
   computed: {
     metaTitle () {
+      if (!this.item || !this.name) return '';
       if (this.item.status === 'Ended' && this.yearStart && this.yearEnd) {
         return `${this.name} (TV Series ${this.yearStart}-${this.yearEnd})`;
       } else if (this.yearStart) {
@@ -122,7 +120,7 @@ export default {
     },
 
     metaDescription () {
-      if (this.item.overview) {
+      if (this.item && this.item.overview) {
         return this.truncate(this.item.overview, 200);
       } else {
         return '';
@@ -130,7 +128,7 @@ export default {
     },
 
     metaImage () {
-      if (this.item.poster_path) {
+      if (this.item && this.item.poster_path) {
         return `${apiImgUrl}/w500${this.item.poster_path}`;
       } else {
         return '';
@@ -138,21 +136,21 @@ export default {
     },
 
     showCredits () {
-      const credits = this.item.credits;
+      const credits = this.item && this.item.credits;
       return credits && credits.cast && credits.cast.length;
     },
 
     showEpisodes () {
-      return this.item.number_of_seasons;
+      return this.item && this.item.number_of_seasons;
     },
 
     showVideos () {
-      const videos = this.item.videos;
+      const videos = this.item && this.item.videos;
       return videos && videos.results && videos.results.length;
     },
 
     showImages () {
-      const images = this.item.images;
+      const images = this.item && this.item.images;
       return images && ((images.backdrops && images.backdrops.length) || (images.posters && images.posters.length));
     },
   },
@@ -172,8 +170,17 @@ export default {
   },
 
   created () {
-    this.createMenu();
-    this.initRecommended();
+    if (this.item && this.item.id) {
+      this.createMenu();
+    }
+  },
+
+  watch: {
+    item() {
+      if (this.item && this.item.id) {
+        this.createMenu();
+      }
+    }
   },
 
   methods: {
@@ -202,13 +209,7 @@ export default {
       this.activeMenu = label;
     },
 
-    initRecommended () {
-      if (this.recommended !== null) return;
 
-      getTvShowRecommended(this.$route.params.id).then((response) => {
-        this.recommended = response;
-      });
-    },
   },
 };
 </script>
