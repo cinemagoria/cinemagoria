@@ -115,35 +115,41 @@
     <div v-if="hasAnyRecommendations" class="recommendations-wrapper">
       <h2 :class="$style.title" style="padding-left: 0; margin-bottom: 1rem;">Recomendaciones</h2>
 
-      <div class="tabs-container">
-        <div class="tabs-desktop">
-          <button 
-            v-for="tab in availableTabs"
-            :key="tab.key"
-            class="tab-btn" 
-            :class="{ active: activeTab === tab.key }" 
-            @click="activeTab = tab.key">
-            {{ tab.label }}
-          </button>
-        </div>
-
-        <div class="tabs-mobile">
-          <button class="nav-arrow" @click="prevTab" :disabled="availableTabs.length <= 1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-          </button>
-          
-          <span class="mobile-label">{{ currentTabLabel }}</span>
-          
-          <button class="nav-arrow" @click="nextTab" :disabled="availableTabs.length <= 1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-          </button>
-        </div>
+      <div v-if="isLoadingRecommendations" class="recommendations-loader">
+        <Loader :size="44" />
       </div>
+      
+      <div v-else>
+        <div class="tabs-container">
+          <div class="tabs-desktop">
+            <button 
+              v-for="tab in availableTabs"
+              :key="tab.key"
+              class="tab-btn" 
+              :class="{ active: activeTab === tab.key }" 
+              @click="activeTab = tab.key">
+              {{ tab.label }}
+            </button>
+          </div>
 
-      <ListingCarousel
-        ref="recommendationCarousel"
-        v-if="currentRecommendationList && currentRecommendationList.results && currentRecommendationList.results.length"
-        :items="currentRecommendationList" />
+          <div class="tabs-mobile">
+            <button class="nav-arrow" @click="prevTab" :disabled="availableTabs.length <= 1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            
+            <span class="mobile-label">{{ currentTabLabel }}</span>
+            
+            <button class="nav-arrow" @click="nextTab" :disabled="availableTabs.length <= 1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <ListingCarousel
+          ref="recommendationCarousel"
+          v-if="currentRecommendationList && currentRecommendationList.results && currentRecommendationList.results.length"
+          :items="currentRecommendationList" />
+      </div>
     </div>
   </div>
 </template>
@@ -160,6 +166,7 @@ export default {
     ExternalLinks,
     WatchOn,
     ListingCarousel,
+    Loader: () => import('~/components/Loader'),
   },
 
   mixins: [
@@ -189,6 +196,7 @@ export default {
       recommended: null,
       creatorItems: null,
       activeTab: null,
+      isLoadingRecommendations: true,
     };
   },
 
@@ -263,13 +271,16 @@ export default {
       this.recommended = null;
       this.creatorItems = null;
       this.activeTab = null;
+      this.isLoadingRecommendations = true;
     },
     async fetchSecondaryData() {
+      this.isLoadingRecommendations = true;
       const p1 = this.fetchRecommended();
       const p2 = this.fetchCreatorShows();
 
       await Promise.allSettled([p1, p2]);
       this.setSmartDefaultTab();
+      this.isLoadingRecommendations = false;
     },
     setSmartDefaultTab() {
       if (this.availableTabs.length > 0) {
@@ -488,6 +499,14 @@ export default {
   padding: 3rem;
   margin-top: 2rem;
   border-radius: 10px;
+}
+
+.recommendations-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  width: 100%;
 }
 
 .tabs-container {
