@@ -65,14 +65,6 @@
           </ul>
         </div>
 
-        <div :class="$style.watchSection">
-          <WatchOn 
-            :providers="providersToDisplay"
-            :imdb-id="item.external_ids.imdb_id"
-            type="tv" 
-          />
-        </div>
-
         <div v-if="isLoggedIn" :class="$style.followSection">
             <h4 style="font-size: 16px; font-weight:800; text-transform: uppercase;" class="section-title">Notificaciones</h4>
             <button 
@@ -89,10 +81,19 @@
               {{ isFollowingTv ? 'Siguiendo' : 'Seguir episodios' }}
             </button>
         </div>
+
         <div :class="$style.external">
           <ExternalLinks :links="item.external_ids" />
         </div>
-        
+
+        <div :class="$style.watchSection">
+          <WatchOn 
+            :providers="providersToDisplay"
+            :imdb-id="item.external_ids.imdb_id"
+            type="tv" 
+          />
+        </div>
+
         <div v-if="reviews && reviews.length" class="reviews-container">
           <br>
           <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reseñas ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px;  color: #8AE8FC;" @click="toggleFullReviews"> ADVERTENCIA: PUEDE CONTENER SPOILERS</span></strong>

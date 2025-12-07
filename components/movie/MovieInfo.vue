@@ -65,6 +65,11 @@
           </ul>
         </div>
 
+
+        <div :class="$style.external">
+          <ExternalLinks :links="item.external_ids" />
+        </div>
+
         <div :class="$style.watchSection">
           <WatchOn 
             :providers="providersToDisplay"
@@ -73,9 +78,6 @@
           />
         </div>
 
-        <div :class="$style.external">
-          <ExternalLinks :links="item.external_ids" />
-        </div>
 
         <div v-if="reviews && reviews.length" class="reviews-container">
           <br>
