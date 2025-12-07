@@ -111,7 +111,9 @@
         </div>
       </div>
     </div>
-
+    
+    <slot name="before-recommendations"></slot>
+    
     <div v-if="hasAnyRecommendations" class="recommendations-wrapper">
       <h2 :class="$style.title" style="padding-left: 0; margin-bottom: 1rem;">Recommendations</h2>
 
@@ -511,8 +513,8 @@ export default {
 
 .tabs-container {
   width: 100%;
-  padding-bottom: 0.5rem;
-  margin-bottom: 0.5rem;
+  top: 1.5rem;
+  position:relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -547,7 +549,18 @@ export default {
   }
 
   &.active {
-    color: #8AE8FC;
+    color: #8BE9FD;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: #8BE9FD;
+      border-radius: 2px;
+    }
   }
 }
 

@@ -8,8 +8,11 @@
     <MediaNav :menu="menu" @clicked="navClicked" />
 
     <template v-if="activeMenu === 'overview'">
-      <TvInfo v-if="item && item.id" :item="item" />
-      <Credits v-if="showCredits" :people="item.credits.cast" />
+      <TvInfo v-if="item && item.id" :item="item">
+        <template #before-recommendations>
+          <Credits v-if="showCredits" :people="item.credits.cast" />
+        </template>
+      </TvInfo>
     </template>
 
     <template v-if="activeMenu === 'episodes' && showEpisodes">
