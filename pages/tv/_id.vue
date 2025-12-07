@@ -77,7 +77,6 @@ export default {
 
   data () {
     return {
-      // FIX CRÍTICO: Inicializamos item
       item: {},
       menu: [],
       activeMenu: 'overview',

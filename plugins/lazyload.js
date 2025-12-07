@@ -36,7 +36,6 @@ Vue.directive('lazyload', {
     function createObserver() {
       const options = {
         root: null,
-        // Increase margin to load images well before they are in view
         rootMargin: '200px',
         threshold: 0.01,
       };
@@ -55,8 +54,6 @@ Vue.directive('lazyload', {
 
   update(el, binding) {
     if (binding.value !== binding.oldValue) {
-      // If the source changes, load immediately or reset observer
-      // For simplicity and robustness in carousels, we just load it if it changed
       loadImage(el, binding.value);
     }
   },

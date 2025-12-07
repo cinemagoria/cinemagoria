@@ -76,7 +76,6 @@ export default {
 
   data () {
     return {
-      // FIX CRÍTICO: Inicializamos item para evitar errores de "undefined" al cargar
       item: {}, 
       menu: [],
       activeMenu: 'overview',
@@ -141,14 +140,12 @@ export default {
   },
 
   created () {
-    // Verificamos si item tiene datos antes de crear el menú
     if (this.item && this.item.id) {
       this.createMenu();
     }
   },
 
   watch: {
-    // Observamos cambios en item para recrear el menú si asyncData carga después
     item() {
       if (this.item && this.item.id) {
         this.createMenu();

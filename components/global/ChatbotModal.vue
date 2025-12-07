@@ -1036,12 +1036,10 @@ export default {
           user_email: userEmail
         });
         
-        // Refresh
         await this.loadConversationsFromBackend();
         this.selectionMode = false;
         this.selectedConversations = [];
         
-        // If active conversation was archived
         if (!this.conversations.find(c => c.id === this.activeConversationId)) {
             if (this.conversations.length > 0) {
                this.switchConversation(this.conversations[0].id);
@@ -1056,19 +1054,17 @@ export default {
 
     async deleteSelectedConversations() {
         if (this.selectedConversations.length === 0) return;
-        // this.chatToDeleteId = null; // Removed
         this.deleteConfirmationText = 'The selected conversations will be permanently deleted.';
         this.confirmDeleteModalOpen = true;
     },
 
     closeDeleteModal() {
         this.confirmDeleteModalOpen = false;
-        // this.chatToDeleteId = null; // Removed
     },
 
     async confirmDelete() {
         const userEmail = this.getUserEmail();
-        const ids = this.selectedConversations; // simplified
+        const ids = this.selectedConversations;
         
         try {
             await axios.post('https://entercinema-assistant-rust.vercel.app/api/delete-conversations', {
@@ -1076,10 +1072,8 @@ export default {
                 user_email: userEmail
             });
             
-            // Remove locally to be snappy
             this.conversations = this.conversations.filter(c => !ids.includes(c.id));
             
-            // If active was deleted
             if (this.activeConversationId && ids.includes(this.activeConversationId)) {
                 if (this.conversations.length > 0) {
                     this.switchConversation(this.conversations[0].id);
@@ -1091,7 +1085,6 @@ export default {
             this.selectionMode = false;
             this.selectedConversations = [];
             
-            // Background refresh to ensure sync
             this.loadConversationsFromBackend();
 
         } catch (e) {
