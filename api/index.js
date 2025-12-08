@@ -535,45 +535,8 @@ export function getMovieReviews(id) {
   });
 }
 
-export function translateReview(reviewContent) {
-  return new Promise((resolve, reject) => {
-    if (!reviewContent || reviewContent.trim().length === 0) {
-      resolve('');
-      return;
-    }
-
-    fetch('https://entercinema-translator-rust.vercel.app/api/translate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        input: reviewContent,
-        options: {
-          target_language: 'Spanish'
-        }
-      })
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data.result) {
-          resolve(data.result);
-        } else {
-          console.warn('Translation API returned unexpected format:', data);
-          resolve(reviewContent);
-        }
-      })
-      .catch(error => {
-        console.error('Translation error:', error);
-        resolve(reviewContent);
-      });
-  });
-}
+const CACHE_PREFIX = 'trans_cache_v1_';
+const BATCH_DELIMITER = ' ||| ';
 
 export async function translateReviewsBatch(reviews) {
   if (!reviews || reviews.length === 0) {
@@ -581,33 +544,90 @@ export async function translateReviewsBatch(reviews) {
   }
 
   const contents = reviews.map(r => r.content || '');
+  const translations = new Array(contents.length).fill(null);
+  const indicesToTranslate = [];
+  const textsToTranslate = [];
 
-  try {
-    const response = await fetch('https://entercinema-translator-rust.vercel.app/api/batch-translate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        texts: contents,
-        options: {
-          target_language: 'Spanish'
-        }
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`Batch translation failed: ${response.status}`);
+  contents.forEach((text, index) => {
+    if (!text.trim()) {
+      translations[index] = '';
+      return;
     }
 
-    const data = await response.json();
-    console.log(`Batch translation completed in ${data.processing_time_ms}ms`);
+    if (process.client) {
+      const cacheKey = CACHE_PREFIX + btoa(unescape(encodeURIComponent(text.slice(0, 50) + text.length)));
+      const cached = localStorage.getItem(cacheKey);
 
-    return data.translations || contents;
-  } catch (error) {
-    console.error('Batch translation error:', error);
-    return contents;
+      if (cached) {
+        translations[index] = cached;
+      } else {
+        indicesToTranslate.push(index);
+        textsToTranslate.push(text);
+      }
+    } else {
+      indicesToTranslate.push(index);
+      textsToTranslate.push(text);
+    }
+  });
+
+  if (indicesToTranslate.length === 0) {
+    return translations;
   }
+
+  const combinedQuery = textsToTranslate.join(BATCH_DELIMITER);
+
+  try {
+    const response = await axios.post('https://free-google-translator.p.rapidapi.com/external-api/free-google-translator',
+      {
+        from: 'en',
+        to: 'es',
+        query: combinedQuery
+      },
+      {
+        headers: {
+          'x-rapidapi-host': 'free-google-translator.p.rapidapi.com',
+          'x-rapidapi-key': process.env.RAPIDAPI_KEY,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (response.data && response.data.translation) {
+      const translatedText = response.data.translation;
+      const translatedParts = translatedText.split(BATCH_DELIMITER.trim());
+
+      if (translatedParts.length === textsToTranslate.length) {
+        translatedParts.forEach((trans, i) => {
+          const originalIndex = indicesToTranslate[i];
+          translations[originalIndex] = trans.trim();
+
+          if (process.client) {
+            const text = textsToTranslate[i];
+            const cacheKey = CACHE_PREFIX + btoa(unescape(encodeURIComponent(text.slice(0, 50) + text.length)));
+            localStorage.setItem(cacheKey, trans.trim());
+          }
+        });
+      } else {
+        indicesToTranslate.forEach((originalIndex, i) => {
+          translations[originalIndex] = textsToTranslate[i];
+        });
+      }
+
+    } else {
+      throw new Error('Invalid response format');
+    }
+
+  } catch (error) {
+    indicesToTranslate.forEach((originalIndex, i) => {
+      translations[originalIndex] = textsToTranslate[i];
+    });
+  }
+
+  return translations;
+}
+
+export function translateReview(reviewContent) {
+  return Promise.resolve(reviewContent);
 }
 
 export function getMovieRecommended(id, page = 1) {
