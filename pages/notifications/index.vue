@@ -1343,6 +1343,7 @@ button {
     justify-content: center;
   }
   
+  
   .secondary-actions {
     flex-direction: column;
     width: 100%;
@@ -1351,6 +1352,7 @@ button {
   
   .mark-all-button {
     width: 100%;
+    max-width: 300px;
     justify-content: center;
     align-items: center;
   }
