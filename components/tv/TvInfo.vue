@@ -703,7 +703,7 @@ export default {
 }
 
 .sourceLogo {
-  height: 20px;
+  height: 15px;
   width: auto;
   display: block;
   margin-top: 5px;
@@ -711,7 +711,7 @@ export default {
 }
 
 .sourceLogoTMDB {
-  height: 15px;
+  height: 10px;
   width: auto;
   display: block;
   margin-top: 5px;
