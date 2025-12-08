@@ -485,6 +485,34 @@ export default {
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
 
+.reviewRatingContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.stars {
+  width: 7.3rem;
+  height: 1.2rem;
+  background-image: url('~assets/images/stars.png');
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  margin-bottom: 0.3rem;
+
+  > div {
+    height: 100%;
+    background-image: url('~assets/images/stars-filled.png');
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+  }
+}
+
+.ratingNumber {
+  font-size: 1.2rem;
+  color: #999;
+  font-weight: 600;
+}
+
 .info { 
   background-color: rgba(0, 0, 0, 0.307);
   border-radius: 10px;
@@ -906,34 +934,5 @@ export default {
     opacity: 0.3;
     pointer-events: none;
   }
-}
-
-
-.reviewRatingContainer {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.stars {
-  width: 7.3rem;
-  height: 1.2rem;
-  background-image: url('~assets/images/stars.png');
-  background-repeat: no-repeat;
-  background-size: auto 100%;
-  margin-bottom: 0.2rem;
-
-  > div {
-    height: 100%;
-    background-image: url('~assets/images/stars-filled.png');
-    background-repeat: no-repeat;
-    background-size: auto 100%;
-  }
-}
-
-.ratingNumber {
-  font-size: 1.2rem;
-  color: #999;
-  font-weight: 600;
 }
 </style>
