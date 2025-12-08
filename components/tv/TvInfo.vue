@@ -94,7 +94,11 @@
           />
         </div>
 
-        <div v-if="reviews && reviews.length" class="reviews-container">
+        <div v-if="isTranslating" :class="$style.translationLoader">
+          <Loader :size="44" />
+        </div>
+
+        <div v-else-if="reviews && reviews.length" class="reviews-container">
           <br>
           <div :class="$style.reviewsHeader">
             <div :class="$style.headerLeft">
@@ -184,7 +188,7 @@
 </template>
 
 <script>
-import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTraktReviews, translateReview, getTvShowRecommended, getPerson, getIMDbRatingFromDB, enrichTVShowWithIMDbRating } from '~/api'; 
+import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTraktReviews, translateReview, translateReviewsBatch, getTvShowRecommended, getPerson, getIMDbRatingFromDB, enrichTVShowWithIMDbRating } from '~/api'; 
 import { name, creators } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
 import WatchOn from '~/components/WatchOn';
@@ -222,6 +226,7 @@ export default {
       isFollowingTv: false,
       followTvLoading: false,
       localProviders: null,
+      isTranslating: false,
       recommended: null,
       creatorItems: null,
       activeTab: null,
@@ -433,44 +438,37 @@ export default {
       } catch (error) { this.localProviders = []; }
     },
     async fetchReviews() {
-        try {
-          const tmdbReviewsPromise = getTvShowReviews(this.item.id);
-          const traktReviewsPromise = this.item.external_ids?.imdb_id 
-            ? getTraktReviews(this.item.external_ids.imdb_id, 'show') 
-            : Promise.resolve([]);
+      this.isTranslating = true;
+      try {
+        const tmdbReviewsPromise = getTvShowReviews(this.item.id);
+        const traktReviewsPromise = this.item.external_ids?.imdb_id 
+          ? getTraktReviews(this.item.external_ids.imdb_id, 'show') 
+          : Promise.resolve([]);
 
-          const [tmdbResult, traktResult] = await Promise.allSettled([tmdbReviewsPromise, traktReviewsPromise]);
-          
-          const tmdbReviews = tmdbResult.status === 'fulfilled' ? tmdbResult.value : [];
-          const traktReviews = traktResult.status === 'fulfilled' ? traktResult.value : [];
-
-          const allReviews = [...tmdbReviews, ...traktReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const [tmdbResult, traktResult] = await Promise.allSettled([tmdbReviewsPromise, traktReviewsPromise]);
         
-          const translatedReviews = await Promise.all(
-            allReviews.map(async (review) => {
-              try {
-                const translated = await translateReview(review.content);
-                return {
-                  ...review,
-                  translatedContent: translated,
-                  showTranslation: true
-                };
-              } catch (error) {
-                console.error('Error translating review:', error);
-                return {
-                  ...review,
-                  translatedContent: review.content,
-                  showTranslation: true
-                };
-              }
-            })
-          );
+        const tmdbReviews = tmdbResult.status === 'fulfilled' ? tmdbResult.value : [];
+        const traktReviews = traktResult.status === 'fulfilled' ? traktResult.value : [];
+
+        const allReviews = [...tmdbReviews, ...traktReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+        if (allReviews.length > 0) {
+          const translations = await translateReviewsBatch(allReviews);
           
-          this.reviews = translatedReviews;
-        } catch (error) {
-          console.error("Error fetching reviews", error);
+          this.reviews = allReviews.map((review, index) => ({
+            ...review,
+            translatedContent: translations[index] || review.content,
+            showTranslation: true
+          }));
+        } else {
           this.reviews = [];
         }
+      } catch (error) {
+        console.error("Error fetching reviews", error);
+        this.reviews = [];
+      } finally {
+        this.isTranslating = false;
+      }
     },
     redirectToUrl(url) { window.open(url, '_blank'); },
   },
@@ -763,6 +761,23 @@ export default {
     width: 14px;
     height: 14px;
   }
+}
+
+.translationLoader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  min-height: 200px;
+}
+
+.loaderText {
+  margin-top: 1.5rem;
+  font-size: 1.6rem;
+  color: #8AE8FC;
+  font-weight: 600;
+  text-align: center;
 }
 
 .noReviews {

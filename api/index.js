@@ -542,11 +542,18 @@ export function translateReview(reviewContent) {
       return;
     }
 
-    const maxChars = 500;
-    const text = reviewContent.substring(0, maxChars);
-    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|es`;
-
-    fetch(url)
+    fetch('https://entercinema-translator-rust.vercel.app/api/translate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        input: reviewContent,
+        options: {
+          target_language: 'Spanish'
+        }
+      })
+    })
       .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -554,8 +561,8 @@ export function translateReview(reviewContent) {
         return response.json();
       })
       .then(data => {
-        if (data.responseData && data.responseData.translatedText) {
-          resolve(data.responseData.translatedText);
+        if (data.result) {
+          resolve(data.result);
         } else {
           console.warn('Translation API returned unexpected format:', data);
           resolve(reviewContent);
@@ -566,6 +573,41 @@ export function translateReview(reviewContent) {
         resolve(reviewContent);
       });
   });
+}
+
+export async function translateReviewsBatch(reviews) {
+  if (!reviews || reviews.length === 0) {
+    return [];
+  }
+
+  const contents = reviews.map(r => r.content || '');
+
+  try {
+    const response = await fetch('https://entercinema-translator-rust.vercel.app/api/batch-translate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        texts: contents,
+        options: {
+          target_language: 'Spanish'
+        }
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Batch translation failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log(`Batch translation completed in ${data.processing_time_ms}ms`);
+
+    return data.translations || contents;
+  } catch (error) {
+    console.error('Batch translation error:', error);
+    return contents;
+  }
 }
 
 export function getMovieRecommended(id, page = 1) {

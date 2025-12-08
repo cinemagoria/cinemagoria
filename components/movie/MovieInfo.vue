@@ -79,7 +79,11 @@
         </div>
 
 
-        <div v-if="reviews && reviews.length" class="reviews-container">
+        <div v-if="isTranslating" :class="$style.translationLoader">
+          <Loader :size="44" />
+        </div>
+
+        <div v-else-if="reviews && reviews.length" class="reviews-container">
           <br>
           <div :class="$style.reviewsHeader">
             <div :class="$style.headerLeft">
@@ -169,7 +173,7 @@
 </template>
 
 <script>
-import { apiImgUrl, getMovieProviders, getMovieReviews, getTraktReviews, translateReview, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating } from '~/api'; 
+import { apiImgUrl, getMovieProviders, getMovieReviews, getTraktReviews, translateReview, translateReviewsBatch, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating } from '~/api'; 
 import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants'; 
 import { name, directors } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
@@ -206,6 +210,7 @@ export default {
       showFullReviews: false,
       reviews: [],
       localProviders: null,
+      isTranslating: false,
       
       recommended: null,
       directorItems: null,
@@ -435,6 +440,7 @@ export default {
       } catch (error) { this.localProviders = []; }
     },
     async fetchReviews() {
+      this.isTranslating = true;
       try {
         const tmdbReviewsPromise = getMovieReviews(this.item.id);
         const traktReviewsPromise = this.item.external_ids?.imdb_id 
@@ -448,30 +454,22 @@ export default {
 
         const allReviews = [...tmdbReviews, ...traktReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         
-        const translatedReviews = await Promise.all(
-          allReviews.map(async (review) => {
-            try {
-              const translated = await translateReview(review.content);
-              return {
-                ...review,
-                translatedContent: translated,
-                showTranslation: true
-              };
-            } catch (error) {
-              console.error('Error translating review:', error);
-              return {
-                ...review,
-                translatedContent: review.content,
-                showTranslation: true
-              };
-            }
-          })
-        );
-        
-        this.reviews = translatedReviews;
+        if (allReviews.length > 0) {
+          const translations = await translateReviewsBatch(allReviews);
+          
+          this.reviews = allReviews.map((review, index) => ({
+            ...review,
+            translatedContent: translations[index] || review.content,
+            showTranslation: true
+          }));
+        } else {
+          this.reviews = [];
+        }
       } catch (error) {
         console.error("Error fetching reviews", error);
         this.reviews = [];
+      } finally {
+        this.isTranslating = false;
       }
     },
     redirectToUrl(url) { window.open(url, '_blank'); },
@@ -763,6 +761,23 @@ export default {
     width: 14px;
     height: 14px;
   }
+}
+
+.translationLoader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  min-height: 200px;
+}
+
+.loaderText {
+  margin-top: 1.5rem;
+  font-size: 1.6rem;
+  color: #8AE8FC;
+  font-weight: 600;
+  text-align: center;
 }
 
 .noReviews {
