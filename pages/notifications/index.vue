@@ -780,7 +780,7 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
   gap: 2rem;
 }
 
@@ -966,7 +966,7 @@ button {
 .mark-all-button {
   display: flex;
   flex-direction: row;
-  gap: 2rem;
+  gap: 0.5rem;
 }
 
 .notification-item {
