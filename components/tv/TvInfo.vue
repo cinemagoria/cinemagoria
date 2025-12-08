@@ -114,7 +114,12 @@
                   <div :class="$style.reviewHeader">
                     <div :class="$style.reviewAuthor">
                       <strong>{{ review.authorName }}</strong>
-                      <span v-if="review.authorRating" :class="$style.reviewRating">★ {{ review.authorRating }}</span>
+                      <div v-if="review.authorRating" :class="$style.reviewRatingContainer">
+                        <div :class="$style.stars">
+                          <div :style="{ width: `${review.authorRating * 10}%` }" />
+                        </div>
+                        <span :class="$style.ratingNumber">{{ review.authorRating }}</span>
+                      </div>
                     </div>
                     <div :class="$style.reviewMeta">
                        <img v-if="review.source === 'Trakt'" src="/traktv-logo.svg" alt="Trakt" :class="$style.sourceLogo" />
@@ -689,11 +694,6 @@ export default {
   }
 }
 
-.reviewRating {
-  font-size: 1.4rem;
-  color: #f5c518;
-  font-weight: bold;
-}
 
 .reviewMeta {
   display: flex;
@@ -895,5 +895,33 @@ export default {
     opacity: 0.3;
     pointer-events: none;
   }
+}
+
+.reviewRatingContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.stars {
+  width: 7.3rem;
+  height: 1.2rem;
+  background-image: url('~assets/images/stars.png');
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  margin-bottom: 0.2rem;
+
+  > div {
+    height: 100%;
+    background-image: url('~assets/images/stars-filled.png');
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+  }
+}
+
+.ratingNumber {
+  font-size: 1.2rem;
+  color: #999;
+  font-weight: 600;
 }
 </style>
