@@ -94,18 +94,46 @@
           />
         </div>
 
-        <div v-if="reviews && reviews.length" class="reviews-container">
+        <div class="reviews-section" v-if="reviews && reviews.length">
           <br>
-          <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reviews ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px;  color: #8AE8FC;" @click="toggleFullReviews"> WARNING: MAY CONTAIN SPOILERS</span></strong>
+          <div :class="$style.reviewsHeader">
+            <div :class="$style.headerLeft">
+               <h4 :class="$style.sectionTitle">REVIEWS ({{ reviewCount }})</h4>
+               <span :class="$style.spoilerBanner">
+                WARNING: MAY CONTAIN SPOILERS
+               </span>
+            </div>
+            
+            <button @click="toggleFullReviews" :class="$style.toggleReviewsBtn">
+              {{ showFullReviews ? 'Hide Reviews' : 'Show Reviews' }}
+            </button>
+          </div>
+
           <ul class="nolist" v-show="showFullReviews">
-              <li v-for="(review, index) in reviews" :key="index" style="margin-top: 3rem;">
-                  <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">
-                      <strong style="letter-spacing: 2px; font-size: 14px;">Written By:</strong> <a style="cursor: pointer; letter-spacing: 2px; font-size: 14px;" @click="redirectToUrl(review.url)">{{ review.authorName }}</a><br>
-                      <strong style="letter-spacing: 2px; font-size: 14px;">Date:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ formatCreatedAt(review.createdAt) }}</span><br>
-                      <strong style="letter-spacing: 2px; font-size: 14px;">Rating:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ review.authorRating }}</span><br>
-                      <span style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.content, index, review.showFullContent)"></span><br>
-                      <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #8AE8FC; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Read More].</span>
-                  </p>
+              <li v-for="(review, index) in reviews" :key="index" :class="$style.reviewCard">
+                  <div :class="$style.reviewHeader">
+                    <div :class="$style.reviewAuthor">
+                      <strong>{{ review.authorName }}</strong>
+                      <span v-if="review.authorRating" :class="$style.reviewRating">★ {{ review.authorRating }}</span>
+                    </div>
+                    <div :class="$style.reviewMeta">
+                       <img v-if="review.source === 'Trakt'" src="/traktv-logo.svg" alt="Trakt" :class="$style.sourceLogo" />
+                       <img v-else src="/tmdb.svg" alt="TMDB" :class="$style.sourceLogoTMDB" />
+                       <span :class="$style.reviewDate">{{ formatCreatedAt(review.createdAt) }}</span>
+                    </div>
+                  </div>
+                  
+                  <div :class="$style.reviewBody">
+                    <span :class="$style.reviewContent" v-html="formatContent(review.content, index, review.showFullContent)"></span>
+                    <span v-if="!review.showFullContent && review.content.split(' ').length > 200" :class="$style.readMore" @click="toggleReadMore(review)">..[Read More]</span>
+                  </div>
+
+                  <div :class="$style.reviewActions" v-if="review.url">
+                    <a :href="review.url" target="_blank" rel="noopener noreferrer" :class="$style.viewReviewButton">
+                      View Review
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    </a>
+                  </div>
               </li>
           </ul>
         </div>
@@ -157,7 +185,7 @@
 </template>
 
 <script>
-import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTvShowRecommended, getPerson, getIMDbRatingFromDB, enrichTVShowWithIMDbRating } from '~/api'; 
+import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTraktReviews, getTvShowRecommended, getPerson, getIMDbRatingFromDB, enrichTVShowWithIMDbRating } from '~/api'; 
 import { name, creators } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
 import WatchOn from '~/components/WatchOn';
@@ -406,10 +434,22 @@ export default {
       } catch (error) { this.localProviders = []; }
     },
     async fetchReviews() {
-      try {
-        const reviews = await getTvShowReviews(this.item.id);
-        this.reviews = reviews;
-      } catch (error) {}
+        try {
+          const tmdbReviewsPromise = getTvShowReviews(this.item.id);
+          const traktReviewsPromise = this.item.external_ids?.imdb_id 
+            ? getTraktReviews(this.item.external_ids.imdb_id, 'show') 
+            : Promise.resolve([]);
+
+          const [tmdbResult, traktResult] = await Promise.allSettled([tmdbReviewsPromise, traktReviewsPromise]);
+          
+          const tmdbReviews = tmdbResult.status === 'fulfilled' ? tmdbResult.value : [];
+          const traktReviews = traktResult.status === 'fulfilled' ? traktResult.value : [];
+
+          this.reviews = [...tmdbReviews, ...traktReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        } catch (error) {
+          console.error("Error fetching reviews", error);
+          this.reviews = [];
+        }
     },
     redirectToUrl(url) { window.open(url, '_blank'); },
   },
@@ -425,6 +465,7 @@ export default {
   padding-bottom: 4rem;
   @media (min-width: $breakpoint-medium) { display: flex; }
 }
+
 .left {
   display: none;
   @media (min-width: $breakpoint-medium) {
@@ -435,10 +476,12 @@ export default {
   }
   @media (min-width: $breakpoint-large) { padding-right: 5rem; }
 }
+
 .right {
   padding-top: 1rem;
   @media (min-width: $breakpoint-medium) { flex: 1; }
 }
+
 .poster {
   position: relative;
   height: 0;
@@ -449,6 +492,7 @@ export default {
   img, span { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
   span { display: flex; align-items: center; justify-content: center; }
 }
+
 .overview {
   max-width: 1000px;
   margin-bottom: 3rem;
@@ -456,6 +500,7 @@ export default {
   color: $text-color;
   @media (min-width: $breakpoint-large) { font-size: 1.6rem; }
 }
+
 .title {
   margin-bottom: 1rem;
   font-size: 1.8rem;
@@ -463,6 +508,7 @@ export default {
   letter-spacing: $letter-spacing;
   @media (min-width: $breakpoint-large) { font-size: 2.4rem; }
 }
+
 .stats {
   margin-bottom: 3rem;
   font-size: 1.5rem;
@@ -476,12 +522,16 @@ export default {
   }
   a { color: #8AE8FC; text-decoration: none; }
 }
+
 .label {
   flex: 1; max-width: 90px; margin-right: 1.5rem; color: #fff;
   @media (min-width: $breakpoint-xsmall) { max-width: 110px; }
 }
+
 .value { flex: 2; }
+
 .watchSection { margin-bottom: 2rem; }
+
 .external {
   ul { display: flex; margin-left: -0.5rem; }
   a {
@@ -490,13 +540,252 @@ export default {
     &:hover, &:focus { svg { fill: $fourth-color; } }
   }
 }
-.followButton { display: inline-flex; margin-top: 1rem; align-items: center; gap: 0.8rem; padding: 1.5rem 2.5rem; background: linear-gradient(315deg, #0A1E26, #11323F, #1A4453); border-radius: 12px; color: #fff; font-size: 1.5rem; font-weight: 500; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s; @media (min-width: $breakpoint-large) { font-size: 1.6rem; } &:hover, &:focus { background: linear-gradient(315deg, #0A1E26, #11323F, #35758B); color: #8BE9FD; box-shadow: 0 0 3px rgba(156, 156, 156, 0.269); transform: scale(1.05); svg { stroke: #8BE9FD; fill: #8BE9FD; } } &:disabled { opacity: 0.5; cursor: not-allowed; } svg { flex-shrink: 0; transition: all 0.2s; } }
-.following { background: #8BE9FD; color: #000; svg { stroke: #000; fill: #000; } &:hover, &:focus { background: linear-gradient(315deg, #0A1E26, #11323F, #35758B); color: #8BE9FD; box-shadow: 0 0 3px rgba(156, 156, 156, 0.269); transform: scale(1.05); svg { stroke: #8BE9FD; fill: #8BE9FD; } } }
-</style>
 
-<style lang="scss" scoped>
+.followButton { 
+  display: inline-flex; 
+  margin-top: 1rem; 
+  align-items: center; 
+  gap: 0.8rem; 
+  padding: 1.5rem 2.5rem; 
+  background: linear-gradient(315deg, #0A1E26, #11323F, #1A4453); 
+  border-radius: 12px; 
+  color: #fff; 
+  font-size: 1.5rem; 
+  font-weight: 500; 
+  letter-spacing: 0.05em; 
+  cursor: pointer; 
+  transition: all 0.2s; 
+  
+  @media (min-width: $breakpoint-large) { font-size: 1.6rem; } 
+  
+  &:hover, &:focus { 
+    background: linear-gradient(315deg, #0A1E26, #11323F, #35758B); 
+    color: #8BE9FD; 
+    box-shadow: 0 0 3px rgba(156, 156, 156, 0.269); 
+    transform: scale(1.05); 
+    svg { stroke: #8BE9FD; fill: #8BE9FD; } 
+  } 
+  
+  &:disabled { opacity: 0.5; cursor: not-allowed; } 
+  svg { flex-shrink: 0; transition: all 0.2s; } 
+}
+
+.following { 
+  background: #8BE9FD; 
+  color: #000; 
+  
+  svg { stroke: #000; fill: #000; } 
+  
+  &:hover, &:focus { 
+    background: linear-gradient(315deg, #0A1E26, #11323F, #35758B); 
+    color: #8BE9FD; 
+    box-shadow: 0 0 3px rgba(156, 156, 156, 0.269); 
+    transform: scale(1.05); 
+    svg { stroke: #8BE9FD; fill: #8BE9FD; } 
+  } 
+}
+
+.reviewsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  
+  @media (min-width: $breakpoint-medium) {
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+  }
+}
+
+.sectionTitle {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.spoilerBanner {
+  font-size: 1.2rem;
+  color: #8AE8FC;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 1px solid rgba(138, 232, 252, 0.3);
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  background: rgba(138, 232, 252, 0.05);
+  cursor: default;
+  display: inline-block;
+  text-align: center;
+}
+
+.toggleReviewsBtn {
+  background: transparent;
+  border: 1px solid #8AE8FC;
+  color: #8AE8FC;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  
+  &:hover {
+    background: rgba(138, 232, 252, 0.1);
+    box-shadow: 0 0 15px rgba(138, 232, 252, 0.15);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.reviewCard {
+  background-color: rgba(12, 33, 42, 0.6);
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  transition: transform 0.2s ease, background-color 0.2s;
+  border: 1px solid rgba(138, 232, 252, 0.1); 
+
+  &:hover {
+    background-color: rgba(12, 33, 42, 0.8);
+    transform: translateY(-2px);
+    border-color: rgba(138, 232, 252, 0.3);
+  }
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 1rem;
+}
+
+.reviewAuthor {
+  display: flex;
+  flex-direction: column;
+  strong {
+    font-size: 1.6rem;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.reviewRating {
+  font-size: 1.4rem;
+  color: #f5c518;
+  font-weight: bold;
+}
+
+.reviewMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.sourceLogo {
+  height: 20px;
+  width: auto;
+  display: block;
+  margin-top: 5px;
+  opacity: 0.8;
+}
+
+.sourceLogoTMDB {
+  height: 15px;
+  width: auto;
+  display: block;
+  margin-top: 5px;
+  opacity: 0.8;
+}
+
+.reviewDate {
+  font-size: 1.2rem;
+  color: #999;
+  font-style: italic;
+}
+
+.reviewBody {
+  font-size: 1.5rem;
+  line-height: 1.6;
+  color: #ddd;
+  margin-bottom: 1.5rem;
+}
+
+.reviewContent {
+}
+
+.readMore {
+  cursor: pointer;
+  color: #8AE8FC;
+  font-size: 1.3rem;
+  margin-left: 0.5rem;
+  font-weight: 600;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.reviewActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.viewReviewButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  color: #8AE8FC;
+  border: 1px solid #8AE8FC;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: rgba(138, 232, 252, 0.1);
+    transform: translateY(-1px);
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.noReviews {
+  text-align: center;
+  font-size: 1.6rem;
+  color: #999;
+  padding: 4rem;
+  font-style: italic;
+}
+
 .recommendations-wrapper {
-  background-color: #000;
   width: 100%;
   padding: 3rem;
   margin-top: 2rem;
@@ -514,7 +803,7 @@ export default {
 .tabs-container {
   width: 100%;
   top: 1.5rem;
-  position:relative;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
