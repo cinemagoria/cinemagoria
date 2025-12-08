@@ -3,6 +3,7 @@ import { SUPPORTED_PRODUCTION_COMPANIES } from '../utils/constants';
 
 const apiUrl = 'https://api.themoviedb.org/3';
 export const apiImgUrl = 'https://image.tmdb.org/t/p';
+const traktApiUrl = 'https://api.trakt.tv';
 const EXCLUDED_TV_IDS = [276880];
 
 const lists = {
@@ -496,7 +497,7 @@ export function getTVShowProviders(id) {
 
 export function getMovieReviews(id) {
   return new Promise((resolve, reject) => {
-    axios.get(`${apiUrl}/movie/${id}/reviews?language=es-ES&page=1`, {
+    axios.get(`${apiUrl}/movie/${id}/reviews?language=en-US&page=1`, {
       params: {
         api_key: process.env.API_KEY,
       },
@@ -519,6 +520,7 @@ export function getMovieReviews(id) {
             content,
             createdAt,
             url,
+            source: 'TMDB',
             translatedContent: null,
             isTranslating: false
           };
@@ -721,7 +723,7 @@ export function getTvShow(id) {
 
 export function getTvShowReviews(id) {
   return new Promise((resolve, reject) => {
-    axios.get(`${apiUrl}/tv/${id}/reviews?language=es-ES&page=1`, {
+    axios.get(`${apiUrl}/tv/${id}/reviews?language=en-US&page=1`, {
       params: {
         api_key: process.env.API_KEY,
       },
@@ -743,7 +745,8 @@ export function getTvShowReviews(id) {
             authorRating,
             content,
             createdAt,
-            url
+            url,
+            source: 'TMDB'
           };
         });
 
@@ -755,6 +758,65 @@ export function getTvShowReviews(id) {
       console.error("Error fetching tv show reviews:", error);
       reject(error);
     });
+  });
+}
+
+export function getTraktReviews(id, type) {
+  return new Promise((resolve, reject) => {
+    const endpoint = type === 'movie' ? 'movies' : 'shows';
+    const clientId = process.env.TRAKT_CLIENT_ID;
+    console.log('Trakt Debug - ID:', id, 'Type:', type);
+    console.log('Trakt Debug - Client ID inside func:', clientId);
+
+    if (!clientId) {
+      console.warn('Trakt Client ID is missing, skipping request.');
+      resolve([]);
+      return;
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', `${traktApiUrl}/${endpoint}/${id}/comments`);
+
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('trakt-api-version', '2');
+    xhr.setRequestHeader('trakt-api-key', clientId);
+
+    xhr.onload = function () {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          const reviews = JSON.parse(xhr.responseText);
+          if (reviews && reviews.length > 0) {
+            const reviewsData = reviews.map(review => {
+              return {
+                authorName: review.user ? review.user.username : 'Anonymous',
+                authorAvatar: null,
+                authorRating: review.rating,
+                content: review.comment,
+                createdAt: review.created_at,
+                url: `https://trakt.tv/comments/${review.id}`,
+                source: 'Trakt'
+              };
+            });
+            resolve(reviewsData);
+          } else {
+            resolve([]);
+          }
+        } catch (e) {
+          console.error('Error parsing Trakt response', e);
+          resolve([]);
+        }
+      } else {
+        console.error(`Trakt API returned ${xhr.status} ${xhr.statusText}`);
+        resolve([]);
+      }
+    };
+
+    xhr.onerror = function () {
+      console.error('Trakt API Network Error');
+      resolve([]);
+    };
+
+    xhr.send();
   });
 }
 

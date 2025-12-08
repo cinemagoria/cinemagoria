@@ -81,16 +81,40 @@
 
         <div v-if="reviews && reviews.length" class="reviews-container">
           <br>
-          <strong style="letter-spacing: 2px; font-size: 16px;" class="label">Reseñas ({{ reviewCount }})<br><span style="cursor: pointer; letter-spacing: 2px; font-size: 15px; color: #8AE8FC;" @click="toggleFullReviews"> ADVERTENCIA: PUEDE CONTENER SPOILERS</span></strong>
+          <div :class="$style.reviewsHeader">
+            <div :class="$style.headerLeft">
+              <h3 :class="$style.sectionTitle">Reseñas ({{ reviewCount }})</h3>
+              <span :class="$style.spoilerBanner">Puede contener spoilers</span>
+            </div>
+            <button :class="$style.toggleReviewsBtn" @click="toggleFullReviews">
+              {{ showFullReviews ? 'Ocultar' : 'Mostrar' }}
+            </button>
+          </div>
           <ul class="nolist" v-show="showFullReviews">
-              <li v-for="(review, index) in reviews" :key="index" style="margin-top: 3rem;">
-                  <p v-if="showFullReviews || (review.authorName && review.authorRating !== null)">
-                      <strong style="letter-spacing: 2px; font-size: 14px;">Escrito por:</strong> <a style="cursor: pointer; letter-spacing: 2px; font-size: 14px;" @click="redirectToUrl(review.url)">{{ review.authorName }}</a><br>
-                      <strong style="letter-spacing: 2px; font-size: 14px;">Fecha:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ formatCreatedAt(review.createdAt) }}</span><br>
-                      <strong style="letter-spacing: 2px; font-size: 14px;">Calificación:</strong> <span style="letter-spacing: 2px; font-size: 14px;">{{ review.authorRating }}</span><br>
-                      <span style="font-size: 1.5rem; color: #B1BABF; font-style: italic;" v-html="formatContent(review.content, index, review.showFullContent)"></span><br>
-                      <span v-if="!review.showFullContent && review.content.split(' ').length > 200" style="cursor: pointer; color: #8AE8FC; letter-spacing: 2px; font-size: 12px;" @click="toggleReadMore(review)">..[Leer Más].</span>
-                  </p>
+              <li v-for="(review, index) in reviews" :key="index" :class="$style.reviewCard">
+                  <div :class="$style.reviewHeader">
+                    <div :class="$style.reviewAuthor">
+                      <strong>{{ review.authorName }}</strong>
+                      <span v-if="review.authorRating" :class="$style.reviewRating">★ {{ review.authorRating }}</span>
+                    </div>
+                    <div :class="$style.reviewMeta">
+                       <img v-if="review.source === 'Trakt'" src="/traktv-logo.svg" alt="Trakt" :class="$style.sourceLogo" />
+                       <img v-else src="/tmdb.svg" alt="TMDB" :class="$style.sourceLogoTMDB" />
+                       <span :class="$style.reviewDate">{{ formatCreatedAt(review.createdAt) }}</span>
+                    </div>
+                  </div>
+                  
+                  <div :class="$style.reviewBody">
+                    <span :class="$style.reviewContent" v-html="formatContent(review.content, index, review.showFullContent)"></span>
+                    <span v-if="!review.showFullContent && review.content.split(' ').length > 200" :class="$style.readMore" @click="toggleReadMore(review)">..[Leer Más]</span>
+                  </div>
+
+                  <div :class="$style.reviewActions" v-if="review.url">
+                    <a :href="review.url" target="_blank" rel="noopener noreferrer" :class="$style.viewReviewButton">
+                      Ver Reseña
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    </a>
+                  </div>
               </li>
           </ul>
         </div>
@@ -142,7 +166,7 @@
 </template>
 
 <script>
-import { apiImgUrl, getMovieProviders, getMovieReviews, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating } from '~/api'; 
+import { apiImgUrl, getMovieProviders, getMovieReviews, getTraktReviews, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating } from '~/api'; 
 import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants'; 
 import { name, directors } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
@@ -409,9 +433,21 @@ export default {
     },
     async fetchReviews() {
       try {
-        const reviews = await getMovieReviews(this.item.id);
-        this.reviews = reviews;
-      } catch (error) {}
+        const tmdbReviewsPromise = getMovieReviews(this.item.id);
+        const traktReviewsPromise = this.item.external_ids?.imdb_id 
+          ? getTraktReviews(this.item.external_ids.imdb_id, 'movie') 
+          : Promise.resolve([]);
+
+        const [tmdbResult, traktResult] = await Promise.allSettled([tmdbReviewsPromise, traktReviewsPromise]);
+        
+        const tmdbReviews = tmdbResult.status === 'fulfilled' ? tmdbResult.value : [];
+        const traktReviews = traktResult.status === 'fulfilled' ? traktResult.value : [];
+
+        this.reviews = [...tmdbReviews, ...traktReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      } catch (error) {
+        console.error("Error fetching reviews", error);
+        this.reviews = [];
+      }
     },
     redirectToUrl(url) { window.open(url, '_blank'); },
   },
@@ -491,6 +527,203 @@ export default {
     svg { transition: all 0.3s ease-in-out; }
     &:hover, &:focus { svg { fill: $fourth-color; } }
   }
+}
+
+.reviewsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  
+  @media (min-width: $breakpoint-medium) {
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+  }
+}
+
+.sectionTitle {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.spoilerBanner {
+  font-size: 1.2rem;
+  color: #8AE8FC;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 1px solid rgba(138, 232, 252, 0.3);
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  background: rgba(138, 232, 252, 0.05);
+  cursor: default;
+  display: inline-block;
+  text-align: center;
+}
+
+.toggleReviewsBtn {
+  background: transparent;
+  border: 1px solid #8AE8FC;
+  color: #8AE8FC;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  
+  &:hover {
+    background: rgba(138, 232, 252, 0.1);
+    box-shadow: 0 0 15px rgba(138, 232, 252, 0.15);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.reviewCard {
+  background-color: rgba(12, 33, 42, 0.6);
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  transition: transform 0.2s ease, background-color 0.2s;
+  border: 1px solid rgba(138, 232, 252, 0.1); 
+
+  &:hover {
+    background-color: rgba(12, 33, 42, 0.8);
+    transform: translateY(-2px);
+    border-color: rgba(138, 232, 252, 0.3);
+  }
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 1rem;
+}
+
+.reviewAuthor {
+  display: flex;
+  flex-direction: column;
+  strong {
+    font-size: 1.6rem;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.reviewRating {
+  font-size: 1.4rem;
+  color: #f5c518;
+  font-weight: bold;
+}
+
+.reviewMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.sourceLogo {
+  height: 20px;
+  width: auto;
+  display: block;
+  margin-top: 5px;
+  opacity: 0.8;
+}
+
+.sourceLogoTMDB {
+  height: 15px;
+  width: auto;
+  display: block;
+  margin-top: 5px;
+  opacity: 0.8;
+}
+
+.reviewDate {
+  font-size: 1.2rem;
+  color: #999;
+  font-style: italic;
+}
+
+.reviewBody {
+  font-size: 1.5rem;
+  line-height: 1.6;
+  color: #ddd;
+  margin-bottom: 1.5rem;
+}
+
+.readMore {
+  cursor: pointer;
+  color: #8AE8FC;
+  font-size: 1.3rem;
+  margin-left: 0.5rem;
+  font-weight: 600;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.reviewActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.viewReviewButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  color: #8AE8FC;
+  border: 1px solid #8AE8FC;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: rgba(138, 232, 252, 0.1);
+    transform: translateY(-1px);
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.noReviews {
+  text-align: center;
+  font-size: 1.6rem;
+  color: #999;
+  padding: 4rem;
+  font-style: italic;
 }
 </style>
 
