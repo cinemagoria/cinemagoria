@@ -522,7 +522,6 @@ export function getMovieReviews(id) {
             url,
             source: 'TMDB',
             translatedContent: null,
-            isTranslating: false
           };
         });
 
@@ -538,52 +537,34 @@ export function getMovieReviews(id) {
 
 export function translateReview(reviewContent) {
   return new Promise((resolve, reject) => {
-    const translationUrl = 'https://entercinema-translator-rust.vercel.app/process';
-    const data = {
-      input: reviewContent,
-      options: {
-        source_language: 'English',
-        target_language: 'Spanish',
-        tone: 'natural'
-      }
-    };
+    if (!reviewContent || reviewContent.trim().length === 0) {
+      resolve('');
+      return;
+    }
 
-    const config = {
-      timeout: 60000,
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
+    const maxChars = 500;
+    const text = reviewContent.substring(0, maxChars);
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|es`;
 
-    const maxRetries = 3;
-    let retryCount = 0;
-
-    const attemptRequest = () => {
-      axios.post(translationUrl, data, config)
-        .then(response => {
-          if (response.data && response.data.result) {
-            resolve(response.data.result);
-          } else {
-            reject(new Error('No translation result returned'));
-          }
-        })
-        .catch(error => {
-          if (retryCount < maxRetries &&
-            (error.code === 'ECONNABORTED' ||
-              error.code === 'ETIMEDOUT' ||
-              (error.response && (error.response.status === 429 || error.response.status >= 500)))) {
-
-            retryCount++;
-            const delay = Math.min(retryCount * 1000, 3000);
-            setTimeout(attemptRequest, delay);
-          } else {
-            console.error('Error translating review:', error);
-            reject(error);
-          }
-        });
-    };
-
-    attemptRequest();
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.responseData && data.responseData.translatedText) {
+          resolve(data.responseData.translatedText);
+        } else {
+          console.warn('Translation API returned unexpected format:', data);
+          resolve(reviewContent);
+        }
+      })
+      .catch(error => {
+        console.error('Translation error:', error);
+        resolve(reviewContent);
+      });
   });
 }
 

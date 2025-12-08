@@ -105,12 +105,15 @@
                   </div>
                   
                   <div :class="$style.reviewBody">
-                    <span :class="$style.reviewContent" v-html="formatContent(review.content, index, review.showFullContent)"></span>
+                    <span :class="$style.reviewContent" v-html="formatContent(review.showTranslation ? review.translatedContent : review.content, index, review.showFullContent)"></span>
                     <span v-if="!review.showFullContent && review.content.split(' ').length > 200" :class="$style.readMore" @click="toggleReadMore(review)">..[Leer Más]</span>
                   </div>
 
-                  <div :class="$style.reviewActions" v-if="review.url">
-                    <a :href="review.url" target="_blank" rel="noopener noreferrer" :class="$style.viewReviewButton">
+                  <div :class="$style.reviewActions">
+                    <button :class="$style.toggleTranslationBtn" @click="review.showTranslation = !review.showTranslation">
+                      {{ review.showTranslation ? 'Ver Original' : 'Ver Traducción' }}
+                    </button>
+                    <a v-if="review.url" :href="review.url" target="_blank" rel="noopener noreferrer" :class="$style.viewReviewButton">
                       Ver Reseña
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                     </a>
@@ -166,7 +169,7 @@
 </template>
 
 <script>
-import { apiImgUrl, getMovieProviders, getMovieReviews, getTraktReviews, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating } from '~/api'; 
+import { apiImgUrl, getMovieProviders, getMovieReviews, getTraktReviews, translateReview, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating } from '~/api'; 
 import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants'; 
 import { name, directors } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
@@ -443,7 +446,29 @@ export default {
         const tmdbReviews = tmdbResult.status === 'fulfilled' ? tmdbResult.value : [];
         const traktReviews = traktResult.status === 'fulfilled' ? traktResult.value : [];
 
-        this.reviews = [...tmdbReviews, ...traktReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const allReviews = [...tmdbReviews, ...traktReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+        const translatedReviews = await Promise.all(
+          allReviews.map(async (review) => {
+            try {
+              const translated = await translateReview(review.content);
+              return {
+                ...review,
+                translatedContent: translated,
+                showTranslation: true
+              };
+            } catch (error) {
+              console.error('Error translating review:', error);
+              return {
+                ...review,
+                translatedContent: review.content,
+                showTranslation: true
+              };
+            }
+          })
+        );
+        
+        this.reviews = translatedReviews;
       } catch (error) {
         console.error("Error fetching reviews", error);
         this.reviews = [];
@@ -690,7 +715,29 @@ export default {
 .reviewActions {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   margin-top: 1rem;
+  gap: 1rem;
+}
+
+.toggleTranslationBtn {
+  display: inline-flex;
+  align-items: center;
+  background-color: rgba(138, 232, 252, 0.1);
+  color: #8AE8FC;
+  border: 1px solid rgba(138, 232, 252, 0.3);
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: rgba(138, 232, 252, 0.2);
+    border-color: #8AE8FC;
+    transform: translateY(-1px);
+  }
 }
 
 .viewReviewButton {
