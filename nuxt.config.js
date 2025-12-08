@@ -148,6 +148,8 @@ export default {
     API_YOUTUBE_KEY: process.env.API_YOUTUBE_KEY || "",
     GA: process.env.GA || "",
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || "",
+    TRAKT_CLIENT_ID: process.env.TRAKT_CLIENT_ID || "",
+    TRAKT_CLIENT_SECRET: process.env.TRAKT_CLIENT_SECRET || "",
   },
   loading: {
     color: "#2196f3",
