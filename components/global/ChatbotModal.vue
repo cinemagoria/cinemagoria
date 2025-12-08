@@ -87,9 +87,9 @@
               <div v-if="chatMessages.length === 0 && !chatBotLoading" class="chatbot-welcome">
                 <h5 style="text-align: center; font-size:16px; padding:1rem; color:white;">Try asking:</h5>
                 <div class="examples-section">
-                  <div class="example-item">"Who directed The Matrix?"</div>
-                  <div class="example-item">"Who starred in the movie Pulp Fiction?"</div>
-                  <div class="example-item">"What was the name of the actress of Queen's Gambit?"</div>
+                  <div class="example-item" @click="handleExampleClick('Who directed The Matrix?')">"Who directed The Matrix?"</div>
+                  <div class="example-item" @click="handleExampleClick('Who starred in the movie Pulp Fiction?')">"Who starred in the movie Pulp Fiction?"</div>
+                  <div class="example-item" @click="handleExampleClick('What was the name of the actress of Queen\'s Gambit?')">"What was the name of the actress of Queen's Gambit?"</div>
                 </div>
 
                 <div class="modern-divider">
@@ -107,8 +107,8 @@
                     <p>{{ currentDailyPrompt }}</p>
                   </div>
                   <button @click="sendDailyPrompt" class="action-btn">
-                    <span style="font-weight: 500; font-size: 16px;">Ask AI</span>
                     <svg style="width: 18px; height: 18px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot-message-square-icon lucide-bot-message-square"><path d="M12 6V2H8"/><path d="M15 11v2"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M20 16a2 2 0 0 1-2 2H8.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 4 20.286V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/><path d="M9 11v2"/></svg>
+                    <span style="font-weight: 500; font-size: 16px;">Ask AI</span>
                   </button>
                 </div>
               </div>
@@ -545,6 +545,10 @@ export default {
     this.$root.$off('open-chatbot-with-selection', this.handleSelectionInit);
   },
   methods: {
+    handleExampleClick(text) {
+      this.chatBotQuery = text;
+      this.handleSendAction();
+    },
     handleImageError(event) {
       const fallbackUrl = 'https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.webp?raw=true';
       if (event.target.src !== fallbackUrl) {
