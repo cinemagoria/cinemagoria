@@ -1356,6 +1356,7 @@ button {
   .filter-button,
   .mark-all-button {
     width: 100%;
+    max-width: 300px;
     justify-content: center;
     align-items: center;
   }
