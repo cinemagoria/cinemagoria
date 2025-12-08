@@ -747,10 +747,12 @@ export default {
 .toggleTranslationBtn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  height: 3.2rem;
   background-color: rgba(138, 232, 252, 0.1);
   color: #8AE8FC;
   border: 1px solid rgba(138, 232, 252, 0.3);
-  padding: 0.6rem 1.2rem;
+  padding: 0 1.2rem;
   border-radius: 4px;
   font-size: 1.2rem;
   font-weight: 600;
@@ -767,11 +769,13 @@ export default {
 .viewReviewButton {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  height: 3.2rem;
   gap: 0.5rem;
   background-color: transparent;
   color: #8AE8FC;
   border: 1px solid #8AE8FC;
-  padding: 0.6rem 1.2rem;
+  padding: 0 1.2rem;
   border-radius: 4px;
   font-size: 1.2rem;
   font-weight: 600;
