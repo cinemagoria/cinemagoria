@@ -23,16 +23,7 @@
               </svg>
               <span>Following ({{ totalFollowingCount }})</span>
             </button>
-
-            <div class="secondary-actions">
-              <button 
-                @click="toggleFilter" 
-                :class="['filter-button', { active: !showUnreadOnly }]">
-                <svg v-if="showUnreadOnly" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-todo-icon lucide-list-todo"><path d="M13 5h8"/><path d="M13 12h8"/><path d="M13 19h8"/><path d="m3 17 2 2 4-4"/><rect x="3" y="4" width="6" height="6" rx="1"/></svg>
-                <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell-dot-icon lucide-bell-dot"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M13.916 2.314A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.74 7.327A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673 9 9 0 0 1-.585-.665"/><circle cx="18" cy="8" r="3"/></svg>
-                <span>{{ showUnreadOnly ? 'Show All' : 'Only Not Readed' }}</span>
-              </button>
-              <button 
+            <button 
                 v-if="unreadCount > 0"
                 @click="markAllAsRead" 
                 class="mark-all-button">
@@ -42,6 +33,13 @@
                 </svg>
                 <span>Mark All Read</span>
               </button>
+            <div class="secondary-actions">
+              <label class="filter-switch">
+                <input type="checkbox" :checked="!showUnreadOnly" @change="toggleFilter">
+                <span>Only Unread</span>
+                <span>Show All</span>
+              </label>
+              
             </div>
           </div>
 
@@ -782,7 +780,7 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
   gap: 2rem;
 }
 
@@ -836,9 +834,78 @@ button {
   gap: 1rem;
 }
 
+.filter-switch {
+  --_switch-bg-clr: rgba(0, 0, 0, 0);
+  --_switch-padding: 3px;
+  --_slider-bg-clr: rgba(31, 104, 135, 0.4);
+  --_slider-bg-clr-on: #8BE9FD;
+  --_slider-txt-clr: #ffffff;
+  --_label-padding: 10px 20px;
+  --_switch-easing: cubic-bezier(0.47, 1.64, 0.41, 0.8);
+  
+  color: rgba(255, 255, 255, 0.7);
+  width: fit-content;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  position: relative;
+  isolation: isolate;
+  border-radius: 25px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  font-size: 1.3rem;
+  align-self: center;
+  margin: 0;
+}
+
+.filter-switch input[type="checkbox"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.filter-switch > span {
+  display: grid;
+  place-content: center;
+  transition: all 300ms ease-in-out;
+  padding: var(--_label-padding);
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.filter-switch::before,
+.filter-switch::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+  transition: inset 150ms ease-in-out;
+}
+
+.filter-switch::before {
+  background-color: var(--_slider-bg-clr-on);
+  inset: var(--_switch-padding) 50% var(--_switch-padding) var(--_switch-padding);
+  transition: inset 500ms var(--_switch-easing), background-color 500ms ease-in-out;
+  z-index: 0;
+  border-radius: 22px;
+}
+
+.filter-switch::after {
+  background-color: var(--_switch-bg-clr);
+  inset: 0;
+  z-index: -1;
+}
+
 .filter-button,
 .mark-all-button {
-  padding: 0.8rem 1.6rem;
+  padding: 0.8rem 0.6rem;
   border-radius: 8px;
   border: 2px solid #8BE9FD;
   background: transparent;
@@ -849,7 +916,7 @@ button {
   white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.1rem;
 }
 
 
@@ -863,10 +930,43 @@ button {
   color: #000;
 }
 
-.notifications-list {
+
+.filter-switch:hover {
+  transform: translateY(-1px);
+}
+
+.filter-switch:has(input:checked)::before {
+  background-color: var(--_slider-bg-clr-on);
+  inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding) 50%;
+}
+
+.filter-switch > span:first-of-type {
+  opacity: 1;
+  color: #000;
+  font-weight: 500;
+}
+
+.filter-switch > span:last-of-type {
+  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.filter-switch:has(input:checked) > span:first-of-type {
+  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: normal;
+}
+
+.filter-switch:has(input:checked) > span:last-of-type {
+  color: #000;
+  opacity: 1;
+  font-weight: 500;
+}
+
+.mark-all-button {
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  flex-direction: row;
+  gap: 0.5rem;
 }
 
 .notification-item {
@@ -1129,7 +1229,6 @@ button {
   }
   
 
-  .filter-button,
   .mark-all-button {
     padding: 0.7rem 1.4rem;
   }
@@ -1244,15 +1343,16 @@ button {
     justify-content: center;
   }
   
+  
   .secondary-actions {
     flex-direction: column;
     width: 100%;
     max-width: 300px;
   }
   
-  .filter-button,
   .mark-all-button {
     width: 100%;
+    max-width: 300px;
     justify-content: center;
     align-items: center;
   }
