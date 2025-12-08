@@ -637,7 +637,6 @@ export default {
   margin: 0;
 }
 
-/* Rating Modal Styles */
 .rating-modal-overlay {
   position: fixed;
   top: 0;
