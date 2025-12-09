@@ -1894,7 +1894,9 @@ export default {
     gap: 0.5rem;
     border: 0.5px #31414C solid;
     top: 2px;
+    margin-top: 3rem;
     position: relative;
+    padding-top: 1rem;
     margin-bottom: 0.5rem;
 }
 
@@ -1912,7 +1914,7 @@ export default {
     padding: 8px;
     gap: 0.5rem;
     border: 0.5px #31414C solid;
-    top: -10px;
+    top: -15px;
     position: relative;
 }
 
