@@ -95,7 +95,7 @@
           </div>
           
           <div v-else>
-            <div v-if="aiSelectionMode" class="ai-selection-banner" style="margin-bottom: 0.8rem; margin-top: 0.8rem; border-radius: 15px;">
+            <div v-if="aiSelectionMode" class="ai-selection-banner" style="margin-bottom: 0.8rem;top: 3rem;position: relative;">
               <div class="banner-content">
                 <div class="selection-info">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
