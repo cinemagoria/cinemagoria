@@ -1859,52 +1859,41 @@ export default {
 
   .pagination {
     display: flex;
-    /* background: black; */
     justify-content: center;
     align-items: center;
-    /* border-radius: 15px; */
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
-    /* border-radius: 15px; */
     width: 97% !important;
     margin: 0 auto;
     background: rgba(82, 71, 71, 0);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur(16px);
     padding: 8px;
-    /* width: 80%; */
-    /* position: relative; */
     gap: 0.5rem;
     border: 0.5px #31414C solid;
-    /* left: -10px; */
-    /* top: 40px; */
-    top: 3px;
+    top: 5px;
+    margin-top: 3rem;
     position: relative;
+    padding-top: 1rem;
     margin-bottom: 0.5rem;
 }
 
 .pagination-footer {
-    display: flex;
-    /* background: black; */
-    justify-content: center;
-    align-items: center;
-    /* border-radius: 15px; */
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    /* border-radius: 15px; */
-    width: 97% !important;
-    margin: 0 auto;
-    background: rgba(16, 20, 33, 0.3);
-    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
-    backdrop-filter: blur(16px);
-    padding: 8px;
-    /* width: 80%; */
-    top: 1.6px;
-    /* position: relative; */
-    gap: 0.5rem;
-    border: 0.5px #31414C solid;
-    /* left: -10px; */
-    position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  width: 100% !important;
+  margin: 0 auto;
+  background: rgba(16, 20, 33, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  padding: 8px;
+  top: -15px;
+  gap: 0.5rem;
+  border: 0.5px #31414C solid;
+  position: relative;
 }
 
 .pagination button {
