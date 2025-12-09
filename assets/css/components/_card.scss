@@ -23,11 +23,12 @@
     height: 0;
     padding-top: 150.27%;
     overflow: hidden;
-    background-color: transparent;    
+    background-color: transparent;
     transition: transform 0.3s ease-in-out;
     box-shadow: 0 19px 10px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur(16px);
   }
+
   img,
   span {
     position: absolute;
@@ -104,11 +105,10 @@
   background-repeat: no-repeat;
   background-size: auto 100%;
 
-  > div {
+  >div {
     height: 100%;
     background-image: url('~assets/images/stars-filled.png');
     background-repeat: no-repeat;
     background-size: auto 100%;
   }
 }
-

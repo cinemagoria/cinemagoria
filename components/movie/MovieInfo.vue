@@ -86,12 +86,9 @@
         <div v-else-if="reviews && reviews.length" class="reviews-container">
           <br>
           <div :class="$style.reviewsHeader">
-            <div :class="$style.headerLeft">
-              <h3 :class="$style.sectionTitle">Reseñas ({{ reviewCount }})</h3>
-              <span :class="$style.spoilerBanner">Puede contener spoilers</span>
-            </div>
-            <button :class="$style.toggleReviewsBtn" @click="toggleFullReviews">
-              {{ showFullReviews ? 'Ocultar' : 'Mostrar' }}
+            <h3 :class="$style.sectionTitle">Reseñas ({{ reviewCount }})</h3>
+            <button @click="toggleFullReviews" :class="$style.spoilerBanner">
+              {{ showFullReviews ? 'OCULTAR RESEÑAS' : 'MOSTRAR (ADVERTENCIA: PUEDE CONTENER SPOILERS)' }}
             </button>
           </div>
           <ul class="nolist" v-show="showFullReviews">
@@ -595,18 +592,6 @@ export default {
   gap: 1.5rem;
 }
 
-.headerLeft {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-  
-  @media (min-width: $breakpoint-medium) {
-    flex-direction: row;
-    align-items: center;
-    gap: 2rem;
-  }
-}
-
 .sectionTitle {
   font-size: 1.6rem;
   font-weight: 600;
@@ -626,37 +611,24 @@ export default {
   padding: 0.4rem 1rem;
   border-radius: 4px;
   background: rgba(138, 232, 252, 0.05);
-  cursor: default;
+  cursor: pointer;
   display: inline-block;
   text-align: center;
-}
-
-.toggleReviewsBtn {
-  background: transparent;
-  border: 1px solid #8AE8FC;
-  color: #8AE8FC;
-  padding: 0.8rem 2rem;
-  border-radius: 8px;
-  font-size: 1.4rem;
-  font-weight: 600;
-  cursor: pointer;
   transition: all 0.2s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  
+
   &:hover {
     background: rgba(138, 232, 252, 0.1);
-    box-shadow: 0 0 15px rgba(138, 232, 252, 0.15);
+    box-shadow: 0 0 10px rgba(138, 232, 252, 0.1);
     transform: translateY(-1px);
   }
-  
+
   &:active {
     transform: translateY(1px);
   }
 }
 
 .reviewCard {
-  background-color: rgba(12, 33, 42, 0.6);
+  background-color: rgba(9, 25, 31, 0.6);
   border-radius: 8px;
   padding: 2rem;
   margin-bottom: 2rem;
