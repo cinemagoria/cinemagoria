@@ -80,19 +80,14 @@
         <div class="reviews-section" v-if="reviews && reviews.length">
           <br>
           <div :class="$style.reviewsHeader">
-            <div :class="$style.headerLeft">
-               <h4 :class="$style.sectionTitle">REVIEWS ({{ reviewCount }})</h4>
-               <span :class="$style.spoilerBanner">
-                WARNING: MAY CONTAIN SPOILERS
-               </span>
-            </div>
-            
-            <button @click="toggleFullReviews" :class="$style.toggleReviewsBtn">
-              {{ showFullReviews ? 'Hide Reviews' : 'Show Reviews' }}
-            </button>
+             <h4 :class="$style.sectionTitle">REVIEWS ({{ reviewCount }})</h4>
+             <button @click="toggleFullReviews" :class="$style.spoilerBanner">
+              <svg v-if="!showFullReviews" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              <span>{{ showFullReviews ? 'HIDE REVIEWS' : 'SHOW (WARNING: MAY CONTAIN SPOILERS)' }}</span>
+             </button>
           </div>
 
-          <ul class="nolist" v-show="showFullReviews">
+          <ul class="nolist" style="padding-right: 1rem;" v-show="showFullReviews">
               <li v-for="(review, index) in reviews" :key="index" :class="$style.reviewCard">
                   <div :class="$style.reviewHeader">
                     <div :class="$style.reviewAuthor">
@@ -539,7 +534,7 @@ export default {
 
 
 .reviewCard {
-  background-color: rgba(12, 33, 42, 0.6);
+  background-color: rgba(9, 25, 31, 0.6);
   border-radius: 8px;
   padding: 2rem;
   margin-bottom: 2rem;
@@ -689,24 +684,11 @@ export default {
 
 .reviewsHeader {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   margin-bottom: 2rem;
   padding: 0 1rem;
-  flex-wrap: wrap;
   gap: 1.5rem;
-}
-
-.headerLeft {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-  
-  @media (min-width: $breakpoint-medium) {
-    flex-direction: row;
-    align-items: center;
-    gap: 2rem;
-  }
 }
 
 .sectionTitle {
@@ -719,46 +701,41 @@ export default {
 }
 
 .spoilerBanner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
   font-size: 1.2rem;
   color: #8AE8FC;
-  font-weight: bold;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
   border: 1px solid rgba(138, 232, 252, 0.3);
-  padding: 0.4rem 1rem;
-  border-radius: 4px;
+  padding: 0.6rem 1.4rem;
+  border-radius: 6px;
   background: rgba(138, 232, 252, 0.05);
-  cursor: default;
-  display: inline-block;
-  text-align: center;
-}
-
-.toggleReviewsBtn {
-  background: transparent;
-  border: 1px solid #8AE8FC;
-  color: #8AE8FC;
-  padding: 0.8rem 2rem;
-  border-radius: 8px;
-  font-size: 1.4rem;
-  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  
+
+  svg {
+    margin-bottom: 2px;
+  }
+
   &:hover {
     background: rgba(138, 232, 252, 0.1);
-    box-shadow: 0 0 15px rgba(138, 232, 252, 0.15);
+    box-shadow: 0 4px 12px rgba(138, 232, 252, 0.15);
     transform: translateY(-1px);
+    border-color: rgba(138, 232, 252, 0.5);
   }
-  
+
   &:active {
     transform: translateY(1px);
   }
 }
 
+
+
 .reviewCard {
-  background-color: rgba(12, 33, 42, 0.6);
+  background-color: rgba(9, 25, 31, 0.6);
   border-radius: 8px;
   padding: 2rem;
   margin-bottom: 2rem;
