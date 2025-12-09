@@ -103,10 +103,11 @@
           <div :class="$style.reviewsHeader">
             <h3 :class="$style.sectionTitle">Reseñas ({{ reviewCount }})</h3>
             <button @click="toggleFullReviews" :class="$style.spoilerBanner">
-              {{ showFullReviews ? 'OCULTAR RESEÑAS' : 'MOSTRAR (ADVERTENCIA: PUEDE CONTENER SPOILERS)' }}
+              <svg v-if="!showFullReviews" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              <span>{{ showFullReviews ? 'OCULTAR RESEÑAS' : 'MOSTRAR (ADVERTENCIA: PUEDE CONTENER SPOILERS)' }}</span>
             </button>
           </div>
-          <ul class="nolist" v-show="showFullReviews">
+          <ul class="nolist" style="padding-right: 1rem;" v-show="showFullReviews">
               <li v-for="(review, index) in reviews" :key="index" :class="$style.reviewCard">
                   <div :class="$style.reviewHeader">
                     <div :class="$style.reviewAuthor">
@@ -583,11 +584,10 @@ export default {
 
 .reviewsHeader {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   margin-bottom: 2rem;
   padding: 0 1rem;
-  flex-wrap: wrap;
   gap: 1.5rem;
 }
 
@@ -601,24 +601,30 @@ export default {
 }
 
 .spoilerBanner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
   font-size: 1.2rem;
   color: #8AE8FC;
-  font-weight: bold;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
   border: 1px solid rgba(138, 232, 252, 0.3);
-  padding: 0.4rem 1rem;
-  border-radius: 4px;
+  padding: 0.6rem 1.4rem;
+  border-radius: 6px;
   background: rgba(138, 232, 252, 0.05);
   cursor: pointer;
-  display: inline-block;
-  text-align: center;
   transition: all 0.2s ease;
+
+  svg {
+    margin-bottom: 2px;
+  }
 
   &:hover {
     background: rgba(138, 232, 252, 0.1);
-    box-shadow: 0 0 10px rgba(138, 232, 252, 0.1);
+    box-shadow: 0 4px 12px rgba(138, 232, 252, 0.15);
     transform: translateY(-1px);
+    border-color: rgba(138, 232, 252, 0.5);
   }
 
   &:active {
