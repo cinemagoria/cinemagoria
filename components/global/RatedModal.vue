@@ -428,7 +428,7 @@ export default {
   font-size: 1.6rem;
   font-weight: 500;
   text-align: center;
-  font-family: 'GrandCru', 'Roboto', sans-serif;
+  font-family: 'Ortica', 'Roboto', sans-serif;
   font-weight: 300;
   letter-spacing: 0.05em;
   line-height: 1.2;
@@ -480,7 +480,7 @@ export default {
   transition: all 0.2s ease;
   position: relative;
   text-align: center;
-  font-family: 'GrandCru', 'Roboto', sans-serif;
+  font-family: 'Ortica', 'Roboto', sans-serif;
   font-weight: 300;
   letter-spacing: 0.05em;
   line-height: 1.2;

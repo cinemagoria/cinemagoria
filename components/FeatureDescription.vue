@@ -15,8 +15,8 @@ export default {
 
 <style scoped>
 @font-face {
-  font-family: 'GrandCru';
-  src: url('@/assets/fonts/GrandCru-LightS.otf') format('opentype');
+  font-family: 'Ortica';
+  src: url('@/assets/fonts/OrticaLinear-Bold.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
@@ -30,7 +30,7 @@ export default {
 .metal-gradient {
   padding: 30px;
   font-size: 52px;
-  font-family: 'GrandCru', 'Tahoma', sans-serif;
+  font-family: 'Ortica', 'Tahoma', sans-serif;
   font-weight: 800;
   max-width: 800px;
   margin: 0 auto;
@@ -51,7 +51,7 @@ export default {
   background-clip: text;
   color: transparent;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
-  font-family: 'GrandCru', 'Tahoma', sans-serif;
+  font-family: 'Ortica', 'Tahoma', sans-serif;
 }
 
 
