@@ -119,7 +119,6 @@
                   </span>
                   <div class="info-container">
                     <label class="release-date">Release: <span class="only-date">{{ formatDate(notification.release_date) }}</span></label>
-                    <span class="time-ago">{{ getTimeAgo(notification.created_at) }}</span>
                   </div>
                 </div>
                 <div v-if="notification.overview && notification.overview.length > 0" class="notification-overview">
@@ -128,7 +127,8 @@
                
               </div>
             </div>
-
+            
+            <div class="time-ago">{{ getTimeAgo(notification.created_at) }}</div>
             <div class="notification-tabs">
               <button 
                 @click.stop="openDeleteModal(notification.id)"
@@ -972,12 +972,17 @@ button {
   gap: 2rem;
 }
 
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6rem;
+}
+
 .notification-item {
   display: grid;
   grid-template-columns: 60px 1fr 250px;
   gap: 2rem;
   padding: 2rem;
-  margin-top:30px;
   background: rgba(255, 255, 255, 0.05);
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
@@ -1395,8 +1400,12 @@ button {
 }
 
 .time-ago {
-  color: #d0d0d0;
-  top: 1px;
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1.3rem;
+  font-weight: 500;
 }
 
 .has-release {
