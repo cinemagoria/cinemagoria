@@ -40,7 +40,7 @@
           <div class="column">
             <h2 class="title-secondary" style="color: #acafb5; font-size: 16px;">Favorite {{ filterText }}</h2>
             
-            <div class="new-controls-container" style="margin-top: 3rem;">
+             <div class="new-controls-container">
               <label class="switch">
                 <input type="checkbox" :checked="filter === 'tvShows'" @change="toggleFilterType">
                 <span>Movies</span>
@@ -95,7 +95,7 @@
           </div>
           
           <div v-else>
-            <div v-if="aiSelectionMode" class="ai-selection-banner" style="margin-bottom: 0.8rem;top: 3rem;position: relative;">
+             <div v-if="aiSelectionMode" class="ai-selection-banner">
               <div class="banner-content">
                 <div class="selection-info">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -3567,7 +3567,7 @@ select.user-rating-select {
   border-radius: 8px;
   padding: 1rem 1.5rem;
   width: 97% !important;
-  margin: 0 auto;
+  margin: 1rem auto;
 }
 
 .banner-content {
