@@ -286,6 +286,11 @@ input[type='text'] {
   background: none;
   border: 0;
   outline: 0;
+
+  &::placeholder {
+    color: #80868b;
+    opacity: 1;
+  }
 }
 
 button {
