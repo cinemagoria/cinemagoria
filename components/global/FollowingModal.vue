@@ -23,11 +23,16 @@
             :class="[{ [$style.active]: activeTab === 'tv' }]">
             TV Series ({{ tvCount }})
           </button>
+          <button 
+            @click="activeTab = 'companies'" 
+            :class="[{ [$style.active]: activeTab === 'companies' }]">
+            Companies ({{ companiesCount }})
+          </button>
         </div>
 
         <div class="undo-bar-container">
           <div v-if="undoItem" :class="$style.undoBar" style="padding: 10px;">
-            <span>{{ undoItem.type === 'person' ? undoItem.name : undoItem.tv_name }} unfollowed</span>
+            <span>{{ getUndoText() }}</span>
             <button @click="handleUndo" :class="$style.undoButton">UNDO</button>
           </div>
         </div>
@@ -41,8 +46,23 @@
         <div v-else :class="$style.modalBody">
           <div v-if="activeTab === 'people'" :class="$style.peopleTab">
             <div v-for="(items, department) in groupedPeople" :key="department" :class="$style.departmentGroup">
-              <h3 :class="$style.departmentTitle">{{ formatDepartment(department) }}</h3>
-              <div :class="$style.grid">
+              <div @click="toggleDepartment(department)" :class="$style.departmentHeader">
+                <h3 :class="$style.departmentTitle">{{ formatDepartment(department) }}</h3>
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="20" 
+                  height="20" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  stroke-width="2" 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round"
+                  :style="{ transform: collapsedDepartments[department] ? 'rotate(-90deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+              <div v-show="!collapsedDepartments[department]" :class="$style.grid">
                 <div 
                   v-for="person in items" 
                   :key="person.person_id"
@@ -77,7 +97,7 @@
             </div>
           </div>
 
-          <div v-else :class="$style.tvTab">
+          <div v-else-if="activeTab === 'tv'" :class="$style.tvTab">
             <div :class="$style.grid">
               <div 
                 v-for="show in tvShows" 
@@ -108,8 +128,44 @@
               </div>
             </div>
 
-            <div v-if="tvShows.length === 0" :class="$style.emptyState">
+          <div v-if="tvShows.length === 0" :class="$style.emptyState">
               <p>Not following any TV shows yet</p>
+            </div>
+          </div>
+
+          <div v-else-if="activeTab === 'companies'" :class="$style.companiesTab">
+            <div :class="$style.grid">
+              <div 
+                v-for="company in companies" 
+                :key="company.company_id"
+                :class="$style.card">
+                <div 
+                  @click="openCompany(company.company_id)" 
+                  :class="$style.cardImage">
+                  <img 
+                    v-if="company.logo_path" 
+                    :src="`https://image.tmdb.org/t/p/w185${company.logo_path}`" 
+                    :alt="company.company_name"
+                    :class="$style.companyLogo">
+                  <div v-else :class="$style.noImage">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div :class="$style.cardContent">
+                  <h4>{{ company.company_name }}</h4>
+                  <button 
+                    @click="unfollowCompany(company)" 
+                    :class="$style.unfollowButton">
+                    Unfollow
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="companies.length === 0" :class="$style.emptyState">
+              <p>Not following any production companies yet</p>
             </div>
           </div>
         </div>
@@ -119,63 +175,99 @@
 </template>
 
 <script>
+import { 
+  getFollowedProductionCompanies, 
+  unfollowProductionCompany, 
+  followProductionCompany 
+} from '~/api';
+
 export default {
+  props: {
+    initialTab: {
+      type: String,
+      default: 'people'
+    }
+  },
   data() {
     return {
       visible: false,
       activeTab: 'people',
       people: [],
       tvShows: [],
-      loading: true,
+      companies: [],
+      loading: false,
       undoItem: null,
       undoTimeout: null,
-      followsApiUrl: 'https://entercinema-follows-rust.vercel.app'
+      collapsedDepartments: {}
     };
   },
-
+  
   computed: {
+    groupedPeople() {
+      const groups = {};
+      this.people.forEach(p => {
+        const type = p.person_type || 'other';
+        if (!groups[type]) groups[type] = [];
+        groups[type].push(p);
+      });
+      return groups;
+    },
     peopleCount() {
       return this.people.length;
     },
     tvCount() {
       return this.tvShows.length;
     },
-    groupedPeople() {
-      const groups = {};
-      this.people.forEach(person => {
-        const dept = person.person_type || 'other';
-        if (!groups[dept]) {
-          groups[dept] = [];
-        }
-        groups[dept].push(person);
-      });
-      return groups;
+    companiesCount() {
+        return this.companies.length;
+    },
+    followsApiUrl() {
+        return 'https://entercinema-follows-rust.vercel.app';
     }
   },
 
-mounted() {
-  this.$root.$on('show-following-modal', this.show);
-},
-
-beforeDestroy() {
-  this.$root.$off('show-following-modal');
-  
-  if (this.undoTimeout) {
-    clearTimeout(this.undoTimeout);
-  }
-},
-
-methods: {
-  async show() {
-    this.visible = true;
-    await this.fetchData();
+  watch: {
+    initialTab: {
+      immediate: true,
+      handler(val) {
+        if (val) this.activeTab = val;
+      }
+    }
   },
 
-  close() {
-    this.visible = false;
+  mounted() {
+    this.$root.$on('show-following-modal', this.show);
   },
 
-  async fetchData() {
+  beforeDestroy() {
+    this.$root.$off('show-following-modal');
+    if (this.undoTimeout) {
+      clearTimeout(this.undoTimeout);
+    }
+  },
+
+  methods: {
+    toggleDepartment(department) {
+      this.$set(this.collapsedDepartments, department, !this.collapsedDepartments[department]);
+    },
+    
+    getUndoText() {
+      if (!this.undoItem) return '';
+      if (this.undoItem.type === 'company') return `${this.undoItem.company_name} unfollowed`;
+      if (this.undoItem.type === 'tv') return `${this.undoItem.tv_name} unfollowed`;
+      return `${this.undoItem.name} unfollowed`;
+    },
+
+    async show() {
+      this.visible = true;
+      await this.fetchData();
+    },
+
+    close() {
+      this.visible = false;
+    },
+
+    async fetchData() {
       const userEmail = localStorage.getItem('email');
       if (!userEmail) return;
 
@@ -189,12 +281,20 @@ methods: {
         if (peopleResponse.ok) {
           const data = await peopleResponse.json();
           this.people = data.follows || [];
+          this.people.forEach(p => {
+             const dept = p.person_type || 'other';
+             if (this.collapsedDepartments[dept] === undefined) {
+               this.$set(this.collapsedDepartments, dept, false);
+             }
+          });
         }
 
         if (tvResponse.ok) {
           const data = await tvResponse.json();
           this.tvShows = data.tv_follows || [];
         }
+
+        this.companies = await getFollowedProductionCompanies(userEmail);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -258,6 +358,27 @@ methods: {
       }
     },
 
+    async unfollowCompany(company) {
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail) return;
+
+      this.companies = this.companies.filter(c => c.company_id !== company.company_id);
+
+      this.undoItem = { ...company, type: 'company' };
+      this.startUndoTimer();
+
+      try {
+        await unfollowProductionCompany(userEmail, company.company_id);
+        this.$emit('unfollow-updated');
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('following-updated'));
+        }
+      } catch (error) {
+        console.error('Error unfollowing company:', error);
+        this.companies.push(company);
+      }
+    },
+
     startUndoTimer() {
       if (this.undoTimeout) {
         clearTimeout(this.undoTimeout);
@@ -289,7 +410,7 @@ methods: {
           if (response.ok) {
             this.people.push(this.undoItem);
           }
-        } else {
+        } else if (this.undoItem.type === 'tv') {
           const response = await fetch(`${this.followsApiUrl}/tv-follows/add`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -306,16 +427,25 @@ methods: {
           if (response.ok) {
             this.tvShows.push(this.undoItem);
           }
+        } else if (this.undoItem.type === 'company') {
+          await followProductionCompany(
+            userEmail,
+            this.undoItem.company_id,
+            this.undoItem.company_name,
+            this.undoItem.logo_path || null,
+            this.undoItem.origin_country || null
+          );
+          this.companies.push(this.undoItem);
         }
 
         this.$emit('unfollow-updated');
         if (typeof window !== 'undefined') {
-        window.dispatchEvent(new Event('following-updated'));
-      }
+          window.dispatchEvent(new Event('following-updated'));
+        }
       } catch (error) {
         console.error('Error undoing:', error);
       }
-
+      
       if (this.undoTimeout) {
         clearTimeout(this.undoTimeout);
       }
@@ -324,6 +454,10 @@ methods: {
 
     openPerson(personId) {
       window.open(`/person/${personId}`, '_blank');
+    },
+
+    openCompany(companyId) {
+      window.open(`/production/${companyId}`, '_blank');
     },
 
     openTvShow(tvId) {
@@ -463,14 +597,24 @@ methods: {
   padding: 2rem;
 }
 
+.departmentHeader {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  color: #8BE9FD;
+}
+
 .departmentGroup {
   margin-bottom: 3rem;
 }
 
 .departmentTitle {
   font-size: 1.8rem;
-  color: #8BE9FD;
-  margin-bottom: 1.5rem;
+  color: inherit;
+  margin-bottom: 0;
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -511,6 +655,12 @@ methods: {
     height: 100%;
     object-fit: cover;
   }
+}
+
+.companyLogo {
+  object-fit: contain !important;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .noImage {
