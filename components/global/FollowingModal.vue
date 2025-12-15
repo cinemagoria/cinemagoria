@@ -46,8 +46,23 @@
         <div v-else :class="$style.modalBody">
           <div v-if="activeTab === 'people'" :class="$style.peopleTab">
             <div v-for="(items, department) in groupedPeople" :key="department" :class="$style.departmentGroup">
-              <h3 :class="$style.departmentTitle">{{ formatDepartment(department) }}</h3>
-              <div :class="$style.grid">
+              <div @click="toggleDepartment(department)" :class="$style.departmentHeader">
+                <h3 :class="$style.departmentTitle">{{ formatDepartment(department) }}</h3>
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="20" 
+                  height="20" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  stroke-width="2" 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round"
+                  :style="{ transform: collapsedDepartments[department] ? 'rotate(-90deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease' }">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+              <div v-show="!collapsedDepartments[department]" :class="$style.grid">
                 <div 
                   v-for="person in items" 
                   :key="person.person_id"
@@ -160,7 +175,19 @@
 </template>
 
 <script>
+import { 
+  getFollowedProductionCompanies, 
+  unfollowProductionCompany, 
+  followProductionCompany 
+} from '~/api';
+
 export default {
+  props: {
+    initialTab: {
+      type: String,
+      default: 'people'
+    }
+  },
   data() {
     return {
       visible: false,
@@ -168,14 +195,23 @@ export default {
       people: [],
       tvShows: [],
       companies: [],
-      loading: true,
+      loading: false,
       undoItem: null,
       undoTimeout: null,
-      followsApiUrl: 'https://entercinema-follows-rust.vercel.app'
+      collapsedDepartments: {}
     };
   },
-
+  
   computed: {
+    groupedPeople() {
+      const groups = {};
+      this.people.forEach(p => {
+        const type = p.person_type || 'other';
+        if (!groups[type]) groups[type] = [];
+        groups[type].push(p);
+      });
+      return groups;
+    },
     peopleCount() {
       return this.people.length;
     },
@@ -183,18 +219,19 @@ export default {
       return this.tvShows.length;
     },
     companiesCount() {
-      return this.companies.length;
+        return this.companies.length;
     },
-    groupedPeople() {
-      const groups = {};
-      this.people.forEach(person => {
-        const dept = person.person_type || 'other';
-        if (!groups[dept]) {
-          groups[dept] = [];
-        }
-        groups[dept].push(person);
-      });
-      return groups;
+    followsApiUrl() {
+        return 'https://entercinema-follows-rust.vercel.app';
+    }
+  },
+
+  watch: {
+    initialTab: {
+      immediate: true,
+      handler(val) {
+        if (val) this.activeTab = val;
+      }
     }
   },
 
@@ -210,11 +247,15 @@ export default {
   },
 
   methods: {
+    toggleDepartment(department) {
+      this.$set(this.collapsedDepartments, department, !this.collapsedDepartments[department]);
+    },
+    
     getUndoText() {
       if (!this.undoItem) return '';
-      if (this.undoItem.type === 'company') return `Dejaste de seguir a ${this.undoItem.company_name}`;
-      if (this.undoItem.type === 'tv') return `Dejaste de seguir a ${this.undoItem.tv_name}`;
-      return `Dejaste de seguir a ${this.undoItem.name}`;
+      if (this.undoItem.type === 'company') return `${this.undoItem.company_name} unfollowed`;
+      if (this.undoItem.type === 'tv') return `${this.undoItem.tv_name} unfollowed`;
+      return `${this.undoItem.name} unfollowed`;
     },
 
     async show() {
@@ -240,6 +281,12 @@ export default {
         if (peopleResponse.ok) {
           const data = await peopleResponse.json();
           this.people = data.follows || [];
+          this.people.forEach(p => {
+             const dept = p.person_type || 'other';
+             if (this.collapsedDepartments[dept] === undefined) {
+               this.$set(this.collapsedDepartments, dept, false);
+             }
+          });
         }
 
         if (tvResponse.ok) {
@@ -247,11 +294,7 @@ export default {
           this.tvShows = data.tv_follows || [];
         }
 
-        const companiesResponse = await fetch(`${this.followsApiUrl}/company-follows/list?user_email=${encodeURIComponent(userEmail)}`);
-        if (companiesResponse.ok) {
-          const data = await companiesResponse.json();
-          this.companies = data.company_follows || [];
-        }
+        this.companies = await getFollowedProductionCompanies(userEmail);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -321,13 +364,11 @@ export default {
 
       this.companies = this.companies.filter(c => c.company_id !== company.company_id);
 
-      this.undoItem = { ...company, type: 'company', name: company.company_name };
+      this.undoItem = { ...company, type: 'company' };
       this.startUndoTimer();
 
       try {
-        await fetch(`${this.followsApiUrl}/company-follows/remove?user_email=${encodeURIComponent(userEmail)}&company_id=${company.company_id}`, {
-          method: 'DELETE'
-        });
+        await unfollowProductionCompany(userEmail, company.company_id);
         this.$emit('unfollow-updated');
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new Event('following-updated'));
@@ -387,20 +428,14 @@ export default {
             this.tvShows.push(this.undoItem);
           }
         } else if (this.undoItem.type === 'company') {
-          const response = await fetch(`${this.followsApiUrl}/company-follows/add`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              user_email: userEmail,
-              company_id: this.undoItem.company_id,
-              company_name: this.undoItem.company_name,
-              logo_path: this.undoItem.logo_path || null,
-              origin_country: this.undoItem.origin_country || null
-            })
-          });
-          if (response.ok) {
-             this.companies.push(this.undoItem);
-          }
+          await followProductionCompany(
+            userEmail,
+            this.undoItem.company_id,
+            this.undoItem.company_name,
+            this.undoItem.logo_path || null,
+            this.undoItem.origin_country || null
+          );
+          this.companies.push(this.undoItem);
         }
 
         this.$emit('unfollow-updated');
@@ -562,14 +597,24 @@ export default {
   padding: 2rem;
 }
 
+.departmentHeader {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  color: #8BE9FD;
+}
+
 .departmentGroup {
   margin-bottom: 3rem;
 }
 
 .departmentTitle {
   font-size: 1.8rem;
-  color: #8BE9FD;
-  margin-bottom: 1.5rem;
+  color: inherit;
+  margin-bottom: 0;
   text-transform: uppercase;
   letter-spacing: 2px;
 }

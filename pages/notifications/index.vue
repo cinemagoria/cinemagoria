@@ -311,7 +311,11 @@ export default {
   methods: {
     handlePersonClick(notification) {
       if (notification.person_id) {
-        this.$router.push(`/person/${notification.person_id}`);
+        if (this.isCompany(notification.person_id)) {
+          this.$router.push(`/production/${notification.person_id}`);
+        } else {
+          this.$router.push(`/person/${notification.person_id}`);
+        }
       }
     },
 
