@@ -1167,3 +1167,43 @@ export async function enrichTVShowWithIMDbRating(item) {
   }
   return { ...item, rating_source: 'tmdb' };
 }
+
+const FOLLOWS_API_URL = 'https://entercinema-follows-rust.vercel.app';
+
+export async function followProductionCompany(userEmail, companyId, companyName, logoPath, originCountry) {
+  try {
+    const response = await axios.post(`${FOLLOWS_API_URL}/company-follows/add`, {
+      user_email: userEmail,
+      company_id: companyId,
+      company_name: companyName,
+      logo_path: logoPath,
+      origin_country: originCountry
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function unfollowProductionCompany(userEmail, companyId) {
+  try {
+    const response = await axios.delete(`${FOLLOWS_API_URL}/company-follows/remove`, {
+      params: { user_email: userEmail, company_id: companyId }
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getFollowedProductionCompanies(userEmail) {
+  try {
+    const response = await axios.get(`${FOLLOWS_API_URL}/company-follows/list`, {
+      params: { user_email: userEmail }
+    });
+    return response.data.company_follows || [];
+  } catch (error) {
+    console.error('Error fetching followed companies:', error);
+    return [];
+  }
+}
