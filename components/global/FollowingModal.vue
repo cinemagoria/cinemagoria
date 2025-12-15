@@ -629,20 +629,20 @@ export default {
   }
 }
 
-.card {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(139, 233, 253, 0.2);
-  }
+.companyLogo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.05);
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+  transform: translateY(-4px);
 }
 
 .cardImage {
   position: relative;
+  background: #8be8fd;
+  border-radius: 10px;
   padding-top: 150%;
   cursor: pointer;
   overflow: hidden;
