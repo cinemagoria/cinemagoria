@@ -120,7 +120,7 @@ export default {
     },
     async toggleFollow() {
         if (!this.isAuthenticated) {
-            alert("Please login to follow production companies.");
+            console.warn("Please login to follow production companies.");
             return;
         }
         const userEmail = localStorage.getItem('email');
@@ -144,7 +144,6 @@ export default {
             }
         } catch (e) {
             console.error(e);
-            alert("An error occurred. Please try again.");
         } finally {
             this.isLoadingFollow = false;
         }
