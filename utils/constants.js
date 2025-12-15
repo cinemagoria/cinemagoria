@@ -658,7 +658,7 @@ export const ISO_TO_COUNTRY_NAME_MAP = {
     "AE": "United Arab Emirates",
     "SA": "Saudi Arabia",
     "QA": "Qatar",
-    "kw": "Kuwait",
+    "KW": "Kuwait",
     "CZ": "Czech Republic",
     "HU": "Hungary",
     "AT": "Austria",
