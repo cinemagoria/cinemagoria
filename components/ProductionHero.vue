@@ -19,12 +19,25 @@
       <div v-if="description" :class="$style.desc">
         {{ description }}
       </div>
+
+      <div :class="$style.buttonContainer" v-if="isSupported && isAuthenticated">
+        <button 
+          :class="[$style.actionButton, { [$style.active]: isFollowing }]" 
+          @click="toggleFollow" 
+          :disabled="isLoadingFollow">
+          <span v-if="isLoadingFollow">Loading...</span>
+          <span v-else>
+            {{ isFollowing ? 'Following' : 'Follow' }}
+          </span>
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { apiImgUrl } from '~/api';
+import { apiImgUrl, followProductionCompany, unfollowProductionCompany, getFollowedProductionCompanies } from '~/api';
+import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants';
 
 export default {
   props: {
@@ -36,6 +49,13 @@ export default {
       type: String,
       default: '',
     },
+  },
+
+  data() {
+    return {
+      isFollowing: false,
+      isLoadingFollow: false,
+    };
   },
 
   computed: {
@@ -60,7 +80,75 @@ export default {
       }
       return null;
     },
+    isAuthenticated() {
+      if (typeof window !== 'undefined') {
+          return !!localStorage.getItem('email');
+      }
+      return false;
+    },
+    isSupported() {
+      return !!SUPPORTED_PRODUCTION_COMPANIES[this.item.id];
+    }
   },
+
+  mounted() {
+    this.checkFollowStatus();
+    if (typeof window !== 'undefined') {
+         window.addEventListener('following-updated', this.checkFollowStatus);
+    }
+  },
+
+  beforeDestroy() {
+    if (typeof window !== 'undefined') {
+         window.removeEventListener('following-updated', this.checkFollowStatus);
+    }
+  },
+
+  methods: {
+    async checkFollowStatus() {
+        if (!this.isAuthenticated || !this.isSupported) return;
+        const userEmail = localStorage.getItem('email');
+        this.isLoadingFollow = true;
+        try {
+            const follows = await getFollowedProductionCompanies(userEmail);
+            this.isFollowing = follows.some(c => c.company_id === this.item.id);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            this.isLoadingFollow = false;
+        }
+    },
+    async toggleFollow() {
+        if (!this.isAuthenticated) {
+            console.warn("Please login to follow production companies.");
+            return;
+        }
+        const userEmail = localStorage.getItem('email');
+        this.isLoadingFollow = true;
+        try {
+            if (this.isFollowing) {
+                await unfollowProductionCompany(userEmail, this.item.id);
+                this.isFollowing = false;
+            } else {
+                await followProductionCompany(
+                    userEmail,
+                    this.item.id,
+                    this.item.name,
+                    this.item.logo_path,
+                    this.item.origin_country
+                );
+                this.isFollowing = true;
+            }
+            if (typeof window !== 'undefined') {
+                window.dispatchEvent(new Event('following-updated'));
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            this.isLoadingFollow = false;
+        }
+    }
+  }
 };
 </script>
 
@@ -181,6 +269,16 @@ export default {
         stroke: #fff !important;
         fill: none !important;
       }
+    }
+  }
+
+  &.active {
+    background-color: #e50914;
+    border-color: #e50914;
+    
+    &:hover {
+      background-color: #f40612;
+      border-color: #f40612;
     }
   }
 }

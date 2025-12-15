@@ -76,7 +76,7 @@
                 v-if="notification.person_id && notification.profile_path" 
                 :src="`https://image.tmdb.org/t/p/w185${notification.profile_path}`" 
                 :alt="notification.person_name"
-                class="person-profile-image">
+                :class="['person-profile-image', { 'company-logo': isCompany(notification.person_id) }]">
               <svg v-else-if="notification.media_type === 'movie'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>
               </svg>
@@ -233,6 +233,7 @@ import UserNav from '@/components/global/UserNav';
 import supabase from '@/services/supabase';
 import FollowingModal from '~/components/global/FollowingModal.vue';
 import HowItWorksModal from '~/components/HowItWorksModal.vue';
+import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants';
 
 export default {
   head () {
@@ -311,7 +312,11 @@ export default {
   methods: {
     handlePersonClick(notification) {
       if (notification.person_id) {
-        this.$router.push(`/person/${notification.person_id}`);
+        if (this.isCompany(notification.person_id)) {
+          this.$router.push(`/production/${notification.person_id}`);
+        } else {
+          this.$router.push(`/person/${notification.person_id}`);
+        }
       }
     },
 
@@ -458,6 +463,10 @@ export default {
     getFallbackImageUrl(notification) {
       if (notification.poster_path) {
         return `https://image.tmdb.org/t/p/w185${notification.poster_path}`;
+      }
+
+      if (notification.media_type === 'movie' || notification.media_type === 'tv') {
+        return '/image_not_found_yet.webp';
       }
       
       if (notification.media_type === 'episode' && notification.person_id) {
@@ -658,6 +667,10 @@ export default {
         } catch (error) {
           console.error('Error marking all as read:', error);
         }
+      },
+      
+      isCompany(id) {
+        return !!SUPPORTED_PRODUCTION_COMPANIES[id];
       }
   }
 };
@@ -729,7 +742,7 @@ button {
 
   @media screen and (max-width: 600px) {
   .navbar-title {
-    font-size: 12px; 
+    font-size: 12px;
   }
 
   .button-logout {
@@ -1021,6 +1034,12 @@ button {
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.person-profile-image.company-logo {
+  object-fit: contain;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 4px;
 }
 
 .notification-content {
