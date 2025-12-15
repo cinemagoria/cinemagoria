@@ -5,13 +5,13 @@
       <div v-if="logo" :class="$style.logoContainer">
         <img :src="logo" :alt="name" :class="$style.logo" />
       </div>
-      <h1 v-else :class="$style.name">
+      <h1 :class="$style.name">
         {{ name }}
       </h1>
 
       <div :class="$style.meta">
         <div :class="$style.info">
-          <span v-if="country">{{ country }}</span>
+          <span v-if="countryName">{{ countryName }}</span>
           <span v-if="headquarters">{{ headquarters }}</span>
         </div>
       </div>
@@ -37,7 +37,7 @@
 
 <script>
 import { apiImgUrl, followProductionCompany, unfollowProductionCompany, getFollowedProductionCompanies } from '~/api';
-import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants';
+import { SUPPORTED_PRODUCTION_COMPANIES, ISO_TO_COUNTRY_NAME_MAP } from '~/utils/constants';
 
 export default {
   props: {
@@ -68,8 +68,9 @@ export default {
     headquarters() {
       return this.item.headquarters;
     },
-    country() {
-      return this.item.origin_country;
+    countryName() {
+      const code = this.item.origin_country;
+      return ISO_TO_COUNTRY_NAME_MAP[code] || code;
     },
     homepage() {
       return this.item.homepage;
@@ -177,15 +178,21 @@ export default {
   margin-bottom: 2rem;
   display: flex;
   justify-content: center;
-  height: 100px;
+  height: 120px;
   align-items: center;
+  background-color: #8BE9FD;
+  border-radius: 10px;
+  padding: 1rem;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .logo {
   max-height: 100%;
   max-width: 80%;
   object-fit: contain;
-  filter: drop-shadow(0 0 4px rgba(255,255,255,0.8));
+  filter: none;
 }
 
 .title {
@@ -273,12 +280,13 @@ export default {
   }
 
   &.active {
-    background-color: #e50914;
-    border-color: #e50914;
+    background-color: #8BE9FD;
+    border-color: #8BE9FD;
+    color: #000000;
     
     &:hover {
-      background-color: #f40612;
-      border-color: #f40612;
+      background-color: #8BE9FD;
+      border-color: #8BE9FD;
     }
   }
 }
