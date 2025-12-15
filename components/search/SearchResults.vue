@@ -26,7 +26,6 @@
             </circle>
           </g>
         </svg>
-        <p>Verificando...</p>
       </div>
       
       <div v-if="suggestedCorrection" class="suggestion">

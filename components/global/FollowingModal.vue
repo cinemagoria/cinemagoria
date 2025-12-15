@@ -23,11 +23,16 @@
             :class="[{ [$style.active]: activeTab === 'tv' }]">
             Series de TV ({{ tvCount }})
           </button>
+          <button 
+            @click="activeTab = 'companies'" 
+            :class="[{ [$style.active]: activeTab === 'companies' }]">
+            Compañías ({{ companiesCount }})
+          </button>
         </div>
 
         <div class="undo-bar-container">
           <div v-if="undoItem" :class="$style.undoBar" style="padding: 10px;">
-            <span>Has dejado de seguir a {{ undoItem.type === 'person' ? undoItem.name : undoItem.tv_name }}</span>
+            <span>{{ getUndoText() }}</span>
             <button @click="handleUndo" :class="$style.undoButton">DESHACER</button>
           </div>
         </div>
@@ -77,7 +82,7 @@
             </div>
           </div>
 
-          <div v-else :class="$style.tvTab">
+          <div v-else-if="activeTab === 'tv'" :class="$style.tvTab">
             <div :class="$style.grid">
               <div 
                 v-for="show in tvShows" 
@@ -108,8 +113,44 @@
               </div>
             </div>
 
-            <div v-if="tvShows.length === 0" :class="$style.emptyState">
+          <div v-if="tvShows.length === 0" :class="$style.emptyState">
               <p>Aún no sigues ninguna serie de TV</p>
+            </div>
+          </div>
+
+          <div v-else-if="activeTab === 'companies'" :class="$style.companiesTab">
+            <div :class="$style.grid">
+              <div 
+                v-for="company in companies" 
+                :key="company.company_id"
+                :class="$style.card">
+                <div 
+                  @click="openCompany(company.company_id)" 
+                  :class="$style.cardImage">
+                  <img 
+                    v-if="company.logo_path" 
+                    :src="`https://image.tmdb.org/t/p/w185${company.logo_path}`" 
+                    :alt="company.company_name"
+                    :class="$style.companyLogo">
+                  <div v-else :class="$style.noImage">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div :class="$style.cardContent">
+                  <h4>{{ company.company_name }}</h4>
+                  <button 
+                    @click="unfollowCompany(company)" 
+                    :class="$style.unfollowButton">
+                    Dejar de seguir
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="companies.length === 0" :class="$style.emptyState">
+              <p>Aún no sigues ninguna productora</p>
             </div>
           </div>
         </div>
@@ -126,6 +167,7 @@ export default {
       activeTab: 'people',
       people: [],
       tvShows: [],
+      companies: [],
       loading: true,
       undoItem: null,
       undoTimeout: null,
@@ -140,6 +182,9 @@ export default {
     tvCount() {
       return this.tvShows.length;
     },
+    companiesCount() {
+      return this.companies.length;
+    },
     groupedPeople() {
       const groups = {};
       this.people.forEach(person => {
@@ -153,29 +198,35 @@ export default {
     }
   },
 
-mounted() {
-  this.$root.$on('show-following-modal', this.show);
-},
-
-beforeDestroy() {
-  this.$root.$off('show-following-modal');
-  
-  if (this.undoTimeout) {
-    clearTimeout(this.undoTimeout);
-  }
-},
-
-methods: {
-  async show() {
-    this.visible = true;
-    await this.fetchData();
+  mounted() {
+    this.$root.$on('show-following-modal', this.show);
   },
 
-  close() {
-    this.visible = false;
+  beforeDestroy() {
+    this.$root.$off('show-following-modal');
+    if (this.undoTimeout) {
+      clearTimeout(this.undoTimeout);
+    }
   },
 
-  async fetchData() {
+  methods: {
+    getUndoText() {
+      if (!this.undoItem) return '';
+      if (this.undoItem.type === 'company') return `Dejaste de seguir a ${this.undoItem.company_name}`;
+      if (this.undoItem.type === 'tv') return `Dejaste de seguir a ${this.undoItem.tv_name}`;
+      return `Dejaste de seguir a ${this.undoItem.name}`;
+    },
+
+    async show() {
+      this.visible = true;
+      await this.fetchData();
+    },
+
+    close() {
+      this.visible = false;
+    },
+
+    async fetchData() {
       const userEmail = localStorage.getItem('email');
       if (!userEmail) return;
 
@@ -195,6 +246,12 @@ methods: {
           const data = await tvResponse.json();
           this.tvShows = data.tv_follows || [];
         }
+
+        const companiesResponse = await fetch(`${this.followsApiUrl}/company-follows/list?user_email=${encodeURIComponent(userEmail)}`);
+        if (companiesResponse.ok) {
+          const data = await companiesResponse.json();
+          this.companies = data.company_follows || [];
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -207,7 +264,7 @@ methods: {
         'actor': 'Actores',
         'director': 'Directores',
         'writer': 'Guionistas',
-        'other': 'Otros'
+        'other': 'Otro'
       };
       return map[dept] || dept.charAt(0).toUpperCase() + dept.slice(1);
     },
@@ -258,6 +315,29 @@ methods: {
       }
     },
 
+    async unfollowCompany(company) {
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail) return;
+
+      this.companies = this.companies.filter(c => c.company_id !== company.company_id);
+
+      this.undoItem = { ...company, type: 'company', name: company.company_name };
+      this.startUndoTimer();
+
+      try {
+        await fetch(`${this.followsApiUrl}/company-follows/remove?user_email=${encodeURIComponent(userEmail)}&company_id=${company.company_id}`, {
+          method: 'DELETE'
+        });
+        this.$emit('unfollow-updated');
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('following-updated'));
+        }
+      } catch (error) {
+        console.error('Error unfollowing company:', error);
+        this.companies.push(company);
+      }
+    },
+
     startUndoTimer() {
       if (this.undoTimeout) {
         clearTimeout(this.undoTimeout);
@@ -289,7 +369,7 @@ methods: {
           if (response.ok) {
             this.people.push(this.undoItem);
           }
-        } else {
+        } else if (this.undoItem.type === 'tv') {
           const response = await fetch(`${this.followsApiUrl}/tv-follows/add`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -306,16 +386,31 @@ methods: {
           if (response.ok) {
             this.tvShows.push(this.undoItem);
           }
+        } else if (this.undoItem.type === 'company') {
+          const response = await fetch(`${this.followsApiUrl}/company-follows/add`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_email: userEmail,
+              company_id: this.undoItem.company_id,
+              company_name: this.undoItem.company_name,
+              logo_path: this.undoItem.logo_path || null,
+              origin_country: this.undoItem.origin_country || null
+            })
+          });
+          if (response.ok) {
+             this.companies.push(this.undoItem);
+          }
         }
 
         this.$emit('unfollow-updated');
         if (typeof window !== 'undefined') {
-        window.dispatchEvent(new Event('following-updated'));
-      }
+          window.dispatchEvent(new Event('following-updated'));
+        }
       } catch (error) {
         console.error('Error undoing:', error);
       }
-
+      
       if (this.undoTimeout) {
         clearTimeout(this.undoTimeout);
       }
@@ -324,6 +419,10 @@ methods: {
 
     openPerson(personId) {
       window.open(`/person/${personId}`, '_blank');
+    },
+
+    openCompany(companyId) {
+      window.open(`/production/${companyId}`, '_blank');
     },
 
     openTvShow(tvId) {
@@ -511,6 +610,12 @@ methods: {
     height: 100%;
     object-fit: cover;
   }
+}
+
+.companyLogo {
+  object-fit: contain !important;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .noImage {
