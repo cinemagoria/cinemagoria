@@ -1171,29 +1171,21 @@ export async function enrichTVShowWithIMDbRating(item) {
 const FOLLOWS_API_URL = 'https://entercinema-follows-rust.vercel.app';
 
 export async function followProductionCompany(userEmail, companyId, companyName, logoPath, originCountry) {
-  try {
-    const response = await axios.post(`${FOLLOWS_API_URL}/company-follows/add`, {
-      user_email: userEmail,
-      company_id: companyId,
-      company_name: companyName,
-      logo_path: logoPath,
-      origin_country: originCountry
-    });
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+  const response = await axios.post(`${FOLLOWS_API_URL}/company-follows/add`, {
+    user_email: userEmail,
+    company_id: companyId,
+    company_name: companyName,
+    logo_path: logoPath,
+    origin_country: originCountry
+  });
+  return response.data;
 }
 
 export async function unfollowProductionCompany(userEmail, companyId) {
-  try {
-    const response = await axios.delete(`${FOLLOWS_API_URL}/company-follows/remove`, {
-      params: { user_email: userEmail, company_id: companyId }
-    });
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+  const response = await axios.delete(`${FOLLOWS_API_URL}/company-follows/remove`, {
+    params: { user_email: userEmail, company_id: companyId }
+  });
+  return response.data;
 }
 
 export async function getFollowedProductionCompanies(userEmail) {
