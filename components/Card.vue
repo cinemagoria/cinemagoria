@@ -11,10 +11,12 @@
           :class="{ 'card__img--logo': media === 'production' }"
           :alt="name">
 
-        <span v-else>
-          <!-- eslint-disable-next-line -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill-rule="evenodd" clip-rule="evenodd" fill="#999"><path d="M24 22h-24v-20h24v20zm-1-19h-22v18h22v-18zm-1 16h-19l4-7.492 3 3.048 5.013-7.556 6.987 12zm-11.848-2.865l-2.91-2.956-2.574 4.821h15.593l-5.303-9.108-4.806 7.243zm-4.652-11.135c1.38 0 2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5-2.5-1.12-2.5-2.5 1.12-2.5 2.5-2.5zm0 1c.828 0 1.5.672 1.5 1.5s-.672 1.5-1.5 1.5-1.5-.672-1.5-1.5.672-1.5 1.5-1.5z"/></svg>
-        </span>
+        <img
+          v-else
+          src="https://raw.githubusercontent.com/imprvhub/entercinema/main/static/image_not_found_yet.webp"
+          alt="Image not found"
+          class="card__img--poster"
+          style="width: 100%; height: 100%; object-fit: cover;">
       </div>
 
       <h2 class="card__name">
@@ -92,7 +94,7 @@ export default {
 .card__img--logo {
   object-fit: contain !important;
   padding: 20px;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: #8BE9FD;
   width: 100%;
   height: 100%;
 }
