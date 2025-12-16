@@ -1,70 +1,87 @@
 <template>
   <main class="main">
     <UserNav @show-rated-modal="showRatedItems" />
-    <div class="tab-controls">
-      <button class="tab-btn" @click="navigateToMovies">
-        <span class="title-primary" style="font-size:16px;">Movies</span>
-      </button>
-      <button class="tab-btn active">
-        <span class="title-primary" style="font-size:16px;">TV Shows</span>
-      </button>
-    </div>
+    
+    <div class="header-container">
+      <h1 class="title-primary" style="text-align: center; margin-bottom: 0.5rem;">TV Shows</h1>
+      <p class="title-secondary" style="text-align: center; margin-bottom: 2rem;">
+        Find your next binge-worthy series, latest episodes, and more.
+      </p>
 
-    <Hero
-      :item="featured" />
-     
+      <div class="switcher-container">
+        <label class="switch">
+          <input type="checkbox" :checked="true" @change="navigateToMovies">
+          <span class="slider"></span>
+          <span class="label-text">Movies</span>
+          <span class="label-text">TV Shows</span>
+        </label>
+      </div>
+    </div>
     <br>
+
     <CustomListingCategoriesSeries
       :title="'Browse By Category'"
       :view-all-url="null"/>
-    <ListingCarousel
-      v-if="popular && popular.results.length"
-      :title="popularTitle"
-      :view-all-url="popularUrl"
-      :items="popular" />
-     
-    <ListingCarousel
-      v-if="topRated && topRated.results.length"
-      :title="topRatedTitle"
-      :view-all-url="topRatedUrl"
-      :items="topRated" />
-     
+
+    <div v-if="followedTvShows && followedTvShows.results && followedTvShows.results.length > 0" class="followed-section">
+      <ListingCarousel
+        :title="'From the Production companies you follow'"
+        :items="followedTvShows"
+        :view-all-url="{ name: 'tv-followed' }" />
+    </div>
+
     <ListingCarousel
       v-if="onAir && onAir.results.length"
       :title="onAirTitle"
       :view-all-url="onAirUrl"
       :items="onAir" />
-     
+
+    <ListingCarousel
+      v-if="popular && popular.results.length"
+      :title="popularTitle"
+      :view-all-url="popularUrl"
+      :items="popular" />
+
     <ListingCarousel
       v-if="airingToday && airingToday.results.length"
       :title="airingTodayTitle"
       :view-all-url="airingTodayUrl"
       :items="airingToday" />
+
+    <ListingCarousel
+      v-if="topRated && topRated.results.length"
+      :title="topRatedTitle"
+      :view-all-url="topRatedUrl"
+      :items="topRated" />
   </main>
 </template>
 
 <script>
 import UserNav from '@/components/global/UserNav';
-import { getTvShows, getTvShow, getListItem } from '~/api';
-import Hero from '~/components/Hero';
+import { getTvShows, getListItem, getFollowedProductionCompanies, getTvShowsByCompanies } from '~/api';
 import ListingCarousel from '~/components/ListingCarousel';
 import CustomListingCategoriesSeries from '~/components/CustomListingCategoriesSeries';
 
 export default {
   components: {
     UserNav,
-    Hero,
     ListingCarousel,
     CustomListingCategoriesSeries,
   },
 
   head () {
     return {
-      title: 'EnterCinema - TV Shows.',
+      title: 'EnterCinema - TV Shows',
       meta: [
         { hid: 'og:title', property: 'og:title', content: 'TV Shows' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
       ],
+    };
+  },
+
+  data() {
+    return {
+      followedTvShows: null,
     };
   },
 
@@ -75,6 +92,26 @@ export default {
     showRatedItems() {
       this.ratedItemsModalVisible = true;
     },
+    async fetchFollowedContent() {
+      if (typeof window === 'undefined') return;
+      
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail) return;
+
+      try {
+        const followedCompanies = await getFollowedProductionCompanies(userEmail);
+        if (followedCompanies && followedCompanies.length > 0) {
+          const companyIds = followedCompanies.map(c => c.company_id).join('|');
+          this.followedTvShows = await getTvShowsByCompanies(companyIds);
+        }
+      } catch (error) {
+        console.error('Error fetching followed TV shows:', error);
+      }
+    }
+  },
+
+  mounted() {
+    this.fetchFollowedContent();
   },
 
   computed: {
@@ -117,70 +154,91 @@ export default {
       const topRated = await getTvShows('top_rated');
       const onAir = await getTvShows('on_the_air');
       const airingToday = await getTvShows('airing_today');
-      const featured = await getTvShow(popular.results[0].id);
 
-      return { popular, topRated, onAir, airingToday, featured };
+      return { popular, topRated, onAir, airingToday };
     } catch {
       error({ statusCode: 504, message: 'Data not available' });
     }
   },
 };
 </script>
-<style scoped>
-.tab-controls {
+
+<style scoped lang="scss">
+.header-container {
+  padding: 2rem 1rem;
   display: flex;
-  background-color: #000;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.tab-btn {
-  flex: 1;
-  background: transparent;
-  border: none;
+.title-secondary {
+  font-size: 16px;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 1.6rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 10px 0;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
+  margin-top: 5px;
+  line-height: 1.5;
+  max-width: 600px;
+}
+
+.switcher-container {
   display: flex;
   justify-content: center;
-  align-items: center;
+  margin-top: 1rem;
 }
 
-.tab-btn span {
+.switch {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  width: 240px;
+  height: 44px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 22px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  user-select: none;
+  padding: 4px;
 }
 
-.tab-btn.active {
-  color: #8BE9FD;
+.switch input {
+  display: none;
 }
 
-.tab-btn.active::after {
-  content: '';
+.slider {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
+  top: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
   background: #8BE9FD;
+  border-radius: 18px;
+  transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  z-index: 1;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  border: none;
 }
 
-.tab-btn:hover:not(.active) {
-  color: rgba(139, 233, 253, 0.8);
+.switch input:checked ~ .slider {
+  transform: translateX(100%);
 }
 
-@media (max-width: 768px) {
-  .tab-btn {
-    font-size: 1.4rem;
-    padding: 8px 0;
-  }
+.label-text {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  color: #80868b;
+  font-size: 1.4rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+.switch input:not(:checked) ~ .label-text:nth-of-type(2) {
+  color: #000;
+}
+
+.switch input:checked ~ .label-text:nth-of-type(3) {
+  color: #000;
 }
 </style>
