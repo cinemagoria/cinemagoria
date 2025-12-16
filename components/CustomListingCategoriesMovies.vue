@@ -99,6 +99,18 @@
   };
 </script>
 <style scoped>  
+    .listing__explore,
+    .listing__explore strong {
+        color: #8BE9FD !important;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .listing__explore:hover,
+    .listing__explore:hover strong {
+        color: #A2EDFD !important;
+    }
+
     .listing__title {
       font-size: 1.8rem;
       letter-spacing: 0.4px;
@@ -132,34 +144,75 @@
     
     .category-link {
         font-weight: 600;
-        color: #80868b;
+        color: #ffffff;
         text-decoration: none;
         cursor: pointer; 
     }
 
     .category-link:hover {
-        color: #ffffff;
+        color: #e0e0e0; 
+    }
+    .carousel__nav {
+        bottom: 0 !important;
+        margin-top: 0 !important;
+        height: 100%;
+    }
+
+    .card {
+        position: relative;
+        border-radius: 15px;
+        overflow: hidden;
+        cursor: pointer;
     }
 
     .card__label {
         font-size: 1.5rem;
-        margin-bottom: .5rem;
+        margin-bottom: 0;
         text-align: center;
-        color: #8BE9FD;
+        color: #ffffff;
+        font-weight: bold; 
+        text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.9);
+        text-transform: uppercase; 
     }
     
     .card__info {
-      background: black;
-      border-end-end-radius: 10px;
-      border-end-start-radius: 10px;
-      position: relative;
-      top: -15px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      z-index: 10;
+      padding: 0 10px;
     }
 
     .card__image {
+        position: relative;
+        width: 100%;
+        height: 100%;
         border-radius: 15px;
-        cursor: pointer;
-        box-shadow: 0 21px 10px 0 rgba(31, 104, 135, 0.37);
-        backdrop-filter: blur(16px);
+        overflow: hidden;
+        transform: translateZ(0);
+    }
+
+    .card__image img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(100%);
+        opacity: 0.8; 
+    }
+
+    .card__image::after {
+        content: '';
+        position: absolute;
+        top: 0; 
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #8BE9FD;
+        mix-blend-mode: hard-light;
+        opacity: 0.6;
+        pointer-events: none;
     }
 </style>
