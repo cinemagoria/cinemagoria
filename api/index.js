@@ -1090,6 +1090,81 @@ export function getTVShowsByProductionCompany(companyId, page = 1) {
       reject(error);
     });
   });
+
+};
+
+export function getMoviesByCompanies(companyIds, page = 1) {
+  return new Promise((resolve, reject) => {
+    axios.get(`${apiUrl}/discover/movie`, {
+      params: {
+        api_key: process.env.API_KEY,
+        language: process.env.API_LANG,
+        with_companies: companyIds,
+        sort_by: 'popularity.desc',
+        page,
+      },
+    }).then(async (response) => {
+      response.data.results.forEach(item => {
+        item.vote_average = parseFloat(item.vote_average).toFixed(1);
+      });
+
+      const enrichedResults = await Promise.all(
+        response.data.results.map(async (item) => {
+          const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}`, {
+            params: {
+              api_key: process.env.API_KEY,
+              append_to_response: 'external_ids'
+            }
+          });
+          item.external_ids = detailsResponse.data.external_ids;
+          return enrichWithIMDbRating(item);
+        })
+      );
+
+      response.data.results = enrichedResults;
+      resolve(response.data);
+    }).catch((error) => {
+      reject(error);
+    });
+  });
+}
+
+export function getTvShowsByCompanies(companyIds, page = 1) {
+  return new Promise((resolve, reject) => {
+    axios.get(`${apiUrl}/discover/tv`, {
+      params: {
+        api_key: process.env.API_KEY,
+        language: process.env.API_LANG,
+        with_companies: companyIds,
+        sort_by: 'popularity.desc',
+        page,
+      },
+    }).then(async (response) => {
+      response.data.results = response.data.results.filter(item => !EXCLUDED_TV_IDS.includes(item.id));
+
+      response.data.results.forEach(item => {
+        item.vote_average = parseFloat(item.vote_average).toFixed(1);
+      });
+
+      const enrichedResults = await Promise.all(
+        response.data.results.map(async (item) => {
+          const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}`, {
+            params: {
+              api_key: process.env.API_KEY,
+              append_to_response: 'external_ids'
+            }
+          });
+          item.external_ids = detailsResponse.data.external_ids;
+          return enrichWithIMDbRating(item);
+        })
+      );
+
+      response.data.results = enrichedResults;
+      resolve(response.data);
+    }).catch((error) => {
+      reject(error);
+    });
+  });
 }
 
 export function getYouTubeVideo(id) {
