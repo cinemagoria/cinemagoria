@@ -2217,7 +2217,6 @@ export default {
     transform: translateY(-5px);
   }
   
-  /* Rated Items Modal */
   .rated-items-btn {
     background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -3542,7 +3541,6 @@ loading-state {
 }
 
 
-/* AI Selection Mode Styles */
 .ai-analysis-btn {
   position: relative;
 }

@@ -25,6 +25,7 @@
                     @click="redirectToRoute(item)"
                 >
                     <div class="search-card__image">
+                    <QuickFav :item="item" />
                     <img 
                         :src="getPosterUrl(item)" 
                         :alt="getTitle(item)"
@@ -64,9 +65,13 @@
   
   <script>
   import carousel from '~/mixins/Carousel';
+  import QuickFav from '~/components/global/QuickFav';
   
   export default {
     name: 'DynamicSearchCarousel',
+    components: {
+        QuickFav,
+    },
   
     mixins: [carousel],
   
@@ -260,6 +265,7 @@
   }
   
   .search-card__image {
+    position: relative;
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 21px 10px 0 rgba(31, 104, 135, 0.37);

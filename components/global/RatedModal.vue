@@ -653,7 +653,6 @@ export default {
   }
 }
 
-/* Rating Modal Styles */
 .rating-modal-overlay {
   position: fixed;
   top: 0;

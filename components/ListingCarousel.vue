@@ -128,8 +128,6 @@ export default {
       padding-top: 150.27%;
       overflow: hidden;
       backdrop-filter: blur(16px);
-      /* background-color: #000000; */
-      /* border-radius: 15px; */
       border-start-start-radius: 10px;
       border-start-end-radius: 10px;
       transition: transform 0.3s ease-in-out;
@@ -140,8 +138,6 @@ export default {
       font-size: 1.3rem;
       background: black;
       text-align: center;
-      /* border-end-end-radius: 10px; */
-      /* border-end-start-radius: 10px; */
       text-overflow: ellipsis;
       letter-spacing: 0.4px;
       top: -20px;
