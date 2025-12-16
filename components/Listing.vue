@@ -13,7 +13,7 @@
         v-if="viewAllUrl"
         :to="viewAllUrl"
         class="listing__explore">
-        <strong>Explorar Más</strong>
+        <strong class="more-link">Explorar Más</strong>
       </nuxt-link>
     </div>
 
@@ -109,3 +109,16 @@ export default {
   },
 };
 </script>
+<style scoped>
+.listing__explore,
+.listing__explore strong {
+  color: #8BE9FD !important;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.listing__explore:hover,
+.listing__explore:hover strong {
+  color: #A2EDFD !important;
+}
+</style>

@@ -108,6 +108,19 @@ export default {
   },
 };
 </script>
+<style scoped>
+.listing__explore,
+.listing__explore strong {
+  color: #8BE9FD !important;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.listing__explore:hover,
+.listing__explore:hover strong {
+  color: #A2EDFD !important;
+}
+</style>
 <style>
     .card__img {
       position: relative;
