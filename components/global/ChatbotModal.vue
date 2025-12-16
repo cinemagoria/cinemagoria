@@ -269,7 +269,7 @@
               <div class="input-wrapper">
                 <textarea
                   v-model="chatBotQuery"
-                  placeholder="Pregunta sobre películas, series, actores..."
+                  placeholder="Buscar películas, series y perfiles del ámbito audiovisual"
                   @keydown.enter.exact.prevent="handleSendAction"
                   @input="adjustTextareaHeight"
                   ref="chatInput"

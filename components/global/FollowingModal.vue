@@ -304,10 +304,10 @@ export default {
 
     formatDepartment(dept) {
       const map = {
-        'actor': 'Actores',
-        'director': 'Directores',
-        'writer': 'Guionistas',
-        'other': 'Otro'
+        actor: 'Intérpretes',
+        director: 'Dirección',
+        writer: 'Guion',
+        other: 'Otros'
       };
       return map[dept] || dept.charAt(0).toUpperCase() + dept.slice(1);
     },

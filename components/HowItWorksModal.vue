@@ -14,7 +14,9 @@
       <div :class="$style.modalBody">
         <div :class="$style.intro">
         <h3>Recibe notificaciones personalizadas</h3>
-        <p>Anticípate a cada estreno siguiendo a tus actores, directores, guionistas, creadores y series de TV favoritos. Nuestra plataforma envía notificaciones automáticas de nuevos proyectos y episodios, con actualizaciones sincronizadas cada 6 horas.</p>
+        <p>
+          Seguimiento de intérpretes, equipos creativos y series de TV, con notificaciones automáticas sobre nuevos proyectos y episodios. Actualizaciones cada 6 horas.
+        </p>
         </div>
 
         <div :class="$style.guideSection">

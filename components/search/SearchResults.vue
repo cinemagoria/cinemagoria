@@ -30,7 +30,8 @@
       
       <div v-if="suggestedCorrection" class="suggestion">
         <p>¿Tal vez quisiste decir: <a href="#" @click.prevent="useCorrection">{{ suggestedCorrection }}</a>?</p>
-        <p class="discover-more">O <span class="highlight"><a href="#" @click.prevent="openAiChat" class="discovery-link">Pregúntale a la IA</a></span> sobre películas, series, actores y más.</p>
+        <p class="discover-more">O <span class="highlight"><a href="#" @click.prevent="openAiChat" class="discovery-link">Pregúntale a la IA</a></span> sobre películas, series y perfiles del ámbito audiovisual.</p>
+
       </div>
     </div>
 
