@@ -272,7 +272,7 @@
               <div class="input-wrapper">
                 <textarea
                   v-model="chatBotQuery"
-                  placeholder="Ask about movies, series, actors..."
+                  placeholder="Ask about movies, series, performers..."
                   @keydown.enter.exact.prevent="handleSendAction"
                   @input="adjustTextareaHeight"
                   ref="chatInput"
