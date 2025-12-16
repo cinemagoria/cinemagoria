@@ -60,7 +60,7 @@
             <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
           </svg>
           <p>{{ showUnreadOnly ? 'No unread notifications' : 'No notifications yet' }}</p>
-          <p class="sub-text">Follow actors and directors to get notified about their new releases</p>
+          <p class="sub-text">Follow perfomers, creative teams, production companies and TV series to get notified about their new releases</p>
         </div>
 
         <div v-else class="notifications-list">

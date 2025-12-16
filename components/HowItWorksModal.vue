@@ -14,7 +14,9 @@
       <div :class="$style.modalBody">
         <div :class="$style.intro">
         <h3>Get Personalized Notifications</h3>
-        <p>Stay ahead of every release by following your favorite actors, directors, writers, creators, and TV shows. Our platform delivers automatic notifications for new projects and episodes, with updates synced every 6 hours.</p>
+        <p>
+          Stay ahead of every release by following people, production companies, and TV series of interest. The platform delivers automatic notifications about new projects and episodes, with updates synchronized every 6 hours.
+        </p>
         </div>
 
         <div :class="$style.guideSection">
