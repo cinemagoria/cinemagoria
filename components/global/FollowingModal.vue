@@ -26,7 +26,7 @@
           <button 
             @click="activeTab = 'companies'" 
             :class="[{ [$style.active]: activeTab === 'companies' }]">
-            Compañías ({{ companiesCount }})
+            Productoras ({{ companiesCount }})
           </button>
         </div>
 
