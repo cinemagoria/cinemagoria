@@ -200,11 +200,10 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      filter: grayscale(100%); /* Reverted contrast */
+      filter: grayscale(100%);
       opacity: 0.8; 
   }
 
-  /* Tint overlay */
   .card__image::after {
       content: '';
       position: absolute;
@@ -214,7 +213,7 @@
       height: 100%;
       background-color: #8BE9FD;
       mix-blend-mode: hard-light;
-      opacity: 0.6; /* Reverted opacity */
+      opacity: 0.6;
       pointer-events: none;
   }
   </style>

@@ -143,7 +143,7 @@ export default {
   },
   props: {
     type: {
-      type: String, // 'movie' or 'tv'
+      type: String,
       required: true
     }
   },
@@ -212,7 +212,6 @@ export default {
         const followedCompanies = await getFollowedProductionCompanies(userEmail);
         
         if (followedCompanies && followedCompanies.length > 0) {
-          // Sort Alphabetically
           followedCompanies.sort((a, b) => a.company_name.localeCompare(b.company_name));
           
           const distinctNames = followedCompanies.map(c => c.company_name);
@@ -330,8 +329,8 @@ export default {
          const votesB = getVotes(b);
 
          switch(this.orderMode) {
-             case 'newest-releases': return dateB - dateA; // Newest first
-             case 'oldest-releases': return dateA - dateB; // Oldest first
+             case 'newest-releases': return dateB - dateA;
+             case 'oldest-releases': return dateA - dateB;
              case 'imdb-high': 
                  if (ratingB !== ratingA) return ratingB - ratingA;
                  return votesB - votesA;
@@ -490,7 +489,6 @@ export default {
     }
 }
 
-/* Modal Styles Ported */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;

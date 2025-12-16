@@ -4,6 +4,7 @@
       class="card__link"
       :to="item.media_type === 'production' ? { name: 'production-slug', params: { slug: item.slug } } : { name: `${media}-id`, params: { id: item.id } }">
       <div class="card__img">
+        <QuickFav v-if="media !== 'production' && media !== 'person'" :item="item" />
         <img
           v-if="poster"
           v-lazyload="poster"
@@ -50,8 +51,12 @@
 <script>
 import { apiImgUrl } from '~/api';
 import { name, stars } from '~/mixins/Details';
+import QuickFav from '~/components/global/QuickFav';
 
 export default {
+  components: {
+    QuickFav,
+  },
   mixins: [
     name,
     stars,
@@ -91,6 +96,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.card__img {
+  position: relative;
+}
 .card__img--logo {
   object-fit: contain !important;
   padding: 20px;

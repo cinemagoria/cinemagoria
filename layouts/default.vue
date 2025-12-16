@@ -8,6 +8,7 @@
     </transition>
     <RatedModal />
     <FollowingModal />
+    <QuickFavModal />
     <Nav />
     <nuxt />
     <ChatbotModal />
@@ -25,6 +26,7 @@ import Footer from '~/components/global/Footer';
 import RatedModal from '@/components/global/RatedModal';
 import FollowingModal from '@/components/global/FollowingModal';
 import ChatbotModal from '@/components/global/ChatbotModal';
+import QuickFavModal from '@/components/global/QuickFavModal';
 
 export default {
   components: {
@@ -36,6 +38,7 @@ export default {
     Footer,
     RatedModal,
     FollowingModal,
+    QuickFavModal,
   },
 
   computed: {
