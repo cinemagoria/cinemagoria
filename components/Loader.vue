@@ -1,6 +1,6 @@
 <template>
   <div class="loader">
-    <svg xmlns="http://www.w3.org/2000/svg" :width="size" :height="size" viewBox="0 0 44 44" stroke="#2196f3">
+    <svg xmlns="http://www.w3.org/2000/svg" :width="size" :height="size" viewBox="0 0 44 44" :stroke="color">
       <g fill="none" fill-rule="evenodd" stroke-width="2">
         <circle cx="22" cy="22" r="1">
           <animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/>
@@ -22,6 +22,10 @@ export default {
     size: {
       type: [Number, String],
       default: 44
+    },
+    color: {
+      type: String,
+      default: '#2196f3'
     }
   }
 };

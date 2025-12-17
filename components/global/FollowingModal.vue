@@ -70,10 +70,17 @@
                   <div 
                     @click="openPerson(person.person_id)" 
                     :class="$style.cardImage">
+                    <div v-show="person.profile_path && !imageLoadStates[`person-${person.person_id}`]" :class="$style.posterLoader">
+                      <Loader :size="44" color="#000" />
+                    </div>
                     <img 
                       v-if="person.profile_path" 
                       :src="`https://image.tmdb.org/t/p/w185${person.profile_path}`" 
-                      :alt="person.person_name">
+                      :alt="person.person_name"
+                      :class="{ [$style.loaded]: imageLoadStates[`person-${person.person_id}`] }"
+                      @load="handleImageLoad(`person-${person.person_id}`)"
+                      @error="onImageError($event, `person-${person.person_id}`)"
+                    >
                     <div v-else :class="$style.noImage">
                       <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="black">
                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
@@ -106,10 +113,17 @@
                 <div 
                   @click="openTvShow(show.tv_id)" 
                   :class="$style.cardImage">
+                  <div v-show="show.poster_path && !imageLoadStates[`tv-${show.tv_id}`]" :class="$style.posterLoader">
+                    <Loader :size="44" color="#000" />
+                  </div>
                   <img 
                     v-if="show.poster_path" 
                     :src="`https://image.tmdb.org/t/p/w185${show.poster_path}`" 
-                    :alt="show.tv_name">
+                    :alt="show.tv_name"
+                    :class="{ [$style.loaded]: imageLoadStates[`tv-${show.tv_id}`] }"
+                    @load="handleImageLoad(`tv-${show.tv_id}`)"
+                    @error="onImageError($event, `tv-${show.tv_id}`)"
+                  >
                   <div v-else :class="$style.noImage">
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="black">
                       <path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .89-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.11-.9-2-2-2zm0 14H3V8h18v12zM9 10v8l7-4z"/>
@@ -142,15 +156,19 @@
                 <div 
                   @click="openCompany(company.company_id)" 
                   :class="$style.cardImage">
+                  <div v-show="company.logo_path && !imageLoadStates[`company-${company.company_id}`]" :class="$style.posterLoader">
+                    <Loader :size="44" color="#000" />
+                  </div>
                   <img 
                     v-if="company.logo_path" 
                     :src="`https://image.tmdb.org/t/p/w185${company.logo_path}`" 
                     :alt="company.company_name"
-                    :class="$style.companyLogo">
+                    :class="[$style.companyLogo, { [$style.loaded]: imageLoadStates[`company-${company.company_id}`] }]"
+                    @load="handleImageLoad(`company-${company.company_id}`)"
+                    @error="onImageError($event, `company-${company.company_id}`)"
+                  >
                   <div v-else :class="$style.noImage">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="black">
-                      <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/>
-                    </svg>
+                    <span :class="$style.fallbackText">{{ company.company_name }}</span>
                   </div>
                 </div>
                 <div :class="$style.cardContent">
@@ -180,8 +198,12 @@ import {
   unfollowProductionCompany, 
   followProductionCompany 
 } from '~/api';
+import Loader from '@/components/Loader';
 
 export default {
+  components: {
+    Loader
+  },
   props: {
     initialTab: {
       type: String,
@@ -198,7 +220,9 @@ export default {
       loading: false,
       undoItem: null,
       undoTimeout: null,
-      collapsedDepartments: {}
+      collapsedDepartments: {},
+      imageLoadStates: {},
+      fallbackImageUrl: "https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.webp?raw=true"
     };
   },
   
@@ -462,6 +486,17 @@ export default {
 
     openTvShow(tvId) {
       window.open(`/tv/${tvId}`, '_blank');
+    },
+
+    handleImageLoad(id) {
+      this.$set(this.imageLoadStates, id, true);
+    },
+
+    onImageError(event, id) {
+       this.$set(this.imageLoadStates, id, true);
+       if (event.target.src !== this.fallbackImageUrl) {
+         event.target.src = this.fallbackImageUrl;
+       }
     }
   }
 };
@@ -637,6 +672,12 @@ export default {
   background-color: rgba(255, 255, 255, 0.05);
   filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
   transform: translateY(-4px);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.companyLogo.loaded {
+  opacity: 1;
 }
 
 .cardImage {
@@ -654,6 +695,12 @@ export default {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  img.loaded {
+    opacity: 1;
   }
 }
 
@@ -673,7 +720,17 @@ export default {
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  color: #000;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.fallbackText {
+  font-weight: 700;
+  font-size: 1.6rem;
+  line-height: 1.3;
+  word-break: break-word;
 }
 
 .cardContent {
@@ -724,6 +781,20 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 4rem;
+}
+
+.posterLoader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
 }
 
 .undo-bar-container {
