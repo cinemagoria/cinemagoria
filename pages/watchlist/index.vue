@@ -171,7 +171,7 @@
                   <div class="user-rating-badge empty" @click.stop="openRatingModal(item)" v-else-if="!aiSelectionMode"> 
                     <span style="font-size: 7px;">Valorar</span>
                   </div>
-                  <a :href="getLink(item)" class="item-link">
+                  <nuxt-link :to="getLink(item)" class="item-link">
                     <div class="poster-container">
                       <div v-show="!imageLoadStates[item.details.idForDb]" class="poster-loader">
                         <Loader :size="44" />
@@ -187,7 +187,7 @@
                       />
                     </div>
                     <h3>{{ item.details.nameForDb }}</h3>
-                  </a>
+                  </nuxt-link>
                   <p>
                     {{
                       item.details.yearStartForDb === item.details.yearEndForDb
@@ -576,8 +576,10 @@ export default {
     this.userEmail = email || '';
     this.hasAccessToken = accessToken !== null;
     this.isLoggedIn = accessToken !== null;
+    this.isLoggedIn = accessToken !== null;
     this.authProvider = authProvider;
 
+    this.restoreState(); // Restore filters before checking data
     await this.checkData();
     this.userName = await getUserName(this.userEmail);
 
@@ -614,6 +616,7 @@ export default {
   watch: {
     selectedGenre() {
       this.currentPage = 1;
+      this.saveState();
     },
     minImdbRating(newVal) {
       if (newVal !== null && this.maxImdbRating !== null && newVal > this.maxImdbRating) {
@@ -622,6 +625,7 @@ export default {
         this.minImdbRating = temp;
       }
       this.currentPage = 1;
+      this.saveState();
     },
     maxImdbRating(newVal) {
       if (newVal !== null && this.minImdbRating !== null && newVal < this.minImdbRating) {
@@ -630,18 +634,23 @@ export default {
         this.maxImdbRating = temp;
       }
       this.currentPage = 1;
+      this.saveState();
     },
     selectedUserRating() {
       this.currentPage = 1;
+      this.saveState();
     },
     customYearStart() {
       this.currentPage = 1;
+      this.saveState();
     },
     customYearEnd() {
       this.currentPage = 1;
+      this.saveState();
     },
     orderMode() {
       this.currentPage = 1;
+      this.saveState();
     },
     totalPages(newTotal) {
       if (newTotal === 0) {
@@ -708,6 +717,7 @@ export default {
     toggleFilterType(event) {
       this.filter = event.target.checked ? 'tvShows' : 'movies';
       this.currentPage = 1;
+      this.saveState();
     },
     toggleGenreDropdown() {
       this.genreDropdownOpen = !this.genreDropdownOpen;
@@ -734,12 +744,14 @@ export default {
       } else {
         this[filterValue] = filterValue.includes('Year') ? null : '';
       }
+      this.saveState();
     },
 
     setYearRange(range) {
       const [start, end] = range.split('-').map(Number);
       this.customYearStart = start;
       this.customYearEnd = end;
+      this.saveState();
     },
 
     clearAllFilters() {
@@ -750,6 +762,7 @@ export default {
       this.customYearStart = null;
       this.customYearEnd = null;
       this.orderMode = 'latest-added';
+      this.saveState();
     },
     openRatingModal(item) {
       this.currentRatingItem = item;
@@ -979,7 +992,8 @@ export default {
       if (!gridElement) return;
       
       const gridWidth = gridElement.offsetWidth;
-      const cardWidth = 200;
+      const isMobile = window.innerWidth <= 600;
+      const cardWidth = isMobile ? 105 : 200;
       const gap = 20;
       
       const calculatedItemsPerRow = Math.floor(gridWidth / (cardWidth + gap));
@@ -990,9 +1004,10 @@ export default {
     },
 
     adjustItemsPerPage() {
-      const rowsToShow = 5;
-
-      const newItemsPerPage = this.itemsPerRow * rowsToShow;
+      // User requirement: Always show at least 30 items per page.
+      const minItems = 30;
+      const rowsNeeded = Math.ceil(minItems / this.itemsPerRow);
+      const newItemsPerPage = rowsNeeded * this.itemsPerRow;
 
       if (this.itemsPerPage !== newItemsPerPage) {
         this.itemsPerPage = newItemsPerPage;
@@ -1227,11 +1242,10 @@ export default {
     },
 
     getLink(item) {
-      const locOrigin = window.location.origin;
       if (item.details.typeForDb === 'movie') {
-        return `${locOrigin}/movie/${item.details.idForDb}`;
+        return `/movie/${item.details.idForDb}`;
       } else if (item.details.typeForDb === 'tv') {
-        return `${locOrigin}/tv/${item.details.idForDb}`;
+        return `/tv/${item.details.idForDb}`;
       } else {
         return '#'; 
       }
@@ -1337,9 +1351,40 @@ export default {
     },
 
     closeNotificationModal() {
-      this.notificationModalVisible = false;
-      this.notificationTitle = '';
       this.notificationMessage = '';
+    },
+
+    saveState() {
+      const state = {
+        filter: this.filter,
+        orderMode: this.orderMode,
+        selectedGenre: this.selectedGenre,
+        minImdbRating: this.minImdbRating,
+        maxImdbRating: this.maxImdbRating,
+        selectedUserRating: this.selectedUserRating,
+        customYearStart: this.customYearStart,
+        customYearEnd: this.customYearEnd
+      };
+      localStorage.setItem('watchlistState_es', JSON.stringify(state));
+    },
+
+    restoreState() {
+      const savedState = localStorage.getItem('watchlistState_es');
+      if (savedState) {
+        try {
+          const state = JSON.parse(savedState);
+          if (state.filter) this.filter = state.filter;
+          if (state.orderMode) this.orderMode = state.orderMode;
+          if (state.selectedGenre) this.selectedGenre = state.selectedGenre;
+          if (state.minImdbRating) this.minImdbRating = state.minImdbRating;
+          if (state.maxImdbRating) this.maxImdbRating = state.maxImdbRating;
+          if (state.selectedUserRating) this.selectedUserRating = state.selectedUserRating;
+          if (state.customYearStart) this.customYearStart = state.customYearStart;
+          if (state.customYearEnd) this.customYearEnd = state.customYearEnd;
+        } catch (e) {
+          console.error('Error restoring watchlist state:', e);
+        }
+      }
     },
   },
   
@@ -1357,6 +1402,8 @@ export default {
       
       return currentItems.length === 0 && (this.moviesFetched.length > 0 || this.tvFetched.length > 0);
     },
+
+
     
     emptyStateMessage() {
       if (this.showEmptyState) {
@@ -2480,7 +2527,7 @@ export default {
   @media screen and (max-width: 600px) {
   .movie-grid,
   .tv-show-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+    grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); 
   }
 
   .movie-card,
@@ -2512,6 +2559,28 @@ export default {
   .tv-show-card img {
     width: 100%; 
     max-width: none; 
+  }
+}
+
+
+@media (max-width: 600px) {
+  .card__stars {
+    transform: scale(0.8);
+    transform-origin: left;
+  }
+  
+  .card___rating p {
+    font-size: 10px !important;
+  }
+  
+  .user-rating-badge {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 11px !important;
+  }
+  
+  .poster-container h3 {
+     font-size: 11px !important;
   }
 }
 
