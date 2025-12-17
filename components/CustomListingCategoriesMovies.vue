@@ -212,7 +212,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: #8BE9FD;
+        background-color: #149AB1;
         mix-blend-mode: hard-light;
         opacity: 0.6;
         pointer-events: none;
