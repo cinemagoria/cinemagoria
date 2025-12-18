@@ -1611,7 +1611,9 @@ export default {
         { value: 'imdb-high', label: 'Highest Rated (IMDB)' },
         { value: 'imdb-low', label: 'Lowest Rated (IMDB)' },
         { value: 'votes-high', label: 'Highest Vote Count' },
-        { value: 'votes-low', label: 'Lowest Vote Count' }
+        { value: 'votes-low', label: 'Lowest Vote Count' },
+        { value: 'shortest-first', label: 'Shortest first' },
+        { value: 'longest-first', label: 'Longest first' }
       ];
     },
     
@@ -1745,7 +1747,7 @@ export default {
           const C = 7.0;
 
           const WR = (v / (v + m)) * R + (m / (v + m)) * C;
-          
+
           return WR;
         };
 
@@ -1758,6 +1760,11 @@ export default {
             }
           }
           return 0;
+        };
+
+        const getRuntime = (item) => {
+           if (item.details.runtime) return item.details.runtime;
+           return 0;
         };
 
         switch(this.orderMode) {
@@ -1787,6 +1794,10 @@ export default {
             return getVotes(b) - getVotes(a);
           case 'votes-low':
              return getVotes(a) - getVotes(b);
+          case 'shortest-first':
+             return getRuntime(a) - getRuntime(b);
+          case 'longest-first':
+             return getRuntime(b) - getRuntime(a);
           default:
             return 0;
         }
