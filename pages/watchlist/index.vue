@@ -346,9 +346,22 @@
                     >
                       All genres
                     </div>
+                    
+                    <div class="dropdown-header">MOVIE GENRES</div>
                     <div 
-                      v-for="genre in uniqueGenres" 
-                      :key="genre" 
+                      v-for="genre in sortedMovieGenres" 
+                      :key="'movie-' + genre" 
+                      class="dropdown-option"
+                      :class="{ selected: selectedGenre === genre }"
+                      @click.stop="selectGenre(genre)"
+                    >
+                      {{ genre }}
+                    </div>
+
+                    <div class="dropdown-header">TV SHOW GENRES</div>
+                    <div 
+                      v-for="genre in sortedTvGenres" 
+                      :key="'tv-' + genre" 
                       class="dropdown-option"
                       :class="{ selected: selectedGenre === genre }"
                       @click.stop="selectGenre(genre)"
@@ -577,7 +590,10 @@ export default {
       filter: 'movies',
       selectedGenre: '',
       selectedYearRange: '',
+      selectedYearRange: '',
       genres: [],
+      movieGenres: [],
+      tvGenres: [],
       years: [],
       resizeObserver: null,
       ratingModalVisible: false,
@@ -599,6 +615,8 @@ export default {
       ],
       minImdbRating: null,
       maxImdbRating: null,
+      minImdbVotes: null,
+      maxImdbVotes: null,
       selectedUserRating: '',
       tmdbRatingRanges: [
         '9-10', '8-8.9', '7-7.9', '6-6.9', '5-5.9', '0-4.9'
@@ -761,6 +779,15 @@ export default {
       this.currentPage = 1;
       this.saveState();
     },
+    minImdbVotes() {
+      this.currentPage = 1;
+      this.saveState();
+    },
+    maxImdbVotes() {
+      this.currentPage = 1;
+      this.saveState();
+    },
+
     customYearStart() {
       this.currentPage = 1;
       this.saveState();
@@ -866,6 +893,9 @@ export default {
       } else if (filterValue === 'imdbRating') {
         this.minImdbRating = null;
         this.maxImdbRating = null;
+      } else if (filterValue === 'imdbVotes') {
+        this.minImdbVotes = null;
+        this.maxImdbVotes = null;
       } else {
         this[filterValue] = filterValue.includes('Year') ? null : '';
       }
@@ -883,6 +913,8 @@ export default {
       this.selectedGenre = '';
       this.minImdbRating = null;
       this.maxImdbRating = null;
+      this.minImdbVotes = null;
+      this.maxImdbVotes = null;
       this.selectedUserRating = '';
       this.customYearStart = null;
       this.customYearEnd = null;
@@ -1156,6 +1188,8 @@ export default {
         const moviesFetched = [];
         const tvFetched = [];
         const genres = new Set();
+        const movieGenresSet = new Set();
+        const tvGenresSet = new Set();
         const years = new Set();
 
         if (data.favorites_json.movies) {
@@ -1192,7 +1226,10 @@ export default {
             
             if (movieData.details.genresForDb) {
               const genresList = movieData.details.genresForDb.split(', ');
-              genresList.forEach(g => genres.add(g));
+              genresList.forEach(g => {
+                genres.add(g);
+                movieGenresSet.add(g);
+              });
             }
             
             if (movieData.details.yearStartForDb) {
@@ -1235,7 +1272,10 @@ export default {
             
             if (tvData.details.genresForDb) {
               const genresList = tvData.details.genresForDb.split(', ');
-              genresList.forEach(g => genres.add(g));
+              genresList.forEach(g => {
+                genres.add(g);
+                tvGenresSet.add(g);
+              });
             }
             
             if (tvData.details.yearStartForDb) {
@@ -1247,6 +1287,8 @@ export default {
         this.moviesFetched = moviesFetched;
         this.tvFetched = tvFetched;
         this.genres = Array.from(genres);
+        this.movieGenres = Array.from(movieGenresSet);
+        this.tvGenres = Array.from(tvGenresSet);
         this.years = Array.from(years).sort();
 
       } catch (error) {
@@ -1404,6 +1446,8 @@ export default {
         selectedGenre: this.selectedGenre,
         minImdbRating: this.minImdbRating,
         maxImdbRating: this.maxImdbRating,
+        minImdbVotes: this.minImdbVotes,
+        maxImdbVotes: this.maxImdbVotes,
         selectedUserRating: this.selectedUserRating,
         customYearStart: this.customYearStart,
         customYearEnd: this.customYearEnd
@@ -1421,6 +1465,8 @@ export default {
           if (state.selectedGenre) this.selectedGenre = state.selectedGenre;
           if (state.minImdbRating) this.minImdbRating = state.minImdbRating;
           if (state.maxImdbRating) this.maxImdbRating = state.maxImdbRating;
+          if (state.minImdbVotes) this.minImdbVotes = state.minImdbVotes;
+          if (state.maxImdbVotes) this.maxImdbVotes = state.maxImdbVotes;
           if (state.selectedUserRating) this.selectedUserRating = state.selectedUserRating;
           if (state.customYearStart) this.customYearStart = state.customYearStart;
           if (state.customYearEnd) this.customYearEnd = state.customYearEnd;
@@ -1469,6 +1515,8 @@ export default {
       return this.selectedGenre !== '' || 
             this.minImdbRating !== null ||
             this.maxImdbRating !== null ||
+            this.minImdbVotes !== null ||
+            this.maxImdbVotes !== null ||
             this.selectedUserRating !== '' || 
             this.customYearStart !== null || 
             this.customYearEnd !== null ||
@@ -1510,6 +1558,23 @@ export default {
           value: 'imdbRating' 
         });
       }
+
+      if (this.minImdbVotes !== null || this.maxImdbVotes !== null) {
+        let label = '';
+        if (this.minImdbVotes !== null && this.maxImdbVotes !== null) {
+           label = `Votes: ${this.minImdbVotes}-${this.maxImdbVotes}`;
+        } else if (this.minImdbVotes !== null) {
+          label = `Votes: ≥ ${this.minImdbVotes}`;
+        } else if (this.maxImdbVotes !== null) {
+          label = `Votes: ≤ ${this.maxImdbVotes}`;
+        }
+
+        chips.push({ 
+          type: 'imdbVotes', 
+          label: label, 
+          value: 'imdbVotes' 
+        });
+      }
       
       if (this.selectedUserRating) {
         const label = this.selectedUserRating === 'not-rated' 
@@ -1535,7 +1600,9 @@ export default {
         { value: 'newer-releases', label: 'Newer Releases' },
         { value: 'older-releases', label: 'Older Releases' },
         { value: 'imdb-high', label: 'Highest Rated (IMDB)' },
-        { value: 'imdb-low', label: 'Lowest Rated (IMDB)' }
+        { value: 'imdb-low', label: 'Lowest Rated (IMDB)' },
+        { value: 'votes-high', label: 'Highest Vote Count' },
+        { value: 'votes-low', label: 'Lowest Vote Count' }
       ];
     },
     
@@ -1611,8 +1678,27 @@ export default {
           }
         }
       }
+
+      let matchesVotes = true;
+      if (this.minImdbVotes !== null || this.maxImdbVotes !== null) {
+        let votes = 0;
+        if (item.details.imdb_votes) {
+          if (typeof item.details.imdb_votes === 'number') {
+            votes = item.details.imdb_votes;
+          } else if (typeof item.details.imdb_votes === 'string') {
+            votes = parseInt(item.details.imdb_votes.replace(/,/g, ''), 10);
+          }
+        }
+        
+        if (this.minImdbVotes !== null && votes < this.minImdbVotes) {
+          matchesVotes = false;
+        }
+        if (this.maxImdbVotes !== null && votes > this.maxImdbVotes) {
+          matchesVotes = false;
+        }
+      }
       
-      return matchesGenre && matchesYear && matchesTmdbRating && matchesUserRating;
+      return matchesGenre && matchesYear && matchesTmdbRating && matchesUserRating && matchesVotes;
       }).sort((a, b) => {
         const getAddedDate = (item) => {
           const dateStr = item.details.added_at || item.addedAt || item.details.addedAt;
@@ -1654,6 +1740,17 @@ export default {
           return WR;
         };
 
+        const getVotes = (item) => {
+          if (item.details.imdb_votes) {
+            if (typeof item.details.imdb_votes === 'number') {
+              return item.details.imdb_votes;
+            } else if (typeof item.details.imdb_votes === 'string') {
+              return parseInt(item.details.imdb_votes.replace(/,/g, ''), 10);
+            }
+          }
+          return 0;
+        };
+
         switch(this.orderMode) {
           case 'latest-added':
             return getAddedDate(b) - getAddedDate(a);
@@ -1677,6 +1774,10 @@ export default {
             if (ratingALow === -1) return 1;
             if (ratingBLow === -1) return -1;
             return ratingALow - ratingBLow;
+          case 'votes-high':
+            return getVotes(b) - getVotes(a);
+          case 'votes-low':
+             return getVotes(a) - getVotes(b);
           default:
             return 0;
         }
@@ -1696,6 +1797,12 @@ export default {
     },
     uniqueGenres() {
       return Array.from(new Set(this.genres));
+    },
+    sortedMovieGenres() {
+      return this.movieGenres.sort();
+    },
+    sortedTvGenres() {
+      return this.tvGenres.sort();
     },
     
     totalPages() {
@@ -1722,6 +1829,7 @@ export default {
   align-items: center; 
   margin: -5px;
   position: relative;
+  min-height: 30px;
   top: -3px;
 }
 
@@ -1755,7 +1863,10 @@ export default {
 }
 
 .movie-card {
-   position: relative;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .delete-icon {
@@ -1929,6 +2040,17 @@ export default {
   .genre-select:hover{
     background: linear-gradient(
 315deg, #0A1E26, #11323F, #1A4453); 
+  }
+
+  .dropdown-header {
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #8BE9FD;
+    background-color: rgba(0, 0, 0, 0.4);
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    pointer-events: none;
   }
 
   .year-select {
@@ -2159,8 +2281,13 @@ export default {
     margin-top: 10px; 
     text-align: center; 
     overflow: hidden; 
-    white-space: nowrap; 
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
     text-overflow: ellipsis; 
+    height: 2.4em; /* Approx 2 lines */
+    line-height: 1.2em;
   }
   .movie-card h3:hover,
   .tv-show-card h3:hover {
@@ -2218,6 +2345,17 @@ export default {
     border-bottom-right-radius: 15px;
     background: black;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .movie-info-container {
+    padding: 10px;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
   }
   
   .user-rating-badge {
