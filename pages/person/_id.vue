@@ -152,6 +152,7 @@ export default {
                     return {
                       ...item,
                       imdb_rating: imdbData.score,
+                      imdb_votes: imdbData.votes,
                       rating_source: 'imdb'
                     };
                   }
