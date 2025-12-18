@@ -9,15 +9,14 @@ const routes = [
     path: '/watchlist',
     name: 'watchlist',
     component: watchlist,
-    meta: { requiresAuth: true } 
+    meta: { requiresAuth: true }
   },
 ];
 
 const router = new VueRouter({
-    mode: 'history',
-    // base: process.env.BASE_URL,
-    routes
-  });
-  
+  mode: 'history',
+  routes
+});
+
 
 export default router;
