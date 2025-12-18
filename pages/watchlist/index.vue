@@ -329,7 +329,7 @@
                 <label class="filter-label">Género</label>
                 <div class="custom-select" @click="toggleGenreDropdown">
                   <div class="select-display">
-                    <span>{{ selectedGenre || 'Todos los géneros' }}</span>
+                    <span>{{ getGenreLabel(selectedGenre) || 'Todos los géneros' }}</span>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" :class="{ 'rotate-180': genreDropdownOpen }">
                       <path d="M7 10l5 5 5-5z"/>
                     </svg>
@@ -342,27 +342,15 @@
                     >
                       Todos los géneros
                     </div>
-
-                    <div class="dropdown-header">GÉNEROS DE PELÍCULAS</div>
+                    
                     <div 
-                      v-for="genre in sortedMovieGenres" 
-                      :key="'movie-' + genre" 
+                      v-for="genreObj in uniqueSortedGenres" 
+                      :key="genreObj.value" 
                       class="dropdown-option"
-                      :class="{ selected: selectedGenre === genre }"
-                      @click.stop="selectGenre(genre)"
+                      :class="{ selected: selectedGenre === genreObj.value }"
+                      @click.stop="selectGenre(genreObj.value)"
                     >
-                      {{ genre }}
-                    </div>
-
-                    <div class="dropdown-header">GÉNEROS DE SERIES</div>
-                    <div 
-                      v-for="genre in sortedTvGenres" 
-                      :key="'tv-' + genre" 
-                      class="dropdown-option"
-                      :class="{ selected: selectedGenre === genre }"
-                      @click.stop="selectGenre(genre)"
-                    >
-                      {{ genre }}
+                      {{ genreObj.label }}
                     </div>
                   </div>
                 </div>
@@ -1209,6 +1197,40 @@ export default {
       }
     },
 
+    getGenreLabel(genre) {
+      if (!genre) return '';
+      const genreMap = {
+        'Action': 'Acción',
+        'Adventure': 'Aventura',
+        'Animation': 'Animación',
+        'Comedy': 'Comedia',
+        'Crime': 'Crimen',
+        'Documentary': 'Documental',
+        'Drama': 'Drama',
+        'Family': 'Familia',
+        'Fantasy': 'Fantasía',
+        'History': 'Historia',
+        'Horror': 'Terror',
+        'Music': 'Música',
+        'Mystery': 'Misterio',
+        'Romance': 'Romance',
+        'Science Fiction': 'Ciencia Ficción',
+        'TV Movie': 'Película de TV',
+        'Thriller': 'Suspenso',
+        'War': 'Guerra',
+        'Western': 'Western',
+        'Action & Adventure': 'Acción y Aventura',
+        'Kids': 'Niños',
+        'News': 'Noticias',
+        'Reality': 'Reality',
+        'Sci-Fi & Fantasy': 'Ciencia Ficción y Fantasía',
+        'Soap': 'Telenovela',
+        'Talk': 'Talk Show',
+        'War & Politics': 'Guerra y Política'
+      };
+      return genreMap[genre] || genre;
+    },
+
     removeFavorite(item) {
       if (!item || !item.details) {
         console.error('Item or item details are undefined:', item);
@@ -1521,7 +1543,8 @@ export default {
       const chips = [];
       
       if (this.selectedGenre) {
-        chips.push({ type: 'genre', label: this.selectedGenre, value: 'selectedGenre' });
+        const label = this.getGenreLabel(this.selectedGenre);
+        chips.push({ type: 'genre', label: label, value: 'selectedGenre' });
       }
       
       if (this.customYearStart) {
@@ -1805,6 +1828,46 @@ export default {
     },
     sortedTvGenres() {
       return this.tvGenres.sort();
+    },
+    uniqueSortedGenres() {
+      const allGenres = new Set([...this.movieGenres, ...this.tvGenres]);
+      const genreMap = {
+        'Action': 'Acción',
+        'Adventure': 'Aventura',
+        'Animation': 'Animación',
+        'Comedy': 'Comedia',
+        'Crime': 'Crimen',
+        'Documentary': 'Documental',
+        'Drama': 'Drama',
+        'Family': 'Familia',
+        'Fantasy': 'Fantasía',
+        'History': 'Historia',
+        'Horror': 'Terror',
+        'Music': 'Música',
+        'Mystery': 'Misterio',
+        'Romance': 'Romance',
+        'Science Fiction': 'Ciencia Ficción',
+        'TV Movie': 'Película de TV',
+        'Thriller': 'Suspenso',
+        'War': 'Guerra',
+        'Western': 'Western',
+        'Action & Adventure': 'Acción y Aventura',
+        'Kids': 'Niños',
+        'News': 'Noticias',
+        'Reality': 'Reality',
+        'Sci-Fi & Fantasy': 'Ciencia Ficción y Fantasía',
+        'Soap': 'Telenovela',
+        'Talk': 'Talk Show',
+        'War & Politics': 'Guerra y Política'
+      };
+
+      return Array.from(allGenres)
+        .sort()
+        .map(genre => ({
+          value: genre, // Mantener valor original en inglés para filtrar
+          label: genreMap[genre] || genre // Mostrar traducción o valor original si no hay traducción
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label, 'es')); // Ordenar alfabéticamente por la etiqueta traducida
     },
     
     totalPages() {
