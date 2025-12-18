@@ -1628,7 +1628,9 @@ export default {
         { value: 'imdb-high', label: 'Mejores valoraciones (IMDB)' },
         { value: 'imdb-low', label: 'Peores valoraciones (IMDB)' },
         { value: 'votes-high', label: 'Mayor Cantidad de Votos' },
-        { value: 'votes-low', label: 'Menor Cantidad de Votos' }
+        { value: 'votes-low', label: 'Menor Cantidad de Votos' },
+        { value: 'shortest-first', label: 'Más corta primero' },
+        { value: 'longest-first', label: 'Más larga primero' }
       ];
     },
     
@@ -1776,6 +1778,11 @@ export default {
             }
             return 0;
           };
+        
+          const getRuntime = (item) => {
+             if (item.details.runtime) return item.details.runtime;
+             return 0;
+          };
 
           switch(this.orderMode) {
             case 'latest-added':
@@ -1804,6 +1811,10 @@ export default {
               return getVotes(b) - getVotes(a);
             case 'votes-low':
                return getVotes(a) - getVotes(b);
+            case 'shortest-first':
+               return getRuntime(a) - getRuntime(b);
+            case 'longest-first':
+               return getRuntime(b) - getRuntime(a);
             default:
               return 0;
           }
@@ -1864,10 +1875,10 @@ export default {
       return Array.from(allGenres)
         .sort()
         .map(genre => ({
-          value: genre, // Mantener valor original en inglés para filtrar
-          label: genreMap[genre] || genre // Mostrar traducción o valor original si no hay traducción
+          value: genre,
+          label: genreMap[genre] || genre
         }))
-        .sort((a, b) => a.label.localeCompare(b.label, 'es')); // Ordenar alfabéticamente por la etiqueta traducida
+        .sort((a, b) => a.label.localeCompare(b.label, 'es'));
     },
     
     totalPages() {

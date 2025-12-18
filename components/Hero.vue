@@ -291,7 +291,7 @@
 
 <script>
 import supabase from '@/services/supabase';
-import { name, stars, yearStart, yearEnd, cert, backdrop, poster, trailer, id, genres, type } from '~/mixins/Details';
+import { name, stars, yearStart, yearEnd, cert, backdrop, poster, trailer, id, genres, type, runtime } from '~/mixins/Details';
 import Modal from '~/components/Modal';
 
 export default {
@@ -311,6 +311,7 @@ export default {
     id,
     genres,
     type,
+    runtime,
   ],
 
   props: {
@@ -714,7 +715,8 @@ export default {
                 external_ids: this.item.external_ids,
                 rating_source: this.item.rating_source || 'tmdb',
                 imdb_rating: this.item.imdb_rating,
-                imdb_votes: this.item.imdb_votes
+                imdb_votes: this.item.imdb_votes,
+                runtime: this.runtime,
               }
             })
           });
@@ -767,7 +769,8 @@ export default {
         external_ids: this.item.external_ids,
         rating_source: this.item.rating_source || 'tmdb',
         imdb_rating: this.item.imdb_rating,
-        imdb_votes: this.item.imdb_votes
+        imdb_votes: this.item.imdb_votes,
+        runtime: this.runtime,
       };
 
       if (index !== -1) {

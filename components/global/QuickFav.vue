@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { name, stars, yearStart, yearEnd, poster, id, type } from '~/mixins/Details';
+import { name, stars, yearStart, yearEnd, poster, id, type, runtime } from '~/mixins/Details';
 
 export default {
   name: 'QuickFav',
@@ -59,6 +59,7 @@ export default {
     poster,
     id,
     type,
+    runtime,
   ],
   props: {
     item: {
@@ -80,6 +81,7 @@ export default {
       idForDb: null,
       genresForDb: null,
       typeForDb: null,
+      runtime: null,
       addedAt: null,
     };
   },
@@ -117,6 +119,7 @@ export default {
     this.idForDb = this.id;
     this.genresForDb = this.calculatedGenres;
     this.typeForDb = this.compType;
+    this.runtime = this.runtime;
     
     this.$root.$on('favorites-updated', this.checkIfFavorite);
   },
@@ -173,9 +176,6 @@ export default {
       let imdbVotes = this.item.imdb_votes;
       let ratingSource = this.item.rating_source || 'tmdb';
 
-      // Check if we need to fetch more details
-      // We check if genres are missing (empty string/null) OR external_ids are missing
-      // We also check if we are expected to have them but don't (e.g. from person page)
       if ((!genresForDb || !externalIds) && this.idForDb) {
         try {
            const { getMovie, getTvShow } = await import('~/api');
@@ -188,18 +188,15 @@ export default {
            }
 
            if (fullDetails) {
-             // Update genres
              if (fullDetails.genres && Array.isArray(fullDetails.genres)) {
                genresForDb = fullDetails.genres.map(g => g.name).join(', ');
-               this.genresForDb = genresForDb; // Update local state too
+               this.genresForDb = genresForDb;
              }
              
-             // Update external IDs
              if (fullDetails.external_ids) {
                externalIds = fullDetails.external_ids;
              }
              
-             // Update IMDb info if available and not already set
              if (fullDetails.imdb_rating && !imdbRating) {
                imdbRating = fullDetails.imdb_rating;
              }
@@ -231,6 +228,7 @@ export default {
             rating_source: ratingSource,
             imdb_rating: imdbRating,
             imdb_votes: imdbVotes,
+            runtime: this.runtime,
         }
       };
 

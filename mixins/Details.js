@@ -164,3 +164,17 @@ export const creators = {
     },
   },
 };
+
+export const runtime = {
+  computed: {
+    runtime() {
+      if (this.item.runtime) {
+        return this.item.runtime;
+      }
+      if (this.item.episode_run_time && this.item.episode_run_time.length > 0) {
+        return this.item.episode_run_time[0];
+      }
+      return null;
+    }
+  }
+};
