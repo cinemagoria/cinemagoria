@@ -347,21 +347,9 @@
                       All genres
                     </div>
                     
-                    <div class="dropdown-header">MOVIE GENRES</div>
                     <div 
-                      v-for="genre in sortedMovieGenres" 
-                      :key="'movie-' + genre" 
-                      class="dropdown-option"
-                      :class="{ selected: selectedGenre === genre }"
-                      @click.stop="selectGenre(genre)"
-                    >
-                      {{ genre }}
-                    </div>
-
-                    <div class="dropdown-header">TV SHOW GENRES</div>
-                    <div 
-                      v-for="genre in sortedTvGenres" 
-                      :key="'tv-' + genre" 
+                      v-for="genre in uniqueSortedGenres" 
+                      :key="genre" 
                       class="dropdown-option"
                       :class="{ selected: selectedGenre === genre }"
                       @click.stop="selectGenre(genre)"
@@ -423,6 +411,27 @@
                     v-model.number="maxImdbRating" 
                     min="0" 
                     max="10"
+                    placeholder="Max"
+                    class="year-input"
+                  >
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <label class="filter-label">IMDB Votes Range</label>
+                <div class="year-inputs">
+                  <input 
+                    type="number" 
+                    v-model.number="minImdbVotes" 
+                    min="0"
+                    placeholder="Min"
+                    class="year-input"
+                  >
+                  <span class="year-separator">-</span>
+                  <input 
+                    type="number" 
+                    v-model.number="maxImdbVotes" 
+                    min="0"
                     placeholder="Max"
                     class="year-input"
                   >
@@ -1803,6 +1812,10 @@ export default {
     },
     sortedTvGenres() {
       return this.tvGenres.sort();
+    },
+    uniqueSortedGenres() {
+      const allGenres = new Set([...this.movieGenres, ...this.tvGenres]);
+      return Array.from(allGenres).sort();
     },
     
     totalPages() {
