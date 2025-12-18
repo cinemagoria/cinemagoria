@@ -167,6 +167,54 @@ export default {
 
     async addFavorite() {
       this.addedAt = new Date();
+      let genresForDb = this.genresForDb;
+      let externalIds = this.item.external_ids;
+      let imdbRating = this.item.imdb_rating;
+      let imdbVotes = this.item.imdb_votes;
+      let ratingSource = this.item.rating_source || 'tmdb';
+
+      // Check if we need to fetch more details
+      // We check if genres are missing (empty string/null) OR external_ids are missing
+      // We also check if we are expected to have them but don't (e.g. from person page)
+      if ((!genresForDb || !externalIds) && this.idForDb) {
+        try {
+           const { getMovie, getTvShow } = await import('~/api');
+           let fullDetails = null;
+
+           if (this.typeForDb === 'movie') {
+             fullDetails = await getMovie(this.idForDb);
+           } else if (this.typeForDb === 'tv') {
+             fullDetails = await getTvShow(this.idForDb);
+           }
+
+           if (fullDetails) {
+             // Update genres
+             if (fullDetails.genres && Array.isArray(fullDetails.genres)) {
+               genresForDb = fullDetails.genres.map(g => g.name).join(', ');
+               this.genresForDb = genresForDb; // Update local state too
+             }
+             
+             // Update external IDs
+             if (fullDetails.external_ids) {
+               externalIds = fullDetails.external_ids;
+             }
+             
+             // Update IMDb info if available and not already set
+             if (fullDetails.imdb_rating && !imdbRating) {
+               imdbRating = fullDetails.imdb_rating;
+             }
+             if (fullDetails.imdb_votes && !imdbVotes) {
+               imdbVotes = fullDetails.imdb_votes;
+             }
+             if (fullDetails.rating_source) {
+                ratingSource = fullDetails.rating_source;
+             }
+           }
+        } catch (err) {
+          console.error('Error fetching full details for QuickFav:', err);
+        }
+      }
+
       const payload = {
         userEmail: this.userEmail,
         item: {
@@ -176,13 +224,13 @@ export default {
             yearEndForDb: this.yearEndForDb,
             posterForDb: this.posterForDb,
             idForDb: this.idForDb,
-            genresForDb: this.genresForDb,
+            genresForDb: genresForDb,
             typeForDb: this.typeForDb,
             addedAt: this.addedAt,
-            external_ids: this.item.external_ids,
-            rating_source: this.item.rating_source || 'tmdb',
-            imdb_rating: this.item.imdb_rating,
-            imdb_votes: this.item.imdb_votes,
+            external_ids: externalIds,
+            rating_source: ratingSource,
+            imdb_rating: imdbRating,
+            imdb_votes: imdbVotes,
         }
       };
 
