@@ -186,28 +186,44 @@
                         @error="onImageError($event, item.details.idForDb)"
                       />
                     </div>
-                    <h3>{{ item.details.nameForDb }}</h3>
                   </nuxt-link>
-                  <p>
-                    {{
-                      item.details.yearStartForDb === item.details.yearEndForDb
-                      ? item.details.yearEndForDb
-                      : (item.details.yearStartForDb + (item.details.yearEndForDb ? `-${item.details.yearEndForDb}` : ''))
-                    }}
-                  </p>
 
-                  <div class="card__content">
-                    <div v-if="item.details.imdb_rating || item.details.starsForDb" class="card__stars">
-                      <div :style="{ width: `${calculateStarsWidth(item.details.imdb_rating ? item.details.imdb_rating : formatRating(item.details.starsForDb))}%` }"></div>
-                    </div>
-                    <div class="card___rating">
-                      <p v-if="item.details.rating_source === 'imdb' && item.details.imdb_rating">
-                        {{ item.details.imdb_rating.toFixed(1) }} IMDb
-                      </p>
-                      <p v-else-if="item.details.starsForDb">
-                        {{ formatRating(item.details.starsForDb) }} TMDB
-                      </p>
-                      <p v-else>No especificado.</p>
+                  <div class="movie-info-container">
+                    <nuxt-link :to="getLink(item)" class="item-link" style="text-decoration: none;">
+                      <h3>{{ item.details.nameForDb }}</h3>
+                    </nuxt-link>
+                    <p class="year-text">
+                      {{
+                        item.details.yearStartForDb === item.details.yearEndForDb
+                        ? item.details.yearEndForDb
+                        : (item.details.yearStartForDb + (item.details.yearEndForDb ? `-${item.details.yearEndForDb}` : ''))
+                      }}
+                    </p>
+
+                    <div class="card__content">
+                      <div class="card___rating">
+                        <div v-if="item.details.rating_source === 'imdb' && item.details.imdb_rating" class="rating-item">
+                          <svg class="rating-logo imdb" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" enable-background="new 0 0 48 48">
+                            <g>
+                              <path fill="#FFC107" d="M44,13H4c-2.2,0-4,1.8-4,4v16c0,2.2,1.8,4,4,4h40c2.2,0,4-1.8,4-4V17C48,14.8,46.2,13,44,13z"/>
+                            </g>
+                            <g>
+                              <path fill="#263238" d="M28.1,18h-3.7v13.1h3.7c2,0,2.8-0.4,3.3-0.7c0.6-0.4,0.9-1.1,0.9-1.8v-7.9c0-0.9-0.4-1.7-0.9-2   C30.6,18.2,30.3,18,28.1,18z M28.8,28.3c0,0.6-0.7,0.6-1.3,0.6V20c0.6,0,1.3,0,1.3,0.6V28.3z"/>
+                              <path fill="#263238" d="M33.8,18v13.3h2.8c0,0,0.2-0.9,0.4-0.7c0.4,0,1.5,0.6,2.2,0.6s1.1,0,1.5-0.2c0.6-0.4,0.7-0.7,0.7-1.3v-7.8   c0-1.1-1.1-1.8-2-1.8s-1.8,0.6-2.2,0.9v-3H33.8z M37.4,22.2c0-0.4,0-0.6,0.4-0.6c0.2,0,0.4,0.2,0.4,0.6v6.6c0,0.4,0,0.6-0.4,0.6   c-0.2,0-0.4-0.2-0.4-0.6V22.2z"/>
+                              <polygon fill="#263238" points="22.7,31.3 22.7,18 18.3,18 17.5,24.3 16.4,18 12.4,18 12.4,31.3 15.3,31.3 15.3,23.9 16.6,31.3    18.6,31.3 19.9,23.9 19.9,31.3  "/>
+                              <rect x="7.6" y="18" fill="#263238" width="3.1" height="13.3"/>
+                            </g>
+                          </svg>
+                          <span class="rating-score">{{ item.details.imdb_rating.toFixed(1) }}</span>
+                          <span class="vote-count" v-if="item.details.imdb_votes">({{ formatVoteCount(item.details.imdb_votes) }})</span>
+                        </div>
+                        <div v-else-if="item.details.starsForDb" class="rating-item">
+                          <img src="~static/tmdb.svg" alt="TMDB" class="rating-logo tmdb">
+                          <span class="rating-score">{{ formatRating(item.details.starsForDb) }}</span>
+                           <span class="vote-count" v-if="item.details.vote_count">({{ formatVoteCount(item.details.vote_count) }})</span>
+                        </div>
+                        <p v-else style="font-size: 11px; opacity: 0.7;">No especificado</p>
+                      </div>
                     </div>
                   </div>
 
@@ -579,7 +595,7 @@ export default {
     this.isLoggedIn = accessToken !== null;
     this.authProvider = authProvider;
 
-    this.restoreState(); // Restore filters before checking data
+    this.restoreState();
     await this.checkData();
     this.userName = await getUserName(this.userEmail);
 
@@ -1004,7 +1020,6 @@ export default {
     },
 
     adjustItemsPerPage() {
-      // User requirement: Always show at least 30 items per page.
       const minItems = 30;
       const rowsNeeded = Math.ceil(minItems / this.itemsPerRow);
       const newItemsPerPage = rowsNeeded * this.itemsPerRow;
@@ -1198,9 +1213,19 @@ export default {
     },
 
     formatRating(stars) {
-      return (stars / 10).toFixed(1);
+      if (!stars) return '0.0';
+      return (parseFloat(stars) / 10).toFixed(1);
     },
-
+    formatVoteCount(count) {
+      if (!count) return '0 votos';
+      if (count >= 1000000) {
+        return (count / 1000000).toFixed(1) + 'M votos';
+      }
+      if (count >= 1000) {
+        return (count / 1000).toFixed(1) + 'K votos';
+      }
+      return count + ' votos';
+    },
     calculateStarsWidth(rating) {
       const maxRating = 10;
       const starWidth = 100 / maxRating;
@@ -1950,7 +1975,6 @@ export default {
   backdrop-filter: blur( 16px );
   -webkit-backdrop-filter: blur( 16px );
   border-radius: 5px;
-  border: 1px solid rgba( 255, 255, 255, 0.18 );
   color: #fff;
   margin: 5px;
   cursor: pointer;
@@ -3953,6 +3977,67 @@ loading-state {
   box-shadow: 0 4px 15px rgba(139, 233, 253, 0.4);
 }
 
+.card___rating {
+  display: flex !important;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.rating-item {
+  display: flex;
+  align-items: center;
+}
+
+.year-text {
+  font-size: 15px;
+  color: #ddd;
+  margin: 4px 0;
+  font-weight: 500;
+}
+
+.rating-score {
+  font-size: 13px;
+  color: #fff;
+  font-weight: 700;
+  margin-left: 8px;
+}
+
+.rating-logo {
+  display: block;
+  object-fit: contain;
+  border-radius: 0 !important;
+}
+
+.rating-logo.imdb {
+  width: 52px;
+  height: 26px;
+  position: relative;
+  top: -1px;
+}
+
+.rating-logo.imdb + .rating-score {
+  margin-left: 5px;
+}
+
+.rating-logo.tmdb {
+  width: 55px;
+  height: auto;
+}
+
+svg.rating-logo.imdb {
+   width: 52px;
+   height: 26px;
+   position: relative;
+   top: -1px;
+}
+
+.vote-count {
+  font-size: 11px;
+  color: #acafb5;
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
 @media (max-width: 600px) {
   .info-options-grid {
     grid-template-columns: 1fr;
@@ -3961,5 +4046,79 @@ loading-state {
   .info-modal {
     max-width: 95%;
   }
+
+  .year-text {
+    font-size: 13px;
+  }
+
+  .rating-score {
+    font-size: 12px;
+    margin-left: 6px;
+  }
+  
+  .rating-logo.imdb + .rating-score {
+      margin-left: 4px;
+  }
+
+  .rating-logo.imdb {
+    width: 44px;
+    height: 22px;
+  }
+  
+  svg.rating-logo.imdb {
+     width: 44px;
+     height: 22px;
+  }
+  
+  .rating-logo.tmdb {
+    width: 50px;
+  }
+
+  .vote-count {
+    font-size: 10px;
+  }
+  
+  .movie-info-container {
+    padding: 6px 8px;
+  }
+}
+
+.movie-info-container {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-top: none; 
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.5); 
+  position: relative;
+  margin-top: -1px; 
+}
+
+.card___rating {
+  width: 100%;
+  display: flex !important;
+  justify-content: center;
+}
+
+.rating-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap; 
+  max-width: 100%;
+  text-align: center;
+  gap: 4px; 
+}
+
+.rating-score {
+  margin-left: 0 !important; 
+}
+
+.rating-logo.imdb + .rating-score {
+  margin-left: 0 !important; 
+}
+
+.vote-count {
+  margin-left: 0 !important; 
 }
 </style>
