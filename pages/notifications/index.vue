@@ -469,7 +469,7 @@ export default {
       }
 
       if (notification.media_type === 'movie' || notification.media_type === 'tv') {
-        return '/image_not_found_yet.webp';
+        return '/image_not_found_yet_es.webp';
       }
       
       if (notification.media_type === 'episode' && notification.person_id) {
