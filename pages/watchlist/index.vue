@@ -47,6 +47,7 @@
                 <span>TV Shows</span>
               </label>
               
+              
               <div class="action-buttons">
                 <button class="control-btn" @click="openFiltersModal">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -99,13 +100,12 @@
               <div class="banner-content">
                 <div class="selection-info">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09 3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/>
+                    <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/>
                   </svg>
                   <span>
                     Selected: {{ selectedMoviesCount }} {{ selectedMoviesCount === 1 ? 'movie' : 'movies' }}, {{ selectedTvShowsCount }} {{ selectedTvShowsCount === 1 ? 'TV show' : 'TV shows' }}
                     <span class="limit-text">(max 10 each)</span>
                   </span>
-                  
                   <div class="info-icon-wrapper" @click.stop="toggleSelectionInfo" title="Learn about AI Analysis">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <circle cx="12" cy="12" r="10"></circle>
@@ -113,7 +113,7 @@
                       <line x1="12" y1="8" x2="12.01" y2="8"></line>
                     </svg>
                   </div>
-                  </div>
+                </div>
                 <div class="banner-actions">
                   <button @click="cancelSelection" class="banner-btn cancel-btn">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -173,16 +173,15 @@
                 </div>
 
                 <div class="card-background">
-                  <div v-if="!aiSelectionMode" class="user-rating-badge" v-show="item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
+                  <div class="user-rating-badge" v-if="!aiSelectionMode && item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
                     @click.stop="openRatingModal(item)"
                     :class="{ 'has-review': item.details.userReview }" 
-                    :title="item.details.userReview ? 'Has Review' : ''">
+                    :title="item.details.userReview ? 'Tiene Reseña' : ''">
                     {{ item.details.userRatingForDb }}
                     <span v-if="item.details.userReview" class="review-indicator"></span>
                   </div>
-                  <div v-if="!aiSelectionMode" class="user-rating-badge empty" @click.stop="openRatingModal(item)" v-show="!item.details.userRatingForDb || item.details.userRatingForDb === '-'"> 
-                    <span style="font-size: 7px;">Rate</span>
-                  </div>
+
+                  
                   <nuxt-link :to="getLink(item)" class="item-link">
                     <div class="poster-container">
                       <div v-show="!imageLoadStates[item.details.idForDb]" class="poster-loader">
@@ -197,13 +196,21 @@
                         @load="handleImageLoad(item.details.idForDb)"
                         @error="onImageError($event, item.details.idForDb)"
                       />
+
+                      <div v-if="!aiSelectionMode" class="card-actions-menu">
+                        <div class="dropdown-trigger" @click.prevent.stop="toggleCardMenu(item.details.idForDb)">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                          </svg>
+                        </div>
+                      </div>
                     </div>
                   </nuxt-link>
 
                   <div class="movie-info-container">
-                    <nuxt-link :to="getLink(item)" class="item-link" style="text-decoration: none;">
+                    <div class="item-link" @click="handleItemClick(item)" style="text-decoration: none; cursor: pointer;">
                       <h3>{{ item.details.nameForDb }}</h3>
-                    </nuxt-link>
+                    </div>
                     <p class="year-text">
                       {{
                         item.details.yearStartForDb === item.details.yearEndForDb
@@ -239,19 +246,31 @@
                     </div>
                   </div>
 
-                  <svg v-if="!aiSelectionMode" fill="84E1F6" height="26px" width="26px" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 446.04" @click="removeFavorite(item)" class="delete-icon">
-                    <defs>
-                      <style>
-                        .cls-1 {
-                          fill: #84E1F6;
-                          stroke: black;
-                          stroke-width: 4px;
-                        }
-                      </style>
-                    </defs>
-                    <title>Remove from Watchlist.</title>
-                    <path class="cls-1" d="M252.63 71.41C285.88 36.72 309.17 6.75 360.44.86c96.22-11.07 184.7 87.44 136.11 184.43-.43.85-.88 1.71-1.33 2.58-27.38-23.8-63.15-38.22-102.25-38.22-43.06 0-82.07 17.47-110.29 45.7-28.23 28.23-45.7 67.23-45.7 110.29s17.47 82.06 45.7 110.29l.15.15-30.2 29.96-59.71-57.51C121.09 319.33 3.95 232.26.09 124.36-2.62 48.79 57.02.37 125.62 1.27c61.31.8 87.08 31.31 127.01 70.14zm187.32 214.31c5.88-.05 10.08-.59 9.97 6.7l-.28 23.61c.04 7.62-2.37 9.65-9.51 9.56h-94.32c-7.14.09-9.56-1.94-9.51-9.56l-.29-23.61c-.1-7.29 4.1-6.75 9.97-6.7h93.97zm-46.98-99.11c32.87 0 62.63 13.32 84.17 34.86S512 272.77 512 305.64c0 32.88-13.33 62.64-34.86 84.17-21.54 21.54-51.31 34.86-84.17 34.86-32.88 0-62.64-13.32-84.17-34.86-21.54-21.54-34.87-51.3-34.87-84.17 0-32.88 13.33-62.63 34.86-84.17 21.54-21.54 51.31-34.86 84.18-34.86zm71.79 47.23c-18.37-18.37-43.75-29.74-71.79-29.74-28.04 0-53.43 11.37-71.81 29.74-18.37 18.37-29.73 43.76-29.73 71.8s11.36 53.43 29.74 71.8c18.37 18.37 43.75 29.74 71.8 29.74 28.03 0 53.42-11.37 71.8-29.74 18.37-18.37 29.73-43.76 29.73-71.8s-11.36-53.43-29.74-71.8z"/>
-                  </svg>
+                  <div v-if="!aiSelectionMode" class="card-actions-menu" :class="{ 'menu-open': activeCardMenuId === item.details.idForDb }">
+                    <div class="dropdown-trigger" @click.prevent.stop="toggleCardMenu(item.details.idForDb)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </div>
+                    
+                    <transition name="fade">
+                      <div v-if="activeCardMenuId === item.details.idForDb" class="action-dropdown" @click.stop>
+                        <div v-if="!item.details.userRatingForDb || item.details.userRatingForDb === '-'" class="dropdown-item" @click="openRatingModal(item); activeCardMenuId = null">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                          </svg>
+                          Rate
+                        </div>
+                        <div class="dropdown-item remove-action" @click="removeFavorite(item); activeCardMenuId = null">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                          </svg>
+                          Remove
+                        </div>
+                      </div>
+                    </transition>
+                  </div>
                 </div>
               </div>
             </div>
@@ -654,6 +673,7 @@ export default {
       aiAnalysisLoading: false,
       showSelectionInfo: false,
       imageLoadStates: {},
+      activeCardMenuId: null,
     };
   },
   async mounted() {
@@ -678,6 +698,7 @@ export default {
       } else {
         window.addEventListener('resize', this.handleResize);
       }
+      document.addEventListener('click', this.closeCardMenu);
     });
 
     const detailsArray = this.tvFetched.map(({ details }) => details);
@@ -772,6 +793,7 @@ export default {
       window.removeEventListener('resize', this.handleResize);
     }
     this.$root.$off('rated-items-updated', this.checkData);
+    document.removeEventListener('click', this.closeCardMenu);
   },
   
   watch: {
@@ -840,7 +862,6 @@ export default {
           this.currentPage = this.totalPages;
         });
       }
-      // Min validation (< 1) is handled on @change to allow typing
     },
     itemsToShow: {
       immediate: true,
@@ -861,6 +882,18 @@ export default {
   },
   
   methods: {
+    toggleCardMenu(id) {
+      if (this.activeCardMenuId === id) {
+        this.activeCardMenuId = null;
+      } else {
+        this.activeCardMenuId = id;
+      }
+    },
+    closeCardMenu(e) {
+      if (this.activeCardMenuId) {
+        this.activeCardMenuId = null;
+      }
+    },
     handleImageLoad(itemId) {
       this.$set(this.imageLoadStates, itemId, true);
     },
@@ -2386,7 +2419,7 @@ export default {
     -webkit-box-orient: vertical;
     white-space: normal;
     text-overflow: ellipsis; 
-    height: 2.4em; /* Approx 2 lines */
+    height: 2.4em; 
     line-height: 1.2em;
   }
   .movie-card h3:hover,
@@ -3459,6 +3492,28 @@ select.user-rating-select {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
+.dropdown-item {
+  padding: 8px 12px;
+  color: #e0e0e0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.menu-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 15;
+  background: transparent;
+  cursor: default;
+}
+
 .dropdown-option {
   padding: 10px;
   color: #fff;
@@ -4370,5 +4425,143 @@ svg.rating-logo.imdb {
 
 .vote-count {
   margin-left: 0 !important; 
+}
+
+.card-actions-menu {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 20;
+}
+
+@media (max-width: 600px) {
+  .card-actions-menu.menu-open {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 50;
+  }
+  
+  .card-actions-menu.menu-open .dropdown-trigger {
+    position: absolute;
+    top: 10px; 
+    right: 10px;
+    z-index: 51;
+  }
+  
+  .card-actions-menu.menu-open .action-dropdown {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    right: 0;
+    margin: 0;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    background: rgba(9, 39, 57, 0.95);
+    backdrop-filter: blur(10px);
+  }
+
+  .card-actions-menu.menu-open .dropdown-item {
+    font-size: 16px;
+    padding: 15px 20px;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.dropdown-trigger {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 5px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.dropdown-trigger svg {
+  stroke: #8BE9FD;
+  width: 20px;
+  height: 20px;
+}
+
+.dropdown-trigger:hover {
+  background: rgba(0, 0, 0, 0.8);
+  border-color: #8BE9FD;
+  transform: scale(1.05);
+}
+
+.action-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  border-radius: 15px;
+  background: linear-gradient(to bottom right, #092739, #061720);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  z-index: 30;
+}
+
+@media screen and (min-width: 601px) {
+  .action-dropdown {
+    min-width: 180px;
+  }
+}
+
+.dropdown-item {
+  padding: 8px 12px;
+  color: #e0e0e0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.menu-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 15;
+  background: transparent;
+  cursor: default;
+}
+
+.dropdown-item:hover {
+  background: rgba(139, 233, 253, 0.1);
+  color: #8BE9FD;
+}
+
+.remove-action {
+  color: #ff6b6b;
+}
+
+.remove-action:hover {
+  background: rgba(255, 107, 107, 0.1);
+  color: #ff8787;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.2s, transform 0.2s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+  transform: translateY(-5px);
 }
 </style>
