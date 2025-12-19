@@ -1512,8 +1512,7 @@ export default {
         }
       }
     },
-  },
-  
+
     validatePageInput() {
       if (!this.currentPage || this.currentPage < 1) {
         this.currentPage = 1;
@@ -1521,6 +1520,7 @@ export default {
         this.currentPage = this.totalPages;
       }
     },
+  },
 
   computed: {
     showEmptyState() {
