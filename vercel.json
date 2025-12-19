@@ -1,0 +1,14 @@
+{
+    "version": 2,
+    "routes": [
+        {
+            "src": "/api/imdb-rating/(.*)",
+            "dest": "/api/imdb-rating.js"
+        }
+    ],
+    "functions": {
+        "api/imdb-rating.js": {
+            "maxDuration": 10
+        }
+    }
+}
