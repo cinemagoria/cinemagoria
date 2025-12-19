@@ -144,15 +144,23 @@
             </div>
 
             <div class="pagination" v-if="filteredItems.length > itemsPerPage">
-              <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
-              <button @click="prevPage" :disabled="currentPage === 1"><<</button>
-              <span>
-                <label for="page" style="font-size:13px;">Page</label>
-                <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
+              <button @click="goToFirst" :disabled="currentPage === 1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-skip-back-icon lucide-skip-back"><path d="M17.971 4.285A2 2 0 0 1 21 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432z"/><path d="M3 20V4"/></svg>
+              </button>
+              <button @click="prevPage" :disabled="currentPage === 1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-step-back-icon lucide-step-back"><path d="M13.971 4.285A2 2 0 0 1 17 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432z"/><path d="M21 20V4"/></svg>
+              </button>
+              <span class="pagination-text-container">
+                <label for="page" class="pagination-label">Page</label>
+                <input type="number" id="page" class="pagination-input" v-model.number="currentPage" min="1" :max="totalPages" @change="validatePageInput">
               </span>
-              <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
-              <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
-              <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
+              <span class="pagination-text">of <span class="pagination-number">{{ totalPages }}</span></span>
+              <button @click="nextPage" :disabled="currentPage === totalPages">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-step-forward-icon lucide-step-forward"><path d="M10.029 4.285A2 2 0 0 0 7 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432z"/><path d="M3 4v16"/></svg>
+              </button>
+              <button @click="goToLast" :disabled="currentPage === totalPages">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-skip-forward-icon lucide-skip-forward"><path d="M21 4v16"/><path d="M6.029 4.285A2 2 0 0 0 3 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432z"/></svg>
+              </button>
             </div>
             
             <div class="movie-grid">
@@ -249,15 +257,23 @@
             </div>
             <br>
             <div class="pagination-footer" v-if="filteredItems.length > itemsPerPage">
-              <button @click="goToFirst" :disabled="currentPage === 1">|<</button>
-              <button @click="prevPage" :disabled="currentPage === 1"><<</button>
-              <span>
-                <label for="page" style="font-size:13px;">Page</label>
-                <input type="number" id="page" style="border-radius: 7px; text-align: center; padding: 1px 2px 1px 4px; height: 20.9462px; transform: translate(2.83728px, -0.0009155px); width: 43.9908px;" v-model.number="currentPage" min="1" :max="totalPages">
+              <button @click="goToFirst" :disabled="currentPage === 1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-skip-back-icon lucide-skip-back"><path d="M17.971 4.285A2 2 0 0 1 21 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432z"/><path d="M3 20V4"/></svg>
+              </button>
+              <button @click="prevPage" :disabled="currentPage === 1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-step-back-icon lucide-step-back"><path d="M13.971 4.285A2 2 0 0 1 17 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432z"/><path d="M21 20V4"/></svg>
+              </button>
+              <span class="pagination-text-container">
+                <label for="page" class="pagination-label">Page</label>
+                <input type="number" id="page" class="pagination-input" v-model.number="currentPage" min="1" :max="totalPages" @change="validatePageInput">
               </span>
-              <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
-              <button @click="nextPage" :disabled="currentPage === totalPages">>></button>
-              <button @click="goToLast" :disabled="currentPage === totalPages">>|</button>
+              <span class="pagination-text">of <span class="pagination-number">{{ totalPages }}</span></span>
+              <button @click="nextPage" :disabled="currentPage === totalPages">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-step-forward-icon lucide-step-forward"><path d="M10.029 4.285A2 2 0 0 0 7 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432z"/><path d="M3 4v16"/></svg>
+              </button>
+              <button @click="goToLast" :disabled="currentPage === totalPages">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-skip-forward-icon lucide-skip-forward"><path d="M21 4v16"/><path d="M6.029 4.285A2 2 0 0 0 3 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432z"/></svg>
+              </button>
             </div>
           </div>
         </div>
@@ -823,11 +839,8 @@ export default {
         this.$nextTick(() => {
           this.currentPage = this.totalPages;
         });
-      } else if (newPage < 1) {
-        this.$nextTick(() => {
-          this.currentPage = 1;
-        });
       }
+      // Min validation (< 1) is handled on @change to allow typing
     },
     itemsToShow: {
       immediate: true,
@@ -1486,6 +1499,14 @@ export default {
     },
     
     
+    validatePageInput() {
+      if (!this.currentPage || this.currentPage < 1) {
+        this.currentPage = 1;
+      } else if (this.currentPage > this.totalPages) {
+        this.currentPage = this.totalPages;
+      }
+    },
+    
   },
 
   computed: {
@@ -1834,7 +1855,10 @@ export default {
     },
 
     itemsToShow() {
-      const start = (this.currentPage - 1) * this.itemsPerPage;
+      let page = this.currentPage;
+      if (!page || page < 1) page = 1;
+      if (page > this.totalPages) page = this.totalPages;
+      const start = (page - 1) * this.itemsPerPage;
       const end = start + this.itemsPerPage;
       return this.filteredItems.slice(start, end);
     },
@@ -2146,7 +2170,7 @@ export default {
   box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
   backdrop-filter: blur( 16px );
   -webkit-backdrop-filter: blur( 16px );
-  border-radius: 5px;
+  border-radius: 25px;
   color: #fff;
   margin: 5px;
   cursor: pointer;
@@ -2163,7 +2187,7 @@ export default {
   box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
   backdrop-filter: blur( 16px );
   -webkit-backdrop-filter: blur( 16px );
-  border-radius: 5px;
+  border-radius: 25px;
   border: 1px solid rgba( 255, 255, 255, 0.18 );
   color: #fff;
   margin: 5px;
@@ -2182,11 +2206,63 @@ export default {
     font-size: 1.5rem;
     font-weight: 500;
     line-height: 1;
-    color: #fff;
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    transition: all 0.2s;
-    }
+  color: #fff;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pagination button:active,
+.pagination-footer button:active {
+  transform: scale(1.1);
+}
+
+.pagination-text-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pagination-label,
+.pagination-text {
+  font-family: 'Ortica', 'Roboto', sans-serif;
+  color: #8BE9FD;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.pagination-input {
+  background-color: #0C181F;
+  color: #8BE9FD;
+  font-family: 'Roboto', sans-serif;
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 7px;
+  text-align: center;
+  padding: 4px 2px;
+  height: 28px;
+  width: 50px;
+  font-size: 1.1rem;
+  outline: none;
+  transition: border-color 0.2s;
+  -moz-appearance: textfield;
+}
+
+.pagination-input::-webkit-outer-spin-button,
+.pagination-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.pagination-input:focus {
+  border-color: #8BE9FD;
+}
+
+.pagination-number {
+  font-family: 'Roboto', sans-serif;
+}
+
+
 
 
   .order-button {

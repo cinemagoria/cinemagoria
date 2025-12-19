@@ -81,7 +81,7 @@ export default {
       idForDb: null,
       genresForDb: null,
       typeForDb: null,
-      runtime: null,
+      runtimeForDb: null,
       addedAt: null,
     };
   },
@@ -119,7 +119,7 @@ export default {
     this.idForDb = this.id;
     this.genresForDb = this.calculatedGenres;
     this.typeForDb = this.compType;
-    this.runtime = this.runtime;
+    this.runtimeForDb = this.runtime;
     
     this.$root.$on('favorites-updated', this.checkIfFavorite);
   },
@@ -159,12 +159,31 @@ export default {
 
     toggleFavorite() {
       if (this.isFavorite) {
-        this.$root.$emit('open-quickfav-modal', {
-            favId: this.favId,
-            nameForDb: this.nameForDb
-        });
+        this.removeFavorite();
       } else {
         this.addFavorite();
+      }
+    },
+
+    async removeFavorite() {
+      if (!this.favId || !this.userEmail) return;
+
+      try {
+        const [itemType, itemId] = this.favId.split('/');
+        const response = await fetch(
+          `${this.tursoBackendUrl}/favorites/${this.userEmail}/${itemType}/${itemId}`,
+          { 
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+          }
+        );
+
+        if (!response.ok) throw new Error('Failed to remove favorite');
+
+        this.isFavorite = false;
+        this.$root.$emit('favorites-updated'); 
+      } catch (e) {
+        console.error('Error removing favorite:', e);
       }
     },
 
@@ -176,7 +195,7 @@ export default {
       let imdbVotes = this.item.imdb_votes;
       let ratingSource = this.item.rating_source || 'tmdb';
 
-      if ((!genresForDb || !externalIds) && this.idForDb) {
+      if ((!genresForDb || !externalIds || !this.runtimeForDb) && this.idForDb) {
         try {
            const { getMovie, getTvShow } = await import('~/api');
            let fullDetails = null;
@@ -206,6 +225,12 @@ export default {
              if (fullDetails.rating_source) {
                 ratingSource = fullDetails.rating_source;
              }
+
+             if (fullDetails.runtime) {
+               this.runtimeForDb = fullDetails.runtime;
+             } else if (fullDetails.episode_run_time && fullDetails.episode_run_time.length > 0) {
+               this.runtimeForDb = fullDetails.episode_run_time[0];
+             }
            }
         } catch (err) {
           console.error('Error fetching full details for QuickFav:', err);
@@ -228,7 +253,7 @@ export default {
             rating_source: ratingSource,
             imdb_rating: imdbRating,
             imdb_votes: imdbVotes,
-            runtime: this.runtime,
+            runtime: this.runtimeForDb,
         }
       };
 
