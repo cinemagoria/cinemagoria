@@ -2,13 +2,20 @@
     "version": 2,
     "routes": [
         {
+            "src": "/api/contact",
+            "dest": "/api/contact.js"
+        },
+        {
             "src": "/api/imdb-rating/(.*)",
             "dest": "/api/imdb-rating.js"
         }
     ],
     "functions": {
+        "api/contact.js": {
+            "maxDuration": 300
+        },
         "api/imdb-rating.js": {
-            "maxDuration": 10
+            "maxDuration": 300
         }
     }
 }
