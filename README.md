@@ -317,5 +317,67 @@ yarn start
 
 ##  Version History
 
+### v3.0.0: Personalized Content Discovery & Enhanced Watchlist (2025-12-19)
+
+**Status**: Production Ready
+
+**Summary**
+This release delivering a significantly more personalized content discovery experience and a powerful, refined Watchlist. With a total of **36 commits**, this update introduces the ability to follow production companies for tailored notifications and content feeds, provides advanced filtering and sorting for your Watchlist, and includes a critical infrastructure migration to Vercel for improved stability.
+
+**Breaking Changes**
+*   **Infrastructure Migration**: Deployment migrated from Netlify to Vercel. This enforces strict 5-second serverless execution limits and requires explicit CORS configuration for API middleware.
+
+**Major Features**
+*   **Production Company Following**: Follow companies to get new release notifications.
+*   **Followed Content Feeds**: Dedicated sections on movie/TV pages for content from companies you follow.
+*   **Watchlist QuickFav**: Efficiently add/remove items with the new `QuickFav` component.
+*   **Persistent Watchlist Filters**: Filters and sort preferences now persist across sessions.
+*   **Advanced Filtering**: Consolidated genre filters, IMDb vote count filtering, and runtime sorting.
+
+**UI/UX Refinements**
+*   **Visual Polish**: Enhanced spoiler banners, consistent margins, refined notification layouts, and updated asset styling.
+*   **Loaders**: Improved image loading states with customizable loaders.
+
+**Performance**
+*   **Vercel Migration**: Adaptation of API middleware for Vercel's serverless environment.
+*   **Config Cleanup**: Removal of Netlify-specific code.
+
+---
+
+### v2.2.0: Dynamic Content Discovery & UI Modernization (2025-12-08)
+
+**Summary**
+Introduces dynamic recommendation systems, a "Watch On" section with streaming links, and Trakt.tv review integration.
+
+**Major Features**
+*   **Dynamic Recommendations**: Tab-based recommendations by Director, Creator, and Producer on detail pages.
+*   **"Watch On" Section**: Unified streaming links (TMDB, VidSRC, ***, ***).
+*   **Trakt.tv Reviews**: deeply integrated with graphical star ratings.
+*   **Smarter AI**: Improved media reference sorting and conversation management (bulk archive/delete).
+
+**UI/UX Refinements**
+*   **Chatbot Redesign**: Modern, responsive UI with improved mobile sidebar.
+*   **Watchlist Filtering**: Integrated sorting into the filter modal with IMDb rating range input.
+*   **WebP Migration**: Significant performance boost by converting assets to WebP.
+
+---
+
+### v2.1.0: Enhanced Watchlist & Smarter AI
+
+**Summary**
+Delivers a robust suite of enhancements focusing on an unparalleled Watchlist experience and AI advancements.
+
+**Breaking Changes**
+*   **Backend Migration**: Favorites & Ratings moved from Supabase to Turso.
+*   **Trailers**: In-app modal removed; trailers now redirect to YouTube.
+
+**Major Features**
+*   **Watchlist Evolution**: Weighted IMDb rating sort (Bayesian average), four-way sorting, and AI analysis integration.
+*   **AI Analysis**: Analyze watchlist items directly with AI.
+*   **Production Company Pages**: Dedicated pages for production companies.
+*   **FollowingModal**: Globalized for universal access.
+
+---
+
 **v2.0.0 (2025-11-13)**
 Architectural overhaul, IMDb integration, notifications, AI sync, modal auth.
