@@ -102,12 +102,19 @@
               <div class="banner-content">
                 <div class="selection-info">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/>
+                    <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09 3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/>
                   </svg>
                   <span>
                     Seleccionado: {{ selectedMoviesCount }} {{ selectedMoviesCount === 1 ? 'película' : 'películas' }}, {{ selectedTvShowsCount }} {{ selectedTvShowsCount === 1 ? 'serie' : 'series' }}
                     <span class="limit-text">(máx 10 cada uno)</span>
                   </span>
+                  <div class="info-icon-wrapper" @click.stop="toggleSelectionInfo" title="Learn about AI Analysis">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                  </div>
                 </div>
                 <div class="banner-actions">
                   <button @click="cancelSelection" class="banner-btn cancel-btn">
@@ -137,6 +144,25 @@
                 </div>
               </div>
             </div>
+
+            <transition name="fade">
+              <div v-if="undoBannerVisible" class="undo-banner">
+                <div class="banner-content">
+                   <div class="selection-info">
+                     <span>Eliminado: <span style="color: #fff; font-weight: bold;">{{ undoItem?.details?.nameForDb }}</span></span>
+                   </div>
+                   <div class="banner-actions">
+                     <button @click="restoreFavorite" class="banner-btn send-btn">
+                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="1 4 1 10 7 10"></polyline>
+                          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                       </svg>
+                       Deshacer
+                     </button>
+                   </div>
+                </div>
+              </div>
+            </transition>
 
             <div class="pagination" v-if="filteredItems.length > itemsPerPage">
               <button @click="goToFirst" :disabled="currentPage === 1">
@@ -646,6 +672,9 @@ export default {
       notificationMessage: '',
       imageLoadStates: {},
       activeCardMenuId: null,
+      undoBannerVisible: false,
+      undoItem: null,
+      undoTimer: null,
     };
   },
   async mounted() {
@@ -1294,6 +1323,16 @@ export default {
         console.error('Item or item details are undefined:', item);
         return;
       }
+      
+      this.undoItem = JSON.parse(JSON.stringify(item));
+      this.undoBannerVisible = true;
+      
+      if (this.undoTimer) clearTimeout(this.undoTimer);
+      
+      this.undoTimer = setTimeout(() => {
+        this.undoBannerVisible = false;
+        this.undoItem = null;
+      }, 10000);
 
       try {
         const { typeForDb, idForDb } = item.details;
@@ -1301,6 +1340,77 @@ export default {
         this.deleteFavorite(keyToDelete);
       } catch (error) {
         console.error('Error removing favorite:', error.message);
+      }
+    },
+    
+    async restoreFavorite() {
+      if (!this.undoItem || !this.undoItem.details) return;
+      
+      const itemToRestore = this.undoItem;
+      const { 
+        nameForDb, starsForDb, yearStartForDb, yearEndForDb, 
+        posterForDb, idForDb, genresForDb, typeForDb, 
+        external_ids, rating_source, imdb_rating, imdb_votes, runtime,
+        userRatingForDb, userReview
+      } = itemToRestore.details;
+      
+      const payload = {
+        userEmail: this.userEmail,
+        item: {
+            nameForDb: nameForDb || null,
+            starsForDb: starsForDb || null,
+            yearStartForDb: yearStartForDb || null,
+            yearEndForDb: yearEndForDb || null,
+            posterForDb: posterForDb || null,
+            idForDb: idForDb,
+            genresForDb: genresForDb || null,
+            typeForDb: typeForDb,
+            addedAt: new Date(), 
+            external_ids: external_ids || null,
+            rating_source: rating_source || null,
+            imdb_rating: imdb_rating || null,
+            imdb_votes: imdb_votes || null,
+            runtime: runtime || null,
+        }
+      };
+      
+      try {
+        const response = await fetch(`${this.tursoBackendUrl}/favorites`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+             const errText = await response.text();
+             throw new Error(`Error al restaurar el elemento: ${errText}`);
+        }
+        
+        if (userRatingForDb && userRatingForDb !== '-') {
+           await fetch(
+            `${this.tursoBackendUrl}/favorites/rating/${this.userEmail}/${typeForDb}/${idForDb}`,
+            {
+              method: 'PUT',
+              headers: { 
+                'Content-Type': 'application/json' 
+              },
+              body: JSON.stringify({
+                rating: parseInt(userRatingForDb),
+                review: userReview || ''
+              })
+            }
+          );
+        }
+        
+        this.undoBannerVisible = false;
+        if (this.undoTimer) clearTimeout(this.undoTimer);
+        this.undoItem = null;
+        
+        await this.checkData();
+        
+      } catch (e) {
+        console.error('Error restoring favorite:', e);
+        alert(`No se pudo restaurar el elemento: ${e.message}`);
       }
     },
 
@@ -4005,6 +4115,15 @@ loading-state {
   margin: 1rem auto;
 }
 
+.undo-banner {
+  background: rgba(139, 233, 253, 0.15);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  width: 97% !important;
+  margin: 1rem auto;
+}
+
 .banner-content {
   display: flex;
   justify-content: space-between;
@@ -4313,7 +4432,7 @@ loading-state {
 }
 
 .got-it-btn {
-  background: linear-gradient(135deg, #8BE9FD 0%, #00a8cc 100%);
+  background: #8BE9FD;
   color: #000;
   border: none;
   padding: 10px 30px;
@@ -4490,7 +4609,7 @@ svg.rating-logo.imdb {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 50;
+    z-index: 105;
   }
   
   .card-actions-menu.menu-open .dropdown-trigger {
@@ -4512,15 +4631,29 @@ svg.rating-logo.imdb {
     justify-content: center;
     align-items: center;
     border: none;
-    background: rgba(9, 39, 57, 0.95);
+    background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.18);
     backdrop-filter: blur(10px);
   }
 
   .card-actions-menu.menu-open .dropdown-item {
     font-size: 16px;
-    padding: 15px 20px;
+    padding: 5px 20px;
     width: 100%;
     justify-content: center;
+    color: #8BE9FD;
+    border-radius: 6px;
+    border: 0.5px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .card-actions-menu.menu-open .dropdown-item:hover {
+    color: #000;
+    background: #8BE9FD;;
+  }
+
+  .card-actions-menu.menu-open .dropdown-item.remove-action:hover {
+    color: #ff6b6b;
+    background: #8BE9FD;;
   }
 }
 
@@ -4556,7 +4689,7 @@ svg.rating-logo.imdb {
   right: 0;
   margin-top: 8px;
   border-radius: 15px;
-  background: linear-gradient(to bottom right, #092739, #061720);
+  background: #000;
   border: 1px solid rgba(139, 233, 253, 0.3);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   overflow: hidden;
@@ -4571,13 +4704,17 @@ svg.rating-logo.imdb {
 
 .dropdown-item {
   padding: 8px 12px;
-  color: #e0e0e0;
+  color: #8BE9FD;;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   font-size: 13px;
   white-space: nowrap;
+}
+
+.dropdown-item svg {
+  flex-shrink: 0;
 }
 
 .menu-overlay {
@@ -4586,23 +4723,24 @@ svg.rating-logo.imdb {
   left: 0;
   width: 100%;
   height: 100%;
+  
   z-index: 15;
   background: transparent;
   cursor: default;
 }
 
 .dropdown-item:hover {
-  background: rgba(139, 233, 253, 0.1);
-  color: #8BE9FD;
+  background: #8BE9FD;
+  color: #000;
 }
 
-.remove-action {
+.dropdown-item.remove-action {
   color: #ff6b6b;
 }
 
-.remove-action:hover {
-  background: rgba(255, 107, 107, 0.1);
-  color: #ff8787;
+.dropdown-item.remove-action:hover {
+  background: #8BE9FD;
+  color: #ff6b6b;
 }
 
 .fade-enter-active, .fade-leave-active {
