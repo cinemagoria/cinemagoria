@@ -7,7 +7,8 @@ module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
+    res.statusCode = 200;
+    res.end();
     return;
   }
 
@@ -15,7 +16,9 @@ module.exports = async (req, res) => {
 
   if (!process.env.IMDB_DB_URL || !process.env.IMDB_DB_TOKEN) {
     console.error('Missing Turso DB credentials');
-    res.status(500).json({ found: false, error: 'Database configuration missing' });
+    res.statusCode = 500;
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ found: false, error: 'Database configuration missing' }));
     return;
   }
 
@@ -38,17 +41,23 @@ module.exports = async (req, res) => {
 
     if (result.rows && result.rows.length > 0) {
       const row = result.rows[0];
-      res.status(200).json({
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({
         found: true,
         score: parseFloat(row.average_rating),
         votes: parseInt(row.num_votes),
         source: 'imdb'
-      });
+      }));
     } else {
-      res.status(200).json({ found: false, source: 'tmdb' });
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ found: false, source: 'tmdb' }));
     }
   } catch (error) {
     console.error('Error in imdb-rating function:', error);
-    res.status(200).json({ found: false, source: 'tmdb', error: error.message });
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({ found: false, source: 'tmdb', error: error.message }));
   }
 };
