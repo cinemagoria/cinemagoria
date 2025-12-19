@@ -78,6 +78,7 @@ export default {
     baseURL: "/",
   },
   serverMiddleware: [
+    { path: '/api/contact', handler: '~/api/contact.js' },
     { path: '/api/imdb-rating', handler: '~/api/imdb-rating.js' }
   ],
   pwa: {
