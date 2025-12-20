@@ -47,13 +47,13 @@
 
 .footer {
   background-color: transparent;
-  padding: 4rem 1.5rem 8rem;
+  padding: 1.5rem 1.5rem 5rem;
   color: $text-color-grey;
-  margin-top: 4rem;
+  margin-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 
   @media (min-width: $breakpoint-large) {
-     padding: 4rem 6rem 3rem;
+     padding: 1.5rem 6rem 0.5rem;
   }
 }
 
@@ -64,7 +64,7 @@
 .grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 3rem;
+  gap: 1rem;
   text-align: center;
   justify-items: center;
 
@@ -72,7 +72,7 @@
     grid-template-columns: repeat(2, 1fr);
     text-align: left;
     justify-items: center;
-    gap: 4rem;
+    gap: 1.5rem;
     align-items: center;
   }
 }
@@ -80,7 +80,7 @@
 .column {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   align-items: center; 
   
   @media (min-width: 768px) {
@@ -96,7 +96,7 @@
   color: #80868b;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .links {
@@ -105,7 +105,7 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
   align-items: center;
 
   @media (min-width: 768px) {
@@ -154,14 +154,14 @@
 .divider {
   height: 1px;
   background: rgba(255, 255, 255, 0.05);
-  margin: 3rem 0;
+  margin: 1.5rem 0;
 }
 
 .bottomBar {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
   font-size: 1.2rem;
   color: $text-color-grey;
   text-align: center;
