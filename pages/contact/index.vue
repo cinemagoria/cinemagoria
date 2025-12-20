@@ -2,9 +2,9 @@
     <main class="main">
     <UserNav />
     <nav class="navbar navbar-welcome">
-      <h1 class="title-primary" style="color: #8BE9FD !important; margin-top:30px; margin-bottom:10px; display:flex; justify-content: center;;">Contáctanos</h1>
+      <h1 class="title-primary" style="color: #8BE9FD !important; margin-top:30px; margin-bottom:10px; display:flex; justify-content: center;;">Contacto</h1>
       <h2 class="title-secondary" style="color: rgb(172, 175, 181); font-size: 14px; max-width: 600px; margin: 20px auto 0;">
-        Nos encantaría saber de ti. Envíanos un mensaje y te responderemos lo antes posible.
+        Complete el siguiente formulario para ponerse en contacto. Se responderá a la brevedad posible.
       </h2>
     </nav>
 
@@ -18,19 +18,19 @@
               id="name" 
               v-model="form.name" 
               required 
-              placeholder="Tu Nombre"
+              placeholder="Nombre Completo"
               class="form-input"
             />
           </div>
 
           <div class="form-group">
-            <label for="email">Email</label>
+            <label for="email">Correo Electrónico</label>
             <input 
               type="email" 
               id="email" 
               v-model="form.email" 
               required 
-              placeholder="tu.email@ejemplo.com"
+              placeholder="correo@ejemplo.com"
               class="form-input"
             />
           </div>
@@ -42,7 +42,7 @@
               id="subject" 
               v-model="form.subject" 
               required 
-              placeholder="Motivo del contacto"
+              placeholder="Asunto del mensaje"
               class="form-input"
             />
           </div>
@@ -53,7 +53,7 @@
               id="message" 
               v-model="form.message" 
               required 
-              placeholder="¿En qué podemos ayudarte?" 
+              placeholder="Escriba su mensaje aquí..." 
               rows="6"
               class="form-input form-textarea"
             ></textarea>
@@ -89,9 +89,9 @@ import UserNav from '@/components/global/UserNav';
 export default {
   head() {
     return {
-      title: 'EnterCinema - Contáctanos',
+      title: 'EnterCinema - Contacto',
       meta: [
-        { hid: 'og:title', property: 'og:title', content: 'Contáctanos' },
+        { hid: 'og:title', property: 'og:title', content: 'Contacto' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
       ],
     };
@@ -130,14 +130,14 @@ export default {
         const data = await response.json();
 
         if (response.ok && data.success) {
-          this.successMessage = '¡Tu mensaje ha sido enviado exitosamente!';
+          this.successMessage = 'Mensaje enviado exitosamente.';
           this.form = { name: '', email: '', subject: '', message: '' };
         } else {
           throw new Error(data.error || 'Error al enviar el mensaje');
         }
       } catch (error) {
         console.error('Contact error:', error);
-        this.errorMessage = 'Algo salió mal. Por favor, inténtalo de nuevo más tarde.';
+        this.errorMessage = 'Ocurrió un error. Por favor, intente nuevamente más tarde.';
       } finally {
         this.loading = false;
       }
@@ -151,7 +151,7 @@ export default {
   display: flex;
   justify-content: center;
   padding: 40px 20px;
-  min-height: 60vh; /* Reduced height */
+  min-height: 60vh;
 }
 
 .contact-container {
@@ -163,7 +163,7 @@ export default {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(127, 219, 241, 0.1);
-  height: fit-content; /* Ensure container fits content */
+  height: fit-content;
 }
 
 .contact-form {
@@ -210,7 +210,7 @@ export default {
 
 .form-textarea {
   resize: vertical;
-  min-height: 120px; /* Adjusted height */
+  min-height: 120px;
 }
 
 .button-container {

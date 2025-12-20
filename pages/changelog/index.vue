@@ -4,7 +4,7 @@
     <nav class="navbar navbar-welcome">
       <h1 class="title-primary" style="color: #8BE9FD !important; margin-top:30px; margin-bottom:10px; display:flex; justify-content: center;">Historial de Cambios</h1>
       <h2 class="title-secondary" style="color: rgb(172, 175, 181); font-size: 14px; max-width: 600px; margin: 20px auto 0;">
-        Últimas actualizaciones y mejoras de nuestro repositorio de código abierto.
+        Últimas actualizaciones y mejoras de Entercinema.
       </h2>
     </nav>
 
@@ -112,9 +112,8 @@ export default {
           throw new Error('Error al obtener las actualizaciones');
         }
         const data = await response.json();
-        const releases = data.filter(r => !r.draft); // Filter out drafts
+        const releases = data.filter(r => !r.draft);
         
-        // Initialize expanded state
         const expandedState = {};
         releases.forEach(r => {
           expandedState[r.id] = false;
@@ -262,7 +261,7 @@ export default {
   transition: max-height 0.3s ease;
   
   &.collapsed {
-    max-height: 300px; /* Limits content to approx 10-15 lines */
+    max-height: 300px;
   }
 }
 
@@ -302,7 +301,6 @@ export default {
   line-height: 1.6;
   font-size: 16px;
 
-  /* Markdown Styles within the body */
   ::v-deep h1, ::v-deep h2, ::v-deep h3 {
     color: #fff;
     margin-top: 20px;
