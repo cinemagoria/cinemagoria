@@ -2,9 +2,9 @@
   <main class="main">
     <UserNav />
     <nav class="navbar navbar-welcome">
-      <h1 class="title-primary" style="color: #8BE9FD !important; margin-top:30px; margin-bottom:10px; display:flex; justify-content: center;;">Contact Us</h1>
+      <h1 class="title-primary" style="color: #8BE9FD !important; margin-top:30px; margin-bottom:10px; display:flex; justify-content: center;;">Contact Support</h1>
       <h2 class="title-secondary" style="color: rgb(172, 175, 181); font-size: 14px; max-width: 600px; margin: 20px auto 0;">
-        We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+        Please complete the form below to get in touch. A response will be provided as soon as possible.
       </h2>
     </nav>
 
@@ -18,7 +18,7 @@
               id="name" 
               v-model="form.name" 
               required 
-              placeholder="Your Name"
+              placeholder="Full Name"
               class="form-input"
             />
           </div>
@@ -30,7 +30,7 @@
               id="email" 
               v-model="form.email" 
               required 
-              placeholder="your.email@example.com"
+              placeholder="name@example.com"
               class="form-input"
             />
           </div>
@@ -42,7 +42,7 @@
               id="subject" 
               v-model="form.subject" 
               required 
-              placeholder="Topic"
+              placeholder="Inquiry Topic"
               class="form-input"
             />
           </div>
@@ -53,7 +53,7 @@
               id="message" 
               v-model="form.message" 
               required 
-              placeholder="How can we help?" 
+              placeholder="Please describe the inquiry..." 
               rows="6"
               class="form-input form-textarea"
             ></textarea>
@@ -89,9 +89,9 @@ import UserNav from '@/components/global/UserNav';
 export default {
   head() {
     return {
-      title: 'EnterCinema - Contact Us',
+      title: 'EnterCinema - Contact Support',
       meta: [
-        { hid: 'og:title', property: 'og:title', content: 'Contact Us' },
+        { hid: 'og:title', property: 'og:title', content: 'Contact Support' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
       ],
     };
@@ -130,14 +130,14 @@ export default {
         const data = await response.json();
 
         if (response.ok && data.success) {
-          this.successMessage = 'Your message has been sent successfully!';
+          this.successMessage = 'Message sent successfully.';
           this.form = { name: '', email: '', subject: '', message: '' };
         } else {
           throw new Error(data.error || 'Failed to send message');
         }
       } catch (error) {
         console.error('Contact error:', error);
-        this.errorMessage = 'Something went wrong. Please try again later.';
+        this.errorMessage = 'An error occurred. Please try again later.';
       } finally {
         this.loading = false;
       }
