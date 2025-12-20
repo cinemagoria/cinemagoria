@@ -761,7 +761,42 @@ export default {
   font-style: italic;
 }
 
+
+
+.reviewRatingContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.stars {
+  width: 7.3rem;
+  height: 1.2rem;
+  background-image: url('~assets/images/stars.png');
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  margin-bottom: 0.2rem;
+
+  > div {
+    height: 100%;
+    background-image: url('~assets/images/stars-filled.png');
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+  }
+}
+
+.ratingNumber {
+  font-size: 1.2rem;
+  color: #999;
+  font-weight: 600;
+}
+</style>
+
+<style lang="scss" scoped>
+@use '~/assets/css/utilities/variables' as *;
+
 .recommendations-wrapper {
+  background-color: #000;
   width: 100%;
   padding: 3rem;
   margin-top: 2rem;
@@ -871,33 +906,5 @@ export default {
     opacity: 0.3;
     pointer-events: none;
   }
-}
-
-.reviewRatingContainer {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.stars {
-  width: 7.3rem;
-  height: 1.2rem;
-  background-image: url('~assets/images/stars.png');
-  background-repeat: no-repeat;
-  background-size: auto 100%;
-  margin-bottom: 0.2rem;
-
-  > div {
-    height: 100%;
-    background-image: url('~assets/images/stars-filled.png');
-    background-repeat: no-repeat;
-    background-size: auto 100%;
-  }
-}
-
-.ratingNumber {
-  font-size: 1.2rem;
-  color: #999;
-  font-weight: 600;
 }
 </style>
