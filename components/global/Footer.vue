@@ -29,10 +29,10 @@
          <div :class="$style.attribution">
             Todos los datos son proporcionados por 
             <a target="_blank" href="https://www.themoviedb.org/" rel="noopener" style="margin: 0 4px;">
-                <img src="~static/tmdb.svg" alt="TMDB Attribution" style="width: 60px; height: 35px; display: inline-block; vertical-align: middle;">
+                <img src="~static/tmdb.svg" alt="TMDB Attribution" style="margin-bottom: 0.5px; width: 60px; height: 35px; display: inline-block; vertical-align: middle;">
             </a>
-            y
-            <a target="_blank" href="https://www.justwatch.com/" rel="noopener" style="margin: 0 4px;">JustWatch</a>.
+            y 
+            <a target="_blank" href="https://www.justwatch.com/" rel="noopener" style="margin: 0 4px; font-size: 11px;">JustWatch.</a>
          </div>
          <div :class="$style.copyright">
              &copy; {{ new Date().getFullYear() }} ENTERCINEMA.COM
@@ -47,18 +47,25 @@
 
 .footer {
   background-color: transparent;
-  padding: 1.5rem 1.5rem 5rem;
+  padding: 1.5rem 1rem 5rem;
   color: $text-color-grey;
   margin-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 
   @media (min-width: $breakpoint-large) {
-     padding: 1.5rem 6rem 0.5rem;
+     padding: 1.5rem 1rem 0.5rem;
   }
 }
 
 .container {
   margin: 0 auto;
+  width: 98%;
+  max-width: 1350px;
+  padding: 0 2rem;
+
+  @media (min-width: 1500px) {
+    max-width: 96%;
+  }
 }
 
 .grid {
@@ -69,11 +76,11 @@
   justify-items: center;
 
   @media (min-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end; 
     text-align: left;
-    justify-items: center;
-    gap: 1.5rem;
-    align-items: center;
+    gap: 0;
   }
 }
 
@@ -84,9 +91,19 @@
   align-items: center; 
   
   @media (min-width: 768px) {
-    align-items: flex-start;
     justify-content: center;
-    min-width: 200px; 
+  }
+
+  &:first-child {
+    @media (min-width: 768px) {
+      align-items: flex-start;
+    }
+  }
+
+  &:last-child {
+    @media (min-width: 768px) {
+      align-items: flex-end;
+    }
   }
 }
 
@@ -131,7 +148,7 @@
   margin-top: 1rem;
   
   @media (min-width: 768px) {
-    justify-content: flex-start;
+    justify-content: flex-end;
     margin-top: 0;
   }
 
@@ -173,6 +190,8 @@
   justify-content: center;
   flex-wrap: wrap;
   line-height: 1.6;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
 
   a {
     color: #fff;
@@ -187,7 +206,7 @@
 
 .copyright {
   font-size: 1.2rem;
-  color: #555;
+  color: #80868b;
   margin-top: 0.5rem;
 }
 </style>
