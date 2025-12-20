@@ -1,107 +1,200 @@
 <template>
   <footer :class="$style.footer">
-    <br>
-    <p>Todos los datos son proporcionados por
-        <a target="_blank" href="https://www.themoviedb.org/" rel="noopener">
-            <img src="~static/tmdb.svg" alt="TMDB Attribution" class="tmdb-attribution" style="width: 60px; height: 35px; display: inline-block; margin-bottom: 2px;">
-        </a>
-        y
-        <a target="_blank" href="https://www.justwatch.com/" rel="noopener" style="margin-top: 2px;">JustWatch</a>.
-    </p>
-    <p> Al usar este sitio, usted acepta los <strong><a href="/usage-policies">Acuerdos de Usuario, Términos y Condiciones</a></strong>.</p>
-    <p>&copy; {{ new Date().getFullYear() }}<a target="_blank" href="mailto:hello@entercinema.com" rel="noopener"> ENTERCINEMA.COM</a> </p>
+    <div :class="$style.container">
+      <div :class="$style.grid">
+        <!-- RESOURCES COLUMN (ES) -->
+        <div :class="$style.column">
+          <h4 :class="$style.heading">Recursos</h4>
+          <ul :class="$style.links">
+            <li><nuxt-link to="/changelog">Últimas Novedades</nuxt-link></li>
+            <li><nuxt-link to="/contact">Contacto</nuxt-link></li>
+            <li><nuxt-link to="/usage-policies">Privacidad y Términos</nuxt-link></li>
+          </ul>
+        </div>
 
-    <ul class="nolist">
-      <li>
-        <a
-          href="https://github.com/imprvhub"
-          target="_blank"
-          aria-label="Link to GitHub account"
-          rel="noopener">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#585858"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://www.linkedin.com/in/ivanluna-dev"
-          target="_blank"
-          aria-label="Link to LinkedIn account"
-          rel="noopener">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#585858"><path d="M19 0H5a5 5 0 0 0-5 5v14a5 5 0 0 0 5 5h14a5 5 0 0 0 5-5V5a5 5 0 0 0-5-5zM8 19H5V8h3v11zM6.5 6.732c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zM20 19h-3v-5.604c0-3.368-4-3.113-4 0V19h-3V8h3v1.765c1.396-2.586 7-2.777 7 2.476V19z"/></svg>
-        </a>
-      </li>
-      <li>
-        <a
-          href="mailto:hello@entercinema.com"
-          aria-label="Link to Email"
-          rel="noopener">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#585858"><path d="M0 3v18h24V3H0zm21.518 2L12 12.713 2.482 5h19.036zM2 19V7.183l10 8.104 10-8.104V19H2z"/></svg>
-        </a>
-      </li>
-    </ul>
+        <!-- CONNECT COLUMN (No Header) -->
+        <div :class="$style.column">
+           <!-- Removed Heading as requested -->
+           <div :class="$style.socials">
+              <a href="https://github.com/imprvhub" target="_blank" rel="noopener" aria-label="GitHub">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+              <a href="https://www.linkedin.com/in/ivanluna-dev" target="_blank" rel="noopener" aria-label="LinkedIn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0H5a5 5 0 0 0-5 5v14a5 5 0 0 0 5 5h14a5 5 0 0 0 5-5V5a5 5 0 0 0-5-5zM8 19H5V8h3v11zM6.5 6.732c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zM20 19h-3v-5.604c0-3.368-4-3.113-4 0V19h-3V8h3v1.765c1.396-2.586 7-2.777 7 2.476V19z"/></svg>
+              </a>
+              <a href="mailto:hello@entercinema.com" aria-label="Email">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3v18h24V3H0zm21.518 2L12 12.713 2.482 5h19.036zM2 19V7.183l10 8.104 10-8.104V19H2z"/></svg>
+              </a>
+           </div>
+        </div>
+      </div>
+
+      <div :class="$style.divider"></div>
+
+      <div :class="$style.bottomBar">
+         <div :class="$style.attribution">
+            Todos los datos son proporcionados por 
+            <a target="_blank" href="https://www.themoviedb.org/" rel="noopener" style="margin: 0 4px;">
+                <img src="~static/tmdb.svg" alt="TMDB Attribution" style="width: 60px; height: 35px; display: inline-block; vertical-align: middle;">
+            </a>
+            y
+            <a target="_blank" href="https://www.justwatch.com/" rel="noopener" style="margin: 0 4px;">JustWatch</a>.
+         </div>
+         <div :class="$style.copyright">
+             &copy; {{ new Date().getFullYear() }} ENTERCINEMA.COM
+         </div>
+      </div>
+    </div>
   </footer>
 </template>
-
 
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
 
 .footer {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-align: center;
-  padding: 2rem 1.5rem 6.5rem;
+  background-color: transparent;
+  padding: 4rem 1.5rem 8rem;
   color: $text-color-grey;
-  text-decoration: none;
-
-  @media (min-width: $breakpoint-small) {
-    padding-right: 4rem;
-    padding-left: 4rem;
-  }
+  margin-top: 4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 
   @media (min-width: $breakpoint-large) {
-    padding: 2rem 5rem;
+     padding: 4rem 6rem 3rem;
+  }
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  text-align: center;
+  justify-items: center;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    text-align: left;
+    justify-items: center;
+    gap: 4rem;
+    align-items: center;
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center; 
+  
+  @media (min-width: 768px) {
+    align-items: flex-start;
+    justify-content: center;
+    min-width: 200px; 
+  }
+}
+
+.heading {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #80868b; /* Muted gray */
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.5rem;
+}
+
+.links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+
+  @media (min-width: 768px) {
+    align-items: flex-start;
   }
 
-  p {
-    margin: 0.3rem 0;
-  }
-
-  a {
-    font-weight: 600;
+  li a {
     color: $text-color-grey;
     text-decoration: none;
-  }
+    font-size: 1.4rem;
+    transition: color 0.3s ease;
 
-  a:hover {
-    color: #ffffff;
-    }
-
-  ul {
-    display: flex;
-    justify-content: center;
-    margin: 2rem 0 0 -0.5rem;
-
-    a {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 4.4rem;
-      height: 4.4rem;
-
-      svg {
-        transition: all 0.3s ease-in-out;
-      }
-
-      &:hover,
-      &:focus {
-        svg {
-          fill: #fff;
-        }
-      }
+    &:hover, :global(.nuxt-link-active) {
+      color: #8BE9FD;
     }
   }
 }
-</style>
 
+.socials {
+  display: flex;
+  gap: 3rem; /* Increased spacing */
+  justify-content: center;
+  margin-top: 1rem;
+  
+  @media (min-width: 768px) {
+    justify-content: flex-start;
+    margin-top: 0;
+  }
+
+  a {
+    color: $text-color-grey;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      color: #8BE9FD;
+      transform: translateY(-2px);
+    }
+    
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.05);
+  margin: 3rem 0;
+}
+
+.bottomBar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 1.2rem;
+  color: $text-color-grey;
+  text-align: center;
+}
+
+.attribution {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  line-height: 1.6;
+
+  a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.copyright {
+  font-size: 1.2rem;
+  color: #555;
+  margin-top: 0.5rem;
+}
+</style>
