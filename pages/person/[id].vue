@@ -119,7 +119,8 @@ const enrichWithIMDbRatings = async (items) => {
         
         // Note: Using process.env.API_KEY. Ensure it's available. 
         // In Nuxt 3/4 runtime config is preferred but process.env might work if decoupled.
-        const apiKey = process.env.API_KEY; 
+        const config = useRuntimeConfig();
+        const apiKey = config.public.apiKey;
         const detailsResponse = await fetch(
           `https://api.themoviedb.org/3/${mediaType}/${item.id}?api_key=${apiKey}&append_to_response=external_ids`
         );
