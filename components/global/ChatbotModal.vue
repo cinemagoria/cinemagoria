@@ -193,7 +193,7 @@
                                :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" 
                                :alt="item.title || 'Movie Poster'"
                                @error="handleImageError">
-                          <img v-else src="https://raw.githubusercontent.com/imprvhub/entercinema/es/static/image_not_found_yet_es.webp" :alt="item.title || 'Movie Poster Not Found'">
+                          <img v-else src="/image_not_found_yet_es.webp" :alt="item.title || 'Movie Poster Not Found'">
                           <div class="media-type">Movie</div>
                           <div class="movie-rating" v-if="item.imdb_rating || item.vote_average > 0">
                             <template v-if="item.rating_source === 'imdb' && item.imdb_rating">
@@ -221,7 +221,7 @@
                                :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" 
                                :alt="item.name || 'TV Show Poster'"
                                @error="handleImageError">
-                          <img v-else src="https://raw.githubusercontent.com/imprvhub/entercinema/es/static/image_not_found_yet_es.webp" :alt="item.name || 'TV Show Poster Not Found'">
+                          <img v-else src="/image_not_found_yet_es.webp" :alt="item.name || 'TV Show Poster Not Found'">
                           <div class="media-type">TV Show</div>
 
                           <div class="movie-rating" v-if="item.imdb_rating || item.vote_average > 0">
@@ -250,7 +250,7 @@
                                :src="'https://image.tmdb.org/t/p/w342' + item.profile_path" 
                                :alt="item.name || 'Person Profile'"
                                @error="handleImageError">
-                          <img v-else src="https://raw.githubusercontent.com/imprvhub/entercinema/es/static/image_not_found_yet_es.webp" :alt="item.name || 'Person Profile Not Found'">
+                          <img v-else src="/image_not_found_yet_es.webp" :alt="item.name || 'Person Profile Not Found'">
                           <div class="media-type">Person</div>
                         </div>
                         <div class="media-info">
@@ -269,7 +269,7 @@
               <div class="input-wrapper">
                 <textarea
                   v-model="chatBotQuery"
-                  placeholder="Buscar películas, series y perfiles del ámbito audiovisual"
+                  placeholder="Buscar películas, series y perfiles..."
                   @keydown.enter.exact.prevent="handleSendAction"
                   @input="adjustTextareaHeight"
                   ref="chatInput"
@@ -298,7 +298,7 @@
       <div v-if="spoilerModalOpen" class="spoiler-modal">
         <div class="spoiler-content">
           <h3>Spoiler Detectado</h3>
-          <p>La respuesta puede contener spoilers sobre tramas, finales o otros elementos narrativos.</p>
+          <p>La respuesta puede contener spoilers sobre tramas, finales u otros elementos narrativos.</p>
           <div class="spoiler-actions">
             <button @click="showSpoilerContent" class="spoiler-button accept">Puedo con la verdad</button>
             <button @click="cancelSpoilerContent" class="spoiler-button cancel">Cancelar</button>
@@ -308,7 +308,7 @@
 
       <div v-if="confirmDeleteModalOpen" class="spoiler-modal delete-modal">
         <div class="spoiler-content">
-          <h3>Eliminar Conversación</h3>
+            <h3>Eliminar Conversación</h3>
           <p style="font-size: 16px; color: #ccc; margin-bottom: 25px;">{{deleteConfirmationText}}</p>
           <div class="spoiler-actions">
             <button @click="confirmDelete" class="spoiler-button accept" style="background: #ff5252; color: white; border: none;">Eliminar</button>
@@ -319,7 +319,7 @@
       
       <transition name="slide-down">
         <div v-if="showCopyNotification" class="copy-notification">
-          <span style="font-size: 16px;">¡Copiado!</span>
+          <span style="font-size: 16px;">Copiado!</span>
         </div>
       </transition>
     </div>
@@ -333,7 +333,6 @@
     <AuthModal ref="authModal" />
   </div>
 </template>
-
 <script>
 import axios from 'axios';
 import DOMPurify from 'dompurify';
@@ -359,22 +358,16 @@ export default {
       inputWidth: 0,
       chatId: null,
       sessionKey: 'entercinema_chat_session',
-      tmdbApiKey: process.env.API_KEY,
+      tmdbApiKey: null,
       baseUrl: typeof window !== 'undefined'
-               ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://es.entercinema.com')
-               : 'https://es.entercinema.com',
-      apiUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-        ? 'https://entercinema-assistant-rust.vercel.app/api/gemini' 
-        : 'https://entercinema-assistant-rust.vercel.app/api/gemini',
-      watchlistAnalysisUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-        ? 'https://entercinema-assistant-rust.vercel.app/api/watchlist-analysis' 
-        : 'https://entercinema-assistant-rust.vercel.app/api/watchlist-analysis',
-      titleGenerationUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-        ? 'https://entercinema-assistant-rust.vercel.app/api/gemini' 
-        : 'https://entercinema-assistant-rust.vercel.app/api/gemini',
+               ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://entercinema.com')
+               : 'https://entercinema.com',
+      apiUrl: '',
+      watchlistAnalysisUrl: '',
+      titleGenerationUrl: '',
       predefinedApiUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
               ? 'http://localhost:8000/api' 
-              : 'https://entercinema-predefined-es.vercel.app/api',
+              : 'https://entercinema-predefined.vercel.app/api',
       currentDailyPrompt: '',
       dailyPrompts: [
         "¿Cuáles fueron las contribuciones más innovadoras de Stanley Kubrick a la cinematografía?",
@@ -408,7 +401,6 @@ export default {
       titleGenerationInterval: null,
       conversationIndex: 0,
       copiedMessageIndex: null,
-      copiedMessageIndex: null,
       showCopyNotification: false,
       pendingSelectionItems: [],
       awaitingSelectionAction: false,
@@ -438,6 +430,19 @@ export default {
     }
   },
   created() {
+    if (this.$config && this.$config.public) {
+        this.tmdbApiKey = this.$config.public.apiKey;
+    } else {
+        try {
+            const config = useRuntimeConfig();
+            this.tmdbApiKey = config.public.apiKey;
+        } catch (e) {
+            console.error("Could not load runtime config", e);
+        }
+    }
+    this.apiUrl = this.$config.public.assistantBackendUrl + '/gemini';
+    this.watchlistAnalysisUrl = this.$config.public.assistantBackendUrl + '/watchlist-analysis';
+    this.titleGenerationUrl = this.$config.public.assistantBackendUrl + '/gemini';
     this.loadDailyPrompt();
   },
   async mounted() {
@@ -464,13 +469,13 @@ export default {
       this.initializeFirstConversation();
     }
     
-    this.$root.$on('chatbot-maximized', () => {
+    this.$bus.$on('chatbot-maximized', () => {
       this.chatBotMinimized = false;
     });
     
-    this.$root.$on('open-chatbot-with-selection', this.handleSelectionInit);
-    
-    this.$root.$on('open-chatbot-with-analysis', async (payload) => {
+    this.$bus.$on('open-chatbot-with-selection', this.handleSelectionInit);
+
+    this.$bus.$on('open-chatbot-with-analysis', async (payload) => {
       console.log('[ChatbotModal] Received open-chatbot-with-analysis event', payload);
       
       try {
@@ -523,7 +528,6 @@ export default {
       }
     });
   },
-
   beforeDestroy() {
     window.removeEventListener('resize', this.checkMobileDevice);
     if (this.dotAnimationInterval) {
@@ -539,9 +543,10 @@ export default {
       this.abortController = null;
     }
     this.clearMinimizedState();
-    this.$root.$off('chatbot-maximized');
-    this.$root.$off('open-chatbot-with-selection', this.handleSelectionInit);
-    this.$root.$off('open-chatbot-with-analysis');
+    this.$bus.$off('rated-items-updated', this.checkData);
+    this.$bus.$off('chatbot-maximized');
+    this.$bus.$off('open-chatbot-with-analysis');
+    this.$bus.$off('open-chatbot-with-selection', this.handleSelectionInit);
   },
   methods: {
     handleExampleClick(text) {
@@ -549,7 +554,7 @@ export default {
       this.handleSendAction();
     },
     handleImageError(event) {
-      const fallbackUrl = 'https://raw.githubusercontent.com/imprvhub/entercinema/es/static/image_not_found_yet_es.webp';
+      const fallbackUrl = '/image_not_found_yet_es.webp';
       if (event.target.src !== fallbackUrl) {
         event.target.src = fallbackUrl;
       }
@@ -569,7 +574,7 @@ export default {
 
       this.chatMessages.push({
         role: 'system',
-        content: `Has seleccionado ${movieCount} película${movieCount !== 1 ? 's' : ''} y ${tvCount} serie${tvCount !== 1 ? 's' : ''}. ¿Cómo te gustaría que la IA las analice?`
+        content: `You've selected ${movieCount} movie${movieCount !== 1 ? 's' : ''} and ${tvCount} TV show${tvCount !== 1 ? 's' : ''}. How would you like the AI to analyze them?`
       });
       
       this.$nextTick(() => {
@@ -604,7 +609,7 @@ export default {
 
       const movieCount = this.pendingSelectionItems.filter(i => i.media_type === 'movie').length;
       const tvCount = this.pendingSelectionItems.filter(i => i.media_type === 'tv').length;
-      
+
       const displayQuery = customQuery 
         ? customQuery 
         : `Analiza mi lista de seguimiento: ${movieCount} películas, ${tvCount} series.`;
@@ -737,6 +742,7 @@ export default {
 
     async loadConversationsFromBackend() {
       const userEmail = this.getUserEmail();
+
       try {
         const url = `${this.apiUrl}?user_email=${encodeURIComponent(userEmail)}&show_archived=${this.showArchived}`;
         const response = await fetch(url, {
@@ -751,6 +757,7 @@ export default {
         }
 
         const data = await response.json();
+
         this.conversations = data.conversations.map(conv => ({
           id: conv.chat_id,
           title: conv.title,
@@ -818,280 +825,7 @@ export default {
         return { messages: [], mediaReferences: [] };
       }
     },
-
-    async fetchMediaDetailsFromBackendReferences(references) {
-      if (!references || references.length === 0) return;
-      
-      const uniqueRefs = references.filter((ref, index, self) =>
-        index === self.findIndex((t) => {
-          if (t.tmdb_id && ref.tmdb_id) {
-            return t.tmdb_id === ref.tmdb_id && t.media_type === ref.media_type;
-          }
-          return t.name === ref.name && t.media_type === ref.media_type;
-        })
-      );
-      
-      const promises = [];
-      const seenIds = new Set();
-      const priorityTypes = { 'movie': 1, 'tv': 2, 'person': 3 };
-
-      const enrichWithIMDb = async (item, mediaType) => {
-        if (mediaType === 'person') return;
-        
-        const imdbId = item.external_ids?.imdb_id || item.imdb_id;
-        if (imdbId) {
-          try {
-            const ratingData = await this.getIMDbRatingFromDB(imdbId);
-            if (ratingData && ratingData.found) {
-              item.imdb_rating = ratingData.rating;
-              item.rating_source = 'imdb';
-            } else {
-              item.rating_source = 'tmdb';
-            }
-          } catch (error) {
-            item.rating_source = 'tmdb';
-          }
-        } else {
-          item.rating_source = 'tmdb';
-        }
-      };
-      
-      for (const ref of uniqueRefs) {
-        if (ref.tmdb_id) {
-          let mediaType = ref.media_type;
-          if (mediaType === 'tv_show' || mediaType === 'series') mediaType = 'tv';
-          else if (mediaType === 'actor' || mediaType === 'director') mediaType = 'person';
-
-          let url = '';
-          if (mediaType === 'movie') {
-            url = `https://api.themoviedb.org/3/movie/${ref.tmdb_id}?api_key=${this.tmdbApiKey}&language=es-ES&append_to_response=external_ids`;
-          } else if (mediaType === 'tv') {
-            url = `https://api.themoviedb.org/3/tv/${ref.tmdb_id}?api_key=${this.tmdbApiKey}&language=es-ES&append_to_response=external_ids`;
-          } else if (mediaType === 'person') {
-            url = `https://api.themoviedb.org/3/person/${ref.tmdb_id}?api_key=${this.tmdbApiKey}&language=es-ES`;
-          }
-
-          if (url) {
-            promises.push(
-              axios.get(url)
-                .then(async response => {
-                  const item = response.data;
-                  const uniqueId = `${mediaType}-${item.id}`;
-
-                  if (!seenIds.has(uniqueId)) {
-                    seenIds.add(uniqueId);
-                    
-                    const formattedItem = {
-                      ...item,
-                      id: item.id,
-                      media_type: mediaType,
-                      url: mediaType === 'movie' ? `/movie/${item.id}` : (mediaType === 'tv' ? `/tv/${item.id}` : `/person/${item.id}`),
-                      title: mediaType === 'movie' ? item.title : undefined,
-                      name: mediaType !== 'movie' ? item.name : undefined,
-                      poster_path: item.poster_path || (mediaType === 'person' ? item.profile_path : undefined),
-                      profile_path: mediaType === 'person' ? item.profile_path : undefined,
-                      release_date: item.release_date,
-                      first_air_date: item.first_air_date,
-                      vote_average: item.vote_average || 0,
-                      known_for_department: item.known_for_department,
-                      priority: priorityTypes[mediaType] || 99,
-                      popularity: item.popularity || 0,
-                      originalName: ref.name,
-                      external_ids: item.external_ids
-                    };
-                    
-                    await enrichWithIMDb(formattedItem, mediaType);
-                    return formattedItem;
-                  }
-                  return null;
-                })
-                .catch(error => {
-                  console.error(`Error fetching specific media for ${ref.name} (ID: ${ref.tmdb_id}):`, error);
-                  return null;
-                })
-            );
-          }
-        } 
-        else {
-          const query = encodeURIComponent(ref.name);
-          let searchUrl = `https://api.themoviedb.org/3/search/multi?api_key=${this.tmdbApiKey}&language=es-ES&query=${query}&page=1`;
-          
-          promises.push(
-            axios.get(searchUrl)
-              .then(async response => {
-                const results = response.data.results;
-                if (results && results.length > 0) {
-                  let bestMatch = results.find(r => r.media_type === ref.media_type);
-                  
-                  if (!bestMatch) {
-                     if (ref.media_type === 'movie') bestMatch = results.find(r => r.media_type === 'movie');
-                     else if (ref.media_type === 'tv') bestMatch = results.find(r => r.media_type === 'tv');
-                     else if (ref.media_type === 'person') bestMatch = results.find(r => r.media_type === 'person');
-                  }
-                  
-                  if (!bestMatch) bestMatch = results[0];
-
-                  if (bestMatch) {
-                    const mediaType = bestMatch.media_type;
-                    const uniqueId = `${mediaType}-${bestMatch.id}`;
-                    
-                    if (!seenIds.has(uniqueId)) {
-                      seenIds.add(uniqueId);
-                      
-                      let detailsUrl = '';
-                      if (mediaType === 'movie') detailsUrl = `https://api.themoviedb.org/3/movie/${bestMatch.id}?api_key=${this.tmdbApiKey}&language=es-ES&append_to_response=external_ids`;
-                      else if (mediaType === 'tv') detailsUrl = `https://api.themoviedb.org/3/tv/${bestMatch.id}?api_key=${this.tmdbApiKey}&language=es-ES&append_to_response=external_ids`;
-                      else if (mediaType === 'person') detailsUrl = `https://api.themoviedb.org/3/person/${bestMatch.id}?api_key=${this.tmdbApiKey}&language=es-ES`;
-
-                      if (detailsUrl) {
-                        try {
-                          const detailsRes = await axios.get(detailsUrl);
-                          const item = detailsRes.data;
-                          
-                          const formattedItem = {
-                            ...item,
-                            id: item.id,
-                            media_type: mediaType,
-                            url: mediaType === 'movie' ? `/movie/${item.id}` : (mediaType === 'tv' ? `/tv/${item.id}` : `/person/${item.id}`),
-                            title: mediaType === 'movie' ? item.title : undefined,
-                            name: mediaType !== 'movie' ? item.name : undefined,
-                            poster_path: item.poster_path || (mediaType === 'person' ? item.profile_path : undefined),
-                            profile_path: mediaType === 'person' ? item.profile_path : undefined,
-                            release_date: item.release_date,
-                            first_air_date: item.first_air_date,
-                            vote_average: item.vote_average || 0,
-                            known_for_department: item.known_for_department,
-                            priority: priorityTypes[mediaType] || 99,
-                            popularity: item.popularity || 0,
-                            originalName: ref.name,
-                            external_ids: item.external_ids
-                          };
-                          
-                          await enrichWithIMDb(formattedItem, mediaType);
-                          return formattedItem;
-                        } catch (e) {
-                          console.error('Error fetching details for search result:', e);
-                          return null;
-                        }
-                      }
-                    }
-                  }
-                }
-                return null;
-              })
-              .catch(error => {
-                console.error(`Error searching for ${ref.name}:`, error);
-                return null;
-              })
-          );
-        }
-      }
-      
-      const results = await Promise.all(promises);
-      this.chatBotResults = results.filter(item => item !== null);
-    },
     
-    toggleSelectionMode() {
-      this.selectionMode = !this.selectionMode;
-      this.selectedConversations = [];
-    },
-
-    toggleArchiveView() {
-      this.showArchived = !this.showArchived;
-      this.selectionMode = false;
-      this.selectedConversations = [];
-      this.loadConversationsFromBackend();
-    },
-
-    handleConversationClick(conv) {
-      if (this.selectionMode) {
-        this.toggleSelectConversation(conv.id);
-      } else {
-        this.switchConversation(conv.id);
-      }
-    },
-
-    toggleSelectConversation(id) {
-      const index = this.selectedConversations.indexOf(id);
-      if (index === -1) {
-        this.selectedConversations.push(id);
-      } else {
-        this.selectedConversations.splice(index, 1);
-      }
-    },
-
-    async archiveSelectedConversations() {
-      if (this.selectedConversations.length === 0) return;
-      
-      const userEmail = this.getUserEmail();
-      const endpoint = this.showArchived 
-          ? 'https://entercinema-assistant-rust.vercel.app/api/unarchive-conversations'
-          : 'https://entercinema-assistant-rust.vercel.app/api/archive-conversations';
-
-      try {
-        await axios.post(endpoint, {
-          chat_ids: this.selectedConversations,
-          user_email: userEmail
-        });
-        
-        await this.loadConversationsFromBackend();
-        this.selectionMode = false;
-        this.selectedConversations = [];
-        
-        if (!this.conversations.find(c => c.id === this.activeConversationId)) {
-            if (this.conversations.length > 0) {
-               this.switchConversation(this.conversations[0].id);
-            } else {
-               this.createNewConversation();
-            }
-        }
-      } catch (e) {
-        console.error("Failed to archive/unarchive", e);
-      }
-    },
-
-    async deleteSelectedConversations() {
-        if (this.selectedConversations.length === 0) return;
-        this.deleteConfirmationText = 'Las conversaciones seleccionadas se eliminarán permanentemente.';
-        this.confirmDeleteModalOpen = true;
-    },
-
-    closeDeleteModal() {
-        this.confirmDeleteModalOpen = false;
-    },
-
-    async confirmDelete() {
-        const userEmail = this.getUserEmail();
-        const ids = this.selectedConversations; 
-        
-        try {
-            await axios.post('https://entercinema-assistant-rust.vercel.app/api/delete-conversations', {
-                chat_ids: ids,
-                user_email: userEmail
-            });
-            
-            this.conversations = this.conversations.filter(c => !ids.includes(c.id));
-            
-            if (this.activeConversationId && ids.includes(this.activeConversationId)) {
-                if (this.conversations.length > 0) {
-                    this.switchConversation(this.conversations[0].id);
-                } else {
-                    this.createNewConversation();
-                }
-            }
-            
-            this.selectionMode = false;
-            this.selectedConversations = [];
-            
-            this.loadConversationsFromBackend();
-
-        } catch (e) {
-            console.error("Failed to delete", e);
-        } finally {
-            this.closeDeleteModal();
-        }
-    },
-
     createNewConversation() {
       const newId = Date.now().toString();
       this.conversationIndex++;
@@ -1133,6 +867,7 @@ export default {
       if (this.isMobileDevice && this.sidebarOpen) {
         this.sidebarOpen = false;
       }
+
       if (conversationId !== this.activeConversationId) {
         const previousConv = this.conversations.find(conv => conv.id === this.activeConversationId);
         if (previousConv) {
@@ -1259,37 +994,121 @@ export default {
       const diffHours = Math.floor(diffMs / 3600000);
       const diffDays = Math.floor(diffMs / 86400000);
 
-      if (diffMins < 1) return 'Ahora';
+      if (diffMins < 1) return 'Just now';
       if (diffMins < 60) return `${diffMins}m`;
       if (diffHours < 24) return `${diffHours}h`;
       if (diffDays < 7) return `${diffDays}d`;
       return date.toLocaleDateString();
     },
 
+    toggleSelectionMode() {
+      this.selectionMode = !this.selectionMode;
+      this.selectedConversations = [];
+    },
+
+    toggleArchiveView() {
+      this.showArchived = !this.showArchived;
+      this.selectionMode = false;
+      this.selectedConversations = [];
+      this.loadConversationsFromBackend();
+    },
+
+    handleConversationClick(conv) {
+      if (this.selectionMode) {
+        this.toggleSelectConversation(conv.id);
+      } else {
+        this.switchConversation(conv.id);
+      }
+    },
+
+    toggleSelectConversation(id) {
+      const index = this.selectedConversations.indexOf(id);
+      if (index === -1) {
+        this.selectedConversations.push(id);
+      } else {
+        this.selectedConversations.splice(index, 1);
+      }
+    },
+
+    async archiveSelectedConversations() {
+      if (this.selectedConversations.length === 0) return;
+      
+      const userEmail = this.getUserEmail();
+      const endpoint = this.showArchived 
+          ? 'https://entercinema-assistant-rust.vercel.app/api/unarchive-conversations'
+          : 'https://entercinema-assistant-rust.vercel.app/api/archive-conversations';
+
+      try {
+        await axios.post(endpoint, {
+          chat_ids: this.selectedConversations,
+          user_email: userEmail
+        });
+        
+        await this.loadConversationsFromBackend();
+        this.selectionMode = false;
+        this.selectedConversations = [];
+        
+        if (!this.conversations.find(c => c.id === this.activeConversationId)) {
+            if (this.conversations.length > 0) {
+               this.switchConversation(this.conversations[0].id);
+            } else {
+               this.createNewConversation();
+            }
+        }
+      } catch (e) {
+        console.error("Failed to archive/unarchive", e);
+      }
+    },
+
+    async deleteSelectedConversations() {
+        if (this.selectedConversations.length === 0) return;
+        this.deleteConfirmationText = 'The selected conversations will be permanently deleted.';
+        this.confirmDeleteModalOpen = true;
+    },
+
+    closeDeleteModal() {
+        this.confirmDeleteModalOpen = false;
+    },
+
+    async confirmDelete() {
+        const userEmail = this.getUserEmail();
+        const ids = this.selectedConversations;
+        
+        try {
+            await axios.post('https://entercinema-assistant-rust.vercel.app/api/delete-conversations', {
+                chat_ids: ids,
+                user_email: userEmail
+            });
+            
+            this.conversations = this.conversations.filter(c => !ids.includes(c.id));
+            
+            if (this.activeConversationId && ids.includes(this.activeConversationId)) {
+                if (this.conversations.length > 0) {
+                    this.switchConversation(this.conversations[0].id);
+                } else {
+                    this.createNewConversation();
+                }
+            }
+            
+            this.selectionMode = false;
+            this.selectedConversations = [];
+            
+            this.loadConversationsFromBackend();
+
+        } catch (e) {
+            console.error("Failed to delete", e);
+        } finally {
+            this.closeDeleteModal();
+        }
+    },
+
     startTitleGenerationInterval() {
     },
 
     async generateConversationTitles() {
-      
     },
 
-    detectLanguage(text) {
-      const spanishWords = ['el', 'la', 'de', 'que', 'y', 'en', 'un', 'es', 'se', 'no', 'te', 'lo', 'le', 'da', 'su', 'por', 'son', 'con', 'para', 'al', 'del', 'los', 'las', 'una', 'como', 'pero', 'sus', 'han', 'había', 'película', 'serie', 'actor', 'actriz', 'director', 'cine'];
-      const englishWords = ['the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'i', 'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at', 'this', 'but', 'his', 'by', 'from', 'movie', 'film', 'series', 'actor', 'actress', 'director', 'cinema'];
-      
-      const words = text.toLowerCase().split(/\s+/);
-      let spanishCount = 0;
-      let englishCount = 0;
-      
-      words.forEach(word => {
-        if (spanishWords.includes(word)) spanishCount++;
-        if (englishWords.includes(word)) englishCount++;
-      });
-      
-      return spanishCount > englishCount ? 'es' : 'en';
-    },
-
-    async generateTitleWithAI(conversationText, language) {
+    async generateTitleWithAI(conversationText) {
       try {
         const response = await fetch(this.titleGenerationUrl, {
           method: 'POST',
@@ -1313,7 +1132,7 @@ export default {
             console.error('Title generation failed:', response.status, response.statusText);
         }
       } catch (error) {
-        console.warn('Error calling title generation API:', error);
+        console.error('Error calling title generation API:', error);
       }
 
       const firstAssistantMessage = conversationText.split('\n').find(line => line.startsWith('assistant:'));
@@ -1411,7 +1230,7 @@ export default {
         });
         return;
       }
-
+      
       this.$nextTick(() => {
          if (this.$refs.chatInput) this.$refs.chatInput.focus();
       });
@@ -1629,7 +1448,8 @@ export default {
         this.scrollToBottom();
       });
 
-      try {const userEmail = this.getUserEmail();
+      try {
+        const userEmail = this.getUserEmail();
         const response = await fetch(this.apiUrl, {
           method: 'POST',
           headers: {
@@ -2317,14 +2137,10 @@ export default {
                             mainObjectResponse.data.results.sort((a, b) => {
                                 const titleA = mediaType === 'movie' ? (a.title || "").toLowerCase() : (a.name || "").toLowerCase();
                                 const titleB = mediaType === 'movie' ? (b.title || "").toLowerCase() : (b.name || "").toLowerCase();
-                                
-                                const originalA = mediaType === 'movie' ? (a.original_title || "").toLowerCase() : (a.original_name || "").toLowerCase();
-                                const originalB = mediaType === 'movie' ? (b.original_title || "").toLowerCase() : (b.original_name || "").toLowerCase();
-
                                 const queryName = effectiveMainObject.name.toLowerCase();
                                 
-                                const exactA = (titleA === queryName || originalA === queryName);
-                                const exactB = (titleB === queryName || originalB === queryName);
+                                const exactA = titleA === queryName;
+                                const exactB = titleB === queryName;
                                 
                                 if (exactA && !exactB) return -1;
                                 if (!exactA && exactB) return 1;
@@ -2434,7 +2250,7 @@ export default {
                         axios.get(detailsUrl, {
                             params: {
                                 api_key: this.tmdbApiKey,
-                                language: 'en-US',
+                                language: 'es-ES',
                                 append_to_response: 'external_ids'
                             },
                             timeout: 8000
@@ -2475,6 +2291,7 @@ export default {
                     );
                     continue;
                 }
+
                 let searchUrl = '';
                 let mediaType = ref.type.toLowerCase();
                 
@@ -2516,14 +2333,10 @@ export default {
                           const sortedResults = response.data.results.sort((a, b) => {
                                 const titleA = mediaType === 'movie' ? (a.title || "").toLowerCase() : (a.name || "").toLowerCase();
                                 const titleB = mediaType === 'movie' ? (b.title || "").toLowerCase() : (b.name || "").toLowerCase();
-
-                                const originalA = mediaType === 'movie' ? (a.original_title || "").toLowerCase() : (a.original_name || "").toLowerCase();
-                                const originalB = mediaType === 'movie' ? (b.original_title || "").toLowerCase() : (b.original_name || "").toLowerCase();
-
                                 const queryName = ref.name.toLowerCase();
                                 
-                                const exactA = (titleA === queryName || originalA === queryName);
-                                const exactB = (titleB === queryName || originalB === queryName);
+                                const exactA = titleA === queryName;
+                                const exactB = titleB === queryName;
                                 
                                 if (exactA && !exactB) return -1;
                                 if (!exactA && exactB) return 1;
@@ -2694,14 +2507,14 @@ export default {
                     let mediaId = mediaItem.id;
                   
                     const creditsPromise = this.verifyMediaPersonRelationship(mediaType, mediaId, limitedPersonResults, this.tmdbApiKey)
-                      .then(isRelated => {
-                          if (isRelated) {
-                              verifiedMediaResults.push(mediaItem);
-                          }
-                      })
-                      .catch(error => {
-                          verifiedMediaResults.push(mediaItem);
-                      });
+                    .then(isRelated => {
+                        if (isRelated) {
+                            verifiedMediaResults.push(mediaItem);
+                        }
+                    })
+                    .catch(error => {
+                        verifiedMediaResults.push(mediaItem);
+                    });
                     
                     verifiedMediaPromises.push(creditsPromise);
                 }
@@ -2723,7 +2536,6 @@ export default {
                     
                     return b.popularity - a.popularity;
                 }).slice(0, 20);
-
                 this.chatBotResults = sortedResults;
                 this.chatBotResults = sortedResults;
                 const activeConv = this.conversations.find(conv => conv.id === this.activeConversationId);
@@ -2907,7 +2719,6 @@ export default {
     }
   }
 </script>
-
 <style scoped>
 /* =========================================
    1. MODAL & LAYOUT

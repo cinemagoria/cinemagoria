@@ -2,7 +2,7 @@
   <div :class="$style.modalOverlay" @click.self="$emit('close')">
     <div :class="$style.modalContent">
       <div :class="$style.modalHeader">
-        <h2>Cómo funciona</h2>
+        <h2>Cómo Funciona</h2>
         <button @click="$emit('close')" :class="$style.closeButton">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="18" y1="6" x2="6" y2="18"/>
@@ -13,7 +13,7 @@
 
       <div :class="$style.modalBody">
         <div :class="$style.intro">
-        <h3>Recibe notificaciones personalizadas</h3>
+         <h3>Recibe notificaciones personalizadas</h3>
         <p>
           Seguimiento de intérpretes, equipos creativos y series de TV, con notificaciones automáticas sobre nuevos proyectos y episodios. Actualizaciones cada 6 horas.
         </p>
@@ -24,14 +24,14 @@
             <h4>Seguir a personas</h4>
             <p>Navega al perfil de cualquier actor, director, guionista o creador y haz clic en el botón "Seguir" para comenzar a recibir notificaciones. Se te notificará al instante sobre su trabajo reciente de los últimos 30 días, además de todos los próximos proyectos programados para estrenarse en los próximos 5 años. Nuestro sistema de notificaciones realiza comprobaciones automáticas cada 6 horas para asegurarse de que nunca te pierdas ningún lanzamiento.</p>
             <div :class="$style.guideImage">
-              <img src="~/static/add-person.png" alt="Guía para seguir a una persona">
+              <img src="/add-person.png" alt="Guía para seguir a una persona">
             </div>
           </div>
 
            <div :class="$style.guideCard">
             <p>Recibe alertas en tiempo real cada vez que alguien a quien sigues estrene una nueva película o proyecto.</p>
             <div :class="$style.guideImage">
-              <img src="~/static/push-person.png" alt="Push notifications for people guide">
+              <img src="/push-person.png" alt="Push notifications for people guide">
             </div>
           </div>
 
@@ -40,7 +40,7 @@
             <h4>Seguir series de TV</h4>
             <p>Accede a la ficha técnica de cualquier serie de TV y haz clic en el botón "Seguir episodios" para suscribirte a las notificaciones de episodios. Recibirás alertas oportunas de los episodios que se emitan dentro de un período de 7 días antes y después de su fecha de estreno programada. Esta función es ideal para mantenerse al día con las series en emisión sin perderse nuevos episodios. El sistema realiza actualizaciones automáticas cada 6 horas para mantener tus notificaciones al día.</p>
             <div :class="$style.guideImage">
-              <img src="~/static/add-tv-show.png" alt="Guía para seguir una serie de TV">
+              <img src="/add-tv-show.png" alt="Guía para seguir una serie de TV">
             </div>
           </div>
         </div>
@@ -48,7 +48,7 @@
           <div :class="$style.guideCard">
             <p>Obtén alertas cuando se estrenen nuevos episodios o temporadas de tus series seguidas. Mantente al día con los calendarios de emisión y no te pierdas ninguna novedad de tus programas favoritos.</p>
             <div :class="$style.guideImage">
-              <img src="~/static/push-tv-show.png" alt="Push notifications for TV shows guide">
+              <img src="/push-tv-show.png" alt="Push notifications for TV shows guide">
             </div>
           </div>
 
@@ -79,7 +79,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1001;
+  z-index: 1000;
   padding: 2rem;
 }
 

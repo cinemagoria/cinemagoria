@@ -7,14 +7,14 @@
         <QuickFav v-if="media !== 'production' && media !== 'person'" :item="item" />
         <img
           v-if="poster"
-          v-lazyload="poster"
-          class="lazyload"
+          :src="poster"
+          loading="lazy"
           :class="{ 'card__img--logo': media === 'production' }"
           :alt="name">
 
         <img
           v-else
-          src="https://raw.githubusercontent.com/imprvhub/entercinema/es/static/image_not_found_yet_es.webp"
+          src="/image_not_found_yet_es.webp"
           alt="Imagen no encontrada"
           class="card__img--poster"
           style="width: 100%; height: 100%; object-fit: cover;">
@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { apiImgUrl } from '~/api';
+import { apiImgUrl } from '~/utils/api';
 import { name, stars } from '~/mixins/Details';
 import QuickFav from '~/components/global/QuickFav';
 
@@ -72,6 +72,7 @@ export default {
   computed: {
     poster () {
       if (this.item.poster_path) {
+        // console.log('Card poster:', `${apiImgUrl}/w500${this.item.poster_path}`);
         return `${apiImgUrl}/w500${this.item.poster_path}`;
       } else if (this.item.profile_path) {
         return `${apiImgUrl}/w500${this.item.profile_path}`;
@@ -99,6 +100,15 @@ export default {
 .card__img {
   position: relative;
 }
+.card__img img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .card__img--logo {
   object-fit: contain !important;
   padding: 20px;

@@ -3,9 +3,9 @@
     <UserNav @show-rated-modal="showRatedItems" />
     
     <div class="header-container">
-      <h1 class="title-primary" style="text-align: center; margin-bottom: 0.5rem;">Series de TV</h1>
+      <h1 class="title-primary" style="text-align: center; margin-bottom: 0.5rem;">Series</h1>
       <p class="title-secondary" style="text-align: center; margin-bottom: 2rem;">
-        Encuentra tu próxima serie favorita, los últimos episodios y más.
+        Encuentra tu próxima serie favorita, últimos episodios y más.
       </p>
 
       <div class="switcher-container">
@@ -13,14 +13,14 @@
           <input type="checkbox" :checked="true" @change="navigateToMovies">
           <span class="slider"></span>
           <span class="label-text">Películas</span>
-          <span class="label-text">Series de TV</span>
+          <span class="label-text">Series</span>
         </label>
       </div>
     </div>
     <br>
 
     <CustomListingCategoriesSeries
-      :title="'Explorar por Categorías'"
+      :title="'Explorar por Categoría'"
       :view-all-url="null"/>
 
     <div v-if="followedTvShows && followedTvShows.results && followedTvShows.results.length > 0" class="followed-section">
@@ -56,111 +56,94 @@
   </main>
 </template>
 
-<script>
-import UserNav from '@/components/global/UserNav';
-import { getTvShows, getListItem, getFollowedProductionCompanies, getTvShowsByCompanies } from '~/api';
-import ListingCarousel from '~/components/ListingCarousel';
-import CustomListingCategoriesSeries from '~/components/CustomListingCategoriesSeries';
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import UserNav from '@/components/global/UserNav.vue';
+import { getTvShows, getListItem, getFollowedProductionCompanies, getTvShowsByCompanies } from '~/utils/api';
+import ListingCarousel from '~/components/ListingCarousel.vue';
+import CustomListingCategoriesSeries from '~/components/CustomListingCategoriesSeries.vue';
 
-export default {
-  components: {
-    UserNav,
-    ListingCarousel,
-    CustomListingCategoriesSeries,
-  },
+const router = useRouter();
+const route = useRoute();
 
-  head () {
-    return {
-      title: 'EnterCinema - Series de TV',
-      meta: [
-        { hid: 'og:title', property: 'og:title', content: 'Series de TV' },
-        { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
-      ],
-    };
-  },
+useHead({
+  title: 'EnterCinema - TV Shows',
+  meta: [
+    { property: 'og:title', content: 'TV Shows' },
+    { property: 'og:url', content: `https://entercinema.com${route.path}` },
+  ],
+});
 
-  data() {
-    return {
-      followedTvShows: null,
-    };
-  },
+// Data
+const followedTvShows = ref(null);
+const ratedItemsModalVisible = ref(false);
 
-  methods: {
-    navigateToMovies() {
-      this.$router.push({ name: 'movie' });
-    },
-    showRatedItems() {
-      this.ratedItemsModalVisible = true;
-    },
-    async fetchFollowedContent() {
-      if (typeof window === 'undefined') return;
-      
-      const userEmail = localStorage.getItem('email');
-      if (!userEmail) return;
-
-      try {
-        const followedCompanies = await getFollowedProductionCompanies(userEmail);
-        if (followedCompanies && followedCompanies.length > 0) {
-          const companyIds = followedCompanies.map(c => c.company_id).join('|');
-          this.followedTvShows = await getTvShowsByCompanies(companyIds);
-        }
-      } catch (error) {
-        console.error('Error fetching followed TV shows:', error);
-      }
-    }
-  },
-
-  mounted() {
-    this.fetchFollowedContent();
-  },
-
-  computed: {
-    popularTitle () {
-      return getListItem('tv', 'popular').title;
-    },
-
-    popularUrl () {
-      return { name: 'tv-category-name', params: { name: 'popular' } };
-    },
-
-    topRatedTitle () {
-      return getListItem('tv', 'top_rated').title;
-    },
-
-    topRatedUrl () {
-      return { name: 'tv-category-name', params: { name: 'top_rated' } };
-    },
-
-    onAirTitle () {
-      return getListItem('tv', 'on_the_air').title;
-    },
-
-    onAirUrl () {
-      return { name: 'tv-category-name', params: { name: 'on_the_air' } };
-    },
-
-    airingTodayTitle () {
-      return getListItem('tv', 'airing_today').title;
-    },
-
-    airingTodayUrl () {
-      return { name: 'tv-category-name', params: { name: 'airing_today' } };
-    },
-  },
-
-  async asyncData ({ error }) {
+// Async Data Fetching
+const { data: tvData } = await useAsyncData('tv-home', async () => {
     try {
-      const popular = await getTvShows('popular');
-      const topRated = await getTvShows('top_rated');
-      const onAir = await getTvShows('on_the_air');
-      const airingToday = await getTvShows('airing_today');
-
-      return { popular, topRated, onAir, airingToday };
-    } catch {
-      error({ statusCode: 504, message: 'Datos no disponibles' });
+        const [popular, topRated, onAir, airingToday] = await Promise.all([
+             getTvShows('popular'),
+             getTvShows('top_rated'),
+             getTvShows('on_the_air'),
+             getTvShows('airing_today')
+        ]);
+        return { popular, topRated, onAir, airingToday };
+    } catch (e) {
+        console.error(e);
+        return { popular: null, topRated: null, onAir: null, airingToday: null };
     }
-  },
+});
+
+const popular = computed(() => tvData.value?.popular);
+const topRated = computed(() => tvData.value?.topRated);
+const onAir = computed(() => tvData.value?.onAir);
+const airingToday = computed(() => tvData.value?.airingToday);
+
+
+// Computed Props for Titles/URLs
+const popularTitle = computed(() => getListItem('tv', 'popular').title);
+const popularUrl = computed(() => ({ name: 'tv-category-name', params: { name: 'popular' } }));
+
+const topRatedTitle = computed(() => getListItem('tv', 'top_rated').title);
+const topRatedUrl = computed(() => ({ name: 'tv-category-name', params: { name: 'top_rated' } }));
+
+const onAirTitle = computed(() => getListItem('tv', 'on_the_air').title);
+const onAirUrl = computed(() => ({ name: 'tv-category-name', params: { name: 'on_the_air' } }));
+
+const airingTodayTitle = computed(() => getListItem('tv', 'airing_today').title);
+const airingTodayUrl = computed(() => ({ name: 'tv-category-name', params: { name: 'airing_today' } }));
+
+
+// Methods
+const navigateToMovies = () => {
+  router.push({ name: 'movie' });
 };
+
+const showRatedItems = () => {
+  ratedItemsModalVisible.value = true;
+};
+
+const fetchFollowedContent = async () => {
+  if (typeof window === 'undefined') return;
+  
+  const userEmail = localStorage.getItem('email');
+  if (!userEmail) return;
+
+  try {
+    const followedCompanies = await getFollowedProductionCompanies(userEmail);
+    if (followedCompanies && followedCompanies.length > 0) {
+      const companyIds = followedCompanies.map(c => c.company_id).join('|');
+      followedTvShows.value = await getTvShowsByCompanies(companyIds);
+    }
+  } catch (error) {
+    console.error('Error fetching followed TV shows:', error);
+  }
+};
+
+onMounted(() => {
+  fetchFollowedContent();
+});
 </script>
 
 <style scoped lang="scss">

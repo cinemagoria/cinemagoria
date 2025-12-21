@@ -6,14 +6,14 @@
       <div class="credits-item__img">
         <img
           v-if="poster"
-          v-lazyload="poster"
-          class="lazyload"
+          :src="poster"
+          loading="lazy"
           :alt="person.name">
 
         <img
           v-else
-          src="https://raw.githubusercontent.com/imprvhub/entercinema/es/static/image_not_found_yet_es.webp"
-          alt="Imagen no encontrada"
+          src="/image_not_found_yet_es.webp"
+          alt="Image not found"
           style="width: 100%; height: 100%; object-fit: cover;">
       </div>
 
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { apiImgUrl } from '~/api';
+import { apiImgUrl } from '~/utils/api';
 
 export default {
   props: {
@@ -59,6 +59,7 @@ export default {
 .credits-item {
   margin-bottom: 2rem;
   line-height: $base-line-height;
+
   border-radius: 10px;
   padding-bottom: 0.5rem;
   position: relative;

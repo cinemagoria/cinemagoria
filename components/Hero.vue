@@ -11,10 +11,11 @@
             @click="openModal">
             <svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" viewBox="0 0 55 55"><circle cx="27.5" cy="27.5" r="26.75" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.97 40.81L40.64 27.5 20.97 14.19v26.62z"/></svg>
           </button>
+
           <img
             v-if="backdrop"
-            v-lazyload="backdrop"
-            class="lazyload"
+            :src="backdrop"
+            loading="lazy"
             :class="$style.image"
             :alt="name">
         </div>
@@ -47,23 +48,23 @@
                 </div>
 
                 <div v-if="item.rating_source === 'imdb' && item.imdb_rating">
-                  {{ item.imdb_rating.toFixed(1) }}/10 · {{ (item.imdb_votes || 0).toLocaleString() }} votos (vía: IMDb)
+                  {{ item.imdb_rating.toFixed(1) }}/10 · {{ (item.imdb_votes || 0).toLocaleString('es-ES') }} votos (vía: IMDb)
                 </div>
                 <div v-else-if="item.vote_average">
-                  {{ item.vote_average.toFixed(1) }}/10 · {{ (item.vote_count || 0).toLocaleString() }} reseñas (vía: TMDB)
+                  {{ item.vote_average.toFixed(1) }}/10 · {{ (item.vote_count || 0).toLocaleString('es-ES') }} reseñas (vía: TMDB)
                 </div>
               </div>
 
               <div :class="$style.info">
                 <span v-if="item.number_of_seasons">Temporada {{ item.number_of_seasons }}</span>
                 <span v-if="yearStart">{{ yearStart }}</span>
-                <span v-if="item.runtime">{{ item.runtime | runtime }}</span>
+                <span v-if="item.runtime">{{ formatRuntime(item.runtime) }}</span>
                 <span v-if="cert">Cert. {{ cert }}</span>
               </div>
             </div>
 
             <div :class="$style.desc">
-              {{ item.overview | truncate(200) }}
+              {{ truncate(item.overview, 200) }}
             </div>
             <br>
             <div :class="$style.buttonContainer">
@@ -156,13 +157,12 @@
         </transition>
       </div>
     </div>
-    
-    <!-- Share Modal -->
-    <div v-if="shareModalVisible" class="modal-overlay">
+
+       <div v-if="shareModalVisible" class="modal-overlay">
         <div class="share-modal-content">
           <div class="share-modal-header">
             <h2>Compartir</h2>
-            <button class="close-button" @click="closeShareModal" type="button" aria-label="Close">
+            <button class="close-button" @click="closeShareModal" type="button" aria-label="Cerrar">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -174,15 +174,15 @@
             <label for="share-url" class="share-label">Enlace</label>
             <div class="share-url-field">
               <input id="share-url" type="text" :value="shareUrl" readonly class="share-url-input">
-                <div class="copy-button-container">
-                  <button @click="copyToClipboard" type="button" class="copy-button" aria-label="Copy to clipboard">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                      <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
-                    </svg>
-                  </button>
-                  <span v-if="copySuccess" class="copy-success">Copiado!</span>
-                </div>
+              <div class="copy-button-container">
+                <button @click="copyToClipboard" type="button" class="copy-button" aria-label="Copiar al portapapeles">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
+                  </svg>
+                </button>
+                <span v-if="copySuccess" class="copy-success">Copiado!</span>
+              </div>
             </div>
           </div>
           
@@ -228,7 +228,6 @@
         </div>
       </div>
 
-    <!-- Rating Modal -->
     <div v-if="ratingModalVisible" class="modal-overlay">
       <div class="rating-modal">
         <div class="modal-header">
@@ -286,12 +285,13 @@
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
 <script>
-import supabase from '@/services/supabase';
 import { name, stars, yearStart, yearEnd, cert, backdrop, poster, trailer, id, genres, type, runtime } from '~/mixins/Details';
+import Filters from '~/mixins/Filters';
 import Modal from '~/components/Modal';
 
 export default {
@@ -300,6 +300,7 @@ export default {
   },
 
   mixins: [
+    Filters,
     name,
     stars,
     yearStart,
@@ -323,14 +324,11 @@ export default {
 
   data() {
     return {
-      tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://entercinema-favorites.vercel.app/api',
       isSingle: this.item.id === this.$route.params.id,
       copySuccess: false,
       ratingModalVisible: false,
-      shareModalVisible: false,
       isFavorite: false,
       hasAccessToken: false,
-      userEmail: '',
       userRatingForDb: '-',
       hasUserRating: false,
       selectedRating: 0,
@@ -360,12 +358,17 @@ export default {
       typeForDb: null,
       addedAt: null,
 
+      shareModalVisible: false,
+      shareTitle: '',
       customTitle: '',
-      customMessage: '',
+      customMessage: this.item.overview,
     };
   },
 
   computed: {
+    tursoBackendUrl() {
+      return this.$config.public.tursoBackendUrl;
+    },
     type() {
       return this.item.title ? 'movie' : 'tv';
     },
@@ -374,35 +377,31 @@ export default {
     },
     shareUrl() {
       return `${window.location.origin}/${this.favId}`;
-    }
+    },
   },
 
   async mounted() {
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');
-    const authProvider = localStorage.getItem('auth_provider') || 'native';
-    
     this.userEmail = email || '';
     this.hasAccessToken = accessToken !== null;
     this.isLoggedIn = accessToken !== null;
-    this.authProvider = authProvider;
-    
     if (this.hasAccessToken) {
-      await this.checkIfFavorite();
-      await this.checkUserRating();
+      this.checkIfFavorite();
+      this.checkUserRating();
     }
-    
     this.posterForDb = this.poster_path;
     this.nameForDb = this.name;
     this.starsForDb = this.stars;
     this.yearStartForDb = this.yearStart;
-    this.yearEndForDb = this.yearEnd;
+    this.yearEndForDb  = this.yearEnd;
     this.idForDb = this.id;
-    this.genresForDb = this.item.genres && this.item.genres.length ? this.item.genres.map(genre => genre.name).join(', ') : '';
+    this.genresForDb = this.item.genres.map(genre => genre.name).join(', ');
     this.typeForDb = this.type;
     this.addedAt = new Date();
-    this.customTitle = `¡Quisiera compartirte '${this.nameForDb}' desde EnterCinema!`;
-    this.customMessage = `Sinopsis: ${this.item.overview || ''}\n\nExplora opciones de streaming, trailer, ficha técnica y mucho más aquí: `;
+    this.shareTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde EnterCinema!";
+    this.customTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde EnterCinema!";
+    this.customMessage = 'Sinopsis: ' + this.item.overview + '\n\nExplora opciones de streaming, trailer, ficha técnica y mucho más aquí: ';
   },
 
   methods: {
@@ -412,23 +411,20 @@ export default {
         window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
       }
     },
-
     openShareModal() {
       this.shareModalVisible = true;
     },
-    
     closeShareModal() {
       this.shareModalVisible = false;
     },
-
+    
     openRatingModal() {
       this.ratingModalVisible = true;
-      this.selectedRating = this.hasUserRating ? parseInt(this.userRatingForDb) : 0;
     },
     
     closeRatingModal() {
       this.ratingModalVisible = false;
-      this.resetPreview();
+      this.activeTab = 'rating';
     },
     
     setRating(rating) {
@@ -446,8 +442,14 @@ export default {
     showRatingDetails() {
       if (this.hasUserRating) {
         this.selectedRating = parseInt(this.userRatingForDb);
+        this.ratingModalVisible = true;
+        if (this.userReview) {
+          this.activeTab = 'review';
+        }
+      } else {
+        this.ratingModalVisible = true;
+        this.activeTab = 'rating';
       }
-      this.openRatingModal();
     },
     
     async saveRatingAndReview() {
@@ -455,16 +457,20 @@ export default {
         alert('Por favor, selecciona una valoración entre 1 y 10');
         return;
       }
+
+      if (!this.userReview.trim()) {
+        this.userReview = this.ratingDescriptions[this.selectedRating - 1];
+      }
       
       try {
         await this.updateUserRatingAndReview(this.selectedRating, this.userReview);
         this.closeRatingModal();
       } catch (error) {
-        console.error('Error guardando la valoración y la reseña:', error);
+        console.error('Error saving rating and review:', error);
         alert('Hubo un error al guardar tu valoración y reseña. Por favor, inténtalo de nuevo.');
       }
     },
-
+    
     async removeRating() {
       try {
         const response = await fetch(
@@ -491,10 +497,10 @@ export default {
         this.userReview = '';
 
         this.closeRatingModal();
-        this.$root.$emit('rated-items-updated');
+        this.$bus.$emit('rated-items-updated');
       } catch (error) {
         console.error('Error removing rating:', error);
-        alert('There was an error removing your rating. Please try again.');
+        alert('Hubo un error al eliminar tu valoración. Por favor intenta de nuevo.');
       }
     },
         
@@ -533,7 +539,7 @@ export default {
     
     async updateUserRating(rating) {
       if (!this.userEmail) {
-        alert('Please login to rate.');
+        alert('Por favor inicia sesión para valorar.');
         return;
       }
       
@@ -568,10 +574,10 @@ export default {
     },
     
     async updateUserRatingAndReview(rating, review) {
-      if (!this.userEmail) {
-        alert('Please login to rate and review.');
-        return;
-      }
+       if (!this.userEmail) {
+         alert('Por favor inicia sesión para valorar y reseñar.');
+         return;
+       }
 
       try {
         if (!this.isFavorite) {
@@ -732,18 +738,39 @@ export default {
       }
     },
 
+
     removeFavorite(favoritesJson, favId) {
       const updatedFavorites = { ...favoritesJson };
-      const favoriteType = this.type === 'movie' ? 'movies' : 'tv';
-      
-      if (updatedFavorites[favoriteType]) {
-        updatedFavorites[favoriteType] = updatedFavorites[favoriteType].filter(item => {
-          const itemKey = Object.keys(item)[0];
-          return itemKey !== favId;
-        });
+      for (const key in updatedFavorites) {
+        if (Array.isArray(updatedFavorites[key])) {
+          updatedFavorites[key] = updatedFavorites[key].filter(item => {
+            if (typeof item === 'object') {
+              return Object.keys(item)[0] !== favId;
+            } else {
+              return item !== favId;
+            }
+          });
+        }
       }
-      
       return updatedFavorites;
+    },
+
+    addFavorite(favoritesJson, favId) {
+      const { type, id } = this.parseFavId(favId);
+      const category = type === 'movie' ? 'movies' : 'tv';
+
+      if (!favoritesJson[category]) {
+        favoritesJson[category] = [];
+      }
+
+      const fullId = `${type}/${id}`;
+      if (!favoritesJson[category].includes(fullId)) {
+        favoritesJson[category].push(fullId);
+
+        this.updateFavoritesData(favoritesJson, fullId);
+      }
+
+      return favoritesJson;
     },
 
     updateFavoritesData(favoritesJson, fullId) {
@@ -795,52 +822,10 @@ export default {
       }
     },
 
-   addFavorite(favoritesJson, favId) {
-      const updatedFavorites = { ...favoritesJson };
-      const favoriteType = this.type === 'movie' ? 'movies' : 'tv';
-
-      if (!updatedFavorites[favoriteType]) {
-        updatedFavorites[favoriteType] = [];
-      }
-      
-      const existingIndex = updatedFavorites[favoriteType].findIndex(item => {
-        const itemKey = Object.keys(item)[0];
-        return itemKey === favId;
-      });
-      
-      if (existingIndex !== -1) {
-        updatedFavorites[favoriteType].splice(existingIndex, 1);
-      }
-      
-      const favoriteData = {
-        [favId]: {
-          details: {
-            nameForDb: this.nameForDb,
-            starsForDb: this.starsForDb,
-            yearStartForDb: this.yearStartForDb,
-            yearEndForDb: this.yearEndForDb,
-            posterForDb: this.posterForDb,
-            idForDb: this.id,
-            genresForDb: this.genresForDb,
-            typeForDb: this.typeForDb,
-            userRatingForDb: this.userRatingForDb || '-',
-            addedAt: new Date().toISOString(),
-            external_ids: this.item.external_ids,
-            rating_source: this.item.rating_source || 'tmdb',
-            imdb_rating: this.item.imdb_rating,
-            imdb_votes: this.item.imdb_votes
-          }
-        }
-      };
-      
-      updatedFavorites[favoriteType].push(favoriteData);
-
-      return updatedFavorites;
-    },
     parseFavId(favId) {
       const [type, id] = favId.split('/');
       return { type, id };
-    }
+    },
   }
 };
 </script>
@@ -953,12 +938,12 @@ export default {
   margin-top: 3rem;
   width: 100%;
   
-  @media (max-width: $breakpoint-small - 1) {
+  @media (max-width: #{$breakpoint-small - 1px}) {
     justify-content: center;
     margin-top: 1.5rem;
   }
   
-  @media (min-width: $breakpoint-small) and (max-width: $breakpoint-medium - 1) {
+  @media (min-width: $breakpoint-small) and (max-width: #{$breakpoint-medium - 1px}) {
     justify-content: flex-start;
   }
   
@@ -1040,7 +1025,7 @@ export default {
     }
   }
   
-  @media (max-width: $breakpoint-small - 1) {
+  @media (max-width: #{$breakpoint-small - 1px}) {
     flex: 0 1 auto;
     max-width: 45%;
     height: 36px;
@@ -1049,7 +1034,7 @@ export default {
     padding: 0 1rem;
   }
   
-  @media (min-width: $breakpoint-small) and (max-width: $breakpoint-medium - 1) {
+  @media (min-width: $breakpoint-small) and (max-width: #{$breakpoint-medium - 1px}) {
     height: 38px;
     line-height: 38px;
     font-size: 1.4rem;
@@ -1074,13 +1059,13 @@ export default {
   justify-content: center;
   padding: 0;
   
-  @media (max-width: $breakpoint-small - 1) {
+  @media (max-width: #{$breakpoint-small - 1px}) {
     width: 36px;
     height: 36px;
     min-width: 36px;
   }
   
-  @media (min-width: $breakpoint-small) and (max-width: $breakpoint-medium - 1) {
+  @media (min-width: $breakpoint-small) and (max-width: #{$breakpoint-medium - 1px}) {
     width: 38px;
     height: 38px;
     min-width: 38px;
@@ -1099,7 +1084,7 @@ export default {
   max-width: none;
   height: 100%;
 
-  @media (max-width: $breakpoint-medium - 1) {
+  @media (max-width: #{$breakpoint-medium - 1px}) {
     width: 100%;
     object-fit: cover;
   }
@@ -1178,7 +1163,7 @@ export default {
   width: 8.5rem;
   height: 1.4rem;
   margin-right: 1rem;
-  background-image: url('~assets/images/stars.png');
+  background-image: url('@/assets/images/stars.png');
   background-repeat: no-repeat;
   background-size: auto 100%;
 
@@ -1189,7 +1174,7 @@ export default {
 
   > div {
     height: 100%;
-    background-image: url('~assets/images/stars-filled.png');
+    background-image: url('@/assets/images/stars-filled.png');
     background-repeat: no-repeat;
     background-size: auto 100%;
   }
@@ -1210,7 +1195,7 @@ export default {
   font-size: 1.5rem;
   color: #fff;
 
-  @media (max-width: $breakpoint-small - 1) {
+  @media (max-width: #{$breakpoint-small - 1px}) {
     display: none;
   }
 
@@ -1322,18 +1307,11 @@ export default {
   outline: none;
   height: 100%;
 }
-@media screen and (max-width: 480px) {
-  .copy-success {
-    right: auto;
-    top: -30px;
-  }
-}
 
 .copy-button-container {
   position: relative;
   display: flex;
   align-items: center;
-  bottom: 2px;
 }
 
 .copy-button {
@@ -1351,7 +1329,6 @@ export default {
   min-height: 100%;
   background: rgba(0, 0, 0, 0.2);
   position: relative;
-  top: -8px;
 }
 
 .copy-success {
@@ -1379,9 +1356,7 @@ export default {
     top: -30px;
   }
 }
-.copy-button {
-  top: 4px;
-}
+
 .copy-button:hover {
   color: #fff;
 }

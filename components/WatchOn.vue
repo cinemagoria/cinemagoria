@@ -8,7 +8,7 @@
           :href="'https://***.to/embed/' + type + '/' + imdbId"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Watch on StreamingSourceA"
+          aria-label="Ver en StreamingSourceA"
         >
           <div class="link-icon ***-logo"></div>
           <span class="label-style">StreamingSourceA</span>
@@ -20,7 +20,7 @@
           :href="***Link"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Watch on ***"
+          aria-label="Ver en ***"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +40,7 @@
           :href="***Url"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Visit ***"
+          aria-label="Visitar ***"
         >
           <div class="link-icon ***-logo"></div>
           <span class="label-style">***</span>
@@ -57,7 +57,7 @@
           target="_blank"
           rel="noopener noreferrer"
           class="provider-content"
-          :title="`Watch on ${provider.name}`"
+          :title="`Ver en ${provider.name}`"
         >
           <img 
             v-if="provider.logo_path"
@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { get***MovieByImdb } from '~/api';
+import { get***MovieByImdb } from '~/utils/api';
 
 export default {
   name: 'WatchOn',
@@ -124,6 +124,7 @@ export default {
       if (!this.imdbId) return;
       
       this.***Url = null;
+      
       const result = await get***MovieByImdb(this.imdbId);
       if (result.found) {
         this.***Url = result.url;

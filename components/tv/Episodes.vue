@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { getTvShowEpisodes } from '~/api';
+import { getTvShowEpisodes } from '~/utils/api';
 import EpisodesItem from '~/components/tv/EpisodesItem';
 
 export default {
@@ -56,7 +56,7 @@ export default {
 
   computed: {
     episodeCount () {
-      return `${this.activeEpisodes.length} ${this.activeEpisodes.length > 1 ? 'Episodes' : 'Episode'}`;
+      return `${this.activeEpisodes.length} ${this.activeEpisodes.length > 1 ? 'Episodios' : 'Episodio'}`;
     },
 
     seasons () {

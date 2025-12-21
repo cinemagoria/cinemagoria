@@ -4,7 +4,7 @@
       <div v-if="title || viewAllUrl" class="listing__head">
         <h2 class="listing__title">{{ title }}</h2>
         <nuxt-link v-if="viewAllUrl" :to="viewAllUrl" class="listing__explore">
-          <strong class="more-link">Explorar Más</strong>
+          <strong>Explorar Más</strong>
         </nuxt-link>
       </div>
   
@@ -72,19 +72,19 @@
     data() {
       return {
         categories: [
-        { image: "/thumbnails/talkshow-tv-esp.webp", link: "/genre/10767/tv", alt: "Programas de TV" },
-        { image: "/thumbnails/comedy-tv-esp.webp", link: "/genre/35/tv", alt: "Comedia" },
-        { image: "/thumbnails/mistery-tv-esp.webp", link: "/genre/9648/tv", alt: "Misterio" },
-        { image: "/thumbnails/sciencefiction-movie-esp.webp", link: "/genre/10765/tv", alt: "Ciencia Ficción y Fantasía" },
-        { image: "/thumbnails/crime-tv-esp.webp", link: "/genre/80/tv", alt: "Crimen" },
-        { image: "/thumbnails/documentary-tv-esp.webp", link: "/genre/99/tv", alt: "Documentales" },
-        { image: "/thumbnails/action-movie-esp.webp", link: "/genre/10759/tv", alt: "Acción y Aventuras" },
-        { image: "/thumbnails/drama-tv-esp.webp", link: "/genre/18/tv", alt: "Drama" }, 
-        { image: "/thumbnails/animation-movie-esp.webp", link: "/genre/16/tv", alt: "Animación" },
+        { image: "/thumbnails/talkshow-tv-eng.webp", link: "/genre/10767/tv", alt: "Programas de TV" },
+        { image: "/thumbnails/comedy-tv-eng.webp", link: "/genre/35/tv", alt: "Comedia" },
+        { image: "/thumbnails/mistery-tv-eng.webp", link: "/genre/9648/tv", alt: "Misterio" },
+        { image: "/thumbnails/sciencefiction-movie-eng.webp", link: "/genre/10765/tv", alt: "Ciencia Ficción y Fantasía" },
+        { image: "/thumbnails/crime-tv-eng.webp", link: "/genre/80/tv", alt: "Crimen" },
+        { image: "/thumbnails/documentary-tv-eng.webp", link: "/genre/99/tv", alt: "Documentales" },
+        { image: "/thumbnails/action-movie-eng.webp", link: "/genre/10759/tv", alt: "Acción y Aventuras" },
+        { image: "/thumbnails/drama-tv-eng.webp", link: "/genre/18/tv", alt: "Drama" }, 
+        { image: "/thumbnails/animation-movie-eng.webp", link: "/genre/16/tv", alt: "Animación" },
         ],
       };
     },
-
+  
     mounted() {
     this.calculateState(this.categories.length);
     },

@@ -3,14 +3,14 @@
     <section class="settings-section">
       <div class="settings-container">
         <div class="settings-header">
-          <h1 class="title-primary">Configuración de Cuenta</h1>
-          <p class="title-secondary">Administra tu perfil y preferencias de cuenta</p>
+          <h1 class="title-primary">Ajustes de Cuenta</h1>
+          <p class="title-secondary">Gestiona tu perfil y preferencias de cuenta</p>
         </div>
 
         <div class="settings-content">
           <div class="avatar-section">
             <div class="avatar-wrapper" @click="openAvatarModal">
-              <img :src="userAvatar" alt="Avatar del usuario" class="avatar-image">
+              <img :src="userAvatar" alt="User Avatar" class="avatar-image">
               <div class="avatar-overlay">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M12 5v14M5 12h14"/>
@@ -44,7 +44,7 @@
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                   <polyline points="22,6 12,13 2,6"/>
                 </svg>
-                <span>Email</span>
+                <span>Correo</span>
               </div>
               <div class="detail-value">{{ email }}</div>
             </div>
@@ -57,7 +57,7 @@
                   <line x1="8" y1="2" x2="8" y2="6"/>
                   <line x1="3" y1="10" x2="21" y2="10"/>
                 </svg>
-                <span>Fecha de registro</span>
+                <span>Fecha de Registro</span>
               </div>
               <div class="detail-value">{{ joinedDate }}</div>
             </div>
@@ -69,7 +69,7 @@
                   <polyline points="10 17 15 12 10 7"/>
                   <line x1="15" y1="12" x2="3" y2="12"/>
                 </svg>
-                <span>Último inicio de sesión</span>
+                <span>Último Acceso</span>
               </div>
               <div class="detail-value">{{ lastLoginDate }}</div>
             </div>
@@ -80,27 +80,26 @@
                   <circle cx="12" cy="12" r="10"/>
                   <polyline points="12 6 12 12 16 14"/>
                 </svg>
-                <span>Última vez activo</span>
+                <span>Última Actividad</span>
               </div>
               <div class="detail-value">{{ lastActiveDate }}</div>
             </div>
           </div>
 
           <div class="actions-container">
-            <button @click="back" class="action-button secondary">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="19" y1="12" x2="5" y2="12"/>
-                <polyline points="12 19 5 12 12 5"/>
-              </svg>
-              <span>Volver</span>
-            </button>
-            <button @click="deleteAccount" class="action-button danger">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="3 6 5 6 21 6"/>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-              </svg>
-              <span>Eliminar Cuenta</span>
-            </button>
+            <div class="danger-zone">
+              <div class="danger-header">
+                <h3>Zona de Peligro</h3>
+                <p>Las siguientes acciones son irreversibles.</p>
+              </div>
+              <button @click="deleteAccount" class="action-button danger">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+                <span>Eliminar Cuenta</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -139,7 +138,7 @@
         
         <div class="delete-modal-content">
           <div class="exclamation-svg">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"/>
               <line x1="12" x2="12" y1="8" y2="12"/>
               <line x1="12" x2="12.01" y1="16" y2="16"/>
@@ -164,23 +163,24 @@
 </template>
 
 <script>
-import supabase from '@/services/supabase';
+
 
 async function getUserAvatar(userEmail) {
   try {
+    const supabase = useSupabaseClient();
     const { data, error } = await supabase
       .from('user_data')
       .select('avatar')
       .eq('email', userEmail);
       
     if (error) {
-      throw new Error('Error al obtener el avatar del usuario:', error.message);
+      throw new Error('Error fetching user avatar:', error.message);
     }
 
     const userAvatar = data[0]?.avatar || '/avatars/avatar-ss0.png';
     return userAvatar;
   } catch (error) {
-    console.error('Error al obtener el avatar del usuario:', error);
+    console.error('Error fetching user avatar:', error);
     return '/avatars/avatar-ss0.png';
   }
 }
@@ -188,9 +188,9 @@ async function getUserAvatar(userEmail) {
 export default {
   head () {
     return {
-      title: 'EnterCinema - Configuración de cuenta.',
+      title: 'EnterCinema - Account Settings.',
       meta: [
-        { hid: 'og:title', property: 'og:title', content: 'Configuración de cuenta' },
+        { hid: 'og:title', property: 'og:title', content: 'Account Settings' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
       ],
     };
@@ -236,6 +236,9 @@ export default {
       ]
     }
   },
+  setup() {
+    return { supabase: useSupabaseClient() }
+  },
   computed: {
     firstName() {
       return this.userData ? this.userData.first_name : '';
@@ -251,9 +254,7 @@ export default {
     }
   },
   methods: {
-    back() {
-      this.$router.go(-1);
-    },
+
 
     openAvatarModal() {
       this.isModalOpen = true;
@@ -281,38 +282,40 @@ export default {
 
     async confirmDelete() {
       try {
-        const { data: existingRequests, error: requestError } = await supabase
+        const { data: existingRequests, error: requestError } = await this.supabase
           .from('requests')
           .select('*')
           .eq('email', this.userEmail)
           .eq('is_executed', 'false');
 
         if (requestError) {
-          throw new Error('Error al buscar solicitudes existentes:', requestError.message);
+          throw new Error('Error fetching existing requests:', requestError.message);
         }
 
-        const { data, error } = await supabase
+        const { data, error } = await this.supabase
           .from('requests')
           .insert([
             { email: this.userEmail, action: 'delete account', is_executed: 'false' }
           ]);
 
         if (error) {
-          throw new Error('Error al crear la solicitud de eliminación de cuenta:', error.message);
+          throw new Error('Error creating account deletion request:', error.message);
         }
 
         this.isDeleteModalOpen = false;
         this.showConfirmationMessage();
       } catch (error) {
-        console.error('Error al confirmar eliminación de cuenta:', error);
+        console.error('Error confirming account deletion:', error);
       }
     },
 
     showConfirmationMessage() {
-      const locOrigin = window.location.origin;
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('email');
-      window.location.href = `${locOrigin}/login`; 
+      if (process.client) {
+        const locOrigin = window.location.origin;
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('email');
+        window.location.href = `${locOrigin}/login`; 
+      }
     },
 
     async selectAvatar(avatar) {
@@ -321,43 +324,43 @@ export default {
         await this.updateUserAvatar(avatar);
         this.closeAvatarModal();
       } catch (error) {
-        console.error('Error al seleccionar el avatar:', error);
+        console.error('Error selecting avatar:', error);
       }
     },
 
     async updateUserAvatar(avatar) {
       try {
         if (!this.userEmail) {
-          throw new Error('El email del usuario no está definido.');
+          throw new Error('User email is not defined.');
         }
-        const { error } = await supabase
+        const { error } = await this.supabase
           .from('user_data')
           .update({ avatar })
           .eq('email', this.userEmail);
         if (error) {
-          throw new Error('Error al actualizar el avatar del usuario:', error.message);
+          throw new Error('Error updating user avatar:', error.message);
         }
       } catch (error) {
-        console.error('Error al actualizar el avatar del usuario:', error);
+        console.error('Error updating user avatar:', error);
       }
     },
 
     async fetchUserDb() {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await this.supabase
           .from('auth_user')
           .select('*')
           .eq('email', this.userEmail);
         
         if (error) {
-          throw new Error('Error al conectar con la base de datos: ' + error.message);
+          throw new Error('Error connecting to the database: ' + error.message);
         }
         
         this.userData = data[0];
         this.userAvatar = await getUserAvatar(this.userEmail);
         this.createOrUpdateUserData();
       } catch (error) {
-        console.error('Error al conectar con la base de datos:', error);
+        console.error('Error connecting to the database:', error);
       }
     },
 
@@ -373,28 +376,28 @@ export default {
           last_active: formattedLastActive
         };
 
-        const { data: existingUserData, error } = await supabase
+        const { data: existingUserData, error } = await this.supabase
           .from('user_data')
           .select('*')
           .eq('email', this.userEmail);
 
         if (error) {
-          throw new Error('Error al verificar la existencia de datos de usuario:', error);
+          throw new Error('Error checking for existing user data:', error);
         }
 
         if (existingUserData && existingUserData.length > 0) {
-          await supabase
+          await this.supabase
             .from('user_data')
             .update(userDataToUpdate)
             .eq('email', this.userEmail);
         } else {
-          await supabase
+          await this.supabase
             .from('user_data')
             .insert([userDataToUpdate]); 
         }
         this.lastActiveDate = formattedLastActive;
       } catch (error) {
-        console.error('Error al crear o actualizar datos de usuario:', error);
+        console.error('Error creating or updating user data:', error);
       }
     },
 
@@ -411,13 +414,15 @@ export default {
   },
   mounted() {
     try {
-      const email = localStorage.getItem('email');
-      const accessToken = localStorage.getItem('access_token');
-      this.userEmail = email || '';
-      this.isLoggedIn = accessToken !== null;
-      this.fetchUserDb();
+      if (process.client) {
+        const email = localStorage.getItem('email');
+        const accessToken = localStorage.getItem('access_token');
+        this.userEmail = email || '';
+        this.isLoggedIn = accessToken !== null;
+        this.fetchUserDb();
+      }
     } catch (error) {
-      console.error('Error en el montaje:', error);
+      console.error('Error on mount:', error);
     }
   }
 }
@@ -619,6 +624,32 @@ export default {
   background: #FF6B6B;
   color: #fff;
   transform: translateY(-2px);
+}
+
+.danger-zone {
+  width: 100%;
+  border: 1px solid rgba(255, 107, 107, 0.4);
+  border-radius: 12px;
+  padding: 2rem;
+  background: rgba(255, 107, 107, 0.05);
+}
+
+.danger-header {
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.danger-header h3 {
+  color: #FF6B6B;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.danger-header p {
+  color: rgba(255, 107, 107, 0.8);
+  font-size: 1.3rem;
+  margin: 0;
 }
 
 .modal-overlay {

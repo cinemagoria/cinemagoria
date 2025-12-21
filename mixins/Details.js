@@ -1,4 +1,4 @@
-import { apiImgUrl } from '~/api';
+import { apiImgUrl } from '~/utils/api';
 
 export const id = {
   computed: {
@@ -6,7 +6,6 @@ export const id = {
       return this.item.id;
     }
   }
-
 }
 
 export const type = {
@@ -47,7 +46,6 @@ export const stars = {
     },
   },
 };
-
 
 
 

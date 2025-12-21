@@ -4,13 +4,13 @@
       <div :class="$style.poster">
         <img
           v-if="avatar"
-          v-lazyload="avatar"
-          class="lazyload"
+          :src="avatar"
+          loading="lazy"
           :alt="person.name">
 
         <img
           v-else
-          src="https://raw.githubusercontent.com/imprvhub/entercinema/es/static/image_not_found_yet_es.webp"
+          src="/image_not_found_yet_es.webp"
           alt="Imagen no encontrada"
           style="width: 100%; height: 100%; object-fit: cover;">
       </div>
@@ -26,7 +26,6 @@
 
         <div v-if="person.biography">
           <img v-if="avatar" :src="avatar" :alt="person.name">
-
           <div v-html="formatContent(person.biography)" />
         </div>
       </div>
@@ -37,7 +36,6 @@
             <div :class="$style.label">
               Profesión
             </div>
-
             <div :class="$style.value">
               {{ person.known_for_department }}
             </div>
@@ -46,35 +44,31 @@
             <div :class="$style.label">
               Fecha de Nacimiento
             </div>
-
             <div :class="$style.value">
-              {{ person.birthday | fullDate }}
-              <span v-if="!person.deathday">({{ age }} años)</span>
+              {{ fullDate(person.birthday) }}
+              <span v-if="!person.deathday">(edad {{ age }})</span>
             </div>
           </li>
           <li v-if="person.place_of_birth">
             <div :class="$style.label">
               Lugar de Nacimiento
             </div>
-
             <div :class="$style.value">
               {{ person.place_of_birth }}
             </div>
           </li>
           <li v-if="person.deathday">
             <div :class="$style.label">
-              Fallecido
+              Fecha de Fallecimiento
             </div>
-
             <div :class="$style.value">
-              {{ person.deathday | fullDate }}
-              <span v-if="person.birthday">({{ age }} años)</span>
+              {{ fullDate(person.deathday) }}
+              <span v-if="person.birthday">(a los {{ age }} años)</span>
             </div>
           </li>
         </ul>
-
         <div v-if="isLoggedIn" :class="$style.followSection">
-            <h4 style="margin-top:2rem; font-size: 16px; font-weight:800; text-transform: uppercase;" class="section-title">Notificaciones</h4>
+                <h4 style="margin-top:2rem; font-size: 16px; font-weight:800; text-transform: uppercase;" class="section-title">Notificaciones</h4>
             <button 
                 v-if="hasAccessToken && isActorOrDirector"
                 @click="toggleFollow" 
@@ -90,9 +84,10 @@
                   <polyline v-if="isFollowing" points="16 11 18 13 22 9"/>
                 </svg>
                 {{ isFollowing ? 'Siguiendo' : 'Seguir' }}
-              </button>
+             </button>
         </div>
       </div>
+
       <div :class="$style.external">
         <ExternalLinks
           media="person"
@@ -103,7 +98,7 @@
 </template>
 
 <script>
-import { apiImgUrl } from '~/api';
+import { apiImgUrl } from '~/utils/api';
 import ExternalLinks from '~/components/ExternalLinks';
 
 export default {
@@ -118,12 +113,14 @@ export default {
       followsApiUrl: 'https://entercinema-follows-rust.vercel.app'
     };
   },
-
   computed: {
     isLoggedIn() {
-      return localStorage.getItem('access_token') !== null;
+      if (typeof window !== 'undefined' && window.localStorage) {
+         return localStorage.getItem('access_token') !== null;
+      }
+      return false;
     },
-    avatar () {
+    avatar() {
       if (this.person.profile_path) {
         return `${apiImgUrl}/w500${this.person.profile_path}`;
       } else {
@@ -142,12 +139,11 @@ export default {
       return dept === 'Acting' || dept === 'Directing' || dept === 'Writing';
     },
   },
-  created () {
+  created() {
     if (this.person.homepage) {
       this.person.external_ids.homepage = this.person.homepage;
     }
   },
-
   mounted() {
     this.userEmail = localStorage.getItem('email');
     this.hasAccessToken = localStorage.getItem('access_token') !== null;
@@ -155,8 +151,15 @@ export default {
       this.checkIfFollowing();
     }
   },
-
   methods: {
+    fullDate(date) {
+      if (!date) return 'N/A';
+      return new Date(date).toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    },
     formatContent(string) {
       return string.split('\n').filter(section => section !== '').map(section => `<p>${section}</p>`).join('');
     },
@@ -228,26 +231,21 @@ export default {
   }
 }
 
-.right {
-  padding-top: 1rem;
-}
-
 .left {
   display: none;
-
   @media (min-width: $breakpoint-medium) {
     display: block;
     width: 25%;
     max-width: 400px;
     padding-right: 3rem;
   }
-
   @media (min-width: $breakpoint-large) {
     padding-right: 5rem;
   }
 }
 
 .right {
+  padding-top: 1rem;
   @media (min-width: $breakpoint-medium) {
     flex: 1;
   }
@@ -256,20 +254,17 @@ export default {
 .poster {
   position: relative;
   height: 0;
+  border-radius: 10px;
   padding-top: 150.27%;
   overflow: hidden;
-  border-radius: 10px;
   background-color: $secondary-color;
-
-  img,
-  span {
+  img, span {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
   }
-
   span {
     display: flex;
     align-items: center;
@@ -283,18 +278,15 @@ export default {
   overflow: hidden;
   font-size: 1.5rem;
   color: $text-color;
-
   @media (min-width: $breakpoint-large) {
     font-size: 1.6rem;
   }
-
   img {
     float: left;
     width: 40%;
     max-width: 200px;
     border-radius: 10px;
     margin: 0 1.5rem 0 0;
-
     @media (min-width: $breakpoint-medium) {
       display: none;
     }
@@ -318,11 +310,10 @@ export default {
 }
 
 .title {
-  margin-top: 10px;
   font-size: 1.8rem;
+  margin-top: 10px;
   color: #fff;
   letter-spacing: $letter-spacing;
-
   @media (min-width: $breakpoint-large) {
     font-size: 2.4rem;
   }
@@ -332,31 +323,25 @@ export default {
   margin-bottom: 3rem;
   font-size: 1.5rem;
   color: $text-color;
-
   @media (min-width: $breakpoint-large) {
     font-size: 1.6rem;
   }
-
   ul {
     @media (min-width: $breakpoint-medium) {
       display: flex;
       flex-wrap: wrap;
     }
   }
-
   li {
     display: flex;
     padding: 0.2rem 0;
-
     @media (min-width: $breakpoint-medium) {
       width: 50%;
     }
-
     @media (min-width: $breakpoint-xlarge) {
       width: 100%;
     }
   }
-
   a {
     color: #8AE8FC;
     text-decoration: none;
@@ -368,7 +353,6 @@ export default {
   max-width: 90px;
   margin-right: 1.5rem;
   color: #fff;
-
   @media (min-width: $breakpoint-xsmall) {
     max-width: 110px;
   }
@@ -383,18 +367,15 @@ export default {
     display: flex;
     margin-left: -0.5rem;
   }
-
   a {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 4.4rem;
     height: 4.4rem;
-
     svg {
       transition: all 0.3s ease-in-out;
     }
-
     &:hover,
     &:focus {
       svg {

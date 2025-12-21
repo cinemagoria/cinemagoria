@@ -1,10 +1,10 @@
-  <template>
-    <main class="main">
+<template>
+  <main class="main">
     <UserNav />
     <nav class="navbar navbar-welcome">
-      <h1 class="title-primary" style="color: #8BE9FD !important; margin-top:30px; margin-bottom:10px; display:flex; justify-content: center;;">Contacto</h1>
+      <h1 class="title-primary" style="color: #8BE9FD !important; margin-top:30px; margin-bottom:10px; display:flex; justify-content: center;;">Contactar Soporte</h1>
       <h2 class="title-secondary" style="color: rgb(172, 175, 181); font-size: 14px; max-width: 600px; margin: 20px auto 0;">
-        Complete el siguiente formulario para ponerse en contacto. Se responderá a la brevedad posible.
+        Por favor completa el formulario a continuación para ponerte en contacto. Se proporcionará una respuesta lo antes posible.
       </h2>
     </nav>
 
@@ -30,7 +30,7 @@
               id="email" 
               v-model="form.email" 
               required 
-              placeholder="correo@ejemplo.com"
+              placeholder="nombre@ejemplo.com"
               class="form-input"
             />
           </div>
@@ -42,7 +42,7 @@
               id="subject" 
               v-model="form.subject" 
               required 
-              placeholder="Asunto del mensaje"
+              placeholder="Tema de consulta"
               class="form-input"
             />
           </div>
@@ -53,7 +53,7 @@
               id="message" 
               v-model="form.message" 
               required 
-              placeholder="Escriba su mensaje aquí..." 
+              placeholder="Por favor describe tu consulta..." 
               rows="6"
               class="form-input form-textarea"
             ></textarea>
@@ -89,9 +89,9 @@ import UserNav from '@/components/global/UserNav';
 export default {
   head() {
     return {
-      title: 'EnterCinema - Contacto',
+      title: 'EnterCinema - Contactar Soporte',
       meta: [
-        { hid: 'og:title', property: 'og:title', content: 'Contacto' },
+        { hid: 'og:title', property: 'og:title', content: 'Contactar Soporte' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
       ],
     };
@@ -137,7 +137,7 @@ export default {
         }
       } catch (error) {
         console.error('Contact error:', error);
-        this.errorMessage = 'Ocurrió un error. Por favor, intente nuevamente más tarde.';
+        this.errorMessage = 'Ocurrió un error. Por favor intente más tarde.';
       } finally {
         this.loading = false;
       }
@@ -210,7 +210,7 @@ export default {
 
 .form-textarea {
   resize: vertical;
-  min-height: 120px;
+  min-height: 120px; 
 }
 
 .button-container {
@@ -229,14 +229,14 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: transparent;
-  border: 1px solid #8BE9FD;
+  background-color: transparent; 
+  border: 1px solid #8BE9FD; 
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(139, 233, 253, 0.1);
   transition: all 0.3s ease;
   
   .txt {
-    color: #8BE9FD !important;
+    color: #8BE9FD !important; 
     text-transform: uppercase;
   }
 
@@ -264,7 +264,7 @@ export default {
   font-size: 14px;
   font-weight: 500;
   margin-top: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 10px; 
   animation: fadeIn 0.5s ease-out;
 
   &.success {
@@ -283,8 +283,8 @@ export default {
 .spinner {
   width: 24px;
   height: 24px;
-  border: 3px solid rgba(139, 233, 253, 0.1);
-  border-top-color: #8BE9FD;
+  border: 3px solid rgba(139, 233, 253, 0.1); 
+  border-top-color: #8BE9FD; 
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }

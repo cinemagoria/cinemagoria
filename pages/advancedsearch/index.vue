@@ -1,30 +1,30 @@
 <template>
   <main class="main" style="top:-50px; position: relative;">
-    <UserNav @show-rated-modal="showRatedItems" />
-    <nav class="navbar navbar-welcome">
+      <UserNav @show-rated-modal="showRatedItems" />
+      <nav class="navbar navbar-welcome">
         <h1 class="title-primary" style="position: relative; color: #7FDBF1 !important; top: 23px;">Búsqueda Avanzada</h1>
         <h2 class="title-secondary" style="color: rgb(172, 175, 181); font-size: 14px; margin-top: 40px; position: relative; text-transform: none; left: -2px; top: -6px;">
-        Refina tus criterios de búsqueda para obtener resultados más precisos.
+        Refina tus criterios de búsqueda para resultados más precisos.
       </h2>
-    </nav>
-      
+      </nav>
+
     <div class="adv-search-section">
       <div class="search-container">
         <div class="search-filters">
           <div class="filter-item">
-            <label for="searchType">Tipo de búsqueda</label>
+            <label for="searchType">Tipo</label>
             <div class="custom-select">
               <select v-model="selectedSearchType" id="searchType" @change="updateGenres">
-                <option value="">Elija una opción</option>
+                <option value="">Selecciona uno</option>
                 <option value="movie">Película</option>
-                <option value="tv">Serie de TV</option>
+                <option value="tv">Serie</option>
               </select>
               <div class="select-arrow"></div>
             </div>
           </div>
 
           <div class="filter-item">
-            <label for="searchGenre">Elige Género</label>
+            <label for="searchGenre">Género</label>
             <div class="custom-select">
               <select v-model="selectedSearchGenre" id="searchGenre">
                 <option value="">Opcional</option>
@@ -46,11 +46,11 @@
             <div class="custom-select">
               <select v-model="selectedSortBy" id="sortBy">
                 <option value="popularity.desc">Más Popular</option>
-                <option value="vote_average.desc">Más Valorado</option>
-                <option value="primary_release_date.desc">Últimos Lanzamientos</option>
-                <option value="revenue.desc">Más Ingresos</option>
-                <option value="imdb-high">Mejores valoraciones (IMDB)</option>
-                <option value="imdb-low">Peores valoraciones (IMDB)</option>
+                <option value="vote_average.desc">Mejor Calificado</option>
+                <option value="primary_release_date.desc">Últimos Estrenos</option>
+                <option value="revenue.desc">Mayor Recaudación</option>
+                <option value="imdb-high">Mejor Calificado (IMDb)</option>
+                <option value="imdb-low">Peor Calificado (IMDb)</option>
               </select>
               <div class="select-arrow"></div>
             </div>
@@ -66,54 +66,54 @@
                 <option value="AR">Argentina</option>
                 <option value="AT">Austria</option>
                 <option value="AU">Australia</option>
-                <option value="BE">Bélgica</option>
+                <option value="BE">Belgium</option>
                 <option value="BO">Bolivia</option>
-                <option value="BR">Brasil</option>
+                <option value="BR">Brazil</option>
                 <option value="BG">Bulgaria</option>
-                <option value="CA">Canadá</option>
+                <option value="CA">Canada</option>
                 <option value="CN">China</option>
                 <option value="CO">Colombia</option>
                 <option value="CR">Costa Rica</option>
-                <option value="HR">Croacia</option>
-                <option value="CZ">República Checa</option>
-                <option value="DK">Dinamarca</option>
+                <option value="HR">Croatia</option>
+                <option value="CZ">Czech Republic</option>
+                <option value="DK">Denmark</option>
                 <option value="EC">Ecuador</option>
-                <option value="EG">Egipto</option>
-                <option value="FI">Finlandia</option>
-                <option value="FR">Francia</option>
-                <option value="DE">Alemania</option>
-                <option value="GR">Grecia</option>
+                <option value="EG">Egypt</option>
+                <option value="FI">Finland</option>
+                <option value="FR">France</option>
+                <option value="DE">Germany</option>
+                <option value="GR">Greece</option>
                 <option value="HK">Hong Kong</option>
-                <option value="HU">Hungría</option>
+                <option value="HU">Hungary</option>
                 <option value="IN">India</option>
-                <option value="IR">Irán</option>
+                <option value="IR">Iran</option>
                 <option value="IQ">Iraq</option>
-                <option value="IE">Irlanda</option>
+                <option value="IE">Ireland</option>
                 <option value="IL">Israel</option>
-                <option value="IT">Italia</option>
+                <option value="IT">Italy</option>
                 <option value="JM">Jamaica</option>
-                <option value="JP">Japón</option>
-                <option value="KR">Corea del Sur</option>
-                <option value="MX">México</option>
-                <option value="MA">Marruecos</option>
-                <option value="NL">Países Bajos</option>
-                <option value="NZ">Nueva Zelanda</option>
+                <option value="JP">Japan</option>
+                <option value="KR">South Korea</option>
+                <option value="MX">Mexico</option>
+                <option value="MA">Morocco</option>
+                <option value="NL">Netherlands</option>
+                <option value="NZ">New Zealand</option>
                 <option value="NG">Nigeria</option>
-                <option value="NO">Noruega</option>
-                <option value="PL">Polonia</option>
+                <option value="NO">Norway</option>
+                <option value="PL">Poland</option>
                 <option value="PT">Portugal</option>
-                <option value="RO">Rumania</option>
-                <option value="RU">Rusia</option>
-                <option value="ZA">Sudáfrica</option>
-                <option value="ES">España</option>
-                <option value="SE">Suecia</option>
-                <option value="CH">Suiza</option>
-                <option value="TW">Taiwán</option>
-                <option value="TH">Tailandia</option>
-                <option value="TR">Turquía</option>
-                <option value="UA">Ucrania</option>
-                <option value="GB">Reino Unido</option>
-                <option value="US">Estados Unidos</option>
+                <option value="RO">Romania</option>
+                <option value="RU">Russia</option>
+                <option value="ZA">South Africa</option>
+                <option value="ES">Spain</option>
+                <option value="SE">Sweden</option>
+                <option value="CH">Switzerland</option>
+                <option value="TW">Taiwan</option>
+                <option value="TH">Thailand</option>
+                <option value="TR">Turkey</option>
+                <option value="UA">Ukraine</option>
+                <option value="GB">United Kingdom</option>
+                <option value="US">United States</option>
                 <option value="UY">Uruguay</option>
                 <option value="VE">Venezuela</option>
                 <option value="VN">Vietnam</option>
@@ -123,7 +123,7 @@
           </div>
 
           <div v-if="selectedSearchType === 'tv'" class="filter-item">
-            <label for="watchProvider">Elegir Red</label>
+            <label for="watchProvider">Canal / Red</label>
             <div class="custom-select">
               <select v-model="selectedWatchProvider" id="watchProvider">
                 <option value="">Opcional</option>
@@ -145,7 +145,7 @@
             <div class="custom-rating-container">
               <div class="rating-container">
                 <svg style="display: none; transform: scale(1.5);">
-                  <symbol viewBox="0 0 60 60" id="shape-star"><title>Estrella</title> <g> <path d="M46.645 54.568L29.65 45.633l-16.997 8.935L15.9 35.643 2.15 22.24l19-2.76 8.5-17.22 8.497 17.22 19.002 2.76L43.4 35.643z"></path> </g> </symbol>
+                  <symbol viewBox="0 0 60 60" id="shape-star"><title>Star</title> <g> <path d="M46.645 54.568L29.65 45.633l-16.997 8.935L15.9 35.643 2.15 22.24l19-2.76 8.5-17.22 8.497 17.22 19.002 2.76L43.4 35.643z"></path> </g> </symbol>
                 </svg>
                 <div class="rating">
                   <div class="rating-stars">
@@ -211,9 +211,7 @@
         </div>
         
         <div class="button-container">
-          <button type="button" class="button button--back" @click.prevent="goBack">
-            <span class="txt">Volver</span>
-          </button>
+
           <button
             class="button button--search"
             :disabled="!selectedSearchType || loading"
@@ -229,10 +227,11 @@
         </div>
         
         <div v-if="MinRatingForLabel === 0" class="default-rating-note">
-          <span class="title-secondary" style="font-size:12px;">*Para obtener los mejores resultados, el valor de calificación mínimo predeterminado es 6/10, con un máximo de 40 resultados por búsqueda.</span>
+          <span class="title-secondary" style="font-size:12px;">*Para resultados óptimos, la calificación mínima por defecto es 6/10, con hasta 40 resultados por búsqueda.</span>
         </div>
       </div>  
       </div>
+
       <div class="column">
         <br>
 
@@ -252,7 +251,7 @@
 
         <div v-else>
           <p style="text-align: center; font-size: 13px; padding: 4rem; color: #7FDBF1;" v-if="searchPerformed && movies.length === 0 && tvShows.length === 0">
-            No hay resultados disponibles. Intente refinar los parámetros de búsqueda.
+            No se encontraron resultados para estos parámetros. Intenta refinar tu búsqueda.
           </p>
         </div>
       </div>
@@ -260,429 +259,391 @@
 </template>
 
 <script>
-import UserNav from '@/components/global/UserNav';
-import DatePicker from 'vue2-datepicker';
-import supabase from '@/services/supabase';
-import DynamicSearchCarousel from '@/components/DynamicSearchCarousel.vue';
-import 'vue2-datepicker/index.css';
-import '@/assets/css/components/_datepicker.scss';
-
-async function getUserAvatar(userEmail) {
-  try {
-    const { data, error } = await supabase
-      .from('user_data')
-      .select('avatar')
-      .eq('email', userEmail);
+  import UserNav from '@/components/global/UserNav';
+  import DynamicSearchCarousel from '@/components/DynamicSearchCarousel.vue';
+  // import '@/assets/css/components/_datepicker.scss';
+  
+  async function getUserAvatar(userEmail) {
+    try {
+      const supabase = useSupabaseClient();
+      const { data, error } = await supabase
+        .from('user_data')
+        .select('avatar')
+        .eq('email', userEmail);
+        
+      if (error) {
+        throw new Error('Error fetching user avatar:', error.message);
+      }
+  
+      const userAvatar = data[0]?.avatar || '/avatars/avatar-ss0.png';
+      return userAvatar;
       
-    if (error) {
-      throw new Error('Error fetching user avatar:', error.message);
+    } catch (error) {
+      console.error('Error fetching user avatar:', error);
+      return '/avatars/avatar-ss0.png';
     }
-
-    const userAvatar = data[0]?.avatar || '/avatars/avatar-ss0.png';
-    return userAvatar;
-    
-  } catch (error) {
-    console.error('Error fetching user avatar:', error);
-    return '/avatars/avatar-ss0.png';
   }
-}
-
-async function getUserName(userEmail) {
-  try {
-    const { data, error } = await supabase
-      .from('user_data')
-      .select('first_name')
-      .eq('email', userEmail);
+  
+  async function getUserName(userEmail) {
+    try {
+      const supabase = useSupabaseClient();
+      const { data, error } = await supabase
+        .from('user_data')
+        .select('first_name')
+        .eq('email', userEmail);
+        
+      if (error) {
+        throw new Error('Error fetching user first name:', error.message);
+      }
+  
+      const userName = data[0]?.first_name|| '';
+      return userName;
       
-    if (error) {
-      throw new Error('Error fetching user first name:', error.message);
+    } catch (error) {
+      console.error('Error fetching user first_name:', error);
     }
-
-    const userName = data[0]?.first_name|| '';
-    return userName;
-    
-  } catch (error) {
-    console.error('Error fetching user first_name:', error);
   }
-}
-
-export default {
-  head () {
+  
+  export default {
+    head () {
     return {
-      title: 'EnterCinema - Búsqueda avanzada.',
+      title: 'EnterCinema - Búsqueda Avanzada.',
       meta: [
-        { hid: 'og:title', property: 'og:title', content: 'Búsqueda avanzada' },
-        { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
+        { hid: 'og:title', property: 'og:title', content: 'Búsqueda Avanzada' },
+        { hid: 'og:url', property: 'og:url', content: `${this.$config.public.frontendUrl}${this.$route.path}` },
       ],
     };
   },
-  components: {
-    UserNav,
-    DatePicker,
-    DynamicSearchCarousel
-  },
-  data() {
-    return {
-      tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://entercinema-favorites.vercel.app/api',
-      searchPerformed: false,
-      loading: false,
-      releaseYear: '',
-      currentYear: new Date().getFullYear(), 
-      movieGenres: [
-        { id: 28, name: 'Action' },
-        { id: 12, name: 'Adventure' },
-        { id: 16, name: 'Animation' },
-        { id: 35, name: 'Comedy' },
-        { id: 80, name: 'Crime' },
-        { id: 99, name: 'Documentary' },
-        { id: 18, name: 'Drama' },
-        { id: 10751, name: 'Family' },
-        { id: 14, name: 'Fantasy' },
-        { id: 36, name: 'History' },
-        { id: 27, name: 'Horror' },
-        { id: 10402, name: 'Music' },
-        { id: 9648, name: 'Mystery' },
-        { id: 10749, name: 'Romance' },
-        { id: 878, name: 'Science Fiction' },
-        { id: 10770, name: 'TV Movie' },
-        { id: 53, name: 'Thriller' },
-        { id: 10752, name: 'War' },
-        { id: 37, name: 'Western' }
-      ],
-      tvGenres: [
-        { id: 10767, name: 'Talk Show' },
-        { id: 10765, name: 'Sci-Fi and Fantasy' },
-        { id: 10759, name: 'Action & Adventure' },
-        { id: 16, name: 'Animation' },
-        { id: 35, name: 'Comedy' },
-        { id: 99, name: 'Documentary' },
-        { id: 80, name: 'Crime' },
-        { id: 18, name: 'Drama' },
-        { id: 36, name: 'History' },
-        { id: 10402, name: 'Music' },
-        { id: 9648, name: 'Mystery' },
-        { id: 10749, name: 'Romance' },
-        { id: 37, name: 'Western' }
-      ],
-      selectedSearchGenre: '',
-      selectedSearchType: '',
-      selectedSortBy: 'popularity.desc',
-      selectedOriginCountry: '',
-      selectedWatchProvider: '',
-      ratings: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-      selectedMinRating: localStorage.getItem('selectedMinRating') || '6',
-      MinRatingForLabel: 0,
-      asterisk: '*',
-      movies: [],
-      tvShows: [],
-      searchResults: [],
-      userEmail: '',
-      accessToken: '',
-      isLoggedIn: false,
-      favorites: [],
-      moviesFetched: [],
-      tvFetched: [],
-      orderText: 'Order Asc',
-      currentPage: 1,
-      itemsPerPage: 12,
-      userFirstName: '', 
-      isMenuOpen: false,
-      filter: 'movies',
-      movieRatings: {}, 
-      tvShowRatings: {}, 
-    };
-  },
+    components: {
+      UserNav,
+      DynamicSearchCarousel
+    },
+    data() {
+      return {
+        tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://entercinema-favorites.vercel.app/api',
+        searchPerformed: false,
+        loading: false,
+        releaseYear: '',
+        currentYear: new Date().getFullYear(), 
+        movieGenres: [
+          { id: 28, name: 'Acción' },
+          { id: 12, name: 'Aventura' },
+          { id: 16, name: 'Animación' },
+          { id: 35, name: 'Comedia' },
+          { id: 80, name: 'Crimen' },
+          { id: 99, name: 'Documental' },
+          { id: 18, name: 'Drama' },
+          { id: 10751, name: 'Familia' },
+          { id: 14, name: 'Fantasía' },
+          { id: 36, name: 'Historia' },
+          { id: 27, name: 'Terror' },
+          { id: 10402, name: 'Música' },
+          { id: 9648, name: 'Misterio' },
+          { id: 10749, name: 'Romance' },
+          { id: 878, name: 'Ciencia Ficción' },
+          { id: 10770, name: 'Película de TV' },
+          { id: 53, name: 'Suspenso' },
+          { id: 10752, name: 'Bélica' },
+          { id: 37, name: 'Western' }
+        ],
+        tvGenres: [
+          { id: 10767, name: 'Talk Show' },
+          { id: 10765, name: 'Ciencia Ficción y Fantasía' },
+          { id: 10759, name: 'Acción y Aventura' },
+          { id: 16, name: 'Animación' },
+          { id: 35, name: 'Comedia' },
+          { id: 99, name: 'Documental' },
+          { id: 80, name: 'Crimen' },
+          { id: 18, name: 'Drama' },
+          { id: 36, name: 'Historia' },
+          { id: 10402, name: 'Música' },
+          { id: 9648, name: 'Misterio' },
+          { id: 10749, name: 'Romance' },
+          { id: 37, name: 'Western' }
+        ],
+        selectedSearchGenre: '',
+        selectedSearchType: '',
+        selectedSortBy: 'popularity.desc',
+        selectedOriginCountry: '',
+        selectedWatchProvider: '',
+        ratings: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        selectedMinRating: '6',
+        MinRatingForLabel: 0,
+        asterisk: '*',
+        movies: [],
+        tvShows: [],
+        searchResults: [],
+        userEmail: '',
+        accessToken: '',
+        isLoggedIn: false,
+        favorites: [],
+        moviesFetched: [],
+        tvFetched: [],
+        orderText: 'Order Asc',
+        currentPage: 1,
+        itemsPerPage: 12,
+        userFirstName: '', 
+        isMenuOpen: false,
+        filter: 'movies',
+        movieRatings: {}, 
+        tvShowRatings: {}, 
+      };
+    },
+    setup() {
+      return { supabase: useSupabaseClient() }
+    },
 
-  async mounted() {
-    localStorage.removeItem('selectedMinRating');
-    this.MinRatingForLabel = this.selectedMinRating !== '6' ? this.selectedMinRating : 0;
-    const email = localStorage.getItem('email');
-    const accessToken = localStorage.getItem('access_token');
-    this.userEmail = email || '';
-    this.hasAccessToken = accessToken !== null;
-    this.isLoggedIn = accessToken !== null;
-    this.userName = await getUserName(this.userEmail);
-    if (this.isLoggedIn) {
+    async mounted() {
+      const storedRating = localStorage.getItem('selectedMinRating');
+      if (storedRating) {
+        this.selectedMinRating = storedRating;
+      }
+      localStorage.removeItem('selectedMinRating');
+      this.MinRatingForLabel = this.selectedMinRating !== '6' ? this.selectedMinRating : 0;
+      const email = localStorage.getItem('email');
+      const accessToken = localStorage.getItem('access_token');
+      this.userEmail = email || '';
+      this.hasAccessToken = accessToken !== null;
+      this.isLoggedIn = accessToken !== null;
       this.userName = await getUserName(this.userEmail);
-    }
-  },
-
-    methods: {
-    showRatedItems() {
-      this.ratedItemsModalVisible = true;
-    },
-    hasTranslation(title) {
-      if (!title) return false;
-      
-      const nonLatinPattern = /[\u0E00-\u0E7F\u3040-\u309F\u30A0-\u30FF\u3400-\u4DBF\u4E00-\u9FFF\uAC00-\uD7AF\uF900-\uFAFF\u0900-\u097F\u0980-\u09FF\u0A00-\u0A7F\u0A80-\u0AFF\u0B00-\u0B7F\u0B80-\u0BFF\u0C00-\u0C7F\u0C80-\u0CFF\u0D00-\u0D7F\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\u0FB50-\u0FDFF\u0FE70-\u0FEFF\u1000-\u109F\u1780-\u17FF\u0E80-\u0EFF\u1800-\u18AF\u0590-\u05FF\u0400-\u04FF\u0500-\u052F\u0370-\u03FF\u1F00-\u1FFF\u0530-\u058F\u10A0-\u10FF\u1200-\u137F\u1380-\u139F\u2D80-\u2DDF\u0300-\u036F]/;
-      
-      return nonLatinPattern.test(title);
-    },
-
-    async getTranslatedTitle(id, type, originalTitle) {
-      try {
-        const apiKey = process.env.API_KEY;
-        const endpoint = type === 'movie' ? 'movie' : 'tv';
-        
-        const responseES = await fetch(`https://api.themoviedb.org/3/${endpoint}/${id}?api_key=${apiKey}&language=es-ES`);
-        const dataES = await responseES.json();
-        const spanishTitle = type === 'movie' ? dataES.title : dataES.name;
-        
-        if (spanishTitle && spanishTitle !== originalTitle) {
-          return spanishTitle;
-        }
-        
-        const responseEN = await fetch(`https://api.themoviedb.org/3/${endpoint}/${id}?api_key=${apiKey}&language=en-US`);
-        const dataEN = await responseEN.json();
-        const englishTitle = type === 'movie' ? dataEN.title : dataEN.name;
-        
-        if (englishTitle && englishTitle !== originalTitle) {
-          return englishTitle;
-        }
-        
-        return originalTitle;
-      } catch (error) {
-        console.error('Error fetching translated title:', error);
-        return originalTitle;
+      if (this.isLoggedIn) {
+        this.userName = await getUserName(this.userEmail);
       }
     },
+  
+    methods: {
+      showRatedItems() {
+        this.ratedItemsModalVisible = true;
+      },
+      updateGenres() {
+        this.selectedSearchGenre = '';
+      },
 
-    updateGenres() {
-      this.selectedSearchGenre = '';
-    },
+      getWeightedRating(item) {
+        let R = 0; 
+        let v = 0; 
 
-    getWeightedRating(item) {
-      let R = 0; 
-      let v = 0; 
-
-      if (item.rating_source === 'imdb' && item.imdb_rating) {
-        R = parseFloat(item.imdb_rating);
-        const votes = item.imdb_votes;
-        if (typeof votes === 'number') {
-          v = votes;
-        } else if (typeof votes === 'string') {
-          v = parseInt(votes.replace(/,/g, ''), 10);
+        if (item.rating_source === 'imdb' && item.imdb_rating) {
+          R = parseFloat(item.imdb_rating);
+          
+          const votes = item.imdb_votes;
+          if (typeof votes === 'number') {
+            v = votes;
+          } else if (typeof votes === 'string') {
+            v = parseInt(votes.replace(/,/g, ''), 10);
+          } else {
+            v = 0;
+          }
         } else {
+          R = parseFloat(item.vote_average);
           v = 0;
         }
-      } else {
-        R = parseFloat(item.vote_average);
-        v = 0; 
-      }
 
-      const m = 1000; 
-      const C = 7.0;  
+        const m = 1000; 
+        const C = 7.0;  
 
-      return (v / (v + m)) * R + (m / (v + m)) * C;
-    },
+        return (v / (v + m)) * R + (m / (v + m)) * C;
+      },
 
-    async searchMovies() {
-      this.searchPerformed = false; 
-      this.loading = true;
-      this.movies = [];
-      const apiKey = process.env.API_KEY;
-      const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : this.releaseYear; 
-      
-      let apiSortBy = this.selectedSortBy;
-      if (this.selectedSortBy === 'imdb-high' || this.selectedSortBy === 'imdb-low') {
-        apiSortBy = 'vote_average.desc';
-      }
-
-      let baseUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&include_adult=false&include_video=false&language=es-ES&sort_by=${apiSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}&primary_release_year=${year}`;
-      if (this.selectedMinRating) {
-        baseUrl += `&vote_average.gte=${this.selectedMinRating}`;
-      }
-      if (this.selectedOriginCountry) {
-        baseUrl += `&with_origin_country=${this.selectedOriginCountry}`;
-      }
-
-      try {
-        const responses = await Promise.all([
-          fetch(`${baseUrl}&page=1`),
-          fetch(`${baseUrl}&page=2`),
-          fetch(`${baseUrl}&page=3`),
-          fetch(`${baseUrl}&page=4`),
-        ]);
-        const data1 = await responses[0].json();
-        const data2 = await responses[1].json();
-        const data3 = await responses[2].json();
-        const data4 = await responses[3].json();
+      async searchMovies() {
+        this.searchPerformed = false; 
+        this.loading = true;
+        this.movies = [];
+        const apiKey = this.$config.public.apiKey;
+        const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : this.releaseYear; 
         
-        let allMovies = [...data1.results, ...data2.results, ...data3.results, ...data4.results];
-        
-        const enrichedMovies = await Promise.all(
-          allMovies.map(async (movie) => {
-            if (this.hasTranslation(movie.title)) {
-              movie.title = await this.getTranslatedTitle(movie.id, 'movie', movie.title);
-            }
-            
-            const detailsResponse = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}&language=es-ES&append_to_response=external_ids`);
-            const details = await detailsResponse.json();
-            
-            if (details.external_ids?.imdb_id) {
-              try {
-                const imdbResponse = await fetch(`/api/imdb-rating/${details.external_ids.imdb_id}`);
-                const imdbData = await imdbResponse.json();
-                
-                if (imdbData.found) {
-                  movie.imdb_rating = imdbData.score;
-                  movie.imdb_votes = imdbData.votes;
-                  movie.rating_source = 'imdb';
-                } else {
+        let apiSortBy = this.selectedSortBy;
+        if (this.selectedSortBy === 'imdb-high' || this.selectedSortBy === 'imdb-low') {
+          apiSortBy = 'vote_average.desc';
+        }
+
+        let baseUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&include_adult=false&include_video=false&language=en-US&sort_by=${apiSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}&primary_release_year=${year}`;
+        if (this.selectedMinRating) {
+          baseUrl += `&vote_average.gte=${this.selectedMinRating}`;
+        }
+        if (this.selectedOriginCountry) {
+          baseUrl += `&with_origin_country=${this.selectedOriginCountry}`;
+        }
+
+        try {
+          const responses = await Promise.all([
+            fetch(`${baseUrl}&page=1`),
+            fetch(`${baseUrl}&page=2`),
+            fetch(`${baseUrl}&page=3`),
+            fetch(`${baseUrl}&page=4`),
+          ]);
+          const data1 = await responses[0].json();
+          const data2 = await responses[1].json();
+          const data3 = await responses[2].json();
+          const data4 = await responses[3].json();
+          
+          let allMovies = [...data1.results, ...data2.results, ...data3.results, ...data4.results];
+          
+          const enrichedMovies = await Promise.all(
+            allMovies.map(async (movie) => {
+              const detailsResponse = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}&append_to_response=external_ids`);
+              const details = await detailsResponse.json();
+              
+              if (details.external_ids?.imdb_id) {
+                try {
+                  const imdbResponse = await fetch(`/api/imdb-rating/${details.external_ids.imdb_id}`);
+                  const imdbData = await imdbResponse.json();
+                  
+                  if (imdbData.found) {
+                    movie.imdb_rating = imdbData.score;
+                    movie.imdb_votes = imdbData.votes;
+                    movie.rating_source = 'imdb';
+                  } else {
+                    movie.rating_source = 'tmdb';
+                  }
+                } catch (err) {
                   movie.rating_source = 'tmdb';
                 }
-              } catch (err) {
+              } else {
                 movie.rating_source = 'tmdb';
               }
-            } else {
-              movie.rating_source = 'tmdb';
-            }
-            
-            return movie;
-          })
-        );
-        
-        if (this.selectedMinRating) {
-          this.movies = enrichedMovies.filter(movie => {
-            const rating = movie.rating_source === 'imdb' ? movie.imdb_rating : parseFloat(movie.vote_average);
-            return rating >= parseFloat(this.selectedMinRating);
+              
+              return movie;
+            })
+          );
+          
+          if (this.selectedMinRating) {
+            this.movies = enrichedMovies.filter(movie => {
+              const rating = movie.rating_source === 'imdb' ? movie.imdb_rating : parseFloat(movie.vote_average);
+              return rating >= parseFloat(this.selectedMinRating);
+            });
+          } else {
+            this.movies = enrichedMovies;
+          }
+
+          if (this.selectedSortBy === 'imdb-high') {
+            this.movies.sort((a, b) => this.getWeightedRating(b) - this.getWeightedRating(a));
+          } else if (this.selectedSortBy === 'imdb-low') {
+            this.movies.sort((a, b) => this.getWeightedRating(a) - this.getWeightedRating(b));
+          }
+          
+          this.movies.forEach(movie => {
+            const rating = movie.rating_source === 'imdb' ? movie.imdb_rating : movie.vote_average;
+            this.movieRatings[movie.id] = rating;
           });
-        } else {
-          this.movies = enrichedMovies;
+          
+          this.loading = false;
+          this.searchPerformed = true;
+        } catch (error) {
+          console.error('Error fetching movies:', error);
+          this.loading = false;
+        }
+      },
+
+      async searchTv() {
+        this.searchPerformed = false; 
+        this.loading = true;
+        this.tvShows = [];
+        const apiKey = this.$config.public.apiKey;
+        const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : this.releaseYear;
+
+        let apiSortBy = this.selectedSortBy;
+        if (this.selectedSortBy === 'imdb-high' || this.selectedSortBy === 'imdb-low') {
+          apiSortBy = 'vote_average.desc';
         }
 
-        if (this.selectedSortBy === 'imdb-high') {
-          this.movies.sort((a, b) => this.getWeightedRating(b) - this.getWeightedRating(a));
-        } else if (this.selectedSortBy === 'imdb-low') {
-          this.movies.sort((a, b) => this.getWeightedRating(a) - this.getWeightedRating(b));
+        let baseUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&include_adult=false&include_video=false&language=en-US&sort_by=${apiSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}&first_air_date_year=${year}`;
+        if (this.selectedMinRating) {
+          baseUrl += `&vote_average.gte=${this.selectedMinRating}`;
         }
-        
-        this.movies.forEach(movie => {
-          const rating = movie.rating_source === 'imdb' ? movie.imdb_rating : movie.vote_average;
-          this.$set(this.movieRatings, movie.id, rating);
-        });
-        
-        this.loading = false;
-        this.searchPerformed = true;
-      } catch (error) {
-        console.error('Error fetching movies:', error);
-        this.loading = false;
-      }
-    },
+        if (this.selectedOriginCountry) {
+          baseUrl += `&with_origin_country=${this.selectedOriginCountry}`;
+        }
+        if (this.selectedWatchProvider) {
+          baseUrl += `&with_networks=${this.selectedWatchProvider}`;
+        }
 
-    async searchTv() {
-      this.searchPerformed = false; 
-      this.loading = true;
-      this.tvShows = [];
-      const apiKey = process.env.API_KEY;
-      const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : this.releaseYear;
-      
-      let apiSortBy = this.selectedSortBy;
-      if (this.selectedSortBy === 'imdb-high' || this.selectedSortBy === 'imdb-low') {
-        apiSortBy = 'vote_average.desc';
-      }
-
-      let baseUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&include_adult=false&include_video=false&language=es-ES&sort_by=${apiSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}&first_air_date_year=${year}`;
-      if (this.selectedMinRating) {
-        baseUrl += `&vote_average.gte=${this.selectedMinRating}`;
-      }
-      if (this.selectedOriginCountry) {
-        baseUrl += `&with_origin_country=${this.selectedOriginCountry}`;
-      }
-      if (this.selectedWatchProvider) {
-        baseUrl += `&with_networks=${this.selectedWatchProvider}`;
-      }
-
-      try {
-        const responses = await Promise.all([
-          fetch(`${baseUrl}&page=1`),
-          fetch(`${baseUrl}&page=2`)
-        ]);
-        const data1 = await responses[0].json();
-        const data2 = await responses[1].json();
-        
-        let allTvShows = [...data1.results, ...data2.results];
-        
-        const enrichedTvShows = await Promise.all(
-          allTvShows.map(async (tvShow) => {
-            if (this.hasTranslation(tvShow.name)) {
-              tvShow.name = await this.getTranslatedTitle(tvShow.id, 'tv', tvShow.name);
-            }
-            
-            const detailsResponse = await fetch(`https://api.themoviedb.org/3/tv/${tvShow.id}?api_key=${apiKey}&language=es-ES&append_to_response=external_ids`);
-            const details = await detailsResponse.json();
-            
-            if (details.external_ids?.imdb_id) {
-              try {
-                const imdbResponse = await fetch(`/api/imdb-rating/${details.external_ids.imdb_id}`);
-                const imdbData = await imdbResponse.json();
-                
-                if (imdbData.found) {
-                  tvShow.imdb_rating = imdbData.score;
-                  tvShow.imdb_votes = imdbData.votes;
-                  tvShow.rating_source = 'imdb';
-                } else {
+        try {
+          const responses = await Promise.all([
+            fetch(`${baseUrl}&page=1`),
+            fetch(`${baseUrl}&page=2`)
+          ]);
+          const data1 = await responses[0].json();
+          const data2 = await responses[1].json();
+          
+          let allTvShows = [...data1.results, ...data2.results];
+          
+          const enrichedTvShows = await Promise.all(
+            allTvShows.map(async (tvShow) => {
+              const detailsResponse = await fetch(`https://api.themoviedb.org/3/tv/${tvShow.id}?api_key=${apiKey}&append_to_response=external_ids`);
+              const details = await detailsResponse.json();
+              
+              if (details.external_ids?.imdb_id) {
+                try {
+                  const imdbResponse = await fetch(`/api/imdb-rating/${details.external_ids.imdb_id}`);
+                  const imdbData = await imdbResponse.json();
+                  
+                  if (imdbData.found) {
+                    tvShow.imdb_rating = imdbData.score;
+                    tvShow.imdb_votes = imdbData.votes;
+                    tvShow.rating_source = 'imdb';
+                  } else {
+                    tvShow.rating_source = 'tmdb';
+                  }
+                } catch (err) {
                   tvShow.rating_source = 'tmdb';
                 }
-              } catch (err) {
+              } else {
                 tvShow.rating_source = 'tmdb';
               }
-            } else {
-              tvShow.rating_source = 'tmdb';
-            }
-            
-            return tvShow;
-          })
-        );
-        
-        if (this.selectedMinRating) {
-          this.tvShows = enrichedTvShows.filter(tvShow => {
-            const rating = tvShow.rating_source === 'imdb' ? tvShow.imdb_rating : parseFloat(tvShow.vote_average);
-            return rating >= parseFloat(this.selectedMinRating);
+              
+              return tvShow;
+            })
+          );
+          
+          if (this.selectedMinRating) {
+            this.tvShows = enrichedTvShows.filter(tvShow => {
+              const rating = tvShow.rating_source === 'imdb' ? tvShow.imdb_rating : parseFloat(tvShow.vote_average);
+              return rating >= parseFloat(this.selectedMinRating);
+            });
+          } else {
+            this.tvShows = enrichedTvShows;
+          }
+
+          if (this.selectedSortBy === 'imdb-high') {
+            this.tvShows.sort((a, b) => this.getWeightedRating(b) - this.getWeightedRating(a));
+          } else if (this.selectedSortBy === 'imdb-low') {
+            this.tvShows.sort((a, b) => this.getWeightedRating(a) - this.getWeightedRating(b));
+          }
+          
+          this.tvShows.forEach(tvShow => {
+            const rating = tvShow.rating_source === 'imdb' ? tvShow.imdb_rating : tvShow.vote_average;
+            this.tvShowRatings[tvShow.id] = rating;
           });
+          
+          this.loading = false;
+          this.searchPerformed = true;
+        } catch (error) {
+          console.error('Error fetching TV shows:', error);
+          this.loading = false;
+        }
+      },
+   
+      disabledFutureDates(date) {
+        const currentYear = new Date().getFullYear();
+        const firstMovieYear = 1888;
+        return date > new Date() || date.getFullYear() < firstMovieYear || date.getFullYear() > currentYear;
+      },
+
+      async searchContent() {
+        this.movies = [];
+        this.tvShows = [];
+        if (this.selectedSearchType === 'movie') {
+          this.searchMovies();
+        } else if (this.selectedSearchType === 'tv') {
+          this.searchTv();
         } else {
-          this.tvShows = enrichedTvShows;
+          alert('Por favor selecciona un tipo (Película o Serie) primero.');
         }
-
-        if (this.selectedSortBy === 'imdb-high') {
-          this.tvShows.sort((a, b) => this.getWeightedRating(b) - this.getWeightedRating(a));
-        } else if (this.selectedSortBy === 'imdb-low') {
-          this.tvShows.sort((a, b) => this.getWeightedRating(a) - this.getWeightedRating(b));
-        }
-        
-        this.tvShows.forEach(tvShow => {
-          const rating = tvShow.rating_source === 'imdb' ? tvShow.imdb_rating : tvShow.vote_average;
-          this.$set(this.tvShowRatings, tvShow.id, rating);
-        });
-        
-        this.loading = false;
-        this.searchPerformed = true;
-      } catch (error) {
-        console.error('Error fetching TV shows:', error);
-        this.loading = false;
-      }
-    },
-
-    disabledFutureDates(date) {
-      const currentYear = new Date().getFullYear();
-      const firstMovieYear = 1888;
-      return date > new Date() || date.getFullYear() < firstMovieYear || date.getFullYear() > currentYear;
-    },
-
-    async searchContent() {
-      this.movies = [];
-      this.tvShows = [];
-      if (this.selectedSearchType === 'movie') {
-        this.searchMovies();
-      } else if (this.selectedSearchType === 'tv') {
-        this.searchTv();
-      } else {
-        alert('Por favor selecciona un tipo (Película o Serie de TV) primero.');
-      }
-    },
-
-    async checkData() {
-      try {
+      },
+          
+      async checkData() {
+        try {
           const response = await fetch(`${this.tursoBackendUrl}/favorites/${this.userEmail}`);
           
           if (!response.ok) {
@@ -693,200 +654,199 @@ export default {
           this.favorites = data.favorites_json;
         } catch (error) {
           console.error(error.message);
-      }
-    },
-
-    toggleOrder(event) {
-      this.orderText = event.target.value === 'asc' ? 'Order Asc' : 'Order Desc';
-      if (this.orderText === 'Order Asc') {
-        this.moviesFetched.reverse();
-        this.tvFetched.reverse();
-      } else {
-        this.moviesFetched.reverse();
-        this.tvFetched.reverse();
-      }
-    },
-
-    filterByGenre(event) {
-      this.selectedSearchGenre = event.target.value;
-    },
-
-    filterByYear(event) {
-      this.selectedYearRange = event.target.value;
-    },
-
-    toggleFilter(event) {
-      this.filter = event.target.value;
-      this.currentPage = 1;
-    },
-
-    formatRating(stars) {
-      return (stars / 10).toFixed(1);
-    },
-
-    goToFirst() {
-      this.currentPage = 1;
-    },
-
-    prevPage() {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-      }
-    },
-
-    nextPage() {
-      if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-      }
-    },
-
-    goToLast() {
-      this.currentPage = this.totalPages;
-    },
-
-    goBack() {
-      this.$router.go(-1);
-    },
-
-    getLink(item) {
-      const locOrigin = window.location.origin;
-      if (item.details.typeForDb === 'movie') {
-        return `${locOrigin}/movie/${item.details.idForDb}`;
-      } else if (item.details.typeForDb === 'tv') {
-        return `${locOrigin}/tv/${item.details.idForDb}`;
-      } else {
-        return '#'; 
-      }
-    },
-
-    async fetchUserFirstName() {
-      try {
-        const { data, error } = await supabase
-          .from('auth_user')
-          .select('first_name')
-          .eq('email', this.userEmail);
-
-        if (error) {
-          throw new Error('Error connecting to the database: ' + error.message);
         }
+      },
 
-        this.userFirstName = data.length > 0 ? data[0].first_name : null;
-      } catch (error) {
-        console.error('Error fetching user first name:', error);
+      toggleOrder(event) {
+        this.orderText = event.target.value === 'asc' ? 'Order Asc' : 'Order Desc';
+        if (this.orderText === 'Order Asc') {
+          this.moviesFetched.reverse();
+          this.tvFetched.reverse();
+        } else {
+          this.moviesFetched.reverse();
+          this.tvFetched.reverse();
+        }
+      },
+
+      filterByGenre(event) {
+        this.selectedSearchGenre = event.target.value;
+      },
+        
+      filterByYear(event) {
+        this.selectedYearRange = event.target.value;
+      },
+
+      toggleFilter(event) {
+        this.filter = event.target.value;
+        this.currentPage = 1;
+      },
+
+      formatRating(stars) {
+        return (stars / 10).toFixed(1);
+      },
+
+      goToFirst() {
+        this.currentPage = 1;
+      },
+
+      prevPage() {
+        if (this.currentPage > 1) {
+          this.currentPage--;
+        }
+      },
+
+      nextPage() {
+        if (this.currentPage < this.totalPages) {
+          this.currentPage++;
+        }
+      },
+
+      goToLast() {
+        this.currentPage = this.totalPages;
+      },
+
+      goBack() {
+        this.$router.go(-1);
+      },
+
+      getLink(item) {
+        const locOrigin = window.location.origin;
+        if (item.details.typeForDb === 'movie') {
+          return `${locOrigin}/movie/${item.details.idForDb}`;
+        } else if (item.details.typeForDb === 'tv') {
+          return `${locOrigin}/tv/${item.details.idForDb}`;
+        } else {
+          return '#'; 
+        }
+      },
+      async fetchUserFirstName() {
+        try {
+          const { data, error } = await this.supabase
+            .from('auth_user')
+            .select('first_name')
+            .eq('email', this.userEmail);
+          
+          if (error) {
+            throw new Error('Error connecting to the database: ' + error.message);
+          }
+          
+          this.userFirstName = data.length > 0 ? data[0].first_name : null;
+        } catch (error) {
+          console.error('Error fetching user first name:', error);
+        }
+      },
+
+      formatGenreNames(genreIds, genreList) {
+        return genreIds.map(id => {
+          const genre = genreList.find(genre => genre.id === id);
+          return genre ? genre.name : '';
+        }).filter(Boolean).join(', ');
+      },
+
+      extractYear(date) {
+        return date ? date.split('-')[0] : '';
+      },
+
+      truncateTitle(title) {
+        return title.length > 28 ? title.slice(0, 28) + '...' : title;
+      },
+        
+      updateRating(value) {
+        this.selectedMinRating = value.toString();
+        this.MinRatingForLabel = this.selectedMinRating;
+        localStorage.setItem('selectedMinRating', this.selectedMinRating);
+      },
+        
+      formattedGenre(genreId) {
+        const genres = {
+          28: 'Acción',
+          12: 'Aventura',
+          16: 'Animación',
+          35: 'Comedia',
+          80: 'Crimen',
+          99: 'Documental',
+          18: 'Drama',
+          10751: 'Familia',
+          14: 'Fantasía',
+          36: 'Historia',
+          27: 'Terror',
+          10402: 'Música',
+          9648: 'Misterio',
+          10749: 'Romance',
+          878: 'Ciencia Ficción',
+          10770: 'Película de TV',
+          53: 'Suspenso',
+          10752: 'Bélica',
+          37: 'Western',
+          10759: 'Acción y Aventura',
+          10765: 'Ciencia Ficción y Fantasía',
+          10767: 'Talk Show'
+        };
+        return genres[genreId] || '';
+      },
+
+      formattedCountry(countryCode) {
+        const countries = {
+          AL: 'Albania',
+          AM: 'Armenia',
+          AR: 'Argentina',
+          AT: 'Austria',
+          AU: 'Australia',
+          BE: 'Belgium',
+          BO: 'Bolivia',
+          BR: 'Brazil',
+          BG: 'Bulgaria',
+          CA: 'Canada',
+          CN: 'China',
+          CO: 'Colombia',
+          CR: 'Costa Rica',
+          HR: 'Croatia',
+          CZ: 'Czech Republic',
+          DK: 'Denmark',
+          EC: 'Ecuador',
+          EG: 'Egypt',
+          FI: 'Finland',
+          FR: 'France',
+          DE: 'Germany',
+          GR: 'Greece',
+          HK: 'Hong Kong',
+          HU: 'Hungary',
+          IN: 'India',
+          IR: 'Iran',
+          IQ: 'Iraq',
+          IE: 'Ireland',
+          IL: 'Israel',
+          IT: 'Italy',
+          JM: 'Jamaica',
+          JP: 'Japan',
+          KR: 'South Korea',
+          MX: 'Mexico',
+          MA: 'Morocco',
+          NL: 'Netherlands',
+          NZ: 'New Zealand',
+          NG: 'Nigeria',
+          NO: 'Norway',
+          PL: 'Poland',
+          PT: 'Portugal',
+          RO: 'Romania',
+          RU: 'Russia',
+          ZA: 'South Africa',
+          ES: 'Spain',
+          SE: 'Sweden',
+          CH: 'Switzerland',
+          TW: 'Taiwan',
+          TH: 'Thailand',
+          TR: 'Turkey',
+          UA: 'Ukraine',
+          GB: 'United Kingdom',
+          US: 'United States',
+          UY: 'Uruguay',
+          VE: 'Venezuela',
+          VN: 'Vietnam'
+        };
+        return countries[countryCode] || '';
       }
     },
-
-    formatGenreNames(genreIds, genreList) {
-      return genreIds.map(id => {
-        const genre = genreList.find(genre => genre.id === id);
-        return genre ? genre.name : '';
-      }).filter(Boolean).join(', ');
-    },
-
-    extractYear(date) {
-      return date ? date.split('-')[0] : '';
-    },
-
-    truncateTitle(title) {
-      return title.length > 28 ? title.slice(0, 28) + '...' : title;
-    },
-
-    updateRating(value) {
-      this.selectedMinRating = value.toString();
-      this.MinRatingForLabel = this.selectedMinRating;
-      localStorage.setItem('selectedMinRating', this.selectedMinRating);
-    },
-
-    formattedGenre(genreId) {
-      const genres = {
-        28: 'Action',
-        12: 'Adventure',
-        16: 'Animation',
-        35: 'Comedy',
-        80: 'Crime',
-        99: 'Documentary',
-        18: 'Drama',
-        10751: 'Family',
-        14: 'Fantasy',
-        36: 'History',
-        27: 'Horror',
-        10402: 'Music',
-        9648: 'Mystery',
-        10749: 'Romance',
-        878: 'Science Fiction',
-        10770: 'TV Movie',
-        53: 'Thriller',
-        10752: 'War',
-        37: 'Western',
-        10759: 'Action & Adventure',
-        10765: 'Sci-Fi and Fantasy',
-        10767: 'Talk Show'
-      };
-      return genres[genreId] || '';
-    },
-
-    formattedCountry(countryCode) {
-      const countries = {
-        AL: 'Albania',
-        AM: 'Armenia',
-        AR: 'Argentina',
-        AT: 'Austria',
-        AU: 'Australia',
-        BE: 'Bélgica',
-        BO: 'Bolivia',
-        BR: 'Brasil',
-        BG: 'Bulgaria',
-        CA: 'Canadá',
-        CN: 'China',
-        CO: 'Colombia',
-        CR: 'Costa Rica',
-        HR: 'Croacia',
-        CZ: 'República Checa',
-        DK: 'Dinamarca',
-        EC: 'Ecuador',
-        EG: 'Egipto',
-        FI: 'Finlandia',
-        FR: 'Francia',
-        DE: 'Alemania',
-        GR: 'Grecia',
-        HK: 'Hong Kong',
-        HU: 'Hungría',
-        IN: 'India',
-        IR: 'Irán',
-        IQ: 'Iraq',
-        IE: 'Irlanda',
-        IL: 'Israel',
-        IT: 'Italia',
-        JM: 'Jamaica',
-        JP: 'Japón',
-        KR: 'Corea del Sur',
-        MX: 'México',
-        MA: 'Marruecos',
-        NL: 'Países Bajos',
-        NZ: 'Nueva Zelanda',
-        NG: 'Nigeria',
-        NO: 'Noruega',
-        PL: 'Polonia',
-        PT: 'Portugal',
-        RO: 'Rumania',
-        RU: 'Rusia',
-        ZA: 'Sudáfrica',
-        ES: 'España',
-        SE: 'Suecia',
-        CH: 'Suiza',
-        TW: 'Taiwán',
-        TH: 'Tailandia',
-        TR: 'Turquía',
-        UA: 'Ucrania',
-        GB: 'Reino Unido',
-        US: 'Estados Unidos',
-        UY: 'Uruguay',
-        VE: 'Venezuela',
-        VN: 'Vietnam'
-      };
-      return countries[countryCode] || '';
-    }
-  },
     computed: {
       showDefaultMessage() {
         return this.MinRatingForLabel === 0;
@@ -963,7 +923,7 @@ export default {
     },
   };
 </script>
-
+  
 <style scoped>
 .adv-search-section {
   background: rgba(6, 47, 64, 0.15);
@@ -974,6 +934,8 @@ export default {
   border: 1px solid rgba(255, 255, 255, 0.18);
   padding: 30px;
   width: 90%;
+  margin-top: 30px !important;
+  position:relative;
   margin: 0 auto;
 }
 
@@ -1051,7 +1013,7 @@ export default {
   position: relative;
 }
 
-.date-picker-custom /deep/ input {
+.date-picker-custom :deep(input) {
   width: 100%;
   padding: 12px 16px;
   background: rgba(8, 45, 62, 0.3);
@@ -1066,7 +1028,7 @@ export default {
   line-height: 21px;
 }
 
-.date-picker-custom /deep/ .mx-datepicker-popup {
+.date-picker-custom :deep(.mx-datepicker-popup) {
   min-width: 100% !important;
   width: 100% !important;
   max-width: none !important;
@@ -1074,53 +1036,53 @@ export default {
   right: 0 !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar-panel-year {
+.date-picker-custom :deep(.mx-calendar-panel-year) {
   width: 100% !important;
   min-width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar {
+.date-picker-custom :deep(.mx-calendar) {
   width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar-content {
+.date-picker-custom :deep(.mx-calendar-content) {
   width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar-panel-date table {
+.date-picker-custom :deep(.mx-calendar-panel-date table) {
   width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar-panel-year .mx-calendar-content {
+.date-picker-custom :deep(.mx-calendar-panel-year .mx-calendar-content) {
   height: auto !important;
   padding: 10px !important;
 }
 
-.date-picker-custom /deep/ .mx-datepicker {
+.date-picker-custom :deep(.mx-datepicker) {
   width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-datepicker-popup {
+.date-picker-custom :deep(.mx-datepicker-popup) {
   top: 45px !important;
   position: absolute !important;
 }
 
-.date-picker-custom /deep/ input:hover {
+.date-picker-custom :deep(input:hover) {
   background: rgba(8, 45, 62, 0.5);
   border-color: rgba(127, 219, 241, 0.5);
 }
 
-.date-picker-custom /deep/ input:focus {
+.date-picker-custom :deep(input:focus) {
   outline: none;
   box-shadow: 0 0 0 2px rgba(127, 219, 241, 0.2);
   border-color: #7FDBF1;
 }
 
-.date-picker-custom /deep/ .mx-input-wrapper {
+.date-picker-custom :deep(.mx-input-wrapper) {
   height: 45px !important;
 }
 
-.date-picker-custom /deep/ .mx-input {
+.date-picker-custom :deep(.mx-input) {
   height: 45px !important;
 }
 
@@ -1244,6 +1206,7 @@ export default {
 .navbar-welcome {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   margin-top: 7rem;
 }
@@ -1251,6 +1214,7 @@ export default {
 .text-center {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
   font-family: 'Roboto', sans-serif;
@@ -1570,9 +1534,13 @@ input:not(:checked):focus ~ #helper-text {
   .tv-show-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
-  
+
   .adv-search-section {
     padding: 20px 15px;
+  }
+
+  .column {
+    padding: 0 15px;
   }
 }
 
@@ -1585,33 +1553,13 @@ input:not(:checked):focus ~ #helper-text {
     left: 0;
   }
   
-  .movie-grid,
-  .tv-show-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 15px;
-  }
-  
-  .movie-card h3,
-  .tv-show-card h3 {
-    font-size: 12px;
-  }
-  
-  .movie-card p,
-  .tv-show-card p {
-    font-size: 10px;
-  }
-  
   .rating-container {
     transform: scale(0.9);
   }
-}
 
-.rating-container {
-    transform: scale(0.9);
-  }
-
-.column {
+  .column {
     padding: 0 10px;
+  }
 }
 
 .adv-search-section {
@@ -1623,8 +1571,6 @@ input:not(:checked):focus ~ #helper-text {
   border: 1px solid rgba(255, 255, 255, 0.18);
   padding: 30px;
   width: 90%;
-  margin-top: 30px !important;
-  position:relative;
   margin: 0 auto;
 }
 
@@ -1702,7 +1648,7 @@ input:not(:checked):focus ~ #helper-text {
   position: relative;
 }
 
-.date-picker-custom /deep/ input {
+.date-picker-custom :deep(input) {
   width: 100%;
   padding: 12px 16px;
   background: rgba(8, 45, 62, 0.3);
@@ -1717,7 +1663,7 @@ input:not(:checked):focus ~ #helper-text {
   line-height: 21px;
 }
 
-.date-picker-custom /deep/ .mx-datepicker-popup {
+.date-picker-custom :deep(.mx-datepicker-popup) {
   min-width: 100% !important;
   width: 100% !important;
   max-width: none !important;
@@ -1725,53 +1671,53 @@ input:not(:checked):focus ~ #helper-text {
   right: 0 !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar-panel-year {
+.date-picker-custom :deep(.mx-calendar-panel-year) {
   width: 100% !important;
   min-width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar {
+.date-picker-custom :deep(.mx-calendar) {
   width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar-content {
+.date-picker-custom :deep(.mx-calendar-content) {
   width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar-panel-date table {
+.date-picker-custom :deep(.mx-calendar-panel-date table) {
   width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar-panel-year .mx-calendar-content {
+.date-picker-custom :deep(.mx-calendar-panel-year .mx-calendar-content) {
   height: auto !important;
   padding: 10px !important;
 }
 
-.date-picker-custom /deep/ .mx-datepicker {
+.date-picker-custom :deep(.mx-datepicker) {
   width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-datepicker-popup {
+.date-picker-custom :deep(.mx-datepicker-popup) {
   top: 45px !important;
   position: absolute !important;
 }
 
-.date-picker-custom /deep/ input:hover {
+.date-picker-custom :deep(input:hover) {
   background: rgba(8, 45, 62, 0.5);
   border-color: rgba(127, 219, 241, 0.5);
 }
 
-.date-picker-custom /deep/ input:focus {
+.date-picker-custom :deep(input:focus) {
   outline: none;
   box-shadow: 0 0 0 2px rgba(127, 219, 241, 0.2);
   border-color: #7FDBF1;
 }
 
-.date-picker-custom /deep/ .mx-input-wrapper {
+.date-picker-custom :deep(.mx-input-wrapper) {
   height: 45px !important;
 }
 
-.date-picker-custom /deep/ .mx-input {
+.date-picker-custom :deep(.mx-input) {
   height: 45px !important;
 }
 
@@ -1895,16 +1841,109 @@ input:not(:checked):focus ~ #helper-text {
 .navbar-welcome {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   margin-top: 7rem;
+  text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
+  font-family: 'Roboto', sans-serif;
 }
 
 .text-center {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
   font-family: 'Roboto', sans-serif;
+}
+
+@media screen and (max-width: 768px) {
+  .search-container,
+  .advanced-search,
+  .filters-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 1rem;
+    margin: 0;
+  }
+
+  .search-filters,
+  .filter-row,
+  .search-options {
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .filter-group,
+  .select-group {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .search-select,
+  .filter-select,
+  select {
+    width: 100%;
+    min-width: unset;
+    max-width: 100%;
+    font-size: 16px;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  .search-input,
+  input[type="text"],
+  input[type="search"] {
+    width: 100%;
+    font-size: 16px;
+    padding: 12px;
+    box-sizing: border-box;
+  }
+
+  .search-button,
+  .filter-button {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 12px;
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .search-container {
+    padding: 0 0.5rem;
+  }
+
+  .filter-group {
+    margin-bottom: 0.8rem;
+  }
+
+  .search-select,
+  .search-input {
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  .search-filters {
+    gap: 0.8rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .advanced-search-form {
+    padding: 1rem 0.5rem;
+  }
+
+  .search-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .select-wrapper {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
 }
 
 @media screen and (max-width: 800px) {
@@ -1952,3 +1991,4 @@ input:not(:checked):focus ~ #helper-text {
   100% { transform: rotate(360deg); }
 }
 </style>
+

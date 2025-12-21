@@ -13,7 +13,7 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
             </svg>
-            <span>Filtros y Orden</span>
+            <span>Filtros y Ordenar</span>
           </button>
         </div>
 
@@ -24,7 +24,7 @@
                 <button @click="removeFilter(chip.value)" class="chip-remove">×</button>
               </div>
             </div>
-            <button @click="clearAllFilters" class="clear-all-inline">Borrar todo</button>
+            <button @click="clearAllFilters" class="clear-all-inline">Borrar Todo</button>
         </div>
       </div>
 
@@ -71,7 +71,7 @@
                <!-- Load More Button -->
               <div v-if="company.page < company.totalPages && !company.loadingMore" class="load-more-container">
                 <button @click="loadMore(company.id)" class="load-more-btn">
-                   Cargar más
+                   Cargar Más
                 </button>
               </div>
               <div v-if="company.loadingMore" class="load-more-container">
@@ -90,25 +90,25 @@
       </div>
 
       <div v-else-if="!loading" class="no-results">
-        <p style="text-align: center; color: white; margin-top: 2rem;">No se encontró contenido de las productoras que sigues.</p>
+       <p style="text-align: center; color: white; margin-top: 2rem;">No se encontró contenido de las productoras que sigues.</p>
       </div>
 
       <!-- Filter Modal -->
       <div v-if="filtersModalVisible" class="modal-overlay" @click="closeFiltersModal">
           <div class="filters-modal" @click.stop>
             <div class="modal-header">
-              <h3>Filtros y Orden</h3>
+              <h3>Filtros y Ordenar</h3>
               <button class="close-btn" @click="closeFiltersModal">×</button>
             </div>
             
             <div class="filters-content">
               
               <div class="filter-group">
-                <label class="filter-label">Rango Calificación IMDb</label>
+                <label class="filter-label">Rango de Calificación IMDB</label>
                  <div class="year-inputs">
-                  <input type="number" v-model.number="minImdbRating" min="0" max="10" placeholder="Min" class="year-input">
+                  <input type="number" v-model.number="minImdbRating" min="0" max="10" placeholder="Mín" class="year-input">
                   <span class="year-separator">-</span>
-                  <input type="number" v-model.number="maxImdbRating" min="0" max="10" placeholder="Max" class="year-input">
+                  <input type="number" v-model.number="maxImdbRating" min="0" max="10" placeholder="Máx" class="year-input">
                 </div>
               </div>
 
@@ -122,7 +122,7 @@
               </div>
 
               <div class="filter-actions">
-                <button @click="clearAllFilters" class="clear-btn">Borrar</button>
+                <button @click="clearAllFilters" class="clear-btn">Limpiar</button>
                 <button @click="closeFiltersModal" class="apply-btn">Aplicar</button>
               </div>
             </div>
@@ -133,7 +133,7 @@
 </template>
 
 <script>
-import { getMoviesByCompanies, getTvShowsByCompanies, getFollowedProductionCompanies } from '~/api';
+import { getMoviesByCompanies, getTvShowsByCompanies, getFollowedProductionCompanies } from '~/utils/api';
 import Card from '~/components/Card';
 
 export default {
@@ -160,12 +160,12 @@ export default {
       maxImdbRating: null,
       
       sortOptions: [
-        { value: 'newest-releases', label: 'Lanzamientos más recientes' },
-        { value: 'oldest-releases', label: 'Lanzamientos más antiguos' },
-        { value: 'imdb-high', label: 'IMDb: Mayor a menor' },
-        { value: 'imdb-low', label: 'IMDb: Menor a mayor' },
-        { value: 'imdb-votes-high', label: 'Votos IMDb: Mayor a menor' },
-        { value: 'imdb-votes-low', label: 'Votos IMDb: Menor a mayor' },
+        { value: 'newest-releases', label: 'Estrenos más recientes' }, 
+        { value: 'oldest-releases', label: 'Estrenos más antiguos' }, 
+        { value: 'imdb-high', label: 'Calificación IMDb: Mayor a Menor' },
+        { value: 'imdb-low', label: 'Calificación IMDb: Menor a Mayor' },
+        { value: 'imdb-votes-high', label: 'Votos IMDb: Mayor a Menor' },
+        { value: 'imdb-votes-low', label: 'Votos IMDb: Menor a Mayor' },
       ],
 
     };

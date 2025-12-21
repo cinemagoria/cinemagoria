@@ -122,52 +122,51 @@ export default {
 }
 </style>
 <style>
-    .card__img {
-      position: relative;
-      height: 0;
-      padding-top: 150.27%;
-      overflow: hidden;
-      backdrop-filter: blur(16px);
-      border-start-start-radius: 10px;
-      border-start-end-radius: 10px;
-      transition: transform 0.3s ease-in-out;
-    }
-    .card__name {
-      margin-bottom: 1rem;
-      overflow: hidden;
-      font-size: 1.3rem;
-      background: black;
-      text-align: center;
-      text-overflow: ellipsis;
-      letter-spacing: 0.4px;
-      top: -20px;
-      white-space: nowrap;
-      position: relative;
+  .card__img {
+    position: relative;
+    height: 0;
+    padding-top: 150.27%;
+    overflow: hidden;
+    backdrop-filter: blur(16px);
+    border-start-start-radius: 10px;
+    border-start-end-radius: 10px;
+    transition: transform 0.3s ease-in-out;
   }
-
-  .card__rating {
-      display: flex;
-      align-items: center;
-      flex-direction: row;
-      justify-content: center;
-      background: black;
-      box-shadow: 0 8px 10px 0 rgba(31, 104, 135, 0.37);
-      border-bottom-right-radius: 10px;
-      border-bottom-left-radius: 10px;
-      bottom: 10px;
-      padding-bottom: 0.5rem;
-      position: relative;
-      top: -30px;
-
-  }
-
-  .card__stars {
+  .card__name {
+    margin-bottom: 1rem;
+    overflow: hidden;
+    font-size: 1.3rem;
+    background: black;
     text-align: center;
-  }
+    text-overflow: ellipsis;
+    letter-spacing: 0.4px;
+    top: -20px;
+    white-space: nowrap;
+    position: relative;
+}
 
-  .card__vote {
-    text-align: center;
-  }
+.card__rating {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+    background: black;
+    box-shadow: 0 8px 10px 0 rgba(31, 104, 135, 0.37);
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    bottom: 10px;
+    padding-bottom: 0.5rem;
+    position: relative;
+    top: -30px;
+
+}
+
+.card__stars {
+  text-align: center;
+}
+
+.card__vote {
+  text-align: center;
+}
 
 </style>
-

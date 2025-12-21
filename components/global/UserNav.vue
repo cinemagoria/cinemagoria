@@ -1,7 +1,7 @@
 <template>
   <div class="user-nav-container">
     <nuxt-link
-      :to="{ name: 'notifications' }"
+      to="/notifications"
       aria-label="notifications"
       class="notifications-button">
       <div class="notification-icon-wrapper">
@@ -12,20 +12,19 @@
         <span v-if="unreadCount > 0" class="notification-badge">{{ unreadCount }}</span>
       </div>
     </nuxt-link>
+
     <div v-if="isLoggedIn" class="user-nav-logged-in">
       <div class="avatar-container" @click="toggleMenu">
         <img :src="userAvatar" alt="User Avatar" class="avatar">
       </div>
 
       <div v-if="isMenuOpen" class="dropdown-menu">
-        <!-- Email Section -->
         <div class="menu-item email-item">
           <span class="user-email">{{ truncatedEmail }}</span>
         </div>
 
         <div class="menu-divider"></div>
 
-        <!-- Home -->
         <div class="menu-item" @click="goToHome">
           <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10" stroke-linejoin="round">
@@ -35,13 +34,11 @@
           <span class="menu-label">Inicio</span>
         </div>
 
-        <!-- Watchlist -->
         <div class="menu-item" @click="goToWatchlist">
-          <img src="~/static/icon-watchlist.png" alt="Watchlist Icon" class="menu-icon">
+          <img src="/icon-watchlist.png" alt="Watchlist Icon" class="menu-icon">
           <span class="menu-label">Mi Lista</span>
         </div>
 
-        <!-- Rated -->
         <div class="menu-item" @click="showRatedModal">
           <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
             <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
@@ -58,29 +55,26 @@
           <span class="menu-label">Siguiendo</span>
         </div>
 
-        <!-- Settings -->
         <div class="menu-item" @click="goToSettings">
-          <img src="~/static/icon-settings.png" alt="Settings Icon" class="menu-icon">
+          <img src="/icon-settings.png" alt="Settings Icon" class="menu-icon">
           <span class="menu-label">Ajustes</span>
         </div>
 
         <div class="menu-divider"></div>
 
-        <!-- Language Switcher -->
         <div class="menu-item language-switch-container">
-          <img src="~static/langpicker-icon.png" alt="Language Icon" class="menu-icon lang-icon">
+          <img src="/langpicker-icon.png" alt="Language Icon" class="menu-icon lang-icon">
           <label class="language-switch">
             <input type="checkbox" :checked="currentLanguage === 'es'" @change="toggleLanguage">
-            <span>English</span>
+            <span>Inglés</span>
             <span>Español</span>
           </label>
         </div>
 
         <div class="menu-divider"></div>
 
-        <!-- Logout -->
         <div class="menu-item" @click="signOut">
-          <img src="~/static/icon-logout.png" alt="Logout Icon" class="menu-icon">
+          <img src="/icon-logout.png" alt="Logout Icon" class="menu-icon">
           <span class="menu-label menu-label-logout">Cerrar Sesión</span>
         </div>
       </div>
@@ -88,18 +82,29 @@
 
     <div v-else class="user-nav-logged-out">
       <button class="sign-in-button" @click="goToLogin" aria-label="Sign In">
-        <img src="~/static/icon-login.png" alt="Login Icon" class="sign-in-icon">
-        <span class="sign-in-label">Iniciar Sesión</span>
+        <img src="/icon-login.png" alt="Login Icon" class="sign-in-icon">
+        <span class="sign-in-label">Ingresar</span>
       </button>
     </div>
   </div>
 </template>
 
 <script>
-import supabase from '@/services/supabase';
+
 
 export default {
   name: 'UserNav',
+  // ...
+  methods: {
+    // We need to initialize supabase carefully or use it as needed.
+    // For legacy components, we can call it inside methods.
+  },
+  setup() {
+    const supabase = useSupabaseClient()
+    return { supabase }
+  },
+ 
+  
   data() {
     return {
       isLoggedIn: false,
@@ -139,12 +144,11 @@ export default {
     this.userEmail = email || '';
 
     const hostname = window.location.hostname;
-    this.currentLanguage = hostname.includes('es.') ? 'es' : 'en';
+    this.currentLanguage = hostname.startsWith('es.') ? 'es' : 'en';
 
     if (this.isLoggedIn && email) {
       await this.fetchUserAvatar(email);
     }
-
     this.$nextTick(() => {
       document.addEventListener('click', this.handleClickOutside);
     });
@@ -170,7 +174,8 @@ export default {
       }
 
       try {
-        const response = await fetch(`https://entercinema-follows-rust.vercel.app/notifications/unread-count?user_email=${encodeURIComponent(userEmail)}`);
+        const baseUrl = this.$config.public.followsBackendUrl;
+        const response = await fetch(`${baseUrl}/notifications/unread-count?user_email=${encodeURIComponent(userEmail)}`);
         if (response.ok) {
           const data = await response.json();
           this.unreadCount = data.unread_count || 0;
@@ -192,7 +197,7 @@ export default {
     },
     async fetchUserAvatar(email) {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await this.supabase
           .from('user_data')
           .select('avatar')
           .eq('email', email);
@@ -214,12 +219,17 @@ export default {
       const currentPath = this.$route.path;
       const currentOrigin = window.location.origin;
       
-      if (this.currentLanguage === 'en') {
-        const spanishUrl = `${currentOrigin.replace('://', '://es.')}${currentPath}`;
-        window.location.href = spanishUrl;
-      } else {
+      if (this.currentLanguage === 'es') {
         const englishUrl = currentOrigin.replace('://es.', '://') + currentPath;
         window.location.href = englishUrl;
+      } else {
+        let spanishUrl;
+        if (currentOrigin.includes('://es.')) {
+            spanishUrl = currentOrigin + currentPath;
+        } else {
+            spanishUrl = currentOrigin.replace('://', '://es.') + currentPath;
+        }
+        window.location.href = spanishUrl;
       }
     },
 
@@ -234,12 +244,12 @@ export default {
     },
 
     showRatedModal() {
-      this.$root.$emit('show-rated-modal');
+      this.$bus.$emit('show-rated-modal');
       this.isMenuOpen = false;
     },
 
     showFollowingModal() {
-      this.$root.$emit('show-following-modal');
+      this.$bus.$emit('show-following-modal');
       this.isMenuOpen = false;
     },
 
@@ -286,8 +296,6 @@ export default {
   width: 40px;
   text-decoration: none;
 }
-
-
 
 .notifications-button:hover {
   background: linear-gradient(135deg, #0a1419 0%, #1a2f3a 100%);
@@ -388,9 +396,8 @@ export default {
   gap: 8px;
   width: 40px;
   height: 40px;
-  top: 6px;
   border-radius: 14px;
-  border: 1px solid #d2d3d3b8;
+  border: 1px solid #D2D3D3;
   box-shadow: 0 5px 32px 0 rgba(31, 97, 135, 0.37);
   background: transparent;
   cursor: pointer;
@@ -406,7 +413,7 @@ export default {
 .sign-in-icon {
   width: 20px;
   height: 20px;
-  bottom: 2px;
+  flex-shrink: 0;
 }
 
 .sign-in-label {

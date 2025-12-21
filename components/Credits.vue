@@ -11,7 +11,7 @@
     <div class="carousel">
       <button
         class="carousel__nav carousel__nav--left"
-        aria-label="Previous"
+        aria-label="Anterior"
         type="button"
         :disabled="disableLeftButton"
         @click="moveToClickEvent('left')">
@@ -31,7 +31,7 @@
 
       <button
         class="carousel__nav carousel__nav--right"
-        aria-label="Next"
+        aria-label="Siguiente"
         type="button"
         :disabled="disableRightButton"
         @click="moveToClickEvent('right')">

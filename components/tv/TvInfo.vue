@@ -5,12 +5,13 @@
         <div :class="$style.poster">
           <img
             v-if="poster"
-            v-lazyload="poster"
-            class="lazyload"
-            :alt="name">
+            :src="poster"
+            loading="lazy"
+            :alt="name"
+            @error="handleImageError">
           <img
             v-else
-            src="https://raw.githubusercontent.com/imprvhub/entercinema/es/static/image_not_found_yet_es.webp"
+            src="/image_not_found_yet_es.webp"
             alt="Imagen no encontrada"
             style="width: 100%; height: 100%; object-fit: cover;">
         </div>
@@ -29,12 +30,12 @@
               <div :class="$style.value">{{ item.original_name }}</div>
             </li>
             <li v-if="item.first_air_date">
-              <div :class="$style.label">Primera emisión</div>
-              <div :class="$style.value">{{ item.first_air_date | fullDate }}</div>
+              <div :class="$style.label">Primera Emisión</div>
+              <div :class="$style.value">{{ fullDate(item.first_air_date) }}</div>
             </li>
             <li v-if="item.last_air_date">
-              <div :class="$style.label">Última emisión</div>
-              <div :class="$style.value">{{ item.last_air_date | fullDate }}</div>
+              <div :class="$style.label">Última Emisión</div>
+              <div :class="$style.value">{{ fullDate(item.last_air_date) }}</div>
             </li>
             <li v-if="item.episode_run_time && item.episode_run_time.length">
               <div :class="$style.label">Duración</div>
@@ -62,7 +63,7 @@
             </li>
             <li v-if="item.original_language">
               <div :class="$style.label">Idioma Original</div>
-              <div :class="$style.value">{{ item.original_language | fullLang }}</div>
+              <div :class="$style.value">{{ fullLang(item.original_language) }}</div>
             </li>
           </ul>
         </div>
@@ -80,7 +81,7 @@
                 <path v-if="isFollowingTv" d="M13.73 21a2 2 0 0 1-3.46 0"/>
                 <polyline v-if="isFollowingTv" points="9 11 12 14 22 4" stroke-width="3"/>
               </svg>
-              {{ isFollowingTv ? 'Siguiendo' : 'Seguir episodios' }}
+              {{ isFollowingTv ? 'Siguiendo' : 'Seguir Episodios' }}
             </button>
         </div>
 
@@ -97,18 +98,19 @@
         </div>
 
         <div v-if="isTranslating" :class="$style.translationLoader">
-          <Loader :size="44" />
+            <Loader :size="44" />
         </div>
 
-        <div v-else-if="reviews && reviews.length" class="reviews-container">
+        <div class="reviews-section" v-else-if="reviews && reviews.length">
           <br>
           <div :class="$style.reviewsHeader">
-            <h3 :class="$style.sectionTitle">Reseñas ({{ reviewCount }})</h3>
-            <button @click="toggleFullReviews" :class="$style.spoilerBanner">
+             <h4 :class="$style.sectionTitle">RESEÑAS ({{ reviewCount }})</h4>
+             <button @click="toggleFullReviews" :class="$style.spoilerBanner">
               <svg v-if="!showFullReviews" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
               <span>{{ showFullReviews ? 'OCULTAR RESEÑAS' : 'MOSTRAR (ADVERTENCIA: PUEDE CONTENER SPOILERS)' }}</span>
-            </button>
+             </button>
           </div>
+
           <ul class="nolist" style="padding-right: 1rem;" v-show="showFullReviews">
               <li v-for="(review, index) in reviews" :key="index" :class="$style.reviewCard">
                   <div :class="$style.reviewHeader">
@@ -193,7 +195,7 @@
 </template>
 
 <script>
-import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTraktReviews, translateReview, translateReviewsBatch, getTvShowRecommended, getPerson, getIMDbRatingFromDB, enrichTVShowWithIMDbRating } from '~/api'; 
+import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTraktReviews, getTvShowRecommended, getPerson, getIMDbRatingFromDB, enrichTVShowWithIMDbRating, translateReviewsBatch } from '~/utils/api'; 
 import { name, creators } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
 import WatchOn from '~/components/WatchOn';
@@ -241,7 +243,12 @@ export default {
 
   computed: {
     reviewCount() { return this.reviews.length; },
-    isLoggedIn() { return localStorage.getItem('access_token') !== null; },
+    isLoggedIn() {
+      if (process.client) {
+         return localStorage.getItem('access_token') !== null;
+      }
+      return false;
+    },
     poster () {
       if (this.item.poster_path) return `${apiImgUrl}/w500${this.item.poster_path}`;
       return false;
@@ -263,8 +270,8 @@ export default {
     },
     availableTabs() {
       const tabs = [];
-      if (this.recommended?.results?.length) tabs.push({ key: 'similar', label: 'Más Como Esto' });
-      if (this.creatorItems?.results?.length) tabs.push({ key: 'creator', label: 'Del Mismo Creador' });
+      if (this.recommended?.results?.length) tabs.push({ key: 'similar', label: 'Similares' });
+      if (this.creatorItems?.results?.length) tabs.push({ key: 'creator', label: 'Del mismo creador' });
       return tabs;
     },
     currentTabLabel() {
@@ -306,6 +313,25 @@ export default {
   },
 
   methods: {
+    handleImageError(e) {
+      e.target.src = '/image_not_found_yet_es.webp';
+    },
+    fullLang(iso) {
+      try {
+        const languageNames = new Intl.DisplayNames(['es'], { type: 'language' });
+        return languageNames.of(iso);
+      } catch (e) {
+        return iso;
+      }
+    },
+    fullDate(date) {
+      if (!date) return 'N/A';
+      return new Date(date).toLocaleDateString(process.env.API_COUNTRY === 'BR' ? 'pt-BR' : 'es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    },
     resetTabs() {
       this.recommended = null;
       this.creatorItems = null;
@@ -422,7 +448,7 @@ export default {
     },
     toggleFullReviews() { this.showFullReviews = !this.showFullReviews; },
     formatGenres (genres) { return genres.map(genre => `<a href="/genre/${genre.id}/tv">${genre.name}</a>`).join(', '); },
-    toggleReadMore(review) { this.$set(review, 'showFullContent', !review.showFullContent); },
+    toggleReadMore(review) { review.showFullContent = !review.showFullContent; },
     formatRunTime (times) { return times.map(time => `${time}m`).join(', '); },
     formatContent(content, index, showFullContent) {
       if (!content) return '';
@@ -443,37 +469,37 @@ export default {
       } catch (error) { this.localProviders = []; }
     },
     async fetchReviews() {
-      this.isTranslating = true;
-      try {
-        const tmdbReviewsPromise = getTvShowReviews(this.item.id);
-        const traktReviewsPromise = this.item.external_ids?.imdb_id 
-          ? getTraktReviews(this.item.external_ids.imdb_id, 'show') 
-          : Promise.resolve([]);
+        this.isTranslating = true;
+        try {
+          const tmdbReviewsPromise = getTvShowReviews(this.item.id);
+          const traktReviewsPromise = this.item.external_ids?.imdb_id 
+            ? getTraktReviews(this.item.external_ids.imdb_id, 'show') 
+            : Promise.resolve([]);
 
-        const [tmdbResult, traktResult] = await Promise.allSettled([tmdbReviewsPromise, traktReviewsPromise]);
-        
-        const tmdbReviews = tmdbResult.status === 'fulfilled' ? tmdbResult.value : [];
-        const traktReviews = traktResult.status === 'fulfilled' ? traktResult.value : [];
-
-        const allReviews = [...tmdbReviews, ...traktReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        
-        if (allReviews.length > 0) {
-          const translations = await translateReviewsBatch(allReviews);
+          const [tmdbResult, traktResult] = await Promise.allSettled([tmdbReviewsPromise, traktReviewsPromise]);
           
-          this.reviews = allReviews.map((review, index) => ({
-            ...review,
-            translatedContent: translations[index] || review.content,
-            showTranslation: true
-          }));
-        } else {
+          const tmdbReviews = tmdbResult.status === 'fulfilled' ? tmdbResult.value : [];
+          const traktReviews = traktResult.status === 'fulfilled' ? traktResult.value : [];
+
+          const allReviews = [...tmdbReviews, ...traktReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+          if (allReviews.length > 0) {
+            const translations = await translateReviewsBatch(allReviews);
+            
+            this.reviews = allReviews.map((review, index) => ({
+              ...review,
+              translatedContent: translations[index] || review.content,
+              showTranslation: true
+            }));
+          } else {
+             this.reviews = [];
+          }
+        } catch (error) {
+          console.error("Error fetching reviews", error);
           this.reviews = [];
+        } finally {
+          this.isTranslating = false;
         }
-      } catch (error) {
-        console.error("Error fetching reviews", error);
-        this.reviews = [];
-      } finally {
-        this.isTranslating = false;
-      }
     },
     redirectToUrl(url) { window.open(url, '_blank'); },
   },
@@ -482,33 +508,6 @@ export default {
 
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
-.reviewRatingContainer {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.stars {
-  width: 7.3rem;
-  height: 1.2rem;
-  background-image: url('~assets/images/stars.png');
-  background-repeat: no-repeat;
-  background-size: auto 100%;
-  margin-bottom: 0.3rem;
-
-  > div {
-    height: 100%;
-    background-image: url('~assets/images/stars-filled.png');
-    background-repeat: no-repeat;
-    background-size: auto 100%;
-  }
-}
-
-.ratingNumber {
-  font-size: 1.2rem;
-  color: #999;
-  font-weight: 600;
-}
 
 .info { 
   background-color: rgba(0, 0, 0, 0.307);
@@ -516,6 +515,7 @@ export default {
   padding-bottom: 4rem;
   @media (min-width: $breakpoint-medium) { display: flex; }
 }
+
 .left {
   display: none;
   @media (min-width: $breakpoint-medium) {
@@ -526,10 +526,12 @@ export default {
   }
   @media (min-width: $breakpoint-large) { padding-right: 5rem; }
 }
+
 .right {
   padding-top: 1rem;
   @media (min-width: $breakpoint-medium) { flex: 1; }
 }
+
 .poster {
   position: relative;
   height: 0;
@@ -540,6 +542,7 @@ export default {
   img, span { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
   span { display: flex; align-items: center; justify-content: center; }
 }
+
 .overview {
   max-width: 1000px;
   margin-bottom: 3rem;
@@ -547,6 +550,7 @@ export default {
   color: $text-color;
   @media (min-width: $breakpoint-large) { font-size: 1.6rem; }
 }
+
 .title {
   margin-bottom: 1rem;
   font-size: 1.8rem;
@@ -554,6 +558,7 @@ export default {
   letter-spacing: $letter-spacing;
   @media (min-width: $breakpoint-large) { font-size: 2.4rem; }
 }
+
 .stats {
   margin-bottom: 3rem;
   font-size: 1.5rem;
@@ -567,12 +572,16 @@ export default {
   }
   a { color: #8AE8FC; text-decoration: none; }
 }
+
 .label {
   flex: 1; max-width: 90px; margin-right: 1.5rem; color: #fff;
   @media (min-width: $breakpoint-xsmall) { max-width: 110px; }
 }
+
 .value { flex: 2; }
+
 .watchSection { margin-bottom: 2rem; }
+
 .external {
   ul { display: flex; margin-left: -0.5rem; }
   a {
@@ -581,8 +590,50 @@ export default {
     &:hover, &:focus { svg { fill: $fourth-color; } }
   }
 }
-.followButton { display: inline-flex; margin-top: 1rem; align-items: center; gap: 0.8rem; padding: 1.5rem 2.5rem; background: linear-gradient(315deg, #0A1E26, #11323F, #1A4453); border-radius: 12px; color: #fff; font-size: 1.5rem; font-weight: 500; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s; @media (min-width: $breakpoint-large) { font-size: 1.6rem; } &:hover, &:focus { background: linear-gradient(315deg, #0A1E26, #11323F, #35758B); color: #8BE9FD; box-shadow: 0 0 3px rgba(156, 156, 156, 0.269); transform: scale(1.05); svg { stroke: #8BE9FD; fill: #8BE9FD; } } &:disabled { opacity: 0.5; cursor: not-allowed; } svg { flex-shrink: 0; transition: all 0.2s; } }
-.following { background: #8BE9FD; color: #000; svg { stroke: #000; fill: #000; } &:hover, &:focus { background: linear-gradient(315deg, #0A1E26, #11323F, #35758B); color: #8BE9FD; box-shadow: 0 0 3px rgba(156, 156, 156, 0.269); transform: scale(1.05); svg { stroke: #8BE9FD; fill: #8BE9FD; } } }
+
+.followButton { 
+  display: inline-flex; 
+  margin-top: 1rem; 
+  align-items: center; 
+  gap: 0.8rem; 
+  padding: 1.5rem 2.5rem; 
+  background: linear-gradient(315deg, #0A1E26, #11323F, #1A4453); 
+  border-radius: 12px; 
+  color: #fff; 
+  font-size: 1.5rem; 
+  font-weight: 500; 
+  letter-spacing: 0.05em; 
+  cursor: pointer; 
+  transition: all 0.2s; 
+  
+  @media (min-width: $breakpoint-large) { font-size: 1.6rem; } 
+  
+  &:hover, &:focus { 
+    background: linear-gradient(315deg, #0A1E26, #11323F, #35758B); 
+    color: #8BE9FD; 
+    box-shadow: 0 0 3px rgba(156, 156, 156, 0.269); 
+    transform: scale(1.05); 
+    svg { stroke: #8BE9FD; fill: #8BE9FD; } 
+  } 
+  
+  &:disabled { opacity: 0.5; cursor: not-allowed; } 
+  svg { flex-shrink: 0; transition: all 0.2s; } 
+}
+
+.following { 
+  background: #8BE9FD; 
+  color: #000; 
+  
+  svg { stroke: #000; fill: #000; } 
+  
+  &:hover, &:focus { 
+    background: linear-gradient(315deg, #0A1E26, #11323F, #35758B); 
+    color: #8BE9FD; 
+    box-shadow: 0 0 3px rgba(156, 156, 156, 0.269); 
+    transform: scale(1.05); 
+    svg { stroke: #8BE9FD; fill: #8BE9FD; } 
+  } 
+}
 
 .reviewsHeader {
   display: flex;
@@ -634,6 +685,8 @@ export default {
   }
 }
 
+
+
 .reviewCard {
   background-color: rgba(9, 25, 31, 0.6);
   border-radius: 8px;
@@ -667,6 +720,7 @@ export default {
     margin-bottom: 0.5rem;
   }
 }
+
 
 .reviewMeta {
   display: flex;
@@ -719,43 +773,17 @@ export default {
 .reviewActions {
   display: flex;
   justify-content: flex-end;
-  align-items: center;
   margin-top: 1rem;
-  gap: 1rem;
-}
-
-.toggleTranslationBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 3.2rem;
-  background-color: rgba(138, 232, 252, 0.1);
-  color: #8AE8FC;
-  border: 1px solid rgba(138, 232, 252, 0.3);
-  padding: 0 1.2rem;
-  border-radius: 4px;
-  font-size: 1.2rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background-color: rgba(138, 232, 252, 0.2);
-    border-color: #8AE8FC;
-    transform: translateY(-1px);
-  }
 }
 
 .viewReviewButton {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  height: 3.2rem;
   gap: 0.5rem;
   background-color: transparent;
   color: #8AE8FC;
   border: 1px solid #8AE8FC;
-  padding: 0 1.2rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 4px;
   font-size: 1.2rem;
   font-weight: 600;
@@ -773,6 +801,61 @@ export default {
   }
 }
 
+.noReviews {
+  text-align: center;
+  font-size: 1.6rem;
+  color: #999;
+  padding: 4rem;
+  font-style: italic;
+}
+
+
+
+.reviewRatingContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.stars {
+  width: 7.3rem;
+  height: 1.2rem;
+  background-image: url('@/assets/images/stars.png');
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  margin-bottom: 0.2rem;
+
+  > div {
+    height: 100%;
+    background-image: url('@/assets/images/stars-filled.png');
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+  }
+}
+
+.toggleTranslationBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 3.2rem;
+  background-color: rgba(138, 232, 252, 0.1);
+  color: #8AE8FC;
+  border: 1px solid rgba(138, 232, 252, 0.3);
+  padding: 0 1.2rem;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 1rem;
+  
+  &:hover {
+    background-color: rgba(138, 232, 252, 0.2);
+    border-color: #8AE8FC;
+    transform: translateY(-1px);
+  }
+}
+
 .translationLoader {
   display: flex;
   flex-direction: column;
@@ -782,24 +865,16 @@ export default {
   min-height: 200px;
 }
 
-.loaderText {
-  margin-top: 1.5rem;
-  font-size: 1.6rem;
-  color: #8AE8FC;
-  font-weight: 600;
-  text-align: center;
-}
-
-.noReviews {
-  text-align: center;
-  font-size: 1.6rem;
+.ratingNumber {
+  font-size: 1.2rem;
   color: #999;
-  padding: 4rem;
-  font-style: italic;
+  font-weight: 600;
 }
 </style>
 
 <style lang="scss" scoped>
+@use '~/assets/css/utilities/variables' as *;
+
 .recommendations-wrapper {
   background-color: #000;
   width: 100%;
@@ -819,7 +894,7 @@ export default {
 .tabs-container {
   width: 100%;
   top: 1.5rem;
-  position:relative;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -912,5 +987,4 @@ export default {
     pointer-events: none;
   }
 }
-
 </style>

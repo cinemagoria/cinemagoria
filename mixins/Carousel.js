@@ -1,10 +1,7 @@
-/**
- * Carousel
- */
 import smoothscroll from 'smoothscroll-polyfill';
 
 export default {
-  data () {
+  data() {
     return {
       elementWidth: 0,
       carouselWidth: 0,
@@ -16,22 +13,23 @@ export default {
     };
   },
 
-  mounted () {
+  mounted() {
     smoothscroll.polyfill();
     window.addEventListener('resize', this.resizeEvent);
   },
 
-  beforeDestroy () {
+  beforeDestroy() {
     window.removeEventListener('resize', this.resizeEvent);
   },
 
   methods: {
-    calculateState (numberOfItems) {
-      if (!this.$refs.carouselElement || !this.$refs.carouselElement.firstChild) {
+    calculateState(numberOfItems) {
+      if (!this.$refs.carouselElement || !this.$refs.carouselElement.firstElementChild) {
         return;
       }
+
       let unusableVisibleWidth = 72;
-      const elementWidth = this.$refs.carouselElement.firstChild.getBoundingClientRect().width;
+      const elementWidth = this.$refs.carouselElement.firstElementChild.getBoundingClientRect().width;
       const carouselWidth = numberOfItems * elementWidth;
       const maximumPosition = this.$refs.carouselElement.scrollWidth;
 
@@ -50,21 +48,21 @@ export default {
       this.disableRightButton = visibleWidth >= carouselWidth;
     },
 
-    moveTo (width) {
+    moveTo(width) {
       this.$refs.carouselElement.scrollTo({
         left: width,
         behavior: 'smooth',
       });
     },
 
-    moveToClickEvent (direction) {
+    moveToClickEvent(direction) {
       const invisible = this.$refs.carouselElement.scrollLeft + (direction === 'left' ? -this.visibleWidth + 1 : this.visibleWidth);
       const remainder = invisible - invisible % this.elementWidth;
 
       this.moveTo(remainder);
     },
 
-    scrollEvent () {
+    scrollEvent() {
       const scrollLeft = this.$refs.carouselElement.scrollLeft;
       const end = this.maximumPosition - this.visibleWidth - this.elementWidth;
 

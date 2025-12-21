@@ -6,13 +6,13 @@
         v-model="activeType"
         @change="filterVideos">
         <option value="all">
-          All
+          Todos
         </option>
         <option
           v-for="type in videoTypes"
           :key="`video-type-${type}`"
           :value="type">
-          {{ type }}
+          {{ formatVideoType(type) }}
         </option>
       </select>
 
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { getYouTubeVideo } from '~/api';
+import { getYouTubeVideo } from '~/utils/api';
 import VideosItem from '~/components/VideosItem';
 import Modal from '~/components/Modal';
 
@@ -85,19 +85,25 @@ export default {
     handleData () {
       const ids = this.videos.map(video => video.key).join(',');
 
-
       this.videos.forEach((video) => {
-        this.$set(video, 'thumb', `https://img.youtube.com/vi/${video.key}/mqdefault.jpg`);
-        this.$set(video, 'src', `https://www.youtube.com/embed/${video.key}?rel=0&showinfo=0&autoplay=1`);
-        this.$set(video, 'url', `https://youtube.com/watch?v=${video.key}`);
+        video.thumb = `https://img.youtube.com/vi/${video.key}/mqdefault.jpg`;
+        video.src = `https://www.youtube.com/embed/${video.key}?rel=0&showinfo=0&autoplay=1`;
+        video.url = `https://youtube.com/watch?v=${video.key}`;
       });
 
       getYouTubeVideo(ids).then((response) => {
+        if (!response || !response.items || !Array.isArray(response.items)) {
+          console.warn('YouTube API response invalid or empty');
+          return;
+        }
+        
         for (let index = 0; index < this.videos.length; index++) {
-          if (response.items[index]) {
-            this.$set(this.videos[index], 'duration', response.items[index].contentDetails.duration);
+          if (response.items[index] && response.items[index].contentDetails) {
+            this.videos[index].duration = response.items[index].contentDetails.duration;
           }
         }
+      }).catch((error) => {
+        console.error('YouTube API error:', error);
       });
     },
 
@@ -113,6 +119,19 @@ export default {
     closeModal () {
       this.modalVisible = false;
       this.modalStartAt = 0;
+    },
+
+    formatVideoType(type) {
+      const map = {
+        'Trailer': 'Tráiler',
+        'Teaser': 'Teaser',
+        'Clip': 'Clip',
+        'Featurette': 'Reportaje',
+        'Behind the Scenes': 'Detrás de cámaras',
+        'Bloopers': 'Tomas falsas',
+        'Opening Credits': 'Créditos iniciales'
+      };
+      return map[type] || type;
     },
   },
 };

@@ -2,8 +2,9 @@
   <div
     v-if="isOpen"
     style="border-radius:12px;"
-    class="alert alert--default alert--bottom"> 
-    <p>¿Quieres <a href="#" @click.prevent="install">Añadir a 'EnterCinema' en tu pantalla de inicio?</a></p>
+    class="alert alert--default alert--bottom">
+    
+    <p>¿Quiere <a href="#" @click.prevent="install">Añadir a 'EnterCinema' en su pantalla de inicio?</a></p>
 
     <button
       class="alert__close"
@@ -88,7 +89,7 @@ export default {
     left: 50%;
     transform: translateX(-50%);
     z-index: 2000;
-    border-radius: 12px;
+    border-radius: 10px;
 }
 
 .alert__close {

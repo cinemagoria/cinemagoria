@@ -1,7 +1,7 @@
 <template>
   <div>
     <main class="main">
-      <section class="profile-section">
+      <section class="watchlist-section">
         <UserNav @show-rated-modal="showRatedItems" />
         <br>
         <nav class="navbar">
@@ -9,45 +9,44 @@
         </nav>
         
         <div v-if="isLoadingFavorites" class="loading-state">
-          <div style="display: flex; flex-direction: column; margin-top: 40px; align-items: center; justify-content: center; width: 100%; text-align: center;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44" stroke="#2196f3">
-              <g fill="none" fill-rule="evenodd" stroke-width="2">
-                <circle cx="22" cy="22" r="1">
-                  <animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/>
-                  <animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/>
-                </circle>
-                <circle cx="22" cy="22" r="1">
-                  <animate attributeName="r" begin="-0.9s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/>
-                  <animate attributeName="stroke-opacity" begin="-0.9s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/>
-                </circle>
-              </g>
-            </svg>
-            <p style="margin: 20px 0 0 0;">Cargando tus favoritos...</p>
-          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44" stroke="#2196f3">
+            <g fill="none" fill-rule="evenodd" stroke-width="2">
+              <circle cx="22" cy="22" r="1">
+                <animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/>
+                <animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="22" cy="22" r="1">
+                <animate attributeName="r" begin="-0.9s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/>
+                <animate attributeName="stroke-opacity" begin="-0.9s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/>
+              </circle>
+            </g>
+          </svg>
+          <p>Cargando tus favoritos...</p>
         </div>
 
         <div v-else-if="showEmptyState" class="empty-state-container">
-          <img src="~/static/cinema-popcorn.svg" alt="Sin favoritos" class="empty-state-icon">
-          <h3>No hay favoritos agregados todavía</h3>
+          <img src="/cinema-popcorn.svg" alt="No favorites" class="empty-state-icon">
+          <h3>Aún no hay favoritos añadidos</h3>
           <p>
-            Comienza a armar tu lista agregando
-            <nuxt-link to="/movie" class="empty-state-link">películas</nuxt-link> 
+            ¡Empieza a crear tu lista añadiendo 
+            <nuxt-link to="/movie" class="empty-state-link">Películas</nuxt-link> 
             y 
-            <nuxt-link to="/tv" class="empty-state-link">series de TV</nuxt-link> 
+            <nuxt-link to="/tv" class="empty-state-link">Series</nuxt-link> 
             que quieras ver!
           </p>
         </div>
 
         <div v-else>
           <div class="column">
-            <h2 class="title-secondary" style="color: #acafb5; font-size: 16px;">{{ filterText }} Favoritas</h2>
+            <h2 class="title-secondary" style="color: #acafb5; font-size: 16px;">{{ filterText }}</h2>
             
-            <div class="new-controls-container">
+             <div class="new-controls-container">
               <label class="switch">
                 <input type="checkbox" :checked="filter === 'tvShows'" @change="toggleFilterType">
                 <span>Películas</span>
-                <span>Series TV</span>
+                <span>Series</span>
               </label>
+              
               
               <div class="action-buttons">
                 <button class="control-btn" @click="openFiltersModal">
@@ -60,9 +59,9 @@
 
                 <button class="control-btn ai-analysis-btn" @click="toggleAiSelectionMode" :class="{ 'active': aiSelectionMode }">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"/>
+                    <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09 3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423 1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0-1.423 1.423Z"/>
                   </svg>
-                  <span class="btn-label">IA</span>
+                  <span class="btn-label">AI</span>
                 </button>
               </div>
             </div>
@@ -78,26 +77,25 @@
                   <button @click="removeFilter(chip.value)" class="chip-remove">×</button>
                 </div>
               </div>
-              <button @click="clearAllFilters" class="clear-all-inline">Limpiar Todo</button>
+              <button @click="clearAllFilters" class="clear-all-inline">Borrar Todo</button>
             </div>
           </div>
 
           <div v-if="showTabEmptyState" class="empty-state-container">
-            <img src="~/static/cinema-popcorn.svg" alt="Sin contenido" class="empty-state-icon">
+            <img src="/cinema-popcorn.svg" alt="No content" class="empty-state-icon">
             <h3>{{ emptyStateMessage }}</h3>
-            <p>¡Cambia de pestaña para ver tus {{ filter === 'movies' ? 'series de TV' : 'películas' }}!</p>
+            <p>¡Cambia de pestaña para ver tus {{ filter === 'movies' ? 'series' : 'películas' }}!</p>
           </div>
           
           <div v-else-if="(filteredItems.length === 0 || itemsToShow.length === 0) && hasActiveFilters" class="no-results-state">
-            <img src="~/static/cinema-popcorn.svg" alt="Sin resultados" class="no-results-icon">
+            <img src="/cinema-popcorn.svg" alt="No hay resultados" class="no-results-icon">
             <h3>No se encontraron resultados</h3>
-            <p>No pudimos encontrar contenido que coincida con tus filtros actuales.</p>
+            <p>No pudimos encontrar contenido que coincida con tus filtros.</p>
             <p class="suggestion">Intenta ajustar o limpiar algunos filtros para ver más resultados.</p>
-            <button @click="clearAllFilters" class="refine-filters-btn">Limpiar Todos los Filtros</button>
+            <button @click="clearAllFilters" class="refine-filters-btn">Borrar Todos los Filtros</button>
           </div>
           
           <div v-else>
-            <!-- AI Selection Mode Banner -->
             <div v-if="aiSelectionMode" class="ai-selection-banner">
               <div class="banner-content">
                 <div class="selection-info">
@@ -106,7 +104,7 @@
                   </svg>
                   <span>
                     Seleccionado: {{ selectedMoviesCount }} {{ selectedMoviesCount === 1 ? 'película' : 'películas' }}, {{ selectedTvShowsCount }} {{ selectedTvShowsCount === 1 ? 'serie' : 'series' }}
-                    <span class="limit-text">(máx 10 cada uno)</span>
+                    <span class="limit-text">(máx 10 c/u)</span>
                   </span>
                   <div class="info-icon-wrapper" @click.stop="toggleSelectionInfo" title="Learn about AI Analysis">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -172,7 +170,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-step-back-icon lucide-step-back"><path d="M13.971 4.285A2 2 0 0 1 17 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432z"/><path d="M21 20V4"/></svg>
               </button>
               <span class="pagination-text-container">
-                <label for="page" class="pagination-label">Pág.</label>
+                <label for="page" class="pagination-label">Página</label>
                 <input type="number" id="page" class="pagination-input" v-model.number="currentPage" min="1" :max="totalPages" @change="validatePageInput">
               </span>
               <span class="pagination-text">de <span class="pagination-number">{{ totalPages }}</span></span>
@@ -186,7 +184,6 @@
             
             <div class="movie-grid">
               <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card" :class="{ 'selection-mode': aiSelectionMode, 'selected': aiSelectionMode && isItemSelected(item), 'disabled': aiSelectionMode && !canSelectItem(item) && !isItemSelected(item) }">
-                <!-- Selection Checkbox (only in AI selection mode) - Top Right -->
                 <div v-if="aiSelectionMode" class="selection-checkbox" @click.stop="toggleItemSelection(item)">
                   <div class="checkbox-wrapper">
                     <input type="checkbox" :checked="isItemSelected(item)" :disabled="!canSelectItem(item)" @click.prevent>
@@ -204,7 +201,6 @@
                   </div>
 
                   
-                  <!-- Replaced nuxt-link with div for click interception -->
                   <nuxt-link :to="getLink(item)" class="item-link">
                     <div class="poster-container">
                       <div v-show="!imageLoadStates[item.details.idForDb]" class="poster-loader">
@@ -260,7 +256,7 @@
                           <span class="vote-count" v-if="item.details.imdb_votes">({{ formatVoteCount(item.details.imdb_votes) }})</span>
                         </div>
                         <div v-else-if="item.details.starsForDb" class="rating-item">
-                          <img src="~static/tmdb.svg" alt="TMDB" class="rating-logo tmdb">
+                          <img src="/tmdb.svg" alt="TMDB" class="rating-logo tmdb">
                           <span class="rating-score">{{ formatRating(item.details.starsForDb) }}</span>
                            <span class="vote-count" v-if="item.details.vote_count">({{ formatVoteCount(item.details.vote_count) }})</span>
                         </div>
@@ -289,7 +285,7 @@
                             <polyline points="3 6 5 6 21 6"></polyline>
                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                           </svg>
-                          Borrar
+                          Eliminar
                         </div>
                       </div>
                     </transition>
@@ -306,7 +302,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-step-back-icon lucide-step-back"><path d="M13.971 4.285A2 2 0 0 1 17 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432z"/><path d="M21 20V4"/></svg>
               </button>
               <span class="pagination-text-container">
-                <label for="page" class="pagination-label">Pág.</label>
+                <label for="page" class="pagination-label">Página</label>
                 <input type="number" id="page" class="pagination-input" v-model.number="currentPage" min="1" :max="totalPages" @change="validatePageInput">
               </span>
               <span class="pagination-text">de <span class="pagination-number">{{ totalPages }}</span></span>
@@ -350,7 +346,7 @@
                 <textarea
                   v-model="userReview"
                   :placeholder="selectedRating > 0 ? 
-                    ratingDescriptions[selectedRating - 1] : 'Selecciona una valoración primero'"
+                    ratingDescriptions[selectedRating - 1] : 'Selecciona una calificación primero'"
                   class="review-textarea"
                   maxlength="500"
                   :disabled="selectedRating === 0"
@@ -364,7 +360,7 @@
                   @click="removeRating" 
                   class="remove-rating-btn"
                 >
-                  <span style="position:relative; margin:0 auto;">Borrar Valoración</span>
+                  <span style="position:relative; margin:0 auto;">Eliminar Calificación</span>
                 </button>
                 
                 <button 
@@ -382,7 +378,7 @@
         <div v-if="filtersModalVisible" class="modal-overlay" @click="closeFiltersModal">
           <div class="filters-modal" @click.stop>
             <div class="modal-header">
-              <h3>Filtros y Orden</h3>
+              <h3>Filtros y Ordenar</h3>
               <button class="close-btn" @click="closeFiltersModal">×</button>
             </div>
             
@@ -391,7 +387,7 @@
                 <label class="filter-label">Género</label>
                 <div class="custom-select" @click="toggleGenreDropdown">
                   <div class="select-display">
-                    <span>{{ getGenreLabel(selectedGenre) || 'Todos los géneros' }}</span>
+                    <span>{{ selectedGenre || 'Todos los géneros' }}</span>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" :class="{ 'rotate-180': genreDropdownOpen }">
                       <path d="M7 10l5 5 5-5z"/>
                     </svg>
@@ -406,13 +402,13 @@
                     </div>
                     
                     <div 
-                      v-for="genreObj in uniqueSortedGenres" 
-                      :key="genreObj.value" 
+                      v-for="genre in uniqueSortedGenres" 
+                      :key="genre" 
                       class="dropdown-option"
-                      :class="{ selected: selectedGenre === genreObj.value }"
-                      @click.stop="selectGenre(genreObj.value)"
+                      :class="{ selected: selectedGenre === genre }"
+                      @click.stop="selectGenre(genre)"
                     >
-                      {{ genreObj.label }}
+                      {{ genre }}
                     </div>
                   </div>
                 </div>
@@ -451,15 +447,16 @@
                 </div>
               </div>
               
+                
               <div class="filter-group">
-                <label class="filter-label">Rango Puntaje IMDB</label>
+                <label class="filter-label">Rango de Calificación IMDB</label>
                 <div class="year-inputs">
                   <input 
                     type="number" 
                     v-model.number="minImdbRating" 
                     min="0" 
                     max="10"
-                    placeholder="Min"
+                    placeholder="Mín"
                     class="year-input"
                   >
                   <span class="year-separator">-</span>
@@ -468,19 +465,19 @@
                     v-model.number="maxImdbRating" 
                     min="0" 
                     max="10"
-                    placeholder="Max"
+                    placeholder="Máx"
                     class="year-input"
                   >
                 </div>
               </div>
 
               <div class="filter-group">
-                <label class="filter-label">Rango Votos IMDB</label>
+                <label class="filter-label">Rango de Votos IMDB</label>
                 <div class="year-inputs">
                   <input 
                     type="number" 
                     v-model.number="minImdbVotes" 
-                    min="0" 
+                    min="0"
                     placeholder="Min"
                     class="year-input"
                   >
@@ -488,7 +485,7 @@
                   <input 
                     type="number" 
                     v-model.number="maxImdbVotes" 
-                    min="0" 
+                    min="0"
                     placeholder="Max"
                     class="year-input"
                   >
@@ -503,19 +500,20 @@
                   </option>
                 </select>
               </div>
+
               
               <div class="filter-group">
-                <label class="filter-label">Mi Puntaje</label>
+                <label class="filter-label">Mi Calificación</label>
                 <select v-model="selectedUserRating" class="filter-input">
-                  <option value="">Todos mis puntajes</option>
+                  <option value="">Todas mis calificaciones</option>
                   <option value="not-rated">Sin Valorar</option>
-                  <option value="10">Mi Puntaje: 10</option>
-                  <option value="9">Mi Puntaje: 9</option>
-                  <option value="8">Mi Puntaje: 8</option>
-                  <option value="7">Mi Puntaje: 7</option>
-                  <option value="6">Mi Puntaje: 6</option>
-                  <option value="5">Mi Puntaje: 5</option>
-                  <option value="1-4">Mi Puntaje: < 5</option>
+                  <option value="10">Mi Calificación: 10</option>
+                  <option value="9">Mi Calificación: 9</option>
+                  <option value="8">Mi Calificación: 8</option>
+                  <option value="7">Mi Calificación: 7</option>
+                  <option value="6">Mi Calificación: 6</option>
+                  <option value="5">Mi Calificación: 5</option>
+                  <option value="1-4">Mi Calificación: < 5</option>
                 </select>
               </div>
               
@@ -526,6 +524,7 @@
             </div>
           </div>
         </div>
+
 
 
         <div v-if="notificationModalVisible" class="modal-overlay" @click="closeNotificationModal">
@@ -540,37 +539,55 @@
             </div>
           </div>
         </div>
+
+        <div v-if="showSelectionInfo" class="modal-overlay" @click="toggleSelectionInfo">
+          <div class="info-modal" @click.stop>
+            <div class="modal-header">
+              <h3>Guía de Análisis IA</h3>
+              <button class="close-btn" @click="toggleSelectionInfo">×</button>
+            </div>
+            
+            <div class="info-modal-content">
+              <p class="info-intro">Has seleccionado elementos para analizar. Una vez que hagas clic en "Enviar a IA", tendrás dos opciones poderosas:</p>
+              
+              <div class="info-options-grid">
+                <div class="info-card">
+                  <div class="info-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  </div>
+                  <h4>Análisis General</h4>
+                  <p>Obtén un desglose completo de temas, prioridades de visualización y pros/contras de tu selección.</p>
+                </div>
+
+                <div class="info-card">
+                  <div class="info-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                  </div>
+                  <h4>Pregunta Personalizada</h4>
+                  <p>Pregunta cosas específicas como <em>"Recomienda películas similares"</em> o <em>"Compara estos estilos"</em>.</p>
+                </div>
+              </div>
+
+              <div class="info-footer">
+                <button @click="toggleSelectionInfo" class="got-it-btn">Entendido</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </section>
     </main>
   </div>
 </template>
 
 <script>
+
 import UserNav from '@/components/global/UserNav';
-import supabase from '@/services/supabase';
 
-async function getUserAvatar(userEmail) {
-  try {
-    const { data, error } = await supabase
-      .from('user_data')
-      .select('avatar')
-      .eq('email', userEmail);
-      
-    if (error) {
-      throw new Error('Error fetching user avatar:', error.message);
-    }
-
-    const userAvatar = data && data.length > 0 ? data[0]?.avatar : '/avatars/avatar-ss0.png';
-    return userAvatar;
-    
-  } catch (error) {
-    console.error('Error fetching user avatar:', error);
-    return '/avatars/avatar-ss0.png';
-  }
-}
 
 async function getUserName(userEmail) {
   try {
+    const supabase = useSupabaseClient();
     const { data, error } = await supabase
       .from('user_data')
       .select('first_name')
@@ -580,12 +597,11 @@ async function getUserName(userEmail) {
       throw new Error('Error fetching user first name:', error.message);
     }
 
-    const userName = data && data.length > 0 ? data[0]?.first_name || '' : '';
+    const userName = data[0]?.first_name|| '';
     return userName;
     
   } catch (error) {
     console.error('Error fetching user first_name:', error);
-    return '';
   }
 }
 
@@ -597,12 +613,15 @@ export default {
 
   head () {
     return {
-      title: 'EnterCinema - Lista de Favoritos.',
+      title: 'EnterCinema - Mi Lista.',
       meta: [
-        { hid: 'og:title', property: 'og:title', content: 'Lista de Favoritos' },
+        { hid: 'og:title', property: 'og:title', content: 'Mi Lista' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
       ],
     };
+  },
+  props: {
+    item: Object,
   },
   data() {
     return {
@@ -610,19 +629,26 @@ export default {
       isLoadingFavorites: false, 
       orderMode: 'latest-added',
       genreDropdownOpen: false,
-      fallbackImageUrl: "https://raw.githubusercontent.com/imprvhub/entercinema/es/static/image_not_found_yet_es.webp",
-      handleImageError: "this.src='https://raw.githubusercontent.com/imprvhub/entercinema/es/static/image_not_found_yet_es.webp'",
+      filteredSeriesDetails: [],
+      filtersModalVisible: false,
+      customYearStart: null,
+      customYearEnd: null,
+      currentYear: new Date().getFullYear(),
+      selectedLanguage: 'english',
+      fallbackImageUrl: "/image_not_found_yet_es.webp",
+      handleImageError: "this.src='/image_not_found_yet_es.webp'",
       userEmail: '',
       accessToken: '',
       isLoggedIn: false,
       favorites: [],
       moviesFetched: [],
+      notificationModalVisible: false,
+      notificationTitle: '',
+      notificationMessage: '',
       tvFetched: [],
-      orderText: 'Order Asc',
       currentPage: 1,
       itemsPerPage: 20,
       itemsPerRow: 4,
-      userAvatar: '/avatars/avatar-ss0.png',
       userFirstName: '', 
       isMenuOpen: false,
       filter: 'movies',
@@ -634,6 +660,9 @@ export default {
       tvGenres: [],
       years: [],
       resizeObserver: null,
+      ratingModalVisible: false,
+      currentRatingItem: null,
+      userReview: '',
       selectedRating: 0,
       hoverRating: 0,
       ratingDescriptions: [
@@ -653,23 +682,16 @@ export default {
       minImdbVotes: null,
       maxImdbVotes: null,
       selectedUserRating: '',
+      tmdbRatingRanges: [
+        '9-10', '8-8.9', '7-7.9', '6-6.9', '5-5.9', '0-4.9'
+      ],
       userRatingRanges: [
         '10', '9', '8', '7', '6', '5', '1-4'
       ],
-      filteredSeriesDetails: [],
-      filtersModalVisible: false,
-      ratingModalVisible: false,
-      currentRatingItem: null,
-      userReview: '',
-      customYearStart: null,
-      customYearEnd: null,
-      currentYear: new Date().getFullYear(),
       aiSelectionMode: false,
       selectedItems: [],
       aiAnalysisLoading: false,
-      notificationModalVisible: false,
-      notificationTitle: '',
-      notificationMessage: '',
+      showSelectionInfo: false,
       imageLoadStates: {},
       activeCardMenuId: null,
       undoBannerVisible: false,
@@ -677,28 +699,22 @@ export default {
       undoTimer: null,
     };
   },
+  setup() {
+    return { supabase: useSupabaseClient() }
+  },
   async mounted() {
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');
-    const authProvider = localStorage.getItem('auth_provider') || 'native';
-    
     this.userEmail = email || '';
     this.hasAccessToken = accessToken !== null;
     this.isLoggedIn = accessToken !== null;
-    this.isLoggedIn = accessToken !== null;
-    this.authProvider = authProvider;
-
-    this.restoreState();
-    await this.checkData();
-    this.userName = await getUserName(this.userEmail);
-
-    if (authProvider === 'native') {
-      await this.fetchUserFirstName();
-    } 
-
+    this.restoreState(); 
+    this.checkData();
+    await this.fetchUserFirstName();
+    
     this.$nextTick(() => {
       this.calculateItemsPerRow();
-      
+
       if (typeof ResizeObserver !== 'undefined') {
         this.resizeObserver = new ResizeObserver(this.handleResize);
         const gridElement = document.querySelector('.movie-grid');
@@ -710,8 +726,91 @@ export default {
       }
       document.addEventListener('click', this.closeCardMenu);
     });
-    this.$root.$on('rated-items-updated', this.checkData);
-    await this.fetchAndStoreSeriesDetails();
+
+    const detailsArray = this.tvFetched.map(({ details }) => details);
+    const currentYear = new Date().getFullYear();
+    const pastYearsLimit = currentYear - 5;
+
+    const filteredArray = detailsArray.filter(item => item.yearEndForDb >= pastYearsLimit);
+
+    const additionalSeries = detailsArray.filter(item => item.nextEpisode !== null && item.nextEpisode !== undefined);
+
+    const uniqueSeries = [...new Set([...filteredArray, ...additionalSeries])];
+
+    const seriesIds = uniqueSeries.map(item => item.idForDb);
+
+    const config = this.$config.public;
+
+    async function fetchSeriesDetails(seriesId) {
+        const apiKey = config.apiKey;
+        const apiLang = config.apiLang;
+        const url = `https://api.themoviedb.org/3/tv/${seriesId}?api_key=${apiKey}&language=${apiLang}`;
+        const options = {
+            method: 'GET',
+            headers: {
+                accept: 'application/json'
+            }
+        };
+
+        try {
+            const response = await fetch(url, options);
+            if (!response.ok) {
+                throw new Error('Error en la respuesta de la API');
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error al obtener detalles de la serie:', error);
+            return null;
+        }
+    }
+
+    async function fetchSeriesDetailsForIds(seriesIds) {
+        const seriesPromises = seriesIds.map(async id => await fetchSeriesDetails(id));
+        const seriesDetails = await Promise.all(seriesPromises);
+
+        function filterSeriesDetails(seriesDetails) {
+            return seriesDetails
+                .map(series => ({
+                    name: series.name,
+                    genres: series.genres.map(genre => ({ id: genre.id, name: genre.name })),
+                    nextEpisode: series.next_episode_to_air,
+                    stillPath: series.still_path,
+                    numberOfEpisodes: series.number_of_episodes,
+                    numberOfSeasons: series.number_of_seasons,
+                    firstAirDate: series.first_air_date,
+                    lastEpisode: series.last_episode_to_air
+                }))
+                .filter(series => series.nextEpisode !== undefined && series.nextEpisode !== null);
+        }
+
+        return filterSeriesDetails(seriesDetails);
+    }
+
+    const filteredSeriesDetails = await fetchSeriesDetailsForIds(seriesIds).catch(err => {
+        console.error('Error al obtener y filtrar detalles de las series:', err);
+        return [];
+    });
+
+    this.filteredSeriesDetails = filteredSeriesDetails;
+    
+    try {
+      const { data, error } = await this.supabase
+        .from('notifications') 
+        .upsert([{
+          user_email: this.userEmail,
+          series_releases_details: this.filteredSeriesDetails, 
+        }], { 
+          onConflict: ['user_email'], 
+        });
+
+      if (error) {
+        throw new Error('Error al guardar en la base de datos: ' + error.message);
+      }
+    } catch (error) {
+      console.error('Error al guardar en la base de datos:', error.message);
+    }
+    this.$bus.$on('rated-items-updated', this.checkData);
   },
 
   beforeDestroy() {
@@ -720,12 +819,16 @@ export default {
     } else {
       window.removeEventListener('resize', this.handleResize);
     }
-    this.$root.$off('rated-items-updated', this.checkData);
+    this.$bus.$off('rated-items-updated', this.checkData);
+    document.removeEventListener('click', this.closeCardMenu);
   },
-
+  
   watch: {
     selectedGenre() {
       this.currentPage = 1;
+      this.saveState();
+    },
+    filter() {
       this.saveState();
     },
     minImdbRating(newVal) {
@@ -758,6 +861,7 @@ export default {
       this.currentPage = 1;
       this.saveState();
     },
+
     customYearStart() {
       this.currentPage = 1;
       this.saveState();
@@ -792,7 +896,7 @@ export default {
         if (newItems && newItems.length) {
           newItems.forEach(item => {
             if (item.details && item.details.idForDb) {
-              this.$set(this.imageLoadStates, item.details.idForDb, false);
+              this.imageLoadStates[item.details.idForDb] = false;
             }
           });
           
@@ -805,15 +909,27 @@ export default {
   },
   
   methods: {
+    toggleCardMenu(id) {
+      if (this.activeCardMenuId === id) {
+        this.activeCardMenuId = null;
+      } else {
+        this.activeCardMenuId = id;
+      }
+    },
+    closeCardMenu(e) {
+      if (this.activeCardMenuId) {
+        this.activeCardMenuId = null;
+      }
+    },
     handleImageLoad(itemId) {
-      this.$set(this.imageLoadStates, itemId, true);
+      this.imageLoadStates[itemId] = true;
     },
 
     onImageError(event, itemId) {
       if (event.target.src !== this.fallbackImageUrl) {
         event.target.src = this.fallbackImageUrl;
-      } else {  
-        this.$set(this.imageLoadStates, itemId, true);
+      } else {
+        this.imageLoadStates[itemId] = true;
       }
     },
 
@@ -822,10 +938,14 @@ export default {
         if (item.details && item.details.idForDb) {
           const imgRef = this.$refs['poster-' + item.details.idForDb];
           if (imgRef && imgRef[0] && imgRef[0].complete) {
-            this.$set(this.imageLoadStates, item.details.idForDb, true);
+            this.imageLoadStates[item.details.idForDb] = true;
           }
         }
       });
+    },
+
+    toggleSelectionInfo() {
+      this.showSelectionInfo = !this.showSelectionInfo;
     },
 
     toggleFilterType(event) {
@@ -847,26 +967,6 @@ export default {
 
     closeFiltersModal() {
       this.filtersModalVisible = false;
-    },
-
-    toggleCardMenu(id) {
-      if (this.activeCardMenuId === id) {
-        this.activeCardMenuId = null;
-      } else {
-        this.activeCardMenuId = id;
-      }
-    },
-    closeCardMenu(e) {
-      if (this.activeCardMenuId) {
-        this.activeCardMenuId = null;
-      }
-    },
-    handleItemClick(item) {
-      if (this.activeCardMenuId) {
-        this.activeCardMenuId = null;
-        return;
-      }
-      this.$router.push(this.getLink(item));
     },
 
     removeFilter(filterValue) {
@@ -903,11 +1003,98 @@ export default {
       this.orderMode = 'latest-added';
       this.saveState();
     },
-    openRatingModal(item) {
-      if (this.activeCardMenuId) {
-        this.activeCardMenuId = null;
+    
+    toggleAiSelectionMode() {
+      this.aiSelectionMode = !this.aiSelectionMode;
+      if (!this.aiSelectionMode) {
+        this.selectedItems = [];
+        this.showSelectionInfo = false;
       }
+    },
+    
+    isItemSelected(item) {
+      return this.selectedItems.some(
+        selected => selected.tmdb_id === item.details.idForDb && selected.media_type === item.details.typeForDb
+      );
+    },
+    
+    canSelectItem(item) {
+      if (!this.aiSelectionMode) return true;
+      
+      if (this.isItemSelected(item)) return true;
+      
+      const mediaType = item.details.typeForDb;
+      if (mediaType === 'movie') {
+        return this.selectedMoviesCount < 10;
+      } else if (mediaType === 'tv') {
+        return this.selectedTvShowsCount < 10;
+      }
+      return false;
+    },
+    
+    toggleItemSelection(item) {
+      if (!this.canSelectItem(item) && !this.isItemSelected(item)) {
+        return;
+      }
+      
+      const itemIndex = this.selectedItems.findIndex(
+        selected => selected.tmdb_id === item.details.idForDb && selected.media_type === item.details.typeForDb
+      );
+      
+      if (itemIndex > -1) {
+        this.selectedItems.splice(itemIndex, 1);
+      } else {
+        this.selectedItems.push({
+          tmdb_id: item.details.idForDb,
+          media_type: item.details.typeForDb,
+          imdb_score: item.details.imdb_rating || null,
+          title: item.details.nameForDb,
+          year: item.details.yearStartForDb,
+          poster_path: item.details.posterForDb,
+          rating_source: item.details.rating_source,
+          tmdb_rating: item.details.starsForDb || null,
+          imdb_votes: item.details.imdb_votes || null,
+          user_rating: item.details.userRatingForDb && item.details.userRatingForDb !== '-' ? parseFloat(item.details.userRatingForDb) : null
+        });
+      }
+    },
+    
+    cancelSelection() {
+      this.aiSelectionMode = false;
+      this.selectedItems = [];
+      this.showSelectionInfo = false;
+    },
+    
+    closeNotificationModal() {
+      this.notificationModalVisible = false;
+      this.notificationTitle = '';
+      this.notificationMessage = '';
+    },
 
+    async sendToAI() {
+      if (this.selectedItems.length === 0) {
+        this.notificationTitle = 'Selection Required';
+        this.notificationMessage = 'Please select at least one item';
+        this.notificationModalVisible = true;
+        return;
+      }
+      
+
+      const preparedItems = this.selectedItems.map(item => ({
+        ...item,
+        user_rating: item.user_rating || null
+      }));
+
+      this.$bus.$emit('open-chatbot-with-selection', {
+        selectedItems: preparedItems
+      });
+
+      this.aiSelectionMode = false;
+      this.selectedItems = [];
+      this.showSelectionInfo = false;
+    },
+    
+    openRatingModal(item) {
       this.currentRatingItem = item;
       
       if (item.details.userRatingForDb && item.details.userRatingForDb !== '-') {
@@ -938,10 +1125,19 @@ export default {
       this.hoverRating = rating;
     },
 
+    filterByTmdbRating(event) {
+      this.selectedTmdbRating = event.target.value;
+    },
+    
+    filterByUserRating(event) {
+      this.selectedUserRating = event.target.value;
+    },
+
     resetPreview() {
       this.hoverRating = 0;
     },
-    
+
+
     async saveRatingAndReview() {
     if (this.selectedRating === 0) {
         alert('Please select a rating between 1 and 10');
@@ -1021,108 +1217,8 @@ export default {
       }
     },
 
-    async fetchAndStoreSeriesDetails() {
-      try {
-        if (!this.tvFetched || this.tvFetched.length === 0) return;
-        
-        const detailsArray = this.tvFetched.map(({ details }) => details).filter(Boolean);
-        const currentYear = new Date().getFullYear();
-        const pastYearsLimit = currentYear - 5;
-
-        const filteredArray = detailsArray.filter(item => 
-          item && item.yearEndForDb && item.yearEndForDb >= pastYearsLimit
-        );
-
-        const additionalSeries = detailsArray.filter(item => 
-          item && item.nextEpisode !== null && item.nextEpisode !== undefined
-        );
-
-        const uniqueSeries = [...new Set([...filteredArray, ...additionalSeries])];
-        const seriesIds = uniqueSeries.map(item => item.idForDb).filter(Boolean);
-
-        if (seriesIds.length === 0) return;
-
-        const seriesDetails = await this.fetchSeriesDetailsForIds(seriesIds);
-        this.filteredSeriesDetails = seriesDetails;
-
-        if (this.userEmail) {
-          await this.storeSeriesDetailsInDatabase();
-        }
-      } catch (error) {
-        console.error('Error en fetchAndStoreSeriesDetails:', error);
-      }
-    },
-
-    async fetchSeriesDetails(seriesId) {
-      try {
-        const apiKey = process.env.API_KEY;
-        const apiLang = 'es-ES';
-        const url = `https://api.themoviedb.org/3/tv/${seriesId}?api_key=${apiKey}&language=${apiLang}`;
-        const options = {
-          method: 'GET',
-          headers: {
-            accept: 'application/json',
-            Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
-          }
-        };
-
-        const response = await fetch(url, options);
-        if (!response.ok) {
-          throw new Error('Error en la respuesta de la API');
-        }
-        
-        return await response.json();
-      } catch (error) {
-        console.error('Error al obtener detalles de la serie:', error);
-        return null;
-      }
-    },
-
-    async fetchSeriesDetailsForIds(seriesIds) {
-      try {
-        const seriesPromises = seriesIds.map(id => this.fetchSeriesDetails(id));
-        const seriesDetails = await Promise.all(seriesPromises);
-
-        return seriesDetails
-          .filter(Boolean)
-          .map(series => ({
-            name: series.name,
-            genres: series.genres ? series.genres.map(genre => ({ id: genre.id, name: genre.name })) : [],
-            nextEpisode: series.next_episode_to_air,
-            stillPath: series.still_path,
-            numberOfEpisodes: series.number_of_episodes,
-            numberOfSeasons: series.number_of_seasons,
-            firstAirDate: series.first_air_date,
-            lastEpisode: series.last_episode_to_air
-          }))
-          .filter(series => series.nextEpisode !== undefined && series.nextEpisode !== null);
-      } catch (error) {
-        console.error('Error al obtener y filtrar detalles de las series:', error);
-        return [];
-      }
-    },
-
-    async storeSeriesDetailsInDatabase() {
-      try {
-        const { error } = await supabase
-          .from('notifications')
-          .upsert([{
-            user_email: this.userEmail,
-            series_releases_details: this.filteredSeriesDetails,
-          }], { 
-            onConflict: ['user_email'],
-          });
-
-        if (error) {
-          throw new Error('Error al guardar en la base de datos: ' + error.message);
-        }
-      } catch (error) {
-        console.error('Error al guardar en la base de datos:', error.message);
-      }
-    },
-
     showRatedItems() {
-      this.$root.$emit('show-rated-modal');
+      this.$bus.$emit('show-rated-modal');
     },
 
     handleResize() {
@@ -1284,40 +1380,6 @@ export default {
       }
     },
 
-    getGenreLabel(genre) {
-      if (!genre) return '';
-      const genreMap = {
-        'Action': 'Acción',
-        'Adventure': 'Aventura',
-        'Animation': 'Animación',
-        'Comedy': 'Comedia',
-        'Crime': 'Crimen',
-        'Documentary': 'Documental',
-        'Drama': 'Drama',
-        'Family': 'Familia',
-        'Fantasy': 'Fantasía',
-        'History': 'Historia',
-        'Horror': 'Terror',
-        'Music': 'Música',
-        'Mystery': 'Misterio',
-        'Romance': 'Romance',
-        'Science Fiction': 'Ciencia Ficción',
-        'TV Movie': 'Película de TV',
-        'Thriller': 'Suspenso',
-        'War': 'Guerra',
-        'Western': 'Western',
-        'Action & Adventure': 'Acción y Aventura',
-        'Kids': 'Niños',
-        'News': 'Noticias',
-        'Reality': 'Reality',
-        'Sci-Fi & Fantasy': 'Ciencia Ficción y Fantasía',
-        'Soap': 'Telenovela',
-        'Talk': 'Talk Show',
-        'War & Politics': 'Guerra y Política'
-      };
-      return genreMap[genre] || genre;
-    },
-
     removeFavorite(item) {
       if (!item || !item.details) {
         console.error('Item or item details are undefined:', item);
@@ -1383,7 +1445,7 @@ export default {
 
         if (!response.ok) {
              const errText = await response.text();
-             throw new Error(`Error al restaurar el elemento: ${errText}`);
+             throw new Error(`Failed to restore favorite: ${errText}`);
         }
         
         if (userRatingForDb && userRatingForDb !== '-') {
@@ -1410,7 +1472,7 @@ export default {
         
       } catch (e) {
         console.error('Error restoring favorite:', e);
-        alert(`No se pudo restaurar el elemento: ${e.message}`);
+        alert(`Failed to restore item: ${e.message}`);
       }
     },
 
@@ -1510,13 +1572,9 @@ export default {
       this.currentPage = this.totalPages;
     },
 
-    filterByTmdbRating(event) {
-      this.selectedTmdbRating = event.target.value;
-    },
-    
-    filterByUserRating(event) {
-      this.selectedUserRating = event.target.value;
-    },
+    goToLogin() {
+        this.$router.push('/login');
+      },
 
     getLink(item) {
       if (item.details.typeForDb === 'movie') {
@@ -1527,10 +1585,16 @@ export default {
         return '#'; 
       }
     },
-    
+
+    handleItemClick(item) {
+      const link = this.getLink(item);
+      if (link && link !== '#') {
+        this.$router.push(link);
+      }
+    },
     async fetchUserFirstName() {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await this.supabase
           .from('auth_user')
           .select('first_name')
           .eq('email', this.userEmail);
@@ -1544,93 +1608,7 @@ export default {
         console.error('Error fetching user first name:', error);
       }
     },
-
-    toggleAiSelectionMode() {
-      this.aiSelectionMode = !this.aiSelectionMode;
-      if (!this.aiSelectionMode) {
-        this.selectedItems = [];
-      }
-    },
     
-    isItemSelected(item) {
-      return this.selectedItems.some(
-        selected => selected.tmdb_id === item.details.idForDb && selected.media_type === item.details.typeForDb
-      );
-    },
-    
-    canSelectItem(item) {
-      if (!this.aiSelectionMode) return true;
-      
-      if (this.isItemSelected(item)) return true;
-      
-      const mediaType = item.details.typeForDb;
-      if (mediaType === 'movie') {
-        return this.selectedMoviesCount < 10;
-      } else if (mediaType === 'tv') {
-        return this.selectedTvShowsCount < 10;
-      }
-      return false;
-    },
-    
-    toggleItemSelection(item) {
-      if (!this.canSelectItem(item) && !this.isItemSelected(item)) {
-        return;
-      }
-      
-      const itemIndex = this.selectedItems.findIndex(
-        selected => selected.tmdb_id === item.details.idForDb && selected.media_type === item.details.typeForDb
-      );
-      
-      if (itemIndex > -1) {
-        this.selectedItems.splice(itemIndex, 1);
-      } else {
-        this.selectedItems.push({
-          tmdb_id: item.details.idForDb,
-          media_type: item.details.typeForDb,
-          imdb_score: item.details.imdb_rating || null,
-          title: item.details.nameForDb,
-          year: item.details.yearStartForDb,
-          poster_path: item.details.posterForDb,
-          rating_source: item.details.rating_source,
-          tmdb_rating: item.details.starsForDb || null,
-          imdb_votes: item.details.imdb_votes || null,
-          user_rating: item.details.userRatingForDb && item.details.userRatingForDb !== '-' ? parseFloat(item.details.userRatingForDb) : null
-        });
-      }
-    },
-    
-    cancelSelection() {
-      this.aiSelectionMode = false;
-      this.selectedItems = [];
-      this.showSelectionInfo = false;
-    },
-    
-    async sendToAI() {
-      if (this.selectedItems.length === 0) {
-        this.notificationTitle = 'Selección Requerida';
-        this.notificationMessage = 'Por favor selecciona al menos un elemento';
-        this.notificationModalVisible = true;
-        return;
-      }
-      
-      const preparedItems = this.selectedItems.map(item => ({
-        ...item,
-        user_rating: item.user_rating || null
-      }));
-
-      this.$root.$emit('open-chatbot-with-selection', {
-        selectedItems: preparedItems
-      });
-
-      this.aiSelectionMode = false;
-      this.selectedItems = [];
-      this.showSelectionInfo = false;
-    },
-
-    closeNotificationModal() {
-      this.notificationMessage = '';
-    },
-
     saveState() {
       const state = {
         filter: this.filter,
@@ -1644,11 +1622,11 @@ export default {
         customYearStart: this.customYearStart,
         customYearEnd: this.customYearEnd
       };
-      localStorage.setItem('watchlistState_es', JSON.stringify(state));
+      localStorage.setItem('watchlistState', JSON.stringify(state));
     },
 
     restoreState() {
-      const savedState = localStorage.getItem('watchlistState_es');
+      const savedState = localStorage.getItem('watchlistState');
       if (savedState) {
         try {
           const state = JSON.parse(savedState);
@@ -1667,7 +1645,8 @@ export default {
         }
       }
     },
-
+    
+    
     validatePageInput() {
       if (!this.currentPage || this.currentPage < 1) {
         this.currentPage = 1;
@@ -1675,9 +1654,16 @@ export default {
         this.currentPage = this.totalPages;
       }
     },
+    
   },
 
   computed: {
+    selectedMoviesCount() {
+      return this.selectedItems.filter(item => item.media_type === 'movie').length;
+    },
+    selectedTvShowsCount() {
+      return this.selectedItems.filter(item => item.media_type === 'tv').length;
+    },
     showEmptyState() {
       return !this.isLoadingFavorites && 
             this.moviesFetched.length === 0 && 
@@ -1691,24 +1677,24 @@ export default {
       
       return currentItems.length === 0 && (this.moviesFetched.length > 0 || this.tvFetched.length > 0);
     },
-
-
     
     emptyStateMessage() {
       if (this.showEmptyState) {
-        return 'No hay favoritos agregados aún';
+        return 'Aún no hay favoritos añadidos';
       }
       if (this.showTabEmptyState) {
         return this.filter === 'movies' 
-          ? 'No hay películas añadidas aún' 
-          : 'No hay series de TV añadidas aún';
+          ? 'Aún no hay películas añadidas' 
+          : 'Aún no hay series añadidas';
       }
       return '';
     },
     hasActiveFilters() {
       return this.selectedGenre !== '' || 
-            this.minImdbRating !== null || 
+            this.minImdbRating !== null ||
             this.maxImdbRating !== null ||
+            this.minImdbVotes !== null ||
+            this.maxImdbVotes !== null ||
             this.selectedUserRating !== '' || 
             this.customYearStart !== null || 
             this.customYearEnd !== null ||
@@ -1719,8 +1705,7 @@ export default {
       const chips = [];
       
       if (this.selectedGenre) {
-        const label = this.getGenreLabel(this.selectedGenre);
-        chips.push({ type: 'genre', label: label, value: 'selectedGenre' });
+        chips.push({ type: 'genre', label: this.selectedGenre, value: 'selectedGenre' });
       }
       
       if (this.customYearStart) {
@@ -1771,8 +1756,8 @@ export default {
       
       if (this.selectedUserRating) {
         const label = this.selectedUserRating === 'not-rated' 
-          ? 'No puntuadas por mí' 
-          : `Puntuada por mi: ${this.selectedUserRating}`;
+          ? 'Sin Valorar' 
+          : `Mi Cal: ${this.selectedUserRating}`;
         chips.push({ type: 'user', label, value: 'selectedUserRating' });
       }
       
@@ -1786,33 +1771,24 @@ export default {
       
       return chips;
     },
-
-    selectedMoviesCount() {
-      return this.selectedItems.filter(item => item.media_type === 'movie').length;
-    },
-    
-    selectedTvShowsCount() {
-      return this.selectedItems.filter(item => item.media_type === 'tv').length;
-    },
-
     sortOptions() {
       return [
-        { value: 'latest-added', label: 'Adiciones más recientes' },
-        { value: 'earliest-added', label: 'Adiciones más antiguas' },
-        { value: 'newer-releases', label: 'Estrenos más recientes' },
-        { value: 'older-releases', label: 'Estrenos más antiguos' },
-        { value: 'imdb-high', label: 'Mejores valoraciones (IMDB)' },
-        { value: 'imdb-low', label: 'Peores valoraciones (IMDB)' },
-        { value: 'votes-high', label: 'Mayor Cantidad de Votos' },
-        { value: 'votes-low', label: 'Menor Cantidad de Votos' },
-        { value: 'shortest-first', label: 'Menor Duración primero' },
-        { value: 'longest-first', label: 'Mayor Duración primero' }
+        { value: 'latest-added', label: 'Últimos Añadidos' },
+        { value: 'earliest-added', label: 'Primeros Añadidos' },
+        { value: 'newer-releases', label: 'Estrenos Recientes' },
+        { value: 'older-releases', label: 'Estrenos Antiguos' },
+        { value: 'imdb-high', label: 'Mejor Calificados (IMDB)' },
+        { value: 'imdb-low', label: 'Peor Calificados (IMDB)' },
+        { value: 'votes-high', label: 'Más Votados' },
+        { value: 'votes-low', label: 'Menos Votados' },
+        { value: 'shortest-first', label: 'Más Cortos' },
+        { value: 'longest-first', label: 'Más Largos' }
       ];
     },
     
     currentSortLabel() {
       const option = this.sortOptions.find(opt => opt.value === this.orderMode);
-      return option ? option.label : 'Latest Added';
+      return option ? option.label : 'Últimos Añadidos';
     },
     filteredRatedItems() {
       const items = this.ratedItemsTab === 'movies' ? this.moviesFetched : this.tvFetched;
@@ -1824,178 +1800,179 @@ export default {
         parseInt(item.details.userRatingForDb) > 0
       );
     },
+    
+  filteredItems() {
+    const items = this.filter === 'movies' ? this.moviesFetched : this.tvFetched;
+    if (!items) return [];
+    return items.filter(item => {
+      if (!item || !item.details) return false;
 
-    filteredItems() {
-      const items = this.filter === 'movies' ? this.moviesFetched : this.tvFetched;
-      if (!items) return [];
-      return items.filter(item => {
-        if (!item || !item.details) return false;
+      const matchesGenre = this.selectedGenre === '' || 
+        (item.details.genresForDb && item.details.genresForDb.includes(this.selectedGenre));
+      
+      const matchesYear = (!this.customYearStart && !this.customYearEnd) || 
+        (item.details.yearStartForDb && 
+        item.details.yearStartForDb >= (this.customYearStart || 1880) && 
+        item.details.yearStartForDb <= (this.customYearEnd || this.currentYear));
 
-        const matchesGenre = this.selectedGenre === '' || 
-          (item.details.genresForDb && item.details.genresForDb.includes(this.selectedGenre));
-        
-        const matchesYear = (!this.customYearStart && !this.customYearEnd) || 
-          (item.details.yearStartForDb && 
-          item.details.yearStartForDb >= (this.customYearStart || 1880) && 
-          item.details.yearStartForDb <= (this.customYearEnd || this.currentYear));
-
-        let matchesTmdbRating = true;
-        if (this.minImdbRating !== null || this.maxImdbRating !== null) {
-          let rating;
-          if (item.details.rating_source === 'imdb' && item.details.imdb_rating) {
-            rating = item.details.imdb_rating;
-          } else if (item.details.starsForDb) {
-            rating = parseFloat(this.formatRating(item.details.starsForDb));
-          }
-          
-          if (rating === undefined || rating === null) {
-            matchesTmdbRating = false;
-          } else {
-            const min = this.minImdbRating !== null ? this.minImdbRating : 0;
-            const max = this.maxImdbRating !== null ? this.maxImdbRating : 10;
-            
-            matchesTmdbRating = rating >= min && rating <= max;
-          }
+      let matchesTmdbRating = true;
+      if (this.minImdbRating !== null || this.maxImdbRating !== null) {
+        let rating;
+        if (item.details.rating_source === 'imdb' && item.details.imdb_rating) {
+          rating = item.details.imdb_rating;
+        } else if (item.details.starsForDb) {
+          rating = parseFloat(this.formatRating(item.details.starsForDb));
         }
         
-        let matchesUserRating = true;
-        if (this.selectedUserRating !== '') {
-          if (this.selectedUserRating === 'not-rated') {
-            matchesUserRating = !item.details.userRatingForDb || 
-                              item.details.userRatingForDb === '-' ||
-                              item.details.userRatingForDb === undefined;
+        if (rating === undefined || rating === null) {
+          matchesTmdbRating = false;
+        } else {
+          const min = this.minImdbRating !== null ? this.minImdbRating : 0;
+          const max = this.maxImdbRating !== null ? this.maxImdbRating : 10;
+          
+          matchesTmdbRating = rating >= min && rating <= max;
+        }
+      }
+      
+      let matchesUserRating = true;
+      if (this.selectedUserRating !== '') {
+        if (this.selectedUserRating === 'not-rated') {
+          matchesUserRating = !item.details.userRatingForDb || 
+                            item.details.userRatingForDb === '-' ||
+                            item.details.userRatingForDb === undefined;
+        } else {
+          if (!item.details.userRatingForDb || 
+              item.details.userRatingForDb === '-' || 
+              item.details.userRatingForDb === undefined) {
+            matchesUserRating = false;
           } else {
-            if (!item.details.userRatingForDb || 
-                item.details.userRatingForDb === '-' || 
-                item.details.userRatingForDb === undefined) {
+            const userRating = parseInt(item.details.userRatingForDb);
+            if (isNaN(userRating)) {
               matchesUserRating = false;
+            } else if (this.selectedUserRating.includes('-')) {
+              const [min, max] = this.selectedUserRating.split('-').map(Number);
+              matchesUserRating = userRating >= min && userRating <= max;
             } else {
-              const userRating = parseInt(item.details.userRatingForDb);
-              if (isNaN(userRating)) {
-                matchesUserRating = false;
-              } else if (this.selectedUserRating.includes('-')) {
-                const [min, max] = this.selectedUserRating.split('-').map(Number);
-                matchesUserRating = userRating >= min && userRating <= max;
-              } else {
-                matchesUserRating = userRating === parseInt(this.selectedUserRating);
-              }
+              matchesUserRating = userRating === parseInt(this.selectedUserRating);
             }
           }
         }
+      }
 
-        let matchesVotes = true;
-        if (this.minImdbVotes !== null || this.maxImdbVotes !== null) {
-          let votes = 0;
+      let matchesVotes = true;
+      if (this.minImdbVotes !== null || this.maxImdbVotes !== null) {
+        let votes = 0;
+        if (item.details.imdb_votes) {
+          if (typeof item.details.imdb_votes === 'number') {
+            votes = item.details.imdb_votes;
+          } else if (typeof item.details.imdb_votes === 'string') {
+            votes = parseInt(item.details.imdb_votes.replace(/,/g, ''), 10);
+          }
+        }
+        
+        if (this.minImdbVotes !== null && votes < this.minImdbVotes) {
+          matchesVotes = false;
+        }
+        if (this.maxImdbVotes !== null && votes > this.maxImdbVotes) {
+          matchesVotes = false;
+        }
+      }
+      
+      return matchesGenre && matchesYear && matchesTmdbRating && matchesUserRating && matchesVotes;
+      }).sort((a, b) => {
+        const getAddedDate = (item) => {
+          const dateStr = item.details.added_at || item.addedAt || item.details.addedAt;
+          return dateStr ? new Date(dateStr) : new Date(0);
+        };
+        
+        const getYear = (item) => {
+          const year = item.details.yearEndForDb || item.details.yearStartForDb;
+          return year || 9999;
+        };
+
+        const getWeightedRating = (item) => {
+          let R = 0;
+          let v = 0;
+
+          if (item.details.rating_source === 'imdb' && item.details.imdb_rating) {
+            R = parseFloat(item.details.imdb_rating);
+            
+            const votes = item.details.imdb_votes;
+            if (typeof votes === 'number') {
+              v = votes;
+            } else if (typeof votes === 'string') {
+              v = parseInt(votes.replace(/,/g, ''), 10);
+            } else {
+              v = 0;
+            }
+          } else if (item.details.starsForDb) {
+            R = parseFloat(this.formatRating(item.details.starsForDb));
+            v = 0;
+          } else {
+            return -1;
+          }
+
+          const m = 1000;
+          const C = 7.0;
+
+          const WR = (v / (v + m)) * R + (m / (v + m)) * C;
+
+          return WR;
+        };
+
+        const getVotes = (item) => {
           if (item.details.imdb_votes) {
             if (typeof item.details.imdb_votes === 'number') {
-              votes = item.details.imdb_votes;
+              return item.details.imdb_votes;
             } else if (typeof item.details.imdb_votes === 'string') {
-              votes = parseInt(item.details.imdb_votes.replace(/,/g, ''), 10);
+              return parseInt(item.details.imdb_votes.replace(/,/g, ''), 10);
             }
           }
-          
-          if (this.minImdbVotes !== null && votes < this.minImdbVotes) {
-            matchesVotes = false;
-          }
-          if (this.maxImdbVotes !== null && votes > this.maxImdbVotes) {
-            matchesVotes = false;
-          }
-        }
-        
-        return matchesGenre && matchesYear && matchesTmdbRating && matchesUserRating && matchesVotes;
-        }).sort((a, b) => {
-          const getAddedDate = (item) => {
-            const dateStr = item.details.added_at || item.addedAt || item.details.addedAt;
-            return dateStr ? new Date(dateStr) : new Date(0);
-          };
-          
-          const getYear = (item) => {
-            const year = item.details.yearEndForDb || item.details.yearStartForDb;
-            return year || 9999;
-          };
+          return 0;
+        };
 
-          const getWeightedRating = (item) => {
-            let R = 0;
-            let v = 0;
+        const getRuntime = (item) => {
+           if (item.details.runtime) return item.details.runtime;
+           return 0;
+        };
 
-            if (item.details.rating_source === 'imdb' && item.details.imdb_rating) {
-              R = parseFloat(item.details.imdb_rating);
-              
-              const votes = item.details.imdb_votes;
-              if (typeof votes === 'number') {
-                v = votes;
-              } else if (typeof votes === 'string') {
-                v = parseInt(votes.replace(/,/g, ''), 10);
-              } else {
-                v = 0;
-              }
-            } else if (item.details.starsForDb) {
-              R = parseFloat(this.formatRating(item.details.starsForDb));
-              v = 0;
-            } else {
-              return -1;
-            }
-
-            const m = 1000;
-            const C = 7.0;
-
-            const WR = (v / (v + m)) * R + (m / (v + m)) * C;
-            
-            return WR;
-          };
-
-          const getVotes = (item) => {
-            if (item.details.imdb_votes) {
-              if (typeof item.details.imdb_votes === 'number') {
-                return item.details.imdb_votes;
-              } else if (typeof item.details.imdb_votes === 'string') {
-                return parseInt(item.details.imdb_votes.replace(/,/g, ''), 10);
-              }
-            }
+        switch(this.orderMode) {
+          case 'latest-added':
+            return getAddedDate(b) - getAddedDate(a);
+          case 'earliest-added':
+            return getAddedDate(a) - getAddedDate(b);
+          case 'newer-releases':
+            return getYear(b) - getYear(a);
+          case 'older-releases':
+            return getYear(a) - getYear(b);
+          case 'imdb-high':
+            const ratingBHigh = getWeightedRating(b);
+            const ratingAHigh = getWeightedRating(a);
+            if (ratingAHigh === -1 && ratingBHigh === -1) return 0;
+            if (ratingAHigh === -1) return 1;
+            if (ratingBHigh === -1) return -1;
+            return ratingBHigh - ratingAHigh;
+          case 'imdb-low':
+            const ratingBLow = getWeightedRating(b);
+            const ratingALow = getWeightedRating(a);
+            if (ratingALow === -1 && ratingBLow === -1) return 0;
+            if (ratingALow === -1) return 1;
+            if (ratingBLow === -1) return -1;
+            return ratingALow - ratingBLow;
+          case 'votes-high':
+            return getVotes(b) - getVotes(a);
+          case 'votes-low':
+             return getVotes(a) - getVotes(b);
+          case 'shortest-first':
+             return getRuntime(a) - getRuntime(b);
+          case 'longest-first':
+             return getRuntime(b) - getRuntime(a);
+          default:
             return 0;
-          };
-        
-          const getRuntime = (item) => {
-             if (item.details.runtime) return item.details.runtime;
-             return 0;
-          };
+        }
+      });
+  },
 
-          switch(this.orderMode) {
-            case 'latest-added':
-              return getAddedDate(b) - getAddedDate(a);
-            case 'earliest-added':
-              return getAddedDate(a) - getAddedDate(b);
-            case 'newer-releases':
-              return getYear(b) - getYear(a);
-            case 'older-releases':
-              return getYear(a) - getYear(b);
-            case 'imdb-high':
-              const ratingBHigh = getWeightedRating(b);
-              const ratingAHigh = getWeightedRating(a);
-              if (ratingAHigh === -1 && ratingBHigh === -1) return 0;
-              if (ratingAHigh === -1) return 1;
-              if (ratingBHigh === -1) return -1;
-              return ratingBHigh - ratingAHigh;
-            case 'imdb-low':
-              const ratingBLow = getWeightedRating(b);
-              const ratingALow = getWeightedRating(a);
-              if (ratingALow === -1 && ratingBLow === -1) return 0;
-              if (ratingALow === -1) return 1;
-              if (ratingBLow === -1) return -1;
-              return ratingALow - ratingBLow;
-            case 'votes-high':
-              return getVotes(b) - getVotes(a);
-            case 'votes-low':
-               return getVotes(a) - getVotes(b);
-            case 'shortest-first':
-               return getRuntime(a) - getRuntime(b);
-            case 'longest-first':
-               return getRuntime(b) - getRuntime(a);
-            default:
-              return 0;
-          }
-        });
-    },
 
     yearRanges() {
       return [
@@ -2018,43 +1995,7 @@ export default {
     },
     uniqueSortedGenres() {
       const allGenres = new Set([...this.movieGenres, ...this.tvGenres]);
-      const genreMap = {
-        'Action': 'Acción',
-        'Adventure': 'Aventura',
-        'Animation': 'Animación',
-        'Comedy': 'Comedia',
-        'Crime': 'Crimen',
-        'Documentary': 'Documental',
-        'Drama': 'Drama',
-        'Family': 'Familia',
-        'Fantasy': 'Fantasía',
-        'History': 'Historia',
-        'Horror': 'Terror',
-        'Music': 'Música',
-        'Mystery': 'Misterio',
-        'Romance': 'Romance',
-        'Science Fiction': 'Ciencia Ficción',
-        'TV Movie': 'Película de TV',
-        'Thriller': 'Suspenso',
-        'War': 'Guerra',
-        'Western': 'Western',
-        'Action & Adventure': 'Acción y Aventura',
-        'Kids': 'Niños',
-        'News': 'Noticias',
-        'Reality': 'Reality',
-        'Sci-Fi & Fantasy': 'Ciencia Ficción y Fantasía',
-        'Soap': 'Telenovela',
-        'Talk': 'Talk Show',
-        'War & Politics': 'Guerra y Política'
-      };
-
-      return Array.from(allGenres)
-        .sort()
-        .map(genre => ({
-          value: genre,
-          label: genreMap[genre] || genre
-        }))
-        .sort((a, b) => a.label.localeCompare(b.label, 'es'));
+      return Array.from(allGenres).sort();
     },
     
     totalPages() {
@@ -2071,12 +2012,11 @@ export default {
     },
 
     filterText() {
-      return this.filter === 'tvShows' ? 'Series de TV' : 'Películas';
+      return this.filter === 'tvShows' ? 'Series de TV Favoritas' : 'Películas Favoritas';
     }
   },
 };
 </script>
-
 
 <style scoped>
 .card__content {
@@ -2087,14 +2027,12 @@ export default {
   position: relative;
   min-height: 30px;
   top: -3px;
-  z-index: 100 !important;
 }
-
 
 .card__stars {
   width: 7.3rem;
   height: 1.2rem;
-  background-image: url('~assets/images/stars.png');
+  background-image: url('@/assets/images/stars.png');
   background-repeat: no-repeat;
   background-size: auto 100%;
   position: relative;
@@ -2103,7 +2041,7 @@ export default {
 
 .card__stars > div {
   height: 100%;
-  background-image: url('~assets/images/stars-filled.png');
+  background-image: url('@/assets/images/stars-filled.png');
   background-repeat: no-repeat;
   background-size: auto 100%;
   position: absolute;
@@ -2143,10 +2081,13 @@ export default {
 }
 
 
+
 .navbar-welcome {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
+  margin-top: 20px;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
   font-family: 'Roboto', sans-serif;
 }
@@ -2154,15 +2095,7 @@ export default {
 .text-center {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
   -webkit-background-clip: text;
-  color: transparent;
-  text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
-  font-family: 'Roboto', sans-serif;
-}
-
-.text-center-grey {
-  text-align: center;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(115, 115, 115) 100%);
-  -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
   font-family: 'Roboto', sans-serif;
@@ -2215,27 +2148,44 @@ export default {
     right: 20px; 
   }
 
-  .button-container select {
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+.button-container select {
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+@media screen and (max-width: 1024px) {
+  .button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
-  @media screen and (max-width: 1024px) {
-    .button-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
+  .button-container select {
+    width: 40%;
+    margin: 0.5rem;
+  }
+}
+  .button-logout {
+    background-color: #062F40;
+    color: #fff;
+    border: none;
+    margin-left: 8px;
+    padding: 1rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: color 0.3s, background-color 0.3s;
+    font-weight: bold; 
+    font-size: 13px; 
+    border-radius: 15px;
+  }
 
-    .button-container select {
-      width: 40%;
-      margin: 0.5rem;
-    }
+  .button-logout:hover {
+    background-color: #B22727;
   }
 
   .order-select {
     cursor: pointer;
-    width: 172.626px;
+    width: 170.626px;
     height: 34.6172px;
     text-align: center;
     padding: 0.8rem 3.5rem 0.8rem 1.5rem;
@@ -2275,7 +2225,6 @@ export default {
   }
 
   .genre-select {
-    width: 168px;
     background: rgba( 82, 71, 71, 0 );
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur( 16px );
@@ -2303,15 +2252,16 @@ export default {
   }
 
   .year-select {
-    width: 172.626px;
+    width: 165.626px;
     background: rgba( 82, 71, 71, 0 );
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur( 16px );
     -webkit-backdrop-filter: blur( 16px );
+    border-radius: 5px;
     margin-right: 5px;
     text-align: center;
-    border: 1px solid rgba( 255, 255, 255, 0.18 );
 
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
   }
 
   .year-select:hover{
@@ -2338,7 +2288,7 @@ export default {
     padding: 8px;
     gap: 0.5rem;
     border: 0.5px #31414C solid;
-    top: 5px;
+    top: 2px;
     margin-top: 3rem;
     position: relative;
     padding-top: 1rem;
@@ -2346,22 +2296,23 @@ export default {
 }
 
 .pagination-footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 15px;
-  width: 100% !important;
-  margin: 0 auto;
-  background: rgba(16, 20, 33, 0.3);
-  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
-  backdrop-filter: blur(16px);
-  padding: 8px;
-  top: -15px;
-  gap: 0.5rem;
-  border: 0.5px #31414C solid;
-  position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    width: 97% !important;
+    margin: 0 auto;
+    background: rgba(16, 20, 33, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+    backdrop-filter: blur(16px);
+    padding: 8px;
+    gap: 0.5rem;
+    border: 0.5px #31414C solid;
+    top: -15px;
+    position: relative;
 }
+
 
 .pagination button {
   padding: 0.5rem 1rem;
@@ -2373,11 +2324,6 @@ export default {
   color: #fff;
   margin: 5px;
   cursor: pointer;
-}
-
-.pagination button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .pagination-footer button:disabled {
@@ -2398,6 +2344,10 @@ export default {
   cursor: pointer;
 }
 
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
   .button,
   a.button {
@@ -2405,7 +2355,7 @@ export default {
     padding: 1.5rem 1.5rem;
     font-size: 1.5rem;
     font-weight: 500;
-  line-height: 1;
+    line-height: 1;
   color: #fff;
   letter-spacing: 0.05em;
   cursor: pointer;
@@ -2446,21 +2396,24 @@ export default {
   outline: none;
   transition: border-color 0.2s;
   -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.pagination-input::-webkit-outer-spin-button,
+.pagination-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
 }
 
 .pagination-input:focus {
   border-color: #8BE9FD;
 }
 
-.pagination-input::-webkit-outer-spin-button,
-.pagination-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
 .pagination-number {
   font-family: 'Roboto', sans-serif;
 }
+
 
 
 
@@ -2567,7 +2520,7 @@ export default {
   }
 
 
-  .profile-section {
+  .watchlist-section {
     padding: 10px;
     
   }
@@ -2582,13 +2535,13 @@ export default {
     overflow: hidden; 
     display: -webkit-box;
     -webkit-line-clamp: 2;
+  line-clamp: 2;
     -webkit-box-orient: vertical;
     white-space: normal;
     text-overflow: ellipsis; 
     height: 2.4em; 
     line-height: 1.2em;
   }
-
   .movie-card h3:hover,
   .tv-show-card h3:hover {
     color: #ffffff; 
@@ -2602,11 +2555,11 @@ export default {
     text-align: center;
   }
 
-
   .column {
     margin-top: 3rem;
     margin: 0 auto;
     text-align: center;
+    max-width: 800px; 
   }
 
   h2 {
@@ -2620,14 +2573,6 @@ export default {
 
   .custom-center {
     text-align: center;
-  }
-
-  .card-background {
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    background: black;
   }
 
   .movie-grid,
@@ -2707,12 +2652,9 @@ export default {
   }
   
   .user-rating-badge.empty {
-    position: absolute;
-    top: 10px;
-    left: 10px;
     background-color: #000;
     color: #88E9FD;
-    border: 3px solid;
+    border: 2px solid;
     border-radius: 50%;
     width: 30px;
     height: 30px;
@@ -2720,10 +2662,8 @@ export default {
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 14px;
-    z-index: 4;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-size: 9px;
+    text-transform: uppercase;
   }
 
   .movie-card img,
@@ -2737,7 +2677,7 @@ export default {
     -webkit-backdrop-filter: blur( 16px );
     border: 1px solid rgba( 255, 255, 255, 0.18 );
   }
-
+  
   .item-link {
     display: block;
     text-decoration: none;
@@ -2749,7 +2689,7 @@ export default {
   .item-link:hover {
     transform: translateY(-5px);
   }
-  
+
   .rated-items-btn {
     background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -2792,7 +2732,7 @@ export default {
     padding: 20px;
     font-family: 'Roboto', 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
   }
-
+  
   .modal-header {
     display: flex;
     align-items: center;
@@ -2873,7 +2813,7 @@ export default {
     height: 2px;
     background: #8BE9FD;
   }
-  
+
   .rating-badge {
     background: #8BE9FD;
     color: #000;
@@ -2925,7 +2865,6 @@ export default {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    bottom: 9px;
     position: relative;
   }
 
@@ -2943,7 +2882,6 @@ export default {
     height: 20px;
     border-radius: 15px;
     gap: 20px;
-    bottom: 9px;
     position: relative;
   }
   
@@ -2965,7 +2903,6 @@ export default {
     background: rgba(255, 0, 0, 0.4);
   }
   
-
   .empty-state {
     display: flex;
     flex-direction: column;
@@ -3009,6 +2946,7 @@ export default {
       font-size: 1.3rem;
     }
   }
+  
 
   @media screen and (max-width: 600px) {
   .movie-grid,
@@ -3040,14 +2978,13 @@ export default {
     width: 100%; 
     max-width: none;
   }
-  
+
   .movie-card img,
   .tv-show-card img {
     width: 100%; 
     max-width: none; 
   }
 }
-
 
 @media (max-width: 600px) {
   .card__stars {
@@ -3324,13 +3261,15 @@ export default {
 
 .tmdb-rating-select:hover,
 .user-rating-select:hover {
-  background-color: #084a66;
+  background: linear-gradient(
+315deg, #0A1E26, #11323F, #1A4453);
 }
 
 select.tmdb-rating-select,
 select.user-rating-select {
   appearance: none;
   -webkit-appearance: none;
+  appearance: none;
   -moz-appearance: none;
   background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
   background-repeat: no-repeat;
@@ -3348,6 +3287,7 @@ select.user-rating-select {
     padding: 0.7rem 1.2rem;
   }
 }
+
 
 .new-controls-container {
  display: flex;
@@ -3513,7 +3453,8 @@ select.user-rating-select {
 }
 
 .control-btn:hover {
-  background-color: #084a66;
+  background: linear-gradient(
+315deg, #0A1E26, #11323F, #1A4453);
 }
 
 .filters-modal {
@@ -3672,6 +3613,28 @@ select.user-rating-select {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
+.dropdown-item {
+  padding: 8px 12px;
+  color: #e0e0e0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.menu-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 15;
+  background: transparent;
+  cursor: default;
+}
+
 .dropdown-option {
   padding: 10px;
   color: #fff;
@@ -3708,11 +3671,13 @@ select.user-rating-select {
 .year-input::-webkit-outer-spin-button,
 .year-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
+  appearance: none;
   margin: 0;
 }
 
 .year-input[type=number] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .dropdown-options::-webkit-scrollbar {
@@ -3909,7 +3874,8 @@ select.user-rating-select {
     font-size: 1.2rem;
   }
 }
-loading-state {
+
+.loading-state {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -4064,6 +4030,8 @@ loading-state {
   color: #8BE9FD;
 }
 
+
+
 @media (max-width: 768px) {
   .active-filters-indicator {
     flex-direction: column;
@@ -4094,7 +4062,6 @@ loading-state {
   color: #fff;
   border-bottom-color: #8BE9FD;
 }
-
 
 .ai-analysis-btn {
   position: relative;
@@ -4251,13 +4218,12 @@ loading-state {
 }
 
 .movie-card.selection-mode .item-link:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px); 
 }
 
 .movie-card.selection-mode.selected .card-background {
-  box-shadow: 0 0 0 3px #8BE9FD;
-  border-radius: 15px;
-  overflow: hidden;
+  box-shadow: 0 0 0 3px #8BE9FD; 
+  overflow: hidden; 
 }
 
 .movie-card.selection-mode.selected img {
@@ -4332,7 +4298,7 @@ loading-state {
   }
   
   .checkbox-wrapper {
-    width: 28px;
+    width: 28px; 
     height: 28px;
   }
 }
@@ -4375,7 +4341,7 @@ loading-state {
 
 .info-intro {
   text-align: center;
-  font-size: 1.1rem;
+  font-size: 1.1rem; 
   margin-bottom: 25px;
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.9);
@@ -4432,7 +4398,7 @@ loading-state {
 }
 
 .got-it-btn {
-  background: #8BE9FD;
+  background: linear-gradient(135deg, #8BE9FD 0%, #00a8cc 100%);
   color: #000;
   border: none;
   padding: 10px 30px;
@@ -4593,7 +4559,6 @@ svg.rating-logo.imdb {
   margin-left: 0 !important; 
 }
 
-
 .card-actions-menu {
   position: absolute;
   top: 10px;
@@ -4609,7 +4574,7 @@ svg.rating-logo.imdb {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 105;
+    z-index: 50;
   }
   
   .card-actions-menu.menu-open .dropdown-trigger {

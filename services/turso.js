@@ -1,4 +1,4 @@
-const { createClient } = require('@libsql/client');
+import { createClient } from '@libsql/client';
 
 let tursoClient = null;
 
@@ -11,4 +11,4 @@ if (process.env.IMDB_DB_URL && process.env.IMDB_DB_TOKEN) {
   console.error('❌ [Turso] Missing environment variables');
 }
 
-module.exports = tursoClient;
+export default tursoClient;

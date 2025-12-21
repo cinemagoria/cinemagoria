@@ -11,6 +11,7 @@
           <p class="title-secondary">
             Mantente al día sobre el nuevo contenido de las personas, productoras y series que sigues.<button @click="openHowItWorksModal" class="help-icon-button"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg></button>
           </p>
+
           <div class="header-actions">
             <button 
               @click="openFollowingModal" 
@@ -22,7 +23,6 @@
               </svg>
               <span>Siguiendo ({{ totalFollowingCount }})</span>
             </button>
-
             <button 
                 v-if="unreadCount > 0"
                 @click="markAllAsRead" 
@@ -31,13 +31,13 @@
                   <polyline points="9 11 12 14 22 4"/>
                   <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
                 </svg>
-                <span>Marcar Todo</span>
+                <span>Marcar todo leído</span>
               </button>
             <div class="secondary-actions">
               <label class="filter-switch">
                 <input type="checkbox" :checked="!showUnreadOnly" @change="toggleFilter">
-                <span>Solo No Leídas</span>
-                <span>Mostrar Todo</span>
+                <span>Solo no leídos</span>
+                <span>Mostrar todo</span>
               </label>
               
             </div>
@@ -59,7 +59,7 @@
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
             <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
           </svg>
-          <p>{{ showUnreadOnly ? 'No hay notificaciones por leer' : 'Aún no hay notificaciones' }}</p>
+          <p>{{ showUnreadOnly ? 'No hay notificaciones sin leer' : 'No hay notificaciones' }}</p>
           <p class="sub-text">Sigue talentos o Series de TV para recibir notificaciones sobre sus nuevos lanzamientos</p>
         </div>
 
@@ -93,7 +93,7 @@
                     style="cursor: pointer; text-decoration: underline; text-decoration-color: rgba(139, 233, 253, 0.3);">
                     {{ notification.person_name }}
                   </strong>
-                  <span class="has-release">has a new release </span>
+                  <span class="has-release">tiene un nuevo estreno </span>
                 </div>
                 <div 
                   class="notification-media" 
@@ -111,14 +111,15 @@
                 </div>
                 
                 <div v-if="notification.character" class="notification-character">
-                  <span style="color:#d0d0d0 !important;">as </span>{{ notification.character }}
+                  <span style="color:#d0d0d0 !important;">como </span>{{ notification.character }}
                 </div>
                  <div class="notification-meta">
                   <span class="media-badge">
-                    {{ notification.media_type === 'movie' ? 'Movie' : notification.media_type === 'tv' ? 'TV Show' : 'Episode' }}
+                    {{ notification.media_type === 'movie' ? 'Película' : notification.media_type === 'tv' ? 'Serie TV' : 'Episodio' }}
                   </span>
                   <div class="info-container">
-                    <label class="release-date">Release: <span class="only-date">{{ formatDate(notification.release_date) }}</span></label>
+                    <label class="release-date">Estreno: <span class="only-date">{{ formatDate(notification.release_date) }}</span></label>
+
                   </div>
                 </div>
                 <div v-if="notification.overview && notification.overview.length > 0" class="notification-overview">
@@ -127,13 +128,12 @@
                
               </div>
             </div>
-            
             <div class="time-ago">{{ getTimeAgo(notification.created_at) }}</div>
             <div class="notification-tabs">
               <button 
                 @click.stop="openDeleteModal(notification.id)"
                 class="tab-delete-btn"
-                title="Delete">
+                title="Eliminar">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M10 11v6"/>
                   <path d="M14 11v6"/>
@@ -193,21 +193,22 @@
               <div class="exclamation-svg">
                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-alert-icon lucide-circle-alert"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
               </div>
-              <p class="delete-message">¿Quieres borrar la notificación?</p>
+              <p class="delete-message">¿Estás seguro que quieres eliminar permanentemente esta notificación?</p>
               <p class="delete-warning">Esta acción no se puede deshacer.</p>
               
               <div class="delete-actions">
                 <button @click="closeDeleteModal" class="cancel-btn" type="button"><span class="label-button-modal">Cancelar</span></button>
-                <button @click="confirmDeleteNotification" class="confirm-delete-btn" type="button"><span class="label-button-modal">Borrar</span></button>
+                <button @click="confirmDeleteNotification" class="confirm-delete-btn" type="button"><span class="label-button-modal">Eliminar</span></button>
               </div>
             </div>
           </div>
         </div>
+
         <div v-if="totalPages > 1" class="pagination-footer">
           <button @click="goToFirst" :disabled="currentPage === 1 || isLoadingPage">|<</button>
           <button @click="previousPage" :disabled="currentPage === 1 || isLoadingPage"><<</button>
           <span>
-            <label for="page" style="font-size:13px;">Page</label>
+            <label for="page" style="font-size:13px;">Página</label>
             <input 
               type="number" 
               id="page" 
@@ -217,10 +218,11 @@
               :max="totalPages"
               :disabled="isLoadingPage">
           </span>
-          <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">of {{ totalPages }}</span>
+          <span style="font-size: 13px; text-align: left; transform: translate(0px, 0px); position: relative; left: 4px; top: 0px; transition: none 0s ease 0s;">de {{ totalPages }}</span>
           <button @click="nextPage" :disabled="currentPage === totalPages || isLoadingPage">>></button>
           <button @click="goToLast" :disabled="currentPage === totalPages || isLoadingPage">>|</button>
         </div>
+
       </div>
     </section>
   </main>
@@ -228,7 +230,7 @@
 
 <script>
 import UserNav from '@/components/global/UserNav';
-import supabase from '@/services/supabase';
+
 import FollowingModal from '~/components/global/FollowingModal.vue';
 import HowItWorksModal from '~/components/HowItWorksModal.vue';
 import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants';
@@ -271,7 +273,9 @@ export default {
       tvFollowsCache: [],
     };
   },
-
+  setup() {
+    return { supabase: useSupabaseClient() }
+  },
   computed: {
     unreadCount() {
       return this.notifications.filter(n => !n.read).length;
@@ -283,7 +287,7 @@ export default {
     const accessToken = localStorage.getItem('access_token');
     this.isLoggedIn = accessToken !== null;
 
-   if (this.isLoggedIn) {
+    if (this.isLoggedIn) {
       this.userAvatar = await this.getUserAvatar();
       await this.fetchNotifications();
       await this.fetchFollowingCount();
@@ -347,7 +351,7 @@ export default {
     },
     async getUserAvatar() {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await this.supabase
           .from('user_data')
           .select('avatar')
           .eq('email', this.userEmail);
@@ -382,9 +386,9 @@ export default {
         console.error('Error fetching notifications:', error);
       } finally {
         this.loading = false;
+        this.isLoadingPage = false;
       }
     },
-
 
     toggleFilter() {
     this.showUnreadOnly = !this.showUnreadOnly;
@@ -403,10 +407,6 @@ export default {
       
       this.fetchNotifications();
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    },
-
-    goToLogin() {
-      this.$router.push('/login');
     },
 
     nextPage() {
@@ -456,7 +456,7 @@ export default {
       const now = Date.now() / 1000;
       const diff = now - timestamp;
 
-      if (diff < 60) return 'Justo ahora';
+      if (diff < 60) return 'Just ahora';
       if (diff < 3600) return `hace ${Math.floor(diff / 60)}m`;
       if (diff < 86400) return `hace ${Math.floor(diff / 3600)}h`;
       if (diff < 604800) return `hace ${Math.floor(diff / 86400)}d`;
@@ -487,10 +487,6 @@ export default {
       return null;
     },
 
-    goToLogin() {
-        this.$router.push('/login');
-    },
-
     getSeriesPosterUrl(tvId) {
       const tvFollow = this.tvFollowsCache.find(f => f.tv_id === tvId);
       if (tvFollow && tvFollow.poster_path) {
@@ -498,6 +494,11 @@ export default {
       }
       return null;
     },
+
+    goToLogin() {
+        this.$router.push('/login');
+    },
+
 
     async fetchFollowingCount() {
         if (!this.userEmail) return;
@@ -528,7 +529,7 @@ export default {
       },
 
       openFollowingModal() {
-        this.$root.$emit('show-following-modal');
+        this.$bus.$emit('show-following-modal');
       },
 
       openHowItWorksModal() {
@@ -742,9 +743,9 @@ button {
   background: none;
 }
 
-@media screen and (max-width: 600px) {
+  @media screen and (max-width: 600px) {
   .navbar-title {
-    font-size: 12px; 
+    font-size: 12px;
   }
 
   .button-logout {
@@ -848,7 +849,6 @@ button {
   display: flex;
   gap: 1rem;
 }
-
 
 .filter-switch {
   --_switch-bg-clr: rgba(0, 0, 0, 0);
@@ -982,8 +982,9 @@ button {
 .mark-all-button {
   display: flex;
   flex-direction: row;
-  gap: 2rem;
+  gap: 0.5rem;
 }
+
 
 .notifications-list {
   display: flex;
@@ -1021,8 +1022,8 @@ button {
   width: 62px;
   height: 62px;
   border-radius: 50%;
-  border: solid 1px #8BE9FD;
   background: #8BE9FD;
+  border: solid 1px #8BE9FD;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1187,15 +1188,6 @@ button {
   cursor: pointer;
 }
 
-.notification-tabs {
-  position: absolute;
-  top: 0;
-  right: 0.3rem;
-  display: flex;
-  gap: 0;
-  transform: translateY(-100%);
-}
-
 @media (max-width: 1024px) {
   .notification-item {
     grid-template-columns: 60px 1fr 200px;
@@ -1240,6 +1232,15 @@ button {
   }
 }
 
+.notification-tabs {
+  position: absolute;
+  top: 0;
+  right: 0.3rem;
+  display: flex;
+  gap: 0;
+  transform: translateY(-100%);
+}
+
 @media (max-width: 768px) {  
   .notification-tabs {
     top: -2px;
@@ -1256,7 +1257,6 @@ button {
   }
   
 
-  .filter-button,
   .mark-all-button {
     padding: 0.7rem 1.4rem;
   }
@@ -1358,8 +1358,8 @@ button {
     max-width: 200px;
     margin-left: 1.5rem;
   }
-
-  .header-actions {
+  
+    .header-actions {
     flex-direction: column;
     align-items: center;
   }
@@ -1371,13 +1371,13 @@ button {
     justify-content: center;
   }
   
+  
   .secondary-actions {
     flex-direction: column;
     width: 100%;
     max-width: 300px;
   }
   
-  .filter-button,
   .mark-all-button {
     width: 100%;
     max-width: 300px;
@@ -1670,7 +1670,6 @@ button {
   position: relative !important;
 }
 
-
 .header-subtitle {
   display: flex;
   align-items: center;
@@ -1701,7 +1700,6 @@ button {
 .help-icon-button svg {
   display: block;
 }
-
 
 .tab-check-btn,
 .tab-delete-btn {

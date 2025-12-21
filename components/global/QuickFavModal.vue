@@ -31,7 +31,7 @@ export default {
   },
   computed: {
     itemName() {
-      return this.item?.nameForDb || this.item?.title || this.item?.name || 'este elemento';
+      return this.item?.nameForDb || this.item?.title || this.item?.name || 'this item';
     },
     favId() {
         if (!this.item) return '';
@@ -39,17 +39,17 @@ export default {
     }
   },
   mounted() {
-    this.$root.$on('open-quickfav-modal', this.open);
+    this.$bus.$on('open-quickfav-modal', this.open);
     const email = localStorage.getItem('email');
     this.userEmail = email || '';
   },
   beforeDestroy() {
-    this.$root.$off('open-quickfav-modal', this.open);
+    this.$bus.$off('open-quickfav-modal', this.open);
   },
   methods: {
     open(payload) {
       if (!payload) return;
-      this.item = payload; 
+      this.item = payload;
       this.visible = true;
       document.body.style.overflow = 'hidden';
     },
@@ -76,7 +76,7 @@ export default {
 
           if (!response.ok) throw new Error('Failed to remove favorite');
 
-          this.$root.$emit('favorites-updated'); 
+          this.$bus.$emit('favorites-updated');
           this.close();
       } catch (e) {
           console.error(e);
@@ -183,8 +183,6 @@ export default {
   background: transparent;
   border: 1px solid rgba(255,255,255,0.2);
   color: #ccc;
-  display:flex;
-  justify-content: center;
 
   &:hover {
     border-color: #fff;
@@ -197,8 +195,6 @@ export default {
   background: #e94b4b;
   border: 1px solid #e94b4b;
   color: white;
-  display:flex;
-  justify-content: center;
 
   &:hover {
     background: #ff6b6b;

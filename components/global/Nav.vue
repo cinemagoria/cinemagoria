@@ -5,15 +5,15 @@
         <nuxt-link
           exact
           :to="{ name: 'index' }"
-          aria-label="Home"
+          aria-label="Inicio"
           @click.native="clearSearchBeforeNavigate">
-          <img src="~static/icon-medium.png" alt="Home" style="width: 32px; height: 32px;" class="home-icon" />
+          <img src="/icon-medium.png" alt="Inicio" style="width: 32px; height: 32px;" class="home-icon" />
         </nuxt-link>
       </li>
       <li>
         <nuxt-link
           :to="{ name: 'movie' }"
-          aria-label="Movies"
+          aria-label="Películas"
           @click.native="clearSearchBeforeNavigate">
           <svg xmlns="http://www.w3.org/2000/svg" :class="$style.navIcon" viewBox="0 0 24 24">
             <g fill="none" stroke="#fff" stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round" stroke-linecap="round">
@@ -27,15 +27,15 @@
       <li>
         <nuxt-link
           :to="{ name: 'advancedsearch' }"
-          aria-label="Advanced Search"
+          aria-label="Búsqueda Avanzada"
           @click.native="clearSearchBeforeNavigate">
-          <img :src="require('~/static/icon-advancedsearch.png')" alt="Advanced Search" :class="$style.navIcon" />
+          <img src="/icon-advancedsearch.png" alt="Búsqueda Avanzada" :class="$style.navIcon" />
         </nuxt-link>
       </li>
       <li>
         <button 
           @click="openAiChat" 
-          :aria-label="'Ask AI'"
+          :aria-label="'Preguntar a IA'"
           class="ai-button-nav">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" :class="$style.navIcon">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
@@ -43,13 +43,13 @@
         </button>
       </li>
       <li v-if="!isLoggedIn">
-        <nuxt-link exact to="/login" aria-label="Sign In" @click.native="clearSearchBeforeNavigate">
-          <img :src="require('~/static/icon-login.png')" alt="Login" :class="$style.navIcon" />
+        <nuxt-link exact to="/login" aria-label="Iniciar Sesión" @click.native="clearSearchBeforeNavigate">
+          <img src="/icon-login.png" alt="Iniciar Sesión" :class="$style.navIcon" />
         </nuxt-link>
       </li>
       <li v-else>
-        <nuxt-link exact to="/watchlist" aria-label="Watchlist" @click.native="clearSearchBeforeNavigate">
-          <img :src="require('~/static/icon-watchlist.png')" alt="Watchlist" :class="$style.navIcon" />
+        <nuxt-link exact to="/watchlist" aria-label="Mi Lista" @click.native="clearSearchBeforeNavigate">
+          <img src="/icon-watchlist.png" alt="Mi Lista" :class="$style.navIcon" />
         </nuxt-link>
       </li>
     </ul>
@@ -59,7 +59,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'pinia';
+import { useSearchStore } from '~/stores/search';
 import ChatbotModal from './ChatbotModal.vue';
 
 export default {
@@ -70,13 +71,12 @@ export default {
     return {
       authToken: null,
       authInterval: null,
-      hasMinimizedConversations: false,
       hasMinimizedConversations: false
     };
   },
 
   computed: {
-    ...mapState('search', ['searchOpen']),
+    ...mapState(useSearchStore, ['searchOpen']),
     isLoggedIn() {
       return this.authToken !== null;
     }
@@ -87,7 +87,7 @@ export default {
     this.checkMinimizedConversations();
 
     this.authInterval = setInterval(this.checkAuthStatus, 500);
-
+    
     if (typeof window !== 'undefined') {
       window.addEventListener('storage', this.handleStorageChange);
       window.addEventListener('auth-changed', this.checkAuthStatus);
@@ -98,7 +98,7 @@ export default {
       }
     }
 
-    this.$root.$on('chatbot-conversations-updated', (hasConversations) => {
+    this.$bus.$on('chatbot-conversations-updated', (hasConversations) => {
       this.hasMinimizedConversations = hasConversations;
     });
   },
@@ -107,7 +107,7 @@ export default {
     if (this.authInterval) {
       clearInterval(this.authInterval);
     }
-
+    
     if (typeof window !== 'undefined') {
       window.removeEventListener('storage', this.handleStorageChange);
       window.removeEventListener('auth-changed', this.checkAuthStatus);
@@ -122,7 +122,6 @@ export default {
         this.authToken = token;
       }
     },
-
     checkMinimizedConversations() {
       try {
         if (typeof localStorage !== 'undefined') {
@@ -150,7 +149,7 @@ export default {
     },
 
     clearSearchBeforeNavigate() {
-      this.$root.$emit('clear-search');
+      this.$bus.$emit('clear-search');
       if (this.$refs.chatbotModalRef && this.$refs.chatbotModalRef.chatBotOpen) {
         this.$refs.chatbotModalRef.minimizeChatBot();
       }
@@ -158,7 +157,7 @@ export default {
 
     toggleSearch() {
       if (this.$route.name !== 'search') {
-        this.$store.commit('search/toggleSearch');
+        this.toggleSearchAction();
       }
     },
 
@@ -177,13 +176,15 @@ export default {
         
         this.hasMinimizedConversations = false;
       }
-    }
+    },
+    ...mapActions(useSearchStore, { toggleSearchAction: 'toggleSearch' })
   }
 };
 </script>
 
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
+
 .nav {
   position: fixed;
   right: 0;

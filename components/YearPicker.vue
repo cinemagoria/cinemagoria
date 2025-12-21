@@ -57,7 +57,7 @@
           this.$emit('input', '');
           return;
         }
-
+        
         if (this.value instanceof Date) {
           const newDate = new Date(parseInt(this.selectedYear, 10), 0, 1);
           this.$emit('input', newDate);

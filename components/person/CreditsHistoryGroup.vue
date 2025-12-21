@@ -33,7 +33,6 @@ export default {
 
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
-
 .row {
   padding: 0;
 }

@@ -18,7 +18,7 @@ export default {
   font-family: 'Ortica';
   src: url('@/assets/fonts/OrticaLinear-Bold.otf') format('opentype');
   font-weight: normal;
-  font-style: normal;
+  font-style: italic;
 }
 
 .feature-description {

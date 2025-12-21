@@ -24,7 +24,7 @@
       v-if="modalVisible"
       :data="images"
       modifier="modal--images"
-      aria-label="Images"
+      aria-label="Imágenes"
       nav
       :start-at="modalStartAt"
       @close="closeModal" />
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { apiImgUrl } from '~/api';
+import { apiImgUrl } from '~/utils/api';
 import ImagesItem from '~/components/ImagesItem';
 import Modal from '~/components/Modal';
 
@@ -68,7 +68,7 @@ export default {
 
   computed: {
     imagesCount () {
-      return `${this.images.length} ${this.images.length > 1 ? 'Images' : 'Image'}`;
+      return `${this.images.length} ${this.images.length > 1 ? 'Imágenes' : 'Imagen'}`;
     },
   },
 

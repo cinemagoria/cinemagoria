@@ -5,7 +5,7 @@
     <div class="header-container">
       <h1 class="title-primary" style="text-align: center; margin-bottom: 0.5rem;">Películas</h1>
       <p class="title-secondary" style="text-align: center; margin-bottom: 2rem;">
-        Descubre los últimos éxitos de taquilla, clásicos y mucho más.
+        Descubre los últimos éxitos de taquilla, clásicos y todo lo demás.
       </p>
 
       <div class="switcher-container">
@@ -13,14 +13,14 @@
           <input type="checkbox" :checked="false" @change="navigateToTvShows">
           <span class="slider"></span>
           <span class="label-text">Películas</span>
-          <span class="label-text">Series de TV</span>
+          <span class="label-text">Series</span>
         </label>
       </div>
     </div>
     <br>
 
     <CustomListingCategoriesMovies
-      :title="'Explorar por Categorías'"
+      :title="'Explorar por Categoría'"
       :view-all-url="null"/>
 
     <div v-if="followedMovies && followedMovies.results && followedMovies.results.length > 0" class="followed-section">
@@ -56,111 +56,95 @@
   </main>
 </template>
 
-<script>
-import UserNav from '@/components/global/UserNav';
-import { getMovies, getListItem, getFollowedProductionCompanies, getMoviesByCompanies } from '~/api';
-import ListingCarousel from '~/components/ListingCarousel';
-import CustomListingCategoriesMovies from '~/components/CustomListingCategoriesMovies';
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import UserNav from '@/components/global/UserNav.vue';
+import { getMovies, getListItem, getFollowedProductionCompanies, getMoviesByCompanies } from '~/utils/api';
+import ListingCarousel from '~/components/ListingCarousel.vue';
+import CustomListingCategoriesMovies from '~/components/CustomListingCategoriesMovies.vue';
 
-export default {
-  components: {
-    UserNav,
-    ListingCarousel,
-    CustomListingCategoriesMovies,
-  },
+const router = useRouter();
+const route = useRoute();
 
-  head () {
-    return {
-      title: 'Entercinema - Películas',
-      meta: [
-        { hid: 'og:title', property: 'og:title', content: 'Películas' },
-        { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
-      ],
-    };
-  },
+useHead({
+  title: 'EnterCinema - Movies',
+  meta: [
+    { property: 'og:title', content: 'Movies' },
+    // Note: process.env.FRONTEND_URL might need runtimeConfig replacement
+    { property: 'og:url', content: `https://entercinema.com${route.path}` },
+  ],
+});
 
-  data() {
-    return {
-      followedMovies: null,
-    };
-  },
+// Data
+const followedMovies = ref(null);
+const ratedItemsModalVisible = ref(false); // Was missing in original data but referenced in method
 
-  methods: {
-    navigateToTvShows() {
-      this.$router.push({ name: 'tv' });
-    },
-    showRatedItems() {
-      this.ratedItemsModalVisible = true;
-    },
-    async fetchFollowedContent() {
-      if (typeof window === 'undefined') return;
-      
-      const userEmail = localStorage.getItem('email');
-      if (!userEmail) return;
-
-      try {
-        const followedCompanies = await getFollowedProductionCompanies(userEmail);
-        if (followedCompanies && followedCompanies.length > 0) {
-          const companyIds = followedCompanies.map(c => c.company_id).join('|');
-          this.followedMovies = await getMoviesByCompanies(companyIds);
-        }
-      } catch (error) {
-        console.error('Error fetching followed movies:', error);
-      }
-    }
-  },
-
-  mounted() {
-    this.fetchFollowedContent();
-  },
-
-  computed: {
-    popularTitle () {
-      return getListItem('movie', 'popular').title;
-    },
-
-    popularUrl () {
-      return { name: 'movie-category-name', params: { name: 'popular' } };
-    },
-
-    topRatedTitle () {
-      return getListItem('movie', 'top_rated').title;
-    },
-
-    topRatedUrl () {
-      return { name: 'movie-category-name', params: { name: 'top_rated' } };
-    },
-
-    upcomingTitle () {
-      return getListItem('movie', 'upcoming').title;
-    },
-
-    upcomingUrl () {
-      return { name: 'movie-category-name', params: { name: 'upcoming' } };
-    },
-
-    nowPlayingTitle () {
-      return getListItem('movie', 'now_playing').title;
-    },
-
-    nowPlayingUrl () {
-      return { name: 'movie-category-name', params: { name: 'now_playing' } };
-    },
-  },
-
-  async asyncData ({ error }) {
+// Async Data Fetching
+const { data: moviesData } = await useAsyncData('movies-home', async () => {
     try {
-      const popular = await getMovies('popular');
-      const topRated = await getMovies('top_rated');
-      const upcoming = await getMovies('upcoming');
-      const nowPlaying = await getMovies('now_playing');
-
-      return { popular, topRated, upcoming, nowPlaying };
-    } catch {
-      error({ statusCode: 504, message: 'Datps no disponibles' });
+        const [popular, topRated, upcoming, nowPlaying] = await Promise.all([
+             getMovies('popular'),
+             getMovies('top_rated'),
+             getMovies('upcoming'),
+             getMovies('now_playing')
+        ]);
+        return { popular, topRated, upcoming, nowPlaying };
+    } catch (e) {
+        console.error(e);
+        return { popular: null, topRated: null, upcoming: null, nowPlaying: null };
     }
-  },
+});
+
+const popular = computed(() => moviesData.value?.popular);
+const topRated = computed(() => moviesData.value?.topRated);
+const upcoming = computed(() => moviesData.value?.upcoming);
+const nowPlaying = computed(() => moviesData.value?.nowPlaying);
+
+
+// Computed Props for Titles/URLs
+const popularTitle = computed(() => getListItem('movie', 'popular').title);
+const popularUrl = computed(() => ({ name: 'movie-category-name', params: { name: 'popular' } }));
+
+const topRatedTitle = computed(() => getListItem('movie', 'top_rated').title);
+const topRatedUrl = computed(() => ({ name: 'movie-category-name', params: { name: 'top_rated' } }));
+
+const upcomingTitle = computed(() => getListItem('movie', 'upcoming').title);
+const upcomingUrl = computed(() => ({ name: 'movie-category-name', params: { name: 'upcoming' } }));
+
+const nowPlayingTitle = computed(() => getListItem('movie', 'now_playing').title);
+const nowPlayingUrl = computed(() => ({ name: 'movie-category-name', params: { name: 'now_playing' } }));
+
+
+// Methods
+const navigateToTvShows = () => {
+  router.push({ name: 'tv' });
 };
+
+const showRatedItems = () => {
+  ratedItemsModalVisible.value = true;
+};
+
+const fetchFollowedContent = async () => {
+  if (typeof window === 'undefined') return;
+  
+  const userEmail = localStorage.getItem('email');
+  if (!userEmail) return;
+
+  try {
+    const followedCompanies = await getFollowedProductionCompanies(userEmail);
+    if (followedCompanies && followedCompanies.length > 0) {
+      const companyIds = followedCompanies.map(c => c.company_id).join('|');
+      followedMovies.value = await getMoviesByCompanies(companyIds);
+    }
+  } catch (error) {
+    console.error('Error fetching followed movies:', error);
+  }
+};
+
+onMounted(() => {
+  fetchFollowedContent();
+});
 </script>
 
 <style scoped lang="scss">

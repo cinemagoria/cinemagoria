@@ -17,7 +17,7 @@
 
       <button
         class="alert__btn alert__btn--primary button"
-        style="border-radius:12px;"
+        style="border-radius:12px !important;"
         type="button"
         aria-label="Cerrar"
         @click="accept">

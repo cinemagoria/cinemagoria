@@ -6,7 +6,7 @@
       :class="{ 'is-favorite': isFavorite }"
       @click="toggleFavorite"
       type="button"
-      :aria-label="isFavorite ? 'Eliminar de Mi Lista' : 'Agregar a Mi Lista'"
+      :aria-label="isFavorite ? 'Eliminar de Mi Lista' : 'Añadir a Mi Lista'"
     >
       <transition name="list-fade" mode="out-in">
         <!-- Plus icon -->
@@ -72,7 +72,7 @@ export default {
       isFavorite: false,
       hasAccessToken: false,
       userEmail: '',
-      tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://entercinema-favorites.vercel.app/api',
+      // tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://entercinema-favorites.vercel.app/api', // Moving to computed
       nameForDb: null,
       starsForDb: null,
       posterForDb: null,
@@ -86,6 +86,9 @@ export default {
     };
   },
   computed: {
+    tursoBackendUrl() {
+        return this.$config.public.tursoBackendUrl;
+    },
     compType() {
       if (this.item.media_type) return this.item.media_type;
       if (this.item.title) return 'movie';
@@ -98,7 +101,7 @@ export default {
       if (this.item.genres && Array.isArray(this.item.genres)) {
         return this.item.genres.map(g => g.name).join(', ');
       }
-      return ''; 
+      return '';
     }
   },
   mounted() {
@@ -121,10 +124,10 @@ export default {
     this.typeForDb = this.compType;
     this.runtimeForDb = this.runtime;
     
-    this.$root.$on('favorites-updated', this.checkIfFavorite);
+    this.$bus.$on('favorites-updated', this.checkIfFavorite);
   },
   beforeDestroy() {
-    this.$root.$off('favorites-updated', this.checkIfFavorite);
+    this.$bus.$off('favorites-updated', this.checkIfFavorite);
   },
   methods: {
     async checkIfFavorite() {
@@ -136,7 +139,7 @@ export default {
         const moviesFetched = [];
         const tvFetched = [];
 
-        if (data.favorites_json.movies) {
+        if (data.favorites_json && data.favorites_json.movies) { // Added safety check
           data.favorites_json.movies.forEach(movie => {
             moviesFetched.push(Object.keys(movie)[0]);
           });
@@ -181,7 +184,7 @@ export default {
         if (!response.ok) throw new Error('Failed to remove favorite');
 
         this.isFavorite = false;
-        this.$root.$emit('favorites-updated'); 
+        this.$bus.$emit('favorites-updated'); 
       } catch (e) {
         console.error('Error removing favorite:', e);
       }
@@ -197,7 +200,7 @@ export default {
 
       if ((!genresForDb || !externalIds || !this.runtimeForDb) && this.idForDb) {
         try {
-           const { getMovie, getTvShow } = await import('~/api');
+           const { getMovie, getTvShow } = await import('~/utils/api');
            let fullDetails = null;
 
            if (this.typeForDb === 'movie') {
@@ -267,7 +270,7 @@ export default {
         if (!response.ok) throw new Error('Failed to add favorite');
         
         this.isFavorite = true;
-        this.$root.$emit('favorites-updated'); 
+        this.$bus.$emit('favorites-updated'); 
       } catch (e) {
         console.error(e);
       }

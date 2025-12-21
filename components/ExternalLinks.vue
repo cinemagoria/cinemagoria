@@ -1,6 +1,6 @@
 <template>
   <div class="external-links-container">
-    <h4 class="section-title">Enlaces Externos</h4>
+    <h4 class="section-title">Enlaces externos</h4>
     <div class="links-grid">
 
       <div v-if="links.imdb_id" class="link-item">
@@ -152,10 +152,10 @@
 </template>
 
 <script>
-import { getMDBListRatings } from '@/api/index';
-import rtIcon from '../static/rotten-tomatoes.svg';
-import lbIcon from '../static/letterboxd-mac-icon.png';
-import traktIcon from '../static/trakt-logo-small.svg';
+import { getMDBListRatings } from '~/utils/api';
+const rtIcon = '/rotten-tomatoes.svg';
+const lbIcon = '/letterboxd-mac-icon.png';
+const traktIcon = '/trakt-logo-small.svg';
 
 export default {
   props: {
@@ -185,7 +185,7 @@ export default {
 
   computed: {
     currentPageType() {
-      const currentPath = window.location.pathname;
+      const currentPath = this.$route ? this.$route.path : '';
       if (currentPath.includes("/movie/")) {
         return "movie";
       } else if (currentPath.includes("/tv/")) {

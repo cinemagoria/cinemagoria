@@ -6,7 +6,7 @@
       <div v-else>
         <p v-if="error" class="error">{{ error }}</p>
         <p class="welcome-label" v-else>Bienvenido, {{ name }}!</p>
-        <img src="~/static/auth-success.svg" alt="Authentication Success" class="success-icon">
+        <img src="/auth-success.svg" alt="Authentication Success" class="success-icon">
         <div class="redirect-message">
           <p>Serás redirigido automáticamente en {{ countdown }} segundos...</p>
         </div>
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import supabase from '@/services/supabase';
+
 
 export default {
   data() {
@@ -29,12 +29,14 @@ export default {
       countdown: 3
     }
   },
+  setup() {
+    return { supabase: useSupabaseClient() }
+  },
   async mounted() {
     const urlParams = new URLSearchParams(window.location.search);
     this.token = urlParams.get('token');
     this.email = urlParams.get('email');
     this.name = urlParams.get('name');
-    const authProvider = urlParams.get('auth_provider') || 'native';
     
     if (!this.token || !this.email) {
       this.error = 'Información de autenticación incompleta';
@@ -45,12 +47,13 @@ export default {
     try {
       localStorage.setItem('access_token', this.token);
       localStorage.setItem('email', this.email);
-      localStorage.setItem('auth_provider', authProvider);
+      localStorage.setItem('auth_provider', urlParams.get('auth_provider') || 'native');
+      
       window.dispatchEvent(new Event('auth-changed'));
-    
+      
       this.forceNavUpdate();
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('user_data')
         .select('*')
         .eq('email', this.email);
@@ -58,7 +61,7 @@ export default {
       if (error) {
         throw new Error('Error al verificar datos de usuario');
       }
-
+      
       this.loading = false;
       const countdownInterval = setInterval(() => {
         this.countdown--;
@@ -75,7 +78,7 @@ export default {
     }
   },
   methods: {
-    redirect() {
+   redirect() {
       this.forceNavUpdate();
       
       const returnUrl = localStorage.getItem('auth_return_url');
@@ -97,7 +100,7 @@ export default {
       const navElements = document.querySelectorAll('nav');
       const loginLinks = document.querySelectorAll('a[href="/login"]');
       const watchlistLinks = document.querySelectorAll('a[href="/watchlist"]');
-      
+
       if (loginLinks.length > 0) {
         loginLinks.forEach(link => {
           const parentLi = link.closest('li');
@@ -146,6 +149,7 @@ export default {
 h1 {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
   margin-bottom: 20px;

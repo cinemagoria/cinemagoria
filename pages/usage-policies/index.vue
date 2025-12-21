@@ -1,12 +1,13 @@
+
 <template>
   <main class="main">
     <section class="terms-section">
       <UserNav @show-rated-modal="showRatedItems" />
       <br>
-      <h1 class="title-primary text-center" style="font-size: 20px; margin-top: 10px;"><b>Políticas de Uso y Acuerdo de Privacidad</b></h1>
+      <h1 class="title-primary text-center" style="font-size: 20px; margin-top: 10px;"><b>Acuerdo de Uso y Politicas de Privacidad</b></h1>
       <br>
       <div>
-        <h2 class="title-secondary custom-center" style="font-size: 12px; position:relative; bottom:15px;"><strong>Fecha de entrada en vigor:</strong> 27 de marzo de 2024</h2>
+        <h2 class="title-secondary custom-center" style="font-size: 12px; position:relative; bottom:15px;"><strong>Vigencia desde:</strong> 27 de marzo de 2024</h2>
         <h2 class="text-center custom-center"><strong>1. INTRODUCCIÓN</strong></h2>
         <h2 class="text-center">ESTA PLATAFORMA TÉCNICA DEMOSTRATIVA, PROPORCIONADA SIN NINGÚN TIPO DE GARANTÍA, ESTÁ DESTINADA ÚNICAMENTE AL USO PERSONAL EN LÍNEA, CON FINES NO COMERCIALES Y SIN ÁNIMO DE LUCRO. LEA COMPLETAMENTE ESTE ACUERDO ANTES DE UTILIZAR LA PLATAFORMA. AL ACCEDER O UTILIZAR ESTA PLATAFORMA —INCLUIDOS SU DOMINIO, CONTENIDO O CUALQUIER INTERACCIÓN (COMO HACER CLIC EN ENLACES)— USTED RECONOCE Y DECLARA QUE ACEPTA ESTE ACUERDO DE USUARIO Y QUE TIENE 18 AÑOS DE EDAD O MÁS. SU ACCESO Y USO IMPLICAN LA ACEPTACIÓN PLENA Y SIN MODIFICACIONES DE TODOS LOS TÉRMINOS Y CONDICIONES AQUÍ ESTABLECIDOS, LOS CUALES ENTRAN EN VIGOR DE INMEDIATO.</h2>
         <h2 class="text-center">Si no está de acuerdo con estos términos, simplemente absténgase de utilizar la plataforma y cierre todas sus ventanas. No podrá acceder ni utilizar esta plataforma si usted (o su tutor legal) no puede celebrar un contrato vinculante, o en cualquier jurisdicción donde este acuerdo no sea exigible. Al permitir el acceso a la plataforma desde su dispositivo o red, usted manifiesta su conformidad con las presentes Políticas de Uso.</h2>
@@ -36,25 +37,19 @@
         <h2 class="text-center">PARA CUALQUIER CONSULTA O DUDA SOBRE ESTE ACUERDO DE USUARIO, TÉRMINOS Y CONDICIONES O POLÍTICAS DE PRIVACIDAD, POR FAVOR ENVÍE UN CORREO ELECTRÓNICO A <strong>hello@entercinema.com.</strong></h2>
         <h2 class="title-secondary custom-center" style="font-size: 12px; margin-top:20px;"><strong>Última actualización:</strong> 20 de diciembre del 2025</h2>
       </div>
-      <br>
-      <div class="button-container">
-        <button class="button button--icon" @click="redirectToHome">
-          <span class="txt">Volver</span>
-        </button>
-      </div>
+
     </section>
   </main>  
 </template>
-
 <script>
 import UserNav from '@/components/global/UserNav';
 
 export default {
   head () {
     return {
-      title: 'EnterCinema - Políticas de Uso y Acuerdo de Privacidad.',
+      title: 'EnterCinema - Usage Policies & Privacy Agreement.',
       meta: [
-        { hid: 'og:title', property: 'og:title', content: 'Políticas de Uso y Acuerdo de Privacidad' },
+        { hid: 'og:title', property: 'og:title', content: 'Usage Policies & Privacy Agreement' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
       ],
     };
@@ -62,14 +57,12 @@ export default {
   components: {
     UserNav,
   },
+
   methods: {
-    redirectToHome() {
-      this.$router.push('/');
-    },
     showRatedItems() {
       this.ratedItemsModalVisible = true;
     },
-  }
+  },
 };
 </script>
 
@@ -93,6 +86,7 @@ export default {
   .button-container {
     display: flex;
     justify-content: center;
+    
   }
 
   .terms-section {
@@ -115,13 +109,5 @@ export default {
 
   .custom-center {
     text-align: center;
-  }
-
-  .selected-language {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem;
-    border-radius: 5px;
   }
 </style>

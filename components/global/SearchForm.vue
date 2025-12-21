@@ -2,14 +2,14 @@
   <div :class="$style.container">
     <div :class="$style.form">
       <form style="width: 100%;" autocomplete="off" @submit.prevent>
-        <label class="visuallyhidden" for="search">Search</label>
+        <label class="visuallyhidden" for="search">Buscar</label>
         <div class="field-wrapper">
           <div :class="$style.field">
             <button 
               v-if="!isRootPage"
               type="button" 
-              style="padding: 0; background-color: black; margin-top: 15px; left: 5px; position: relative;"
-              aria-label="Go Back" 
+              style="padding: 0; background-color: black; top: 1.5rem; left: 5px; position: relative;"
+              aria-label="Volver" 
               class="button-back-search"
               @click="goBack">
               <svg xmlns="http://www.w3.org/2000/svg"
@@ -38,14 +38,16 @@
               @blur="unFocus"
             >
             <button
-              style="-webkit-appearance: button; 
+              style="  -webkit-appearance: none;
+  appearance: none; 
               cursor: pointer; 
               position: absolute;
               right: 2%;
-              margin-left: 2rem;"
+              margin-left: 2rem;
+              top: 2rem !important;"
               v-if="showButton"
               type="button"
-              aria-label="Close"
+              aria-label="Cerrar"
               @click="goBack"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15">
@@ -59,18 +61,22 @@
       </form>
     </div>
     <div :class="$style.userMenu">
-      <!---->
+      <UserNav />
   </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import { debounce } from 'lodash';
-import supabase from '@/services/supabase';
+import { mapState, mapActions } from 'pinia';
+import { useSearchStore } from '~/stores/search';
+import lodash from 'lodash';
+const { debounce } = lodash;
+import UserNav from './UserNav.vue';
+
 
 async function getUserAvatar(userEmail) {
   try {
+    const supabase = useSupabaseClient();
     const { data, error } = await supabase
       .from('user_data')
       .select('avatar')
@@ -91,6 +97,7 @@ async function getUserAvatar(userEmail) {
 
 async function getUserName(userEmail) {
   try {
+    const supabase = useSupabaseClient();
     const { data, error } = await supabase
       .from('user_data')
       .select('first_name')
@@ -109,6 +116,9 @@ async function getUserName(userEmail) {
 }
 
 export default {
+  components: {
+    UserNav
+  },
   data() {
     return {
       query: this.$route.query.q ? this.$route.query.q : '',
@@ -148,7 +158,7 @@ export default {
     showButton() {
       return this.$route.name === 'search';
     },
-    ...mapState('search', ['fromPage']),
+    ...mapState(useSearchStore, ['fromPage']),
   },
 
   async mounted() {
@@ -165,8 +175,8 @@ export default {
   if (this.isLoggedIn) {
     this.userName = await getUserName(this.userEmail);
   }
-  this.$root.$on('clear-search', this.clearSearch);
-  this.$root.$on('update-search-query', this.updateSearchQuery);
+  this.$bus.$on('clear-search', this.clearSearch);
+  this.$bus.$on('update-search-query', this.updateSearchQuery);
 },
 
 updateSearchQuery(newQuery) {
@@ -179,8 +189,8 @@ updateSearchQuery(newQuery) {
 },
 
 beforeDestroy() {
-  this.$root.$off('clear-search', this.clearSearch);
-  this.$root.$off('update-search-query', this.updateSearchQuery);
+  this.$bus.$off('clear-search', this.clearSearch);
+  this.$bus.$off('update-search-query', this.updateSearchQuery);
 },
   methods: {
     goToRoute() {
@@ -219,10 +229,11 @@ beforeDestroy() {
         const fromLink = target && target.tagName.toLowerCase() === 'a' && target.getAttribute('href') === '/search-genre';
         if (!target || (!target.classList.contains('search-toggle') && !fromLink)) {
           this.query = '';
-          this.$store.commit('search/closeSearch');
+          this.closeSearchAction();
         }
       }
     },
+    ...mapActions(useSearchStore, { closeSearchAction: 'closeSearch' })
   },
 };
 </script>
@@ -232,6 +243,7 @@ beforeDestroy() {
 body {
   font-family: 'Roboto', sans-serif;
 }
+
 .container {
   display: flex;
   width: 100%;
@@ -297,14 +309,13 @@ button {
   display: flex;
   align-items: center;
   padding: 0 1.5rem;
-  background: none;  
+  background: none;
 }
 
 @media screen and (max-width: 600px) {
   .navbar-title {
     font-size: 12px; 
   }
-
 
   .navbar-title {
     text-align: center;
@@ -316,4 +327,6 @@ button {
       margin-top: 30px; 
     }
   }
+
+
 </style>

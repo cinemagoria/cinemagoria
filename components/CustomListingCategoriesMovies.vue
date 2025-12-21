@@ -1,40 +1,38 @@
 <template>
     <div class="listing-carousel-categories">
-      <br>
-        <div v-if="title || viewAllUrl" class="listing__head">
-         <h2 class="listing__title">{{ title }}</h2>
-         <nuxt-link v-if="viewAllUrl" :to="viewAllUrl" class="listing__explore">
-           <strong>Explorar Más</strong>
-         </nuxt-link>
-       </div>
-  
       <div class="carousel">
-        <button
-          class="carousel__nav carousel__nav---left"
-          aria-label="Previous"
-          type="button"
-          :disabled="disableLeftButton"
-          @click="moveToClickEvent('left')">
-          <!-- eslint-disable-next-line -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"/></svg>
-        </button>
-    
-          <div ref="carouselElement" class="carousel__items" @scroll="scrollEvent">
-            <div v-for="(category, index) in categories" :key="`category-${index}`" class="card" @click="redirectToRoute(category.link)">
-              <div class="card__image">
-                  <img :src="category.image" :alt="category.alt">
-              </div>
-    
-              <div class="card__info">
-              <h2 class="card__label">
-                  <a @click.prevent="redirectToRoute(category.link)" class="category-link">{{ category.alt }}</a>
-              </h2>
+        <div v-if="title || viewAllUrl" class="listing__head">
+          <h2 class="listing__title">{{ title }}</h2>
+        <nuxt-link v-if="viewAllUrl" :to="viewAllUrl" class="listing__explore">
+          <strong>Explorar Más</strong>
+        </nuxt-link>
+      </div>
+      <button
+        class="carousel__nav carousel__nav-left"
+        aria-label="Previous"
+        type="button"
+        :disabled="disableLeftButton"
+        @click="moveToClickEvent('left')">
+        <!-- eslint-disable-next-line -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"/></svg>
+      </button>
+  
+        <div ref="carouselElement" class="carousel__items" @scroll="scrollEvent">
+          <div v-for="(category, index) in categories" :key="`category-${index}`" class="card" @click="redirectToRoute(category.link)">
+            <div class="card__image">
+                <img :src="category.image" :alt="category.alt">
             </div>
-            </div>
+  
+            <div class="card__info">
+            <h2 class="card__label">
+                <a @click.prevent="redirectToRoute(category.link)" class="category-link">{{ category.alt }}</a>
+            </h2>
           </div>
-    
-          <button
-            class="carousel__nav carousel__nav---right"
+          </div>
+        </div>
+  
+        <button
+            class="carousel__nav carousel__nav-right"
             aria-label="Next"
             type="button"
             :disabled="disableRightButton"
@@ -73,18 +71,18 @@
     data() {
       return {
         categories: [
-          { image: "/thumbnails/drama-tv-esp.webp", link: "/genre/18/movie", alt: "Drama" },
-          { image: "/thumbnails/comedy-movie-esp.webp", link: "/genre/35/movie", alt: "Comedia" },
-          { image: "/thumbnails/action-movie-esp.webp", link: "/genre/28/movie", alt: "Acción" },
-          { image: "/thumbnails/horror-movie-esp.webp", link: "/genre/27/movie", alt: "Terror" },
-          { image: "/thumbnails/suspense-movie-esp.webp", link: "/genre/53/movie", alt: "Suspenso" },
-          { image: "/thumbnails/sciencefiction-movie-esp.webp", link: "/genre/878/movie", alt: "Ciencia Ficción" },
-          { image: "/thumbnails/adventure-tv-esp.webp", link: "/genre/12/movie", alt: "Aventura" },
-          { image: "/thumbnails/crime-movie-esp.webp", link: "/genre/80/movie", alt: "Crimen" },
-          { image: "/thumbnails/history-movie-esp.webp", link: "/genre/36/movie", alt: "Historia" },
-          { image: "/thumbnails/documentary-movie-esp.webp", link: "/genre/99/movie", alt: "Documentales" },
-          { image: "/thumbnails/animation-movie-esp.webp", link: "/genre/16/movie", alt: "Animación" },
-          { image: "/thumbnails/mistery-movie-esp.webp", link: "/genre/9648/movie", alt: "Misterio" }
+          { image: "/thumbnails/drama-tv-eng.webp", link: "/genre/18/movie", alt: "Drama" },
+          { image: "/thumbnails/comedy-movie-eng.webp", link: "/genre/35/movie", alt: "Comedia" },
+          { image: "/thumbnails/action-movie-eng.webp", link: "/genre/28/movie", alt: "Acción" },
+          { image: "/thumbnails/horror-movie-eng.webp", link: "/genre/27/movie", alt: "Terror" },
+          { image: "/thumbnails/suspense-movie-eng.webp", link: "/genre/53/movie", alt: "Suspenso" },
+          { image: "/thumbnails/sciencefiction-movie-eng.webp", link: "/genre/878/movie", alt: "Ciencia Ficción" },
+          { image: "/thumbnails/adventure-tv-eng.webp", link: "/genre/12/movie", alt: "Aventura" },
+          { image: "/thumbnails/crime-movie-eng.webp", link: "/genre/80/movie", alt: "Crimen" },
+          { image: "/thumbnails/history-movie-eng.webp", link: "/genre/36/movie", alt: "Historia" },
+          { image: "/thumbnails/documentary-movie-eng.webp", link: "/genre/99/movie", alt: "Documentales" },
+          { image: "/thumbnails/animation-movie-eng.webp", link: "/genre/16/movie", alt: "Animación" },
+          { image: "/thumbnails/mistery-movie-eng.webp", link: "/genre/9648/movie", alt: "Misterio" }
         ],
       };
     },

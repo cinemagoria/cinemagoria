@@ -82,7 +82,7 @@
                       @error="onImageError($event, `person-${person.person_id}`)"
                     >
                     <div v-else :class="$style.noImage">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="black">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="black">
                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                       </svg>
                     </div>
@@ -125,7 +125,7 @@
                     @error="onImageError($event, `tv-${show.tv_id}`)"
                   >
                   <div v-else :class="$style.noImage">
-                   <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="black">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="black">
                       <path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .89-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.11-.9-2-2-2zm0 14H3V8h18v12zM9 10v8l7-4z"/>
                     </svg>
                   </div>
@@ -197,7 +197,7 @@ import {
   getFollowedProductionCompanies, 
   unfollowProductionCompany, 
   followProductionCompany 
-} from '~/api';
+} from '~/utils/api';
 import Loader from '@/components/Loader';
 
 export default {
@@ -222,7 +222,7 @@ export default {
       undoTimeout: null,
       collapsedDepartments: {},
       imageLoadStates: {},
-      fallbackImageUrl: "https://raw.githubusercontent.com/imprvhub/entercinema/es/static/image_not_found_yet_es.webp"
+      fallbackImageUrl: "/image_not_found_yet_es.webp"
     };
   },
   
@@ -260,11 +260,11 @@ export default {
   },
 
   mounted() {
-    this.$root.$on('show-following-modal', this.show);
+    this.$bus.$on('show-following-modal', this.show);
   },
 
   beforeDestroy() {
-    this.$root.$off('show-following-modal');
+    this.$bus.$off('show-following-modal');
     if (this.undoTimeout) {
       clearTimeout(this.undoTimeout);
     }
@@ -272,14 +272,14 @@ export default {
 
   methods: {
     toggleDepartment(department) {
-      this.$set(this.collapsedDepartments, department, !this.collapsedDepartments[department]);
+      this.collapsedDepartments[department] = !this.collapsedDepartments[department];
     },
     
     getUndoText() {
       if (!this.undoItem) return '';
-      if (this.undoItem.type === 'company') return `${this.undoItem.company_name} unfollowed`;
-      if (this.undoItem.type === 'tv') return `${this.undoItem.tv_name} unfollowed`;
-      return `${this.undoItem.name} unfollowed`;
+      if (this.undoItem.type === 'company') return `${this.undoItem.company_name} dejado de seguir`;
+      if (this.undoItem.type === 'tv') return `${this.undoItem.tv_name} dejado de seguir`;
+      return `${this.undoItem.name} dejado de seguir`;
     },
 
     async show() {
@@ -308,7 +308,7 @@ export default {
           this.people.forEach(p => {
              const dept = p.person_type || 'other';
              if (this.collapsedDepartments[dept] === undefined) {
-               this.$set(this.collapsedDepartments, dept, false);
+               this.collapsedDepartments[dept] = false;
              }
           });
         }
@@ -328,10 +328,10 @@ export default {
 
     formatDepartment(dept) {
       const map = {
-        actor: 'Intérpretes',
-        director: 'Dirección',
-        writer: 'Guion',
-        other: 'Otros'
+        'actor': 'Intérpretes',
+        'director': 'Dirección',
+        'writer': 'Guion',
+        'other': 'Otros'
       };
       return map[dept] || dept.charAt(0).toUpperCase() + dept.slice(1);
     },
@@ -489,11 +489,11 @@ export default {
     },
 
     handleImageLoad(id) {
-      this.$set(this.imageLoadStates, id, true);
+      this.imageLoadStates[id] = true;
     },
 
     onImageError(event, id) {
-       this.$set(this.imageLoadStates, id, true);
+       this.imageLoadStates[id] = true;
        if (event.target.src !== this.fallbackImageUrl) {
          event.target.src = this.fallbackImageUrl;
        }
@@ -680,7 +680,6 @@ export default {
   opacity: 1;
 }
 
-
 .cardImage {
   position: relative;
   background: #8be8fd;
@@ -720,6 +719,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
   background: rgba(255, 255, 255, 0.05);
   color: #000;
   padding: 1.5rem;

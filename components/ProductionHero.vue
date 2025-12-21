@@ -25,7 +25,7 @@
           :class="[$style.actionButton, { [$style.active]: isFollowing }]" 
           @click="toggleFollow" 
           :disabled="isLoadingFollow">
-          <span v-if="isLoadingFollow">Loading...</span>
+          <span v-if="isLoadingFollow">Cargando...</span>
           <span v-else>
             {{ isFollowing ? 'Siguiendo' : 'Seguir' }}
           </span>
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { apiImgUrl, followProductionCompany, unfollowProductionCompany, getFollowedProductionCompanies } from '~/api';
+import { apiImgUrl, followProductionCompany, unfollowProductionCompany, getFollowedProductionCompanies } from '~/utils/api';
 import { SUPPORTED_PRODUCTION_COMPANIES, ISO_TO_COUNTRY_NAME_MAP } from '~/utils/constants';
 
 export default {
@@ -121,7 +121,7 @@ export default {
     },
     async toggleFollow() {
         if (!this.isAuthenticated) {
-            console.warn("Please login to follow production companies.");
+            console.warn("Por favor inicia sesión para seguir productoras.");
             return;
         }
         const userEmail = localStorage.getItem('email');

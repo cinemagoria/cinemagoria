@@ -2,7 +2,7 @@
     <main class="main">
       <section class="wip-section">
         <div class="image-container">
-          <img src="~static/wip.png" alt="Maintenance Image" class="maintenance-image">
+          <img src="/wip.png" alt="Maintenance Image" class="maintenance-image">
         </div>
         <br>
         <br>
@@ -11,7 +11,7 @@
           <button class="button button--icon" @click="redirectToHome">
             <span class="txt">Back</span>
           </button>
-          <a href="https://github.com/imprvhub/entercinema/blob/main/README.md" target="_blank" class="info button button--icon">
+          <a href="https://github.com/imprvhub/entercinema/blob/es/README.md" target="_blank" class="info button button--icon">
             <span class="txt">More Information</span>
           </a>
         </div>
@@ -23,9 +23,9 @@
   export default {
     head () {
       return {
-        title: 'EnterCinema - Trabajo en proceso.',
+        title: 'EnterCinema - Work in progress.',
         meta: [
-          { hid: 'og:title', property: 'og:title', content: 'Trabajo en proceso' },
+          { hid: 'og:title', property: 'og:title', content: 'Work in progress' },
           { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
         ],
       };

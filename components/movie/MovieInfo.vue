@@ -5,12 +5,13 @@
         <div :class="$style.poster">
           <img
             v-if="poster"
-            v-lazyload="poster"
-            class="lazyload"
-            :alt="name">
+            :src="poster"
+            loading="lazy"
+            :alt="name"
+            @error="handleImageError">
           <img
             v-else
-            src="https://raw.githubusercontent.com/imprvhub/entercinema/es/static/image_not_found_yet_es.webp"
+            src="/image_not_found_yet_es.webp"
             alt="Imagen no encontrada"
             style="width: 100%; height: 100%; object-fit: cover;">
         </div>
@@ -30,11 +31,11 @@
             </li>
             <li v-if="item.release_date">
               <div :class="$style.label">Lanzamiento</div>
-              <div :class="$style.value">{{ item.release_date | fullDate }}</div>
+              <div :class="$style.value">{{ fullDate(item.release_date) }}</div>
             </li>
             <li v-if="item.runtime">
               <div :class="$style.label">Duración</div>
-              <div :class="$style.value">{{ item.runtime | runtime }}</div>
+              <div :class="$style.value">{{ formatRuntime(item.runtime) }}</div>
             </li>
             <li v-if="directors">
               <div :class="$style.label">Director</div>
@@ -42,11 +43,11 @@
             </li>
             <li v-if="item.budget">
               <div :class="$style.label">Presupuesto</div>
-              <div :class="$style.value">${{ item.budget | numberWithCommas }}</div>
+              <div :class="$style.value">${{ numberWithCommas(item.budget) }}</div>
             </li>
             <li v-if="item.revenue">
               <div :class="$style.label">Recaudación</div>
-              <div :class="$style.value">${{ item.revenue | numberWithCommas }}</div>
+              <div :class="$style.value">${{ numberWithCommas(item.revenue) }}</div>
             </li>
             <li v-if="item.genres && item.genres.length">
               <div :class="$style.label">Género</div>
@@ -58,7 +59,7 @@
             </li>
             <li v-if="item.original_language">
               <div :class="$style.label">Idioma Original</div>
-              <div :class="$style.value">{{ item.original_language | fullLang }}</div>
+              <div :class="$style.value">{{ fullLang(item.original_language) }}</div>
             </li>
             <li v-if="item.production_companies && item.production_companies.length">
               <div :class="$style.label">Producción</div>
@@ -67,8 +68,7 @@
           </ul>
         </div>
 
-
-        <div :class="$style.external">
+         <div :class="$style.external">
           <ExternalLinks :links="item.external_ids" />
         </div>
 
@@ -80,20 +80,20 @@
           />
         </div>
 
-
         <div v-if="isTranslating" :class="$style.translationLoader">
           <Loader :size="44" />
         </div>
 
-        <div v-else-if="reviews && reviews.length" class="reviews-container">
+        <div class="reviews-section" v-else-if="reviews && reviews.length">
           <br>
           <div :class="$style.reviewsHeader">
-            <h3 :class="$style.sectionTitle">Reseñas ({{ reviewCount }})</h3>
-            <button @click="toggleFullReviews" :class="$style.spoilerBanner">
+             <h4 :class="$style.sectionTitle">RESEÑAS ({{ reviewCount }})</h4>
+             <button @click="toggleFullReviews" :class="$style.spoilerBanner">
               <svg v-if="!showFullReviews" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
               <span>{{ showFullReviews ? 'OCULTAR RESEÑAS' : 'MOSTRAR (ADVERTENCIA: PUEDE CONTENER SPOILERS)' }}</span>
-            </button>
+             </button>
           </div>
+
           <ul class="nolist" style="padding-right: 1rem;" v-show="showFullReviews">
               <li v-for="(review, index) in reviews" :key="index" :class="$style.reviewCard">
                   <div :class="$style.reviewHeader">
@@ -178,12 +178,15 @@
 </template>
 
 <script>
-import { apiImgUrl, getMovieProviders, getMovieReviews, getTraktReviews, translateReview, translateReviewsBatch, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating } from '~/api'; 
+import { apiImgUrl, getMovieProviders, getMovieReviews, getTraktReviews, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating, translateReviewsBatch } from '~/utils/api'; 
 import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants'; 
 import { name, directors } from '~/mixins/Details';
+import Filters from '~/mixins/Filters';
 import ExternalLinks from '~/components/ExternalLinks';
 import WatchOn from '~/components/WatchOn';
 import ListingCarousel from '~/components/ListingCarousel';
+
+import { getProductionCompanySlug } from '~/utils/constants';
 
 export default {
   components: {
@@ -194,6 +197,7 @@ export default {
   },
 
   mixins: [
+    Filters,
     name,
     directors,
   ],
@@ -219,6 +223,7 @@ export default {
       
       recommended: null,
       directorItems: null,
+      producerItems: null,
       producerItems: null,
       activeTab: null,
       isLoadingRecommendations: true,
@@ -257,8 +262,8 @@ export default {
     },
     availableTabs() {
       const tabs = [];
-      if (this.recommended?.results?.length) tabs.push({ key: 'similar', label: 'Más Como Esto' });
-      if (this.directorItems?.results?.length) tabs.push({ key: 'director', label: 'Del Mismo Director' });
+      if (this.recommended?.results?.length) tabs.push({ key: 'similar', label: 'Similares' });
+      if (this.directorItems?.results?.length) tabs.push({ key: 'director', label: 'Del mismo director' });
       if (this.producerItems?.results?.length) tabs.push({ key: 'producer', label: 'De las Mismas Productoras' });
       return tabs;
     },
@@ -302,6 +307,25 @@ export default {
   },
 
   methods: {
+    handleImageError(e) {
+      e.target.src = '/image_not_found_yet_es.webp';
+    },
+    fullDate(date) {
+      if (!date) return 'N/A';
+      return new Date(date).toLocaleDateString(process.env.API_COUNTRY === 'BR' ? 'pt-BR' : 'es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    },
+    fullLang(iso) {
+      try {
+        const languageNames = new Intl.DisplayNames(['es'], { type: 'language' });
+        return languageNames.of(iso);
+      } catch (e) {
+        return iso;
+      }
+    },
     resetTabs() {
       this.recommended = null;
       this.directorItems = null;
@@ -418,14 +442,13 @@ export default {
     toggleFullReviews() { this.showFullReviews = !this.showFullReviews; },
     formatGenres(genres) { return genres.map(genre => `<a href="/genre/${genre.id}/movie">${genre.name}</a>`).join(', '); },
     formatProductionCompanies(companies) {
-      const { getProductionCompanySlug } = require('~/utils/constants');
       return companies.map(company => {
         const slug = getProductionCompanySlug(company.id);
-        if (slug) return `<a href="/production/${slug}">${company.name}</a>`;
+        if (slug) return`<a href="/production/${slug}">${company.name}</a>`;
         return company.name;
       }).join(', ');
     },
-    toggleReadMore(review) { this.$set(review, 'showFullContent', !review.showFullContent); },
+    toggleReadMore(review) { review.showFullContent = !review.showFullContent; },
     formatContent(content, index, showFullContent) {
       if (!content) return '';
       content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/_([^_]+)_/g, (match, p1) => p1.toUpperCase());
@@ -458,7 +481,7 @@ export default {
         const traktReviews = traktResult.status === 'fulfilled' ? traktResult.value : [];
 
         const allReviews = [...tmdbReviews, ...traktReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        
+
         if (allReviews.length > 0) {
           const translations = await translateReviewsBatch(allReviews);
           
@@ -468,7 +491,7 @@ export default {
             showTranslation: true
           }));
         } else {
-          this.reviews = [];
+             this.reviews = [];
         }
       } catch (error) {
         console.error("Error fetching reviews", error);
@@ -484,34 +507,6 @@ export default {
 
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
-
-.reviewRatingContainer {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.stars {
-  width: 7.3rem;
-  height: 1.2rem;
-  background-image: url('~assets/images/stars.png');
-  background-repeat: no-repeat;
-  background-size: auto 100%;
-  margin-bottom: 0.3rem;
-
-  > div {
-    height: 100%;
-    background-image: url('~assets/images/stars-filled.png');
-    background-repeat: no-repeat;
-    background-size: auto 100%;
-  }
-}
-
-.ratingNumber {
-  font-size: 1.2rem;
-  color: #999;
-  font-weight: 600;
-}
 
 .info { 
   background-color: rgba(0, 0, 0, 0.307);
@@ -585,55 +580,6 @@ export default {
   }
 }
 
-.reviewsHeader {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  padding: 0 1rem;
-  gap: 1.5rem;
-}
-
-.sectionTitle {
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #fff;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0;
-}
-
-.spoilerBanner {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.8rem;
-  font-size: 1.2rem;
-  color: #8AE8FC;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  border: 1px solid rgba(138, 232, 252, 0.3);
-  padding: 0.6rem 1.4rem;
-  border-radius: 6px;
-  background: rgba(138, 232, 252, 0.05);
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  svg {
-    margin-bottom: 2px;
-  }
-
-  &:hover {
-    background: rgba(138, 232, 252, 0.1);
-    box-shadow: 0 4px 12px rgba(138, 232, 252, 0.15);
-    transform: translateY(-1px);
-    border-color: rgba(138, 232, 252, 0.5);
-  }
-
-  &:active {
-    transform: translateY(1px);
-  }
-}
 
 .reviewCard {
   background-color: rgba(9, 25, 31, 0.6);
@@ -667,6 +613,34 @@ export default {
     color: #fff;
     margin-bottom: 0.5rem;
   }
+}
+
+.reviewRatingContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.stars {
+  width: 7.3rem;
+  height: 1.2rem;
+  background-image: url('@/assets/images/stars.png');
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  margin-bottom: 0.2rem;
+
+  > div {
+    height: 100%;
+    background-image: url('@/assets/images/stars-filled.png');
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+  }
+}
+
+.ratingNumber {
+  font-size: 1.2rem;
+  color: #999;
+  font-weight: 600;
 }
 
 .reviewMeta {
@@ -720,43 +694,17 @@ export default {
 .reviewActions {
   display: flex;
   justify-content: flex-end;
-  align-items: center;
   margin-top: 1rem;
-  gap: 1rem;
-}
-
-.toggleTranslationBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 3.2rem;
-  background-color: rgba(138, 232, 252, 0.1);
-  color: #8AE8FC;
-  border: 1px solid rgba(138, 232, 252, 0.3);
-  padding: 0 1.2rem;
-  border-radius: 4px;
-  font-size: 1.2rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background-color: rgba(138, 232, 252, 0.2);
-    border-color: #8AE8FC;
-    transform: translateY(-1px);
-  }
 }
 
 .viewReviewButton {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  height: 3.2rem;
   gap: 0.5rem;
   background-color: transparent;
   color: #8AE8FC;
   border: 1px solid #8AE8FC;
-  padding: 0 1.2rem;
+  padding: 0.6rem 1.2rem;
   border-radius: 4px;
   font-size: 1.2rem;
   font-weight: 600;
@@ -774,21 +722,139 @@ export default {
   }
 }
 
-.translationLoader {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 2rem;
-  min-height: 200px;
+.noReviews {
+  text-align: center;
+  font-size: 1.6rem;
+  color: #999;
+  padding: 4rem;
+  font-style: italic;
 }
 
-.loaderText {
-  margin-top: 1.5rem;
+.reviewsHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+  gap: 1.5rem;
+}
+
+.sectionTitle {
   font-size: 1.6rem;
-  color: #8AE8FC;
   font-weight: 600;
-  text-align: center;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.spoilerBanner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 1.2rem;
+  color: #8AE8FC;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 1px solid rgba(138, 232, 252, 0.3);
+  padding: 0.6rem 1.4rem;
+  border-radius: 6px;
+  background: rgba(138, 232, 252, 0.05);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  svg {
+    margin-bottom: 2px;
+  }
+
+  &:hover {
+    background: rgba(138, 232, 252, 0.1);
+    box-shadow: 0 4px 12px rgba(138, 232, 252, 0.15);
+    transform: translateY(-1px);
+    border-color: rgba(138, 232, 252, 0.5);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+
+
+.reviewCard {
+  background-color: rgba(9, 25, 31, 0.6);
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  transition: transform 0.2s ease, background-color 0.2s;
+  border: 1px solid rgba(138, 232, 252, 0.1); 
+
+  &:hover {
+    background-color: rgba(12, 33, 42, 0.8);
+    transform: translateY(-2px);
+    border-color: rgba(138, 232, 252, 0.3);
+  }
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 1rem;
+}
+
+.reviewAuthor {
+  display: flex;
+  flex-direction: column;
+  strong {
+    font-size: 1.6rem;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.reviewMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.traktBadge {
+  color: #ED1C24;
+  font-weight: bold;
+  font-size: 1.1rem;
+  border: 1px solid #ED1C24;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+
+.reviewDate {
+  font-size: 1.2rem;
+  color: #999;
+  font-style: italic;
+}
+
+.reviewBody {
+  font-size: 1.5rem;
+  line-height: 1.6;
+  color: #ddd;
+}
+
+.readMore {
+  cursor: pointer;
+  color: #8AE8FC;
+  font-size: 1.3rem;
+  margin-left: 0.5rem;
+  font-weight: 600;
+  
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .noReviews {

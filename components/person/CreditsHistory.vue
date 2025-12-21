@@ -3,7 +3,7 @@
     <div :class="$style.head">
       <div :class="$style.filter">
         <label for="credits_category">
-          Rol
+          Departamento
         </label>
 
         <select
@@ -20,7 +20,7 @@
             v-for="(category) in categories"
             :key="`credit-filter-${category.toLowerCase()}`"
             :value="category.toLowerCase()">
-            {{ category }}
+            {{ formatDepartment(category) }}
           </option>
         </select>
       </div>
@@ -35,6 +35,7 @@
           v-model="active_media"
           :class="$style.select"
           @change="getCredits">
+
           <option value="combined_credits">
             Todos
           </option>
@@ -42,7 +43,7 @@
             Películas
           </option>
           <option value="tv_credits">
-            Series de TV
+            Series
           </option>
         </select>
       </div>
@@ -53,7 +54,7 @@
       :key="`credits-${category.name.toLowerCase()}`"
       :class="$style.category">
       <h2 :class="$style.title">
-        {{ category.name }}
+        {{ formatDepartment(category.name) }}
       </h2>
 
       <table>
@@ -69,7 +70,7 @@
 </template>
 
 <script>
-import { getCredits } from '~/api';
+import { getCredits } from '~/utils/api';
 import CreditsHistoryGroup from '~/components/person/CreditsHistoryGroup';
 
 export default {
@@ -239,6 +240,31 @@ export default {
 
         return 0;
       });
+    },
+
+
+    formatDepartment(name) {
+      const map = {
+        'Acting': 'Actuación',
+        'Directing': 'Dirección',
+        'Production': 'Producción',
+        'Writing': 'Guion',
+        'Editing': 'Edición',
+        'Creator': 'Creador',
+        'Crew': 'Equipo',
+        'Visual Effects': 'Efectos Visuales',
+        'Sound': 'Sonido',
+        'Camera': 'Cámara',
+        'Art': 'Arte',
+        'Costume & Make-Up': 'Vestuario y Maquillaje',
+        'Lighting': 'Iluminación',
+        'Loader': 'Cargador', // Rare but possible
+        'Actors': 'Actuación',
+        'Directors': 'Dirección',
+        'Writers': 'Guion',
+        'Producers': 'Producción'
+      };
+      return map[name] || name;
     },
   },
 };

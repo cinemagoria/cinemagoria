@@ -2,7 +2,7 @@
   <main class="main">
     <UserNav />
     <nav class="navbar navbar-welcome">
-      <h1 class="title-primary" style="color: #8BE9FD !important; margin-top:30px; margin-bottom:10px; display:flex; justify-content: center;">Historial de Cambios</h1>
+      <h1 class="title-primary" style="color: #8BE9FD !important; margin-top:30px; margin-bottom:10px; display:flex; justify-content: center;">Últimas novedades</h1>
       <h2 class="title-secondary" style="color: rgb(172, 175, 181); font-size: 14px; max-width: 600px; margin: 20px auto 0;">
         Últimas actualizaciones y mejoras de Entercinema.
       </h2>
@@ -11,7 +11,7 @@
     <div class="changelog-section">
       <div v-if="loading" class="loading-container">
         <div class="spinner"></div>
-        <p>Cargando actualizaciones...</p>
+        <p>Cargando versiones...</p>
       </div>
 
       <div v-else-if="error" class="error-container">
@@ -46,7 +46,7 @@
         </div>
         
         <div v-if="releases.length === 0" class="no-releases">
-          No se encontraron actualizaciones.
+          No se encontraron versiones.
         </div>
       </div>
     </div>
@@ -55,21 +55,17 @@
 
 <script>
 import UserNav from '@/components/global/UserNav';
+import MarkdownIt from 'markdown-it';
 
 export default {
   head() {
     return {
-      title: 'EnterCinema - Historial de Cambios',
+      title: 'EnterCinema - Changelog',
       meta: [
-        { hid: 'og:title', property: 'og:title', content: 'Historial de Cambios' },
+        { hid: 'og:title', property: 'og:title', content: 'Changelog' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
       ],
-      script: [
-        {
-          src: 'https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js',
-          callback: () => { this.initMarkdown(); }
-        }
-      ]
+
     };
   },
   components: {
@@ -84,23 +80,18 @@ export default {
     };
   },
   async mounted() {
-    this.md = null;
-    if (window.markdownit) {
-      this.initMarkdown();
-    }
+    this.initMarkdown();
     await this.fetchReleases();
   },
   methods: {
     initMarkdown() {
-      if (!this.md && window.markdownit) {
-        this.md = window.markdownit({
-          html: true,
-          linkify: true,
-          typographer: true
-        });
-        if (this.releases.length > 0) {
-          this.processReleasesMarkdown();
-        }
+      this.md = new MarkdownIt({
+        html: true,
+        linkify: true,
+        typographer: true
+      });
+      if (this.releases.length > 0) {
+        this.processReleasesMarkdown();
       }
     },
     async fetchReleases() {
@@ -109,7 +100,7 @@ export default {
       try {
         const response = await fetch('https://api.github.com/repos/imprvhub/entercinema/releases');
         if (!response.ok) {
-          throw new Error('Error al obtener las actualizaciones');
+          throw new Error('Error al obtener versiones');
         }
         const data = await response.json();
         const releases = data.filter(r => !r.draft);
@@ -125,7 +116,7 @@ export default {
 
       } catch (err) {
         console.error('Error fetching changelog:', err);
-        this.error = 'No se pudo cargar el historial. Inténtalo de nuevo más tarde.';
+        this.error = 'Error al cargar el registro de cambios. Por favor intente más tarde.';
       } finally {
         this.loading = false;
       }
@@ -145,15 +136,18 @@ export default {
       });
     },
     toggleExpand(id) {
-      this.$set(this.expanded, id, !this.expanded[id]);
+      this.expanded[id] = !this.expanded[id];
     },
     formatDate(dateString) {
       if (!dateString) return '';
-      return new Date(dateString).toLocaleDateString('es-ES', {
+      // Create date from string to handle timezone correctly or just use UTC if needed.
+      // Assuming existing behavior is fine with local time interpretation.
+      const date = new Date(dateString);
+      return date.toLocaleDateString('es-ES', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
-      });
+      }); // This typically produces "19 de diciembre de 2025" in es-ES
     }
   }
 };
@@ -301,33 +295,33 @@ export default {
   line-height: 1.6;
   font-size: 16px;
 
-  ::v-deep h1, ::v-deep h2, ::v-deep h3 {
+  :deep(h1), :deep(h2), :deep(h3) {
     color: #fff;
     margin-top: 20px;
     margin-bottom: 10px;
     font-weight: 600;
   }
   
-  ::v-deep h1 { font-size: 1.5em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
-  ::v-deep h2 { font-size: 1.3em; }
-  ::v-deep h3 { font-size: 1.1em; }
+  :deep(h1) { font-size: 1.5em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
+  :deep(h2) { font-size: 1.3em; }
+  :deep(h3) { font-size: 1.1em; }
 
-  ::v-deep ul, ::v-deep ol {
+  :deep(ul), :deep(ol) {
     padding-left: 20px;
     margin-bottom: 15px;
   }
 
-  ::v-deep li {
+  :deep(li) {
     margin-bottom: 5px;
   }
 
-  ::v-deep a {
+  :deep(a) {
     color: #8BE9FD;
     text-decoration: none;
     &:hover { text-decoration: underline; }
   }
 
-  ::v-deep code {
+  :deep(code) {
     background: rgba(0,0,0,0.3);
     padding: 2px 5px;
     border-radius: 4px;
@@ -335,7 +329,7 @@ export default {
     font-size: 0.9em;
   }
 
-  ::v-deep pre {
+  :deep(pre) {
     background: rgba(0,0,0,0.3);
     padding: 15px;
     border-radius: 8px;
@@ -348,7 +342,7 @@ export default {
     }
   }
   
-  ::v-deep blockquote {
+  :deep(blockquote) {
     border-left: 4px solid #8BE9FD;
     margin: 0 0 15px;
     padding-left: 15px;

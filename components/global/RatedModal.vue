@@ -58,7 +58,6 @@
       </div>
     </div>
 
-    <!-- Rating Modal -->
     <div v-if="ratingModalVisible" class="rating-modal-overlay" @click="closeRatingModal">
       <div class="rating-modal" @click.stop>
         <div class="modal-header">
@@ -120,7 +119,6 @@
 </template>
 
 <script>
-import supabase from '@/services/supabase';
 
 export default {
   name: 'RatedModal',
@@ -167,14 +165,14 @@ export default {
   },
   
   mounted() {
-    this.$root.$on('show-rated-modal', this.show);
+    this.$bus.$on('show-rated-modal', this.show);
     
     const email = localStorage.getItem('email');
     this.userEmail = email || '';
   },
   
   beforeDestroy() {
-    this.$root.$off('show-rated-modal', this.show);
+    this.$bus.$off('show-rated-modal', this.show);
   },
   
   methods: {
@@ -263,7 +261,7 @@ export default {
         this.moviesFetched = moviesFetched;
         this.tvFetched = tvFetched;
       } catch (error) {
-        console.error('Error al obtener elementos valorados:', error);
+        console.error('Error fetching rated items:', error);
       }
     },
     
@@ -304,7 +302,7 @@ export default {
 
     async saveRatingAndReview() {
       if (this.selectedRating === 0) {
-         alert('Por favor selecciona una valoración entre 1 y 10');
+        alert('Please select a rating between 1 and 10');
         return;
       }
 
@@ -339,10 +337,10 @@ export default {
 
         this.closeRatingModal();
         await this.fetchRatedItems();
-        this.$root.$emit('rated-items-updated');
+        this.$bus.$emit('rated-items-updated');
 
       } catch (error) {
-        console.error('Error al guardar valoración y reseña:', error);
+        console.error('Error saving rating and review:', error);
         alert('Hubo un error al guardar tu valoración. Por favor intenta de nuevo.');
       }
     },
@@ -375,10 +373,10 @@ export default {
 
         this.closeRatingModal();
         await this.fetchRatedItems();
-        this.$root.$emit('rated-items-updated');
+        this.$bus.$emit('rated-items-updated');
 
       } catch (error) {
-        console.error('Error al eliminar valoración:', error);
+        console.error('Error removing rating:', error);
         alert('Hubo un error al eliminar tu valoración. Por favor intenta de nuevo.');
       }
     }
@@ -579,6 +577,16 @@ export default {
   justify-content: center;
 }
 
+.rating-badge.editable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rating-badge.editable:hover {
+  background: #66deff;
+  transform: scale(1.1);
+}
+
 .rated-item-review-container {
   position: relative;
   margin-top: 10px;
@@ -591,16 +599,6 @@ export default {
   overflow-y: auto;
   padding-right: 5px;
   line-height: 1.4;
-}
-
-.rating-badge.editable {
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.rating-badge.editable:hover {
-  background: #66deff;
-  transform: scale(1.1);
 }
 
 .rated-item-review::-webkit-scrollbar {
@@ -636,21 +634,6 @@ export default {
 .empty-state p {
   font-size: 1.4rem;
   margin: 0;
-}
-
-@media (max-width: 768px) {
-  .rated-items-modal {
-    max-width: 100%;
-    height: 90vh;
-  }
-  
-  .rated-items-list {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  }
-  
-  .rated-item-title {
-    font-size: 1.3rem;
-  }
 }
 
 .rating-modal-overlay {
@@ -829,6 +812,21 @@ export default {
   border-color: rgba(255, 0, 0, 0.6);
   transform: translateY(-1px);
   box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .rated-items-modal {
+    max-width: 100%;
+    height: 90vh;
+  }
+  
+  .rated-items-list {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  
+  .rated-item-title {
+    font-size: 1.3rem;
+  }
 }
 
 @media (max-width: 400px) {
