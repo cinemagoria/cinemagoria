@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { getCredits } from '~/api';
+import { getCredits } from '~/utils/api';
 import CreditsHistoryGroup from '~/components/person/CreditsHistoryGroup';
 
 export default {

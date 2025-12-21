@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { get***MovieByImdb } from '~/api';
+import { get***MovieByImdb } from '~/utils/api';
 
 export default {
   name: 'WatchOn',

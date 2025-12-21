@@ -230,7 +230,7 @@
 
 <script>
 import UserNav from '@/components/global/UserNav';
-import supabase from '@/services/supabase';
+
 import FollowingModal from '~/components/global/FollowingModal.vue';
 import HowItWorksModal from '~/components/HowItWorksModal.vue';
 import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants';
@@ -272,6 +272,9 @@ export default {
       notificationToDelete: null,
       tvFollowsCache: [],
     };
+  },
+  setup() {
+    return { supabase: useSupabaseClient() }
   },
   computed: {
     unreadCount() {
@@ -348,7 +351,7 @@ export default {
     },
     async getUserAvatar() {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await this.supabase
           .from('user_data')
           .select('avatar')
           .eq('email', this.userEmail);
@@ -526,7 +529,7 @@ export default {
       },
 
       openFollowingModal() {
-        this.$root.$emit('show-following-modal');
+        this.$bus.$emit('show-following-modal');
       },
 
       openHowItWorksModal() {

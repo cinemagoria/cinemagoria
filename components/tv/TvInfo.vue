@@ -5,8 +5,8 @@
         <div :class="$style.poster">
           <img
             v-if="poster"
-            v-lazyload="poster"
-            class="lazyload"
+            :src="poster"
+            loading="lazy"
             :alt="name">
           <img
             v-else
@@ -30,11 +30,11 @@
             </li>
             <li v-if="item.first_air_date">
               <div :class="$style.label">First Aired</div>
-              <div :class="$style.value">{{ item.first_air_date | fullDate }}</div>
+              <div :class="$style.value">{{ fullDate(item.first_air_date) }}</div>
             </li>
             <li v-if="item.last_air_date">
               <div :class="$style.label">Last Aired</div>
-              <div :class="$style.value">{{ item.last_air_date | fullDate }}</div>
+              <div :class="$style.value">{{ fullDate(item.last_air_date) }}</div>
             </li>
             <li v-if="item.episode_run_time && item.episode_run_time.length">
               <div :class="$style.label">Runtime</div>
@@ -62,7 +62,7 @@
             </li>
             <li v-if="item.original_language">
               <div :class="$style.label">Language</div>
-              <div :class="$style.value">{{ item.original_language | fullLang }}</div>
+              <div :class="$style.value">{{ fullLang(item.original_language) }}</div>
             </li>
           </ul>
         </div>
@@ -187,7 +187,7 @@
 </template>
 
 <script>
-import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTraktReviews, getTvShowRecommended, getPerson, getIMDbRatingFromDB, enrichTVShowWithIMDbRating } from '~/api'; 
+import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTraktReviews, getTvShowRecommended, getPerson, getIMDbRatingFromDB, enrichTVShowWithIMDbRating } from '~/utils/api'; 
 import { name, creators } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
 import WatchOn from '~/components/WatchOn';
@@ -234,7 +234,12 @@ export default {
 
   computed: {
     reviewCount() { return this.reviews.length; },
-    isLoggedIn() { return localStorage.getItem('access_token') !== null; },
+    isLoggedIn() {
+      if (process.client) {
+         return localStorage.getItem('access_token') !== null;
+      }
+      return false;
+    },
     poster () {
       if (this.item.poster_path) return `${apiImgUrl}/w500${this.item.poster_path}`;
       return false;
@@ -299,6 +304,22 @@ export default {
   },
 
   methods: {
+    fullLang(iso) {
+      try {
+        const languageNames = new Intl.DisplayNames(['en'], { type: 'language' });
+        return languageNames.of(iso);
+      } catch (e) {
+        return iso;
+      }
+    },
+    fullDate(date) {
+      if (!date) return 'N/A';
+      return new Date(date).toLocaleDateString(process.env.API_COUNTRY === 'BR' ? 'pt-BR' : 'en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    },
     resetTabs() {
       this.recommended = null;
       this.creatorItems = null;
@@ -415,7 +436,7 @@ export default {
     },
     toggleFullReviews() { this.showFullReviews = !this.showFullReviews; },
     formatGenres (genres) { return genres.map(genre => `<a href="/genre/${genre.id}/tv">${genre.name}</a>`).join(', '); },
-    toggleReadMore(review) { this.$set(review, 'showFullContent', !review.showFullContent); },
+    toggleReadMore(review) { review.showFullContent = !review.showFullContent; },
     formatRunTime (times) { return times.map(time => `${time}m`).join(', '); },
     formatContent(content, index, showFullContent) {
       if (!content) return '';
@@ -772,14 +793,14 @@ export default {
 .stars {
   width: 7.3rem;
   height: 1.2rem;
-  background-image: url('~assets/images/stars.png');
+  background-image: url('@/assets/images/stars.png');
   background-repeat: no-repeat;
   background-size: auto 100%;
   margin-bottom: 0.2rem;
 
   > div {
     height: 100%;
-    background-image: url('~assets/images/stars-filled.png');
+    background-image: url('@/assets/images/stars-filled.png');
     background-repeat: no-repeat;
     background-size: auto 100%;
   }

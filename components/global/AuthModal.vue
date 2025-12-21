@@ -183,7 +183,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+
 import GoogleLogin from './GoogleLogin.vue';
 
 export default {
@@ -286,15 +286,18 @@ export default {
       this.errorMessage = '';
       
       try {
-        const response = await axios.post('https://entercinema-drf.vercel.app/login/', {
-          email: this.loginEmail,
-          password: this.loginPassword
+        const data = await $fetch('https://entercinema-drf.vercel.app/login/', {
+          method: 'POST',
+          body: {
+            email: this.loginEmail,
+            password: this.loginPassword
+          }
         });
 
         const returnUrl = window.location.pathname + window.location.search;
         localStorage.setItem('auth_return_url', returnUrl);
 
-        const successUrl = `/auth-success?token=${encodeURIComponent(response.data.access_token)}&email=${encodeURIComponent(response.data.email)}&name=${encodeURIComponent(response.data.name || response.data.email)}&auth_provider=native`;
+        const successUrl = `/auth-success?token=${encodeURIComponent(data.access_token)}&email=${encodeURIComponent(data.email)}&name=${encodeURIComponent(data.name || data.email)}&auth_provider=native`;
         
         window.location.href = successUrl;
       } catch (error) {
@@ -313,10 +316,13 @@ export default {
       this.errorMessage = '';
       
       try {
-        await axios.post('https://entercinema-drf.vercel.app/api/register/', {
-          name: this.registerName,
-          email: this.registerEmail,
-          password: this.registerPassword
+        await $fetch('https://entercinema-drf.vercel.app/api/register/', {
+          method: 'POST',
+          body: {
+            name: this.registerName,
+            email: this.registerEmail,
+            password: this.registerPassword
+          }
         });
         
         this.showSuccessMessage = true;

@@ -38,7 +38,8 @@
               @blur="unFocus"
             >
             <button
-              style="-webkit-appearance: button; 
+              style="  -webkit-appearance: none;
+  appearance: none; 
               cursor: pointer; 
               position: absolute;
               right: 2%;
@@ -60,18 +61,22 @@
       </form>
     </div>
     <div :class="$style.userMenu">
-      <!---->
+      <UserNav />
   </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import { debounce } from 'lodash';
-import supabase from '@/services/supabase';
+import { mapState, mapActions } from 'pinia';
+import { useSearchStore } from '~/stores/search';
+import lodash from 'lodash';
+const { debounce } = lodash;
+import UserNav from './UserNav.vue';
+
 
 async function getUserAvatar(userEmail) {
   try {
+    const supabase = useSupabaseClient();
     const { data, error } = await supabase
       .from('user_data')
       .select('avatar')
@@ -92,6 +97,7 @@ async function getUserAvatar(userEmail) {
 
 async function getUserName(userEmail) {
   try {
+    const supabase = useSupabaseClient();
     const { data, error } = await supabase
       .from('user_data')
       .select('first_name')
@@ -110,6 +116,9 @@ async function getUserName(userEmail) {
 }
 
 export default {
+  components: {
+    UserNav
+  },
   data() {
     return {
       query: this.$route.query.q ? this.$route.query.q : '',
@@ -149,7 +158,7 @@ export default {
     showButton() {
       return this.$route.name === 'search';
     },
-    ...mapState('search', ['fromPage']),
+    ...mapState(useSearchStore, ['fromPage']),
   },
 
   async mounted() {
@@ -166,8 +175,8 @@ export default {
   if (this.isLoggedIn) {
     this.userName = await getUserName(this.userEmail);
   }
-  this.$root.$on('clear-search', this.clearSearch);
-  this.$root.$on('update-search-query', this.updateSearchQuery);
+  this.$bus.$on('clear-search', this.clearSearch);
+  this.$bus.$on('update-search-query', this.updateSearchQuery);
 },
 
 updateSearchQuery(newQuery) {
@@ -180,8 +189,8 @@ updateSearchQuery(newQuery) {
 },
 
 beforeDestroy() {
-  this.$root.$off('clear-search', this.clearSearch);
-  this.$root.$off('update-search-query', this.updateSearchQuery);
+  this.$bus.$off('clear-search', this.clearSearch);
+  this.$bus.$off('update-search-query', this.updateSearchQuery);
 },
   methods: {
     goToRoute() {
@@ -220,10 +229,11 @@ beforeDestroy() {
         const fromLink = target && target.tagName.toLowerCase() === 'a' && target.getAttribute('href') === '/search-genre';
         if (!target || (!target.classList.contains('search-toggle') && !fromLink)) {
           this.query = '';
-          this.$store.commit('search/closeSearch');
+          this.closeSearchAction();
         }
       }
     },
+    ...mapActions(useSearchStore, { closeSearchAction: 'closeSearch' })
   },
 };
 </script>
