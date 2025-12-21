@@ -36,7 +36,7 @@ export default defineNuxtConfig({
 
     // Public keys (exposed to client)
     public: {
-      frontendUrl: process.env.FRONTEND_URL || "https://entercinema.com",
+      frontendUrl: process.env.FRONTEND_URL || "https://es.entercinema.com",
       apiUrl: process.env.API_URL || "https://entercinema-drf.vercel.app",
       apiKey: process.env.API_KEY || "",
       apiLang: process.env.API_LANG || "es-ES",

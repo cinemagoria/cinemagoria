@@ -32,7 +32,7 @@ useHead({
   title: 'EnterCinema - Search',
   meta: [
     { property: 'og:title', content: 'Search' },
-    { property: 'og:url', content: `https://entercinema.com${route.path}` },
+    { property: 'og:url', content: `https://es.entercinema.com${route.path}` },
   ],
   bodyAttrs: {
     class: 'page page-search',

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://entercinema.com/sitemap.xml
+Sitemap: https://es.entercinema.com/sitemap.xml

@@ -360,8 +360,8 @@ export default {
       sessionKey: 'entercinema_chat_session',
       tmdbApiKey: null,
       baseUrl: typeof window !== 'undefined'
-               ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://entercinema.com')
-               : 'https://entercinema.com',
+               ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://es.entercinema.com')
+               : 'https://es.entercinema.com',
       apiUrl: '',
       watchlistAnalysisUrl: '',
       titleGenerationUrl: '',
@@ -1062,7 +1062,7 @@ export default {
 
     async deleteSelectedConversations() {
         if (this.selectedConversations.length === 0) return;
-        this.deleteConfirmationText = 'The selected conversations will be permanently deleted.';
+        this.deleteConfirmationText = 'La/s conversación/es seleccionada/s será permanentemente eliminada/s.';
         this.confirmDeleteModalOpen = true;
     },
 

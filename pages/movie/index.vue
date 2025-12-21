@@ -72,7 +72,7 @@ useHead({
   meta: [
     { property: 'og:title', content: 'Movies' },
     // Note: process.env.FRONTEND_URL might need runtimeConfig replacement
-    { property: 'og:url', content: `https://entercinema.com${route.path}` },
+    { property: 'og:url', content: `https://es.entercinema.com${route.path}` },
   ],
 });
 

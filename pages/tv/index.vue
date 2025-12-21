@@ -71,7 +71,7 @@ useHead({
   title: 'EnterCinema - TV Shows',
   meta: [
     { property: 'og:title', content: 'TV Shows' },
-    { property: 'og:url', content: `https://entercinema.com${route.path}` },
+    { property: 'og:url', content: `https://es.entercinema.com${route.path}` },
   ],
 });
 
