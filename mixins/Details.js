@@ -1,4 +1,4 @@
-import { apiImgUrl } from '~/api';
+import { apiImgUrl } from '~/utils/api';
 
 export const id = {
   computed: {

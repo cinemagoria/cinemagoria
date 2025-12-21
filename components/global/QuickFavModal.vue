@@ -39,12 +39,12 @@ export default {
     }
   },
   mounted() {
-    this.$root.$on('open-quickfav-modal', this.open);
+    this.$bus.$on('open-quickfav-modal', this.open);
     const email = localStorage.getItem('email');
     this.userEmail = email || '';
   },
   beforeDestroy() {
-    this.$root.$off('open-quickfav-modal', this.open);
+    this.$bus.$off('open-quickfav-modal', this.open);
   },
   methods: {
     open(payload) {
@@ -76,7 +76,7 @@ export default {
 
           if (!response.ok) throw new Error('Failed to remove favorite');
 
-          this.$root.$emit('favorites-updated');
+          this.$bus.$emit('favorites-updated');
           this.close();
       } catch (e) {
           console.error(e);

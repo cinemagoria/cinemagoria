@@ -29,7 +29,7 @@
          <div :class="$style.attribution">
             All Data is provided by 
             <a target="_blank" href="https://www.themoviedb.org/" rel="noopener" style="margin: 0 4px;">
-                <img src="~static/tmdb.svg" alt="TMDB Attribution" style="margin-bottom: 0.5px; width: 60px; height: 35px; display: inline-block; vertical-align: middle;">
+                <img src="/tmdb.svg" alt="TMDB Attribution" style="margin-bottom: 0.5px; width: 60px; height: 35px; display: inline-block; vertical-align: middle;">
             </a>
             and 
             <a target="_blank" href="https://www.justwatch.com/" rel="noopener" style="margin: 0 4px; font-size: 11px;">JustWatch.</a>

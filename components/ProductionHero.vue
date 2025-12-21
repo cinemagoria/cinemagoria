@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { apiImgUrl, followProductionCompany, unfollowProductionCompany, getFollowedProductionCompanies } from '~/api';
+import { apiImgUrl, followProductionCompany, unfollowProductionCompany, getFollowedProductionCompanies } from '~/utils/api';
 import { SUPPORTED_PRODUCTION_COMPANIES, ISO_TO_COUNTRY_NAME_MAP } from '~/utils/constants';
 
 export default {

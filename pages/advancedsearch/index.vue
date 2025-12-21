@@ -211,9 +211,7 @@
         </div>
         
         <div class="button-container">
-          <button type="button" class="button button--back" @click.prevent="goBack">
-            <span class="txt">Back</span>
-          </button>
+
           <button
             class="button button--search"
             :disabled="!selectedSearchType || loading"
@@ -262,14 +260,12 @@
 
 <script>
   import UserNav from '@/components/global/UserNav';
-  import DatePicker from 'vue2-datepicker';
-  import supabase from '@/services/supabase';
   import DynamicSearchCarousel from '@/components/DynamicSearchCarousel.vue';
-  import 'vue2-datepicker/index.css';
-  import '@/assets/css/components/_datepicker.scss';
+  // import '@/assets/css/components/_datepicker.scss';
   
   async function getUserAvatar(userEmail) {
     try {
+      const supabase = useSupabaseClient();
       const { data, error } = await supabase
         .from('user_data')
         .select('avatar')
@@ -290,6 +286,7 @@
   
   async function getUserName(userEmail) {
     try {
+      const supabase = useSupabaseClient();
       const { data, error } = await supabase
         .from('user_data')
         .select('first_name')
@@ -313,13 +310,12 @@
       title: 'EnterCinema - Advanced Search.',
       meta: [
         { hid: 'og:title', property: 'og:title', content: 'Advanced Search' },
-        { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
+        { hid: 'og:url', property: 'og:url', content: `${this.$config.public.frontendUrl}${this.$route.path}` },
       ],
     };
   },
     components: {
       UserNav,
-      DatePicker,
       DynamicSearchCarousel
     },
     data() {
@@ -371,7 +367,7 @@
         selectedOriginCountry: '',
         selectedWatchProvider: '',
         ratings: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        selectedMinRating: localStorage.getItem('selectedMinRating') || '6',
+        selectedMinRating: '6',
         MinRatingForLabel: 0,
         asterisk: '*',
         movies: [],
@@ -393,8 +389,15 @@
         tvShowRatings: {}, 
       };
     },
+    setup() {
+      return { supabase: useSupabaseClient() }
+    },
 
     async mounted() {
+      const storedRating = localStorage.getItem('selectedMinRating');
+      if (storedRating) {
+        this.selectedMinRating = storedRating;
+      }
       localStorage.removeItem('selectedMinRating');
       this.MinRatingForLabel = this.selectedMinRating !== '6' ? this.selectedMinRating : 0;
       const email = localStorage.getItem('email');
@@ -446,7 +449,7 @@
         this.searchPerformed = false; 
         this.loading = true;
         this.movies = [];
-        const apiKey = process.env.API_KEY;
+        const apiKey = this.$config.public.apiKey;
         const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : this.releaseYear; 
         
         let apiSortBy = this.selectedSortBy;
@@ -521,7 +524,7 @@
           
           this.movies.forEach(movie => {
             const rating = movie.rating_source === 'imdb' ? movie.imdb_rating : movie.vote_average;
-            this.$set(this.movieRatings, movie.id, rating);
+            this.movieRatings[movie.id] = rating;
           });
           
           this.loading = false;
@@ -536,7 +539,7 @@
         this.searchPerformed = false; 
         this.loading = true;
         this.tvShows = [];
-        const apiKey = process.env.API_KEY;
+        const apiKey = this.$config.public.apiKey;
         const year = this.releaseYear instanceof Date ? this.releaseYear.getFullYear() : this.releaseYear;
 
         let apiSortBy = this.selectedSortBy;
@@ -610,7 +613,7 @@
           
           this.tvShows.forEach(tvShow => {
             const rating = tvShow.rating_source === 'imdb' ? tvShow.imdb_rating : tvShow.vote_average;
-            this.$set(this.tvShowRatings, tvShow.id, rating);
+            this.tvShowRatings[tvShow.id] = rating;
           });
           
           this.loading = false;
@@ -718,7 +721,7 @@
       },
       async fetchUserFirstName() {
         try {
-          const { data, error } = await supabase
+          const { data, error } = await this.supabase
             .from('auth_user')
             .select('first_name')
             .eq('email', this.userEmail);
@@ -1010,7 +1013,7 @@
   position: relative;
 }
 
-.date-picker-custom /deep/ input {
+.date-picker-custom :deep(input) {
   width: 100%;
   padding: 12px 16px;
   background: rgba(8, 45, 62, 0.3);
@@ -1025,7 +1028,7 @@
   line-height: 21px;
 }
 
-.date-picker-custom /deep/ .mx-datepicker-popup {
+.date-picker-custom :deep(.mx-datepicker-popup) {
   min-width: 100% !important;
   width: 100% !important;
   max-width: none !important;
@@ -1033,53 +1036,53 @@
   right: 0 !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar-panel-year {
+.date-picker-custom :deep(.mx-calendar-panel-year) {
   width: 100% !important;
   min-width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar {
+.date-picker-custom :deep(.mx-calendar) {
   width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar-content {
+.date-picker-custom :deep(.mx-calendar-content) {
   width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar-panel-date table {
+.date-picker-custom :deep(.mx-calendar-panel-date table) {
   width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar-panel-year .mx-calendar-content {
+.date-picker-custom :deep(.mx-calendar-panel-year .mx-calendar-content) {
   height: auto !important;
   padding: 10px !important;
 }
 
-.date-picker-custom /deep/ .mx-datepicker {
+.date-picker-custom :deep(.mx-datepicker) {
   width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-datepicker-popup {
+.date-picker-custom :deep(.mx-datepicker-popup) {
   top: 45px !important;
   position: absolute !important;
 }
 
-.date-picker-custom /deep/ input:hover {
+.date-picker-custom :deep(input:hover) {
   background: rgba(8, 45, 62, 0.5);
   border-color: rgba(127, 219, 241, 0.5);
 }
 
-.date-picker-custom /deep/ input:focus {
+.date-picker-custom :deep(input:focus) {
   outline: none;
   box-shadow: 0 0 0 2px rgba(127, 219, 241, 0.2);
   border-color: #7FDBF1;
 }
 
-.date-picker-custom /deep/ .mx-input-wrapper {
+.date-picker-custom :deep(.mx-input-wrapper) {
   height: 45px !important;
 }
 
-.date-picker-custom /deep/ .mx-input {
+.date-picker-custom :deep(.mx-input) {
   height: 45px !important;
 }
 
@@ -1203,6 +1206,7 @@
 .navbar-welcome {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   margin-top: 7rem;
 }
@@ -1210,6 +1214,7 @@
 .text-center {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
   font-family: 'Roboto', sans-serif;
@@ -1643,7 +1648,7 @@ input:not(:checked):focus ~ #helper-text {
   position: relative;
 }
 
-.date-picker-custom /deep/ input {
+.date-picker-custom :deep(input) {
   width: 100%;
   padding: 12px 16px;
   background: rgba(8, 45, 62, 0.3);
@@ -1658,7 +1663,7 @@ input:not(:checked):focus ~ #helper-text {
   line-height: 21px;
 }
 
-.date-picker-custom /deep/ .mx-datepicker-popup {
+.date-picker-custom :deep(.mx-datepicker-popup) {
   min-width: 100% !important;
   width: 100% !important;
   max-width: none !important;
@@ -1666,53 +1671,53 @@ input:not(:checked):focus ~ #helper-text {
   right: 0 !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar-panel-year {
+.date-picker-custom :deep(.mx-calendar-panel-year) {
   width: 100% !important;
   min-width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar {
+.date-picker-custom :deep(.mx-calendar) {
   width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar-content {
+.date-picker-custom :deep(.mx-calendar-content) {
   width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar-panel-date table {
+.date-picker-custom :deep(.mx-calendar-panel-date table) {
   width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-calendar-panel-year .mx-calendar-content {
+.date-picker-custom :deep(.mx-calendar-panel-year .mx-calendar-content) {
   height: auto !important;
   padding: 10px !important;
 }
 
-.date-picker-custom /deep/ .mx-datepicker {
+.date-picker-custom :deep(.mx-datepicker) {
   width: 100% !important;
 }
 
-.date-picker-custom /deep/ .mx-datepicker-popup {
+.date-picker-custom :deep(.mx-datepicker-popup) {
   top: 45px !important;
   position: absolute !important;
 }
 
-.date-picker-custom /deep/ input:hover {
+.date-picker-custom :deep(input:hover) {
   background: rgba(8, 45, 62, 0.5);
   border-color: rgba(127, 219, 241, 0.5);
 }
 
-.date-picker-custom /deep/ input:focus {
+.date-picker-custom :deep(input:focus) {
   outline: none;
   box-shadow: 0 0 0 2px rgba(127, 219, 241, 0.2);
   border-color: #7FDBF1;
 }
 
-.date-picker-custom /deep/ .mx-input-wrapper {
+.date-picker-custom :deep(.mx-input-wrapper) {
   height: 45px !important;
 }
 
-.date-picker-custom /deep/ .mx-input {
+.date-picker-custom :deep(.mx-input) {
   height: 45px !important;
 }
 
@@ -1836,6 +1841,7 @@ input:not(:checked):focus ~ #helper-text {
 .navbar-welcome {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   margin-top: 7rem;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
@@ -1845,6 +1851,7 @@ input:not(:checked):focus ~ #helper-text {
 .text-center {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
   font-family: 'Roboto', sans-serif;

@@ -10,14 +10,12 @@ a.button {
   color: #fff;
   letter-spacing: 0.05em;
   cursor: pointer;
-  background: linear-gradient(
-  315deg, #0A1E26, #11323F, #1A4453);
+  background: linear-gradient(315deg, #0A1E26, #11323F, #1A4453);
   transition: all 0.2s;
 
   &:hover,
   &:focus {
-    background: linear-gradient(
-315deg, #0A1E26, #11323F, #35758B);
+    background: linear-gradient(315deg, #0A1E26, #11323F, #35758B);
     border-color: #8BE9FD;
     color: #8BE9FD;
     stroke: #8BE9FD;
@@ -55,7 +53,7 @@ select {
   padding: 0.8rem 3.5rem 0.8rem 1.5rem;
   font-size: 1.3rem;
   color: #fff;
-  background: $secondary-color url('~assets/images/select-arrow.svg') no-repeat 100% 45%;
+  background: $secondary-color url('~/assets/images/select-arrow.svg') no-repeat 100% 45%;
   background-size: 30px 60px;
   border-color: $secondary-color;
   appearance: none;
@@ -88,6 +86,7 @@ button {
   border-radius: 0;
 
   &.icon {
+
     &:hover,
     &:focus {
       background: linear-gradient(315deg, #0A1E26, #11323F, #1A4453);

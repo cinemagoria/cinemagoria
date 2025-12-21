@@ -7,7 +7,7 @@
           :to="{ name: 'index' }"
           aria-label="Home"
           @click.native="clearSearchBeforeNavigate">
-          <img src="~static/icon-medium.png" alt="Home" style="width: 32px; height: 32px;" class="home-icon" />
+          <img src="/icon-medium.png" alt="Home" style="width: 32px; height: 32px;" class="home-icon" />
         </nuxt-link>
       </li>
       <li>
@@ -29,7 +29,7 @@
           :to="{ name: 'advancedsearch' }"
           aria-label="Advanced Search"
           @click.native="clearSearchBeforeNavigate">
-          <img :src="require('~/static/icon-advancedsearch.png')" alt="Advanced Search" :class="$style.navIcon" />
+          <img src="/icon-advancedsearch.png" alt="Advanced Search" :class="$style.navIcon" />
         </nuxt-link>
       </li>
       <li>
@@ -44,12 +44,12 @@
       </li>
       <li v-if="!isLoggedIn">
         <nuxt-link exact to="/login" aria-label="Sign In" @click.native="clearSearchBeforeNavigate">
-          <img :src="require('~/static/icon-login.png')" alt="Login" :class="$style.navIcon" />
+          <img src="/icon-login.png" alt="Login" :class="$style.navIcon" />
         </nuxt-link>
       </li>
       <li v-else>
         <nuxt-link exact to="/watchlist" aria-label="Watchlist" @click.native="clearSearchBeforeNavigate">
-          <img :src="require('~/static/icon-watchlist.png')" alt="Watchlist" :class="$style.navIcon" />
+          <img src="/icon-watchlist.png" alt="Watchlist" :class="$style.navIcon" />
         </nuxt-link>
       </li>
     </ul>
@@ -59,7 +59,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'pinia';
+import { useSearchStore } from '~/stores/search';
 import ChatbotModal from './ChatbotModal.vue';
 
 export default {
@@ -75,7 +76,7 @@ export default {
   },
 
   computed: {
-    ...mapState('search', ['searchOpen']),
+    ...mapState(useSearchStore, ['searchOpen']),
     isLoggedIn() {
       return this.authToken !== null;
     }
@@ -97,7 +98,7 @@ export default {
       }
     }
 
-    this.$root.$on('chatbot-conversations-updated', (hasConversations) => {
+    this.$bus.$on('chatbot-conversations-updated', (hasConversations) => {
       this.hasMinimizedConversations = hasConversations;
     });
   },
@@ -148,7 +149,7 @@ export default {
     },
 
     clearSearchBeforeNavigate() {
-      this.$root.$emit('clear-search');
+      this.$bus.$emit('clear-search');
       if (this.$refs.chatbotModalRef && this.$refs.chatbotModalRef.chatBotOpen) {
         this.$refs.chatbotModalRef.minimizeChatBot();
       }
@@ -156,7 +157,7 @@ export default {
 
     toggleSearch() {
       if (this.$route.name !== 'search') {
-        this.$store.commit('search/toggleSearch');
+        this.toggleSearchAction();
       }
     },
 
@@ -175,7 +176,8 @@ export default {
         
         this.hasMinimizedConversations = false;
       }
-    }
+    },
+    ...mapActions(useSearchStore, { toggleSearchAction: 'toggleSearch' })
   }
 };
 </script>

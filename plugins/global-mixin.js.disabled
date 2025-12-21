@@ -1,0 +1,6 @@
+import { defineNuxtPlugin } from '#app';
+import Filters from '~/mixins/Filters.js';
+
+export default defineNuxtPlugin((nuxtApp) => {
+    nuxtApp.vueApp.mixin(Filters);
+});

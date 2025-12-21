@@ -31,10 +31,10 @@
               allowfullscreen />
 
             <img
-              v-if="type === 'image' && activeItem"
-              v-lazyload="activeItem.src"
-              class="lazyload"
-              alt="">
+              v-if="type === 'image'"
+              :src="data.src"
+              loading="lazy"
+              :alt="data.name">
           </div>
 
           <div
@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { debounce } from '~/mixins/Functions';
+import { debounce } from '~/mixins/Functions.js';
 
 let focusedElBeforeOpen;
 let focusableEls;
@@ -328,7 +328,7 @@ body.modal-open {
   padding: 0;
   background: none;
 
-  @media (max-width: $breakpoint-large - 1) {
+  @media (max-width: #{$breakpoint-large - 1px}) {
     position: fixed;
     left: 0;
     width: 6rem;
@@ -337,12 +337,12 @@ body.modal-open {
 }
 
 .modal--nav {
-  @media (max-width: $breakpoint-large - 1) {
+  @media (max-width: #{$breakpoint-large - 1px}) {
     padding-bottom: 5rem;
   }
 
   .modal__image img {
-    @media (max-width: $breakpoint-large - 1) {
+    @media (max-width: #{$breakpoint-large - 1px}) {
       max-height: calc(100vh - 5rem);
     }
   }
@@ -357,7 +357,7 @@ body.modal-open {
   align-items: center;
   height: 4.4rem;
 
-  @media (max-width: $breakpoint-large - 1) {
+  @media (max-width: #{$breakpoint-large - 1px}) {
     position: fixed;
     right: 0;
     bottom: 0;
@@ -379,7 +379,7 @@ body.modal-open {
   padding: 0;
   background: none;
 
-  @media (max-width: $breakpoint-large - 1) {
+  @media (max-width: #{$breakpoint-large - 1px}) {
     flex: 1;
     height: 5rem;
   }
@@ -418,7 +418,7 @@ body.modal-open {
 
 .modal__image {
   &.lazyloading {
-    background: url('~assets/images/loader.svg') no-repeat center;
+    background: url('~/assets/images/loader.svg') no-repeat center;
   }
 
   img {

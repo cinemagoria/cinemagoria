@@ -5,8 +5,8 @@
         <div :class="$style.poster">
           <img
             v-if="poster"
-            v-lazyload="poster"
-            class="lazyload"
+            :src="poster"
+            loading="lazy"
             :alt="name">
           <img
             v-else
@@ -30,11 +30,11 @@
             </li>
             <li v-if="item.release_date">
               <div :class="$style.label">Released</div>
-              <div :class="$style.value">{{ item.release_date | fullDate }}</div>
+              <div :class="$style.value">{{ fullDate(item.release_date) }}</div>
             </li>
             <li v-if="item.runtime">
               <div :class="$style.label">Runtime</div>
-              <div :class="$style.value">{{ item.runtime | runtime }}</div>
+              <div :class="$style.value">{{ formatRuntime(item.runtime) }}</div>
             </li>
             <li v-if="directors">
               <div :class="$style.label">Director</div>
@@ -42,11 +42,11 @@
             </li>
             <li v-if="item.budget">
               <div :class="$style.label">Budget</div>
-              <div :class="$style.value">${{ item.budget | numberWithCommas }}</div>
+              <div :class="$style.value">${{ numberWithCommas(item.budget) }}</div>
             </li>
             <li v-if="item.revenue">
               <div :class="$style.label">Revenue</div>
-              <div :class="$style.value">${{ item.revenue | numberWithCommas }}</div>
+              <div :class="$style.value">${{ numberWithCommas(item.revenue) }}</div>
             </li>
             <li v-if="item.genres && item.genres.length">
               <div :class="$style.label">Genre</div>
@@ -58,7 +58,7 @@
             </li>
             <li v-if="item.original_language">
               <div :class="$style.label">Language</div>
-              <div :class="$style.value">{{ item.original_language | fullLang }}</div>
+              <div :class="$style.value">{{ fullLang(item.original_language) }}</div>
             </li>
             <li v-if="item.production_companies && item.production_companies.length">
               <div :class="$style.label">Production</div>
@@ -170,12 +170,15 @@
 </template>
 
 <script>
-import { apiImgUrl, getMovieProviders, getMovieReviews, getTraktReviews, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating } from '~/api'; 
+import { apiImgUrl, getMovieProviders, getMovieReviews, getTraktReviews, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating } from '~/utils/api'; 
 import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants'; 
 import { name, directors } from '~/mixins/Details';
+import Filters from '~/mixins/Filters';
 import ExternalLinks from '~/components/ExternalLinks';
 import WatchOn from '~/components/WatchOn';
 import ListingCarousel from '~/components/ListingCarousel';
+
+import { getProductionCompanySlug } from '~/utils/constants';
 
 export default {
   components: {
@@ -186,6 +189,7 @@ export default {
   },
 
   mixins: [
+    Filters,
     name,
     directors,
   ],
@@ -294,6 +298,22 @@ export default {
   },
 
   methods: {
+    fullDate(date) {
+      if (!date) return 'N/A';
+      return new Date(date).toLocaleDateString(process.env.API_COUNTRY === 'BR' ? 'pt-BR' : 'en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    },
+    fullLang(iso) {
+      try {
+        const languageNames = new Intl.DisplayNames(['en'], { type: 'language' });
+        return languageNames.of(iso);
+      } catch (e) {
+        return iso;
+      }
+    },
     resetTabs() {
       this.recommended = null;
       this.directorItems = null;
@@ -410,14 +430,14 @@ export default {
     toggleFullReviews() { this.showFullReviews = !this.showFullReviews; },
     formatGenres(genres) { return genres.map(genre => `<a href="/genre/${genre.id}/movie">${genre.name}</a>`).join(', '); },
     formatProductionCompanies(companies) {
-      const { getProductionCompanySlug } = require('~/utils/constants');
+      // getProductionCompanySlug should be imported at top level
       return companies.map(company => {
         const slug = getProductionCompanySlug(company.id);
-        if (slug) return `<a href="/production/${slug}">${company.name}</a>`;
+        if (slug) return`<a href="/production/${slug}">${company.name}</a>`;
         return company.name;
       }).join(', ');
     },
-    toggleReadMore(review) { this.$set(review, 'showFullContent', !review.showFullContent); },
+    toggleReadMore(review) { review.showFullContent = !review.showFullContent; },
     formatContent(content, index, showFullContent) {
       if (!content) return '';
       content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/_([^_]+)_/g, (match, p1) => p1.toUpperCase());
@@ -578,14 +598,14 @@ export default {
 .stars {
   width: 7.3rem;
   height: 1.2rem;
-  background-image: url('~assets/images/stars.png');
+  background-image: url('@/assets/images/stars.png');
   background-repeat: no-repeat;
   background-size: auto 100%;
   margin-bottom: 0.2rem;
 
   > div {
     height: 100%;
-    background-image: url('~assets/images/stars-filled.png');
+    background-image: url('@/assets/images/stars-filled.png');
     background-repeat: no-repeat;
     background-size: auto 100%;
   }

@@ -6,7 +6,7 @@
       <div v-else>
         <p v-if="error" class="error">{{ error }}</p>
         <p class="welcome-label" v-else>Welcome, {{ name }}!</p>
-        <img src="~/static/auth-success.svg" alt="Authentication Success" class="success-icon">
+        <img src="/auth-success.svg" alt="Authentication Success" class="success-icon">
         <div class="redirect-message">
           <p>You will be automatically redirected in {{ countdown }} seconds...</p>
         </div>
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import supabase from '@/services/supabase';
+
 
 export default {
   data() {
@@ -28,6 +28,9 @@ export default {
       name: null,
       countdown: 3
     }
+  },
+  setup() {
+    return { supabase: useSupabaseClient() }
   },
   async mounted() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -50,7 +53,7 @@ export default {
       
       this.forceNavUpdate();
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('user_data')
         .select('*')
         .eq('email', this.email);
@@ -146,6 +149,7 @@ export default {
 h1 {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
   margin-bottom: 20px;
