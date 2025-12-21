@@ -4,6 +4,7 @@
     <FeatureDescription />
 
     <Hero
+      v-if="featured"
       :item="featured" />
 
     <ListingCarousel
@@ -20,153 +21,123 @@
   </main>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from 'vue';
 import UserNav from '@/components/global/UserNav';
-import { getTrending, getMovie, getTvShow, getListItem } from '~/api';
+import { getTrending, getMovie, getTvShow, getListItem } from '~/utils/api';
 import Hero from '~/components/Hero';
 import ListingCarousel from '~/components/ListingCarousel';
 import FeatureDescription from '~/components/FeatureDescription';
-import supabase from '@/services/supabase';
+
+
+const userEmail = ref('');
+const hasAccessToken = ref(false);
+const isLoggedIn = ref(false);
+const userName = ref('');
+const ratedItemsModalVisible = ref(false);
+
+const showRatedItems = () => {
+  ratedItemsModalVisible.value = true;
+};
+
+// Async Data Fetching
+const { data: pageData, error: pageError } = await useAsyncData('homepage', async () => {
+  try {
+    const trendingMovies = await getTrending('movie');
+    const trendingTv = await getTrending('tv');
+    
+    const filterRecentYears = (items) => {
+      const currentYear = new Date().getFullYear();
+      const previousYear = currentYear - 1;
+      
+      return items.filter(item => {
+        const dateField = item.release_date || item.first_air_date;
+        if (!dateField) return false;
+        
+        const year = new Date(dateField).getFullYear();
+        return year === currentYear || year === previousYear;
+      });
+    };
+    
+    // Check if results exist before filtering
+    if (trendingMovies?.results) {
+        trendingMovies.results = filterRecentYears(trendingMovies.results);
+    }
+    if (trendingTv?.results) {
+        trendingTv.results = filterRecentYears(trendingTv.results);
+    }
+    
+    const recentItems = [...(trendingMovies?.results || []), ...(trendingTv?.results || [])];
+    
+    let featured = null;
+    if (recentItems.length > 0) {
+      const randomItem = recentItems[Math.floor(Math.random() * recentItems.length)];
+      const media = randomItem.title ? 'movie' : 'tv';
+      
+      if (media === 'movie') {
+        featured = await getMovie(randomItem.id);
+      } else {
+        featured = await getTvShow(randomItem.id);
+      }
+    }
+    
+    return { trendingMovies, trendingTv, featured };
+  } catch (error) {
+    console.error('Data Loading Error:', error);
+    return { trendingMovies: { results: [] }, trendingTv: { results: [] }, featured: null };
+  }
+});
+
+const featured = computed(() => pageData.value?.featured);
+const trendingMovies = computed(() => pageData.value?.trendingMovies);
+const trendingTv = computed(() => pageData.value?.trendingTv);
+
+const trendingMoviesTitle = computed(() => getListItem('movie', 'trending').title);
+const trendingMoviesUrl = computed(() => ({ name: 'movie-category-name', params: { name: 'trending' } }));
+const trendingTvTitle = computed(() => getListItem('tv', 'trending').title);
+const trendingTvUrl = computed(() => ({ name: 'tv-category-name', params: { name: 'trending' } }));
 
 async function getUserAvatar(userEmail) {
   try {
+    const supabase = useSupabaseClient();
     const { data, error } = await supabase
       .from('user_data')
       .select('avatar')
       .eq('email', userEmail);
-      
-    if (error) {
-      throw new Error('Error fetching user avatar:', error.message);
-    }
-
-    const userAvatar = data[0]?.avatar || '/avatars/avatar-ss0.png';
-    return userAvatar;
-    
+    if (error) throw new Error(error.message);
+    return data[0]?.avatar || '/avatars/avatar-ss0.png';
   } catch (error) {
-    console.error('Error fetching user avatar:', error);
     return '/avatars/avatar-ss0.png';
   }
 }
 
-async function getUserName(userEmail) {
+async function getUserName(email) {
   try {
+    const supabase = useSupabaseClient();
     const { data, error } = await supabase
       .from('user_data')
       .select('first_name')
-      .eq('email', userEmail);
-      
-    if (error) {
-      throw new Error('Error fetching user first name:', error.message);
-    }
-
-    const userName = data[0]?.first_name|| 'undefined';
-    return userName;
-    
+      .eq('email', email);
+    if (error) throw new Error(error.message);
+    return data[0]?.first_name || 'undefined';
   } catch (error) {
     console.error('Error fetching user first_name:', error);
   }
 }
 
-export default {
-  components: {
-    UserNav,
-  },
-  data() {
-    return {
-      userEmail: '',
-      accessToken: '',
-      isLoggedIn: false,
-      userName: '',
-      isMenuOpen: false,
-    }
-  },
-
-  async mounted() {
+onMounted(async () => {
+  if (process.client) {
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');
-    this.userEmail = email || '';
-    this.hasAccessToken = accessToken !== null;
-    this.isLoggedIn = accessToken !== null;
-    this.userName = await getUserName(this.userEmail);
-
-    if (this.isLoggedIn) {
-      this.userName = await getUserName(this.userEmail);
+    userEmail.value = email || '';
+    hasAccessToken.value = accessToken !== null;
+    isLoggedIn.value = accessToken !== null;
+    
+    if (isLoggedIn.value) {
+      userName.value = await getUserName(userEmail.value);
     }
-  },
-
-  components: {
-    FeatureDescription,
-    Hero,
-    ListingCarousel,
-  },
-
-  methods: {
-    showRatedItems() {
-      this.ratedItemsModalVisible = true;
-    },
-  },
-  
-  computed: {
-    trendingMoviesTitle () {
-      return getListItem('movie', 'trending').title;
-    },
-
-    trendingMoviesUrl () {
-      return { name: 'movie-category-name', params: { name: 'trending' } };
-    },
-
-    trendingTvTitle () {
-      return getListItem('tv', 'trending').title;
-    },
-
-    trendingTvUrl () {
-      return { name: 'tv-category-name', params: { name: 'trending' } };
-    },
-  },
-
-  async asyncData ({ error }) {
-    try {
-      const trendingMovies = await getTrending('movie');
-      const trendingTv = await getTrending('tv');
-      
-      const filterRecentYears = (items) => {
-        const currentYear = new Date().getFullYear();
-        const previousYear = currentYear - 1;
-        
-        return items.filter(item => {
-          const dateField = item.release_date || item.first_air_date;
-          if (!dateField) return false;
-          
-          const year = new Date(dateField).getFullYear();
-          return year === currentYear || year === previousYear;
-        });
-      };
-      
-      trendingMovies.results = filterRecentYears(trendingMovies.results);
-      trendingTv.results = filterRecentYears(trendingTv.results);
-      
-      const recentItems = [...trendingMovies.results, ...trendingTv.results];
-      
-      let featured;
-      if (recentItems.length > 0) {
-        const randomItem = recentItems[Math.floor(Math.random() * recentItems.length)];
-        const media = randomItem.title ? 'movie' : 'tv';
-        
-        if (media === 'movie') {
-          featured = await getMovie(randomItem.id);
-        } else {
-          featured = await getTvShow(randomItem.id);
-        }
-      } else {
-        error({ statusCode: 504, message: 'No recent content available' });
-      }
-
-      return { trendingMovies, trendingTv, featured };
-    } catch {
-      error({ statusCode: 504, message: 'Data not available' });
-    }
-  },
-};
+  }
+});
 </script>
 <style scoped>
   @media screen and (max-width: 600px) {

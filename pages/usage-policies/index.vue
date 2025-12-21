@@ -38,11 +38,7 @@
         <h2 class="title-secondary custom-center" style="font-size: 12px; margin-top:20px;"><strong>Last Updated:</strong> December 20, 2025</h2>
       </div>
       <br>
-      <div class="button-container">
-        <button class="button button--icon" @click="redirectToHome">
-          <span class="txt">Back</span>
-        </button>
-      </div>
+
     </section>
   </main>  
 </template>
@@ -63,9 +59,7 @@ export default {
     UserNav,
   },
   methods: {
-    redirectToHome() {
-      this.$router.push('/');
-    },
+
     showRatedItems() {
       this.ratedItemsModalVisible = true;
     },

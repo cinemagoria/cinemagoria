@@ -118,7 +118,7 @@
         if (item.poster_path) {
           return `https://image.tmdb.org/t/p/w500${item.poster_path}`;
         }
-        return '/static/image_not_found.webp';
+          return '/image_not_found.webp';
       },
   
       getTitle(item) {
@@ -142,7 +142,7 @@
       },
   
       handleImageError(event) {
-        event.target.src = '/static/image_not_found.webp';
+        event.target.src = '/image_not_found.webp';
       },
   
       redirectToRoute(item) {
@@ -331,6 +331,7 @@
   hyphens: auto;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -372,6 +373,7 @@
   .search-card__title {
     font-size: 1.2rem;
     -webkit-line-clamp: 2;
+  line-clamp: 2;
     max-height: 3rem;
   }
 
@@ -402,6 +404,7 @@
   .search-card__title {
     font-size: 1rem;
     -webkit-line-clamp: 2;
+  line-clamp: 2;
     max-height: 2.5rem;
     line-height: 1.25;
   }

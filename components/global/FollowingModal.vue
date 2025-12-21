@@ -197,7 +197,7 @@ import {
   getFollowedProductionCompanies, 
   unfollowProductionCompany, 
   followProductionCompany 
-} from '~/api';
+} from '~/utils/api';
 import Loader from '@/components/Loader';
 
 export default {
@@ -260,11 +260,11 @@ export default {
   },
 
   mounted() {
-    this.$root.$on('show-following-modal', this.show);
+    this.$bus.$on('show-following-modal', this.show);
   },
 
   beforeDestroy() {
-    this.$root.$off('show-following-modal');
+    this.$bus.$off('show-following-modal');
     if (this.undoTimeout) {
       clearTimeout(this.undoTimeout);
     }
@@ -272,7 +272,7 @@ export default {
 
   methods: {
     toggleDepartment(department) {
-      this.$set(this.collapsedDepartments, department, !this.collapsedDepartments[department]);
+      this.collapsedDepartments[department] = !this.collapsedDepartments[department];
     },
     
     getUndoText() {
@@ -308,7 +308,7 @@ export default {
           this.people.forEach(p => {
              const dept = p.person_type || 'other';
              if (this.collapsedDepartments[dept] === undefined) {
-               this.$set(this.collapsedDepartments, dept, false);
+               this.collapsedDepartments[dept] = false;
              }
           });
         }
@@ -489,11 +489,11 @@ export default {
     },
 
     handleImageLoad(id) {
-      this.$set(this.imageLoadStates, id, true);
+      this.imageLoadStates[id] = true;
     },
 
     onImageError(event, id) {
-       this.$set(this.imageLoadStates, id, true);
+       this.imageLoadStates[id] = true;
        if (event.target.src !== this.fallbackImageUrl) {
          event.target.src = this.fallbackImageUrl;
        }

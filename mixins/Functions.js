@@ -21,8 +21,12 @@ export const supportsLocalStorage = function () {
 
   try {
     const test = '__vue-localStorage-check';
-    window.localStorage.setItem(test, test);
-    window.localStorage.removeItem(test);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      window.localStorage.setItem(test, test);
+      window.localStorage.removeItem(test);
+    } else {
+      return false;
+    }
   } catch (e) {
     supports = false;
   }

@@ -110,6 +110,14 @@ yarn start
 
 ### Version History
 
+#### v4.0.0 — The Hybrid Migration (2025-12-21)
+
+* **Architecture:** Migrated from Nuxt 2 (Vue 2) to Nuxt 4 (Vue 3, ^4.2.2) using a "Hybrid" compatibility strategy.
+* **Axios Shim:** Implemented a custom bridge wrapping `$fetch` to preserve legacy `axios` logic without refactoring components.
+* **State Management:** Replaced Vuex with Pinia (`stores/`) while retaining complex Options API mixins for stability.
+* **Infrastructure:** Modernized config (`nuxt.config.ts`), replaced `static/` with `public/`, and updated file-based routing to Nuxt 4 syntax (`[id].vue`).
+* **Events:** Replaced legacy `$root` event bus with `mitt` for global messaging.
+
 #### v3.0.0 — Personalized Discovery (2025-12-19)
 
 * **Infrastructure:** Migrated deployment to Vercel for superior stability.

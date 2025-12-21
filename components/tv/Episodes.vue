@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { getTvShowEpisodes } from '~/api';
+import { getTvShowEpisodes } from '~/utils/api';
 import EpisodesItem from '~/components/tv/EpisodesItem';
 
 export default {

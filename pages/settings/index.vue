@@ -87,20 +87,19 @@
           </div>
 
           <div class="actions-container">
-            <button @click="back" class="action-button secondary">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="19" y1="12" x2="5" y2="12"/>
-                <polyline points="12 19 5 12 12 5"/>
-              </svg>
-              <span>Back</span>
-            </button>
-            <button @click="deleteAccount" class="action-button danger">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="3 6 5 6 21 6"/>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-              </svg>
-              <span>Delete Account</span>
-            </button>
+            <div class="danger-zone">
+              <div class="danger-header">
+                <h3>Danger Zone</h3>
+                <p>The following actions are irreversible.</p>
+              </div>
+              <button @click="deleteAccount" class="action-button danger">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+                <span>Delete Account</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -154,7 +153,7 @@
               <span class="label-button-modal">Cancel</span>
             </button>
             <button @click="confirmDelete" class="confirm-delete-btn" type="button">
-              <span class="label-button-modal">Confirm Delete</span>
+              <span class="label-button-modal">Confirm</span>
             </button>
           </div>
         </div>
@@ -164,10 +163,11 @@
 </template>
 
 <script>
-import supabase from '@/services/supabase';
+
 
 async function getUserAvatar(userEmail) {
   try {
+    const supabase = useSupabaseClient();
     const { data, error } = await supabase
       .from('user_data')
       .select('avatar')
@@ -236,6 +236,9 @@ export default {
       ]
     }
   },
+  setup() {
+    return { supabase: useSupabaseClient() }
+  },
   computed: {
     firstName() {
       return this.userData ? this.userData.first_name : '';
@@ -251,9 +254,7 @@ export default {
     }
   },
   methods: {
-    back() {
-      this.$router.go(-1);
-    },
+
 
     openAvatarModal() {
       this.isModalOpen = true;
@@ -281,7 +282,7 @@ export default {
 
     async confirmDelete() {
       try {
-        const { data: existingRequests, error: requestError } = await supabase
+        const { data: existingRequests, error: requestError } = await this.supabase
           .from('requests')
           .select('*')
           .eq('email', this.userEmail)
@@ -291,7 +292,7 @@ export default {
           throw new Error('Error fetching existing requests:', requestError.message);
         }
 
-        const { data, error } = await supabase
+        const { data, error } = await this.supabase
           .from('requests')
           .insert([
             { email: this.userEmail, action: 'delete account', is_executed: 'false' }
@@ -309,10 +310,12 @@ export default {
     },
 
     showConfirmationMessage() {
-      const locOrigin = window.location.origin;
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('email');
-      window.location.href = `${locOrigin}/login`; 
+      if (process.client) {
+        const locOrigin = window.location.origin;
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('email');
+        window.location.href = `${locOrigin}/login`; 
+      }
     },
 
     async selectAvatar(avatar) {
@@ -330,7 +333,7 @@ export default {
         if (!this.userEmail) {
           throw new Error('User email is not defined.');
         }
-        const { error } = await supabase
+        const { error } = await this.supabase
           .from('user_data')
           .update({ avatar })
           .eq('email', this.userEmail);
@@ -344,7 +347,7 @@ export default {
 
     async fetchUserDb() {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await this.supabase
           .from('auth_user')
           .select('*')
           .eq('email', this.userEmail);
@@ -373,7 +376,7 @@ export default {
           last_active: formattedLastActive
         };
 
-        const { data: existingUserData, error } = await supabase
+        const { data: existingUserData, error } = await this.supabase
           .from('user_data')
           .select('*')
           .eq('email', this.userEmail);
@@ -383,12 +386,12 @@ export default {
         }
 
         if (existingUserData && existingUserData.length > 0) {
-          await supabase
+          await this.supabase
             .from('user_data')
             .update(userDataToUpdate)
             .eq('email', this.userEmail);
         } else {
-          await supabase
+          await this.supabase
             .from('user_data')
             .insert([userDataToUpdate]); 
         }
@@ -411,11 +414,13 @@ export default {
   },
   mounted() {
     try {
-      const email = localStorage.getItem('email');
-      const accessToken = localStorage.getItem('access_token');
-      this.userEmail = email || '';
-      this.isLoggedIn = accessToken !== null;
-      this.fetchUserDb();
+      if (process.client) {
+        const email = localStorage.getItem('email');
+        const accessToken = localStorage.getItem('access_token');
+        this.userEmail = email || '';
+        this.isLoggedIn = accessToken !== null;
+        this.fetchUserDb();
+      }
     } catch (error) {
       console.error('Error on mount:', error);
     }
@@ -619,6 +624,32 @@ export default {
   background: #FF6B6B;
   color: #fff;
   transform: translateY(-2px);
+}
+
+.danger-zone {
+  width: 100%;
+  border: 1px solid rgba(255, 107, 107, 0.4);
+  border-radius: 12px;
+  padding: 2rem;
+  background: rgba(255, 107, 107, 0.05);
+}
+
+.danger-header {
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.danger-header h3 {
+  color: #FF6B6B;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.danger-header p {
+  color: rgba(255, 107, 107, 0.8);
+  font-size: 1.3rem;
+  margin: 0;
 }
 
 .modal-overlay {

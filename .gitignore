@@ -1,21 +1,28 @@
-# dependencies
-node_modules
-
-# logs
-npm-debug.log
-yarn-error.log
-
-# Nuxt build
+# Nuxt dev/build outputs
+.output
+.data
 .nuxt
-
-# Nuxt generate
+.nitro
+.cache
 dist
 
-# Environment files
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
+.fleet
+.idea
+
+# Local env files
 .env
+.env.*
+!.env.example
 
 #Other
 .eslintcache
-.DS_Store
-Icon?
-static/sw.js
+

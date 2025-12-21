@@ -14,8 +14,8 @@
 
           <img
             v-if="backdrop"
-            v-lazyload="backdrop"
-            class="lazyload"
+            :src="backdrop"
+            loading="lazy"
             :class="$style.image"
             :alt="name">
         </div>
@@ -48,23 +48,23 @@
                 </div>
 
                 <div v-if="item.rating_source === 'imdb' && item.imdb_rating">
-                  {{ item.imdb_rating.toFixed(1) }}/10 · {{ (item.imdb_votes || 0).toLocaleString() }} votes (source: IMDb)
+                  {{ item.imdb_rating.toFixed(1) }}/10 · {{ (item.imdb_votes || 0).toLocaleString('en-US') }} votes (source: IMDb)
                 </div>
                 <div v-else-if="item.vote_average">
-                  {{ item.vote_average.toFixed(1) }}/10 · {{ (item.vote_count || 0).toLocaleString() }} reviews (source: TMDB)
+                  {{ item.vote_average.toFixed(1) }}/10 · {{ (item.vote_count || 0).toLocaleString('en-US') }} reviews (source: TMDB)
                 </div>
               </div>
 
               <div :class="$style.info">
                 <span v-if="item.number_of_seasons">Season {{ item.number_of_seasons }}</span>
                 <span v-if="yearStart">{{ yearStart }}</span>
-                <span v-if="item.runtime">{{ item.runtime | runtime }}</span>
+                <span v-if="item.runtime">{{ formatRuntime(item.runtime) }}</span>
                 <span v-if="cert">Cert. {{ cert }}</span>
               </div>
             </div>
 
             <div :class="$style.desc">
-              {{ item.overview | truncate(200) }}
+              {{ truncate(item.overview, 200) }}
             </div>
             <br>
             <div :class="$style.buttonContainer">
@@ -291,6 +291,7 @@
 
 <script>
 import { name, stars, yearStart, yearEnd, cert, backdrop, poster, trailer, id, genres, type, runtime } from '~/mixins/Details';
+import Filters from '~/mixins/Filters';
 import Modal from '~/components/Modal';
 
 export default {
@@ -299,6 +300,7 @@ export default {
   },
 
   mixins: [
+    Filters,
     name,
     stars,
     yearStart,
@@ -322,7 +324,6 @@ export default {
 
   data() {
     return {
-      tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://entercinema-favorites.vercel.app/api',
       isSingle: this.item.id === this.$route.params.id,
       copySuccess: false,
       ratingModalVisible: false,
@@ -365,6 +366,9 @@ export default {
   },
 
   computed: {
+    tursoBackendUrl() {
+      return this.$config.public.tursoBackendUrl;
+    },
     type() {
       return this.item.title ? 'movie' : 'tv';
     },
@@ -493,7 +497,7 @@ export default {
         this.userReview = '';
 
         this.closeRatingModal();
-        this.$root.$emit('rated-items-updated');
+        this.$bus.$emit('rated-items-updated');
       } catch (error) {
         console.error('Error removing rating:', error);
         alert('There was an error removing your rating. Please try again.');
@@ -934,12 +938,12 @@ export default {
   margin-top: 3rem;
   width: 100%;
   
-  @media (max-width: $breakpoint-small - 1) {
+  @media (max-width: #{$breakpoint-small - 1px}) {
     justify-content: center;
     margin-top: 1.5rem;
   }
   
-  @media (min-width: $breakpoint-small) and (max-width: $breakpoint-medium - 1) {
+  @media (min-width: $breakpoint-small) and (max-width: #{$breakpoint-medium - 1px}) {
     justify-content: flex-start;
   }
   
@@ -1021,7 +1025,7 @@ export default {
     }
   }
   
-  @media (max-width: $breakpoint-small - 1) {
+  @media (max-width: #{$breakpoint-small - 1px}) {
     flex: 0 1 auto;
     max-width: 45%;
     height: 36px;
@@ -1030,7 +1034,7 @@ export default {
     padding: 0 1rem;
   }
   
-  @media (min-width: $breakpoint-small) and (max-width: $breakpoint-medium - 1) {
+  @media (min-width: $breakpoint-small) and (max-width: #{$breakpoint-medium - 1px}) {
     height: 38px;
     line-height: 38px;
     font-size: 1.4rem;
@@ -1055,13 +1059,13 @@ export default {
   justify-content: center;
   padding: 0;
   
-  @media (max-width: $breakpoint-small - 1) {
+  @media (max-width: #{$breakpoint-small - 1px}) {
     width: 36px;
     height: 36px;
     min-width: 36px;
   }
   
-  @media (min-width: $breakpoint-small) and (max-width: $breakpoint-medium - 1) {
+  @media (min-width: $breakpoint-small) and (max-width: #{$breakpoint-medium - 1px}) {
     width: 38px;
     height: 38px;
     min-width: 38px;
@@ -1080,7 +1084,7 @@ export default {
   max-width: none;
   height: 100%;
 
-  @media (max-width: $breakpoint-medium - 1) {
+  @media (max-width: #{$breakpoint-medium - 1px}) {
     width: 100%;
     object-fit: cover;
   }
@@ -1159,7 +1163,7 @@ export default {
   width: 8.5rem;
   height: 1.4rem;
   margin-right: 1rem;
-  background-image: url('~assets/images/stars.png');
+  background-image: url('@/assets/images/stars.png');
   background-repeat: no-repeat;
   background-size: auto 100%;
 
@@ -1170,7 +1174,7 @@ export default {
 
   > div {
     height: 100%;
-    background-image: url('~assets/images/stars-filled.png');
+    background-image: url('@/assets/images/stars-filled.png');
     background-repeat: no-repeat;
     background-size: auto 100%;
   }
@@ -1191,7 +1195,7 @@ export default {
   font-size: 1.5rem;
   color: #fff;
 
-  @media (max-width: $breakpoint-small - 1) {
+  @media (max-width: #{$breakpoint-small - 1px}) {
     display: none;
   }
 
