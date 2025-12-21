@@ -16,6 +16,10 @@
 
 <script>
 export default {
+  setup() {
+    const config = useRuntimeConfig()
+    return { config }
+  },
   props: {
     buttonText: {
       type: String,
@@ -35,7 +39,7 @@ export default {
       this.$emit('google-login-start');
       
       try {
-        const response = await fetch(`${process.env.API_URL}/auth/google/`);
+        const response = await fetch(`${this.config.public.apiUrl}/auth/google/`);
         const data = await response.json();
         
         if (data && data.login_url) {
