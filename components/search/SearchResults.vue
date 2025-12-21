@@ -188,7 +188,7 @@ export default {
           query: { q: this.suggestedCorrection }
         });
         
-        this.$root.$emit('update-search-query', this.suggestedCorrection);
+        this.$bus.$emit('update-search-query', this.suggestedCorrection);
       }
     }
   },

@@ -1,50 +1,64 @@
 <template>
-  <div>
+  <div class="app-layout">
+    <Nav />
+    
+    <div class="main-content">
+      <SearchForm />
+      <div class="page-content">
+        <slot />
+      </div>
+      <Footer />
+    </div>
+
+    <!-- Global Modals -->
+    <AuthModal ref="authModal" />
     <CookieConsent />
     <InstallPrompt />
-
-    <transition name="slidedown">
-      <SearchForm />
-    </transition>
     <RatedModal />
     <FollowingModal />
+    
+    <!-- Modals triggered by EventBus -->
     <QuickFavModal />
-    <Nav />
-    <nuxt />
-    <ChatbotModal />
-    <Footer />
   </div>
 </template>
 
-<script>
-import { mapState } from 'vuex';
-import CookieConsent from '~/components/global/CookieConsent';
-import InstallPrompt from '~/components/global/InstallPrompt';
-import SearchForm from '~/components/global/SearchForm';
-import Nav from '~/components/global/Nav';
-import Footer from '~/components/global/Footer';
-import RatedModal from '@/components/global/RatedModal';
-import FollowingModal from '@/components/global/FollowingModal';
-import ChatbotModal from '@/components/global/ChatbotModal';
-import QuickFavModal from '@/components/global/QuickFavModal';
+<script setup>
+import Nav from '~/components/global/Nav.vue'
+import SearchForm from '~/components/global/SearchForm.vue'
+import Footer from '~/components/global/Footer.vue'
+import AuthModal from '~/components/global/AuthModal.vue'
+import CookieConsent from '~/components/global/CookieConsent.vue'
+import InstallPrompt from '~/components/global/InstallPrompt.vue'
+import RatedModal from '~/components/global/RatedModal.vue'
+import FollowingModal from '~/components/global/FollowingModal.vue'
+import QuickFavModal from '~/components/global/QuickFavModal.vue'
 
-export default {
-  components: {
-    CookieConsent,
-    InstallPrompt,
-    SearchForm,
-    ChatbotModal,
-    Nav,
-    Footer,
-    RatedModal,
-    FollowingModal,
-    QuickFavModal,
-  },
-
-  computed: {
-    ...mapState('search', [
-      'searchOpen',
-    ]),
-  },
-};
+// Event Bus listeners for global modals if needed
+// Providing global access if necessary
 </script>
+
+<style lang="scss" scoped>
+@use '~/assets/css/utilities/variables' as *;
+
+.app-layout {
+  min-height: 100vh;
+  position: relative;
+}
+
+.main-content {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  
+  padding-bottom: 4.5rem;
+
+  @media (min-width: $breakpoint-large) {
+    padding-bottom: 0;
+  }
+}
+
+.page-content {
+  flex: 1;
+}
+</style>

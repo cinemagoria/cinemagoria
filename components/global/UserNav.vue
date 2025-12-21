@@ -1,7 +1,7 @@
 <template>
   <div class="user-nav-container">
     <nuxt-link
-      :to="{ name: 'notifications' }"
+      to="/notifications"
       aria-label="notifications"
       class="notifications-button">
       <div class="notification-icon-wrapper">
@@ -35,7 +35,7 @@
         </div>
 
         <div class="menu-item" @click="goToWatchlist">
-          <img src="~/static/icon-watchlist.png" alt="Watchlist Icon" class="menu-icon">
+          <img src="/icon-watchlist.png" alt="Watchlist Icon" class="menu-icon">
           <span class="menu-label">Watchlist</span>
         </div>
 
@@ -56,14 +56,14 @@
         </div>
 
         <div class="menu-item" @click="goToSettings">
-          <img src="~/static/icon-settings.png" alt="Settings Icon" class="menu-icon">
+          <img src="/icon-settings.png" alt="Settings Icon" class="menu-icon">
           <span class="menu-label">Settings</span>
         </div>
 
         <div class="menu-divider"></div>
 
         <div class="menu-item language-switch-container">
-          <img src="~static/langpicker-icon.png" alt="Language Icon" class="menu-icon lang-icon">
+          <img src="/langpicker-icon.png" alt="Language Icon" class="menu-icon lang-icon">
           <label class="language-switch">
             <input type="checkbox" :checked="currentLanguage === 'es'" @change="toggleLanguage">
             <span>English</span>
@@ -74,7 +74,7 @@
         <div class="menu-divider"></div>
 
         <div class="menu-item" @click="signOut">
-          <img src="~/static/icon-logout.png" alt="Logout Icon" class="menu-icon">
+          <img src="/icon-logout.png" alt="Logout Icon" class="menu-icon">
           <span class="menu-label menu-label-logout">Log out</span>
         </div>
       </div>
@@ -82,7 +82,7 @@
 
     <div v-else class="user-nav-logged-out">
       <button class="sign-in-button" @click="goToLogin" aria-label="Sign In">
-        <img src="~/static/icon-login.png" alt="Login Icon" class="sign-in-icon">
+        <img src="/icon-login.png" alt="Login Icon" class="sign-in-icon">
         <span class="sign-in-label">Sign In</span>
       </button>
     </div>
@@ -90,10 +90,22 @@
 </template>
 
 <script>
-import supabase from '@/services/supabase';
+
 
 export default {
   name: 'UserNav',
+  // ...
+  methods: {
+    // We need to initialize supabase carefully or use it as needed.
+    // For legacy components, we can call it inside methods.
+  },
+  setup() {
+    const supabase = useSupabaseClient()
+    return { supabase }
+  },
+  // OR simply replace usage in the code. 
+  // Wait, these are Options API components. They likely use `supabase` in mounted/methods.
+  // The safest way for "Blitz" is to attach it to 'this' or call it.
   
   data() {
     return {
@@ -164,7 +176,8 @@ export default {
       }
 
       try {
-        const response = await fetch(`https://entercinema-follows-rust.vercel.app/notifications/unread-count?user_email=${encodeURIComponent(userEmail)}`);
+        const baseUrl = this.$config.public.followsBackendUrl;
+        const response = await fetch(`${baseUrl}/notifications/unread-count?user_email=${encodeURIComponent(userEmail)}`);
         if (response.ok) {
           const data = await response.json();
           this.unreadCount = data.unread_count || 0;
@@ -186,7 +199,7 @@ export default {
     },
     async fetchUserAvatar(email) {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await this.supabase
           .from('user_data')
           .select('avatar')
           .eq('email', email);
@@ -228,12 +241,12 @@ export default {
     },
 
     showRatedModal() {
-      this.$root.$emit('show-rated-modal');
+      this.$bus.$emit('show-rated-modal');
       this.isMenuOpen = false;
     },
 
     showFollowingModal() {
-      this.$root.$emit('show-following-modal');
+      this.$bus.$emit('show-following-modal');
       this.isMenuOpen = false;
     },
 

@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { apiImgUrl } from '~/api';
+import { apiImgUrl } from '~/utils/api';
 import ImagesItem from '~/components/ImagesItem';
 import Modal from '~/components/Modal';
 

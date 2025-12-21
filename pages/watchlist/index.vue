@@ -25,7 +25,7 @@
         </div>
 
         <div v-else-if="showEmptyState" class="empty-state-container">
-          <img src="~/static/cinema-popcorn.svg" alt="No favorites" class="empty-state-icon">
+          <img src="/cinema-popcorn.svg" alt="No favorites" class="empty-state-icon">
           <h3>No favorites added yet</h3>
           <p>
             Start building your watchlist by adding 
@@ -82,13 +82,13 @@
           </div>
 
           <div v-if="showTabEmptyState" class="empty-state-container">
-            <img src="~/static/cinema-popcorn.svg" alt="No content" class="empty-state-icon">
+            <img src="/cinema-popcorn.svg" alt="No content" class="empty-state-icon">
             <h3>{{ emptyStateMessage }}</h3>
             <p>Switch tabs to see your {{ filter === 'movies' ? 'TV shows' : 'movies' }}!</p>
           </div>
           
           <div v-else-if="(filteredItems.length === 0 || itemsToShow.length === 0) && hasActiveFilters" class="no-results-state">
-            <img src="~/static/cinema-popcorn.svg" alt="No results" class="no-results-icon">
+            <img src="/cinema-popcorn.svg" alt="No results" class="no-results-icon">
             <h3>No Results Found</h3>
             <p>We couldn't find any content matching your current filters.</p>
             <p class="suggestion">Try adjusting or clearing some filters to see more results.</p>
@@ -256,7 +256,7 @@
                           <span class="vote-count" v-if="item.details.imdb_votes">({{ formatVoteCount(item.details.imdb_votes) }})</span>
                         </div>
                         <div v-else-if="item.details.starsForDb" class="rating-item">
-                          <img src="~static/tmdb.svg" alt="TMDB" class="rating-logo tmdb">
+                          <img src="/tmdb.svg" alt="TMDB" class="rating-logo tmdb">
                           <span class="rating-score">{{ formatRating(item.details.starsForDb) }}</span>
                            <span class="vote-count" v-if="item.details.vote_count">({{ formatVoteCount(item.details.vote_count) }})</span>
                         </div>
@@ -581,12 +581,13 @@
 </template>
 
 <script>
-import supabase from '@/services/supabase';
+
 import UserNav from '@/components/global/UserNav';
 
 
 async function getUserName(userEmail) {
   try {
+    const supabase = useSupabaseClient();
     const { data, error } = await supabase
       .from('user_data')
       .select('first_name')
@@ -634,8 +635,8 @@ export default {
       customYearEnd: null,
       currentYear: new Date().getFullYear(),
       selectedLanguage: 'english',
-      fallbackImageUrl: "https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.webp?raw=true",
-      handleImageError: "this.src='https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.webp?raw=true'",
+      fallbackImageUrl: "/image_not_found_yet.webp",
+      handleImageError: "this.src='/image_not_found_yet.webp'",
       userEmail: '',
       accessToken: '',
       isLoggedIn: false,
@@ -698,6 +699,9 @@ export default {
       undoTimer: null,
     };
   },
+  setup() {
+    return { supabase: useSupabaseClient() }
+  },
   async mounted() {
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');
@@ -735,15 +739,16 @@ export default {
 
     const seriesIds = uniqueSeries.map(item => item.idForDb);
 
+    const config = this.$config.public;
+
     async function fetchSeriesDetails(seriesId) {
-        const apiKey = process.env.API_KEY;
-        const apiLang = process.env.API_LANG;
+        const apiKey = config.apiKey;
+        const apiLang = config.apiLang;
         const url = `https://api.themoviedb.org/3/tv/${seriesId}?api_key=${apiKey}&language=${apiLang}`;
         const options = {
             method: 'GET',
             headers: {
-                accept: 'application/json',
-                Authorization: `Bearer ${process.env.ACCESS_TOKEN}`
+                accept: 'application/json'
             }
         };
 
@@ -790,7 +795,7 @@ export default {
     this.filteredSeriesDetails = filteredSeriesDetails;
     
     try {
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('notifications') 
         .upsert([{
           user_email: this.userEmail,
@@ -805,7 +810,7 @@ export default {
     } catch (error) {
       console.error('Error al guardar en la base de datos:', error.message);
     }
-    this.$root.$on('rated-items-updated', this.checkData);
+    this.$bus.$on('rated-items-updated', this.checkData);
   },
 
   beforeDestroy() {
@@ -814,7 +819,7 @@ export default {
     } else {
       window.removeEventListener('resize', this.handleResize);
     }
-    this.$root.$off('rated-items-updated', this.checkData);
+    this.$bus.$off('rated-items-updated', this.checkData);
     document.removeEventListener('click', this.closeCardMenu);
   },
   
@@ -891,7 +896,7 @@ export default {
         if (newItems && newItems.length) {
           newItems.forEach(item => {
             if (item.details && item.details.idForDb) {
-              this.$set(this.imageLoadStates, item.details.idForDb, false);
+              this.imageLoadStates[item.details.idForDb] = false;
             }
           });
           
@@ -917,14 +922,14 @@ export default {
       }
     },
     handleImageLoad(itemId) {
-      this.$set(this.imageLoadStates, itemId, true);
+      this.imageLoadStates[itemId] = true;
     },
 
     onImageError(event, itemId) {
       if (event.target.src !== this.fallbackImageUrl) {
         event.target.src = this.fallbackImageUrl;
       } else {
-        this.$set(this.imageLoadStates, itemId, true);
+        this.imageLoadStates[itemId] = true;
       }
     },
 
@@ -933,7 +938,7 @@ export default {
         if (item.details && item.details.idForDb) {
           const imgRef = this.$refs['poster-' + item.details.idForDb];
           if (imgRef && imgRef[0] && imgRef[0].complete) {
-            this.$set(this.imageLoadStates, item.details.idForDb, true);
+            this.imageLoadStates[item.details.idForDb] = true;
           }
         }
       });
@@ -1080,7 +1085,7 @@ export default {
         user_rating: item.user_rating || null
       }));
 
-      this.$root.$emit('open-chatbot-with-selection', {
+      this.$bus.$emit('open-chatbot-with-selection', {
         selectedItems: preparedItems
       });
 
@@ -1213,7 +1218,7 @@ export default {
     },
 
     showRatedItems() {
-      this.$root.$emit('show-rated-modal');
+      this.$bus.$emit('show-rated-modal');
     },
 
     handleResize() {
@@ -1580,9 +1585,16 @@ export default {
         return '#'; 
       }
     },
+
+    handleItemClick(item) {
+      const link = this.getLink(item);
+      if (link && link !== '#') {
+        this.$router.push(link);
+      }
+    },
     async fetchUserFirstName() {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await this.supabase
           .from('auth_user')
           .select('first_name')
           .eq('email', this.userEmail);
@@ -2020,7 +2032,7 @@ export default {
 .card__stars {
   width: 7.3rem;
   height: 1.2rem;
-  background-image: url('~assets/images/stars.png');
+  background-image: url('@/assets/images/stars.png');
   background-repeat: no-repeat;
   background-size: auto 100%;
   position: relative;
@@ -2029,7 +2041,7 @@ export default {
 
 .card__stars > div {
   height: 100%;
-  background-image: url('~assets/images/stars-filled.png');
+  background-image: url('@/assets/images/stars-filled.png');
   background-repeat: no-repeat;
   background-size: auto 100%;
   position: absolute;
@@ -2073,6 +2085,7 @@ export default {
 .navbar-welcome {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   margin-top: 20px;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
@@ -2082,6 +2095,7 @@ export default {
 .text-center {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgb(220, 220, 220) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
   font-family: 'Roboto', sans-serif;
@@ -2382,11 +2396,13 @@ export default {
   outline: none;
   transition: border-color 0.2s;
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .pagination-input::-webkit-outer-spin-button,
 .pagination-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
+  appearance: none;
   margin: 0;
 }
 
@@ -2519,6 +2535,7 @@ export default {
     overflow: hidden; 
     display: -webkit-box;
     -webkit-line-clamp: 2;
+  line-clamp: 2;
     -webkit-box-orient: vertical;
     white-space: normal;
     text-overflow: ellipsis; 
@@ -3252,6 +3269,7 @@ select.tmdb-rating-select,
 select.user-rating-select {
   appearance: none;
   -webkit-appearance: none;
+  appearance: none;
   -moz-appearance: none;
   background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
   background-repeat: no-repeat;
@@ -3653,11 +3671,13 @@ select.user-rating-select {
 .year-input::-webkit-outer-spin-button,
 .year-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
+  appearance: none;
   margin: 0;
 }
 
 .year-input[type=number] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .dropdown-options::-webkit-scrollbar {

@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { getTrending, getMovies, getListItem } from '~/api';
+import { getTrending, getMovies, getListItem } from '~/utils/api';
 import TopNav from '~/components/global/TopNav';
 import Listing from '~/components/Listing';
 

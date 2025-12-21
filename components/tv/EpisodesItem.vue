@@ -1,37 +1,37 @@
 <template>
   <div :class="$style.item">
-    <div :class="$style.image">
+    <div :class="$style.image" style="border-radius:15px;">
       <img
         v-if="poster"
-        v-lazyload="poster"
-        class="lazyload"
+        :src="poster"
+        loading="lazy"
         :alt="episode.name">
 
       <img
         v-else
-        src="https://raw.githubusercontent.com/imprvhub/entercinema/main/static/image_not_found_yet_horizontal.webp"
+        src="/image_not_found_yet_horizontal.webp"
         alt="Image not found"
-        style="width: 100%; height: 100%; object-fit: cover;">
+        style="width: 100%; height: 100%; object-fit: cover; padding: 3rem;">
     </div>
 
     <h2 :class="$style.name">
-      <strong>E{{ episode.episode_number | numberWithDoubleDigits }}</strong> {{ episode.name }}
+      <strong>E{{ numberWithDoubleDigits(episode.episode_number) }}</strong> {{ episode.name }}
     </h2>
 
     <div :class="$style.overview">
-      {{ episode.overview | truncate(300) }}
+      {{ truncate(episode.overview, 300) }}
     </div>
 
     <div
       v-if="episode.air_date"
       :class="$style.aired">
-      {{ episode.air_date | fullDate }}
+      {{ fullDate(episode.air_date) }}
     </div>
   </div>
 </template>
 
 <script>
-import { apiImgUrl } from '~/api';
+import { apiImgUrl } from '~/utils/api';
 
 export default {
   props: {
@@ -48,6 +48,43 @@ export default {
       } else {
         return null;
       }
+    },
+  },
+
+  methods: {
+    numberWithDoubleDigits(number) {
+      if (number < 10) {
+        return `0${number}`;
+      }
+      return number;
+    },
+
+    truncate(text, length, clamp) {
+      text = text || '';
+      clamp = clamp || '...';
+      length = length || 30;
+
+      if (text.length <= length) return text;
+
+      let tcText = text.slice(0, length - clamp.length);
+      let last = tcText.length - 1;
+
+      while (last > 0 && tcText[last] !== ' ' && tcText[last] !== clamp[0]) last -= 1;
+
+      last = last || length - clamp.length;
+
+      tcText = tcText.slice(0, last);
+
+      return tcText + clamp;
+    },
+
+    fullDate(string) {
+      if (!string) return '';
+      const dateArray = string.split('-');
+      const date = dateArray[2].substr(0, 1) === '0' ? dateArray[2].substr(1, 1) : dateArray[2];
+      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+      return `${date} ${months[dateArray[1] - 1]} ${dateArray[0]}`;
     },
   },
 };

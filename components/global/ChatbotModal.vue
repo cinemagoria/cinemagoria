@@ -196,7 +196,7 @@
                                :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" 
                                :alt="item.title || 'Movie Poster'"
                                @error="handleImageError">
-                          <img v-else src="https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.webp?raw=true" :alt="item.title || 'Movie Poster Not Found'">
+                          <img v-else src="/image_not_found_yet.webp" :alt="item.title || 'Movie Poster Not Found'">
                           <div class="media-type">Movie</div>
                           <div class="movie-rating" v-if="item.imdb_rating || item.vote_average > 0">
                             <template v-if="item.rating_source === 'imdb' && item.imdb_rating">
@@ -224,7 +224,7 @@
                                :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" 
                                :alt="item.name || 'TV Show Poster'"
                                @error="handleImageError">
-                          <img v-else src="https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.webp?raw=true" :alt="item.name || 'TV Show Poster Not Found'">
+                          <img v-else src="/image_not_found_yet.webp" :alt="item.name || 'TV Show Poster Not Found'">
                           <div class="media-type">TV Show</div>
 
                           <div class="movie-rating" v-if="item.imdb_rating || item.vote_average > 0">
@@ -253,7 +253,7 @@
                                :src="'https://image.tmdb.org/t/p/w342' + item.profile_path" 
                                :alt="item.name || 'Person Profile'"
                                @error="handleImageError">
-                          <img v-else src="https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.webp?raw=true" :alt="item.name || 'Person Profile Not Found'">
+                          <img v-else src="/image_not_found_yet.webp" :alt="item.name || 'Person Profile Not Found'">
                           <div class="media-type">Person</div>
                         </div>
                         <div class="media-info">
@@ -361,19 +361,13 @@ export default {
       inputWidth: 0,
       chatId: null,
       sessionKey: 'entercinema_chat_session',
-      tmdbApiKey: process.env.API_KEY,
+      tmdbApiKey: null,
       baseUrl: typeof window !== 'undefined'
                ? (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://entercinema.com')
                : 'https://entercinema.com',
-      apiUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-        ? 'https://entercinema-assistant-rust.vercel.app/api/gemini' 
-        : 'https://entercinema-assistant-rust.vercel.app/api/gemini',
-      watchlistAnalysisUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-        ? 'https://entercinema-assistant-rust.vercel.app/api/watchlist-analysis' 
-        : 'https://entercinema-assistant-rust.vercel.app/api/watchlist-analysis',
-      titleGenerationUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-        ? 'https://entercinema-assistant-rust.vercel.app/api/gemini' 
-        : 'https://entercinema-assistant-rust.vercel.app/api/gemini',
+      apiUrl: '',
+      watchlistAnalysisUrl: '',
+      titleGenerationUrl: '',
       predefinedApiUrl: typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
               ? 'http://localhost:8000/api' 
               : 'https://entercinema-predefined.vercel.app/api',
@@ -439,6 +433,20 @@ export default {
     }
   },
   created() {
+    if (this.$config && this.$config.public) {
+        this.tmdbApiKey = this.$config.public.apiKey;
+    } else {
+        // Fallback or try useRuntimeConfig if available
+        try {
+            const config = useRuntimeConfig();
+            this.tmdbApiKey = config.public.apiKey;
+        } catch (e) {
+            console.error("Could not load runtime config", e);
+        }
+    }
+    this.apiUrl = this.$config.public.assistantBackendUrl + '/gemini';
+    this.watchlistAnalysisUrl = this.$config.public.assistantBackendUrl + '/watchlist-analysis';
+    this.titleGenerationUrl = this.$config.public.assistantBackendUrl + '/gemini';
     this.loadDailyPrompt();
   },
   async mounted() {
@@ -465,13 +473,13 @@ export default {
       this.initializeFirstConversation();
     }
     
-    this.$root.$on('chatbot-maximized', () => {
+    this.$bus.$on('chatbot-maximized', () => {
       this.chatBotMinimized = false;
     });
     
-    this.$root.$on('open-chatbot-with-selection', this.handleSelectionInit);
+    this.$bus.$on('open-chatbot-with-selection', this.handleSelectionInit);
 
-    this.$root.$on('open-chatbot-with-analysis', async (payload) => {
+    this.$bus.$on('open-chatbot-with-analysis', async (payload) => {
       console.log('[ChatbotModal] Received open-chatbot-with-analysis event', payload);
       
       try {
@@ -539,10 +547,10 @@ export default {
       this.abortController = null;
     }
     this.clearMinimizedState();
-    this.$root.$off('rated-items-updated', this.checkData);
-    this.$root.$off('chatbot-maximized');
-    this.$root.$off('open-chatbot-with-analysis');
-    this.$root.$off('open-chatbot-with-selection', this.handleSelectionInit);
+    this.$bus.$off('rated-items-updated', this.checkData);
+    this.$bus.$off('chatbot-maximized');
+    this.$bus.$off('open-chatbot-with-analysis');
+    this.$bus.$off('open-chatbot-with-selection', this.handleSelectionInit);
   },
   methods: {
     handleExampleClick(text) {
@@ -550,7 +558,7 @@ export default {
       this.handleSendAction();
     },
     handleImageError(event) {
-      const fallbackUrl = 'https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.webp?raw=true';
+      const fallbackUrl = '/image_not_found_yet.webp';
       if (event.target.src !== fallbackUrl) {
         event.target.src = fallbackUrl;
       }

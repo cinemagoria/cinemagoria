@@ -2,7 +2,7 @@
     <main class="main">
       <section class="wip-section">
         <div class="image-container">
-          <img src="~static/wip.png" alt="Maintenance Image" class="maintenance-image">
+          <img src="/wip.png" alt="Maintenance Image" class="maintenance-image">
         </div>
         <br>
         <br>

@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { getMovieReleaseDates } from '~/api';
+import { getMovieReleaseDates } from '~/utils/api';
 export default {
   props: {
     item: {

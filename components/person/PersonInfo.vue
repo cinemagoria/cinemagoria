@@ -4,8 +4,8 @@
       <div :class="$style.poster">
         <img
           v-if="avatar"
-          v-lazyload="avatar"
-          class="lazyload"
+          :src="avatar"
+          loading="lazy"
           :alt="person.name">
 
         <img
@@ -45,7 +45,7 @@
               Born
             </div>
             <div :class="$style.value">
-              {{ person.birthday | fullDate }}
+              {{ fullDate(person.birthday) }}
               <span v-if="!person.deathday">(age {{ age }})</span>
             </div>
           </li>
@@ -62,7 +62,7 @@
               Died
             </div>
             <div :class="$style.value">
-              {{ person.deathday | fullDate }}
+              {{ fullDate(person.deathday) }}
               <span v-if="person.birthday">(aged {{ age }})</span>
             </div>
           </li>
@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import { apiImgUrl } from '~/api';
+import { apiImgUrl } from '~/utils/api';
 import ExternalLinks from '~/components/ExternalLinks';
 
 export default {
@@ -115,7 +115,10 @@ export default {
   },
   computed: {
     isLoggedIn() {
-      return localStorage.getItem('access_token') !== null;
+      if (typeof window !== 'undefined' && window.localStorage) {
+         return localStorage.getItem('access_token') !== null;
+      }
+      return false;
     },
     avatar() {
       if (this.person.profile_path) {
@@ -149,6 +152,14 @@ export default {
     }
   },
   methods: {
+    fullDate(date) {
+      if (!date) return 'N/A';
+      return new Date(date).toLocaleDateString(process.env.API_COUNTRY === 'BR' ? 'pt-BR' : 'en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    },
     formatContent(string) {
       return string.split('\n').filter(section => section !== '').map(section => `<p>${section}</p>`).join('');
     },

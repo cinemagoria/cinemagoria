@@ -6,8 +6,8 @@
       <div class="credits-item__img">
         <img
           v-if="poster"
-          v-lazyload="poster"
-          class="lazyload"
+          :src="poster"
+          loading="lazy"
           :alt="person.name">
 
         <img
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { apiImgUrl } from '~/api';
+import { apiImgUrl } from '~/utils/api';
 
 export default {
   props: {

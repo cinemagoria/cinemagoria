@@ -133,7 +133,7 @@
 </template>
 
 <script>
-import { getMoviesByCompanies, getTvShowsByCompanies, getFollowedProductionCompanies } from '~/api';
+import { getMoviesByCompanies, getTvShowsByCompanies, getFollowedProductionCompanies } from '~/utils/api';
 import Card from '~/components/Card';
 
 export default {

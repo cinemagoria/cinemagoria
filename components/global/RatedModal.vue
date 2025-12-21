@@ -119,7 +119,6 @@
 </template>
 
 <script>
-import supabase from '@/services/supabase';
 
 export default {
   name: 'RatedModal',
@@ -166,14 +165,14 @@ export default {
   },
   
   mounted() {
-    this.$root.$on('show-rated-modal', this.show);
+    this.$bus.$on('show-rated-modal', this.show);
     
     const email = localStorage.getItem('email');
     this.userEmail = email || '';
   },
   
   beforeDestroy() {
-    this.$root.$off('show-rated-modal', this.show);
+    this.$bus.$off('show-rated-modal', this.show);
   },
   
   methods: {
@@ -338,7 +337,7 @@ export default {
 
         this.closeRatingModal();
         await this.fetchRatedItems();
-        this.$root.$emit('rated-items-updated');
+        this.$bus.$emit('rated-items-updated');
 
       } catch (error) {
         console.error('Error saving rating and review:', error);
@@ -374,7 +373,7 @@ export default {
 
         this.closeRatingModal();
         await this.fetchRatedItems();
-        this.$root.$emit('rated-items-updated');
+        this.$bus.$emit('rated-items-updated');
 
       } catch (error) {
         console.error('Error removing rating:', error);

@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { getMediaByGenre, getGenreList } from '~/api';
+import { getTrending, getTvShows, getListItem } from '~/utils/api';
 import TopNav from '~/components/global/TopNav';
 import Listing from '~/components/Listing';
 
@@ -48,27 +48,16 @@ export default {
     },
 
     title () {
-      if (this.genre) {
-        return `TV Genre: ${this.genre.name}`;
-      } else {
-        return `TV Genre`;
-      }
+      return getListItem('tv', this.$route.params.name).title;
     },
   },
 
   async asyncData ({ params, error }) {
     try {
-      const items = await getMediaByGenre('tv', params.id);
-      const genres = await getGenreList('tv');
-      const genre = genres.find(genre => genre.id === parseInt(params.id));
-
-      if (genre) {
-        return { items, genre };
-      } else {
-        error({ message: 'Page not found' });
-      }
+      const items = params.name === 'trending' ? await getTrending('tv') : await getTvShows(params.name);
+      return { items };
     } catch {
-      error({ statusCode: 504, message: 'Data not available' });
+      error({ message: 'Page not found' });
     }
   },
 
@@ -76,13 +65,23 @@ export default {
     loadMore () {
       this.loading = true;
 
-      getMediaByGenre('tv', this.$route.params.id, this.items.page + 1).then((response) => {
-        this.items.results = this.items.results.concat(response.results);
-        this.items.page = response.page;
-        this.loading = false;
-      }).catch(() => {
-        this.loading = false;
-      });
+      if (this.$route.params.name === 'trending') {
+        getTrending('tv', this.items.page + 1).then((response) => {
+          this.items.results = this.items.results.concat(response.results);
+          this.items.page = response.page;
+          this.loading = false;
+        }).catch(() => {
+          this.loading = false;
+        });
+      } else {
+        getTvShows(this.$route.params.name, this.items.page + 1).then((response) => {
+          this.items.results = this.items.results.concat(response.results);
+          this.items.page = response.page;
+          this.loading = false;
+        }).catch(() => {
+          this.loading = false;
+        });
+      }
     },
   },
 };
