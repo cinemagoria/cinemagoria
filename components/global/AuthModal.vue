@@ -286,7 +286,8 @@ export default {
       this.errorMessage = '';
       
       try {
-        const data = await $fetch('https://entercinema-drf.vercel.app/login/', {
+        const config = useRuntimeConfig();
+        const data = await $fetch(`${config.public.apiUrl}/login/`, {
           method: 'POST',
           body: {
             email: this.loginEmail,

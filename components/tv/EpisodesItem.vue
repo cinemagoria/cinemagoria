@@ -9,7 +9,7 @@
 
       <img
         v-else
-        src="https://raw.githubusercontent.com/imprvhub/entercinema/main/static/image_not_found_yet_horizontal.webp"
+        src="/image_not_found_yet_horizontal.webp"
         alt="Image not found"
         style="width: 100%; height: 100%; object-fit: cover; padding: 3rem;">
     </div>
