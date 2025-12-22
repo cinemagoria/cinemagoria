@@ -1190,6 +1190,8 @@ export default {
   }
 }
 
+
+
 .rating {
   display: flex;
   align-items: center;
@@ -1248,6 +1250,34 @@ export default {
 .share {
   margin-top: 3rem;
   border-radius: 1.0rem;
+}
+
+@media (min-width: 2200px) {
+  .name {
+    font-size: 50px;
+  }
+
+  .meta,
+  .desc {
+    font-size: 0.8vw;
+  }
+
+  .button {
+    font-size: 0.8vw;
+    height: 45px;
+    line-height: 45px;
+  }
+
+  .shareButton {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+  }
+
+  .stars {
+    width: 9rem;
+    height: 1.5rem;
+  }
 }
 </style>
 
