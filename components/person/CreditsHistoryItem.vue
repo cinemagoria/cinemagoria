@@ -57,9 +57,9 @@ export default {
       const job = this.credit.job;
 
       if (character) {
-        return `as ${character}`;
+        return ` as ${character}`;
       } else if (job) {
-        return `as ${job}`;
+        return ` as ${job}`;
       } else {
         return false;
       }
@@ -70,9 +70,9 @@ export default {
 
       if (episodes) {
         if (episodes > 1) {
-          return `(${episodes} episodes)`;
+          return ` (${episodes} episodes)`;
         } else {
-          return `(${episodes} episode)`;
+          return ` (${episodes} episode)`;
         }
       } else {
         return false;
