@@ -22,7 +22,11 @@
       </div>
       
       <div class="rated-items-content">
-        <div v-if="filteredRatedItems && filteredRatedItems.length > 0" class="rated-items-list">
+        <div v-if="loading" class="loader">
+          <Loader :size="60" color="#8BE9FD" />
+        </div>
+        
+        <div v-else-if="filteredRatedItems && filteredRatedItems.length > 0" class="rated-items-list">
           <div v-for="(item, index) in filteredRatedItems" :key="index" class="rated-item">
             <img :src="item.details.posterForDb" class="rated-item-poster" :alt="item.details.nameForDb">
             <div class="rated-item-info">
@@ -120,8 +124,14 @@
 
 <script>
 
+import Loader from '@/components/Loader';
+
 export default {
   name: 'RatedModal',
+
+  components: {
+    Loader
+  },
   
   data() {
     return {
@@ -147,7 +157,8 @@ export default {
       currentRatingItem: null,
       selectedRating: 0,
       hoverRating: 0,
-      userReview: ''
+      userReview: '',
+      loading: false
     };
   },
   
@@ -186,6 +197,7 @@ export default {
     },
     
     async fetchRatedItems() {
+      this.loading = true;
       try {
         const response = await fetch(`${this.tursoBackendUrl}/favorites/${this.userEmail}`);
         
@@ -262,6 +274,8 @@ export default {
         this.tvFetched = tvFetched;
       } catch (error) {
         console.error('Error fetching rated items:', error);
+      } finally {
+        this.loading = false;
       }
     },
     
@@ -805,6 +819,14 @@ export default {
   flex: 1;
   max-width: 120px;
   text-align: center;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 70vh;
 }
 
 .remove-rating-btn:hover {
