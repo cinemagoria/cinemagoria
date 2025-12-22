@@ -151,7 +151,7 @@ export default {
   letter-spacing: $letter-spacing;
 
   strong {
-    color: #8BE9FD;
+    color: $cyan-color;
   }
 }
 

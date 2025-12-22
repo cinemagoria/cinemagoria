@@ -26,7 +26,6 @@
     <template v-if="activeMenu === 'photos' && showImages">
       <Images v-if="item.images.backdrops.length" title="Backdrops" type="backdrop" :images="item.images.backdrops" />
       <Images v-if="item.images.posters.length" title="Posters" type="poster" :images="item.images.posters" />
-      <Images v-if="item.images.posters.length" title="Posters" type="poster" :images="item.images.posters" />
     </template>
 
     <template v-if="activeMenu === 'ost' && showSoundtracks">
@@ -148,17 +147,16 @@ const createMenu = () => {
 
 watch(item, async () => {
   if (item.value && item.value.id) {
-    createMenu();
     try {
       const query = item.value.original_title || item.value.title;
       if (query) {
         const results = await searchSoundtracks(query, yearStart.value);
         soundtrackItems.value = results;
-        createMenu();
       }
     } catch (e) {
       console.error(e);
     }
+    createMenu();
   }
 }, { immediate: true });
 
