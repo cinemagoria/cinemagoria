@@ -7,7 +7,7 @@
       <div :class="$style.backdrop">
         <div>
           <button
-            v-if="trailer"
+            v-if="trailer && !isLoading"
             :class="$style.play"
             type="button"
             aria-label="Play Trailer"
@@ -875,6 +875,7 @@ export default {
 
 .hero {
   display: flex;
+  position: relative;
   flex-direction: column;
   justify-content: space-between;
   height: 52rem;

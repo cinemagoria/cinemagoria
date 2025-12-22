@@ -8,6 +8,7 @@
           </div>
           <img
             v-if="poster"
+            ref="posterImage"
             :src="poster"
             loading="lazy"
             :alt="name"
@@ -299,6 +300,7 @@ export default {
     item: {
       immediate: true,
       handler() {
+        this.isPosterLoading = true;
         this.resetTabs();
         this.fetchSecondaryData();
         this.fetchProviders();
@@ -324,7 +326,17 @@ export default {
     this.reviews = this.reviewsProp || [];
   },
 
+  mounted() {
+    this.checkImageLoaded();
+  },
+
   methods: {
+    checkImageLoaded() {
+      const img = this.$refs.posterImage;
+      if (img && img.complete && img.naturalHeight !== 0) {
+        this.onPosterLoaded();
+      }
+    },
     handleImageError(e) {
       e.target.src = '/image_not_found_yet_es.webp';
       this.isPosterLoading = false;
