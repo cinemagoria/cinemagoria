@@ -94,18 +94,12 @@
 
 export default {
   name: 'UserNav',
-  // ...
   methods: {
-    // We need to initialize supabase carefully or use it as needed.
-    // For legacy components, we can call it inside methods.
   },
   setup() {
     const supabase = useSupabaseClient()
     return { supabase }
   },
-  // OR simply replace usage in the code. 
-  // Wait, these are Options API components. They likely use `supabase` in mounted/methods.
-  // The safest way for "Blitz" is to attach it to 'this' or call it.
   
   data() {
     return {

@@ -31,10 +31,10 @@
               allowfullscreen />
 
             <img
-              v-if="type === 'image'"
-              :src="data.src"
+              v-if="type === 'image' && activeItem"
+              :src="activeItem.src"
               loading="lazy"
-              :alt="data.name">
+              :alt="activeItem.name">
           </div>
 
           <div

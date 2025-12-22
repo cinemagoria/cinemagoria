@@ -1,6 +1,5 @@
 import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants';
 
-// Shim Axios to use $fetch for Nuxt 4 compatibility (SSR safe)
 const axios = {
     get: async (url, config = {}) => {
         try {
@@ -9,12 +8,10 @@ const axios = {
                 params: config.params,
                 headers: config.headers,
                 timeout: config.timeout,
-                ignoreResponseError: true // handle status codes manually if needed, or let fetch throw
+                ignoreResponseError: true
             });
-            // $fetch returns the body directly. Axios expects response.data.
             return { data: response, status: 200, statusText: 'OK' };
         } catch (error) {
-            // Mimic axios error structure
             throw {
                 response: {
                     data: error.data,
@@ -43,7 +40,6 @@ const axios = {
     }
 };
 
-// Helper to access runtime config or fall back to process.env (for client/server consistency)
 const getEnv = (key) => {
     try {
         const config = useRuntimeConfig().public;
@@ -293,7 +289,6 @@ export function getIMDbRatingFromDB(imdbId) {
     });
 }
 
-// Fixed env variable access
 async function enrichWithIMDbRating(item) {
     if (!item.imdb_id && !item.external_ids?.imdb_id) {
         item.rating_source = 'tmdb';
@@ -702,7 +697,6 @@ export function getTvShowReviews(id) {
     });
 };
 
-// Replaced XMLHttpRequest with axios to support SSR
 export function getTraktReviews(id, type) {
     return new Promise((resolve, reject) => {
         const endpoint = type === 'movie' ? 'movies' : 'shows';
@@ -721,7 +715,6 @@ export function getTraktReviews(id, type) {
                 'trakt-api-key': clientId
             }
         }).then(response => {
-            // Axios shim returns { data: body }
             const reviews = response.data;
             if (reviews && reviews.length > 0) {
                 const reviewsData = reviews.map(review => {
@@ -1036,7 +1029,6 @@ export function getMDBListRatings(imdbId, type) {
         const apiKey = getEnv('MDBLIST_API');
 
         if (!apiKey) {
-            // console.warn('MDBLIST API Key missing');
             resolve({ found: false });
             return;
         }
@@ -1261,7 +1253,6 @@ export async function enrichTVShowWithIMDbRating(item) {
 const FOLLOWS_API_URL = 'https://entercinema-follows-rust.vercel.app';
 
 export async function followProductionCompany(userEmail, companyId, companyName, logoPath, originCountry) {
-    // Using direct $fetch since it's a simple POST
     const response = await $fetch(`${FOLLOWS_API_URL}/company-follows/add`, {
         method: 'POST',
         body: {

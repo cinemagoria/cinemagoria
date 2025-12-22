@@ -9,7 +9,6 @@ export type Json =
 export interface Database {
     public: {
         Tables: {
-            // Add your tables here if needed for typed Supabase client
         }
         Views: {
         }

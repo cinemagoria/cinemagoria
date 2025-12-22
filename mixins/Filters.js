@@ -68,7 +68,6 @@ export default {
             return `${date} ${months[dateArray[1] - 1]} ${dateArray[0]}`;
         },
 
-        // Note: fullLang requires 'languages' from api. Handling simplified version or ignoring for now to avoid dependency cycle if not critical.
         fullLang(iso) {
             return iso;
         }
