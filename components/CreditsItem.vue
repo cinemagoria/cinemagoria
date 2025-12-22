@@ -4,17 +4,25 @@
       class="credits-item__link"
       :to="{ name: 'person-id', params: { id: person.id } }">
       <div class="credits-item__img">
+        <div v-if="isLoading" class="credits-item-loader">
+          <Loader :size="30" />
+        </div>
         <img
           v-if="poster"
           :src="poster"
           loading="lazy"
-          :alt="person.name">
+          :alt="person.name"
+          :style="{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }"
+          @load="onImageLoaded"
+          @error="onImageLoaded">
 
         <img
           v-else
           src="/image_not_found_yet.webp"
           alt="Image not found"
-          style="width: 100%; height: 100%; object-fit: cover;">
+          style="width: 100%; height: 100%; object-fit: cover;"
+          @load="onImageLoaded"
+          @error="onImageLoaded">
       </div>
 
       
@@ -32,12 +40,34 @@
 
 <script>
 import { apiImgUrl } from '~/utils/api';
+import Loader from '~/components/Loader.vue';
 
 export default {
+  components: {
+    Loader,
+  },
   props: {
     person: {
       type: Object,
       required: true,
+    },
+  },
+
+  data() {
+    return {
+      isLoading: true,
+    };
+  },
+
+  mounted() {
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 5000);
+  },
+
+  methods: {
+    onImageLoaded() {
+      this.isLoading = false;
     },
   },
 
@@ -68,8 +98,8 @@ export default {
 .credits-item__img {
   position: relative;
   height: 0;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
   padding-top: 150.27%;
   overflow: hidden;
   background-color: $secondary-color;
@@ -82,7 +112,8 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    transform: scale(0.97);
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
   }
 
   .card-background {
@@ -102,6 +133,19 @@ export default {
   &.lazyloaded img {
     transform: scale(1);
   }
+}
+
+.credits-item-loader {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  background-color: $secondary-color;
+  z-index: 2;
 }
 
 .credits-item__name {
