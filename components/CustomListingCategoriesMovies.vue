@@ -20,10 +20,19 @@
         <div ref="carouselElement" class="carousel__items" @scroll="scrollEvent">
           <div v-for="(category, index) in categories" :key="`category-${index}`" class="card" @click="redirectToRoute(category.link)">
             <div class="card__image">
-                <img :src="category.image" :alt="category.alt">
+                <div v-if="loadingStates[index]" class="card-loader">
+                    <Loader :size="40" />
+                </div>
+                <img 
+                    :src="category.image" 
+                    :alt="category.alt"
+                    loading="lazy"
+                    :style="{ opacity: loadingStates[index] ? 0 : 1, transition: 'opacity 0.5s ease' }"
+                    @load="onImageLoad(index)"
+                    @error="onImageLoad(index)">
             </div>
   
-            <div class="card__info">
+            <div v-if="!loadingStates[index]" class="card__info">
             <h2 class="card__label">
                 <a @click.prevent="redirectToRoute(category.link)" class="category-link">{{ category.alt }}</a>
             </h2>
@@ -46,11 +55,16 @@
   
   <script>
   import carousel from '~/mixins/Carousel';
+  import Loader from '~/components/Loader.vue';
   
   export default {
     name: 'CustomListingCategoriesMovies',
   
     mixins: [carousel],
+
+    components: {
+      Loader,
+    },
 
     props: {
       title: {
@@ -69,8 +83,7 @@
     },
   
     data() {
-      return {
-        categories: [
+      const categories = [
           { image: "/thumbnails/drama-tv-eng.webp", link: "/genre/18/movie", alt: "Drama" },
           { image: "/thumbnails/comedy-movie-eng.webp", link: "/genre/35/movie", alt: "Comedy" },
           { image: "/thumbnails/action-movie-eng.webp", link: "/genre/28/movie", alt: "Action" },
@@ -83,7 +96,10 @@
           { image: "/thumbnails/documentary-movie-eng.webp", link: "/genre/99/movie", alt: "Documentary" },
           { image: "/thumbnails/animation-movie-eng.webp", link: "/genre/16/movie", alt: "Animation" },
           { image: "/thumbnails/mistery-movie-eng.webp", link: "/genre/9648/movie", alt: "Mistery" }
-        ],
+      ];
+      return {
+        loadingStates: new Array(categories.length).fill(true),
+        categories,
       };
     },
   
@@ -95,6 +111,9 @@
       redirectToRoute(route) {
         this.$router.push({ path: route });
       },
+      onImageLoad(index) {
+        this.loadingStates[index] = false;
+      }
     },
   };
 </script>
@@ -214,5 +233,18 @@
         mix-blend-mode: hard-light;
         opacity: 0.6;
         pointer-events: none;
+    }
+
+    .card-loader {
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        background-color: #0000004e;
+        z-index: 2;
     }
 </style>

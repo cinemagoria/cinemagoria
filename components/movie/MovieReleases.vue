@@ -18,7 +18,12 @@
           :class="$style.releaseCard">
 
           <div :class="$style.countryHeader">
-            <span :class="$style.flag">{{ getCountryFlag(release.country) }}</span>
+            <img 
+              :src="getCountryFlag(release.country)" 
+              :alt="release.country" 
+              :class="$style.flagIcon"
+              loading="lazy"
+            >
             <span :class="$style.countryName">{{ getCountryName(release.country) }}</span>
           </div>
 
@@ -377,11 +382,7 @@ export default {
       }
     },
     getCountryFlag(countryCode) {
-      const codePoints = countryCode
-        .toUpperCase()
-        .split('')
-        .map(char => 127397 + char.charCodeAt());
-      return String.fromCodePoint(...codePoints);
+      return `https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`;
     },
     getCountryName(countryCode) {
       return this.countryNames[countryCode] || countryCode;
@@ -461,9 +462,13 @@ export default {
   background: rgba(255, 255, 255, 0.05);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-.flag {
-  font-size: 2.4rem;
-  line-height: 1;
+.flagIcon {
+  width: 24px;
+  height: 17px;
+  object-fit: cover;
+  border-radius: 2px;
+  display: block;
+  box-shadow: 0 0 1px rgba(0,0,0,0.5);
 }
 .countryName {
   font-size: 1.6rem;
