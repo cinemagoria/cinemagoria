@@ -71,16 +71,13 @@ useHead({
   title: 'EnterCinema - Movies',
   meta: [
     { property: 'og:title', content: 'Movies' },
-    // Note: process.env.FRONTEND_URL might need runtimeConfig replacement
     { property: 'og:url', content: `https://es.entercinema.com${route.path}` },
   ],
 });
 
-// Data
 const followedMovies = ref(null);
-const ratedItemsModalVisible = ref(false); // Was missing in original data but referenced in method
+const ratedItemsModalVisible = ref(false);
 
-// Async Data Fetching
 const { data: moviesData } = await useAsyncData('movies-home', async () => {
     try {
         const [popular, topRated, upcoming, nowPlaying] = await Promise.all([
@@ -101,8 +98,6 @@ const topRated = computed(() => moviesData.value?.topRated);
 const upcoming = computed(() => moviesData.value?.upcoming);
 const nowPlaying = computed(() => moviesData.value?.nowPlaying);
 
-
-// Computed Props for Titles/URLs
 const popularTitle = computed(() => getListItem('movie', 'popular').title);
 const popularUrl = computed(() => ({ name: 'movie-category-name', params: { name: 'popular' } }));
 
@@ -116,7 +111,6 @@ const nowPlayingTitle = computed(() => getListItem('movie', 'now_playing').title
 const nowPlayingUrl = computed(() => ({ name: 'movie-category-name', params: { name: 'now_playing' } }));
 
 
-// Methods
 const navigateToTvShows = () => {
   router.push({ name: 'tv' });
 };

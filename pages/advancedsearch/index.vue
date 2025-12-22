@@ -261,7 +261,6 @@
 <script>
   import UserNav from '@/components/global/UserNav';
   import DynamicSearchCarousel from '@/components/DynamicSearchCarousel.vue';
-  // import '@/assets/css/components/_datepicker.scss';
   
   async function getUserAvatar(userEmail) {
     try {

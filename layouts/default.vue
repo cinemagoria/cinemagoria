@@ -33,8 +33,6 @@ import RatedModal from '~/components/global/RatedModal.vue'
 import FollowingModal from '~/components/global/FollowingModal.vue'
 import QuickFavModal from '~/components/global/QuickFavModal.vue'
 
-// Event Bus listeners for global modals if needed
-// Providing global access if necessary
 </script>
 
 <style lang="scss" scoped>

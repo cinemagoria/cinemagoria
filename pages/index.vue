@@ -40,7 +40,6 @@ const showRatedItems = () => {
   ratedItemsModalVisible.value = true;
 };
 
-// Async Data Fetching
 const { data: pageData, error: pageError } = await useAsyncData('homepage', async () => {
   try {
     const trendingMovies = await getTrending('movie');
@@ -59,7 +58,6 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
       });
     };
     
-    // Check if results exist before filtering
     if (trendingMovies?.results) {
         trendingMovies.results = filterRecentYears(trendingMovies.results);
     }

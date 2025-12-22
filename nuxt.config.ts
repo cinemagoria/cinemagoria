@@ -29,12 +29,10 @@ export default defineNuxtConfig({
   ],
 
   runtimeConfig: {
-    // Private keys (server-side only)
     imdbDbUrl: process.env.IMDB_DB_URL,
     imdbDbToken: process.env.IMDB_DB_TOKEN,
     traktClientSecret: process.env.TRAKT_CLIENT_SECRET,
 
-    // Public keys (exposed to client)
     public: {
       frontendUrl: process.env.FRONTEND_URL || "https://es.entercinema.com",
       apiUrl: process.env.API_URL || "https://entercinema-drf.vercel.app",
@@ -66,7 +64,6 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-        // Add Google Fonts if strictly needed, otherwise Nuxt Fonts is better
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500' }
       ],
     }

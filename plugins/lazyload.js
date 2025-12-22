@@ -12,7 +12,6 @@ export default defineNuxtPlugin((nuxtApp) => {
             }
         },
         getSSRProps(binding, vnode) {
-            // Check if binding.value is truthy to avoid setting empty src
             return binding.value ? { src: binding.value } : {}
         }
     })

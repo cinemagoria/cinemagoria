@@ -140,14 +140,12 @@ export default {
     },
     formatDate(dateString) {
       if (!dateString) return '';
-      // Create date from string to handle timezone correctly or just use UTC if needed.
-      // Assuming existing behavior is fine with local time interpretation.
       const date = new Date(dateString);
       return date.toLocaleDateString('es-ES', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
-      }); // This typically produces "19 de diciembre de 2025" in es-ES
+      });
     }
   }
 };

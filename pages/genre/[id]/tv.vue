@@ -22,7 +22,6 @@ import Listing from '~/components/Listing';
 const route = useRoute();
 const loading = ref(false);
 
-// Async Data Fetching
 const { data: pageData, error } = await useAsyncData(`genre-tv-${route.params.id}`, async () => {
   try {
     const items = await getMediaByGenre('tv', route.params.id);
@@ -42,7 +41,6 @@ const { data: pageData, error } = await useAsyncData(`genre-tv-${route.params.id
 const items = computed(() => pageData.value?.items || null);
 const genre = computed(() => pageData.value?.genre || null);
 
-// Computed Properties
 const title = computed(() => {
   if (genre.value) {
     return `Género de Serie: ${genre.value.name}`;
@@ -53,7 +51,6 @@ const title = computed(() => {
 
 const metaTitle = computed(() => title.value);
 
-// Methods
 const loadMore = () => {
   if (!items.value) return;
 
@@ -70,7 +67,6 @@ const loadMore = () => {
   });
 };
 
-// Head Management
 const config = useRuntimeConfig();
 
 useHead({

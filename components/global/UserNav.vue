@@ -94,10 +94,7 @@
 
 export default {
   name: 'UserNav',
-  // ...
   methods: {
-    // We need to initialize supabase carefully or use it as needed.
-    // For legacy components, we can call it inside methods.
   },
   setup() {
     const supabase = useSupabaseClient()

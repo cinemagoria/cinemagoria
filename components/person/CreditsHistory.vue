@@ -258,7 +258,7 @@ export default {
         'Art': 'Arte',
         'Costume & Make-Up': 'Vestuario y Maquillaje',
         'Lighting': 'Iluminación',
-        'Loader': 'Cargador', // Rare but possible
+        'Loader': 'Cargador',
         'Actors': 'Actuación',
         'Directors': 'Dirección',
         'Writers': 'Guion',

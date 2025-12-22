@@ -72,7 +72,6 @@ export default {
       isFavorite: false,
       hasAccessToken: false,
       userEmail: '',
-      // tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://entercinema-favorites.vercel.app/api', // Moving to computed
       nameForDb: null,
       starsForDb: null,
       posterForDb: null,
@@ -139,7 +138,7 @@ export default {
         const moviesFetched = [];
         const tvFetched = [];
 
-        if (data.favorites_json && data.favorites_json.movies) { // Added safety check
+        if (data.favorites_json && data.favorites_json.movies) {
           data.favorites_json.movies.forEach(movie => {
             moviesFetched.push(Object.keys(movie)[0]);
           });

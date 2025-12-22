@@ -1,6 +1,9 @@
 <template>
   <div>
     <div :class="$style.hero">
+      <div v-if="isLoading" class="hero-loader">
+        <Loader :size="60" />
+      </div>
       <div :class="$style.backdrop">
         <div>
           <button
@@ -14,10 +17,14 @@
 
           <img
             v-if="backdrop"
+            ref="backdropRef"
             :src="backdrop"
-            loading="lazy"
+            loading="eager"
             :class="$style.image"
-            :alt="name">
+            :alt="name"
+            :style="{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }"
+            @load="onBackdropLoaded"
+            @error="onBackdropLoaded">
         </div>
       </div>
       <div :class="$style.pane">
@@ -293,10 +300,12 @@
 import { name, stars, yearStart, yearEnd, cert, backdrop, poster, trailer, id, genres, type, runtime } from '~/mixins/Details';
 import Filters from '~/mixins/Filters';
 import Modal from '~/components/Modal';
+import Loader from '~/components/Loader.vue';
 
 export default {
   components: {
     Modal,
+    Loader,
   },
 
   mixins: [
@@ -324,6 +333,7 @@ export default {
 
   data() {
     return {
+      isLoading: true,
       isSingle: this.item.id === this.$route.params.id,
       copySuccess: false,
       ratingModalVisible: false,
@@ -381,6 +391,23 @@ export default {
   },
 
   async mounted() {
+    this.checkIfFavorite();
+    this.checkUserRating();
+
+    if (!this.backdrop) {
+      this.isLoading = false;
+    } else {
+      this.$nextTick(() => {
+        if (this.$refs.backdropRef && this.$refs.backdropRef.complete) {
+          this.isLoading = false;
+        }
+      });
+    }
+    
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 10000);
+
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');
     this.userEmail = email || '';
@@ -405,6 +432,10 @@ export default {
   },
 
   methods: {
+    onBackdropLoaded() {
+      this.isLoading = false;
+    },
+
     openModal() {
       if (this.trailer && this.trailer[0]) {
         const videoId = this.trailer[0].src.match(/embed\/([^?]+)/)[1];
@@ -1666,5 +1697,20 @@ export default {
   .review-textarea {
     font-size: 1.2rem;
   }
+}
+</style>
+
+<style scoped>
+.hero-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.307);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

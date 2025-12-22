@@ -63,13 +63,11 @@ const route = useRoute();
 const config = useRuntimeConfig();
 const { $bus } = useNuxtApp();
 
-// State
 const moviesLoading = ref(false);
 const tvShowsLoading = ref(false);
 const activeTab = ref('movies');
 const showRatedItems = ref(false);
 
-// Logic to determine Company ID from Slug
 const slug = route.params.slug;
 let companyId = null;
 const companyInfo = getProductionCompanyBySlug(slug);
@@ -84,7 +82,6 @@ if (!companyId) {
   throw createError({ statusCode: 404, message: 'Production company not found' });
 }
 
-// Async Data Fetching using useAsyncData
 const { data: asyncDataResult, error } = await useAsyncData(`production-${companyId}`, async () => {
   const [moviesData, tvShowsData, companyDetails] = await Promise.all([
     getMoviesByProductionCompany(companyId, 1),
@@ -104,12 +101,9 @@ if (error.value) {
   throw createError({ statusCode: 500, message: 'Error loading production company data' });
 }
 
-// Destructure data (reactive)
 const movies = ref(asyncDataResult.value?.movies || {});
 const tvShows = ref(asyncDataResult.value?.tvShows || {});
 const company = ref(asyncDataResult.value?.company || {});
-
-// Computed Properties
 const metaTitle = computed(() => {
   return company.value && company.value.name ? `${company.value.name} - Productora` : 'Productora';
 });
@@ -121,7 +115,6 @@ const heroBackdrop = computed(() => {
   return null;
 });
 
-// Meta Tags (SEO)
 useHead({
   title: metaTitle,
   meta: [
@@ -133,7 +126,6 @@ useHead({
   },
 });
 
-// Methods
 const handleShowRatedModal = () => {
   showRatedItems.value = true;
 };
@@ -180,7 +172,6 @@ const loadMoreTVShows = () => {
     });
 };
 
-// Lifecycle
 onMounted(() => {
   if ($bus && $bus.$on) {
     $bus.$on('show-rated-modal', handleShowRatedModal);
