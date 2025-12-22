@@ -93,7 +93,7 @@
                     style="cursor: pointer; text-decoration: underline; text-decoration-color: rgba(139, 233, 253, 0.3);">
                     {{ notification.person_name }}
                   </strong>
-                  <span class="has-release">has a new release </span>
+                  <span class="has-release"> has a new release </span>
                 </div>
                 <div 
                   class="notification-media" 
@@ -1475,7 +1475,7 @@ button {
   .notification-overview {
     grid-column: 2;
     grid-row: 5;
-    margin-top: 0;
+    margin-top: 1.5rem;
   }
   
   .media-badge {
