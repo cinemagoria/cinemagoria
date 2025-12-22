@@ -352,15 +352,46 @@ export function getMovies(query, page = 1) {
 
 export function getMovie(id) {
     return new Promise((resolve, reject) => {
-        axios.get(`${apiUrl}/movie/${id}`, {
+        const mainRequest = axios.get(`${apiUrl}/movie/${id}`, {
             params: {
                 api_key: getEnv('API_KEY'),
                 language: getEnv('API_LANG'),
                 append_to_response: 'videos,credits,images,external_ids,release_dates',
-                include_image_language: 'es',
+                include_image_language: 'es,en,null',
             },
-        }).then(async (response) => {
+        });
+
+        const extraVideosRequest = axios.get(`${apiUrl}/movie/${id}/videos`, {
+            params: {
+                api_key: getEnv('API_KEY'),
+                language: 'en-US'
+            }
+        }).catch(() => ({ data: { results: [] } }));
+
+        Promise.all([mainRequest, extraVideosRequest]).then(async ([response, videoResponse]) => {
             const responseData = response.data;
+
+            if (videoResponse.data && videoResponse.data.results) {
+                const currentIds = new Set((responseData.videos.results || []).map(v => v.id));
+                const newVideos = videoResponse.data.results.filter(v => !currentIds.has(v.id));
+                responseData.videos = {
+                    ...responseData.videos,
+                    results: [...(responseData.videos.results || []), ...newVideos]
+                };
+            }
+
+            const sortImages = (imgs) => {
+                if (!imgs) return [];
+                return imgs.sort((a, b) => {
+                    const score = (lang) => (lang === 'es' || lang === 'es-ES') ? 2 : (lang === null ? 1 : 0);
+                    return score(b.iso_639_1) - score(a.iso_639_1);
+                });
+            };
+
+            if (responseData.images) {
+                if (responseData.images.backdrops) responseData.images.backdrops = sortImages(responseData.images.backdrops);
+                if (responseData.images.posters) responseData.images.posters = sortImages(responseData.images.posters);
+            }
             const [providersResult, reviewsResult] = await Promise.allSettled([
                 getMovieProviders(id),
                 getMovieReviews(id)
@@ -613,15 +644,46 @@ export function getTvShows(query, page = 1) {
 
 export function getTvShow(id) {
     return new Promise((resolve, reject) => {
-        axios.get(`${apiUrl}/tv/${id}`, {
+        const mainRequest = axios.get(`${apiUrl}/tv/${id}`, {
             params: {
                 api_key: getEnv('API_KEY'),
                 language: getEnv('API_LANG'),
                 append_to_response: 'videos,credits,images,external_ids,content_ratings',
-                include_image_language: 'es',
+                include_image_language: 'es,en,null',
             },
-        }).then(async (response) => {
+        });
+
+        const extraVideosRequest = axios.get(`${apiUrl}/tv/${id}/videos`, {
+            params: {
+                api_key: getEnv('API_KEY'),
+                language: 'en-US'
+            }
+        }).catch(() => ({ data: { results: [] } }));
+
+        Promise.all([mainRequest, extraVideosRequest]).then(async ([response, videoResponse]) => {
             const responseData = response.data;
+
+            if (videoResponse.data && videoResponse.data.results) {
+                const currentIds = new Set((responseData.videos.results || []).map(v => v.id));
+                const newVideos = videoResponse.data.results.filter(v => !currentIds.has(v.id));
+                responseData.videos = {
+                    ...responseData.videos,
+                    results: [...(responseData.videos.results || []), ...newVideos]
+                };
+            }
+
+            const sortImages = (imgs) => {
+                if (!imgs) return [];
+                return imgs.sort((a, b) => {
+                    const score = (lang) => (lang === 'es' || lang === 'es-ES') ? 2 : (lang === null ? 1 : 0);
+                    return score(b.iso_639_1) - score(a.iso_639_1);
+                });
+            };
+
+            if (responseData.images) {
+                if (responseData.images.backdrops) responseData.images.backdrops = sortImages(responseData.images.backdrops);
+                if (responseData.images.posters) responseData.images.posters = sortImages(responseData.images.posters);
+            }
             try {
                 const providers = await getTVShowProviders(id);
                 responseData.providers = providers;

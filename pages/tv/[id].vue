@@ -26,6 +26,11 @@
     <template v-if="activeMenu === 'fotos' && showImages">
       <Images v-if="item.images.backdrops.length" title="Fondos" type="backdrop" :images="item.images.backdrops" />
       <Images v-if="item.images.posters.length" title="Pósters" type="poster" :images="item.images.posters" />
+      <Images v-if="item.images.posters.length" title="Pósters" type="poster" :images="item.images.posters" />
+    </template>
+
+    <template v-if="activeMenu === 'bso' && showSoundtracks">
+      <SoundtrackList :items="soundtrackItems" />
     </template>
   </main>
 </template>
@@ -43,6 +48,8 @@ import Videos from '~/components/Videos.vue';
 import Images from '~/components/Images.vue';
 import Credits from '~/components/Credits.vue';
 import Episodes from '~/components/tv/Episodes.vue';
+import SoundtrackList from '~/components/music/SoundtrackList.vue';
+import { searchSoundtracks } from '~/utils/musicbrainz';
 
 const route = useRoute();
 const router = useRouter();
@@ -59,6 +66,8 @@ const ratedItemsModalVisible = ref(false);
 const activeMenu = ref('sinopsis');
 const menu = ref([]);
 const reviews = ref(null);
+const soundtrackItems = ref([]);
+
 const { data: tvData, error } = await useAsyncData(`tv-${route.params.id}`, async () => {
   try {
     const item = await getTvShow(route.params.id);
@@ -135,18 +144,33 @@ const showImages = computed(() => {
   return images && ((images.backdrops && images.backdrops.length) || (images.posters && images.posters.length));
 });
 
+const showSoundtracks = computed(() => {
+  return soundtrackItems.value && soundtrackItems.value.length > 0;
+});
+
 const createMenu = () => {
   const m = [];
   m.push('Sinopsis');
   if (showEpisodes.value) m.push('Episodios');
+  if (showSoundtracks.value) m.push('BSO');
   if (showVideos.value) m.push('Videos');
   if (showImages.value) m.push('Fotos');
   menu.value = m;
 };
 
-watch(item, () => {
+watch(item, async () => {
   if (item.value && item.value.id) {
     createMenu();
+    try {
+      const query = item.value.original_name || item.value.name;
+      if (query) {
+        const results = await searchSoundtracks(query, yearStart.value);
+        soundtrackItems.value = results;
+        createMenu(); 
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }
 }, { immediate: true });
 
