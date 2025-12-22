@@ -238,6 +238,23 @@ export default {
         return 0;
       });
     },
+
+    formatDepartment (name) {
+      if (name === 'Acting') return 'Acting';
+      if (name === 'Production') return 'Production';
+      if (name === 'Directing') return 'Directing';
+      if (name === 'Writing') return 'Writing';
+      if (name === 'Creator') return 'Creator';
+      if (name === 'Crew') return 'Crew';
+      if (name === 'Visual Effects') return 'Visual Effects';
+      if (name === 'Sound') return 'Sound';
+      if (name === 'Editing') return 'Editing';
+      if (name === 'Art') return 'Art';
+      if (name === 'Costume & Make-Up') return 'Costume & Make-Up';
+      if (name === 'Camera') return 'Camera';
+      if (name === 'Lighting') return 'Lighting';
+      return name;
+    },
   },
 };
 </script>
