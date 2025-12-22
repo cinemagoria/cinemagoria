@@ -6,8 +6,8 @@ export default defineNuxtConfig({
     '~/api': fileURLToPath(new URL('./utils/api.js', import.meta.url))
   },
   compatibilityDate: '2024-11-01',
-  devtools: { enabled: true },
-  debug: true,
+  devtools: { enabled: false },
+  debug: false,
 
   modules: [
     '@pinia/nuxt',
