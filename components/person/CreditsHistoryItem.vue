@@ -1,36 +1,26 @@
 <template>
-  <tr :class="$style.item">
-    <td :class="$style.year">
-      {{ year ? year : '—' }}
-    </td>
-    <td>
-      <nuxt-link :to="{ name: `${media}-id`, params: { id: credit.id } }">
-        <strong>{{ name }}</strong>
+  <div :class="$style.item">
+    <nuxt-link :to="{ name: `${media}-id`, params: { id: credit.id } }" :class="$style.link">
+      <strong :class="$style.cyan">{{ name }}</strong>
 
-        <span
-          v-if="episodes"
-          :class="$style.episodes">
-          {{ episodes }}
-        </span>
+      <span
+        v-if="episodes"
+        :class="$style.episodes">
+        {{ episodes }}
+      </span>
 
-        <span
-          v-if="role"
-          :class="$style.role">
-          {{ role }}
-        </span>
-      </nuxt-link>
-    </td>
-  </tr>
+      <span
+        v-if="role"
+        :class="$style.role">
+        {{ role.prefix }}<span :class="$style.character">{{ role.character }}</span>
+      </span>
+    </nuxt-link>
+  </div>
 </template>
 
 <script>
 export default {
   props: {
-    year: {
-      type: String,
-      required: true,
-    },
-
     credit: {
       type: Object,
       required: true,
@@ -57,9 +47,9 @@ export default {
       const job = this.credit.job;
 
       if (character) {
-        return ` como ${character}`;
+        return { prefix: ' como ', character };
       } else if (job) {
-        return ` como ${job}`;
+        return { prefix: ' como ', character: job };
       } else {
         return false;
       }
@@ -87,18 +77,26 @@ export default {
 
 .item {
   font-size: 1.5rem;
+  line-height: 1.5;
 
   @media (min-width: $breakpoint-large) {
     font-size: 1.6rem;
   }
+}
 
-  td {
-    padding: 1rem 2rem;
+.link {
+  display: block;
+  text-decoration: none;
+  
+  &:hover {
+    strong {
+      text-decoration: underline;
+    }
   }
 }
 
-.year {
-  width: 8rem;
+.cyan {
+  color: #8BE9FD;
 }
 
 .episodes {
@@ -106,6 +104,10 @@ export default {
 }
 
 .role {
-  color: rgba(255, 255, 255, 0.8);
+  color: #999;
+}
+
+.character {
+  color: #fff;
 }
 </style>
