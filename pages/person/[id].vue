@@ -7,9 +7,11 @@
     <PersonInfo
       :person="person" />
 
-    <MediaNav
-      :menu="menu"
-      @clicked="navClicked" />
+    <div class="spacing">
+      <MediaNav
+        :menu="menu"
+        @clicked="navClicked" />
+    </div>
 
     <template v-if="activeMenu === 'conocido-por'">
       <div class="spacing content-container">
