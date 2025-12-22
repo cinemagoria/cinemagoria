@@ -5,19 +5,29 @@
       :to="item.media_type === 'production' ? { name: 'production-slug', params: { slug: item.slug } } : { name: `${media}-id`, params: { id: item.id } }">
       <div class="card__img">
         <QuickFav v-if="media !== 'production' && media !== 'person'" :item="item" />
+        
+        <div v-if="isLoading" class="card-loader">
+          <Loader :size="40" />
+        </div>
+
         <img
           v-if="poster"
           :src="poster"
           loading="lazy"
           :class="{ 'card__img--logo': media === 'production' }"
-          :alt="name">
+          :alt="name"
+          :style="{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }"
+          @load="onImageLoaded"
+          @error="onImageLoaded">
 
         <img
           v-else
           src="/image_not_found_yet_es.webp"
           alt="Imagen no encontrada"
           class="card__img--poster"
-          style="width: 100%; height: 100%; object-fit: cover;">
+          style="width: 100%; height: 100%; object-fit: cover;"
+          @load="onImageLoaded"
+          @error="onImageLoaded">
       </div>
 
       <h2 class="card__name">
@@ -52,10 +62,12 @@
 import { apiImgUrl } from '~/utils/api';
 import { name, stars } from '~/mixins/Details';
 import QuickFav from '~/components/global/QuickFav';
+import Loader from '~/components/Loader.vue';
 
 export default {
   components: {
     QuickFav,
+    Loader,
   },
   mixins: [
     name,
@@ -66,6 +78,24 @@ export default {
     item: {
       type: Object,
       required: true,
+    },
+  },
+
+  data() {
+    return {
+      isLoading: true,
+    };
+  },
+
+  mounted() {
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 5000);
+  },
+
+  methods: {
+    onImageLoaded() {
+      this.isLoading = false;
     },
   },
 
@@ -105,6 +135,8 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
   object-fit: cover;
 }
 
@@ -114,5 +146,18 @@ export default {
   background-color: #8BE9FD;
   width: 100%;
   height: 100%;
+}
+
+.card-loader {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a1a1a; 
+  z-index: 2;
 }
 </style>

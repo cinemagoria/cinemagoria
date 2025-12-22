@@ -3,17 +3,24 @@
     <div class="spacing" :class="$style.info">
       <div :class="$style.left">
         <div :class="$style.poster">
+          <div v-if="isPosterLoading" class="poster-loader">
+            <Loader :size="40" />
+          </div>
           <img
             v-if="poster"
             :src="poster"
             loading="lazy"
             :alt="name"
+            :style="{ opacity: isPosterLoading ? 0 : 1, transition: 'opacity 0.5s ease' }"
+            @load="onPosterLoaded"
             @error="handleImageError">
           <img
             v-else
             src="/image_not_found_yet_es.webp"
             alt="Imagen no encontrada"
-            style="width: 100%; height: 100%; object-fit: cover;">
+            style="width: 100%; height: 100%; object-fit: cover;"
+            @load="onPosterLoaded"
+            @error="onPosterLoaded">
         </div>
       </div>
 
@@ -85,16 +92,16 @@
             </button>
         </div>
 
-        <div :class="$style.external">
+        <div v-if="hasExternalLinks" :class="$style.external">
           <ExternalLinks :links="item.external_ids" />
         </div>
 
-        <div :class="$style.watchSection">
-          <WatchOn 
-            :providers="providersToDisplay"
-            :imdb-id="item.external_ids.imdb_id"
-            type="tv" 
-          />
+        <div v-if="providersToDisplay && providersToDisplay.length" :class="$style.watchSection">
+           <WatchOn 
+             :providers="providersToDisplay"
+             :imdb-id="item.external_ids.imdb_id"
+             type="tv" 
+           />
         </div>
 
         <div v-if="isTranslating" :class="$style.translationLoader">
@@ -228,6 +235,7 @@ export default {
 
   data() {
     return {
+      isPosterLoading: true,
       showFullReviews: false,
       reviews: [],
       isFollowingTv: false,
@@ -280,6 +288,10 @@ export default {
     },
     activeTabIndex() {
       return this.availableTabs.findIndex(t => t.key === this.activeTab);
+    },
+    hasExternalLinks() {
+       const links = this.item.external_ids;
+       return links && (links.imdb_id || links.twitter_id || links.instagram_id || links.homepage || links.facebook_id);
     }
   },
 
@@ -315,6 +327,10 @@ export default {
   methods: {
     handleImageError(e) {
       e.target.src = '/image_not_found_yet_es.webp';
+      this.isPosterLoading = false;
+    },
+    onPosterLoaded() {
+      this.isPosterLoading = false;
     },
     fullLang(iso) {
       try {
@@ -337,6 +353,9 @@ export default {
       this.creatorItems = null;
       this.activeTab = null;
       this.isLoadingRecommendations = true;
+    },
+    onPosterLoaded() {
+      this.isPosterLoading = false;
     },
     async fetchSecondaryData() {
       this.isLoadingRecommendations = true;
@@ -506,6 +525,20 @@ export default {
 };
 </script>
 
+<style lang="scss">
+.poster-loader {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+</style>
+
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
 
@@ -529,7 +562,10 @@ export default {
 
 .right {
   padding-top: 1rem;
-  @media (min-width: $breakpoint-medium) { flex: 1; }
+  @media (min-width: $breakpoint-medium) { 
+    flex: 1; 
+    padding-right: 2rem;
+  }
 }
 
 .poster {

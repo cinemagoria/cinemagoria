@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="people && people.length"
-    class="listing listing--carousel">
+    class="listing listing--carousel credits-container">
     <div class="listing__head">
       <h2 class="listing__title">
         Reparto
@@ -72,3 +72,20 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.credits-container {
+  background-color: rgba(0, 0, 0, 0.307);
+  border-radius: 10px;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+}
+
+.listing__head {
+  padding-left: 2rem;
+}
+
+.carousel {
+  padding: 0 1rem;
+}
+</style>

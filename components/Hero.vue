@@ -25,6 +25,15 @@
             :style="{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }"
             @load="onBackdropLoaded"
             @error="onBackdropLoaded">
+          <img
+            v-else
+            src="/no-data-es.webp"
+            loading="eager"
+            :class="$style.image"
+            alt="No Hay Datos"
+            :style="{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }"
+            @load="onBackdropLoaded"
+            @error="onBackdropLoaded">
         </div>
       </div>
       <div :class="$style.pane">
