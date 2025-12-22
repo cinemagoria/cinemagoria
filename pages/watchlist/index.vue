@@ -4003,6 +4003,27 @@ select.user-rating-select {
   gap: 10px;
 }
 
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  color: #acafb5;
+  text-align: center;
+}
+
+.loading-state svg {
+  margin-bottom: 1rem;
+}
+
+.loading-state p {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.749);
+}
+
 .sort-option {
   display: flex;
   align-items: center;
