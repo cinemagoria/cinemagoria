@@ -12,6 +12,7 @@
 
         <img
           v-if="poster"
+          ref="posterImage"
           :src="poster"
           loading="lazy"
           :class="{ 'card__img--logo': media === 'production' }"
@@ -88,12 +89,28 @@ export default {
   },
 
   mounted() {
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 5000);
+    this.checkImageLoaded();
+  },
+
+  watch: {
+    item: {
+      immediate: true,
+      handler() {
+        this.isLoading = true;
+        this.$nextTick(() => {
+           this.checkImageLoaded();
+        });
+      }
+    }
   },
 
   methods: {
+    checkImageLoaded() {
+      const img = this.$refs.posterImage;
+      if (img && img.complete && img.naturalHeight !== 0) {
+        this.onImageLoaded();
+      }
+    },
     onImageLoaded() {
       this.isLoading = false;
     },
@@ -157,7 +174,7 @@ export default {
   height: 100%;
   align-items: center;
   justify-content: center;
-  background-color: #1a1a1a; 
+  background-color: #0000004e;
   z-index: 2;
 }
 </style>
