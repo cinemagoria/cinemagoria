@@ -25,6 +25,7 @@ export default {
 
   data () {
     return {
+      items: null,
       loading: false,
     };
   },
@@ -58,6 +59,20 @@ export default {
       return { items };
     } catch {
       error({ message: 'Page not found' });
+    }
+  },
+
+  async mounted() {
+    if (!this.items) {
+      this.loading = true;
+      try {
+        const name = this.$route.params.name;
+        this.items = name === 'trending' ? await getTrending('movie') : await getMovies(name);
+      } catch (e) {
+        console.error('Error fetching category items:', e);
+      } finally {
+        this.loading = false;
+      }
     }
   },
 
