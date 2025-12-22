@@ -436,7 +436,6 @@ export default {
     if (this.$config && this.$config.public) {
         this.tmdbApiKey = this.$config.public.apiKey;
     } else {
-        // Fallback or try useRuntimeConfig if available
         try {
             const config = useRuntimeConfig();
             this.tmdbApiKey = config.public.apiKey;

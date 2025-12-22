@@ -12,28 +12,43 @@
       @clicked="navClicked" />
 
     <template v-if="activeMenu === 'known-for'">
-      <Listing
-        v-if="knownFor && knownFor.results.length"
-        :items="knownFor" />
+      <div class="spacing content-container">
+        <div v-if="!knownFor" class="translationLoader">
+          <Loader :size="44" />
+        </div>
+        <Listing
+          v-else-if="knownFor && knownFor.results.length"
+          :items="knownFor" />
+      </div>
     </template>
 
     <template v-if="activeMenu === 'credits'">
-      <CreditsHistory
-        :credits="person.combined_credits" />
+      <div class="spacing content-container">
+        <div v-if="loadingCredits" class="translationLoader">
+          <Loader :size="44" />
+        </div>
+        <CreditsHistory
+          v-else
+          :credits="person.combined_credits" />
+      </div>
     </template>
 
     <template v-if="activeMenu === 'photos' && showImages">
-      <Images
-        v-if="person.images.profiles.length"
-        title="Photos"
-        type="poster"
-        :images="person.images.profiles" />
+      <div class="spacing content-container">
+        <div v-if="loadingPhotos" class="translationLoader">
+          <Loader :size="44" />
+        </div>
+        <Images
+          v-else-if="person.images.profiles.length"
+          title="Photos"
+          type="poster"
+          :images="person.images.profiles" />
+      </div>
     </template>
   </main>
 </template>
-
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, watch, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import UserNav from '@/components/global/UserNav.vue';
 import { apiImgUrl, getPerson } from '~/utils/api';
@@ -43,11 +58,11 @@ import MediaNav from '~/components/MediaNav.vue';
 import CreditsHistory from '~/components/person/CreditsHistory.vue';
 import Images from '~/components/Images.vue';
 import Listing from '~/components/Listing.vue';
+import Loader from '~/components/Loader.vue';
 
 const route = useRoute();
 const router = useRouter();
 
-// Methods
 const showRatedItems = () => {
   ratedItemsModalVisible.value = true;
 };
@@ -56,13 +71,13 @@ const navClicked = (label) => {
   activeMenu.value = label;
 };
 
-// Data
 const ratedItemsModalVisible = ref(false);
 const activeMenu = ref('known-for');
 const menu = ref([]);
 const knownFor = ref(null);
+const loadingCredits = ref(false);
+const loadingPhotos = ref(false);
 
-// Async Data
 const { data: personData, error } = await useAsyncData(`person-${route.params.id}`, async () => {
   try {
     const person = await getPerson(route.params.id);
@@ -77,7 +92,6 @@ const { data: personData, error } = await useAsyncData(`person-${route.params.id
 
 const person = computed(() => personData.value?.person || {});
 
-// Computed
 const metaTitle = computed(() => person.value.name || '');
 
 const metaDescription = computed(() => {
@@ -101,7 +115,6 @@ const showImages = computed(() => {
   return images && (images.profiles && images.profiles.length);
 });
 
-// Logic from methods
 const removeDuplicates = (myArr) => {
   return myArr.filter((obj, pos, arr) => {
     const prop = obj.title ? 'title' : 'name';
@@ -117,8 +130,6 @@ const enrichWithIMDbRatings = async (items) => {
       try {
         const mediaType = item.media_type || (item.title ? 'movie' : 'tv');
         
-        // Note: Using process.env.API_KEY. Ensure it's available. 
-        // In Nuxt 3/4 runtime config is preferred but process.env might work if decoupled.
         const config = useRuntimeConfig();
         const apiKey = config.public.apiKey;
         const detailsResponse = await fetch(
@@ -203,16 +214,29 @@ const createMenu = () => {
   menu.value = m;
 };
 
-// Lifecycle
 onMounted(() => {
     createMenu();
     initKnownFor();
 });
 
-// Watch person change if needed (usually handled by route key or asyncData re-run)
+watch(activeMenu, (newVal) => {
+  if (newVal === 'credits') {
+    loadingCredits.value = true;
+    setTimeout(() => {
+      loadingCredits.value = false;
+    }, 500);
+  } else if (newVal === 'photos') {
+    loadingPhotos.value = true;
+    setTimeout(() => {
+      loadingPhotos.value = false;
+    }, 500);
+  }
+});
+
 watch(person, () => {
     if (person.value && person.value.id) {
         createMenu();
+        knownFor.value = null;
         initKnownFor();
     }
 });
@@ -231,3 +255,20 @@ useHead({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.translationLoader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  width: 100%;
+}
+
+.content-container {
+  background-color: rgba(0, 0, 0, 0.307);
+  border-radius: 10px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+</style>

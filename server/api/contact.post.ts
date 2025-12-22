@@ -11,10 +11,6 @@ export default defineEventHandler(async (event) => {
         })
     }
 
-    // Use env directly for nodemailer config as in original
-    // But defineNuxtConfig runtimeConfig is cleaner.
-    // We'll stick to process.env where possible for speed if keys are there.
-
     const transporter = nodemailer.createTransport({
         host: 'smtp.hostinger.com',
         port: 465,

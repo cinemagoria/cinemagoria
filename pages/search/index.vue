@@ -39,15 +39,12 @@ useHead({
   },
 });
 
-// Data
 const loading = ref(false);
 const items = ref(null);
 
-// Computed
 const query = computed(() => route.query.q || '');
 const title = computed(() => query.value ? `Results For: ${query.value}` : '');
 
-// Async Data
 const { data: searchData, refresh } = await useAsyncData(`search-${route.query.q}`, async () => {
   if (route.query.q) {
     try {
@@ -63,11 +60,9 @@ const { data: searchData, refresh } = await useAsyncData(`search-${route.query.q
        return data;
     } catch(e) {
         console.error(e);
-        return null; // Or handle error
+        return null;
     }
   } else {
-     // Redirect logic originally in asyncData, but usually handled by layout or middleware.
-     // Here we just return null.
      return null; 
   }
 }, {
@@ -78,8 +73,6 @@ watch(searchData, (newVal) => {
     items.value = newVal;
 }, { immediate: true });
 
-
-// Methods
 const loadMore = () => {
   loading.value = true;
 
@@ -94,7 +87,6 @@ const loadMore = () => {
 
 onMounted(() => {
   searchStore.openSearch();
-  // searchStore.setFromPage(fromPage); // Logic omitted as simple back usage is common or requires middleware
 });
 
 onBeforeRouteLeave((to, from, next) => {

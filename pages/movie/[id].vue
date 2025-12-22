@@ -49,7 +49,6 @@ const { truncate } = lodash;
 const route = useRoute();
 const router = useRouter();
 
-// Methods (moved up for hoisting if needed, but in setup order matters less for declared functions)
 const showRatedItems = () => {
   ratedItemsModalVisible.value = true;
 };
@@ -58,13 +57,10 @@ const navClicked = (label) => {
   activeMenu.value = label;
 };
 
-// Data
 const ratedItemsModalVisible = ref(false);
 const activeMenu = ref('overview');
 const menu = ref([]);
 const reviews = ref(null);
-
-// Async Data
 const { data: movieData, error } = await useAsyncData(`movie-${route.params.id}`, async () => {
   try {
     const item = await getMovie(route.params.id);
@@ -79,7 +75,6 @@ const { data: movieData, error } = await useAsyncData(`movie-${route.params.id}`
 
 const item = computed(() => movieData.value?.item || {});
 
-// Mixin Re-implementation
 const name = computed(() => item.value.title ? item.value.title : item.value.name);
 const yearStart = computed(() => {
   const date = item.value.release_date ? item.value.release_date : item.value.first_air_date;
@@ -89,7 +84,6 @@ const yearStart = computed(() => {
   return '';
 });
 
-// Computed
 const metaTitle = computed(() => {
   if (!item.value || !name.value) return '';
   if (yearStart.value) {
@@ -130,7 +124,6 @@ const showImages = computed(() => {
   return images && ((images.backdrops && images.backdrops.length) || (images.posters && images.posters.length));
 });
 
-// Watch & Menu Logic
 const createMenu = () => {
   const m = [];
   m.push('Overview');

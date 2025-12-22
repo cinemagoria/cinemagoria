@@ -4,17 +4,28 @@
       :href="image.thumb"
       @click.prevent="handleGallery(index)">
       <div :class="$style.image">
+        <div v-if="isLoading" :class="$style.loaderContainer">
+           <Loader :size="30" />
+        </div>
         <img
           :src="image.thumb"
           loading="lazy"
-          alt="">
+          alt=""
+          :style="{ opacity: isLoading ? 0 : 1 }"
+          @load="onLoad">
       </div>
     </a>
   </div>
 </template>
 
 <script>
+import Loader from '~/components/Loader.vue';
+
 export default {
+  components: {
+    Loader
+  },
+
   props: {
     image: {
       type: Object,
@@ -32,10 +43,19 @@ export default {
     },
   },
 
+  data() {
+    return {
+      isLoading: true
+    };
+  },
+
   methods: {
     handleGallery (index) {
       this.$emit('openModal', index);
     },
+    onLoad() {
+      this.isLoading = false;
+    }
   },
 };
 </script>
@@ -59,7 +79,22 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
   }
+}
+
+.loaderContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $secondary-color;
+  z-index: 1;
 }
 
 .backdrop {

@@ -1,7 +1,6 @@
 import { createClient } from '@libsql/client'
 
 export default defineEventHandler(async (event) => {
-    // Enable CORS
     setResponseHeaders(event, {
         "Access-Control-Allow-Methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
         "Access-Control-Allow-Origin": "*",
@@ -28,7 +27,6 @@ export default defineEventHandler(async (event) => {
         return { found: false, error: 'Database configuration missing' }
     }
 
-    // Initialize LibSQL Client
     const client = createClient({
         url: config.imdbDbUrl,
         authToken: config.imdbDbToken,
@@ -42,7 +40,6 @@ export default defineEventHandler(async (event) => {
 
         if (result.rows && result.rows.length > 0) {
             const row = result.rows[0]
-            // Safe parsing for potential null values
             const score = row.average_rating ? parseFloat(String(row.average_rating)) : 0
             const votes = row.num_votes ? parseInt(String(row.num_votes)) : 0
 
@@ -53,7 +50,6 @@ export default defineEventHandler(async (event) => {
                 source: 'imdb'
             }
         } else {
-            // console.log(`[IMDb] No rating found for ${id}`)
             return { found: false, source: 'tmdb' }
         }
     } catch (error: any) {

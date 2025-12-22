@@ -75,11 +75,9 @@ useHead({
   ],
 });
 
-// Data
 const followedTvShows = ref(null);
 const ratedItemsModalVisible = ref(false);
 
-// Async Data Fetching
 const { data: tvData } = await useAsyncData('tv-home', async () => {
     try {
         const [popular, topRated, onAir, airingToday] = await Promise.all([
@@ -100,8 +98,6 @@ const topRated = computed(() => tvData.value?.topRated);
 const onAir = computed(() => tvData.value?.onAir);
 const airingToday = computed(() => tvData.value?.airingToday);
 
-
-// Computed Props for Titles/URLs
 const popularTitle = computed(() => getListItem('tv', 'popular').title);
 const popularUrl = computed(() => ({ name: 'tv-category-name', params: { name: 'popular' } }));
 
@@ -114,8 +110,6 @@ const onAirUrl = computed(() => ({ name: 'tv-category-name', params: { name: 'on
 const airingTodayTitle = computed(() => getListItem('tv', 'airing_today').title);
 const airingTodayUrl = computed(() => ({ name: 'tv-category-name', params: { name: 'airing_today' } }));
 
-
-// Methods
 const navigateToMovies = () => {
   router.push({ name: 'movie' });
 };

@@ -72,7 +72,6 @@ export default {
   computed: {
     poster () {
       if (this.item.poster_path) {
-        // console.log('Card poster:', `${apiImgUrl}/w500${this.item.poster_path}`);
         return `${apiImgUrl}/w500${this.item.poster_path}`;
       } else if (this.item.profile_path) {
         return `${apiImgUrl}/w500${this.item.profile_path}`;

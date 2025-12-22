@@ -10,7 +10,7 @@
             :alt="name">
           <img
             v-else
-            src="https://raw.githubusercontent.com/imprvhub/entercinema/main/static/image_not_found_yet.webp"
+            src="/image_not_found_yet.webp"
             alt="Image not found"
             style="width: 100%; height: 100%; object-fit: cover;">
         </div>
@@ -430,7 +430,6 @@ export default {
     toggleFullReviews() { this.showFullReviews = !this.showFullReviews; },
     formatGenres(genres) { return genres.map(genre => `<a href="/genre/${genre.id}/movie">${genre.name}</a>`).join(', '); },
     formatProductionCompanies(companies) {
-      // getProductionCompanySlug should be imported at top level
       return companies.map(company => {
         const slug = getProductionCompanySlug(company.id);
         if (slug) return`<a href="/production/${slug}">${company.name}</a>`;
