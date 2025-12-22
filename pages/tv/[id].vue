@@ -26,6 +26,11 @@
     <template v-if="activeMenu === 'photos' && showImages">
       <Images v-if="item.images.backdrops.length" title="Backdrops" type="backdrop" :images="item.images.backdrops" />
       <Images v-if="item.images.posters.length" title="Posters" type="poster" :images="item.images.posters" />
+      <Images v-if="item.images.posters.length" title="Posters" type="poster" :images="item.images.posters" />
+    </template>
+
+    <template v-if="activeMenu === 'ost' && showSoundtracks">
+      <SoundtrackList :items="soundtrackItems" />
     </template>
   </main>
 </template>
@@ -43,6 +48,8 @@ import Videos from '~/components/Videos.vue';
 import Images from '~/components/Images.vue';
 import Credits from '~/components/Credits.vue';
 import Episodes from '~/components/tv/Episodes.vue';
+import SoundtrackList from '~/components/music/SoundtrackList.vue';
+import { searchSoundtracks } from '~/utils/musicbrainz';
 
 const route = useRoute();
 const router = useRouter();
@@ -59,6 +66,7 @@ const ratedItemsModalVisible = ref(false);
 const activeMenu = ref('overview');
 const menu = ref([]);
 const reviews = ref(null);
+const soundtrackItems = ref([]);
 
 const { data: tvData, error } = await useAsyncData(`tv-${route.params.id}`, async () => {
   try {
@@ -136,18 +144,33 @@ const showImages = computed(() => {
   return images && ((images.backdrops && images.backdrops.length) || (images.posters && images.posters.length));
 });
 
+const showSoundtracks = computed(() => {
+  return soundtrackItems.value && soundtrackItems.value.length > 0;
+});
+
 const createMenu = () => {
   const m = [];
   m.push('Overview');
   if (showEpisodes.value) m.push('Episodes');
+  if (showSoundtracks.value) m.push('OST');
   if (showVideos.value) m.push('Videos');
   if (showImages.value) m.push('Photos');
   menu.value = m;
 };
 
-watch(item, () => {
+watch(item, async () => {
   if (item.value && item.value.id) {
     createMenu();
+     try {
+      const query = item.value.original_name || item.value.name;
+      if (query) {
+        const results = await searchSoundtracks(query, yearStart.value);
+        soundtrackItems.value = results;
+        createMenu();
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }
 }, { immediate: true });
 
