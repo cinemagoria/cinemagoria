@@ -38,9 +38,7 @@
         </div>
 
         <div v-if="loading" :class="$style.loader">
-          <div class="modern-spinner">
-            <div></div><div></div><div></div><div></div>
-          </div>
+          <Loader :size="60" color="#8BE9FD" />
         </div>
 
         <div v-else :class="$style.modalBody">
@@ -780,7 +778,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 4rem;
+  flex: 1;
+  min-height: 50vh;
 }
 
 .posterLoader {
