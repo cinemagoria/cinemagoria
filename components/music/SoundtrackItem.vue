@@ -1,12 +1,11 @@
 <template>
   <div :class="$style.item">
     <a :href="url" target="_blank" rel="noopener noreferrer" :class="$style.link">
-      <strong :class="$style.cyan">{{ title }}</strong>
-
+      <strong :class="$style.cyan">{{ item.title }}</strong>
       <span
-        v-if="disambiguation"
+        v-if="item.disambiguation"
         :class="$style.episodes">
-        ({{ disambiguation }})
+        ({{ item.disambiguation }})
       </span>
 
       <span
@@ -33,12 +32,7 @@ export default {
     url() {
       return getMusicBrainzUrl(this.item.id);
     },
-    title() {
-      return this.item.title;
-    },
-    disambiguation() {
-      return this.item.disambiguation;
-    },
+
     artist() {
       if (this.item['artist-credit'] && this.item['artist-credit'].length) {
         return this.item['artist-credit'].map(c => c.name).join(', ');
@@ -73,7 +67,7 @@ export default {
 }
 
 .cyan {
-  color: #8BE9FD;
+  color: $cyan-color;
 }
 
 .episodes {

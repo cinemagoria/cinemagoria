@@ -6,7 +6,7 @@
      
      <div v-else-if="selectedAlbum" :class="$style.albumCard">
        <div :class="$style.albumHeader">
-         <h2 :class="$style.albumTitle">Original Soundtrack <span :class="$style.year" v-if="releaseYear">({{ releaseYear }})</span></h2>
+         <h2 :class="$style.albumTitle">Original Soundtrack</h2>
          <div :class="$style.meta">
             <span v-if="selectedAlbum['artist-credit']">by {{ formatArtist(selectedAlbum['artist-credit']) }}</span>
          </div>
@@ -20,7 +20,7 @@
            <span :class="$style.trackNumber">{{ i + 1 }}</span>
            <div :class="$style.trackInfo">
              <span :class="$style.trackTitle">{{ track.title }}</span>
-             <span :class="$style.trackArtist" v-if="shouldShowArtist(track)">{{ formatArtist(track['artist-credit']) }}</span>
+             <span :class="$style.trackArtist" v-if="track['artist-credit']">{{ formatArtist(track['artist-credit']) }}</span>
            </div>
            <span :class="$style.trackDuration">{{ formatDuration(track.length) }}</span>
          </li>
@@ -95,10 +95,7 @@ export default {
     },
     formatArtist(credits) {
       if (!credits) return '';
-      return credits.map(c => c.name).join('');
-    },
-    shouldShowArtist(track) {
-       return true;
+      return credits.map(c => c.name).join(', ');
     },
     formatDuration(ms) {
       if (!ms) return '';
@@ -202,7 +199,7 @@ export default {
         }
         
         .trackTitle {
-            color: color.adjust(#8BE9FD, $lightness: 10%);
+            color: color.adjust($cyan-color, $lightness: 10%);
         }
     }
 
@@ -215,7 +212,7 @@ export default {
     width: 24px;
     height: 24px;
     margin-right: 1rem;
-    color: #8BE9FD;
+    color: $cyan-color;
     opacity: 0;
     transform: scale(0.8);
     transition: all 0.2s ease;
@@ -241,7 +238,7 @@ export default {
 
 .trackTitle {
     font-weight: 600;
-    color: #8BE9FD;
+    color: $cyan-color;
     font-size: 1.5rem; /* Matched to overview text size */
     margin-bottom: 0.25rem;
     transition: color 0.2s ease;
