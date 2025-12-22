@@ -5,7 +5,9 @@ const USER_AGENT = 'EnterCinema/1.0 ( https://entercinema.com )';
 
 export async function searchSoundtracks(query, year) {
     try {
-        const escapedQuery = query.replace(/"/g, '\\"');
+        const escapedQuery = query
+            .replace(/\\/g, '\\\\')
+            .replace(/"/g, '\\"');
         const luceneQuery = `releasegroup:"${escapedQuery}" AND secondarytype:soundtrack`;
 
         const response = await axios.get(`${BASE_URL}/release-group`, {
