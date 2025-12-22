@@ -351,11 +351,6 @@ export default {
     },
     handleImageError(e) {
       this.isPosterLoading = false;
-      // Ensure fallback is visible if main image fails, though the v-else block handles the initial 'no poster' case.
-      // If the URL was valid but failed to load, we might want to switch to fallback.
-      // But currently v-if="poster" controls which img is shown. 
-      // If poster variable is truthy but image fails, we should probably force a fallback?
-      // For now, at least stop the loader.
       e.target.src = '/image_not_found_yet.webp';
     },
     async fetchSecondaryData() {
