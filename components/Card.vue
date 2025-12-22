@@ -145,6 +145,10 @@ export default {
 <style lang="scss" scoped>
 .card__img {
   position: relative;
+  overflow: hidden;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  transform: translateZ(0);
 }
 .card__img img {
   position: absolute;
@@ -153,8 +157,6 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
 }
 
 .card__img--logo {

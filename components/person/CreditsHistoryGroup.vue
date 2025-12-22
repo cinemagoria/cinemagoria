@@ -1,17 +1,16 @@
 <template>
-  <tr :class="$style.group">
-    <td :class="$style.row">
-      <table>
-        <tbody>
-          <CreditsHistoryItem
-            v-for="credit in group.credits"
-            :key="`credit-${credit.credit_id}`"
-            :year="group.year"
-            :credit="credit" />
-        </tbody>
-      </table>
-    </td>
-  </tr>
+  <div :class="$style.group">
+    <div :class="[$style.year, { [$style.cyan]: group.year }]">
+      {{ group.year ? group.year : '—' }}
+    </div>
+
+    <div :class="$style.credits">
+      <CreditsHistoryItem
+        v-for="credit in group.credits"
+        :key="`credit-${credit.credit_id}`"
+        :credit="credit" />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -33,7 +32,35 @@ export default {
 
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
-.row {
-  padding: 0;
+
+.group {
+  display: flex;
+  margin-bottom: 2rem;
+  
+  @media (min-width: $breakpoint-large) {
+    margin-bottom: 3rem;
+  }
+}
+
+.year {
+  width: 6rem;
+  min-width: 6rem;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: #999;
+  padding-top: 0.5rem;
+}
+
+.cyan {
+  color: #8BE9FD;
+}
+
+.credits {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-left: 2px solid #333;
+  padding-left: 2rem;
 }
 </style>

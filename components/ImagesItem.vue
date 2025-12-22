@@ -72,6 +72,7 @@ export default {
   height: 0;
   overflow: hidden;
   background-color: $secondary-color;
+  border-radius: 15px;
 
   img {
     position: absolute;

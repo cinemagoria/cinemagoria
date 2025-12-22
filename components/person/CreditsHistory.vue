@@ -53,17 +53,15 @@
       :key="`credits-${category.name.toLowerCase()}`"
       :class="$style.category">
       <h2 :class="$style.title">
-        {{ category.name }}
+        {{ formatDepartment(category.name) }}
       </h2>
 
-      <table>
-        <tbody>
-          <CreditsHistoryGroup
-            v-for="group in category.groups"
-            :key="`credit-${category.name.toLowerCase()}-${group.year}`"
-            :group="group" />
-        </tbody>
-      </table>
+      <div :class="$style.list">
+        <CreditsHistoryGroup
+          v-for="group in category.groups"
+          :key="`credit-${category.name.toLowerCase()}-${group.year}`"
+          :group="group" />
+      </div>
     </div>
   </div>
 </template>
