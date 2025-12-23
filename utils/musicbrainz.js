@@ -14,9 +14,7 @@ export async function searchSoundtracks(query, year) {
                 fmt: 'json',
                 limit: 100,
             },
-            headers: {
-                'User-Agent': USER_AGENT
-            }
+            headers: typeof window === 'undefined' ? { 'User-Agent': USER_AGENT } : {}
         });
 
         if (response.data && response.data['release-groups']) {
@@ -63,7 +61,7 @@ export async function getAlbumTracks(releaseGroupId) {
                 inc: 'recordings+artist-credits',
                 fmt: 'json'
             },
-            headers: { 'User-Agent': USER_AGENT }
+            headers: typeof window === 'undefined' ? { 'User-Agent': USER_AGENT } : {}
         });
 
         if (tracksResp.data && tracksResp.data.media && tracksResp.data.media.length) {

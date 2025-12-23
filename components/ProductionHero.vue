@@ -55,6 +55,7 @@ export default {
     return {
       isFollowing: false,
       isLoadingFollow: false,
+      isAuthenticated: false,
     };
   },
 
@@ -81,18 +82,15 @@ export default {
       }
       return null;
     },
-    isAuthenticated() {
-      if (typeof window !== 'undefined') {
-          return !!localStorage.getItem('email');
-      }
-      return false;
-    },
     isSupported() {
       return !!SUPPORTED_PRODUCTION_COMPANIES[this.item.id];
     }
   },
 
   mounted() {
+    if (typeof window !== 'undefined') {
+         this.isAuthenticated = !!localStorage.getItem('email');
+    }
     this.checkFollowStatus();
     if (typeof window !== 'undefined') {
          window.addEventListener('following-updated', this.checkFollowStatus);
