@@ -50,7 +50,7 @@
     }
   
     .button {
-      border-radius: 10px;
+      border-radius: 15px;;
       margin-right: 10px; 
     }
   

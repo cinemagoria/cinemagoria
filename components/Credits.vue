@@ -76,7 +76,7 @@ export default {
 <style lang="scss" scoped>
 .credits-container {
   background-color: rgba(0, 0, 0, 0.307);
-  border-radius: 10px;
+  border-radius: 15px;;
   padding: 2rem 0;
   margin-bottom: 2rem;
 }
