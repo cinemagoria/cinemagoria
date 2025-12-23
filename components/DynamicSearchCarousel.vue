@@ -148,7 +148,7 @@
       redirectToRoute(item) {
         const mediaType = item.media_type || this.type;
         const route = mediaType === 'tv' ? `/tv/${item.id}` : `/movie/${item.id}`;
-        window.open(route, '_blank');
+        this.$router.push(route);
       },
     },
   };

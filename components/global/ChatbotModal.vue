@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <Teleport to="body">
+    <div>
     <div v-if="chatBotOpen" class="chatbot-modal" @click.self="closeChatBot">
       <div class="chatbot-container">
         <div class="chatbot-main">
@@ -332,6 +333,7 @@
     </div>
     <AuthModal ref="authModal" />
   </div>
+  </Teleport>
 </template>
 <script>
 import axios from 'axios';
