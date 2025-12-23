@@ -4,7 +4,7 @@
       <h2 :class="$style.title">Release Information</h2>
 
       <div v-if="loading" :class="$style.loading">
-        <p>Loading release dates...</p>
+        <Loader />
       </div>
 
       <div v-else-if="groupedReleases.length === 0" :class="$style.noData">
@@ -57,7 +57,12 @@
 
 <script>
 import { getMovieReleaseDates } from '~/utils/api';
+import Loader from '~/components/Loader.vue';
+
 export default {
+  components: {
+    Loader,
+  },
   props: {
     item: {
       type: Object,
@@ -425,12 +430,23 @@ export default {
     font-size: 2.4rem;
   }
 }
-.loading,
 .noData {
   padding: 3rem 0;
   text-align: center;
   font-size: 1.5rem;
   color: $text-color;
+}
+
+.loading {
+  padding: 3rem 0;
+  text-align: center;
+  font-size: 1.5rem;
+  color: $text-color;
+  background: rgba(0, 0, 0, 0.307);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 .releaseList {
   display: grid;

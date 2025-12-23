@@ -48,10 +48,8 @@
           @close="showHowItWorksModal = false" />
         </div>
 
-        <div v-if="loading" class="loader">
-          <div class="modern-spinner">
-            <div></div><div></div><div></div><div></div>
-          </div>
+        <div v-if="loading" class="loader-container">
+          <Loader />
         </div>
 
         <div v-else-if="notifications.length === 0" class="no-notifications">
@@ -248,7 +246,8 @@ export default {
   components: {
     UserNav,
     FollowingModal,
-    HowItWorksModal
+    HowItWorksModal,
+    Loader: () => import('@/components/Loader')
   },
   data() {
     return {
@@ -799,6 +798,22 @@ button {
   margin-bottom: 4rem;
   gap: 2rem;
 }
+
+.loader-container {
+    background: rgba(0, 0, 0, 0.307);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+}
+
+
 
 .header-top {
   text-align: center;
