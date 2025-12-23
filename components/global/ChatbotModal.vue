@@ -1,340 +1,342 @@
 <template>
-  <div>
-    <div v-if="chatBotOpen" class="chatbot-modal" @click.self="closeChatBot">
-      <div class="chatbot-container">
-        <div class="chatbot-main">
-          <transition name="fade">
-            <div v-if="sidebarOpen && isMobileDevice" class="sidebar-backdrop" @click="toggleSidebar"></div>
-          </transition>
-
-          <div class="conversations-sidebar" :class="{ 'open': sidebarOpen }">
-            <div class="sidebar-header">
-              <div v-if="!selectionMode" class="default-header-actions">
-                <button @click="createNewConversation" class="new-conversation-btn" title="New chat">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 5v14M5 12h14"/>
-                  </svg>
-                  <span>New Chat</span>
-                </button>
-                <div class="header-right-actions">
-                   <button @click="toggleArchiveView" class="icon-action-btn" :class="{ 'active': showArchived }" :title="showArchived ? 'View Active Chats' : 'View Archived Chats'">
-                    <svg v-if="!showArchived" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
-                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+  <Teleport to="body">
+    <div>
+      <div v-if="chatBotOpen" class="chatbot-modal" @click.self="closeChatBot">
+        <div class="chatbot-container">
+          <div class="chatbot-main">
+            <transition name="fade">
+              <div v-if="sidebarOpen && isMobileDevice" class="sidebar-backdrop" @click="toggleSidebar"></div>
+            </transition>
+  
+            <div class="conversations-sidebar" :class="{ 'open': sidebarOpen }">
+              <div class="sidebar-header">
+                <div v-if="!selectionMode" class="default-header-actions">
+                  <button @click="createNewConversation" class="new-conversation-btn" title="New chat">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    <span>New Chat</span>
                   </button>
-                  <button @click="toggleSelectionMode" class="icon-action-btn" title="Select conversations">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-                  </button>
+                  <div class="header-right-actions">
+                     <button @click="toggleArchiveView" class="icon-action-btn" :class="{ 'active': showArchived }" :title="showArchived ? 'View Active Chats' : 'View Archived Chats'">
+                      <svg v-if="!showArchived" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+                      <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    </button>
+                    <button @click="toggleSelectionMode" class="icon-action-btn" title="Select conversations">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div v-else class="selection-header-actions">
-                <button @click="toggleSelectionMode" class="cancel-selection-btn">Cancel</button>
-                <div class="selection-tools">
-                  <button @click="archiveSelectedConversations" class="tool-btn archive" :disabled="selectedConversations.length === 0" :title="showArchived ? 'Unarchive Selected' : 'Archive Selected'">
-                    <svg v-if="!showArchived" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
-                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-                  </button>
-                  <button @click="deleteSelectedConversations" class="tool-btn delete" :disabled="selectedConversations.length === 0" title="Delete Selected">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                  </button>
+                <div v-else class="selection-header-actions">
+                  <button @click="toggleSelectionMode" class="cancel-selection-btn">Cancel</button>
+                  <div class="selection-tools">
+                    <button @click="archiveSelectedConversations" class="tool-btn archive" :disabled="selectedConversations.length === 0" :title="showArchived ? 'Unarchive Selected' : 'Archive Selected'">
+                      <svg v-if="!showArchived" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+                      <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                    </button>
+                    <button @click="deleteSelectedConversations" class="tool-btn delete" :disabled="selectedConversations.length === 0" title="Delete Selected">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </div>
-            
-            <div class="conversations-list">
-              <div 
-                v-for="conv in conversations" 
-                :key="conv.id"
-                :class="['conversation-item', { active: activeConversationId === conv.id, selected: selectedConversations.includes(conv.id) }]"
-                @click="handleConversationClick(conv)"
-                :title="conv.title">
-                
-                <div v-if="selectionMode" class="checkbox-wrapper">
-                  <div class="custom-checkbox" :class="{ checked: selectedConversations.includes(conv.id) }"></div>
-                </div>
-
-                <div class="conversation-content">
-                  <span class="conversation-title">{{ conv.title }}</span>
-                  <span class="conversation-time">{{ formatConversationTime(conv.createdAt) }}</span>
-                </div>
-
-              </div>
-              <div v-if="conversations.length === 0" class="empty-state">
-                  <span v-if="showArchived">No archived conversations</span>
-                  <span v-else>No conversations yet</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="chat-content">
-            <div class="chatbot-header">
-              <div class="header-left">
-                <button @click="toggleSidebar" class="sidebar-toggle" title="Toggle conversations">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect width="18" height="18" x="3" y="3" rx="2"/>
-                    <path d="M9 3v18"/>
-                  </svg>
-                </button>
-                <h3>Ask AI</h3>
               </div>
               
-              <div class="header-buttons">
-                <button @click="minimizeChatBot" class="minimize-button">−</button>
-                <button @click="closeChatBot" class="close-button">×</button>
+              <div class="conversations-list">
+                <div 
+                  v-for="conv in conversations" 
+                  :key="conv.id"
+                  :class="['conversation-item', { active: activeConversationId === conv.id, selected: selectedConversations.includes(conv.id) }]"
+                  @click="handleConversationClick(conv)"
+                  :title="conv.title">
+                  
+                  <div v-if="selectionMode" class="checkbox-wrapper">
+                    <div class="custom-checkbox" :class="{ checked: selectedConversations.includes(conv.id) }"></div>
+                  </div>
+  
+                  <div class="conversation-content">
+                    <span class="conversation-title">{{ conv.title }}</span>
+                    <span class="conversation-time">{{ formatConversationTime(conv.createdAt) }}</span>
+                  </div>
+  
+                </div>
+                <div v-if="conversations.length === 0" class="empty-state">
+                    <span v-if="showArchived">No archived conversations</span>
+                    <span v-else>No conversations yet</span>
+                </div>
               </div>
             </div>
-
-            <div class="chatbot-messages" ref="chatbotMessagesContainer">
-              <div v-if="chatMessages.length === 0 && !chatBotLoading" class="chatbot-welcome">
-                <h5 style="text-align: center; font-size:16px; padding:1rem; color:white;">Try asking:</h5>
-                <div class="examples-section">
-                  <div class="example-item" @click="handleExampleClick('Who directed The Matrix?')">"Who directed The Matrix?"</div>
-                  <div class="example-item" @click="handleExampleClick('Who starred in the movie Pulp Fiction?')">"Who starred in the movie Pulp Fiction?"</div>
-                  <div class="example-item" @click="handleExampleClick('What was the name of the actress of Queen\'s Gambit?')">"What was the name of the actress of Queen's Gambit?"</div>
-                </div>
-
-                <div class="modern-divider">
-                  <span class="divider-line"></span>
-                  <span class="divider-text">OR</span>
-                  <span class="divider-line"></span>
-                </div>
-
-                <div v-if="currentDailyPrompt" class="daily-prompt-card">
-                  <div class="card-glow"></div>
-                  <div class="card-header">
-                    <span class="label">Daily Prompt</span>
-                  </div>
-                  <div class="card-content">
-                    <p>{{ currentDailyPrompt }}</p>
-                  </div>
-                  <button @click="sendDailyPrompt" class="action-btn">
-                    <svg style="width: 18px; height: 18px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot-message-square-icon lucide-bot-message-square"><path d="M12 6V2H8"/><path d="M15 11v2"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M20 16a2 2 0 0 1-2 2H8.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 4 20.286V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/><path d="M9 11v2"/></svg>
-                    <span style="font-weight: 500; font-size: 16px;">Ask AI</span>
+  
+            <div class="chat-content">
+              <div class="chatbot-header">
+                <div class="header-left">
+                  <button @click="toggleSidebar" class="sidebar-toggle" title="Toggle conversations">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect width="18" height="18" x="3" y="3" rx="2"/>
+                      <path d="M9 3v18"/>
+                    </svg>
                   </button>
-                </div>
-              </div>
-
-              <div v-if="chatMessages.length > 0" class="conversation-container">
-                <div v-for="(message, index) in chatMessages" :key="index" class="message-wrapper">
-                  
-                  <div v-if="message.role === 'user'" class="user-message">
-                    <div class="message-content">
-                      <p>{{ message.content }}</p>
-                      <button @click="copyMessage(message.content, index)" class="copy-button" :title="copiedMessageIndex === index ? 'Copied!' : 'Copy message'">
-                        <svg v-if="copiedMessageIndex === index" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                          <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                        <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div v-else-if="message.role === 'assistant'" class="assistant-message">
-                    <div class="message-content">
-                      <p v-html="message.content"></p>
-                      <button @click="copyMessage(getPlainTextContent(message.content), index)" class="copy-button" :title="copiedMessageIndex === index ? 'Copied!' : 'Copy message'">
-                        <svg v-if="copiedMessageIndex === index" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                          <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                        <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div v-else-if="message.role === 'system' && awaitingSelectionAction" class="system-selection-ui">
-                    <div class="selection-message-content">
-                      <p>{{ message.content }}</p>
-                      <div class="selection-actions">
-                        <button @click="triggerDefaultAnalysis" class="selection-btn primary">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                          Get AI Analysis
-                        </button>
-                        <button @click="triggerCustomQuestion" class="selection-btn secondary">
-                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
-                           Ask Custom Question
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
+                  <h3>Ask AI</h3>
                 </div>
                 
-                <div v-if="chatBotLoading && messageWaitingForResponse" class="message-wrapper">
-                  <div class="assistant-message">
-                    <div class="message-content reasoning-content">
-                      <div class="modern-loader">
-                        <div class="typing-indicator">
-                          <span></span>
-                          <span></span>
-                          <span></span>
+                <div class="header-buttons">
+                  <button @click="minimizeChatBot" class="minimize-button">−</button>
+                  <button @click="closeChatBot" class="close-button">×</button>
+                </div>
+              </div>
+  
+              <div class="chatbot-messages" ref="chatbotMessagesContainer">
+                <div v-if="chatMessages.length === 0 && !chatBotLoading" class="chatbot-welcome">
+                  <h5 style="text-align: center; font-size:16px; padding:1rem; color:white;">Try asking:</h5>
+                  <div class="examples-section">
+                    <div class="example-item" @click="handleExampleClick('Who directed The Matrix?')">"Who directed The Matrix?"</div>
+                    <div class="example-item" @click="handleExampleClick('Who starred in the movie Pulp Fiction?')">"Who starred in the movie Pulp Fiction?"</div>
+                    <div class="example-item" @click="handleExampleClick('What was the name of the actress of Queen\'s Gambit?')">"What was the name of the actress of Queen's Gambit?"</div>
+                  </div>
+  
+                  <div class="modern-divider">
+                    <span class="divider-line"></span>
+                    <span class="divider-text">OR</span>
+                    <span class="divider-line"></span>
+                  </div>
+  
+                  <div v-if="currentDailyPrompt" class="daily-prompt-card">
+                    <div class="card-glow"></div>
+                    <div class="card-header">
+                      <span class="label">Daily Prompt</span>
+                    </div>
+                    <div class="card-content">
+                      <p>{{ currentDailyPrompt }}</p>
+                    </div>
+                    <button @click="sendDailyPrompt" class="action-btn">
+                      <svg style="width: 18px; height: 18px;" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot-message-square-icon lucide-bot-message-square"><path d="M12 6V2H8"/><path d="M15 11v2"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M20 16a2 2 0 0 1-2 2H8.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 4 20.286V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/><path d="M9 11v2"/></svg>
+                      <span style="font-weight: 500; font-size: 16px;">Ask AI</span>
+                    </button>
+                  </div>
+                </div>
+  
+                <div v-if="chatMessages.length > 0" class="conversation-container">
+                  <div v-for="(message, index) in chatMessages" :key="index" class="message-wrapper">
+                    
+                    <div v-if="message.role === 'user'" class="user-message">
+                      <div class="message-content">
+                        <p>{{ message.content }}</p>
+                        <button @click="copyMessage(message.content, index)" class="copy-button" :title="copiedMessageIndex === index ? 'Copied!' : 'Copy message'">
+                          <svg v-if="copiedMessageIndex === index" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                          <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+  
+                    <div v-else-if="message.role === 'assistant'" class="assistant-message">
+                      <div class="message-content">
+                        <p v-html="message.content"></p>
+                        <button @click="copyMessage(getPlainTextContent(message.content), index)" class="copy-button" :title="copiedMessageIndex === index ? 'Copied!' : 'Copy message'">
+                          <svg v-if="copiedMessageIndex === index" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                          <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+  
+                    <div v-else-if="message.role === 'system' && awaitingSelectionAction" class="system-selection-ui">
+                      <div class="selection-message-content">
+                        <p>{{ message.content }}</p>
+                        <div class="selection-actions">
+                          <button @click="triggerDefaultAnalysis" class="selection-btn primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            Get AI Analysis
+                          </button>
+                          <button @click="triggerCustomQuestion" class="selection-btn secondary">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                             Ask Custom Question
+                          </button>
                         </div>
-                        <span class="loader-text">Reasoning...</span>
+                      </div>
+                    </div>
+  
+                  </div>
+                  
+                  <div v-if="chatBotLoading && messageWaitingForResponse" class="message-wrapper">
+                    <div class="assistant-message">
+                      <div class="message-content reasoning-content">
+                        <div class="modern-loader">
+                          <div class="typing-indicator">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                          </div>
+                          <span class="loader-text">Reasoning...</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div v-if="chatBotResults.length > 0" class="media-carousel">
-                <h3 class="carousel-title">Related Results</h3>
-                <div class="carousel-container">
-                  <button @click="scrollCarousel('left')" class="carousel-nav carousel-prev">❮</button>
-                  <div class="carousel-content" ref="mediaCarousel">
-                    <div v-for="item in chatBotResults" :key="item.id + '-' + item.media_type" class="carousel-item">
-
-                      <a v-if="item.media_type === 'movie'"
-                         :href="item.url"
-                         class="media-link"
-                         target="_blank">
-                        <div class="poster-wrapper">
-                          <img v-if="item.poster_path" 
-                               :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" 
-                               :alt="item.title || 'Movie Poster'"
-                               @error="handleImageError">
-                          <img v-else src="/image_not_found_yet.webp" :alt="item.title || 'Movie Poster Not Found'">
-                          <div class="media-type">Movie</div>
-                          <div class="movie-rating" v-if="item.imdb_rating || item.vote_average > 0">
-                            <template v-if="item.rating_source === 'imdb' && item.imdb_rating">
-                              {{ item.imdb_rating.toFixed(1) }}
-                              <span class="star">★</span>
-                            </template>
-                            <template v-else-if="item.vote_average">
-                              {{ item.vote_average.toFixed(1) }}
-                              <span class="star">★</span>
-                            </template>
+  
+                <div v-if="chatBotResults.length > 0" class="media-carousel">
+                  <h3 class="carousel-title">Related Results</h3>
+                  <div class="carousel-container">
+                    <button @click="scrollCarousel('left')" class="carousel-nav carousel-prev">❮</button>
+                    <div class="carousel-content" ref="mediaCarousel">
+                      <div v-for="item in chatBotResults" :key="item.id + '-' + item.media_type" class="carousel-item">
+  
+                        <a v-if="item.media_type === 'movie'"
+                           :href="item.url"
+                           class="media-link"
+                           target="_blank">
+                          <div class="poster-wrapper">
+                            <img v-if="item.poster_path" 
+                                 :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" 
+                                 :alt="item.title || 'Movie Poster'"
+                                 @error="handleImageError">
+                            <img v-else src="/image_not_found_yet.webp" :alt="item.title || 'Movie Poster Not Found'">
+                            <div class="media-type">Movie</div>
+                            <div class="movie-rating" v-if="item.imdb_rating || item.vote_average > 0">
+                              <template v-if="item.rating_source === 'imdb' && item.imdb_rating">
+                                {{ item.imdb_rating.toFixed(1) }}
+                                <span class="star">★</span>
+                              </template>
+                              <template v-else-if="item.vote_average">
+                                {{ item.vote_average.toFixed(1) }}
+                                <span class="star">★</span>
+                              </template>
+                            </div>
                           </div>
-                        </div>
-                        <div class="media-info">
-                          <h4>{{ item.title }}</h4>
-                          <p>{{ item.release_date ? item.release_date.substring(0, 4) : 'N/A' }}</p>
-                        </div>
-                      </a>
-
-                      <a v-else-if="item.media_type === 'tv'"
-                         :href="item.url"
-                         class="media-link"
-                         target="_blank">
-                        <div class="poster-wrapper">
-                          <img v-if="item.poster_path" 
-                               :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" 
-                               :alt="item.name || 'TV Show Poster'"
-                               @error="handleImageError">
-                          <img v-else src="/image_not_found_yet.webp" :alt="item.name || 'TV Show Poster Not Found'">
-                          <div class="media-type">TV Show</div>
-
-                          <div class="movie-rating" v-if="item.imdb_rating || item.vote_average > 0">
-                            <template v-if="item.rating_source === 'imdb' && item.imdb_rating">
-                              {{ item.imdb_rating.toFixed(1) }}
-                              <span class="star">★</span>
-                            </template>
-                            <template v-else-if="item.vote_average">
-                              {{ item.vote_average.toFixed(1) }}
-                              <span class="star">★</span>
-                            </template>
+                          <div class="media-info">
+                            <h4>{{ item.title }}</h4>
+                            <p>{{ item.release_date ? item.release_date.substring(0, 4) : 'N/A' }}</p>
                           </div>
-                        </div>
-                        <div class="media-info">
-                          <h4>{{ item.name }}</h4>
-                          <p>{{ item.first_air_date ? item.first_air_date.substring(0, 4) : 'N/A' }}</p>
-                        </div>
-                      </a>
-
-                      <a v-else-if="item.media_type === 'person'"
-                         :href="item.url"
-                         class="media-link"
-                         target="_blank">
-                        <div class="profile-wrapper">
-                          <img v-if="item.profile_path" 
-                               :src="'https://image.tmdb.org/t/p/w342' + item.profile_path" 
-                               :alt="item.name || 'Person Profile'"
-                               @error="handleImageError">
-                          <img v-else src="/image_not_found_yet.webp" :alt="item.name || 'Person Profile Not Found'">
-                          <div class="media-type">Person</div>
-                        </div>
-                        <div class="media-info">
-                          <h4>{{ item.name }}</h4>
-                          <p>{{ item.known_for_department || '' }}</p>
-                        </div>
-                      </a>
+                        </a>
+  
+                        <a v-else-if="item.media_type === 'tv'"
+                           :href="item.url"
+                           class="media-link"
+                           target="_blank">
+                          <div class="poster-wrapper">
+                            <img v-if="item.poster_path" 
+                                 :src="'https://image.tmdb.org/t/p/w342' + item.poster_path" 
+                                 :alt="item.name || 'TV Show Poster'"
+                                 @error="handleImageError">
+                            <img v-else src="/image_not_found_yet.webp" :alt="item.name || 'TV Show Poster Not Found'">
+                            <div class="media-type">TV Show</div>
+  
+                            <div class="movie-rating" v-if="item.imdb_rating || item.vote_average > 0">
+                              <template v-if="item.rating_source === 'imdb' && item.imdb_rating">
+                                {{ item.imdb_rating.toFixed(1) }}
+                                <span class="star">★</span>
+                              </template>
+                              <template v-else-if="item.vote_average">
+                                {{ item.vote_average.toFixed(1) }}
+                                <span class="star">★</span>
+                              </template>
+                            </div>
+                          </div>
+                          <div class="media-info">
+                            <h4>{{ item.name }}</h4>
+                            <p>{{ item.first_air_date ? item.first_air_date.substring(0, 4) : 'N/A' }}</p>
+                          </div>
+                        </a>
+  
+                        <a v-else-if="item.media_type === 'person'"
+                           :href="item.url"
+                           class="media-link"
+                           target="_blank">
+                          <div class="profile-wrapper">
+                            <img v-if="item.profile_path" 
+                                 :src="'https://image.tmdb.org/t/p/w342' + item.profile_path" 
+                                 :alt="item.name || 'Person Profile'"
+                                 @error="handleImageError">
+                            <img v-else src="/image_not_found_yet.webp" :alt="item.name || 'Person Profile Not Found'">
+                            <div class="media-type">Person</div>
+                          </div>
+                          <div class="media-info">
+                            <h4>{{ item.name }}</h4>
+                            <p>{{ item.known_for_department || '' }}</p>
+                          </div>
+                        </a>
+                      </div>
                     </div>
+                    <button @click="scrollCarousel('right')" class="carousel-nav carousel-next">❯</button>
                   </div>
-                  <button @click="scrollCarousel('right')" class="carousel-nav carousel-next">❯</button>
                 </div>
               </div>
-            </div>
-
-            <div class="chatbot-input">
-              <div class="input-wrapper">
-                <textarea
-                  v-model="chatBotQuery"
-                  placeholder="Ask about movies, series, performers..."
-                  @keydown.enter.exact.prevent="handleSendAction"
-                  @input="adjustTextareaHeight"
-                  ref="chatInput"
-                  rows="1"
-                  class="modern-textarea"
-                ></textarea>
+  
+              <div class="chatbot-input">
+                <div class="input-wrapper">
+                  <textarea
+                    v-model="chatBotQuery"
+                    placeholder="Ask about movies, series, performers..."
+                    @keydown.enter.exact.prevent="handleSendAction"
+                    @input="adjustTextareaHeight"
+                    ref="chatInput"
+                    rows="1"
+                    class="modern-textarea"
+                  ></textarea>
+                </div>
+                <button @click="handleSendAction" :disabled="!chatBotQuery.trim() && !chatBotLoading" class="send-button" :class="{ 'stop-button': chatBotLoading }">
+                  <span v-if="chatBotLoading" class="stop-indicator">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                      <rect x="6" y="6" width="12" height="12" rx="2"></rect>
+                    </svg>
+                  </span>
+                  <span v-else>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="22" y1="2" x2="11" y2="13"></line>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                  </span>
+                </button>
               </div>
-              <button @click="handleSendAction" :disabled="!chatBotQuery.trim() && !chatBotLoading" class="send-button" :class="{ 'stop-button': chatBotLoading }">
-                <span v-if="chatBotLoading" class="stop-indicator">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                    <rect x="6" y="6" width="12" height="12" rx="2"></rect>
-                  </svg>
-                </span>
-                <span v-else>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                  </svg>
-                </span>
-              </button>
             </div>
           </div>
         </div>
-      </div>
-      
-      <div v-if="spoilerModalOpen" class="spoiler-modal">
-        <div class="spoiler-content">
-          <h3>Spoiler Detected</h3>
-          <p>The answer may contain spoilers about plot twists, endings, or other narrative elements.</p>
-          <div class="spoiler-actions">
-            <button @click="showSpoilerContent" class="spoiler-button accept">I can handle the truth</button>
-            <button @click="cancelSpoilerContent" class="spoiler-button cancel">Cancel</button>
+        
+        <div v-if="spoilerModalOpen" class="spoiler-modal">
+          <div class="spoiler-content">
+            <h3>Spoiler Detected</h3>
+            <p>The answer may contain spoilers about plot twists, endings, or other narrative elements.</p>
+            <div class="spoiler-actions">
+              <button @click="showSpoilerContent" class="spoiler-button accept">I can handle the truth</button>
+              <button @click="cancelSpoilerContent" class="spoiler-button cancel">Cancel</button>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div v-if="confirmDeleteModalOpen" class="spoiler-modal delete-modal">
-        <div class="spoiler-content">
-          <h3>Delete Conversation</h3>
-          <p style="font-size: 16px; color: #ccc; margin-bottom: 25px;">{{deleteConfirmationText}}</p>
-          <div class="spoiler-actions">
-            <button @click="confirmDelete" class="spoiler-button accept" style="background: #ff5252; color: white; border: none;">Delete</button>
-            <button @click="closeDeleteModal" class="spoiler-button cancel">Cancel</button>
+  
+        <div v-if="confirmDeleteModalOpen" class="spoiler-modal delete-modal">
+          <div class="spoiler-content">
+            <h3>Delete Conversation</h3>
+            <p style="font-size: 16px; color: #ccc; margin-bottom: 25px;">{{deleteConfirmationText}}</p>
+            <div class="spoiler-actions">
+              <button @click="confirmDelete" class="spoiler-button accept" style="background: #ff5252; color: white; border: none;">Delete</button>
+              <button @click="closeDeleteModal" class="spoiler-button cancel">Cancel</button>
+            </div>
           </div>
         </div>
+        
+        <transition name="slide-down">
+          <div v-if="showCopyNotification" class="copy-notification">
+            <span style="font-size: 16px;">Copied!</span>
+          </div>
+        </transition>
       </div>
       
-      <transition name="slide-down">
-        <div v-if="showCopyNotification" class="copy-notification">
-          <span style="font-size: 16px;">Copied!</span>
-        </div>
-      </transition>
+      <div v-if="chatBotMinimized" class="minimized-chatbot" @click="maximizeChatBot">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+          </svg>
+          <div v-if="hasConversation" class="notification-dot"></div>
+      </div>
+      <AuthModal ref="authModal" />
     </div>
-    
-    <div v-if="chatBotMinimized" class="minimized-chatbot" @click="maximizeChatBot">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
-        </svg>
-        <div v-if="hasConversation" class="notification-dot"></div>
-    </div>
-    <AuthModal ref="authModal" />
-  </div>
+  </Teleport>
 </template>
 <script>
 import axios from 'axios';
