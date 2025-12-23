@@ -601,7 +601,7 @@ export default {
   display: flex;
   position: relative;
   top: 5px;
-  border-radius: 10px;
+  border-radius: 15px;;
   justify-content: space-between;
   align-items: center;
   font-size: 1.4rem;
@@ -681,7 +681,7 @@ export default {
 .cardImage {
   position: relative;
   background: #8be8fd;
-  border-radius: 10px;
+  border-radius: 15px;;
   padding-top: 150%;
   cursor: pointer;
   overflow: hidden;

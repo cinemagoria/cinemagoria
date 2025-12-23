@@ -189,7 +189,7 @@ export default {
 .form-input {
   background: rgba(30, 41, 59, 0.6);
   border: 1px solid rgba(127, 219, 241, 0.2);
-  border-radius: 10px;
+  border-radius: 15px;;
   padding: 14px 18px;
   color: #fff;
   font-size: 16px;
@@ -222,7 +222,7 @@ export default {
 .button--search {
   width: 100%;
   padding: 16px;
-  border-radius: 10px;
+  border-radius: 15px;;
   font-weight: 700;
   font-size: 16px;
   letter-spacing: 1px;

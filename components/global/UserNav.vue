@@ -332,7 +332,7 @@ export default {
   font-size: 10px;
   font-weight: bold;
   padding: 2px 5px;
-  border-radius: 10px;
+  border-radius: 15px;;
   min-width: 16px;
   height: 16px;
   display: flex;

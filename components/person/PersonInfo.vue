@@ -224,7 +224,7 @@ export default {
 
 .info { 
   background-color: rgba(0, 0, 0, 0.307);
-  border-radius: 10px;
+  border-radius: 15px;;
   padding-bottom: 4rem;
   @media (min-width: $breakpoint-medium) {
     display: flex;
@@ -254,7 +254,7 @@ export default {
 .poster {
   position: relative;
   height: 0;
-  border-radius: 10px;
+  border-radius: 15px;;
   padding-top: 150.27%;
   overflow: hidden;
   background-color: $secondary-color;
@@ -285,7 +285,7 @@ export default {
     float: left;
     width: 40%;
     max-width: 200px;
-    border-radius: 10px;
+    border-radius: 15px;;
     margin: 0 1.5rem 0 0;
     @media (min-width: $breakpoint-medium) {
       display: none;

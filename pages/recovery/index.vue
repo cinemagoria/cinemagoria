@@ -68,7 +68,7 @@ export default {
   box-shadow: 0 8px 32px 0 rgba(31, 97, 135, 0.37);
   backdrop-filter: blur(13.5px);
   -webkit-backdrop-filter: blur(13.5px);
-  border-radius: 10px;
+  border-radius: 15px;;
   border: 1px solid rgba(255, 255, 255, 0.18);
   padding: 20px;
   margin: 20px;
@@ -79,7 +79,7 @@ export default {
   box-shadow: 0 8px 32px 0 rgba(31, 97, 135, 0.37);
   backdrop-filter: blur(13.5px);
   -webkit-backdrop-filter: blur(13.5px);
-  border-radius: 10px;
+  border-radius: 15px;;
   border: 1px solid rgba(255, 255, 255, 0.18);
   padding: 20px;
   margin-left: 20px;
@@ -123,7 +123,7 @@ h3 {
 }
 
 .button {
-    border-radius: 10px;
+    border-radius: 15px;;
     margin: 3px;
   }
 
@@ -148,7 +148,7 @@ h2 {
 
 .form-group input[type="email"],
 .form-group input[type="password"] {
-  border-radius: 10px;
+  border-radius: 15px;;
   padding: 10px; 
   border: 1px solid #ccc;
 }

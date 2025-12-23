@@ -94,7 +94,7 @@ export default {
   }
 
   .button {
-    border-radius: 10px;
+    border-radius: 15px;;
   }
 
   h2 {

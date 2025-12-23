@@ -170,7 +170,7 @@ export default {
 .release-card {
   background: rgba(16, 26, 35, 0.85);
   border: 1px solid hsla(0, 0%, 100%, .18);
-  border-radius: 10px;
+  border-radius: 15px;;
   box-shadow: 0 8px 32px 0 rgba(31, 97, 135, .37);
   backdrop-filter: blur(10px);
   padding: 30px;

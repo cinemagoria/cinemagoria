@@ -165,7 +165,7 @@ export default {
 
 .card {
   background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
+  border-radius: 15px;;
   padding: 3rem;
   width: 100%;
   max-width: 800px;
@@ -181,7 +181,7 @@ export default {
   height: 120px;
   align-items: center;
   background-color: #8BE9FD;
-  border-radius: 10px;
+  border-radius: 15px;;
   padding: 1rem;
   width: fit-content;
   margin-left: auto;

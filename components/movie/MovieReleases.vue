@@ -163,7 +163,7 @@ export default {
 @use '~/assets/css/utilities/variables' as *;
 .releases {
   background-color: rgba(0, 0, 0, 0.307);
-  border-radius: 10px;
+  border-radius: 15px;;
   padding-bottom: 4rem;
 }
 .container {

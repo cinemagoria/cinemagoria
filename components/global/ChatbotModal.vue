@@ -3183,7 +3183,7 @@ export default {
 .carousel-container { position: relative; display: flex; align-items: center; }
 .carousel-content { display: flex; overflow-x: auto; scroll-behavior: smooth; padding: 10px 5px; -ms-overflow-style: none; scrollbar-width: none; scroll-snap-type: x mandatory; gap: 15px; margin: 0 35px; }
 .carousel-content::-webkit-scrollbar { display: none; }
-.carousel-item { flex: 0 0 auto; width: 160px; border-radius: 10px; overflow: hidden; transition: all 0.3s ease; scroll-snap-align: start; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); background-color: #0f2133; }
+.carousel-item { flex: 0 0 auto; width: 160px; border-radius: 15px;; overflow: hidden; transition: all 0.3s ease; scroll-snap-align: start; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); background-color: #0f2133; }
 .carousel-item:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); }
 .poster-wrapper { position: relative; height: 240px; overflow: hidden; background-color: #222; }
 .carousel-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }

@@ -282,7 +282,7 @@ useHead({
 
 .content-container {
   background-color: rgba(0, 0, 0, 0.307);
-  border-radius: 10px;
+  border-radius: 15px;;
   padding: 2rem;
   margin-bottom: 2rem;
 }

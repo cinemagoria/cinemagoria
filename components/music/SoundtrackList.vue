@@ -75,7 +75,8 @@ export default {
       immediate: true,
       handler(newItems) {
         if (newItems && newItems.length) {
-          this.fetchTracks(newItems[0]);
+          const bestRelease = newItems.find(item => item['primary-type'] === 'Album') || newItems[0];
+          this.fetchTracks(bestRelease);
         }
       }
     }
@@ -127,6 +128,8 @@ export default {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 1rem 4rem;
+  top: 2rem;
+  position: relative;
   
   @media (min-width: $breakpoint-large) {
      padding: 0 5rem 4rem;
