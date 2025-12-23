@@ -28,7 +28,19 @@
         
         <div v-else-if="filteredRatedItems && filteredRatedItems.length > 0" class="rated-items-list">
           <div v-for="(item, index) in filteredRatedItems" :key="index" class="rated-item">
-            <img :src="item.details.posterForDb" class="rated-item-poster" :alt="item.details.nameForDb">
+            <div class="rated-item-image-container">
+              <div v-if="isImageLoading(item)" class="card-loader">
+                <Loader :size="30" />
+              </div>
+              <img 
+                :src="item.details.posterForDb" 
+                class="rated-item-poster" 
+                :alt="item.details.nameForDb"
+                :style="{ opacity: isImageLoading(item) ? 0 : 1, transition: 'opacity 0.3s ease' }"
+                @load="handleImageLoad(item)"
+                @error="handleImageLoad(item)"
+              >
+            </div>
             <div class="rated-item-info">
               <h4 class="rated-item-title">{{ item.details.nameForDb }}</h4>
               <div class="rated-item-meta">
@@ -158,7 +170,8 @@ export default {
       selectedRating: 0,
       hoverRating: 0,
       userReview: '',
-      loading: false
+      loading: false,
+      imageLoadingStates: {}
     };
   },
   
@@ -187,6 +200,26 @@ export default {
   },
   
   methods: {
+    getUniqueId(item) {
+      if (!item || !item.details) return null;
+      return `${item.details.typeForDb}_${item.details.idForDb}`;
+    },
+
+    isImageLoading(item) {
+      const id = this.getUniqueId(item);
+      if (!id) return false;
+      // Default to true (loading) if state is undefined
+      return this.imageLoadingStates[id] !== false;
+    },
+
+    handleImageLoad(item) {
+      const id = this.getUniqueId(item);
+      if (id) {
+        // Direct reactivity in Vue 3 (or Vue 2.7+)
+        this.imageLoadingStates[id] = false; 
+      }
+    },
+
     async show() {
       this.visible = true;
       await this.fetchRatedItems();
@@ -198,6 +231,7 @@ export default {
     
     async fetchRatedItems() {
       this.loading = true;
+      this.imageLoadingStates = {}; // Reset loading states
       try {
         const response = await fetch(`${this.tursoBackendUrl}/favorites/${this.userEmail}`);
         
@@ -543,10 +577,30 @@ export default {
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
 }
 
-.rated-item-poster {
+.rated-item-image-container {
+  position: relative;
   width: 100%;
   aspect-ratio: 2/3;
+}
+
+.rated-item-poster {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  display: block;
+}
+
+.card-loader {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  background-color: #0d1a22;
+  z-index: 2;
 }
 
 .rated-item-info {
