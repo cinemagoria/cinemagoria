@@ -90,7 +90,7 @@ export default {
   margin-bottom: 2rem;
   line-height: $base-line-height;
 
-  border-radius: 10px;
+  border-radius: 15px;;
   padding-bottom: 0.5rem;
   position: relative;
 }

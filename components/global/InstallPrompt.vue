@@ -89,7 +89,7 @@ export default {
     left: 50%;
     transform: translateX(-50%);
     z-index: 2000;
-    border-radius: 10px;
+    border-radius: 15px;;
 }
 
 .alert__close {

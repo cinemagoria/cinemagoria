@@ -75,7 +75,8 @@ export default {
       immediate: true,
       handler(newItems) {
         if (newItems && newItems.length) {
-          this.fetchTracks(newItems[0]);
+          const bestRelease = newItems.find(item => item['primary-type'] === 'Album') || newItems[0];
+          this.fetchTracks(bestRelease);
         }
       }
     }
@@ -127,6 +128,8 @@ export default {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 1rem 4rem;
+  top: 2rem;
+  position: relative;
   
   @media (min-width: $breakpoint-large) {
      padding: 0 5rem 4rem;
@@ -138,15 +141,16 @@ export default {
     justify-content: center;
     align-items: center;
     padding: 2rem;
-    min-height: 400px; /* Ensure sufficient height for centering */
+    min-height: 400px;
 }
 
 .albumCard {
-    background-color: rgba(0, 0, 0, 0.307);
-    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.307);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
     padding: 2rem;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .albumHeader {

@@ -534,7 +534,7 @@ export default {
 
 .info { 
   background-color: rgba(0, 0, 0, 0.307);
-  border-radius: 10px;
+  border-radius: 15px;;
   padding-bottom: 4rem;
   @media (min-width: $breakpoint-medium) { display: flex; }
 }
@@ -563,7 +563,7 @@ export default {
   height: 0;
   padding-top: 150.27%;
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: 15px;;
   background-color: $secondary-color;
   img, span { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
   span { display: flex; align-items: center; justify-content: center; }
@@ -874,7 +874,7 @@ export default {
   width: 100%;
   padding: 3rem;
   margin-top: 2rem;
-  border-radius: 10px;
+  border-radius: 15px;;
 }
 
 .recommendations-loader {
