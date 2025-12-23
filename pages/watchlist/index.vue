@@ -3863,34 +3863,7 @@ select.user-rating-select {
   }
 }
 
-.loading-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  min-height: 400px;
-}
 
-.loading-state p {
-  margin-top: 20px;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1.4rem;
-}
-
-.empty-state-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  text-align: center;
-  min-height: 400px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 15px;
-  margin: 20px auto;
-  max-width: 600px;
-}
 
 .empty-state-icon {
   width: 200px;
@@ -3996,22 +3969,19 @@ select.user-rating-select {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4rem 2rem;
+  padding: 4rem;
   color: #8b9bb4;
   text-align: center;
-  margin-top: 6rem;
+  margin-top: 4rem;
   position: relative;
+  min-height: 850px;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.307);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
 }
 
-.loading-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 2rem;
-  color: #acafb5;
-  text-align: center;
-}
+
 
 .loading-state svg {
   margin-bottom: 1rem;
@@ -4750,5 +4720,7 @@ svg.rating-logo.imdb {
   overflow: hidden;
   transition: all 0.3s ease;
   margin-top: 4rem;
+  min-height: 850px;
+  width: 100%;
 }
 </style>
