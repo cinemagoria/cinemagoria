@@ -9,19 +9,7 @@
         </nav>
         
         <div v-if="isLoadingFavorites" class="loading-state">
-          <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44" stroke="#2196f3">
-            <g fill="none" fill-rule="evenodd" stroke-width="2">
-              <circle cx="22" cy="22" r="1">
-                <animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/>
-                <animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/>
-              </circle>
-              <circle cx="22" cy="22" r="1">
-                <animate attributeName="r" begin="-0.9s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/>
-                <animate attributeName="stroke-opacity" begin="-0.9s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/>
-              </circle>
-            </g>
-          </svg>
-          <p>Cargando tus favoritos...</p>
+          <Loader />
         </div>
 
         <div v-else-if="showEmptyState" class="empty-state-container">
@@ -4003,6 +3991,18 @@ select.user-rating-select {
   gap: 10px;
 }
 
+.empty-state-container {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  color: #8b9bb4;
+  text-align: center;
+  margin-top: 6rem;
+  position: relative;
+}
+
 .loading-state {
   display: flex;
   flex-direction: column;
@@ -4735,5 +4735,20 @@ svg.rating-logo.imdb {
 .fade-enter, .fade-leave-to {
   opacity: 0;
   transform: translateY(-5px);
+}
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  text-align: center;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.307);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-top: 4rem;
 }
 </style>

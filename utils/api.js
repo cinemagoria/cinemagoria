@@ -502,6 +502,12 @@ export function getMovieProviders(id) {
             },
         }).then((response) => {
             const results = response.data.results;
+
+            if (!results) {
+                resolve([]);
+                return;
+            }
+
             let countryData = results.AR;
             let flatrate = [];
             let watchLink = '';
@@ -509,7 +515,7 @@ export function getMovieProviders(id) {
             if (countryData && countryData.flatrate) {
                 flatrate = countryData.flatrate;
                 watchLink = countryData.link;
-            } else {
+            } else if (results.US) {
                 countryData = results.US;
                 if (countryData && countryData.flatrate) {
                     flatrate = countryData.flatrate;
@@ -526,8 +532,8 @@ export function getMovieProviders(id) {
             resolve(providerData);
 
         }).catch((error) => {
-            console.error(error);
-            reject(error);
+            console.error("Error fetching movie providers:", error);
+            resolve([]);
         });
     });
 };
@@ -540,6 +546,12 @@ export function getTVShowProviders(id) {
             },
         }).then((response) => {
             const results = response.data.results;
+
+            if (!results) {
+                resolve([]);
+                return;
+            }
+
             let countryData = results.AR;
             let flatrate = [];
             let watchLink = '';
@@ -547,7 +559,7 @@ export function getTVShowProviders(id) {
             if (countryData && countryData.flatrate) {
                 flatrate = countryData.flatrate;
                 watchLink = countryData.link;
-            } else {
+            } else if (results.US) {
                 countryData = results.US;
                 if (countryData && countryData.flatrate) {
                     flatrate = countryData.flatrate;
@@ -564,8 +576,8 @@ export function getTVShowProviders(id) {
             resolve(providerData);
 
         }).catch((error) => {
-            console.error(error);
-            reject(error);
+            console.error("Error fetching TV show providers:", error);
+            resolve([]);
         });
     });
 };

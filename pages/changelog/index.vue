@@ -10,8 +10,7 @@
 
     <div class="changelog-section">
       <div v-if="loading" class="loading-container">
-        <div class="spinner"></div>
-        <p>Cargando versiones...</p>
+        <Loader />
       </div>
 
       <div v-else-if="error" class="error-container">
@@ -69,7 +68,8 @@ export default {
     };
   },
   components: {
-    UserNav
+    UserNav,
+    Loader: () => import('@/components/Loader')
   },
   data() {
     return {
@@ -348,7 +348,7 @@ export default {
   }
 }
 
-.loading-container, .error-container, .no-releases {
+.error-container, .no-releases {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -357,6 +357,22 @@ export default {
   text-align: center;
   color: #ccc;
   width: 100%;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  text-align: center;
+  color: #ccc;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.307);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 .spinner {
