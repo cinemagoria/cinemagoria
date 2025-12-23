@@ -23,6 +23,7 @@
 
         <img
           v-else
+          ref="posterImage"
           src="/image_not_found_yet_es.webp"
           alt="Imagen no encontrada"
           class="card__img--poster"
