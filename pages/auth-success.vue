@@ -34,9 +34,9 @@ export default {
   },
   async mounted() {
     const urlParams = new URLSearchParams(window.location.search);
-    this.token = urlParams.get('token');
-    this.email = urlParams.get('email');
-    this.name = urlParams.get('name');
+    this.token = urlParams.get('token') || this.$route.query.token;
+    this.email = urlParams.get('email') || this.$route.query.email;
+    this.name = urlParams.get('name') || this.$route.query.name;
     
     if (!this.token || !this.email) {
       this.error = 'Incomplete authentication information';
@@ -87,12 +87,16 @@ export default {
         localStorage.removeItem('auth_return_url');
         
         if (returnUrl.includes('/login') || returnUrl.includes('/register')) {
-          window.location.href = '/';
+          this.$router.push('/');
         } else {
-          window.location.href = returnUrl;
+          if (returnUrl.startsWith('http')) {
+            window.location.href = returnUrl;
+          } else {
+            this.$router.push(returnUrl);
+          }
         }
       } else {
-        window.location.href = '/';
+        this.$router.push('/');
       }
     },
     

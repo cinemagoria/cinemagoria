@@ -251,7 +251,7 @@ export default {
       const currentPath = this.$route?.path || window.location.pathname;
       
       if (currentPath === '/login' || currentPath === '/register') {
-        window.location.href = '/';
+        this.$router.push('/');
       } else {
         this.close();
       }
@@ -300,7 +300,7 @@ export default {
 
         const successUrl = `/auth-success?token=${encodeURIComponent(data.access_token)}&email=${encodeURIComponent(data.email)}&name=${encodeURIComponent(data.name || data.email)}&auth_provider=native`;
         
-        window.location.href = successUrl;
+        this.$router.push(successUrl);
       } catch (error) {
         if (error.response && error.response.status === 401) {
           this.errorMessage = 'Invalid login credentials.';
