@@ -277,8 +277,7 @@ export default {
     },
     hasExternalLinks() {
        const links = this.item.external_ids;
-       const hasLinks = links && (links.imdb_id || links.twitter_id || links.instagram_id || links.homepage || links.facebook_id);
-       return hasLinks && this.isReleasedOrCloseToRelease;
+       return links && (links.imdb_id || links.twitter_id || links.instagram_id || links.homepage || links.facebook_id);
     },
     isReleasedOrCloseToRelease() {
       if (!this.item.release_date) return true;
