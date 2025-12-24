@@ -80,7 +80,7 @@
           <ExternalLinks :links="item.external_ids" />
         </div>
 
-        <div v-if="providersToDisplay && providersToDisplay.length" :class="$style.watchSection">
+        <div v-if="shouldShowWatchOn" :class="$style.watchSection">
           <WatchOn 
             :providers="providersToDisplay"
             :imdb-id="item.external_ids.imdb_id"
@@ -285,7 +285,20 @@ export default {
     },
     hasExternalLinks() {
        const links = this.item.external_ids;
-       return links && (links.imdb_id || links.twitter_id || links.instagram_id || links.homepage || links.facebook_id);
+       const hasLinks = links && (links.imdb_id || links.twitter_id || links.instagram_id || links.homepage || links.facebook_id);
+       return hasLinks && this.isReleasedOrCloseToRelease;
+    },
+    isReleasedOrCloseToRelease() {
+      if (!this.item.release_date) return true;
+      const releaseDate = new Date(this.item.release_date);
+      const now = new Date();
+      const oneMonthFromNow = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
+      return releaseDate <= oneMonthFromNow;
+    },
+    shouldShowWatchOn() {
+       const hasProviders = this.providersToDisplay && this.providersToDisplay.length > 0;
+       const hasImdb = this.item.external_ids && this.item.external_ids.imdb_id;
+       return (hasProviders || hasImdb) && this.isReleasedOrCloseToRelease;
     }
   },
 
