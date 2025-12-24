@@ -110,6 +110,14 @@ yarn start
 
 ### Version History
 
+#### v4.1.0 — Visual Refinements & OST (2025-12-24)
+
+* **Original Soundtrack (OST):** Integrated MusicBrainz for comprehensive soundtrack details.
+* **Advanced Search:** Complete overhaul with new filters and improved discovery logic.
+* **Loading States:** Standardized loading indicators across the application.
+* **UI/UX Polish:** Refined layouts, spacing, and visual consistency.
+* **Performance:** Backend optimizations and Vue 3 migration refinements.
+
 #### v3.0.0 — Personalized Discovery (2025-12-19)
 
 * **Infrastructure:** Migrated deployment to Vercel for superior stability.
