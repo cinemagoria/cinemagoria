@@ -438,6 +438,12 @@ export default {
     this.shareTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde EnterCinema!";
     this.customTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde EnterCinema!";
     this.customMessage = 'Sinopsis: ' + this.item.overview + '\n\nExplora opciones de streaming, trailer, ficha técnica y mucho más aquí: ';
+    
+    this.$bus.$on('favorites-updated', this.checkIfFavorite);
+  },
+
+  beforeDestroy() {
+    this.$bus.$off('favorites-updated', this.checkIfFavorite);
   },
 
   methods: {
