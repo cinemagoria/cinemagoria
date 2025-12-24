@@ -799,6 +799,7 @@ export default {
       console.error('Error al guardar en la base de datos:', error.message);
     }
     this.$bus.$on('rated-items-updated', this.checkData);
+    this.$bus.$on('favorites-updated', this.checkData);
   },
 
   beforeDestroy() {
@@ -808,6 +809,7 @@ export default {
       window.removeEventListener('resize', this.handleResize);
     }
     this.$bus.$off('rated-items-updated', this.checkData);
+    this.$bus.$off('favorites-updated', this.checkData);
     document.removeEventListener('click', this.closeCardMenu);
   },
   
@@ -1261,6 +1263,8 @@ export default {
         const movieGenresSet = new Set();
         const tvGenresSet = new Set();
         const years = new Set();
+        
+        const fetchImdbPromises = [];
 
         if (data.favorites_json.movies) {
           for (const movie of data.favorites_json.movies) {
@@ -1272,27 +1276,29 @@ export default {
               continue;
             }
             
+            moviesFetched.push(movieData);
+            
             if (movieData.details.external_ids?.imdb_id && !movieData.details.rating_source) {
-              try {
-                const imdbResponse = await fetch(`/api/imdb-rating/${movieData.details.external_ids.imdb_id}`);
-                const imdbData = await imdbResponse.json();
-                
-                if (imdbData.found) {
-                  movieData.details.imdb_rating = imdbData.score;
-                  movieData.details.imdb_votes = imdbData.votes;
-                  movieData.details.rating_source = 'imdb';
-                } else {
+              const fetchPromise = fetch(`/api/imdb-rating/${movieData.details.external_ids.imdb_id}`)
+                .then(res => res.json())
+                .then(imdbData => {
+                  if (imdbData.found) {
+                    movieData.details.imdb_rating = imdbData.score;
+                    movieData.details.imdb_votes = imdbData.votes;
+                    movieData.details.rating_source = 'imdb';
+                  } else {
+                    movieData.details.rating_source = 'tmdb';
+                  }
+                })
+                .catch(err => {
+                  console.error('Error fetching IMDb rating:', err);
                   movieData.details.rating_source = 'tmdb';
-                }
-              } catch (err) {
-                console.error('Error fetching IMDb rating:', err);
-                movieData.details.rating_source = 'tmdb';
-              }
+                });
+                
+              fetchImdbPromises.push(fetchPromise);
             } else if (!movieData.details.rating_source) {
               movieData.details.rating_source = movieData.details.imdb_rating ? 'imdb' : 'tmdb';
             }
-            
-            moviesFetched.push(movieData);
             
             if (movieData.details.genresForDb) {
               const genresList = movieData.details.genresForDb.split(', ');
@@ -1318,27 +1324,29 @@ export default {
               continue;
             }
             
+            tvFetched.push(tvData);
+            
             if (tvData.details.external_ids?.imdb_id && !tvData.details.rating_source) {
-              try {
-                const imdbResponse = await fetch(`/api/imdb-rating/${tvData.details.external_ids.imdb_id}`);
-                const imdbData = await imdbResponse.json();
-                
-                if (imdbData.found) {
-                  tvData.details.imdb_rating = imdbData.score;
-                  tvData.details.imdb_votes = imdbData.votes;
-                  tvData.details.rating_source = 'imdb';
-                } else {
+              const fetchPromise = fetch(`/api/imdb-rating/${tvData.details.external_ids.imdb_id}`)
+                .then(res => res.json())
+                .then(imdbData => {
+                  if (imdbData.found) {
+                    tvData.details.imdb_rating = imdbData.score;
+                    tvData.details.imdb_votes = imdbData.votes;
+                    tvData.details.rating_source = 'imdb';
+                  } else {
+                    tvData.details.rating_source = 'tmdb';
+                  }
+                })
+                .catch(err => {
+                  console.error('Error fetching IMDb rating:', err);
                   tvData.details.rating_source = 'tmdb';
-                }
-              } catch (err) {
-                console.error('Error fetching IMDb rating:', err);
-                tvData.details.rating_source = 'tmdb';
-              }
+                });
+
+              fetchImdbPromises.push(fetchPromise);
             } else if (!tvData.details.rating_source) {
               tvData.details.rating_source = tvData.details.imdb_rating ? 'imdb' : 'tmdb';
             }
-            
-            tvFetched.push(tvData);
             
             if (tvData.details.genresForDb) {
               const genresList = tvData.details.genresForDb.split(', ');
@@ -1352,6 +1360,11 @@ export default {
               years.add(tvData.details.yearStartForDb);
             }
           }
+        }
+
+        // Wait for all IMDb fetches to complete in parallel
+        if (fetchImdbPromises.length > 0) {
+          await Promise.all(fetchImdbPromises);
         }
 
         this.moviesFetched = moviesFetched;
