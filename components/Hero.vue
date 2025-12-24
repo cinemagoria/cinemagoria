@@ -438,6 +438,12 @@ export default {
     this.shareTitle = "I'd like to share '" + this.nameForDb + "' from EnterCinema!";
     this.customTitle = "I'd like to share '" + this.nameForDb + "' from EnterCinema!";
     this.customMessage = 'Synopsis: ' + this.item.overview + '\n\nExplore streaming options, trailer, technical details, and much more here: ';
+    
+    this.$bus.$on('favorites-updated', this.checkIfFavorite);
+  },
+
+  beforeDestroy() {
+    this.$bus.$off('favorites-updated', this.checkIfFavorite);
   },
 
   methods: {
