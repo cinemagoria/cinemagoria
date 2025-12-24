@@ -1,5 +1,5 @@
 export default defineNuxtPlugin((nuxtApp) => {
-    console.log('Lazyload plugin running', process.server ? 'on SERVER' : 'on CLIENT');
+
     nuxtApp.vueApp.directive('lazyload', {
         mounted(el, binding) {
             if (binding.value) {
