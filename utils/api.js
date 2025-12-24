@@ -371,6 +371,11 @@ export function getMovie(id) {
         Promise.all([mainRequest, extraVideosRequest]).then(async ([response, videoResponse]) => {
             const responseData = response.data;
 
+            if (!responseData || responseData.success === false) {
+                reject(new Error(responseData?.status_message || 'Movie not found'));
+                return;
+            }
+
             if (videoResponse.data && videoResponse.data.results) {
                 const currentIds = new Set((responseData.videos.results || []).map(v => v.id));
                 const newVideos = videoResponse.data.results.filter(v => !currentIds.has(v.id));
@@ -674,6 +679,11 @@ export function getTvShow(id) {
 
         Promise.all([mainRequest, extraVideosRequest]).then(async ([response, videoResponse]) => {
             const responseData = response.data;
+
+            if (!responseData || responseData.success === false) {
+                reject(new Error(responseData?.status_message || 'TV Show not found'));
+                return;
+            }
 
             if (videoResponse.data && videoResponse.data.results) {
                 const currentIds = new Set((responseData.videos.results || []).map(v => v.id));

@@ -3,33 +3,44 @@
     <UserNav @show-rated-modal="showRatedItems" />
     <TopNav :title="metaTitle" />
 
-    <Hero v-if="item && item.id" :item="item" />
-    
-    <MediaNav :menu="menu" @clicked="navClicked" />
+    <div v-if="error" class="error-page-container">
+      <div class="empty-state-container">
+        <img src="/cinema-popcorn.svg" alt="Película no encontrada" class="empty-state-icon">
+        <h3>Película no encontrada</h3>
+        <p>Lo sentimos, no pudimos encontrar la película que buscas. Puede que haya sido eliminada o que el enlace sea incorrecto.</p>
+        <button @click="router.push('/')" class="refine-filters-btn">Volver al Inicio</button>
+      </div>
+    </div>
 
-    <template v-if="activeMenu === 'sinopsis'">
-      <MovieInfo v-if="item && item.id" :item="item" :reviews-prop="reviews">
-        <template #before-recommendations>
-          <Credits v-if="showCredits" :people="item.credits.cast" />
-        </template>
-      </MovieInfo>
-    </template>
+    <template v-else>
+      <Hero v-if="item && item.id" :item="item" />
+      
+      <MediaNav :menu="menu" @clicked="navClicked" />
 
-    <template v-if="activeMenu === 'estrenos'">
-      <MovieReleases v-if="item && item.release_dates" :item="item" />
-    </template>
+      <template v-if="activeMenu === 'sinopsis'">
+        <MovieInfo v-if="item && item.id" :item="item" :reviews-prop="reviews">
+          <template #before-recommendations>
+            <Credits v-if="showCredits" :people="item.credits.cast" />
+          </template>
+        </MovieInfo>
+      </template>
 
-    <template v-if="activeMenu === 'videos' && showVideos">
-      <Videos :videos="item.videos.results" />
-    </template>
+      <template v-if="activeMenu === 'estrenos'">
+        <MovieReleases v-if="item && item.release_dates" :item="item" />
+      </template>
 
-    <template v-if="activeMenu === 'fotos' && showImages">
-      <Images v-if="item.images.backdrops.length" title="Fondos" type="backdrop" :images="item.images.backdrops" />
-      <Images v-if="item.images.posters.length" title="Pósters" type="poster" :images="item.images.posters" />
-    </template>
+      <template v-if="activeMenu === 'videos' && showVideos">
+        <Videos :videos="item.videos.results" />
+      </template>
 
-    <template v-if="activeMenu === 'bso' && showSoundtracks">
-      <SoundtrackList :items="soundtrackItems" />
+      <template v-if="activeMenu === 'fotos' && showImages">
+        <Images v-if="item.images.backdrops.length" title="Fondos" type="backdrop" :images="item.images.backdrops" />
+        <Images v-if="item.images.posters.length" title="Pósters" type="poster" :images="item.images.posters" />
+      </template>
+
+      <template v-if="activeMenu === 'bso' && showSoundtracks">
+        <SoundtrackList :items="soundtrackItems" />
+      </template>
     </template>
   </main>
 </template>
@@ -179,5 +190,68 @@ useHead({
 @media (max-width: 1200px) {
   .user-nav-container { top: 7px !important; }
   .container { bottom: 10px !important; }
+}
+
+.error-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 2rem;
+}
+
+.empty-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  color: #8b9bb4;
+  text-align: center;
+  width: 100%;
+  max-width: 800px;
+  background: rgba(0, 0, 0, 0.307);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+}
+
+.empty-state-icon {
+  width: 200px;
+  height: 200px;
+  margin-bottom: 25px;
+  opacity: 0.7;
+}
+
+.empty-state-container h3 {
+  color: #8BE9FD;
+  font-size: 2rem;
+  margin: 0 auto 15px;
+  letter-spacing: 1px;
+}
+
+.empty-state-container p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.4rem;
+  margin: 8px auto 25px;
+  line-height: 1.5;
+}
+
+.refine-filters-btn {
+  padding: 12px 30px;
+  background: rgba(139, 233, 253, 0.1);
+  border: 1px solid #8BE9FD;
+  border-radius: 25px;
+  color: #8BE9FD;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: block;
+}
+
+.refine-filters-btn:hover {
+  background: rgba(139, 233, 253, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(139, 233, 253, 0.3);
 }
 </style>

@@ -313,6 +313,11 @@ export default {
 
   methods: {
     handlePersonClick(notification) {
+      if (this.isTvFollow(notification.person_id)) {
+        this.$router.push(`/tv/${notification.person_id}`);
+        return;
+      }
+
       if (notification.person_id) {
         if (this.isCompany(notification.person_id)) {
           this.$router.push(`/production/${notification.person_id}`);
@@ -323,6 +328,11 @@ export default {
     },
 
     handleContentClick(notification) {
+      if (this.isTvFollow(notification.person_id)) {
+        this.$router.push(`/tv/${notification.person_id}`);
+        return;
+      }
+
       let url;
       if (notification.media_type === 'episode') {
         url = `/tv/${notification.person_id}`;
@@ -330,6 +340,26 @@ export default {
         url = `/${notification.media_type}/${notification.media_id}`;
       }
       this.$router.push(url);
+    },
+
+    handleNotificationClick(notification) {
+      if (this.isTvFollow(notification.person_id)) {
+        this.$router.push(`/tv/${notification.person_id}`);
+        return;
+      }
+
+      let url;
+      if (notification.media_type === 'episode') {
+        url = `/tv/${notification.person_id}`;
+      } else {
+        url = `/${notification.media_type}/${notification.media_id}`;
+      }
+      this.$router.push(url);
+    },
+
+    isTvFollow(id) {
+      if (!id) return false;
+      return this.tvFollowsCache.some(f => String(f.tv_id) === String(id));
     },
     async fetchTvFollowsForCache() {
       if (!this.userEmail) return;
