@@ -360,6 +360,10 @@ export function getMovie(id) {
             },
         }).then(async (response) => {
             const responseData = response.data;
+            if (!responseData || responseData.success === false) {
+                reject(new Error(responseData?.status_message || 'Movie not found'));
+                return;
+            }
             const [providersResult, reviewsResult] = await Promise.allSettled([
                 getMovieProviders(id),
                 getMovieReviews(id)
@@ -633,6 +637,10 @@ export function getTvShow(id) {
             },
         }).then(async (response) => {
             const responseData = response.data;
+            if (!responseData || responseData.success === false) {
+                reject(new Error(responseData?.status_message || 'TV Show not found'));
+                return;
+            }
             try {
                 const providers = await getTVShowProviders(id);
                 responseData.providers = providers;
