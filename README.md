@@ -110,6 +110,14 @@ yarn start
 
 ### Version History
 
+#### v4.1.0 — Visual Refinements & OST (2025-12-24)
+
+* **Original Soundtrack (OST):** Integrated MusicBrainz for comprehensive soundtrack details.
+* **Advanced Search:** Complete overhaul with new filters and improved discovery logic.
+* **Loading States:** Standardized loading indicators across the application.
+* **UI/UX Polish:** Refined layouts, spacing, and visual consistency.
+* **Performance:** Backend optimizations and Vue 3 migration refinements.
+
 #### v4.0.0 — The Hybrid Migration (2025-12-21)
 
 * **Architecture:** Migrated from Nuxt 2 (Vue 2) to Nuxt 4 (Vue 3, ^4.2.2) using a "Hybrid" compatibility strategy.
