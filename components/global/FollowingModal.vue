@@ -3,7 +3,7 @@
     <div :class="$style.modalWrapper">
       <div :class="$style.modalContent">
         <div :class="$style.modalHeader">
-          <h2>Siguiendo</h2>
+          <h2 class="title-primary">Siguiendo</h2>
           <button @click="close" :class="$style.closeButton">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18"/>
@@ -16,17 +16,17 @@
           <button 
             @click="activeTab = 'people'" 
             :class="[{ [$style.active]: activeTab === 'people' }]">
-            Personas ({{ peopleCount }})
+            <span :class="$style.tabLabel">Personas ({{ peopleCount }})</span>
           </button>
           <button 
             @click="activeTab = 'tv'" 
             :class="[{ [$style.active]: activeTab === 'tv' }]">
-            Series de TV ({{ tvCount }})
+            <span :class="$style.tabLabel">Series de TV ({{ tvCount }})</span>
           </button>
           <button 
             @click="activeTab = 'companies'" 
             :class="[{ [$style.active]: activeTab === 'companies' }]">
-            Productoras ({{ companiesCount }})
+            <span :class="$style.tabLabel">Productoras ({{ companiesCount }})</span>
           </button>
         </div>
 
@@ -564,31 +564,49 @@ export default {
 
 .tabs {
   display: flex;
-  gap: 1rem;
-  padding: 1.5rem 2rem 0;
-  border-bottom: 1px solid rgba(127, 219, 241, 0.2);
-  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: center;
+  position: relative;
+  padding-left: 10px;
+  background: transparent;
+  padding: 0;
+  gap: 0;
 
   button {
-    padding: 1rem 2rem;
-    background: none;
+    flex: 1;
+    background: transparent;
     border: none;
     color: rgba(255, 255, 255, 0.6);
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    padding: 12px 0;
     cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transition: all 0.3s ease;
-    font-weight: 500;
+    transition: all 0.2s ease;
+    position: relative;
+    text-align: center;
+    font-family: 'Ortica', 'Roboto', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    text-shadow: 
+        0 1px 2px rgba(255, 255, 255, 0.3),
+        0 2px 8px rgba(255, 255, 255, 0.2),
+        0 4px 16px rgba(139, 233, 253, 0.15);
 
     &.active {
       color: #8BE9FD;
-      border-radius: 7px;
-      border-bottom-color: #8BE9FD;
-      background: rgba(139, 233, 253, 0.1);
+      background: transparent;
+      border-radius: 0;
+      border-bottom: none;
     }
 
-    &:hover:not(.active) {
-      color: rgba(255, 255, 255, 0.8);
+    &.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #8BE9FD;
     }
   }
 }
@@ -751,20 +769,26 @@ export default {
 }
 
 .unfollowButton {
-  width: 100%;
-  padding: 0.6rem;
-  background: rgba(139, 233, 253, 0.1);
-  border: 1px solid #db3939;
-  border-radius: 6px;
-  color: #d48282;
-  font-size: 1.3rem;
+  background: rgba(255, 0, 0, 0.2);
+  color: #fff;
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 0;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  border-radius: 30px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &:hover {
-    background: #f03131;
-    color: #fff;
+    background: rgba(255, 0, 0, 0.4);
+    border-color: rgba(255, 0, 0, 0.6);
     transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
   }
 }
 .emptyState {
@@ -817,10 +841,22 @@ padding: 1rem 2rem;
 
   h2 {
     font-size: 2.4rem;
-    color: #fff;
+    color: #8BE9FD;
     margin: 0;
     flex: 1;
     text-align: center;
   }
+}
+
+.following-.title-primary {
+  font-size: 2.4rem;
+  color: #8BE9FD;
+}
+
+.tabLabel {
+  text-transform: uppercase;
+  margin: 0 auto;
+  position: relative;
+  font-size: 1.6rem;
 }
 </style>

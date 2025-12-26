@@ -3987,7 +3987,7 @@ select.user-rating-select {
   text-align: center;
   margin-top: 4rem;
   position: relative;
-  min-height: 850px;
+  min-height: 400px;
   width: 100%;
   background: rgba(0, 0, 0, 0.307);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -4733,7 +4733,7 @@ svg.rating-logo.imdb {
   overflow: hidden;
   transition: all 0.3s ease;
   margin-top: 4rem;
-  min-height: 850px;
+  min-height: 400px;
   width: 100%;
 }
 </style>

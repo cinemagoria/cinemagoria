@@ -2,7 +2,7 @@
   <div v-if="visible" class="modal-overlay" @click="close">
     <div class="rated-items-modal" @click.stop>
       <div class="modal-header">
-        <h3 class="title-primary">Tus Valoraciones</h3>
+        <h2 class="title-primary">Tus Valoraciones</h2>
         <button class="close-btn" @click="close">×</button>
       </div>
       
@@ -11,13 +11,13 @@
           :class="['tab-btn', { active: currentTab === 'movies' }]" 
           @click="currentTab = 'movies'"
         >
-          <span style="position:relative; margin:0 auto;">Películas</span>
+          <span class="tab-labels">Películas</span>
         </button>
         <button 
           :class="['tab-btn', { active: currentTab === 'tv' }]" 
           @click="currentTab = 'tv'"
         >
-          <span style="position:relative; margin:0 auto;">Series</span>
+          <span class="tab-labels">Series</span>
         </button>
       </div>
       
@@ -453,10 +453,13 @@ export default {
   max-width: 850px;
   height: auto;
   max-height: 90vh;
-  background: linear-gradient(to bottom right, #092739, #000000);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, rgba(6, 47, 64, 0.98) 0%, rgba(10, 30, 40, 0.99) 100%);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 28' width='56' height='28'%3E%3Cpath fill='%237ed2e3' fill-opacity='0.1' d='M56 26v2h-7.75c2.3-1.27 4.94-2 7.75-2zm-26 2a2 2 0 1 0-4 0h-4.09A25.98 25.98 0 0 0 0 16v-2c.67 0 1.34.02 2 .07V14a2 2 0 0 0-2-2v-2a4 4 0 0 1 3.98 3.6 28.09 28.09 0 0 1 2.8-3.86A8 8 0 0 0 0 6V4a9.99 9.99 0 0 1 8.17 4.23c.94-.95 1.96-1.83 3.03-2.63A13.98 13.98 0 0 0 0 0h7.75c2 1.1 3.73 2.63 5.1 4.45 1.12-.72 2.3-1.37 3.53-1.93A20.1 20.1 0 0 0 14.28 0h2.7c.45.56.88 1.14 1.29 1.74 1.3-.48 2.63-.87 4-1.15-.11-.2-.23-.4-.36-.59H26v.07a28.4 28.4 0 0 1 4 0V0h4.09l-.37.59c1.38.28 2.72.67 4.01 1.15.4-.6.84-1.18 1.3-1.74h2.69a20.1 20.1 0 0 0-2.1 2.52c1.23.56 2.41 1.2 3.54 1.93A16.08 16.08 0 0 1 48.25 0H56c-4.58 0-8.65 2.2-11.2 5.6 1.07.8 2.09 1.68 3.03 2.63A9.99 9.99 0 0 1 56 4v2a8 8 0 0 0-6.77 3.74c1.03 1.2 1.97 2.5 2.79 3.86A4 4 0 0 1 56 10v2a2 2 0 0 0-2 2.07 28.4 28.4 0 0 1 2-.07v2c-9.2 0-17.3 4.78-21.91 12H30zM7.75 28H0v-2c2.81 0 5.46.73 7.75 2zM56 20v2c-5.6 0-10.65 2.3-14.28 6h-2.7c4.04-4.89 10.15-8 16.98-8zm-39.03 8h-2.69C10.65 24.3 5.6 22 0 22v-2c6.83 0 12.94 3.11 16.97 8zm15.01-.4a28.09 28.09 0 0 1 2.8-3.86 8 8 0 0 0-13.55 0c1.03 1.2 1.97 2.5 2.79 3.86a4 4 0 0 1 7.96 0zm14.29-11.86c1.3-.48 2.63-.87 4-1.15a25.99 25.99 0 0 0-44.55 0c1.38.28 2.72.67 4.01 1.15a21.98 21.98 0 0 1 36.54 0zm-5.43 2.71c1.13-.72 2.3-1.37 3.54-1.93a19.98 19.98 0 0 0-32.76 0c1.23.56 2.41 1.2 3.54 1.93a15.98 15.98 0 0 1 25.68 0zm-4.67 3.78c.94-.95 1.96-1.83 3.03-2.63a13.98 13.98 0 0 0-22.4 0c1.07.8 2.09 1.68 3.03 2.63a9.99 9.99 0 0 1 16.34 0z'%3E%3C/path%3E%3C/svg%3E");
+  box-shadow: 0 12px 40px 0 rgba(31, 104, 135, 0.6);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 16px;
+  border: 1px solid rgba(127, 219, 241, 0.3);
   display: flex;
   flex-direction: column;
 }
@@ -932,5 +935,17 @@ export default {
   .remove-rating-btn {
     max-width: 100%;
   }
+}
+
+.title-primary {
+  margin: 0 auto;
+  font-size: 2.4rem;
+}
+
+.tab-labels {
+  text-transform: uppercase;
+  margin: 0 auto;
+  position: relative;
+  font-size: 1.6rem;
 }
 </style>
