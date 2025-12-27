@@ -146,6 +146,9 @@
 <script>
 import Loader from '@/components/Loader';
 
+
+import { mapItemToDbPayload } from '~/utils/itemMapper';
+
 export default {
   components: {
     Loader
@@ -268,16 +271,7 @@ export default {
         const wasIn = this.inWatchlist;
         this.inWatchlist = !wasIn;
 
-        const item = {
-           idForDb: this.itemToAdd.idForDb || this.itemToAdd.id,
-           typeForDb: this.itemToAdd.typeForDb || (this.itemToAdd.title ? 'movie' : 'tv'),
-           nameForDb: this.itemToAdd.nameForDb || this.itemToAdd.title || this.itemToAdd.name,
-           posterForDb: this.itemToAdd.posterForDb || this.itemToAdd.poster_path,
-           imdb_rating: this.itemToAdd.imdb_rating || this.itemToAdd.vote_average,
-           imdb_votes: this.itemToAdd.imdb_votes || this.itemToAdd.vote_count,
-           year_start: this.itemToAdd.yearStartForDb || (this.itemToAdd.release_date || this.itemToAdd.first_air_date || '').substr(0, 4),
-           genres: this.itemToAdd.genresForDb || this.itemToAdd.genres
-        };
+        const item = mapItemToDbPayload(this.itemToAdd);
 
         try {
             if (wasIn) {
@@ -303,19 +297,7 @@ export default {
              try {
                 const mappedItems = this.itemsToAdd
                     .filter(raw => raw && (raw.idForDb || raw.id))
-                    .map(raw => ({
-                        ...raw,
-                        idForDb: raw.idForDb || raw.id,
-                        typeForDb: raw.typeForDb || (raw.title ? 'movie' : 'tv'),
-                        nameForDb: raw.nameForDb || raw.title || raw.name,
-                        posterForDb: raw.posterForDb || raw.poster_path,
-                        imdb_votes: raw.imdb_votes || raw.vote_count,
-                        imdb_rating: raw.imdb_rating || raw.vote_average,
-                        starsForDb: raw.starsForDb || (raw.vote_average ? raw.vote_average * 10 : null),
-                        yearStartForDb: raw.yearStartForDb || (raw.release_date || raw.first_air_date || '').substr(0, 4),
-                        genres: raw.genresForDb || raw.genres,
-                        topLevel: true 
-                    }));
+                    .map(raw => ({ ...raw, ...mapItemToDbPayload(raw), topLevel: true }));
 
                 await fetch(`${this.tursoBackendUrl}/lists/${listId}/items`, {
                     method: 'POST',
@@ -342,16 +324,7 @@ export default {
              list.item_count = (list.item_count || 0) + 1;
          }
 
-         const item = {
-            idForDb: this.itemToAdd.idForDb || this.itemToAdd.id,
-            typeForDb: this.itemToAdd.typeForDb || (this.itemToAdd.title ? 'movie' : 'tv'),
-            nameForDb: this.itemToAdd.nameForDb || this.itemToAdd.title || this.itemToAdd.name,
-            posterForDb: this.itemToAdd.posterForDb || this.itemToAdd.poster_path,
-            imdb_votes: this.itemToAdd.imdb_votes || this.itemToAdd.imdbVotes || this.itemToAdd.vote_count,
-            yearStartForDb: this.itemToAdd.yearStartForDb || (this.itemToAdd.release_date || this.itemToAdd.first_air_date || '').substr(0, 4),
-            genres: this.itemToAdd.genresForDb || this.itemToAdd.genres,
-            topLevel: true 
-         };
+         const item = { ...mapItemToDbPayload(this.itemToAdd), topLevel: true };
 
          try {
              if (isPresent) {
@@ -359,7 +332,7 @@ export default {
                      method: 'DELETE'
                  });
              } else {
-                 const payload = { ...this.itemToAdd, ...item };
+                  const payload = mapItemToDbPayload(this.itemToAdd);
                  await fetch(`${this.tursoBackendUrl}/lists/${listId}/items`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
