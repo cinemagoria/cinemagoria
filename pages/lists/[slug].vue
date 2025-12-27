@@ -59,9 +59,7 @@
 
         <div v-else>
           <div class="column">
-            <h2 class="title-secondary" style="color: #acafb5; font-size: 16px;">
-                {{ filter === 'movies' ? 'Movies' : 'TV Shows' }} in List
-            </h2>
+
             
              <div class="new-controls-container">
               <label class="switch">
@@ -1285,13 +1283,114 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     &:hover { background: rgba(255, 0, 0, 0.4); }
 }
 
-// Pagination
-.pagination, .pagination-footer {
-    display: flex; justify-content: center; align-items: center; gap: 1rem;
-    margin-bottom: 2rem; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 12px;
+// Pagination Styles from Watchlist
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    width: 97% !important;
+    margin: 0 auto;
+    background: rgba(82, 71, 71, 0);
+    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+    backdrop-filter: blur(16px);
+    padding: 8px;
+    gap: 0.5rem;
+    border: 0.5px #31414C solid;
+    top: 2px;
+    margin-top: 3rem;
+    position: relative;
+    padding-top: 1rem;
+    margin-bottom: 0.5rem;
 }
+
+.pagination-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    width: 97% !important;
+    margin: 0 auto;
+    background: rgba(16, 20, 33, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+    backdrop-filter: blur(16px);
+    padding: 8px;
+    gap: 0.5rem;
+    border: 0.5px #31414C solid;
+    top: -7px; /* Moved down by approx 0.5rem from -15px */
+    position: relative;
+}
+
+.pagination button, .pagination-footer button {
+  padding: 0.5rem 1rem;
+  background: rgba( 82, 71, 71, 0 );
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur( 16px );
+  -webkit-backdrop-filter: blur( 16px );
+  border-radius: 25px;
+  border: 1px solid rgba( 255, 255, 255, 0.18 );
+  color: #fff;
+  margin: 5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination button:disabled, .pagination-footer button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination button:active, .pagination-footer button:active {
+  transform: scale(1.1);
+}
+
+.pagination-text-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pagination-label, .pagination-text {
+  font-family: 'Ortica', 'Roboto', sans-serif;
+  color: #8BE9FD;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
 .pagination-input {
-    background: transparent; border: 1px solid #555; color: #fff; width: 50px; text-align: center; border-radius: 4px;
+  background-color: #0C181F;
+  color: #8BE9FD;
+  font-family: 'Roboto', sans-serif;
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 7px;
+  text-align: center;
+  padding: 4px 2px;
+  height: 28px;
+  width: 50px;
+  font-size: 1.1rem;
+  outline: none;
+  transition: border-color 0.2s;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.pagination-input:focus {
+  border-color: #8BE9FD;
+}
+
+.pagination-number {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Ensure movie-grid aligns with this width to complete the encapsulated look */
+.movie-grid {
+    width: 97% !important;
+    margin: 0 auto;
 }
 
 // Modals Common
