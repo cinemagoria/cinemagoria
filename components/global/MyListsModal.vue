@@ -268,18 +268,21 @@ export default {
              // BULK ADD MODE
              try {
                 // Prepare items for DB
-                const mappedItems = this.itemsToAdd.map(raw => ({
-                    idForDb: raw.idForDb || raw.id,
-                    typeForDb: raw.typeForDb || (raw.title ? 'movie' : 'tv'),
-                    nameForDb: raw.nameForDb || raw.title || raw.name,
-                    posterForDb: raw.posterForDb || raw.poster_path,
-                    imdb_votes: raw.imdb_votes || raw.vote_count,
-                    imdb_rating: raw.imdb_rating || raw.vote_average,
-                    starsForDb: raw.starsForDb || (raw.vote_average ? raw.vote_average * 10 : null),
-                    yearStartForDb: raw.yearStartForDb || (raw.release_date || raw.first_air_date || '').substr(0, 4),
-                    genres: raw.genresForDb || raw.genres,
-                    topLevel: true 
-                }));
+                const mappedItems = this.itemsToAdd
+                    .filter(raw => raw && (raw.idForDb || raw.id))
+                    .map(raw => ({
+                        ...raw, // Include all original props as fallback
+                        idForDb: raw.idForDb || raw.id,
+                        typeForDb: raw.typeForDb || (raw.title ? 'movie' : 'tv'),
+                        nameForDb: raw.nameForDb || raw.title || raw.name,
+                        posterForDb: raw.posterForDb || raw.poster_path,
+                        imdb_votes: raw.imdb_votes || raw.vote_count,
+                        imdb_rating: raw.imdb_rating || raw.vote_average,
+                        starsForDb: raw.starsForDb || (raw.vote_average ? raw.vote_average * 10 : null),
+                        yearStartForDb: raw.yearStartForDb || (raw.release_date || raw.first_air_date || '').substr(0, 4),
+                        genres: raw.genresForDb || raw.genres,
+                        topLevel: true 
+                    }));
 
                 await fetch(`${this.tursoBackendUrl}/lists/${listId}/items`, {
                     method: 'POST',
@@ -290,7 +293,6 @@ export default {
                 list.item_count = (list.item_count || 0) + mappedItems.length;
                 this.$bus.$emit('lists-updated');
                 this.close(); // Close after bulk add
-                alert(`Added ${mappedItems.length} items to "${list.name}"`);
              } catch(e) {
                  console.error(e);
                  alert('Failed to add items to list');
