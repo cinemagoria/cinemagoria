@@ -9,7 +9,6 @@
     <transition name="fade">
       <div v-if="isOpen" class="dropdown-menu">
         
-        <!-- View: Main -->
         <div v-if="view === 'main'" class="menu-view">
            <button class="menu-item" @click="openRate">
              <span class="icon">
@@ -38,7 +37,7 @@
            </button>
         </div>
 
-        <!-- View: Manage Lists -->
+
         <div v-else-if="view === 'manage'" class="menu-view">
            <div class="menu-header">
               <button class="back-btn" @click="view = 'main'">
@@ -81,13 +80,13 @@
 export default {
   props: {
     item: { type: Object, required: true },
-    currentList: { type: Object, default: null } // If present, indicates we are in a list context
+    currentList: { type: Object, default: null }
   },
   
   data() {
     return {
       isOpen: false,
-      view: 'main', // main | manage
+      view: 'main',
       loadingLists: false,
       userLists: [],
       membership: { inWatchlist: false, lists: [] }
@@ -117,7 +116,6 @@ export default {
     userEmail() {
         return localStorage.getItem('email');
     },
-    // Map item props for consistency
     itemType() { return this.item.media_type || (this.item.title ? 'movie' : 'tv'); },
     itemId() { return this.item.id; }
   },
@@ -136,19 +134,7 @@ export default {
     },
     
     openRate() {
-        // Emit event to open rating modal (handled by parent or global bus)
-        // Card.vue usually handles this or passes it up
-        // We can use the bus
-        this.$bus.$emit('show-rated-modal'); // Wait, RatedModal is a list. We need properties.
-        // Actually Card.vue has `openRatingModal(item)`.
-        // Let's emit an event that `[slug].vue` or `watchlist/index.vue` can catch?
-        // Or better: emit 'rate-item' with item payload.
-        // But QuickFav handles Favorites. Hero handles rating directly.
-        // Let's assume there is a global rating modal or we inject one.
-        // For now, let's alert or integrate properly later. 
-        // Actually, RatedModal is for *your* rated items list.
-        // Hero has `ratingModalVisible`.
-        // We should emit to the parent Card to handle rating opening?
+        this.$bus.$emit('show-rated-modal');
         this.$emit('rate', this.item);
         this.close();
     },
@@ -193,19 +179,12 @@ export default {
     
     async toggleWatchlist() {
         const wasIn = this.membership.inWatchlist;
-        this.membership.inWatchlist = !wasIn; // Optimistic update
+        this.membership.inWatchlist = !wasIn;
         
         try {
-            // Re-use logic or call API directly
             if (wasIn) {
                 await fetch(`${this.tursoBackendUrl}/favorites/${this.userEmail}/${this.itemType}/${this.itemId}`, { method: 'DELETE' });
             } else {
-                // We need full item payload. 
-                // This is heavy. Ideally the backend `addFavorite` handles minimal info or fetches it?
-                // The backend `addFavorite` expects `item` object.
-                // We should emit 'toggle-watchlist' and let parent handle intricate data payload construction?
-                // Or try our best here.
-                // For now, let's emit.
                 this.$bus.$emit('toggle-favorite-request', this.item);
             }
             await this.fetchMembership();
@@ -214,16 +193,11 @@ export default {
     
     async toggleList(list) {
         const isIn = this.isInList(list.id);
-        // Optimistic update local state for UI responsiveness?
-        // It's complex with the array.
         
         try {
             if (isIn) {
                 await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items?itemId=${this.itemId}&itemType=${this.itemType}`, { method: 'DELETE' });
             } else {
-                // Add
-                // We need payload.
-                // Assuming item has basic details.
                 const payload = {
                     idForDb: this.itemId,
                     typeForDb: this.itemType,

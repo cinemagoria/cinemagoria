@@ -45,7 +45,6 @@
       </div>
     </div>
 
-    <!-- Watchlist-style Controls -->
     <div v-if="!loading" class="watchlist-section" style="padding-top: 0;">
         <div v-if="undoItem" class="undo-bar-container">
            <div class="undo-bar">
@@ -104,7 +103,6 @@
                 <button @click="clearAllFilters" class="refine-filters-btn">Clear All Filters</button>
              </template>
              <template v-else>
-                 <!-- Empty Tab State -->
                 <img src="/cinema-popcorn.svg" alt="No content" class="empty-state-icon">
                 <h3>No {{ filter === 'movies' ? 'Movies' : 'TV Shows' }}</h3>
                 <p>Switch tabs or add some content!</p>
@@ -112,7 +110,6 @@
           </div>
           
           <div v-else>
-            <!-- Pagination Top -->
             <div class="pagination" v-if="filteredItems.length > itemsPerPage">
               <button @click="goToFirst" :disabled="currentPage === 1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-skip-back-icon lucide-skip-back"><path d="M17.971 4.285A2 2 0 0 1 21 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432z"/><path d="M3 20V4"/></svg>
@@ -192,7 +189,6 @@
 
                      <div class="card__content">
                         <div class="card___rating">
-                          <!-- IMDb Rating -->
                           <div v-if="item.details.rating_source === 'imdb' && item.details.imdb_rating" class="rating-item">
                              <svg class="rating-logo imdb" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" enable-background="new 0 0 48 48">
                                <g><path fill="#FFC107" d="M44,13H4c-2.2,0-4,1.8-4,4v16c0,2.2,1.8,4,4,4h40c2.2,0,4-1.8,4-4V17C48,14.8,46.2,13,44,13z"/></g>
@@ -206,7 +202,6 @@
                              <span class="rating-score">{{ formatRatingValue(item.details.imdb_rating) }}</span>
                              <span class="vote-count" v-if="item.details.imdb_votes">({{ formatVoteCount(item.details.imdb_votes) }})</span>
                           </div>
-                          <!-- TMDB Rating -->
                           <div v-else-if="item.details.starsForDb" class="rating-item">
                              <img src="/tmdb.svg" alt="TMDB" class="rating-logo tmdb">
                              <span class="rating-score">{{ formatRating(item.details.starsForDb) }}</span>
@@ -219,8 +214,6 @@
                  </div>
               </div>
             </div>
-
-            <!-- Pagination Bottom -->
              <div class="pagination-footer" v-if="filteredItems.length > itemsPerPage">
               <!-- Reusing svg icons/buttons logic -->
                <button @click="goToFirst" :disabled="currentPage === 1">
@@ -244,8 +237,6 @@
           </div>
         </div>
     </div>
-
-    <!-- Filters Modal -->
     <div v-if="filtersModalVisible" class="modal-overlay" @click="closeFiltersModal">
       <div class="filters-modal" @click.stop>
         <div class="modal-header">
@@ -320,7 +311,6 @@
       </div>
     </div>
     
-    <!-- Share Modal -->
     <div v-if="shareModalVisible" class="modal-overlay">
         <div class="share-modal-content">
           <div class="share-modal-header">
@@ -391,7 +381,6 @@
         </div>
     </div>
 
-    <!-- Rename List Modal -->
     <div v-if="renameListModalVisible" class="modal-overlay" @click="closeRenameModal">
         <div class="create-list-modal-content" @click.stop>
              <div class="modal-header-cl">
@@ -471,7 +460,7 @@ export default {
     computed: {
         shareUrl() {
             if (process.client) {
-                return window.location.href; // Works for both localhost and production
+                return window.location.href;
             }
             return '';
         },
@@ -607,22 +596,18 @@ export default {
                              if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
                                  genres = JSON.parse(raw.genres);
                              } else {
-                                 // Handle plain comma-separated string
                                  genres = trimmed.split(',').map(s => s.trim());
                              }
                          } else {
-                             // Fallback try parse
                              genres = JSON.parse(raw.genres);
                          }
 
-                         // Handle [{id, name}] format
                          genres = genres.map(g => {
                            if (typeof g === 'string') return g;
                            if (g && g.name) return g.name;
                            return null;
                          }).filter(Boolean);
                      } catch(e) {
-                         // Fallback for failed JSON parse that might be a simple string
                          if (typeof raw.genres === 'string') {
                              genres = raw.genres.split(',').map(s => s.trim());
                          }
@@ -641,7 +626,7 @@ export default {
                          starsForDb: raw.tmdb_rating ? raw.tmdb_rating * 10 : null,
                          imdb_rating: raw.imdb_rating,
                          imdb_votes: raw.imdb_rating ? raw.imdb_votes : null,
-                         vote_count: !raw.imdb_rating ? raw.imdb_votes : null, // Map from DB column if TMDB
+                         vote_count: !raw.imdb_rating ? raw.imdb_votes : null,
                          rating_source: raw.imdb_rating ? 'imdb' : 'tmdb',
                          added_at: raw.added_at
                      }
@@ -742,19 +727,15 @@ export default {
         },
 
         async removeListItem(item) {
-            // If already undoing another item, finalize it immediately
             if (this.undoItem) {
                 this.finalizeDelete();
             }
 
-            // Optimistic Remove
             if (item.details.typeForDb === 'movie') {
                 this.moviesFetched = this.moviesFetched.filter(i => i.details.idForDb !== item.details.idForDb);
             } else {
                 this.tvFetched = this.tvFetched.filter(i => i.details.idForDb !== item.details.idForDb);
             }
-            // Keep specific reference to original raw item if needed, but for list display we use 'items'
-            // We should remove from 'items' too to keep consistency if filters change
             this.items = this.items.filter(i => !(i.item_id == item.details.idForDb && i.item_type == item.details.typeForDb));
             
             this.undoItem = item;
@@ -789,16 +770,11 @@ export default {
         handleUndo() {
             if (this.undoTimer) clearTimeout(this.undoTimer);
             if (this.undoItem) {
-                // Restore item
                 if (this.undoItem.details.typeForDb === 'movie') {
                     this.moviesFetched.unshift(this.undoItem);
                 } else {
                     this.tvFetched.unshift(this.undoItem);
                 }
-                // We need to restore to 'items' raw array too?
-                // Construct raw representation or just push hydrating object if 'items' is used only for hydrating.
-                // Actually 'items' is used for hydrating. We can just leave 'items' out of sync if we don't re-hydrate.
-                // But wait, 'filters' use 'moviesFetched', so unshifting to fetched arrays is enough for display.
                 
                 this.undoItem = null;
             }
@@ -908,7 +884,7 @@ export default {
 @use '~/assets/css/utilities/variables' as *;
 
 .list-page {
-    padding-top: 50px; /* Reduced from 100px */
+    padding-top: 50px;
     min-height: 100vh;
     padding-bottom: 4rem;
     padding-left: 2rem;
@@ -922,10 +898,10 @@ export default {
     margin-bottom: 3rem;
     
     .list-title {
-        font-size: 2.8rem; /* Reduced from 3.5rem */
-        color: #8BE9FD; /* Cyan color */
+        font-size: 2.8rem;
+        color: #8BE9FD;
         margin-bottom: 0.5rem;
-        word-wrap: break-word; /* Handle long titles */
+        word-wrap: break-word;
         line-height: 1.2;
         padding: 0 1rem;
     }
@@ -944,10 +920,10 @@ export default {
         font-size: 1.4rem;
         align-items: center;
         margin-bottom: 2rem;
-        flex-wrap: wrap; /* Handle overflow on small screens */
+        flex-wrap: wrap;
         
         .dot { font-weight: bold; opacity: 0.5; }
-        .author { color: #fff; font-weight: 600; } /* White author */
+        .author { color: #fff; font-weight: 600; }
         
         .privacy-wrapper {
             display: flex; align-items: center;
@@ -983,7 +959,7 @@ export default {
         align-items: center;
         justify-content: center;
         transition: all 0.2s;
-        margin-left: 0.5rem; /* Spacing from privacy */
+        margin-left: 0.5rem;
         
         &:hover { 
             background: rgba(139, 233, 253, 0.1); 
@@ -1003,7 +979,7 @@ export default {
         border-radius: 8px;
         z-index: 20;
         min-width: 100%;
-        width: max-content; /* Ensure it fits content but minimum button width */
+        width: max-content;
         overflow: hidden;
         box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
@@ -1011,10 +987,10 @@ export default {
     .privacy-dropdown .dropdown-item {
         padding: 6px 12px;
         color: #fff;
-        font-size: 1.2rem; /* Match button size */
+        font-size: 1.2rem;
         cursor: pointer;
         transition: background 0.2s;
-        text-align: center; /* Center text */
+        text-align: center;
         
         &:hover { background: rgba(139, 233, 253, 0.1); color: #8BE9FD; }
         &.active { color: #8BE9FD; font-weight: 600; background: rgba(139, 233, 253, 0.05); }
@@ -1104,7 +1080,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  text-align: center; /* Center text */
+  text-align: center;
 
   h3 {
       font-size: 1.4rem; color: #fff; margin: 0 0 5px; 
@@ -1126,14 +1102,14 @@ export default {
   width: 100%;
   display: flex !important;
   align-items: center;
-  justify-content: center; /* Center rating */
+  justify-content: center;
   margin-top: 8px;
 }
 
 .rating-item {
   display: flex;
   align-items: center;
-  justify-content: center; /* Center rating item */
+  justify-content: center;
   gap: 4px;
 }
 
@@ -1170,7 +1146,7 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
   white-space: nowrap;
 }
 
-// Actions Menu
+
 .card-actions-menu {
   position: absolute;
   top: 10px;
@@ -1229,9 +1205,9 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     }
 }
 
-// Shared Controls
+
 .title-secondary {
-    text-align: center; /* Centered */
+    text-align: center;
     margin-bottom: 1rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -1287,7 +1263,7 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #fff;
-    width: 44px; height: 44px; /* Increased size slightly */
+    width: 44px; height: 44px;
     border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
@@ -1298,7 +1274,7 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     }
 }
 
-// Active Filter Chips
+
 .active-filters-indicator {
   display: flex;
   align-items: center;
@@ -1342,7 +1318,7 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     &:hover { background: rgba(255, 0, 0, 0.4); }
 }
 
-// Pagination Styles from Watchlist
+
 .pagination {
     display: flex;
     justify-content: center;
@@ -1378,7 +1354,7 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     padding: 8px;
     gap: 0.5rem;
     border: 0.5px #31414C solid;
-    top: -7px; /* Moved down by approx 0.5rem from -15px */
+    top: -7px;
     position: relative;
 }
 
@@ -1446,13 +1422,13 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
   font-family: 'Roboto', sans-serif;
 }
 
-/* Ensure movie-grid aligns with this width to complete the encapsulated look */
+
 .movie-grid {
     width: 97% !important;
     margin: 0 auto;
 }
 
-// Modals Common
+
 
 .filters-modal {
   width: 100%;
@@ -1716,12 +1692,11 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     p { color: #aaa; margin-bottom: 1.5rem; font-size: 1.4rem; }
     .explore-btn, .refine-filters-btn {
         background: #8BE9FD; color: #000; padding: 10px 20px; border-radius: 20px; text-decoration: none; font-weight: bold; border: none; cursor: pointer;
-        display: inline-block; /* Ensure it respects text-align center of parent or margin auto */
+        display: inline-block;
         margin: 0 auto; 
     }
 }
 
-/* Dropdown Responsive Styles matching Watchlist */
 @media (max-width: 600px) {
   .card-actions-menu.menu-open {
     top: 0;
@@ -1776,8 +1751,6 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
   }
 }
 
-
-/* Share Modal Styles - Copied/Adapted from Hero.vue */
 .share-modal-content {
   width: 100%;
   max-width: 480px;
@@ -1966,7 +1939,6 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
   }
 }
 
-/* Create/Rename List Modal Styles */
 .create-list-modal-content {
   width: 100%;
   max-width: 500px;

@@ -387,7 +387,6 @@
     },
 
     async mounted() {
-      // Restore state from sessionStorage if available
       if (process.client) {
         const savedState = sessionStorage.getItem('advancedSearchState');
         if (savedState) {
@@ -406,7 +405,6 @@
           this.searchPerformed = state.searchPerformed || false;
           
           if (this.movies.length > 0 || this.tvShows.length > 0) {
-             // restore ratings or other derived data if necessary
           }
         }
       }
@@ -468,8 +466,6 @@
             case 'minRating': this.minImdbRating = null; break;
             case 'maxRating': this.maxImdbRating = null; break;
         }
-        // Could re-trigger search if desired, but user likely wants to adjust then search.
-        // If we want reactive search, we'd call searchContent(), but here explicit search is better.
       },
 
       showRatedItems() {
@@ -510,13 +506,7 @@
         this.loading = true;
         this.movies = [];
         const apiKey = this.$config.public.apiKey;
-        
-        // Year logic: Start and End
-        // If only Start is provided: >= Start
-        // If only End is provided: <= End
-        // If both: >= Start AND <= End
-        // If neither: All years (default)
-        
+
         let apiSortBy = this.selectedSortBy;
         if (this.selectedSortBy === 'imdb-high') {
           apiSortBy = 'vote_average.desc';
@@ -588,7 +578,6 @@
           
           let filteredMovies = enrichedMovies;
 
-          // Process filters locally if API parameters are insufficient or if using custom logic
           if (this.minImdbRating || this.maxImdbRating) {
              filteredMovies = filteredMovies.filter(movie => {
               const rating = movie.rating_source === 'imdb' ? movie.imdb_rating : parseFloat(movie.vote_average);
@@ -600,9 +589,6 @@
           
           this.movies = filteredMovies;
 
-          
-          // Extensive Client-Side Sorting to ensure order across multiple pages
-          // Extensive Client-Side Sorting to ensure order across multiple pages
           if (this.selectedSortBy === 'popularity.desc') {
             this.movies.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
           } else if (this.selectedSortBy === 'vote_average.desc') {
@@ -738,17 +724,13 @@
           
           this.tvShows = filteredTv;
 
-          
-          // Extensive Client-Side Sorting for TV Shows
-          // Extensive Client-Side Sorting for TV Shows
           if (this.selectedSortBy === 'popularity.desc') {
             this.tvShows.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
           } else if (this.selectedSortBy === 'vote_average.desc') {
             this.tvShows.sort((a, b) => (b.vote_average || 0) - (a.vote_average || 0));
-          } else if (this.selectedSortBy === 'primary_release_date.desc') { // Note: TV uses first_air_date usually, checking key
+          } else if (this.selectedSortBy === 'primary_release_date.desc') { 
              this.tvShows.sort((a, b) => new Date(b.first_air_date || 0) - new Date(a.first_air_date || 0));
           } else if (this.selectedSortBy === 'revenue.desc') {
-             // TV shows often don't have revenue, but keeping for structure
              this.tvShows.sort((a, b) => (b.revenue || 0) - (a.revenue || 0));
           } else if (this.selectedSortBy === 'vote_count.desc') {
             this.tvShows.sort((a, b) => {
@@ -925,7 +907,6 @@
       },
 
       toggleDropdown(name) {
-        // Close others
         Object.keys(this.dropdowns).forEach(key => {
             if (key !== name) this.dropdowns[key] = false;
         });
@@ -1154,9 +1135,6 @@
             chips.push({ label: `Country: ${this.formattedCountry(this.selectedOriginCountry)}`, type: 'country' });
         }
         if (this.selectedWatchProvider) {
-            // Mapping provider IDs to names would involve a lookup, similar to formattedGenre
-            // For now simple display or adding a method.
-            // Let's assume standard providers
             const providers = { '2552': 'Apple TV+', '2739': 'Disney+', '453': 'Hulu', '6783': 'Max', '213': 'Netflix', '1024': 'Prime Video' };
             chips.push({ label: `Provider: ${providers[this.selectedWatchProvider] || this.selectedWatchProvider}`, type: 'provider' });
         }
@@ -2464,7 +2442,6 @@ input:not(:checked):focus ~ #helper-text {
   color: #8BE9FD;
 }
 
-/* Custom scrollbar for dropdown */
 .dropdown-options::-webkit-scrollbar {
   width: 6px;
 }

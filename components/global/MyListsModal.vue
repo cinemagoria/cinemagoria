@@ -26,8 +26,7 @@
         <div :class="$style.modalBody">
             <div :class="$style.grid">
               
-              <!-- Watchlist Card (Only in Add/Manage Mode) -->
-              <!-- Watchlist Card (Only in Add/Manage Mode - Single Item) -->
+
               <div 
                 v-if="itemToAdd && !Array.isArray(itemsToAdd)"
                 :class="[$style.card, inWatchlist ? $style.activeCard : '']"
@@ -48,7 +47,7 @@
                 </div>
               </div>
 
-              <!-- Custom Lists -->
+
               <div 
                 v-for="list in lists" 
                 :key="list.id"
@@ -72,14 +71,14 @@
                      <img src="/empty-list-placeholder.webp" :class="$style.listPlaceholderImg" alt="List placeholder" />
                    </div>
                    
-                   <!-- Added Indicator -->
+
                    <div v-if="addedLists.includes(list.id) && !Array.isArray(itemsToAdd)" :class="$style.addedIndicator">
                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                    </div>
                 </div>
                 <div :class="$style.cardContent">
                   <template v-if="editingListId === list.id">
-                      <!-- Edit Mode -->
+
                       <div :class="$style.editFormContainer">
                           <input 
                             v-model="editForm.name" 
@@ -126,7 +125,7 @@
                 </div>
               </div>
               
-              <!-- Create New Card -->
+
                <div :class="[$style.card, $style.createCard]" @click="openCreateModal">
                   <div :class="$style.createContent">
                       <img src="/plus_placeholder.webp" :class="$style.createIcon" alt="+" />
@@ -157,8 +156,8 @@ export default {
       loading: false,
       lists: [],
       itemToAdd: null,
-      itemsToAdd: null, // For bulk operations
-      addedLists: [], // Track IDs of lists where item is present
+      itemsToAdd: null,
+      addedLists: [],
       inWatchlist: false,
       undoList: null,
       undoTimer: null,
@@ -206,7 +205,7 @@ export default {
     async showAddMode(input) {
         if (Array.isArray(input)) {
              this.itemsToAdd = input;
-             this.itemToAdd = null; // Ensure single mode is off
+             this.itemToAdd = null;
         } else {
              this.itemToAdd = input;
              this.itemsToAdd = null;
@@ -267,7 +266,6 @@ export default {
         if (!userEmail || !this.itemToAdd) return;
 
         const wasIn = this.inWatchlist;
-        // Optimistic
         this.inWatchlist = !wasIn;
 
         const item = {
@@ -283,10 +281,8 @@ export default {
 
         try {
             if (wasIn) {
-                // Remove
                 await fetch(`${this.tursoBackendUrl}/favorites/${encodeURIComponent(userEmail)}/${item.typeForDb}/${item.idForDb}`, { method: 'DELETE' });
             } else {
-                // Add
                 await fetch(`${this.tursoBackendUrl}/favorites`, {
                    method: 'POST',
                    headers: { 'Content-Type': 'application/json' },
@@ -294,10 +290,9 @@ export default {
                 });
             }
             this.$bus.$emit('favorites-updated');
-            // If we are currently ON the watchlist page or list page, this might trigger refreshes, which is good.
         } catch(e) {
             console.error(e);
-            this.inWatchlist = wasIn; // Revert
+            this.inWatchlist = wasIn;
         }
     },
 
@@ -305,13 +300,11 @@ export default {
          const listId = list.id;
 
          if (this.itemsToAdd && Array.isArray(this.itemsToAdd)) {
-             // BULK ADD MODE
              try {
-                // Prepare items for DB
                 const mappedItems = this.itemsToAdd
                     .filter(raw => raw && (raw.idForDb || raw.id))
                     .map(raw => ({
-                        ...raw, // Include all original props as fallback
+                        ...raw,
                         idForDb: raw.idForDb || raw.id,
                         typeForDb: raw.typeForDb || (raw.title ? 'movie' : 'tv'),
                         nameForDb: raw.nameForDb || raw.title || raw.name,
@@ -332,18 +325,15 @@ export default {
 
                 list.item_count = (list.item_count || 0) + mappedItems.length;
                 this.$bus.$emit('lists-updated');
-                this.close(); // Close after bulk add
+                this.close();
              } catch(e) {
-                 console.error(e);
                  alert('Failed to add items to list');
              }
              return;
          }
 
-         // SINGLE ITEM MODE
          const isPresent = this.addedLists.includes(listId);
 
-         // Optimistic Update
          if (isPresent) {
              this.addedLists = this.addedLists.filter(id => id !== listId);
              list.item_count = Math.max(0, (list.item_count || 0) - 1);
@@ -365,12 +355,10 @@ export default {
 
          try {
              if (isPresent) {
-                 // Remove
                  await fetch(`${this.tursoBackendUrl}/lists/${listId}/items?itemId=${item.idForDb}&itemType=${item.typeForDb}`, {
                      method: 'DELETE'
                  });
              } else {
-                 // Add
                  const payload = { ...this.itemToAdd, ...item };
                  await fetch(`${this.tursoBackendUrl}/lists/${listId}/items`, {
                     method: 'POST',
@@ -380,8 +368,6 @@ export default {
              }
              this.$bus.$emit('lists-updated');
          } catch(e) {
-             console.error(e);
-             // Revert
              if (isPresent) this.addedLists.push(listId);
              else this.addedLists = this.addedLists.filter(id => id !== listId);
          }
@@ -390,7 +376,6 @@ export default {
     async handleNewList(newList) {
         await this.fetchLists();
         if (this.itemToAdd) {
-            // New lists are empty, add to it
             await this.toggleListItem(newList);
         }
     },
@@ -473,7 +458,6 @@ export default {
             is_public: this.editForm.is_public
         };
 
-        // Optimistic update
         this.lists[listIndex].name = updates.name;
         this.lists[listIndex].is_public = updates.is_public;
 
@@ -488,7 +472,7 @@ export default {
             this.$bus.$emit('lists-updated');
         } catch(e) {
             console.error(e);
-            this.lists[listIndex] = original; // Revert
+            this.lists[listIndex] = original;
         }
     }
   }
@@ -773,7 +757,7 @@ export default {
     display: flex;
     flex-direction: column;
     height: 100%;
-    min-height: 110px; /* Ensure space */
+    min-height: 110px;
 }
 
 .editInput {
