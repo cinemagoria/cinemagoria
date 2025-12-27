@@ -51,6 +51,7 @@
         </div>
 
         <div v-if="items.length === 0 && !undoItem" class="empty-state">
+             <img src="/cinema-popcorn.svg" alt="Empty list" class="empty-state-icon">
              <h3>This list is empty</h3>
              <p>Go explore and add some movies or TV shows!</p>
              <nuxt-link to="/" class="explore-btn">Explore Content</nuxt-link>
@@ -156,12 +157,19 @@
                         
                         <transition name="fade">
                            <div v-if="activeCardMenuId === item.details.idForDb" class="action-dropdown" @click.stop>
-                               <div class="dropdown-item remove-action" @click="removeListItem(item); activeCardMenuId = null">
+                               <div class="dropdown-item" @click="openAddModal(item); activeCardMenuId = null">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                  </svg>
+                                  Add to...
+                               </div>
+                               <div class="dropdown-item remove-action" @click="openAddModal(item); activeCardMenuId = null">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
                                     <polyline points="3 6 5 6 21 6"></polyline>
                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                   </svg>
-                                  Remove
+                                  Remove from...
                                </div>
                            </div>
                         </transition>
@@ -508,11 +516,13 @@ export default {
         await this.fetchListDetails();
         document.addEventListener('click', this.closeDropdowns);
         document.addEventListener('click', this.closeCardMenu);
+        this.$bus.$on('lists-updated', this.fetchListDetails);
     },
     
     beforeDestroy() {
         document.removeEventListener('click', this.closeDropdowns);
         document.removeEventListener('click', this.closeCardMenu);
+        this.$bus.$off('lists-updated', this.fetchListDetails);
         this.finalizeDelete();
     },
 
@@ -630,6 +640,10 @@ export default {
         validatePageInput() {
              if(this.currentPage < 1) this.currentPage = 1;
              if(this.currentPage > this.totalPages) this.currentPage = this.totalPages;
+        },
+
+        openAddModal(item) {
+             this.$bus.$emit('show-add-to-list-modal', item.details);
         },
 
         async removeListItem(item) {
@@ -1324,9 +1338,14 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
 }
 
 .empty-state, .no-results-state {
-    text-align: center; padding: 4rem 0;
+    text-align: center; padding: 4rem 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    margin: 2rem 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    
     img { width: 150px; opacity: 0.5; margin-bottom: 1rem; }
-    h3 { color: #8BE9FD; font-size: 2rem; }
+    h3 { color: #8BE9FD; font-size: 2rem; margin-bottom: 0.5rem; }
     p { color: #aaa; margin-bottom: 1.5rem; font-size: 1.4rem; }
     .explore-btn, .refine-filters-btn {
         background: #8BE9FD; color: #000; padding: 10px 20px; border-radius: 20px; text-decoration: none; font-weight: bold; border: none; cursor: pointer;
