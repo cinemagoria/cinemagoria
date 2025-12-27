@@ -78,17 +78,51 @@
                    </div>
                 </div>
                 <div :class="$style.cardContent">
-                  <h4>{{ list.name }}</h4>
-                  <div :class="$style.meta">
-                    <span>{{ list.item_count || 0 }} items</span>
-                    <span v-if="list.is_public" title="Public">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                    </span>
-                    <span v-else title="Private">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    </span>
-                  </div>
-                  <button v-if="!itemToAdd" @click.stop="deleteList(list)" :class="$style.deleteButton">Delete</button>
+                  <template v-if="editingListId === list.id">
+                      <!-- Edit Mode -->
+                      <div :class="$style.editFormContainer">
+                          <input 
+                            v-model="editForm.name" 
+                            :class="$style.editInput"
+                            placeholder="List Name"
+                            @keyup.enter="saveEdit" 
+                            @click.stop
+                            autoFocus
+                          />
+                          
+                          <div :class="$style.privacyToggle" @click.stop="editForm.is_public = !editForm.is_public">
+                             <div :class="$style.privacyOption">
+                                 <span :class="!editForm.is_public ? $style.privacyActive : ''">Private</span>
+                                 <div :class="$style.toggleSwitch">
+                                     <div :class="[$style.toggleKnob, editForm.is_public ? $style.toggleOn : '']"></div>
+                                 </div>
+                                 <span :class="editForm.is_public ? $style.privacyActive : ''">Public</span>
+                             </div>
+                          </div>
+
+                          <div :class="$style.editActions">
+                               <button @click.stop="cancelEdit" :class="$style.cancelBtn">Cancel</button>
+                               <button @click.stop="saveEdit" :class="$style.saveBtn">Save</button>
+                          </div>
+                      </div>
+                  </template>
+                  
+                  <template v-else>
+                      <h4>{{ list.name }}</h4>
+                      <div :class="$style.meta">
+                        <span>{{ list.item_count || 0 }} items</span>
+                        <span v-if="list.is_public" title="Public">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        </span>
+                        <span v-else title="Private">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        </span>
+                      </div>
+                      <div v-if="!itemToAdd" :class="$style.actionButtons">
+                         <button @click.stop="startEdit(list)" :class="$style.editButton">Edit</button>
+                         <button @click.stop="deleteList(list)" :class="$style.deleteButton">Delete</button>
+                      </div>
+                  </template>
                 </div>
               </div>
               
@@ -127,7 +161,13 @@ export default {
       addedLists: [], // Track IDs of lists where item is present
       inWatchlist: false,
       undoList: null,
-      undoTimer: null
+      undoTimer: null,
+      editingListId: null,
+      editForm: {
+        id: null,
+        name: '',
+        is_public: false
+      }
     };
   },
   
@@ -406,6 +446,50 @@ export default {
             this.lists.unshift(this.undoList);
             this.undoList = null;
         }
+    },
+
+    startEdit(list) {
+        this.editingListId = list.id;
+        this.editForm = {
+            id: list.id,
+            name: list.name,
+            is_public: !!list.is_public
+        };
+    },
+
+    cancelEdit() {
+        this.editingListId = null;
+    },
+
+    async saveEdit() {
+        if (!this.editForm.name || !this.editForm.name.trim()) return;
+
+        const listIndex = this.lists.findIndex(l => l.id === this.editForm.id);
+        if (listIndex === -1) return;
+
+        const original = { ...this.lists[listIndex] };
+        const updates = {
+            name: this.editForm.name,
+            is_public: this.editForm.is_public
+        };
+
+        // Optimistic update
+        this.lists[listIndex].name = updates.name;
+        this.lists[listIndex].is_public = updates.is_public;
+
+        this.editingListId = null;
+
+        try {
+            await fetch(`${this.tursoBackendUrl}/lists/${this.editForm.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updates)
+            });
+            this.$bus.$emit('lists-updated');
+        } catch(e) {
+            console.error(e);
+            this.lists[listIndex] = original; // Revert
+        }
     }
   }
 };
@@ -641,28 +725,149 @@ export default {
     margin-bottom: 1rem;
 }
 
-.deleteButton {
-  background: rgba(255, 0, 0, 0.2);
-  color: #fff;
-  border: 1px solid rgba(255, 0, 0, 0.4);
+.actionButtons {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: auto;
+}
+
+.editButton, .deleteButton {
+  flex: 1;
   font-size: 13px;
   font-weight: 600;
-  padding: 10px 0;
+  padding: 8px 0;
   cursor: pointer;
   transition: all 0.2s ease;
-  border-radius: 30px;
-  width: 100%;
+  border-radius: 6px;
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.deleteButton {
+  background: rgba(255, 0, 0, 0.15);
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 0, 0, 0.3);
 
   &:hover {
-    background: rgba(255, 0, 0, 0.4);
-    border-color: rgba(255, 0, 0, 0.6);
+    background: rgba(255, 0, 0, 0.3);
+    border-color: rgba(255, 0, 0, 0.5);
     transform: translateY(-1px);
-    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
   }
+}
+
+.editButton {
+  background: rgba(139, 233, 253, 0.15);
+  color: #8BE9FD;
+  border: 1px solid rgba(139, 233, 253, 0.3);
+
+  &:hover {
+    background: rgba(139, 233, 253, 0.3);
+    border-color: #8BE9FD;
+    transform: translateY(-1px);
+  }
+}
+
+.editFormContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 110px; /* Ensure space */
+}
+
+.editInput {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 1.4rem;
+    width: 100%;
+    margin-bottom: 1rem;
+    outline: none;
+    
+    &:focus {
+        border-color: #8BE9FD;
+    }
+}
+
+.privacyToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+
+.privacyOption {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.privacyActive {
+    color: #fff;
+    font-weight: 600;
+}
+
+.toggleSwitch {
+    width: 36px;
+    height: 20px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    position: relative;
+    transition: background 0.3s;
+}
+
+.toggleKnob {
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: left 0.3s;
+}
+
+.toggleOn {
+    left: 18px;
+    background: #8BE9FD;
+}
+
+.editActions {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: auto;
+}
+
+.saveBtn, .cancelBtn {
+    flex: 1;
+    padding: 6px 0;
+    border-radius: 6px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    &:hover { opacity: 0.9; }
+}
+
+.saveBtn {
+    background: #8BE9FD;
+    color: #000;
+}
+
+.cancelBtn {
+    background: rgba(255,255,255,0.1);
+    color: #aaa;
 }
 
 .emptyState {
