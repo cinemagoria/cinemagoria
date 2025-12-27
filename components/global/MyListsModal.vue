@@ -3,7 +3,10 @@
     <div :class="$style.modalWrapper">
       <div :class="$style.modalContent">
         <div :class="$style.modalHeader">
-          <h2 class="title-primary">{{ modalTitle }}</h2>
+          <div :class="$style.headerContent">
+             <h2 class="title-primary">{{ modalTitle }}</h2>
+             <p v-if="modalSubtitle" :class="$style.subtitle">{{ modalSubtitle }}</p>
+          </div>
           <button @click="close" :class="$style.closeButton">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18"/>
@@ -178,8 +181,18 @@ export default {
       return this.$config.public.tursoBackendUrl;
     },
     modalTitle() {
-        if (Array.isArray(this.itemsToAdd)) return `Add ${this.itemsToAdd.length} Items to...`;
+        if (Array.isArray(this.itemsToAdd)) return `Add Items`;
         return this.itemToAdd ? 'Manage Lists' : 'My Lists';
+    },
+    modalSubtitle() {
+        if (this.itemToAdd) {
+             const name = this.itemToAdd.nameForDb || this.itemToAdd.title || this.itemToAdd.name || 'Item';
+             return `Add / Remove "${name}" from lists`;
+        }
+        if (Array.isArray(this.itemsToAdd)) {
+             return `Add / Remove ${this.itemsToAdd.length} items from lists`;
+        }
+        return null;
     }
   },
 
@@ -488,21 +501,37 @@ export default {
   flex-direction: column;
 }
 
-.modalHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  .modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
 
-  h2 {
+  .headerContent {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-right: 2rem;
+  }
+
+  .modalHeader h2 {
     font-size: 2.4rem;
     color: #8BE9FD;
     margin: 0;
-    flex: 1;
     text-align: center;
+    line-height: 1.2;
   }
-}
+  
+  .subtitle {
+      font-size: 1.4rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 0.5rem;
+      text-align: center;
+      font-weight: 300;
+  }
 
 .closeButton {
   background: none;
