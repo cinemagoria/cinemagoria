@@ -208,14 +208,12 @@ export default {
     isImageLoading(item) {
       const id = this.getUniqueId(item);
       if (!id) return false;
-      // Default to true (loading) if state is undefined
       return this.imageLoadingStates[id] !== false;
     },
 
     handleImageLoad(item) {
       const id = this.getUniqueId(item);
       if (id) {
-        // Direct reactivity in Vue 3 (or Vue 2.7+)
         this.imageLoadingStates[id] = false; 
       }
     },
@@ -231,7 +229,7 @@ export default {
     
     async fetchRatedItems() {
       this.loading = true;
-      this.imageLoadingStates = {}; // Reset loading states
+      this.imageLoadingStates = {};
       try {
         const response = await fetch(`${this.tursoBackendUrl}/favorites/${this.userEmail}`);
         

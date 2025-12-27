@@ -1361,8 +1361,7 @@ export default {
             }
           }
         }
-
-        // Wait for all fetches to complete
+        
         if (fetchImdbPromises.length > 0) {
           await Promise.all(fetchImdbPromises);
         }

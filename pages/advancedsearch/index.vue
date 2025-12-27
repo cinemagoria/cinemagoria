@@ -386,7 +386,6 @@
     },
 
     async mounted() {
-      // Restore state from sessionStorage if available
       if (process.client) {
         const savedState = sessionStorage.getItem('advancedSearchState');
         if (savedState) {
@@ -405,7 +404,6 @@
           this.searchPerformed = state.searchPerformed || false;
           
           if (this.movies.length > 0 || this.tvShows.length > 0) {
-             // restore ratings or other derived data if necessary
           }
         }
       }
@@ -506,10 +504,7 @@
         this.searchPerformed = false; 
         this.loading = true;
         this.movies = [];
-        const apiKey = this.$config.public.apiKey;
-        
-        // Year logic: Start and End
-        
+        const apiKey = this.$config.public.apiKey;        
         let apiSortBy = this.selectedSortBy;
         if (this.selectedSortBy === 'imdb-high') {
           apiSortBy = 'vote_average.desc';
@@ -591,9 +586,6 @@
           }
           
           this.movies = filteredMovies;
-
-          
-          // Extensive Client-Side Sorting to ensure order across multiple pages
           if (this.selectedSortBy === 'popularity.desc') {
             this.movies.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
           } else if (this.selectedSortBy === 'vote_average.desc') {
@@ -727,16 +719,13 @@
           
           this.tvShows = filteredTv;
 
-          
-          // Extensive Client-Side Sorting for TV Shows
           if (this.selectedSortBy === 'popularity.desc') {
             this.tvShows.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
           } else if (this.selectedSortBy === 'vote_average.desc') {
             this.tvShows.sort((a, b) => (b.vote_average || 0) - (a.vote_average || 0));
-          } else if (this.selectedSortBy === 'primary_release_date.desc') { // Note: TV uses first_air_date usually, checking key
+          } else if (this.selectedSortBy === 'primary_release_date.desc') {
              this.tvShows.sort((a, b) => new Date(b.first_air_date || 0) - new Date(a.first_air_date || 0));
           } else if (this.selectedSortBy === 'revenue.desc') {
-             // TV shows often don't have revenue, but keeping for structure
              this.tvShows.sort((a, b) => (b.revenue || 0) - (a.revenue || 0));
           } else if (this.selectedSortBy === 'vote_count.desc') {
             this.tvShows.sort((a, b) => {
@@ -2448,7 +2437,6 @@ input:not(:checked):focus ~ #helper-text {
   color: #8BE9FD;
 }
 
-/* Custom scrollbar for dropdown */
 .dropdown-options::-webkit-scrollbar {
   width: 6px;
 }

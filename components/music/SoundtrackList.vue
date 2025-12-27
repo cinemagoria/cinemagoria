@@ -141,7 +141,7 @@ export default {
     justify-content: center;
     align-items: center;
     padding: 2rem;
-    min-height: 400px; /* Ensure sufficient height for centering */
+    min-height: 400px;
 }
 
 .albumCard {
@@ -170,12 +170,12 @@ export default {
 .year {
     font-weight: 400;
     color: var(--text-color-light);
-    font-size: 0.6em; /* Relative to title */
+    font-size: 0.6em;
     vertical-align: middle;
 }
 
 .meta {
-    font-size: 1.5rem; /* Matched to overview text size */
+    font-size: 1.5rem;
     color: var(--text-color);
 }
 
@@ -227,7 +227,7 @@ export default {
 .trackNumber {
     width: 30px;
     color: var(--text-color-light);
-    font-size: 1.2rem; /* Increased readability */
+    font-size: 1.2rem;
     font-variant-numeric: tabular-nums;
     opacity: 0.7;
 }
@@ -242,7 +242,7 @@ export default {
 .trackTitle {
     font-weight: 600;
     color: $cyan-color;
-    font-size: 1.5rem; /* Matched to overview text size */
+    font-size: 1.5rem;
     margin-bottom: 0.25rem;
     transition: color 0.2s ease;
 }
