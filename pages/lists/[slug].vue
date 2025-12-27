@@ -28,6 +28,10 @@
                   </transition>
               </div>
               
+<button @click="openRenameModal" class="share-btn-icon" aria-label="Rename List" style="margin-right: 5px;">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block; min-width: 20px;"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+              </button>
+              
                <button v-if="list.is_public" @click="openShareModal" class="share-btn-icon" aria-label="Share">
                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block; min-width: 20px;">
                     <circle cx="18" cy="5" r="3"/>
@@ -386,6 +390,31 @@
           </div>
         </div>
     </div>
+
+    <!-- Rename List Modal -->
+    <div v-if="renameListModalVisible" class="modal-overlay" @click="closeRenameModal">
+        <div class="create-list-modal-content" @click.stop>
+             <div class="modal-header-cl">
+                <h2>Rename List</h2>
+                <button class="close-btn-cl" @click="closeRenameModal">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                </button>
+             </div>
+             <div class="modal-body-cl">
+                 <div class="form-group-cl">
+                    <label>New Name</label>
+                    <input type="text" v-model="newListName" class="input-cl" @keyup.enter="updateListName" autofocus placeholder="e.g. Best Movies">
+                 </div>
+                 <div class="actions-cl">
+                      <button @click="closeRenameModal" class="cancel-btn-cl">Cancel</button>
+                      <button @click="updateListName" class="create-btn-cl" :disabled="!newListName || !newListName.trim()">Save</button>
+                 </div>
+             </div>
+        </div>
+    </div>
   </div>
 </template>
 
@@ -434,6 +463,8 @@ export default {
             copySuccess: false,
             
             privacyDropdownOpen: false,
+            renameListModalVisible: false,
+            newListName: '',
         };
     },
     
@@ -628,6 +659,34 @@ export default {
         
         toggleFilterType() { this.filter = this.filter === 'movies' ? 'tvShows' : 'movies'; this.currentPage = 1; },
         
+        openRenameModal() {
+            this.newListName = this.list.name;
+            this.renameListModalVisible = true;
+        },
+        closeRenameModal() {
+            this.renameListModalVisible = false;
+        },
+        async updateListName() {
+            if (!this.newListName || !this.newListName.trim()) return;
+
+            try {
+                const response = await fetch(`${this.tursoBackendUrl}/lists/${this.list.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: this.newListName })
+                });
+
+                if (response.ok) {
+                    this.list.name = this.newListName;
+                    this.closeRenameModal();
+                } else {
+                    console.error('Failed to update list name');
+                }
+            } catch (error) {
+                console.error('Error updating list name:', error);
+            }
+        },
+
         openFiltersModal() { this.filtersModalVisible = true; },
         closeFiltersModal() { this.filtersModalVisible = false; },
         toggleGenreDropdown() { this.genreDropdownOpen = !this.genreDropdownOpen; },
@@ -1905,5 +1964,114 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
+}
+
+/* Create/Rename List Modal Styles */
+.create-list-modal-content {
+  width: 100%;
+  max-width: 500px;
+  background: linear-gradient(135deg, rgba(6, 47, 64, 0.98) 0%, rgba(10, 30, 40, 0.99) 100%);
+  box-shadow: 0 12px 40px 0 rgba(31, 104, 135, 0.6);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 16px;
+  border: 1px solid rgba(127, 219, 241, 0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header-cl {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  h2 {
+    font-size: 2rem;
+    color: #8BE9FD;
+    margin: 0;
+    flex: 1;
+    text-align: center;
+  }
+}
+
+.close-btn-cl {
+  background: none;
+  border: none;
+  font-size: 2.4rem;
+  color: #fff;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+.close-btn-cl:hover { color: #8BE9FD; }
+
+.modal-body-cl {
+  padding: 2rem;
+}
+
+.form-group-cl {
+    margin-bottom: 2rem;
+    
+    label {
+        display: block;
+        color: #8F989E;
+        margin-bottom: 0.8rem;
+        font-size: 1.4rem;
+    }
+}
+
+.input-cl {
+    width: 100%;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    color: #fff;
+    font-size: 1.6rem;
+}
+.input-cl:focus {
+    border-color: #8BE9FD;
+    outline: none;
+}
+
+.actions-cl {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.cancel-btn-cl {
+    background: transparent;
+    border: none;
+    color: #aaa;
+    font-size: 1.4rem;
+    padding: 1rem 2rem;
+    cursor: pointer;
+}
+.cancel-btn-cl:hover { color: #fff; }
+
+.create-btn-cl {
+    background: #8BE9FD;
+    color: #000;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 8px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.create-btn-cl:hover:not(:disabled) {
+    background: #7bd3e5;
+    transform: translateY(-1px);
+}
+.create-btn-cl:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 </style>
