@@ -100,7 +100,7 @@
                   class="button button--icon" 
                   type="button"
                   :class="{ [$style.actionButton]: true, [$style.favoritesFilled]: isInAnyList || showAddListMenu }"
-                  @click="toggleAddListMenu">
+                  @click.stop="toggleAddListMenu">
                   <span class="icon">
                     <svg v-if="!isInAnyList" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     <svg v-else xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -113,9 +113,9 @@
                   <div v-if="showAddListMenu" class="add-list-menu">
                     <div class="menu-header">Save to</div>
                     
-                    <button class="menu-option" @click="toggleFavorite">
+                    <button class="menu-option" @click.stop.prevent="handleToggleFavorite">
                       <div class="checkbox">
-                        <svg v-if="membership.inWatchlist" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <svg v-if="membership.inWatchlist || isFavorite" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                       </div>
                       <span>Watchlist</span>
                     </button>
@@ -178,7 +178,7 @@
                     xmlns="http://www.w3.org/2000/svg"
                     width="15"
                     height="15"
-                    style="position:relative; margin-left:9px;"
+                    style="position:relative;"
                     viewBox="0 0 24 24"
                     fill="none">
                     <path
@@ -327,6 +327,7 @@
 
 <script>
 import { name, stars, yearStart, yearEnd, cert, backdrop, poster, trailer, id, genres, type, runtime } from '~/mixins/Details';
+import { mapItemToDbPayload } from '~/utils/itemMapper';
 import Filters from '~/mixins/Filters';
 import Modal from '~/components/Modal';
 import Loader from '~/components/Loader.vue';
@@ -521,11 +522,7 @@ export default {
             if (isInList) {
                 await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items?itemId=${this.id}&itemType=${this.typeForDb}`, { method: 'DELETE' });
             } else {
-                const payload = {
-                    idForDb, typeForDb, nameForDb, posterForDb, yearStartForDb, yearEndForDb, genresForDb, starsForDb,
-                    imdb_rating: this.item.imdb_rating,
-                    imdb_votes: this.item.imdb_votes || this.item.vote_count
-                };
+                const payload = mapItemToDbPayload(this.item);
                 await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -835,6 +832,11 @@ export default {
       }
     },
 
+    async handleToggleFavorite() {
+        await this.toggleFavorite();
+        await this.checkMembership();
+    },
+
     async toggleFavorite() {
       try {
         if (this.isFavorite) {
@@ -926,24 +928,10 @@ export default {
         }
     },
 
+
     async addToList(list) {
          try {
-            const item = {
-                nameForDb: this.nameForDb,
-                starsForDb: this.starsForDb,
-                yearStartForDb: this.yearStartForDb,
-                yearEndForDb: this.yearEndForDb,
-                posterForDb: this.posterForDb,
-                idForDb: this.id,
-                genresForDb: this.genresForDb,
-                typeForDb: this.typeForDb,
-                addedAt: new Date(), 
-                external_ids: this.item.external_ids,
-                rating_source: this.item.rating_source || 'tmdb',
-                imdb_rating: this.item.imdb_rating,
-                imdb_votes: this.item.imdb_votes || this.item.vote_count, 
-                runtime: this.runtime,
-            };
+            const item = mapItemToDbPayload(this.item);
              
             const response = await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items`, {
                 method: 'POST',
@@ -1161,14 +1149,20 @@ export default {
   gap: 1rem;
   margin-top: 3rem;
   width: 100%;
+  position: relative;
+  right: 0.5rem;
   
   @media (max-width: #{$breakpoint-small - 1px}) {
     justify-content: center;
     margin-top: 1.5rem;
+    gap: 0.6rem;
+    flex-wrap: nowrap;
   }
   
   @media (min-width: $breakpoint-small) and (max-width: #{$breakpoint-medium - 1px}) {
     justify-content: flex-start;
+    gap: 0.6rem;
+    flex-wrap: nowrap;
   }
   
   @media (min-width: $breakpoint-medium) {
@@ -1247,15 +1241,27 @@ export default {
         stroke: #8BE9FD !important;
       }
     }
+
+    @media (max-width: 390px) {
+       :global(.txt) {
+         display: none;
+       }
+       :global(.icon) {
+         margin: 0 0 0 3px;
+       }
+       padding: 0;
+       width: 36px;
+       flex: 0 0 36px;
+    }
   }
   
   @media (max-width: #{$breakpoint-small - 1px}) {
-    flex: 0 1 auto;
-    max-width: 45%;
+    flex: 1 1 auto;
+    max-width: none;
     height: 36px;
     line-height: 36px;
     font-size: 1.3rem;
-    padding: 0 1rem;
+    padding: 0 0.8rem;
   }
   
   @media (min-width: $breakpoint-small) and (max-width: #{$breakpoint-medium - 1px}) {
@@ -1282,6 +1288,10 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 0;
+  
+  :global(.icon) {
+    margin-left: 6px;
+  }
   
   @media (max-width: #{$breakpoint-small - 1px}) {
     width: 36px;

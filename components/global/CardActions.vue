@@ -77,6 +77,8 @@
 </template>
 
 <script>
+import { mapItemToDbPayload } from '~/utils/itemMapper';
+
 export default {
   props: {
     item: { type: Object, required: true },
@@ -198,14 +200,7 @@ export default {
             if (isIn) {
                 await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items?itemId=${this.itemId}&itemType=${this.itemType}`, { method: 'DELETE' });
             } else {
-                const payload = {
-                    idForDb: this.itemId,
-                    typeForDb: this.itemType,
-                    nameForDb: this.item.name || this.item.title,
-                    posterForDb: this.item.poster_path,
-                    yearStartForDb: this.item.first_air_date ? this.item.first_air_date.split('-')[0] : (this.item.release_date ? this.item.release_date.split('-')[0] : null),
-                    starsForDb: this.item.vote_average ? Math.round(this.item.vote_average * 10) : null
-                };
+                const payload = mapItemToDbPayload(this.item);
                 await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
