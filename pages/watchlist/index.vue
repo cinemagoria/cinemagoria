@@ -46,10 +46,11 @@
 
 
                 <button class="control-btn ai-analysis-btn" @click="toggleAiSelectionMode" :class="{ 'active': aiSelectionMode }">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09 3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423 1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0-1.423 1.423Z"/>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <polyline points="9 11 12 14 22 4"></polyline>
                   </svg>
-                  <span class="btn-label">AI</span>
+                  <span class="btn-label">Select</span>
                 </button>
               </div>
             </div>
@@ -108,6 +109,17 @@
                       <path d="M18 6L6 18M6 6l12 12"/>
                     </svg>
                     Cancel
+                  </button>
+                  <button 
+                    @click="openBulkAddModal" 
+                    class="banner-btn add-to-btn" 
+                    :disabled="selectedItems.length === 0"
+                    style="background: #2D3748; color: white; margin-right: 10px;"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                        <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Add to...
                   </button>
                   <button 
                     @click="sendToAI" 
@@ -267,6 +279,12 @@
                             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                           </svg>
                           Rate
+                        </div>
+                        <div class="dropdown-item" @click="openAddToListModal(item); activeCardMenuId = null">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                             <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+                          </svg>
+                          Add to...
                         </div>
                         <div class="dropdown-item remove-action" @click="removeFavorite(item); activeCardMenuId = null">
                           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
@@ -800,6 +818,8 @@ export default {
     }
     this.$bus.$on('rated-items-updated', this.checkData);
     this.$bus.$on('favorites-updated', this.checkData);
+    this.$bus.$on('lists-updated', this.onListsUpdated);
+    this.$bus.$on('open-add-to-list-modal', this.openAddToListModal);
   },
 
   beforeDestroy() {
@@ -810,6 +830,8 @@ export default {
     }
     this.$bus.$off('rated-items-updated', this.checkData);
     this.$bus.$off('favorites-updated', this.checkData);
+    this.$bus.$off('lists-updated', this.onListsUpdated);
+    this.$bus.$off('open-add-to-list-modal', this.openAddToListModal);
     document.removeEventListener('click', this.closeCardMenu);
   },
   
@@ -1082,6 +1104,54 @@ export default {
       this.aiSelectionMode = false;
       this.selectedItems = [];
       this.showSelectionInfo = false;
+      this.showSelectionInfo = false;
+    },
+
+    onListsUpdated() {
+      if (this.selectedItems.length > 0) {
+          this.selectedItems = [];
+          this.aiSelectionMode = false;
+          this.showSelectionInfo = false;
+          this.$bus.$emit('show-toast', 'Items added correctly');
+      }
+    },
+
+    async openBulkAddModal() {
+        if (this.selectedItems.length === 0) return;
+        
+        const items = this.selectedItems.map(sel => {
+             let original = null;
+             if (sel.media_type === 'movie') {
+                 original = this.moviesFetched.find(m => m.details.idForDb === sel.tmdb_id);
+             } else {
+                 original = this.tvFetched.find(t => t.details.idForDb === sel.tmdb_id);
+             }
+
+             if (original && original.details) {
+                 return { ...original.details };
+             }
+             
+             return {
+                idForDb: sel.tmdb_id,
+                typeForDb: sel.media_type,
+                nameForDb: sel.title,
+                posterForDb: sel.poster_path,
+                imdb_votes: sel.imdb_votes,
+                imdb_rating: sel.imdb_score,
+                starsForDb: sel.tmdb_rating,
+                yearStartForDb: sel.year,
+             };
+        });
+            
+        this.$bus.$emit('show-add-to-list-modal', items);
+    },
+
+    async openAddToListModal(item) {
+      if (!this.hasAccessToken) {
+         this.$bus.$emit('show-auth-modal');
+         return;
+      }
+      this.$bus.$emit('show-add-to-list-modal', item.details);
     },
     
     openRatingModal(item) {
@@ -1362,7 +1432,6 @@ export default {
           }
         }
 
-        // Wait for all IMDb fetches to complete in parallel
         if (fetchImdbPromises.length > 0) {
           await Promise.all(fetchImdbPromises);
         }
