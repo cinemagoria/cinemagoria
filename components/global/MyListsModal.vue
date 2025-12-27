@@ -319,6 +319,7 @@ export default {
             posterForDb: this.itemToAdd.posterForDb || this.itemToAdd.poster_path,
             imdb_votes: this.itemToAdd.imdb_votes || this.itemToAdd.imdbVotes || this.itemToAdd.vote_count,
             yearStartForDb: this.itemToAdd.yearStartForDb || (this.itemToAdd.release_date || this.itemToAdd.first_air_date || '').substr(0, 4),
+            genres: this.itemToAdd.genresForDb || this.itemToAdd.genres,
             topLevel: true 
          };
 
