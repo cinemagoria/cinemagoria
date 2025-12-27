@@ -1104,7 +1104,36 @@ export default {
 
     async openBulkAddModal() {
         if (this.selectedItems.length === 0) return;
-        const items = this.selectedItems.map(item => item.details);
+        
+        // Reconstruct full details for Bulk Add by looking up original data
+        // This keeps toggleItemSelection generic for AI, but gives us rich data here.
+        const items = this.selectedItems.map(sel => {
+             let original = null;
+             // Try to find in movies
+             if (sel.media_type === 'movie') {
+                 original = this.moviesFetched.find(m => m.details.idForDb === sel.tmdb_id);
+             } else {
+                 original = this.tvFetched.find(t => t.details.idForDb === sel.tmdb_id);
+             }
+
+             if (original && original.details) {
+                 return { ...original.details };
+             }
+             
+             // Fallback if not found (should rarely happen)
+             return {
+                idForDb: sel.tmdb_id,
+                typeForDb: sel.media_type,
+                nameForDb: sel.title,
+                posterForDb: sel.poster_path,
+                imdb_votes: sel.imdb_votes,
+                imdb_rating: sel.imdb_score,
+                starsForDb: sel.tmdb_rating,
+                yearStartForDb: sel.year,
+                // Genres will be missing in fallback, but acceptable
+             };
+        });
+            
         this.$bus.$emit('show-add-to-list-modal', items);
     },
 
