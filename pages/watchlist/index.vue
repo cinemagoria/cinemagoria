@@ -818,6 +818,8 @@ export default {
     }
     this.$bus.$on('rated-items-updated', this.checkData);
     this.$bus.$on('favorites-updated', this.checkData);
+    this.$bus.$on('lists-updated', this.onListsUpdated);
+    this.$bus.$on('open-add-to-list-modal', this.openAddToListModal);
   },
 
   beforeDestroy() {
@@ -828,6 +830,8 @@ export default {
     }
     this.$bus.$off('rated-items-updated', this.checkData);
     this.$bus.$off('favorites-updated', this.checkData);
+    this.$bus.$off('lists-updated', this.onListsUpdated);
+    this.$bus.$off('open-add-to-list-modal', this.openAddToListModal);
     document.removeEventListener('click', this.closeCardMenu);
   },
   
@@ -1100,6 +1104,17 @@ export default {
       this.aiSelectionMode = false;
       this.selectedItems = [];
       this.showSelectionInfo = false;
+      this.showSelectionInfo = false;
+    },
+
+    onListsUpdated() {
+      // Clear selection after successful list operation (e.g. bulk add)
+      if (this.selectedItems.length > 0) {
+          this.selectedItems = [];
+          this.aiSelectionMode = false;
+          this.showSelectionInfo = false;
+          this.$bus.$emit('show-toast', 'Items added correctly');
+      }
     },
 
     async openBulkAddModal() {

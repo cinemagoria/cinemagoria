@@ -289,11 +289,25 @@
           
           <div class="filter-group">
             <label class="filter-label">Sort By</label>
-            <select v-model="orderMode" class="filter-input">
-              <option v-for="option in sortOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <div class="custom-select" @click="toggleSortDropdown">
+              <div class="select-display">
+                <span class="selected-value">{{ currentSortLabel }}</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" :class="{ 'rotate-180': sortDropdownOpen }">
+                  <path d="M7 10l5 5 5-5z"/>
+                </svg>
+              </div>
+              <div v-if="sortDropdownOpen" class="dropdown-options">
+                <div 
+                  v-for="option in sortOptions" 
+                   :key="option.value" 
+                   class="dropdown-option"
+                   :class="{ selected: orderMode === option.value }"
+                   @click.stop="selectSort(option.value)"
+                >
+                  {{ option.label }}
+                </div>
+              </div>
+            </div>
           </div>
           
           <div class="filter-actions">
@@ -400,6 +414,7 @@ export default {
             orderMode: 'latest-added',
             filtersModalVisible: false,
             genreDropdownOpen: false,
+            sortDropdownOpen: false,
             selectedGenre: '',
             customYearStart: null,
             customYearEnd: null,
@@ -556,15 +571,33 @@ export default {
                  let genres = [];
                  if (raw.genres) {
                      try {
-                         if (Array.isArray(raw.genres)) genres = raw.genres;
-                         else genres = JSON.parse(raw.genres);
+                         if (Array.isArray(raw.genres)) {
+                             genres = raw.genres;
+                         } else if (typeof raw.genres === 'string') {
+                             const trimmed = raw.genres.trim();
+                             if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
+                                 genres = JSON.parse(raw.genres);
+                             } else {
+                                 // Handle plain comma-separated string
+                                 genres = trimmed.split(',').map(s => s.trim());
+                             }
+                         } else {
+                             // Fallback try parse
+                             genres = JSON.parse(raw.genres);
+                         }
+
                          // Handle [{id, name}] format
                          genres = genres.map(g => {
                            if (typeof g === 'string') return g;
                            if (g && g.name) return g.name;
                            return null;
                          }).filter(Boolean);
-                     } catch(e) {}
+                     } catch(e) {
+                         // Fallback for failed JSON parse that might be a simple string
+                         if (typeof raw.genres === 'string') {
+                             genres = raw.genres.split(',').map(s => s.trim());
+                         }
+                     }
                  }
                  
                  const hydrated = {
@@ -601,6 +634,8 @@ export default {
         closeFiltersModal() { this.filtersModalVisible = false; },
         toggleGenreDropdown() { this.genreDropdownOpen = !this.genreDropdownOpen; },
         selectGenre(g) { this.selectedGenre = g; this.genreDropdownOpen = false; },
+        toggleSortDropdown() { this.sortDropdownOpen = !this.sortDropdownOpen; },
+        selectSort(o) { this.orderMode = o; this.sortDropdownOpen = false; },
         setYearRange(range) {
             const [start, end] = range.split('-').map(Number);
             this.customYearStart = start;
@@ -619,6 +654,9 @@ export default {
         closeDropdowns(e) {
              if (this.genreDropdownOpen && !e.target.closest('.custom-select')) {
                  this.genreDropdownOpen = false;
+             }
+             if (this.sortDropdownOpen && !e.target.closest('.custom-select')) {
+                 this.sortDropdownOpen = false;
              }
              if (this.privacyDropdownOpen && !e.target.closest('.privacy-wrapper')) {
                  this.privacyDropdownOpen = false;
@@ -1257,84 +1295,255 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
 }
 
 // Modals Common
-.modal-overlay {
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8);
-    z-index: 1000; display: flex; align-items: center; justify-content: center;
-}
+
 .filters-modal {
-    background: #0B1622; padding: 2rem; border-radius: 12px;
-    border: 1px solid rgba(139, 233, 253, 0.2);
-    width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto;
-}
-.modal-header {
-    display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;
-    h3 { color: #8BE9FD; font-size: 1.8rem; margin: 0; }
-    .close-btn { background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; }
+  width: 100%;
+  max-width: 500px;
+  background: linear-gradient(to bottom right, #092739, #061720);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
-// Filters specific
-.filter-group { margin-bottom: 1.5rem; }
-.filter-label { display: block; color: #8F989E; margin-bottom: 0.5rem; }
-.custom-select, .year-inputs, .filter-input {
-    width: 100%; background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 6px;
-}
-.select-display { display: flex; justify-content: space-between; align-items: center; cursor: pointer; 
-    .selected-value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 90%; }
-}
-.dropdown-options {
-    margin-top: 5px; background: #0B1622; border: 1px solid #333; max-height: 200px;
-    overflow-y: auto; position: absolute; width: 83%; z-index: 10;
-    max-width: 440px; 
-}
-.dropdown-option { padding: 10px; cursor: pointer; &:hover { background: rgba(139, 233, 253, 0.1); } }
-.dropdown-option.selected { color: #8BE9FD; }
-
-.year-inputs { display: flex; gap: 10px; align-items: center; }
-.year-input { width: 100%; background: transparent; border: none; color: #fff; }
-.quick-year-options { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-.year-quick-btn {
-    background: rgba(255,255,255,0.05); border: none; color: #ccc; padding: 4px 8px; border-radius: 4px; cursor: pointer;
-    &:hover { background: rgba(139, 233, 253, 0.1); color: #8BE9FD; }
+.filters-content {
+  padding: 20px;
 }
 
-.filter-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; }
-.clear-btn { background: transparent; border: 1px solid #ff6363; color: #ff6363; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
-.apply-btn { background: #8BE9FD; border: none; color: #000; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-
-.undo-bar-container {
-    width: 100%;
-    margin-bottom: 2rem;
+.filter-group {
+  margin-bottom: 20px;
 }
 
-.undo-bar {
-  background: linear-gradient(90deg, rgba(139, 233, 253, 0.2) 0%, rgba(0, 136, 204, 0.2) 100%);
-  border-bottom: 2px solid #8BE9FD;
-  color: white;
-  padding: 1.2rem 3rem;
+.filter-label {
+  display: block;
+  color: #8BE9FD;
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.filter-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1.3rem;
+}
+
+.year-inputs {
   display: flex;
-  position: relative;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.year-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1.3rem;
+  transition: border-color 0.2s ease;
+}
+
+.year-input:focus {
+  outline: none;
+  border-color: rgba(139, 233, 253, 0.5);
+}
+
+.year-separator {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: bold;
+}
+
+.quick-year-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.year-quick-btn {
+  padding: 5px 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 15px;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+}
+
+.year-quick-btn:hover {
+  background: rgba(139, 233, 253, 0.2);
+  border-color: #8BE9FD;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.clear-btn, .apply-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1.3rem;
+  transition: all 0.2s ease;
+}
+
+.clear-btn {
+  background: rgba(255, 0, 0, 0.2);
+  color: #fff;
+}
+
+.apply-btn {
+  background: #8BE9FD;
+  color: #000;
+}
+
+.custom-select {
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+}
+
+.select-display {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1.4rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px;
+  color: #fff;
+  font-size: 1.3rem;
+  transition: all 0.2s ease;
 }
 
-.undo-btn {
-  background: #8BE9FD;
-  border: none;
-  color: #000;
-  padding: 0.6rem 1.6rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
+.select-display:hover {
+  border-color: rgba(139, 233, 253, 0.5);
+}
 
-  &:hover {
-    background: #7DD4E8;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(139, 233, 253, 0.3);
-  }
+.dropdown-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #092739;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  margin-top: 2px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.dropdown-option {
+  padding: 10px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 1.3rem;
+}
+
+.dropdown-option:hover {
+  background: rgba(139, 233, 253, 0.1);
+}
+
+.dropdown-option.selected {
+  background: rgba(139, 233, 253, 0.2);
+  color: #8BE9FD;
+}
+
+.dropdown-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-options::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dropdown-options::-webkit-scrollbar-thumb {
+  background: rgba(139, 233, 253, 0.3);
+  border-radius: 3px;
+}
+
+.active-filters-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: nowrap;
+  margin: 20px auto;
+  padding: 15px 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  max-width: 1200px;
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.filter-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(139, 233, 253, 0.15);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 20px;
+  padding: 6px 12px;
+  color: #8BE9FD;
+  font-size: 1.3rem;
+}
+
+.chip-remove {
+  background: none;
+  border: none;
+  color: #8BE9FD;
+  font-size: 1.8rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.chip-remove:hover {
+  color: #fff;
+}
+
+.clear-all-inline {
+  background: rgba(255, 0, 0, 0.2);
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  color: #fff;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+.clear-all-inline:hover {
+  background: rgba(255, 0, 0, 0.4);
 }
 
 .empty-state, .no-results-state {
@@ -1349,6 +1558,8 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     p { color: #aaa; margin-bottom: 1.5rem; font-size: 1.4rem; }
     .explore-btn, .refine-filters-btn {
         background: #8BE9FD; color: #000; padding: 10px 20px; border-radius: 20px; text-decoration: none; font-weight: bold; border: none; cursor: pointer;
+        display: inline-block; /* Ensure it respects text-align center of parent or margin auto */
+        margin: 0 auto; 
     }
 }
 
