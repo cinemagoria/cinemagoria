@@ -108,8 +108,14 @@ export default {
         });
 
         if (response.ok) {
+            const data = await response.json();
             this.$bus.$emit('lists-updated');
-            // If opened from Add to List popover (future), we might wanna emit created list
+            // Emit specific event with list details (id is crucial)
+            if (data && data.list) {
+                this.$bus.$emit('new-list-created', data.list);
+            } else if (data && data.id) {
+               this.$bus.$emit('new-list-created', data);
+            }
             this.close();
             // Re-open my lists modal if it was closed or needs refresh? 
             // The MyListsModal listens to 'lists-updated', so straightforward.

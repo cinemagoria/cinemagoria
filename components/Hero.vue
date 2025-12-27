@@ -105,7 +105,7 @@
                     <svg v-if="!isInAnyList" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     <svg v-else xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                   </span>
-                  <span class="txt">{{ isInAnyList ? 'Saved' : 'Add to List...' }}</span>
+                  <span class="txt">{{ isInAnyList ? 'Saved' : 'Add to...' }}</span>
                 </button>
 
                 <!-- Popover Menu -->
@@ -443,6 +443,7 @@ export default {
   },
 
   async mounted() {
+    this.$bus.$on('new-list-created', this.handleNewList);
     // ... existing initialization ...
     this.posterForDb = this.poster_path;
     this.nameForDb = this.name;
@@ -489,6 +490,7 @@ export default {
   beforeDestroy() {
     this.$bus.$off('favorites-updated', this.checkMembership);
     this.$bus.$off('lists-updated', this.checkMembership);
+    this.$bus.$off('new-list-created', this.handleNewList);
   },
 
   methods: {
@@ -530,7 +532,8 @@ export default {
                 // Add
                 const payload = {
                     idForDb, typeForDb, nameForDb, posterForDb, yearStartForDb, yearEndForDb, genresForDb, starsForDb,
-                    imdb_rating: this.item.imdb_rating
+                    imdb_rating: this.item.imdb_rating,
+                    imdb_votes: this.item.imdb_votes || this.item.vote_count // Fix missing votes
                 };
                 await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items`, {
                     method: 'POST',
@@ -543,6 +546,18 @@ export default {
         } catch(e) {
             console.error(e);
         }
+    },
+
+    async handleNewList(newList) {
+        // Automatically add current item to the newly created list
+        if (!newList || !newList.id) return;
+        
+        // Use addToList which already ensures full payload
+        await this.addToList(newList);
+        
+        // Refresh membership to show the checkmark
+        await this.checkMembership();
+        await this.fetchUserLists();
     },
 
     async toggleAddListMenu() {
@@ -938,11 +953,12 @@ export default {
                 idForDb: this.id,
                 genresForDb: this.genresForDb,
                 typeForDb: this.typeForDb,
-                addedAt: new Date(), // Re-generate addedAt 
+                addedAt: new Date(), 
                 external_ids: this.item.external_ids,
                 rating_source: this.item.rating_source || 'tmdb',
                 imdb_rating: this.item.imdb_rating,
-                imdb_votes: this.item.imdb_votes,
+                // Save vote count regardless of source into imdb_votes column for now, or ensure we have it
+                imdb_votes: this.item.imdb_votes || this.item.vote_count, 
                 runtime: this.runtime,
             };
              
@@ -953,10 +969,11 @@ export default {
             });
             
             if (response.ok) {
-                alert(`Added to ${list.name}`);
+                // alert(`Added to ${list.name}`);
                 this.closeAddListMenu();
             } else {
-                alert('Failed to add to list');
+                // alert('Failed to add to list');
+                console.error('Failed to add to list');
             }
          } catch(e) {
              console.error(e);
