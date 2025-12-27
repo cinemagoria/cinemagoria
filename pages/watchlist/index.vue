@@ -1108,7 +1108,6 @@ export default {
     },
 
     onListsUpdated() {
-      // Clear selection after successful list operation (e.g. bulk add)
       if (this.selectedItems.length > 0) {
           this.selectedItems = [];
           this.aiSelectionMode = false;
@@ -1120,11 +1119,8 @@ export default {
     async openBulkAddModal() {
         if (this.selectedItems.length === 0) return;
         
-        // Reconstruct full details for Bulk Add by looking up original data
-        // This keeps toggleItemSelection generic for AI, but gives us rich data here.
         const items = this.selectedItems.map(sel => {
              let original = null;
-             // Try to find in movies
              if (sel.media_type === 'movie') {
                  original = this.moviesFetched.find(m => m.details.idForDb === sel.tmdb_id);
              } else {
@@ -1135,7 +1131,6 @@ export default {
                  return { ...original.details };
              }
              
-             // Fallback if not found (should rarely happen)
              return {
                 idForDb: sel.tmdb_id,
                 typeForDb: sel.media_type,
@@ -1145,7 +1140,6 @@ export default {
                 imdb_rating: sel.imdb_score,
                 starsForDb: sel.tmdb_rating,
                 yearStartForDb: sel.year,
-                // Genres will be missing in fallback, but acceptable
              };
         });
             
@@ -1438,7 +1432,6 @@ export default {
           }
         }
 
-        // Wait for all IMDb fetches to complete in parallel
         if (fetchImdbPromises.length > 0) {
           await Promise.all(fetchImdbPromises);
         }

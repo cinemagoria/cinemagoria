@@ -444,29 +444,24 @@ export default {
 
   async mounted() {
     this.$bus.$on('new-list-created', this.handleNewList);
-    // ... existing initialization ...
     this.posterForDb = this.poster_path;
     this.nameForDb = this.name;
     this.idForDb = this.id;
     this.typeForDb = this.type;
-    // ...
-    
-    // Initialize user session
+
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');
     this.userEmail = email || '';
     this.hasAccessToken = accessToken !== null;
     
     if (this.hasAccessToken) {
-      await this.checkMembership(); // New combined check
+      await this.checkMembership();
       this.checkUserRating();
     }
     
-    // Legacy checks if needed, but checkMembership covers watchlist
     this.$bus.$on('favorites-updated', this.checkMembership);
-    this.$bus.$on('lists-updated', this.checkMembership); // Listen for list changes
+    this.$bus.$on('lists-updated', this.checkMembership);
     
-    // Image loading logic
     if (!this.backdrop) {
       this.isLoading = false;
     } else {
@@ -476,7 +471,6 @@ export default {
     }
     setTimeout(() => this.isLoading = false, 5000);
     
-    // Setup fields
     this.starsForDb = this.stars;
     this.yearStartForDb = this.yearStart;
     this.yearEndForDb  = this.yearEnd;
@@ -494,7 +488,6 @@ export default {
   },
 
   methods: {
-    // ... existing onBackdropLoaded ...
     onBackdropLoaded() { this.isLoading = false; },
 
     async checkMembership() {
@@ -526,14 +519,12 @@ export default {
         
         try {
             if (isInList) {
-                // Remove
                 await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items?itemId=${this.id}&itemType=${this.typeForDb}`, { method: 'DELETE' });
             } else {
-                // Add
                 const payload = {
                     idForDb, typeForDb, nameForDb, posterForDb, yearStartForDb, yearEndForDb, genresForDb, starsForDb,
                     imdb_rating: this.item.imdb_rating,
-                    imdb_votes: this.item.imdb_votes || this.item.vote_count // Fix missing votes
+                    imdb_votes: this.item.imdb_votes || this.item.vote_count
                 };
                 await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items`, {
                     method: 'POST',
@@ -549,13 +540,8 @@ export default {
     },
 
     async handleNewList(newList) {
-        // Automatically add current item to the newly created list
         if (!newList || !newList.id) return;
-        
-        // Use addToList which already ensures full payload
         await this.addToList(newList);
-        
-        // Refresh membership to show the checkmark
         await this.checkMembership();
         await this.fetchUserLists();
     },
@@ -576,8 +562,6 @@ export default {
         this.showAddListMenu = false;
         this.$bus.$emit('show-create-list-modal');
     },
-
-    // ... Keep existing methods below ...
 
     openModal() {
       if (this.trailer && this.trailer[0]) {
@@ -957,7 +941,6 @@ export default {
                 external_ids: this.item.external_ids,
                 rating_source: this.item.rating_source || 'tmdb',
                 imdb_rating: this.item.imdb_rating,
-                // Save vote count regardless of source into imdb_votes column for now, or ensure we have it
                 imdb_votes: this.item.imdb_votes || this.item.vote_count, 
                 runtime: this.runtime,
             };
@@ -969,10 +952,8 @@ export default {
             });
             
             if (response.ok) {
-                // alert(`Added to ${list.name}`);
                 this.closeAddListMenu();
             } else {
-                // alert('Failed to add to list');
                 console.error('Failed to add to list');
             }
          } catch(e) {
