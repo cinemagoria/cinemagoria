@@ -16,7 +16,14 @@
           <Loader :size="60" color="#8BE9FD" />
         </div>
 
-        <div v-else :class="$style.modalBody">
+        <div v-if="undoList" :class="$style.undoBarContainer">
+           <div :class="$style.undoBar">
+             <span>List "{{ undoList.name }}" deleted</span>
+             <button @click="handleUndo" :class="$style.undoButton">UNDO</button>
+           </div>
+        </div>
+
+        <div :class="$style.modalBody">
             <div :class="$style.grid">
               <div 
                 v-for="list in lists" 
@@ -40,6 +47,11 @@
                    </div>
                    <div v-else :class="$style.listIcon">
                      <img src="/empty-list-placeholder.webp" :class="$style.listPlaceholderImg" alt="List placeholder" />
+                   </div>
+                   
+                   <!-- Added Indicator -->
+                   <div v-if="addedLists.includes(list.id)" :class="$style.addedIndicator">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                    </div>
                 </div>
                 <div :class="$style.cardContent">
@@ -87,7 +99,10 @@ export default {
       visible: false,
       loading: false,
       lists: [],
-      itemToAdd: null // If set, we are in "Add to List" mode
+      itemToAdd: null,
+      addedLists: [], // Track IDs of lists where item was added
+      undoList: null,
+      undoTimer: null
     };
   },
   
@@ -104,12 +119,15 @@ export default {
     this.$bus.$on('show-my-lists-modal', this.show);
     this.$bus.$on('show-add-to-list-modal', this.showAddMode);
     this.$bus.$on('lists-updated', this.fetchLists);
+    this.$bus.$on('new-list-created', this.handleNewList);
   },
 
   beforeDestroy() {
     this.$bus.$off('show-my-lists-modal');
     this.$bus.$off('show-add-to-list-modal');
     this.$bus.$off('lists-updated');
+    this.$bus.$off('new-list-created');
+    this.finalizeDelete(); // Ensure pending delete happens if component destroyed
   },
 
   methods: {
@@ -121,13 +139,16 @@ export default {
 
     async showAddMode(item) {
         this.itemToAdd = item;
+        this.addedLists = []; // Reset added state
         this.visible = true;
         await this.fetchLists();
     },
 
     close() {
+      this.finalizeDelete(); // Ensure pending delete happens on close
       this.visible = false;
       this.itemToAdd = null;
+      this.addedLists = [];
     },
     
     openCreateModal() {
@@ -144,25 +165,19 @@ export default {
     },
 
     async addListItem(list) {
+         if (this.addedLists.includes(list.id)) return; // Already added
+
          try {
              // Ensure item structure matches backend expectation
-             // If coming from Watchlist page, item is already formatted mostly correctly from 'details'
-             // But let's standardize.
              const item = {
                 idForDb: this.itemToAdd.idForDb || this.itemToAdd.id,
                 typeForDb: this.itemToAdd.typeForDb || this.itemToAdd.media_type || (this.itemToAdd.title ? 'movie' : 'tv'),
                 nameForDb: this.itemToAdd.nameForDb || this.itemToAdd.title || this.itemToAdd.name,
                 posterForDb: this.itemToAdd.posterForDb || this.itemToAdd.poster_path,
+                imdb_votes: this.itemToAdd.imdb_votes || this.itemToAdd.imdbVotes || this.itemToAdd.vote_count,
                 topLevel: true 
-                // Add stored props if available
              };
              
-             // We need to fetch full details if missing? 
-             // In Watchlist, we have 'item.details' which has everything.
-             // So passed 'item' should be 'item.details'.
-             
-             // Let's assume passed object is robust enough or we map it.
-             // Reuse the payload structure from Hero if possible.
              const payload = { ...this.itemToAdd, ...item };
              
             const response = await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items`, {
@@ -172,15 +187,30 @@ export default {
             });
 
             if(response.ok) {
-                // visual feedback
-                alert(`Added to ${list.name}`);
-                this.close();
-            } else {
-                alert('Failed to add');
+                this.addedLists.push(list.id);
+                // We do NOT close the modal, to allow adding to multiple lists
+                // We update the list count though? Ideally yes, but complex.
+                // For now, visual feedback is enough.
+                list.item_count = (list.item_count || 0) + 1; // Optimistic update
             }
          } catch(e) {
              console.error(e);
          }
+    },
+
+    async handleNewList(newList) {
+        // Called when a new list is created via the CreateListModal (if we wire it)
+        // Refresh lists first to show it
+        await this.fetchLists();
+        
+        // If we are in "Add Mode", automatically add the item to this new list
+        if (this.itemToAdd) {
+            // Find the list object from updated lists (it should be first)
+            const listObj = this.lists.find(l => l.id === newList.id) || this.lists[0];
+            if (listObj) {
+                await this.addListItem(listObj);
+            }
+        }
     },
 
     async fetchLists() {
@@ -208,19 +238,48 @@ export default {
     },
 
     async deleteList(list) {
-        if (this.itemToAdd) return; // Disable delete in add mode? Or allow it.
+        // If there is already an item pending deletion, finalize it immediately before starting a new one
+        if (this.undoList) {
+            await this.finalizeDelete(); 
+        }
+
+        // Optimistic remove
+        this.lists = this.lists.filter(l => l.id !== list.id);
         
-        if(!confirm(`Are you sure you want to delete "${list.name}"?`)) return;
+        // Set undo state
+        this.undoList = list;
+        this.startUndoTimer();
+    },
+
+    startUndoTimer() {
+        if (this.undoTimer) clearTimeout(this.undoTimer);
+        this.undoTimer = setTimeout(() => {
+            this.finalizeDelete();
+        }, 7000);
+    },
+
+    async finalizeDelete() {
+        if (!this.undoList) return;
+        const listToDelete = this.undoList;
+        this.undoList = null; // Clear state so we don't delete again
+        if (this.undoTimer) clearTimeout(this.undoTimer);
         
         try {
-            const response = await fetch(`${this.tursoBackendUrl}/lists/${list.id}`, {
+            await fetch(`${this.tursoBackendUrl}/lists/${listToDelete.id}`, {
                 method: 'DELETE'
             });
-            if(response.ok) {
-                this.lists = this.lists.filter(l => l.id !== list.id);
-            }
+            // No need to update local list as it's already gone
+            this.$bus.$emit('lists-updated'); // Emit just in case
         } catch(e) {
             console.error(e);
+        }
+    },
+
+    handleUndo() {
+        if (this.undoTimer) clearTimeout(this.undoTimer);
+        if (this.undoList) {
+            this.lists.unshift(this.undoList);
+            this.undoList = null;
         }
     }
   }
@@ -453,20 +512,27 @@ export default {
 }
 
 .deleteButton {
-    width: 100%;
-    background: transparent;
-    border: 1px solid #d48282;
-    color: #d48282;
-    padding: 0.5rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: all 0.2s;
-    
-    &:hover {
-        background: #d48282;
-        color: #fff;
-    }
+  background: rgba(255, 0, 0, 0.2);
+  color: #fff;
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 30px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    background: rgba(255, 0, 0, 0.4);
+    border-color: rgba(255, 0, 0, 0.6);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+  }
 }
 
 .emptyState {
@@ -480,5 +546,61 @@ export default {
     display: flex;
     justify-content: center;
     padding: 4rem;
+}
+
+.undoBarContainer {
+    padding: 0 2rem;
+    margin-bottom: 1rem;
+}
+
+.undoBar {
+  background: linear-gradient(90deg, rgba(139, 233, 253, 0.2) 0%, rgba(0, 136, 204, 0.2) 100%);
+  border-bottom: 2px solid #8BE9FD;
+  color: white;
+  padding: 1.2rem 3rem;
+  display: flex;
+  position: relative;
+  border-radius: 15px;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.4rem;
+}
+
+.undoButton {
+  background: #8BE9FD;
+  border: none;
+  color: #000;
+  padding: 0.6rem 1.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #7DD4E8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(139, 233, 253, 0.3);
+  }
+}
+
+.addedIndicator {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    background: #8BE9FD;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    z-index: 2;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
 }
 </style>
