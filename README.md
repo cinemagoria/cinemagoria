@@ -35,6 +35,17 @@ A robust personal library designed for active viewers.
 * **Global Rating Tool:** A universal modal allowing 1–10 scoring and text reviews from any page.
 * **Real-time Sync:** Instant state synchronization across devices via Supabase.
 
+#### Custom List Management
+
+A powerful and flexible system for organizing and sharing your favorite content.
+
+* **Comprehensive Curation:** Create and manage unlimited custom lists for any theme or purpose.
+* **Dynamic Privacy Controls:** Set lists to public or private with inline editing capabilities.
+* **Bulk Actions:** Add multiple items to lists simultaneously with enhanced data reconstruction.
+* **Advanced Filtering:** Navigate large lists with sophisticated filtering options and modern pagination.
+* **Seamless Integration:** Unified watchlist management within the list modal with undo functionality.
+* **Intuitive Editing:** Rename lists, update privacy status, and manage items with dedicated modals.
+
 #### Intelligent Search Engine
 
 A custom search architecture optimized for speed and accuracy.
@@ -109,6 +120,17 @@ yarn start
 ---
 
 ### Version History
+
+#### v4.2.0 — Custom Lists & Enhanced Curation (2025-12-28)
+
+* **Custom List Management:** Comprehensive system for creating, managing, and sharing custom movie and TV show lists with dynamic privacy controls.
+* **List Detail Pages:** Revamped with enhanced filtering, pagination, and undo functionality matching watchlist design.
+* **Bulk Item Adding:** Add multiple items to lists at once with enhanced data reconstruction and genre parsing.
+* **Inline Editing:** Rename lists and update privacy status directly within modals for streamlined management.
+* **Dedicated Error Pages:** Introduced 'not found' pages for invalid movie and TV detail URLs.
+* **UI Standardization:** Harmonized modal designs, button styles, and pagination across the platform for cross-project consistency.
+* **Performance Optimizations:** Concurrent IMDb rating fetches and event bus handling for reactive favorites updates.
+* **Code Quality:** Introduced `itemMapper` utility for standardized item payload creation across components.
 
 #### v4.1.0 — Visual Refinements & OST (2025-12-24)
 
