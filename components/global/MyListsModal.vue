@@ -182,7 +182,7 @@ export default {
     },
     modalTitle() {
         if (Array.isArray(this.itemsToAdd)) return `Añadir Elementos`;
-        return this.itemToAdd ? 'Gestionar Listas' : 'Mis Listas';
+        return this.itemToAdd ? 'Gestionar Listas' : 'Mis Listas Personalizadas';
     },
     modalSubtitle() {
         if (this.itemToAdd) {
