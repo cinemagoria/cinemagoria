@@ -514,7 +514,7 @@
           apiSortBy = 'vote_average.asc';
         }
 
-        let baseUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&include_adult=false&include_video=false&language=en-US&sort_by=${apiSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}`;
+        let baseUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&include_adult=false&include_video=false&language=es-ES&sort_by=${apiSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}`;
         
         if (this.customYearStart) {
           baseUrl += `&primary_release_date.gte=${this.customYearStart}-01-01`;
@@ -650,7 +650,7 @@
           apiSortBy = 'vote_average.asc';
         }
 
-        let baseUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&include_adult=false&include_video=false&language=en-US&sort_by=${apiSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}`;
+        let baseUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&include_adult=false&include_video=false&language=es-ES&sort_by=${apiSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}`;
         
         if (this.customYearStart) {
           baseUrl += `&first_air_date.gte=${this.customYearStart}-01-01`;
