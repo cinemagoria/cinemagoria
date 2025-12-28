@@ -16,12 +16,14 @@
            <form @submit.prevent="createList">
                <div :class="$style.formGroup">
                    <label for="listName">Name</label>
-                   <input type="text" id="listName" v-model="form.name" required placeholder="e.g. Best Sci-Fi 2024" maxlength="60" />
+                   <input type="text" id="listName" v-model="form.name" required placeholder="e.g. Best Sci-Fi 2024" maxlength="90" />
+                   <span :class="$style.charCount">{{ 90 - form.name.length }} remaining</span>
                </div>
                
                <div :class="$style.formGroup">
                    <label for="listDesc">Description (Optional)</label>
-                   <textarea id="listDesc" v-model="form.description" rows="3" placeholder="What's this list about?"></textarea>
+                   <textarea id="listDesc" v-model="form.description" rows="3" placeholder="What's this list about?" maxlength="180"></textarea>
+                   <span :class="$style.charCount">{{ 180 - form.description.length }} remaining</span>
                </div>
 
                <div :class="$style.formGroup">
@@ -88,7 +90,7 @@ export default {
     },
 
     async createList() {
-      const userEmail = localStorage.getItem('email');
+      const userEmail = localStorage.getItem('email')?.replace(/['"]+/g, '');
       if (!userEmail) { 
           alert('You must be logged in.');
           return;
@@ -242,6 +244,15 @@ export default {
     margin-top: 0.5rem;
     color: #5d666b;
     font-size: 1.2rem;
+}
+
+.charCount {
+    display: block;
+    text-align: right;
+    font-size: 1.1rem;
+    color: #5d666b;
+    margin-top: 0.4rem;
+    transition: color 0.3s;
 }
 
 .actions {

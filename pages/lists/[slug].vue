@@ -450,7 +450,7 @@ export default {
     
     computed: {
         shareUrl() {
-            if (process.client) {
+            if (import.meta.client) {
                 return window.location.href;
             }
             return '';
@@ -540,22 +540,33 @@ export default {
         await this.fetchListDetails();
         document.addEventListener('click', this.closeDropdowns);
         document.addEventListener('click', this.closeCardMenu);
-        this.$bus.$on('lists-updated', this.fetchListDetails);
+        this.$bus.$on('lists-updated', this.handleListUpdate);
     },
     
     beforeDestroy() {
         document.removeEventListener('click', this.closeDropdowns);
         document.removeEventListener('click', this.closeCardMenu);
-        this.$bus.$off('lists-updated', this.fetchListDetails);
+        this.$bus.$off('lists-updated', this.handleListUpdate);
         this.finalizeDelete();
     },
 
     methods: {
-        async fetchListDetails() {
+        handleListUpdate() {
+            this.fetchListDetails(true);
+        },
+
+        async fetchListDetails(redirectOnMissing = false) {
             try {
                 this.loading = true;
                 const slug = this.$route.params.slug;
-                const response = await fetch(`${this.tursoBackendUrl}/lists/${slug}`);
+                const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+                
+                let url = `${this.tursoBackendUrl}/lists/${slug}`;
+                if (userEmail) {
+                    url += `?userEmail=${encodeURIComponent(userEmail)}`;
+                }
+                
+                const response = await fetch(url);
                 if (response.ok) {
                     const data = await response.json();
                     this.list = data.list;
@@ -565,7 +576,11 @@ export default {
                         this.filter = 'tvShows';
                     }
                 } else {
-                    this.$nuxt.error({ statusCode: 404, message: 'List not found' });
+                    if (redirectOnMissing) {
+                         this.$router.push('/lists');
+                    } else {
+                         showError({ statusCode: 404, statusMessage: 'List not found' });
+                    }
                 }
             } catch (e) { console.error(e); } finally { this.loading = false; }
         },
@@ -576,6 +591,8 @@ export default {
              this.movieGenres = [];
              this.tvGenres = [];
              
+             if (!this.items) return;
+
              this.items.forEach(raw => {
                  let genres = [];
                  if (raw.genres) {
@@ -645,11 +662,13 @@ export default {
         async updateListName() {
             if (!this.newListName || !this.newListName.trim()) return;
 
+            const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+
             try {
                 const response = await fetch(`${this.tursoBackendUrl}/lists/${this.list.id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: this.newListName })
+                    body: JSON.stringify({ name: this.newListName, userEmail })
                 });
 
                 if (response.ok) {
@@ -749,9 +768,14 @@ export default {
             const listId = this.list.id;
             const itemId = item.details.idForDb;
             const itemType = item.details.typeForDb;
+            const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
 
             try {
-                await fetch(`${this.tursoBackendUrl}/lists/${listId}/items?itemId=${itemId}&itemType=${itemType}`, {
+                let url = `${this.tursoBackendUrl}/lists/${listId}/items?itemId=${itemId}&itemType=${itemType}`;
+                if (userEmail) {
+                    url += `&userEmail=${encodeURIComponent(userEmail)}`;
+                }
+                await fetch(url, {
                     method: 'DELETE'
                 });
                 this.$bus.$emit('lists-updated');
@@ -847,11 +871,13 @@ export default {
             return;
         }
 
+        const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+
         try {
             const response = await fetch(`${this.tursoBackendUrl}/lists/${this.list.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ is_public: isPublic })
+                body: JSON.stringify({ is_public: isPublic, userEmail })
             });
 
             if (response.ok) {
@@ -894,20 +920,34 @@ export default {
     margin-bottom: 3rem;
     
     .list-title {
-        font-size: 2.8rem;
-        color: #8BE9FD;
-        margin-bottom: 0.5rem;
-        word-wrap: break-word;
-        line-height: 1.2;
-        padding: 0 1rem;
-    }
-    .list-description {
-        font-size: 1.5rem;
-        color: #acafb5;
-        max-width: 600px;
-        margin: 0 auto 1.5rem;
-        line-height: 1.5;
-    }
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #8BE9FD;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    max-width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    line-height: 1.2;
+  }
+  
+  .list-description {
+     font-size: 1.6rem;
+     color: #ccc;
+     margin-bottom: 2rem;
+     max-width: 90%;
+     margin-left: auto;
+     margin-right: auto;
+     line-height: 1.6;
+     word-wrap: break-word;
+     overflow-wrap: break-word;
+     white-space: normal;
+     text-align: center;
+  }  }
     .list-meta {
         display: flex;
         justify-content: center;
@@ -991,7 +1031,6 @@ export default {
         &:hover { background: rgba(139, 233, 253, 0.1); color: #8BE9FD; }
         &.active { color: #8BE9FD; font-weight: 600; background: rgba(139, 233, 253, 0.05); }
     }
-}
 
 .loader-container {
     margin-top: 4rem;
