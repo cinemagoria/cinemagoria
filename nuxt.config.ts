@@ -59,7 +59,7 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { key: 'description', name: 'description', content: 'EnterCinema - Your Movie & TV Show Guide' },
+        { key: 'description', name: 'description', content: 'EnterCinema - The moment you discover what to watch.' },
         { name: 'theme-color', content: '#03496B' }
       ],
       link: [
