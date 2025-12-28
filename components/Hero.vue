@@ -411,15 +411,15 @@ export default {
 
   directives: {
     'click-outside': {
-        bind: function (el, binding, vnode) {
+        mounted(el, binding) {
             el.clickOutsideEvent = function (event) {
                 if (!(el == event.target || el.contains(event.target))) {
-                    vnode.context[binding.expression](event);
+                    binding.value(event);
                 }
             };
             document.body.addEventListener('click', el.clickOutsideEvent);
         },
-        unbind: function (el) {
+        beforeUnmount(el) {
             document.body.removeEventListener('click', el.clickOutsideEvent);
         }
     }
@@ -452,7 +452,7 @@ export default {
 
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');
-    this.userEmail = email || '';
+    this.userEmail = email ? email.replace(/['"]+/g, '') : '';
     this.hasAccessToken = accessToken !== null;
     
     if (this.hasAccessToken) {
@@ -520,13 +520,13 @@ export default {
         
         try {
             if (isInList) {
-                await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items?itemId=${this.id}&itemType=${this.typeForDb}`, { method: 'DELETE' });
+                await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items?itemId=${this.id}&itemType=${this.typeForDb}&userEmail=${encodeURIComponent(this.userEmail)}`, { method: 'DELETE' });
             } else {
                 const payload = mapItemToDbPayload(this.item);
                 await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ item: payload })
+                    body: JSON.stringify({ item: payload, userEmail: this.userEmail })
                 });
             }
             await this.checkMembership();
@@ -536,9 +536,7 @@ export default {
         }
     },
 
-    async handleNewList(newList) {
-        if (!newList || !newList.id) return;
-        await this.addToList(newList);
+    async handleNewList() {
         await this.checkMembership();
         await this.fetchUserLists();
     },
@@ -936,7 +934,7 @@ export default {
             const response = await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ item })
+                body: JSON.stringify({ item, userEmail: this.userEmail })
             });
             
             if (response.ok) {
@@ -1153,10 +1151,10 @@ export default {
   right: 0.5rem;
   
   @media (max-width: #{$breakpoint-small - 1px}) {
-    justify-content: center;
+    justify-content: flex-start;
     margin-top: 1.5rem;
-    gap: 0.6rem;
-    flex-wrap: nowrap;
+    gap: 0.8rem 0.6rem;
+    flex-wrap: wrap;
   }
   
   @media (min-width: $breakpoint-small) and (max-width: #{$breakpoint-medium - 1px}) {
@@ -1256,8 +1254,9 @@ export default {
   }
   
   @media (max-width: #{$breakpoint-small - 1px}) {
-    flex: 1 1 auto;
-    max-width: none;
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 250px;
     height: 36px;
     line-height: 36px;
     font-size: 1.3rem;

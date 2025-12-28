@@ -869,7 +869,7 @@ button {
 
 .following-button-primary {
   padding: 0.8rem 1.6rem;
-  border-radius: 8px;
+  border-radius: 15px;
   background: #8BE9FD;
   color: #000;
   border: none;
@@ -967,7 +967,7 @@ button {
 .filter-button,
 .mark-all-button {
   padding: 0.8rem 0.6rem;
-  border-radius: 8px;
+  border-radius: 15px;
   border: 2px solid #8BE9FD;
   background: transparent;
   color: #8BE9FD;
