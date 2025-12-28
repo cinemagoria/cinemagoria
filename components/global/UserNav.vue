@@ -46,6 +46,13 @@
           <span class="menu-label">Valoraciones</span>
         </div>
 
+        <div class="menu-item" @click="showMyListsModal">
+          <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
+          </svg>
+          <span class="menu-label">Mis Listas</span>
+        </div>
+
         <div class="menu-item" @click="showFollowingModal">
           <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="m16 11 2 2 4-4"/>
@@ -75,7 +82,7 @@
 
         <div class="menu-item" @click="signOut">
           <img src="/icon-logout.png" alt="Logout Icon" class="menu-icon">
-          <span class="menu-label menu-label-logout">Cerrar Sesión</span>
+          <span class="menu-label menu-label-logout">Cerrar sesión</span>
         </div>
       </div>
     </div>
@@ -100,7 +107,6 @@ export default {
     const supabase = useSupabaseClient()
     return { supabase }
   },
- 
   
   data() {
     return {
@@ -247,6 +253,11 @@ export default {
 
     showFollowingModal() {
       this.$bus.$emit('show-following-modal');
+      this.isMenuOpen = false;
+    },
+
+    showMyListsModal() {
+      this.$bus.$emit('show-my-lists-modal');
       this.isMenuOpen = false;
     },
 

@@ -11,7 +11,7 @@
       <span
         v-if="artist"
         :class="$style.role">
-        by <span :class="$style.character">{{ artist }}</span>
+        por <span :class="$style.character">{{ artist }}</span>
       </span>
     </a>
   </div>

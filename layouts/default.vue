@@ -19,6 +19,8 @@
     
     <!-- Modals triggered by EventBus -->
     <QuickFavModal />
+    <MyListsModal />
+    <CreateListModal />
   </div>
 </template>
 
@@ -32,7 +34,8 @@ import InstallPrompt from '~/components/global/InstallPrompt.vue'
 import RatedModal from '~/components/global/RatedModal.vue'
 import FollowingModal from '~/components/global/FollowingModal.vue'
 import QuickFavModal from '~/components/global/QuickFavModal.vue'
-
+import MyListsModal from '~/components/global/MyListsModal.vue'
+import CreateListModal from '~/components/global/CreateListModal.vue'
 </script>
 
 <style lang="scss" scoped>

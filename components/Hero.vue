@@ -30,7 +30,7 @@
             src="/no-data-es.webp"
             loading="eager"
             :class="$style.image"
-            alt="No Hay Datos"
+            alt="No Data"
             :style="{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }"
             @load="onBackdropLoaded"
             @error="onBackdropLoaded">
@@ -91,37 +91,57 @@
                 type="button"
                 @click="openModal">
                 <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="#fff"><path d="M3 22v-20l18 10-18 10z"/></svg></span>
-                <span class="txt">Ver Trailer</span>
+                <span class="txt">Ver Tráiler</span>
               </button>
 
-              <button
-                v-if="hasAccessToken"
-                class="button button--icon" 
-                type="button"
-                :class="{ [$style.actionButton]: true, [$style.favoritesFilled]: isFavorite }"
-                @click="toggleFavorite">
-                <span class="icon">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="15"
-                    height="15"
-                    viewBox="0 0 24 24"
-                    fill="none">
-                    <path
-                      v-if="!isFavorite"
-                      d="M12 21l-1.42-1.34C5.4 15.34 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.84-8.58 11.16L12 21z"
-                      stroke="#fff"
-                      stroke-width="2"
-                    />
-                    <path
-                      v-if="isFavorite"
-                      d="M12 21l-1.42-1.34C5.4 15.34 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.84-8.58 11.16L12 21z"
-                      fill="#fff"
-                    />
-                  </svg>
-                </span>
-                <span class="txt">{{ isFavorite ? 'Borrar de Mi Lista' : 'Añadir a Mi Lista' }}</span>
-              </button>
+              <div class="add-to-list-wrapper" v-click-outside="closeAddListMenu" style="position: relative;">
+                <button
+                  v-if="hasAccessToken"
+                  class="button button--icon" 
+                  type="button"
+                  :class="{ [$style.actionButton]: true, [$style.favoritesFilled]: isInAnyList || showAddListMenu }"
+                  @click.stop="toggleAddListMenu">
+                  <span class="icon">
+                    <svg v-if="!isInAnyList" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </span>
+                  <span class="txt">{{ isInAnyList ? 'Guardado' : 'Añadir a...' }}</span>
+                </button>
+
+                <!-- Popover Menu -->
+                <transition name="fade">
+                  <div v-if="showAddListMenu" class="add-list-menu">
+                    <div class="menu-header">Guardar en</div>
+                    
+                    <button class="menu-option" @click.stop.prevent="handleToggleFavorite">
+                      <div class="checkbox">
+                        <svg v-if="membership.inWatchlist || isFavorite" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      </div>
+                      <span>Mi Lista</span>
+                    </button>
+
+                    <div class="divider"></div>
+                    
+                    <div v-if="userLists.length > 0">
+                       <button 
+                          v-for="list in userLists" 
+                          :key="list.id" 
+                          class="menu-option"
+                          @click="toggleListMembership(list)">
+                          <div class="checkbox">
+                            <svg v-if="membership.lists.some(l => l.id === list.id)" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                          </div>
+                          <span class="list-name">{{ list.name }}</span>
+                       </button>
+                       <div class="divider"></div>
+                    </div>
+
+                    <button class="menu-option create-new" @click="openCreateListModal">
+                      <span class="plus">+</span> Crear Nueva Lista
+                    </button>
+                  </div>
+                </transition>
+              </div>
               
               <button
                 v-if="hasAccessToken"
@@ -158,7 +178,7 @@
                     xmlns="http://www.w3.org/2000/svg"
                     width="15"
                     height="15"
-                    style="position:relative; margin-left:9px;"
+                    style="position:relative;"
                     viewBox="0 0 24 24"
                     fill="none">
                     <path
@@ -174,11 +194,11 @@
       </div>
     </div>
 
-       <div v-if="shareModalVisible" class="modal-overlay">
+      <div v-if="shareModalVisible" class="modal-overlay">
         <div class="share-modal-content">
           <div class="share-modal-header">
             <h2>Compartir</h2>
-            <button class="close-button" @click="closeShareModal" type="button" aria-label="Cerrar">
+            <button class="close-button" @click="closeShareModal" type="button" aria-label="Close">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -191,13 +211,13 @@
             <div class="share-url-field">
               <input id="share-url" type="text" :value="shareUrl" readonly class="share-url-input">
               <div class="copy-button-container">
-                <button @click="copyToClipboard" type="button" class="copy-button" aria-label="Copiar al portapapeles">
+                <button @click="copyToClipboard" type="button" class="copy-button" aria-label="Copy to clipboard">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                     <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
                   </svg>
                 </button>
-                <span v-if="copySuccess" class="copy-success">Copiado!</span>
+                <span v-if="copySuccess" class="copy-success">¡Copiado!</span>
               </div>
             </div>
           </div>
@@ -213,7 +233,7 @@
           </div>
           
           <div class="share-buttons-container">
-            <label class="share-label">Compartir en</label>
+            <label class="share-label">Compartir En</label>
             <div class="share-buttons">
               <button @click="shareTo('whatsapp')" class="share-icon-button" aria-label="Share on WhatsApp" title="WhatsApp">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -307,6 +327,7 @@
 
 <script>
 import { name, stars, yearStart, yearEnd, cert, backdrop, poster, trailer, id, genres, type, runtime } from '~/mixins/Details';
+import { mapItemToDbPayload } from '~/utils/itemMapper';
 import Filters from '~/mixins/Filters';
 import Modal from '~/components/Modal';
 import Loader from '~/components/Loader.vue';
@@ -381,7 +402,27 @@ export default {
       shareTitle: '',
       customTitle: '',
       customMessage: this.item.overview,
+      
+      showAddListMenu: false,
+      userLists: [],
+      membership: { inWatchlist: false, lists: [] }
     };
+  },
+
+  directives: {
+    'click-outside': {
+        bind: function (el, binding, vnode) {
+            el.clickOutsideEvent = function (event) {
+                if (!(el == event.target || el.contains(event.target))) {
+                    vnode.context[binding.expression](event);
+                }
+            };
+            document.body.addEventListener('click', el.clickOutsideEvent);
+        },
+        unbind: function (el) {
+            document.body.removeEventListener('click', el.clickOutsideEvent);
+        }
+    }
   },
 
   computed: {
@@ -397,58 +438,126 @@ export default {
     shareUrl() {
       return `${window.location.origin}/${this.favId}`;
     },
+    isInAnyList() {
+        return this.isFavorite || (this.membership.lists && this.membership.lists.length > 0);
+    }
   },
 
   async mounted() {
-    this.checkIfFavorite();
-    this.checkUserRating();
-
-    if (!this.backdrop) {
-      this.isLoading = false;
-    } else {
-      this.$nextTick(() => {
-        if (this.$refs.backdropRef && this.$refs.backdropRef.complete) {
-          this.isLoading = false;
-        }
-      });
-    }
-    
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 10000);
+    this.$bus.$on('new-list-created', this.handleNewList);
+    this.posterForDb = this.poster_path;
+    this.nameForDb = this.name;
+    this.idForDb = this.id;
+    this.typeForDb = this.type;
 
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');
     this.userEmail = email || '';
     this.hasAccessToken = accessToken !== null;
-    this.isLoggedIn = accessToken !== null;
+    
     if (this.hasAccessToken) {
-      this.checkIfFavorite();
+      await this.checkMembership();
       this.checkUserRating();
     }
-    this.posterForDb = this.poster_path;
-    this.nameForDb = this.name;
+    
+    this.$bus.$on('favorites-updated', this.checkMembership);
+    this.$bus.$on('lists-updated', this.checkMembership);
+    
+    if (!this.backdrop) {
+      this.isLoading = false;
+    } else {
+       this.$nextTick(() => {
+        if (this.$refs.backdropRef && this.$refs.backdropRef.complete) this.isLoading = false;
+       });
+    }
+    setTimeout(() => this.isLoading = false, 5000);
+    
     this.starsForDb = this.stars;
     this.yearStartForDb = this.yearStart;
     this.yearEndForDb  = this.yearEnd;
-    this.idForDb = this.id;
-    this.genresForDb = this.item.genres.map(genre => genre.name).join(', ');
-    this.typeForDb = this.type;
+    this.genresForDb = this.item.genres ? this.item.genres.map(genre => genre.name).join(', ') : '';
     this.addedAt = new Date();
     this.shareTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde EnterCinema!";
     this.customTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde EnterCinema!";
-    this.customMessage = 'Sinopsis: ' + this.item.overview + '\n\nExplora opciones de streaming, trailer, ficha técnica y mucho más aquí: ';
-    
-    this.$bus.$on('favorites-updated', this.checkIfFavorite);
+    this.customMessage = 'Sinopsis: ' + this.item.overview + '\n\nExplora opciones de streaming...';
   },
 
   beforeDestroy() {
-    this.$bus.$off('favorites-updated', this.checkIfFavorite);
+    this.$bus.$off('favorites-updated', this.checkMembership);
+    this.$bus.$off('lists-updated', this.checkMembership);
+    this.$bus.$off('new-list-created', this.handleNewList);
   },
 
   methods: {
-    onBackdropLoaded() {
-      this.isLoading = false;
+    onBackdropLoaded() { this.isLoading = false; },
+
+    async checkMembership() {
+      if (!this.userEmail || !this.id) return;
+      try {
+         const response = await fetch(`${this.tursoBackendUrl}/membership/${encodeURIComponent(this.userEmail)}/${this.typeForDb}/${this.id}`);
+         if (response.ok) {
+             const data = await response.json();
+             this.membership = data;
+             this.isFavorite = data.inWatchlist; 
+         }
+      } catch(e) { console.error(e); }
+    },
+
+    async fetchUserLists() {
+        if (!this.userEmail) return;
+        try {
+            const response = await fetch(`${this.tursoBackendUrl}/lists/user/${encodeURIComponent(this.userEmail)}`);
+            if (response.ok) {
+                const data = await response.json();
+                this.userLists = data.lists || [];
+            }
+        } catch(e) { console.error(e); }
+    },
+
+    async toggleListMembership(list) {
+        const isInList = this.membership.lists.some(l => l.id === list.id);
+        const { typeForDb, idForDb, nameForDb, posterForDb, yearStartForDb, yearEndForDb, genresForDb, starsForDb } = this;
+        
+        try {
+            if (isInList) {
+                await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items?itemId=${this.id}&itemType=${this.typeForDb}`, { method: 'DELETE' });
+            } else {
+                const payload = mapItemToDbPayload(this.item);
+                await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ item: payload })
+                });
+            }
+            await this.checkMembership();
+            this.$bus.$emit('lists-updated');
+        } catch(e) {
+            console.error(e);
+        }
+    },
+
+    async handleNewList(newList) {
+        if (!newList || !newList.id) return;
+        await this.addToList(newList);
+        await this.checkMembership();
+        await this.fetchUserLists();
+    },
+
+    async toggleAddListMenu() {
+        this.showAddListMenu = !this.showAddListMenu;
+        if (this.showAddListMenu) {
+            await this.fetchUserLists();
+            await this.checkMembership();
+        }
+    },
+    
+    closeAddListMenu() {
+        this.showAddListMenu = false;
+    },
+    
+    openCreateListModal() {
+        this.showAddListMenu = false;
+        this.$bus.$emit('show-create-list-modal');
     },
 
     openModal() {
@@ -546,7 +655,7 @@ export default {
         this.$bus.$emit('rated-items-updated');
       } catch (error) {
         console.error('Error removing rating:', error);
-        alert('Hubo un error al eliminar tu valoración. Por favor intenta de nuevo.');
+         alert('Hubo un error al eliminar tu valoración. Por favor intenta de nuevo.');
       }
     },
         
@@ -583,7 +692,7 @@ export default {
       }
     },
     
-    async updateUserRating(rating) {
+        async updateUserRating(rating) {
       if (!this.userEmail) {
         alert('Por favor inicia sesión para valorar.');
         return;
@@ -723,6 +832,11 @@ export default {
       }
     },
 
+    async handleToggleFavorite() {
+        await this.toggleFavorite();
+        await this.checkMembership();
+    },
+
     async toggleFavorite() {
       try {
         if (this.isFavorite) {
@@ -784,6 +898,57 @@ export default {
       }
     },
 
+
+    toggleAddListMenu() {
+        if (!this.showAddListMenu) {
+            this.fetchUserLists();
+        }
+        this.showAddListMenu = !this.showAddListMenu;
+    },
+    
+    closeAddListMenu() {
+        this.showAddListMenu = false;
+    },
+    
+    openCreateListModal() {
+        this.closeAddListMenu();
+        this.$bus.$emit('show-create-list-modal');
+    },
+
+    async fetchUserLists() {
+        if (!this.userEmail) return;
+        try {
+            const response = await fetch(`${this.tursoBackendUrl}/lists/user/${encodeURIComponent(this.userEmail)}`);
+            if (response.ok) {
+                const data = await response.json();
+                this.userLists = data.lists || [];
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    },
+
+
+    async addToList(list) {
+         try {
+            const item = mapItemToDbPayload(this.item);
+             
+            const response = await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ item })
+            });
+            
+            if (response.ok) {
+                this.closeAddListMenu();
+            } else {
+                console.error('Failed to add to list');
+            }
+         } catch(e) {
+             console.error(e);
+             alert('Error adding to list');
+         }
+    },
 
     removeFavorite(favoritesJson, favId) {
       const updatedFavorites = { ...favoritesJson };
@@ -984,14 +1149,20 @@ export default {
   gap: 1rem;
   margin-top: 3rem;
   width: 100%;
+  position: relative;
+  right: 0.5rem;
   
   @media (max-width: #{$breakpoint-small - 1px}) {
     justify-content: center;
     margin-top: 1.5rem;
+    gap: 0.6rem;
+    flex-wrap: nowrap;
   }
   
   @media (min-width: $breakpoint-small) and (max-width: #{$breakpoint-medium - 1px}) {
     justify-content: flex-start;
+    gap: 0.6rem;
+    flex-wrap: nowrap;
   }
   
   @media (min-width: $breakpoint-medium) {
@@ -1070,15 +1241,27 @@ export default {
         stroke: #8BE9FD !important;
       }
     }
+
+    @media (max-width: 390px) {
+       :global(.txt) {
+         display: none;
+       }
+       :global(.icon) {
+         margin: 0 0 0 3px;
+       }
+       padding: 0;
+       width: 36px;
+       flex: 0 0 36px;
+    }
   }
   
   @media (max-width: #{$breakpoint-small - 1px}) {
-    flex: 0 1 auto;
-    max-width: 45%;
+    flex: 1 1 auto;
+    max-width: none;
     height: 36px;
     line-height: 36px;
     font-size: 1.3rem;
-    padding: 0 1rem;
+    padding: 0 0.8rem;
   }
   
   @media (min-width: $breakpoint-small) and (max-width: #{$breakpoint-medium - 1px}) {
@@ -1105,6 +1288,10 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 0;
+  
+  :global(.icon) {
+    margin-left: 6px;
+  }
   
   @media (max-width: #{$breakpoint-small - 1px}) {
     width: 36px;
@@ -1758,5 +1945,84 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.add-list-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 10px;
+  background: #151f24;
+  border: 1px solid rgba(127, 219, 241, 0.3);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  border-radius: 8px;
+  width: 220px;
+  z-index: 100;
+  overflow: hidden;
+  text-align: left; 
+}
+
+.menu-header {
+  padding: 10px 15px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #8F989E;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.menu-option {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 15px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.4rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s;
+}
+
+.menu-option:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.checkbox {
+  width: 20px;
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.list-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.divider {
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    margin: 5px 0;
+}
+
+.create-new {
+    color: #8BE9FD;
+    font-weight: 500;
+}
+
+.plus {
+    margin-right: 10px;
+    font-weight: bold;
+    font-size: 1.6rem;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.2s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>

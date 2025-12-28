@@ -14,9 +14,9 @@
 
         <div v-else-if="showEmptyState" class="empty-state-container">
           <img src="/cinema-popcorn.svg" alt="No favorites" class="empty-state-icon">
-          <h3>Aún no hay favoritos añadidos</h3>
+          <h3>Aún no has agregado favoritos</h3>
           <p>
-            ¡Empieza a crear tu lista añadiendo 
+            Comienza a construir tu lista agregando 
             <nuxt-link to="/movie" class="empty-state-link">Películas</nuxt-link> 
             y 
             <nuxt-link to="/tv" class="empty-state-link">Series</nuxt-link> 
@@ -46,10 +46,11 @@
 
 
                 <button class="control-btn ai-analysis-btn" @click="toggleAiSelectionMode" :class="{ 'active': aiSelectionMode }">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09 3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423 1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0-1.423 1.423Z"/>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <polyline points="9 11 12 14 22 4"></polyline>
                   </svg>
-                  <span class="btn-label">AI</span>
+                  <span class="btn-label">Seleccionar</span>
                 </button>
               </div>
             </div>
@@ -65,7 +66,7 @@
                   <button @click="removeFilter(chip.value)" class="chip-remove">×</button>
                 </div>
               </div>
-              <button @click="clearAllFilters" class="clear-all-inline">Borrar Todo</button>
+              <button @click="clearAllFilters" class="clear-all-inline">Limpiar Todo</button>
             </div>
           </div>
 
@@ -76,11 +77,11 @@
           </div>
           
           <div v-else-if="(filteredItems.length === 0 || itemsToShow.length === 0) && hasActiveFilters" class="no-results-state">
-            <img src="/cinema-popcorn.svg" alt="No hay resultados" class="no-results-icon">
+            <img src="/cinema-popcorn.svg" alt="No results" class="no-results-icon">
             <h3>No se encontraron resultados</h3>
-            <p>No pudimos encontrar contenido que coincida con tus filtros.</p>
+            <p>No pudimos encontrar contenido que coincida con tus filtros actuales.</p>
             <p class="suggestion">Intenta ajustar o limpiar algunos filtros para ver más resultados.</p>
-            <button @click="clearAllFilters" class="refine-filters-btn">Borrar Todos los Filtros</button>
+            <button @click="clearAllFilters" class="refine-filters-btn">Limpiar Todos los Filtros</button>
           </div>
           
           <div v-else>
@@ -91,8 +92,8 @@
                     <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09 3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/>
                   </svg>
                   <span>
-                    Seleccionado: {{ selectedMoviesCount }} {{ selectedMoviesCount === 1 ? 'película' : 'películas' }}, {{ selectedTvShowsCount }} {{ selectedTvShowsCount === 1 ? 'serie' : 'series' }}
-                    <span class="limit-text">(máx 10 c/u)</span>
+                    Selección: {{ selectedMoviesCount }} {{ selectedMoviesCount === 1 ? 'película' : 'películas' }}, {{ selectedTvShowsCount }} {{ selectedTvShowsCount === 1 ? 'serie' : 'series' }}
+                    <span class="limit-text">(máx 10 cada uno)</span>
                   </span>
                   <div class="info-icon-wrapper" @click.stop="toggleSelectionInfo" title="Learn about AI Analysis">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -108,6 +109,17 @@
                       <path d="M18 6L6 18M6 6l12 12"/>
                     </svg>
                     Cancelar
+                  </button>
+                  <button 
+                    @click="openBulkAddModal" 
+                    class="banner-btn add-to-btn" 
+                    :disabled="selectedItems.length === 0"
+                    style="background: #2D3748; color: white; margin-right: 10px;"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                        <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Añadir a...
                   </button>
                   <button 
                     @click="sendToAI" 
@@ -268,6 +280,12 @@
                           </svg>
                           Valorar
                         </div>
+                        <div class="dropdown-item" @click="openAddToListModal(item); activeCardMenuId = null">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                             <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+                          </svg>
+                          Añadir a...
+                        </div>
                         <div class="dropdown-item remove-action" @click="removeFavorite(item); activeCardMenuId = null">
                           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
                             <polyline points="3 6 5 6 21 6"></polyline>
@@ -290,10 +308,10 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-step-back-icon lucide-step-back"><path d="M13.971 4.285A2 2 0 0 1 17 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432z"/><path d="M21 20V4"/></svg>
               </button>
               <span class="pagination-text-container">
-                <label for="page" class="pagination-label">Página</label>
+                <label for="page" class="pagination-label">Page</label>
                 <input type="number" id="page" class="pagination-input" v-model.number="currentPage" min="1" :max="totalPages" @change="validatePageInput">
               </span>
-              <span class="pagination-text">de <span class="pagination-number">{{ totalPages }}</span></span>
+              <span class="pagination-text">of <span class="pagination-number">{{ totalPages }}</span></span>
               <button @click="nextPage" :disabled="currentPage === totalPages">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-step-forward-icon lucide-step-forward"><path d="M10.029 4.285A2 2 0 0 0 7 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432z"/><path d="M3 4v16"/></svg>
               </button>
@@ -348,7 +366,7 @@
                   @click="removeRating" 
                   class="remove-rating-btn"
                 >
-                  <span style="position:relative; margin:0 auto;">Eliminar Calificación</span>
+                  <span style="position:relative; margin:0 auto;">Eliminar</span>
                 </button>
                 
                 <button 
@@ -366,7 +384,7 @@
         <div v-if="filtersModalVisible" class="modal-overlay" @click="closeFiltersModal">
           <div class="filters-modal" @click.stop>
             <div class="modal-header">
-              <h3>Filtros y Ordenar</h3>
+              <h3>Filtros y Ordenamiento</h3>
               <button class="close-btn" @click="closeFiltersModal">×</button>
             </div>
             
@@ -444,7 +462,7 @@
                     v-model.number="minImdbRating" 
                     min="0" 
                     max="10"
-                    placeholder="Mín"
+                    placeholder="Mín" 
                     class="year-input"
                   >
                   <span class="year-separator">-</span>
@@ -481,7 +499,7 @@
               </div>
 
               <div class="filter-group">
-                <label class="filter-label">Ordenar Por</label>
+                <label class="filter-label">Ordenar por</label>
                 <select v-model="orderMode" class="filter-input">
                   <option v-for="option in sortOptions" :key="option.value" :value="option.value">
                     {{ option.label }}
@@ -536,7 +554,7 @@
             </div>
             
             <div class="info-modal-content">
-              <p class="info-intro">Has seleccionado elementos para analizar. Una vez que hagas clic en "Enviar a IA", tendrás dos opciones poderosas:</p>
+              <p class="info-intro">Has seleccionado películas para análisis. Una vez que hagas clic en "Enviar a IA", tendrás dos opciones:</p>
               
               <div class="info-options-grid">
                 <div class="info-card">
@@ -544,7 +562,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                   </div>
                   <h4>Análisis General</h4>
-                  <p>Obtén un desglose completo de temas, prioridades de visualización y pros/contras de tu selección.</p>
+                  <p>Obtendrás un análisis general de los temas, prioridades de visualización y pros/cons de tu selección.</p>
                 </div>
 
                 <div class="info-card">
@@ -552,7 +570,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
                   </div>
                   <h4>Pregunta Personalizada</h4>
-                  <p>Pregunta cosas específicas como <em>"Recomienda películas similares"</em> o <em>"Compara estos estilos"</em>.</p>
+                  <p>Pregunta cosas específicas como <em>"Recomendar películas similares"</em> o <em>"Comparar estos estilos"</em>.</p>
                 </div>
               </div>
 
@@ -800,6 +818,8 @@ export default {
     }
     this.$bus.$on('rated-items-updated', this.checkData);
     this.$bus.$on('favorites-updated', this.checkData);
+    this.$bus.$on('lists-updated', this.onListsUpdated);
+    this.$bus.$on('open-add-to-list-modal', this.openAddToListModal);
   },
 
   beforeDestroy() {
@@ -810,6 +830,8 @@ export default {
     }
     this.$bus.$off('rated-items-updated', this.checkData);
     this.$bus.$off('favorites-updated', this.checkData);
+    this.$bus.$off('lists-updated', this.onListsUpdated);
+    this.$bus.$off('open-add-to-list-modal', this.openAddToListModal);
     document.removeEventListener('click', this.closeCardMenu);
   },
   
@@ -1082,6 +1104,54 @@ export default {
       this.aiSelectionMode = false;
       this.selectedItems = [];
       this.showSelectionInfo = false;
+      this.showSelectionInfo = false;
+    },
+
+    onListsUpdated() {
+      if (this.selectedItems.length > 0) {
+          this.selectedItems = [];
+          this.aiSelectionMode = false;
+          this.showSelectionInfo = false;
+          this.$bus.$emit('show-toast', 'Items added correctly');
+      }
+    },
+
+    async openBulkAddModal() {
+        if (this.selectedItems.length === 0) return;
+        
+        const items = this.selectedItems.map(sel => {
+             let original = null;
+             if (sel.media_type === 'movie') {
+                 original = this.moviesFetched.find(m => m.details.idForDb === sel.tmdb_id);
+             } else {
+                 original = this.tvFetched.find(t => t.details.idForDb === sel.tmdb_id);
+             }
+
+             if (original && original.details) {
+                 return { ...original.details };
+             }
+             
+             return {
+                idForDb: sel.tmdb_id,
+                typeForDb: sel.media_type,
+                nameForDb: sel.title,
+                posterForDb: sel.poster_path,
+                imdb_votes: sel.imdb_votes,
+                imdb_rating: sel.imdb_score,
+                starsForDb: sel.tmdb_rating,
+                yearStartForDb: sel.year,
+             };
+        });
+            
+        this.$bus.$emit('show-add-to-list-modal', items);
+    },
+
+    async openAddToListModal(item) {
+      if (!this.hasAccessToken) {
+         this.$bus.$emit('show-auth-modal');
+         return;
+      }
+      this.$bus.$emit('show-add-to-list-modal', item.details);
     },
     
     openRatingModal(item) {
@@ -1342,7 +1412,7 @@ export default {
                   console.error('Error fetching IMDb rating:', err);
                   tvData.details.rating_source = 'tmdb';
                 });
-                
+
               fetchImdbPromises.push(fetchPromise);
             } else if (!tvData.details.rating_source) {
               tvData.details.rating_source = tvData.details.imdb_rating ? 'imdb' : 'tmdb';
@@ -1361,7 +1431,7 @@ export default {
             }
           }
         }
-        
+
         if (fetchImdbPromises.length > 0) {
           await Promise.all(fetchImdbPromises);
         }
@@ -1680,12 +1750,12 @@ export default {
     
     emptyStateMessage() {
       if (this.showEmptyState) {
-        return 'Aún no hay favoritos añadidos';
+        return 'No favoritos agregados todavía';
       }
       if (this.showTabEmptyState) {
         return this.filter === 'movies' 
-          ? 'Aún no hay películas añadidas' 
-          : 'Aún no hay series añadidas';
+          ? 'No películas agregadas todavía' 
+          : 'No series agregadas todavía';
       }
       return '';
     },
@@ -3976,6 +4046,8 @@ select.user-rating-select {
   gap: 10px;
 }
 
+
+
 .empty-state-container {
   display: flex !important;
   flex-direction: column;
@@ -3992,8 +4064,6 @@ select.user-rating-select {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 15px;
 }
-
-
 
 .loading-state svg {
   margin-bottom: 1rem;

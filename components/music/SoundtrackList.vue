@@ -8,7 +8,7 @@
        <div :class="$style.albumHeader">
          <h2 :class="$style.albumTitle">Banda Sonora Original</h2>
          <div :class="$style.meta">
-            <span v-if="selectedAlbum['artist-credit']">de {{ formatArtist(selectedAlbum['artist-credit']) }}</span>
+            <span v-if="selectedAlbum['artist-credit']">por {{ formatArtist(selectedAlbum['artist-credit']) }}</span>
          </div>
        </div>
 
@@ -145,11 +145,12 @@ export default {
 }
 
 .albumCard {
-    background-color: rgba(0, 0, 0, 0.307);
-    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.307);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
     padding: 2rem;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .albumHeader {
@@ -283,7 +284,7 @@ export default {
         color: var(--primary-color);
         transition: color 0.2s ease;
         &:hover {
-             color: #fff;
+            color: #fff;
             text-decoration: underline;
         }
     }

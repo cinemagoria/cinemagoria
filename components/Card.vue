@@ -3,9 +3,11 @@
     <nuxt-link
       class="card__link"
       :to="item.media_type === 'production' ? { name: 'production-slug', params: { slug: item.slug } } : { name: `${media}-id`, params: { id: item.id } }">
-      <div class="card__img">
-        <QuickFav v-if="media !== 'production' && media !== 'person'" :item="item" />
-        
+      
+      <CardActions v-if="context === 'list'" :item="item" :currentList="list" />
+      <QuickFav v-else-if="media !== 'production' && media !== 'person'" :item="item" />
+
+      <div class="card__img">        
         <div v-if="isLoading" class="card-loader">
           <Loader :size="40" />
         </div>
@@ -25,7 +27,7 @@
           v-else
           ref="posterImage"
           src="/image_not_found_yet_es.webp"
-          alt="Imagen no encontrada"
+          alt="Image not found"
           class="card__img--poster"
           style="width: 100%; height: 100%; object-fit: cover;"
           @load="onImageLoaded"
@@ -64,11 +66,13 @@
 import { apiImgUrl } from '~/utils/api';
 import { name, stars } from '~/mixins/Details';
 import QuickFav from '~/components/global/QuickFav';
+import CardActions from '~/components/global/CardActions.vue';
 import Loader from '~/components/Loader.vue';
 
 export default {
   components: {
     QuickFav,
+    CardActions,
     Loader,
   },
   mixins: [
@@ -81,6 +85,14 @@ export default {
       type: Object,
       required: true,
     },
+    context: {
+      type: String,
+      default: 'home'
+    },
+    list: {
+      type: Object,
+      default: null
+    }
   },
 
   data() {
@@ -144,6 +156,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.card__link {
+  display: block;
+  position: relative;
+}
+
 .card__img {
   position: relative;
   overflow: hidden;

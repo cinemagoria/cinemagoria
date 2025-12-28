@@ -4,7 +4,7 @@
       <nav class="navbar navbar-welcome">
         <h1 class="title-primary" style="position: relative; color: #7FDBF1 !important; top: 23px;">Búsqueda Avanzada</h1>
         <h2 class="title-secondary" style="color: rgb(172, 175, 181); font-size: 14px; margin-top: 40px; position: relative; text-transform: none; left: -2px; top: -6px;">
-        Refina tus criterios de búsqueda para resultados más precisos.
+        Refina tus criterios de búsqueda para obtener resultados más precisos.
       </h2>
       </nav>
 
@@ -29,7 +29,7 @@
                 <line x1="12" y1="16" x2="12" y2="12"></line>
                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
               </svg>
-              <span>Por favor, selecciona un tipo (Película o Serie) para habilitar otros filtros.</span>
+              <span>Por favor selecciona un tipo (Película o Serie) para habilitar otros filtros.</span>
             </div>
           </div>
         </div>
@@ -39,7 +39,7 @@
             <label>Tipo</label>
             <div class="custom-select" @click.stop="toggleDropdown('type')">
               <div class="select-display">
-                <span>{{ selectedSearchType === 'movie' ? 'Película' : (selectedSearchType === 'tv' ? 'Serie' : 'Seleccionar') }}</span>
+                <span>{{ selectedSearchType === 'movie' ? 'Película' : (selectedSearchType === 'tv' ? 'Serie' : 'Elegir Uno') }}</span>
                 <div class="select-arrow" :class="{ 'rotate-180': dropdowns.type }"></div>
               </div>
               <div v-if="dropdowns.type" class="dropdown-options">
@@ -71,7 +71,7 @@
           </div>
 
           <div class="filter-item" :class="{ 'disabled-item': !selectedSearchType }">
-            <label>Rango de Años</label>
+            <label>Año de Estreno</label>
             <div class="range-inputs">
               <input 
                 type="number" 
@@ -143,6 +143,7 @@
                 <div class="dropdown-option" @click.stop="selectCountry('IT')">Italia</div>
                 <div class="dropdown-option" @click.stop="selectCountry('MX')">México</div>
                 <div class="dropdown-option" @click.stop="selectCountry('RU')">Rusia</div>
+                <!-- Add other countries as needed, simplified for brevity -->
               </div>
             </div>
           </div>
@@ -175,7 +176,7 @@
                 min="0" 
                 max="10" 
                 step="0.1"
-                placeholder="Min"
+                placeholder="Mín"
                 class="range-input"
                 @input="validateRatingInput"
                 :disabled="!selectedSearchType"
@@ -187,7 +188,7 @@
                 min="0" 
                 max="10" 
                 step="0.1"
-                placeholder="Max"
+                placeholder="Máx"
                 class="range-input"
                 @input="validateRatingInput"
                 :disabled="!selectedSearchType"
@@ -208,7 +209,7 @@
             <span
               v-else
               :class="{ 'txt': true, 'disabled-color': !selectedSearchType, 'active-color': selectedSearchType }"
-            >Ver Resultados</span>
+            >Buscar</span>
           </button>
         </div>
       </div>  
@@ -233,7 +234,7 @@
 
         <div v-else>
           <p style="text-align: center; font-size: 13px; padding: 4rem; color: #7FDBF1;" v-if="searchPerformed && movies.length === 0 && tvShows.length === 0">
-            No se encontraron resultados para estos parámetros. Intenta refinar tu búsqueda.
+            No se encontraron resultados para estos parámetros de búsqueda. Intenta refinar tu búsqueda.
           </p>
         </div>
       </div>
@@ -347,6 +348,11 @@
         selectedSortBy: 'popularity.desc',
         selectedOriginCountry: '',
         selectedWatchProvider: '',
+        ratings: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        customYearStart: null,
+        customYearEnd: null,
+        minImdbRating: null,
+        maxImdbRating: null,
         dropdowns: {
           type: false,
           genre: false,
@@ -354,11 +360,6 @@
           country: false,
           network: false
         },
-        ratings: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        customYearStart: null,
-        customYearEnd: null,
-        minImdbRating: null,
-        maxImdbRating: null,
         asterisk: '*',
         movies: [],
         tvShows: [],
@@ -500,11 +501,12 @@
         return (v / (v + m)) * R + (m / (v + m)) * C;
       },
 
-      async searchMovies() {
+    async searchMovies() {
         this.searchPerformed = false; 
         this.loading = true;
         this.movies = [];
-        const apiKey = this.$config.public.apiKey;        
+        const apiKey = this.$config.public.apiKey;
+
         let apiSortBy = this.selectedSortBy;
         if (this.selectedSortBy === 'imdb-high') {
           apiSortBy = 'vote_average.desc';
@@ -586,6 +588,7 @@
           }
           
           this.movies = filteredMovies;
+
           if (this.selectedSortBy === 'popularity.desc') {
             this.movies.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
           } else if (this.selectedSortBy === 'vote_average.desc') {
@@ -641,8 +644,10 @@
         const apiKey = this.$config.public.apiKey;
         
         let apiSortBy = this.selectedSortBy;
-        if (this.selectedSortBy === 'imdb-high' || this.selectedSortBy === 'imdb-low') {
+        if (this.selectedSortBy === 'imdb-high') {
           apiSortBy = 'vote_average.desc';
+        } else if (this.selectedSortBy === 'imdb-low') {
+          apiSortBy = 'vote_average.asc';
         }
 
         let baseUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&include_adult=false&include_video=false&language=en-US&sort_by=${apiSortBy}&vote_count.gte=10&with_genres=${this.selectedSearchGenre}`;
@@ -723,7 +728,7 @@
             this.tvShows.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
           } else if (this.selectedSortBy === 'vote_average.desc') {
             this.tvShows.sort((a, b) => (b.vote_average || 0) - (a.vote_average || 0));
-          } else if (this.selectedSortBy === 'primary_release_date.desc') {
+          } else if (this.selectedSortBy === 'primary_release_date.desc') { 
              this.tvShows.sort((a, b) => new Date(b.first_air_date || 0) - new Date(a.first_air_date || 0));
           } else if (this.selectedSortBy === 'revenue.desc') {
              this.tvShows.sort((a, b) => (b.revenue || 0) - (a.revenue || 0));
@@ -781,7 +786,7 @@
         } else if (this.selectedSearchType === 'tv') {
           this.searchTv();
         } else {
-          alert('Por favor selecciona un tipo (Película o Serie) primero.');
+          alert('Please select a type (Movie or TV Show) first.');
         }
       },
           
