@@ -882,6 +882,11 @@ export default {
     padding-right: 2rem;
     max-width: 1400px;
     margin: 0 auto;
+
+    @media screen and (max-width: 600px) {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
 }
 
 .list-header {
@@ -1007,9 +1012,23 @@ export default {
 
 .movie-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
   margin-bottom: 3rem;
+  justify-content: center;
+}
+
+@media screen and (max-width: 600px) {
+  .movie-grid {
+    grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); 
+    gap: 15px;
+  }
+}
+
+@media screen and (min-width: 601px) {
+  .movie-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+  }
 }
 
 .movie-card {
@@ -1074,9 +1093,22 @@ export default {
   text-align: center;
 
   h3 {
-      font-size: 1.4rem; color: #fff; margin: 0 0 5px; 
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      &:hover { color: #8BE9FD; }
+      font-size: 1.4rem; 
+      color: #8BE9FD; 
+      margin: 10px 0 5px;
+      text-align: center;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      white-space: normal;
+      text-overflow: ellipsis;
+      height: 2.4em;
+      line-height: 1.2em;
+      cursor: pointer;
+
+      &:hover { color: #ffffff; }
   }
 }
 
@@ -1099,16 +1131,19 @@ export default {
 
 .rating-item {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  column-gap: 6px;
+  row-gap: 2px;
+  max-width: 100%;
 }
 
 .rating-score {
   font-size: 13px;
   color: #fff;
   font-weight: 700;
-  margin-left: 5px;
+  margin-left: 0;
 }
 
 .rating-logo {
@@ -1133,7 +1168,7 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
 .vote-count {
   font-size: 11px;
   color: #acafb5;
-  margin-left: 4px;
+  margin-left: 0;
   white-space: nowrap;
 }
 
