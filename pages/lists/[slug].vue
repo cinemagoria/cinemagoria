@@ -231,16 +231,16 @@
     <div v-if="filtersModalVisible" class="modal-overlay" @click="closeFiltersModal">
       <div class="filters-modal" @click.stop>
         <div class="modal-header">
-          <h3>Filters & Sorting</h3>
+          <h3>Filtros y Ordenamiento</h3>
           <button class="close-btn" @click="closeFiltersModal">×</button>
         </div>
         
         <div class="filters-content">
           <div class="filter-group">
-            <label class="filter-label">Genre</label>
+            <label class="filter-label">Genéros</label>
             <div class="custom-select" @click="toggleGenreDropdown">
               <div class="select-display">
-                <span class="selected-value">{{ selectedGenre || 'All genres' }}</span>
+                <span class="selected-value">{{ selectedGenre || 'Todos los géneros' }}</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" :class="{ 'rotate-180': genreDropdownOpen }">
                   <path d="M7 10l5 5 5-5z"/>
                 </svg>
