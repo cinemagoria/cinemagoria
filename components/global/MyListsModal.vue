@@ -421,9 +421,9 @@ export default {
         const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
         
         try {
-            let url = `${this.tursoBackendUrl}/lists/${listToDelete.id}`;
-            if (userEmail) url += `?userEmail=${encodeURIComponent(userEmail)}`;
-            await fetch(url, { method: 'DELETE' });
+            const url = new URL(`${this.tursoBackendUrl}/lists/${listToDelete.id}`);
+            if (userEmail) url.searchParams.append('userEmail', userEmail);
+            await fetch(url.toString(), { method: 'DELETE' });
             const currentSlug = this.$route.params.slug;
             if (currentSlug && listToDelete.slug && (currentSlug === listToDelete.slug || decodeURIComponent(currentSlug) === listToDelete.slug)) {
                  await this.$router.push('/lists');
