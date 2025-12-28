@@ -61,7 +61,8 @@
                       <div v-for="i in 4" :key="i" :class="$style.gridCell">
                           <img 
                             v-if="list.cover_images && list.cover_images[i-1]" 
-                            :src="list.cover_images[i-1]" 
+                            :src="resolvePoster(list.cover_images[i-1])" 
+                            @error="handleImgError"
                             :class="$style.coverImg" 
                             alt="Cover"
                           />
@@ -246,6 +247,16 @@ export default {
       this.inWatchlist = false;
     },
     
+    resolvePoster(path) {
+        if (!path) return '/empty-list-placeholder.webp';
+        if (path.startsWith('http') || path.startsWith('//')) return path;
+        return `https://image.tmdb.org/t/p/w500${path.startsWith('/') ? '' : '/'}${path}`;
+    },
+
+    handleImgError(e) {
+        e.target.src = '/plus_placeholder.webp';
+    },
+    
     openCreateModal() {
         this.$bus.$emit('show-create-list-modal');
     },
@@ -305,6 +316,7 @@ export default {
 
     async toggleListItem(list) {
          const listId = list.id;
+         const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
 
          if (this.itemsToAdd && Array.isArray(this.itemsToAdd)) {
              try {
@@ -315,7 +327,7 @@ export default {
                 await fetch(`${this.tursoBackendUrl}/lists/${listId}/items`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ items: mappedItems })
+                    body: JSON.stringify({ items: mappedItems, userEmail })
                 });
 
                 list.item_count = (list.item_count || 0) + mappedItems.length;
@@ -341,7 +353,9 @@ export default {
 
          try {
              if (isPresent) {
-                 await fetch(`${this.tursoBackendUrl}/lists/${listId}/items?itemId=${item.idForDb}&itemType=${item.typeForDb}`, {
+                 let url = `${this.tursoBackendUrl}/lists/${listId}/items?itemId=${item.idForDb}&itemType=${item.typeForDb}`;
+                 if (userEmail) url += `&userEmail=${encodeURIComponent(userEmail)}`;
+                 await fetch(url, {
                      method: 'DELETE'
                  });
              } else {
@@ -349,7 +363,7 @@ export default {
                  await fetch(`${this.tursoBackendUrl}/lists/${listId}/items`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ item: payload })
+                    body: JSON.stringify({ item: payload, userEmail })
                 });
              }
              this.$bus.$emit('lists-updated');
@@ -404,9 +418,17 @@ export default {
         const listToDelete = this.undoList;
         this.undoList = null; 
         if (this.undoTimer) clearTimeout(this.undoTimer);
+        const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
         
         try {
-            await fetch(`${this.tursoBackendUrl}/lists/${listToDelete.id}`, { method: 'DELETE' });
+            const url = new URL(`${this.tursoBackendUrl}/lists/${listToDelete.id}`);
+            if (userEmail) url.searchParams.append('userEmail', userEmail);
+            await fetch(url.toString(), { method: 'DELETE' });
+            const currentSlug = this.$route.params.slug;
+            if (currentSlug && listToDelete.slug && (currentSlug === listToDelete.slug || decodeURIComponent(currentSlug) === listToDelete.slug)) {
+                 await this.$router.push('/lists');
+            }
+            
             this.$bus.$emit('lists-updated');
         } catch(e) { console.error(e); }
     },
@@ -450,10 +472,11 @@ export default {
         this.editingListId = null;
 
         try {
+            const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
             await fetch(`${this.tursoBackendUrl}/lists/${this.editForm.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updates)
+                body: JSON.stringify({ ...updates, userEmail })
             });
             this.$bus.$emit('lists-updated');
         } catch(e) {
@@ -724,7 +747,7 @@ export default {
   padding: 8px 0;
   cursor: pointer;
   transition: all 0.2s ease;
-  border-radius: 6px;
+  border-radius: 15px;
   text-align: center;
   display: flex;
   justify-content: center;
