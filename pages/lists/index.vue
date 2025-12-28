@@ -177,7 +177,7 @@ export default {
   },
 
   async mounted() {
-    const email = localStorage.getItem('email');
+    const email = localStorage.getItem('email')?.replace(/['"]+/g, '');
     if (!email) {
       this.$router.push('/');
       return;
