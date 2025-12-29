@@ -555,7 +555,7 @@ export default {
     
     openCreateListModal() {
         this.showAddListMenu = false;
-        this.$bus.$emit('show-create-list-modal');
+        this.$bus.$emit('show-create-list-modal', this.item);
     },
 
     openModal() {
@@ -908,10 +908,7 @@ export default {
         this.showAddListMenu = false;
     },
     
-    openCreateListModal() {
-        this.closeAddListMenu();
-        this.$bus.$emit('show-create-list-modal');
-    },
+
 
     async fetchUserLists() {
         if (!this.userEmail) return;
