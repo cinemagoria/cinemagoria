@@ -35,7 +35,16 @@
       </div>
 
       <div v-else-if="filteredLists.length === 0" class="empty-state">
-        <img src="/empty-list-placeholder.webp" alt="No lists" class="empty-icon"/>
+        <div v-if="imageLoading" class="empty-icon placeholder-loader">
+          <Loader :size="40" color="#8BE9FD" />
+        </div>
+        <img 
+          v-show="!imageLoading"
+          src="/empty-list-placeholder.webp" 
+          alt="No lists" 
+          class="empty-icon"
+          @load="imageLoading = false"
+        />
         <h3 v-if="lists.length === 0">You haven't created any lists yet</h3>
         <h3 v-else>No {{ filterMode }} lists found</h3>
         <p v-if="lists.length === 0">Curate your own collections of movies and TV shows.</p>
@@ -145,6 +154,7 @@ export default {
     return {
       lists: [],
       loading: true,
+      imageLoading: true,
       userEmail: '',
       filterMode: 'all',
       editingListId: null,
@@ -471,6 +481,15 @@ export default {
     border-radius: 15px;
     margin-bottom: 2rem;
     border: #8BE9FD solid 1px;
+}
+
+.placeholder-loader {
+    width: 448px;
+    max-width: 90vw;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .empty-state h3 {
