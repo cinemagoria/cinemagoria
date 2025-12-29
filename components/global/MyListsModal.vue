@@ -433,12 +433,23 @@ export default {
          if (!userEmail) return;
 
          try {
-             let type = this.itemToAdd.title ? 'movie' : 'tv';
-             if (this.itemToAdd.media_type) type = this.itemToAdd.media_type;
+             let type = 'movie';
+             let id = null;
+
+             if (this.itemToAdd.idForDb) {
+                 id = this.itemToAdd.idForDb;
+                 type = this.itemToAdd.typeForDb || 'movie';
+             } else {
+                 id = this.itemToAdd.id;
+                 type = this.itemToAdd.title ? 'movie' : 'tv';
+                 if (this.itemToAdd.media_type) type = this.itemToAdd.media_type;
+             }
+
+             if (!id) return;
              
              const normalizedType = (type === 'movie' || type === 'movies') ? 'movie' : 'tv';
              
-             const url = `${this.tursoBackendUrl}/membership/${encodeURIComponent(userEmail)}/${normalizedType}/${this.itemToAdd.id}`;
+             const url = `${this.tursoBackendUrl}/membership/${encodeURIComponent(userEmail)}/${normalizedType}/${id}`;
              const response = await fetch(url);
              if (response.ok) {
                  const data = await response.json();
