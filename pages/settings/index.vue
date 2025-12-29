@@ -456,7 +456,7 @@ export default {
 
 .title-primary {
   font-size: 2.8rem;
-  color: #fff;
+  color: #8BE9FD;
   margin: 0 0 1rem 0;
   font-weight: 600;
 }

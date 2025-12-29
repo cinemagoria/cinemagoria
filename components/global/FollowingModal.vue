@@ -674,11 +674,11 @@ export default {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+  gap: 1.5rem;
 
   @media (min-width: $breakpoint-medium) {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
   }
 }
 
@@ -686,7 +686,7 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 10px;
+  padding: 8px;
   background-color: rgba(255, 255, 255, 0.05);
   filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
   transform: translateY(-4px);
@@ -701,7 +701,7 @@ export default {
 .cardImage {
   position: relative;
   background: #8be8fd;
-  border-radius: 15px;;
+  border-radius: 12px;
   padding-top: 150%;
   cursor: pointer;
   overflow: hidden;
@@ -724,7 +724,7 @@ export default {
 
 .companyLogo {
   object-fit: contain !important;
-  padding: 10px;
+  padding: 8px;
   background: rgba(255, 255, 255, 0.05);
 }
 
@@ -740,46 +740,47 @@ export default {
   background: rgba(255, 255, 255, 0.05);
   background: rgba(255, 255, 255, 0.05);
   color: #000;
-  padding: 1.5rem;
+  padding: 1rem;
   text-align: center;
 }
 
 .fallbackText {
   font-weight: 700;
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   line-height: 1.3;
   word-break: break-word;
 }
 
 .cardContent {
-  padding: 1.2rem;
+  padding: 0.9rem;
 
   h4 {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     color: #fff;
-    margin: 0 0 0.8rem 0;
+    margin: 0 0 0.6rem 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    text-align: center;
   }
 }
 
 .status {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: #8F989E;
-  margin: 0 0 0.8rem 0;
+  margin: 0 0 0.6rem 0;
 }
 
 .unfollowButton {
   background: rgba(255, 0, 0, 0.2);
   color: #fff;
   border: 1px solid rgba(255, 0, 0, 0.4);
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
-  padding: 10px 0;
+  padding: 8px 0;
   cursor: pointer;
   transition: all 0.2s ease;
-  border-radius: 30px;
+  border-radius: 24px;
   width: 100%;
   text-align: center;
   display: flex;
@@ -843,7 +844,6 @@ padding: 1rem 2rem;
 
   h2 {
     font-size: 2.4rem;
-    color: #fff;
     margin: 0;
     flex: 1;
     text-align: center;
