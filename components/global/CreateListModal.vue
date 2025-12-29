@@ -76,13 +76,15 @@ export default {
   },
 
   methods: {
-    show() {
+    show(item = null) {
       this.visible = true;
+      this.pendingItemToAdd = item;
       this.resetForm();
     },
 
     close() {
       this.visible = false;
+      this.pendingItemToAdd = null;
     },
     
     resetForm() {
@@ -150,13 +152,17 @@ export default {
         if (response.ok) {
             const data = await response.json();
             this.$bus.$emit('lists-updated');
-            if (data && data.list) {
-                this.$bus.$emit('new-list-created', data.list);
-            } else if (data && data.id) {
-               this.$bus.$emit('new-list-created', data);
-            }
+            
+            const newList = data.list || data;
+            this.$bus.$emit('new-list-created', newList);
+
+            const itemToPass = this.pendingItemToAdd;
             this.close();
-            this.$bus.$emit('show-my-lists-modal');
+            if (itemToPass) {
+                 this.$bus.$emit('show-add-to-list-modal', itemToPass, newList.id);
+            } else {
+                 this.$bus.$emit('show-my-lists-modal', { keepContext: true });
+            }
         } else {
             alert('Failed to create list');
         }
