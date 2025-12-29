@@ -8,11 +8,11 @@
           <h1 class="list-title">{{ list.name }}</h1>
           <p class="list-description" v-if="list.description">{{ list.description }}</p>
           <div class="list-meta">
-              <span class="author">por Ti</span>
+              <span class="author">{{ isOwner ? 'por Ti' : 'por ' + (list.owner_name || 'Desconocido') }}</span>
               <span class="dot">·</span>
               <span class="count">{{ items.length }} elementos</span>
               <span class="dot">·</span>
-              <div class="privacy-wrapper" style="position: relative;">
+              <div v-if="isOwner" class="privacy-wrapper" style="position: relative;">
                   <button @click.stop="togglePrivacyDropdown" class="privacy-btn">
                       {{ list.is_public ? 'Pública' : 'Privada' }}
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;">
@@ -28,7 +28,7 @@
                   </transition>
               </div>
               
-<button @click="openRenameModal" class="share-btn-icon" aria-label="Rename List" style="margin-right: 5px;">
+               <button v-if="isOwner" @click="openRenameModal" class="share-btn-icon" aria-label="Rename List" style="margin-right: 5px;">
                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block; min-width: 20px;"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
               </button>
               
@@ -48,16 +48,16 @@
     <div v-if="!loading" class="watchlist-section" style="padding-top: 0;">
         <div v-if="undoItem" class="undo-bar-container">
            <div class="undo-bar">
-             <span>Eliminado "{{ undoItem.details.nameForDb }}"</span>
-             <button @click="handleUndo" class="undo-btn">DESHACER</button>
+             <span>Removed "{{ undoItem.details.nameForDb }}"</span>
+             <button @click="handleUndo" class="undo-btn">Deshacer</button>
            </div>
         </div>
 
         <div v-if="items.length === 0 && !undoItem" class="empty-state">
              <img src="/cinema-popcorn.svg" alt="Empty list" class="empty-state-icon">
              <h3>Esta lista está vacía</h3>
-             <p>¡Explora y agrega algunas películas o series!</p>
-             <nuxt-link to="/" class="explore-btn">Explorar Contenido</nuxt-link>
+             <p>Explora y añade películas o series!</p>
+             <nuxt-link to="/" class="explore-btn">Explore Content</nuxt-link>
         </div>
 
         <div v-else>
@@ -91,7 +91,7 @@
                   <button @click="removeFilter(chip.value)" class="chip-remove">×</button>
                 </div>
               </div>
-              <button @click="clearAllFilters" class="clear-all-inline">Limpiar Todo</button>
+              <button @click="clearAllFilters" class="clear-all-inline">Limpiar todo</button>
             </div>
           </div>
 
@@ -99,8 +99,8 @@
              <template v-if="filteredItems.length === 0 && hasActiveFilters">
                 <img src="/cinema-popcorn.svg" alt="No results" class="no-results-icon">
                 <h3>No se encontraron resultados</h3>
-                <p>No pudimos encontrar contenido que coincida con tus filtros actuales.</p>
-                <button @click="clearAllFilters" class="refine-filters-btn">Limpiar Todos los Filtros</button>
+                <p>No encontramos ningún contenido que coincida con tus filtros actuales.</p>
+                <button @click="clearAllFilters" class="refine-filters-btn">Limpiar todos los filtros</button>
              </template>
              <template v-else>
                 <img src="/cinema-popcorn.svg" alt="No content" class="empty-state-icon">
@@ -533,6 +533,13 @@ export default {
            if (page > this.totalPages && this.totalPages > 0) page = this.totalPages;
            const start = (page - 1) * this.itemsPerPage;
            return this.filteredItems.slice(start, start + this.itemsPerPage);  
+        },
+        
+        isOwner() {
+            if (!this.list) return false;
+            const dbEmail = this.list.user_email ? this.list.user_email.toLowerCase() : '';
+            const localEmail = import.meta.client ? (localStorage.getItem('email')?.replace(/['"]+/g, '').toLowerCase() || '') : '';
+            return dbEmail === localEmail && localEmail !== '';
         }
     },
 
@@ -661,6 +668,7 @@ export default {
         },
         async updateListName() {
             if (!this.newListName || !this.newListName.trim()) return;
+
             const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
 
             try {
@@ -821,7 +829,7 @@ export default {
            this.$router.push(this.getLink(item));
         },
         getImageUrl(path) {
-           if (!path) return '/image_not_found_yet_es.webp';
+           if (!path) return '/image_not_found_yet.webp';
            if (path.startsWith('http')) return path; 
            return `${apiImgUrl}/w500${path}`;
         },
@@ -829,7 +837,7 @@ export default {
             this.imageLoadStates[id] = true;
         },
         handleImageError(e) {
-            e.target.src = '/image_not_found_yet_es.webp';
+            e.target.src = '/image_not_found_yet.webp';
         },
         
         openShareModal() {
@@ -916,7 +924,7 @@ export default {
 
 .list-header {
     text-align: center;
-    margin-top: 3rem;
+    margin-bottom: 3rem;
     
     .list-title {
     font-size: 3rem;
@@ -946,7 +954,7 @@ export default {
      overflow-wrap: break-word;
      white-space: normal;
      text-align: center;
-  }  
+  }  }
     .list-meta {
         display: flex;
         justify-content: center;
@@ -954,7 +962,7 @@ export default {
         color: #8F989E;
         font-size: 1.4rem;
         align-items: center;
-        margin-top: 3rem;
+        margin-bottom: 2rem;
         flex-wrap: wrap;
         
         .dot { font-weight: bold; opacity: 0.5; }
@@ -1030,7 +1038,6 @@ export default {
         &:hover { background: rgba(139, 233, 253, 0.1); color: #8BE9FD; }
         &.active { color: #8BE9FD; font-weight: 600; background: rgba(139, 233, 253, 0.05); }
     }
-}
 
 .loader-container {
     margin-top: 4rem;

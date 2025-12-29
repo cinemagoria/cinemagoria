@@ -97,6 +97,45 @@ export default {
       }
 
       this.loading = true;
+      let ownerName = localStorage.getItem('name');
+      
+      if (!ownerName && userEmail) {
+          try {
+             const supabase = useSupabaseClient();
+             
+             const { data: authData } = await supabase
+               .from('auth_user')
+               .select('first_name')
+               .eq('email', userEmail)
+               .single();
+               
+             if (authData && authData.first_name) {
+                 ownerName = authData.first_name;
+             } else {
+                 const { data: userData } = await supabase
+                   .from('user_data')
+                   .select('first_name')
+                   .eq('email', userEmail)
+                   .single();
+                   
+                 if (userData && userData.first_name) {
+                     ownerName = userData.first_name;
+                 }
+             }
+             
+             if (ownerName) {
+                 localStorage.setItem('name', ownerName);
+             } else {
+                 ownerName = userEmail.split('@')[0];
+             }
+          } catch (e) {
+              console.error('Error fetching name from Supabase:', e);
+              ownerName = userEmail.split('@')[0];
+          }
+      }
+      
+      console.log('[CreateList] Sending ownerName:', ownerName);
+
       try {
         const response = await fetch(`${this.tursoBackendUrl}/lists`, {
             method: 'POST',
@@ -105,7 +144,8 @@ export default {
                 userEmail,
                 name: this.form.name,
                 description: this.form.description,
-                isPublic: this.form.isPublic
+                isPublic: this.form.isPublic,
+                ownerName
             })
         });
 
@@ -120,7 +160,7 @@ export default {
             this.close();
             this.$bus.$emit('show-my-lists-modal');
         } else {
-            alert('Error al crear la lista');
+            alert('Failed to create list');
         }
       } catch (error) {
         console.error('Error creating list:', error);

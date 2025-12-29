@@ -1,14 +1,14 @@
 <template>
   <div class="auth-success">
     <div class="auth-success-card">
-      <h1>Autenticación exitosa</h1>
-      <p v-if="loading">Procesando tu información...</p>
+      <h1>Autenticación Exitosa</h1>
+      <p v-if="loading">Procesando información...</p>
       <div v-else>
         <p v-if="error" class="error">{{ error }}</p>
-        <p class="welcome-label" v-else>Bienvenido, {{ name }}!</p>
+        <p class="welcome-label" v-else>Te damos la bienvenida, {{ name }}!</p>
         <img src="/auth-success.svg" alt="Authentication Success" class="success-icon">
         <div class="redirect-message">
-          <p>Serás redirigido automáticamente en {{ countdown }} segundos...</p>
+          <p>Redireccionando automáticamente en {{ countdown }} segundos...</p>
         </div>
       </div>
     </div>
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { syncUserToTurso } from '~/services/userSync';
 
 
 export default {
@@ -43,11 +44,21 @@ export default {
       this.loading = false;
       return;
     }
+
+    if (!this.name) {
+        this.name = this.email.split('@')[0];
+    }
     
     try {
       localStorage.setItem('access_token', this.token);
       localStorage.setItem('email', this.email);
+      localStorage.setItem('name', this.name);
       localStorage.setItem('auth_provider', urlParams.get('auth_provider') || 'native');
+      
+      syncUserToTurso({
+          email: this.email,
+          name: this.name,
+      });
       
       window.dispatchEvent(new Event('auth-changed'));
       
@@ -59,7 +70,7 @@ export default {
         .eq('email', this.email);
         
       if (error) {
-        throw new Error('Error al verificar datos de usuario');
+        throw new Error('Error verifying user data');
       }
       
       this.loading = false;
@@ -73,7 +84,7 @@ export default {
       
     } catch (error) {
       console.error('Auth success error:', error);
-      this.error = 'Error al procesar la información de autenticación';
+      this.error = 'Error processing authentication information';
       this.loading = false;
     }
   },
