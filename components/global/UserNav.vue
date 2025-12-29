@@ -36,7 +36,7 @@
 
         <div class="menu-item" @click="goToWatchlist">
           <img src="/icon-watchlist.png" alt="Watchlist Icon" class="menu-icon">
-          <span class="menu-label">Mi Colección</span>
+          <span class="menu-label">Mi Lista</span>
         </div>
 
         <div class="menu-item" @click="showRatedModal">

@@ -5,7 +5,7 @@
         <UserNav @show-rated-modal="showRatedItems" />
         <br>
         <nav class="navbar">
-          <h1 class="title-primary">Mi Colección</h1>
+          <h1 class="title-primary">Mi Lista</h1>
         </nav>
         
         <div v-if="isLoadingFavorites" class="loading-state">
@@ -630,9 +630,9 @@ export default {
 
   head () {
     return {
-      title: 'EnterCinema - Mi Colección.',
+      title: 'EnterCinema - Mi Lista.',
       meta: [
-        { hid: 'og:title', property: 'og:title', content: 'Mi Colección' },
+        { hid: 'og:title', property: 'og:title', content: 'Mi Lista' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
       ],
     };

@@ -6,7 +6,7 @@
       :class="{ 'is-favorite': isFavorite }"
       @click="toggleFavorite"
       type="button"
-      :aria-label="isFavorite ? 'Eliminar de Mi Colección' : 'Añadir a Mi Colección'"
+      :aria-label="isFavorite ? 'Eliminar de Mi Lista' : 'Añadir a Mi Lista'"
     >
       <transition name="list-fade" mode="out-in">
         <!-- Plus icon -->

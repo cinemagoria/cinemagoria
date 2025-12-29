@@ -45,8 +45,8 @@
           class="empty-icon" 
           @load="imageLoading = false"
         />
-        <h3 v-if="lists.length === 0">Aún no has creado ninguna lista</h3>
-        <h3 v-else>No se encontraron listas {{ filterMode === 'private' ? 'privadas' : 'públicas' }}</h3>
+        <h3 v-if="lists.length === 0">Aún no has creado ninguna colección</h3>
+        <h3 v-else>No se encontraron colecciones {{ filterMode === 'private' ? 'privadas' : 'públicas' }}</h3>
         <p v-if="lists.length === 0">Crea tus propias colecciones de películas y series.</p>
       </div>
 
@@ -93,7 +93,7 @@
                      <input 
                         v-model="editForm.name" 
                         class="edit-input"
-                        placeholder="Nombre de la lista"
+                        placeholder="Nombre de la colección"
                         @keyup.enter="saveEdit" 
                         autoFocus
                     />
@@ -247,7 +247,7 @@ export default {
                             }
                         }
                    } catch (err) {
-                       console.error("Error al hidratar las portadas de la lista", err);
+                       console.error("Error al hidratar las portadas de la colección", err);
                    }
                } else if (list.items && Array.isArray(list.items)) {
                      validCovers = list.items

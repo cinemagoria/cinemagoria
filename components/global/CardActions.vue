@@ -52,7 +52,7 @@
                     <svg v-if="membership.inWatchlist" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                  </div>
                  <input type="checkbox" :checked="membership.inWatchlist" @change="toggleWatchlist" style="display:none;">
-                 <span>Mi Colección</span>
+                 <span>Mi Lista</span>
               </label>
               
               <div class="divider"></div>
@@ -66,7 +66,7 @@
                      <span>{{ list.name }}</span>
                   </label>
               </template>
-              <div v-else class="empty-msg">Sin listas personalizadas</div>
+              <div v-else class="empty-msg">Sin colecciones personalizadas</div>
            </div>
            <div v-else class="loader-mini">Cargando...</div>
         </div>

@@ -43,7 +43,7 @@
                      </div>
                   </div>
                   <div :class="$style.cardContent">
-                    <h4>Watchlist</h4>
+                    <h4>Mi Lista</h4>
                     <div :class="$style.meta">
                       <span>Favoritos</span>
                     </div>
@@ -91,7 +91,7 @@
                             <input 
                               v-model="editForm.name" 
                               :class="$style.editInput"
-                              placeholder="Nombre de la lista"
+                              placeholder="Nombre de la colección"
                               @keyup.enter="saveEdit" 
                               @click.stop
                               autoFocus
@@ -143,7 +143,7 @@
               </div>
 
               <div v-if="!loading && lists.length === 0 && !itemToAdd && !itemsToAdd" :class="$style.emptyState">
-                 <p>Comienza creando tu primera lista.</p>
+                 <p>Comienza creando tu primera coleccción.</p>
               </div>
           </div>
 
@@ -202,10 +202,10 @@ export default {
     modalSubtitle() {
         if (this.itemToAdd) {
              const name = this.itemToAdd.nameForDb || this.itemToAdd.title || this.itemToAdd.name || 'Elemento';
-             return `Añadir / Eliminar "${name}" de las listas`;
+             return `Añadir / Eliminar "${name}" de las colecciones`;
         }
         if (Array.isArray(this.itemsToAdd)) {
-             return `Selecciona listas para añadir ${this.itemsToAdd.length} elementos`;
+             return `Selecciona colecciones para añadir ${this.itemsToAdd.length} elementos`;
         }
         return null;
     }
@@ -337,7 +337,7 @@ export default {
                  this.close();
              } catch (e) {
                  console.error("Bulk add failed", e);
-                 alert('Error al añadir elementos a las listas');
+                 alert('Error al añadir elementos a las colecciones');
              } finally {
                  this.loading = false;
              }
@@ -404,7 +404,7 @@ export default {
                  this.close();
              } catch (e) {
                  console.error("Single item update failed", e);
-                 alert('Error al actualizar listas');
+                 alert('Error al actualizar colecciones');
              } finally {
                  this.loading = false;
              }
@@ -497,7 +497,7 @@ export default {
                             }
                         }
                    } catch (err) {
-                       console.error("Error al hidratar las portadas de la lista", err);
+                       console.error("Error al hidratar las portadas de la colección", err);
                    }
                } else if (list.items && Array.isArray(list.items)) {
                      validCovers = list.items

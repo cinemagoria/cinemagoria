@@ -55,7 +55,7 @@
 
         <div v-if="items.length === 0 && !undoItem" class="empty-state">
              <img src="/cinema-popcorn.svg" alt="Empty list" class="empty-state-icon">
-             <h3>Esta lista está vacía</h3>
+             <h3>Esta colección está vacía</h3>
              <p>Explora y añade películas o series!</p>
              <nuxt-link to="/" class="explore-btn">Explore Content</nuxt-link>
         </div>
@@ -842,8 +842,8 @@ export default {
         
         openShareModal() {
             this.shareModalVisible = true;
-            this.customTitle = "¡Mirá esta lista '" + this.list.name + "' en EnterCinema!";
-            this.customMessage = "¡Encontré esta lista '" + this.list.name + "' en EnterCinema!";
+            this.customTitle = "¡Mirá esta colección '" + this.list.name + "' en EnterCinema!";
+            this.customMessage = "¡Encontré esta colección '" + this.list.name + "' en EnterCinema!";
         },
         closeShareModal() { this.shareModalVisible = false; },
         

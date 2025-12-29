@@ -22,7 +22,7 @@
                
                <div :class="$style.formGroup">
                    <label for="listDesc">Descripción (Opcional)</label>
-                   <textarea id="listDesc" v-model="form.description" rows="3" placeholder="¿De qué trata esta lista?" maxlength="180"></textarea>
+                   <textarea id="listDesc" v-model="form.description" rows="3" placeholder="¿De qué trata esta colección?" maxlength="180"></textarea>
                    <span :class="$style.charCount">{{ 180 - form.description.length }} restantes</span>
                </div>
 
@@ -31,7 +31,7 @@
                        <input type="checkbox" v-model="form.isPublic" />
                        <span :class="$style.labelText">¿Hacer Pública?</span>
                    </label>
-                   <p :class="$style.hint">Las listas públicas se pueden compartir mediante una URL única.</p>
+                   <p :class="$style.hint">Las colecciones públicas se pueden compartir mediante una URL única.</p>
                </div>
 
                <div :class="$style.actions">
@@ -159,7 +159,7 @@ export default {
                  this.$bus.$emit('show-my-lists-modal', { keepContext: true });
             }
         } else {
-            alert('Error al crear la lista');
+            alert('Error al crear la colección');
         }
       } catch (error) {
         console.error('Error creating list:', error);

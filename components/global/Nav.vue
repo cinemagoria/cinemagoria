@@ -48,8 +48,8 @@
         </nuxt-link>
       </li>
       <li v-else>
-        <nuxt-link exact to="/watchlist" aria-label="Mi Colección" @click.native="clearSearchBeforeNavigate">
-          <img src="/icon-watchlist.png" alt="Mi Colección" :class="$style.navIcon" />
+        <nuxt-link exact to="/watchlist" aria-label="Mi Lista" @click.native="clearSearchBeforeNavigate">
+          <img src="/icon-watchlist.png" alt="Mi Lista" :class="$style.navIcon" />
         </nuxt-link>
       </li>
     </ul>
