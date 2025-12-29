@@ -32,20 +32,20 @@
 
                 <div 
                   v-if="itemToAdd && !Array.isArray(itemsToAdd)"
-                  :class="[$style.card, inWatchlist ? $style.activeCard : '']"
+                  :class="[$style.card, watchlistSelected ? $style.activeCard : '']"
                   @click="toggleWatchlist">
                   <div :class="$style.cardImage">
                      <div :class="$style.listIcon">
                        <img src="/empty-list-placeholder.webp" :class="$style.listPlaceholderImg" alt="Watchlist" style="object-fit: cover; opacity: 0.8;" />
                      </div>
-                     <div v-if="inWatchlist" :class="$style.addedIndicator">
+                     <div v-if="watchlistSelected" :class="$style.addedIndicator">
                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                      </div>
                   </div>
                   <div :class="$style.cardContent">
                     <h4>Watchlist</h4>
                     <div :class="$style.meta">
-                      <span>Favoritos</span>
+                      <span>Favorites</span>
                     </div>
                   </div>
                 </div>
@@ -179,6 +179,7 @@ export default {
       addedLists: [],
       selectedListIds: [],
       inWatchlist: false,
+      watchlistSelected: false,
       undoList: null,
       undoTimer: null,
       editingListId: null,
@@ -402,6 +403,7 @@ export default {
          
          this.addedLists = [];
          this.inWatchlist = false;
+         this.watchlistSelected = false;
 
          const userEmail = localStorage.getItem('email')?.replace(/['"]+/g, '');
          if (!userEmail) return;
@@ -422,11 +424,16 @@ export default {
                  }
                  if (data.inWatchlist) {
                      this.inWatchlist = true;
+                     this.watchlistSelected = true;
                  }
              }
          } catch (e) {
              console.error('Error fetching membership:', e);
          }
+    },
+    
+    toggleWatchlist() {
+        this.watchlistSelected = !this.watchlistSelected;
     },
 
     async fetchLists() {
