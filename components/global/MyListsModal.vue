@@ -353,11 +353,9 @@ export default {
              
              try {
                  const promises = [];
-                 
-                 // Handle Favorites (Watchlist) Toggle
+
                  if (this.watchlistSelected !== this.inWatchlist) {
                      if (this.watchlistSelected) {
-                         // Add to favorites
                          promises.push(
                              fetch(`${this.tursoBackendUrl}/favorites`, {
                                  method: 'POST',
@@ -366,7 +364,6 @@ export default {
                              })
                          );
                      } else {
-                         // Remove from favorites
                          let type = this.itemToAdd.title ? 'movie' : 'tv';
                          if (this.itemToAdd.media_type) type = this.itemToAdd.media_type;
                          type = (type === 'movie' || type === 'movies') ? 'movie' : 'tv';
@@ -395,7 +392,6 @@ export default {
                  await Promise.all(promises);
                  
                  this.$bus.$emit('lists-updated');
-                 // Also emit rated/favorites updated if we touched favorites
                  if (this.watchlistSelected !== this.inWatchlist) {
                      this.$bus.$emit('favorites-updated');
                  }
@@ -403,8 +399,7 @@ export default {
                  if (listsToAdd.length > 0 || (this.watchlistSelected && !this.inWatchlist)) {
                       this.$bus.$emit('bulk-items-added', { 
                          elementCount: 1, 
-                         listCount: listsToAdd.length + (this.watchlistSelected && !this.inWatchlist ? 1 : 0) // Count watchlist as a list? Maybe just list count.
-                                                                                                               // Banner says "added to X lists". Favorites is kind of a list.
+                         listCount: listsToAdd.length + (this.watchlistSelected && !this.inWatchlist ? 1 : 0) 
                      });
                  }
                  
@@ -430,7 +425,6 @@ export default {
     async fetchMembership() {
          if (!this.itemToAdd) return;
          
-         // Reset state
          this.addedLists = [];
          this.inWatchlist = false;
          this.watchlistSelected = false;
@@ -439,21 +433,17 @@ export default {
          if (!userEmail) return;
 
          try {
-             // We need type and id. itemToAdd has them, but we need to map to DB format if needed
-             // Usually itemToAdd is raw item.
              let type = this.itemToAdd.title ? 'movie' : 'tv';
              if (this.itemToAdd.media_type) type = this.itemToAdd.media_type;
              
-             // Normalize type
-             type = (type === 'movie' || type === 'movies') ? 'movie' : 'tv';
-
-             const url = `${this.tursoBackendUrl}/membership/${encodeURIComponent(userEmail)}/${type}/${this.itemToAdd.id}`;
+             const normalizedType = (type === 'movie' || type === 'movies') ? 'movie' : 'tv';
+             
+             const url = `${this.tursoBackendUrl}/membership/${encodeURIComponent(userEmail)}/${normalizedType}/${this.itemToAdd.id}`;
              const response = await fetch(url);
              if (response.ok) {
                  const data = await response.json();
                  if (data.lists) {
                      this.addedLists = data.lists.map(l => l.id);
-                     // Sync selectedListIds with membership for initial state
                      this.selectedListIds = [...this.addedLists];
                  }
                  if (data.inWatchlist) {
