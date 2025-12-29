@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { syncUserToTurso } from '~/services/userSync';
 
 
 export default {
@@ -39,15 +40,25 @@ export default {
     this.name = urlParams.get('name') || this.$route.query.name;
     
     if (!this.token || !this.email) {
-      this.error = 'Incomplete authentication information';
+      this.error = 'Authentication incomplete';
       this.loading = false;
       return;
+    }
+
+    if (!this.name) {
+        this.name = this.email.split('@')[0];
     }
     
     try {
       localStorage.setItem('access_token', this.token);
       localStorage.setItem('email', this.email);
+      localStorage.setItem('name', this.name);
       localStorage.setItem('auth_provider', urlParams.get('auth_provider') || 'native');
+      
+      syncUserToTurso({
+          email: this.email,
+          name: this.name,
+      });
       
       window.dispatchEvent(new Event('auth-changed'));
       

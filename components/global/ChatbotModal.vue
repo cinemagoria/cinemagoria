@@ -481,8 +481,6 @@ export default {
     this.$bus.$on('open-chatbot-with-selection', this.handleSelectionInit);
 
     this.$bus.$on('open-chatbot-with-analysis', async (payload) => {
-      console.log('[ChatbotModal] Received open-chatbot-with-analysis event', payload);
-      
       try {
         this.createNewConversation();
         
@@ -504,7 +502,6 @@ export default {
         });
         
         if (payload.mediaReferences && payload.mediaReferences.length > 0) {
-          console.log('[ChatbotModal] Fetching media details for', payload.mediaReferences.length, 'references');
           this.chatBotResults = [];
           await this.fetchMediaDetailsFromBackendReferences(payload.mediaReferences);
         } else {
@@ -526,8 +523,6 @@ export default {
         this.$nextTick(() => {
           this.scrollToBottom();
         });
-        
-        console.log('[ChatbotModal] Modal opened successfully');
       } catch (error) {
         console.error('[ChatbotModal] Error opening modal with analysis:', error);
       }
