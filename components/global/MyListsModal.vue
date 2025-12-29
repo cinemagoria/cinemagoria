@@ -32,13 +32,13 @@
 
                 <div 
                   v-if="itemToAdd && !Array.isArray(itemsToAdd)"
-                  :class="[$style.card, inWatchlist ? $style.activeCard : '']"
+                  :class="[$style.card, watchlistSelected ? $style.activeCard : '']"
                   @click="toggleWatchlist">
                   <div :class="$style.cardImage">
                      <div :class="$style.listIcon">
                        <img src="/empty-list-placeholder.webp" :class="$style.listPlaceholderImg" alt="Watchlist" style="object-fit: cover; opacity: 0.8;" />
                      </div>
-                     <div v-if="inWatchlist" :class="$style.addedIndicator">
+                     <div v-if="watchlistSelected" :class="$style.addedIndicator">
                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                      </div>
                   </div>
@@ -180,6 +180,7 @@ export default {
       addedLists: [],
       selectedListIds: [],
       inWatchlist: false,
+      watchlistSelected: false,
       undoList: null,
       undoTimer: null,
       editingListId: null,
@@ -353,6 +354,28 @@ export default {
              try {
                  const promises = [];
                  
+                 // Handle Favorites (Watchlist) Toggle
+                 if (this.watchlistSelected !== this.inWatchlist) {
+                     if (this.watchlistSelected) {
+                         // Add to favorites
+                         promises.push(
+                             fetch(`${this.tursoBackendUrl}/favorites`, {
+                                 method: 'POST',
+                                 headers: { 'Content-Type': 'application/json' },
+                                 body: JSON.stringify({ item, userEmail })
+                             })
+                         );
+                     } else {
+                         // Remove from favorites
+                         let type = this.itemToAdd.title ? 'movie' : 'tv';
+                         if (this.itemToAdd.media_type) type = this.itemToAdd.media_type;
+                         type = (type === 'movie' || type === 'movies') ? 'movie' : 'tv';
+                         
+                         const url = `${this.tursoBackendUrl}/favorites/${encodeURIComponent(userEmail)}/${type}/${this.itemToAdd.id}`;
+                         promises.push(fetch(url, { method: 'DELETE' }));
+                     }
+                 }
+
                  listsToAdd.forEach(listId => {
                      promises.push(
                          fetch(`${this.tursoBackendUrl}/lists/${listId}/items`, {
@@ -372,11 +395,16 @@ export default {
                  await Promise.all(promises);
                  
                  this.$bus.$emit('lists-updated');
+                 // Also emit rated/favorites updated if we touched favorites
+                 if (this.watchlistSelected !== this.inWatchlist) {
+                     this.$bus.$emit('favorites-updated');
+                 }
                  
-                 if (listsToAdd.length > 0) {
+                 if (listsToAdd.length > 0 || (this.watchlistSelected && !this.inWatchlist)) {
                       this.$bus.$emit('bulk-items-added', { 
                          elementCount: 1, 
-                         listCount: listsToAdd.length 
+                         listCount: listsToAdd.length + (this.watchlistSelected && !this.inWatchlist ? 1 : 0) // Count watchlist as a list? Maybe just list count.
+                                                                                                               // Banner says "added to X lists". Favorites is kind of a list.
                      });
                  }
                  
@@ -402,16 +430,21 @@ export default {
     async fetchMembership() {
          if (!this.itemToAdd) return;
          
+         // Reset state
          this.addedLists = [];
          this.inWatchlist = false;
+         this.watchlistSelected = false;
 
          const userEmail = localStorage.getItem('email')?.replace(/['"]+/g, '');
          if (!userEmail) return;
 
          try {
+             // We need type and id. itemToAdd has them, but we need to map to DB format if needed
+             // Usually itemToAdd is raw item.
              let type = this.itemToAdd.title ? 'movie' : 'tv';
              if (this.itemToAdd.media_type) type = this.itemToAdd.media_type;
              
+             // Normalize type
              type = (type === 'movie' || type === 'movies') ? 'movie' : 'tv';
 
              const url = `${this.tursoBackendUrl}/membership/${encodeURIComponent(userEmail)}/${type}/${this.itemToAdd.id}`;
@@ -420,15 +453,21 @@ export default {
                  const data = await response.json();
                  if (data.lists) {
                      this.addedLists = data.lists.map(l => l.id);
+                     // Sync selectedListIds with membership for initial state
                      this.selectedListIds = [...this.addedLists];
                  }
                  if (data.inWatchlist) {
                      this.inWatchlist = true;
+                     this.watchlistSelected = true;
                  }
              }
          } catch (e) {
              console.error('Error fetching membership:', e);
          }
+    },
+    
+    toggleWatchlist() {
+        this.watchlistSelected = !this.watchlistSelected;
     },
 
     async fetchLists() {
