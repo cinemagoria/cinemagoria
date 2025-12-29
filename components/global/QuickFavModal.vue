@@ -3,7 +3,7 @@
     <div v-if="visible" class="modal-overlay" @click.self="close">
       <div class="modal-content">
         <div class="modal-header">
-          <h3>¿Eliminar de Mi Lista?</h3>
+          <h3>¿Eliminar de Mi Colección?</h3>
           <button class="close-btn" @click="close">×</button>
         </div>
         <div class="modal-body">

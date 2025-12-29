@@ -117,7 +117,7 @@
                       <div class="checkbox">
                         <svg v-if="membership.inWatchlist || isFavorite" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                       </div>
-                      <span>Mi Lista</span>
+                      <span>Mi Colección</span>
                     </button>
 
                     <div class="divider"></div>
@@ -137,7 +137,7 @@
                     </div>
 
                     <button class="menu-option create-new" @click="openCreateListModal">
-                      <span class="plus">+</span> Crear Nueva Lista
+                      <span class="plus">+</span> Crear Nueva Colección
                     </button>
                   </div>
                 </transition>

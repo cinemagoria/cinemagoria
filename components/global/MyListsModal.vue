@@ -21,7 +21,7 @@
 
         <div v-if="undoList" :class="$style.undoBarContainer">
            <div :class="$style.undoBar">
-             <span>Lista "{{ undoList.name }}" eliminada</span>
+             <span>Colección "{{ undoList.name }}" eliminada</span>
              <button @click="handleUndo" :class="$style.undoButton">DESHACER</button>
            </div>
         </div>
@@ -137,7 +137,7 @@
                  <div :class="[$style.card, $style.createCard]" @click="openCreateModal">
                     <div :class="$style.createContent">
                         <img src="/plus_placeholder.webp" :class="$style.createIcon" alt="+" />
-                        <span :class="$style.createLabel">Crear Nueva Lista</span>
+                        <span :class="$style.createLabel">Crear Nueva Colección</span>
                     </div>
                  </div>
               </div>

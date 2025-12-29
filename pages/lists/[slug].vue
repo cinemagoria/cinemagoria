@@ -305,7 +305,7 @@
     <div v-if="shareModalVisible" class="modal-overlay">
         <div class="share-modal-content">
           <div class="share-modal-header">
-            <h2>Compartir Esta Lista</h2>
+            <h2>Compartir Esta Colección</h2>
             <button class="close-button" @click="closeShareModal" type="button" aria-label="Close">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -375,7 +375,7 @@
     <div v-if="renameListModalVisible" class="modal-overlay" @click="closeRenameModal">
         <div class="create-list-modal-content" @click.stop>
              <div class="modal-header-cl">
-                <h2>Renombrar Lista</h2>
+                <h2>Renombrar Colección</h2>
                 <button class="close-btn-cl" @click="closeRenameModal">
                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="6" x2="6" y2="18"></line>

@@ -11,7 +11,7 @@
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
-          Crear Nueva Lista
+          Crear Nueva Colección
         </button>
 
         <div v-if="shouldShowFilter" class="filter-switch-container">
@@ -130,7 +130,7 @@
       <transition name="slide-up">
         <div v-if="undoList" class="undo-banner">
           <div class="undo-content">
-              <span>Lista "{{ undoList.name }}" borrada</span>
+              <span>Colección "{{ undoList.name }}" borrada</span>
               <button @click="undoDelete" class="undo-btn">Deshacer</button>
           </div>
           <div class="timer-line"></div>

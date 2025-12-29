@@ -3,7 +3,7 @@
     <div :class="$style.modalWrapper">
       <div :class="$style.modalContent">
         <div :class="$style.modalHeader">
-          <h2>Crear Nueva Lista</h2>
+          <h2>Crear Nueva Colección</h2>
           <button @click="close" :class="$style.closeButton">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18"/>
@@ -37,7 +37,7 @@
                <div :class="$style.actions">
                    <button type="button" @click="close" :class="$style.cancelBtn">Cancelar</button>
                    <button type="submit" :class="$style.createBtn" :disabled="loading">
-                       {{ loading ? 'Creando...' : 'Crear Lista' }}
+                       {{ loading ? 'Creando...' : 'Crear Colección' }}
                    </button>
                </div>
            </form>
