@@ -582,6 +582,17 @@
         </div>
 
       </section>
+      <!-- Added Banner -->
+      <transition name="fade">
+        <div v-if="addedBannerVisible" class="added-banner">
+          <div class="added-content">
+             <div class="selection-info">
+               <span>{{ addedBannerMessage }}</span>
+             </div>
+          </div>
+          <div class="timer-line"></div>
+        </div>
+      </transition>
     </main>
   </div>
 </template>
@@ -703,6 +714,9 @@ export default {
       undoBannerVisible: false,
       undoItem: null,
       undoTimer: null,
+      addedBannerVisible: false,
+      addedBannerMessage: '', 
+      addedBannerTimer: null,
     };
   },
   setup() {
@@ -820,6 +834,7 @@ export default {
     this.$bus.$on('favorites-updated', this.checkData);
     this.$bus.$on('lists-updated', this.onListsUpdated);
     this.$bus.$on('open-add-to-list-modal', this.openAddToListModal);
+    this.$bus.$on('bulk-items-added', this.showAddedBanner);
   },
 
   beforeDestroy() {
@@ -832,6 +847,7 @@ export default {
     this.$bus.$off('favorites-updated', this.checkData);
     this.$bus.$off('lists-updated', this.onListsUpdated);
     this.$bus.$off('open-add-to-list-modal', this.openAddToListModal);
+    this.$bus.$off('bulk-items-added', this.showAddedBanner);
     document.removeEventListener('click', this.closeCardMenu);
   },
   
@@ -921,6 +937,19 @@ export default {
   },
   
   methods: {
+    showAddedBanner({ elementCount, listCount }) {
+        this.addedBannerMessage = `${elementCount} elements added to ${listCount} list${listCount !== 1 ? 's' : ''}`;
+        this.addedBannerVisible = true;
+        
+        this.aiSelectionMode = false;
+        this.selectedItems = [];
+        
+        if (this.addedBannerTimer) clearTimeout(this.addedBannerTimer);
+        this.addedBannerTimer = setTimeout(() => {
+            this.addedBannerVisible = false;
+        }, 4000);
+    },
+
     toggleCardMenu(id) {
       if (this.activeCardMenuId === id) {
         this.activeCardMenuId = null;
@@ -4164,6 +4193,37 @@ select.user-rating-select {
   margin: 1rem auto;
 }
 
+.added-banner {
+    position: fixed;
+    bottom: 15vh;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 1rem 2rem;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+}
+
+.added-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    gap: 1.5rem;
+    
+    span {
+        flex: 1;
+        min-width: 0;
+        word-wrap: break-word;
+        line-height: 1.4;
+    }
+}
+
 .banner-content {
   display: flex;
   justify-content: space-between;
@@ -4804,5 +4864,19 @@ svg.rating-logo.imdb {
   margin-top: 4rem;
   min-height: 400px;
   width: 100%;
+}
+
+
+
+.timer-line {
+    height: 3px;
+    background: #8BE9FD;
+    width: 100%;
+    animation: timer-line-countdown 4s linear forwards;
+}
+
+@keyframes timer-line-countdown {
+    from { width: 100%; }
+    to { width: 0%; }
 }
 </style>
