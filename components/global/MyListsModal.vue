@@ -352,10 +352,8 @@ export default {
              try {
                  const promises = [];
                  
-                 // Handle Favorites (Watchlist) Toggle
                  if (this.watchlistSelected !== this.inWatchlist) {
                      if (this.watchlistSelected) {
-                         // Add to favorites
                          promises.push(
                              fetch(`${this.tursoBackendUrl}/favorites`, {
                                  method: 'POST',
@@ -364,7 +362,6 @@ export default {
                              })
                          );
                      } else {
-                         // Remove from favorites
                          let type = this.itemToAdd.title ? 'movie' : 'tv';
                          if (this.itemToAdd.media_type) type = this.itemToAdd.media_type;
                          type = (type === 'movie' || type === 'movies') ? 'movie' : 'tv';
@@ -437,9 +434,9 @@ export default {
              let type = this.itemToAdd.title ? 'movie' : 'tv';
              if (this.itemToAdd.media_type) type = this.itemToAdd.media_type;
              
-             type = (type === 'movie' || type === 'movies') ? 'movie' : 'tv';
+             const normalizedType = (type === 'movie' || type === 'movies') ? 'movie' : 'tv';
 
-             const url = `${this.tursoBackendUrl}/membership/${encodeURIComponent(userEmail)}/${type}/${this.itemToAdd.id}`;
+             const url = `${this.tursoBackendUrl}/membership/${encodeURIComponent(userEmail)}/${normalizedType}/${this.itemToAdd.id}`;
              const response = await fetch(url);
              if (response.ok) {
                  const data = await response.json();

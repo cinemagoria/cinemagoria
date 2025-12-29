@@ -4873,10 +4873,10 @@ svg.rating-logo.imdb {
     height: 3px;
     background: #8BE9FD;
     width: 100%;
-    animation: undo-timer 4s linear forwards;
+    animation: timer-line-countdown 4s linear forwards;
 }
 
-@keyframes undo-timer {
+@keyframes timer-line-countdown {
     from { width: 100%; }
     to { width: 0%; }
 }
