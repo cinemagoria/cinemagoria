@@ -8,11 +8,11 @@
           <h1 class="list-title">{{ list.name }}</h1>
           <p class="list-description" v-if="list.description">{{ list.description }}</p>
           <div class="list-meta">
-              <span class="author">by You</span>
+              <span class="author">{{ isOwner ? 'by You' : 'by ' + (list.owner_name || 'Unknown') }}</span>
               <span class="dot">·</span>
               <span class="count">{{ items.length }} items</span>
               <span class="dot">·</span>
-              <div class="privacy-wrapper" style="position: relative;">
+              <div v-if="isOwner" class="privacy-wrapper" style="position: relative;">
                   <button @click.stop="togglePrivacyDropdown" class="privacy-btn">
                       {{ list.is_public ? 'Public' : 'Private' }}
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;">
@@ -28,7 +28,7 @@
                   </transition>
               </div>
               
-<button @click="openRenameModal" class="share-btn-icon" aria-label="Rename List" style="margin-right: 5px;">
+               <button v-if="isOwner" @click="openRenameModal" class="share-btn-icon" aria-label="Rename List" style="margin-right: 5px;">
                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block; min-width: 20px;"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
               </button>
               
@@ -533,6 +533,13 @@ export default {
            if (page > this.totalPages && this.totalPages > 0) page = this.totalPages;
            const start = (page - 1) * this.itemsPerPage;
            return this.filteredItems.slice(start, start + this.itemsPerPage);  
+        },
+        
+        isOwner() {
+            if (!this.list) return false;
+            const dbEmail = this.list.user_email ? this.list.user_email.toLowerCase() : '';
+            const localEmail = import.meta.client ? (localStorage.getItem('email')?.replace(/['"]+/g, '').toLowerCase() || '') : '';
+            return dbEmail === localEmail && localEmail !== '';
         }
     },
 
