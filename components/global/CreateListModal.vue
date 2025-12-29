@@ -53,11 +53,13 @@ export default {
     return {
       visible: false,
       loading: false,
+      validationError: null,
+      pendingItemToAdd: null,
       form: {
           name: '',
           description: '',
           isPublic: false
-      }
+      },
     };
   },
   
