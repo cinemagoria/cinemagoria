@@ -4837,20 +4837,17 @@ svg.rating-logo.imdb {
 
 .added-banner {
     position: fixed;
-    bottom: 4rem;
+    bottom: 15vh;
     left: 50%;
     transform: translateX(-50%);
-    background: linear-gradient(90deg, rgba(139, 233, 253, 0.2) 0%, rgba(0, 136, 204, 0.2) 100%);
-    border-bottom: 2px solid #8BE9FD;
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
-    padding: 1.2rem 3rem;
+    background: #000;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 1rem 2rem;
     z-index: 2000;
     display: flex;
     flex-direction: column;
     min-width: 300px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    color: white;
 }
 
 .added-content {
