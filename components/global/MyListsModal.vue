@@ -45,7 +45,7 @@
                   <div :class="$style.cardContent">
                     <h4>Watchlist</h4>
                     <div :class="$style.meta">
-                      <span>Favorites</span>
+                      <span>Favoritos</span>
                     </div>
                   </div>
                 </div>
@@ -352,6 +352,28 @@ export default {
              try {
                  const promises = [];
                  
+                 // Handle Favorites (Watchlist) Toggle
+                 if (this.watchlistSelected !== this.inWatchlist) {
+                     if (this.watchlistSelected) {
+                         // Add to favorites
+                         promises.push(
+                             fetch(`${this.tursoBackendUrl}/favorites`, {
+                                 method: 'POST',
+                                 headers: { 'Content-Type': 'application/json' },
+                                 body: JSON.stringify({ item, userEmail })
+                             })
+                         );
+                     } else {
+                         // Remove from favorites
+                         let type = this.itemToAdd.title ? 'movie' : 'tv';
+                         if (this.itemToAdd.media_type) type = this.itemToAdd.media_type;
+                         type = (type === 'movie' || type === 'movies') ? 'movie' : 'tv';
+                         
+                         const url = `${this.tursoBackendUrl}/favorites/${encodeURIComponent(userEmail)}/${type}/${this.itemToAdd.id}`;
+                         promises.push(fetch(url, { method: 'DELETE' }));
+                     }
+                 }
+
                  listsToAdd.forEach(listId => {
                      promises.push(
                          fetch(`${this.tursoBackendUrl}/lists/${listId}/items`, {
@@ -371,18 +393,21 @@ export default {
                  await Promise.all(promises);
                  
                  this.$bus.$emit('lists-updated');
+                 if (this.watchlistSelected !== this.inWatchlist) {
+                     this.$bus.$emit('favorites-updated');
+                 }
                  
-                 if (listsToAdd.length > 0) {
+                 if (listsToAdd.length > 0 || (this.watchlistSelected && !this.inWatchlist)) {
                       this.$bus.$emit('bulk-items-added', { 
                          elementCount: 1, 
-                         listCount: listsToAdd.length 
+                         listCount: listsToAdd.length + (this.watchlistSelected && !this.inWatchlist ? 1 : 0)
                      });
                  }
                  
                  this.close();
              } catch (e) {
                  console.error("Single item update failed", e);
-                 alert('Error al actualizar las listas');
+                 alert('Error al actualizar listas');
              } finally {
                  this.loading = false;
              }
