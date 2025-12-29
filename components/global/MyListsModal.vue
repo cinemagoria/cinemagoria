@@ -30,121 +30,134 @@
             <div :class="$style.grid">
               
 
-              <div 
-                v-if="itemToAdd && !Array.isArray(itemsToAdd)"
-                :class="[$style.card, inWatchlist ? $style.activeCard : '']"
-                @click="toggleWatchlist">
-                <div :class="$style.cardImage">
-                   <div :class="$style.listIcon">
-                     <img src="/empty-list-placeholder.webp" :class="$style.listPlaceholderImg" alt="Watchlist" style="object-fit: cover; opacity: 0.8;" />
-                   </div>
-                   <div v-if="inWatchlist" :class="$style.addedIndicator">
-                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                   </div>
-                </div>
-                <div :class="$style.cardContent">
-                  <h4>Watchlist</h4>
-                  <div :class="$style.meta">
-                    <span>Favorites</span>
+                <div 
+                  v-if="itemToAdd && !Array.isArray(itemsToAdd)"
+                  :class="[$style.card, inWatchlist ? $style.activeCard : '']"
+                  @click="toggleWatchlist">
+                  <div :class="$style.cardImage">
+                     <div :class="$style.listIcon">
+                       <img src="/empty-list-placeholder.webp" :class="$style.listPlaceholderImg" alt="Watchlist" style="object-fit: cover; opacity: 0.8;" />
+                     </div>
+                     <div v-if="inWatchlist" :class="$style.addedIndicator">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                     </div>
+                  </div>
+                  <div :class="$style.cardContent">
+                    <h4>Watchlist</h4>
+                    <div :class="$style.meta">
+                      <span>Favorites</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
 
-              <div 
-                v-for="list in lists" 
-                :key="list.id"
-                :class="[$style.card, addedLists.includes(list.id) ? $style.activeCard : '']"
-                @click="goToList(list)">
-                <div :class="$style.cardImage">
-                   <div v-if="list.item_count > 0" :class="$style.dynamicCoverGrid">
-                      <div v-for="i in 4" :key="i" :class="$style.gridCell">
-                          <img 
-                            v-if="list.cover_images && list.cover_images[i-1]" 
-                            :src="resolvePoster(list.cover_images[i-1])" 
-                            @error="handleImgError"
-                            :class="$style.coverImg" 
-                            alt="Cover"
-                          />
-                          <div v-else :class="$style.plusPlaceholder">
-                              <img src="/plus_placeholder.webp" :class="$style.plusIcon" alt="+" />
-                          </div>
-                      </div>
-                   </div>
-                   <div v-else :class="$style.listIcon">
-                     <img src="/empty-list-placeholder.webp" :class="$style.listPlaceholderImg" alt="List placeholder" />
-                   </div>
-                   
+                <div 
+                  v-for="list in lists" 
+                  :key="list.id"
+                  :class="[$style.card, isListSelected(list.id) ? $style.activeCard : '']"
+                  @click="goToList(list)">
+                  <div :class="$style.cardImage">
+                     <div v-if="list.item_count > 0" :class="$style.dynamicCoverGrid">
+                        <div v-for="i in 4" :key="i" :class="$style.gridCell">
+                            <img 
+                              v-if="list.cover_images && list.cover_images[i-1]" 
+                              :src="resolvePoster(list.cover_images[i-1])" 
+                              @error="handleImgError"
+                              :class="$style.coverImg" 
+                              alt="Cover"
+                            />
+                            <div v-else :class="$style.plusPlaceholder">
+                                <img src="/plus_placeholder.webp" :class="$style.plusIcon" alt="+" />
+                            </div>
+                        </div>
+                     </div>
+                     <div v-else :class="$style.listIcon">
+                       <img src="/empty-list-placeholder.webp" :class="$style.listPlaceholderImg" alt="List placeholder" />
+                     </div>
+                     
 
-                   <div v-if="addedLists.includes(list.id) && !Array.isArray(itemsToAdd)" :class="$style.addedIndicator">
-                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                   </div>
-                </div>
-                <div :class="$style.cardContent">
-                  <template v-if="editingListId === list.id">
-
-                      <div :class="$style.editFormContainer">
-                          <input 
-                            v-model="editForm.name" 
-                            :class="$style.editInput"
-                            placeholder="List Name"
-                            @keyup.enter="saveEdit" 
-                            @click.stop
-                            autoFocus
-                          />
-                          
-                          <div :class="$style.privacyToggle" @click.stop="editForm.is_public = !editForm.is_public">
-                             <div :class="$style.privacyOption">
-                                 <span :class="!editForm.is_public ? $style.privacyActive : ''">Private</span>
-                                 <div :class="$style.toggleSwitch">
-                                     <div :class="[$style.toggleKnob, editForm.is_public ? $style.toggleOn : '']"></div>
-                                 </div>
-                                 <span :class="editForm.is_public ? $style.privacyActive : ''">Public</span>
-                             </div>
-                          </div>
-
-                          <div :class="$style.editActions">
-                               <button @click.stop="cancelEdit" :class="$style.cancelBtn">Cancel</button>
-                               <button @click.stop="saveEdit" :class="$style.saveBtn">Save</button>
-                          </div>
-                      </div>
-                  </template>
-                  
-                  <template v-else>
-                      <h4>{{ list.name }}</h4>
-                      <div :class="$style.meta">
-                        <span>{{ list.item_count || 0 }} items</span>
-                        <span v-if="list.is_public" title="Public">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                        </span>
-                        <span v-else title="Private">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        </span>
-                      </div>
-                      <div v-if="!itemToAdd" :class="$style.actionButtons">
-                         <button @click.stop="startEdit(list)" :class="$style.editButton">Edit</button>
-                         <button @click.stop="deleteList(list)" :class="$style.deleteButton">Delete</button>
-                      </div>
-                  </template>
-                </div>
-              </div>
-              
-
-               <div :class="[$style.card, $style.createCard]" @click="openCreateModal">
-                  <div :class="$style.createContent">
-                      <img src="/plus_placeholder.webp" :class="$style.createIcon" alt="+" />
-                      <span :class="$style.createLabel">Create New List</span>
+                     <div v-if="isListSelected(list.id) && !Array.isArray(itemsToAdd)" :class="$style.addedIndicator">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                     </div>
+                     <!-- Indicator for bulk mode -->
+                     <div v-if="isListSelected(list.id) && Array.isArray(itemsToAdd)" :class="$style.addedIndicator">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                     </div>
                   </div>
-               </div>
-            </div>
+                  <div :class="$style.cardContent">
+                    <template v-if="editingListId === list.id">
 
-            <div v-if="!loading && lists.length === 0 && !itemToAdd" :class="$style.emptyState">
-               <p>Start curating by creating your first list.</p>
-            </div>
+                        <div :class="$style.editFormContainer">
+                            <input 
+                              v-model="editForm.name" 
+                              :class="$style.editInput"
+                              placeholder="List Name"
+                              @keyup.enter="saveEdit" 
+                              @click.stop
+                              autoFocus
+                            />
+                            
+                            <div :class="$style.privacyToggle" @click.stop="editForm.is_public = !editForm.is_public">
+                               <div :class="$style.privacyOption">
+                                   <span :class="!editForm.is_public ? $style.privacyActive : ''">Private</span>
+                                   <div :class="$style.toggleSwitch">
+                                       <div :class="[$style.toggleKnob, editForm.is_public ? $style.toggleOn : '']"></div>
+                                   </div>
+                                   <span :class="editForm.is_public ? $style.privacyActive : ''">Public</span>
+                               </div>
+                            </div>
+
+                            <div :class="$style.editActions">
+                                 <button @click.stop="cancelEdit" :class="$style.cancelBtn">Cancel</button>
+                                 <button @click.stop="saveEdit" :class="$style.saveBtn">Save</button>
+                            </div>
+                        </div>
+                    </template>
+                    
+                    <template v-else>
+                        <h4>{{ list.name }}</h4>
+                        <div :class="$style.meta">
+                          <span>{{ list.item_count || 0 }} items</span>
+                          <span v-if="list.is_public" title="Public">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                          </span>
+                          <span v-else title="Private">
+                               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                          </span>
+                        </div>
+                        <div v-if="!itemToAdd && !itemsToAdd" :class="$style.actionButtons">
+                           <button @click.stop="startEdit(list)" :class="$style.editButton">Edit</button>
+                           <button @click.stop="deleteList(list)" :class="$style.deleteButton">Delete</button>
+                        </div>
+                    </template>
+                  </div>
+                </div>
+                
+
+                 <div :class="[$style.card, $style.createCard]" @click="openCreateModal">
+                    <div :class="$style.createContent">
+                        <img src="/plus_placeholder.webp" :class="$style.createIcon" alt="+" />
+                        <span :class="$style.createLabel">Create New List</span>
+                    </div>
+                 </div>
+              </div>
+
+              <div v-if="!loading && lists.length === 0 && !itemToAdd && !itemsToAdd" :class="$style.emptyState">
+                 <p>Start curating by creating your first list.</p>
+              </div>
+          </div>
+          
+          <!-- Footer for Bulk & Single Mode -->
+          <div v-if="itemToAdd || Array.isArray(itemsToAdd)" :class="$style.modalFooter">
+              <button @click="close" :class="$style.footerCancelBtn">Cancel</button>
+              <button @click="confirmBulkAdd" :class="$style.footerDoneBtn" :disabled="selectedListIds.length === 0">
+                 Done ({{ selectedListIds.length }})
+              </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+
 </template>
 
 <script>
@@ -165,6 +178,7 @@ export default {
       itemToAdd: null,
       itemsToAdd: null,
       addedLists: [],
+      selectedListIds: [],
       inWatchlist: false,
       undoList: null,
       undoTimer: null,
@@ -191,7 +205,7 @@ export default {
              return `Add / Remove "${name}" from lists`;
         }
         if (Array.isArray(this.itemsToAdd)) {
-             return `Add / Remove ${this.itemsToAdd.length} items from lists`;
+             return `Select lists to add ${this.itemsToAdd.length} items to`;
         }
         return null;
     }
@@ -213,19 +227,24 @@ export default {
   },
 
   methods: {
-    async show() {
-      this.itemToAdd = null;
+    async show(options = {}) {
+      if (!options || !options.keepContext) {
+          this.itemToAdd = null;
+          this.itemsToAdd = null;
+      }
       this.visible = true;
       await this.fetchLists();
     },
 
-    async showAddMode(input) {
+    async showAddMode(input, preSelectedListId = null) {
         if (Array.isArray(input)) {
              this.itemsToAdd = input;
              this.itemToAdd = null;
+             this.selectedListIds = [];
         } else {
              this.itemToAdd = input;
              this.itemsToAdd = null;
+             this.selectedListIds = [];
         }
 
         this.visible = true;
@@ -235,6 +254,18 @@ export default {
         if (this.itemToAdd) promises.push(this.fetchMembership());
         
         await Promise.all(promises);
+        
+        if (this.itemToAdd) {
+             this.selectedListIds = [...this.addedLists];
+             if (preSelectedListId && !this.selectedListIds.includes(preSelectedListId)) {
+                 this.selectedListIds.push(preSelectedListId);
+             }
+        } else if (preSelectedListId) {
+             if (!this.selectedListIds.includes(preSelectedListId)) {
+                 this.selectedListIds.push(preSelectedListId);
+             }
+        }
+
         this.loading = false;
     },
 
@@ -244,6 +275,7 @@ export default {
       this.itemToAdd = null;
       this.itemsToAdd = null;
       this.addedLists = [];
+      this.selectedListIds = [];
       this.inWatchlist = false;
     },
     
@@ -258,126 +290,145 @@ export default {
     },
     
     openCreateModal() {
-        this.$bus.$emit('show-create-list-modal');
+        this.$bus.$emit('show-create-list-modal', this.itemToAdd);
+    },
+
+    isListSelected(listId) {
+        return this.selectedListIds.includes(listId);
     },
 
     goToList(list) {
         if (this.itemToAdd || this.itemsToAdd) {
-            this.toggleListItem(list);
+             if (this.selectedListIds.includes(list.id)) {
+                 this.selectedListIds = this.selectedListIds.filter(id => id !== list.id);
+             } else {
+                 this.selectedListIds.push(list.id);
+             }
         } else {
             this.$router.push(`/lists/${list.slug}`);
             this.close();
         }
     },
 
-    async fetchMembership() {
-        if (!this.itemToAdd) return;
-        const userEmail = localStorage.getItem('email')?.replace(/['"]+/g, '');
-        if (!userEmail) return;
-
-        const id = this.itemToAdd.idForDb || this.itemToAdd.id;
-        const type = this.itemToAdd.typeForDb || (this.itemToAdd.title ? 'movie' : 'tv');
-
-        try {
-            const res = await fetch(`${this.tursoBackendUrl}/membership/${encodeURIComponent(userEmail)}/${type}/${id}`);
-            if(res.ok) {
-                const data = await res.json();
-                this.inWatchlist = data.inWatchlist;
-                this.addedLists = data.lists.map(l => l.id);
-            }
-        } catch(e) { console.error(e); }
-    },
-
-    async toggleWatchlist() {
-        const userEmail = localStorage.getItem('email')?.replace(/['"]+/g, '');
-        if (!userEmail || !this.itemToAdd) return;
-
-        const wasIn = this.inWatchlist;
-        this.inWatchlist = !wasIn;
-
-        const item = mapItemToDbPayload(this.itemToAdd);
-
-        try {
-            if (wasIn) {
-                await fetch(`${this.tursoBackendUrl}/favorites/${encodeURIComponent(userEmail)}/${item.typeForDb}/${item.idForDb}`, { method: 'DELETE' });
-            } else {
-                await fetch(`${this.tursoBackendUrl}/favorites`, {
-                   method: 'POST',
-                   headers: { 'Content-Type': 'application/json' },
-                   body: JSON.stringify({ userEmail, item })
-                });
-            }
-            this.$bus.$emit('favorites-updated');
-        } catch(e) {
-            console.error(e);
-            this.inWatchlist = wasIn;
-        }
-    },
-
-    async toggleListItem(list) {
-         const listId = list.id;
-         const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
-
-         if (this.itemsToAdd && Array.isArray(this.itemsToAdd)) {
+    async confirmBulkAdd() {
+        if (this.itemsToAdd) {
+             if (!this.selectedListIds.length) return;
+             this.loading = true;
+             const userEmail = localStorage.getItem('email')?.replace(/['"]+/g, '');
+             
              try {
-                const mappedItems = this.itemsToAdd
-                    .filter(raw => raw && (raw.idForDb || raw.id))
-                    .map(raw => ({ ...raw, ...mapItemToDbPayload(raw), topLevel: true }));
-
-                await fetch(`${this.tursoBackendUrl}/lists/${listId}/items`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ items: mappedItems, userEmail })
-                });
-
-                list.item_count = (list.item_count || 0) + mappedItems.length;
-                this.$bus.$emit('lists-updated');
-                this.close();
-             } catch(e) {
-                 alert('Failed to add items to list');
-             }
-             return;
-         }
-
-         const isPresent = this.addedLists.includes(listId);
-
-         if (isPresent) {
-             this.addedLists = this.addedLists.filter(id => id !== listId);
-             list.item_count = Math.max(0, (list.item_count || 0) - 1);
-         } else {
-             this.addedLists.push(listId);
-             list.item_count = (list.item_count || 0) + 1;
-         }
-
-         const item = { ...mapItemToDbPayload(this.itemToAdd), topLevel: true };
-
-         try {
-             if (isPresent) {
-                 let url = `${this.tursoBackendUrl}/lists/${listId}/items?itemId=${item.idForDb}&itemType=${item.typeForDb}`;
-                 if (userEmail) url += `&userEmail=${encodeURIComponent(userEmail)}`;
-                 await fetch(url, {
-                     method: 'DELETE'
+                 const mappedItems = this.itemsToAdd
+                     .filter(raw => raw && (raw.idForDb || raw.id))
+                     .map(raw => ({ ...raw, ...mapItemToDbPayload(raw), topLevel: true }));
+                 
+                 const promises = this.selectedListIds.map(listId => 
+                     fetch(`${this.tursoBackendUrl}/lists/${listId}/items`, {
+                         method: 'POST',
+                         headers: { 'Content-Type': 'application/json' },
+                         body: JSON.stringify({ items: mappedItems, userEmail })
+                     })
+                 );
+     
+                 await Promise.all(promises);
+                 this.$bus.$emit('lists-updated');
+                 this.$bus.$emit('bulk-items-added', { 
+                     elementCount: mappedItems.length, 
+                     listCount: this.selectedListIds.length 
                  });
-             } else {
-                  const payload = mapItemToDbPayload(this.itemToAdd);
-                 await fetch(`${this.tursoBackendUrl}/lists/${listId}/items`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ item: payload, userEmail })
-                });
+                 this.close();
+             } catch (e) {
+                 console.error("Bulk add failed", e);
+                 alert('Failed to add items to some lists');
+             } finally {
+                 this.loading = false;
              }
-             this.$bus.$emit('lists-updated');
-         } catch(e) {
-             if (isPresent) this.addedLists.push(listId);
-             else this.addedLists = this.addedLists.filter(id => id !== listId);
-         }
+        } else if (this.itemToAdd) {
+             this.loading = true;
+             const userEmail = localStorage.getItem('email')?.replace(/['"]+/g, '');
+             const item = { ...mapItemToDbPayload(this.itemToAdd), topLevel: true };
+
+             const listsToAdd = this.selectedListIds.filter(id => !this.addedLists.includes(id));
+             const listsToRemove = this.addedLists.filter(id => !this.selectedListIds.includes(id));
+             
+             try {
+                 const promises = [];
+                 
+                 listsToAdd.forEach(listId => {
+                     promises.push(
+                         fetch(`${this.tursoBackendUrl}/lists/${listId}/items`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ item, userEmail })
+                        })
+                     );
+                 });
+                 
+                 listsToRemove.forEach(listId => {
+                      let url = `${this.tursoBackendUrl}/lists/${listId}/items?itemId=${item.idForDb}&itemType=${item.typeForDb}`;
+                      if (userEmail) url += `&userEmail=${encodeURIComponent(userEmail)}`;
+                      promises.push(fetch(url, { method: 'DELETE' }));
+                 });
+
+                 await Promise.all(promises);
+                 
+                 this.$bus.$emit('lists-updated');
+                 
+                 if (listsToAdd.length > 0) {
+                      this.$bus.$emit('bulk-items-added', { 
+                         elementCount: 1, 
+                         listCount: listsToAdd.length 
+                     });
+                 }
+                 
+                 this.close();
+             } catch (e) {
+                 console.error("Single item update failed", e);
+                 alert('Failed to update lists');
+             } finally {
+                 this.loading = false;
+             }
+        }
     },
 
     async handleNewList(newList) {
         await this.fetchLists();
-        if (this.itemToAdd) {
-            await this.toggleListItem(newList);
+        if (this.itemToAdd || this.itemsToAdd) {
+             if (!this.selectedListIds.includes(newList.id)) {
+                 this.selectedListIds.push(newList.id);
+             }
         }
+    },
+    
+    async fetchMembership() {
+         if (!this.itemToAdd) return;
+         
+         this.addedLists = [];
+         this.inWatchlist = false;
+
+         const userEmail = localStorage.getItem('email')?.replace(/['"]+/g, '');
+         if (!userEmail) return;
+
+         try {
+             let type = this.itemToAdd.title ? 'movie' : 'tv';
+             if (this.itemToAdd.media_type) type = this.itemToAdd.media_type;
+             
+             type = (type === 'movie' || type === 'movies') ? 'movie' : 'tv';
+
+             const url = `${this.tursoBackendUrl}/membership/${encodeURIComponent(userEmail)}/${type}/${this.itemToAdd.id}`;
+             const response = await fetch(url);
+             if (response.ok) {
+                 const data = await response.json();
+                 if (data.lists) {
+                     this.addedLists = data.lists.map(l => l.id);
+                     this.selectedListIds = [...this.addedLists];
+                 }
+                 if (data.inWatchlist) {
+                     this.inWatchlist = true;
+                 }
+             }
+         } catch (e) {
+             console.error('Error fetching membership:', e);
+         }
     },
 
     async fetchLists() {
@@ -976,5 +1027,54 @@ export default {
 @keyframes popIn {
   from { transform: scale(0); }
   to { transform: scale(1); }
+}
+
+.modalFooter {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.footerCancelBtn {
+    padding: 0.8rem 1.5rem;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: #fff;
+    }
+}
+
+.footerDoneBtn {
+    padding: 0.8rem 1.5rem;
+    background: #8BE9FD;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+
+    &:hover {
+        background: #A4F0FF;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(139, 233, 253, 0.3);
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
 }
 </style>
