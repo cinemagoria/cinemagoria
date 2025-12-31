@@ -2,8 +2,8 @@
   <main class="main">
     <UserNav />
     <nav class="navbar navbar-welcome">
-      <h1 class="title-primary" style="color: #8BE9FD !important; margin-top:30px; margin-bottom:10px; display:flex; justify-content: center;">Latest News</h1>
-      <h2 class="title-secondary" style="color: rgb(172, 175, 181); font-size: 14px; max-width: 600px; margin: 20px auto 0;">
+      <h1 class="title-primary page-title">Latest News</h1>
+      <h2 class="title-secondary page-subtitle">
         Your daily briefing on film, television, and the entertainment industry.
       </h2>
     </nav>
@@ -323,6 +323,21 @@ function sanitizeDescription(desc) {
 </script>
 
 <style scoped>
+.page-title {
+  color: #8BE9FD !important;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.page-subtitle {
+  color: rgb(172, 175, 181);
+  font-size: 14px;
+  max-width: 600px;
+  margin: 20px auto 0;
+}
+
 .news-section {
   display: flex;
   justify-content: center;
