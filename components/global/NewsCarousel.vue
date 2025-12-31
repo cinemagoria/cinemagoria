@@ -384,6 +384,7 @@ export default {
   line-height: 1.5;
   
   display: -webkit-box;
+  line-clamp: 4;
   -webkit-line-clamp: 4; 
   -webkit-box-orient: vertical;
   overflow: hidden;

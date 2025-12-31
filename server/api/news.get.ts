@@ -9,7 +9,12 @@ export default defineEventHandler(async (event) => {
     try {
         const aggregatorUrl = config.public.newsAggregatorUrl as string
 
-        const response: any = await $fetch(aggregatorUrl, {
+        interface NewsApiResponse {
+            results: any[];
+            [key: string]: any;
+        }
+
+        const response = await $fetch<NewsApiResponse>(aggregatorUrl, {
             params: {
                 lang: lang,
                 limit: limit,
@@ -24,7 +29,7 @@ export default defineEventHandler(async (event) => {
 
         return response
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('RSS Aggregator Error:', error)
         throw createError({
             statusCode: 500,
