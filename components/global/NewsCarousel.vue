@@ -79,7 +79,7 @@
 
               <!-- Description -->
               <p class="card-description">
-                {{ (article.description || article.summary || '').replace(/<[^>]*>?/gm, '') }}
+                {{ (article.description || article.summary || '').replace(/<[^>]+>/g, '') }}
               </p>
 
 
