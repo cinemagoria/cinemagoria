@@ -117,7 +117,7 @@
                         </h3>
                         
                         <p class="card-desc">
-                          {{ item.description ? item.description.replace(/<[^>]*>?/gm, '') : '' }}
+                          {{ item.description ? item.description.replace(/<[^>]+>/g, '') : '' }}
                         </p>
                         <div class="card-footer">
                           <a :href="item.href" target="_blank" class="read-link">
