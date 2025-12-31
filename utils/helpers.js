@@ -15,5 +15,9 @@ export function handleImageError(item, event = null) {
         }
     } else {
         item.image = null;
+        if (event && event.target) {
+            event.target.src = '/placeholder_news.webp';
+            event.target.onerror = null;
+        }
     }
 }
