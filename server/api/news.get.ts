@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
     const lang = query.lang || config.public.apiLang || 'en'
 
     try {
-        const aggregatorUrl = 'https://entercinema-rss-aggregator.vercel.app/news'
+        const aggregatorUrl = config.public.newsAggregatorUrl as string
 
         const response: any = await $fetch(aggregatorUrl, {
             params: {
@@ -15,6 +15,10 @@ export default defineEventHandler(async (event) => {
                 limit: limit,
                 page: page,
                 source: query.source
+            },
+            headers: {
+                // Security: Explicitly identify ourselves to pass backend strict origin check
+                'Origin': config.public.frontendUrl
             }
         })
 
