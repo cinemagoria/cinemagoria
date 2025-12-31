@@ -50,6 +50,7 @@ export default defineNuxtConfig({
       assistantBackendUrl: process.env.ASSISTANT_BACKEND_URL || "https://entercinema-assistant-rust.vercel.app/api",
       mdblistApi: process.env.MDBLIST_API,
       rapidApiKey: process.env.RAPIDAPI_KEY,
+      newsAggregatorUrl: process.env.NEWS_AGGREGATOR_URL || "https://entercinema-rss-aggregator.vercel.app/news",
     }
   },
 

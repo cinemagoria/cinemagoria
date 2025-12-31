@@ -18,6 +18,8 @@
       :title="trendingTvTitle"
       :view-all-url="trendingTvUrl"
       :items="trendingTv" />
+
+    <NewsCarousel />
   </main>
 </template>
 
@@ -28,6 +30,7 @@ import { getTrending, getMovie, getTvShow, getListItem } from '~/utils/api';
 import Hero from '~/components/Hero';
 import ListingCarousel from '~/components/ListingCarousel';
 import FeatureDescription from '~/components/FeatureDescription';
+import NewsCarousel from '~/components/global/NewsCarousel';
 
 
 const userEmail = ref('');
