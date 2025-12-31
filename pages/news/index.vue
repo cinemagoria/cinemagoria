@@ -16,11 +16,16 @@
           <div class="sidebar-card">
             <h3 class="sidebar-title">Fuentes</h3>
             <div class="sources-container-mobile">
-              <button class="scroll-arrow left" @click="scrollSources('left')" aria-label="Scroll Left">
+              <button class="expand-btn" @click="toggleSourcesExpansion" :aria-label="isSourcesExpanded ? 'Contraer' : 'Expandir'">
+                 <svg v-if="!isSourcesExpanded" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-icon lucide-chevrons-down"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
+                 <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-icon lucide-chevrons-up"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
+              </button>
+            
+              <button class="scroll-arrow left" @click="scrollSources('left')" aria-label="Scroll Left" v-if="!isSourcesExpanded">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
               </button>
               
-              <div class="sources-list" ref="sourcesListRef">
+              <div class="sources-list" ref="sourcesListRef" :class="{ 'expanded': isSourcesExpanded }">
                  <button 
                   class="source-btn" 
                   :class="{ active: !selectedSource }"
@@ -39,7 +44,7 @@
                 </button>
               </div>
 
-              <button class="scroll-arrow right" @click="scrollSources('right')" aria-label="Scroll Right">
+              <button class="scroll-arrow right" @click="scrollSources('right')" aria-label="Scroll Right" v-if="!isSourcesExpanded">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </button>
             </div>
@@ -280,6 +285,11 @@ function scrollSources(direction) {
 
 function getSourceUrl(source) {
   return SOURCE_URLS[source] || '#';
+}
+
+const isSourcesExpanded = ref(false);
+function toggleSourcesExpansion() {
+  isSourcesExpanded.value = !isSourcesExpanded.value;
 }
 </script>
 
@@ -650,6 +660,26 @@ function getSourceUrl(source) {
     padding: 0; 
   }
 
+  .expand-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05); 
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    width: 36px; 
+    height: 36px;
+    border-radius: 8px; /* Slightly different to distinguish from arrows */
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0; 
+    margin-right: 5px;
+  }
+  .expand-btn:hover {
+     background: rgba(139, 233, 253, 0.15);
+     color: #8BE9FD;
+  }
+
   .sources-list {
     display: flex;
     flex-direction: row; 
@@ -659,6 +689,13 @@ function getSourceUrl(source) {
     flex-grow: 1;
     -ms-overflow-style: none;  
     scrollbar-width: none;  
+  }
+  
+  .sources-list.expanded {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    overflow-y: visible;
+    white-space: normal;
   }
   
   .sources-list::-webkit-scrollbar {
