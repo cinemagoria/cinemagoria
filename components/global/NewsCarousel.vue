@@ -123,30 +123,7 @@ export default {
     }
   },
   async created() {
-    try {
-      this.pending = true
-      const data = await $fetch('/api/news')
-      this.data = data
-      if (data && data.results) {
-        data.results.forEach(a => {
-           if(a.image) {
-             this.loadingMap[a.id] = true;
-           }
-        });
-      }
-    } catch (e) {
-      this.error = e
-    } finally {
-      this.pending = false
-      this.$nextTick(() => {
-        if (this.articles.length > 0) {
-           this.calculateState(this.articles.length);
-           if (typeof window !== 'undefined') {
-             this.startAutoplay();
-           }
-        }
-      })
-    }
+    await this.fetchNews();
   },
   computed: {
     articles() {
@@ -176,6 +153,36 @@ export default {
     }
   },
   methods: {
+    async fetchNews() {
+      try {
+        this.pending = true;
+        this.error = null;
+        const data = await $fetch('/api/news');
+        this.data = data;
+        if (data && data.results) {
+          data.results.forEach(a => {
+            if(a.image) {
+              this.loadingMap[a.id] = true;
+            }
+          });
+        }
+      } catch (e) {
+        this.error = e;
+      } finally {
+        this.pending = false;
+        this.$nextTick(() => {
+          if (this.articles.length > 0) {
+            this.calculateState(this.articles.length);
+            if (typeof window !== 'undefined') {
+              this.startAutoplay();
+            }
+          }
+        });
+      }
+    },
+    refresh() {
+      this.fetchNews();
+    },
     formatDate(dateString) {
       if (!dateString) return ''
       return new Date(dateString).toLocaleDateString('es-ES', {
