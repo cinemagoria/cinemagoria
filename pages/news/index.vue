@@ -117,7 +117,7 @@
                         </h3>
                         
                         <p class="card-desc">
-                          {{ item.description ? item.description.replace(/<[^>]+>/g, '') : '' }}
+                          {{ sanitizeDescription(item.description) }}
                         </p>
                         <div class="card-footer">
                           <a :href="item.href" target="_blank" class="read-link">
@@ -147,6 +147,7 @@
 <script setup>
 import UserNav from '@/components/global/UserNav';
 import Loader from '@/components/Loader';
+import striptags from 'striptags';
 
 const config = useRuntimeConfig();
 const currentLang = ref(config.public.apiLang || 'es');
@@ -290,6 +291,11 @@ function getSourceUrl(source) {
 const isSourcesExpanded = ref(false);
 function toggleSourcesExpansion() {
   isSourcesExpanded.value = !isSourcesExpanded.value;
+}
+
+function sanitizeDescription(desc) {
+  if (!desc) return '';
+  return striptags(desc);
 }
 </script>
 

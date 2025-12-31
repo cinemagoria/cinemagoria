@@ -79,7 +79,7 @@
 
               <!-- Description -->
               <p class="card-description">
-                {{ (article.description || article.summary || '').replace(/<[^>]+>/g, '') }}
+                {{ sanitizeDescription(article.description || article.summary) }}
               </p>
 
 
@@ -105,6 +105,7 @@
 <script>
 import Loader from '@/components/Loader';
 import carousel from '~/mixins/Carousel';
+import striptags from 'striptags';
 
 export default {
   name: 'NewsCarousel',
@@ -182,6 +183,10 @@ export default {
         month: 'long',
         day: 'numeric'
       })
+    },
+    sanitizeDescription(desc) {
+      if (!desc) return '';
+      return striptags(desc);
     },
     onImageLoad(id) {
        this.loadingMap[id] = false; 
