@@ -460,7 +460,7 @@ function sanitizeDescription(desc) {
 
 .card-image {
   position: relative;
-  height: 180px;
+  height: 220px;
   overflow: hidden;
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
