@@ -106,6 +106,9 @@
 import Loader from '@/components/Loader';
 import carousel from '~/mixins/Carousel';
 import striptags from 'striptags';
+import { formatDate, handleImageError } from '~/utils/helpers';
+
+const AUTOPLAY_INTERVAL = 15000;
 
 export default {
   name: 'NewsCarousel',
@@ -183,13 +186,8 @@ export default {
     refresh() {
       this.fetchNews();
     },
-    formatDate(dateString) {
-      if (!dateString) return ''
-      return new Date(dateString).toLocaleDateString('es-ES', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      })
+    formatDate(date) {
+      return formatDate(date, 'es-ES');
     },
     sanitizeDescription(desc) {
       if (!desc) return '';
@@ -200,12 +198,7 @@ export default {
     },
     onImageError(article) {
        this.loadingMap[article.id] = false;
-       
-       if (article.image && article.image.includes('maxresdefault.jpg')) {
-           article.image = article.image.replace('maxresdefault.jpg', 'hqdefault.jpg');
-       } else {
-           article.image = null;
-       }
+       handleImageError(article);
     },
     resizeEvent () {
       this.calculateState(this.articles.length);
@@ -222,7 +215,7 @@ export default {
         } else {
            this.moveTo(0);
         }
-      }, 15000); 
+      }, AUTOPLAY_INTERVAL); 
     },
     pauseAutoplay() {
       if (this.autoplayInterval) clearInterval(this.autoplayInterval);

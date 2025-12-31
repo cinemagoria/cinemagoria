@@ -149,6 +149,7 @@ import UserNav from '@/components/global/UserNav';
 import Loader from '@/components/Loader';
 import striptags from 'striptags';
 import { SOURCES, SOURCE_URLS } from '~/utils/newsSources';
+import { formatDate as formatDateHelper, handleImageError as handleImageErrorHelper } from '~/utils/helpers';
 
 const config = useRuntimeConfig();
 const currentLang = ref(config.public.apiLang || 'es');
@@ -179,6 +180,7 @@ const newsItems = computed(() => {
 
 const visibleLimit = ref(20);
 const sentinel = ref(null);
+let observer = null;
 
 const displayedItems = computed(() => {
   return newsItems.value.slice(0, visibleLimit.value);
@@ -188,7 +190,7 @@ watch(selectedSource, () => {
   visibleLimit.value = 20;
 });
 onMounted(() => {
-  const observer = new IntersectionObserver((entries) => {
+  observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
       if (visibleLimit.value < newsItems.value.length) {
         visibleLimit.value += 20;
@@ -201,6 +203,12 @@ onMounted(() => {
   watch(sentinel, (el) => {
     if (el) observer.observe(el);
   });
+});
+
+onUnmounted(() => {
+  if (observer) {
+    observer.disconnect();
+  }
 });
 
 watch([newsItems, () => route.query.highlight], ([items, highlightId]) => {
@@ -221,17 +229,10 @@ watch([newsItems, () => route.query.highlight], ([items, highlightId]) => {
       }
     });
   }
-}, { immediate: true, deep: true });
+}, { immediate: true });
 
 function onImageError(event, item) {
-  event.target.src = '/placeholder_news.webp';
-  
-  if (item.image && item.image.includes('maxresdefault.jpg')) {
-      item.image = item.image.replace('maxresdefault.jpg', 'hqdefault.jpg');
-      event.target.src = item.image;
-  } else {
-      item.image = null;
-  }
+    handleImageErrorHelper(item, event);
 }
 
 function setSource(source) {
@@ -240,11 +241,7 @@ function setSource(source) {
 }
 
 function formatDate(isoString) {
-  if (!isoString) return '';
-  const locale = 'es-ES';
-  return new Date(isoString).toLocaleDateString(locale, { 
-    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
-  });
+   return formatDateHelper(isoString, 'es-ES');
 }
 
 const sourcesListRef = ref(null);
