@@ -148,59 +148,11 @@
 import UserNav from '@/components/global/UserNav';
 import Loader from '@/components/Loader';
 import striptags from 'striptags';
+import { SOURCES, SOURCE_URLS } from '~/utils/newsSources';
 
 const config = useRuntimeConfig();
 const currentLang = ref(config.public.apiLang || 'en');
 
-const SOURCES = {
-  en: [
-    'Bloody Disgusting',
-    'Collider',
-    'ComingSoon.net',
-    'Dark Horizons',
-    'Deadline',
-    'Dread Central',
-    'Hollywood Reporter',
-    'Horror Society',
-    'HorrorBuzz',
-    'HorrorNews.net',
-    'IndieWire',
-    'JoBlo',
-    'Rue Morgue',
-    'ScreenAnarchy',
-    'ScreenRant',
-    'SlashFilm',
-    'Variety'
-  ],
-  es: [
-    'Espinof', 
-    'PremiosOscar', 
-    'SensaCine'
-  ]
-};
-
-const SOURCE_URLS = {
-  'Bloody Disgusting': 'https://bloody-disgusting.com/',
-  'Collider': 'https://collider.com/',
-  'ComingSoon.net': 'https://www.comingsoon.net/',
-  'Dark Horizons': 'https://www.darkhorizons.com/',
-  'Deadline': 'https://deadline.com/',
-  'Dread Central': 'https://www.dreadcentral.com/',
-  'Hollywood Reporter': 'https://www.hollywoodreporter.com/',
-  'Horror Society': 'https://www.horrorsociety.com/',
-  'HorrorBuzz': 'https://horrorbuzz.com/',
-  'HorrorNews.net': 'https://horrornews.net/',
-  'IndieWire': 'https://www.indiewire.com/',
-  'JoBlo': 'https://www.joblo.com/',
-  'Rue Morgue': 'https://rue-morgue.com/',
-  'ScreenAnarchy': 'https://screenanarchy.com/',
-  'ScreenRant': 'https://screenrant.com/',
-  'SlashFilm': 'https://www.slashfilm.com/',
-  'Variety': 'https://variety.com/',
-  'Espinof': 'https://www.espinof.com/',
-  'PremiosOscar': 'https://www.premiososcar.net/',
-  'SensaCine': 'https://www.sensacine.com/'
-};
 
 const currentSources = computed(() => SOURCES[currentLang.value] || SOURCES['en']);
 const route = useRoute();
@@ -253,7 +205,7 @@ onMounted(() => {
 watch([newsItems, () => route.query.highlight], ([items, highlightId]) => {
   if (items.length && highlightId) {
     nextTick(() => {
-      const index = items.findIndex(item => item.id == highlightId);
+      const index = items.findIndex(item => String(item.id) === highlightId);
       if (index !== -1) {
         if (index >= visibleLimit.value) {
           visibleLimit.value = index + 5;
