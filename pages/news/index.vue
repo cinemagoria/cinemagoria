@@ -97,10 +97,18 @@
                       <!-- Image / Video Area -->
                       <a :href="item.href" target="_blank" class="card-image" :class="{ 'has-video': item.video_id }">
                           <img 
-                              :src="item.image || '/placeholder_news.webp'" 
+                              v-if="item.image"
+                              :src="item.image" 
                               :alt="item.title" 
                               loading="lazy"
                               @error="onImageError($event, item)"
+                              class="img-lazy"
+                          />
+                          <img 
+                              v-else
+                              src="/placeholder_news.webp" 
+                              :alt="item.title" 
+                              loading="lazy"
                               class="img-lazy"
                           />
                           
