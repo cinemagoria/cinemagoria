@@ -26,22 +26,25 @@
       </li>
       <li>
         <nuxt-link
+          :to="{ name: 'news' }"
+          aria-label="Noticias"
+          @click.native="clearSearchBeforeNavigate">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :class="$style.navIcon">
+            <path d="M4 11a9 9 0 0 1 9 9"/>
+            <path d="M4 4a16 16 0 0 1 16 16"/>
+            <circle cx="5" cy="19" r="1"/>
+          </svg>
+        </nuxt-link>
+      </li>
+      <li>
+        <nuxt-link
           :to="{ name: 'advancedsearch' }"
           aria-label="Búsqueda Avanzada"
           @click.native="clearSearchBeforeNavigate">
           <img src="/icon-advancedsearch.png" alt="Búsqueda Avanzada" :class="$style.navIcon" />
         </nuxt-link>
       </li>
-      <li>
-        <button 
-          @click="openAiChat" 
-          :aria-label="'Preguntar a IA'"
-          class="ai-button-nav">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" :class="$style.navIcon">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
-          </svg>
-        </button>
-      </li>
+
       <li v-if="!isLoggedIn">
         <nuxt-link exact to="/login" aria-label="Iniciar Sesión" @click.native="clearSearchBeforeNavigate">
           <img src="/icon-login.png" alt="Iniciar Sesión" :class="$style.navIcon" />
@@ -54,24 +57,21 @@
       </li>
     </ul>
 
-    <ChatbotModal ref="chatbotModalRef" />
+
   </nav>
 </template>
 
 <script>
 import { mapState, mapActions } from 'pinia';
 import { useSearchStore } from '~/stores/search';
-import ChatbotModal from './ChatbotModal.vue';
 
 export default {
   components: {
-    ChatbotModal
   },
   data() {
     return {
       authToken: null,
-      authInterval: null,
-      hasMinimizedConversations: false
+      authInterval: null
     };
   },
 
@@ -84,7 +84,6 @@ export default {
 
   mounted() {
     this.checkAuthStatus();
-    this.checkMinimizedConversations();
 
     this.authInterval = setInterval(this.checkAuthStatus, 500);
     
@@ -97,10 +96,6 @@ export default {
         this.forceUpdateNavIcons();
       }
     }
-
-    this.$bus.$on('chatbot-conversations-updated', (hasConversations) => {
-      this.hasMinimizedConversations = hasConversations;
-    });
   },
 
   beforeDestroy() {
@@ -122,17 +117,6 @@ export default {
         this.authToken = token;
       }
     },
-    checkMinimizedConversations() {
-      try {
-        if (typeof localStorage !== 'undefined') {
-          const conversations = JSON.parse(localStorage.getItem('entercinema_chat_conversations') || '{}');
-          this.hasMinimizedConversations = Object.keys(conversations).length > 0 && 
-            Object.values(conversations).some(conv => conv.messages && conv.messages.length > 0);
-        }
-      } catch (error) {
-        console.warn('Error checking conversations:', error);
-      }
-    },
 
     forceUpdateNavIcons() {
       const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
@@ -143,16 +127,11 @@ export default {
     handleStorageChange(event) {
       if (event.key === 'access_token') {
         this.authToken = event.newValue;
-      } else if (event.key === 'entercinema_chat_conversations') {
-        this.checkMinimizedConversations();
       }
     },
 
     clearSearchBeforeNavigate() {
       this.$bus.$emit('clear-search');
-      if (this.$refs.chatbotModalRef && this.$refs.chatbotModalRef.chatBotOpen) {
-        this.$refs.chatbotModalRef.minimizeChatBot();
-      }
     },
 
     toggleSearch() {
@@ -161,22 +140,6 @@ export default {
       }
     },
 
-    openAiChat() {
-      if (this.$refs.chatbotModalRef) {
-        const isAuthenticated = typeof window !== 'undefined' && localStorage.getItem('access_token');
-        
-        if (isAuthenticated) {
-          this.$refs.chatbotModalRef.open();
-        } else {
-          this.$refs.chatbotModalRef.chatBotOpen = true;
-          this.$refs.chatbotModalRef.chatBotMinimized = false;
-          this.$refs.chatbotModalRef.clearMinimizedState();
-          this.$refs.chatbotModalRef.checkMobileDevice();
-        }
-        
-        this.hasMinimizedConversations = false;
-      }
-    },
     ...mapActions(useSearchStore, { toggleSearchAction: 'toggleSearch' })
   }
 };
