@@ -87,6 +87,7 @@
                       v-for="item in displayedItems" 
                       :key="item.id" 
                       class="news-card"
+                      :id="'news-item-' + item.id"
                     >
                       <!-- Image / Video Area -->
                       <a :href="item.href" target="_blank" class="card-image" :class="{ 'has-video': item.video_id }">
@@ -174,7 +175,8 @@ const SOURCE_URLS = {
 };
 
 const currentSources = computed(() => SOURCES[currentLang.value] || SOURCES['es']);
-const selectedSource = ref(null);
+const route = useRoute();
+const selectedSource = ref(route.query.source || null);
 
 const { data, pending, refresh, error } = await useFetch('/api/news', {
   query: computed(() => ({
@@ -219,6 +221,26 @@ onMounted(() => {
     if (el) observer.observe(el);
   });
 });
+
+watch([newsItems, () => route.query.highlight], ([items, highlightId]) => {
+  if (items.length && highlightId) {
+    nextTick(() => {
+      const index = items.findIndex(item => item.id == highlightId);
+      if (index !== -1) {
+        if (index >= visibleLimit.value) {
+          visibleLimit.value = index + 5;
+        }
+        nextTick(() => {
+          const el = document.getElementById(`news-item-${highlightId}`);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.classList.add('highlight-news');
+          }
+        });
+      }
+    });
+  }
+}, { immediate: true, deep: true });
 
 function onImageError(event, item) {
   event.target.src = '/placeholder_news.webp';
@@ -412,6 +434,18 @@ function getSourceUrl(source) {
   transform: translateY(-4px);
   box-shadow: 0 12px 40px 0 rgba(139, 233, 253, 0.15);
   border-color: rgba(139, 233, 253, 0.5);
+}
+
+.news-card.highlight-news {
+  border-color: #8BE9FD;
+  box-shadow: 0 0 0 2px rgba(139, 233, 253, 0.3), 0 12px 40px 0 rgba(139, 233, 253, 0.15);
+  animation: pulse-highlight 2s infinite;
+}
+
+@keyframes pulse-highlight {
+  0% { box-shadow: 0 0 0 2px rgba(139, 233, 253, 0.3); }
+  50% { box-shadow: 0 0 0 4px rgba(139, 233, 253, 0.5); }
+  100% { box-shadow: 0 0 0 2px rgba(139, 233, 253, 0.3); }
 }
 
 .card-image {

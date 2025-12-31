@@ -38,7 +38,11 @@
             <div class="release-card">
             
             <!-- Image Top -> Redirects to Internal Feed -->
-            <NuxtLink to="/news" class="card-image-link" :class="{ 'has-video': article.video_id }">
+            <NuxtLink 
+              :to="{ path: '/news', query: { source: article.source?.name, highlight: article.id } }" 
+              class="card-image-link" 
+              :class="{ 'has-video': article.video_id }"
+            >
               <div v-if="loadingMap[article.id]" class="card-loader">
                 <Loader :size="40" />
               </div>
@@ -65,7 +69,11 @@
 
               <!-- Title -->
               <!-- Title -> Redirects to Internal Feed -->
-              <NuxtLink to="/news" class="card-title" :title="article.title">
+              <NuxtLink 
+                :to="{ path: '/news', query: { source: article.source?.name, highlight: article.id } }" 
+                class="card-title" 
+                :title="article.title"
+              >
                 {{ article.title }}
               </NuxtLink>
 
