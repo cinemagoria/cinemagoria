@@ -504,6 +504,7 @@ function sanitizeDescription(desc) {
   line-height: 1.4;
   color: #fff;
   display: -webkit-box;
+  line-clamp: 3;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -516,6 +517,7 @@ function sanitizeDescription(desc) {
   margin-bottom: 20px;
   flex-grow: 1;
   display: -webkit-box;
+  line-clamp: 5;
   -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -740,6 +742,7 @@ function sanitizeDescription(desc) {
   text-decoration: none;
   
   display: -webkit-box;
+  line-clamp: 3;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
