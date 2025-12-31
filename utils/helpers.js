@@ -16,7 +16,8 @@ export function handleImageError(item, event = null) {
     } else {
         item.image = null;
         if (event && event.target) {
-            // Optional: Set a flag or placeholder via event if needed, but item.image = null usually triggers v-else
+            event.target.src = '/placeholder_news.webp';
+            event.target.onerror = null;
         }
     }
 }
