@@ -148,37 +148,12 @@
 import UserNav from '@/components/global/UserNav';
 import Loader from '@/components/Loader';
 import striptags from 'striptags';
+import { SOURCES, SOURCE_URLS } from '~/utils/newsSources';
 
 const config = useRuntimeConfig();
 const currentLang = ref(config.public.apiLang || 'es');
 
-const SOURCES = {
-  es: [
-    'Almas Oscuras',
-    "Cine O'culto",
-    'CineyTele',
-    'EscribiendoCine',
-    'Espinof', 
-    'Mundiario',
-    'OtrosCines',
-    'SensaCine',
-    'TerrorWeekend',
-    'Uruloki'
-  ]
-};
 
-const SOURCE_URLS = {
-  'Espinof': 'https://www.espinof.com/',
-  'SensaCine': 'https://www.sensacine.com/',
-  'TerrorWeekend': 'https://www.terrorweekend.com/',
-  'Almas Oscuras': 'https://www.almasoscuras.com/',
-  'EscribiendoCine': 'https://www.escribiendocine.com/',
-  'Uruloki': 'https://www.uruloki.org/',
-  'CineyTele': 'https://www.cineytele.com/',
-  'Mundiario': 'https://www.mundiario.com/cineseries/',
-  'OtrosCines': 'https://www.otroscines.com/',
-  "Cine O'culto": 'https://cineoculto.com/'
-};
 
 const currentSources = computed(() => SOURCES[currentLang.value] || SOURCES['es']);
 const route = useRoute();
@@ -231,7 +206,7 @@ onMounted(() => {
 watch([newsItems, () => route.query.highlight], ([items, highlightId]) => {
   if (items.length && highlightId) {
     nextTick(() => {
-      const index = items.findIndex(item => item.id == highlightId);
+      const index = items.findIndex(item => String(item.id) === highlightId);
       if (index !== -1) {
         if (index >= visibleLimit.value) {
           visibleLimit.value = index + 5;
