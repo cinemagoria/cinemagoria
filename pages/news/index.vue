@@ -153,16 +153,16 @@ const currentLang = ref(config.public.apiLang || 'es');
 
 const SOURCES = {
   es: [
-    'Espinof', 
-    'SensaCine',
-    'TerrorWeekend',
     'Almas Oscuras',
-    'EscribiendoCine',
-    'Uruloki',
+    "Cine O'culto",
     'CineyTele',
+    'EscribiendoCine',
+    'Espinof', 
     'Mundiario',
     'OtrosCines',
-    "Cine O'culto"
+    'SensaCine',
+    'TerrorWeekend',
+    'Uruloki'
   ]
 };
 
