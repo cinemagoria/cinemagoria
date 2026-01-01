@@ -150,7 +150,7 @@
           <!-- Footer for Bulk & Single Mode -->
           <div v-if="itemToAdd || Array.isArray(itemsToAdd)" :class="$style.modalFooter">
               <button @click="close" :class="$style.footerCancelBtn">Cancelar</button>
-              <button @click="confirmBulkAdd" :class="$style.footerDoneBtn" :disabled="selectedListIds.length === 0">
+              <button @click="confirmBulkAdd" :class="$style.footerDoneBtn" :disabled="Array.isArray(itemsToAdd) && selectedListIds.length === 0">
                  Listo ({{ selectedListIds.length }})
               </button>
           </div>
