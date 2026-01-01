@@ -151,7 +151,7 @@
           <div v-if="itemToAdd || Array.isArray(itemsToAdd)" :class="$style.modalFooter">
               <button @click="close" :class="$style.footerCancelBtn">Cancel</button>
               <button @click="confirmBulkAdd" :class="$style.footerDoneBtn" :disabled="Array.isArray(itemsToAdd) && selectedListIds.length === 0">
-                 Done ({{ selectedListIds.length }})
+                 Done ({{ selectedCount }})
               </button>
           </div>
         </div>
@@ -209,6 +209,12 @@ export default {
              return `Select lists to add ${this.itemsToAdd.length} items to`;
         }
         return null;
+    },
+    selectedCount() {
+      if (Array.isArray(this.itemsToAdd)) {
+        return this.selectedListIds.length;
+      }
+      return this.selectedListIds.length + (this.watchlistSelected ? 1 : 0);
     }
   },
 
