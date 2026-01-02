@@ -475,7 +475,7 @@ export default {
   align-items: center;
   gap: 1rem;
   padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.307);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 .flagIcon {
@@ -498,7 +498,7 @@ export default {
 .releaseItem {
   padding: 1rem 0;
   &:not(:last-child) {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.307);
   }
 }
 .releaseType {

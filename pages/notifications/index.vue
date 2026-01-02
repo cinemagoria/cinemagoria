@@ -1042,7 +1042,7 @@ button {
   grid-template-columns: 60px 1fr 250px;
   gap: 2rem;
   padding: 2rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.307);
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
   border-top-left-radius: 12px;
@@ -1086,7 +1086,7 @@ button {
 
 .person-profile-image.company-logo {
   object-fit: contain;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(0, 0, 0, 0.307);
   padding: 4px;
 }
 

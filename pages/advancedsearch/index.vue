@@ -2446,7 +2446,7 @@ input:not(:checked):focus ~ #helper-text {
   width: 6px;
 }
 .dropdown-options::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.307);
 }
 .dropdown-options::-webkit-scrollbar-thumb {
   background: rgba(139, 233, 253, 0.3);

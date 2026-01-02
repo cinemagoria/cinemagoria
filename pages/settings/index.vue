@@ -543,7 +543,7 @@ export default {
 }
 
 .user-details-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.307);
   border-radius: 12px;
   padding: 2rem;
   border: 1px solid rgba(139, 233, 253, 0.1);

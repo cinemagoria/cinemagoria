@@ -467,7 +467,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 15px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.307);
 }
 
 .modal-header h3 {
@@ -510,7 +510,7 @@ export default {
 
 .tab-controls {
   display: flex;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.307);
   text-align: center;
   position: relative;
   padding-left: 10px;
@@ -675,7 +675,7 @@ export default {
 }
 
 .rated-item-review::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.307);
 }
 
 .rated-item-review::-webkit-scrollbar-thumb {

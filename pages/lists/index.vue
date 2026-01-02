@@ -516,7 +516,7 @@ export default {
 .placeholder-loader {
     width: 448px;
     max-width: 90vw;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.307);
     display: flex;
     justify-content: center;
     align-items: center;

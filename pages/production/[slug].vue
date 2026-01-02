@@ -556,7 +556,7 @@ onUnmounted(() => {
   margin: 3rem auto 20px auto;
   min-height: 50px;
   width: fit-content;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.307);
   padding: 10px 20px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -779,7 +779,7 @@ onUnmounted(() => {
   }
   
   &::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.307);
   }
  
   &::-webkit-scrollbar-thumb {
