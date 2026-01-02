@@ -133,6 +133,13 @@
             <div class="movie-grid">
               <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
                  <div class="card-background">
+                   <div class="user-rating-badge" v-if="isOwner && !aiSelectionMode && item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
+                     @click.stop="openRatingModal(item)"
+                     :class="{ 'has-review': item.details.userReview }" 
+                     :title="item.details.userReview ? 'Tiene Reseña' : ''">
+                     {{ item.details.userRatingForDb }}
+                     <span v-if="item.details.userReview" class="review-indicator"></span>
+                   </div>
                    
                    <div class="poster-container">
                      <nuxt-link :to="getLink(item)" class="item-link-overlay">
@@ -156,6 +163,12 @@
                         
                         <transition name="fade">
                            <div v-if="activeCardMenuId === item.details.idForDb" class="action-dropdown" @click.stop>
+                               <div v-if="isOwner && (!item.details.userRatingForDb || item.details.userRatingForDb === '-')" class="dropdown-item" @click="openRatingModal(item); activeCardMenuId = null">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                  </svg>
+                                  Rate
+                               </div>
                                <div class="dropdown-item" @click="openAddModal(item); activeCardMenuId = null">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
                                     <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/>
@@ -196,7 +209,7 @@
                           </div>
                           <div v-else-if="item.details.starsForDb" class="rating-item">
                              <img src="/tmdb.svg" alt="TMDB" class="rating-logo tmdb">
-                             <span class="rating-score">{{ formatRating(item.details.starsForDb) }}</span>
+                             <span class="rating-score">{{ formatRating(item.details.starsForDb / 10) }}</span>
                              <span class="vote-count" v-if="item.details.vote_count">({{ formatVoteCount(item.details.vote_count) }})</span>
                           </div>
                           <p v-else style="font-size: 11px; opacity: 0.7;">Not specified</p>
@@ -228,6 +241,64 @@
           </div>
         </div>
     </div>
+    <div v-if="ratingModalVisible" class="modal-overlay">
+      <div class="rating-modal">
+        <div class="modal-header">
+          <h3>Rate '{{ currentRatingItem?.details?.nameForDb }}'</h3>
+          <button class="close-btn" @click="closeRatingModal">×</button>
+        </div>
+
+        <div class="rating-content">
+          <div class="rating-selector">
+            <div class="rating-numbers">
+              <button
+                v-for="n in 10"
+                :key="n"
+                @click="setRating(n)"
+                @mouseover="previewRating(n)"
+                @mouseout="resetPreview()"
+                :class="[
+                  'rating-btn',
+                  { 'rating-btn-active': n <= (hoverRating || selectedRating) }
+                ]"
+              >
+                {{ n }}
+              </button>
+            </div>
+          </div>
+
+          <div class="review-section">
+            <textarea
+              v-model="userReview"
+              :placeholder="selectedRating > 0 ? ratingDescriptions[selectedRating - 1] : 'Select a rating first'"
+              class="review-textarea"
+              maxlength="500"
+              :disabled="selectedRating === 0"
+            ></textarea>
+            <div class="char-count">{{ userReview.length }}/500</div>
+          </div>
+
+          <div class="rating-modal-buttons">
+            <button 
+              v-if="currentRatingItem && currentRatingItem.details.userRatingForDb && currentRatingItem.details.userRatingForDb !== '-'"
+              @click="removeRating" 
+              class="remove-rating-btn"
+            >
+              <span style="position:relative; margin:0 auto;">Remove Rating</span>
+            </button>
+            
+            <button 
+              @click="saveRatingAndReview" 
+              class="save-btn"
+              :disabled="selectedRating === 0"
+            >
+              <span style="position:relative; margin:0 auto;">Save</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <div v-if="filtersModalVisible" class="modal-overlay" @click="closeFiltersModal">
       <div class="filters-modal" @click.stop>
         <div class="modal-header">
@@ -270,6 +341,50 @@
               </button>
             </div>
           </div>
+
+          <div class="filter-group">
+            <label class="filter-label">IMDB Rating Range</label>
+            <div class="year-inputs">
+              <input 
+                type="number" 
+                v-model.number="minImdbRating" 
+                min="0" 
+                max="10"
+                placeholder="Min"
+                class="year-input"
+              >
+              <span class="year-separator">-</span>
+              <input 
+                type="number" 
+                v-model.number="maxImdbRating" 
+                min="0" 
+                max="10"
+                placeholder="Max"
+                class="year-input"
+              >
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">IMDB Votes Range</label>
+            <div class="year-inputs">
+              <input 
+                type="number" 
+                v-model.number="minImdbVotes" 
+                min="0"
+                placeholder="Min"
+                class="year-input"
+              >
+              <span class="year-separator">-</span>
+              <input 
+                type="number" 
+                v-model.number="maxImdbVotes" 
+                min="0"
+                placeholder="Max"
+                class="year-input"
+              >
+            </div>
+          </div>
           
           <div class="filter-group">
             <label class="filter-label">Sort By</label>
@@ -292,6 +407,21 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <div class="filter-group" v-if="isOwner">
+            <label class="filter-label">My Rating</label>
+            <select v-model="selectedUserRating" class="filter-input">
+              <option value="">All my ratings</option>
+              <option value="not-rated">Not Rated</option>
+              <option value="10">My Rating: 10</option>
+              <option value="9">My Rating: 9</option>
+              <option value="8">My Rating: 8</option>
+              <option value="7">My Rating: 7</option>
+              <option value="6">My Rating: 6</option>
+              <option value="5">My Rating: 5</option>
+              <option value="1-4">My Rating: < 5</option>
+            </select>
           </div>
           
           <div class="filter-actions">
@@ -425,26 +555,31 @@ export default {
             selectedGenre: '',
             customYearStart: null,
             customYearEnd: null,
+            minImdbRating: null,
+            maxImdbRating: null,
+            minImdbVotes: null,
+            maxImdbVotes: null,
+            selectedUserRating: '',
             currentYear: new Date().getFullYear(),
             activeCardMenuId: null,
             imageLoadStates: {},
-
             movieGenres: [],
             tvGenres: [],
-
             undoItem: null,
             undoTimer: null,
-            
             shareModalVisible: false,
             customTitle: '',
-
-
             customMessage: '',
             copySuccess: false,
-            
             privacyDropdownOpen: false,
             renameListModalVisible: false,
             newListName: '',
+            ratingModalVisible: false,
+            currentRatingItem: null,
+            selectedRating: 0,
+            hoverRating: 0,
+            userReview: '',
+            ratingDescriptions: ['Abysmal', 'Terrible', 'Bad', 'Poor', 'Average', 'Okay', 'Good', 'Great', 'Amazing', 'Masterpiece'],
         };
     },
     
@@ -461,6 +596,11 @@ export default {
           return this.selectedGenre !== '' || 
                 this.customYearStart !== null || 
                 this.customYearEnd !== null ||
+                this.minImdbRating !== null ||
+                this.maxImdbRating !== null ||
+                this.minImdbVotes !== null ||
+                this.maxImdbVotes !== null ||
+                this.selectedUserRating !== '' ||
                 this.orderMode !== 'latest-added';
         },
         uniqueSortedGenres() {
@@ -474,7 +614,11 @@ export default {
              { value: 'newer-releases', label: 'Newer Releases' },
              { value: 'older-releases', label: 'Older Releases' },
              { value: 'imdb-high', label: 'Highest Rated (IMDB/TMDB)' },
-             { value: 'imdb-low', label: 'Lowest Rated (IMDB/TMDB)' }
+             { value: 'imdb-low', label: 'Lowest Rated (IMDB/TMDB)' },
+             { value: 'votes-high', label: 'Highest Vote Count' },
+             { value: 'votes-low', label: 'Lowest Vote Count' },
+             { value: 'shortest-first', label: 'Shortest first' },
+             { value: 'longest-first', label: 'Longest first' }
            ];
         },
         yearRanges() {
@@ -488,6 +632,37 @@ export default {
            const chips = [];
            if (this.selectedGenre) chips.push({ label: this.selectedGenre, value: 'selectedGenre' });
            if (this.customYearStart) chips.push({ label: `From ${this.customYearStart}`, value: 'customYearStart' });
+           if (this.customYearEnd) chips.push({ label: `To ${this.customYearEnd}`, value: 'customYearEnd' });
+           
+           if (this.minImdbRating !== null || this.maxImdbRating !== null) {
+              let label = '';
+              if (this.minImdbRating !== null && this.maxImdbRating !== null) {
+                 label = this.minImdbRating === this.maxImdbRating ? `IMDB: ${this.minImdbRating}` : `IMDB: ${this.minImdbRating}-${this.maxImdbRating}`;
+              } else if (this.minImdbRating !== null) {
+                 label = `IMDB: ≥ ${this.minImdbRating}`;
+              } else {
+                 label = `IMDB: ≤ ${this.maxImdbRating}`;
+              }
+              chips.push({ label, value: 'imdbRating' });
+           }
+
+           if (this.minImdbVotes !== null || this.maxImdbVotes !== null) {
+              let label = '';
+              if (this.minImdbVotes !== null && this.maxImdbVotes !== null) {
+                 label = `Votes: ${this.minImdbVotes}-${this.maxImdbVotes}`;
+              } else if (this.minImdbVotes !== null) {
+                 label = `Votes: ≥ ${this.minImdbVotes}`;
+              } else {
+                 label = `Votes: ≤ ${this.maxImdbVotes}`;
+              }
+              chips.push({ label, value: 'imdbVotes' });
+           }
+           
+           if (this.selectedUserRating) {
+               const label = this.selectedUserRating === 'not-rated' ? 'Not Rated' : `My Rating: ${this.selectedUserRating}`;
+               chips.push({ label, value: 'selectedUserRating' });
+           }
+
            if (this.orderMode !== 'latest-added') chips.push({ label: `Sort: ${this.currentSortLabel}`, value: 'orderMode' });
            return chips;
         },
@@ -507,19 +682,108 @@ export default {
                     item.details.yearStartForDb >= (this.customYearStart || 1880) && 
                     item.details.yearStartForDb <= (this.customYearEnd || this.currentYear));
                
-               return matchesGenre && matchesYear;
+               let matchesTmdbRating = true;
+               if (this.minImdbRating !== null || this.maxImdbRating !== null) {
+                   let rating;
+                   if (item.details.rating_source === 'imdb' && item.details.imdb_rating) {
+                       rating = item.details.imdb_rating;
+                   } else if (item.details.starsForDb) {
+                       rating = item.details.starsForDb / 10;
+                   }
+                   
+                   if (rating === undefined || rating === null) {
+                       matchesTmdbRating = false;
+                   } else {
+                       const min = this.minImdbRating !== null ? this.minImdbRating : 0;
+                       const max = this.maxImdbRating !== null ? this.maxImdbRating : 10;
+                       matchesTmdbRating = rating >= min && rating <= max;
+                   }
+               }
+
+               let matchesVotes = true;
+               if (this.minImdbVotes !== null || this.maxImdbVotes !== null) {
+                  let votes = 0;
+                  if (item.details.imdb_votes) {
+                      votes = typeof item.details.imdb_votes === 'number' ? item.details.imdb_votes : parseInt(item.details.imdb_votes.replace(/,/g, ''), 10);
+                  } else if (item.details.vote_count) {
+                      votes = item.details.vote_count;
+                  }
+                  
+                  if (this.minImdbVotes !== null && votes < this.minImdbVotes) matchesVotes = false;
+                  if (this.maxImdbVotes !== null && votes > this.maxImdbVotes) matchesVotes = false;
+               }
+
+               let matchesUserRating = true;
+               if (this.selectedUserRating !== '') {
+                   if (this.selectedUserRating === 'not-rated') {
+                      matchesUserRating = !item.details.userRatingForDb || item.details.userRatingForDb === '-';
+                   } else {
+                      if (!item.details.userRatingForDb || item.details.userRatingForDb === '-') {
+                          matchesUserRating = false;
+                      } else {
+                          const userRating = parseInt(item.details.userRatingForDb);
+                          if (this.selectedUserRating.includes('-')) {
+                              const [min, max] = this.selectedUserRating.split('-').map(Number);
+                              matchesUserRating = userRating >= min && userRating <= max;
+                          } else {
+                              matchesUserRating = userRating === parseInt(this.selectedUserRating);
+                          }
+                      }
+                   }
+               }
+
+               return matchesGenre && matchesYear && matchesTmdbRating && matchesVotes && matchesUserRating;
            }).sort((a, b) => {
                const getAddedDate = (i) => new Date(i.details.added_at || 0);
-               const getYear = (i) => i.details.yearStartForDb || 0;
-               const getRating = (i) => i.details.imdb_rating || (i.details.starsForDb ? i.details.starsForDb/10 : 0);
+               const getYear = (i) => i.details.yearEndForDb || i.details.yearStartForDb || 9999;
                
+               const getVotes = (i) => {
+                   if (i.details.imdb_votes) return typeof i.details.imdb_votes === 'number' ? i.details.imdb_votes : parseInt(i.details.imdb_votes.replace(/,/g, ''), 10);
+                   return i.details.vote_count || 0;
+               };
+               
+               const getRuntime = (i) => i.details.runtime || 0;
+
+               const getWeightedRating = (i) => {
+                   let R = 0; 
+                   let v = 0;
+                   if (i.details.rating_source === 'imdb' && i.details.imdb_rating) {
+                       R = parseFloat(i.details.imdb_rating);
+                       v = getVotes(i);
+                   } else if (i.details.starsForDb) {
+                       R = i.details.starsForDb / 10;
+                       v = 0;
+                   } else {
+                       return -1;
+                   }
+                   const m = 1000;
+                   const C = 7.0;
+                   return (v / (v + m)) * R + (m / (v + m)) * C;
+               };
+
                switch(this.orderMode) {
                    case 'latest-added': return getAddedDate(b) - getAddedDate(a);
                    case 'earliest-added': return getAddedDate(a) - getAddedDate(b);
                    case 'newer-releases': return getYear(b) - getYear(a);
                    case 'older-releases': return getYear(a) - getYear(b);
-                   case 'imdb-high': return getRating(b) - getRating(a);
-                   case 'imdb-low': return getRating(a) - getRating(b);
+                   case 'imdb-high': 
+                       const rB = getWeightedRating(b);
+                       const rA = getWeightedRating(a);
+                       if (rA === -1 && rB === -1) return 0;
+                       if (rA === -1) return 1;
+                       if (rB === -1) return -1;
+                       return rB - rA;
+                   case 'imdb-low': 
+                       const rB_low = getWeightedRating(b);
+                       const rA_low = getWeightedRating(a);
+                       if (rA_low === -1 && rB_low === -1) return 0;
+                       if (rA_low === -1) return 1;
+                       if (rB_low === -1) return -1;
+                       return rA_low - rB_low;
+                   case 'votes-high': return getVotes(b) - getVotes(a);
+                   case 'votes-low': return getVotes(a) - getVotes(b);
+                   case 'shortest-first': return getRuntime(a) - getRuntime(b);
+                   case 'longest-first': return getRuntime(b) - getRuntime(a);
                    default: return 0;
                }
            });
@@ -643,6 +907,8 @@ export default {
                          imdb_votes: raw.imdb_rating ? raw.imdb_votes : null,
                          vote_count: !raw.imdb_rating ? raw.imdb_votes : null,
                          rating_source: raw.imdb_rating ? 'imdb' : 'tmdb',
+                         userRatingForDb: raw.viewer_rating ? raw.viewer_rating.toString() : '-',
+                         userReview: raw.viewer_review || '',
                          added_at: raw.added_at
                      }
                  };
@@ -702,13 +968,24 @@ export default {
         },
         clearAllFilters() {
             this.selectedGenre = '';
+            this.minImdbRating = null;
+            this.maxImdbRating = null;
+            this.minImdbVotes = null;
+            this.maxImdbVotes = null;
+            this.selectedUserRating = '';
             this.customYearStart = null;
             this.customYearEnd = null;
             this.orderMode = 'latest-added';
             this.filtersModalVisible = false;
         },
         removeFilter(key) {
-             this[key] = key === 'orderMode' ? 'latest-added' : (key === 'selectedGenre' ? '' : null);
+             if (key === 'orderMode') this.orderMode = 'latest-added';
+             else if (key === 'selectedGenre') this.selectedGenre = '';
+             else if (key === 'imdbRating') { this.minImdbRating = null; this.maxImdbRating = null; }
+             else if (key === 'imdbVotes') { this.minImdbVotes = null; this.maxImdbVotes = null; }
+             else if (key === 'selectedUserRating') this.selectedUserRating = '';
+             else if (key.includes('Year')) this[key] = null;
+             else this[key] = null;
         },
         closeDropdowns(e) {
              if (this.genreDropdownOpen && !e.target.closest('.custom-select')) {
@@ -899,6 +1176,115 @@ export default {
     
     togglePrivacyDropdown() {
         this.privacyDropdownOpen = !this.privacyDropdownOpen;
+    },
+
+    openRatingModal(item) {
+        this.currentRatingItem = item;
+        this.selectedRating = item.details.userRatingForDb && item.details.userRatingForDb !== '-' ? parseInt(item.details.userRatingForDb) : 0;
+        this.userReview = item.details.userReview || '';
+        this.ratingModalVisible = true;
+    },
+
+    closeRatingModal() {
+        this.ratingModalVisible = false;
+        this.currentRatingItem = null;
+        this.selectedRating = 0;
+        this.hoverRating = 0;
+        this.userReview = '';
+    },
+
+    setRating(rating) { this.selectedRating = rating; },
+    previewRating(rating) { this.hoverRating = rating; },
+    resetPreview() { this.hoverRating = 0; },
+
+    async saveRatingAndReview() {
+      if (this.selectedRating === 0) {
+        alert('Please select a rating between 1 and 10');
+        return;
+      }
+
+      const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+      if (!userEmail) return;
+
+      if (!this.userReview.trim()) {
+        this.userReview = this.ratingDescriptions[this.selectedRating - 1];
+      }
+
+      const item = this.currentRatingItem;
+      const { typeForDb, idForDb } = item.details;
+      
+      const updateRatingCall = async () => {
+          return await fetch(
+            `${this.tursoBackendUrl}/favorites/rating/${userEmail}/${typeForDb}/${idForDb}`,
+            {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                rating: this.selectedRating,
+                review: this.userReview.trim()
+              })
+            }
+          );
+      };
+
+      try {
+        let response = await updateRatingCall();
+
+        if (response.status === 404) {
+            const addResponse = await fetch(`${this.tursoBackendUrl}/favorites`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userEmail, item: item.details })
+            });
+            
+            if (!addResponse.ok) throw new Error('Failed to add item to watchlist before rating');
+            response = await updateRatingCall();
+        }
+
+        if (!response.ok) {
+             throw new Error('Error updating rating.');
+        }
+
+        item.details.userRatingForDb = this.selectedRating.toString();
+        item.details.userReview = this.userReview.trim();
+
+        this.closeRatingModal();
+        this.$bus.$emit('lists-updated');
+
+      } catch (error) {
+        console.error('Error saving rating:', error);
+        alert('Could not save rating. Please try again.');
+      }
+    },
+
+    async removeRating() {
+      const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+      if (!userEmail) return;
+
+      try {
+        const item = this.currentRatingItem;
+        const { typeForDb, idForDb } = item.details;
+
+        const response = await fetch(
+          `${this.tursoBackendUrl}/favorites/rating/${userEmail}/${typeForDb}/${idForDb}`,
+          {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rating: null, review: '' })
+          }
+        );
+
+        if (!response.ok) throw new Error('Error removing rating');
+
+        item.details.userRatingForDb = '-';
+        item.details.userReview = '';
+
+        this.closeRatingModal();
+        this.$bus.$emit('lists-updated');
+
+      } catch (error) {
+        console.error('Error removing rating:', error);
+      }
     }
   }
 }
@@ -1190,6 +1576,231 @@ export default {
   color: #fff;
   font-weight: 700;
   margin-left: 0;
+}
+
+.user-rating-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #000;
+    color: #88E9FD;
+    border: 3px solid;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    z-index: 5;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-rating-badge:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(139, 233, 253, 0.5);
+}
+
+.user-rating-badge.has-review {
+    overflow: visible;
+    border: 3px solid #8BE9FD;
+}
+
+.review-indicator {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 10px;
+    height: 10px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 2px solid #041019;
+}
+
+.user-rating-badge.empty {
+    background-color: #000;
+    color: #88E9FD;
+    border: 2px solid;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 9px;
+    text-transform: uppercase;
+}
+
+.rating-modal {
+  width: 100%;
+  max-width: 360px;
+  background: linear-gradient(to bottom right, #092739, #061720);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.rating-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rating-selector {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.rating-numbers {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.rating-numbers::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.07);
+  transform: translateY(-50%);
+  z-index: 0;
+}
+
+.rating-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: #041019;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  z-index: 2;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rating-btn-active {
+  background: #8BE9FD;
+  color: #000;
+  transform: scale(1.15);
+  box-shadow: 0 0 10px rgba(139, 233, 253, 0.5);
+}
+
+.rating-btn:hover {
+  transform: scale(1.15);
+}
+
+.review-section {
+  width: 100%;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.review-textarea {
+  width: 100%;
+  height: 100px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  color: #fff;
+  font-size: 1.3rem;
+  resize: none;
+  transition: border-color 0.2s ease;
+}
+
+.review-textarea:focus {
+  outline: none;
+  border-color: rgba(139, 233, 253, 0.5);
+}
+
+.review-textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.char-count {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.save-btn {
+  background: #8BE9FD;
+  color: #000;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 30px;
+  text-align: center;
+  width: 100%;
+}
+
+.save-btn:hover {
+  background: #7AD6E9;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(139, 233, 253, 0.3);
+}
+
+.save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.rating-modal-buttons {
+    display: flex; 
+    gap: 10px; 
+    width: 100%;
+}
+
+.remove-rating-btn {
+    background: rgba(255, 85, 85, 0.2);
+    color: #ff5555;
+    border: 1px solid rgba(255, 85, 85, 0.3);
+    border-radius: 30px;
+    padding: 10px 0;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+}
+
+.remove-rating-btn:hover {
+    background: rgba(255, 85, 85, 0.3);
+    border-color: #ff5555;
+}
+
+@media (max-width: 400px) {
+  .rating-modal {
+    max-width: 300px;
+  }
+  .rating-btn {
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+  }
 }
 
 .rating-logo {
@@ -1507,7 +2118,7 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
   max-width: 500px;
   background: linear-gradient(to bottom right, #092739, #061720);
   border-radius: 12px;
-  overflow: hidden;
+  /* overflow: hidden; */
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
