@@ -50,7 +50,7 @@
   padding: 1.5rem 1rem 5rem;
   color: $text-color-grey;
   margin-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(0, 0, 0, 0.307);
 
   @media (min-width: $breakpoint-large) {
      padding: 1.5rem 1rem 0.5rem;
@@ -170,7 +170,7 @@
 
 .divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.307);
   margin: 1.5rem 0;
 }
 

@@ -1707,7 +1707,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 15px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.307);
 }
 
 .modal-header h3 {

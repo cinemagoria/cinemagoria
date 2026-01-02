@@ -2837,7 +2837,7 @@ export default {
     align-items: center;
     justify-content: space-between;
     padding: 15px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.307);
   }
   
   .modal-header h3 {
@@ -3122,7 +3122,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 15px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.307);
 }
 
 .modal-header h3 {
@@ -3784,7 +3784,7 @@ select.user-rating-select {
 }
 
 .dropdown-options::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.307);
 }
 
 .dropdown-options::-webkit-scrollbar-thumb {

@@ -1928,7 +1928,7 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
   margin: 3rem auto 0 auto;
   min-height: 50px;
   width: fit-content;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.307);
     padding: 10px 20px;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -2305,7 +2305,7 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
 }
 
 .dropdown-options::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.307);
 }
 
 .dropdown-options::-webkit-scrollbar-thumb {
@@ -2387,7 +2387,7 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
 
 .empty-state, .no-results-state {
     text-align: center; padding: 4rem 2rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.307);
     border-radius: 12px;
     margin: 2rem 0;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

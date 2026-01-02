@@ -350,7 +350,7 @@ function sanitizeDescription(desc) {
   width: 4px;
 }
 .sources-list::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.307);
 }
 .sources-list::-webkit-scrollbar-thumb {
   background: rgba(139, 233, 253, 0.3);
@@ -373,7 +373,7 @@ function sanitizeDescription(desc) {
 }
 
 .source-btn:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.307);
   color: #fff;
 }
 
@@ -652,7 +652,7 @@ function sanitizeDescription(desc) {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05); 
+    background: rgba(0, 0, 0, 0.307); 
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #fff;
     width: 36px; 
@@ -667,7 +667,7 @@ function sanitizeDescription(desc) {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05); 
+    background: rgba(0, 0, 0, 0.307); 
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #fff;
     width: 36px; 
