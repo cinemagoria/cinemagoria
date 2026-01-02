@@ -118,8 +118,8 @@
                     <span class="item-count">{{ list.item_count || 0 }} elementos</span>
                 </div>
                 <div class="action-buttons">
-                    <button @click.stop="startEdit(list)" class="action-btn edit-btn">Editar</button>
                     <button @click.stop="deleteList(list)" class="action-btn delete-btn">Borrar</button>
+                    <button @click.stop="startEdit(list)" class="action-btn edit-btn">Editar</button>
                 </div>
              </template>
           </div>
@@ -545,6 +545,15 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 2.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 1rem;
+  }
 }
 
 .list-card {
@@ -577,7 +586,7 @@ export default {
 .card-cover {
   position: relative;
   width: 100%;
-  padding-top: 56.25%;
+  padding-top: 100%;
   background: #111;
 }
 
@@ -670,6 +679,10 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   transition: color 0.2s;
+
+  @media (max-width: 768px) {
+    font-size: 1.4rem;
+  }
 }
 
 .item-count {
