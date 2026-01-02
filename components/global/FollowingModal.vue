@@ -210,7 +210,6 @@ export default {
   },
   data() {
     return {
-      visible: false,
       activeTab: 'people',
       people: [],
       tvShows: [],
@@ -225,6 +224,10 @@ export default {
   },
   
   computed: {
+    visible() {
+      // The modal is visible if the 'following' query parameter is set to 'true'
+      return this.$route.query.following === 'true';
+    },
     groupedPeople() {
       const groups = {};
       this.people.forEach(p => {
@@ -254,6 +257,15 @@ export default {
       handler(val) {
         if (val) this.activeTab = val;
       }
+    },
+    // Watch for changes in visibility to fetch data when opened
+    visible: {
+      immediate: true,
+      handler(val) {
+        if (val) {
+          this.fetchData();
+        }
+      }
     }
   },
 
@@ -280,13 +292,18 @@ export default {
       return `${this.undoItem.name} unfollowed`;
     },
 
-    async show() {
-      this.visible = true;
-      await this.fetchData();
+    show() {
+      this.$router.push({
+        query: { ...this.$route.query, following: 'true' }
+      });
     },
 
     close() {
-      this.visible = false;
+      // Go back to remove the query param if it exists, effectively closing the modal
+      // Using $router.back() mimics the behavior of the browser back button
+      if (this.visible) {
+        this.$router.back();
+      }
     },
 
     async fetchData() {
@@ -475,15 +492,15 @@ export default {
     },
 
     openPerson(personId) {
-      window.open(`/person/${personId}`, '_blank');
+      this.$router.push(`/person/${personId}`);
     },
 
     openCompany(companyId) {
-      window.open(`/production/${companyId}`, '_blank');
+      this.$router.push(`/production/${companyId}`);
     },
 
     openTvShow(tvId) {
-      window.open(`/tv/${tvId}`, '_blank');
+      this.$router.push(`/tv/${tvId}`);
     },
 
     handleImageLoad(id) {
