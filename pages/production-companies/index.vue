@@ -67,17 +67,13 @@ useHead({
 .listing {
   margin: 0 1.5rem;
 
-  @media (min-width: $breakpoint-xsmall) {
-    margin: 0 1.5rem;
-  }
-
   @media (min-width: $breakpoint-large) {
     margin: 0 5rem;
   }
 }
 
 .page-title {
-  color: #8BE9FD !important;
+  color: #8BE9FD;
   margin-top: 10px;
   margin-bottom: 5px;
   display: flex;
@@ -88,7 +84,7 @@ useHead({
 }
 
 .page-subtitle {
-  color: rgb(172, 175, 181);
+  color: $color-text-subtle;
   font-size: 14px;
   max-width: 600px;
   margin: 0 auto 2rem; 
