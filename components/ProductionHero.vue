@@ -20,7 +20,7 @@
         {{ description }}
       </div>
 
-      <div :class="$style.buttonContainer" v-if="isSupported && isAuthenticated">
+      <div :class="$style.buttonContainer" v-if="isSupported">
         <button 
           :class="[$style.actionButton, { [$style.active]: isFollowing }]" 
           @click="toggleFollow" 
@@ -119,7 +119,10 @@ export default {
     },
     async toggleFollow() {
         if (!this.isAuthenticated) {
-            console.warn("Por favor inicia sesión para seguir productoras.");
+             if (typeof window !== 'undefined') {
+                const event = new CustomEvent('open-auth-modal', { detail: { action: 'register' } });
+                window.dispatchEvent(event);
+            }
             return;
         }
         const userEmail = localStorage.getItem('email');

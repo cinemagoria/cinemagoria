@@ -15,8 +15,8 @@
              <div class="new-controls-container">
                <label class="switch">
                  <input type="checkbox" :checked="activeTab === 'tvShows'" @change="toggleTab">
-                 <span>Movies</span>
-                 <span>TV Shows</span>
+                 <span>Películas</span>
+                 <span>Series de TV</span>
                </label>
                
                <div class="action-buttons">
@@ -563,11 +563,7 @@ onUnmounted(() => {
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   
-  @media (max-width: 768px) {
-      flex-direction: column;
-      align-items: stretch;
-      width: 90%;
-  }
+
 }
 
 .switch {

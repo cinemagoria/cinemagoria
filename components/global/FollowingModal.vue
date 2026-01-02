@@ -225,7 +225,6 @@ export default {
   
   computed: {
     visible() {
-      // The modal is visible if the 'following' query parameter is set to 'true'
       return this.$route.query.following === 'true';
     },
     groupedPeople() {
@@ -258,7 +257,6 @@ export default {
         if (val) this.activeTab = val;
       }
     },
-    // Watch for changes in visibility to fetch data when opened
     visible: {
       immediate: true,
       handler(val) {
@@ -299,7 +297,6 @@ export default {
     },
 
     close() {
-      // Go back to remove the query param if it exists, effectively closing the modal
       if (this.visible) {
         this.$router.back();
       }
