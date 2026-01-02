@@ -2381,7 +2381,7 @@ export default {
     border-top-right-radius: 15px;
     width: 97% !important;
     margin: 0 auto;
-    background: rgba(82, 71, 71, 0);
+    background: rgba(0, 0, 0, 0.307);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur(16px);
     padding: 8px;
@@ -2402,7 +2402,7 @@ export default {
     border-bottom-right-radius: 15px;
     width: 97% !important;
     margin: 0 auto;
-    background: rgba(16, 20, 33, 0.3);
+    background: rgba(0, 0, 0, 0.307);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur(16px);
     padding: 8px;
@@ -2679,7 +2679,7 @@ export default {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
     gap: 20px;
-    background-color: black;
+    background-color: rgba(0, 0, 0, 0.307);
     border-radius: 15px;
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur(16px);
