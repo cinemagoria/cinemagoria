@@ -245,7 +245,7 @@ export default {
 
 .link-item.tmdb-provider .provider-content:hover {
   opacity: 1;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(0, 0, 0, 0.307);
 }
 
 .***-logo {
