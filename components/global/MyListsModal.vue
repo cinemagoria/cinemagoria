@@ -712,7 +712,7 @@ export default {
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(0, 0, 0, 0.307);
   border-radius: 12px;
   overflow: hidden;
   transition: transform 0.2s, box-shadow 0.2s;
