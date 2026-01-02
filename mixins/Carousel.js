@@ -49,6 +49,7 @@ export default {
     },
 
     moveTo(width) {
+      if (!this.$refs.carouselElement) return;
       this.$refs.carouselElement.scrollTo({
         left: width,
         behavior: 'smooth',
@@ -56,6 +57,7 @@ export default {
     },
 
     moveToClickEvent(direction) {
+      if (!this.$refs.carouselElement) return;
       const invisible = this.$refs.carouselElement.scrollLeft + (direction === 'left' ? -this.visibleWidth + 1 : this.visibleWidth);
       const remainder = invisible - invisible % this.elementWidth;
 
