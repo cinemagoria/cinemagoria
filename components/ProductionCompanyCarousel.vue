@@ -42,7 +42,7 @@
             <div class="logo-container">
                <img 
                  v-if="company.logo_path" 
-                 :src="`https://image.tmdb.org/t/p/w500${company.logo_path}`" 
+                 :src="`${apiImgUrl}/w500${company.logo_path}`" 
                  :alt="company.name" 
                  class="company-logo"
                  loading="lazy"
@@ -77,6 +77,7 @@
 
 <script>
 import carousel from '~/mixins/Carousel';
+import { apiImgUrl } from '~/utils/api';
 
 export default {
   mixins: [carousel],
@@ -90,14 +91,22 @@ export default {
       default: null
     }
   },
+  data() {
+    return {
+      apiImgUrl
+    };
+  },
+  computed: {
+    totalItems() {
+      return this.items.length + (this.viewAllLink ? 1 : 0);
+    }
+  },
   mounted() {
-    const totalItems = this.items.length + (this.viewAllLink ? 1 : 0);
-    this.calculateState(totalItems);
+    this.calculateState(this.totalItems);
   },
   methods: {
     resizeEvent() {
-      const totalItems = this.items.length + (this.viewAllLink ? 1 : 0);
-      this.calculateState(totalItems);
+      this.calculateState(this.totalItems);
     }
   }
 };
