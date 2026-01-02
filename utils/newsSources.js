@@ -1,6 +1,5 @@
 export const SOURCES = {
     es: [
-        'Almas Oscuras',
         "Cine O'culto",
         'CineyTele',
         'EscribiendoCine',
@@ -17,7 +16,6 @@ export const SOURCE_URLS = {
     'Espinof': 'https://www.espinof.com/',
     'SensaCine': 'https://www.sensacine.com/',
     'TerrorWeekend': 'https://www.terrorweekend.com/',
-    'Almas Oscuras': 'https://www.almasoscuras.com/',
     'EscribiendoCine': 'https://www.escribiendocine.com/',
     'Uruloki': 'https://www.uruloki.org/',
     'CineyTele': 'https://www.cineytele.com/',
