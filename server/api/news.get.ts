@@ -22,7 +22,6 @@ export default defineEventHandler(async (event) => {
                 source: query.source
             },
             headers: {
-                // Security: Explicitly identify ourselves to pass backend strict origin check
                 'Origin': config.public.frontendUrl
             }
         })

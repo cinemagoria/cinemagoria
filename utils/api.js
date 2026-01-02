@@ -1147,17 +1147,25 @@ export function getMDBListRatings(imdbId, type) {
     });
 }
 
-export function getMoviesByProductionCompany(companyId, page = 1) {
+export function getMoviesByProductionCompany(companyId, page = 1, filters = {}) {
     return new Promise((resolve, reject) => {
-        axios.get(`${apiUrl}/discover/movie`, {
-            params: {
-                api_key: getEnv('API_KEY'),
-                language: getEnv('API_LANG'),
-                with_companies: companyId,
-                sort_by: 'popularity.desc',
-                page,
-            },
-        }).then(async (response) => {
+        const params = {
+            api_key: getEnv('API_KEY'),
+            language: getEnv('API_LANG'),
+            with_companies: companyId,
+            sort_by: filters.sort_by || 'popularity.desc',
+            page,
+        };
+
+        if (filters.with_genres) params.with_genres = filters.with_genres;
+        if (filters['primary_release_date.gte']) params['primary_release_date.gte'] = filters['primary_release_date.gte'];
+        if (filters['primary_release_date.lte']) params['primary_release_date.lte'] = filters['primary_release_date.lte'];
+        if (filters['vote_average.gte']) params['vote_average.gte'] = filters['vote_average.gte'];
+        if (filters['vote_average.lte']) params['vote_average.lte'] = filters['vote_average.lte'];
+        if (filters['vote_count.gte']) params['vote_count.gte'] = filters['vote_count.gte'];
+        if (filters['vote_count.lte']) params['vote_count.lte'] = filters['vote_count.lte'];
+
+        axios.get(`${apiUrl}/discover/movie`, { params }).then(async (response) => {
             response.data.results.forEach(item => {
                 item.vote_average = parseFloat(item.vote_average).toFixed(1);
             });
@@ -1183,17 +1191,25 @@ export function getMoviesByProductionCompany(companyId, page = 1) {
     });
 }
 
-export function getTVShowsByProductionCompany(companyId, page = 1) {
+export function getTVShowsByProductionCompany(companyId, page = 1, filters = {}) {
     return new Promise((resolve, reject) => {
-        axios.get(`${apiUrl}/discover/tv`, {
-            params: {
-                api_key: getEnv('API_KEY'),
-                language: getEnv('API_LANG'),
-                with_companies: companyId,
-                sort_by: 'popularity.desc',
-                page,
-            },
-        }).then(async (response) => {
+        const params = {
+            api_key: getEnv('API_KEY'),
+            language: getEnv('API_LANG'),
+            with_companies: companyId,
+            sort_by: filters.sort_by || 'popularity.desc',
+            page,
+        };
+
+        if (filters.with_genres) params.with_genres = filters.with_genres;
+        if (filters['first_air_date.gte']) params['first_air_date.gte'] = filters['first_air_date.gte'];
+        if (filters['first_air_date.lte']) params['first_air_date.lte'] = filters['first_air_date.lte'];
+        if (filters['vote_average.gte']) params['vote_average.gte'] = filters['vote_average.gte'];
+        if (filters['vote_average.lte']) params['vote_average.lte'] = filters['vote_average.lte'];
+        if (filters['vote_count.gte']) params['vote_count.gte'] = filters['vote_count.gte'];
+        if (filters['vote_count.lte']) params['vote_count.lte'] = filters['vote_count.lte'];
+
+        axios.get(`${apiUrl}/discover/tv`, { params }).then(async (response) => {
             response.data.results = response.data.results.filter(item => !EXCLUDED_TV_IDS.includes(item.id));
 
             response.data.results.forEach(item => {
