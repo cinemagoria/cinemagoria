@@ -126,23 +126,14 @@
               </div>
               <div v-if="dropdowns.country" class="dropdown-options">
                 <div class="dropdown-option" @click.stop="selectCountry('')">Optional</div>
-                <div class="dropdown-option" @click.stop="selectCountry('US')">United States</div>
-                <div class="dropdown-option" @click.stop="selectCountry('GB')">United Kingdom</div>
-                <div class="dropdown-option" @click.stop="selectCountry('FR')">France</div>
-                <div class="dropdown-option" @click.stop="selectCountry('JP')">Japan</div>
-                <div class="dropdown-option" @click.stop="selectCountry('KR')">South Korea</div>
-                <div class="dropdown-option" @click.stop="selectCountry('ES')">Spain</div>
-                <div class="dropdown-option" @click.stop="selectCountry('AL')">Albania</div>
-                <div class="dropdown-option" @click.stop="selectCountry('AR')">Argentina</div>
-                <div class="dropdown-option" @click.stop="selectCountry('AU')">Australia</div>
-                <div class="dropdown-option" @click.stop="selectCountry('BR')">Brazil</div>
-                <div class="dropdown-option" @click.stop="selectCountry('CA')">Canada</div>
-                <div class="dropdown-option" @click.stop="selectCountry('CN')">China</div>
-                <div class="dropdown-option" @click.stop="selectCountry('DE')">Germany</div>
-                <div class="dropdown-option" @click.stop="selectCountry('IN')">India</div>
-                <div class="dropdown-option" @click.stop="selectCountry('IT')">Italy</div>
-                <div class="dropdown-option" @click.stop="selectCountry('MX')">Mexico</div>
-                <div class="dropdown-option" @click.stop="selectCountry('RU')">Russia</div>
+                <div 
+                    v-for="country in countries" 
+                    :key="country.code" 
+                    class="dropdown-option"
+                    @click.stop="selectCountry(country.code)"
+                >
+                  {{ country.name }}
+                </div>
                 <!-- Add other countries as needed, simplified for brevity -->
               </div>
             </div>
@@ -244,6 +235,7 @@
 <script>
   import UserNav from '@/components/global/UserNav';
   import DynamicSearchCarousel from '@/components/DynamicSearchCarousel.vue';
+  import { countries } from '~/utils/countries';
   
   async function getUserAvatar(userEmail) {
     try {
@@ -300,8 +292,12 @@
       UserNav,
       DynamicSearchCarousel
     },
+    setup() {
+      return { supabase: useSupabaseClient() }
+    },
     data() {
       return {
+        countries,
         tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://entercinema-favorites.vercel.app/api',
         searchPerformed: false,
         loading: false,
@@ -339,7 +335,6 @@
           { id: 18, name: 'Drama' },
           { id: 36, name: 'History' },
           { id: 10402, name: 'Music' },
-          { id: 9648, name: 'Mystery' },
           { id: 10749, name: 'Romance' },
           { id: 37, name: 'Western' }
         ],
@@ -1014,66 +1009,10 @@
       },
 
       formattedCountry(countryCode) {
-        const countries = {
-          AL: 'Albania',
-          AM: 'Armenia',
-          AR: 'Argentina',
-          AT: 'Austria',
-          AU: 'Australia',
-          BE: 'Belgium',
-          BO: 'Bolivia',
-          BR: 'Brazil',
-          BG: 'Bulgaria',
-          CA: 'Canada',
-          CN: 'China',
-          CO: 'Colombia',
-          CR: 'Costa Rica',
-          HR: 'Croatia',
-          CZ: 'Czech Republic',
-          DK: 'Denmark',
-          EC: 'Ecuador',
-          EG: 'Egypt',
-          FI: 'Finland',
-          FR: 'France',
-          DE: 'Germany',
-          GR: 'Greece',
-          HK: 'Hong Kong',
-          HU: 'Hungary',
-          IN: 'India',
-          IR: 'Iran',
-          IQ: 'Iraq',
-          IE: 'Ireland',
-          IL: 'Israel',
-          IT: 'Italy',
-          JM: 'Jamaica',
-          JP: 'Japan',
-          KR: 'South Korea',
-          MX: 'Mexico',
-          MA: 'Morocco',
-          NL: 'Netherlands',
-          NZ: 'New Zealand',
-          NG: 'Nigeria',
-          NO: 'Norway',
-          PL: 'Poland',
-          PT: 'Portugal',
-          RO: 'Romania',
-          RU: 'Russia',
-          ZA: 'South Africa',
-          ES: 'Spain',
-          SE: 'Sweden',
-          CH: 'Switzerland',
-          TW: 'Taiwan',
-          TH: 'Thailand',
-          TR: 'Turkey',
-          UA: 'Ukraine',
-          GB: 'United Kingdom',
-          US: 'United States',
-          UY: 'Uruguay',
-          VE: 'Venezuela',
-          VN: 'Vietnam'
-        };
-        return countries[countryCode] || '';
-      }
+        if (!countryCode) return '';
+        const found = countries.find(c => c.code === countryCode);
+        return found ? found.name : countryCode;
+      },
     },
     computed: {
       showDefaultMessage() {
