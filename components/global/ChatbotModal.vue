@@ -3158,7 +3158,7 @@ export default {
    7. DAILY PROMPT & CAROUSEL
    ========================================= */
 .daily-prompt-card {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(0, 0, 0, 0.307);
   border: 1px solid rgba(127, 219, 241, 0.2);
   border-radius: 16px; padding: 24px; margin: 20px auto; max-width: 500px;
   position: relative; overflow: hidden; text-align: center;

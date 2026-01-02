@@ -154,29 +154,12 @@
                         />
                      </nuxt-link>
                      
-                     <div v-if="isOwner" class="card-actions-menu" :class="{ 'menu-open': activeCardMenuId === item.details.idForDb }">
+                     <div v-if="isOwner" class="card-actions-menu">
                         <div class="dropdown-trigger" @click.prevent.stop="toggleCardMenu(item.details.idForDb)">
                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="6 9 12 15 18 9"></polyline>
                           </svg>
                         </div>
-                        
-                        <transition name="fade">
-                           <div v-if="activeCardMenuId === item.details.idForDb" class="action-dropdown" @click.stop>
-                               <div v-if="isOwner && (!item.details.userRatingForDb || item.details.userRatingForDb === '-')" class="dropdown-item" @click="openRatingModal(item); activeCardMenuId = null">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
-                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                                  </svg>
-                                  Valorar
-                               </div>
-                               <div class="dropdown-item" @click="openAddModal(item); activeCardMenuId = null">
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
-                                    <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/>
-                                  </svg>
-                                  Editar...
-                               </div>
-                           </div>
-                        </transition>
                      </div>
                    </div>
 
@@ -216,8 +199,42 @@
                         </div>
                      </div>
                    </div>
+
+                   <div v-if="isOwner" class="card-actions-menu" :class="{ 'menu-open': activeCardMenuId === item.details.idForDb }">
+                      <div class="dropdown-trigger" @click.prevent.stop="toggleCardMenu(item.details.idForDb)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                      </div>
+                      
+                      <transition name="fade">
+                         <div v-if="activeCardMenuId === item.details.idForDb" class="action-dropdown" @click.stop>
+                             <div v-if="isOwner && (!item.details.userRatingForDb || item.details.userRatingForDb === '-')" class="dropdown-item" @click="openRatingModal(item); activeCardMenuId = null">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                                Valorar
+                             </div>
+                             <div class="dropdown-item" @click="openAddModal(item); activeCardMenuId = null">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                                  <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/>
+                                </svg>
+                                Edit...
+                             </div>
+                             <div class="dropdown-item remove-action" @click="removeListItem(item); activeCardMenuId = null">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+                                  <polyline points="3 6 5 6 21 6"></polyline>
+                                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                                Remove
+                             </div>
+                         </div>
+                      </transition>
+
                  </div>
               </div>
+            </div>
+
             </div>
              <div class="pagination-footer" v-if="filteredItems.length > itemsPerPage">
                <button @click="goToFirst" :disabled="currentPage === 1">
@@ -1852,6 +1869,62 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
   top: 10px;
   right: 10px;
   z-index: 20;
+}
+
+@media (max-width: 600px) {
+  .card-actions-menu.menu-open {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 50;
+  }
+  
+  .card-actions-menu.menu-open .dropdown-trigger {
+    position: absolute;
+    top: 10px; 
+    right: 10px;
+    z-index: 51;
+  }
+  
+  .card-actions-menu.menu-open .action-dropdown {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    right: 0;
+    margin: 0;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(10px);
+  }
+
+  .card-actions-menu.menu-open .dropdown-item {
+    font-size: 16px;
+    padding: 5px 20px;
+    width: 100%;
+    justify-content: center;
+    color: #8BE9FD;
+    border-radius: 6px;
+    border: 0.5px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .card-actions-menu.menu-open .dropdown-item:hover {
+    color: #000;
+    background: #8BE9FD;;
+  }
+
+  .card-actions-menu.menu-open .dropdown-item.remove-action:hover {
+    color: #ff6b6b;
+    background: #8BE9FD;;
+  }
 }
 
 .dropdown-trigger {
