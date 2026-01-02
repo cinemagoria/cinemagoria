@@ -19,6 +19,12 @@
       :view-all-url="trendingTvUrl"
       :items="trendingTv" />
 
+    <ProductionCompanyCarousel 
+      v-if="popularProductionCompanies.length"
+      :items="popularProductionCompanies"
+      view-all-link="/production-companies"
+    />
+
     <NewsCarousel />
   </main>
 </template>
@@ -31,6 +37,8 @@ import Hero from '~/components/Hero';
 import ListingCarousel from '~/components/ListingCarousel';
 import FeatureDescription from '~/components/FeatureDescription';
 import NewsCarousel from '~/components/global/NewsCarousel';
+import ProductionCompanyCarousel from '~/components/ProductionCompanyCarousel';
+import { SUPPORTED_PRODUCTION_COMPANIES, POPULAR_PRODUCTION_COMPANIES_IDS } from '~/utils/constants';
 
 
 const userEmail = ref('');
@@ -97,6 +105,10 @@ const trendingMoviesTitle = computed(() => getListItem('movie', 'trending').titl
 const trendingMoviesUrl = computed(() => ({ name: 'movie-category-name', params: { name: 'trending' } }));
 const trendingTvTitle = computed(() => getListItem('tv', 'trending').title);
 const trendingTvUrl = computed(() => ({ name: 'tv-category-name', params: { name: 'trending' } }));
+
+const popularProductionCompanies = computed(() => {
+  return POPULAR_PRODUCTION_COMPANIES_IDS.map(id => SUPPORTED_PRODUCTION_COMPANIES[id]).filter(Boolean);
+});
 
 async function getUserAvatar(userEmail) {
   try {
