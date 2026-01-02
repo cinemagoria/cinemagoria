@@ -26,6 +26,14 @@
       </li>
       <li>
         <nuxt-link
+          :to="{ name: 'advancedsearch' }"
+          aria-label="Advanced Search"
+          @click.native="clearSearchBeforeNavigate">
+          <img src="/icon-advancedsearch.png" alt="Advanced Search" :class="$style.navIcon" />
+        </nuxt-link>
+      </li>
+      <li>
+        <nuxt-link
           :to="{ name: 'news' }"
           aria-label="News"
           @click.native="clearSearchBeforeNavigate">
@@ -34,14 +42,6 @@
             <path d="M4 4a16 16 0 0 1 16 16"/>
             <circle cx="5" cy="19" r="1"/>
           </svg>
-        </nuxt-link>
-      </li>
-      <li>
-        <nuxt-link
-          :to="{ name: 'advancedsearch' }"
-          aria-label="Advanced Search"
-          @click.native="clearSearchBeforeNavigate">
-          <img src="/icon-advancedsearch.png" alt="Advanced Search" :class="$style.navIcon" />
         </nuxt-link>
       </li>
 
@@ -153,7 +153,7 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 5;
+  z-index: 999;
   height: 4.5rem;
   background-color: #000;
   border: 1.5px solid rgba(34, 98, 121, 0.782);

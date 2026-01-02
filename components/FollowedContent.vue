@@ -499,20 +499,26 @@ export default {
     justify-content: center;
 }
 .filters-modal {
-    background: #000;
-    width: 90%;
-    max-width: 500px;
-    border-radius: 15px;;
-    overflow: hidden;
-     border: 1px solid rgba(255,255,255,0.1);
+  width: 100%;
+  max-width: 500px;
+  background: linear-gradient(to bottom right, #092739, #061720);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 1.5rem;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    
-    h3 { margin: 0; color: #8BE9FD; font-size: 1.8rem; }
+  padding: 20px 25px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, rgba(139, 233, 253, 0.05), transparent);
+  
+  h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: #fff;
+    font-weight: 600;
+  }
 }
 .close-btn {
     background: none; border: none; color: white; font-size: 2rem; cursor: pointer;
