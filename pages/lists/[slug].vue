@@ -1454,13 +1454,18 @@ export default {
   width: 100%;
 }
 
-.movie-grid {
+movie-grid {
+  backdrop-filter: blur(16px);
+  background-color: rgba(0, 0, 0, 0.307);
+  border-radius: 15px;
+  box-shadow: 0 8px 32px #1f68875e;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
-  margin-bottom: 3rem;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   justify-content: center;
+  padding: .5rem 1rem;
 }
+
 
 @media screen and (max-width: 600px) {
   .movie-grid {
@@ -2027,7 +2032,7 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     border-top-right-radius: 15px;
     width: 97% !important;
     margin: 0 auto;
-    background: rgba(82, 71, 71, 0);
+    background: rgba(0, 0, 0, 0.307);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur(16px);
     padding: 8px;
@@ -2048,7 +2053,7 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     border-bottom-right-radius: 15px;
     width: 97% !important;
     margin: 0 auto;
-    background: rgba(16, 20, 33, 0.3);
+    background: rgba(0, 0, 0, 0.307);
     box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
     backdrop-filter: blur(16px);
     padding: 8px;
