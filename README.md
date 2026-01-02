@@ -121,6 +121,15 @@ yarn start
 
 ### Version History
 
+#### v4.3.0 — Lists & News Evolution (2026-01-02)
+
+* **Enhanced List Management:** Multi-selection support, "Create-Then-Add" flow, owner-specific actions, and dynamic list cover images.
+* **Cinema News:** Dedicated news section with RSS aggregation and homepage carousel.
+* **Production Company Discovery:** Integrated overview pages and discovery carousel for production companies.
+* **User Ratings & Reviews:** New system for rating content and leaving reviews.
+* **AI Chat Integration:** Relocated AI chat to `UserNav` for better accessibility.
+* **UI/UX & Performance:** Robust HTML stripping for news, improved carousel stability, and standardized SCSS variables.
+
 #### v4.2.0 — Custom Lists & Enhanced Curation (2025-12-28)
 
 * **Custom List Management:** Comprehensive system for creating, managing, and sharing custom movie and TV show lists with dynamic privacy controls.
