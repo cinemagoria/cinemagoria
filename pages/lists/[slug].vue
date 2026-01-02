@@ -133,7 +133,7 @@
             <div class="movie-grid">
               <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card">
                  <div class="card-background">
-                   <div class="user-rating-badge" v-if="isOwner && !aiSelectionMode && item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
+                   <div class="user-rating-badge" v-if="isOwner && item.details.userRatingForDb && item.details.userRatingForDb !== '-'" 
                      @click.stop="openRatingModal(item)"
                      :class="{ 'has-review': item.details.userReview }" 
                      :title="item.details.userReview ? 'Tiene Reseña' : ''">
@@ -1860,14 +1860,19 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
 .action-dropdown {
     position: absolute; top: 100%; right: 0;
     margin-top: 8px;
-    min-width: 180px;
+    min-width: 140px;
     background: #000;
     border: 1px solid rgba(139, 233, 253, 0.3);
-    border-radius: 15px;
+    border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     z-index: 30;
     overflow: hidden;
     padding: 5px 0;
+    
+    @media (max-width: 480px) {
+        min-width: 120px;
+        right: -5px;
+    }
 }
 
 .dropdown-item {
@@ -2380,59 +2385,7 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     }
 }
 
-@media (max-width: 600px) {
-  .card-actions-menu.menu-open {
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 50;
-    position: fixed; 
-  }
-  
-  .card-actions-menu.menu-open .dropdown-trigger {
-    position: absolute;
-    top: 10px; 
-    right: 10px;
-    z-index: 51;
-  }
-  
-  .card-actions-menu.menu-open .action-dropdown {
-    width: 100%;
-    height: 100%;
-    top: 0;
-    right: 0;
-    margin: 0;
-    border-radius: 0; 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border: none;
-    background: rgba(0,0,0,0.95);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(10px);
-    position: fixed; 
-  }
 
-  .card-actions-menu.menu-open .dropdown-item {
-    font-size: 16px;
-    padding: 15px 20px;
-    width: 80%;
-    justify-content: center;
-    color: #8BE9FD;
-    border-radius: 6px;
-    border: 0.5px solid rgba(255, 255, 255, 0.2);
-    margin-bottom: 10px;
-  }
-
-  .card-actions-menu.menu-open .dropdown-item:hover {
-    color: #000;
-    background: #8BE9FD;;
-  }
-}
 
 .share-modal-content {
   width: 100%;
