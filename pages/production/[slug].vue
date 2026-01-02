@@ -561,11 +561,7 @@ onUnmounted(() => {
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   
-  @media (max-width: 768px) {
-      flex-direction: column;
-      align-items: stretch;
-      width: 90%;
-  }
+
 }
 
 .switch {

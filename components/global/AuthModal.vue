@@ -233,7 +233,21 @@ export default {
       this.activeTab = newTab;
     }
   },
+  mounted() {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('open-auth-modal', this.handleOpenEvent);
+    }
+  },
+  beforeDestroy() {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('open-auth-modal', this.handleOpenEvent);
+    }
+  },
   methods: {
+    handleOpenEvent(event) {
+      const action = event.detail ? event.detail.action : null;
+      this.open(action);
+    },
     open(action = null) {
     this.isOpen = true;
     this.pendingAction = action;
