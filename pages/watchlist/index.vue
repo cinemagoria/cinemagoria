@@ -2072,13 +2072,14 @@ export default {
 
 
     yearRanges() {
+      const currentYear = new Date().getFullYear();
       return [
         '1888-1960',
         '1960-1980',
         '1980-2000',
         '2000-2010',
         '2010-2020',
-        '2020-2025',
+        `2020-${currentYear}`,
       ];
     },
     uniqueGenres() {
