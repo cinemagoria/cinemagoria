@@ -7,7 +7,7 @@ export async function syncUserToTurso(user) {
     if (!user || !user.email) return;
 
     try {
-        const response = await fetch(`${config.tursoBackendUrl}/users/sync`, {
+        const response = await fetch(`${config.tursoBackendUrl}/api/users/sync`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
