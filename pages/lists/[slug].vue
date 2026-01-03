@@ -1234,9 +1234,7 @@ export default {
       const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
       if (!userEmail) return;
 
-      if (!this.userReview.trim()) {
-        this.userReview = this.ratingDescriptions[this.selectedRating - 1];
-      }
+
 
       const item = this.currentRatingItem;
       const { typeForDb, idForDb } = item.details;

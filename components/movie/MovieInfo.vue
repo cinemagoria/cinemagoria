@@ -115,7 +115,8 @@
                       </div>
                     </div>
                     <div :class="$style.reviewMeta">
-                       <img v-if="review.source === 'Trakt'" src="/traktv-logo.svg" alt="Trakt" :class="$style.sourceLogo" />
+                       <span v-if="review.source === 'User'" :class="$style.traktBadge" style="border-color: #8BE9FD; color: #8BE9FD;">TÚ</span>
+                       <img v-else-if="review.source === 'Trakt'" src="/traktv-logo.svg" alt="Trakt" :class="$style.sourceLogo" />
                        <img v-else src="/tmdb.svg" alt="TMDB" :class="$style.sourceLogoTMDB" />
                        <span :class="$style.reviewDate">{{ formatCreatedAt(review.createdAt) }}</span>
                     </div>
@@ -518,12 +519,37 @@ export default {
           ? getTraktReviews(this.item.external_ids.imdb_id, 'movie') 
           : Promise.resolve([]);
 
-        const [tmdbResult, traktResult] = await Promise.allSettled([tmdbReviewsPromise, traktReviewsPromise]);
+        let userReviewPromise = Promise.resolve(null);
+        const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+        
+        if (userEmail) {
+             const tursoUrl = this.$config.public.tursoBackendUrl || 'https://entercinema-favorites.vercel.app/api';
+             userReviewPromise = fetch(`${tursoUrl}/membership/${userEmail}/movie/${this.item.id}`)
+               .then(res => res.json())
+               .then(data => data.userRating)
+               .catch(e => null);
+        }
+
+        const [tmdbResult, traktResult, userReviewResult] = await Promise.allSettled([tmdbReviewsPromise, traktReviewsPromise, userReviewPromise]);
         
         const tmdbReviews = tmdbResult.status === 'fulfilled' ? tmdbResult.value : [];
         const traktReviews = traktResult.status === 'fulfilled' ? traktResult.value : [];
+        const userRatingData = userReviewResult.status === 'fulfilled' ? userReviewResult.value : null;
 
-        const allReviews = [...tmdbReviews, ...traktReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        let allReviews = [...tmdbReviews, ...traktReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+        if (userRatingData && userRatingData.review) {
+            const userReview = {
+                authorName: 'Tu Reseña',
+                authorRating: userRatingData.score,
+                source: 'User',
+                createdAt: null, 
+                content: userRatingData.review,
+                showFullContent: true,
+                url: null
+            };
+            allReviews.unshift(userReview);
+        }
 
         if (allReviews.length > 0) {
           const translations = await translateReviewsBatch(allReviews);

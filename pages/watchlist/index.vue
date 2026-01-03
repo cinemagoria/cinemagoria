@@ -1233,9 +1233,7 @@ export default {
         return;
       }
 
-      if (!this.userReview.trim()) {
-        this.userReview = this.ratingDescriptions[this.selectedRating - 1];
-      }
+
 
       try {
         const item = this.currentRatingItem;
