@@ -121,6 +121,15 @@ yarn start
 
 ### Version History
 
+#### v4.3.1 — Enhanced User Experience & UI Refresh (2026-01-03)
+
+* **Revamped User Ratings & Reviews:** Decoupled from watchlist, full review control without auto-population, and personal review display in media details.
+* **Dynamic Advanced Search:** Content filtering by origin country with a comprehensive, dynamically rendered list of options.
+* **Smarter Content Discovery:** Stricter hero item criteria (IMDb source, >7.0 score, >5000 votes) and dynamic year ranges for always-up-to-date listings.
+* **Modern Dark UI Theme:** Sleeker interface with consistent semi-transparent dark backgrounds and subtle blur effects across grids and cards.
+* **Enhanced List Management:** New 'remove' option in list item menus with improved mobile responsiveness.
+
+
 #### v4.3.0 — Lists & News Evolution (2026-01-02)
 
 * **Enhanced List Management:** Multi-selection support, "Create-Then-Add" flow, owner-specific actions, and dynamic list cover images.
