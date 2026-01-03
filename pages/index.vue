@@ -80,7 +80,16 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
       const genreIds = item.genre_ids || [];
       const hasAnimation = genreIds.includes(16);
       const hasFantasy = genreIds.includes(14) || genreIds.includes(10765);
-      return !(hasAnimation || hasFantasy);
+      
+      const hasImdb = item.rating_source === 'imdb';
+      const imdbRating = item.imdb_rating ? parseFloat(item.imdb_rating) : 0;
+      const imdbVotes = typeof item.imdb_votes === 'number' 
+          ? item.imdb_votes 
+          : (item.imdb_votes ? parseInt(String(item.imdb_votes).replace(/,/g, ''), 10) : 0);
+
+      const meetsImdbCriteria = hasImdb && imdbRating > 7.0 && imdbVotes > 5000;
+
+      return !(hasAnimation || hasFantasy) && meetsImdbCriteria;
     });
     
     let featured = null;
