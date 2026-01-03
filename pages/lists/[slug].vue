@@ -650,7 +650,7 @@ export default {
            ];
         },
         yearRanges() {
-          return [ '1960-1980', '1980-2000', '2000-2010', '2010-2020', '2020-2025' ];
+          return [ '1960-1980', '1980-2000', '2000-2010', '2010-2020', `2020-${this.currentYear}` ];
         },
         currentSortLabel() {
            const option = this.sortOptions.find(opt => opt.value === this.orderMode);

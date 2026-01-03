@@ -76,7 +76,12 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         trendingTv.results = filterRecentYears(trendingTv.results);
     }
     
-    const recentItems = [...(trendingMovies?.results || []), ...(trendingTv?.results || [])];
+    const recentItems = [...(trendingMovies?.results || []), ...(trendingTv?.results || [])].filter(item => {
+      const genreIds = item.genre_ids || [];
+      const hasAnimation = genreIds.includes(16);
+      const hasFantasy = genreIds.includes(14) || genreIds.includes(10765);
+      return !(hasAnimation || hasFantasy);
+    });
     
     let featured = null;
     if (recentItems.length > 0) {

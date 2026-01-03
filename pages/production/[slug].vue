@@ -376,7 +376,7 @@ const currentSortLabel = computed(() => {
     return option ? option.label : 'Popularidad';
 });
 
-const yearRanges = ['1960-1980', '1980-2000', '2000-2010', '2010-2020', '2020-2025'];
+const yearRanges = ['1960-1980', '1980-2000', '2000-2010', '2010-2020', `2020-${currentYear}`];
 
 const getApiFilters = () => {
     const apiFilters = { sort_by: orderMode.value };
