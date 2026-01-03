@@ -59,7 +59,7 @@
           :class="{ 'is-editing': editingListId === list.id }"
         >
           <div class="card-cover">
-             <div v-if="list.item_count > 0" class="dynamic-cover-grid">
+             <div v-if="list.item_count > 0 && list.cover_images && list.cover_images.length > 0" class="dynamic-cover-grid">
                 <div v-for="i in 4" :key="i" class="grid-cell">
                     <img 
                       v-if="list.cover_images && list.cover_images[i-1]" 
@@ -595,11 +595,9 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #0b0b0b; 
+  background-color: #000; 
   
   .placeholder-img-match-modal {
-    width: 60%;
-    height: 60%;
     object-fit: contain;
     opacity: 1;
   }
@@ -635,8 +633,8 @@ export default {
   }
   
   .plus-icon {
-    width: 100%;
-    height: 100%;
+    width: 40%;
+    height: 40%;
     object-fit: cover;
     opacity: 1;
   }
