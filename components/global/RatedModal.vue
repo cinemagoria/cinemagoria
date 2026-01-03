@@ -56,9 +56,7 @@
                 <div v-if="item.details.userReview" class="rated-item-review">
                   {{ item.details.userReview }}
                 </div>
-                <div v-else class="rated-item-review">
-                  {{ ratingDescriptions[parseInt(item.details.userRatingForDb) - 1] }}
-                </div>
+
               </div>
             </div>
           </div>
@@ -352,9 +350,7 @@ export default {
         return;
       }
 
-      if (!this.userReview.trim()) {
-        this.userReview = this.ratingDescriptions[this.selectedRating - 1];
-      }
+
 
       try {
         const item = this.currentRatingItem;
