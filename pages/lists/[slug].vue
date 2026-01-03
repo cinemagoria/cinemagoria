@@ -1469,7 +1469,7 @@ export default {
   width: 100%;
 }
 
-movie-grid {
+.movie-grid {
   backdrop-filter: blur(16px);
   background-color: rgba(0, 0, 0, 0.307);
   border-radius: 15px;
