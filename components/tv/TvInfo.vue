@@ -128,7 +128,8 @@
                       </div>
                     </div>
                     <div :class="$style.reviewMeta">
-                       <img v-if="review.source === 'Trakt'" src="/traktv-logo.svg" alt="Trakt" :class="$style.sourceLogo" />
+                       <span v-if="review.source === 'User'" :class="$style.userBadge">YOU</span>
+                       <img v-else-if="review.source === 'Trakt'" src="/traktv-logo.svg" alt="Trakt" :class="$style.sourceLogo" />
                        <img v-else src="/tmdb.svg" alt="TMDB" :class="$style.sourceLogoTMDB" />
                        <span :class="$style.reviewDate">{{ formatCreatedAt(review.createdAt) }}</span>
                     </div>
@@ -507,12 +508,42 @@ export default {
             ? getTraktReviews(this.item.external_ids.imdb_id, 'show') 
             : Promise.resolve([]);
 
-          const [tmdbResult, traktResult] = await Promise.allSettled([tmdbReviewsPromise, traktReviewsPromise]);
+          let userReviewPromise = Promise.resolve(null);
+          const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+          
+          if (userEmail) {
+              const tursoUrl = this.$config.public.tursoBackendUrl || 'https://entercinema-favorites.vercel.app/api';
+              userReviewPromise = fetch(`${tursoUrl}/membership/${userEmail}/tv/${this.item.id}`)
+                .then(res => res.json())
+                .then(data => data.userRating)
+                .catch(e => {
+                    console.error('Error fetching user review:', e);
+                    return null;
+                });
+          }
+
+          const [tmdbResult, traktResult, userReviewResult] = await Promise.allSettled([tmdbReviewsPromise, traktReviewsPromise, userReviewPromise]);
           
           const tmdbReviews = tmdbResult.status === 'fulfilled' ? tmdbResult.value : [];
           const traktReviews = traktResult.status === 'fulfilled' ? traktResult.value : [];
+          const userRatingData = userReviewResult.status === 'fulfilled' ? userReviewResult.value : null;
 
-          this.reviews = [...tmdbReviews, ...traktReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          let allReviews = [...tmdbReviews, ...traktReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+          if (userRatingData && userRatingData.review) {
+              const userReview = {
+                  authorName: 'Your Review',
+                  authorRating: userRatingData.score,
+                  source: 'User',
+                  createdAt: userRatingData.createdAt, 
+                  content: userRatingData.review,
+                  showFullContent: true, 
+                  url: null
+              };
+              allReviews.unshift(userReview);
+          }
+
+          this.reviews = allReviews;
         } catch (error) {
           console.error("Error fetching reviews", error);
           this.reviews = [];
@@ -761,6 +792,26 @@ export default {
   flex-direction: column;
   align-items: flex-end;
   gap: 0.5rem;
+}
+
+.traktBadge {
+  color: #ED1C24;
+  font-weight: bold;
+  font-size: 1.1rem;
+  border: 1px solid #ED1C24;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+
+.userBadge {
+  color: #8BE9FD;
+  font-weight: bold;
+  font-size: 1.1rem;
+  border: 1px solid #8BE9FD;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 1px;
 }
 
 .sourceLogo {
