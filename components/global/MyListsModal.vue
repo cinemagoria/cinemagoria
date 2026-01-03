@@ -57,7 +57,7 @@
                   :class="[$style.card, isListSelected(list.id) ? $style.activeCard : '']"
                   @click="goToList(list)">
                   <div :class="$style.cardImage">
-                     <div v-if="list.item_count > 0" :class="$style.dynamicCoverGrid">
+                     <div v-if="list.item_count > 0 && list.cover_images && list.cover_images.length > 0" :class="$style.dynamicCoverGrid">
                         <div v-for="i in 4" :key="i" :class="$style.gridCell">
                             <img 
                               v-if="list.cover_images && list.cover_images[i-1]" 
