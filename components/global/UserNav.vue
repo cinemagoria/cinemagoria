@@ -162,6 +162,7 @@ export default {
     if (typeof window !== 'undefined') {
       window.addEventListener('notifications-updated', this.fetchUnreadCount);
       window.addEventListener('storage', this.handleStorageChatChange);
+      window.addEventListener('auth-changed', this.checkAuthStatus);
     }
     this.$bus.$on('chatbot-conversations-updated', (hasConversations) => {
       this.hasMinimizedConversations = hasConversations;
@@ -173,18 +174,7 @@ export default {
     });
 
     this.checkMinimizedConversations();
-    const email = localStorage.getItem('email');
-    const accessToken = localStorage.getItem('access_token');
-    
-    this.isLoggedIn = !!accessToken;
-    this.userEmail = email || '';
-
-    const hostname = window.location.hostname;
-    this.currentLanguage = hostname.startsWith('es.') ? 'es' : 'en';
-
-    if (this.isLoggedIn && email) {
-      await this.fetchUserAvatar(email);
-    }
+    this.checkAuthStatus();
     this.$nextTick(() => {
       document.addEventListener('click', this.handleClickOutside);
     });
@@ -199,10 +189,25 @@ export default {
     if (typeof window !== 'undefined') {
       window.removeEventListener('notifications-updated', this.fetchUnreadCount);
       window.removeEventListener('storage', this.handleStorageChatChange);
+      window.removeEventListener('auth-changed', this.checkAuthStatus);
     }
   },
 
   methods: {
+    checkAuthStatus() {
+      const email = localStorage.getItem('email');
+      const accessToken = localStorage.getItem('access_token');
+      
+      this.isLoggedIn = !!accessToken;
+      this.userEmail = email || '';
+
+      const hostname = window.location.hostname;
+      this.currentLanguage = hostname.startsWith('es.') ? 'es' : 'en';
+
+      if (this.isLoggedIn && email) {
+        this.fetchUserAvatar(email);
+      }
+    },
     async fetchUnreadCount() {
       const userEmail = localStorage.getItem('email');
       if (!userEmail) {
