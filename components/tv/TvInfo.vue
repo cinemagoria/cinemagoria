@@ -132,7 +132,7 @@
                       </div>
                     </div>
                     <div :class="$style.reviewMeta">
-                       <span v-if="review.source === 'User'" :class="$style.traktBadge" style="border-color: #8BE9FD; color: #8BE9FD;">TÚ</span>
+                       <span v-if="review.source === 'User'" :class="$style.userBadge">TÚ</span>
                        <img v-else-if="review.source === 'Trakt'" src="/traktv-logo.svg" alt="Trakt" :class="$style.sourceLogo" />
                        <img v-else src="/tmdb.svg" alt="TMDB" :class="$style.sourceLogoTMDB" />
                        <span :class="$style.reviewDate">{{ formatCreatedAt(review.createdAt) }}</span>
@@ -528,7 +528,10 @@ export default {
               userReviewPromise = fetch(`${tursoUrl}/membership/${userEmail}/tv/${this.item.id}`)
                 .then(res => res.json())
                 .then(data => data.userRating)
-                .catch(e => null);
+                .catch(e => {
+                    console.error('Error fetching user review:', e);
+                    return null;
+                });
           }
 
           const [tmdbResult, traktResult, userReviewResult] = await Promise.allSettled([tmdbReviewsPromise, traktReviewsPromise, userReviewPromise]);
@@ -544,7 +547,7 @@ export default {
                   authorName: 'Tu Reseña',
                   authorRating: userRatingData.score,
                   source: 'User',
-                  createdAt: null, 
+                  createdAt: userRatingData.createdAt, 
                   content: userRatingData.review,
                   showFullContent: true, 
                   url: null
@@ -820,6 +823,16 @@ export default {
   font-weight: bold;
   font-size: 1.1rem;
   border: 1px solid #ED1C24;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+
+.userBadge {
+  color: #8BE9FD;
+  font-weight: bold;
+  font-size: 1.1rem;
+  border: 1px solid #8BE9FD;
   padding: 2px 6px;
   border-radius: 4px;
   letter-spacing: 1px;
