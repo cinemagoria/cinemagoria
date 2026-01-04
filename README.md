@@ -1,21 +1,13 @@
 ## Entercinema - The moment you discover what to watch.
 
-Entercinema is a high-performance **Progressive Web Application (PWA)** engineered for modern viewers. By aggregating intelligence from **TMDB, IMDb, MDBList, Trakt, and JustWatch**, it provides a centralized hub for intelligent search, cross-device synchronization, and a conversational AI discovery experience.
+Entercinema is a high-performance **Progressive Web Application (PWA)** engineered for modern viewers. By aggregating intelligence from **TMDB, IMDb, MDBList, Trakt, and JustWatch**, it provides a centralized hub for intelligent search and cross-device synchronization.
 
 ### Project Overview
 
-Entercinema streamlines the entertainment lifecycle—from initial discovery to release tracking. It bridges the gap between fragmented streaming data and personal curation, offering a seamless interface for managing watchlists, receiving real-time notifications, and interacting with a context-aware AI assistant.
+Entercinema streamlines the entertainment lifecycle—from initial discovery to release tracking. It bridges the gap between fragmented streaming data and personal curation, offering a seamless interface for managing watchlists and receiving real-time notifications.
 
 ### Core Features
 
-#### AI Discovery Assistant (Ask AI)
-
-A sophisticated conversational interface built for natural-language entertainment guidance.
-
-* **Contextual Intelligence:** Provides recommendations based on current trends and user history.
-* **Thread Management:** Supports multiple concurrent conversations with cross-device sync and automatic cleanup of empty threads.
-* **Rich Metadata:** Integrates IMDb-prioritized references and interactive result carousels with posters.
-* **Smart Safety:** Built-in spoiler detection and curated daily discovery prompts (20-day cycle).
 
 #### Advanced Notification Center
 
@@ -128,6 +120,14 @@ yarn start
 * **Smarter Content Discovery:** Stricter hero item criteria (IMDb source, >7.0 score, >5000 votes) and dynamic year ranges for always-up-to-date listings.
 * **Modern Dark UI Theme:** Sleeker interface with consistent semi-transparent dark backgrounds and subtle blur effects across grids and cards.
 * **Enhanced List Management:** New 'remove' option in list item menus with improved mobile responsiveness.
+
+
+#### v4.3.2 — AI System Refactor & Legacy Chatbot Deprecation (2026-01-04)
+
+* **Legacy AI Deprecation:** The Ask-AI chatbot and `ChatbotModal` have been removed to streamline architecture and prepare for future privacy-centric AI features.
+* **New Typo Detection Service:** Introduced `api/typo.rs`, a dedicated high-performance service for search typo tolerance.
+* **Architectural Cleanup:** Significant reduction in technical debt by removing the legacy `api/gemini.rs` endpoint.
+* **Foundation for Future AI:** Laid the groundwork for upcoming personalized weekly recommendations based on watchlist analysis.
 
 
 #### v4.3.0 — Lists & News Evolution (2026-01-02)
