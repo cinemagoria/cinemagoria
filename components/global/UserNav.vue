@@ -106,9 +106,7 @@
 
 export default {
   name: 'UserNav',
-  components: {
 
-  },
   methods: {
   },
   setup() {
@@ -148,6 +146,7 @@ export default {
     this.notificationInterval = setInterval(this.fetchUnreadCount, 30000);
 
     if (typeof window !== 'undefined') {
+      window.addEventListener('notifications-updated', this.fetchUnreadCount);
       window.addEventListener('auth-changed', this.checkAuthStatus);
     }
     this.checkAuthStatus();

@@ -55,15 +55,11 @@
 import { debounce } from '~/mixins/Functions';
 import Card from '~/components/Card';
 
-
-
 import axios from 'axios';
 
 export default {
   components: {
-    Card,
-
-  },
+    Card
 
   props: {
     title: {
@@ -166,10 +162,6 @@ export default {
         this.$bus.$emit('update-search-query', this.suggestedCorrection);
       }
     }
-    
-
-    
-
   },
 };
 </script>
