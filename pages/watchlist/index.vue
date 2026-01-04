@@ -95,13 +95,7 @@
                     Selected: {{ selectedMoviesCount }} {{ selectedMoviesCount === 1 ? 'movie' : 'movies' }}, {{ selectedTvShowsCount }} {{ selectedTvShowsCount === 1 ? 'TV show' : 'TV shows' }}
                     <span class="limit-text">(max 10 each)</span>
                   </span>
-                  <div class="info-icon-wrapper" @click.stop="toggleSelectionInfo" title="Learn about AI Analysis">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="12" y1="16" x2="12" y2="12"></line>
-                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                    </svg>
-                  </div>
+
                 </div>
                 <div class="banner-actions">
                   <button @click="cancelSelection" class="banner-btn cancel-btn">
@@ -121,24 +115,7 @@
                     </svg>
                     Add to...
                   </button>
-                  <button 
-                    @click="sendToAI" 
-                    class="banner-btn send-btn" 
-                    :disabled="selectedItems.length === 0 || aiAnalysisLoading"
-                  >
-                    <svg v-if="!aiAnalysisLoading" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-                    </svg>
-                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 44 44" stroke="currentColor">
-                      <g fill="none" fill-rule="evenodd" stroke-width="2">
-                        <circle cx="22" cy="22" r="1">
-                          <animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/>
-                          <animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/>
-                        </circle>
-                      </g>
-                    </svg>
-                    {{ aiAnalysisLoading ? 'Analyzing...' : 'Send to AI' }}
-                  </button>
+
                 </div>
               </div>
             </div>
@@ -546,40 +523,7 @@
           </div>
         </div>
 
-        <div v-if="showSelectionInfo" class="modal-overlay" @click="toggleSelectionInfo">
-          <div class="info-modal" @click.stop>
-            <div class="modal-header">
-              <h3>AI Analysis Guide</h3>
-              <button class="close-btn" @click="toggleSelectionInfo">×</button>
-            </div>
-            
-            <div class="info-modal-content">
-              <p class="info-intro">You've selected items for analysis. Once you click "Send to AI", you'll have two powerful options:</p>
-              
-              <div class="info-options-grid">
-                <div class="info-card">
-                  <div class="info-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                  </div>
-                  <h4>General Analysis</h4>
-                  <p>Get a comprehensive breakdown of themes, viewing priorities, and pros/cons of your selection.</p>
-                </div>
 
-                <div class="info-card">
-                  <div class="info-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
-                  </div>
-                  <h4>Custom Question</h4>
-                  <p>Ask specific things like <em>"Recommend similar movies"</em> or <em>"Compare these styles"</em>.</p>
-                </div>
-              </div>
-
-              <div class="info-footer">
-                <button @click="toggleSelectionInfo" class="got-it-btn">Got it</button>
-              </div>
-            </div>
-          </div>
-        </div>
 
       </section>
       <!-- Added Banner -->
@@ -707,8 +651,7 @@ export default {
       ],
       aiSelectionMode: false,
       selectedItems: [],
-      aiAnalysisLoading: false,
-      showSelectionInfo: false,
+
       imageLoadStates: {},
       activeCardMenuId: null,
       undoBannerVisible: false,
@@ -985,9 +928,7 @@ export default {
       });
     },
 
-    toggleSelectionInfo() {
-      this.showSelectionInfo = !this.showSelectionInfo;
-    },
+
 
     toggleFilterType(event) {
       this.filter = event.target.checked ? 'tvShows' : 'movies';
@@ -1049,7 +990,6 @@ export default {
       this.aiSelectionMode = !this.aiSelectionMode;
       if (!this.aiSelectionMode) {
         this.selectedItems = [];
-        this.showSelectionInfo = false;
       }
     },
     
@@ -1103,7 +1043,6 @@ export default {
     cancelSelection() {
       this.aiSelectionMode = false;
       this.selectedItems = [];
-      this.showSelectionInfo = false;
     },
     
     closeNotificationModal() {
@@ -1112,35 +1051,12 @@ export default {
       this.notificationMessage = '';
     },
 
-    async sendToAI() {
-      if (this.selectedItems.length === 0) {
-        this.notificationTitle = 'Selection Required';
-        this.notificationMessage = 'Please select at least one item';
-        this.notificationModalVisible = true;
-        return;
-      }
-      
 
-      const preparedItems = this.selectedItems.map(item => ({
-        ...item,
-        user_rating: item.user_rating || null
-      }));
-
-      this.$bus.$emit('open-chatbot-with-selection', {
-        selectedItems: preparedItems
-      });
-
-      this.aiSelectionMode = false;
-      this.selectedItems = [];
-      this.showSelectionInfo = false;
-      this.showSelectionInfo = false;
-    },
 
     onListsUpdated() {
       if (this.selectedItems.length > 0) {
           this.selectedItems = [];
           this.aiSelectionMode = false;
-          this.showSelectionInfo = false;
           this.$bus.$emit('show-toast', 'Items added correctly');
       }
     },
