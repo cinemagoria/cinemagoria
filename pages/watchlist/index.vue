@@ -178,7 +178,23 @@
                   </div>
 
                   
-                  <nuxt-link :to="getLink(item)" class="item-link">
+                  <div v-if="aiSelectionMode" class="item-link" @click="toggleItemSelection(item)" style="cursor: pointer;">
+                    <div class="poster-container">
+                      <div v-show="!imageLoadStates[item.details.idForDb]" class="poster-loader">
+                        <Loader :size="44" />
+                      </div>
+                      <img 
+                        :ref="'poster-' + item.details.idForDb"
+                        :src="item.details.posterForDb || fallbackImageUrl" 
+                        alt="Poster" 
+                        class="poster" 
+                        :class="{ 'loaded': imageLoadStates[item.details.idForDb] }"
+                        @load="handleImageLoad(item.details.idForDb)"
+                        @error="onImageError($event, item.details.idForDb)"
+                      />
+                    </div>
+                  </div>
+                  <nuxt-link v-else :to="getLink(item)" class="item-link">
                     <div class="poster-container">
                       <div v-show="!imageLoadStates[item.details.idForDb]" class="poster-loader">
                         <Loader :size="44" />
@@ -193,7 +209,7 @@
                         @error="onImageError($event, item.details.idForDb)"
                       />
 
-                      <div v-if="!aiSelectionMode" class="card-actions-menu">
+                      <div class="card-actions-menu">
                         <div class="dropdown-trigger" @click.prevent.stop="toggleCardMenu(item.details.idForDb)">
                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="6 9 12 15 18 9"></polyline>
@@ -1600,6 +1616,10 @@ export default {
     },
 
     handleItemClick(item) {
+      if (this.aiSelectionMode) {
+        this.toggleItemSelection(item);
+        return;
+      }
       const link = this.getLink(item);
       if (link && link !== '#') {
         this.$router.push(link);
