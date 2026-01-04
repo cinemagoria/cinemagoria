@@ -1,18 +1,6 @@
 <template>
   <div class="user-nav-container">
-    <div class="ai-button-wrapper">
-      <button 
-        @click="openAiChat" 
-        :aria-label="'Preguntar a IA'"
-        class="notifications-button ai-button">
-        <div class="notification-icon-wrapper">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="notification-icon">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
-          </svg>
-          <div v-if="hasMinimizedConversations" class="conversationIndicator"></div>
-        </div>
-      </button>
-    </div>
+
 
     <nuxt-link
       to="/notifications"
@@ -107,19 +95,19 @@
         <span class="sign-in-label">Ingresar</span>
       </button>
     </div>
-    <ChatbotModal ref="chatbotModalRef" />
+
   </div>
 </template>
 
 <script>
 
 
-import ChatbotModal from './ChatbotModal.vue';
+
 
 export default {
   name: 'UserNav',
   components: {
-    ChatbotModal
+
   },
   methods: {
   },
@@ -138,7 +126,7 @@ export default {
       unreadCount: 0,
       unreadCount: 0,
       notificationInterval: null,
-      hasMinimizedConversations: false
+
     };
   },
 
@@ -160,20 +148,8 @@ export default {
     this.notificationInterval = setInterval(this.fetchUnreadCount, 30000);
 
     if (typeof window !== 'undefined') {
-      window.addEventListener('notifications-updated', this.fetchUnreadCount);
-      window.addEventListener('storage', this.handleStorageChatChange);
       window.addEventListener('auth-changed', this.checkAuthStatus);
     }
-    this.$bus.$on('chatbot-conversations-updated', (hasConversations) => {
-      this.hasMinimizedConversations = hasConversations;
-    });
-    this.$bus.$on('clear-search', () => {
-       if (this.$refs.chatbotModalRef && this.$refs.chatbotModalRef.chatBotOpen) {
-        this.$refs.chatbotModalRef.minimizeChatBot();
-      }
-    });
-
-    this.checkMinimizedConversations();
     this.checkAuthStatus();
     this.$nextTick(() => {
       document.addEventListener('click', this.handleClickOutside);
@@ -188,7 +164,6 @@ export default {
 
     if (typeof window !== 'undefined') {
       window.removeEventListener('notifications-updated', this.fetchUnreadCount);
-      window.removeEventListener('storage', this.handleStorageChatChange);
       window.removeEventListener('auth-changed', this.checkAuthStatus);
     }
   },
@@ -315,40 +290,7 @@ export default {
       window.location.href = '/';
     },
 
-    checkMinimizedConversations() {
-      try {
-        if (typeof localStorage !== 'undefined') {
-          const conversations = JSON.parse(localStorage.getItem('entercinema_chat_conversations') || '{}');
-          this.hasMinimizedConversations = Object.keys(conversations).length > 0 && 
-            Object.values(conversations).some(conv => conv.messages && conv.messages.length > 0);
-        }
-      } catch (error) {
-        console.warn('Error checking conversations:', error);
-      }
-    },
 
-    handleStorageChatChange(event) {
-      if (event.key === 'entercinema_chat_conversations') {
-        this.checkMinimizedConversations();
-      }
-    },
-
-    openAiChat() {
-      if (this.$refs.chatbotModalRef) {
-        const isAuthenticated = typeof window !== 'undefined' && localStorage.getItem('access_token');
-        
-        if (isAuthenticated) {
-          this.$refs.chatbotModalRef.open();
-        } else {
-          this.$refs.chatbotModalRef.chatBotOpen = true;
-          this.$refs.chatbotModalRef.chatBotMinimized = false;
-          this.$refs.chatbotModalRef.clearMinimizedState();
-          this.$refs.chatbotModalRef.checkMobileDevice();
-        }
-        
-        this.hasMinimizedConversations = false;
-      }
-    },
   },
 };
 </script>
