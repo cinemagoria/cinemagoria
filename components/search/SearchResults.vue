@@ -59,8 +59,8 @@ import axios from 'axios';
 
 export default {
   components: {
-    Card
-
+    Card,
+  },
   props: {
     title: {
       type: String,
