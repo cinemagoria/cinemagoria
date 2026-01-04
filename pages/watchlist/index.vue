@@ -93,7 +93,7 @@
                   </svg>
                   <span>
                     Selección: {{ selectedMoviesCount }} {{ selectedMoviesCount === 1 ? 'película' : 'películas' }}, {{ selectedTvShowsCount }} {{ selectedTvShowsCount === 1 ? 'serie' : 'series' }}
-                    <span class="limit-text">(máx 10 cada uno)</span>
+                    <span class="limit-text">(máx 50 cada uno)</span>
                   </span>
 
                 </div>
@@ -1022,9 +1022,9 @@ export default {
       
       const mediaType = item.details.typeForDb;
       if (mediaType === 'movie') {
-        return this.selectedMoviesCount < 10;
+        return this.selectedMoviesCount < 50;
       } else if (mediaType === 'tv') {
-        return this.selectedTvShowsCount < 10;
+        return this.selectedTvShowsCount < 50;
       }
       return false;
     },
