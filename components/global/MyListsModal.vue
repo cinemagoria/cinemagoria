@@ -8,10 +8,7 @@
              <p v-if="modalSubtitle" :class="$style.subtitle">{{ modalSubtitle }}</p>
           </div>
           <button @click="close" :class="$style.closeButton">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"/>
-              <line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
           </button>
         </div>
 
@@ -39,7 +36,7 @@
                        <img src="/empty-list-placeholder.webp" :class="$style.listPlaceholderImg" alt="Watchlist" style="object-fit: cover; opacity: 0.8;" />
                      </div>
                      <div v-if="watchlistSelected" :class="$style.addedIndicator">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
                      </div>
                   </div>
                   <div :class="$style.cardContent">
@@ -77,11 +74,11 @@
                      
 
                      <div v-if="isListSelected(list.id) && !Array.isArray(itemsToAdd)" :class="$style.addedIndicator">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
                      </div>
                      <!-- Indicator for bulk mode -->
                      <div v-if="isListSelected(list.id) && Array.isArray(itemsToAdd)" :class="$style.addedIndicator">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
                      </div>
                   </div>
                   <div :class="$style.cardContent">
@@ -119,10 +116,10 @@
                         <div :class="$style.meta">
                           <span>{{ list.item_count || 0 }} elementos</span>
                           <span v-if="list.is_public" title="Pública">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                           </span>
                           <span v-else title="Privada">
-                               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                           </span>
                         </div>
                         <div v-if="!itemToAdd && !itemsToAdd" :class="$style.actionButtons">

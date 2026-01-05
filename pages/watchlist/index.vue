@@ -38,18 +38,13 @@
               
               <div class="action-buttons">
                 <button class="control-btn" @click="openFiltersModal">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
-                  </svg>
+                  <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M3 17v2h6v-2zM3 5v2h10V5zm10 16v-2h8v-2h-8v-2h-2v6zM7 9v2H3v2h4v2h2V9zm14 4v-2H11v2zm-6-4h2V7h4V5h-4V3h-2z"/></svg>
                 </button>
 
 
 
                 <button class="control-btn ai-analysis-btn" @click="toggleAiSelectionMode" :class="{ 'active': aiSelectionMode }">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <polyline points="9 11 12 14 22 4"></polyline>
-                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><path d="m9 11 3 3L22 4"/></svg>
                   <span class="btn-label">Seleccionar</span>
                 </button>
               </div>
@@ -88,9 +83,7 @@
             <div v-if="aiSelectionMode" class="ai-selection-banner">
               <div class="banner-content">
                 <div class="selection-info">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09 3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/>
-                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09 3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/></svg>
                   <span>
                     Selección: {{ selectedMoviesCount }} {{ selectedMoviesCount === 1 ? 'película' : 'películas' }}, {{ selectedTvShowsCount }} {{ selectedTvShowsCount === 1 ? 'serie' : 'series' }}
                     <span class="limit-text">(máx 50 cada uno)</span>
@@ -99,9 +92,7 @@
                 </div>
                 <div class="banner-actions">
                   <button @click="cancelSelection" class="banner-btn cancel-btn">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M18 6L6 18M6 6l12 12"/>
-                    </svg>
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
                     Cancelar
                   </button>
                   <button 
@@ -110,9 +101,7 @@
                     :disabled="selectedItems.length === 0"
                     style="background: #2D3748; color: white; margin-right: 10px;"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
-                        <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="margin-right:4px" viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg>
                     Añadir a...
                   </button>
 
@@ -128,10 +117,7 @@
                    </div>
                    <div class="banner-actions">
                      <button @click="restoreFavorite" class="banner-btn send-btn">
-                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <polyline points="1 4 1 10 7 10"></polyline>
-                          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
-                       </svg>
+                       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
                        Deshacer
                      </button>
                    </div>
@@ -141,10 +127,10 @@
 
             <div class="pagination" v-if="filteredItems.length > itemsPerPage">
               <button @click="goToFirst" :disabled="currentPage === 1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-skip-back-icon lucide-skip-back"><path d="M17.971 4.285A2 2 0 0 1 21 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432z"/><path d="M3 20V4"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#8be9fd" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-skip-back-icon lucide-skip-back" viewBox="0 0 24 24"><path d="M17.971 4.285A2 2 0 0 1 21 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432zM3 20V4"/></svg>
               </button>
               <button @click="prevPage" :disabled="currentPage === 1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-step-back-icon lucide-step-back"><path d="M13.971 4.285A2 2 0 0 1 17 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432z"/><path d="M21 20V4"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#8be9fd" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-step-back-icon lucide-step-back" viewBox="0 0 24 24"><path d="M13.971 4.285A2 2 0 0 1 17 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432zM21 20V4"/></svg>
               </button>
               <span class="pagination-text-container">
                 <label for="page" class="pagination-label">Página</label>
@@ -152,10 +138,10 @@
               </span>
               <span class="pagination-text">de <span class="pagination-number">{{ totalPages }}</span></span>
               <button @click="nextPage" :disabled="currentPage === totalPages">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-step-forward-icon lucide-step-forward"><path d="M10.029 4.285A2 2 0 0 0 7 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432z"/><path d="M3 4v16"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#8be9fd" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-step-forward-icon lucide-step-forward" viewBox="0 0 24 24"><path d="M10.029 4.285A2 2 0 0 0 7 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432zM3 4v16"/></svg>
               </button>
               <button @click="goToLast" :disabled="currentPage === totalPages">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-skip-forward-icon lucide-skip-forward"><path d="M21 4v16"/><path d="M6.029 4.285A2 2 0 0 0 3 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#8be9fd" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-skip-forward-icon lucide-skip-forward" viewBox="0 0 24 24"><path d="M21 4v16M6.029 4.285A2 2 0 0 0 3 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432z"/></svg>
               </button>
             </div>
             
@@ -211,9 +197,7 @@
 
                       <div class="card-actions-menu">
                         <div class="dropdown-trigger" @click.prevent.stop="toggleCardMenu(item.details.idForDb)">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                          </svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#8be9fd" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
                         </div>
                       </div>
                     </div>
@@ -234,17 +218,7 @@
                     <div class="card__content">
                       <div class="card___rating">
                         <div v-if="item.details.rating_source === 'imdb' && item.details.imdb_rating" class="rating-item">
-                          <svg class="rating-logo imdb" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" enable-background="new 0 0 48 48">
-                            <g>
-                              <path fill="#FFC107" d="M44,13H4c-2.2,0-4,1.8-4,4v16c0,2.2,1.8,4,4,4h40c2.2,0,4-1.8,4-4V17C48,14.8,46.2,13,44,13z"/>
-                            </g>
-                            <g>
-                              <path fill="#263238" d="M28.1,18h-3.7v13.1h3.7c2,0,2.8-0.4,3.3-0.7c0.6-0.4,0.9-1.1,0.9-1.8v-7.9c0-0.9-0.4-1.7-0.9-2   C30.6,18.2,30.3,18,28.1,18z M28.8,28.3c0,0.6-0.7,0.6-1.3,0.6V20c0.6,0,1.3,0,1.3,0.6V28.3z"/>
-                              <path fill="#263238" d="M33.8,18v13.3h2.8c0,0,0.2-0.9,0.4-0.7c0.4,0,1.5,0.6,2.2,0.6s1.1,0,1.5-0.2c0.6-0.4,0.7-0.7,0.7-1.3v-7.8   c0-1.1-1.1-1.8-2-1.8s-1.8,0.6-2.2,0.9v-3H33.8z M37.4,22.2c0-0.4,0-0.6,0.4-0.6c0.2,0,0.4,0.2,0.4,0.6v6.6c0,0.4,0,0.6-0.4,0.6   c-0.2,0-0.4-0.2-0.4-0.6V22.2z"/>
-                              <polygon fill="#263238" points="22.7,31.3 22.7,18 18.3,18 17.5,24.3 16.4,18 12.4,18 12.4,31.3 15.3,31.3 15.3,23.9 16.6,31.3    18.6,31.3 19.9,23.9 19.9,31.3  "/>
-                              <rect x="7.6" y="18" fill="#263238" width="3.1" height="13.3"/>
-                            </g>
-                          </svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" class="rating-logo imdb" viewBox="0 0 48 48"><path fill="#ffc107" d="M44 13H4c-2.2 0-4 1.8-4 4v16c0 2.2 1.8 4 4 4h40c2.2 0 4-1.8 4-4V17c0-2.2-1.8-4-4-4"/><path fill="#263238" d="M28.1 18h-3.7v13.1h3.7c2 0 2.8-.4 3.3-.7.6-.4.9-1.1.9-1.8v-7.9c0-.9-.4-1.7-.9-2-.8-.5-1.1-.7-3.3-.7m.7 10.3c0 .6-.7.6-1.3.6V20c.6 0 1.3 0 1.3.6zm5-10.3v13.3h2.8s.2-.9.4-.7c.4 0 1.5.6 2.2.6s1.1 0 1.5-.2c.6-.4.7-.7.7-1.3v-7.8c0-1.1-1.1-1.8-2-1.8s-1.8.6-2.2.9v-3zm3.6 4.2c0-.4 0-.6.4-.6.2 0 .4.2.4.6v6.6c0 .4 0 .6-.4.6-.2 0-.4-.2-.4-.6zm-14.7 9.1V18h-4.4l-.8 6.3-1.1-6.3h-4v13.3h2.9v-7.4l1.3 7.4h2l1.3-7.4v7.4zM7.6 18h3.1v13.3H7.6z"/></svg>
                           <span class="rating-score">{{ item.details.imdb_rating.toFixed(1) }}</span>
                           <span class="vote-count" v-if="item.details.imdb_votes">({{ formatVoteCount(item.details.imdb_votes) }})</span>
                         </div>
@@ -260,30 +234,21 @@
 
                   <div v-if="!aiSelectionMode" class="card-actions-menu" :class="{ 'menu-open': activeCardMenuId === item.details.idForDb }">
                     <div class="dropdown-trigger" @click.prevent.stop="toggleCardMenu(item.details.idForDb)">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                      </svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#8be9fd" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
                     </div>
                     
                     <transition name="fade">
                       <div v-if="activeCardMenuId === item.details.idForDb" class="action-dropdown" @click.stop>
                         <div v-if="!item.details.userRatingForDb || item.details.userRatingForDb === '-'" class="dropdown-item" @click="openRatingModal(item); activeCardMenuId = null">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                          </svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="margin-right:6px" viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>
                           Valorar
                         </div>
                         <div class="dropdown-item" @click="openAddToListModal(item); activeCardMenuId = null">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
-                             <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
-                          </svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="margin-right:6px" viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg>
                           Añadir a...
                         </div>
                         <div class="dropdown-item remove-action" @click="removeFavorite(item); activeCardMenuId = null">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                          </svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="margin-right:6px" viewBox="0 0 24 24"><path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                           Eliminar
                         </div>
                       </div>
@@ -295,10 +260,10 @@
             <br>
             <div class="pagination-footer" v-if="filteredItems.length > itemsPerPage">
               <button @click="goToFirst" :disabled="currentPage === 1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-skip-back-icon lucide-skip-back"><path d="M17.971 4.285A2 2 0 0 1 21 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432z"/><path d="M3 20V4"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#8be9fd" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-skip-back-icon lucide-skip-back" viewBox="0 0 24 24"><path d="M17.971 4.285A2 2 0 0 1 21 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432zM3 20V4"/></svg>
               </button>
               <button @click="prevPage" :disabled="currentPage === 1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-step-back-icon lucide-step-back"><path d="M13.971 4.285A2 2 0 0 1 17 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432z"/><path d="M21 20V4"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#8be9fd" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-step-back-icon lucide-step-back" viewBox="0 0 24 24"><path d="M13.971 4.285A2 2 0 0 1 17 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432zM21 20V4"/></svg>
               </button>
               <span class="pagination-text-container">
                 <label for="page" class="pagination-label">Page</label>
@@ -306,10 +271,10 @@
               </span>
               <span class="pagination-text">of <span class="pagination-number">{{ totalPages }}</span></span>
               <button @click="nextPage" :disabled="currentPage === totalPages">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-step-forward-icon lucide-step-forward"><path d="M10.029 4.285A2 2 0 0 0 7 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432z"/><path d="M3 4v16"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#8be9fd" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-step-forward-icon lucide-step-forward" viewBox="0 0 24 24"><path d="M10.029 4.285A2 2 0 0 0 7 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432zM3 4v16"/></svg>
               </button>
               <button @click="goToLast" :disabled="currentPage === totalPages">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-skip-forward-icon lucide-skip-forward"><path d="M21 4v16"/><path d="M6.029 4.285A2 2 0 0 0 3 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#8be9fd" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-skip-forward-icon lucide-skip-forward" viewBox="0 0 24 24"><path d="M21 4v16M6.029 4.285A2 2 0 0 0 3 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432z"/></svg>
               </button>
             </div>
           </div>
@@ -4024,6 +3989,7 @@ select.user-rating-select {
   position: relative;
   min-height: 400px;
   width: 100%;
+  margin: 0 auto;
   background: rgba(0, 0, 0, 0.307);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 15px;

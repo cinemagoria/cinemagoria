@@ -15,7 +15,7 @@
        <ul :class="$style.tracklist">
          <li v-for="(track, i) in tracks" :key="track.id" :class="$style.trackItem" @click="openYouTube(track)">
            <div :class="$style.playIcon">
-             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg>
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" stroke="none" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
            </div>
            <span :class="$style.trackNumber">{{ i + 1 }}</span>
            <div :class="$style.trackInfo">

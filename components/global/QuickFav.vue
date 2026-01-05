@@ -10,37 +10,10 @@
     >
       <transition name="list-fade" mode="out-in">
         <!-- Plus icon -->
-        <svg
-          v-if="!isFavorite"
-          key="plus"
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#8BE9FD"
-          stroke-width="4"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
+        <svg width="14" height="14" fill="none" stroke="#8be9fd" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" v-if="!isFavorite" key="plus" viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg>
 
         <!-- Check icon -->
-        <svg
-          v-else
-          key="check"
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#000000"
-          stroke-width="4"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <polyline points="20 6 9 17 4 12"></polyline>
-        </svg>
+        <svg width="14" height="14" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" v-else key="check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
       </transition>
     </button>
   </div>

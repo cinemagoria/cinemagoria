@@ -74,15 +74,7 @@
                 @click="toggleFollow" 
                 :class="[$style.followButton, { [$style.following]: isFollowing }]"
                 :disabled="followLoading">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path v-if="!isFollowing" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                  <circle v-if="!isFollowing" cx="9" cy="7" r="4"/>
-                  <line v-if="!isFollowing" x1="19" y1="8" x2="19" y2="14"/>
-                  <line v-if="!isFollowing" x1="22" y1="11" x2="16" y2="11"/>
-                  <path v-if="isFollowing" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                  <circle v-if="isFollowing" cx="9" cy="7" r="4"/>
-                  <polyline v-if="isFollowing" points="16 11 18 13 22 9"/>
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" v-if="!isFollowing"/><circle cx="9" cy="7" r="4" v-if="!isFollowing"/><path d="M19 8v6m3-3h-6" v-if="!isFollowing"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" v-if="isFollowing"/><circle cx="9" cy="7" r="4" v-if="isFollowing"/><path d="m16 11 2 2 4-4" v-if="isFollowing"/></svg>
                 {{ isFollowing ? 'Siguiendo' : 'Seguir' }}
              </button>
         </div>

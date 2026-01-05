@@ -15,13 +15,7 @@
           :to="{ name: 'movie' }"
           aria-label="Películas"
           @click.native="clearSearchBeforeNavigate">
-          <svg xmlns="http://www.w3.org/2000/svg" :class="$style.navIcon" viewBox="0 0 24 24">
-            <g fill="none" stroke="#fff" stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round" stroke-linecap="round">
-              <path d="M3.2 12.8h19.6v9.5c0 .5-.4.9-1 .9H4.1c-.5 0-1-.4-1-.9v-9.5"/>
-              <path d="M3.3 13.1l-2-4.4c-.2-.5 0-1 .5-1.2L18 .8c.5-.2 1.1 0 1.3.5l1.8 4-17.5 7.3"/>
-              <path d="M15 2.1l-.9 6M8 4.7l-1.2 6.6"/>
-            </g>
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" :class="$style.navIcon" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5"><path d="M3.2 12.8h19.6v9.5c0 .5-.4.9-1 .9H4.1c-.5 0-1-.4-1-.9v-9.5"/><path d="m3.3 13.1-2-4.4c-.2-.5 0-1 .5-1.2L18 .8c.5-.2 1.1 0 1.3.5l1.8 4-17.5 7.3M15 2.1l-.9 6M8 4.7l-1.2 6.6"/></g></svg>
         </nuxt-link>
       </li>
       <li>
@@ -37,11 +31,7 @@
           :to="{ name: 'news' }"
           aria-label="Noticias"
           @click.native="clearSearchBeforeNavigate">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :class="$style.navIcon">
-            <path d="M4 11a9 9 0 0 1 9 9"/>
-            <path d="M4 4a16 16 0 0 1 16 16"/>
-            <circle cx="5" cy="19" r="1"/>
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :class="$style.navIcon" viewBox="0 0 24 24"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
         </nuxt-link>
       </li>
 

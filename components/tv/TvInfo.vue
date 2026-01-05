@@ -82,13 +82,7 @@
               @click="toggleFollowTv" 
               :class="[$style.followButton, { [$style.following]: isFollowingTv }]"
               :disabled="followTvLoading">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path v-if="!isFollowingTv" d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                <path v-if="!isFollowingTv" d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                <path v-if="isFollowingTv" d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                <path v-if="isFollowingTv" d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                <polyline v-if="isFollowingTv" points="9 11 12 14 22 4" stroke-width="3"/>
-              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9m-4.27 13a2 2 0 0 1-3.46 0" v-if="!isFollowingTv"/><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9m-4.27 13a2 2 0 0 1-3.46 0" v-if="isFollowingTv"/><path stroke-width="3" d="m9 11 3 3L22 4" v-if="isFollowingTv"/></svg>
               {{ isFollowingTv ? 'Siguiendo' : 'Seguir Episodios' }}
             </button>
         </div>
@@ -150,7 +144,7 @@
                     </button>
                     <a v-if="review.url" :href="review.url" target="_blank" rel="noopener noreferrer" :class="$style.viewReviewButton">
                       Ver Reseña
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-external-link" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6m4-3h6v6m-11 5L21 3"/></svg>
                     </a>
                   </div>
               </li>
@@ -183,13 +177,13 @@
 
           <div class="tabs-mobile">
             <button class="nav-arrow" @click="prevTab" :disabled="availableTabs.length <= 1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
             </button>
             
             <span class="mobile-label">{{ currentTabLabel }}</span>
             
             <button class="nav-arrow" @click="nextTab" :disabled="availableTabs.length <= 1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
             </button>
           </div>
         </div>

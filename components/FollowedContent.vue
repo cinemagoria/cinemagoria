@@ -10,9 +10,7 @@
 
         <div class="filter-actions-container">
           <button class="filter-btn" @click="openFiltersModal">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
-            </svg>
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M3 17v2h6v-2zM3 5v2h10V5zm10 16v-2h8v-2h-8v-2h-2v6zM7 9v2H3v2h4v2h2V9zm14 4v-2H11v2zm-6-4h2V7h4V5h-4V3h-2z"/></svg>
             <span>Filtros y Ordenar</span>
           </button>
         </div>
@@ -29,14 +27,7 @@
       </div>
 
       <div v-if="loading" class="loading-container" style="width: 100%; display: flex; justify-content: center; padding: 2rem;">
-           <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44" stroke="#2196f3">
-            <g fill="none" fill-rule="evenodd" stroke-width="2">
-              <circle cx="22" cy="22" r="1">
-                <animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/>
-                <animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/>
-              </circle>
-            </g>
-          </svg>
+           <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" stroke="#2196f3" viewBox="0 0 44 44"><circle cx="22" cy="22" r="1" fill="none" stroke-width="2"><animate attributeName="r" begin="0s" calcMode="spline" dur="1.8s" keySplines="0.165, 0.84, 0.44, 1" keyTimes="0; 1" repeatCount="indefinite" values="1; 20"/><animate attributeName="stroke-opacity" begin="0s" calcMode="spline" dur="1.8s" keySplines="0.3, 0.61, 0.355, 1" keyTimes="0; 1" repeatCount="indefinite" values="1; 0"/></circle></svg>
       </div>
 
       <div v-else-if="companySections.length > 0" class="content-container">
@@ -75,14 +66,7 @@
                 </button>
               </div>
               <div v-if="company.loadingMore" class="load-more-container">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 44 44" stroke="#8BE9FD">
-                    <g fill="none" fill-rule="evenodd" stroke-width="2">
-                        <circle cx="22" cy="22" r="1">
-                            <animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/>
-                            <animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/>
-                        </circle>
-                    </g>
-                </svg>
+                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" stroke="#8be9fd" viewBox="0 0 44 44"><circle cx="22" cy="22" r="1" fill="none" stroke-width="2"><animate attributeName="r" begin="0s" calcMode="spline" dur="1.8s" keySplines="0.165, 0.84, 0.44, 1" keyTimes="0; 1" repeatCount="indefinite" values="1; 20"/><animate attributeName="stroke-opacity" begin="0s" calcMode="spline" dur="1.8s" keySplines="0.3, 0.61, 0.355, 1" keyTimes="0; 1" repeatCount="indefinite" values="1; 0"/></circle></svg>
               </div>
 
            </div>
