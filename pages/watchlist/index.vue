@@ -4019,6 +4019,7 @@ select.user-rating-select {
   justify-content: center;
   padding: 4rem;
   color: #8b9bb4;
+  margin: 0 auto;
   text-align: center;
   margin-top: 4rem;
   position: relative;
