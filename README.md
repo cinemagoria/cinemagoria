@@ -88,7 +88,7 @@ A custom search architecture optimized for speed and accuracy.
 
 ```bash
 # Clone the repository
-git clone https://github.com/imprvhub/entercinema.git
+git clone https://github.com/entercinema/entercinema.git
 
 # Install dependencies
 yarn install

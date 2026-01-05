@@ -219,7 +219,7 @@ export default {
       undoTimeout: null,
       collapsedDepartments: {},
       imageLoadStates: {},
-      fallbackImageUrl: "https://github.com/imprvhub/entercinema/blob/main/static/image_not_found_yet.webp?raw=true"
+      fallbackImageUrl: "/image_not_found_yet.webp"
     };
   },
   
