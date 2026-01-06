@@ -109,19 +109,13 @@
               </div>
             </div>
 
-            <transition name="fade">
+            <transition name="slide-up">
               <div v-if="undoBannerVisible" class="undo-banner">
-                <div class="banner-content">
-                   <div class="selection-info">
-                     <span>Eliminado: <span style="color: #fff; font-weight: bold;">{{ undoItem?.details?.nameForDb }}</span></span>
-                   </div>
-                   <div class="banner-actions">
-                     <button @click="restoreFavorite" class="banner-btn send-btn">
-                       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-                       Deshacer
-                     </button>
-                   </div>
+                <div class="undo-content">
+                   <span>Eliminado "{{ undoItem?.details?.nameForDb }}"</span>
+                   <button @click="restoreFavorite" class="undo-btn">Deshacer</button>
                 </div>
+                <div class="timer-line"></div>
               </div>
             </transition>
 
@@ -4777,5 +4771,63 @@ svg.rating-logo.imdb {
 @keyframes timer-line-countdown {
     from { width: 100%; }
     to { width: 0%; }
+}
+
+.undo-banner {
+    position: fixed;
+    bottom: 15vh;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 1rem 2rem;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+    max-width: 500px;
+    width: fit-content;
+}
+
+.undo-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    gap: 1.5rem;
+}
+
+.undo-content span {
+    flex: 1;
+    min-width: 0;
+    word-wrap: break-word;
+    line-height: 1.4;
+}
+
+.undo-btn {
+    background: #8BE9FD;
+    color: #000;
+    border: none;
+    padding: 0.5rem 1.6rem;
+    border-radius: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.undo-btn:hover {
+    background: #73cde0;
+}
+
+.slide-up-enter-active, .slide-up-leave-active {
+    transition: all 0.3s ease;
+}
+
+.slide-up-enter, .slide-up-leave-to {
+    transform: translate(-50%, 100%);
+    opacity: 0;
 }
 </style>
