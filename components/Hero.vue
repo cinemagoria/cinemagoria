@@ -663,20 +663,35 @@ export default {
         );
         if (!response.ok) return;
 
-        const data = await response.json(); // expects { ratings: [...] }
-        const ratingObj = data.ratings.find(r => r.item.idForDb == this.id);
-        if (ratingObj) {
-          this.userRatingForDb = ratingObj.rating ? ratingObj.rating.toString() : '-';
-          this.userReview = ratingObj.review || '';
-          this.hasUserRating = this.userRatingForDb !== '-';
-          this.selectedRating = this.hasUserRating ? parseInt(this.userRatingForDb) : 0;
-        } else {
-          // If not found in ratings, it might still be in watchlist BUT we want independent rating.
-          // So if not in ratings table, we really don't have a rating.
-          // However, to be safe during migration, we might want to check watchlist? 
-          // No, we migrated everything.
-           // Only reset if we are sure? No, let's trust the endpoint.
-           // But wait, if I haven't rated it, this correctly sets it to '-'.
+        const data = await response.json(); 
+        
+        // Structure is { favorites_json: { movies: [...], tv: [...] } }
+        const typeKey = this.type === 'movie' ? 'movies' : 'tv'; // ensuring we use 'movies'/'tv'
+        const list = data.favorites_json && data.favorites_json[typeKey] ? data.favorites_json[typeKey] : [];
+        
+        let found = false;
+        for (const itemWrapper of list) {
+             const key = Object.keys(itemWrapper)[0]; 
+             if (key === this.favId) { 
+                 const details = itemWrapper[key].details;
+                 this.userRatingForDb = details.userRatingForDb || '-';
+                 this.userReview = details.userReview || '';
+                 this.hasUserRating = this.userRatingForDb !== '-';
+                 this.selectedRating = this.hasUserRating ? parseInt(this.userRatingForDb) : 0;
+                 found = true;
+                 break;
+             }
+        }
+        
+        if (!found) {
+           // Not found in ratings endpoint => not rated.
+           // However, checkUserRating (watchlist) might have set it?
+           // No, ratings endpoint is the source of truth for ratings now.
+           // We explicitly reset to ensure UI reflects independence.
+           this.userRatingForDb = '-';
+           this.hasUserRating = false;
+           this.selectedRating = 0;
+           this.userReview = '';
         }
       } catch (e) {
         console.error('Error loading rating from ratings endpoint:', e);
