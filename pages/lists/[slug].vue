@@ -589,6 +589,8 @@ export default {
             moviesFetched: [],
             tvFetched: [],
             filter: 'movies',
+            itemsPerRow: 4,
+            resizeObserver: null,
             
             listSelectorOpen: false,
             listSelectorPage: 1,
@@ -898,10 +900,25 @@ export default {
         await this.fetchListDetails();
         document.addEventListener('click', this.closeDropdowns);
         document.addEventListener('click', this.closeCardMenu);
+        
+        this.$nextTick(() => {
+            this.calculateItemsPerRow();
+            if (typeof ResizeObserver !== 'undefined') {
+                this.resizeObserver = new ResizeObserver(this.handleResize);
+                const gridElement = document.querySelector('.movie-grid');
+                if (gridElement) this.resizeObserver.observe(gridElement);
+            } else {
+                window.addEventListener('resize', this.handleResize);
+            }
+        });
         this.$bus.$on('lists-updated', this.handleListUpdate);
     },
     
     beforeDestroy() {
+        if (this.resizeObserver) {
+            this.resizeObserver.disconnect();
+        }
+        window.removeEventListener('resize', this.handleResize);
         document.removeEventListener('click', this.closeDropdowns);
         document.removeEventListener('click', this.closeCardMenu);
         this.$bus.$off('lists-updated', this.handleListUpdate);
@@ -909,6 +926,41 @@ export default {
     },
 
     methods: {
+        calculateItemsPerRow() {
+            const gridElement = document.querySelector('.movie-grid');
+            if (!gridElement) return;
+
+            const gridWidth = gridElement.offsetWidth;
+            const isMobile = window.innerWidth <= 600; 
+            const cardWidth = isMobile ? 105 : 200;
+            const gap = 20;
+
+            const calculatedItemsPerRow = Math.floor(gridWidth / (cardWidth + gap));
+            this.itemsPerRow = Math.max(1, calculatedItemsPerRow);
+
+            this.adjustItemsPerPage();
+        },
+        
+        adjustItemsPerPage() {
+            const minItems = 20;
+            const rowsNeeded = Math.ceil(minItems / this.itemsPerRow);
+            const newItemsPerPage = rowsNeeded * this.itemsPerRow;
+
+            if (this.itemsPerPage !== newItemsPerPage) {
+                this.itemsPerPage = newItemsPerPage;
+                if (this.currentPage > this.totalPages && this.totalPages > 0) {
+                    this.currentPage = this.totalPages;
+                }
+            }
+        },
+
+        handleResize() {
+             if (window.requestAnimationFrame) {
+                window.requestAnimationFrame(() => this.calculateItemsPerRow());
+             } else {
+                setTimeout(() => this.calculateItemsPerRow(), 66);
+             }
+        },
         async fetchUserCustomLists() {
             const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
             if (!userEmail) return;
