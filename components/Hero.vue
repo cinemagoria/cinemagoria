@@ -699,9 +699,7 @@ export default {
        }
 
       try {
-        if (!this.isFavorite) {
-          await this.toggleFavorite();
-        }
+        // No auto-adding to watchlist when rating; keep rating independent
 
         const response = await fetch(
           `${this.tursoBackendUrl}/favorites/rating/${this.userEmail}/${this.typeForDb}/${this.id}`,
