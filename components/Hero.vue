@@ -665,8 +665,7 @@ export default {
 
         const data = await response.json(); 
         
-        // Structure is { favorites_json: { movies: [...], tv: [...] } }
-        const typeKey = this.type === 'movie' ? 'movies' : 'tv'; // ensuring we use 'movies'/'tv'
+        const typeKey = this.type === 'movie' ? 'movies' : 'tv';
         const list = data.favorites_json && data.favorites_json[typeKey] ? data.favorites_json[typeKey] : [];
         
         let found = false;
@@ -684,10 +683,6 @@ export default {
         }
         
         if (!found) {
-           // Not found in ratings endpoint => not rated.
-           // However, checkUserRating (watchlist) might have set it?
-           // No, ratings endpoint is the source of truth for ratings now.
-           // We explicitly reset to ensure UI reflects independence.
            this.userRatingForDb = '-';
            this.hasUserRating = false;
            this.selectedRating = 0;
@@ -738,8 +733,6 @@ export default {
       }
       
       try {
-        // No auto-adding to watchlist when rating; keep rating independent
-
         const response = await fetch(
           `${this.tursoBackendUrl}/favorites/rating/${this.userEmail}/${this.typeForDb}/${this.id}`,
           {
@@ -773,9 +766,6 @@ export default {
       }
 
       try {
-        // No auto-adding to watchlist when rating; keep rating independent
-
-        // Reload rating state to be sure
         await this.loadRatingFromRatingsEndpoint();
 
         const response = await fetch(
@@ -896,7 +886,6 @@ export default {
             throw new Error('Error removing favorite');
           }
 
-          // Do NOT wipe rating. Reload it to be sure.
           await this.loadRatingFromRatingsEndpoint();
         } else {
           const response = await fetch(`${this.tursoBackendUrl}/favorites`, {
