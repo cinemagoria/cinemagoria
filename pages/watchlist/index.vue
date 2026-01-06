@@ -5,7 +5,30 @@
         <UserNav @show-rated-modal="showRatedItems" />
         <br>
         <nav class="navbar">
-          <h1 class="title-primary">Mi Lista</h1>
+          <div class="list-nav-wrapper" v-click-outside="closeListSelector" style="justify-content: center;">
+            <div class="title-with-selector">
+              <h1 class="title-primary">Mi Lista</h1>
+              <button v-if="userCustomLists.length > 0" @click="toggleListSelector" class="list-selector-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
+            </div>
+            <transition name="fade">
+              <div v-if="listSelectorOpen" class="list-selector-dropdown" @click.stop>
+                <div class="dropdown-header">
+                  <a v-if="selectorTotalPages > 1" href="#" @click.prevent.stop="goToPrevPage" class="dropdown-nav-btn" :class="{ 'disabled': listSelectorPage <= 1 }" style="z-index: 101; position: relative; display: flex; align-items: center; justify-content: center; text-decoration: none; width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 4px; pointer-events: auto;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                  </a>
+                  <span>IR A</span>
+                  <a v-if="selectorTotalPages > 1" href="#" @click.prevent.stop="goToNextPage" class="dropdown-nav-btn" :class="{ 'disabled': listSelectorPage >= selectorTotalPages }" style="z-index: 101; position: relative; display: flex; align-items: center; justify-content: center; text-decoration: none; width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 4px; pointer-events: auto;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </a>
+                </div>
+                <div v-for="list in visibleCustomLists" :key="list.id + '_' + listSelectorPage">
+                  <nuxt-link :to="`/lists/${list.slug}`" class="dropdown-list-item">{{ list.name }}</nuxt-link>
+                </div>
+              </div>
+            </transition>
+          </div>
         </nav>
         
         <div v-if="isLoadingFavorites" class="loading-state">
@@ -587,6 +610,11 @@ export default {
       itemsPerRow: 4,
       userFirstName: '', 
       isMenuOpen: false,
+      
+      listSelectorOpen: false,
+      listSelectorPage: 1,
+      userCustomLists: [],
+      
       filter: 'movies',
       selectedGenre: '',
       selectedYearRange: '',
@@ -644,6 +672,9 @@ export default {
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');
     this.userEmail = email || '';
+    if (this.userEmail) {
+        this.fetchUserCustomLists();
+    }
     this.hasAccessToken = accessToken !== null;
     this.isLoggedIn = accessToken !== null;
     this.restoreState(); 
@@ -855,6 +886,35 @@ export default {
   },
   
   methods: {
+    async fetchUserCustomLists() {
+      if (!this.userEmail) return;
+      try {
+        const response = await fetch(`${this.tursoBackendUrl}/lists/user/${encodeURIComponent(this.userEmail)}`);
+        if (response.ok) {
+          const data = await response.json();
+          this.userCustomLists = data.lists || [];
+        }
+      } catch (error) {
+        console.error('Error fetching user custom lists:', error);
+      }
+    },
+    toggleListSelector() {
+      this.listSelectorOpen = !this.listSelectorOpen;
+    },
+    closeListSelector() {
+      this.listSelectorOpen = false;
+      this.listSelectorPage = 1;
+    },
+    goToPrevPage() {
+      if (this.listSelectorPage > 1) {
+        this.listSelectorPage--;
+      }
+    },
+    goToNextPage() {
+      if (this.listSelectorPage < this.selectorTotalPages) {
+        this.listSelectorPage++;
+      }
+    },
     showAddedBanner({ elementCount, listCount }) {
         this.addedBannerMessage = `${elementCount} elementos añadidos a ${listCount} lista${listCount !== 1 ? 's' : ''}`;
         this.addedBannerVisible = true;
@@ -1649,7 +1709,32 @@ export default {
     
   },
 
+  directives: {
+    'click-outside': {
+      mounted(el, binding) {
+        el.clickOutsideEvent = function(event) {
+          if (!(el === event.target || el.contains(event.target))) {
+            binding.value(event);
+          }
+        };
+        document.body.addEventListener('click', el.clickOutsideEvent);
+      },
+      unmounted(el) {
+        document.body.removeEventListener('click', el.clickOutsideEvent);
+      },
+    }
+  },
   computed: {
+    visibleCustomLists() {
+      if (!this.userCustomLists) return [];
+      const start = (this.listSelectorPage - 1) * 5;
+      const end = start + 5;
+      return this.userCustomLists.slice(start, end);
+    },
+    selectorTotalPages() {
+      if (!this.userCustomLists) return 0;
+      return Math.ceil(this.userCustomLists.length / 5);
+    },
     selectedMoviesCount() {
       return this.selectedItems.filter(item => item.media_type === 'movie').length;
     },
@@ -4829,5 +4914,124 @@ svg.rating-logo.imdb {
 .slide-up-enter, .slide-up-leave-to {
     transform: translate(-50%, 100%);
     opacity: 0;
+}
+
+/* List Selector Styles */
+.list-nav-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 50;
+    margin-bottom: 0;
+}
+
+.title-with-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+}
+
+.list-selector-btn {
+    background: rgba(139, 233, 253, 0.1);
+    border: 1px solid rgba(139, 233, 253, 0.3);
+    border-radius: 8px;
+    padding: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8BE9FD;
+    backdrop-filter: blur(4px);
+    position: relative;
+    top: -6px;
+}
+
+.list-selector-btn:hover {
+    background: rgba(139, 233, 253, 0.2);
+    border-color: #8BE9FD;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 233, 253, 0.15);
+}
+
+.list-selector-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #151f24;
+    border: 1px solid rgba(139, 233, 253, 0.3);
+    border-radius: 12px;
+    width: 260px;
+    z-index: 100;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.list-selector-dropdown .dropdown-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #8F989E;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    position: relative;
+    height: 50px;
+}
+
+.dropdown-header span {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.dropdown-nav-btn {
+    color: #8BE9FD;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dropdown-nav-btn:hover:not(.disabled) {
+    background: rgba(139, 233, 253, 0.25) !important;
+    border-color: #8BE9FD;
+}
+
+.dropdown-nav-btn.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.dropdown-list-item {
+    display: block;
+    padding: 14px 16px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.4rem;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+
+.dropdown-list-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-list-item:hover {
+    background: rgba(139, 233, 253, 0.1);
+    color: #8BE9FD;
+    padding-left: 20px;
 }
 </style>
