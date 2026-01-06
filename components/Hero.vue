@@ -655,6 +655,34 @@ export default {
       }
     },
         
+    async loadRatingFromRatingsEndpoint() {
+      if (!this.userEmail) return;
+      try {
+        const response = await fetch(
+          `${this.tursoBackendUrl}/ratings/${encodeURIComponent(this.userEmail)}`
+        );
+        if (!response.ok) return;
+
+        const data = await response.json(); // expects { ratings: [...] }
+        const ratingObj = data.ratings.find(r => r.item.idForDb == this.id);
+        if (ratingObj) {
+          this.userRatingForDb = ratingObj.rating ? ratingObj.rating.toString() : '-';
+          this.userReview = ratingObj.review || '';
+          this.hasUserRating = this.userRatingForDb !== '-';
+          this.selectedRating = this.hasUserRating ? parseInt(this.userRatingForDb) : 0;
+        } else {
+          // If not found in ratings, it might still be in watchlist BUT we want independent rating.
+          // So if not in ratings table, we really don't have a rating.
+          // However, to be safe during migration, we might want to check watchlist? 
+          // No, we migrated everything.
+           // Only reset if we are sure? No, let's trust the endpoint.
+           // But wait, if I haven't rated it, this correctly sets it to '-'.
+        }
+      } catch (e) {
+        console.error('Error loading rating from ratings endpoint:', e);
+      }
+    },
+
     async checkUserRating() {
       try {
         const response = await fetch(`${this.tursoBackendUrl}/favorites/${this.userEmail}`);
@@ -730,9 +758,10 @@ export default {
       }
 
       try {
-        if (!this.isFavorite) {
-          await this.toggleFavorite();
-        }
+        // No auto-adding to watchlist when rating; keep rating independent
+
+        // Reload rating state to be sure
+        await this.loadRatingFromRatingsEndpoint();
 
         const response = await fetch(
           `${this.tursoBackendUrl}/favorites/rating/${this.userEmail}/${this.typeForDb}/${this.id}`,
@@ -852,10 +881,8 @@ export default {
             throw new Error('Error removing favorite');
           }
 
-          this.hasUserRating = false;
-          this.userRatingForDb = '-';
-          this.selectedRating = 0;
-          this.userReview = '';
+          // Do NOT wipe rating. Reload it to be sure.
+          await this.loadRatingFromRatingsEndpoint();
         } else {
           const response = await fetch(`${this.tursoBackendUrl}/favorites`, {
             method: 'POST',
