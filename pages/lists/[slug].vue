@@ -595,7 +595,7 @@ export default {
             selectedRating: 0,
             hoverRating: 0,
             userReview: '',
-            ratingDescriptions: ['Abysmal', 'Terrible', 'Bad', 'Poor', 'Average', 'Okay', 'Good', 'Great', 'Amazing', 'Masterpiece'],
+            ratingDescriptions: ['', '', '', '', '', '', '', '', '', ''],
         };
     },
     

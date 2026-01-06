@@ -376,16 +376,16 @@ export default {
       activeTab: 'rating',
       userReview: '',
       ratingDescriptions: [
-        'Terrible, a complete waste of time',
-        'Very bad, hard to finish',
-        'Bad, few redeeming qualities',
-        'Mediocre, barely passable',
-        'Average, has its moments',
-        'Decent, entertaining but forgettable',
-        'Good, worth watching',
-        'Very good, recommended',
-        'Excellent, a great experience',
-        'Masterpiece, must-see'
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        ''
       ],
 
       nameForDb: null,
