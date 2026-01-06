@@ -2,10 +2,11 @@ export function mapItemToDbPayload(item) {
     if (!item) return null;
 
     const idForDb = item.idForDb || item.id;
-    const typeForDb = item.typeForDb || item.media_type || (item.title ? 'movie' : 'tv');
+    let typeForDb = item.typeForDb || item.media_type || (item.title ? 'movie' : 'tv');
+    if (typeForDb === 'movies') typeForDb = 'movie';
 
     const nameForDb = item.nameForDb || item.title || item.name;
-    const posterForDb = item.posterForDb || item.poster_path;
+    const posterForDb = item.posterForDb || item.poster_path || item.poster_url;
 
     let yearStartForDb = item.yearStartForDb;
     if (!yearStartForDb) {
