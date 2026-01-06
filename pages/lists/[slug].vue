@@ -5,7 +5,30 @@
          <Loader :size="60" />
       </div>
       <div v-else class="header-content">
-          <h1 class="list-title">{{ list.name }}</h1>
+          <div class="list-nav-wrapper" v-click-outside="closeListSelector" style="justify-content: center;">
+              <div class="title-with-selector">
+                  <h1 class="list-title title-primary" style="margin: 0; display: inline-block;">{{ list.name }}</h1>
+                  <button v-if="allAvailableLists.length > 0" @click="toggleListSelector" class="list-selector-btn">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                  </button>
+              </div>
+              <transition name="fade">
+                  <div v-if="listSelectorOpen" class="list-selector-dropdown" @click.stop>
+                      <div class="dropdown-header">
+                          <a v-if="selectorTotalPages > 1" href="#" @click.prevent.stop="goToPrevPage" class="dropdown-nav-btn" :class="{ 'disabled': listSelectorPage <= 1 }" style="z-index: 101; position: relative; display: flex; align-items: center; justify-content: center; text-decoration: none; width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 4px; pointer-events: auto;">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                          </a>
+                          <span>Switch to</span>
+                          <a v-if="selectorTotalPages > 1" href="#" @click.prevent.stop="goToNextPage" class="dropdown-nav-btn" :class="{ 'disabled': listSelectorPage >= selectorTotalPages }" style="z-index: 101; position: relative; display: flex; align-items: center; justify-content: center; text-decoration: none; width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 4px; pointer-events: auto;">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                          </a>
+                      </div>
+                      <div v-for="l in visibleCustomLists" :key="l.id + '_' + listSelectorPage">
+                          <nuxt-link :to="l.link" class="dropdown-list-item">{{ l.name }}</nuxt-link>
+                      </div>
+                  </div>
+              </transition>
+          </div>
           <p class="list-description" v-if="list.description">{{ list.description }}</p>
           <div class="list-meta">
               <span class="author">{{ isOwner ? 'by You' : 'by ' + (list.owner_name || 'Unknown') }}</span>
@@ -563,7 +586,13 @@ export default {
             items: [], 
             moviesFetched: [],
             tvFetched: [],
+            moviesFetched: [],
+            tvFetched: [],
             filter: 'movies',
+            
+            listSelectorOpen: false,
+            listSelectorPage: 1,
+            userCustomLists: [],
             
             currentPage: 1,
             itemsPerPage: 20,
@@ -602,7 +631,45 @@ export default {
         };
     },
     
+    directives: {
+      'click-outside': {
+        mounted(el, binding) {
+          el.clickOutsideEvent = function(event) {
+            if (!(el === event.target || el.contains(event.target))) {
+              binding.value(event);
+            }
+          };
+          document.body.addEventListener('click', el.clickOutsideEvent);
+        },
+        unmounted(el) {
+          document.body.removeEventListener('click', el.clickOutsideEvent);
+        },
+      }
+    },
     computed: {
+        allAvailableLists() {
+            const currentSlug = this.$route.params.slug;
+            const lists = [];
+
+            lists.push({ id: 'watchlist', name: 'Watchlist', link: '/watchlist', isWatchlist: true });
+
+            if (this.userCustomLists) {
+                this.userCustomLists.forEach(l => {
+                    if (l.slug !== currentSlug) {
+                        lists.push({ ...l, link: `/lists/${l.slug}`, isWatchlist: false });
+                    }
+                });
+            }
+            return lists;
+        },
+        selectorTotalPages() {
+            return Math.ceil(this.allAvailableLists.length / 5);
+        },
+        visibleCustomLists() {
+            const start = (this.listSelectorPage - 1) * 5;
+            const end = start + 5;
+            return this.allAvailableLists.slice(start, end);
+        },
         shareUrl() {
             if (import.meta.client) {
                 return window.location.href;
@@ -827,6 +894,7 @@ export default {
     },
 
     async mounted() {
+        this.fetchUserCustomLists();
         await this.fetchListDetails();
         document.addEventListener('click', this.closeDropdowns);
         document.addEventListener('click', this.closeCardMenu);
@@ -841,6 +909,41 @@ export default {
     },
 
     methods: {
+        async fetchUserCustomLists() {
+            const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+            if (!userEmail) return;
+            try {
+                const response = await fetch(`${this.tursoBackendUrl}/lists/user/${encodeURIComponent(userEmail)}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    this.userCustomLists = data.lists || [];
+                }
+            } catch (error) {
+                console.error('Error fetching user custom lists:', error);
+            }
+        },
+
+        toggleListSelector() {
+            this.listSelectorOpen = !this.listSelectorOpen;
+        },
+
+        closeListSelector() {
+            this.listSelectorOpen = false;
+            this.listSelectorPage = 1;
+        },
+
+        goToPrevPage() {
+            if (this.listSelectorPage > 1) {
+                this.listSelectorPage--;
+            }
+        },
+
+        goToNextPage() {
+             if (this.listSelectorPage < this.selectorTotalPages) {
+                this.listSelectorPage++;
+            }
+        },
+
         handleListUpdate() {
             this.fetchListDetails(true);
         },
@@ -1365,7 +1468,7 @@ export default {
         color: #8F989E;
         font-size: 1.4rem;
         align-items: center;
-        margin-bottom: 2rem;
+        margin-top: 2rem;
         flex-wrap: wrap;
         
         .dot { font-weight: bold; opacity: 0.5; }
@@ -2826,5 +2929,146 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
 .slide-up-enter, .slide-up-leave-to {
     transform: translate(-50%, 100%);
     opacity: 0;
+}
+
+/* List Selector Styles */
+.list-nav-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 50;
+    margin-bottom: 0;
+}
+
+.title-with-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    max-width: 100%;
+    justify-content: center;
+}
+
+.list-title.title-primary {
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    max-width: calc(100vw - 120px);
+    line-height: 1.2;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .list-title.title-primary {
+        max-width: calc(100vw - 80px);
+    }
+}
+
+.list-selector-btn {
+    flex-shrink: 0;
+    background: rgba(139, 233, 253, 0.1);
+    border: 1px solid rgba(139, 233, 253, 0.3);
+    border-radius: 8px;
+    padding: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8BE9FD;
+    backdrop-filter: blur(4px);
+    position: relative;
+    bottom: -3px;
+}
+
+.list-selector-btn:hover {
+    background: rgba(139, 233, 253, 0.2);
+    border-color: #8BE9FD;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 233, 253, 0.15);
+}
+
+.list-selector-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #151f24;
+    border: 1px solid rgba(139, 233, 253, 0.3);
+    border-radius: 12px;
+    width: 260px;
+    z-index: 100;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.list-selector-dropdown .dropdown-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #8F989E;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    position: relative;
+    height: 50px;
+}
+
+.dropdown-header span {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.dropdown-nav-btn {
+    color: #8BE9FD;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dropdown-nav-btn:hover:not(.disabled) {
+    background: rgba(139, 233, 253, 0.25) !important;
+    border-color: #8BE9FD;
+}
+
+.dropdown-nav-btn.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.dropdown-list-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.4rem;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+.dropdown-list-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-list-item:hover {
+    background: rgba(139, 233, 253, 0.1);
+    color: #8BE9FD;
+    padding-left: 20px;
 }
 </style>
