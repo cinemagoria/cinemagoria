@@ -21,6 +21,7 @@
 
 <script>
 import { name, stars, yearStart, yearEnd, poster, id, type, runtime } from '~/mixins/Details';
+import { mapItemToDbPayload } from '~/utils/itemMapper';
 
 export default {
   name: 'QuickFav',
@@ -212,24 +213,27 @@ export default {
         }
       }
 
+      const enrichedItem = {
+        ...this.item,
+        genresForDb: genresForDb,
+        runtime: this.runtimeForDb,
+        external_ids: externalIds,
+        imdb_rating: imdbRating,
+        imdb_votes: imdbVotes,
+        rating_source: ratingSource,
+        idForDb: this.idForDb,
+        typeForDb: this.typeForDb,
+        nameForDb: this.nameForDb,
+        posterForDb: this.posterForDb,
+        yearStartForDb: this.yearStartForDb,
+        yearEndForDb: this.yearEndForDb,
+        starsForDb: this.starsForDb,
+        addedAt: this.addedAt
+      };
+
       const payload = {
         userEmail: this.userEmail,
-        item: {
-            nameForDb: this.nameForDb,
-            starsForDb: this.starsForDb,
-            yearStartForDb: this.yearStartForDb,
-            yearEndForDb: this.yearEndForDb,
-            posterForDb: this.posterForDb,
-            idForDb: this.idForDb,
-            genresForDb: genresForDb,
-            typeForDb: this.typeForDb,
-            addedAt: this.addedAt,
-            external_ids: externalIds,
-            rating_source: ratingSource,
-            imdb_rating: imdbRating,
-            imdb_votes: imdbVotes,
-            runtime: this.runtimeForDb,
-        }
+        item: mapItemToDbPayload(enrichedItem)
       };
 
       try {
