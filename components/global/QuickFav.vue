@@ -90,6 +90,7 @@ export default {
         return this.$config.public.tursoBackendUrl;
     },
     compType() {
+      if (this.item.media_type === 'movies' || this.item.media_type === 'movie') return 'movie';
       if (this.item.media_type) return this.item.media_type;
       if (this.item.title) return 'movie';
       return 'tv';
