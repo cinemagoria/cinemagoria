@@ -622,6 +622,30 @@ export default {
       }
     },
         
+    async loadRatingFromRatingsEndpoint() {
+      if (!this.userEmail) return;
+      try {
+        const response = await fetch(
+          `${this.tursoBackendUrl}/ratings/${encodeURIComponent(this.userEmail)}`
+        );
+        if (!response.ok) return;
+
+        const data = await response.json(); // expects { ratings: [...] }
+        const ratingObj = data.ratings.find(r => r.item.idForDb == this.id);
+        if (ratingObj) {
+          this.userRatingForDb = ratingObj.rating ? ratingObj.rating.toString() : '-';
+          this.userReview = ratingObj.review || '';
+          this.hasUserRating = this.userRatingForDb !== '-';
+          this.selectedRating = this.hasUserRating ? parseInt(this.userRatingForDb) : 0;
+        } else {
+          // Rating not found, do nothing or reset?
+          // For independence, if not explicitly rated in user_ratings, it is not rated.
+        }
+      } catch (e) {
+        console.error('Error loading rating from ratings endpoint:', e);
+      }
+    },
+
     async checkUserRating() {
       try {
         const response = await fetch(`${this.tursoBackendUrl}/favorites/${this.userEmail}`);
@@ -700,6 +724,9 @@ export default {
 
       try {
         // No auto-adding to watchlist when rating; keep rating independent
+
+        // Reload rating state to be sure
+        await this.loadRatingFromRatingsEndpoint();
 
         const response = await fetch(
           `${this.tursoBackendUrl}/favorites/rating/${this.userEmail}/${this.typeForDb}/${this.id}`,
@@ -819,10 +846,8 @@ export default {
             throw new Error('Error removing favorite');
           }
 
-          this.hasUserRating = false;
-          this.userRatingForDb = '-';
-          this.selectedRating = 0;
-          this.userReview = '';
+          // Do NOT wipe rating. Reload it to be sure.
+          await this.loadRatingFromRatingsEndpoint();
         } else {
           const response = await fetch(`${this.tursoBackendUrl}/favorites`, {
             method: 'POST',
