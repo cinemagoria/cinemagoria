@@ -370,12 +370,8 @@ export default {
                              })
                          );
                      } else {
-                         let type = this.itemToAdd.title ? 'movie' : 'tv';
-                         if (this.itemToAdd.media_type) type = this.itemToAdd.media_type;
-                         type = (type === 'movie' || type === 'movies') ? 'movie' : 'tv';
-                         
-                         const url = `${this.tursoBackendUrl}/favorites/${encodeURIComponent(userEmail)}/${type}/${this.itemToAdd.id}`;
-                         promises.push(fetch(url, { method: 'DELETE' }));
+                         const url = `${this.tursoBackendUrl}/favorites/${encodeURIComponent(userEmail)}/${item.typeForDb}/${item.idForDb}`;
+                     promises.push(fetch(url, { method: 'DELETE' }));
                      }
                  }
 
