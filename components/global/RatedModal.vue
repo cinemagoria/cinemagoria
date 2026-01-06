@@ -227,10 +227,10 @@ export default {
       this.loading = true;
       this.imageLoadingStates = {};
       try {
-        const response = await fetch(`${this.tursoBackendUrl}/favorites/${this.userEmail}`);
+        const response = await fetch(`${this.tursoBackendUrl}/ratings/${this.userEmail}`);
         
         if (!response.ok) {
-          throw new Error('Error fetching favorites: ' + response.statusText);
+          throw new Error('Error fetching ratings: ' + response.statusText);
         }
 
         const data = await response.json();
@@ -363,7 +363,8 @@ export default {
             },
             body: JSON.stringify({
               rating: this.selectedRating,
-              review: this.userReview.trim()
+              review: this.userReview.trim(),
+              item: item.details
             })
           }
         );

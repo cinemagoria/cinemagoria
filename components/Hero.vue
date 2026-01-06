@@ -675,7 +675,8 @@ export default {
             },
             body: JSON.stringify({
               rating: rating,
-              review: this.userReview || ''
+              review: this.userReview || '',
+              item: mapItemToDbPayload(this.item)
             })
           }
         );
@@ -711,7 +712,8 @@ export default {
             },
             body: JSON.stringify({ 
               rating, 
-              review 
+              review,
+              item: mapItemToDbPayload(this.item)
             })
           }
         );
