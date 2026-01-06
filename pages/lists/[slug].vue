@@ -46,12 +46,15 @@
     </div>
 
     <div v-if="!loading" class="watchlist-section" style="padding-top: 0;">
-        <div v-if="undoItem" class="undo-bar-container">
-           <div class="undo-bar">
-             <span>Removed "{{ undoItem.details.nameForDb }}"</span>
-             <button @click="handleUndo" class="undo-btn">UNDO</button>
+        <transition name="slide-up">
+           <div v-if="undoItem" class="undo-banner">
+             <div class="undo-content">
+                 <span>Removed "{{ undoItem.details.nameForDb }}"</span>
+                 <button @click="handleUndo" class="undo-btn">Undo</button>
+             </div>
+             <div class="timer-line"></div>
            </div>
-        </div>
+        </transition>
 
         <div v-if="items.length === 0 && !undoItem" class="empty-state">
              <img src="/cinema-popcorn.svg" alt="Empty list" class="empty-state-icon">
@@ -2755,5 +2758,73 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
 .create-btn-cl:disabled {
     opacity: 0.7;
     cursor: not-allowed;
+}
+
+.undo-banner {
+    position: fixed;
+    bottom: 15vh;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 1rem 2rem;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+}
+
+.undo-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    gap: 1.5rem;
+    
+    span {
+        flex: 1;
+        min-width: 0;
+        word-wrap: break-word;
+        line-height: 1.4;
+    }
+}
+
+.undo-btn {
+    background: #8BE9FD;
+    color: #000;
+    border: none;
+    padding: 0.5rem 1.6rem;
+    border-radius: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    
+    &:hover {
+        background: #73cde0;
+    }
+}
+
+.timer-line {
+    height: 3px;
+    background: #8BE9FD;
+    width: 100%;
+    animation: undo-timer 4s linear forwards;
+}
+
+@keyframes undo-timer {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+
+.slide-up-enter-active, .slide-up-leave-active {
+    transition: all 0.3s ease;
+}
+
+.slide-up-enter, .slide-up-leave-to {
+    transform: translate(-50%, 100%);
+    opacity: 0;
 }
 </style>
