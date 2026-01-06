@@ -568,16 +568,16 @@ export default {
             hoverRating: 0,
             userReview: '',
             ratingDescriptions: [
-                'Terrible, una completa pérdida de tiempo',
-                'Muy mala, difícil de ver',
-                'Mala, poco interesante',
-                'Mediocre, apenas pasable',
-                'Regular, tiene sus momentos',
-                'Decente, entrenenida pero olvidable',
-                'Buena, vale la pena mirar',
-                'Muy buena, recomendable',
-                'Excelente, una gran experiencia',
-                'Impresionante, obligatorio ver'
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '',
+                ''
             ],
         };
     },
