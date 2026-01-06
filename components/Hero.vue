@@ -630,16 +630,31 @@ export default {
         );
         if (!response.ok) return;
 
-        const data = await response.json(); // expects { ratings: [...] }
-        const ratingObj = data.ratings.find(r => r.item.idForDb == this.id);
-        if (ratingObj) {
-          this.userRatingForDb = ratingObj.rating ? ratingObj.rating.toString() : '-';
-          this.userReview = ratingObj.review || '';
-          this.hasUserRating = this.userRatingForDb !== '-';
-          this.selectedRating = this.hasUserRating ? parseInt(this.userRatingForDb) : 0;
-        } else {
-          // Rating not found, do nothing or reset?
-          // For independence, if not explicitly rated in user_ratings, it is not rated.
+        const data = await response.json(); 
+        
+        // Structure is { favorites_json: { movies: [...], tv: [...] } }
+        const typeKey = this.type === 'movie' ? 'movies' : 'tv'; // ensuring we use 'movies'/'tv'
+        const list = data.favorites_json && data.favorites_json[typeKey] ? data.favorites_json[typeKey] : [];
+        
+        let found = false;
+        for (const itemWrapper of list) {
+             const key = Object.keys(itemWrapper)[0]; 
+             if (key === this.favId) { 
+                 const details = itemWrapper[key].details;
+                 this.userRatingForDb = details.userRatingForDb || '-';
+                 this.userReview = details.userReview || '';
+                 this.hasUserRating = this.userRatingForDb !== '-';
+                 this.selectedRating = this.hasUserRating ? parseInt(this.userRatingForDb) : 0;
+                 found = true;
+                 break;
+             }
+        }
+        
+        if (!found) {
+           this.userRatingForDb = '-';
+           this.hasUserRating = false;
+           this.selectedRating = 0;
+           this.userReview = '';
         }
       } catch (e) {
         console.error('Error loading rating from ratings endpoint:', e);
