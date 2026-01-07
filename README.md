@@ -2,12 +2,24 @@
 
 Entercinema is a high-performance **Progressive Web Application (PWA)** engineered for modern viewers. By aggregating intelligence from **TMDB, IMDb, MDBList, Trakt, and JustWatch**, it provides a centralized hub for intelligent search and cross-device synchronization.
 
+![EnterCinema Cover](https://www.ivanluna.dev/images/assets/entercinema-asset1.webp)
+
 ### Project Overview
 
 Entercinema streamlines the entertainment lifecycle—from initial discovery to release tracking. It bridges the gap between fragmented streaming data and personal curation, offering a seamless interface for managing watchlists and receiving real-time notifications.
 
+
+
 ### Core Features
 
+
+#### Comprehensive Catalog Exploration
+
+Explore dedicated universes for Movies and TV Shows with instant context switching. The platform features optimized carousels for 'Now Playing', 'Upcoming', 'Popular', and 'Top Rated', alongside genre-based navigation (Drama, Sci-Fi, Animation, etc.) and exclusive feeds from followed production companies.
+
+<div align="center">
+  <img src="https://www.ivanluna.dev/images/assets/entercinema-asset2.webp" alt="Catalog Discovery" width="70%">
+</div>
 
 #### Advanced Notification Center
 
@@ -16,7 +28,11 @@ A real-time tracking engine for the content and creators you care about.
 * **Granular Following:** Follow actors, directors, writers, production companies, and specific TV series.
 * **Multi-Channel Alerts:** Notifications for theatrical releases, digital drops, and weekly episode premieres.
 * **Management Suite:** Features bulk actions, read/unread filtering, and a 60-second "undo" window for unfollowing.
-* **Infrastructure:** Powered by a Rust/LibSQL backend with automated daily cron-job validation.
+* **Infrastructure:** Powered by a Rust/LibSQL backend with automated daily cron-job validation (GitHub Actions).
+
+<div align="center">
+  <img src="https://www.ivanluna.dev/images/assets/entercinema-asset3.webp" alt="Notification Center" width="70%">
+</div>
 
 #### Precision Watchlist & Rating System
 
@@ -25,7 +41,11 @@ A robust personal library designed for active viewers.
 * **Segmented Tracking:** Distinct environments for Movies and TV Shows.
 * **Deep Filtering:** Filter by genre, release year, production country, and community vs. personal ratings.
 * **Global Rating Tool:** A universal modal allowing 1–10 scoring and text reviews from any page.
-* **Real-time Sync:** Instant state synchronization across devices via Supabase.
+* **Real-time Sync:** Instant state synchronization across devices via Turso.
+
+<div align="center">
+  <img src="https://www.ivanluna.dev/images/assets/entercinema-asset4.webp" alt="Watchlist" width="70%">
+</div>
 
 #### Custom List Management
 
@@ -46,12 +66,32 @@ A custom search architecture optimized for speed and accuracy.
 * **Universal Autocomplete:** Real-time results across movies, shows, and people.
 * **Curation:** Highlighting trending content specifically tailored for the 2024–2025 landscape.
 
+<div align="center">
+  <img src="https://www.ivanluna.dev/images/assets/entercinema-asset6.webp" alt="Advanced Search" width="70%">
+</div>
+
 #### Comprehensive Metadata Pages
 
 * **Deep Data:** Access cast/crew details, runtimes, budgets, and original titles.
 * **Streaming Logic:** Integrated JustWatch API for localized "Where to Watch" data.
 * **External Links:** Direct access to IMDb, Rotten Tomatoes, Trakt, and ***.
 * **Visual Media:** High-definition galleries and integrated trailer support.
+
+<div align="center">
+  <img src="https://www.ivanluna.dev/images/assets/entercinema-asset8.webp" alt="Deep Metadata" width="70%">
+</div>
+
+#### Industry News & Insights
+
+Stay informed with a dedicated news section that aggregates the latest updates from the entertainment industry.
+
+* **Responsive Carousels:** Visual news feed integrated directly into the interface.
+* **RSS Integration:** Aggregated breaking news from top industry sources.
+* **Automated Updates:** Refreshed every 12 hours via GitHub Actions.
+
+<div align="center">
+  <img src="https://www.ivanluna.dev/images/assets/entercinema-asset5.webp" alt="Industry News" width="70%">
+</div>
 
 ### Technical Stack
 
@@ -70,6 +110,10 @@ A custom search architecture optimized for speed and accuracy.
 * **Unified Auth:** Modal-based system supporting Email/Password and Google OAuth 2.0.
 * **Smart Routing:** Persistent return-to-origin behavior after login and pending action queuing.
 * **Localization:** Native support for English (EN) and Spanish (ES).
+
+<div align="center">
+  <img src="https://www.ivanluna.dev/images/assets/entercinema-asset7.webp" alt="Authentication" width="70%">
+</div>
 
 #### Performance Optimization
 
