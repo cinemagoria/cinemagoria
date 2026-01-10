@@ -2355,7 +2355,6 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
   max-width: 500px;
   background: linear-gradient(to bottom right, #092739, #061720);
   border-radius: 12px;
-  /* overflow: hidden; */
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
@@ -2983,7 +2982,6 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     opacity: 0;
 }
 
-/* List Selector Styles */
 .list-nav-wrapper {
     position: relative;
     display: flex;
