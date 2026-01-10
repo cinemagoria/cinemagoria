@@ -4934,7 +4934,7 @@ svg.rating-logo.imdb {
     display: flex;
     flex-direction: column;
     min-width: 300px;
-    max-width: 500px;
+    max-width: 350px;
     width: fit-content;
 }
 
