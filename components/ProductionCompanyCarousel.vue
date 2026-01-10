@@ -126,7 +126,7 @@ export default {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 5; /* Added Z-index as requested */
+    z-index: 5;
     background: rgba(0,0,0,0.5);
     border: none;
     border-radius: 50%;
@@ -161,9 +161,7 @@ export default {
     align-items: stretch;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    padding-bottom: 20px; /* Space for scrollbar or shadow */
-    
-    /* Hide scrollbar */
+    padding-bottom: 20px;
     scrollbar-width: none; 
     -ms-overflow-style: none;
     &::-webkit-scrollbar { 
@@ -176,9 +174,7 @@ export default {
   align-items: stretch;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  padding-bottom: 20px; /* Space for scrollbar or shadow */
-  
-  /* Hide scrollbar */
+  padding-bottom: 20px;
   scrollbar-width: none; 
   -ms-overflow-style: none;
   &::-webkit-scrollbar { 

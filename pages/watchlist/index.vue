@@ -66,7 +66,7 @@
 
 
 
-                <button class="control-btn ai-analysis-btn" @click="toggleAiSelectionMode" :class="{ 'active': aiSelectionMode }">
+                <button class="control-btn bulk-actions-btn" @click="toggleAiSelectionMode" :class="{ 'active': aiSelectionMode }">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><path d="m9 11 3 3L22 4"/></svg>
                   <span class="btn-label">Seleccionar</span>
                 </button>
@@ -114,18 +114,40 @@
 
                 </div>
                 <div class="banner-actions">
-                  <button @click="cancelSelection" class="banner-btn cancel-btn">
-                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
-                    Cancelar
-                  </button>
                   <button 
                     @click="openBulkAddModal" 
-                    class="banner-btn add-to-btn" 
+                    class="banner-btn send-btn" 
                     :disabled="selectedItems.length === 0"
-                    style="background: #2D3748; color: white; margin-right: 10px;"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="margin-right:4px" viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                        <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
                     Añadir a...
+                  </button>
+                  <button 
+                    @click="openBulkMoveModal" 
+                    class="banner-btn send-btn" 
+                    :disabled="selectedItems.length === 0"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                    Mover a...
+                  </button>
+                  <button 
+                    @click="openBulkDeleteModal" 
+                    class="banner-btn remove-btn" 
+                    :disabled="selectedItems.length === 0"
+                    style="background: rgba(255, 107, 107, 0.2); color: #ff6b6b; border-color: rgba(255, 107, 107, 0.4);"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    Eliminar...
+                  </button>
+                  <button @click="cancelSelection" class="banner-btn cancel-btn">
+                    Cancelar
                   </button>
 
                 </div>
@@ -164,7 +186,7 @@
             
             <div class="movie-grid">
               <div v-for="(item, index) in itemsToShow" :key="'item-' + index" class="movie-card" :class="{ 'selection-mode': aiSelectionMode, 'selected': aiSelectionMode && isItemSelected(item), 'disabled': aiSelectionMode && !canSelectItem(item) && !isItemSelected(item) }">
-                <div v-if="aiSelectionMode" class="selection-checkbox" @click.stop="toggleItemSelection(item)">
+                <div v-if="aiSelectionMode" class="selection-checkbox" @click.stop="toggleSelection(item)">
                   <div class="checkbox-wrapper">
                     <input type="checkbox" :checked="isItemSelected(item)" :disabled="!canSelectItem(item)" @click.prevent>
                     <span class="checkmark"></span>
@@ -181,7 +203,7 @@
                   </div>
 
                   
-                  <div v-if="aiSelectionMode" class="item-link" @click="toggleItemSelection(item)" style="cursor: pointer;">
+                  <div v-if="aiSelectionMode" class="item-link" @click="toggleSelection(item)" style="cursor: pointer;">
                     <div class="poster-container">
                       <div v-show="!imageLoadStates[item.details.idForDb]" class="poster-loader">
                         <Loader :size="44" />
@@ -663,6 +685,9 @@ export default {
       addedBannerVisible: false,
       addedBannerMessage: '', 
       addedBannerTimer: null,
+      lastBulkAction: null,
+      undoAction: null,
+      undoPayload: null
     };
   },
   setup() {
@@ -916,16 +941,39 @@ export default {
       }
     },
     showAddedBanner({ elementCount, listCount }) {
-        this.addedBannerMessage = `${elementCount} elementos añadidos a ${listCount} lista${listCount !== 1 ? 's' : ''}`;
-        this.addedBannerVisible = true;
+        if (this.lastBulkAction === 'move') {
+             const fullItems = this.getSelectedItemsFull();
+             this.undoPayload = { items: fullItems };
+             
+             this.handleBulkDelete(this.selectedItems, true);
+             
+             this.addedBannerMessage = `Movidos ${elementCount} elementos a ${listCount} colecc${listCount !== 1 ? 'iones' : 'ión'}`;
+             this.undoAction = 'bulk-move';
+             
+             this.aiSelectionMode = false;
+             this.selectedItems = [];
+             
+             this.undoBannerVisible = true;
+             this.undoTimer = setTimeout(() => {
+                 this.undoBannerVisible = false;
+                 this.undoAction = null;
+                 this.undoPayload = null;
+             }, 5000);
+
+        } else {
+            this.addedBannerMessage = `${elementCount} elementos añadidos a ${listCount} colecc${listCount !== 1 ? 'iones' : 'ión'}`;
+            this.addedBannerVisible = true;
+            
+            this.aiSelectionMode = false;
+            this.selectedItems = [];
+            
+            if (this.addedBannerTimer) clearTimeout(this.addedBannerTimer);
+            this.addedBannerTimer = setTimeout(() => {
+                this.addedBannerVisible = false;
+            }, 4000);
+        }
         
-        this.aiSelectionMode = false;
-        this.selectedItems = [];
-        
-        if (this.addedBannerTimer) clearTimeout(this.addedBannerTimer);
-        this.addedBannerTimer = setTimeout(() => {
-            this.addedBannerVisible = false;
-        }, 4000);
+        this.lastBulkAction = null;
     },
 
     toggleCardMenu(id) {
@@ -1048,29 +1096,27 @@ export default {
       return false;
     },
     
-    toggleItemSelection(item) {
-      if (!this.canSelectItem(item) && !this.isItemSelected(item)) {
-        return;
-      }
+    toggleSelection(item) {
+      if (!this.aiSelectionMode) return;
       
-      const itemIndex = this.selectedItems.findIndex(
-        selected => selected.tmdb_id === item.details.idForDb && selected.media_type === item.details.typeForDb
-      );
+      const details = item.details || item;
+      
+      const itemIndex = this.selectedItems.findIndex(i => i.tmdb_id === details.idForDb);
       
       if (itemIndex > -1) {
         this.selectedItems.splice(itemIndex, 1);
       } else {
         this.selectedItems.push({
-          tmdb_id: item.details.idForDb,
-          media_type: item.details.typeForDb,
-          imdb_score: item.details.imdb_rating || null,
-          title: item.details.nameForDb,
-          year: item.details.yearStartForDb,
-          poster_path: item.details.posterForDb,
-          rating_source: item.details.rating_source,
-          tmdb_rating: item.details.starsForDb || null,
-          imdb_votes: item.details.imdb_votes || null,
-          user_rating: item.details.userRatingForDb && item.details.userRatingForDb !== '-' ? parseFloat(item.details.userRatingForDb) : null
+          tmdb_id: details.idForDb,
+          media_type: details.typeForDb,
+          imdb_score: details.imdb_rating || null,
+          title: details.nameForDb,
+          year: details.yearStartForDb,
+          poster_path: details.posterForDb,
+          rating_source: details.rating_source,
+          tmdb_rating: details.starsForDb || null,
+          imdb_votes: details.imdb_votes || null,
+          user_rating: details.userRatingForDb && details.userRatingForDb !== '-' ? parseFloat(details.userRatingForDb) : null
         });
       }
     },
@@ -1096,15 +1142,13 @@ export default {
       }
     },
 
-    async openBulkAddModal() {
-        if (this.selectedItems.length === 0) return;
-        
-        const items = this.selectedItems.map(sel => {
+    getSelectedItemsFull() {
+        return this.selectedItems.map(sel => {
              let original = null;
              if (sel.media_type === 'movie') {
-                 original = this.moviesFetched.find(m => m.details.idForDb === sel.tmdb_id);
+                 original = this.moviesFetched.find(m => m.details.idForDb == sel.tmdb_id);
              } else {
-                 original = this.tvFetched.find(t => t.details.idForDb === sel.tmdb_id);
+                 original = this.tvFetched.find(t => t.details.idForDb == sel.tmdb_id);
              }
 
              if (original && original.details) {
@@ -1122,8 +1166,137 @@ export default {
                 yearStartForDb: sel.year,
              };
         });
-            
-        this.$bus.$emit('show-add-to-list-modal', items);
+    },
+
+    async openBulkAddModal() {
+        if (this.selectedItems.length === 0) return;
+        this.lastBulkAction = 'add';
+        const items = this.getSelectedItemsFull();
+        this.$bus.$emit('show-add-to-list-modal', items, null, 'add');
+    },
+
+    async openBulkMoveModal() {
+        if (this.selectedItems.length === 0) return;
+        this.lastBulkAction = 'move';
+        const items = this.getSelectedItemsFull();
+        this.$bus.$emit('show-add-to-list-modal', items, null, 'move');
+    },
+    
+    async openBulkDeleteModal() {
+        if (this.selectedItems.length === 0) return;
+        
+        const itemsToDelete = this.getSelectedItemsFull();
+        this.undoPayload = { items: itemsToDelete };
+        
+        await this.handleBulkDelete(this.selectedItems);
+        
+        this.undoItem = { details: { nameForDb: `${itemsToDelete.length} elementos` } }; 
+        this.undoAction = 'bulk-delete';
+        this.undoBannerVisible = true;
+        
+        this.aiSelectionMode = false;
+        this.selectedItems = [];
+
+        if (this.undoTimer) clearTimeout(this.undoTimer);
+        this.undoTimer = setTimeout(() => {
+            this.undoBannerVisible = false;
+            this.undoAction = null;
+            this.undoPayload = null;
+        }, 5000);
+    },
+    
+    async handleBulkDelete(items, silent = false) {
+          const payload = {
+              userEmail: this.userEmail,
+              items: items.map(i => ({ id: i.tmdb_id, type: i.media_type }))
+          };
+          
+          try {
+              const res = await fetch(`${this.tursoBackendUrl}/favorites/bulk`, {
+                  method: 'DELETE',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(payload)
+              });
+              
+              if (res.ok) {
+                  await this.checkData(); 
+                  if (!silent) this.$bus.$emit('favorites-updated'); 
+              }
+          } catch (e) {
+              console.error('Bulk delete failed', e);
+          }
+    },
+    
+    async restoreFavorite() {
+      if (this.undoAction === 'bulk-delete' || this.undoAction === 'bulk-move') {
+           if (!this.undoPayload || !this.undoPayload.items) return;
+           
+           try {
+               const itemsToRestore = this.undoPayload.items;
+               const promises = itemsToRestore.map(item => {
+                   const safeItem = {
+                       idForDb: item.idForDb || item.tmdb_id,
+                       typeForDb: item.typeForDb || item.media_type,
+                       nameForDb: item.nameForDb || item.title || item.name,
+                       posterForDb: item.posterForDb || item.poster_path,
+                       yearStartForDb: item.yearStartForDb || item.year,
+                       ...item
+                   };
+
+                   return fetch(`${this.tursoBackendUrl}/favorites`, {
+                       method: 'POST',
+                       headers: { 'Content-Type': 'application/json' },
+                       body: JSON.stringify({ item: safeItem, userEmail: this.userEmail })
+                   });
+               });
+               
+               await Promise.all(promises);
+               await this.checkData();
+               
+               this.undoBannerVisible = false;
+               this.undoAction = null;
+               this.undoPayload = null;
+           } catch(e) {
+               console.error("Undo failed", e);
+           }
+           return;
+      }
+      
+      const itemToRestore = this.undoItem; 
+      if (!itemToRestore) return; 
+
+      if (!itemToRestore.details || (!itemToRestore.details.idForDb && !itemToRestore.details.tmdb_id)) {
+          console.warn('DEBUG: Attempted to restore placeholder item. Aborting.', itemToRestore);
+          this.undoBannerVisible = false;
+          return;
+      }
+
+      this.isLoadingFavorites = true;
+      try {
+        const response = await fetch(`${this.tursoBackendUrl}/favorites`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userEmail: this.userEmail,
+            item: itemToRestore.details,
+          }),
+        });
+        
+        if (!response.ok) {
+           throw new Error('Error restoring favorite');
+        }
+        
+        await this.checkData();
+        this.undoBannerVisible = false;
+        this.undoItem = null;
+
+      } catch (error) {
+        console.error('Error restoring favorite:', error);
+      } finally {
+        this.isLoadingFavorites = false;
+      }
     },
 
     async openAddToListModal(item) {
@@ -1453,77 +1626,6 @@ export default {
       }
     },
     
-    async restoreFavorite() {
-      if (!this.undoItem || !this.undoItem.details) return;
-      
-      const itemToRestore = this.undoItem;
-      const { 
-        nameForDb, starsForDb, yearStartForDb, yearEndForDb, 
-        posterForDb, idForDb, genresForDb, typeForDb, 
-        external_ids, rating_source, imdb_rating, imdb_votes, runtime,
-        userRatingForDb, userReview
-      } = itemToRestore.details;
-      
-      const payload = {
-        userEmail: this.userEmail,
-        item: {
-            nameForDb: nameForDb || null,
-            starsForDb: starsForDb || null,
-            yearStartForDb: yearStartForDb || null,
-            yearEndForDb: yearEndForDb || null,
-            posterForDb: posterForDb || null,
-            idForDb: idForDb,
-            genresForDb: genresForDb || null,
-            typeForDb: typeForDb,
-            addedAt: new Date(), 
-            external_ids: external_ids || null,
-            rating_source: rating_source || null,
-            imdb_rating: imdb_rating || null,
-            imdb_votes: imdb_votes || null,
-            runtime: runtime || null,
-        }
-      };
-      
-      try {
-        const response = await fetch(`${this.tursoBackendUrl}/favorites`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-             const errText = await response.text();
-             throw new Error(`Failed to restore favorite: ${errText}`);
-        }
-        
-        if (userRatingForDb && userRatingForDb !== '-') {
-           await fetch(
-            `${this.tursoBackendUrl}/favorites/rating/${this.userEmail}/${typeForDb}/${idForDb}`,
-            {
-              method: 'PUT',
-              headers: { 
-                'Content-Type': 'application/json' 
-              },
-              body: JSON.stringify({
-                rating: parseInt(userRatingForDb),
-                review: userReview || ''
-              })
-            }
-          );
-        }
-        
-        this.undoBannerVisible = false;
-        if (this.undoTimer) clearTimeout(this.undoTimer);
-        this.undoItem = null;
-        
-        await this.checkData();
-        
-      } catch (e) {
-        console.error('Error restoring favorite:', e);
-        alert(`Failed to restore item: ${e.message}`);
-      }
-    },
-
     async deleteFavorite(keyToDelete) {
       try {
         const [itemType, itemId] = keyToDelete.split('/');
@@ -4145,11 +4247,11 @@ select.user-rating-select {
   border-bottom-color: #8BE9FD;
 }
 
-.ai-analysis-btn {
+.bulk-actions-btn {
   position: relative;
 }
 
-.ai-analysis-btn.active {
+.bulk-actions-btn.active {
   background: rgba(139, 233, 253, 0.2);
   border: 1px solid #8BE9FD;
   color: #8BE9FD;
@@ -4917,7 +5019,6 @@ svg.rating-logo.imdb {
     opacity: 0;
 }
 
-/* List Selector Styles */
 .list-nav-wrapper {
     position: relative;
     display: flex;

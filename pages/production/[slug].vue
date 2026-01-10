@@ -683,7 +683,6 @@ onUnmounted(() => {
   max-width: 500px;
   background: linear-gradient(to bottom right, #092739, #061720);
   border-radius: 12px;
-  /* overflow: hidden; Removed to fix dropdown cutoff */
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
@@ -720,11 +719,9 @@ onUnmounted(() => {
 
 .filters-content {
   padding: 20px;
-  /* overflow-y: auto; Removed to prevent dropdown clipping */
   display: flex;
   flex-direction: column;
   gap: 20px;
-  /* max-height: 80vh; Removed to prevent clipping */
 }
 
 .filter-group {

@@ -183,7 +183,8 @@ export default {
       editForm: {
         id: null,
         name: '',
-        is_public: false
+        navState: 'lists',
+        mode: 'add'
       }
     };
   },
@@ -202,7 +203,8 @@ export default {
              return `Añadir / Eliminar "${name}" de las colecciones`;
         }
         if (Array.isArray(this.itemsToAdd)) {
-             return `Selecciona colecciones para añadir ${this.itemsToAdd.length} elementos`;
+             const action = this.mode === 'move' ? 'mover' : 'añadir';
+             return `Selecciona colecciones para ${action} ${this.itemsToAdd.length} elementos`;
         }
         return null;
     },
@@ -239,7 +241,8 @@ export default {
       await this.fetchLists();
     },
 
-    async showAddMode(input, preSelectedListId = null) {
+    async showAddMode(input, preSelectedListId = null, mode = 'add') {
+        this.mode = mode;
         if (Array.isArray(input)) {
              this.itemsToAdd = input;
              this.itemToAdd = null;
@@ -332,11 +335,11 @@ export default {
                  );
      
                  await Promise.all(promises);
-                 this.$bus.$emit('lists-updated');
                  this.$bus.$emit('bulk-items-added', { 
                      elementCount: mappedItems.length, 
                      listCount: this.selectedListIds.length 
                  });
+                 this.$bus.$emit('lists-updated');
                  this.close();
              } catch (e) {
                  console.error("Bulk add failed", e);

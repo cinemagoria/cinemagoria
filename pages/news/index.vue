@@ -672,7 +672,7 @@ function sanitizeDescription(desc) {
     color: #fff;
     width: 36px; 
     height: 36px;
-    border-radius: 8px; /* Slightly different to distinguish from arrows */
+    border-radius: 8px;
     cursor: pointer;
     flex-shrink: 0;
     padding: 0; 
