@@ -4169,7 +4169,8 @@ select.user-rating-select {
   border: 1px solid rgba(139, 233, 253, 0.3);
   border-radius: 8px;
   padding: 1rem 1.5rem;
-  width: 97% !important;
+  width: 100%;
+  max-width: 350px;
   margin: 1rem auto;
 }
 
