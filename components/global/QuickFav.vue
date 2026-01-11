@@ -54,7 +54,7 @@
             <div class="checkbox">
               <svg v-if="membership.inWatchlist" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
             </div>
-            <span>Watchlist</span>
+            <span style="font-size: 13px;">Watchlist</span>
           </button>
 
           <div class="divider"></div>
@@ -75,7 +75,7 @@
           </div>
 
           <button class="menu-option create-new" @click.stop.prevent="openCreateListModal">
-            <span class="plus">+</span> Create New List
+            <span class="plus">+</span> Create List
           </button>
         </div>
       </transition>
@@ -497,16 +497,14 @@ export default {
     }
     
     .list-name {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
       flex: 1;
       position: static !important;
       min-width: 0 !important;
       text-align: left !important;
       line-height: 1.2;
+      font-size: 12px !important;
     }
-    
+
     &.create-new {
       color: #8BE9FD;
       font-weight: 600;
