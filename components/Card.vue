@@ -5,12 +5,13 @@
       :to="item.media_type === 'production' ? { name: 'production-slug', params: { slug: item.slug } } : { name: `${media}-id`, params: { id: item.id } }">
       
       <CardActions v-if="context === 'list'" :item="item" :currentList="list" />
-      <QuickFav v-else-if="media !== 'production' && media !== 'person'" :item="item" />
 
       <div class="card__img">        
         <div v-if="isLoading" class="card-loader">
           <Loader :size="40" />
         </div>
+        
+        <QuickFav v-if="media !== 'production' && media !== 'person'" :item="item" />
 
         <img
           v-if="poster"
