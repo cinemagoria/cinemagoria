@@ -1,6 +1,6 @@
 ## Entercinema - The moment you discover what to watch.
 
-Entercinema is a high-performance **Progressive Web Application (PWA)** engineered for modern viewers. By aggregating intelligence from **TMDB, IMDb, MDBList, Trakt, and JustWatch**, it provides a centralized hub for intelligent search and cross-device synchronization.
+Entercinema is a high-performance **Progressive Web Application (PWA)** engineered for modern viewers. By aggregating data from **TMDB, IMDb, MDBList, Trakt, and JustWatch**, it provides a centralized hub for intelligent search and cross-device synchronization.
 
 ![EnterCinema Cover](https://www.ivanluna.dev/images/assets/entercinema-asset1.webp)
 
