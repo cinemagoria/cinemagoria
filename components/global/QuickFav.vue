@@ -75,7 +75,7 @@
           </div>
 
           <button class="menu-option create-new" @click.stop.prevent="openCreateListModal">
-            <span style="text-transform: uppercase;" class="plus">+</span> Create New List
+            <span class="plus">+</span> Create New List
           </button>
         </div>
       </transition>
@@ -185,7 +185,7 @@ export default {
     this.$bus.$on('lists-updated', this.checkMembership);
     this.$bus.$on('new-list-created', this.handleNewList);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.$bus.$off('favorites-updated', this.checkMembership);
     this.$bus.$off('lists-updated', this.checkMembership);
     this.$bus.$off('new-list-created', this.handleNewList);
@@ -330,7 +330,7 @@ export default {
                 console.error(e);
             }
         }
-        setTimeout(() => this.checkMembership(), 100);
+        await this.checkMembership();
     },
 
     async toggleListMembership(list) {
