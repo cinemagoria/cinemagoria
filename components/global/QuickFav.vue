@@ -443,7 +443,7 @@ export default {
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    height: 36px;
+    height: 24px;
   }
   
   .divider {
@@ -497,11 +497,12 @@ export default {
     }
     
     .list-name {
-      white-space: nowrap;
       overflow: hidden;
-      text-overflow: ellipsis;
       flex: 1;
       position: static !important;
+      min-width: 0 !important;
+      text-align: left !important;
+      line-height: 1.2;
     }
     
     &.create-new {
