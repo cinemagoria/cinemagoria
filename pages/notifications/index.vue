@@ -1800,4 +1800,9 @@ button {
   background: #FF6B6B;
   color: #fff;
 }
+
+.company-logo {
+  background-color: #8BE9FD !important;
+  opacity: 1 !important;
+}
 </style>
