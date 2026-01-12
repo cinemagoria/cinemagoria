@@ -1335,6 +1335,14 @@ export default {
         this.isLoadingFavorites = false;
       }
     },
+
+    async openAddToListModal(item) {
+      if (!this.hasAccessToken) {
+         this.$bus.$emit('show-auth-modal');
+         return;
+      }
+      this.$bus.$emit('show-add-to-list-modal', item.details);
+    },
     
     openRatingModal(item) {
       this.currentRatingItem = item;
