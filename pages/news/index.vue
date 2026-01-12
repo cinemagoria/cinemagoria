@@ -1,7 +1,7 @@
 <template>
   <div>
   <main class="main">
-     <UserNav />
+    <UserNav v-if="isMounted" />
     <nav class="navbar navbar-welcome">
       <h1 class="title-primary page-title">Latest News</h1>
       <h2 class="title-secondary page-subtitle">
@@ -68,11 +68,10 @@
               <a 
                 :href="getSourceUrl(selectedSource)" 
                 target="_blank" 
-                style="color: #8BE9FD; text-decoration: none; cursor: pointer;"
                 class="source-link-header"
               >
                 {{ selectedSource }}
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 2px; position:relative; top: 1px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="external-link-icon"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
               </a>
             </h2>
             <h2 class="status-title" v-else>All Updates</h2>
@@ -107,8 +106,8 @@
                <!-- Saved View -->
                <div v-if="isSavedView">
                   <div v-if="Object.keys(groupedSavedArticles).length > 0">
-                    <div v-for="(group, sourceName) in groupedSavedArticles" :key="sourceName" class="source-group" style="margin-bottom: 50px;">
-                        <h3 class="source-group-title" style="color: #fff; font-size: 22px; margin-bottom: 20px; border-left: 4px solid #8BE9FD; padding-left: 15px;">{{ sourceName }}</h3>
+                    <div v-for="(group, sourceName) in groupedSavedArticles" :key="sourceName" class="source-group">
+                        <h3 class="source-group-title">{{ sourceName }}</h3>
                         <div class="news-grid">
                             <div 
                               v-for="item in group" 
@@ -346,7 +345,6 @@ function onImageError(event, item) {
 
 function setSource(source) {
   selectedSource.value = source;
-  // If we are in saved view, we must exit it
   if (isSavedView.value || route.query.view === 'saved') {
       currentView.value = 'latest';
       const query = { ...route.query };
@@ -386,7 +384,6 @@ function sanitizeDescription(desc) {
   return striptags(desc);
 }
 
-// --- Saved News Logic ---
 const savedArticles = ref(new Set());
 const localSavedArticlesList = ref([]);
 const userEmail = ref(null);
@@ -402,7 +399,6 @@ watch(() => route.query.view, (newView) => {
 
 const isSavedView = computed(() => currentView.value === 'saved');
 
-// Group saved articles by source
 const groupedSavedArticles = computed(() => {
   if (!isSavedView.value) return {};
   const groups = {};
@@ -418,17 +414,14 @@ const groupedSavedArticles = computed(() => {
 
 async function fetchSavedArticlesList() {
     if (!userEmail.value) {
-      // If no email, maybe show auth modal or empty state?
-      // userEmail ref is set in onMounted.
       return; 
     }
     pending.value = true;
     try {
-        const response = await fetch(`https://entercinema-favorites.vercel.app/api/news/saved/${userEmail.value}`);
+        const response = await fetch(`${config.public.tursoBackendUrl}/news/saved/${userEmail.value}`);
         const data = await response.json();
         if (data.success && data.articles) {
             localSavedArticlesList.value = data.articles;
-            // Also update the Set for checking status
             savedArticles.value = new Set(data.articles.map(a => a.link));
         } else {
              localSavedArticlesList.value = [];
@@ -463,7 +456,7 @@ onMounted(() => {
 async function fetchSavedNews() {
   if (!userEmail.value) return;
   try {
-    const response = await fetch(`https://entercinema-favorites.vercel.app/api/news/saved/${userEmail.value}`);
+    const response = await fetch(`${config.public.tursoBackendUrl}/news/saved/${userEmail.value}`);
     const data = await response.json();
     if (data.success && data.articles) {
       savedArticles.value = new Set(data.articles.map(a => a.link));
@@ -474,19 +467,8 @@ async function fetchSavedNews() {
 }
 
 function isSaved(article) {
-  return savedArticles.value.has(article.link || article.href); // Fallback to href if link missing, but consistency is key
-  // Note: Backend saves 'link'. News items here have 'href' usually constructed, or 'url'? 
-  // Let's check news item structure. Previous files showed `article.link`.
-  // Wait, `pages/news/index.vue` uses `item.href`.
-  // But `NewsCarousel` uses `article.id` to link to `/news`.
-  // I should check what property holds the external URL or unique ID for saving.
-  // The backend uses `link` as primary key (unique with email).
-  // If `item.href` is the external link, I should use that.
+  return savedArticles.value.has(article.link || article.href);
 }
-
-// Actually better check item structure.
-// `item.href` in template (line 98).
-// So `item.href` is likely the link.
 
 async function toggleSave(article) {
   if (!userEmail.value) {
@@ -494,26 +476,21 @@ async function toggleSave(article) {
     return;
   }
 
-  const link = article.href || article.link; // Ensure we get the link
+  const link = article.href || article.link;
   const isArticleSaved = savedArticles.value.has(link);
   
-  // Optimistic update
   if (isArticleSaved) {
     savedArticles.value.delete(link);
-    // Remove from article list immediately if we are in saved view (or just general consistency)
     localSavedArticlesList.value = localSavedArticlesList.value.filter(a => (a.link || a.href) !== link);
   } else {
     savedArticles.value.add(link);
-    // Note: We can't easily add to localSavedArticlesList here without the full object structure often returned by API
-    // behaving like the saved list. But usually we are removing from the saved list view.
   }
   savedArticles.value = new Set(savedArticles.value);
 
   try {
-    const url = 'https://entercinema-favorites.vercel.app/api/news/saved';
+    const url = `${config.public.tursoBackendUrl}/news/saved`;
     const method = isArticleSaved ? 'DELETE' : 'POST';
     
-    // Prepare article object for saving
     const articleToSave = {
         title: article.title,
         link: link,
@@ -536,9 +513,11 @@ async function toggleSave(article) {
 
   } catch (e) {
     console.error('Error toggling save:', e);
-    // Revert
     if (isArticleSaved) {
       savedArticles.value.add(link);
+      if (isSavedView.value) {
+           localSavedArticlesList.value.push(article);
+      }
     } else {
       savedArticles.value.delete(link);
     }
@@ -783,6 +762,7 @@ watch(userEmail, (val) => {
   transform: scale(1.05);
 }
 
+
 .card-source {
   position: absolute;
   top: 10px;
@@ -796,6 +776,50 @@ watch(userEmail, (val) => {
   color: #8BE9FD;
   border: 1px solid rgba(139, 233, 253, 0.3);
   text-transform: uppercase;
+}
+
+.source-group {
+  margin-bottom: 50px;
+}
+
+.source-group-title {
+  color: #fff;
+  font-size: 22px;
+  margin-bottom: 20px;
+  border-left: 4px solid #8BE9FD;
+  padding-left: 15px;
+}
+
+.source-link-header {
+  color: #8BE9FD;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.external-link-icon {
+  margin-left: 2px;
+  position: relative;
+  top: 1px;
+}
+
+.no-results-content {
+  text-align: center;
+}
+
+.no-results-icon {
+  opacity: 0.5;
+  margin-bottom: 20px;
+}
+
+.no-results-title {
+  color: #8BE9FD;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.no-results-text {
+  font-size: 14px;
+  color: #aaa;
 }
 
 .card-content {
