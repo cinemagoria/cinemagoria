@@ -258,7 +258,6 @@ export default {
       }
     },
     visible: {
-      immediate: true,
       handler(val) {
         if (val) {
           this.fetchData();
@@ -269,6 +268,9 @@ export default {
 
   mounted() {
     this.$bus.$on('show-following-modal', this.show);
+    if (this.visible) {
+      this.fetchData();
+    }
   },
 
   beforeDestroy() {
@@ -678,7 +680,7 @@ export default {
 }
 
 .departmentTitle {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   color: inherit;
   margin-bottom: 0;
   text-transform: uppercase;
@@ -700,7 +702,7 @@ export default {
   height: 100%;
   object-fit: contain;
   padding: 8px;
-  background-color: rgba(0, 0, 0, 0.307);
+  background-color: #8BE9FD !important;
   filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
   transform: translateY(-4px);
   opacity: 0;
@@ -738,7 +740,8 @@ export default {
 .companyLogo {
   object-fit: contain !important;
   padding: 8px;
-  background: rgba(0, 0, 0, 0.307);
+  background-color: #8BE9FD !important;
+  opacity: 1 !important;
 }
 
 .noImage {
@@ -750,8 +753,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.307);
-  background: rgba(0, 0, 0, 0.307);
   color: #000;
   padding: 1rem;
   text-align: center;
@@ -872,6 +873,5 @@ padding: 1rem 2rem;
   text-transform: uppercase;
   margin: 0 auto;
   position: relative;
-  font-size: 1.6rem;
 }
 </style>
