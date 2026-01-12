@@ -1,6 +1,7 @@
 <template>
+  <div>
   <main class="main">
-    <UserNav />
+    <UserNav v-if="isMounted" />
     <nav class="navbar navbar-welcome">
       <h1 class="title-primary page-title">Latest News</h1>
       <h2 class="title-secondary page-subtitle">
@@ -14,6 +15,12 @@
         <!-- Sidebar -->
         <aside class="news-sidebar">
           <div class="sidebar-card">
+            
+            <NuxtLink :to="{ path: '/news', query: { view: 'saved' } }" class="saved-articles-link" :class="{ 'active': isSavedView }">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><line x1="12" x2="12" y1="7" y2="13"/><line x1="15" x2="9" y1="10" y2="10"/></svg>
+              <span>Saved Articles</span>
+            </NuxtLink>
+
             <h3 class="sidebar-title">Sources</h3>
             <div class="sources-container-mobile">
               <button class="expand-btn" @click="toggleSourcesExpansion" :aria-label="isSourcesExpanded ? 'Collapse' : 'Expand'">
@@ -55,20 +62,30 @@
         <div class="news-main">
           
           <div class="header-status">
-            <h2 class="status-title" v-if="selectedSource">
+            <h2 class="status-title" v-if="isSavedView">Saved Articles</h2>
+            <h2 class="status-title" v-else-if="selectedSource">
               Latest from 
               <a 
                 :href="getSourceUrl(selectedSource)" 
                 target="_blank" 
-                style="color: #8BE9FD; text-decoration: none; cursor: pointer;"
                 class="source-link-header"
               >
                 {{ selectedSource }}
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 2px; position:relative; top: 1px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="external-link-icon"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
               </a>
             </h2>
             <h2 class="status-title" v-else>All Updates</h2>
-            <span class="count-badge" v-if="!pending">{{ newsItems.length }} articles</span>
+            
+            <ClientOnly>
+              <span class="count-badge">
+                <template v-if="isSavedView">
+                  {{ localSavedArticlesList.length }} {{ localSavedArticlesList.length === 1 ? 'article' : 'articles' }}
+                </template>
+                <template v-else-if="!pending">
+                  {{ newsItems.length }} {{ newsItems.length === 1 ? 'article' : 'articles' }}
+                </template>
+              </span>
+            </ClientOnly>
           </div>
 
           <!-- Loading State -->
@@ -84,9 +101,76 @@
             <button @click="refresh" class="retry-btn">Retry</button>
           </div>
 
-          <!-- News Grid (Success State) -->
+           <!-- News Grid (Success State) -->
             <div v-else>
-               <div v-if="newsItems.length > 0">
+               <!-- Saved View -->
+               <div v-if="isSavedView">
+                  <div v-if="Object.keys(groupedSavedArticles).length > 0">
+                    <div v-for="(group, sourceName) in groupedSavedArticles" :key="sourceName" class="source-group">
+                        <h3 class="source-group-title">{{ sourceName }}</h3>
+                        <div class="news-grid">
+                            <div 
+                              v-for="item in group" 
+                              :key="item.link" 
+                              class="news-card"
+                            >
+                              <a :href="item.link" target="_blank" class="card-image">
+                                  <img 
+                                      v-if="item.image"
+                                      :src="item.image" 
+                                      :alt="item.title" 
+                                      loading="lazy"
+                                      @error="onImageError($event, item)"
+                                      class="img-lazy"
+                                  />
+                                  <img 
+                                      v-else
+                                      src="/placeholder_news.webp" 
+                                      :alt="item.title" 
+                                      loading="lazy"
+                                      class="img-lazy"
+                                  />
+                                   
+                                   <!-- Bookmark Button (Already Saved) -->
+                                  <button 
+                                    class="bookmark-btn is-saved"
+                                    @click.prevent="toggleSave(item)"
+                                    title="Remove from Saved"
+                                  >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="is-saved-icon"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/><path d="m9 10 2 2 4-4"/></svg>
+                                  </button>
+                              </a>
+
+                              <div class="card-content">
+                                <div class="meta-row">
+                                  <span class="card-date">{{ formatDate(item.published_at) }}</span>
+                                </div>
+                                
+                                <h3>
+                                    <a :href="item.link" target="_blank" class="card-title-link">{{ item.title }}</a>
+                                </h3>
+                                
+                                <div class="card-footer">
+                                  <a :href="item.link" target="_blank" class="read-link">
+                                    Read Article
+                                  </a>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                  <div v-else class="no-results">
+                      <div style="text-align: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5; margin-bottom: 20px;"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><line x1="12" x2="12" y1="7" y2="13"/><line x1="15" x2="9" y1="10" y2="10"/></svg>
+                        <h3 style="color: #8BE9FD; font-size: 16px; margin-bottom: 10px;">No saved articles yet</h3>
+                        <p style="font-size: 14px; color: #aaa;">Articles you save will appear here.</p>
+                      </div>
+                  </div>
+               </div>
+
+               <!-- Standard Feed View -->
+               <div v-else-if="newsItems.length > 0">
                   <div class="news-grid">
                     <div 
                       v-for="item in displayedItems" 
@@ -113,6 +197,17 @@
                           />
                           
                           <div class="card-source">{{ item.source.name }}</div>
+
+                           <!-- Bookmark Button -->
+                          <button 
+                            class="bookmark-btn"
+                            :class="{ 'is-saved': isSaved(item) }"
+                            @click.prevent="toggleSave(item)"
+                            :title="isSaved(item) ? 'Remove from Saved' : 'Read Later'"
+                          >
+                            <svg v-if="!isSaved(item)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><line x1="12" x2="12" y1="7" y2="13"/><line x1="15" x2="9" y1="10" y2="10"/></svg>
+                            <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="is-saved-icon"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/><path d="m9 10 2 2 4-4"/></svg>
+                          </button>
                       </a>
 
                       <div class="card-content">
@@ -150,6 +245,7 @@
       </div>
     </div>
   </main>
+  </div>
 </template>
 
 <script setup>
@@ -160,11 +256,13 @@ import { SOURCES, SOURCE_URLS } from '~/utils/newsSources';
 import { formatDate as formatDateHelper, handleImageError as handleImageErrorHelper } from '~/utils/helpers';
 
 const config = useRuntimeConfig();
+const { $store, $bus } = useNuxtApp();
 const currentLang = ref(config.public.apiLang || 'en');
 
 
 const currentSources = computed(() => SOURCES[currentLang.value] || SOURCES['en']);
 const route = useRoute();
+const router = useRouter();
 const selectedSource = ref(route.query.source || null);
 
 const { data, pending, refresh, error } = await useFetch('/api/news', {
@@ -196,7 +294,10 @@ const displayedItems = computed(() => {
 watch(selectedSource, () => {
   visibleLimit.value = 20;
 });
+
+const isMounted = ref(false);
 onMounted(() => {
+  isMounted.value = true;
   observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
       if (visibleLimit.value < newsItems.value.length) {
@@ -244,6 +345,12 @@ function onImageError(event, item) {
 
 function setSource(source) {
   selectedSource.value = source;
+  if (isSavedView.value || route.query.view === 'saved') {
+      currentView.value = 'latest';
+      const query = { ...route.query };
+      delete query.view;
+      router.push({ query });
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -276,6 +383,156 @@ function sanitizeDescription(desc) {
   if (!desc) return '';
   return striptags(desc);
 }
+
+const savedArticles = ref(new Set());
+const localSavedArticlesList = ref([]);
+const userEmail = ref(null);
+const currentView = ref(route.query.view || 'latest'); 
+
+watch(() => route.query.view, (newView) => {
+  currentView.value = newView || 'latest';
+  if (currentView.value === 'saved') {
+    fetchSavedArticlesList();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
+
+const isSavedView = computed(() => currentView.value === 'saved');
+
+const groupedSavedArticles = computed(() => {
+  if (!isSavedView.value) return {};
+  const groups = {};
+  localSavedArticlesList.value.forEach(article => {
+    const source = article.source || 'Unknown Source';
+    if (!groups[source]) {
+      groups[source] = [];
+    }
+    groups[source].push(article);
+  });
+  return groups;
+});
+
+async function fetchSavedArticlesList() {
+    if (!userEmail.value) {
+      return; 
+    }
+    pending.value = true;
+    try {
+        const response = await fetch(`${config.public.tursoBackendUrl}/news/saved/${userEmail.value}`);
+        const data = await response.json();
+        if (data.success && data.articles) {
+            localSavedArticlesList.value = data.articles;
+            savedArticles.value = new Set(data.articles.map(a => a.link));
+        } else {
+             localSavedArticlesList.value = [];
+        }
+    } catch (e) {
+        console.error('Error fetching saved articles list:', e);
+    } finally {
+        pending.value = false;
+    }
+}
+
+onMounted(() => {
+  if (typeof window !== 'undefined') {
+    const email = localStorage.getItem('email');
+    userEmail.value = email || null;
+    
+    if (isSavedView.value && userEmail.value) {
+        fetchSavedArticlesList();
+    } else if (isSavedView.value && !userEmail.value) {
+         // Potentially redirect or just show empty states
+    }
+
+    window.addEventListener('auth-changed', () => {
+       const newEmail = localStorage.getItem('email');
+       userEmail.value = newEmail || null;
+       if (isSavedView.value) fetchSavedArticlesList();
+    });
+  }
+});
+
+
+async function fetchSavedNews() {
+  if (!userEmail.value) return;
+  try {
+    const response = await fetch(`${config.public.tursoBackendUrl}/news/saved/${userEmail.value}`);
+    const data = await response.json();
+    if (data.success && data.articles) {
+      savedArticles.value = new Set(data.articles.map(a => a.link));
+    }
+  } catch (e) {
+    console.error('Error fetching saved news:', e);
+  }
+}
+
+function isSaved(article) {
+  return savedArticles.value.has(article.link || article.href);
+}
+
+async function toggleSave(article) {
+  if (!userEmail.value) {
+    $bus.$emit('show-auth-modal');
+    return;
+  }
+
+  const link = article.href || article.link;
+  const isArticleSaved = savedArticles.value.has(link);
+  
+  if (isArticleSaved) {
+    savedArticles.value.delete(link);
+    localSavedArticlesList.value = localSavedArticlesList.value.filter(a => (a.link || a.href) !== link);
+  } else {
+    savedArticles.value.add(link);
+  }
+  savedArticles.value = new Set(savedArticles.value);
+
+  try {
+    const url = `${config.public.tursoBackendUrl}/news/saved`;
+    const method = isArticleSaved ? 'DELETE' : 'POST';
+    
+    const articleToSave = {
+        title: article.title,
+        link: link,
+        image: article.image,
+        source: article.source?.name,
+        published_at: article.published_at,
+    };
+
+    const body = isArticleSaved 
+      ? { userEmail: userEmail.value, link: link }
+      : { userEmail: userEmail.value, article: articleToSave };
+
+    const response = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if (!response.ok) throw new Error('Failed to update');
+
+  } catch (e) {
+    console.error('Error toggling save:', e);
+    if (isArticleSaved) {
+      savedArticles.value.add(link);
+      if (isSavedView.value) {
+           localSavedArticlesList.value.push(article);
+      }
+    } else {
+      savedArticles.value.delete(link);
+    }
+    savedArticles.value = new Set(savedArticles.value);
+  }
+}
+
+watch(userEmail, (val) => {
+  if (val) {
+    fetchSavedNews();
+  } else {
+    savedArticles.value = new Set();
+  }
+}, { immediate: true });
+
 </script>
 
 <style scoped>
@@ -324,6 +581,34 @@ function sanitizeDescription(desc) {
   max-height: calc(100vh - 120px);
   display: flex;
   flex-direction: column;
+}
+
+.saved-articles-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(139, 233, 253, 0.1);
+  color: #8BE9FD;
+  padding: 12px 15px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 20px;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(139, 233, 253, 0.2);
+
+  &:hover {
+    background: rgba(139, 233, 253, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 233, 253, 0.1);
+  }
+
+  &.active {
+    background: rgba(139, 233, 253, 0.25);
+    border-color: #8BE9FD;
+    box-shadow: 0 0 10px rgba(139, 233, 253, 0.2);
+  }
 }
 
 .sidebar-title {
@@ -477,6 +762,7 @@ function sanitizeDescription(desc) {
   transform: scale(1.05);
 }
 
+
 .card-source {
   position: absolute;
   top: 10px;
@@ -490,6 +776,50 @@ function sanitizeDescription(desc) {
   color: #8BE9FD;
   border: 1px solid rgba(139, 233, 253, 0.3);
   text-transform: uppercase;
+}
+
+.source-group {
+  margin-bottom: 50px;
+}
+
+.source-group-title {
+  color: #fff;
+  font-size: 22px;
+  margin-bottom: 20px;
+  border-left: 4px solid #8BE9FD;
+  padding-left: 15px;
+}
+
+.source-link-header {
+  color: #8BE9FD;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.external-link-icon {
+  margin-left: 2px;
+  position: relative;
+  top: 1px;
+}
+
+.no-results-content {
+  text-align: center;
+}
+
+.no-results-icon {
+  opacity: 0.5;
+  margin-bottom: 20px;
+}
+
+.no-results-title {
+  color: #8BE9FD;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.no-results-text {
+  font-size: 14px;
+  color: #aaa;
 }
 
 .card-content {
@@ -630,6 +960,10 @@ function sanitizeDescription(desc) {
 .sources-container-mobile {
   display: flex;
   flex-direction: column; 
+}
+
+.expand-btn {
+  display: none;
 }
 
 .scroll-arrow {
@@ -778,5 +1112,37 @@ function sanitizeDescription(desc) {
 
 .read-link:hover {
   background: rgba(139, 233, 253, 0.1);
+}
+
+.bookmark-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  
+  &:hover {
+    background: rgba(139, 233, 253, 0.2);
+    border-color: #8BE9FD;
+    color: #8BE9FD;
+    transform: scale(1.1);
+  }
+
+  &.is-saved {
+    background: #8BE9FD;
+    border-color: #8BE9FD;
+    color: #000;
+  }
 }
 </style>
