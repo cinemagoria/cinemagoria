@@ -33,7 +33,7 @@
                 <Loader :size="30" />
               </div>
               <img 
-                :src="item.details.posterForDb" 
+                :src="getPosterUrl(item.details.posterForDb)" 
                 class="rated-item-poster" 
                 :alt="item.details.nameForDb"
                 :style="{ opacity: isImageLoading(item) ? 0 : 1, transition: 'opacity 0.3s ease' }"
@@ -201,6 +201,12 @@ export default {
     getUniqueId(item) {
       if (!item || !item.details) return null;
       return `${item.details.typeForDb}_${item.details.idForDb}`;
+    },
+
+    getPosterUrl(path) {
+      if (!path) return '/image_not_found_yet.webp';
+      if (path.startsWith('http')) return path;
+      return `https://image.tmdb.org/t/p/w500${path.startsWith('/') ? '' : '/'}${path}`;
     },
 
     isImageLoading(item) {
