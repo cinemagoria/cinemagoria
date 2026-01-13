@@ -31,6 +31,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     imdbDbUrl: process.env.IMDB_DB_URL,
     imdbDbToken: process.env.IMDB_DB_TOKEN,
+    rssDbUrl: process.env.RSS_DB_URL || process.env.TURSO_DATABASE_URL,
+    rssDbToken: process.env.RSS_DB_TOKEN || process.env.TURSO_AUTH_TOKEN,
     traktClientSecret: process.env.TRAKT_CLIENT_SECRET,
 
     public: {
