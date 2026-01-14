@@ -15,10 +15,10 @@
     <template v-else>
       <Hero v-if="item && item.id" :item="item" />
       
-      <MediaNav :menu="menu" @clicked="navClicked" />
+      <MediaNav :menu="menu" :active-label="activeMenu" @clicked="navClicked" />
 
       <template v-if="activeMenu === 'overview'">
-        <MovieInfo v-if="item && item.id" :item="item" :reviews-prop="reviews">
+        <MovieInfo v-if="item && item.id" :item="item" @open-releases="activeMenu = 'releases'" :reviews-prop="reviews">
           <template #before-recommendations>
             <Credits v-if="showCredits" :people="item.credits.cast" />
           </template>
