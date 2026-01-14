@@ -64,7 +64,7 @@
             <li v-if="item.status">
               <div :class="$style.label">Estado</div>
               <div :class="$style.value">
-                {{ item.status }}
+                {{ translateStatus(item.status) }}
                 <span 
                   v-if="releaseStatusSuffix" 
                   :class="$style.releaseLink"
@@ -76,7 +76,7 @@
             </li>
             <li v-if="item.original_language">
               <div :class="$style.label">Idioma Original</div>
-              <div :class="$style.value">{{ fullLang(item.original_language) }}</div>
+              <div :class="$style.value" style="text-transform: capitalize;">{{ fullLang(item.original_language) }}</div>
             </li>
             <li v-if="item.production_companies && item.production_companies.length">
               <div :class="$style.label">Producción</div>
@@ -323,8 +323,9 @@ export default {
         default:
           return '';
       }
-    }
+    },
   },
+  
 
   watch: {
     item: {
@@ -362,6 +363,17 @@ export default {
   },
 
   methods: {
+    translateStatus(status) {
+      const map = {
+        'Released': 'Estrenado',
+        'Post Production': 'Post Producción',
+        'In Production': 'En Producción',
+        'Planned': 'Planificado',
+        'Rumored': 'Rumoreado',
+        'Canceled': 'Cancelado'
+      };
+      return map[status] || status;
+    },
     checkImageLoaded() {
       const img = this.$refs.posterImage;
       if (img && img.complete && img.naturalHeight !== 0) {
