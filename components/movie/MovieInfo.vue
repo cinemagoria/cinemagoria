@@ -63,7 +63,16 @@
             </li>
             <li v-if="item.status">
               <div :class="$style.label">Estado</div>
-              <div :class="$style.value">{{ item.status }}</div>
+              <div :class="$style.value">
+                {{ item.status }}
+                <span 
+                  v-if="releaseStatusSuffix" 
+                  :class="$style.releaseLink"
+                  @click="$emit('open-releases')"
+                >
+                  {{ releaseStatusSuffix }}
+                </span>
+              </div>
             </li>
             <li v-if="item.original_language">
               <div :class="$style.label">Idioma Original</div>
@@ -188,6 +197,7 @@
 
 <script>
 import { apiImgUrl, getMovieProviders, getMovieReviews, getTraktReviews, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating, translateReviewsBatch } from '~/utils/api'; 
+import { getReleaseStatusContext } from '~/utils/helpers';
 import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants'; 
 import { name, directors } from '~/mixins/Details';
 import Filters from '~/mixins/Filters';
@@ -299,6 +309,20 @@ export default {
        const hasProviders = this.providersToDisplay && this.providersToDisplay.length > 0;
        const hasImdb = this.item.external_ids && this.item.external_ids.imdb_id;
        return (hasProviders || hasImdb) && this.isReleasedOrCloseToRelease;
+    },
+    releaseStatusSuffix() {
+      const context = getReleaseStatusContext(this.item, process.env.API_COUNTRY || 'US');
+      
+      switch (context) {
+        case 'FESTIVALS_AND_THEATRICAL_ONLY':
+          return ' (Solo Festivales y Cines)';
+        case 'THEATRICAL_ONLY':
+          return ' (Solo en Cines)';
+        case 'FESTIVALS_ONLY':
+          return ' (Solo en Festivales)';
+        default:
+          return '';
+      }
     }
   },
 
@@ -962,6 +986,14 @@ export default {
   color: #999;
   padding: 4rem;
   font-style: italic;
+}
+.releaseLink {
+  color: #8AE8FC !important;
+  cursor: pointer;
+  
+  &:hover {
+    text-decoration: underline;
+  }
 }
 </style>
 

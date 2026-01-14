@@ -18,6 +18,10 @@ export default {
       type: Array,
       required: true,
     },
+    activeLabel: {
+      type: String,
+      default: '',
+    },
   },
 
   data () {
@@ -30,6 +34,19 @@ export default {
     clicked (index, item) {
       this.active = index;
       this.$emit('clicked', item.replace(/\s+/g, '-').toLowerCase());
+    },
+  },
+
+  watch: {
+    activeLabel: {
+      handler(newVal) {
+        if (!newVal) return;
+        const index = this.menu.findIndex(item => item.replace(/\s+/g, '-').toLowerCase() === newVal);
+        if (index !== -1) {
+          this.active = index;
+        }
+      },
+      immediate: true,
     },
   },
 };
