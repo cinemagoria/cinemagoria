@@ -280,7 +280,12 @@ const { data, pending, refresh, error } = await useFetch('/api/news', {
 
 const newsItems = computed(() => {
   if (!data.value) return [];
-  return data.value.results || data.value || [];
+  const items = data.value.results || data.value || [];
+  return [...items].sort((a, b) => {
+    const dateA = new Date(a.published_at || 0).getTime();
+    const dateB = new Date(b.published_at || 0).getTime();
+    return dateB - dateA;
+  });
 });
 
 const visibleLimit = ref(20);
