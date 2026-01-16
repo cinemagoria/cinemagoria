@@ -17,7 +17,6 @@ export const SOURCES = {
 };
 
 export const SOURCE_URLS = {
-    '20 Minutos Cine': 'https://www.20minutos.es/cine/',
     'Cine O\'culto': 'https://cineoculto.com/',
     'Cine PREMIERE': 'https://www.cinepremiere.com.mx/',
     'CineyTele': 'https://www.cineytele.com/',
