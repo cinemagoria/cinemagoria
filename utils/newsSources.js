@@ -2,6 +2,7 @@ export const SOURCES = {
     es: [
         "Cine O'culto",
         'CineyTele',
+        'eCartelera',
         'EscribiendoCine',
         'Espinof',
         'Mundiario',
@@ -21,5 +22,6 @@ export const SOURCE_URLS = {
     'CineyTele': 'https://www.cineytele.com/',
     'Mundiario': 'https://www.mundiario.com/cineseries/',
     'OtrosCines': 'https://www.otroscines.com/',
-    "Cine O'culto": 'https://cineoculto.com/'
+    "Cine O'culto": 'https://cineoculto.com/',
+    'eCartelera': 'https://www.ecartelera.com/'
 };
