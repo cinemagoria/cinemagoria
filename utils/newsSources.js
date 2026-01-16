@@ -1,6 +1,8 @@
 export const SOURCES = {
     es: [
-        "Cine O'culto",
+        '20 Minutos Cine',
+        'Cine O\'culto',
+        'Cine PREMIERE',
         'CineyTele',
         'eCartelera',
         'EscribiendoCine',
@@ -14,14 +16,16 @@ export const SOURCES = {
 };
 
 export const SOURCE_URLS = {
-    'Espinof': 'https://www.espinof.com/',
-    'SensaCine': 'https://www.sensacine.com/',
-    'TerrorWeekend': 'https://www.terrorweekend.com/',
-    'EscribiendoCine': 'https://www.escribiendocine.com/',
-    'Uruloki': 'https://www.uruloki.org/',
+    '20 Minutos Cine': 'https://www.20minutos.es/cine/',
+    'Cine O\'culto': 'https://cineoculto.com/',
+    'Cine PREMIERE': 'https://www.cinepremiere.com.mx/',
     'CineyTele': 'https://www.cineytele.com/',
+    'eCartelera': 'https://www.ecartelera.com/',
+    'EscribiendoCine': 'https://www.escribiendocine.com/',
+    'Espinof': 'https://www.espinof.com/',
     'Mundiario': 'https://www.mundiario.com/cineseries/',
     'OtrosCines': 'https://www.otroscines.com/',
-    "Cine O'culto": 'https://cineoculto.com/',
-    'eCartelera': 'https://www.ecartelera.com/'
+    'SensaCine': 'https://www.sensacine.com/',
+    'TerrorWeekend': 'https://www.terrorweekend.com/',
+    'Uruloki': 'https://www.uruloki.org/'
 };
