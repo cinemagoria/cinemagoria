@@ -1,6 +1,5 @@
 export const SOURCES = {
     es: [
-        '20 Minutos Cine',
         'Cine O\'culto',
         'Cine PREMIERE',
         'CineyTele',
