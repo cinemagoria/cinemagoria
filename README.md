@@ -157,6 +157,19 @@ yarn start
 
 ### Version History
 
+#### v4.3.4 — Enhanced Productivity, Dynamic Content, and Core Performance (2026-01-16)
+
+* **Watchlist Bulk Actions:** Add, move, and delete multiple items with undo support.
+* **Multi-List QuickFav:** Manage items across all lists from any card.
+* **Saved Articles:** Bookmark news articles for later reading (`/news?view=saved`).
+* **Async News Curation:** Background processing via GitHub Actions. Load times: ~10s → <50ms.
+* **Release Status Context:** Granular movie release info (Theaters, Streaming, Digital, Physical).
+* **News Sorting:** Articles now sorted by date (newest first).
+* **UI Polish:** Refined undo banner, QuickFav styling, and FollowingModal.
+* **Performance:** Auto-remove console logs in production, improved poster URL handling.
+* **Dependencies:** Updated `diff`, `devalue`, `h3`.
+
+
 #### v4.3.1 — Enhanced User Experience & UI Refresh (2026-01-03)
 
 * **Revamped User Ratings & Reviews:** Decoupled from watchlist, full review control without auto-population, and personal review display in media details.
