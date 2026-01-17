@@ -31,9 +31,10 @@ export default defineEventHandler(async (event) => {
         if (source) {
             sql += ` AND source = ?`
             args.push(source)
+            sql += ` ORDER BY published_at DESC LIMIT ? OFFSET ?`
+        } else {
+            sql += ` ORDER BY created_at DESC LIMIT ? OFFSET ?`
         }
-
-        sql += ` ORDER BY published_at DESC LIMIT ? OFFSET ?`
         args.push(limit, offset)
 
         const result = await db.execute({ sql, args })
