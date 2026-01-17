@@ -23,14 +23,14 @@
             <h4>Following People</h4>
             <p>Navigate to any actor, director, writer, or creator profile and click the "Follow" button to start receiving notifications. You'll be instantly notified about their recent work from the past 30 days, plus all upcoming projects scheduled for release within the next 5 years. Our notification system runs automated checks every 6 hours to ensure you never miss an announcement.</p>
             <div :class="$style.guideImage">
-              <img src="/add-person-en.png" alt="Follow person guide">
+              <img src="/add-person-en.webp" alt="Follow person guide">
             </div>
           </div>
 
           <div :class="$style.guideCard">
             <p>Get real-time alerts whenever someone you follow releases a new movie or project.</p>
             <div :class="$style.guideImage">
-              <img src="/push-person-en.png" alt="Push notifications for people guide">
+              <img src="/push-person-en.webp" alt="Push notifications for people guide">
             </div>
           </div>
 
@@ -38,14 +38,14 @@
             <h4>Following TV Shows</h4>
             <p>Access any TV series page and click the "Follow Episodes" button to subscribe to episode notifications. You'll receive timely alerts for episodes airing within a 7-day window before and after their scheduled release date. This feature is ideal for staying current with ongoing series without missing new episodes. The system performs automatic updates every 6 hours to keep your notifications fresh.</p>
             <div :class="$style.guideImage">
-              <img src="/add-tv-show-en.png" alt="Follow TV show guide">
+              <img src="/add-tv-show-en.webp" alt="Follow TV show guide">
             </div>
           </div>
 
           <div :class="$style.guideCard">
             <p>Receive timely notifications when new episodes or seasons of your followed series are released. Stay up to date with airing schedules and never miss the latest from your favorite shows.</p>
             <div :class="$style.guideImage">
-              <img src="/push-tv-show-en.png" alt="Push notifications for TV shows guide">
+              <img src="/push-tv-show-en.webp" alt="Push notifications for TV shows guide">
             </div>
           </div>
         </div>
