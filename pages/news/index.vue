@@ -266,7 +266,7 @@ const selectedSource = ref(route.query.source || null);
 
 const { data, pending, refresh, error } = await useFetch('/api/news', {
   query: computed(() => ({
-    limit: 100,
+    limit: selectedSource.value ? 100 : 200,
     source: selectedSource.value,
     lang: currentLang.value
   })),

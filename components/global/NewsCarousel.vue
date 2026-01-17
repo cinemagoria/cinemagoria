@@ -136,6 +136,10 @@ export default {
       const dateLimit = new Date();
       dateLimit.setDate(dateLimit.getDate() - 7);
       
+      allItems.sort((a, b) => {
+        return new Date(b.published_at) - new Date(a.published_at);
+      });
+
       allItems = allItems.filter(item => {
         const pubDate = new Date(item.published_at);
         return pubDate >= dateLimit;
@@ -152,7 +156,10 @@ export default {
         }
       }
 
-      return distinctItems;
+
+      return distinctItems.sort((a, b) => {
+        return new Date(b.published_at) - new Date(a.published_at);
+      });
     }
   },
   methods: {
