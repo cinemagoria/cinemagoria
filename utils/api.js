@@ -1080,7 +1080,7 @@ export function search(query, page = 1) {
 
 export function get***MovieByImdb(imdbId) {
     return new Promise((resolve) => {
-        axios.get('https://***.lt/api/v2/list_movies.json', {
+        axios.get('https://***.bz/api/v2/list_movies.json', {
             params: {
                 query_term: imdbId,
                 limit: 1,
@@ -1096,7 +1096,7 @@ export function get***MovieByImdb(imdbId) {
 
                 resolve({
                     slug: `${title}`,
-                    url: `https://***.lt/movies/${title}`,
+                    url: `https://***.bz/movies/${title}`,
                     found: true
                 });
             } else {
