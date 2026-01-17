@@ -2,7 +2,12 @@
   <div v-if="visible" class="modal-overlay" @click="close">
     <div class="rated-items-modal" @click.stop>
       <div class="modal-header">
-        <h2 class="title-primary">Tus Valoraciones</h2>
+        <div class="header-content">
+          <h2 class="title-primary">Tus Valoraciones</h2>
+          <p class="modal-subtitle">
+            Gestiona tus valoraciones y reseñas de contenidos.
+          </p>
+        </div>
         <button class="close-btn" @click="close">×</button>
       </div>
       
@@ -471,11 +476,10 @@ export default {
   border-bottom: 1px solid rgba(0, 0, 0, 0.307);
 }
 
-.modal-header h3 {
-  margin: 0;
-  font-size: 1.6rem;
+.modal-header h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2.4rem;
   font-weight: 500;
-  text-align: center;
   font-family: 'Ortica', 'Roboto', sans-serif;
   font-weight: 300;
   letter-spacing: 0.05em;
@@ -485,7 +489,20 @@ export default {
       0 1px 2px rgba(255, 255, 255, 0.3),
       0 2px 8px rgba(255, 255, 255, 0.2),
       0 4px 16px rgba(139, 233, 253, 0.15);
+  text-align: center;
+}
+
+.header-content {
   flex: 1;
+  text-align: center;
+}
+
+.modal-subtitle {
+  color: rgb(172, 175, 181);
+  font-size: 13px;
+  margin: 0 auto;
+  max-width: 500px;
+  text-align: center;
 }
 
 .close-btn {
