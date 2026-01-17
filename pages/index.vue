@@ -177,9 +177,9 @@ const trendingMovies = computed(() => pageData.value?.trendingMovies);
 const trendingTv = computed(() => pageData.value?.trendingTv);
 
 const trendingMoviesTitle = computed(() => getListItem('movie', 'trending').title);
-const trendingMoviesUrl = computed(() => ({ name: 'movie-category-name', params: { name: 'trending' } }));
+const trendingMoviesUrl = computed(() => '/movie');
 const trendingTvTitle = computed(() => getListItem('tv', 'trending').title);
-const trendingTvUrl = computed(() => ({ name: 'tv-category-name', params: { name: 'trending' } }));
+const trendingTvUrl = computed(() => '/tv');
 
 const popularProductionCompanies = computed(() => {
   return POPULAR_PRODUCTION_COMPANIES_IDS.map(id => SUPPORTED_PRODUCTION_COMPANIES[id]).filter(Boolean);
