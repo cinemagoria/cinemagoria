@@ -4,6 +4,9 @@
     
     <main class="main-content">
       <h1 class="title-primary">My Lists</h1>
+      <h2 class="title-secondary page-subtitle">
+        Organize your favorite movies and TV shows into custom collections.
+      </h2>
       
       <div class="toolbar-section" :class="{ 'justify-center': !shouldShowFilter }">
         <button @click="openCreateModal" class="create-btn">
@@ -396,7 +399,15 @@ export default {
   font-size: 3.2rem;
   color: #8BE9FD;
   font-weight: 700;
-  margin: 2rem 0 5rem;
+  margin: 2rem 0 1rem;
+  text-align: center;
+}
+
+.page-subtitle {
+  color: rgb(172, 175, 181);
+  font-size: 14px;
+  max-width: 600px;
+  margin: 0 auto 3rem;
   text-align: center;
 }
 

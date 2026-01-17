@@ -67,11 +67,11 @@
             </li>
             <li v-if="item.status">
               <div :class="$style.label">Status</div>
-              <div :class="$style.value">{{ item.status }}</div>
+              <div :class="$style.value">{{ translateStatus(item.status) }}</div>
             </li>
             <li v-if="item.original_language">
               <div :class="$style.label">Language</div>
-              <div :class="$style.value">{{ fullLang(item.original_language) }}</div>
+              <div :class="$style.value" style="text-transform: capitalize;">{{ fullLang(item.original_language) }}</div>
             </li>
           </ul>
         </div>
@@ -480,7 +480,16 @@ export default {
       } catch (error) { console.error(error); } finally { this.followTvLoading = false; }
     },
     toggleFullReviews() { this.showFullReviews = !this.showFullReviews; },
-    formatGenres (genres) { return genres.map(genre => `<a href="/genre/${genre.id}/tv">${genre.name}</a>`).join(', '); },
+    formatGenres (genres) { 
+      return genres.map(genre => {
+        const genreTranslations = {
+          'Sci-Fi & Fantasy': 'Sci-Fi & Fantasy',
+          'Action & Adventure': 'Action & Adventure'
+        };
+        const translatedName = genreTranslations[genre.name] || genre.name;
+        return `<a href="/genre/${genre.id}/tv">${translatedName}</a>`;
+      }).join(', '); 
+    },
     toggleReadMore(review) { review.showFullContent = !review.showFullContent; },
     formatRunTime (times) { return times.map(time => `${time}m`).join(', '); },
     formatContent(content, index, showFullContent) {
@@ -550,6 +559,17 @@ export default {
         }
     },
     redirectToUrl(url) { window.open(url, '_blank'); },
+    translateStatus(status) {
+      const map = {
+        'Returning Series': 'Returning Series',
+        'Ended': 'Ended',
+        'Canceled': 'Canceled',
+        'In Production': 'In Production',
+        'Planned': 'Planned',
+        'Pilot': 'Pilot'
+      };
+      return map[status] || status;
+    },
   },
 };
 </script>
