@@ -3,7 +3,12 @@
     <div :class="$style.modalWrapper">
       <div :class="$style.modalContent">
         <div :class="$style.modalHeader">
-          <h2 class="title-primary">Following</h2>
+          <div :class="$style.headerContent">
+            <h2 class="title-primary">Following</h2>
+            <p :class="$style.modalSubtitle">
+              Manage the people, TV shows, and companies you follow for notifications.
+            </p>
+          </div>
           <button @click="close" :class="$style.closeButton">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18"/>
@@ -557,10 +562,22 @@ export default {
   h2 {
     font-size: 2.4rem;
     color: #8BE9FD;
-    margin: 0;
-    flex: 1;
+    margin: 0 0 0.5rem 0;
     text-align: center;
   }
+}
+
+.headerContent {
+  flex: 1;
+  text-align: center;
+}
+
+.modalSubtitle {
+  color: rgb(172, 175, 181);
+  font-size: 13px;
+  margin: 0.5rem auto 0;
+  max-width: 500px;
+  text-align: center;
 }
 
 .closeButton {
