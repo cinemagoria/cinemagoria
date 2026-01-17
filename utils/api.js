@@ -1015,7 +1015,7 @@ export function search(query, page = 1) {
 
 export function getYTSMovieByImdb(imdbId) {
     return new Promise((resolve) => {
-        axios.get('https://yts.lt/api/v2/list_movies.json', {
+        axios.get('https://yts.bz/api/v2/list_movies.json', {
             params: {
                 query_term: imdbId,
                 limit: 1,
@@ -1031,7 +1031,7 @@ export function getYTSMovieByImdb(imdbId) {
 
                 resolve({
                     slug: `${title}`,
-                    url: `https://yts.lt/movies/${title}`,
+                    url: `https://yts.bz/movies/${title}`,
                     found: true
                 });
             } else {
