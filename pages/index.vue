@@ -82,6 +82,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
     
     const fetchWithRefill = async (mediaType, minItems = 20, maxPages = 5) => {
       let allResults = [];
+      const seenIds = new Set();
       let asianShowCount = 0;
       let currentBatch = 1;
       const batchSize = 3;
@@ -116,7 +117,12 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
               });
             }
             
-            allResults = [...allResults, ...carouselFiltered];
+            for (const item of carouselFiltered) {
+              if (!seenIds.has(item.id)) {
+                seenIds.add(item.id);
+                allResults.push(item);
+              }
+            }
           }
         }
         
