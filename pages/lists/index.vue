@@ -10,7 +10,7 @@
       
       <div class="toolbar-section" :class="{ 'justify-center': !shouldShowFilter }">
         <button @click="openCreateModal" class="create-btn">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;min-width:20px"><path d="M16 5H3"/><path d="M11 12H3"/><path d="M16 19H3"/><path d="M18 9v6"/><path d="M21 12h-6"/></svg>
           Crear Nueva Colección
         </button>
 
@@ -571,6 +571,7 @@ export default {
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
   cursor: pointer;
+  width: 90%;
   display: flex;
   flex-direction: column;
   
