@@ -55,6 +55,10 @@
                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block; min-width: 20px;"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
               </button>
               
+               <button v-if="!isOwner && list.is_public" @click="handleCloneList" class="share-btn-icon" aria-label="Clone List" title="Clone to my profile">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;min-width:20px"><path d="M12 13v8l-4-4"/><path d="m12 21 4-4"/><path d="M4.393 15.269A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.436 8.284"/></svg>
+               </button>
+
                <button v-if="list.is_public" @click="openShareModal" class="share-btn-icon" aria-label="Share">
                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block; min-width: 20px;">
                     <circle cx="18" cy="5" r="3"/>
@@ -544,6 +548,27 @@
         </div>
     </div>
 
+    <div v-if="cloneModalVisible" class="modal-overlay" @click="closeCloneModal">
+        <div class="create-list-modal-content" @click.stop>
+             <div class="modal-header-cl">
+                <h2>Clone List</h2>
+                <button class="close-btn-cl" @click="closeCloneModal">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                </button>
+             </div>
+             <div class="modal-body-cl">
+                 <p class="clone-modal-prompt">Do you want to create a copy of "<strong>{{ list.name }}</strong>" as a custom list?</p>
+                 <div class="actions-cl">
+                      <button @click="closeCloneModal" class="cancel-btn-cl">Cancel</button>
+                      <button @click="confirmCloneList" class="create-btn-cl">Confirm</button>
+                 </div>
+             </div>
+        </div>
+    </div>
+
     <div v-if="renameListModalVisible" class="modal-overlay" @click="closeRenameModal">
         <div class="create-list-modal-content" @click.stop>
              <div class="modal-header-cl">
@@ -577,6 +602,38 @@ import { apiImgUrl } from '~/utils/api';
 export default {
     components: {
         Loader
+    },
+
+    setup() {
+        const route = useRoute();
+        const config = useRuntimeConfig();
+        const { data: seoData } = useFetch(`${config.public.tursoBackendUrl}/lists/${route.params.slug}`, {
+            key: `list-seo-${route.params.slug}`,
+            server: true,
+            lazy: true
+        });
+
+        const listTitle = () => seoData.value?.list?.name ? `${seoData.value.list.name} | EnterCinema` : 'EnterCinema List';
+        const listDescription = () => seoData.value?.list?.description || 'Check out this curated list on EnterCinema.';
+
+        useSeoMeta({
+            title: listTitle,
+            description: listDescription,
+            ogTitle: listTitle,
+            ogDescription: listDescription,
+            ogImage: () => {
+                if (seoData.value?.items?.length > 0) {
+                     const poster = seoData.value.items[0].poster_url;
+                     if (poster) {
+                         return poster.startsWith('http') ? poster : `https://image.tmdb.org/t/p/w500${poster}`;
+                     }
+                }
+                return 'https://entercinema.com/cinema-popcorn.svg';
+            },
+            twitterCard: 'summary_large_image',
+        });
+        
+        return {};
     },
     
     data() {
@@ -618,6 +675,7 @@ export default {
             undoItem: null,
             undoTimer: null,
             shareModalVisible: false,
+            cloneModalVisible: false,
             customTitle: '',
             customMessage: '',
             copySuccess: false,
@@ -1291,6 +1349,76 @@ export default {
             e.target.src = '/image_not_found_yet.webp';
         },
         
+
+        _getUserEmail() {
+            return import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+        },
+
+        async handleCloneList() {
+             const userEmail = this._getUserEmail();
+             if (!userEmail) {
+                 if (typeof window !== 'undefined') {
+                      window.dispatchEvent(new CustomEvent('open-auth-modal', { detail: { action: 'login' } }));
+                 } else {
+                     alert('You must be logged in to clone lists.');
+                 }
+                 return;
+             }
+             
+             this.cloneModalVisible = true;
+         }, 
+         
+         closeCloneModal() {
+             this.cloneModalVisible = false;
+         },
+
+         async confirmCloneList() {
+             const userEmail = this._getUserEmail();
+             this.closeCloneModal();
+
+             try {
+                this.loading = true;
+                const response = await fetch(`${this.tursoBackendUrl}/lists/clone`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        sourceListId: this.list.id,
+                        userEmail
+                    })
+                });
+                
+                if (response.ok) {
+                    let data;
+                    try {
+                        data = await response.json();
+                    } catch (jsonErr) {
+                         console.error("Error parsing success JSON", jsonErr);
+                         data = { list: { slug: 'watchlist' } };
+                    }
+          
+                    if (data && data.list && data.list.slug) {
+                        setTimeout(() => {
+                            this.$router.push(`/lists/${data.list.slug}`);
+                        }, 1000);
+                    }
+                } else {
+                    let errorMessage = 'Unknown error';
+                    try {
+                        const data = await response.json();
+                        errorMessage = data.error || errorMessage;
+                    } catch (jsonErr) {
+                        console.error("Error parsing error response JSON", jsonErr);
+                    }
+                    alert(`Failed to clone list: ${errorMessage}`);
+                }
+             } catch (e) {
+                 console.error(e);
+                 alert('An error occurred while cloning the list.');
+             } finally {
+                 this.loading = false;
+             }
+        },
+
         openShareModal() {
             this.shareModalVisible = true;
             this.customTitle = "Check out this list '" + this.list.name + "' on EnterCinema!";
@@ -2821,8 +2949,8 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
 
 .modal-header-cl {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding: 1.5rem 2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
@@ -3120,5 +3248,159 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     background: rgba(139, 233, 253, 0.1);
     color: #8BE9FD;
     padding-left: 20px;
+}
+
+
+/* Unified Modal Styles */
+.modal-content-base,
+.create-list-modal-content,
+.modal-content-cl {
+  width: 100%;
+  max-width: 450px;
+  background: linear-gradient(to bottom right, #092739, #061720);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header-base,
+.modal-header-cl {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-header-base h2,
+.modal-header-cl h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #fff;
+    font-weight: 600;
+}
+
+.close-btn-base,
+.close-btn-cl {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.close-btn-base:hover,
+.close-btn-cl:hover {
+    color: #fff;
+}
+
+.modal-body-base,
+.modal-body-cl {
+    padding: 20px;
+}
+
+.form-group-base,
+.form-group-cl {
+    margin-bottom: 20px;
+}
+
+.form-group-base label,
+.form-group-cl label {
+    display: block;
+    margin-bottom: 8px;
+    color: #ccc;
+    font-size: 1.4rem;
+}
+
+.input-base,
+.input-cl {
+    width: 100%;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 1.4rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input-base:focus,
+.input-cl:focus {
+    border-color: #8BE9FD;
+}
+
+.actions-base,
+.actions-cl {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.cancel-btn-base,
+.cancel-btn-cl {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.3rem;
+    transition: background 0.2s;
+}
+
+.cancel-btn-base:hover,
+.cancel-btn-cl:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.create-btn-base,
+.create-btn-cl {
+    background: #8BE9FD;
+    color: #000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.3rem;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.create-btn-base:hover,
+.create-btn-cl:hover {
+    background: #7AD6E9;
+}
+
+.create-btn-base:disabled,
+.create-btn-cl:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.clone-modal-prompt {
+    color: #ccc;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.6rem;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
 }
 </style>
