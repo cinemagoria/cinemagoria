@@ -560,7 +560,7 @@
                 </button>
              </div>
              <div class="modal-body-cl">
-                 <p style="color: #ccc; margin-bottom: 20px; text-align: center;">Do you want to create a copy of "<strong>{{ list.name }}</strong>" in your collection?</p>
+                 <p class="clone-modal-prompt">Do you want to create a copy of "<strong>{{ list.name }}</strong>" as a custom list?</p>
                  <div class="actions-cl">
                       <button @click="closeCloneModal" class="cancel-btn-cl">Cancel</button>
                       <button @click="confirmCloneList" class="create-btn-cl">Confirm</button>
@@ -613,11 +613,14 @@ export default {
             lazy: true
         });
 
+        const listTitle = () => seoData.value?.list?.name ? `${seoData.value.list.name} | EnterCinema` : 'EnterCinema List';
+        const listDescription = () => seoData.value?.list?.description || 'Check out this curated list on EnterCinema.';
+
         useSeoMeta({
-            title: () => seoData.value?.list?.name ? `${seoData.value.list.name} | EnterCinema` : 'EnterCinema List',
-            description: () => seoData.value?.list?.description || 'Check out this curated list on EnterCinema.',
-            ogTitle: () => seoData.value?.list?.name ? `${seoData.value.list.name} | EnterCinema` : 'EnterCinema List',
-            ogDescription: () => seoData.value?.list?.description || 'Check out this curated list on EnterCinema.',
+            title: listTitle,
+            description: listDescription,
+            ogTitle: listTitle,
+            ogDescription: listDescription,
             ogImage: () => {
                 if (seoData.value?.items?.length > 0) {
                      const poster = seoData.value.items[0].poster_url;
@@ -1346,8 +1349,13 @@ export default {
             e.target.src = '/image_not_found_yet.webp';
         },
         
+
+        _getUserEmail() {
+            return import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+        },
+
         async handleCloneList() {
-             const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+             const userEmail = this._getUserEmail();
              if (!userEmail) {
                  if (typeof window !== 'undefined') {
                       window.dispatchEvent(new CustomEvent('open-auth-modal', { detail: { action: 'login' } }));
@@ -1365,7 +1373,7 @@ export default {
          },
 
          async confirmCloneList() {
-             const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+             const userEmail = this._getUserEmail();
              this.closeCloneModal();
 
              try {
@@ -1380,11 +1388,28 @@ export default {
                 });
                 
                 if (response.ok) {
-                    const data = await response.json();
-                    this.$router.push(`/lists/${data.list.slug}`);
+                    let data;
+                    try {
+                        data = await response.json();
+                    } catch (jsonErr) {
+                         console.error("Error parsing success JSON", jsonErr);
+                         data = { list: { slug: 'watchlist' } };
+                    }
+          
+                    if (data && data.list && data.list.slug) {
+                        setTimeout(() => {
+                            this.$router.push(`/lists/${data.list.slug}`);
+                        }, 1000);
+                    }
                 } else {
-                    const data = await response.json();
-                    alert(`Failed to clone list: ${data.error || 'Unknown error'}`);
+                    let errorMessage = 'Unknown error';
+                    try {
+                        const data = await response.json();
+                        errorMessage = data.error || errorMessage;
+                    } catch (jsonErr) {
+                        console.error("Error parsing error response JSON", jsonErr);
+                    }
+                    alert(`Failed to clone list: ${errorMessage}`);
                 }
              } catch (e) {
                  console.error(e);
@@ -2924,8 +2949,8 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
 
 .modal-header-cl {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding: 1.5rem 2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
@@ -3225,8 +3250,11 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     padding-left: 20px;
 }
 
-/* Clone Modal Styles */
-.create-list-modal-content {
+
+/* Unified Modal Styles */
+.modal-content-base,
+.create-list-modal-content,
+.modal-content-cl {
   width: 100%;
   max-width: 450px;
   background: linear-gradient(to bottom right, #092739, #061720);
@@ -3237,6 +3265,7 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
   flex-direction: column;
 }
 
+.modal-header-base,
 .modal-header-cl {
     display: flex;
     justify-content: space-between;
@@ -3245,6 +3274,7 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.modal-header-base h2,
 .modal-header-cl h2 {
     margin: 0;
     font-size: 1.8rem;
@@ -3252,6 +3282,7 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     font-weight: 600;
 }
 
+.close-btn-base,
 .close-btn-cl {
     background: transparent;
     border: none;
@@ -3264,18 +3295,22 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     transition: color 0.2s;
 }
 
+.close-btn-base:hover,
 .close-btn-cl:hover {
     color: #fff;
 }
 
+.modal-body-base,
 .modal-body-cl {
     padding: 20px;
 }
 
+.form-group-base,
 .form-group-cl {
     margin-bottom: 20px;
 }
 
+.form-group-base label,
 .form-group-cl label {
     display: block;
     margin-bottom: 8px;
@@ -3283,6 +3318,7 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     font-size: 1.4rem;
 }
 
+.input-base,
 .input-cl {
     width: 100%;
     padding: 10px;
@@ -3295,16 +3331,19 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     transition: border-color 0.2s;
 }
 
+.input-base:focus,
 .input-cl:focus {
     border-color: #8BE9FD;
 }
 
+.actions-base,
 .actions-cl {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
 }
 
+.cancel-btn-base,
 .cancel-btn-cl {
     background: rgba(255, 255, 255, 0.1);
     color: #fff;
@@ -3316,10 +3355,12 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     transition: background 0.2s;
 }
 
+.cancel-btn-base:hover,
 .cancel-btn-cl:hover {
     background: rgba(255, 255, 255, 0.2);
 }
 
+.create-btn-base,
 .create-btn-cl {
     background: #8BE9FD;
     color: #000;
@@ -3332,15 +3373,23 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     transition: background 0.2s;
 }
 
+.create-btn-base:hover,
 .create-btn-cl:hover {
     background: #7AD6E9;
 }
 
+.create-btn-base:disabled,
 .create-btn-cl:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
+.clone-modal-prompt {
+    color: #ccc;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.6rem;
+}
 .modal-overlay {
   position: fixed;
   top: 0;
