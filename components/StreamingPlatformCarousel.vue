@@ -24,27 +24,27 @@
         class="carousel__items"
         @scroll="scrollEvent">
         
-        <div
+        
+        <NuxtLink
           v-for="platform in items"
           :key="platform.id"
+          :to="`/streaming/${platform.slug}`"
           class="production-company-card"
         >
-          <NuxtLink 
-            :to="`/streaming/${platform.slug}`"
-            class="company-link"
-          >
-            <div class="logo-container">
-              <img 
-                v-if="platform.logo_path" 
-                :src="`${apiImgUrl}/w500${platform.logo_path}`" 
-                :alt="platform.name" 
-                class="company-logo"
-                loading="lazy"
-              >
-              <span v-else class="company-name">{{ platform.name }}</span>
-            </div>
-          </NuxtLink>
-        </div>
+          <div class="logo-container">
+            <img 
+              v-if="getLogoUrl(platform)" 
+              :src="getLogoUrl(platform)" 
+              :alt="platform.name" 
+              :class="['company-logo', { 'company-logo--large': platform.id === 11 || platform.id === 99 }]"
+              loading="lazy"
+            >
+            <span v-else class="company-name">{{ platform.name }}</span>
+          </div>
+        </NuxtLink>
+
+
+
 
       </div>
 
@@ -74,7 +74,18 @@ export default {
   },
   data() {
     return {
-      apiImgUrl
+      apiImgUrl,
+      customLogos: {
+        11: '/mubi-logo.svg',
+        15: '/hulu-logo.svg',
+        350: '/apple-tv-logo.svg',
+        8: '/netflix-logo.png',
+        9: '/amazon-prime-video-logo.png',
+        1899: '/hbo-max-logo.svg',
+        337: '/disney-logo.png',
+        386: '/peacock-logo.png',
+        99: '/shudder-logo.svg'
+      }
     };
   },
   computed: {
@@ -88,6 +99,13 @@ export default {
   methods: {
     resizeEvent() {
       this.calculateState(this.totalItems);
+    },
+    getLogoUrl(platform) {
+      const customLogo = this.customLogos[platform.id];
+      if (customLogo) {
+        return customLogo;
+      }
+      return platform.logo_path ? `${apiImgUrl}/w500${platform.logo_path}` : null;
     }
   }
 };
@@ -168,6 +186,7 @@ export default {
 
 
 .production-company-card {
+  display: block;
   width: 180px;
   height: 100px;
   flex-shrink: 0;
@@ -177,6 +196,7 @@ export default {
   background: #333;
   margin-right: 20px;
   scroll-snap-align: start;
+  text-decoration: none;
   
   &:hover {
     transform: scale(1.05);
@@ -195,13 +215,6 @@ export default {
   }
 }
 
-.company-link {
-  display: block;
-  width: 100%;
-  height: 100%;
-  text-decoration: none;
-}
-
 .logo-container {
   width: 100%;
   height: 100%;
@@ -209,13 +222,21 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 1rem;
-  background: #8BE9FD; /* Updated background color */
+  background: #8BE9FD;
 }
 
 .company-logo {
-  max-width: 90%;
-  max-height: 90%;
+  max-width: 120px;
+  max-height: 60px;
+  width: auto;
+  height: auto;
   object-fit: contain;
+  filter: brightness(0);
+  
+  &--large {
+    max-width: 220px;
+    max-height: 110px;
+  }
 }
 
 .company-name {

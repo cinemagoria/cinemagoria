@@ -1294,3 +1294,9 @@ export const POPULAR_PRODUCTION_COMPANIES_IDS = [
     25,
     923,
 ];
+export function getStreamingProviderBySlug(slug) {
+    return STREAMING_PROVIDERS.find(
+        provider => provider.slug === slug
+    ) || null;
+}
+
