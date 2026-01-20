@@ -347,15 +347,20 @@ const activeFilterChips = computed(() => {
     return chips;
 });
 
-const sortOptions = [
-    { value: 'popularity.desc', label: 'Popularity' },
-    { value: 'primary_release_date.desc', label: 'Newer Releases' },
-    { value: 'primary_release_date.asc', label: 'Older Releases' },
-    { value: 'vote_average.desc', label: 'Highest Rated' },
-    { value: 'vote_average.asc', label: 'Lowest Rated' },
-    { value: 'vote_count.desc', label: 'Highest Vote Count' },
-    { value: 'vote_count.asc', label: 'Lowest Vote Count' }
-];
+const sortOptions = computed(() => {
+    const isMovie = activeTab.value === 'movies';
+    const dateField = isMovie ? 'primary_release_date' : 'first_air_date';
+    
+    return [
+        { value: 'popularity.desc', label: 'Popularity' },
+        { value: `${dateField}.desc`, label: 'Newer Releases' },
+        { value: `${dateField}.asc`, label: 'Older Releases' },
+        { value: 'vote_average.desc', label: 'Highest Rated' },
+        { value: 'vote_average.asc', label: 'Lowest Rated' },
+        { value: 'vote_count.desc', label: 'Highest Vote Count' },
+        { value: 'vote_count.asc', label: 'Lowest Vote Count' }
+    ];
+});
 
 const currentSortLabel = computed(() => {
     const option = sortOptions.find(opt => opt.value === orderMode.value);

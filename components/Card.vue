@@ -44,7 +44,7 @@
       
 
       <div
-        v-if="media !== 'person' && media !== 'streaming' && media !== 'production' && (stars || item.vote_average || item.imdb_rating)"
+        v-if="!['person', 'streaming', 'production'].includes(media) && (stars || item.vote_average || item.imdb_rating)"
         class="card__rating">
         <div
           v-if="stars"
