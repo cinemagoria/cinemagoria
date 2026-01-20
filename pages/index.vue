@@ -25,6 +25,11 @@
       view-all-link="/production-companies"
     />
 
+    <StreamingPlatformCarousel 
+      v-if="popularStreamingProviders.length"
+      :items="popularStreamingProviders"
+    />
+
     <NewsCarousel />
   </main>
 </template>
@@ -38,7 +43,8 @@ import ListingCarousel from '~/components/ListingCarousel';
 import FeatureDescription from '~/components/FeatureDescription';
 import NewsCarousel from '~/components/global/NewsCarousel';
 import ProductionCompanyCarousel from '~/components/ProductionCompanyCarousel';
-import { SUPPORTED_PRODUCTION_COMPANIES, POPULAR_PRODUCTION_COMPANIES_IDS } from '~/utils/constants';
+import StreamingPlatformCarousel from '~/components/StreamingPlatformCarousel';
+import { SUPPORTED_PRODUCTION_COMPANIES, POPULAR_PRODUCTION_COMPANIES_IDS, STREAMING_PROVIDERS } from '~/utils/constants';
 
 
 const userEmail = ref('');
@@ -183,6 +189,21 @@ const trendingTvUrl = computed(() => '/tv');
 
 const popularProductionCompanies = computed(() => {
   return POPULAR_PRODUCTION_COMPANIES_IDS.map(id => SUPPORTED_PRODUCTION_COMPANIES[id]).filter(Boolean);
+});
+
+const popularStreamingProviders = computed(() => {
+  // Specific providers requested for homepage carousel
+  const requestedIds = [
+    8,    // Netflix
+    350,  // Apple TV
+    15,   // Hulu
+    9,    // Amazon Prime Video
+    1899, // HBO Max (Max)
+    337,  // Disney Plus
+    204957, // Mubi
+  ];
+  
+  return STREAMING_PROVIDERS.filter(p => requestedIds.includes(p.id));
 });
 
 async function getUserAvatar(userEmail) {
