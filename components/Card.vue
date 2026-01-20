@@ -2,7 +2,7 @@
   <div class="card">
     <nuxt-link
       class="card__link"
-      :to="item.media_type === 'production' ? { name: 'production-slug', params: { slug: item.slug } } : { name: `${media}-id`, params: { id: item.id } }">
+      :to="getRouteLink()">
       
       <CardActions v-if="context === 'list'" :item="item" :currentList="list" />
 
@@ -11,14 +11,14 @@
           <Loader :size="40" />
         </div>
 
-        <QuickFav v-if="media !== 'production' && media !== 'person'" :item="item" />
+        <QuickFav v-if="media !== 'production' && media !== 'person' && media !== 'streaming'" :item="item" />
 
         <img
           v-if="poster"
           ref="posterImage"
           :src="poster"
           loading="lazy"
-          :class="{ 'card__img--logo': media === 'production' }"
+          :class="{ 'card__img--logo': media === 'production' || media === 'streaming' }"
           :alt="name"
           :style="{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }"
           @load="onImageLoaded"
@@ -38,9 +38,12 @@
       <h2 class="card__name">
         {{ name }}
       </h2>
+      
+      <div v-if="media === 'streaming'" class="card__indicator">Streaming Service</div>
+      <div v-if="media === 'production'" class="card__indicator">Production Company</div>
 
       <div
-        v-if="media !== 'person' && (stars || item.vote_average || item.imdb_rating)"
+        v-if="media !== 'person' && media !== 'streaming' && media !== 'production' && (stars || item.vote_average || item.imdb_rating)"
         class="card__rating">
         <div
           v-if="stars"
@@ -128,6 +131,15 @@ export default {
     onImageLoaded() {
       this.isLoading = false;
     },
+    getRouteLink() {
+        if (this.item.media_type === 'production') {
+            return { name: 'production-slug', params: { slug: this.item.slug } };
+        }
+        if (this.item.media_type === 'streaming') {
+            return { name: 'streaming-slug', params: { slug: this.item.slug } };
+        }
+        return { name: `${this.media}-id`, params: { id: this.item.id } };
+    }
   },
 
   computed: {
@@ -197,5 +209,14 @@ export default {
   justify-content: center;
   background-color: #0000004e;
   z-index: 2;
+}
+
+.card__indicator {
+  font-size: 0.8rem;
+  color: #8BE9FD;
+  margin-top: 0.2rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 </style>

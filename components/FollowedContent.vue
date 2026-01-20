@@ -2,7 +2,9 @@
   <div>
     <main class="main">
       <div class="header-container">
-        <h1 class="title-primary" style="text-align: center; margin-bottom: 0.5rem; color: #8BE9FD; font-family: 'Ortica', sans-serif;">From the Production companies you follow</h1>
+        <h1 class="title-primary" style="text-align: center; margin-bottom: 0.5rem; color: #8BE9FD; font-family: 'Ortica', sans-serif;">
+          {{ titleText }}
+        </h1>
         
         <p v-if="companyNames" class="title-secondary" style="text-align: center; margin-bottom: 2rem;">
           Showing titles of: {{ companyNames }}
@@ -133,7 +135,7 @@
 </template>
 
 <script>
-import { getMoviesByCompanies, getTvShowsByCompanies, getFollowedProductionCompanies } from '~/utils/api';
+import { getMoviesByCompanies, getTvShowsByCompanies, getFollowedProductionCompanies, getMoviesByProvider, getTvShowsByProvider, getFollowedStreamingPlatforms } from '~/utils/api';
 import Card from '~/components/Card';
 
 export default {
@@ -145,6 +147,11 @@ export default {
     type: {
       type: String,
       required: true
+    },
+    source: {
+      type: String,
+      default: 'production_company',
+      validator: value => ['production_company', 'streaming_platform'].includes(value)
     }
   },
 
@@ -185,6 +192,12 @@ export default {
           chips.push({ label, value: 'imdb' });
       }
       return chips;
+    },
+    titleText() {
+        if (this.source === 'streaming_platform') {
+            return 'From the Streaming Platforms you follow';
+        }
+        return 'From the Production Companies you follow';
     }
   },
 
@@ -198,6 +211,9 @@ export default {
     },
 
     getApiFunction() {
+        if (this.source === 'streaming_platform') {
+            return this.type === 'movie' ? getMoviesByProvider : getTvShowsByProvider;
+        }
         return this.type === 'movie' ? getMoviesByCompanies : getTvShowsByCompanies;
     },
 
@@ -209,12 +225,19 @@ export default {
 
       this.loading = true;
       try {
-        const followedCompanies = await getFollowedProductionCompanies(userEmail);
+        let followedItems = [];
+        if (this.source === 'streaming_platform') {
+             const follows = await getFollowedStreamingPlatforms(userEmail);
+             followedItems = follows.map(f => ({ id: f.provider_id, name: f.provider_name }));
+        } else {
+             const follows = await getFollowedProductionCompanies(userEmail);
+             followedItems = follows.map(f => ({ id: f.company_id, name: f.company_name }));
+        }
         
-        if (followedCompanies && followedCompanies.length > 0) {
-          followedCompanies.sort((a, b) => a.company_name.localeCompare(b.company_name));
+        if (followedItems && followedItems.length > 0) {
+          followedItems.sort((a, b) => a.name.localeCompare(b.name));
           
-          const distinctNames = followedCompanies.map(c => c.company_name);
+          const distinctNames = followedItems.map(c => c.name);
           if (distinctNames.length > 10) {
             this.companyNames = distinctNames.slice(0, 10).join(', ') + ' and more';
           } else {
@@ -223,12 +246,12 @@ export default {
           
           const apiFunc = this.getApiFunction();
 
-          const sectionsPromises = followedCompanies.map(async (company) => {
-             const response = await apiFunc(company.company_id, 1);
+          const sectionsPromises = followedItems.map(async (item) => {
+             const response = await apiFunc(item.id, 1);
              if (response && response.results) {
                return {
-                 id: company.company_id,
-                 name: company.company_name,
+                 id: item.id,
+                 name: item.name,
                  items: response.results,
                  expanded: true,
                  page: 1,
