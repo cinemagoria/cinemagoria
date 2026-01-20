@@ -2,16 +2,20 @@
   <div>
     <main class="main">
       <div class="header-container">
-        <h1 class="title-primary" style="text-align: center; margin-bottom: 0.5rem; color: #8BE9FD; font-family: 'Ortica', sans-serif;">De las productoras que sigues</h1>
+        <h1 class="title-primary" style="text-align: center; margin-bottom: 0.5rem; color: #8BE9FD; font-family: 'Ortica', sans-serif;">
+          {{ titleText }}
+        </h1>
         
         <p v-if="companyNames" class="title-secondary" style="text-align: center; margin-bottom: 2rem;">
-          Mostrando títulos de: {{ companyNames }}
+           Mostrando títulos de: {{ companyNames }}
         </p>
 
         <div class="filter-actions-container">
           <button class="filter-btn" @click="openFiltersModal">
-            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M3 17v2h6v-2zM3 5v2h10V5zm10 16v-2h8v-2h-8v-2h-2v6zM7 9v2H3v2h4v2h2V9zm14 4v-2H11v2zm-6-4h2V7h4V5h-4V3h-2z"/></svg>
-            <span>Filtros y Ordenar</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
+            </svg>
+            <span>Filtros y Ordenamiento</span>
           </button>
         </div>
 
@@ -22,12 +26,19 @@
                 <button @click="removeFilter(chip.value)" class="chip-remove">×</button>
               </div>
             </div>
-            <button @click="clearAllFilters" class="clear-all-inline">Borrar Todo</button>
+            <button @click="clearAllFilters" class="clear-all-inline">Limpiar todo</button>
         </div>
       </div>
 
       <div v-if="loading" class="loading-container" style="width: 100%; display: flex; justify-content: center; padding: 2rem;">
-           <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" stroke="#2196f3" viewBox="0 0 44 44"><circle cx="22" cy="22" r="1" fill="none" stroke-width="2"><animate attributeName="r" begin="0s" calcMode="spline" dur="1.8s" keySplines="0.165, 0.84, 0.44, 1" keyTimes="0; 1" repeatCount="indefinite" values="1; 20"/><animate attributeName="stroke-opacity" begin="0s" calcMode="spline" dur="1.8s" keySplines="0.3, 0.61, 0.355, 1" keyTimes="0; 1" repeatCount="indefinite" values="1; 0"/></circle></svg>
+           <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44" stroke="#2196f3">
+            <g fill="none" fill-rule="evenodd" stroke-width="2">
+              <circle cx="22" cy="22" r="1">
+                <animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/>
+                <animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/>
+              </circle>
+            </g>
+          </svg>
       </div>
 
       <div v-else-if="companySections.length > 0" class="content-container">
@@ -62,11 +73,18 @@
                <!-- Load More Button -->
               <div v-if="company.page < company.totalPages && !company.loadingMore" class="load-more-container">
                 <button @click="loadMore(company.id)" class="load-more-btn">
-                   Cargar Más
+                   Cargar más
                 </button>
               </div>
               <div v-if="company.loadingMore" class="load-more-container">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" stroke="#8be9fd" viewBox="0 0 44 44"><circle cx="22" cy="22" r="1" fill="none" stroke-width="2"><animate attributeName="r" begin="0s" calcMode="spline" dur="1.8s" keySplines="0.165, 0.84, 0.44, 1" keyTimes="0; 1" repeatCount="indefinite" values="1; 20"/><animate attributeName="stroke-opacity" begin="0s" calcMode="spline" dur="1.8s" keySplines="0.3, 0.61, 0.355, 1" keyTimes="0; 1" repeatCount="indefinite" values="1; 0"/></circle></svg>
+                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 44 44" stroke="#8BE9FD">
+                    <g fill="none" fill-rule="evenodd" stroke-width="2">
+                        <circle cx="22" cy="22" r="1">
+                            <animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/>
+                            <animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/>
+                        </circle>
+                    </g>
+                </svg>
               </div>
 
            </div>
@@ -74,21 +92,21 @@
       </div>
 
       <div v-else-if="!loading" class="no-results">
-       <p style="text-align: center; color: white; margin-top: 2rem;">No se encontró contenido de las productoras que sigues.</p>
+        <p style="text-align: center; color: white; margin-top: 2rem;">No se encontró contenido de las productoras que sigues.</p>
       </div>
 
       <!-- Filter Modal -->
       <div v-if="filtersModalVisible" class="modal-overlay" @click="closeFiltersModal">
           <div class="filters-modal" @click.stop>
             <div class="modal-header">
-              <h3>Filtros y Ordenar</h3>
+              <h3>Filtros y Ordenamiento</h3>
               <button class="close-btn" @click="closeFiltersModal">×</button>
             </div>
             
             <div class="filters-content">
               
               <div class="filter-group">
-                <label class="filter-label">Rango de Calificación IMDB</label>
+                 <label class="filter-label">Rango de Calificación IMDB</label>
                  <div class="year-inputs">
                   <input type="number" v-model.number="minImdbRating" min="0" max="10" placeholder="Mín" class="year-input">
                   <span class="year-separator">-</span>
@@ -97,7 +115,7 @@
               </div>
 
               <div class="filter-group">
-                <label class="filter-label">Ordenar Por</label>
+                <label class="filter-label">Ordenar por</label>
                 <select v-model="orderMode" class="filter-input">
                   <option v-for="option in sortOptions" :key="option.value" :value="option.value">
                     {{ option.label }}
@@ -117,7 +135,7 @@
 </template>
 
 <script>
-import { getMoviesByCompanies, getTvShowsByCompanies, getFollowedProductionCompanies } from '~/utils/api';
+import { getMoviesByCompanies, getTvShowsByCompanies, getFollowedProductionCompanies, getMoviesByProvider, getTvShowsByProvider, getFollowedStreamingPlatforms } from '~/utils/api';
 import Card from '~/components/Card';
 
 export default {
@@ -129,6 +147,11 @@ export default {
     type: {
       type: String,
       required: true
+    },
+    source: {
+      type: String,
+      default: 'production_company',
+      validator: value => ['production_company', 'streaming_platform'].includes(value)
     }
   },
 
@@ -144,12 +167,12 @@ export default {
       maxImdbRating: null,
       
       sortOptions: [
-        { value: 'newest-releases', label: 'Estrenos más recientes' }, 
-        { value: 'oldest-releases', label: 'Estrenos más antiguos' }, 
-        { value: 'imdb-high', label: 'Calificación IMDb: Mayor a Menor' },
-        { value: 'imdb-low', label: 'Calificación IMDb: Menor a Mayor' },
-        { value: 'imdb-votes-high', label: 'Votos IMDb: Mayor a Menor' },
-        { value: 'imdb-votes-low', label: 'Votos IMDb: Menor a Mayor' },
+        { value: 'newest-releases', label: 'Lanzamientos más recientes' }, 
+        { value: 'oldest-releases', label: 'Lanzamientos más antiguos' }, 
+        { value: 'imdb-high', label: 'Puntaje IMDB: Más altos primero' },
+        { value: 'imdb-low', label: 'Puntaje IMDB: Más bajos primero' },
+        { value: 'imdb-votes-high', label: 'Votos IMDB: Más votos' },
+        { value: 'imdb-votes-low', label: 'Votos IMDB: Menos votos' },
       ],
 
     };
@@ -169,6 +192,12 @@ export default {
           chips.push({ label, value: 'imdb' });
       }
       return chips;
+    },
+    titleText() {
+        if (this.source === 'streaming_platform') {
+            return 'De las Plataformas de Streaming que sigues';
+        }
+        return 'De las Productoras que sigues';
     }
   },
 
@@ -182,6 +211,9 @@ export default {
     },
 
     getApiFunction() {
+        if (this.source === 'streaming_platform') {
+            return this.type === 'movie' ? getMoviesByProvider : getTvShowsByProvider;
+        }
         return this.type === 'movie' ? getMoviesByCompanies : getTvShowsByCompanies;
     },
 
@@ -193,26 +225,33 @@ export default {
 
       this.loading = true;
       try {
-        const followedCompanies = await getFollowedProductionCompanies(userEmail);
+        let followedItems = [];
+        if (this.source === 'streaming_platform') {
+             const follows = await getFollowedStreamingPlatforms(userEmail);
+             followedItems = follows.map(f => ({ id: f.provider_id, name: f.provider_name }));
+        } else {
+             const follows = await getFollowedProductionCompanies(userEmail);
+             followedItems = follows.map(f => ({ id: f.company_id, name: f.company_name }));
+        }
         
-        if (followedCompanies && followedCompanies.length > 0) {
-          followedCompanies.sort((a, b) => a.company_name.localeCompare(b.company_name));
+        if (followedItems && followedItems.length > 0) {
+          followedItems.sort((a, b) => a.name.localeCompare(b.name));
           
-          const distinctNames = followedCompanies.map(c => c.company_name);
+          const distinctNames = followedItems.map(c => c.name);
           if (distinctNames.length > 10) {
-            this.companyNames = distinctNames.slice(0, 10).join(', ') + ' y más';
+            this.companyNames = distinctNames.slice(0, 10).join(', ') + ' and more';
           } else {
             this.companyNames = distinctNames.join(', ');
           }
           
           const apiFunc = this.getApiFunction();
 
-          const sectionsPromises = followedCompanies.map(async (company) => {
-             const response = await apiFunc(company.company_id, 1);
+          const sectionsPromises = followedItems.map(async (item) => {
+             const response = await apiFunc(item.id, 1);
              if (response && response.results) {
                return {
-                 id: company.company_id,
-                 name: company.company_name,
+                 id: item.id,
+                 name: item.name,
                  items: response.results,
                  expanded: true,
                  page: 1,

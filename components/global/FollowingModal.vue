@@ -30,6 +30,11 @@
             :class="[{ [$style.active]: activeTab === 'companies' }]">
             <span :class="$style.tabLabel">Productoras ({{ companiesCount }})</span>
           </button>
+          <button 
+            @click="activeTab = 'streaming'" 
+            :class="[{ [$style.active]: activeTab === 'streaming' }]">
+            <span :class="$style.tabLabel">Plataformas de Streaming ({{ streamingCount }})</span>
+          </button>
         </div>
 
         <div class="undo-bar-container">
@@ -182,6 +187,46 @@
               <p>Aún no sigues ninguna productora</p>
             </div>
           </div>
+
+          <div v-else-if="activeTab === 'streaming'" :class="$style.companiesTab">
+            <div :class="$style.grid">
+              <div 
+                v-for="service in streamingServices" 
+                :key="service.provider_id"
+                :class="$style.card">
+                <div 
+                  @click="openStreaming(service.provider_id)" 
+                  :class="$style.cardImage">
+                  <div v-show="service.logo_path && !imageLoadStates[`streaming-${service.provider_id}`]" :class="$style.posterLoader">
+                    <Loader :size="44" color="#000" />
+                  </div>
+                  <img 
+                    v-if="service.logo_path" 
+                    :src="`https://image.tmdb.org/t/p/w500${service.logo_path}`" 
+                    :alt="service.provider_name"
+                    :class="[$style.companyLogo, { [$style.loaded]: imageLoadStates[`streaming-${service.provider_id}`] }]"
+                    @load="handleImageLoad(`streaming-${service.provider_id}`)"
+                    @error="onImageError($event, `streaming-${service.provider_id}`)"
+                  >
+                  <div v-else :class="$style.noImage">
+                    <span :class="$style.fallbackText">{{ service.provider_name }}</span>
+                  </div>
+                </div>
+                <div :class="$style.cardContent">
+                  <h4>{{ service.provider_name }}</h4>
+                  <button 
+                    @click="unfollowStreaming(service)" 
+                    :class="$style.unfollowButton">
+                    Dejar de seguir
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="streamingServices.length === 0" :class="$style.emptyState">
+              <p>Aún no sigues ninguna plataforma de streaming</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -194,6 +239,7 @@ import {
   unfollowProductionCompany, 
   followProductionCompany 
 } from '~/utils/api';
+import { STREAMING_PROVIDERS } from '~/utils/constants';
 import Loader from '@/components/Loader';
 
 export default {
@@ -212,6 +258,7 @@ export default {
       people: [],
       tvShows: [],
       companies: [],
+      streamingServices: [],
       loading: false,
       undoItem: null,
       undoTimeout: null,
@@ -242,6 +289,9 @@ export default {
     },
     companiesCount() {
         return this.companies.length;
+    },
+    streamingCount() {
+        return this.streamingServices.length;
     },
     followsApiUrl() {
         return 'https://entercinema-follows-rust.vercel.app';
@@ -286,10 +336,10 @@ export default {
     getUndoText() {
       if (!this.undoItem) return '';
       if (this.undoItem.type === 'company') return `${this.undoItem.company_name} dejado de seguir`;
+      if (this.undoItem.type === 'streaming') return `${this.undoItem.provider_name} dejado de seguir`;
       if (this.undoItem.type === 'tv') return `${this.undoItem.tv_name} dejado de seguir`;
       return `${this.undoItem.name} dejado de seguir`;
     },
-
     show() {
       this.$router.push({
         query: { ...this.$route.query, following: 'true' }
@@ -308,9 +358,10 @@ export default {
 
       this.loading = true;
       try {
-        const [peopleResponse, tvResponse] = await Promise.all([
+        const [peopleResponse, tvResponse, streamingResponse] = await Promise.all([
           fetch(`${this.followsApiUrl}/follows/list?user_email=${encodeURIComponent(userEmail)}`),
-          fetch(`${this.followsApiUrl}/tv-follows/list?user_email=${encodeURIComponent(userEmail)}`)
+          fetch(`${this.followsApiUrl}/tv-follows/list?user_email=${encodeURIComponent(userEmail)}`),
+          fetch(`${this.followsApiUrl}/streaming-follows/list?user_email=${encodeURIComponent(userEmail)}`)
         ]);
 
         if (peopleResponse.ok) {
@@ -328,7 +379,10 @@ export default {
           const data = await tvResponse.json();
           this.tvShows = data.tv_follows || [];
         }
-
+        if (streamingResponse.ok) {
+          const data = await streamingResponse.json();
+          this.streamingServices = data.streaming_follows || [];
+        }
         this.companies = await getFollowedProductionCompanies(userEmail);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -367,6 +421,29 @@ export default {
       } catch (error) {
         console.error('Error unfollowing:', error);
         this.people.push(person);
+      }
+    },
+
+    async unfollowStreaming(service) {
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail) return;
+
+      this.streamingServices = this.streamingServices.filter(s => s.provider_id !== service.provider_id);
+
+      this.undoItem = { ...service, type: 'streaming' };
+      this.startUndoTimer();
+
+      try {
+        await fetch(`${this.followsApiUrl}/streaming-follows/remove?user_email=${encodeURIComponent(userEmail)}&provider_id=${service.provider_id}`, {
+          method: 'DELETE'
+        });
+        this.$emit('unfollow-updated');
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('following-updated'));
+        }
+      } catch (error) {
+        console.error('Error unfollowing streaming service:', error);
+        this.streamingServices.push(service);
       }
     },
 
@@ -471,6 +548,20 @@ export default {
             this.undoItem.origin_country || null
           );
           this.companies.push(this.undoItem);
+          } else if (this.undoItem.type === 'streaming') {
+          const response = await fetch(`${this.followsApiUrl}/streaming-follows/add`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_email: userEmail,
+              provider_id: this.undoItem.provider_id,
+              provider_name: this.undoItem.provider_name,
+              logo_path: this.undoItem.logo_path || null
+            })
+          });
+          if (response.ok) {
+            this.streamingServices.push(this.undoItem);
+          }
         }
 
         this.$emit('unfollow-updated');
@@ -493,6 +584,17 @@ export default {
 
     openCompany(companyId) {
       this.$router.push(`/production/${companyId}`);
+    },
+
+    openStreaming(providerId) {
+      const providerConst = STREAMING_PROVIDERS.find(p => p.id === providerId);
+      
+      if (providerConst && providerConst.slug) {
+        this.$router.push(`/streaming/${providerConst.slug}`);
+      } else {
+         console.error(`Could not find slug for provider with ID: ${providerId}`);
+         this.$router.push(`/streaming/${providerId}`);
+      }
     },
 
     openTvShow(tvId) {

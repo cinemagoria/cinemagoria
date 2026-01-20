@@ -1,4 +1,4 @@
-import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants';
+import { SUPPORTED_PRODUCTION_COMPANIES, STREAMING_PROVIDERS } from '~/utils/constants';
 
 const axios = {
     get: async (url, config = {}) => {
@@ -1063,14 +1063,18 @@ export function search(query, page = 1) {
                         name: SUPPORTED_PRODUCTION_COMPANIES[company.id].name
                     }));
 
-                const combinedResults = [...companyResults, ...enrichedMultiResults];
+                let streamingResults = [];
+                if (page === 1) {
+                    streamingResults = STREAMING_PROVIDERS
+                        .filter(provider => provider.name.toLowerCase().includes(query.toLowerCase()))
+                        .map(provider => ({
+                            ...provider,
+                            media_type: 'streaming'
+                        }));
+                }
 
-                const finalResponse = {
-                    ...multiResponse.data,
-                    results: combinedResults
-                };
-
-                resolve(finalResponse);
+                multiResponse.data.results = [...streamingResults, ...companyResults, ...enrichedMultiResults];
+                resolve(multiResponse.data);
             })
             .catch((error) => {
                 reject(error);
@@ -1490,4 +1494,129 @@ export async function translateReviewsBatch(reviews) {
 
 export function translateReview(reviewContent) {
     return Promise.resolve(reviewContent);
+}
+
+export async function followStreamingPlatform(userEmail, providerId, providerName, logoPath) {
+    const response = await $fetch(`${FOLLOWS_API_URL}/streaming-follows/add`, {
+        method: 'POST',
+        body: {
+            user_email: userEmail,
+            provider_id: providerId,
+            provider_name: providerName,
+            logo_path: logoPath
+        }
+    });
+    return response;
+}
+
+export async function unfollowStreamingPlatform(userEmail, providerId) {
+    const response = await $fetch(`${FOLLOWS_API_URL}/streaming-follows/remove`, {
+        method: 'DELETE',
+        params: { user_email: userEmail, provider_id: providerId }
+    });
+    return response;
+}
+
+export async function getFollowedStreamingPlatforms(userEmail) {
+    try {
+        const response = await $fetch(`${FOLLOWS_API_URL}/streaming-follows/list`, {
+            params: { user_email: userEmail }
+        });
+        return response.streaming_follows || [];
+    } catch (error) {
+        console.error('Error fetching followed streaming platforms:', error);
+        return [];
+    }
+}
+
+export function getMoviesByProvider(providerId, page = 1, filters = {}) {
+    return new Promise((resolve, reject) => {
+        const params = {
+            api_key: getEnv('API_KEY'),
+            language: getEnv('API_LANG'),
+            with_watch_providers: providerId,
+            watch_region: 'US',
+            sort_by: filters.sort_by || 'popularity.desc',
+            page,
+        };
+
+        if (filters.with_genres) params.with_genres = filters.with_genres;
+        if (filters['primary_release_date.gte']) params['primary_release_date.gte'] = filters['primary_release_date.gte'];
+        if (filters['primary_release_date.lte']) params['primary_release_date.lte'] = filters['primary_release_date.lte'];
+        if (filters['vote_average.gte']) params['vote_average.gte'] = filters['vote_average.gte'];
+        if (filters['vote_average.lte']) params['vote_average.lte'] = filters['vote_average.lte'];
+        if (filters['vote_count.gte']) params['vote_count.gte'] = filters['vote_count.gte'];
+        if (filters['vote_count.lte']) params['vote_count.lte'] = filters['vote_count.lte'];
+
+        axios.get(`${apiUrl}/discover/movie`, { params }).then(async (response) => {
+            response.data.results.forEach(item => {
+                item.vote_average = parseFloat(item.vote_average).toFixed(1);
+            });
+
+            const enrichedResults = await Promise.all(
+                response.data.results.map(async (item) => {
+                    const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}`, {
+                        params: {
+                            api_key: getEnv('API_KEY'),
+                            append_to_response: 'external_ids'
+                        }
+                    });
+                    item.external_ids = detailsResponse.data.external_ids;
+                    return enrichWithIMDbRating(item);
+                })
+            );
+
+            response.data.results = enrichedResults;
+            resolve(response.data);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+
+export function getTvShowsByProvider(providerId, page = 1, filters = {}) {
+    return new Promise((resolve, reject) => {
+        const params = {
+            api_key: getEnv('API_KEY'),
+            language: getEnv('API_LANG'),
+            with_watch_providers: providerId,
+            watch_region: 'US',
+            sort_by: filters.sort_by || 'popularity.desc',
+            page,
+        };
+
+        if (filters.with_genres) params.with_genres = filters.with_genres;
+        if (filters['first_air_date.gte']) params['first_air_date.gte'] = filters['first_air_date.gte'];
+        if (filters['first_air_date.lte']) params['first_air_date.lte'] = filters['first_air_date.lte'];
+        if (filters['vote_average.gte']) params['vote_average.gte'] = filters['vote_average.gte'];
+        if (filters['vote_average.lte']) params['vote_average.lte'] = filters['vote_average.lte'];
+        if (filters['vote_count.gte']) params['vote_count.gte'] = filters['vote_count.gte'];
+        if (filters['vote_count.lte']) params['vote_count.lte'] = filters['vote_count.lte'];
+
+        axios.get(`${apiUrl}/discover/tv`, { params }).then(async (response) => {
+            response.data.results = response.data.results.filter(item => !EXCLUDED_TV_IDS.includes(item.id));
+
+            response.data.results.forEach(item => {
+                item.vote_average = parseFloat(item.vote_average).toFixed(1);
+            });
+
+            const enrichedResults = await Promise.all(
+                response.data.results.map(async (item) => {
+                    const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}`, {
+                        params: {
+                            api_key: getEnv('API_KEY'),
+                            append_to_response: 'external_ids'
+                        }
+                    });
+                    item.external_ids = detailsResponse.data.external_ids;
+                    return enrichWithIMDbRating(item);
+                })
+            );
+
+            response.data.results = enrichedResults;
+            resolve(response.data);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
 }

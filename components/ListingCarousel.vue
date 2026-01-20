@@ -82,7 +82,7 @@ export default {
     },
 
     viewAllUrl: {
-      type: Object,
+      type: [String, Object],
       required: false,
       default: function () {
         return null;

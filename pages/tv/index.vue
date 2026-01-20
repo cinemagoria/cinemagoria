@@ -30,6 +30,14 @@
         :view-all-url="{ name: 'tv-followed' }" />
     </div>
 
+    <div v-if="followedStreaming && followedStreaming.results && followedStreaming.results.length > 0" class="followed-section">
+      <ListingCarousel
+        :title="'De las plataformas de streaming que sigues'"
+        :items="followedStreaming"
+        :view-all-url="{ name: 'streaming-followed', query: { type: 'tv' } }" />
+    </div>
+
+
     <ListingCarousel
       v-if="onAir && onAir.results.length"
       :title="onAirTitle"
@@ -60,9 +68,10 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import UserNav from '@/components/global/UserNav.vue';
-import { getTvShows, getListItem, getFollowedProductionCompanies, getTvShowsByCompanies } from '~/utils/api';
+import { getTvShows, getListItem, getFollowedProductionCompanies, getTvShowsByCompanies, getFollowedStreamingPlatforms, getTvShowsByProvider } from '~/utils/api';
 import ListingCarousel from '~/components/ListingCarousel.vue';
 import CustomListingCategoriesSeries from '~/components/CustomListingCategoriesSeries.vue';
+
 
 const router = useRouter();
 const route = useRoute();
@@ -76,6 +85,7 @@ useHead({
 });
 
 const followedTvShows = ref(null);
+const followedStreaming = ref(null);
 const ratedItemsModalVisible = ref(false);
 
 const { data: tvData } = await useAsyncData('tv-home', async () => {
@@ -129,6 +139,11 @@ const fetchFollowedContent = async () => {
     if (followedCompanies && followedCompanies.length > 0) {
       const companyIds = followedCompanies.map(c => c.company_id).join('|');
       followedTvShows.value = await getTvShowsByCompanies(companyIds);
+    }
+    const followedPlatforms = await getFollowedStreamingPlatforms(userEmail);
+    if (followedPlatforms && followedPlatforms.length > 0) {
+      const providerIds = followedPlatforms.map(p => p.provider_id).join('|');
+      followedStreaming.value = await getTvShowsByProvider(providerIds);
     }
   } catch (error) {
     console.error('Error fetching followed TV shows:', error);

@@ -1,4 +1,372 @@
-// Supported production companies for dynamic pages
+export const STREAMING_PROVIDERS = [
+    {
+        "id": 8,
+        "name": "Netflix",
+        "slug": "netflix",
+        "logo_path": "/pbpMk2JmcoNnQwx5JGpXngfoWtp.jpg"
+    },
+    {
+        "id": 337,
+        "name": "Disney Plus",
+        "slug": "disney-plus",
+        "logo_path": "/97yvRBw1GzX7fXprcF80er19ot.jpg"
+    },
+    {
+        "id": 350,
+        "name": "Apple TV+",
+        "slug": "apple-tv-plus",
+        "logo_path": "/mcbz1LgtErU9p4UdbZ0rG6RTWHX.jpg"
+    },
+    {
+        "id": 9,
+        "name": "Amazon Prime Video",
+        "slug": "amazon-prime-video",
+        "logo_path": "/pvske1MyAoymrs5bguRfVqYiM9a.jpg"
+    },
+    {
+        "id": 10,
+        "name": "Amazon Video",
+        "slug": "amazon-video",
+        "logo_path": "/qR6FKvnPBx2O37FDg8PNM7efwF3.jpg"
+    },
+    {
+        "id": 2,
+        "name": "Apple TV",
+        "slug": "apple-tv",
+        "logo_path": "/SPnB1qiCkYfirS2it3hZORwGVn.jpg"
+    },
+    {
+        "id": 15,
+        "name": "Hulu",
+        "slug": "hulu",
+        "logo_path": "/bxBlRPEPpMVDc4jMhSrTf2339DW.jpg"
+    },
+    {
+        "id": 283,
+        "name": "Crunchyroll",
+        "slug": "crunchyroll",
+        "logo_path": "/fzN5Jok5Ig1eJ7gyNGoMhnLSCfh.jpg"
+    },
+    {
+        "id": 257,
+        "name": "fuboTV",
+        "slug": "fubotv",
+        "logo_path": "/9BgaNQRMDvVlji1JBZi6tcfxpKx.jpg"
+    },
+    {
+        "id": 1899,
+        "name": "HBO Max",
+        "slug": "hbo-max",
+        "logo_path": "/jbe4gVSfRlbPTdESXhEKpornsfu.jpg"
+    },
+    {
+        "id": 1825,
+        "name": "HBO Max Amazon Channel",
+        "slug": "hbo-max-amazon-channel",
+        "logo_path": "/5AkEgpCNaBP3Fbwd2m1GdQIk0vv.jpg"
+    },
+    {
+        "id": 583,
+        "name": "MGM+ Amazon Channel",
+        "slug": "mgm-amazon-channel",
+        "logo_path": "/efu1Cqc63XrPBoreYnf2mn0Nizj.jpg"
+    },
+    {
+        "id": 1968,
+        "name": "Crunchyroll Amazon Channel",
+        "slug": "crunchyroll-amazon-channel",
+        "logo_path": "/pgjz7bzfBq4nFDu8JJDLBoUVAX8.jpg"
+    },
+    {
+        "id": 386,
+        "name": "Peacock Premium",
+        "slug": "peacock-premium",
+        "logo_path": "/2aGrp1xw3qhwCYvNGAJZPdjfeeX.jpg"
+    },
+    {
+        "id": 3,
+        "name": "Google Play Movies",
+        "slug": "google-play-movies",
+        "logo_path": "/8z7rC8uIDaTM91X0ZfkRf04ydj2.jpg"
+    },
+    {
+        "id": 192,
+        "name": "YouTube",
+        "slug": "youtube",
+        "logo_path": "/pTnn5JwWr4p3pG8H6VrpiQo7Vs0.jpg"
+    },
+    {
+        "id": 1853,
+        "name": "Paramount Plus Apple TV Channel",
+        "slug": "paramount-plus-apple-tv-channel",
+        "logo_path": "/tJqmTmQ8jp9WfyaZfApHK8lSywA.jpg"
+    },
+    {
+        "id": 1855,
+        "name": "Starz Apple TV Channel",
+        "slug": "starz-apple-tv-channel",
+        "logo_path": "/1C5EVCWyQD798CE1DFfcm6oAbxP.jpg"
+    },
+    {
+        "id": 1854,
+        "name": "AMC Plus Apple TV Channel",
+        "slug": "amc-plus-apple-tv-channel",
+        "logo_path": "/oTQdXIqM9iewlN4MC2nhKB0gHw.jpg"
+    },
+    {
+        "id": 1852,
+        "name": "Britbox Apple TV Channel",
+        "slug": "britbox-apple-tv-channel",
+        "logo_path": "/bzEv2wssRqVgl12IVBfYhCIvvG.jpg"
+    },
+    {
+        "id": 582,
+        "name": "Paramount+ Amazon Channel",
+        "slug": "paramount-amazon-channel",
+        "logo_path": "/hExO4PtimLIYn3kBOrzsejNv7cT.jpg"
+    },
+    {
+        "id": 584,
+        "name": "Discovery+ Amazon Channel",
+        "slug": "discovery-amazon-channel",
+        "logo_path": "/lgudHqEtTOzkMWlpTjU1oUyoUSZ.jpg"
+    },
+    {
+        "id": 528,
+        "name": "AMC+ Amazon Channel",
+        "slug": "amc-amazon-channel",
+        "logo_path": "/2ino0WmHA4GROB7NYKzT6PGqLcb.jpg"
+    },
+    {
+        "id": 207,
+        "name": "The Roku Channel",
+        "slug": "the-roku-channel",
+        "logo_path": "/wQzSN83BnWVgO7xEh0SeTVqtrFv.jpg"
+    },
+    {
+        "id": 633,
+        "name": "Paramount+ Roku Premium Channel",
+        "slug": "paramount-roku-premium-channel",
+        "logo_path": "/ywIoxSjoYJGUIbR6BfxUiCHdPi3.jpg"
+    },
+    {
+        "id": 634,
+        "name": "Starz Roku Premium Channel",
+        "slug": "starz-roku-premium-channel",
+        "logo_path": "/9laPF1MAiUxlqM8T98F3Gj0bhzd.jpg"
+    },
+    {
+        "id": 635,
+        "name": "AMC+ Roku Premium Channel",
+        "slug": "amc-roku-premium-channel",
+        "logo_path": "/gAGrSQCTAisxy2CsWbijVvJEnRo.jpg"
+    },
+    {
+        "id": 526,
+        "name": "AMC+",
+        "slug": "amc",
+        "logo_path": "/ovmu6uot1XVvsemM2dDySXLiX57.jpg"
+    },
+    {
+        "id": 636,
+        "name": "MGM Plus Roku Premium Channel",
+        "slug": "mgm-plus-roku-premium-channel",
+        "logo_path": "/lD7HKUmXDvUya58DceiTA809Zbf.jpg"
+    },
+    {
+        "id": 188,
+        "name": "YouTube Premium",
+        "slug": "youtube-premium",
+        "logo_path": "/rMb93u1tBeErSYLv79zSTR07UdO.jpg"
+    },
+    {
+        "id": 83,
+        "name": "The CW",
+        "slug": "the-cw",
+        "logo_path": "/spcwROYevucLluqZZ8Fv75UuTBt.jpg"
+    },
+    {
+        "id": 191,
+        "name": "Kanopy",
+        "slug": "kanopy",
+        "logo_path": "/rcBwnERpNfPfWB5DaSTyEMCZbCA.jpg"
+    },
+    {
+        "id": 212,
+        "name": "Hoopla",
+        "slug": "hoopla",
+        "logo_path": "/j7D006Uy3UWwZ6G0xH6BMgIWTzH.jpg"
+    },
+    {
+        "id": 7,
+        "name": "Fandango At Home",
+        "slug": "fandango-at-home",
+        "logo_path": "/19fkcOz0xeUgCVW8tO85uOYnYK9.jpg"
+    },
+    {
+        "id": 2528,
+        "name": "YouTube TV",
+        "slug": "youtube-tv",
+        "logo_path": "/x9zOHTUkQzt3PgPVKbMH9CKBwLK.jpg"
+    },
+    {
+        "id": 43,
+        "name": "Starz",
+        "slug": "starz",
+        "logo_path": "/yIKwylTLP1u8gl84Is7FItpYLGL.jpg"
+    },
+    {
+        "id": 332,
+        "name": "Fandango at Home Free",
+        "slug": "fandango-at-home-free",
+        "logo_path": "/19fkcOz0xeUgCVW8tO85uOYnYK9.jpg"
+    },
+    {
+        "id": 258,
+        "name": "Criterion Channel",
+        "slug": "criterion-channel",
+        "logo_path": "/yhrtzYd43pFIhRq0ruO8umJPuyn.jpg"
+    },
+    {
+        "id": 209,
+        "name": "PBS",
+        "slug": "pbs",
+        "logo_path": "/iLjStQKQwzyxXJb3jyNpvDmW9mx.jpg"
+    },
+    {
+        "id": 123,
+        "name": "FXNow",
+        "slug": "fxnow",
+        "logo_path": "/m4KUe3UoTnLgN4g6txYMnBqeUI5.jpg"
+    },
+    {
+        "id": 2285,
+        "name": "JustWatch TV",
+        "slug": "justwatch-tv",
+        "logo_path": "/g2IaWyo6jCY0rIFjb4qgZ0bSmm3.jpg"
+    },
+    {
+        "id": 2239,
+        "name": "FlixHouse",
+        "slug": "flixhouse",
+        "logo_path": "/69eoIMVggmpyY7Aa8qeN4jsREfd.jpg"
+    },
+    {
+        "id": 309,
+        "name": "Sun Nxt",
+        "slug": "sun-nxt",
+        "logo_path": "/6KEQzITx2RrCAQt5Nw9WrL1OI8z.jpg"
+    },
+    {
+        "id": 80,
+        "name": "AMC",
+        "slug": "amc",
+        "logo_path": "/92Kx25Od0habmgRBTqT6XWgwgKt.jpg"
+    },
+    {
+        "id": 25,
+        "name": "Fandor",
+        "slug": "fandor",
+        "logo_path": "/45lSM3J7Ts4TXTtDv0EuTPL0eH5.jpg"
+    },
+    {
+        "id": 190,
+        "name": "Curiosity Stream",
+        "slug": "curiosity-stream",
+        "logo_path": "/oR1aNm1Qu9jQBkW4VrGPWhqbC3P.jpg"
+    },
+    {
+        "id": 79,
+        "name": "NBC",
+        "slug": "nbc",
+        "logo_path": "/6hFf3sIdmXSAczy3i6tLSmy6gwK.jpg"
+    },
+    {
+        "id": 34,
+        "name": "MGM Plus",
+        "slug": "mgm-plus",
+        "logo_path": "/ctiRpS16dlaTXQBSsiFncMrgWmh.jpg"
+    },
+    {
+        "id": 211,
+        "name": "Freeform",
+        "slug": "freeform",
+        "logo_path": "/4cHGd32hhEHmFjDGJcjVEAwFQg0.jpg"
+    },
+    {
+        "id": 2383,
+        "name": "Philo",
+        "slug": "philo",
+        "logo_path": "/ptmbGSttkyzawLbxx9MElmxKuVo.jpg"
+    },
+    {
+        "id": 157,
+        "name": "Lifetime",
+        "slug": "lifetime",
+        "logo_path": "/tWq6XvHqPjBW1BZTpf4Nziy8CDD.jpg"
+    },
+    {
+        "id": 99,
+        "name": "Shudder",
+        "slug": "shudder",
+        "logo_path": "/vEtdiYRPRbDCp1Tcn3BEPF1Ni76.jpg"
+    },
+    {
+        "id": 87,
+        "name": "Acorn TV",
+        "slug": "acorn-tv",
+        "logo_path": "/doCc555FPPgGtuaZJxf9QZVpIp5.jpg"
+    },
+    {
+        "id": 143,
+        "name": "Sundance Now",
+        "slug": "sundance-now",
+        "logo_path": "/1Edma9SrJnqkQW3BqFd2rJNHZvX.jpg"
+    },
+    {
+        "id": 100,
+        "name": "GuideDoc",
+        "slug": "guidedoc",
+        "logo_path": "/eKVmLFHW5PeNhuR7Nedd8OIxW2M.jpg"
+    },
+    {
+        "id": 151,
+        "name": "BritBox",
+        "slug": "britbox",
+        "logo_path": "/8oA7IcDNNUtBa9JYB5kQ8hrDz5o.jpg"
+    },
+    {
+        "id": 11,
+        "name": "MUBI",
+        "slug": "mubi",
+        "logo_path": "/x570VpH2C9EKDf1riP83rYc5dnL.jpg"
+    },
+    {
+        "id": 251,
+        "name": "ALLBLK",
+        "slug": "allblk",
+        "logo_path": "/4cKdiYEPW1BsWLb9UmNzAyUlD5p.jpg"
+    },
+    {
+        "id": 73,
+        "name": "Tubi TV",
+        "slug": "tubi-tv",
+        "logo_path": "/zLYr7OPvpskMA4S79E3vlCi71iC.jpg"
+    }
+];
+
+export const POPULAR_STREAMING_IDS = [
+    11,
+    15,
+    350,
+    8,
+    9,
+    1899,
+    337,
+    386,
+    99,
+];
+
 export const SUPPORTED_PRODUCTION_COMPANIES = {
     41077: { id: 41077, name: 'A24', slug: 'a24', logo_path: '/1ZXsGaFPgrgS6ZZGS37AqD5uU12.png' },
     9993: { id: 9993, name: 'DC Entertainment', slug: 'dc-entertainment', logo_path: '/2Tc1P3Ac8M479naPp1kYT3izLS5.png' },
@@ -932,3 +1300,8 @@ export const POPULAR_PRODUCTION_COMPANIES_IDS = [
     25,
     923,
 ];
+export function getStreamingProviderBySlug(slug) {
+    return STREAMING_PROVIDERS.find(
+        provider => provider.slug === slug
+    ) || null;
+}

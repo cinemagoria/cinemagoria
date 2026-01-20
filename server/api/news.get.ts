@@ -20,7 +20,6 @@ export default defineEventHandler(async (event) => {
             statusMessage: 'Database configuration missing'
         })
     }
-    console.log('[API-ES] DB Configured. URL starts with:', dbUrl.substring(0, 10))
 
     const db = createClient({
         url: dbUrl.trim(),
