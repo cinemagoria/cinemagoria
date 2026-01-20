@@ -33,14 +33,15 @@
           style="width: 100%; height: 100%; object-fit: cover;"
           @load="onImageLoaded"
           @error="onImageLoaded">
+
+          <div v-if="media === 'streaming'" class="card__badge">Streaming Service</div>
+          <div v-if="media === 'production'" class="card__badge">Production Company</div>
       </div>
 
       <h2 class="card__name">
         {{ name }}
       </h2>
       
-      <div v-if="media === 'streaming'" class="card__indicator">Streaming Service</div>
-      <div v-if="media === 'production'" class="card__indicator">Production Company</div>
 
       <div
         v-if="media !== 'person' && media !== 'streaming' && media !== 'production' && (stars || item.vote_average || item.imdb_rating)"
@@ -218,5 +219,30 @@ export default {
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.card__badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #8BE9FD;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 5;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+
+  @media (max-width: 500px) {
+    font-size: 0.6rem;
+    padding: 2px 4px;
+    top: 5px;
+    right: 5px;
+  }
 }
 </style>
