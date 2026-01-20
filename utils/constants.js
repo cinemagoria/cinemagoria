@@ -13,8 +13,8 @@ export const STREAMING_PROVIDERS = [
     },
     {
         "id": 350,
-        "name": "Apple TV",
-        "slug": "apple-tv",
+        "name": "Apple TV+",
+        "slug": "apple-tv-plus",
         "logo_path": "/mcbz1LgtErU9p4UdbZ0rG6RTWHX.jpg"
     },
     {
@@ -353,6 +353,18 @@ export const STREAMING_PROVIDERS = [
         "slug": "tubi-tv",
         "logo_path": "/zLYr7OPvpskMA4S79E3vlCi71iC.jpg"
     }
+];
+
+export const POPULAR_STREAMING_IDS = [
+    11,
+    15,
+    350,
+    8,
+    9,
+    1899,
+    337,
+    386,
+    99,
 ];
 
 export const SUPPORTED_PRODUCTION_COMPANIES = {
