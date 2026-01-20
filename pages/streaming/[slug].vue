@@ -363,7 +363,7 @@ const sortOptions = computed(() => {
 });
 
 const currentSortLabel = computed(() => {
-    const option = sortOptions.find(opt => opt.value === orderMode.value);
+    const option = sortOptions.value.find(opt => opt.value === orderMode.value);
     return option ? option.label : 'Popularity';
 });
 
