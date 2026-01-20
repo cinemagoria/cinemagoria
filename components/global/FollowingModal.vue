@@ -193,9 +193,6 @@
             <div v-if="companies.length === 0" :class="$style.emptyState">
               <p>Not following any production companies yet</p>
             </div>
-            <div v-if="companies.length === 0" :class="$style.emptyState">
-              <p>Not following any production companies yet</p>
-            </div>
           </div>
 
           <div v-else-if="activeTab === 'streaming'" :class="$style.companiesTab">
@@ -249,6 +246,7 @@ import {
   unfollowProductionCompany, 
   followProductionCompany 
 } from '~/utils/api';
+import { STREAMING_PROVIDERS } from '~/utils/constants';
 import Loader from '@/components/Loader';
 
 export default {
@@ -599,7 +597,14 @@ export default {
     },
 
     openStreaming(providerId) {
-      this.$router.push(`/streaming/${providerId}`);
+      const providerConst = STREAMING_PROVIDERS.find(p => p.id === providerId);
+      
+      if (providerConst && providerConst.slug) {
+        this.$router.push(`/streaming/${providerConst.slug}`);
+      } else {
+         console.error(`Could not find slug for provider with ID: ${providerId}`);
+         this.$router.push(`/streaming/${providerId}`);
+      }
     },
 
     openTvShow(tvId) {

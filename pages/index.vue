@@ -45,7 +45,7 @@ import FeatureDescription from '~/components/FeatureDescription';
 import NewsCarousel from '~/components/global/NewsCarousel';
 import ProductionCompanyCarousel from '~/components/ProductionCompanyCarousel';
 import StreamingPlatformCarousel from '~/components/StreamingPlatformCarousel';
-import { SUPPORTED_PRODUCTION_COMPANIES, POPULAR_PRODUCTION_COMPANIES_IDS, STREAMING_PROVIDERS } from '~/utils/constants';
+import { SUPPORTED_PRODUCTION_COMPANIES, POPULAR_PRODUCTION_COMPANIES_IDS, STREAMING_PROVIDERS, POPULAR_STREAMING_IDS } from '~/utils/constants';
 
 
 const userEmail = ref('');
@@ -193,19 +193,7 @@ const popularProductionCompanies = computed(() => {
 });
 
 const popularStreamingProviders = computed(() => {
-  const requestedIds = [
-    11,
-    15,
-    350,
-    8,
-    9,
-    1899,
-    337,
-    386,
-    99,
-  ];
-  
-  return requestedIds.map(id => STREAMING_PROVIDERS.find(p => p.id === id)).filter(Boolean);
+  return POPULAR_STREAMING_IDS.map(id => STREAMING_PROVIDERS.find(p => p.id === id)).filter(Boolean);
 });
 
 async function getUserAvatar(userEmail) {
