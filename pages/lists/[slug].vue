@@ -3250,8 +3250,6 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     padding-left: 20px;
 }
 
-
-/* Unified Modal Styles */
 .modal-content-base,
 .create-list-modal-content,
 .modal-content-cl {

@@ -30,6 +30,13 @@
         :view-all-url="{ name: 'movie-followed' }" />
     </div>
 
+    <div v-if="followedStreaming && followedStreaming.results && followedStreaming.results.length > 0" class="followed-section">
+      <ListingCarousel
+        :title="'From the Streaming Services you follow'"
+        :items="followedStreaming"
+        :view-all-url="{ name: 'streaming-followed' }" />
+    </div>
+
     <ListingCarousel
       v-if="nowPlaying && nowPlaying.results.length"
       :title="nowPlayingTitle"
@@ -60,7 +67,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import UserNav from '@/components/global/UserNav.vue';
-import { getMovies, getListItem, getFollowedProductionCompanies, getMoviesByCompanies } from '~/utils/api';
+import { getMovies, getListItem, getFollowedProductionCompanies, getMoviesByCompanies, getFollowedStreamingPlatforms, getMoviesByProvider } from '~/utils/api';
 import ListingCarousel from '~/components/ListingCarousel.vue';
 import CustomListingCategoriesMovies from '~/components/CustomListingCategoriesMovies.vue';
 
@@ -76,6 +83,7 @@ useHead({
 });
 
 const followedMovies = ref(null);
+const followedStreaming = ref(null);
 const ratedItemsModalVisible = ref(false);
 
 const { data: moviesData } = await useAsyncData('movies-home', async () => {
@@ -130,8 +138,14 @@ const fetchFollowedContent = async () => {
       const companyIds = followedCompanies.map(c => c.company_id).join('|');
       followedMovies.value = await getMoviesByCompanies(companyIds);
     }
+
+    const followedPlatforms = await getFollowedStreamingPlatforms(userEmail);
+    if (followedPlatforms && followedPlatforms.length > 0) {
+      const providerIds = followedPlatforms.map(p => p.provider_id).join('|');
+      followedStreaming.value = await getMoviesByProvider(providerIds);
+    }
   } catch (error) {
-    console.error('Error fetching followed movies:', error);
+    console.error('Error fetching followed content:', error);
   }
 };
 
