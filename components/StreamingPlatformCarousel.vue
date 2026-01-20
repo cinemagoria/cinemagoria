@@ -5,7 +5,11 @@
       class="listing__head">
       <h2 class="listing__title">
         Popular Streaming Services
-        <NuxtLink to="/streaming-services" class="explore-all">Explore All</NuxtLink>
+        <NuxtLink 
+          v-if="viewAllLink" 
+          :to="viewAllLink" 
+          class="explore-all"
+        >Explore All</NuxtLink>
       </h2>
     </div>
 
@@ -43,6 +47,15 @@
           </div>
         </NuxtLink>
 
+        <!-- 'Explore All' Card -->
+        <div class="production-company-card explore-card" v-if="viewAllLink">
+             <nuxt-link :to="viewAllLink" class="company-link">
+               <div class="logo-container explore-container">
+                 <span>Explore All</span>
+               </div>
+             </nuxt-link>
+        </div>
+
 
 
 
@@ -70,6 +83,10 @@ export default {
     items: {
       type: Array,
       required: true
+    },
+    viewAllLink: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -90,7 +107,7 @@ export default {
   },
   computed: {
     totalItems() {
-      return this.items.length;
+      return this.items.length + (this.viewAllLink ? 1 : 0);
     }
   },
   mounted() {
@@ -244,5 +261,26 @@ export default {
   font-weight: bold;
   font-size: 1rem;
   text-align: center;
+}
+
+.explore-card {
+    background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    &:hover {
+        background: #111;
+    }
+}
+
+.explore-container {
+    flex-direction: column;
+    gap: 10px;
+    color: #fff;
+    font-weight: 500;
+    font-size: 1.1rem;
+    background: transparent;
+    @media (min-width: $breakpoint-large) {
+      font-size: 1.3rem;
+    }
 }
 </style>
