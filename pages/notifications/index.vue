@@ -71,10 +71,10 @@
               @click.stop="notification.profile_path ? handlePersonClick(notification) : null"
               :style="notification.profile_path ? 'cursor: pointer;' : ''">
               <img 
-                v-if="notification.person_id && notification.profile_path" 
-                :src="`https://image.tmdb.org/t/p/w185${notification.profile_path}`" 
+                v-if="notification.person_id && (notification.profile_path || getStreamingProvider(notification.person_id))" 
+                :src="getProfileImage(notification)" 
                 :alt="notification.person_name"
-                :class="['person-profile-image', { 'company-logo': isCompany(notification.person_id) }]">
+                :class="['person-profile-image', { 'company-logo': isCompany(notification.person_id) || getStreamingProvider(notification.person_id) }]">
               <svg v-else-if="notification.media_type === 'movie'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>
               </svg>
@@ -231,7 +231,7 @@ import UserNav from '@/components/global/UserNav';
 
 import FollowingModal from '~/components/global/FollowingModal.vue';
 import HowItWorksModal from '~/components/HowItWorksModal.vue';
-import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants';
+import { SUPPORTED_PRODUCTION_COMPANIES, STREAMING_PROVIDERS } from '~/utils/constants';
 
 export default {
   head () {
@@ -319,6 +319,13 @@ export default {
       }
 
       if (notification.person_id) {
+        if (this.getStreamingProvider(notification.person_id)) {
+             const provider = STREAMING_PROVIDERS.find(p => p.id === notification.person_id);
+             if (provider) {
+                 this.$router.push(`/streaming/${provider.slug}`);
+                 return;
+             }
+        }
         if (this.isCompany(notification.person_id)) {
           this.$router.push(`/production/${notification.person_id}`);
         } else {
@@ -703,6 +710,16 @@ export default {
       
       isCompany(id) {
         return !!SUPPORTED_PRODUCTION_COMPANIES[id];
+      },
+      getStreamingProvider(id) {
+        return STREAMING_PROVIDERS.find(p => p.id === id);
+      },
+      getProfileImage(notification) {
+        const provider = this.getStreamingProvider(notification.person_id);
+        if (provider) {
+            return `https://image.tmdb.org/t/p/w185${provider.logo_path}`;
+        }
+        return `https://image.tmdb.org/t/p/w185${notification.profile_path}`;
       }
   }
 };
