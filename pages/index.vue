@@ -25,6 +25,12 @@
       view-all-link="/production-companies"
     />
 
+    <StreamingPlatformCarousel 
+      v-if="popularStreamingProviders.length"
+      :items="popularStreamingProviders"
+      view-all-link="/streaming-services"
+    />
+
     <NewsCarousel />
   </main>
 </template>
@@ -38,7 +44,8 @@ import ListingCarousel from '~/components/ListingCarousel';
 import FeatureDescription from '~/components/FeatureDescription';
 import NewsCarousel from '~/components/global/NewsCarousel';
 import ProductionCompanyCarousel from '~/components/ProductionCompanyCarousel';
-import { SUPPORTED_PRODUCTION_COMPANIES, POPULAR_PRODUCTION_COMPANIES_IDS } from '~/utils/constants';
+import StreamingPlatformCarousel from '~/components/StreamingPlatformCarousel';
+import { SUPPORTED_PRODUCTION_COMPANIES, POPULAR_PRODUCTION_COMPANIES_IDS, STREAMING_PROVIDERS, POPULAR_STREAMING_IDS } from '~/utils/constants';
 
 
 const userEmail = ref('');
@@ -183,6 +190,10 @@ const trendingTvUrl = computed(() => '/tv');
 
 const popularProductionCompanies = computed(() => {
   return POPULAR_PRODUCTION_COMPANIES_IDS.map(id => SUPPORTED_PRODUCTION_COMPANIES[id]).filter(Boolean);
+});
+
+const popularStreamingProviders = computed(() => {
+  return POPULAR_STREAMING_IDS.map(id => STREAMING_PROVIDERS.find(p => p.id === id)).filter(Boolean);
 });
 
 async function getUserAvatar(userEmail) {

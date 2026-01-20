@@ -2,7 +2,7 @@
   <div class="card">
     <nuxt-link
       class="card__link"
-      :to="item.media_type === 'production' ? { name: 'production-slug', params: { slug: item.slug } } : { name: `${media}-id`, params: { id: item.id } }">
+      :to="getRouteLink()">
       
       <CardActions v-if="context === 'list'" :item="item" :currentList="list" />
 
@@ -11,14 +11,14 @@
           <Loader :size="40" />
         </div>
 
-        <QuickFav v-if="media !== 'production' && media !== 'person'" :item="item" />
+        <QuickFav v-if="media !== 'production' && media !== 'person' && media !== 'streaming'" :item="item" />
 
         <img
           v-if="poster"
           ref="posterImage"
           :src="poster"
           loading="lazy"
-          :class="{ 'card__img--logo': media === 'production' }"
+          :class="{ 'card__img--logo': media === 'production' || media === 'streaming' }"
           :alt="name"
           :style="{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }"
           @load="onImageLoaded"
@@ -33,14 +33,18 @@
           style="width: 100%; height: 100%; object-fit: cover;"
           @load="onImageLoaded"
           @error="onImageLoaded">
+
+          <div v-if="media === 'streaming'" class="card__badge">Streaming Service</div>
+          <div v-if="media === 'production'" class="card__badge">Production Company</div>
       </div>
 
       <h2 class="card__name">
         {{ name }}
       </h2>
+      
 
       <div
-        v-if="media !== 'person' && (stars || item.vote_average || item.imdb_rating)"
+        v-if="!['person', 'streaming', 'production'].includes(media) && (stars || item.vote_average || item.imdb_rating)"
         class="card__rating">
         <div
           v-if="stars"
@@ -128,6 +132,15 @@ export default {
     onImageLoaded() {
       this.isLoading = false;
     },
+    getRouteLink() {
+        if (this.item.media_type === 'production') {
+            return { name: 'production-slug', params: { slug: this.item.slug } };
+        }
+        if (this.item.media_type === 'streaming') {
+            return { name: 'streaming-slug', params: { slug: this.item.slug } };
+        }
+        return { name: `${this.media}-id`, params: { id: this.item.id } };
+    }
   },
 
   computed: {
@@ -197,5 +210,39 @@ export default {
   justify-content: center;
   background-color: #0000004e;
   z-index: 2;
+}
+
+.card__indicator {
+  font-size: 0.8rem;
+  color: #8BE9FD;
+  margin-top: 0.2rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card__badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #8BE9FD;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 5;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+
+  @media (max-width: 500px) {
+    font-size: 0.6rem;
+    padding: 2px 4px;
+    top: 5px;
+    right: 5px;
+  }
 }
 </style>
