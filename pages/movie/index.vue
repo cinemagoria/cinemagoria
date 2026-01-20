@@ -34,7 +34,7 @@
       <ListingCarousel
         :title="'From the Streaming Services you follow'"
         :items="followedStreaming"
-        :view-all-url="{ name: 'streaming-followed' }" />
+        :view-all-url="{ name: 'streaming-followed', query: { type: 'movie' } }" />
     </div>
 
     <ListingCarousel
