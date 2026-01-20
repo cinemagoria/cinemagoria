@@ -300,12 +300,6 @@ export const STREAMING_PROVIDERS = [
         "logo_path": "/ptmbGSttkyzawLbxx9MElmxKuVo.jpg"
     },
     {
-        "id": 156,
-        "name": "A&E",
-        "slug": "a-e",
-        "logo_path": "/pA4qJFsD4lUFxJzwOE7U4FAxK7v.jpg"
-    },
-    {
         "id": 157,
         "name": "Lifetime",
         "slug": "lifetime",

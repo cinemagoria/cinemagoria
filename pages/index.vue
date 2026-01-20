@@ -28,6 +28,7 @@
     <StreamingPlatformCarousel 
       v-if="popularStreamingProviders.length"
       :items="popularStreamingProviders"
+      view-all-link="/streaming-services"
     />
 
     <NewsCarousel />
