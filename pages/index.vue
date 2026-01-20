@@ -192,18 +192,19 @@ const popularProductionCompanies = computed(() => {
 });
 
 const popularStreamingProviders = computed(() => {
-  // Specific providers requested for homepage carousel
   const requestedIds = [
-    8,    // Netflix
-    350,  // Apple TV
-    15,   // Hulu
-    9,    // Amazon Prime Video
-    1899, // HBO Max (Max)
-    337,  // Disney Plus
-    204957, // Mubi
+    11,
+    15,
+    350,
+    8,
+    9,
+    1899,
+    337,
+    386,
+    99,
   ];
   
-  return STREAMING_PROVIDERS.filter(p => requestedIds.includes(p.id));
+  return requestedIds.map(id => STREAMING_PROVIDERS.find(p => p.id === id)).filter(Boolean);
 });
 
 async function getUserAvatar(userEmail) {
