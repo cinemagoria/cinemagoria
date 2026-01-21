@@ -5,29 +5,8 @@
          <Loader :size="60" />
       </div>
       <div v-else class="header-content">
-          <div class="list-nav-wrapper" v-click-outside="closeListSelector" style="justify-content: center;">
-              <div class="title-with-selector">
-                  <h1 class="list-title title-primary" style="margin: 0; display: inline-block;">{{ list.name }}</h1>
-                  <!-- <button v-if="allAvailableLists.length > 0" @click="toggleListSelector" class="list-selector-btn">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                  </button> -->
-              </div>
-              <transition name="fade">
-                  <div v-if="listSelectorOpen" class="list-selector-dropdown" @click.stop>
-                      <div class="dropdown-header">
-                          <a v-if="selectorTotalPages > 1" href="#" @click.prevent.stop="goToPrevPage" class="dropdown-nav-btn" :class="{ 'disabled': listSelectorPage <= 1 }" style="z-index: 101; position: relative; display: flex; align-items: center; justify-content: center; text-decoration: none; width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 4px; pointer-events: auto;">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                          </a>
-                          <span>Switch to</span>
-                          <a v-if="selectorTotalPages > 1" href="#" @click.prevent.stop="goToNextPage" class="dropdown-nav-btn" :class="{ 'disabled': listSelectorPage >= selectorTotalPages }" style="z-index: 101; position: relative; display: flex; align-items: center; justify-content: center; text-decoration: none; width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 4px; pointer-events: auto;">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                          </a>
-                      </div>
-                      <div v-for="l in visibleCustomLists" :key="l.id + '_' + listSelectorPage">
-                          <nuxt-link :to="l.link" class="dropdown-list-item">{{ l.name }}</nuxt-link>
-                      </div>
-                  </div>
-              </transition>
+          <div class="header-title-container" style="display: flex; justify-content: center;">
+               <h1 class="list-title title-primary" style="margin: 0; display: inline-block;">{{ list.name }}</h1>
           </div>
           <p class="list-description" v-if="list.description">{{ list.description }}</p>
           <div class="list-meta">
@@ -649,10 +628,9 @@ export default {
             itemsPerRow: 4,
             resizeObserver: null,
             
-            listSelectorOpen: false,
-            listSelectorPage: 1,
-            userCustomLists: [],
             
+            
+            userCustomLists: [],
             currentPage: 1,
             itemsPerPage: 20,
             orderMode: 'latest-added',
@@ -707,29 +685,6 @@ export default {
       }
     },
     computed: {
-        allAvailableLists() {
-            const currentSlug = this.$route.params.slug;
-            const lists = [];
-
-            lists.push({ id: 'watchlist', name: 'Watchlist', link: '/watchlist', isWatchlist: true });
-
-            if (this.userCustomLists) {
-                this.userCustomLists.forEach(l => {
-                    if (l.slug !== currentSlug) {
-                        lists.push({ ...l, link: `/lists/${l.slug}`, isWatchlist: false });
-                    }
-                });
-            }
-            return lists;
-        },
-        selectorTotalPages() {
-            return Math.ceil(this.allAvailableLists.length / 5);
-        },
-        visibleCustomLists() {
-            const start = (this.listSelectorPage - 1) * 5;
-            const end = start + 5;
-            return this.allAvailableLists.slice(start, end);
-        },
         shareUrl() {
             if (import.meta.client) {
                 return window.location.href;
@@ -984,6 +939,20 @@ export default {
     },
 
     methods: {
+        async fetchUserCustomLists() {
+            const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+            if (!userEmail) return;
+            try {
+                const response = await fetch(`${this.tursoBackendUrl}/lists/user/${encodeURIComponent(userEmail)}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    this.userCustomLists = data.lists || [];
+                }
+            } catch (error) {
+                console.error('Error fetching user custom lists:', error);
+            }
+        },
+
         calculateItemsPerRow() {
             const gridElement = document.querySelector('.movie-grid');
             if (!gridElement) return;
@@ -1019,40 +988,7 @@ export default {
                 setTimeout(() => this.calculateItemsPerRow(), 66);
              }
         },
-        async fetchUserCustomLists() {
-            const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
-            if (!userEmail) return;
-            try {
-                const response = await fetch(`${this.tursoBackendUrl}/lists/user/${encodeURIComponent(userEmail)}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    this.userCustomLists = data.lists || [];
-                }
-            } catch (error) {
-                console.error('Error fetching user custom lists:', error);
-            }
-        },
 
-        toggleListSelector() {
-            this.listSelectorOpen = !this.listSelectorOpen;
-        },
-
-        closeListSelector() {
-            this.listSelectorOpen = false;
-            this.listSelectorPage = 1;
-        },
-
-        goToPrevPage() {
-            if (this.listSelectorPage > 1) {
-                this.listSelectorPage--;
-            }
-        },
-
-        goToNextPage() {
-             if (this.listSelectorPage < this.selectorTotalPages) {
-                this.listSelectorPage++;
-            }
-        },
 
         handleListUpdate() {
             this.fetchListDetails(true);
@@ -3146,59 +3082,6 @@ svg.rating-logo.imdb { width: 52px; height: 26px; position: relative; top: -1px;
     }
 }
 
-.list-selector-btn {
-    flex-shrink: 0;
-    background: rgba(139, 233, 253, 0.1);
-    border: 1px solid rgba(139, 233, 253, 0.3);
-    border-radius: 8px;
-    padding: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #8BE9FD;
-    backdrop-filter: blur(4px);
-    position: relative;
-    bottom: -3px;
-}
-
-.list-selector-btn:hover {
-    background: rgba(139, 233, 253, 0.2);
-    border-color: #8BE9FD;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(139, 233, 253, 0.15);
-}
-
-.list-selector-dropdown {
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: #151f24;
-    border: 1px solid rgba(139, 233, 253, 0.3);
-    border-radius: 12px;
-    width: 260px;
-    z-index: 100;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-}
-
-.list-selector-dropdown .dropdown-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 16px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #8F989E;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    position: relative;
-    height: 50px;
-}
 
 .dropdown-header span {
     position: absolute;

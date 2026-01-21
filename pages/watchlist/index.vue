@@ -5,55 +5,8 @@
         <UserNav @show-rated-modal="showRatedItems" />
         <br>
         <nav class="navbar">
-          <div class="list-nav-wrapper" v-click-outside="closeListSelector">
-            <div class="title-with-selector">
-              <h1 class="title-primary">Watchlist</h1>
-              <!-- <button v-if="userCustomLists.length > 0" @click="toggleListSelector" class="list-selector-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button> -->
-            </div>
-            <transition name="fade">
-              <div v-if="listSelectorOpen" class="list-selector-dropdown" @click.stop>
-                <div class="dropdown-header">
-                  <a 
-                    v-if="selectorTotalPages > 1" 
-                    href="#"
-                    @click.prevent.stop="goToPrevPage" 
-                    class="dropdown-nav-btn"
-                    :class="{ 'disabled': listSelectorPage <= 1 }"
-                    style="z-index: 101; position: relative; display: flex; align-items: center; justify-content: center; text-decoration: none; width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 4px; pointer-events: auto;"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;">
-                      <polyline points="15 18 9 12 15 6"></polyline>
-                    </svg>
-                  </a>
-                  <span>Switch to</span>
-                  <a 
-                    v-if="selectorTotalPages > 1" 
-                    href="#"
-                    @click.prevent.stop="goToNextPage" 
-                    class="dropdown-nav-btn"
-                    :class="{ 'disabled': listSelectorPage >= selectorTotalPages }"
-                    style="z-index: 101; position: relative; display: flex; align-items: center; justify-content: center; text-decoration: none; width: 32px; height: 32px; background: rgba(255,255,255,0.05); border-radius: 4px; pointer-events: auto;"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;">
-                      <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                  </a>
-                </div>
-                <!-- Using userCustomLists directly with slice to force reactivity -->
-                <nuxt-link 
-                  v-for="list in userCustomLists.slice((listSelectorPage - 1) * 5, listSelectorPage * 5)" 
-                  :key="list.id + '_' + listSelectorPage" 
-                  :to="`/lists/${list.slug}`" 
-                  class="dropdown-list-item"
-                >
-                  {{ list.name }}
-                </nuxt-link>
-              </div>
-            </transition>
+          <div class="header-title-container" style="display: flex; justify-content: center; margin-bottom: 20px;">
+             <h1 class="title-primary">Watchlist</h1>
           </div>
         </nav>
         
@@ -751,8 +704,6 @@ export default {
       addedBannerMessage: '', 
       addedBannerTimer: null,
       userCustomLists: [],
-      listSelectorOpen: false,
-      listSelectorPage: 1,
       lastBulkAction: null,
       undoAction: null,
       undoPayload: null
@@ -1813,26 +1764,7 @@ export default {
       }
     },
 
-    toggleListSelector() {
-      this.listSelectorOpen = !this.listSelectorOpen;
-    },
 
-    closeListSelector() {
-      this.listSelectorOpen = false;
-      this.listSelectorPage = 1;
-    },
-
-    goToPrevPage() {
-      if (this.listSelectorPage > 1) {
-        this.listSelectorPage--;
-      }
-    },
-
-    goToNextPage() {
-      if (this.listSelectorPage < this.selectorTotalPages) {
-        this.listSelectorPage++;
-      }
-    },
     
     saveState() {
       const state = {
@@ -5076,74 +5008,6 @@ svg.rating-logo.imdb {
     opacity: 0;
 }
 
-.list-nav-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    width: 100%;
-}
-
-.title-with-selector {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-}
-
-.list-selector-btn {
-    background: rgba(139, 233, 253, 0.1);
-    border: 1px solid rgba(139, 233, 253, 0.3);
-    border-radius: 6px;
-    padding: 6px 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.25s ease;
-    color: #8BE9FD;
-    backdrop-filter: blur(4px);
-    position: relative;
-    top: -6px;
-}
-
-.list-selector-btn:hover {
-    background: rgba(139, 233, 253, 0.2);
-    border-color: #8BE9FD;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(139, 233, 253, 0.15);
-}
-
-.list-selector-dropdown {
-    position: absolute;
-    top: calc(100% - 5px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: #151f24;
-    border: 1px solid rgba(139, 233, 253, 0.3);
-    border-radius: 12px;
-    width: 260px;
-    z-index: 100;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-}
-
-.list-selector-dropdown .dropdown-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 16px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #8F989E;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    position: relative;
-    height: 50px;
-}
-
 .dropdown-header span {
     position: absolute;
     left: 50%;
@@ -5219,22 +5083,4 @@ svg.rating-logo.imdb {
     opacity: 1;
 }
 
-@media (max-width: 500px) {
-    .list-selector-btn {
-        padding: 4px 6px;
-    }
-    
-    .list-selector-btn svg {
-        width: 12px;
-        height: 12px;
-    }
-    
-    .title-with-selector {
-        gap: 0.3rem;
-    }
-    
-    .list-selector-dropdown {
-        width: 220px;
-    }
-}
 </style>
