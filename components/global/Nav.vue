@@ -571,6 +571,8 @@ export default {
 .closeMenuBtn {
     background: none;
     border: none;
+    position: relative;
+    top: -0.3rem;
     color: #8BE9FD; 
     cursor: pointer;
     display: flex;
