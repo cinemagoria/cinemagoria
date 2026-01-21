@@ -77,7 +77,7 @@
         <div :class="$style.menuContent">
             <div v-if="listsPage === 1" :class="$style.menuItem" @click="navigateFromMenu('/watchlist')">
                 <div :class="$style.itemIcon">
-                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+                   <img src="/empty-list-placeholder.webp" :class="$style.placeholderImgNav" alt="Watchlist" />
                 </div>
                 <span :class="$style.listName">Watchlist</span>
             </div>
@@ -90,7 +90,21 @@
                 :title="list.name"
              >
                 <div :class="$style.itemIcon">
-                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+                   <div v-if="list.cover_images && list.cover_images.length > 0" :class="$style.dynamicCoverGridNav">
+                       <div v-for="i in 4" :key="i" :class="$style.gridCellNav">
+                           <img 
+                             v-if="list.cover_images[i-1]" 
+                             :src="resolvePoster(list.cover_images[i-1])" 
+                             @error="handleImgError"
+                             :class="$style.coverImgNav" 
+                             alt="Cover"
+                           />
+                           <div v-else :class="$style.emptyCellNav"></div>
+                       </div>
+                   </div>
+                   <div v-else :class="$style.fallbackIconNav">
+                       <img src="/empty-list-placeholder.webp" :class="$style.placeholderImgNav" alt="List" />
+                   </div>
                 </div>
                 <span :class="$style.listName">{{ list.name }}</span>
             </div>
@@ -263,11 +277,51 @@ export default {
             const response = await fetch(`${this.tursoBackendUrl}/lists/user/${encodeURIComponent(email)}`);
             if (response.ok) {
                 const data = await response.json();
-                this.userLists = data.lists || [];
+                const rawLists = data.lists || [];
+                
+                const hydratedLists = await Promise.all(rawLists.map(async (list) => {
+                     let validCovers = (list.cover_images || []).filter(url => url && typeof url === 'string' && url.trim().length > 0);
+                     
+                     if (validCovers.length < 4 && list.item_count > validCovers.length && (!list.items || list.items.length === 0)) {
+                         try {
+                              const detailsRes = await fetch(`${this.tursoBackendUrl}/lists/${list.slug}?userEmail=${encodeURIComponent(email)}`);
+                              if (detailsRes.ok) {
+                                  const detailsData = await detailsRes.json();
+                                  if (detailsData.items && Array.isArray(detailsData.items)) {
+                                      validCovers = detailsData.items
+                                          .map(item => item.poster_url || item.poster_path)
+                                          .filter(url => url && typeof url === 'string' && url.trim().length > 0)
+                                          .slice(0, 4);
+                                  }
+                              }
+                         } catch (err) {
+                             console.error("Failed to hydrate list covers in Nav", err);
+                         }
+                     } else if (list.items && Array.isArray(list.items)) {
+                           validCovers = list.items
+                              .map(item => item.poster_url || item.poster_path)
+                              .filter(url => url && typeof url === 'string' && url.trim().length > 0)
+                              .slice(0, 4);
+                     }
+     
+                     return { ...list, cover_images: validCovers };
+                }));
+
+                this.userLists = hydratedLists;
             }
         } catch (e) {
             console.error("Error fetching lists for Nav", e);
         }
+    },
+
+    resolvePoster(path) {
+        if (!path) return '/empty-list-placeholder.webp';
+        if (path.startsWith('http') || path.startsWith('//')) return path;
+        return `https://image.tmdb.org/t/p/w200${path.startsWith('/') ? '' : '/'}${path}`;
+    },
+
+    handleImgError(e) {
+        e.target.src = '/plus_placeholder.webp';
     },
     
     checkScreenSize() {
@@ -467,7 +521,7 @@ export default {
     left: 10px;
     right: 10px;
     border-radius: 15px;
-    height: 28vh;
+    height: 240px;
 
     @media (min-width: $breakpoint-large) {
         top: 0; 
@@ -519,65 +573,163 @@ export default {
     &:hover { opacity: 0.8; }
 }
 
+
 .menuContent {
     flex: 1;
-    overflow-y: visible;
+    overflow-y: hidden;
+    overflow-x: auto;
     padding: 1rem;
-    padding-bottom: 1.5rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-    min-height: 0;
+    padding-bottom: 2rem;
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    
+    -ms-overflow-style: none; 
+    scrollbar-width: none; 
+    &::-webkit-scrollbar {
+        display: none;
+    }
     
     @media (min-width: $breakpoint-large) {
         display: flex;
         flex-direction: column;
         overflow-y: auto;
+        overflow-x: hidden;
         grid-template-columns: unset;
         padding-bottom: 1rem;
+        gap: 0.5rem;
     }
 }
 
 .menuItem {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    padding: 0.8rem 1rem;
+    padding: 0;
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.2s;
-    min-width: 0;
+    min-width: 140px;
+    max-width: 140px;
+    text-align: center;
     
     &:hover {
-        background: rgba(139, 233, 253, 0.1);
+        background: transparent;
+    }
+
+    @media (min-width: $breakpoint-large) {
+        flex-direction: row;
+        align-items: center;
+        padding: 0.8rem 1rem;
+        min-width: 0;
+        max-width: none;
+        text-align: left;
+        
+        &:hover {
+             background: rgba(139, 233, 253, 0.1);
+        }
     }
 
     .itemIcon {
-        width: 24px;
-        height: 24px;
+        width: 120px;
+        height: 120px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: 1rem;
+        margin-bottom: 0.8rem;
+        margin-right: 0;
         flex-shrink: 0;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #000;
         
-        svg {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+        @media (min-width: $breakpoint-large) {
+             width: 44px;
+             height: 44px;
+             margin-bottom: 0;
+             margin-right: 1.2rem;
+             border-radius: 6px;
         }
+
+        svg {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+
+            @media (min-width: $breakpoint-large) {
+                 width: 24px;
+                 height: 24px;
+            }
+        }
+    }
+    
+    .dynamicCoverGridNav {
+        width: 100%;
+        height: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 0;
+    }
+    
+    .gridCellNav {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+    
+    .coverImgNav {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    
+    .emptyCellNav {
+        width: 100%;
+        height: 100%;
+        background: #111;
+    }
+    
+    .fallbackIconNav {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #111;
+    }
+    
+    .placeholderImgNav {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
     
     .listName {
         color: #fff;
         font-size: 1.1rem;
-        white-space: nowrap;
+        white-space: normal;
         overflow: hidden;
         text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
         min-width: 0;
-        flex: 1;
+        flex: unset;
+        width: 100%;
+        line-height: 1.3;
+        padding: 0 5px;
         
         @media (min-width: $breakpoint-large) {
-            font-size: 1rem;
+            font-size: 1.2rem;
+            white-space: nowrap;
+            flex: 1;
+            width: auto;
+            -webkit-line-clamp: unset;
+            display: block;
+            padding: 0;
         }
     }
 }
