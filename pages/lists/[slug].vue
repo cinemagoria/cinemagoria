@@ -8,9 +8,9 @@
           <div class="list-nav-wrapper" v-click-outside="closeListSelector" style="justify-content: center;">
               <div class="title-with-selector">
                   <h1 class="list-title title-primary" style="margin: 0; display: inline-block;">{{ list.name }}</h1>
-                  <button v-if="allAvailableLists.length > 0" @click="toggleListSelector" class="list-selector-btn">
+                  <!-- <button v-if="allAvailableLists.length > 0" @click="toggleListSelector" class="list-selector-btn">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                  </button>
+                  </button> -->
               </div>
               <transition name="fade">
                   <div v-if="listSelectorOpen" class="list-selector-dropdown" @click.stop>
