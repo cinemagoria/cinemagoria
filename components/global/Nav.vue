@@ -51,12 +51,62 @@
         </nuxt-link>
       </li>
       <li v-else>
-        <nuxt-link exact to="/watchlist" aria-label="Watchlist" @click.native="clearSearchBeforeNavigate">
+        <a 
+          href="/watchlist" 
+          @click.prevent.stop="handleWatchlistClick"
+          aria-label="Watchlist"
+          :class="{ 'nuxt-link-active': isWatchlistActive }"
+        >
           <img src="/icon-watchlist.png" alt="Watchlist" :class="$style.navIcon" />
-        </nuxt-link>
+        </a>
       </li>
     </ul>
 
+    <transition name="slide-fade">
+      <div v-if="showListsMenu" :class="$style.listsMenu" v-click-outside="closeListsMenu">
+        <div :class="$style.menuHeader">
+            <h3 :class="$style.menuTitle">My Lists</h3>
+        </div>
+        
+        <div :class="$style.closeButtonContainer">
+            <button @click="closeListsMenu" :class="$style.closeMenuBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        
+        <div :class="$style.menuContent">
+            <div v-if="listsPage === 1" :class="$style.menuItem" @click="navigateFromMenu('/watchlist')">
+                <div :class="$style.itemIcon">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+                </div>
+                <span :class="$style.listName">Watchlist</span>
+            </div>
+
+             <div 
+                v-for="list in displayedLists" 
+                :key="list.id" 
+                :class="$style.menuItem"
+                @click="navigateFromMenu(`/lists/${list.slug}`)"
+                :title="list.name"
+             >
+                <div :class="$style.itemIcon">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+                </div>
+                <span :class="$style.listName">{{ list.name }}</span>
+            </div>
+        </div>
+
+        <div v-if="totalPages > 1" :class="$style.pagination">
+            <button :disabled="listsPage === 1" @click.stop="listsPage--" :class="$style.pageBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <span :class="$style.pageInfo">{{ listsPage }} / {{ totalPages }}</span>
+            <button :disabled="listsPage === totalPages" @click.stop="listsPage++" :class="$style.pageBtn">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+        </div>
+      </div>
+    </transition>
 
   </nav>
 </template>
@@ -66,12 +116,32 @@ import { mapState, mapActions } from 'pinia';
 import { useSearchStore } from '~/stores/search';
 
 export default {
+  directives: {
+    'click-outside': {
+        mounted(el, binding) {
+            el.clickOutsideEvent = function (event) {
+                if (!(el == event.target || el.contains(event.target))) {
+                    binding.value(event);
+                }
+            };
+            document.body.addEventListener('click', el.clickOutsideEvent);
+        },
+        beforeUnmount(el) {
+            document.body.removeEventListener('click', el.clickOutsideEvent);
+        }
+    }
+  },
   components: {
   },
   data() {
     return {
       authToken: null,
-      authInterval: null
+      authInterval: null,
+      userLists: [],
+      showListsMenu: false,
+      listsPage: 1,
+      listsPerPage: 8,
+      isDesktop: false
     };
   },
 
@@ -79,6 +149,41 @@ export default {
     ...mapState(useSearchStore, ['searchOpen']),
     isLoggedIn() {
       return this.authToken !== null;
+    },
+    tursoBackendUrl() {
+        return this.$config.public.tursoBackendUrl;
+    },
+    sortedUserLists() {
+        return [...this.userLists].sort((a, b) => {
+            const dateA = new Date(a.updated_at || a.created_at || 0);
+            const dateB = new Date(b.updated_at || b.created_at || 0);
+            return dateB - dateA;
+        });
+    },
+    paginatedLists() {
+        const start = (this.listsPage - 1) * this.listsPerPage;
+        return this.sortedUserLists.slice(start, start + this.listsPerPage);
+    },
+    displayedLists() {
+        if (this.isDesktop) {
+            return this.sortedUserLists;
+        }
+        return this.paginatedLists;
+    },
+    totalPages() {
+        if (this.isDesktop) {
+            return 1;
+        }
+        return Math.ceil(this.userLists.length / this.listsPerPage);
+    },
+    isWatchlistActive() {
+        return this.$route.path === '/watchlist' || this.$route.path.startsWith('/lists/');
+    }
+  },
+
+  watch: {
+    showListsMenu(val) {
+        if (val) this.listsPage = 1;
     }
   },
 
@@ -88,12 +193,22 @@ export default {
     this.authInterval = setInterval(this.checkAuthStatus, 500);
     
     if (typeof window !== 'undefined') {
+      this.checkScreenSize();
+      window.addEventListener('resize', this.checkScreenSize);
+      
       window.addEventListener('storage', this.handleStorageChange);
       window.addEventListener('auth-changed', this.checkAuthStatus);
       window.addEventListener('notifications-updated', this.fetchUnreadCount);
+      
+      this.$bus.$on('lists-updated', this.fetchUserLists);
+      this.$bus.$on('new-list-created', this.fetchUserLists);
 
       if (window.location.pathname.includes('auth-success')) {
         this.forceUpdateNavIcons();
+      }
+      
+      if (this.isLoggedIn) {
+          this.fetchUserLists();
       }
     }
   },
@@ -104,10 +219,13 @@ export default {
     }
     
     if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', this.checkScreenSize);
       window.removeEventListener('storage', this.handleStorageChange);
       window.removeEventListener('auth-changed', this.checkAuthStatus);
       window.removeEventListener('notifications-updated', this.fetchUnreadCount);
     }
+    this.$bus.$off('lists-updated', this.fetchUserLists);
+    this.$bus.$off('new-list-created', this.fetchUserLists);
   },
 
   methods: {
@@ -115,19 +233,65 @@ export default {
       const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
       if (token !== this.authToken) {
         this.authToken = token;
+        if (this.authToken) this.fetchUserLists();
+        else {
+            this.userLists = [];
+            this.showListsMenu = false;
+        }
       }
     },
 
     forceUpdateNavIcons() {
       const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
       this.authToken = token;
+      this.fetchUserLists();
       this.$forceUpdate(); 
     },
 
     handleStorageChange(event) {
       if (event.key === 'access_token') {
         this.authToken = event.newValue;
+        if (this.authToken) this.fetchUserLists();
       }
+    },
+    
+    async fetchUserLists() {
+        const email = localStorage.getItem('email')?.replace(/['"]+/g, '');
+        if (!email) return;
+
+        try {
+            const response = await fetch(`${this.tursoBackendUrl}/lists/user/${encodeURIComponent(email)}`);
+            if (response.ok) {
+                const data = await response.json();
+                this.userLists = data.lists || [];
+            }
+        } catch (e) {
+            console.error("Error fetching lists for Nav", e);
+        }
+    },
+    
+    checkScreenSize() {
+        this.isDesktop = window.innerWidth >= 1024;
+    },
+
+    handleWatchlistClick() {
+        this.clearSearchBeforeNavigate();
+        if (this.userLists.length > 0) {
+            this.showListsMenu = !this.showListsMenu;
+        } else {
+            this.$router.push('/watchlist');
+        }
+    },
+    
+    closeListsMenu(e) {
+        if (this.showListsMenu) {
+             this.showListsMenu = false;
+        }
+    },
+    
+    navigateFromMenu(path) {
+        this.showListsMenu = false;
+        this.$router.push(path);
     },
 
     clearSearchBeforeNavigate() {
@@ -289,7 +453,222 @@ export default {
     }
   }
 }
+.listsMenu {
+    position: fixed;
+    background-color: #000;
+    border: 1.5px solid rgba(139, 233, 253, 0.3);
+    z-index: 998; 
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    overflow: hidden;
+
+    bottom: 5rem;
+    left: 10px;
+    right: 10px;
+    border-radius: 15px;
+    height: 28vh;
+
+    @media (min-width: $breakpoint-large) {
+        top: 0; 
+        margin-top: 6.2rem; 
+        bottom: 0;
+        height: 93.4%;
+        max-height: none;
+        
+        left: 9.9rem;
+        width: 280px;
+        right: auto;
+        
+        border-radius: 15px; 
+    }
+}
+
+.menuHeader {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    
+    .menuTitle {
+        margin: 0;
+        font-size: 1.2rem;
+        color: #8BE9FD;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        line-height: 1;
+        white-space: nowrap; 
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.closeButtonContainer {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    z-index: 10;
+}
+
+.closeMenuBtn {
+    background: none;
+    border: none;
+    color: #8BE9FD; 
+    cursor: pointer;
+    display: flex;
+    padding: 0;
+    
+    &:hover { opacity: 0.8; }
+}
+
+.menuContent {
+    flex: 1;
+    overflow-y: visible;
+    padding: 1rem;
+    padding-bottom: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    min-height: 0;
+    
+    @media (min-width: $breakpoint-large) {
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        grid-template-columns: unset;
+        padding-bottom: 1rem;
+    }
+}
+
+.menuItem {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    min-width: 0;
+    
+    &:hover {
+        background: rgba(139, 233, 253, 0.1);
+    }
+
+    .itemIcon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        flex-shrink: 0;
+        
+        svg {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    }
+    
+    .listName {
+        color: #fff;
+        font-size: 1.1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
+        flex: 1;
+        
+        @media (min-width: $breakpoint-large) {
+            font-size: 1rem;
+        }
+    }
+}
+
+.divider {
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    margin: 0.5rem 0;
+    width: 100%;
+}
+
+.pagination {
+    padding: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    flex-direction: row !important;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    color: #8BE9FD; 
+    font-size: 1.1rem;
+}
+
+.pageInfo {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.pageBtn {
+    background: none;
+    border: 1px solid rgba(139, 233, 253, 0.3);
+    border-radius: 5px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8BE9FD;
+    cursor: pointer;
+    
+    &:hover:not(:disabled) {
+        background: rgba(139, 233, 253, 0.1);
+        border-color: #8BE9FD;
+    }
+    
+    &:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        border-color: rgba(255,255,255,0.1);
+        color: #fff;
+    }
+}
 </style>
+
+<style lang="scss" scoped>
+@use '~/assets/css/utilities/variables' as *;
+
+a.nuxt-link-active {
+  &:hover,
+  &:focus {
+    opacity: 1;
+  }
+
+  svg g { 
+    stroke: #8BE9FD; 
+  }
+
+  svg {
+    color: #8BE9FD;
+    stroke: #8BE9FD;
+  }
+
+  img:not(.home-icon) { 
+    filter: brightness(0) saturate(100%) invert(83%) sepia(76%) saturate(618%) hue-rotate(164deg) brightness(96%) contrast(108%);
+  }
+}
+
+.slide-fade-enter-active, .slide-fade-leave-active {
+  transition: all 0.3s ease;
+}
+.slide-fade-enter, .slide-fade-leave-to {
+  transform: translateY(20px);
+  opacity: 0;
+  
+  @media (min-width: $breakpoint-large) {
+      transform: translateX(-20px);
+  }
+}
+</style>
+
+
 
 <style lang="scss" scoped>
 @use '~/assets/css/utilities/variables' as *;
