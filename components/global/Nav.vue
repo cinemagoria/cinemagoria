@@ -99,7 +99,12 @@
                              :class="$style.coverImgNav" 
                              alt="Cover"
                            />
-                           <div v-else :class="$style.emptyCellNav"></div>
+                           <img 
+                             v-else 
+                             src="/plus_placeholder.webp" 
+                             :class="$style.coverImgNav" 
+                             alt="Plus"
+                           />
                        </div>
                    </div>
                    <div v-else :class="$style.fallbackIconNav">
@@ -280,28 +285,29 @@ export default {
                 const rawLists = data.lists || [];
                 
                 const hydratedLists = await Promise.all(rawLists.map(async (list) => {
-                     let validCovers = (list.cover_images || []).filter(url => url && typeof url === 'string' && url.trim().length > 0);
+                     let validCovers = (list.cover_images || []).filter(url => url && typeof url === 'string' && url.trim().length > 0 && !url.includes('null') && !url.includes('undefined'));
                      
-                     if (validCovers.length < 4 && list.item_count > validCovers.length && (!list.items || list.items.length === 0)) {
+                     if ((validCovers.length < 4 && list.item_count > validCovers.length) || (list.item_count > 0 && validCovers.length === 0)) {
                          try {
-                              const detailsRes = await fetch(`${this.tursoBackendUrl}/lists/${list.slug}?userEmail=${encodeURIComponent(email)}`);
-                              if (detailsRes.ok) {
-                                  const detailsData = await detailsRes.json();
-                                  if (detailsData.items && Array.isArray(detailsData.items)) {
-                                      validCovers = detailsData.items
-                                          .map(item => item.poster_url || item.poster_path)
-                                          .filter(url => url && typeof url === 'string' && url.trim().length > 0)
-                                          .slice(0, 4);
+                              let items = list.items;
+                              
+                              if (!items || items.length === 0) {
+                                  const detailsRes = await fetch(`${this.tursoBackendUrl}/lists/${list.slug}?userEmail=${encodeURIComponent(email)}`);
+                                  if (detailsRes.ok) {
+                                      const detailsData = await detailsRes.json();
+                                      items = detailsData.items;
                                   }
+                              }
+
+                              if (items && Array.isArray(items)) {
+                                  validCovers = items
+                                      .map(item => item.poster_url || item.poster_path)
+                                      .filter(url => url && typeof url === 'string' && url.trim().length > 0 && !url.includes('null') && !url.includes('undefined'))
+                                      .slice(0, 4); 
                               }
                          } catch (err) {
                              console.error("Failed to hydrate list covers in Nav", err);
                          }
-                     } else if (list.items && Array.isArray(list.items)) {
-                           validCovers = list.items
-                              .map(item => item.poster_url || item.poster_path)
-                              .filter(url => url && typeof url === 'string' && url.trim().length > 0)
-                              .slice(0, 4);
                      }
      
                      return { ...list, cover_images: validCovers };
