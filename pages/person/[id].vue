@@ -31,7 +31,8 @@
         </div>
         <CreditsHistory
           v-else
-          :credits="person.combined_credits" />
+          :credits="person.combined_credits"
+          :known-for-department="person.known_for_department" />
       </div>
     </template>
 

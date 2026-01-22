@@ -924,7 +924,7 @@ export function getPerson(id) {
                 api_key: getEnv('API_KEY'),
                 language: getEnv('API_LANG'),
                 append_to_response: 'images,combined_credits,external_ids',
-                include_image_language: 'en',
+                include_image_language: 'en,null',
             },
         }).then((response) => {
             response.data.combined_credits.cast.forEach(role => {
