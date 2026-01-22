@@ -107,7 +107,7 @@ export default {
     if (cast) creditsList.push({ name: 'Acting', groups: cast });
     if (crew) creditsList = [...creditsList, ...crew];
 
-    this.$data[this.active_media] = this.sortDepartments(creditsList); // Sort here
+    this.$data[this.active_media] = this.sortDepartments(creditsList);
 
     this.active_credits = this.$data[this.active_media];
 
@@ -176,7 +176,7 @@ export default {
           if (cast) creditsList.push({ name: 'Acting', groups: cast });
           if (crew) creditsList = [...creditsList, ...crew];
 
-          this.$data[media] = this.sortDepartments(creditsList); // Sort here
+          this.$data[media] = this.sortDepartments(creditsList);
 
           this.active_credits = this.$data[media];
           this.active_category = 'all';

@@ -1,0 +1,473 @@
+<template>
+  <main class="main">
+    <div class="container header-container">
+      <div class="festival-hero">
+        <div class="hero-backdrop">
+            <img 
+              src="/sundance_backdrop.webp" 
+              alt="Fondo Sundance"
+            />
+            <div class="hero-overlay"></div>
+        </div>
+      </div>
+
+      <div class="switcher-container">
+        <a href="https://festival.sundance.org/tickets/online" target="_blank" class="buy-tickets-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart-icon lucide-shopping-cart"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+            <span>Comprar Tickets</span>
+        </a>
+
+        <div class="segmented-control">
+            <input type="radio" id="tab-films" value="films" v-model="activeTab">
+            <label for="tab-films" @click="activeTab = 'films'">Películas</label>
+            
+            <input type="radio" id="tab-schedule" value="schedule" v-model="activeTab">
+            <label for="tab-schedule" @click="activeTab = 'schedule'">Horario</label>
+            
+            <div class="glider" :class="activeTab"></div>
+        </div>
+      </div>
+    </div>
+
+      <div v-if="loading" class="loader-container">
+        <Loader />
+      </div>
+
+      <div v-else>
+        <!-- Films Tab -->
+        <div v-if="activeTab === 'films'" class="films-grid">
+            <Listing 
+                v-if="films && films.results.length"
+                title="Todas las Películas"
+                :items="films"
+                :show-view-all="false"
+            />
+        </div>
+
+        <!-- Schedule Tab -->
+        <div v-if="activeTab === 'schedule'" class="schedule-container">
+          <div v-for="(dayScreenings, date) in groupedScreenings" :key="date" class="schedule-day">
+            <div class="day-header" @click="toggleDay(date)">
+                <h2>{{ formatDate(date) }}</h2>
+                <div class="chevron" :class="{ 'closed': !isOpen(date) }">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+            </div>
+            
+            <transition name="slide">
+                <div v-show="isOpen(date)" class="screenings-list">
+              <div v-for="screening in dayScreenings" :key="screening.id" class="screening-card">
+                 <div class="time-block">
+                    <span class="time">{{ formatTime(screening.start_time) }}</span>
+                    <span class="timezone">{{ screening.timezone }}</span>
+                 </div>
+                 
+                  <div class="film-info">
+                     <component 
+                        :is="screening.film.source_url ? 'a' : 'span'"
+                        :href="screening.film.source_url || ''"
+                        :target="screening.film.source_url ? '_blank' : ''"
+                        class="film-title"
+                        :class="{'no-link': !screening.film.source_url}"
+                     >
+                        {{ screening.film.title }}
+                     </component>
+                     <div class="film-meta">
+                         <span v-if="screening.film.director">Dirigida por {{ screening.film.director }}</span>
+                         <span v-if="screening.film.director && screening.film.runtime"> • </span>
+                         <span v-if="screening.film.runtime">{{ screening.film.runtime }} min</span>
+                     </div>
+                     <div class="tags">
+                         <span v-if="screening.is_in_person" class="tag in-person">En persona</span>
+                         <span v-if="screening.is_online" class="tag online">Online</span>
+                         <span v-if="screening.is_sold_out" class="tag sold-out">Agotado</span>
+                     </div>
+                  </div>
+                  
+                  <div class="poster-mini">
+                      <img 
+                        v-if="screening.film.poster_path" 
+                        :src="screening.film.poster_path" 
+                        alt="Poster" 
+                        loading="lazy" 
+                        @error="$event.target.src = '/image_not_found_yet.webp'"
+                      />
+                      <img v-else src="/image_not_found_yet.webp" alt="No Poster" />
+                  </div>
+              </div>
+            </div>
+            </transition>
+          </div>
+        </div>
+      </div>
+    </main>
+</template>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import Loader from '~/components/Loader.vue';
+import Listing from '~/components/Listing.vue';
+
+const activeTab = ref('films');
+const loading = ref(true);
+const films = ref({ results: [] });
+const schedule = ref([]);
+const openDays = ref(new Set());
+
+const formatDate = (dateStr) => {
+    const options = { weekday: 'long', month: 'long', day: 'numeric' };
+    const date = new Date(dateStr).toLocaleDateString('es-ES', options);
+    return date.charAt(0).toUpperCase() + date.slice(1);
+};
+
+const formatTime = (timeStr) => {
+    return new Date(timeStr).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+};
+
+const groupedScreenings = computed(() => {
+    if (!schedule.value) return {};
+    const groups = {};
+    schedule.value.forEach(s => {
+        const dateKey = s.start_time.split('T')[0];
+        if (!groups[dateKey]) groups[dateKey] = [];
+        groups[dateKey].push(s);
+    });
+    return Object.keys(groups).sort().reduce((obj, key) => {
+        obj[key] = groups[key];
+        return obj;
+    }, {});
+});
+
+const toggleDay = (date) => {
+    if (openDays.value.has(date)) {
+        openDays.value.delete(date);
+    } else {
+        openDays.value.add(date);
+    }
+}
+
+const isOpen = (date) => openDays.value.has(date);
+
+onMounted(async () => {
+    try {
+        const [filmsData, scheduleData] = await Promise.all([
+            $fetch('/api/festival/sundance/films?limit=200&sort=title'),
+            $fetch('/api/festival/sundance/schedule')
+        ]);
+        
+        films.value = filmsData;
+        schedule.value = scheduleData.results || [];
+
+        if (schedule.value.length > 0) {
+            const dates = new Set(schedule.value.map(s => s.start_time.split('T')[0]));
+            dates.forEach(d => openDays.value.add(d));
+        }
+        
+    } catch (e) {
+        console.error('Error fetching festival data', e);
+    } finally {
+        loading.value = false;
+    }
+});
+</script>
+
+<style lang="scss" scoped>
+@use '~/assets/css/utilities/variables' as *;
+
+.header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.switcher-container {
+    display: flex;
+    top: 3.5rem;
+    position: relative;
+    justify-content: center;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.buy-tickets-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #8BE9FD;
+    color: #000;
+    padding: 0 20px;
+    height: 40px;
+    border-radius: 16px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: transform 0.2s, opacity 0.2s;
+    
+    &:hover {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
+    
+    span {
+        white-space: nowrap;
+    }
+}
+
+.segmented-control {
+    position: relative;
+    display: flex;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px; 
+    padding: 4px;
+    height: 48px;
+    align-items: center;
+    min-width: 300px;
+}
+
+.segmented-control input[type="radio"] {
+    display: none;
+}
+
+.segmented-control label {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    text-align: center;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: color 0.3s;
+    font-weight: 600;
+    line-height: 40px;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.segmented-control input:checked + label {
+    color: #000;
+}
+
+.segmented-control .glider {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    height: calc(100% - 8px);
+    width: calc((100% - 8px) / 2);
+    background: #8BE9FD;
+    border-radius: 16px;
+    z-index: 1;
+    transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.segmented-control .glider.films { transform: translateX(0); }
+.segmented-control .glider.schedule { transform: translateX(100%); }
+
+
+.festival-hero {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    border: 1px solid #8BE9FD;
+}
+
+.hero-backdrop {
+    width: 100%;
+    height: auto;
+    position: relative;
+    
+    img {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: contain;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgb(27 77 95 / 7%));
+        pointer-events: none;
+    }
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 20px;
+}
+
+.loader-container {
+    display: flex;
+    justify-content: center;
+    padding: 3rem;
+}
+
+.schedule-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.day-header {
+    font-size: 1.8rem;
+    color: #fff;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.5rem;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    
+    h2 {
+        font-size: 1.8rem;
+        margin: 0;
+    }
+    
+    .chevron {
+        transition: transform 0.3s ease;
+        
+        &.closed {
+            transform: rotate(-90deg);
+        }
+    }
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.3s ease-out;
+  max-height: 2000px;
+  opacity: 1;
+  overflow: hidden;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  max-height: 0;
+  opacity: 0;
+  margin-bottom: 0;
+}
+
+.screening-card {
+    display: flex;
+    background: #0a161b;
+    border: 1px solid #8BE9FD;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    gap: 1.5rem;
+    transition: transform 0.2s;
+    
+    &:hover {
+        transform: translateY(-2px);
+        background: #252525;
+    }
+}
+
+.time-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    border-right: 1px solid #333;
+    padding-right: 1.5rem;
+    
+    .time {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #fff;
+    }
+    .timezone {
+        font-size: 0.92rem;
+        color: #888;
+    }
+}
+
+.film-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+    .film-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #fff;
+        text-decoration: none;
+        margin-bottom: 0.5rem;
+        display: block;
+        
+        &:hover {
+            color: #8BE9FD;
+        }
+    }
+    
+    .film-meta {
+        font-size: 1.05rem;
+        color: #aaa;
+        margin-bottom: 0.8rem;
+    }
+}
+
+.tags {
+    display: flex;
+    gap: 0.5rem;
+    
+    .tag {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+        text-transform: uppercase;
+        
+        &.in-person { background: rgba(52, 152, 219, 0.2); }
+        &.online { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+        &.sold-out { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+    }
+}
+
+.poster-mini {
+    width: 60px;
+    height: 90px;
+    
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+}
+
+@media (max-width: 600px) {
+    .screening-card {
+        flex-direction: column; 
+        gap: 1rem;
+    }
+    .time-block {
+        border-right: none;
+        border-bottom: 1px solid #333;
+        padding-right: 0;
+        padding-bottom: 1rem;
+        flex-direction: row;
+        gap: 1rem;
+        width: 100%;
+    }
+    .poster-mini {
+        display: none;
+    }
+}
+</style>

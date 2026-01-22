@@ -376,6 +376,23 @@ export function getMovie(id) {
                 return;
             }
 
+            if (!responseData.overview && getEnv('API_LANG') !== 'en-US') {
+                try {
+                    const fallbackResponse = await axios.get(`${apiUrl}/movie/${id}`, {
+                        params: {
+                            api_key: getEnv('API_KEY'),
+                            language: 'en-US',
+                        },
+                    });
+                    if (fallbackResponse.data.overview) {
+                        responseData.overview = fallbackResponse.data.overview;
+                        responseData.original_overview_language = 'en';
+                    }
+                } catch (e) {
+                    console.warn('Failed to fetch fallback overview', e);
+                }
+            }
+
             if (videoResponse.data && videoResponse.data.results) {
                 const currentIds = new Set((responseData.videos.results || []).map(v => v.id));
                 const newVideos = videoResponse.data.results.filter(v => !currentIds.has(v.id));
@@ -683,6 +700,23 @@ export function getTvShow(id) {
             if (!responseData || responseData.success === false) {
                 reject(new Error(responseData?.status_message || 'TV Show not found'));
                 return;
+            }
+
+            if (!responseData.overview && getEnv('API_LANG') !== 'en-US') {
+                try {
+                    const fallbackResponse = await axios.get(`${apiUrl}/tv/${id}`, {
+                        params: {
+                            api_key: getEnv('API_KEY'),
+                            language: 'en-US',
+                        },
+                    });
+                    if (fallbackResponse.data.overview) {
+                        responseData.overview = fallbackResponse.data.overview;
+                        responseData.original_overview_language = 'en';
+                    }
+                } catch (e) {
+                    console.warn('Failed to fetch fallback overview', e);
+                }
             }
 
             if (videoResponse.data && videoResponse.data.results) {
