@@ -6,7 +6,7 @@
           <div :class="$style.headerContent">
             <h2 class="title-primary">Following</h2>
             <p :class="$style.modalSubtitle">
-              Manage the people, TV shows, and companies you follow for notifications.
+              Manage the people, TV shows, production companies, and streaming services you follow for notifications.
             </p>
           </div>
           <button @click="close" :class="$style.closeButton">
@@ -31,7 +31,7 @@
           <button 
             @click="activeTab = 'companies'" 
             :class="[{ [$style.active]: activeTab === 'companies' }]">
-            <span :class="$style.tabLabel">Companies ({{ companiesCount }})</span>
+            <span :class="$style.tabLabel">Production Companies ({{ companiesCount }})</span>
           </button>
           <button 
             @click="activeTab = 'streaming'" 
@@ -660,7 +660,7 @@ export default {
 .modalHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: 2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
@@ -717,13 +717,19 @@ export default {
     border: none;
     color: rgba(255, 255, 255, 0.6);
     font-size: 1.4rem;
-    padding: 12px 0;
+    padding: 12px 8px;
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
     text-align: center;
     font-family: 'Ortica', 'Roboto', sans-serif;
     font-weight: 300;
+
+    @media (max-width: 768px) {
+      font-size: 0.9rem;
+      font-weight: 200;
+      padding: 12px 4px;
+    }
     letter-spacing: 0.05em;
     line-height: 1.2;
     text-shadow: 
