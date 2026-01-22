@@ -43,25 +43,12 @@
       </h2>
       
 
-      <div
-        v-if="!['person', 'streaming', 'production'].includes(media) && (stars || item.vote_average || item.imdb_rating)"
-        class="card__rating">
-        <div
-          v-if="stars"
-          class="card__stars">
-          <div :style="{ width: `${stars}%` }" />
-        </div>
-
-        <div
-          v-if="item.rating_source === 'imdb' && item.imdb_rating"
-          class="card__vote">
-          {{ item.imdb_rating.toFixed(1) }}
-        </div>
-        <div
-          v-else-if="item.vote_average"
-          class="card__vote">
-          {{ parseFloat(item.vote_average).toFixed(1) }}
-        </div>
+      <div class="card__logo-container">
+        <img 
+            src="/sundance_film_festival_2026_logo.png" 
+            alt="Sundance Selection" 
+            class="card__sundance-logo"
+        />
       </div>
     </nuxt-link>
   </div>
@@ -247,5 +234,27 @@ export default {
     top: 5px;
     right: 5px;
   }
+}
+
+.card__logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: black;
+    box-shadow: 0 8px 10px 0 rgba(31, 104, 135, 0.37);
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    bottom: 10px;
+    padding-bottom: 0.5rem;
+    position: relative;
+    top: -30px;
+    height: 60px;
+}
+
+.card__sundance-logo {
+    height: 50px;
+    width: auto;
+    filter: invert(1);
+    object-fit: contain;
 }
 </style>

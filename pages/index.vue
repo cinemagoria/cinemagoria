@@ -7,6 +7,12 @@
       v-if="featured"
       :item="featured" />
 
+    <SundanceCarousel
+      v-if="sundanceMovies && sundanceMovies.results.length"
+      title="Sundance Festival 2026"
+      view-all-url="/festival/sundance-2026"
+      :items="sundanceMovies" />
+
     <ListingCarousel
       v-if="trendingMovies && trendingMovies.results.length"
       :title="trendingMoviesTitle"
@@ -41,6 +47,7 @@ import UserNav from '@/components/global/UserNav';
 import { getTrending, getMovie, getTvShow, getListItem } from '~/utils/api';
 import Hero from '~/components/Hero';
 import ListingCarousel from '~/components/ListingCarousel';
+import SundanceCarousel from '~/components/SundanceCarousel';
 import FeatureDescription from '~/components/FeatureDescription';
 import NewsCarousel from '~/components/global/NewsCarousel';
 import ProductionCompanyCarousel from '~/components/ProductionCompanyCarousel';
@@ -141,6 +148,17 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
       return { results: allResults };
     };
     
+    const fetchSundanceMovies = async () => {
+        try {
+            const data = await $fetch('/api/festival/sundance/films?limit=30&sort=rating');
+            return data;
+        } catch (e) {
+            console.error('Sundance fetch error', e);
+            return { results: [] };
+        }
+    };
+
+    const sundanceMovies = await fetchSundanceMovies();
     const trendingMovies = await fetchWithRefill('movie', 20, 3);
     const trendingTv = await fetchWithRefill('tv', 20, 6);
     
@@ -172,14 +190,15 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
       }
     }
     
-    return { trendingMovies, trendingTv, featured };
+    return { trendingMovies, trendingTv, featured, sundanceMovies };
   } catch (error) {
     console.error('Data Loading Error:', error);
-    return { trendingMovies: { results: [] }, trendingTv: { results: [] }, featured: null };
+    return { trendingMovies: { results: [] }, trendingTv: { results: [] }, featured: null, sundanceMovies: { results: [] } };
   }
 });
 
 const featured = computed(() => pageData.value?.featured);
+const sundanceMovies = computed(() => pageData.value?.sundanceMovies);
 const trendingMovies = computed(() => pageData.value?.trendingMovies);
 const trendingTv = computed(() => pageData.value?.trendingTv);
 
