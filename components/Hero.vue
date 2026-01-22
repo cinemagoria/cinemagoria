@@ -53,6 +53,14 @@
               </template>
             </h1>
 
+            <div v-if="sundanceFilm" :class="$style.festivalBadgeContainer">
+                <SundanceBadge />
+                <nuxt-link to="/festival/sundance-2026" :class="$style.festivalLink">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FBD378" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-range"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M17 14h-6"/><path d="M13 18H7"/><path d="M7 14h.01"/><path d="M17 18h.01"/></svg>
+                    <span :class="$style.buttonText">SEE SCREENING<br>SCHEDULE</span>
+                </nuxt-link>
+            </div>
+
             <div :class="$style.meta">
               <div
                 v-if="stars || item.vote_count"
@@ -331,11 +339,13 @@ import { mapItemToDbPayload } from '~/utils/itemMapper';
 import Filters from '~/mixins/Filters';
 import Modal from '~/components/Modal';
 import Loader from '~/components/Loader.vue';
+import SundanceBadge from '~/components/festival/SundanceBadge.vue';
 
 export default {
   components: {
     Modal,
     Loader,
+    SundanceBadge,
   },
 
   mixins: [
@@ -405,7 +415,8 @@ export default {
       
       showAddListMenu: false,
       userLists: [],
-      membership: { inWatchlist: false, lists: [] }
+      membership: { inWatchlist: false, lists: [] },
+      sundanceFilm: null
     };
   },
 
@@ -480,6 +491,8 @@ export default {
     this.shareTitle = "I'd like to share '" + this.nameForDb + "' from EnterCinema!";
     this.customTitle = "I'd like to share '" + this.nameForDb + "' from EnterCinema!";
     this.customMessage = 'Synopsis: ' + this.item.overview + '\n\nExplore streaming options...';
+    
+    this.checkFestivalStatus();
   },
 
   beforeDestroy() {
@@ -501,6 +514,21 @@ export default {
              this.isFavorite = data.inWatchlist; 
          }
       } catch(e) { console.error(e); }
+    },
+
+    async checkFestivalStatus() {
+        if (this.type !== 'movie') return;
+        try {
+            const response = await fetch(`/api/festival/sundance/films?tmdb_id=${this.id}`);
+            if (response.ok) {
+                const data = await response.json();
+                if (data.results && data.results.length > 0) {
+                    this.sundanceFilm = data.results[0];
+                }
+            }
+        } catch (e) {
+            console.error('Error checking festival status:', e);
+        }
     },
 
     async fetchUserLists() {
@@ -1079,6 +1107,44 @@ export default {
 
   @media (max-width: 397px) {
   height: 54rem;
+}
+
+.festivalBadgeContainer {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.festivalLink {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #FBD378;
+  padding: 0 24px;
+  height: 78px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-sizing: border-box;
+
+  &:hover {
+    background: rgba(251, 211, 120, 0.15);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+}
+
+.buttonText {
+    text-align: left;
+    line-height: 1.2;
+    font-size: 0.9rem;
 }
 
   @media (min-width: $breakpoint-xsmall) and (max-width: 767px) {
