@@ -30,5 +30,9 @@
   filter: invert(1);
   object-fit: contain;
   display: block;
+
+  @media (max-width: 1023px) {
+    height: 50px;
+  }
 }
 </style>

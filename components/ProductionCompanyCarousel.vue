@@ -56,7 +56,7 @@
         <div class="production-company-card explore-card" v-if="viewAllLink">
              <nuxt-link :to="viewAllLink" class="company-link explore-link">
                <div class="logo-container explore-container">
-                 <span>Explore Todo</span>
+                 <span>Explorar Más</span>
                </div>
              </nuxt-link>
         </div>

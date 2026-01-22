@@ -42,9 +42,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import UserNav from '@/components/global/UserNav';
-import { getTrending, getMovie, getTvShow, getListItem } from '~/utils/api';
+import { getTrending, getMovie, getTvShow, getListItem, translateText } from '~/utils/api';
 import Hero from '~/components/Hero';
 import ListingCarousel from '~/components/ListingCarousel';
 import SundanceCarousel from '~/components/SundanceCarousel';
@@ -59,6 +59,8 @@ const hasAccessToken = ref(false);
 const isLoggedIn = ref(false);
 const userName = ref('');
 const ratedItemsModalVisible = ref(false);
+const translatedOverview = ref(null);
+const isTranslating = ref(false);
 
 const showRatedItems = () => {
   ratedItemsModalVisible.value = true;
@@ -157,37 +159,22 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         }
     };
 
-    const sundanceMovies = await fetchSundanceMovies();
-    const trendingMovies = await fetchWithRefill('movie', 20, 3);
-    const trendingTv = await fetchWithRefill('tv', 20, 6);
-    
-    const recentItems = [...(trendingMovies?.results || []), ...(trendingTv?.results || [])].filter(item => {
-      const genreIds = item.genre_ids || [];
-      const hasAnimation = genreIds.includes(16);
-      const hasFantasy = genreIds.includes(14) || genreIds.includes(10765);
-      
-      const hasImdb = item.rating_source === 'imdb';
-      const imdbRating = item.imdb_rating ? parseFloat(item.imdb_rating) : 0;
-      const imdbVotes = typeof item.imdb_votes === 'number' 
-          ? item.imdb_votes 
-          : (item.imdb_votes ? parseInt(String(item.imdb_votes).replace(/,/g, ''), 10) : 0);
+    const fetchHero = async () => { 
+        try {
+             const data = await $fetch('/api/hero');
+             return data.result;
+        } catch (e) {
+             console.error('Hero fetch error', e);
+             return null;
+        }
+    };
 
-      const meetsImdbCriteria = hasImdb && imdbRating > 7.0 && imdbVotes > 5000;
-
-      return !(hasAnimation || hasFantasy) && meetsImdbCriteria;
-    });
-    
-    let featured = null;
-    if (recentItems.length > 0) {
-      const randomItem = recentItems[Math.floor(Math.random() * recentItems.length)];
-      const media = randomItem.title ? 'movie' : 'tv';
-      
-      if (media === 'movie') {
-        featured = await getMovie(randomItem.id);
-      } else {
-        featured = await getTvShow(randomItem.id);
-      }
-    }
+    const [sundanceMovies, trendingMovies, trendingTv, featured] = await Promise.all([
+        fetchSundanceMovies(),
+        fetchWithRefill('movie', 20, 3),
+        fetchWithRefill('tv', 20, 6),
+        fetchHero()
+    ]);
     
     return { trendingMovies, trendingTv, featured, sundanceMovies };
   } catch (error) {
@@ -196,7 +183,18 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
   }
 });
 
-const featured = computed(() => pageData.value?.featured);
+const featured = computed(() => {
+    const item = pageData.value?.featured;
+    if (item && translatedOverview.value) {
+        return { 
+            ...item, 
+            overview: translatedOverview.value,
+            original_overview_language: 'es' 
+        };
+    }
+    return item;
+});
+
 const sundanceMovies = computed(() => pageData.value?.sundanceMovies);
 const trendingMovies = computed(() => pageData.value?.trendingMovies);
 const trendingTv = computed(() => pageData.value?.trendingTv);
@@ -243,8 +241,24 @@ async function getUserName(email) {
   }
 }
 
+const handleTranslation = async () => {
+    const item = pageData.value?.featured;
+    if (item?.overview && (item.original_overview_language === 'en' || !item.original_language || item.original_language === 'en')) {
+        isTranslating.value = true;
+        try {
+            translatedOverview.value = await translateText(item.overview);
+        } catch (error) {
+            console.error('Translation failed', error);
+        } finally {
+            isTranslating.value = false;
+        }
+    }
+};
+
 onMounted(async () => {
   if (process.client) {
+    handleTranslation();
+    
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');
     userEmail.value = email || '';
