@@ -1114,6 +1114,11 @@ export default {
     align-items: center;
     gap: 15px;
     margin-bottom: 15px;
+
+    @media (max-width: 1023px) {
+      gap: 8px;
+      margin-bottom: 8px;
+    }
 }
 
 .festivalLink {
@@ -1139,12 +1144,28 @@ export default {
     transform: translateY(-2px);
     text-decoration: none;
   }
+
+  @media (max-width: 1023px) {
+    height: 45px;
+    padding: 0 10px;
+    font-size: 0.75rem;
+    gap: 6px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
 }
 
 .buttonText {
     text-align: left;
     line-height: 1.2;
     font-size: 0.9rem;
+
+    @media (max-width: 1023px) {
+      font-size: 0.75rem;
+    }
 }
 
   @media (min-width: $breakpoint-xsmall) and (max-width: 767px) {
@@ -1244,7 +1265,7 @@ export default {
   
   @media (max-width: #{$breakpoint-small - 1px}) {
     justify-content: flex-start;
-    margin-top: 1.5rem;
+    margin-top: 1rem;
     gap: 0.8rem 0.6rem;
     flex-wrap: wrap;
   }
