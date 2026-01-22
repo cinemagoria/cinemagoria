@@ -6,7 +6,7 @@
           <div :class="$style.headerContent">
             <h2 class="title-primary">Siguiendo</h2>
             <p :class="$style.modalSubtitle">
-              Gestiona las personas, series y productoras que sigues para recibir notificaciones.
+              Gestiona las personas, series, productoras y plataformas de streaming que sigues para recibir notificaciones.
             </p>
           </div>
           <button @click="close" :class="$style.closeButton">
@@ -650,7 +650,7 @@ export default {
 .modalHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: 2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
@@ -707,13 +707,19 @@ export default {
     border: none;
     color: rgba(255, 255, 255, 0.6);
     font-size: 1.4rem;
-    padding: 12px 0;
+    padding: 12px 8px;
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
     text-align: center;
     font-family: 'Ortica', 'Roboto', sans-serif;
     font-weight: 300;
+
+    @media (max-width: 768px) {
+        font-size: 0.9rem;
+        font-weight: 200;
+        padding: 12px 4px;
+    }
     letter-spacing: 0.05em;
     line-height: 1.2;
     text-shadow: 

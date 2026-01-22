@@ -577,14 +577,14 @@ export default {
 
 .rated-items-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 15px;
   padding: 10px 0;
 }
 
 .rated-item {
   background: rgba(0, 0, 0, 0.2);
-  border-radius: 15px;
+  border-radius: 12px;
   overflow: hidden;
   border: 0.5px solid #8AE8FC;
   transition: transform 0.2s ease;
@@ -623,11 +623,11 @@ export default {
 }
 
 .rated-item-info {
-  padding: 12px;
+  padding: 10px;
 }
 
 .rated-item-title {
-  font-size: 1.4rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #fff;
   margin: 0 0 5px;
@@ -640,24 +640,24 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
-  font-size: 1.2rem;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.7);
 }
 
 .rated-item-rating {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 
 .rating-badge {
   background: #8BE9FD;
   color: #000;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -676,20 +676,20 @@ export default {
 
 .rated-item-review-container {
   position: relative;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .rated-item-review {
-  font-size: 1.2rem;
+  font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.8);
-  max-height: 80px;
+  max-height: 60px;
   overflow-y: auto;
-  padding-right: 5px;
-  line-height: 1.4;
+  padding-right: 4px;
+  line-height: 1.3;
 }
 
 .rated-item-review::-webkit-scrollbar {
-  width: 4px;
+  width: 3px;
 }
 
 .rated-item-review::-webkit-scrollbar-track {
