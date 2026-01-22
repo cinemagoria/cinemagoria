@@ -97,6 +97,11 @@
                         @keyup.enter="saveEdit" 
                         autoFocus
                     />
+                    <textarea 
+                        v-model="editForm.description" 
+                        class="edit-input edit-textarea"
+                        placeholder="Description"
+                    ></textarea>
                      <div class="privacy-toggle" @click.stop="editForm.is_public = !editForm.is_public">
                          <div class="privacy-option">
                              <span :class="{ 'privacy-active': !editForm.is_public }">Private</span>
@@ -115,6 +120,7 @@
              <template v-else>
                 <div class="info-row">
                     <h3 class="list-name">{{ list.name }}</h3>
+                    <p v-if="list.description" class="list-desc">{{ list.description }}</p>
                     <span class="item-count">{{ list.item_count || 0 }} items</span>
                 </div>
                 <div class="action-buttons">
@@ -160,6 +166,7 @@ export default {
       editingListId: null,
       editForm: {
           name: '',
+          description: '',
           is_public: false
       },
       undoList: null,
@@ -282,13 +289,14 @@ export default {
         this.editingListId = list.id;
         this.editForm = {
             name: list.name,
+            description: list.description || '',
             is_public: !!list.is_public
         };
     },
     
     cancelEdit() {
         this.editingListId = null;
-        this.editForm = { name: '', is_public: false };
+        this.editForm = { name: '', description: '', is_public: false };
     },
     
     async saveEdit() {
@@ -298,6 +306,7 @@ export default {
             const listId = this.editingListId;
             const updatedData = {
                 name: this.editForm.name,
+                description: this.editForm.description,
                 is_public: this.editForm.is_public
             };
             
@@ -691,6 +700,18 @@ export default {
   }
 }
 
+.list-desc {
+    color: #ccc;
+    font-size: 1.2rem;
+    margin: 0 0 0.5rem 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.4;
+    opacity: 0.8;
+}
+
 .item-count {
   font-size: 1.3rem;
   color: #888;
@@ -762,6 +783,13 @@ export default {
         outline: none;
         box-shadow: 0 0 0 2px rgba(139, 233, 253, 0.2);
     }
+}
+
+.edit-textarea {
+    resize: none;
+    height: 60px;
+    font-family: inherit;
+    font-size: 1.2rem;
 }
 
 .privacy-toggle {

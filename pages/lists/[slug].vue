@@ -564,6 +564,10 @@
                     <label>New Name</label>
                     <input type="text" v-model="newListName" class="input-cl" @keyup.enter="updateListName" autofocus placeholder="e.g. Best Movies">
                  </div>
+                 <div class="form-group-cl" style="margin-top: 15px;">
+                    <label>Description (Optional)</label>
+                    <textarea v-model="newListDescription" class="input-cl textarea-cl" placeholder="Add a description..."></textarea>
+                 </div>
                  <div class="actions-cl">
                       <button @click="closeRenameModal" class="cancel-btn-cl">Cancel</button>
                       <button @click="updateListName" class="create-btn-cl" :disabled="!newListName || !newListName.trim()">Save</button>
@@ -660,6 +664,7 @@ export default {
             privacyDropdownOpen: false,
             renameListModalVisible: false,
             newListName: '',
+            newListDescription: '',
             ratingModalVisible: false,
             currentRatingItem: null,
             selectedRating: 0,
@@ -1095,6 +1100,7 @@ export default {
         
         openRenameModal() {
             this.newListName = this.list.name;
+            this.newListDescription = this.list.description || '';
             this.renameListModalVisible = true;
         },
         closeRenameModal() {
@@ -1109,17 +1115,22 @@ export default {
                 const response = await fetch(`${this.tursoBackendUrl}/lists/${this.list.id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: this.newListName, userEmail })
+                    body: JSON.stringify({ 
+                        name: this.newListName, 
+                        description: this.newListDescription,
+                        userEmail 
+                    })
                 });
 
                 if (response.ok) {
                     this.list.name = this.newListName;
+                    this.list.description = this.newListDescription;
                     this.closeRenameModal();
                 } else {
-                    console.error('Failed to update list name');
+                    console.error('Failed to update list details');
                 }
             } catch (error) {
-                console.error('Error updating list name:', error);
+                console.error('Error updating list details:', error);
             }
         },
 
