@@ -13,7 +13,7 @@
         v-if="viewAllUrl"
         :to="viewAllUrl"
         class="listing__explore">
-        <strong>Explore All</strong>
+        <strong>Explore Todo</strong>
       </nuxt-link>
     </div>
 
@@ -44,7 +44,7 @@
             :to="viewAllUrl"
             class="card__link">
             <div class="card__img" style="background-color: black;">
-              <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white;">Explore All</span>
+              <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white;">Explore Todo</span>
             </div>
             
             <!-- Exact structure replica for height matching -->
