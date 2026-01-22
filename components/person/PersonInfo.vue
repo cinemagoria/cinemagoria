@@ -40,7 +40,7 @@
               Profesión
             </div>
             <div :class="$style.value">
-              {{ person.known_for_department }}
+              {{ translateDepartment(person.known_for_department) }}
             </div>
           </li>
           <li v-if="person.birthday">
@@ -207,6 +207,24 @@ export default {
       } catch (error) {
         console.error('Error checking follow status:', error);
       }
+    },
+    translateDepartment(department) {
+      const map = {
+        'Acting': 'Actuación',
+        'Directing': 'Dirección',
+        'Production': 'Producción',
+        'Writing': 'Guion',
+        'Editing': 'Edición',
+        'Sound': 'Sonido',
+        'Camera': 'Cámara',
+        'Art': 'Arte',
+        'Costume & Make-Up': 'Vestuario y Maquillaje',
+        'Visual Effects': 'Efectos Visuales',
+        'Lighting': 'Iluminación',
+        'Creator': 'Creador',
+        'Crew': 'Equipo'
+      };
+      return map[department] || department;
     },
     async toggleFollow() {
       if (!this.userEmail || this.followLoading) return;
