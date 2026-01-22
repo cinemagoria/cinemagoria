@@ -81,6 +81,10 @@ export default {
       type: Object,
       required: true,
     },
+    knownForDepartment: {
+      type: String,
+      default: '',
+    },
   },
 
   data () {
@@ -99,8 +103,11 @@ export default {
     const cast = this.handleCast(this.credits.cast);
     const crew = this.handleCrew(this.credits.crew);
 
-    if (cast) this.$data[this.active_media].push({ name: 'Acting', groups: cast });
-    if (crew) this.$data[this.active_media] = [...this.$data[this.active_media], ...crew];
+    let creditsList = [];
+    if (cast) creditsList.push({ name: 'Acting', groups: cast });
+    if (crew) creditsList = [...creditsList, ...crew];
+
+    this.$data[this.active_media] = this.sortDepartments(creditsList); // Sort here
 
     this.active_credits = this.$data[this.active_media];
 
@@ -165,14 +172,27 @@ export default {
           const cast = this.handleCast(response.cast);
           const crew = this.handleCrew(response.crew);
 
-          if (cast) this.$data[media].push({ name: 'Acting', groups: cast });
-          if (crew) this.$data[media] = [...this.$data[media], ...crew];
+          let creditsList = [];
+          if (cast) creditsList.push({ name: 'Acting', groups: cast });
+          if (crew) creditsList = [...creditsList, ...crew];
+
+          this.$data[media] = this.sortDepartments(creditsList); // Sort here
 
           this.active_credits = this.$data[media];
           this.active_category = 'all';
           this.categories = this.getCategories();
         });
       }
+    },
+
+    sortDepartments(items) {
+      if (!this.knownForDepartment) return items;
+
+      return items.sort((a, b) => {
+        if (a.name === this.knownForDepartment) return -1;
+        if (b.name === this.knownForDepartment) return 1;
+        return 0;
+      });
     },
 
     filterCredits () {

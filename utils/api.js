@@ -989,9 +989,27 @@ export function getPerson(id) {
                 api_key: getEnv('API_KEY'),
                 language: getEnv('API_LANG'),
                 append_to_response: 'images,combined_credits,external_ids',
-                include_image_language: 'en',
+                include_image_language: 'en,null',
             },
-        }).then((response) => {
+        }).then(async (response) => {
+            // Fallback for biography if empty and not English
+            if (!response.data.biography && getEnv('API_LANG') !== 'en-US') {
+                try {
+                    const fallbackResponse = await axios.get(`${apiUrl}/person/${id}`, {
+                        params: {
+                            api_key: getEnv('API_KEY'),
+                            language: 'en-US',
+                        },
+                    });
+                    if (fallbackResponse.data.biography) {
+                        response.data.biography = fallbackResponse.data.biography;
+                        response.data.original_biography_language = 'en';
+                    }
+                } catch (e) {
+                    console.warn('Failed to fetch fallback biography', e);
+                }
+            }
+
             response.data.combined_credits.cast.forEach(role => {
                 role.vote_average = role.vote_average.toFixed(1);
             });
@@ -1490,6 +1508,54 @@ export async function translateReviewsBatch(reviews) {
     }
 
     return translations;
+}
+
+export async function translateText(text) {
+    if (!text || !text.trim()) return '';
+
+    if (import.meta.client) {
+        try {
+            const cacheKey = CACHE_PREFIX + btoa(unescape(encodeURIComponent(text.slice(0, 50) + text.length)));
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) return cached;
+        } catch (e) {
+            // Ignore
+        }
+    }
+
+    try {
+        const response = await axios.post('https://free-google-translator.p.rapidapi.com/external-api/free-google-translator',
+            {
+                from: 'en',
+                to: 'es',
+                query: text
+            },
+            {
+                headers: {
+                    'x-rapidapi-host': 'free-google-translator.p.rapidapi.com',
+                    'x-rapidapi-key': getEnv('rapidApiKey'),
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        if (response.data && response.data.translation) {
+            const translation = response.data.translation;
+            if (import.meta.client) {
+                try {
+                    const cacheKey = CACHE_PREFIX + btoa(unescape(encodeURIComponent(text.slice(0, 50) + text.length)));
+                    localStorage.setItem(cacheKey, translation);
+                } catch (e) {
+                    // Ignore
+                }
+            }
+            return translation;
+        }
+    } catch (error) {
+        console.error('Translation Error', error);
+    }
+
+    return text;
 }
 
 export function translateReview(reviewContent) {

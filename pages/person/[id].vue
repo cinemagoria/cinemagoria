@@ -31,7 +31,8 @@
         </div>
         <CreditsHistory
           v-else
-          :credits="person.combined_credits" />
+          :credits="person.combined_credits"
+          :known-for-department="person.known_for_department" />
       </div>
     </template>
 
@@ -133,7 +134,8 @@ const enrichWithIMDbRatings = async (items) => {
       try {
         const mediaType = item.media_type || (item.title ? 'movie' : 'tv');
         
-        const apiKey = process.env.API_KEY; 
+        const config = useRuntimeConfig();
+        const apiKey = config.public.apiKey; 
         const detailsResponse = await fetch(
           `https://api.themoviedb.org/3/${mediaType}/${item.id}?api_key=${apiKey}&append_to_response=external_ids`
         );

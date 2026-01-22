@@ -24,9 +24,12 @@
           </h2>
         </div>
 
-        <div v-if="person.biography">
+        <div v-if="person.biography" :class="$style.biographyContainer">
+          <div v-if="isTranslating" :class="$style.translationLoader" style="z-index: 10;">
+             <Loader :size="44" />
+          </div>
           <img v-if="avatar" :src="avatar" :alt="person.name">
-          <div v-html="formatContent(person.biography)" />
+          <div :class="{ [$style.blurContent]: isTranslating }" v-html="formatContent(translatedBiography || person.biography)" />
         </div>
       </div>
 
@@ -90,11 +93,14 @@
 </template>
 
 <script>
-import { apiImgUrl } from '~/utils/api';
+import { apiImgUrl, translateText } from '~/utils/api';
 import ExternalLinks from '~/components/ExternalLinks';
 
 export default {
-  components: { ExternalLinks },
+  components: { 
+    ExternalLinks,
+    Loader: () => import('~/components/Loader'),
+  },
   props: { person: { type: Object, required: true } },
   data() {
     return {
@@ -102,7 +108,9 @@ export default {
       isFollowing: false,
       followLoading: false,
       userEmail: null,
-      followsApiUrl: 'https://entercinema-follows-rust.vercel.app'
+      followsApiUrl: 'https://entercinema-follows-rust.vercel.app',
+      isTranslating: false,
+      translatedBiography: null
     };
   },
   computed: {
@@ -131,6 +139,14 @@ export default {
       return dept === 'Acting' || dept === 'Directing' || dept === 'Writing';
     },
   },
+  watch: {
+    person: {
+        immediate: true,
+        handler() {
+            this.handleTranslation();
+        }
+    }
+  },
   created() {
     if (this.person.homepage) {
       this.person.external_ids.homepage = this.person.homepage;
@@ -144,6 +160,21 @@ export default {
     }
   },
   methods: {
+    async handleTranslation() {
+        if (this.person.biography && this.person.original_biography_language === 'en') {
+            this.isTranslating = true;
+            try {
+                this.translatedBiography = await translateText(this.person.biography);
+            } catch (error) {
+                console.error('Translation failed', error);
+            } finally {
+                this.isTranslating = false;
+            }
+        } else {
+            this.translatedBiography = null;
+            this.isTranslating = false;
+        }
+    },
     fullDate(date) {
       if (!date) return 'N/A';
       return new Date(date).toLocaleDateString('es-ES', {
@@ -153,6 +184,7 @@ export default {
       });
     },
     formatContent(string) {
+      if (!string) return '';
       return string.split('\n').filter(section => section !== '').map(section => `<p>${section}</p>`).join('');
     },
     getAge(born, died) {
@@ -262,6 +294,30 @@ export default {
     align-items: center;
     justify-content: center;
   }
+}
+
+.biographyContainer {
+    position: relative;
+    min-height: 100px; 
+}
+
+.blurContent {
+    filter: blur(4px);
+    opacity: 0.6;
+    pointer-events: none;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.translationLoader {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; 
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
 }
 
 .overview {
