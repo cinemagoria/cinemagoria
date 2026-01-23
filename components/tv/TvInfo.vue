@@ -28,7 +28,12 @@
       <div :class="$style.right">
         <div v-if="item.overview" :class="$style.overview">
           <h2 :class="$style.title">Sinopsis</h2>
-          <div v-html="item.overview" />
+          <div style="position: relative; min-height: 50px;">
+             <div v-if="isTranslatingSynopsis" style="position: absolute; top:0; left:0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 2;">
+                <Loader :size="30" />
+            </div>
+            <div :style="isTranslatingSynopsis ? { opacity: 0.5, filter: 'blur(2px)' } : {}" v-html="translatedOverview || item.overview" />
+          </div>
         </div>
 
         <div :class="$style.stats">
@@ -198,7 +203,7 @@
 </template>
 
 <script>
-import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTraktReviews, getTvShowRecommended, getPerson, getIMDbRatingFromDB, enrichTVShowWithIMDbRating, translateReviewsBatch } from '~/utils/api'; 
+import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTraktReviews, getTvShowRecommended, getPerson, getIMDbRatingFromDB, enrichTVShowWithIMDbRating, translateReviewsBatch, translateText } from '~/utils/api'; 
 import { name, creators } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
 import WatchOn from '~/components/WatchOn';
@@ -242,6 +247,10 @@ export default {
       creatorItems: null,
       activeTab: null,
       isLoadingRecommendations: true,
+
+      // Synopsis Translation
+      isTranslatingSynopsis: false,
+      translatedOverview: null,
     };
   },
 
@@ -312,6 +321,7 @@ export default {
         this.fetchSecondaryData();
         this.fetchProviders();
         this.fetchReviews();
+        this.handleSynopsisTranslation();
         if (this.isLoggedIn) this.checkIfFollowingTv();
       }
     },
@@ -587,6 +597,21 @@ export default {
         'Pilot': 'Piloto'
       };
       return map[status] || status;
+    },
+    async handleSynopsisTranslation() {
+        if (this.item.overview && this.item.original_overview_language === 'en') {
+            this.isTranslatingSynopsis = true;
+            try {
+                this.translatedOverview = await translateText(this.item.overview);
+            } catch (error) {
+                console.error('Synopsis translation failed', error);
+            } finally {
+                this.isTranslatingSynopsis = false;
+            }
+        } else {
+            this.translatedOverview = null;
+            this.isTranslatingSynopsis = false;
+        }
     },
   },
 };
