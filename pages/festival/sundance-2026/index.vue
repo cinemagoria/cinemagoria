@@ -2,20 +2,17 @@
   <main class="main">
     <div class="container header-container">
       <div class="festival-hero">
-        <div class="hero-backdrop">
+        <a href="https://festival.sundance.org/tickets/online" target="_blank" class="hero-backdrop">
             <img 
-              src="/sundance_backdrop.webp" 
+              src="/sundance_backdrop_2026_eng.webp" 
               alt="Sundance Backdrop"
             />
             <div class="hero-overlay"></div>
-        </div>
+        </a>
       </div>
 
       <div class="switcher-container">
-        <a href="https://festival.sundance.org/tickets/online" target="_blank" class="buy-tickets-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart-icon lucide-shopping-cart"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
-            <span>Buy Tickets</span>
-        </a>
+
 
         <div class="segmented-control">
             <input type="radio" id="tab-films" value="films" v-model="activeTab">
