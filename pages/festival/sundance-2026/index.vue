@@ -16,10 +16,10 @@
 
         <div class="segmented-control">
             <input type="radio" id="tab-films" value="films" v-model="activeTab">
-            <label for="tab-films" @click="activeTab = 'films'">Películas</label>
+            <label for="tab-films" @click="activeTab = 'films'">Estrenos</label>
             
             <input type="radio" id="tab-schedule" value="schedule" v-model="activeTab">
-            <label for="tab-schedule" @click="activeTab = 'schedule'">Horario</label>
+            <label for="tab-schedule" @click="activeTab = 'schedule'">Horarios</label>
             
             <div class="glider" :class="activeTab"></div>
         </div>
@@ -35,7 +35,7 @@
         <div v-if="activeTab === 'films'" class="films-grid">
             <Listing 
                 v-if="films && films.results.length"
-                title="Todas las Películas"
+                title="Todos los Estrenos"
                 :items="films"
                 :show-view-all="false"
             />
