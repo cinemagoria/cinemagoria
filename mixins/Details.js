@@ -125,13 +125,23 @@ export const trailer = {
 
       if (!videos.length) return null;
 
-      videos = videos.find(video => video.type === 'Trailer');
+      let video = videos.find(v => v.type === 'Trailer');
 
-      if (!videos) return null;
+      if (!video) {
+        video = videos.find(v => v.type === 'Teaser');
+      }
+      if (!video) {
+        video = videos.find(v => v.type !== 'Featurette' && v.type !== 'Fallback');
+      }
+      if (!video) {
+        video = videos.find(v => v.type === 'Fallback');
+      }
+
+      if (!video) return null;
 
       return [{
-        name: videos.name,
-        src: `https://www.youtube.com/embed/${videos.key}?rel=0&showinfo=0&autoplay=1`,
+        name: video.name,
+        src: `https://www.youtube.com/embed/${video.key}?rel=0&showinfo=0&autoplay=1`,
       }];
     },
   },

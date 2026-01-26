@@ -58,7 +58,38 @@ export default defineEventHandler(async (event) => {
             genres: String(row.genres).split(', ').map(g => ({ name: g })),
 
             videos: {
-                results: row.trailer_key ? [{ site: 'YouTube', key: row.trailer_key, type: 'Trailer', name: 'Trailer' }] : []
+                results: await (async () => {
+                    const videos = [];
+                    try {
+                        interface TMDBResponse {
+                            results: Array<{
+                                key: string;
+                                site: string;
+                                type: string;
+                                name: string;
+                            }>;
+                        }
+                        const tmdbRes = await $fetch<TMDBResponse>(`https://api.themoviedb.org/3/${row.media_type}/${row.tmdb_id}/videos`, {
+                            params: { api_key: config.public.apiKey }
+                        });
+                        if (tmdbRes.results) {
+                            videos.push(...tmdbRes.results);
+                        }
+                    } catch (e) {
+                        // Ignore TMDB errors
+                    }
+
+                    if (row.trailer_key) {
+                        videos.push({
+                            site: 'YouTube',
+                            key: row.trailer_key,
+                            type: 'Fallback',
+                            name: 'Trailer (Fallback)'
+                        });
+                    }
+
+                    return videos;
+                })()
             },
 
             runtime: row.runtime,
