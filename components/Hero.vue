@@ -1102,8 +1102,8 @@ export default {
   background-color: #000;
 
   @media (max-width: 397px) {
-  height: 54rem;
-}
+    height: 64rem;
+  }
 
 .festivalBadgeContainer {
     display: flex;
@@ -1165,7 +1165,7 @@ export default {
 }
 
   @media (min-width: $breakpoint-xsmall) and (max-width: 767px) {
-    height: 56rem;
+    height: 64rem;
   }
 
   @media (min-width: 768px) and (max-width: 1023px) {
