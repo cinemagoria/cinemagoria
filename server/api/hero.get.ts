@@ -61,6 +61,15 @@ export default defineEventHandler(async (event) => {
                 results: await (async () => {
                     const videos = [];
 
+                    if (row.trailer_key) {
+                        videos.push({
+                            site: 'YouTube',
+                            key: row.trailer_key,
+                            type: 'CustomPriority',
+                            name: 'Trailer'
+                        });
+                    }
+
                     try {
                         interface TMDBResponse {
                             results: Array<{
@@ -78,15 +87,6 @@ export default defineEventHandler(async (event) => {
                         }
                     } catch (e) {
                         // Ignore TMDB errors
-                    }
-
-                    if (row.trailer_key) {
-                        videos.push({
-                            site: 'YouTube',
-                            key: row.trailer_key,
-                            type: 'Fallback',
-                            name: 'Trailer (Fallback)'
-                        });
                     }
 
                     return videos;

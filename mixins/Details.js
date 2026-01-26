@@ -125,17 +125,17 @@ export const trailer = {
 
       if (!videos.length) return null;
 
-      let video = videos.find(v => v.type === 'Trailer');
+      let video = videos.find(v => v.type === 'CustomPriority');
+
+      if (!video) {
+        video = videos.find(v => v.type === 'Trailer');
+      }
 
       if (!video) {
         video = videos.find(v => v.type === 'Teaser');
       }
-
       if (!video) {
-        video = videos.find(v => v.type !== 'Featurette' && v.type !== 'Fallback');
-      }
-      if (!video) {
-        video = videos.find(v => v.type === 'Fallback');
+        video = videos.find(v => v.type !== 'Featurette' && v.type !== 'CustomPriority');
       }
 
       if (!video) return null;
