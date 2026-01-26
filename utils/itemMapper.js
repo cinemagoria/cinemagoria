@@ -2,8 +2,8 @@ export function mapItemToDbPayload(item) {
     if (!item) return null;
 
     const idForDb = item.idForDb || item.id;
-    let typeForDb = item.typeForDb || item.media_type || (item.title ? 'movie' : 'tv');
-    if (typeForDb === 'movies') typeForDb = 'movie';
+    let typeForDb = item.typeForDb || item.type || item.media_type || (item.title ? 'movie' : 'tv');
+    if (typeForDb !== 'movie') typeForDb = 'tv';
 
     const nameForDb = item.nameForDb || item.title || item.name;
     const posterForDb = item.posterForDb || item.poster_path || item.poster_url;
