@@ -441,7 +441,8 @@ export default {
       return this.$config.public.tursoBackendUrl;
     },
     type() {
-      return this.item.title ? 'movie' : 'tv';
+      const t = this.item.type || (this.item.title ? 'movie' : 'tv');
+      return t === 'movie' ? 'movie' : 'tv';
     },
     favId() {
       return `${this.type}/${this.item.id}`;
