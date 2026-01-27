@@ -5,7 +5,8 @@
 
     <Hero
       v-if="featured"
-      :item="featured" />
+      :item="featured"
+      :is-homepage="true" />
 
     <SundanceCarousel
       v-if="sundanceMovies && sundanceMovies.results.length"
