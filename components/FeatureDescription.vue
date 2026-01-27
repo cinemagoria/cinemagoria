@@ -63,24 +63,16 @@ export default {
   margin: 0;
   position: relative;
   z-index: 1;
-  background: linear-gradient(
-    to bottom, 
-    rgba(255, 255, 255, 1) 0%, 
-    rgba(240, 240, 245, 0.98) 25%,
-    rgba(214, 214, 218, 0.92) 50%,
-    rgba(183, 183, 187, 0.85) 75%,
-    rgba(144, 144, 149, 0.8) 100%
-  );
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(240, 240, 245, 0.98) 25%, rgba(200, 200, 210, 0.95) 50%, rgb(234 234 234 / 92%) 75%, rgb(255 255 255 / 90%) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   text-shadow: 
     0 1px 2px rgba(255, 255, 255, 0.3),
-    0 2px 4px rgba(0, 0, 0, 0.4),
-    0 4px 8px rgba(0, 0, 0, 0.5),
-    0 8px 16px rgba(0, 0, 0, 0.6),
-    0 12px 24px rgba(0, 0, 0, 0.5),
-    0 16px 32px rgba(0, 0, 0, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    0 4px 8px rgba(0, 0, 0, 0.25),
+    0 8px 16px rgba(0, 0, 0, 0.3),
+    0 12px 24px rgba(0, 0, 0, 0.2),
     0 -1px 1px rgba(255, 255, 255, 0.15);
   filter: brightness(1.1) contrast(1.05);
   letter-spacing: -0.02em;
@@ -118,24 +110,17 @@ export default {
   margin: 0;
   position: relative;
   z-index: 1;
-  background: linear-gradient(
-    to bottom, 
-    rgba(255, 255, 255, 0.95) 0%, 
-    rgba(220, 220, 230, 0.9) 30%,
-    rgba(180, 180, 190, 0.85) 60%,
-    rgba(140, 140, 150, 0.8) 100%
-  );
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.98) 0%, rgba(220, 220, 230, 0.95) 30%, rgba(180, 180, 190, 0.92) 60%, rgb(230 230 234 / 90%) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   text-shadow: 
     0 1px 2px rgba(255, 255, 255, 0.2),
-    0 2px 4px rgba(0, 0, 0, 0.3),
-    0 4px 8px rgba(0, 0, 0, 0.4),
-    0 6px 12px rgba(0, 0, 0, 0.35),
-    0 8px 16px rgba(0, 0, 0, 0.3),
-    0 12px 20px rgba(0, 0, 0, 0.25);
-  filter: brightness(1.08) contrast(1.03) drop-shadow(0 0 20px rgba(255, 255, 255, 0.1));
+    0 2px 4px rgba(0, 0, 0, 0.12),
+    0 4px 8px rgba(0, 0, 0, 0.18),
+    0 6px 12px rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.1);
+  filter: brightness(1.08) contrast(1.03);
   letter-spacing: -0.01em;
   font-family: 'Ortica', 'Tahoma', sans-serif;
 }
@@ -164,11 +149,11 @@ export default {
 
 @media screen and (min-width: 200px) and (max-width: 460px) {
   .metal-gradient {
-    font-size: 16.2px;
+    font-size: 18px;
   }
 
   .feature-text {
-    font-size: 12.6px;
+    font-size: 14px;
   }
   
   .cinematic-light {
@@ -184,11 +169,11 @@ export default {
 
 @media screen and (max-width: 799px) {
   .metal-gradient {
-    font-size: 28.8px; 
+    font-size: 32px; 
   }
   
   .feature-text {
-    font-size: 14.4px;
+    font-size: 16px;
   }
   
   .cinematic-light {
