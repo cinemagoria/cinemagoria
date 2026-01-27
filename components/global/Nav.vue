@@ -527,7 +527,7 @@ export default {
     left: 10px;
     right: 10px;
     border-radius: 15px;
-    height: 240px;
+    height: 250px;
 
     @media (min-width: $breakpoint-large) {
         top: 0; 
