@@ -41,7 +41,7 @@
           appear
           name="hero">
           <div>
-            <h1 :class="$style.name">
+            <h1 :class="[$style.name, { [$style.nameHomepage]: isHomepage }]">
               <template v-if="isSingle">
                 {{ name }}
               </template>
@@ -368,6 +368,10 @@ export default {
     item: {
       type: Object,
       required: true,
+    },
+    isHomepage: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -1486,6 +1490,18 @@ export default {
 
   @media (min-width: $breakpoint-large) {
     font-size: 2.4vw;
+  }
+}
+
+.nameHomepage {
+  font-size: 2.52rem;
+
+  @media (max-width: 397px) {
+    font-size: 2.16rem;
+  }
+
+  @media (min-width: $breakpoint-large) {
+    font-size: 2.16vw;
   }
 }
 
