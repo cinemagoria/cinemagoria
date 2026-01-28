@@ -3,7 +3,8 @@ import { apiImgUrl } from '~/utils/api';
 export const id = {
   computed: {
     id() {
-      return this.item.id;
+      const item = this.item;
+      return item.id;
     }
   }
 }
@@ -11,7 +12,8 @@ export const id = {
 export const type = {
   computed: {
     type() {
-      return this.item.type;
+      const item = this.item;
+      return item.type;
     }
   }
 }
@@ -19,7 +21,8 @@ export const type = {
 export const name = {
   computed: {
     name() {
-      return this.item.title ? this.item.title : this.item.name;
+      const item = this.item;
+      return item.title ? item.title : item.name;
     },
   },
 };
@@ -27,8 +30,9 @@ export const name = {
 export const genres = {
   computed: {
     genres() {
-      if (this.item.genres) {
-        return this.itemgenres;
+      const item = this.item;
+      if (item.genres) {
+        return item.genres;
 
       }
     }
@@ -38,10 +42,11 @@ export const genres = {
 export const stars = {
   computed: {
     stars() {
-      if (this.item.imdb_rating && this.item.rating_source === 'imdb') {
-        return this.item.imdb_rating * 10;
-      } else if (this.item.vote_average) {
-        return this.item.vote_average * 10;
+      const item = this.item;
+      if (item.imdb_rating && item.rating_source === 'imdb') {
+        return item.imdb_rating * 10;
+      } else if (item.vote_average) {
+        return item.vote_average * 10;
       }
     },
   },
@@ -52,7 +57,8 @@ export const stars = {
 export const yearStart = {
   computed: {
     yearStart() {
-      const date = this.item.release_date ? this.item.release_date : this.item.first_air_date;
+      const item = this.item;
+      const date = item.release_date ? item.release_date : item.first_air_date;
 
       if (date) {
         return date.split('-')[0];
@@ -65,7 +71,8 @@ export const yearStart = {
 export const yearEnd = {
   computed: {
     yearEnd() {
-      const date = this.item.last_air_date;
+      const item = this.item;
+      const date = item.last_air_date;
 
       if (date) {
         return date.split('-')[0];
@@ -77,8 +84,9 @@ export const yearEnd = {
 export const poster = {
   computed: {
     poster_path() {
-      if (this.item.poster_path) {
-        return `${apiImgUrl}/w500${this.item.poster_path}`;
+      const item = this.item;
+      if (item.poster_path) {
+        return `${apiImgUrl}/w500${item.poster_path}`;
       }
     },
   },
@@ -87,8 +95,9 @@ export const poster = {
 export const backdrop = {
   computed: {
     backdrop() {
-      if (this.item.backdrop_path) {
-        return `${apiImgUrl}/original${this.item.backdrop_path}`;
+      const item = this.item;
+      if (item.backdrop_path) {
+        return `${apiImgUrl}/original${item.backdrop_path}`;
       }
     },
   },
@@ -98,17 +107,18 @@ export const backdrop = {
 export const cert = {
   computed: {
     cert() {
-      if (this.item.release_dates) {
-        const releases = this.item.release_dates.results.find(release => release.iso_3166_1 === process.env.API_COUNTRY || release.iso_3166_1 === 'US');
+      const item = this.item;
+      if (item.release_dates) {
+        const releases = item.release_dates.results.find(release => release.iso_3166_1 === process.env.API_COUNTRY || release.iso_3166_1 === 'US');
 
         if (!releases) return null;
 
-        const item = releases.release_dates.find(date => date.certification !== '');
+        const certItem = releases.release_dates.find(date => date.certification !== '');
 
-        if (item) return item.certification;
+        if (certItem) return certItem.certification;
 
-      } else if (this.item.content_ratings) {
-        const releases = this.item.content_ratings.results.find(release => release.iso_3166_1 === process.env.API_COUNTRY || release.iso_3166_1 === 'US');
+      } else if (item.content_ratings) {
+        const releases = item.content_ratings.results.find(release => release.iso_3166_1 === process.env.API_COUNTRY || release.iso_3166_1 === 'US');
 
         if (!releases) return null;
 
@@ -121,7 +131,8 @@ export const cert = {
 export const trailer = {
   computed: {
     trailer() {
-      let videos = this.item.videos.results;
+      const item = this.item;
+      let videos = item.videos.results;
 
       if (!videos.length) return null;
 
@@ -152,7 +163,8 @@ export const trailer = {
 export const directors = {
   computed: {
     directors() {
-      const people = this.item.credits.crew;
+      const item = this.item;
+      const people = item.credits.crew;
 
       if (people) {
         return people.filter(person => person.job === 'Director').map(person => `<a href="/person/${person.id}">${person.name}</a>`).join(', ');
@@ -165,7 +177,8 @@ export const directors = {
 export const creators = {
   computed: {
     creators() {
-      const people = this.item.created_by;
+      const item = this.item;
+      const people = item.created_by;
 
       if (people) {
         return people.map(person => `<a href="/person/${person.id}">${person.name}</a>`).join(', ');
@@ -177,11 +190,12 @@ export const creators = {
 export const runtime = {
   computed: {
     runtime() {
-      if (this.item.runtime) {
-        return this.item.runtime;
+      const item = this.item;
+      if (item.runtime) {
+        return item.runtime;
       }
-      if (this.item.episode_run_time && this.item.episode_run_time.length > 0) {
-        return this.item.episode_run_time[0];
+      if (item.episode_run_time && item.episode_run_time.length > 0) {
+        return item.episode_run_time[0];
       }
       return null;
     }

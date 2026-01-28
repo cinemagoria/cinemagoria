@@ -4,8 +4,9 @@
     <FeatureDescription />
 
     <Hero
-      v-if="featured"
-      :item="featured"
+      v-if="featured && featured.length"
+      :items="featured"
+      :initial-item="featured[0]"
       :is-homepage="true" />
 
     <SundanceCarousel
