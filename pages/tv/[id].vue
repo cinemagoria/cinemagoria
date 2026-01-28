@@ -13,7 +13,7 @@
     </div>
 
     <template v-else>
-      <Hero v-if="item && item.id" :item="item" />
+      <Hero v-if="item && item.id" :initial-item="item" />
 
       <MediaNav :menu="menu" @clicked="navClicked" />
 
