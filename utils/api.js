@@ -1026,7 +1026,6 @@ export function getPerson(id) {
                 include_image_language: 'en,null',
             },
         }).then(async (response) => {
-            // Fallback for biography if empty and not English
             if (!response.data.biography && getEnv('API_LANG') !== 'en-US') {
                 try {
                     const fallbackResponse = await axios.get(`${apiUrl}/person/${id}`, {

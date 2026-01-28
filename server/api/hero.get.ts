@@ -26,89 +26,70 @@ export default defineEventHandler(async (event) => {
         `)
 
         if (result.rows.length === 0) {
-            return { result: null }
+            return { result: [] }
         }
+        const selectedRows = result.rows.sort(() => 0.5 - Math.random());
 
-        const randomIndex = Math.floor(Math.random() * result.rows.length);
-        const row = result.rows[randomIndex];
+        const items = await Promise.all(selectedRows.map(async (row) => {
+            const cert = row.certification;
 
-        const cert = row.certification;
+            return {
+                id: row.tmdb_id,
+                type: row.media_type,
+                title: row.title,
+                name: row.title,
+                original_title: row.title,
 
-        const item = {
-            id: row.tmdb_id,
-            type: row.media_type,
-            title: row.title,
-            name: row.title,
-            original_title: row.title,
+                poster_path: row.poster_path,
+                backdrop_path: row.backdrop_path,
+                overview: row.overview,
 
-            poster_path: row.poster_path,
-            backdrop_path: row.backdrop_path,
-            overview: row.overview,
+                release_date: row.release_date,
+                first_air_date: row.release_date,
 
-            release_date: row.release_date,
-            first_air_date: row.release_date,
+                vote_average: row.vote_average,
+                vote_count: row.vote_count,
 
-            vote_average: row.vote_average,
-            vote_count: row.vote_count,
+                imdb_rating: row.imdb_rating,
+                imdb_votes: row.imdb_votes,
+                rating_source: 'imdb',
 
-            imdb_rating: row.imdb_rating,
-            imdb_votes: row.imdb_votes,
-            rating_source: 'imdb',
+                genres: String(row.genres).split(', ').map(g => ({ name: g })),
 
-            genres: String(row.genres).split(', ').map(g => ({ name: g })),
+                videos: {
+                    results: await (async () => {
+                        const videos = [];
 
-            videos: {
-                results: await (async () => {
-                    const videos = [];
-
-                    if (row.trailer_key) {
-                        videos.push({
-                            site: 'YouTube',
-                            key: row.trailer_key,
-                            type: 'CustomPriority',
-                            name: 'Trailer'
-                        });
-                    }
-
-                    try {
-                        interface TMDBResponse {
-                            results: Array<{
-                                key: string;
-                                site: string;
-                                type: string;
-                                name: string;
-                            }>;
+                        if (row.trailer_key) {
+                            videos.push({
+                                site: 'YouTube',
+                                key: row.trailer_key,
+                                type: 'CustomPriority',
+                                name: 'Trailer'
+                            });
                         }
-                        const tmdbRes = await $fetch<TMDBResponse>(`https://api.themoviedb.org/3/${row.media_type}/${row.tmdb_id}/videos`, {
-                            params: { api_key: config.public.apiKey }
-                        });
-                        if (tmdbRes.results) {
-                            videos.push(...tmdbRes.results);
-                        }
-                    } catch (e) {
-                        // Ignore TMDB errors
-                    }
 
-                    return videos;
-                })()
-            },
+                        return videos;
+                    })()
+                },
 
-            runtime: row.runtime,
+                runtime: row.runtime,
 
-            release_dates: {
-                results: [
-                    { iso_3166_1: 'US', release_dates: [{ certification: cert || '' }] }
-                ]
-            },
-            content_ratings: {
-                results: [
-                    { iso_3166_1: 'US', rating: cert || '' }
-                ]
-            },
-            original_overview_language: 'en'
-        }
+                release_dates: {
+                    results: [
+                        { iso_3166_1: 'US', release_dates: [{ certification: cert || '' }] }
+                    ]
+                },
+                content_ratings: {
+                    results: [
+                        { iso_3166_1: 'US', rating: cert || '' }
+                    ]
+                },
+                original_overview_language: 'en'
+            };
+        }));
 
-        return { result: item }
+        return { result: items }
 
     } catch (error: any) {
         console.error('Hero Fetch Error:', error)

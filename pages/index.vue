@@ -4,8 +4,9 @@
     <FeatureDescription />
 
     <Hero
-      v-if="featured"
-      :item="featured"
+      v-if="featured && featured.length"
+      :items="featured"
+      :initial-item="featured[0]"
       :is-homepage="true" />
 
     <SundanceCarousel
@@ -60,8 +61,6 @@ const hasAccessToken = ref(false);
 const isLoggedIn = ref(false);
 const userName = ref('');
 const ratedItemsModalVisible = ref(false);
-const translatedOverview = ref(null);
-const isTranslating = ref(false);
 
 const showRatedItems = () => {
   ratedItemsModalVisible.value = true;
@@ -184,17 +183,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
   }
 });
 
-const featured = computed(() => {
-    const item = pageData.value?.featured;
-    if (item && translatedOverview.value) {
-        return { 
-            ...item, 
-            overview: translatedOverview.value,
-            original_overview_language: 'es' 
-        };
-    }
-    return item;
-});
+const featured = computed(() => pageData.value?.featured);
 
 const sundanceMovies = computed(() => pageData.value?.sundanceMovies);
 const trendingMovies = computed(() => pageData.value?.trendingMovies);
@@ -242,23 +231,10 @@ async function getUserName(email) {
   }
 }
 
-const handleTranslation = async () => {
-    const item = pageData.value?.featured;
-    if (item?.overview && (item.original_overview_language === 'en' || !item.original_language || item.original_language === 'en')) {
-        isTranslating.value = true;
-        try {
-            translatedOverview.value = await translateText(item.overview);
-        } catch (error) {
-            console.error('Translation failed', error);
-        } finally {
-            isTranslating.value = false;
-        }
-    }
-};
+
 
 onMounted(async () => {
   if (process.client) {
-    handleTranslation();
     
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');

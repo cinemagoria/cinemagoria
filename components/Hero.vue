@@ -34,8 +34,26 @@
             :style="{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }"
             @load="onBackdropLoaded"
             @error="onBackdropLoaded">
+
+            <div v-if="items && items.length > 1" class="nav-arrows">
+                <button
+                class="arrow-nav left"
+                aria-label="Previous"
+                type="button"
+                @click="prevItem">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"/></svg>
+                </button>
+                <button
+                class="arrow-nav right"
+                aria-label="Next"
+                type="button"
+                @click="nextItem">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"/></svg>
+                </button>
+            </div>
         </div>
       </div>
+
       <div :class="$style.pane">
         <transition
           appear
@@ -47,7 +65,7 @@
               </template>
 
               <template v-else>
-                <nuxt-link :to="{ name: `${type}-id`, params: { id: item.id } }">
+                <nuxt-link :to="{ name: `${type}-id`, params: { id: heroItem.id } }">
                   {{ name }}
                 </nuxt-link>
               </template>
@@ -71,18 +89,18 @@
                   <div :style="{ width: `${stars}%` }" />
                 </div>
 
-                <div v-if="item.rating_source === 'imdb' && item.imdb_rating">
-                  {{ item.imdb_rating.toFixed(1) }}/10 · {{ (item.imdb_votes || 0).toLocaleString('es-ES') }} votos (vía: IMDb)
+                <div v-if="heroItem.rating_source === 'imdb' && heroItem.imdb_rating">
+                  {{ heroItem.imdb_rating.toFixed(1) }}/10 · {{ (heroItem.imdb_votes || 0).toLocaleString('es-ES') }} votos (vía: IMDb)
                 </div>
-                <div v-else-if="item.vote_average">
-                  {{ item.vote_average.toFixed(1) }}/10 · {{ (item.vote_count || 0).toLocaleString('es-ES') }} reseñas (vía: TMDB)
+                <div v-else-if="heroItem.vote_average">
+                  {{ heroItem.vote_average.toFixed(1) }}/10 · {{ (heroItem.vote_count || 0).toLocaleString('es-ES') }} reseñas (vía: TMDB)
                 </div>
               </div>
 
               <div :class="$style.info">
-                <span v-if="item.number_of_seasons">Temporada {{ item.number_of_seasons }}</span>
+                <span v-if="heroItem.number_of_seasons">Temporada {{ heroItem.number_of_seasons }}</span>
                 <span v-if="yearStart">{{ yearStart }}</span>
-                <span v-if="item.runtime">{{ formatRuntime(item.runtime) }}</span>
+                <span v-if="heroItem.runtime">{{ formatRuntime(heroItem.runtime) }}</span>
                 <span v-if="cert">Cert. {{ cert }}</span>
               </div>
             </div>
@@ -92,7 +110,7 @@
                   <Loader :size="30" />
               </div>
               <div :style="isTranslating ? { opacity: 0.5, filter: 'blur(2px)' } : {}">
-                {{ truncate(translatedOverview || item.overview, 200) }}
+                {{ truncate(translatedOverview || heroItem.overview, 200) }}
               </div>
             </div>
             <br>
@@ -338,7 +356,7 @@ export default {
   ],
 
   props: {
-    item: {
+    initialItem: {
       type: Object,
       required: true,
     },
@@ -346,12 +364,16 @@ export default {
       type: Boolean,
       default: false,
     },
+    items: {
+      type: Array,
+      default: () => [],
+    },
   },
 
   data() {
     return {
       isLoading: true,
-      isSingle: this.item.id === this.$route.params.id,
+      isSingle: this.initialItem.id === this.$route.params.id,
       copySuccess: false,
       ratingModalVisible: false,
       isFavorite: false,
@@ -388,7 +410,7 @@ export default {
       shareModalVisible: false,
       shareTitle: '',
       customTitle: '',
-      customMessage: this.item.overview,
+      customMessage: this.initialItem.overview,
       
       showAddListMenu: false,
       userLists: [],
@@ -396,6 +418,7 @@ export default {
       sundanceFilm: null,
       isTranslating: false,
       translatedOverview: null,
+      currentIndex: 0
     };
   },
 
@@ -416,15 +439,24 @@ export default {
   },
 
   computed: {
+    heroItem() {
+      if (this.items && this.items.length > 0) {
+        return this.items[this.currentIndex];
+      }
+      return this.initialItem;
+    },
     tursoBackendUrl() {
       return this.$config.public.tursoBackendUrl;
     },
+    item() {
+      return this.heroItem;
+    },
     type() {
-      const t = this.item.type || (this.item.title ? 'movie' : 'tv');
+      const t = this.heroItem.type || (this.heroItem.title ? 'movie' : 'tv');
       return t === 'movie' ? 'movie' : 'tv';
     },
     favId() {
-      return `${this.type}/${this.item.id}`;
+      return `${this.type}/${this.id}`;
     },
     shareUrl() {
       return `${window.location.origin}/${this.favId}`;
@@ -436,44 +468,24 @@ export default {
 
   async mounted() {
     this.$bus.$on('new-list-created', this.handleNewList);
-    this.posterForDb = this.poster_path;
-    this.nameForDb = this.name;
-    this.idForDb = this.id;
-    this.typeForDb = this.type;
 
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');
     this.userEmail = email ? email.replace(/['"]+/g, '') : '';
     this.hasAccessToken = accessToken !== null;
     
-    if (this.hasAccessToken) {
-      await this.checkMembership();
-      this.checkUserRating();
-    }
-    
+    this.updateHeroState();
+
     this.$bus.$on('favorites-updated', this.checkMembership);
     this.$bus.$on('lists-updated', this.checkMembership);
-    
-    if (!this.backdrop) {
-      this.isLoading = false;
-    } else {
-       this.$nextTick(() => {
-        if (this.$refs.backdropRef && this.$refs.backdropRef.complete) this.isLoading = false;
-       });
+  },
+
+  watch: {
+    heroItem(val) {
+      if (val) {
+        this.updateHeroState();
+      }
     }
-    setTimeout(() => this.isLoading = false, 5000);
-    
-    this.starsForDb = this.stars;
-    this.yearStartForDb = this.yearStart;
-    this.yearEndForDb  = this.yearEnd;
-    this.genresForDb = this.item.genres ? this.item.genres.map(genre => genre.name).join(', ') : '';
-    this.addedAt = new Date();
-    this.shareTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde EnterCinema!";
-    this.customTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde EnterCinema!";
-    this.customMessage = 'Sinopsis: ' + this.item.overview + '\n\nExplora opciones de streaming...';
-    
-    this.checkFestivalStatus();
-    this.handleTranslation();
   },
 
   beforeDestroy() {
@@ -483,11 +495,57 @@ export default {
   },
 
   methods: {
+    nextItem() {
+      if (this.items.length > 1) {
+        this.currentIndex = (this.currentIndex + 1) % this.items.length;
+      }
+    },
+    prevItem() {
+      if (this.items.length > 1) {
+        this.currentIndex = (this.currentIndex - 1 + this.items.length) % this.items.length;
+      }
+    },
+    async updateHeroState() {
+        this.isLoading = true;
+        this.posterForDb = this.poster_path;
+        this.nameForDb = this.name;
+        this.idForDb = this.id;
+        this.typeForDb = this.type;
+        this.starsForDb = this.stars;
+        this.yearStartForDb = this.yearStart;
+        this.yearEndForDb = this.yearEnd;
+        
+        const currentItem = this.heroItem || this.item;
+        this.genresForDb = currentItem.genres ? currentItem.genres.map(genre => genre.name).join(', ') : '';
+        this.addedAt = new Date();
+        
+        this.shareTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde EnterCinema!";
+        this.customTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde EnterCinema!";
+        this.customMessage = 'Sinopsis: ' + currentItem.overview + '\n\nExplora opciones de streaming...';
+        
+        if (this.hasAccessToken) {
+            await this.checkMembership();
+            this.checkUserRating();
+        }
+        
+        this.checkFestivalStatus();
+        this.handleTranslation();
+
+        if (!this.backdrop) {
+          this.isLoading = false;
+        } else {
+           this.$nextTick(() => {
+            if (this.$refs.backdropRef && this.$refs.backdropRef.complete) this.isLoading = false;
+           });
+        }
+        setTimeout(() => this.isLoading = false, 5000);
+    },
     async handleTranslation() {
-        if (this.item.overview && this.item.original_overview_language === 'en') {
+        const item = this.heroItem || this.item;
+        if (item.overview && item.original_overview_language === 'en') {
             this.isTranslating = true;
             try {
-                this.translatedOverview = await translateText(this.item.overview);
+                this.translatedOverview = await translateText(item.overview);
             } catch (error) {
                 console.error('Translation failed', error);
             } finally {
@@ -547,7 +605,7 @@ export default {
             if (isInList) {
                 await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items?itemId=${this.id}&itemType=${this.typeForDb}&userEmail=${encodeURIComponent(this.userEmail)}`, { method: 'DELETE' });
             } else {
-                const payload = mapItemToDbPayload(this.item);
+                const payload = mapItemToDbPayload(this.heroItem);
                 await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -580,7 +638,7 @@ export default {
     
     openCreateListModal() {
         this.showAddListMenu = false;
-        this.$bus.$emit('show-create-list-modal', this.item);
+        this.$bus.$emit('show-create-list-modal', this.heroItem);
     },
 
     openModal() {
@@ -772,7 +830,7 @@ export default {
             body: JSON.stringify({
               rating: rating,
               review: this.userReview || '',
-              item: mapItemToDbPayload(this.item)
+              item: mapItemToDbPayload(this.heroItem)
             })
           }
         );
@@ -807,7 +865,7 @@ export default {
             body: JSON.stringify({ 
               rating, 
               review,
-              item: mapItemToDbPayload(this.item)
+              item: mapItemToDbPayload(this.heroItem)
             })
           }
         );
@@ -934,10 +992,10 @@ export default {
                 genresForDb: this.genresForDb,
                 typeForDb: this.typeForDb,
                 addedAt: this.addedAt,
-                external_ids: this.item.external_ids,
-                rating_source: this.item.rating_source || 'tmdb',
-                imdb_rating: this.item.imdb_rating,
-                imdb_votes: this.item.imdb_votes,
+                external_ids: this.heroItem.external_ids,
+                rating_source: this.heroItem.rating_source || 'tmdb',
+                imdb_rating: this.heroItem.imdb_rating,
+                imdb_votes: this.heroItem.imdb_votes,
                 runtime: this.runtime,
               }
             })
@@ -984,7 +1042,7 @@ export default {
 
     async addToList(list) {
          try {
-            const item = mapItemToDbPayload(this.item);
+            const item = mapItemToDbPayload(this.heroItem);
              
             const response = await fetch(`${this.tursoBackendUrl}/lists/${list.id}/items`, {
                 method: 'POST',
@@ -1057,10 +1115,10 @@ export default {
         genresForDb: this.genresForDb,
         typeForDb: this.typeForDb,
         addedAt: this.addedAt,
-        external_ids: this.item.external_ids,
-        rating_source: this.item.rating_source || 'tmdb',
-        imdb_rating: this.item.imdb_rating,
-        imdb_votes: this.item.imdb_votes,
+        external_ids: this.heroItem.external_ids,
+        rating_source: this.heroItem.rating_source || 'tmdb',
+        imdb_rating: this.heroItem.imdb_rating,
+        imdb_votes: this.heroItem.imdb_votes,
         runtime: this.runtime,
       };
 
@@ -2150,4 +2208,77 @@ export default {
 .fade-enter, .fade-leave-to {
   opacity: 0;
 }
+
+.nav-arrows {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    z-index: 20;
+    pointer-events: none;
+    left: 0;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    
+    @media (min-width: 1025px) {
+        justify-content: flex-end;
+    }
+}
+
+.arrow-nav {
+    background: rgba(0,0,0,0.3); /* Lighter background initially */
+    border: none;
+    border-radius: 50%;
+    width: 50px; /* Base size larger */
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.3s, opacity 0.3s, transform 0.2s;
+    pointer-events: auto;
+    
+    /* Responsive sizing */
+    @media (min-width: 768px) {
+        width: 60px;
+        height: 60px;
+    }
+
+    @media (min-width: 1200px) {
+        width: 80px; /* Double the size of standard carousel arrows on large screens */
+        height: 80px;
+        background: rgba(0,0,0,0.2); 
+    }
+}
+
+.arrow-nav svg {
+    width: 24px;
+    height: 24px;
+    
+    @media (min-width: 768px) {
+        width: 32px;
+        height: 32px;
+    }
+    
+    @media (min-width: 1200px) {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+.arrow-nav:hover {
+    background: rgba(0,0,0,0.6);
+    transform: scale(1.05);
+}
+
+/* Remove absolute positioning on buttons themselves since we utilize flex container spacing */
+.arrow-nav.left {
+    /* left: 20px; handled by flex container padding and justification */
+    @media (min-width: 1025px) {
+        display: none;
+    }
+}
+
+
 </style>

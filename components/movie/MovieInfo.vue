@@ -252,8 +252,6 @@ export default {
       producerItems: null,
       activeTab: null,
       isLoadingRecommendations: true,
-      
-      // Synopsis Translation
       isTranslatingSynopsis: false,
       translatedOverview: null,
     };
