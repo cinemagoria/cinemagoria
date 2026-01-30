@@ -572,6 +572,7 @@ export default {
     },
 
     async checkFestivalStatus() {
+        this.sundanceFilm = null;
         if (this.type !== 'movie') return;
         try {
             const response = await fetch(`/api/festival/sundance/films?tmdb_id=${this.id}`);
