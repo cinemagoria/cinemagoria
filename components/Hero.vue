@@ -71,7 +71,10 @@
               </template>
             </h1>
 
-            <div v-if="sundanceFilm" :class="$style.festivalBadgeContainer">
+            <div v-if="isFestivalLoading" :class="$style.festivalBadgeContainer" style="min-width: 150px;">
+                <Loader :size="30" />
+            </div>
+            <div v-else-if="sundanceFilm" :class="$style.festivalBadgeContainer">
                 <SundanceBadge />
                 <nuxt-link to="/festival/sundance-2026" :class="$style.festivalLink">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FBD378" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-range"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M17 14h-6"/><path d="M13 18H7"/><path d="M7 14h.01"/><path d="M17 18h.01"/></svg>
@@ -444,6 +447,7 @@ export default {
       userLists: [],
       membership: { inWatchlist: false, lists: [] },
       sundanceFilm: null,
+      isFestivalLoading: false,
       currentIndex: 0
     };
   },
@@ -581,18 +585,32 @@ export default {
     },
 
     async checkFestivalStatus() {
+        const wasSundance = !!this.sundanceFilm;
         this.sundanceFilm = null;
         if (this.type !== 'movie') return;
+        
+        // Show loader if we are transitioning FROM a festival film (Disappearing case)
+        if (wasSundance) {
+            this.isFestivalLoading = true;
+        }
+
         try {
             const response = await fetch(`/api/festival/sundance/films?tmdb_id=${this.id}`);
             if (response.ok) {
                 const data = await response.json();
                 if (data.results && data.results.length > 0) {
+                     // Show loader if we are transitioning TO a festival film (Appearing case)
+                     if (!wasSundance) {
+                        this.isFestivalLoading = true;
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                     }
                     this.sundanceFilm = data.results[0];
                 }
             }
         } catch (e) {
             console.error('Error checking festival status:', e);
+        } finally {
+            this.isFestivalLoading = false;
         }
     },
 
