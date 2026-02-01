@@ -2,6 +2,10 @@
   <main class="main">
     <div class="container header-container">
       <div class="festival-hero">
+        <nuxt-link to="/festival" class="back-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            All Festivals
+        </nuxt-link>
         <a href="https://festival.sundance.org/tickets/online" target="_blank" class="hero-backdrop">
             <img 
               src="/sundance_backdrop_2026_eng.webp" 
@@ -273,6 +277,52 @@ onMounted(async () => {
     display: flex;
     justify-content: center;
     border: 1px solid #8BE9FD;
+}
+
+.back-link {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.4rem;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 12px 24px;
+    border-radius: 30px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+
+    &:hover {
+        background: #fff;
+        color: #000;
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        border-color: #fff;
+    }
+    
+    svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    @media (max-width: 768px) {
+        top: 20px;
+        left: 20px;
+        font-size: 0.9rem;
+        padding: 8px 16px;
+        
+        svg {
+            width: 18px;
+            height: 18px;
+        }
+    }
 }
 
 .hero-backdrop {

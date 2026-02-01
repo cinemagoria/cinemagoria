@@ -9,11 +9,11 @@
       :initial-item="featured[0]"
       :is-homepage="true" />
 
-    <SundanceCarousel
-      v-if="sundanceMovies && sundanceMovies.results.length"
-      title="Sundance Festival 2026"
-      view-all-url="/festival/sundance-2026"
-      :items="sundanceMovies" />
+    <FestivalsCarousel
+      v-if="festivalsMovies && festivalsMovies.results.length"
+      title="Berlinale & Sundance Festivals 2026"
+      view-all-url="/festival"
+      :items="festivalsMovies" />
 
     <ListingCarousel
       v-if="trendingMovies && trendingMovies.results.length"
@@ -49,7 +49,7 @@ import UserNav from '@/components/global/UserNav';
 import { getTrending, getMovie, getTvShow, getListItem } from '~/utils/api';
 import Hero from '~/components/Hero';
 import ListingCarousel from '~/components/ListingCarousel';
-import SundanceCarousel from '~/components/SundanceCarousel';
+import FestivalsCarousel from '~/components/FestivalsCarousel';
 import FeatureDescription from '~/components/FeatureDescription';
 import NewsCarousel from '~/components/global/NewsCarousel';
 import ProductionCompanyCarousel from '~/components/ProductionCompanyCarousel';
@@ -152,11 +152,21 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
     
     const fetchSundanceMovies = async () => {
         try {
-            const data = await $fetch('/api/festival/sundance/films?limit=30&sort=rating');
-            return data;
+            const data = await $fetch('/api/festival/sundance/films?limit=100');
+            return data.results.map(f => ({ ...f, festival_source: 'sundance' }));
         } catch (e) {
             console.error('Sundance fetch error', e);
-            return { results: [] };
+            return [];
+        }
+    };
+
+    const fetchBerlinaleMovies = async () => {
+        try {
+            const data = await $fetch('/api/festival/berlinale/films?limit=100');
+            return data.results.map(f => ({ ...f, festival_source: 'berlinale' }));
+        } catch (e) {
+            console.error('Berlinale fetch error', e);
+            return [];
         }
     };
 
@@ -170,22 +180,91 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         }
     };
 
-    const [sundanceMovies, trendingMovies, trendingTv, featured] = await Promise.all([
+    const [sundanceList, berlinaleList, trendingMovies, trendingTv, featured] = await Promise.all([
         fetchSundanceMovies(),
+        fetchBerlinaleMovies(),
         fetchWithRefill('movie', 20, 3),
         fetchWithRefill('tv', 20, 6),
         fetchHero()
     ]);
     
-    return { trendingMovies, trendingTv, featured, sundanceMovies };
+    const FEATURED_ORDER = [
+        'Yellow Letters',
+        'Everybody Digs Bill Evans',
+        'Rosebush Pruning',
+        'At the sea',
+        'Kurtuluş',
+        'À voix basse',
+        'Rose',
+        'Queen at sea',
+        'The Weight',
+        'Leviticus',
+        'undertone',
+        'The Gallerist',
+        'Tuner',
+        'The Invite',
+        'The Only Living Pickpocket in New York',
+        'Time and Water',
+        'In the Blink of An Eye',
+        'Give Me the Ball!',
+        'Queen of Chess',
+        'Broken English',
+        'Antiheroine',
+        'Saccharine',
+        'The Moment',
+        'Josephine',
+        'The Shitheads'
+    ];
+    
+    const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
+    
+    const allFestivalFilms = [...sundanceList, ...berlinaleList];
+    
+    let mixedFestivalFilms = allFestivalFilms.filter(f => {
+        const t = norm(f.title);
+        if (f.title.includes('Kurtulu')) return true; 
+        if (f.title.includes('A voix basse') || f.title.includes('À voix basse')) return true;
+        return FEATURED_ORDER.some(o => norm(o) === t);
+    });
+    
+    // Sort
+    mixedFestivalFilms.sort((a, b) => {
+        const getIdx = (title) => {
+             const t = norm(title);
+             if (title.includes('Kurtulu')) return FEATURED_ORDER.findIndex(x => x.startsWith('Kurtul'));
+             if (title.includes('voix basse')) return FEATURED_ORDER.findIndex(x => x.includes('voix basse'));
+             
+             return FEATURED_ORDER.findIndex(o => norm(o) === t);
+        };
+        
+        let idxA = getIdx(a.title);
+        let idxB = getIdx(b.title);
+        
+        if (idxA === -1) idxA = 999;
+        if (idxB === -1) idxB = 999;
+        
+        return idxA - idxB;
+    });
+    
+    // Remove duplicates (Josephine might be in both, keep one - preferably verified one or first one)
+    const uniqueMixed = [];
+    const seenTitles = new Set();
+    for (const f of mixedFestivalFilms) {
+        if (!seenTitles.has(norm(f.title))) {
+            seenTitles.add(norm(f.title));
+            uniqueMixed.push(f);
+        }
+    }
+
+    return { trendingMovies, trendingTv, featured, festivalsMovies: { results: uniqueMixed } };
   } catch (error) {
     console.error('Data Loading Error:', error);
-    return { trendingMovies: { results: [] }, trendingTv: { results: [] }, featured: null, sundanceMovies: { results: [] } };
+    return { trendingMovies: { results: [] }, trendingTv: { results: [] }, featured: null, festivalsMovies: { results: [] } };
   }
 });
 
 const featured = computed(() => pageData.value?.featured);
-const sundanceMovies = computed(() => pageData.value?.sundanceMovies);
+const festivalsMovies = computed(() => pageData.value?.festivalsMovies);
 const trendingMovies = computed(() => pageData.value?.trendingMovies);
 const trendingTv = computed(() => pageData.value?.trendingTv);
 

@@ -30,27 +30,23 @@
 
       <div
         ref="carouselElement"
-        class="carousel__items"
+        class="carousel__items carousel__items--flex"
         @scroll="scrollEvent">
-        <SundanceCard
-          v-for="item in items.results"
-          :key="`card-${item.id}`"
-          :item="item" />
+        <component
+            v-for="item in items.results"
+            :key="`card-${item.id}`"
+            :is="getCardComponent(item)" 
+            :item="item" 
+        />
 
         <div
           v-if="viewAllUrl"
-          class="card">
+          class="card card--explore">
           <nuxt-link
             :to="viewAllUrl"
             class="card__link">
-            <div class="card__img" style="background-color: black;">
-              <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white;">Explore All</span>
-            </div>
-            
-            <!-- Exact structure replica for height matching -->
-            <h2 class="card__name" style="color: transparent; user-select: none;">Spacer</h2>
-            <div class="card__logo-container">
-               <!-- Empty container to match height -->
+            <div class="card__img">
+              <span>Explore All</span>
             </div>
           </nuxt-link>
         </div>
@@ -71,11 +67,13 @@
 
 <script>
 import carousel from '~/mixins/Carousel';
-import SundanceCard from '~/components/SundanceCard';
+import SundanceCard from '~/components/SundanceCard.vue';
+import BerlinaleCard from '~/components/BerlinaleCard.vue';
 
 export default {
   components: {
     SundanceCard,
+    BerlinaleCard
   },
 
   mixins: [carousel],
@@ -111,6 +109,10 @@ export default {
       const count = this.viewAllUrl ? this.items.results.length + 1 : this.items.results.length;
       this.calculateState(count);
     },
+    getCardComponent(item) {
+          if (item.festival_source === 'berlinale') return 'BerlinaleCard';
+          return 'SundanceCard';
+    }
   },
 };
 </script>
@@ -127,42 +129,45 @@ export default {
   color: #A2EDFD !important;
 }
 
-.card__logo-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: black;
-    box-shadow: 0 8px 10px 0 rgba(31, 104, 135, 0.37);
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    bottom: 10px;
-    padding-bottom: 0.5rem;
-    position: relative;
-    top: -30px;
-    height: 60px;
+.carousel__items--flex {
+  display: flex !important;
+  align-items: stretch;
 }
-</style>
-<style>
-  .card__img {
-    position: relative;
-    height: 0;
-    padding-top: 150.27%;
-    overflow: hidden;
-    backdrop-filter: blur(16px);
-    border-start-start-radius: 10px;
-    border-start-end-radius: 10px;
-    transition: transform 0.3s ease-in-out;
-  }
-  .card__name {
-    margin-bottom: 1rem;
-    overflow: hidden;
-    font-size: 1.3rem;
-    background: black;
-    text-align: center;
-    text-overflow: ellipsis;
-    letter-spacing: 0.4px;
-    top: -20px;
-    white-space: nowrap;
-    position: relative;
-  }
+
+.carousel__items--flex .card {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.card--explore .card__link {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card--explore .card__img {
+  flex: 1;
+  padding-top: 0 !important;
+  height: calc(100% - 30px) !important;
+  flex-basis: calc(100% - 30px);
+  flex-grow: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+  border-radius: 15px;
+}
+
+.card--explore .card__img span {
+  position: static;
+  width: auto;
+  height: auto;
+  font-weight: 700;
+  color: #fff;
+  font-size: 1.3rem; 
+  display: block; 
+}
 </style>

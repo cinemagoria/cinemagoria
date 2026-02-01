@@ -81,6 +81,13 @@
                     <span :class="$style.buttonText">SEE SCREENING<br>SCHEDULE</span>
                 </nuxt-link>
             </div>
+            <div v-else-if="berlinaleFilm" :class="$style.festivalBadgeContainer">
+                <BerlinaleBadge />
+                <nuxt-link to="/festival/berlinale-2026" :class="$style.festivalLink">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FBD378" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-range"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M17 14h-6"/><path d="M13 18H7"/><path d="M7 14h.01"/><path d="M17 18h.01"/></svg>
+                    <span :class="$style.buttonText">SEE SCREENING<br>SCHEDULE</span>
+                </nuxt-link>
+            </div>
 
             <div :class="$style.meta">
               <div
@@ -362,12 +369,14 @@ import Filters from '~/mixins/Filters';
 import Modal from '~/components/Modal';
 import Loader from '~/components/Loader.vue';
 import SundanceBadge from '~/components/festival/SundanceBadge.vue';
+import BerlinaleBadge from '~/components/festival/BerlinaleBadge.vue';
 
 export default {
   components: {
     Modal,
     Loader,
     SundanceBadge,
+    BerlinaleBadge,
   },
 
   mixins: [
@@ -447,6 +456,7 @@ export default {
       userLists: [],
       membership: { inWatchlist: false, lists: [] },
       sundanceFilm: null,
+      berlinaleFilm: null,
       isFestivalLoading: false,
       currentIndex: 0
     };
@@ -586,27 +596,44 @@ export default {
 
     async checkFestivalStatus() {
         const wasSundance = !!this.sundanceFilm;
+        const wasBerlinale = !!this.berlinaleFilm;
+        
         this.sundanceFilm = null;
+        this.berlinaleFilm = null;
+        
         if (this.type !== 'movie') return;
         
-        // Show loader if we are transitioning FROM a festival film (Disappearing case)
-        if (wasSundance) {
+        if (wasSundance || wasBerlinale) {
             this.isFestivalLoading = true;
         }
 
         try {
-            const response = await fetch(`/api/festival/sundance/films?tmdb_id=${this.id}`);
-            if (response.ok) {
-                const data = await response.json();
+            const sundanceResponse = await fetch(`/api/festival/sundance/films?tmdb_id=${this.id}`);
+            if (sundanceResponse.ok) {
+                const data = await sundanceResponse.json();
                 if (data.results && data.results.length > 0) {
-                     // Show loader if we are transitioning TO a festival film (Appearing case)
                      if (!wasSundance) {
                         this.isFestivalLoading = true;
                         await new Promise(resolve => setTimeout(resolve, 500));
                      }
                     this.sundanceFilm = data.results[0];
+                    this.isFestivalLoading = false;
+                    return;
                 }
             }
+
+            const berlinaleResponse = await fetch(`/api/festival/berlinale/films?tmdb_id=${this.id}`);
+            if (berlinaleResponse.ok) {
+                const data = await berlinaleResponse.json();
+                if (data.results && data.results.length > 0) {
+                     if (!wasBerlinale) {
+                        this.isFestivalLoading = true;
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                     }
+                     this.berlinaleFilm = data.results[0];
+                }
+            }
+            
         } catch (e) {
             console.error('Error checking festival status:', e);
         } finally {
@@ -2251,10 +2278,10 @@ export default {
 }
 
 .arrow-nav {
-    background: rgba(0,0,0,0.3); /* Lighter background initially */
+    background: rgba(0,0,0,0.3);
     border: none;
     border-radius: 50%;
-    width: 50px; /* Base size larger */
+    width: 50px;
     height: 50px;
     display: flex;
     align-items: center;
@@ -2263,14 +2290,13 @@ export default {
     transition: background 0.3s, opacity 0.3s, transform 0.2s;
     pointer-events: auto;
     
-    /* Responsive sizing */
     @media (min-width: 768px) {
         width: 60px;
         height: 60px;
     }
 
     @media (min-width: 1200px) {
-        width: 80px; /* Double the size of standard carousel arrows on large screens */
+        width: 80px;
         height: 80px;
         background: rgba(0,0,0,0.2); 
     }
@@ -2296,9 +2322,7 @@ export default {
     transform: scale(1.05);
 }
 
-/* Remove absolute positioning on buttons themselves since we utilize flex container spacing */
 .arrow-nav.left {
-    /* left: 20px; handled by flex container padding and justification */
     @media (min-width: 1025px) {
         display: none;
     }
