@@ -240,8 +240,7 @@ const createMenu = () => {
 };
 
 onMounted(() => {
-    console.log("DEBUG: onMounted triggered");
-    console.log("DEBUG: Initial person value:", person.value);
+
     createMenu();
     initKnownFor();
 });
@@ -261,16 +260,13 @@ watch(activeMenu, (newVal) => {
 });
 
 watch(person, async () => {
-    console.log("DEBUG: Watch triggered. Person:", person.value);
     if (person.value && person.value.id) {
-        console.log("DEBUG: Person loaded (inside if):", person.value.name, person.value.id);
         
         createMenu();
         knownFor.value = null;
         initKnownFor();
 
         try {
-             console.log("DEBUG: Fetching awards...");
              const awards = await $fetch('/api/awards', {
                 params: {
                    tmdbId: person.value.id,
@@ -278,15 +274,12 @@ watch(person, async () => {
                    type: 'person'
                 }
             });
-            console.log("DEBUG: Awards response:", JSON.stringify(awards, null, 2));
             awardsData.value = awards;
-            console.log("DEBUG: awardsData set. Oscars:", awards.oscars?.length, "GG:", awards.goldenGlobes?.length);
             
             createMenu();
-            console.log("DEBUG: Menu recreated");
-        } catch(e) { console.error("DEBUG: Fetch error:", e); }
+        } catch(e) { console.error(e); }
     } else {
-        console.log("DEBUG: Person ID missing or person null");
+        // Person ID missing
     }
 }, { immediate: true });
 
