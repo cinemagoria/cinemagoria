@@ -227,7 +227,6 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         return FEATURED_ORDER.some(o => norm(o) === t);
     });
     
-    // Sort
     mixedFestivalFilms.sort((a, b) => {
         const getIdx = (title) => {
              const t = norm(title);
@@ -246,7 +245,6 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         return idxA - idxB;
     });
     
-    // Remove duplicates (Josephine might be in both, keep one - preferably verified one or first one)
     const uniqueMixed = [];
     const seenTitles = new Set();
     for (const f of mixedFestivalFilms) {
