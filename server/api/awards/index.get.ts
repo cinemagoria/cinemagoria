@@ -10,9 +10,31 @@ const db = createClient({
     authToken: dbToken!,
 });
 
+interface Oscar {
+    id: number;
+    year: number;
+    ceremony: number;
+    category: string;
+    winner: number;
+    film: string;
+    name: string;
+    tmdb_id: number;
+}
+
+interface GoldenGlobe {
+    id: number;
+    year_film: number;
+    year_award: number;
+    ceremony: number;
+    category: string;
+    nominee: string;
+    film: string;
+    won: number;
+}
+
 export default defineEventHandler(async (event) => {
     const query = getQuery(event);
-    const { tmdbId, name, title, type } = query;
+    const { tmdbId, name, title, type } = query as { tmdbId?: string, name?: string, title?: string, type?: string };
 
     if (!tmdbId && !name && !title) {
         return { oscars: [], goldenGlobes: [] };
@@ -22,36 +44,59 @@ export default defineEventHandler(async (event) => {
     let goldenGlobes: any[] = [];
 
     try {
-        if (tmdbId && (type === 'movie' || !type)) {
-            const result = await db.execute({
-                sql: "SELECT * FROM awards_oscars WHERE tmdb_id = ?",
-                args: [tmdbId] as any
-            });
-            oscars = [...oscars, ...result.rows];
-        }
+        if (type === 'person') {
+            if (name) {
+                const oscarResult = await db.execute({
+                    sql: "SELECT * FROM awards_oscars WHERE nominee_name LIKE ? COLLATE NOCASE",
+                    args: [`%${name}%`]
+                });
+                oscars = [...oscars, ...oscarResult.rows];
 
-        if (name && (type === 'person' || !type)) {
-            const result = await db.execute({
-                sql: "SELECT * FROM awards_oscars WHERE nominee_name LIKE ? COLLATE NOCASE",
-                args: [`%${name}%`] as any
-            });
-            oscars = [...oscars, ...result.rows];
-        }
-
-        if (title && (type === 'movie' || type === 'tv' || !type)) {
-            const result = await db.execute({
-                sql: "SELECT * FROM awards_golden_globes WHERE film LIKE ? COLLATE NOCASE",
-                args: [`${title}`] as any
-            });
-            goldenGlobes = [...goldenGlobes, ...result.rows];
-        }
-
-        if (name && (type === 'person' || !type)) {
-            const result = await db.execute({
-                sql: "SELECT * FROM awards_golden_globes WHERE nominee LIKE ? COLLATE NOCASE",
-                args: [`%${name}%`] as any
-            });
-            goldenGlobes = [...goldenGlobes, ...result.rows];
+                const ggResult = await db.execute({
+                    sql: "SELECT * FROM awards_golden_globes WHERE nominee LIKE ? COLLATE NOCASE",
+                    args: [`%${name}%`]
+                });
+                goldenGlobes = [...goldenGlobes, ...ggResult.rows];
+            }
+        } else if (type === 'movie') {
+            if (tmdbId) {
+                const oscarResult = await db.execute({
+                    sql: "SELECT * FROM awards_oscars WHERE tmdb_id = ?",
+                    args: [tmdbId]
+                });
+                oscars = [...oscars, ...oscarResult.rows];
+            }
+            if (title) {
+                const ggResult = await db.execute({
+                    sql: "SELECT * FROM awards_golden_globes WHERE film LIKE ? COLLATE NOCASE",
+                    args: [`${title}`]
+                });
+                goldenGlobes = [...goldenGlobes, ...ggResult.rows];
+            }
+        } else if (type === 'tv') {
+            if (title) {
+                const ggResult = await db.execute({
+                    sql: "SELECT * FROM awards_golden_globes WHERE film LIKE ? COLLATE NOCASE",
+                    args: [`${title}`]
+                });
+                goldenGlobes = [...goldenGlobes, ...ggResult.rows];
+            }
+        } else {
+            // Fallback for no type specified
+            if (tmdbId) {
+                const res = await db.execute({ sql: "SELECT * FROM awards_oscars WHERE tmdb_id = ?", args: [tmdbId] });
+                oscars.push(...res.rows);
+            }
+            if (name) {
+                const resO = await db.execute({ sql: "SELECT * FROM awards_oscars WHERE nominee_name LIKE ? COLLATE NOCASE", args: [`%${name}%`] });
+                oscars.push(...resO.rows);
+                const resG = await db.execute({ sql: "SELECT * FROM awards_golden_globes WHERE nominee LIKE ? COLLATE NOCASE", args: [`%${name}%`] });
+                goldenGlobes.push(...resG.rows);
+            }
+            if (title) {
+                const res = await db.execute({ sql: "SELECT * FROM awards_golden_globes WHERE film LIKE ? COLLATE NOCASE", args: [`${title}`] });
+                goldenGlobes.push(...res.rows);
+            }
         }
 
     } catch (e) {
