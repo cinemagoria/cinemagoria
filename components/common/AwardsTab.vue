@@ -18,11 +18,11 @@
                 <table :class="$style.awardsTable">
                     <thead>
                         <tr>
-                            <th style="width: 80px;">Year</th>
+                            <th :class="$style.yearHeader">Year</th>
                             <th>Category</th>
                             <th v-if="type !== 'person'">Nominee</th>
                             <th v-if="type === 'person'">Film</th>
-                            <th style="width: 100px;">Result</th>
+                            <th :class="$style.resultHeader">Result</th>
                         </tr>
                     </thead>
                 <tbody>
@@ -57,11 +57,11 @@
                 <table :class="$style.awardsTable">
                     <thead>
                         <tr>
-                            <th style="width: 80px;">Year</th>
+                            <th :class="$style.yearHeader">Year</th>
                             <th>Category</th>
                             <th v-if="type !== 'person'">Nominee</th>
                             <th v-if="type === 'person'">Film</th>
-                            <th style="width: 100px;">Result</th>
+                            <th :class="$style.resultHeader">Result</th>
                         </tr>
                     </thead>
                 <tbody>
@@ -284,5 +284,13 @@ const searchAndNavigateToPerson = async (personName) => {
     color: #666;
     font-size: 1rem;
     text-transform: uppercase;
+}
+
+.yearHeader {
+    width: 80px;
+}
+
+.resultHeader {
+    width: 100px;
 }
 </style>
