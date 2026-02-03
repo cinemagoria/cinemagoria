@@ -18,7 +18,7 @@
       <MediaNav :menu="menu" :active-label="activeMenu" @clicked="navClicked" />
 
       <template v-if="activeMenu === 'overview'">
-        <MovieInfo v-if="item && item.id" :item="item" @open-releases="activeMenu = 'releases'" :reviews-prop="reviews">
+        <MovieInfo v-if="item && item.id" :item="item" @open-releases="activeMenu = 'releases'" @show-awards="activeMenu = 'awards'" :reviews-prop="reviews" :oscars="awardsData.oscars" :golden-globes="awardsData.goldenGlobes">
           <template #before-recommendations>
             <Credits v-if="showCredits" :people="item.credits.cast" />
           </template>
@@ -41,6 +41,16 @@
       <template v-if="activeMenu === 'ost' && showSoundtracks">
         <SoundtrackList :items="soundtrackItems" />
       </template>
+
+      <template v-if="activeMenu === 'awards' && showAwards">
+        <AwardsTab 
+          :tmdb-id="item.id" 
+          :title="item.title" 
+          type="movie"
+          :oscars-prop="awardsData.oscars"
+          :golden-globes-prop="awardsData.goldenGlobes"
+        />
+      </template>
     </template>
   </main>
 </template>
@@ -59,6 +69,7 @@ import Videos from '~/components/Videos.vue';
 import Images from '~/components/Images.vue';
 import Credits from '~/components/Credits.vue';
 import SoundtrackList from '~/components/music/SoundtrackList.vue';
+import AwardsTab from '~/components/common/AwardsTab.vue';
 import { searchSoundtracks } from '~/utils/musicbrainz';
 import lodash from 'lodash';
 const { truncate } = lodash;
@@ -79,6 +90,7 @@ const activeMenu = ref('overview');
 const menu = ref([]);
 const reviews = ref(null);
 const soundtrackItems = ref([]);
+const awardsData = ref({ oscars: [], goldenGlobes: [] });
 const { data: movieData, error } = await useAsyncData(`movie-${route.params.id}`, async () => {
   try {
     const item = await getMovie(route.params.id);
@@ -146,10 +158,16 @@ const showSoundtracks = computed(() => {
   return soundtrackItems.value && soundtrackItems.value.length > 0;
 });
 
+const showAwards = computed(() => {
+  return (awardsData.value.oscars && awardsData.value.oscars.length > 0) || 
+         (awardsData.value.goldenGlobes && awardsData.value.goldenGlobes.length > 0);
+});
+
 const createMenu = () => {
   const m = [];
   m.push('Overview');
   m.push('Releases');
+  if (showAwards.value) m.push('Awards');
   if (showSoundtracks.value) m.push('OST');
   if (showVideos.value) m.push('Videos');
   if (showImages.value) m.push('Photos');
@@ -164,6 +182,16 @@ watch(item, async () => {
         const results = await searchSoundtracks(query, yearStart.value);
         soundtrackItems.value = results;
       }
+      
+      const awards = await $fetch('/api/awards', {
+          query: {
+             tmdbId: item.value.id,
+             title: item.value.original_title || item.value.title,
+             type: 'movie'
+          }
+      });
+      awardsData.value = awards;
+
     } catch (e) {
       console.error(e);
     }
