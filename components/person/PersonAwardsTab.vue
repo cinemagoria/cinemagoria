@@ -9,10 +9,10 @@
             <table :class="$style.awardsTable">
                 <thead>
                     <tr>
-                        <th style="width: 80px;">Año</th>
+                        <th :class="$style.yearHeader">Año</th>
                         <th>Categoría</th>
                         <th>Película</th>
-                        <th style="width: 100px;">Resultado</th>
+                        <th :class="$style.resultHeader">Resultado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,10 +46,10 @@
             <table :class="$style.awardsTable">
                 <thead>
                     <tr>
-                        <th style="width: 80px;">Año</th>
+                        <th :class="$style.yearHeader">Año</th>
                         <th>Categoría</th>
                         <th>Película</th>
-                        <th style="width: 100px;">Resultado</th>
+                        <th :class="$style.resultHeader">Resultado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -279,5 +279,13 @@ const translateCategory = (category) => {
     color: #666;
     font-size: 1rem;
     text-transform: uppercase;
+}
+
+.yearHeader {
+    width: 80px;
+}
+
+.resultHeader {
+    width: 100px;
 }
 </style>
