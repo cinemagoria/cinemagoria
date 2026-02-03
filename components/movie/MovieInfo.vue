@@ -191,6 +191,8 @@
           </div>
         </div>
 
+
+
          <div v-if="activeTab === 'awards'">
           <AwardsTab :tmdb-id="item.id" :title="item.title" type="movie" />
         </div>
