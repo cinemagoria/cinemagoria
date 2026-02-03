@@ -5,11 +5,15 @@
       :title="metaTitle" />
 
     <PersonInfo
-      :person="person" />
+      :person="person"
+      :oscars="awardsData.oscars"
+      :golden-globes="awardsData.goldenGlobes"
+      @show-awards="activeMenu = 'awards'" />
 
     <div class="spacing">
       <MediaNav
         :menu="menu"
+        :active-label="activeMenu"
         @clicked="navClicked" />
     </div>
 
@@ -48,6 +52,14 @@
           :images="person.images.profiles" />
       </div>
     </template>
+    <template v-if="activeMenu === 'awards' && showAwards">
+       <div class="spacing content-container">
+          <PersonAwardsTab 
+            :oscars="awardsData.oscars"
+            :golden-globes="awardsData.goldenGlobes"
+          />
+       </div>
+    </template>
   </main>
 </template>
 <script setup>
@@ -62,6 +74,7 @@ import CreditsHistory from '~/components/person/CreditsHistory.vue';
 import Images from '~/components/Images.vue';
 import Listing from '~/components/Listing.vue';
 import Loader from '~/components/Loader.vue';
+import PersonAwardsTab from '~/components/person/PersonAwardsTab.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -80,6 +93,7 @@ const menu = ref([]);
 const knownFor = ref(null);
 const loadingCredits = ref(false);
 const loadingPhotos = ref(false);
+const awardsData = ref({ oscars: [], goldenGlobes: [] });
 
 const { data: personData, error } = await useAsyncData(`person-${route.params.id}`, async () => {
   try {
@@ -116,6 +130,11 @@ const metaImage = computed(() => {
 const showImages = computed(() => {
   const images = person.value.images;
   return images && (images.profiles && images.profiles.length);
+});
+
+const showAwards = computed(() => {
+  return (awardsData.value.oscars && awardsData.value.oscars.length > 0) || 
+         (awardsData.value.goldenGlobes && awardsData.value.goldenGlobes.length > 0);
 });
 
 const removeDuplicates = (myArr) => {
@@ -213,14 +232,12 @@ const createMenu = () => {
   const m = [];
   m.push('Known For');
   m.push('Credits');
+  if (showAwards.value) m.push('Awards');
   if (showImages.value) m.push('Photos');
   menu.value = m;
 };
 
-onMounted(() => {
-    createMenu();
-    initKnownFor();
-});
+
 
 watch(activeMenu, (newVal) => {
   if (newVal === 'credits') {
@@ -236,13 +253,28 @@ watch(activeMenu, (newVal) => {
   }
 });
 
-watch(person, () => {
-    if (person.value && person.value.id) {
-        createMenu();
+watch(person, async (newPerson) => {
+    if (newPerson && newPerson.id) {
         knownFor.value = null;
         initKnownFor();
+
+        try {
+             const awards = await $fetch('/api/awards', {
+                params: {
+                   tmdbId: newPerson.id,
+                   name: newPerson.name,
+                   type: 'person'
+                }
+            });
+            awardsData.value = awards;
+        } catch(e) { 
+            console.error(e); 
+        }
+        
+        
+        createMenu();
     }
-});
+}, { immediate: true });
 
 useHead({
   title: metaTitle,

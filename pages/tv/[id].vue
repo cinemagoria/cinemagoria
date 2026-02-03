@@ -18,7 +18,7 @@
       <MediaNav :menu="menu" @clicked="navClicked" />
 
       <template v-if="activeMenu === 'overview'">
-        <TvInfo v-if="item && item.id" :item="item">
+        <TvInfo v-if="item && item.id" :item="item" @show-awards="activeMenu = 'awards'" :oscars="awardsData.oscars" :golden-globes="awardsData.goldenGlobes">
           <template #before-recommendations>
             <Credits v-if="showCredits" :people="item.credits.cast" />
           </template>
@@ -41,6 +41,16 @@
       <template v-if="activeMenu === 'ost' && showSoundtracks">
         <SoundtrackList :items="soundtrackItems" />
       </template>
+
+      <template v-if="activeMenu === 'awards' && showAwards">
+        <AwardsTab 
+          :tmdb-id="item.id" 
+          :title="item.name" 
+          type="tv"
+          :oscars-prop="awardsData.oscars"
+          :golden-globes-prop="awardsData.goldenGlobes"
+        />
+      </template>
     </template>
   </main>
 </template>
@@ -59,6 +69,7 @@ import Images from '~/components/Images.vue';
 import Credits from '~/components/Credits.vue';
 import Episodes from '~/components/tv/Episodes.vue';
 import SoundtrackList from '~/components/music/SoundtrackList.vue';
+import AwardsTab from '~/components/common/AwardsTab.vue';
 import { searchSoundtracks } from '~/utils/musicbrainz';
 
 const route = useRoute();
@@ -77,6 +88,7 @@ const activeMenu = ref('overview');
 const menu = ref([]);
 const reviews = ref(null);
 const soundtrackItems = ref([]);
+const awardsData = ref({ oscars: [], goldenGlobes: [] });
 
 const { data: tvData, error } = await useAsyncData(`tv-${route.params.id}`, async () => {
   try {
@@ -158,10 +170,16 @@ const showSoundtracks = computed(() => {
   return soundtrackItems.value && soundtrackItems.value.length > 0;
 });
 
+const showAwards = computed(() => {
+  return (awardsData.value.oscars && awardsData.value.oscars.length > 0) || 
+         (awardsData.value.goldenGlobes && awardsData.value.goldenGlobes.length > 0);
+});
+
 const createMenu = () => {
   const m = [];
   m.push('Overview');
   if (showEpisodes.value) m.push('Episodes');
+  if (showAwards.value) m.push('Awards');
   if (showSoundtracks.value) m.push('OST');
   if (showVideos.value) m.push('Videos');
   if (showImages.value) m.push('Photos');
@@ -170,12 +188,22 @@ const createMenu = () => {
 
 watch(item, async () => {
   if (item.value && item.value.id) {
-     try {
+    try {
       const query = item.value.original_name || item.value.name;
       if (query) {
         const results = await searchSoundtracks(query, yearStart.value);
         soundtrackItems.value = results;
       }
+      
+      const awards = await $fetch('/api/awards', {
+          query: {
+             tmdbId: item.value.id,
+             title: item.value.original_name || item.value.name,
+             type: 'tv'
+          }
+      });
+      awardsData.value = awards;
+
     } catch (e) {
       console.error(e);
     }
