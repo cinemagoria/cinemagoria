@@ -241,8 +241,7 @@ const createMenu = () => {
 
 onMounted(() => {
 
-    createMenu();
-    initKnownFor();
+
 });
 
 watch(activeMenu, (newVal) => {
