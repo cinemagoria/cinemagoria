@@ -60,6 +60,18 @@
               {{ person.place_of_birth }}
             </div>
           </li>
+          <li v-if="hasWinnerAwards" :class="$style.awardsRow">
+            <div :class="$style.label">Premios</div>
+            <div :class="$style.value">
+              <span :class="$style.awardsPreview">{{ awardsSummary }}</span>
+              <button 
+                :class="$style.seeMoreBtn"
+                @click="$emit('show-awards')"
+              >
+                Ver más
+              </button>
+            </div>
+          </li>
           <li v-if="person.deathday">
             <div :class="$style.label">
               Fecha de Fallecimiento
@@ -70,7 +82,7 @@
             </div>
           </li>
         </ul>
-        <div v-if="isLoggedIn" :class="$style.followSection">
+        <div v-if="hasAccessToken" :class="$style.followSection">
                 <h4 style="margin-top:2rem; font-size: 16px; font-weight:800; text-transform: uppercase;" class="section-title">Notificaciones</h4>
             <button 
                 v-if="hasAccessToken && isActorOrDirector"
@@ -86,8 +98,9 @@
       <div :class="$style.external">
         <ExternalLinks
           media="person"
-          :links="person.external_ids" />
+          :links="person.external_ids || {}" />
       </div>
+
     </div>
   </div>
 </template>
@@ -101,7 +114,12 @@ export default {
     ExternalLinks,
     Loader: () => import('~/components/Loader'),
   },
-  props: { person: { type: Object, required: true } },
+  props: { 
+    person: { type: Object, required: true },
+    oscars: { type: Array, default: () => [] },
+    goldenGlobes: { type: Array, default: () => [] }
+  },
+  emits: ['show-awards'],
   data() {
     return {
       hasAccessToken: false,
@@ -137,6 +155,23 @@ export default {
     isActorOrDirector() {
       const dept = this.person.known_for_department;
       return dept === 'Acting' || dept === 'Directing' || dept === 'Writing';
+    },
+    winnerOscars() {
+      return this.oscars.filter(award => award.won);
+    },
+    winnerGoldenGlobes() {
+      return this.goldenGlobes.filter(award => award.won);
+    },
+    hasWinnerAwards() {
+      return this.winnerOscars.length > 0 || this.winnerGoldenGlobes.length > 0;
+    },
+    awardsSummary() {
+      const oscarCount = this.winnerOscars.length;
+      const ggCount = this.winnerGoldenGlobes.length;
+      const parts = [];
+      if (oscarCount > 0) parts.push(`${oscarCount} Oscar${oscarCount > 1 ? 's' : ''}`);
+      if (ggCount > 0) parts.push(`${ggCount} Globo${ggCount > 1 ? 's' : ''} de Oro`);
+      return parts.join(', ');
     },
   },
   watch: {
@@ -515,6 +550,32 @@ export default {
       stroke: #8BE9FD;
       fill: #8BE9FD;
     }
+  }
+}
+
+.awardsRow {
+  align-items: flex-start;
+}
+
+.awardsPreview {
+  color: #FFD700;
+  font-weight: 600;
+  margin-right: 1rem;
+}
+
+.seeMoreBtn {
+  background: transparent;
+  border: 1px solid #8AE8FC;
+  color: #8AE8FC;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba(138, 232, 252, 0.1);
+    transform: translateY(-1px);
   }
 }
 </style>

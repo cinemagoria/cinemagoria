@@ -5,11 +5,15 @@
       :title="metaTitle" />
 
     <PersonInfo
-      :person="person" />
+      :person="person"
+      :oscars="awardsData.oscars"
+      :golden-globes="awardsData.goldenGlobes"
+      @show-awards="activeMenu = 'premios'" />
 
     <div class="spacing">
       <MediaNav
         :menu="menu"
+        :active-label="activeMenu"
         @clicked="navClicked" />
     </div>
 
@@ -48,6 +52,14 @@
           :images="person.images.profiles" />
       </div>
     </template>
+    <template v-if="activeMenu === 'premios' && showAwards">
+       <div class="spacing content-container">
+          <PersonAwardsTab 
+            :oscars="awardsData.oscars"
+            :golden-globes="awardsData.goldenGlobes"
+          />
+       </div>
+    </template>
   </main>
 </template>
 
@@ -63,6 +75,8 @@ import CreditsHistory from '~/components/person/CreditsHistory.vue';
 import Images from '~/components/Images.vue';
 import Listing from '~/components/Listing.vue';
 import Loader from '~/components/Loader.vue';
+import AwardsTab from '~/components/common/AwardsTab.vue';
+import PersonAwardsTab from '~/components/person/PersonAwardsTab.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -81,6 +95,7 @@ const menu = ref([]);
 const knownFor = ref(null);
 const loadingCredits = ref(false);
 const loadingPhotos = ref(false);
+const awardsData = ref({ oscars: [], goldenGlobes: [] });
 
 const { data: personData, error } = await useAsyncData(`person-${route.params.id}`, async () => {
   try {
@@ -117,6 +132,11 @@ const metaImage = computed(() => {
 const showImages = computed(() => {
   const images = person.value.images;
   return images && (images.profiles && images.profiles.length);
+});
+
+const showAwards = computed(() => {
+  return (awardsData.value.oscars && awardsData.value.oscars.length > 0) || 
+         (awardsData.value.goldenGlobes && awardsData.value.goldenGlobes.length > 0);
 });
 
 const removeDuplicates = (myArr) => {
@@ -214,11 +234,14 @@ const createMenu = () => {
   const m = [];
   m.push('Conocido por');
   m.push('Créditos');
+  if (showAwards.value) m.push('Premios');
   if (showImages.value) m.push('Fotos');
   menu.value = m;
 };
 
 onMounted(() => {
+    console.log("DEBUG: onMounted triggered");
+    console.log("DEBUG: Initial person value:", person.value);
     createMenu();
     initKnownFor();
 });
@@ -236,27 +259,36 @@ watch(activeMenu, (newVal) => {
     }, 500);
   }
 });
-watch(activeMenu, (newVal) => {
-  if (newVal === 'créditos') {
-    loadingCredits.value = true;
-    setTimeout(() => {
-      loadingCredits.value = false;
-    }, 500);
-  } else if (newVal === 'fotos') {
-    loadingPhotos.value = true;
-    setTimeout(() => {
-      loadingPhotos.value = false;
-    }, 500);
-  }
-});
 
-watch(person, () => {
+watch(person, async () => {
+    console.log("DEBUG: Watch triggered. Person:", person.value);
     if (person.value && person.value.id) {
+        console.log("DEBUG: Person loaded (inside if):", person.value.name, person.value.id);
+        
         createMenu();
         knownFor.value = null;
         initKnownFor();
+
+        try {
+             console.log("DEBUG: Fetching awards...");
+             const awards = await $fetch('/api/awards', {
+                params: {
+                   tmdbId: person.value.id,
+                   name: person.value.name,
+                   type: 'person'
+                }
+            });
+            console.log("DEBUG: Awards response:", JSON.stringify(awards, null, 2));
+            awardsData.value = awards;
+            console.log("DEBUG: awardsData set. Oscars:", awards.oscars?.length, "GG:", awards.goldenGlobes?.length);
+            
+            createMenu();
+            console.log("DEBUG: Menu recreated");
+        } catch(e) { console.error("DEBUG: Fetch error:", e); }
+    } else {
+        console.log("DEBUG: Person ID missing or person null");
     }
-});
+}, { immediate: true });
 
 useHead({
   title: metaTitle,
