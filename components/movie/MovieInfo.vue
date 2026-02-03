@@ -78,6 +78,18 @@
               <div :class="$style.label">Language</div>
               <div :class="$style.value">{{ fullLang(item.original_language) }}</div>
             </li>
+            <li v-if="hasWinnerAwards" :class="$style.awardsRow">
+              <div :class="$style.label">Awards</div>
+              <div :class="$style.value">
+                <span :class="$style.awardsPreview">{{ awardsSummary }}</span>
+                <button 
+                  :class="$style.seeMoreBtn"
+                  @click="$emit('show-awards')"
+                >
+                  See more
+                </button>
+              </div>
+            </li>
             <li v-if="item.production_companies && item.production_companies.length">
               <div :class="$style.label">Production</div>
               <div :class="$style.value" v-html="formatProductionCompanies(item.production_companies)" />
@@ -179,9 +191,15 @@
           </div>
         </div>
 
-        <ListingCarousel
+
+
+         <div v-if="activeTab === 'awards'">
+          <AwardsTab :tmdb-id="item.id" :title="item.title" type="movie" />
+        </div>
+
+         <ListingCarousel
           ref="recommendationCarousel"
-          v-if="currentRecommendationList && currentRecommendationList.results && currentRecommendationList.results.length"
+          v-else-if="currentRecommendationList && currentRecommendationList.results && currentRecommendationList.results.length"
           :items="currentRecommendationList" />
       </div>
     </div>
@@ -205,6 +223,7 @@ export default {
     ExternalLinks,
     WatchOn,
     ListingCarousel,
+    AwardsTab: () => import('~/components/common/AwardsTab'),
     Loader: () => import('~/components/Loader'),
   },
 
@@ -223,7 +242,9 @@ export default {
     providers: {
       type: Array,
       default: () => [],
-    }
+    },
+    oscars: { type: Array, default: () => [] },
+    goldenGlobes: { type: Array, default: () => [] }
   },
 
   data() {
@@ -315,7 +336,24 @@ export default {
         default:
           return '';
       }
-    }
+    },
+    winnerOscars() {
+      return this.oscars.filter(award => award.won);
+    },
+    winnerGoldenGlobes() {
+      return this.goldenGlobes.filter(award => award.won);
+    },
+    hasWinnerAwards() {
+      return this.winnerOscars.length > 0 || this.winnerGoldenGlobes.length > 0;
+    },
+    awardsSummary() {
+      const oscarCount = this.winnerOscars.length;
+      const ggCount = this.winnerGoldenGlobes.length;
+      const parts = [];
+      if (oscarCount > 0) parts.push(`${oscarCount} Oscar${oscarCount > 1 ? 's' : ''}`);
+      if (ggCount > 0) parts.push(`${ggCount} Golden Globe${ggCount > 1 ? 's' : ''}`);
+      return parts.join(', ');
+    },
   },
 
   watch: {
@@ -969,6 +1007,32 @@ export default {
   
   &:hover {
     text-decoration: underline;
+  }
+}
+
+.awardsRow {
+  align-items: flex-start;
+}
+
+.awardsPreview {
+  color: #FFD700;
+  font-weight: 600;
+  margin-right: 1rem;
+}
+
+.seeMoreBtn {
+  background: transparent;
+  border: 1px solid #8AE8FC;
+  color: #8AE8FC;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba(138, 232, 252, 0.1);
+    transform: translateY(-1px);
   }
 }
 </style>
