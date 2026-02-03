@@ -237,9 +237,7 @@ const createMenu = () => {
   menu.value = m;
 };
 
-onMounted(() => {
-    initKnownFor();
-});
+
 
 watch(activeMenu, (newVal) => {
   if (newVal === 'credits') {
@@ -261,7 +259,6 @@ watch(person, async (newPerson) => {
         initKnownFor();
 
         try {
-             console.log("Fetching awards for person:", newPerson.name, newPerson.id);
              const awards = await $fetch('/api/awards', {
                 params: {
                    tmdbId: newPerson.id,
@@ -269,15 +266,13 @@ watch(person, async (newPerson) => {
                    type: 'person'
                 }
             });
-            console.log("Awards received:", awards);
             awardsData.value = awards;
-            console.log("awardsData set:", awardsData.value);
         } catch(e) { 
-            console.error("Fetch error:", e); 
+            console.error(e); 
         }
         
+        
         createMenu();
-        console.log("Menu created with items:", menu.value);
     }
 }, { immediate: true });
 
