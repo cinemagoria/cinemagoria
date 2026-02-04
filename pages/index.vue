@@ -191,6 +191,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Yellow Letters',
         'Everybody Digs Bill Evans',
         'Rosebush Pruning',
+        'Nightborn',
         'At the sea',
         'Kurtuluş',
         'À voix basse',
