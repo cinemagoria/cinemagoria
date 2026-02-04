@@ -215,8 +215,8 @@ const internalLoading = ref(true);
 const internalOscars = ref([]);
 const internalGoldenGlobes = ref([]);
 const internalPalme = ref([]);
-const internalLion = ref([]);
-const internalBear = ref([]);
+const internalGoldenLion = ref([]);
+const internalGoldenBear = ref([]);
 
 const oscars = computed(() => {
     const data = props.oscarsProp || internalOscars.value;
@@ -231,11 +231,11 @@ const palme = computed(() => {
     return [...data].sort((a, b) => b.year - a.year);
 });
 const goldenLion = computed(() => {
-    const data = props.goldenLion || internalLion.value;
+    const data = props.goldenLion || internalGoldenLion.value;
     return [...data].sort((a, b) => b.year - a.year);
 });
 const goldenBear = computed(() => {
-    const data = props.goldenBear || internalBear.value;
+    const data = props.goldenBear || internalGoldenBear.value;
     return [...data].sort((a, b) => b.year - a.year);
 });
 
@@ -263,8 +263,8 @@ const fetchAwards = async () => {
         internalOscars.value = data.oscars || [];
         internalGoldenGlobes.value = data.goldenGlobes || [];
         internalPalme.value = data.palme || [];
-        internalLion.value = data.goldenLion || [];
-        internalBear.value = data.goldenBear || [];
+        internalGoldenLion.value = data.goldenLion || [];
+        internalGoldenBear.value = data.goldenBear || [];
     } catch (e) {
         console.error("Failed to fetch awards", e);
     } finally {
