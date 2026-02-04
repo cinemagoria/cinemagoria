@@ -558,7 +558,7 @@ export default {
 }
 
 .awardsPreview {
-  color: #FFD700;
+  color: #8AE8FC;
   font-weight: 600;
   margin-right: 1rem;
 }
