@@ -1212,12 +1212,14 @@ export default {
   position: relative;
   flex-direction: column;
   justify-content: space-between;
-  height: 52rem;
+  min-height: 52rem;
+  height: auto;
   color: #999;
   background-color: #000;
 
   @media (max-width: 397px) {
-    height: 64rem;
+    min-height: 64rem;
+    height: auto;
   }
 
 
@@ -1281,11 +1283,13 @@ export default {
 }
 
   @media (min-width: $breakpoint-xsmall) and (max-width: 767px) {
-    height: 64rem;
+    min-height: 64rem;
+    height: auto;
   }
 
   @media (min-width: 768px) and (max-width: 1023px) {
-    height: 70rem;
+    min-height: 70rem;
+    height: auto;
   }
 
   @media (min-width: $breakpoint-medium) and (max-width: 1023px) {
