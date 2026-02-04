@@ -8,6 +8,9 @@
       :person="person"
       :oscars="awardsData.oscars"
       :golden-globes="awardsData.goldenGlobes"
+      :palme="awardsData.palme"
+      :golden-lion="awardsData.goldenLion"
+      :golden-bear="awardsData.goldenBear"
       @show-awards="activeMenu = 'awards'" />
 
     <div class="spacing">
@@ -57,6 +60,9 @@
           <PersonAwardsTab 
             :oscars="awardsData.oscars"
             :golden-globes="awardsData.goldenGlobes"
+            :palme="awardsData.palme"
+            :golden-lion="awardsData.goldenLion"
+            :golden-bear="awardsData.goldenBear"
           />
        </div>
     </template>
@@ -93,7 +99,7 @@ const menu = ref([]);
 const knownFor = ref(null);
 const loadingCredits = ref(false);
 const loadingPhotos = ref(false);
-const awardsData = ref({ oscars: [], goldenGlobes: [] });
+const awardsData = ref({ oscars: [], goldenGlobes: [], palme: [], goldenLion: [], goldenBear: [] });
 
 const { data: personData, error } = await useAsyncData(`person-${route.params.id}`, async () => {
   try {
@@ -134,7 +140,10 @@ const showImages = computed(() => {
 
 const showAwards = computed(() => {
   return (awardsData.value.oscars && awardsData.value.oscars.length > 0) || 
-         (awardsData.value.goldenGlobes && awardsData.value.goldenGlobes.length > 0);
+         (awardsData.value.goldenGlobes && awardsData.value.goldenGlobes.length > 0) ||
+         (awardsData.value.palme && awardsData.value.palme.length > 0) ||
+         (awardsData.value.goldenLion && awardsData.value.goldenLion.length > 0) ||
+         (awardsData.value.goldenBear && awardsData.value.goldenBear.length > 0);
 });
 
 const removeDuplicates = (myArr) => {

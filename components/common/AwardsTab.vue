@@ -51,7 +51,7 @@
         <!-- Golden Globes Section -->
         <div v-if="goldenGlobes.length" :class="$style.awardSection">
             <h3 :class="$style.awardLogo">
-                <span :class="$style.goldText">GOLDEN GLOBES</span>
+                <span :class="$style.goldText">GOLDEN GLOBES</span> AWARDS
             </h3>
             <div :class="$style.tableWrapper">
                 <table :class="$style.awardsTable">
@@ -86,6 +86,115 @@
                 </table>
             </div>
         </div>
+
+        <!-- Palme d'Or Section -->
+        <div v-if="palme.length" :class="$style.awardSection">
+            <h3 :class="$style.awardLogo">
+                <span :class="$style.goldText">CANNES</span> PALME D'OR
+            </h3>
+            <div :class="$style.tableWrapper">
+                <table :class="$style.awardsTable">
+                    <thead>
+                        <tr>
+                            <th :class="$style.yearHeader">Year</th>
+                            <th>Award</th>
+                            <th v-if="type !== 'person'">Director</th>
+                            <th v-if="type === 'person'">Film</th>
+                            <th :class="$style.resultHeader">Result</th>
+                        </tr>
+                    </thead>
+                <tbody>
+                    <tr v-for="award in palme" :key="award.id" :class="$style.winnerRow">
+                        <td :class="$style.yearCell">{{ award.year }}</td>
+                        <td>Palme d'Or</td>
+                        <td v-if="type !== 'person'">
+                             <span 
+                                :class="$style.clickableName"
+                                @click="searchAndNavigateToPerson(award.director)"
+                            >
+                                {{ award.director }}
+                            </span>
+                        </td>
+                        <td v-if="type === 'person'">{{ award.film_title }}</td>
+                        <td><span :class="$style.winnerBadge">WINNER</span></td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Golden Lion Section -->
+        <div v-if="goldenLion.length" :class="$style.awardSection">
+            <h3 :class="$style.awardLogo">
+                <span :class="$style.goldText">VENICE</span> GOLDEN LION
+            </h3>
+            <div :class="$style.tableWrapper">
+                <table :class="$style.awardsTable">
+                    <thead>
+                        <tr>
+                            <th :class="$style.yearHeader">Year</th>
+                            <th>Award</th>
+                            <th v-if="type !== 'person'">Director</th>
+                            <th v-if="type === 'person'">Film</th>
+                            <th :class="$style.resultHeader">Result</th>
+                        </tr>
+                    </thead>
+                <tbody>
+                    <tr v-for="award in goldenLion" :key="award.id" :class="$style.winnerRow">
+                        <td :class="$style.yearCell">{{ award.year }}</td>
+                        <td>Golden Lion</td>
+                         <td v-if="type !== 'person'">
+                             <span 
+                                :class="$style.clickableName"
+                                @click="searchAndNavigateToPerson(award.director)"
+                            >
+                                {{ award.director }}
+                            </span>
+                        </td>
+                        <td v-if="type === 'person'">{{ award.film_title }}</td>
+                        <td><span :class="$style.winnerBadge">WINNER</span></td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Golden Bear Section -->
+        <div v-if="goldenBear.length" :class="$style.awardSection">
+            <h3 :class="$style.awardLogo">
+                <span :class="$style.goldText">BERLIN</span> GOLDEN BEAR
+            </h3>
+            <div :class="$style.tableWrapper">
+                <table :class="$style.awardsTable">
+                    <thead>
+                        <tr>
+                            <th :class="$style.yearHeader">Year</th>
+                            <th>Award</th>
+                            <th v-if="type !== 'person'">Director</th>
+                            <th v-if="type === 'person'">Film</th>
+                            <th :class="$style.resultHeader">Result</th>
+                        </tr>
+                    </thead>
+                <tbody>
+                    <tr v-for="award in goldenBear" :key="award.id" :class="$style.winnerRow">
+                        <td :class="$style.yearCell">{{ award.year }}</td>
+                        <td>Golden Bear</td>
+                         <td v-if="type !== 'person'">
+                             <span 
+                                :class="$style.clickableName"
+                                @click="searchAndNavigateToPerson(award.director)"
+                            >
+                                {{ award.director }}
+                            </span>
+                        </td>
+                        <td v-if="type === 'person'">{{ award.film_title }}</td>
+                        <td><span :class="$style.winnerBadge">WINNER</span></td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
   </div>
 </template>
@@ -97,12 +206,18 @@ const props = defineProps({
   name: { type: String, default: null },  
   type: { type: String, default: 'movie' },
   oscarsProp: { type: Array, default: null },
-  goldenGlobesProp: { type: Array, default: null }
+  goldenGlobesProp: { type: Array, default: null },
+  palme: { type: Array, default: null },
+  goldenLion: { type: Array, default: null },
+  goldenBear: { type: Array, default: null }
 });
 
 const internalLoading = ref(true);
 const internalOscars = ref([]);
 const internalGoldenGlobes = ref([]);
+const internalPalme = ref([]);
+const internalLion = ref([]);
+const internalBear = ref([]);
 
 const oscars = computed(() => {
     const data = props.oscarsProp || internalOscars.value;
@@ -112,14 +227,27 @@ const goldenGlobes = computed(() => {
     const data = props.goldenGlobesProp || internalGoldenGlobes.value;
     return [...data].sort((a, b) => b.year_award - a.year_award);
 });
+const palme = computed(() => {
+    const data = props.palme || internalPalme.value;
+    return [...data].sort((a, b) => b.year - a.year);
+});
+const goldenLion = computed(() => {
+    const data = props.goldenLion || internalLion.value;
+    return [...data].sort((a, b) => b.year - a.year);
+});
+const goldenBear = computed(() => {
+    const data = props.goldenBear || internalBear.value;
+    return [...data].sort((a, b) => b.year - a.year);
+});
+
 
 const loading = computed(() => {
-    if (props.oscarsProp || props.goldenGlobesProp) return false;
+    if (props.oscarsProp || props.goldenGlobesProp || props.palme || props.goldenLion || props.goldenBear) return false;
     return internalLoading.value;
 });
 
 const fetchAwards = async () => {
-    if (props.oscarsProp || props.goldenGlobesProp) {
+    if (props.oscarsProp || props.goldenGlobesProp || props.palme || props.goldenLion || props.goldenBear) {
         return;
     }
 
@@ -135,6 +263,10 @@ const fetchAwards = async () => {
         });
         internalOscars.value = data.oscars || [];
         internalGoldenGlobes.value = data.goldenGlobes || [];
+        internalPalme.value = data.palme || [];
+        internalLion.value = data.goldenLion || [];
+        internalBear.value = data.goldenBear || [];
+        
     } catch (e) {
         console.error("Failed to fetch awards", e);
     } finally {
@@ -142,11 +274,18 @@ const fetchAwards = async () => {
     }
 };
 
+
 onMounted(() => {
     fetchAwards();
 });
 
-const isEmpty = computed(() => oscars.value.length === 0 && goldenGlobes.value.length === 0);
+const isEmpty = computed(() => 
+    oscars.value.length === 0 && 
+    goldenGlobes.value.length === 0 &&
+    palme.value.length === 0 &&
+    goldenLion.value.length === 0 &&
+    goldenBear.value.length === 0
+);
 
 const router = useRouter();
 const config = useRuntimeConfig();

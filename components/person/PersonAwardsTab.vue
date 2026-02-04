@@ -73,17 +73,104 @@
             </table>
         </div>
     </div>
+    <!-- Palme d'Or Section -->
+    <div v-if="palme.length" :class="$style.awardSection">
+        <h3 :class="$style.awardLogo">
+            <span :class="$style.goldText">CANNES</span> PALME D'OR
+        </h3>
+        <div :class="$style.tableWrapper">
+            <table :class="$style.awardsTable">
+                <thead>
+                    <tr>
+                        <th :class="$style.yearHeader">Year</th>
+                        <th>Award</th>
+                        <th>Film</th>
+                        <th :class="$style.resultHeader">Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="award in sortedPalme" :key="award.id" :class="$style.winnerRow">
+                        <td :class="$style.yearCell">{{ award.year }}</td>
+                        <td>Palme d'Or</td>
+                        <td>{{ award.film_title }}</td>
+                        <td><span :class="$style.winnerBadge">WINNER</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Golden Lion Section -->
+    <div v-if="goldenLion.length" :class="$style.awardSection">
+        <h3 :class="$style.awardLogo">
+            <span :class="$style.goldText">VENICE</span> GOLDEN LION
+        </h3>
+        <div :class="$style.tableWrapper">
+            <table :class="$style.awardsTable">
+                <thead>
+                    <tr>
+                        <th :class="$style.yearHeader">Year</th>
+                        <th>Award</th>
+                        <th>Film</th>
+                        <th :class="$style.resultHeader">Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="award in sortedGoldenLion" :key="award.id" :class="$style.winnerRow">
+                        <td :class="$style.yearCell">{{ award.year }}</td>
+                        <td>Golden Lion</td>
+                         <td>{{ award.film_title }}</td>
+                        <td><span :class="$style.winnerBadge">WINNER</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Golden Bear Section -->
+    <div v-if="goldenBear.length" :class="$style.awardSection">
+        <h3 :class="$style.awardLogo">
+            <span :class="$style.goldText">BERLIN</span> GOLDEN BEAR
+        </h3>
+        <div :class="$style.tableWrapper">
+            <table :class="$style.awardsTable">
+                <thead>
+                    <tr>
+                        <th :class="$style.yearHeader">Year</th>
+                        <th>Award</th>
+                        <th>Film</th>
+                        <th :class="$style.resultHeader">Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="award in sortedGoldenBear" :key="award.id" :class="$style.winnerRow">
+                        <td :class="$style.yearCell">{{ award.year }}</td>
+                        <td>Golden Bear</td>
+                         <td>{{ award.film_title }}</td>
+                        <td><span :class="$style.winnerBadge">WINNER</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
   </div>
 </template>
 
 <script setup>
 const props = defineProps({
   oscars: { type: Array, default: () => [] },
-  goldenGlobes: { type: Array, default: () => [] }
+  goldenGlobes: { type: Array, default: () => [] },
+  palme: { type: Array, default: () => [] },
+  goldenLion: { type: Array, default: () => [] },
+  goldenBear: { type: Array, default: () => [] }
 });
 
 const sortedOscars = computed(() => [...props.oscars].sort((a, b) => b.year - a.year));
 const sortedGoldenGlobes = computed(() => [...props.goldenGlobes].sort((a, b) => b.year_award - a.year_award));
+const sortedPalme = computed(() => [...props.palme].sort((a, b) => b.year - a.year));
+const sortedGoldenLion = computed(() => [...props.goldenLion].sort((a, b) => b.year - a.year));
+const sortedGoldenBear = computed(() => [...props.goldenBear].sort((a, b) => b.year - a.year));
 
 const router = useRouter();
 const config = useRuntimeConfig();

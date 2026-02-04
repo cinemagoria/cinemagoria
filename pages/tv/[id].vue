@@ -18,7 +18,16 @@
       <MediaNav :menu="menu" @clicked="navClicked" />
 
       <template v-if="activeMenu === 'overview'">
-        <TvInfo v-if="item && item.id" :item="item" @show-awards="activeMenu = 'awards'" :oscars="awardsData.oscars" :golden-globes="awardsData.goldenGlobes">
+        <TvInfo 
+          v-if="item && item.id" 
+          :item="item" 
+          @show-awards="activeMenu = 'awards'" 
+          :oscars="awardsData.oscars" 
+          :golden-globes="awardsData.goldenGlobes"
+          :palme="awardsData.palme"
+          :golden-lion="awardsData.goldenLion"
+          :golden-bear="awardsData.goldenBear"
+        >
           <template #before-recommendations>
             <Credits v-if="showCredits" :people="item.credits.cast" />
           </template>
@@ -49,6 +58,9 @@
           type="tv"
           :oscars-prop="awardsData.oscars"
           :golden-globes-prop="awardsData.goldenGlobes"
+          :palme="awardsData.palme"
+          :golden-lion="awardsData.goldenLion"
+          :golden-bear="awardsData.goldenBear"
         />
       </template>
     </template>
@@ -88,7 +100,7 @@ const activeMenu = ref('overview');
 const menu = ref([]);
 const reviews = ref(null);
 const soundtrackItems = ref([]);
-const awardsData = ref({ oscars: [], goldenGlobes: [] });
+const awardsData = ref({ oscars: [], goldenGlobes: [], palme: [], goldenLion: [], goldenBear: [] });
 
 const { data: tvData, error } = await useAsyncData(`tv-${route.params.id}`, async () => {
   try {
@@ -172,7 +184,10 @@ const showSoundtracks = computed(() => {
 
 const showAwards = computed(() => {
   return (awardsData.value.oscars && awardsData.value.oscars.length > 0) || 
-         (awardsData.value.goldenGlobes && awardsData.value.goldenGlobes.length > 0);
+         (awardsData.value.goldenGlobes && awardsData.value.goldenGlobes.length > 0) ||
+         (awardsData.value.palme && awardsData.value.palme.length > 0) ||
+         (awardsData.value.goldenLion && awardsData.value.goldenLion.length > 0) ||
+         (awardsData.value.goldenBear && awardsData.value.goldenBear.length > 0);
 });
 
 const createMenu = () => {
