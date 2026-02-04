@@ -11,7 +11,7 @@
                     <tr>
                         <th :class="$style.yearHeader">Year</th>
                         <th>Category</th>
-                        <th>Film</th>
+                        <th>Film/Series</th>
                         <th :class="$style.resultHeader">Result</th>
                     </tr>
                 </thead>
@@ -22,7 +22,7 @@
                         <td>
                             <span 
                                 :class="$style.clickableName"
-                                @click="searchAndNavigateToFilm(award.film_title)"
+                                @click="searchAndNavigateToFilm(award.film_title, award.category)"
                             >
                                 {{ award.film_title }}
                             </span>
@@ -48,7 +48,7 @@
                     <tr>
                         <th :class="$style.yearHeader">Year</th>
                         <th>Category</th>
-                        <th>Film</th>
+                        <th>Film/Series</th>
                         <th :class="$style.resultHeader">Result</th>
                     </tr>
                 </thead>
@@ -59,7 +59,7 @@
                         <td>
                             <span 
                                 :class="$style.clickableName"
-                                @click="searchAndNavigateToFilm(award.film)"
+                                @click="searchAndNavigateToFilm(award.film, award.category)"
                             >
                                 {{ award.film }}
                             </span>
@@ -89,19 +89,54 @@ const router = useRouter();
 const config = useRuntimeConfig();
 const apiKey = config.public.apiKey;
 
-const searchAndNavigateToFilm = async (filmTitle) => {
+const searchAndNavigateToFilm = async (filmTitle, category = '') => {
   if (!filmTitle) return;
   
   try {
     const response = await fetch(
-      `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(filmTitle)}&language=en-US`
+      `https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${encodeURIComponent(filmTitle)}&language=en-US`
     );
     
     if (response.ok) {
       const data = await response.json();
       if (data.results && data.results.length > 0) {
-        const bestMatch = data.results[0];
-        router.push(`/movie/${bestMatch.id}`);
+        let bestMatch;
+        
+        // Detect preference from category
+        const catLower = category.toLowerCase();
+        let preferType = null;
+        if (catLower.includes('television') || catLower.includes('series') || catLower.includes('tv') || catLower.includes('miniseries')) {
+            preferType = 'tv';
+        } else if (catLower.includes('motion picture') || catLower.includes('film')) {
+            preferType = 'movie';
+        }
+
+        // Try to find exact title match with preferred type
+        if (preferType) {
+            bestMatch = data.results.find(item => {
+                const title = item.title || item.name;
+                return title && title.toLowerCase() === filmTitle.toLowerCase() && item.media_type === preferType;
+            });
+        }
+        
+        // Fallback: Exact title match regardless of type
+        if (!bestMatch) {
+            bestMatch = data.results.find(item => {
+                const title = item.title || item.name;
+                return title && title.toLowerCase() === filmTitle.toLowerCase();
+            });
+        }
+        
+        // Fallback: First result
+        if (!bestMatch) {
+            bestMatch = data.results[0];
+        }
+
+        if (bestMatch.media_type === 'movie') {
+            router.push(`/movie/${bestMatch.id}`);
+        } else if (bestMatch.media_type === 'tv') {
+            router.push(`/tv/${bestMatch.id}`);
+        }
       }
     }
   } catch (error) {
