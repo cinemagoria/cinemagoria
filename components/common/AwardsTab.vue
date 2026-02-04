@@ -86,6 +86,114 @@
                 </table>
             </div>
         </div>
+
+        <!-- Palme d'Or Section -->
+        <div v-if="palme.length" :class="$style.awardSection">
+            <h3 :class="$style.awardLogo">
+                <span :class="$style.goldText">CANNES</span> PALMA DE ORO
+            </h3>
+            <div :class="$style.tableWrapper">
+                <table :class="$style.awardsTable">
+                    <thead>
+                        <tr>
+                            <th :class="$style.yearHeader">Año</th>
+                            <th>Premio</th>
+                            <th v-if="type !== 'person'">Director</th>
+                            <th v-if="type === 'person'">Película</th>
+                            <th :class="$style.resultHeader">Resultado</th>
+                        </tr>
+                    </thead>
+                <tbody>
+                    <tr v-for="award in palme" :key="award.id" :class="$style.winnerRow">
+                        <td :class="$style.yearCell">{{ award.year }}</td>
+                        <td>Palma de Oro</td>
+                         <td v-if="type !== 'person'">
+                             <span 
+                                :class="$style.clickableName"
+                                @click="searchAndNavigateToPerson(award.director)"
+                            >
+                                {{ award.director }}
+                            </span>
+                        </td>
+                        <td v-if="type === 'person'">{{ award.film_title }}</td>
+                        <td><span :class="$style.winnerBadge">GANÓ</span></td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Golden Lion Section -->
+        <div v-if="goldenLion.length" :class="$style.awardSection">
+            <h3 :class="$style.awardLogo">
+                <span :class="$style.goldText">VENECIA</span> LEÓN DE ORO
+            </h3>
+            <div :class="$style.tableWrapper">
+                <table :class="$style.awardsTable">
+                    <thead>
+                        <tr>
+                            <th :class="$style.yearHeader">Año</th>
+                            <th>Premio</th>
+                            <th v-if="type !== 'person'">Director</th>
+                            <th v-if="type === 'person'">Película</th>
+                            <th :class="$style.resultHeader">Resultado</th>
+                        </tr>
+                    </thead>
+                <tbody>
+                    <tr v-for="award in goldenLion" :key="award.id" :class="$style.winnerRow">
+                        <td :class="$style.yearCell">{{ award.year }}</td>
+                        <td>León de Oro</td>
+                         <td v-if="type !== 'person'">
+                             <span 
+                                :class="$style.clickableName"
+                                @click="searchAndNavigateToPerson(award.director)"
+                            >
+                                {{ award.director }}
+                            </span>
+                        </td>
+                        <td v-if="type === 'person'">{{ award.film_title }}</td>
+                        <td><span :class="$style.winnerBadge">GANÓ</span></td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Golden Bear Section -->
+        <div v-if="goldenBear.length" :class="$style.awardSection">
+            <h3 :class="$style.awardLogo">
+                <span :class="$style.goldText">BERLÍN</span> OSO DE ORO
+            </h3>
+            <div :class="$style.tableWrapper">
+                <table :class="$style.awardsTable">
+                    <thead>
+                        <tr>
+                            <th :class="$style.yearHeader">Año</th>
+                            <th>Premio</th>
+                            <th v-if="type !== 'person'">Director</th>
+                            <th v-if="type === 'person'">Película</th>
+                            <th :class="$style.resultHeader">Resultado</th>
+                        </tr>
+                    </thead>
+                <tbody>
+                    <tr v-for="award in goldenBear" :key="award.id" :class="$style.winnerRow">
+                        <td :class="$style.yearCell">{{ award.year }}</td>
+                        <td>Oso de Oro</td>
+                         <td v-if="type !== 'person'">
+                             <span 
+                                :class="$style.clickableName"
+                                @click="searchAndNavigateToPerson(award.director)"
+                            >
+                                {{ award.director }}
+                            </span>
+                        </td>
+                        <td v-if="type === 'person'">{{ award.film_title }}</td>
+                        <td><span :class="$style.winnerBadge">GANÓ</span></td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+        </div>
     </div>
   </div>
 </template>
@@ -97,12 +205,18 @@ const props = defineProps({
   name: { type: String, default: null },  
   type: { type: String, default: 'movie' },
   oscarsProp: { type: Array, default: null },
-  goldenGlobesProp: { type: Array, default: null }
+  goldenGlobesProp: { type: Array, default: null },
+  palme: { type: Array, default: null },
+  goldenLion: { type: Array, default: null },
+  goldenBear: { type: Array, default: null }
 });
 
 const internalLoading = ref(true);
 const internalOscars = ref([]);
 const internalGoldenGlobes = ref([]);
+const internalPalme = ref([]);
+const internalLion = ref([]);
+const internalBear = ref([]);
 
 const oscars = computed(() => {
     const data = props.oscarsProp || internalOscars.value;
@@ -112,14 +226,27 @@ const goldenGlobes = computed(() => {
     const data = props.goldenGlobesProp || internalGoldenGlobes.value;
     return [...data].sort((a, b) => b.year_award - a.year_award);
 });
+const palme = computed(() => {
+    const data = props.palme || internalPalme.value;
+    return [...data].sort((a, b) => b.year - a.year);
+});
+const goldenLion = computed(() => {
+    const data = props.goldenLion || internalLion.value;
+    return [...data].sort((a, b) => b.year - a.year);
+});
+const goldenBear = computed(() => {
+    const data = props.goldenBear || internalBear.value;
+    return [...data].sort((a, b) => b.year - a.year);
+});
+
 
 const loading = computed(() => {
-    if (props.oscarsProp || props.goldenGlobesProp) return false;
+    if (props.oscarsProp || props.goldenGlobesProp || props.palme || props.goldenLion || props.goldenBear) return false;
     return internalLoading.value;
 });
 
 const fetchAwards = async () => {
-    if (props.oscarsProp || props.goldenGlobesProp) {
+    if (props.oscarsProp || props.goldenGlobesProp || props.palme || props.goldenLion || props.goldenBear) {
         return;
     }
 
@@ -135,6 +262,9 @@ const fetchAwards = async () => {
         });
         internalOscars.value = data.oscars || [];
         internalGoldenGlobes.value = data.goldenGlobes || [];
+        internalPalme.value = data.palme || [];
+        internalLion.value = data.goldenLion || [];
+        internalBear.value = data.goldenBear || [];
     } catch (e) {
         console.error("Failed to fetch awards", e);
     } finally {
@@ -146,7 +276,13 @@ onMounted(() => {
     fetchAwards();
 });
 
-const isEmpty = computed(() => oscars.value.length === 0 && goldenGlobes.value.length === 0);
+const isEmpty = computed(() => 
+    oscars.value.length === 0 && 
+    goldenGlobes.value.length === 0 &&
+    palme.value.length === 0 &&
+    goldenLion.value.length === 0 &&
+    goldenBear.value.length === 0
+);
 
 const router = useRouter();
 const config = useRuntimeConfig();

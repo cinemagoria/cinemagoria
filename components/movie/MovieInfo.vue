@@ -256,7 +256,10 @@ export default {
       default: () => [],
     },
     oscars: { type: Array, default: () => [] },
-    goldenGlobes: { type: Array, default: () => [] }
+    goldenGlobes: { type: Array, default: () => [] },
+    palme: { type: Array, default: () => [] },
+    goldenLion: { type: Array, default: () => [] },
+    goldenBear: { type: Array, default: () => [] }
   },
   
   emits: ['open-releases', 'show-awards'],
@@ -361,14 +364,25 @@ export default {
       return this.goldenGlobes.filter(award => award.won);
     },
     hasWinnerAwards() {
-      return this.winnerOscars.length > 0 || this.winnerGoldenGlobes.length > 0;
+      return this.winnerOscars.length > 0 || 
+             this.winnerGoldenGlobes.length > 0 ||
+             this.palme.length > 0 ||
+             this.goldenLion.length > 0 ||
+             this.goldenBear.length > 0;
     },
     awardsSummary() {
       const oscarCount = this.winnerOscars.length;
       const ggCount = this.winnerGoldenGlobes.length;
+      const palmeCount = this.palme.length;
+      const lionCount = this.goldenLion.length;
+      const bearCount = this.goldenBear.length;
+
       const parts = [];
       if (oscarCount > 0) parts.push(`${oscarCount} Oscar${oscarCount > 1 ? 's' : ''}`);
       if (ggCount > 0) parts.push(`${ggCount} Globo${ggCount > 1 ? 's' : ''} de Oro`);
+      if (palmeCount > 0) parts.push(`${palmeCount} Palma de Oro`);
+      if (lionCount > 0) parts.push(`${lionCount} León${lionCount > 1 ? 'es' : ''} de Oro`);
+      if (bearCount > 0) parts.push(`${bearCount} Oso${bearCount > 1 ? 's' : ''} de Oro`);
       return parts.join(', ');
     },
   },
