@@ -75,7 +75,7 @@ export default defineEventHandler(async (event) => {
                 'Queen of Chess',
                 'Broken English',
                 'Leviticus',
-                'undertone',
+                'The Undertone',
                 'The Weight',
                 'The Gallerist',
                 'Tuner',
