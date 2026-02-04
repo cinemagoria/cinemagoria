@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div :class="$style.hero">
+    <div :class="[$style.hero, { [$style.heroHomepage]: isHomepage }]">
       <div v-if="isLoading" class="hero-loader">
         <Loader :size="60" />
       </div>
@@ -1220,6 +1220,7 @@ export default {
     height: 64rem;
   }
 
+
 .festivalBadgeContainer {
     display: flex;
     align-items: center;
@@ -1300,6 +1301,15 @@ export default {
     height: 0;
     padding-bottom: 40%;
   }
+}
+
+.heroHomepage {
+  border-radius: 15px;
+  border: 1px solid transparent;
+  background: linear-gradient(#000, #000) padding-box,
+              linear-gradient(to right, #1E5164, #8AE8FC) border-box;
+  overflow: hidden;
+  margin-top: 20px;
 }
 
 .backdrop {
