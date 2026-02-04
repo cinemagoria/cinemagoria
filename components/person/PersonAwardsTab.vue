@@ -102,7 +102,6 @@ const searchAndNavigateToFilm = async (filmTitle, category = '') => {
       if (data.results && data.results.length > 0) {
         let bestMatch;
         
-        // Detect preference from category
         const catLower = category.toLowerCase();
         let preferType = null;
         if (catLower.includes('television') || catLower.includes('series') || catLower.includes('tv') || catLower.includes('miniseries')) {
@@ -111,7 +110,6 @@ const searchAndNavigateToFilm = async (filmTitle, category = '') => {
             preferType = 'movie';
         }
 
-        // Try to find exact title match with preferred type
         if (preferType) {
             bestMatch = data.results.find(item => {
                 const title = item.title || item.name;
@@ -119,7 +117,6 @@ const searchAndNavigateToFilm = async (filmTitle, category = '') => {
             });
         }
         
-        // Fallback: Exact title match regardless of type
         if (!bestMatch) {
             bestMatch = data.results.find(item => {
                 const title = item.title || item.name;
@@ -127,7 +124,6 @@ const searchAndNavigateToFilm = async (filmTitle, category = '') => {
             });
         }
         
-        // Fallback: First result
         if (!bestMatch) {
             bestMatch = data.results[0];
         }
