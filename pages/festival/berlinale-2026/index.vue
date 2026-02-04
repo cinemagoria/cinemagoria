@@ -49,13 +49,62 @@
         <!-- Schedule Tab -->
         <div v-if="activeTab === 'schedule'" class="schedule-container">
             <!-- Coming Soon Message -->
-            <div class="coming-soon-container">
-                <div class="coming-soon-content">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#FBD378" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-clock"><path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h5"/><path d="M17.5 17.5 16 16.25V14"/><path d="M22 16a6 6 0 1 1-12 0 6 6 0 0 1 12 0Z"/></svg>
-                    <h2>Schedule Coming Soon</h2>
-                    <p>Specific screening dates and times will be announced starting February 4th, 2026.</p>
+          <div v-for="(dayScreenings, date) in groupedScreenings" :key="date" class="schedule-day">
+            <div class="day-header" @click="toggleDay(date)">
+                <h2>{{ formatDate(date) }}</h2>
+                <div class="chevron" :class="{ 'closed': !isOpen(date) }">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FBD378" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
                 </div>
             </div>
+            
+            <transition name="slide">
+                <div v-show="isOpen(date)" class="screenings-list">
+                  <div v-for="screening in dayScreenings" :key="screening.id" class="screening-card">
+                     <div class="time-block">
+                        <span class="time">{{ formatTime(screening.start_time) }}</span>
+                        <span class="timezone">{{ screening.timezone }}</span>
+                     </div>
+                     
+                      <div class="film-info">
+                         <component 
+                            :is="screening.film.source_url ? 'a' : 'span'"
+                            :href="screening.film.source_url || ''"
+                            :target="screening.film.source_url ? '_blank' : ''"
+                            class="film-title"
+                            :class="{'no-link': !screening.film.source_url}"
+                         >
+                            {{ screening.film.title }}
+                         </component>
+                         <div class="film-meta">
+                             <span v-if="screening.film.director">Directed by {{ screening.film.director }}</span>
+                             <span v-if="screening.film.director && screening.film.runtime"> • </span>
+                             <span v-if="screening.film.runtime">{{ screening.film.runtime }} min</span>
+                         </div>
+                         <div v-if="screening.venue" class="venue-info">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                            {{ screening.venue }}
+                         </div>
+                         <div class="tags">
+                             <span v-if="screening.is_in_person" class="tag in-person">In Person</span>
+                             <span v-if="screening.is_online" class="tag online">Online</span>
+                             <span v-if="screening.is_sold_out" class="tag sold-out">Sold Out</span>
+                         </div>
+                      </div>
+                      
+                      <div class="poster-mini">
+                          <img 
+                            v-if="screening.film.poster_path" 
+                            :src="screening.film.poster_path" 
+                            alt="Poster" 
+                            loading="lazy" 
+                            @error="$event.target.src = '/image_not_found_yet.webp'"
+                          />
+                          <img v-else src="/image_not_found_yet.webp" alt="No Poster" />
+                      </div>
+                  </div>
+                </div>
+            </transition>
+          </div>
         </div>
       </div>
     </div>
@@ -70,17 +119,66 @@ import Listing from '~/components/Listing.vue';
 const activeTab = ref('films');
 const loading = ref(true);
 const films = ref({ results: [] });
-// const schedule = ref([]); // Schedule not used yet
+const schedule = ref([]);
+const openDays = ref(new Set());
+
+const formatDate = (dateStr) => {
+    const options = { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'Europe/Berlin' };
+    return new Date(dateStr).toLocaleDateString('en-US', options);
+};
+
+const formatTime = (timeStr) => {
+    return new Date(timeStr).toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        timeZone: 'Europe/Berlin'
+    });
+};
+
+const groupedScreenings = computed(() => {
+    if (!schedule.value) return {};
+    const groups = {};
+    schedule.value.forEach(s => {
+        // We need to group by Berlin date, not local date.
+        // So we should use format parts or similar.
+        // Or simply substring if the string is ISO with offset +01:00, 
+        // string split 'T' might be risky if we rely on local conversion implicitly elsewhere.
+        // But s.start_time comes as "YYYY-MM-DDTHH:mm:SS+01:00".
+        // The date part YYYY-MM-DD matches Berlin date because offset is included.
+        const dateKey = s.start_time.split('T')[0];
+        if (!groups[dateKey]) groups[dateKey] = [];
+        groups[dateKey].push(s);
+    });
+    return Object.keys(groups).sort().reduce((obj, key) => {
+        obj[key] = groups[key];
+        return obj;
+    }, {});
+});
+
+const toggleDay = (date) => {
+    if (openDays.value.has(date)) {
+        openDays.value.delete(date);
+    } else {
+        openDays.value.add(date);
+    }
+}
+
+const isOpen = (date) => openDays.value.has(date);
 
 onMounted(async () => {
     try {
-        const [filmsData] = await Promise.all([
+        const [filmsData, scheduleData] = await Promise.all([
             $fetch('/api/festival/berlinale/films?limit=200&sort=title'),
-            // $fetch('/api/festival/berlinale/schedule') // Keep API ready but don't fail if empty
+            $fetch('/api/festival/berlinale/schedule')
         ]);
         
         films.value = filmsData;
-        // schedule.value = scheduleData.results || [];
+        schedule.value = scheduleData.results || [];
+        
+        if (schedule.value.length > 0) {
+            const dates = new Set(schedule.value.map(s => s.start_time.split('T')[0]));
+            dates.forEach(d => openDays.value.add(d));
+        }
         
     } catch (e) {
         console.error('Error fetching festival data', e);
@@ -258,40 +356,164 @@ onMounted(async () => {
     margin: 0 auto;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
-    min-height: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-.coming-soon-container {
-    text-align: center;
-    padding: 3rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    max-width: 600px;
+.day-header {
+    font-size: 1.8rem;
+    color: #fff;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.5rem;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
     
-    .coming-soon-content {
+    h2 {
+        font-size: 1.8rem;
+        margin: 0;
+    }
+    
+    .chevron {
+        transition: transform 0.3s ease;
+        
+        &.closed {
+            transform: rotate(-90deg);
+        }
+    }
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.3s ease-out;
+  max-height: 2000px;
+  opacity: 1;
+  overflow: hidden;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  max-height: 0;
+  opacity: 0;
+  margin-bottom: 0;
+}
+
+.screening-card {
+    display: flex;
+    background: #0a161b;
+    border: 1px solid #FBD378;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    gap: 1.5rem;
+    transition: transform 0.2s;
+}
+
+.time-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    border-right: 1px solid #333;
+    padding-right: 1.5rem;
+    
+    .time {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #fff;
+    }
+    .timezone {
+        font-size: 0.92rem;
+        color: #888;
+    }
+}
+
+.film-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+    .film-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #fff;
+        text-decoration: none;
+        margin-bottom: 0.5rem;
+        
+        &:hover {
+            color: #FBD378;
+        }
+    }
+    
+    .film-meta {
+        font-size: 1.05rem;
+        color: #aaa;
+        margin-bottom: 0.8rem;
+    }
+    
+    .venue-info {
+        font-size: 1.25rem;
+        color: #ccc;
+        margin-bottom: 0.8rem;
         display: flex;
-        flex-direction: column;
         align-items: center;
-        gap: 1.5rem;
+        gap: 0.5rem;
         
-        h2 {
-            font-size: 2rem;
-            margin: 0;
-            background: linear-gradient(to right, #FBD378, #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        svg {
+            min-width: 18px;
         }
+    }
+}
+
+.tags {
+    display: flex;
+    gap: 0.5rem;
+    
+    .tag {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+        text-transform: uppercase;
         
-        p {
-            font-size: 1.2rem;
-            color: #aaa;
-            line-height: 1.6;
-            margin: 0;
-        }
+        &.in-person { background: rgba(52, 152, 219, 0.2); }
+        &.online { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+        &.sold-out { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+    }
+}
+
+.poster-mini {
+    width: 60px;
+    height: 90px;
+    
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+}
+
+@media (max-width: 600px) {
+    .screening-card {
+        flex-direction: column; 
+        gap: 1rem;
+    }
+    .time-block {
+        border-right: none;
+        border-bottom: 1px solid #333;
+        padding-right: 0;
+        padding-bottom: 1rem;
+        flex-direction: row;
+        gap: 1rem;
+        width: 100%;
+    }
+    .poster-mini {
+        display: none;
     }
 }
 </style>
