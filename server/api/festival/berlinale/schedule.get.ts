@@ -28,6 +28,7 @@ export default defineEventHandler(async (event) => {
                 s.is_in_person,
                 s.is_online,
                 s.is_sold_out,
+                s.venue,
                 f.id as film_id,
                 f.title,
                 f.image_url,
@@ -58,6 +59,7 @@ export default defineEventHandler(async (event) => {
                 is_in_person: Boolean(row.is_in_person),
                 is_online: Boolean(row.is_online),
                 is_sold_out: Boolean(row.is_sold_out),
+                venue: row.venue,
                 film: {
                     id: row.film_id,
                     title: row.title,
