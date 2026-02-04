@@ -139,12 +139,6 @@ const groupedScreenings = computed(() => {
     if (!schedule.value) return {};
     const groups = {};
     schedule.value.forEach(s => {
-        // We need to group by Berlin date, not local date.
-        // So we should use format parts or similar.
-        // Or simply substring if the string is ISO with offset +01:00, 
-        // string split 'T' might be risky if we rely on local conversion implicitly elsewhere.
-        // But s.start_time comes as "YYYY-MM-DDTHH:mm:SS+01:00".
-        // The date part YYYY-MM-DD matches Berlin date because offset is included.
         const dateKey = s.start_time.split('T')[0];
         if (!groups[dateKey]) groups[dateKey] = [];
         groups[dateKey].push(s);
