@@ -6,6 +6,9 @@
       </div>
       <div :class="$style.backdrop">
         <div>
+          <div v-if="isHomepage" :class="$style.upcomingBadge">
+             PRÓXIMAMENTE
+          </div>
           <button
             v-if="trailer && !isLoading"
             :class="$style.play"
@@ -59,7 +62,7 @@
           appear
           name="hero">
           <div>
-            <h1 :class="[$style.name, { [$style.nameHomepage]: isHomepage }]">
+            <h1 :class="[$style.name, { [$style.nameHomepage]: isHomepage }, $style.hoverableName]">
               <template v-if="isSingle">
                 {{ name }}
               </template>
@@ -75,10 +78,8 @@
                 <Loader :size="30" />
             </div>
             <div v-else-if="sundanceFilm" :class="$style.festivalBadgeContainer">
-                <SundanceBadge />
-                <nuxt-link to="/festival/sundance-2026" :class="$style.festivalLink">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FBD378" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-range"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M17 14h-6"/><path d="M13 18H7"/><path d="M7 14h.01"/><path d="M17 18h.01"/></svg>
-                    <span :class="$style.buttonText">VER HORARIO<br>DE PROYECCIÓN</span>
+                <nuxt-link to="/festival/sundance-2026" style="text-decoration: none; display: inline-block;">
+                    <SundanceBadge />
                 </nuxt-link>
             </div>
             <div v-else-if="berlinaleFilm" :class="$style.festivalBadgeContainer">
@@ -131,7 +132,7 @@
                 :class="$style.actionButton"
                 type="button"
                 @click="openModal">
-                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="#fff"><path d="M3 22v-20l18 10-18 10z"/></svg></span>
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 22v-20l18 10-18 10z" fill="currentColor" stroke="none"/></svg></span>
                 <span class="txt">Ver Tráiler</span>
               </button>
 
@@ -192,7 +193,7 @@
                 @click="hasUserRating ? showRatingDetails() : openRatingModal()"
                 style="overflow: hidden; position: relative;">
                 <span class="icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" :fill="hasUserRating ? '#8BE9FD' : '#fff'"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" :fill="hasUserRating ? '#8BE9FD' : 'currentColor'"/></svg>
                 </span>
                 <span class="txt" style="position:relative; top:1.3px;">{{ hasUserRating ? userRatingForDb : 'Valorar' }}</span>
                 <span v-if="hasUserRating" style="position: absolute; bottom: -5px; left: 0; width: 100%; height: 3px; background-color: #8BE9FD;"></span>
@@ -205,7 +206,7 @@
                 type="button"
                 @click="openShareModal">
                 <span class="icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" style="position:relative" viewBox="0 0 24 24"><path fill="#fff" d="M18 16.08c-.76 0-1.44.3-1.96.77l-7.12-4.21c.05-.25.08-.51.08-.78s-.03-.53-.08-.78l7.12-4.21c.53.48 1.22.77 1.96.77 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .27.03.53.08.78L7.96 9.63c-.53-.48-1.22-.77-1.96-.77-1.66 0-3 1.34-3 3s1.34 3 3 3c.74 0 1.43-.29 1.96-.77l7.12 4.21c-.05.25-.08.51-.08.78 0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" style="position:relative" viewBox="0 0 24 24"><path fill="currentColor" d="M18 16.08c-.76 0-1.44.3-1.96.77l-7.12-4.21c.05-.25.08-.51.08-.78s-.03-.53-.08-.78l7.12-4.21c.53.48 1.22.77 1.96.77 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .27.03.53.08.78L7.96 9.63c-.53-.48-1.22-.77-1.96-.77-1.66 0-3 1.34-3 3s1.34 3 3 3c.74 0 1.43-.29 1.96-.77l7.12 4.21c-.05.25-.08.51-.08.78 0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3"/></svg>
                 </span>
               </button>
             </div>
@@ -1398,31 +1399,25 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  background: #000;
+  border: 1px solid #8BE9FD;
+  color: #8BE9FD;
   
+  :global(.icon) svg {
+    display: block; 
+  }
+
   :global(.icon) svg path {
-    stroke: #fff;
+    stroke: currentColor; 
+    transition: stroke 0.3s ease, fill 0.3s ease;
   }
   
   :global(.txt) {
-    color: #fff;
+    color: currentColor;
   }
   
-  &:not(.favoritesFilled) {
-    :global(.icon) svg path {
-      fill: none;
-      stroke: #fff;
-    }
-    
-    &:hover {
-      :global(.icon) svg path {
-        stroke: #8BE9FD !important;
-        fill: none !important;
-      }
-      
-      :global(.txt) {
-        color: #8BE9FD !important;
-      }
-    }
+  &:hover {
+      background: radial-gradient(circle at center, rgba(139, 233, 253, 0.3) 0%, #000 100%);
   }
 
   &.favoritesFilled {
@@ -1446,14 +1441,12 @@ export default {
   &:first-child,
   &:nth-child(3) {
     :global(.icon) svg path {
-      fill: #fff !important;
-      stroke: #fff !important;
+      stroke: currentColor !important;
     }
     
     &:hover {
       :global(.icon) svg path {
-        fill: #8BE9FD !important;
-        stroke: #8BE9FD !important;
+        stroke: currentColor !important;
       }
     }
 
@@ -1504,6 +1497,13 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 0;
+  background: #000;
+  border: 1px solid #8BE9FD;
+  color: #8BE9FD;
+  
+  &:hover {
+      background: radial-gradient(circle at center, rgba(139, 233, 253, 0.3) 0%, #000 100%);
+  }
   
   :global(.icon) {
     margin-left: 6px;
@@ -1699,6 +1699,43 @@ export default {
     width: 9rem;
     height: 1.5rem;
   }
+}
+
+.upcomingBadge {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    z-index: 20;
+    color: #8BE9FD;
+    border: 1px solid #8BE9FD;
+    border-radius: 15px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    background: #000;
+    pointer-events: none;
+
+    @media (max-width: 600px) {
+        top: 1.5rem;
+        right: 1.5rem;
+        font-size: 1rem;
+        padding: 0.4rem 1.2rem;
+    }
+}
+
+.hoverableName {
+    transition: color 0.3s ease;
+    cursor: pointer;
+    
+    a {
+         transition: color 0.3s ease;
+         cursor: pointer;
+    }
+
+    &:hover, a:hover {
+        color: #8BE9FD;
+    }
 }
 </style>
 
