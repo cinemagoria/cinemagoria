@@ -237,26 +237,24 @@ body {
   position: sticky;
   top: 0;
   z-index: 999;
-  background-color: black;
+  border-radius: 15px;
+  border: 1px solid transparent;
+  background: linear-gradient(#000, #000) padding-box,
+              linear-gradient(to right, #1E5164, #8AE8FC) border-box;
 }
 
 .form {
   width: 50%;
-  background-color: black;
 }
 
 .userMenu {
   width: 50%;
   background-color: black;
   display: flex;
+  border-radius:15px;
   justify-content: flex-end;
   align-items: center;
   padding: 1rem;
-  border-bottom: 1.5px solid rgb(38 104 128 / 78%);
-  border-right: 1.5px solid rgb(42 128 159 / 78%);
-  border-top: 1.5px solid rgba(46, 135, 168, 0.78);
-  border-bottom-right-radius: 9px;
-  border-top-right-radius: 9px;
 }
 .field-wrapper {
   display: flex;
@@ -266,12 +264,6 @@ body {
 .field {
   display: flex;
   align-items: flex-start;
-  background-color: black;
-  border-bottom: 1.5px solid rgb(38 104 128 / 78%);
-  border-left: 1.5px solid rgb(42 128 159 / 78%);
-  border-top: 1.5px solid rgba(46, 135, 168, 0.78);
-  border-bottom-left-radius: 9px;
-  border-top-left-radius: 9px;
 }
 
 input[type='text'] {

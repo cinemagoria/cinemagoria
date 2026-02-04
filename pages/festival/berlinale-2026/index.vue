@@ -123,13 +123,11 @@ const schedule = ref([]);
 const openDays = ref(new Set());
 
 const formatDate = (dateStr) => {
-    // Usar locale español
     const options = { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'Europe/Berlin' };
     return new Date(dateStr).toLocaleDateString('es-ES', options);
 };
 
 const formatTime = (timeStr) => {
-    // Usar locale español (normalmente 24h o formato local)
     return new Date(timeStr).toLocaleTimeString('es-ES', { 
         hour: '2-digit', 
         minute: '2-digit',

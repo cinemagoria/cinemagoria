@@ -736,7 +736,6 @@ export default {
 
 .form {
   width: 50%;
-  background-color: black;
 }
 
 .userMenu {
@@ -760,7 +759,6 @@ export default {
 .field {
   display: flex;
   align-items: flex-start;
-  background-color: black;
   border-bottom: 1.5px solid rgba(28, 79, 97, 0.782);
   border-left: 1.5px solid rgba(28, 79, 97, 0.782);
   border-top: 1.5px solid rgba(34, 98, 121, 0.782);

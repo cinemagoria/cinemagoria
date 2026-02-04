@@ -1,7 +1,6 @@
 <template>
   <main class="main">
     <UserNav @show-rated-modal="showRatedItems" />
-    <FeatureDescription />
 
     <Hero
       v-if="featured && featured.length"
