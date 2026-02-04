@@ -136,11 +136,13 @@ export default defineEventHandler(async (event) => {
                 const res = await db.execute({ sql: "SELECT * FROM awards_oscars WHERE tmdb_id = ?", args: [tmdbId] });
                 oscars.push(...res.rows);
 
-                const p = await db.execute({ sql: "SELECT * FROM awards_palm_d_or WHERE tmdb_id = ?", args: [tmdbId] });
+                const [p, l, b] = await Promise.all([
+                    db.execute({ sql: "SELECT * FROM awards_palm_d_or WHERE tmdb_id = ?", args: [tmdbId] }),
+                    db.execute({ sql: "SELECT * FROM awards_golden_lion WHERE tmdb_id = ?", args: [tmdbId] }),
+                    db.execute({ sql: "SELECT * FROM awards_golden_bear WHERE tmdb_id = ?", args: [tmdbId] })
+                ]);
                 palme.push(...p.rows);
-                const l = await db.execute({ sql: "SELECT * FROM awards_golden_lion WHERE tmdb_id = ?", args: [tmdbId] });
                 goldenLion.push(...l.rows);
-                const b = await db.execute({ sql: "SELECT * FROM awards_golden_bear WHERE tmdb_id = ?", args: [tmdbId] });
                 goldenBear.push(...b.rows);
             }
             if (name) {
