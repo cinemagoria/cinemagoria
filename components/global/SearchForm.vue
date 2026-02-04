@@ -277,7 +277,6 @@ body {
 .field {
   display: flex;
   align-items: flex-start;
-  background-color: black;
 }
 
 input[type='text'] {
