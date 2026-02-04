@@ -37,11 +37,14 @@ export default defineEventHandler(async (event) => {
     const { tmdbId, name, title, type } = query as { tmdbId?: string, name?: string, title?: string, type?: string };
 
     if (!tmdbId && !name && !title) {
-        return { oscars: [], goldenGlobes: [] };
+        return { oscars: [], goldenGlobes: [], palme: [], goldenLion: [], goldenBear: [] };
     }
 
     let oscars: any[] = [];
     let goldenGlobes: any[] = [];
+    let palme: any[] = [];
+    let goldenLion: any[] = [];
+    let goldenBear: any[] = [];
 
     try {
         if (type === 'person') {
@@ -57,6 +60,15 @@ export default defineEventHandler(async (event) => {
                     args: [`%${name}%`]
                 });
                 goldenGlobes = [...goldenGlobes, ...ggResult.rows];
+
+                const palmeRes = await db.execute({ sql: "SELECT * FROM awards_palm_d_or WHERE director LIKE ? COLLATE NOCASE", args: [`%${name}%`] });
+                palme = [...palme, ...palmeRes.rows];
+
+                const lionRes = await db.execute({ sql: "SELECT * FROM awards_golden_lion WHERE director LIKE ? COLLATE NOCASE", args: [`%${name}%`] });
+                goldenLion = [...goldenLion, ...lionRes.rows];
+
+                const bearRes = await db.execute({ sql: "SELECT * FROM awards_golden_bear WHERE director LIKE ? COLLATE NOCASE", args: [`%${name}%`] });
+                goldenBear = [...goldenBear, ...bearRes.rows];
             }
         } else if (type === 'movie') {
             if (tmdbId) {
@@ -65,6 +77,15 @@ export default defineEventHandler(async (event) => {
                     args: [tmdbId]
                 });
                 oscars = [...oscars, ...oscarResult.rows];
+
+                const palmeRes = await db.execute({ sql: "SELECT * FROM awards_palm_d_or WHERE tmdb_id = ?", args: [tmdbId] });
+                palme = [...palme, ...palmeRes.rows];
+
+                const lionRes = await db.execute({ sql: "SELECT * FROM awards_golden_lion WHERE tmdb_id = ?", args: [tmdbId] });
+                goldenLion = [...goldenLion, ...lionRes.rows];
+
+                const bearRes = await db.execute({ sql: "SELECT * FROM awards_golden_bear WHERE tmdb_id = ?", args: [tmdbId] });
+                goldenBear = [...goldenBear, ...bearRes.rows];
             }
             if (title) {
                 const ggResult = await db.execute({
@@ -72,6 +93,35 @@ export default defineEventHandler(async (event) => {
                     args: [`${title}`]
                 });
                 goldenGlobes = [...goldenGlobes, ...ggResult.rows];
+
+                if (goldenGlobes.length === 0 && tmdbId) {
+                    try {
+                        const apiKey = config.public.apiKey;
+                        const tmdbRes: any = await $fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${apiKey}&language=en-US`);
+                        if (tmdbRes && tmdbRes.title && tmdbRes.title !== title) {
+                            const ggResultEn = await db.execute({
+                                sql: "SELECT * FROM awards_golden_globes WHERE film LIKE ? COLLATE NOCASE",
+                                args: [`${tmdbRes.title}`]
+                            });
+                            goldenGlobes = [...goldenGlobes, ...ggResultEn.rows];
+                        }
+                    } catch (e) {
+                        // ignore
+                    }
+                }
+
+                if (palme.length === 0) {
+                    const r = await db.execute({ sql: "SELECT * FROM awards_palm_d_or WHERE film_title LIKE ? COLLATE NOCASE", args: [title] });
+                    palme.push(...r.rows);
+                }
+                if (goldenLion.length === 0) {
+                    const r = await db.execute({ sql: "SELECT * FROM awards_golden_lion WHERE film_title LIKE ? COLLATE NOCASE", args: [title] });
+                    goldenLion.push(...r.rows);
+                }
+                if (goldenBear.length === 0) {
+                    const r = await db.execute({ sql: "SELECT * FROM awards_golden_bear WHERE film_title LIKE ? COLLATE NOCASE", args: [title] });
+                    goldenBear.push(...r.rows);
+                }
             }
         } else if (type === 'tv') {
             if (title) {
@@ -82,10 +132,18 @@ export default defineEventHandler(async (event) => {
                 goldenGlobes = [...goldenGlobes, ...ggResult.rows];
             }
         } else {
-            // Fallback for no type specified
             if (tmdbId) {
                 const res = await db.execute({ sql: "SELECT * FROM awards_oscars WHERE tmdb_id = ?", args: [tmdbId] });
                 oscars.push(...res.rows);
+
+                const [p, l, b] = await Promise.all([
+                    db.execute({ sql: "SELECT * FROM awards_palm_d_or WHERE tmdb_id = ?", args: [tmdbId] }),
+                    db.execute({ sql: "SELECT * FROM awards_golden_lion WHERE tmdb_id = ?", args: [tmdbId] }),
+                    db.execute({ sql: "SELECT * FROM awards_golden_bear WHERE tmdb_id = ?", args: [tmdbId] })
+                ]);
+                palme.push(...p.rows);
+                goldenLion.push(...l.rows);
+                goldenBear.push(...b.rows);
             }
             if (name) {
                 const resO = await db.execute({ sql: "SELECT * FROM awards_oscars WHERE nominee_name LIKE ? COLLATE NOCASE", args: [`%${name}%`] });
@@ -105,6 +163,9 @@ export default defineEventHandler(async (event) => {
 
     return {
         oscars,
-        goldenGlobes
+        goldenGlobes,
+        palme,
+        goldenLion,
+        goldenBear
     };
 });
