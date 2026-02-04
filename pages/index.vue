@@ -200,7 +200,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Queen at sea',
         'The Weight',
         'Leviticus',
-        'undertone',
+        'The Undertone',
         'The Gallerist',
         'Tuner',
         'The Invite',
