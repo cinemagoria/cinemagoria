@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div
+    @touchstart="handleTouchStart"
+    @touchend="handleTouchEnd"
+    @wheel.prevent="handleWheel">
     <div :class="[$style.hero, { [$style.heroHomepage]: isHomepage }]">
       <div v-if="isLoading" class="hero-loader" :class="{ 'hide-on-mobile-homepage': isHomepage }">
         <Loader :size="60" />
@@ -463,7 +466,10 @@ export default {
       sundanceFilm: null,
       berlinaleFilm: null,
       isFestivalLoading: false,
-      currentIndex: 0
+      currentIndex: 0,
+      touchStartX: 0,
+      touchEndX: 0,
+      lastWheelTime: 0
     };
   },
 
@@ -540,6 +546,45 @@ export default {
   },
 
   methods: {
+    handleTouchStart(e) {
+      if (!this.isHomepage || this.items.length <= 1) return;
+      this.touchStartX = e.changedTouches[0].screenX;
+    },
+    handleTouchEnd(e) {
+      if (!this.isHomepage || this.items.length <= 1) return;
+      this.touchEndX = e.changedTouches[0].screenX;
+      this.handleSwipe();
+    },
+    handleWheel(e) {
+      if (!this.isHomepage || this.items.length <= 1) return;
+
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        const now = Date.now();
+        if (now - this.lastWheelTime < 600) return;
+        
+        if (Math.abs(e.deltaX) < 20) return;
+        
+        this.lastWheelTime = now;
+        
+        if (e.deltaX > 0) {
+          this.nextItem();
+        } else {
+          this.prevItem();
+        }
+      }
+    },
+    handleSwipe() {
+      const diff = this.touchStartX - this.touchEndX;
+      const threshold = 50; 
+      
+      if (Math.abs(diff) > threshold) {
+        if (diff > 0) {
+          this.nextItem();
+        } else {
+          this.prevItem();
+        }
+      }
+    },
     nextItem() {
       if (this.items.length > 1) {
         this.currentIndex = (this.currentIndex + 1) % this.items.length;
@@ -1317,6 +1362,7 @@ export default {
   background: linear-gradient(#000, #000) padding-box,
               linear-gradient(to right, #1E5164, #8AE8FC) border-box;
   margin-top: 20px;
+  touch-action: pan-y;
 }
 
 .backdrop {
