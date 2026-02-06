@@ -368,8 +368,8 @@ onMounted(async () => {
     h2 {
         font-size: 1.8rem;
         margin: 0;
-        text-transform: capitalize; /* Capitalize day names in Spanish if lowercase */
-    }
+            text-transform: capitalize;
+        }
     
     .chevron {
         transition: transform 0.3s ease;

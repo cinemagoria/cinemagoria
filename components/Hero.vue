@@ -168,17 +168,17 @@
 
                     <div class="divider"></div>
                     
-                    <div v-if="userLists.length > 0">
-                       <button 
-                          v-for="list in userLists" 
-                          :key="list.id" 
-                          class="menu-option"
-                          @click="toggleListMembership(list)">
-                          <div class="checkbox">
-                            <svg v-if="membership.lists.some(l => l.id === list.id)" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                          </div>
-                          <span class="list-name">{{ list.name }}</span>
-                       </button>
+                    <div v-if="userLists.length > 0" class="list-scroll-area">
+                       <div v-for="list in userLists" :key="list.id">
+                           <button 
+                              class="menu-option"
+                              @click="toggleListMembership(list)">
+                              <div class="checkbox">
+                                <svg v-if="membership.lists.some(l => l.id === list.id)" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                              </div>
+                              <span class="list-name">{{ list.name }}</span>
+                           </button>
+                       </div>
                        <div class="divider"></div>
                     </div>
 
@@ -1309,13 +1309,18 @@ export default {
   display: flex;
   flex: 1 1 auto;
   min-height: 0;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  overflow: hidden;
 
   @media (max-width: 639px) {
     min-height: 30rem;
+    border-radius: 15px 15px 0 0;
   }
 
   @media (min-width: 640px) and (max-width: 767px) {
     min-height: 34rem;
+    border-radius: 15px 15px 0 0;
   }
 
   @media (min-width: $breakpoint-medium) {
@@ -1325,6 +1330,7 @@ export default {
     display: block;
     width: 71.1%;
     height: 100%;
+    border-radius: 0 15px 15px 0;
   }
 
   &::after {
@@ -1751,7 +1757,6 @@ export default {
   border: 1px solid transparent;
   background: linear-gradient(#000, #000) padding-box,
               linear-gradient(to right, #1E5164, #8AE8FC) border-box;
-  overflow: hidden;
   margin-top: 20px;
 }
 
@@ -2258,8 +2263,8 @@ export default {
   top: 100%;
   left: 0;
   margin-top: 10px;
-  background: #151f24;
-  border: 1px solid rgba(127, 219, 241, 0.3);
+  border: 1px solid #8AE8FC;
+  background: #000000;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   border-radius: 8px;
   width: 220px;
@@ -2295,10 +2300,29 @@ export default {
   background: rgba(255,255,255,0.05);
 }
 
+.list-scroll-area {
+  max-height: 240px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(139, 233, 253, 0.3);
+    border-radius: 2px;
+  }
+}
+
 .checkbox {
   width: 20px;
+  min-width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-right: 10px;
 }
 
