@@ -1,7 +1,7 @@
 <template>
   <div>
     <div :class="[$style.hero, { [$style.heroHomepage]: isHomepage }]">
-      <div v-if="isLoading" class="hero-loader">
+      <div v-if="isLoading" class="hero-loader" :class="{ 'hide-on-mobile-homepage': isHomepage }">
         <Loader :size="60" />
       </div>
       <div :class="$style.backdrop">
@@ -37,6 +37,10 @@
             :style="{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }"
             @load="onBackdropLoaded"
             @error="onBackdropLoaded">
+
+          <div v-if="isLoading && isHomepage" class="mobile-homepage-loader">
+             <Loader :size="60" />
+          </div>
 
             <div v-if="items && items.length > 1" class="nav-arrows">
                 <button
@@ -2230,6 +2234,29 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.hide-on-mobile-homepage {
+  @media (max-width: 1023px) {
+    display: none;
+  }
+}
+
+.mobile-homepage-loader {
+  display: none;
+  
+  @media (max-width: 1023px) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.307);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .add-list-menu {
