@@ -704,6 +704,11 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 2rem;
+
+  @media (max-width: 768px) {
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 1rem;
+  }
 }
 
 .card {
@@ -734,6 +739,10 @@ export default {
     align-items: center;
     justify-content: center;
     min-height: 250px;
+
+    @media (max-width: 768px) {
+        min-height: 150px;
+    }
     
     &:hover {
         border-color: #8BE9FD;
@@ -752,6 +761,13 @@ export default {
         width: 120px;
         height: 120px;
         object-fit: contain;
+
+        @media (max-width: 768px) {
+             width: 60px;
+             height: 60px;
+             margin-bottom: 0.8rem;
+        }
+
         margin-bottom: 1.5rem;
         opacity: 0.9;
         transition: transform 0.2s;
@@ -761,6 +777,10 @@ export default {
         font-size: 1.8rem;
         text-align: center;
         line-height: 1.2;
+
+        @media (max-width: 768px) {
+            font-size: 1.2rem;
+        }
     }
 
     &:hover .createIcon {
