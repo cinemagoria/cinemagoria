@@ -9,6 +9,8 @@ export default defineEventHandler(async (event) => {
         "Access-Control-Expose-Headers": "*"
     })
 
+    setResponseHeader(event, 'Cache-Control', 'public, max-age=86400, s-maxage=86400')
+
     if (getMethod(event) === 'OPTIONS') {
         event.node.res.statusCode = 204
         return
