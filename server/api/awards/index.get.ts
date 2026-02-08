@@ -1,24 +1,16 @@
-import { createClient } from "@libsql/client";
 
-const config = useRuntimeConfig();
+import awardsData from '../../data/awards.json';
 
-const dbUrl = process.env.IMDB_DB_URL || config.tursoDbUrl || process.env.DB_URL;
-const dbToken = process.env.IMDB_DB_TOKEN || config.tursoDbToken || process.env.DB_TOKEN;
-
-const db = createClient({
-    url: dbUrl!,
-    authToken: dbToken!,
-});
-
+// Type definitions based on the JSON structure
 interface Oscar {
     id: number;
-    year: number;
-    ceremony: number;
     category: string;
-    winner: number;
-    film: string;
-    name: string;
+    year: string;
+    won: number;
+    film_title: string;
     tmdb_id: number;
+    imdb_id: string;
+    nominee_name: string;
 }
 
 interface GoldenGlobe {
@@ -32,13 +24,37 @@ interface GoldenGlobe {
     won: number;
 }
 
+interface FestivalAward { // Palme / Lion / Bear share similar structure
+    id: number;
+    year: string;
+    film_title: string;
+    original_title: string;
+    director: string;
+    country: string;
+    tmdb_id: number;
+    imdb_id: string;
+    won: number;
+}
+
+const oscarsData = ((awardsData as any).oscars || []) as Oscar[];
+const goldenGlobesData = ((awardsData as any).goldenGlobes || []) as GoldenGlobe[];
+const palmeData = ((awardsData as any).palme || []) as FestivalAward[];
+const goldenLionData = ((awardsData as any).goldenLion || []) as FestivalAward[];
+const goldenBearData = ((awardsData as any).goldenBear || []) as FestivalAward[];
+
 export default defineEventHandler(async (event) => {
     const query = getQuery(event);
-    const { tmdbId, name, title, type } = query as { tmdbId?: string, name?: string, title?: string, type?: string };
+    // Cast query params to strings to be safe
+    const tmdbIdStr = query.tmdbId as string | undefined;
+    const name = query.name as string | undefined;
+    const title = query.title as string | undefined;
+    const type = query.type as string | undefined;
 
-    if (!tmdbId && !name && !title) {
+    if (!tmdbIdStr && !name && !title) {
         return { oscars: [], goldenGlobes: [], palme: [], goldenLion: [], goldenBear: [] };
     }
+
+    const tmdbId = tmdbIdStr ? parseInt(tmdbIdStr) : undefined;
 
     let oscars: any[] = [];
     let goldenGlobes: any[] = [];
@@ -46,119 +62,89 @@ export default defineEventHandler(async (event) => {
     let goldenLion: any[] = [];
     let goldenBear: any[] = [];
 
+    // Helper for case-insensitive partial match
+    const includesIgnoreCase = (source: string | undefined | null, target: string) =>
+        source && source.toLowerCase().includes(target.toLowerCase());
+
+    const equalsIgnoreCase = (source: string | undefined | null, target: string) =>
+        source && source.toLowerCase() === target.toLowerCase();
+
     try {
-        if (type === 'person') {
-            if (name) {
-                const oscarResult = await db.execute({
-                    sql: "SELECT * FROM awards_oscars WHERE nominee_name LIKE ? COLLATE NOCASE",
-                    args: [`%${name}%`]
-                });
-                oscars = [...oscars, ...oscarResult.rows];
+        if (type === 'person' && name) {
+            // Person Search
+            oscars = oscarsData.filter(a => includesIgnoreCase(a.nominee_name, name));
+            goldenGlobes = goldenGlobesData.filter(a => includesIgnoreCase(a.nominee, name));
+            palme = palmeData.filter(a => includesIgnoreCase(a.director, name));
+            goldenLion = goldenLionData.filter(a => includesIgnoreCase(a.director, name));
+            goldenBear = goldenBearData.filter(a => includesIgnoreCase(a.director, name));
 
-                const ggResult = await db.execute({
-                    sql: "SELECT * FROM awards_golden_globes WHERE nominee LIKE ? COLLATE NOCASE",
-                    args: [`%${name}%`]
-                });
-                goldenGlobes = [...goldenGlobes, ...ggResult.rows];
-
-                const palmeRes = await db.execute({ sql: "SELECT * FROM awards_palm_d_or WHERE director LIKE ? COLLATE NOCASE", args: [`%${name}%`] });
-                palme = [...palme, ...palmeRes.rows];
-
-                const lionRes = await db.execute({ sql: "SELECT * FROM awards_golden_lion WHERE director LIKE ? COLLATE NOCASE", args: [`%${name}%`] });
-                goldenLion = [...goldenLion, ...lionRes.rows];
-
-                const bearRes = await db.execute({ sql: "SELECT * FROM awards_golden_bear WHERE director LIKE ? COLLATE NOCASE", args: [`%${name}%`] });
-                goldenBear = [...goldenBear, ...bearRes.rows];
-            }
         } else if (type === 'movie') {
+            // Movie Search
             if (tmdbId) {
-                const oscarResult = await db.execute({
-                    sql: "SELECT * FROM awards_oscars WHERE tmdb_id = ?",
-                    args: [tmdbId]
-                });
-                oscars = [...oscars, ...oscarResult.rows];
-
-                const palmeRes = await db.execute({ sql: "SELECT * FROM awards_palm_d_or WHERE tmdb_id = ?", args: [tmdbId] });
-                palme = [...palme, ...palmeRes.rows];
-
-                const lionRes = await db.execute({ sql: "SELECT * FROM awards_golden_lion WHERE tmdb_id = ?", args: [tmdbId] });
-                goldenLion = [...goldenLion, ...lionRes.rows];
-
-                const bearRes = await db.execute({ sql: "SELECT * FROM awards_golden_bear WHERE tmdb_id = ?", args: [tmdbId] });
-                goldenBear = [...goldenBear, ...bearRes.rows];
+                oscars = oscarsData.filter(a => a.tmdb_id === tmdbId);
+                palme = palmeData.filter(a => a.tmdb_id === tmdbId);
+                goldenLion = goldenLionData.filter(a => a.tmdb_id === tmdbId);
+                goldenBear = goldenBearData.filter(a => a.tmdb_id === tmdbId);
             }
+
             if (title) {
-                const ggResult = await db.execute({
-                    sql: "SELECT * FROM awards_golden_globes WHERE film LIKE ? COLLATE NOCASE",
-                    args: [`${title}`]
-                });
-                goldenGlobes = [...goldenGlobes, ...ggResult.rows];
+                // Golden Globes typically don't have TMDB ID in the dataset, rely on Title
+                goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title));
 
-                if (goldenGlobes.length === 0 && tmdbId) {
-                    try {
-                        const apiKey = config.public.apiKey;
-                        const tmdbRes: any = await $fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${apiKey}&language=en-US`);
-                        if (tmdbRes && tmdbRes.title && tmdbRes.title !== title) {
-                            const ggResultEn = await db.execute({
-                                sql: "SELECT * FROM awards_golden_globes WHERE film LIKE ? COLLATE NOCASE",
-                                args: [`${tmdbRes.title}`]
-                            });
-                            goldenGlobes = [...goldenGlobes, ...ggResultEn.rows];
-                        }
-                    } catch (e) {
-                        // ignore
-                    }
-                }
-
+                // Fallback for festivals if no results by ID (or if TMDB ID is 0/missing in dataset)
                 if (palme.length === 0) {
-                    const r = await db.execute({ sql: "SELECT * FROM awards_palm_d_or WHERE film_title LIKE ? COLLATE NOCASE", args: [title] });
-                    palme.push(...r.rows);
+                    palme = palmeData.filter(a => equalsIgnoreCase(a.film_title, title));
                 }
                 if (goldenLion.length === 0) {
-                    const r = await db.execute({ sql: "SELECT * FROM awards_golden_lion WHERE film_title LIKE ? COLLATE NOCASE", args: [title] });
-                    goldenLion.push(...r.rows);
+                    goldenLion = goldenLionData.filter(a => equalsIgnoreCase(a.film_title, title));
                 }
                 if (goldenBear.length === 0) {
-                    const r = await db.execute({ sql: "SELECT * FROM awards_golden_bear WHERE film_title LIKE ? COLLATE NOCASE", args: [title] });
-                    goldenBear.push(...r.rows);
+                    goldenBear = goldenBearData.filter(a => equalsIgnoreCase(a.film_title, title));
+                }
+
+                // If no Golden Globes found by title, try fetching English title from TMDB (as per original logic)
+                if (goldenGlobes.length === 0 && tmdbId) {
+                    // We keep this logic to match original behavior, but strictly speaking this triggers an external API call.
+                    // It is NOT a DB call, so it is safe for the goal of reducing DB reads.
+                    try {
+                        const config = useRuntimeConfig();
+                        const apiKey = config.public.apiKey;
+                        if (apiKey) {
+                            const tmdbRes: any = await $fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${apiKey}&language=en-US`);
+                            if (tmdbRes && tmdbRes.title && tmdbRes.title !== title) {
+                                const extraGG = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, tmdbRes.title));
+                                goldenGlobes = [...goldenGlobes, ...extraGG];
+                            }
+                        }
+                    } catch (e) {
+                        // ignore TMDB fetch error
+                    }
                 }
             }
-        } else if (type === 'tv') {
-            if (title) {
-                const ggResult = await db.execute({
-                    sql: "SELECT * FROM awards_golden_globes WHERE film LIKE ? COLLATE NOCASE",
-                    args: [`${title}`]
-                });
-                goldenGlobes = [...goldenGlobes, ...ggResult.rows];
-            }
-        } else {
-            if (tmdbId) {
-                const res = await db.execute({ sql: "SELECT * FROM awards_oscars WHERE tmdb_id = ?", args: [tmdbId] });
-                oscars.push(...res.rows);
 
-                const [p, l, b] = await Promise.all([
-                    db.execute({ sql: "SELECT * FROM awards_palm_d_or WHERE tmdb_id = ?", args: [tmdbId] }),
-                    db.execute({ sql: "SELECT * FROM awards_golden_lion WHERE tmdb_id = ?", args: [tmdbId] }),
-                    db.execute({ sql: "SELECT * FROM awards_golden_bear WHERE tmdb_id = ?", args: [tmdbId] })
-                ]);
-                palme.push(...p.rows);
-                goldenLion.push(...l.rows);
-                goldenBear.push(...b.rows);
+        } else if (type === 'tv' && title) {
+            // TV Search
+            goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title));
+
+        } else {
+            // Generic Fallback (matches original 'else' block logic)
+            if (tmdbId) {
+                oscars.push(...oscarsData.filter(a => a.tmdb_id === tmdbId));
+                palme.push(...palmeData.filter(a => a.tmdb_id === tmdbId));
+                goldenLion.push(...goldenLionData.filter(a => a.tmdb_id === tmdbId));
+                goldenBear.push(...goldenBearData.filter(a => a.tmdb_id === tmdbId));
             }
             if (name) {
-                const resO = await db.execute({ sql: "SELECT * FROM awards_oscars WHERE nominee_name LIKE ? COLLATE NOCASE", args: [`%${name}%`] });
-                oscars.push(...resO.rows);
-                const resG = await db.execute({ sql: "SELECT * FROM awards_golden_globes WHERE nominee LIKE ? COLLATE NOCASE", args: [`%${name}%`] });
-                goldenGlobes.push(...resG.rows);
+                oscars.push(...oscarsData.filter(a => includesIgnoreCase(a.nominee_name, name)));
+                goldenGlobes.push(...goldenGlobesData.filter(a => includesIgnoreCase(a.nominee, name)));
             }
             if (title) {
-                const res = await db.execute({ sql: "SELECT * FROM awards_golden_globes WHERE film LIKE ? COLLATE NOCASE", args: [`${title}`] });
-                goldenGlobes.push(...res.rows);
+                goldenGlobes.push(...goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title)));
             }
         }
 
     } catch (e) {
-        console.error("Database error in awards API:", e);
+        console.error("Error in in-memory awards API:", e);
     }
 
     return {
