@@ -38,3 +38,5 @@ entercinema-v2.sql
 GEMINI.md
 AGENTS.md
 CLAUDE.md
+backup/awards_backup.sql
+scripts/backup_awards.ts
