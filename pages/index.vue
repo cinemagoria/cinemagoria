@@ -186,16 +186,27 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         fetchHero()
     ]);
     
-    const FEATURED_ORDER = [
+         const FEATURED_ORDER = [
         'Yellow Letters',
-        'Everybody Digs Bill Evans',
+        'A Prayer for the Dying',
+        'A Russian Winter',
         'Rosebush Pruning',
-        'Nightborn',
+        'WAX & GOLD',
+        'No Good Men',
+        'The Red Hangar',
+        'Everybody Digs Bill Evans',
         'At the sea',
-        'Kurtuluş',
-        'À voix basse',
+        'Salvation',
+        'Nightborn',
+        'In a Whisper',
         'Rose',
         'Queen at sea',
+        'Chronicles from the Siege',
+        'The Day She Returns',
+        'Allegro Pastell',
+        'Four Minus Three',
+        'Lali',
+        'The Hidden Face of The Earth',
         'The Weight',
         'Leviticus',
         'The Undertone',
