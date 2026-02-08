@@ -1,7 +1,6 @@
 
 import awardsData from '../../data/awards.json';
 
-// Type definitions based on the JSON structure
 interface Oscar {
     id: number;
     category: string;
@@ -24,7 +23,7 @@ interface GoldenGlobe {
     won: number;
 }
 
-interface FestivalAward { // Palme / Lion / Bear share similar structure
+interface FestivalAward {
     id: number;
     year: string;
     film_title: string;
@@ -44,7 +43,6 @@ const goldenBearData = ((awardsData as any).goldenBear || []) as FestivalAward[]
 
 export default defineEventHandler(async (event) => {
     const query = getQuery(event);
-    // Cast query params to strings to be safe
     const tmdbIdStr = query.tmdbId as string | undefined;
     const name = query.name as string | undefined;
     const title = query.title as string | undefined;
@@ -62,7 +60,6 @@ export default defineEventHandler(async (event) => {
     let goldenLion: any[] = [];
     let goldenBear: any[] = [];
 
-    // Helper for case-insensitive partial match
     const includesIgnoreCase = (source: string | undefined | null, target: string) =>
         source && source.toLowerCase().includes(target.toLowerCase());
 
@@ -71,7 +68,6 @@ export default defineEventHandler(async (event) => {
 
     try {
         if (type === 'person' && name) {
-            // Person Search
             oscars = oscarsData.filter(a => includesIgnoreCase(a.nominee_name, name));
             goldenGlobes = goldenGlobesData.filter(a => includesIgnoreCase(a.nominee, name));
             palme = palmeData.filter(a => includesIgnoreCase(a.director, name));
@@ -79,7 +75,6 @@ export default defineEventHandler(async (event) => {
             goldenBear = goldenBearData.filter(a => includesIgnoreCase(a.director, name));
 
         } else if (type === 'movie') {
-            // Movie Search
             if (tmdbId) {
                 oscars = oscarsData.filter(a => a.tmdb_id === tmdbId);
                 palme = palmeData.filter(a => a.tmdb_id === tmdbId);
@@ -88,10 +83,8 @@ export default defineEventHandler(async (event) => {
             }
 
             if (title) {
-                // Golden Globes typically don't have TMDB ID in the dataset, rely on Title
                 goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title));
 
-                // Fallback for festivals if no results by ID (or if TMDB ID is 0/missing in dataset)
                 if (palme.length === 0) {
                     palme = palmeData.filter(a => equalsIgnoreCase(a.film_title, title));
                 }
@@ -102,10 +95,7 @@ export default defineEventHandler(async (event) => {
                     goldenBear = goldenBearData.filter(a => equalsIgnoreCase(a.film_title, title));
                 }
 
-                // If no Golden Globes found by title, try fetching English title from TMDB (as per original logic)
                 if (goldenGlobes.length === 0 && tmdbId) {
-                    // We keep this logic to match original behavior, but strictly speaking this triggers an external API call.
-                    // It is NOT a DB call, so it is safe for the goal of reducing DB reads.
                     try {
                         const config = useRuntimeConfig();
                         const apiKey = config.public.apiKey;
@@ -123,11 +113,9 @@ export default defineEventHandler(async (event) => {
             }
 
         } else if (type === 'tv' && title) {
-            // TV Search
             goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title));
 
         } else {
-            // Generic Fallback (matches original 'else' block logic)
             if (tmdbId) {
                 oscars.push(...oscarsData.filter(a => a.tmdb_id === tmdbId));
                 palme.push(...palmeData.filter(a => a.tmdb_id === tmdbId));
