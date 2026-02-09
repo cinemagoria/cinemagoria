@@ -217,11 +217,9 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Time and Water',
         'In the Blink of An Eye',
         'Give Me the Ball!',
-        'Queen of Chess',
         'Broken English',
         'Antiheroine',
         'Saccharine',
-        'The Moment',
         'Josephine',
         'The Shitheads'
     ];
