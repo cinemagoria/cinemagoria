@@ -129,8 +129,29 @@
             </div>
             <br>
             <div :class="$style.buttonContainer">
+              <template v-if="isVidSrcAvailable">
+                <button
+                  class="button button--icon"
+                  :class="[$style.actionButton, $style.shiningButton]"
+                  type="button"
+                  @click="openVidSrc">
+                  <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 22v-20l18 10-18 10z" fill="currentColor" stroke="none"/></svg></span>
+                  <span class="txt">Watch Now</span>
+                </button>
+                
+                <button
+                  v-if="trailer"
+                  class="button button--icon"
+                  :class="$style.actionButton"
+                  type="button"
+                  @click="openModal">
+                  <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 22v-20l18 10-18 10z" fill="currentColor" stroke="none"/></svg></span>
+                  <span class="txt">Trailer</span>
+                </button>
+              </template>
+
               <button
-                v-if="trailer"
+                v-else-if="trailer"
                 class="button button--icon"
                 :class="$style.actionButton"
                 type="button"
@@ -367,6 +388,138 @@
       </div>
     </div>
 
+    <!-- Optimization Modal -->
+    <div v-if="showOptimizationModal" class="modal-overlay" @click.self="closeOptimizationModal">
+      <div class="optimization-modal">
+        <div class="modal-header">
+           <h3 style="flex: 1; text-align: left;">Quick Setup Tip</h3>
+           <button class="close-btn" @click="closeOptimizationModal">&times;</button>
+        </div>
+        
+        <div class="optimization-content">
+           <p class="optimization-text">
+             For an optimal experience, we recommend using <a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">Chrome</a> or <a href="https://www.mozilla.org/en-US/firefox/new/" target="_blank" rel="noopener noreferrer">Firefox</a> and preferably having an ad blocker installed like:
+           </p>
+           
+           <div class="adblock-links">
+             <a href="https://chromewebstore.google.com/detail/ublock-origin-lite/ddkjiahejlhfcafbddmgiahcphecmpfh?hl=en" target="_blank" rel="noopener noreferrer" class="adblock-link">
+               uBlock Origin Lite (Chrome)
+             </a>
+             <a href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=search" target="_blank" rel="noopener noreferrer" class="adblock-link">
+               uBlock Origin (Firefox)
+             </a>
+             <a href="https://chromewebstore.google.com/detail/adblock-plus-free-ad-bloc/cfhdojbkjhnklbpkdaibdccddilifddb?hl=en" target="_blank" rel="noopener noreferrer" class="adblock-link">
+               Adblock Plus (Chrome)
+             </a>
+             <a href="https://addons.mozilla.org/en-US/firefox/addon/adblock-plus/" target="_blank" rel="noopener noreferrer" class="adblock-link">
+               Adblock Plus (Firefox)
+             </a>
+           </div>
+
+           <div class="checkbox-container">
+             <label class="custom-checkbox">
+               <input type="checkbox" v-model="preventOptimizationModal">
+               <span class="checkmark"></span>
+               Don't show this again
+             </label>
+           </div>
+
+           <div class="modal-actions">
+              <button class="modal-btn cancel" @click="closeOptimizationModal">Cancel</button>
+              <button class="modal-btn continue" @click="proceedToVidSrc">Continue</button>
+           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Optimization Modal -->
+    <div v-if="showOptimizationModal" class="modal-overlay" @click.self="closeOptimizationModal">
+      <div class="optimization-modal">
+        <div class="modal-header">
+           <h3 style="flex: 1; text-align: left;">Quick Setup Tip</h3>
+           <button class="close-btn" @click="closeOptimizationModal">&times;</button>
+        </div>
+        
+        <div class="optimization-content">
+           <p class="optimization-text">
+             For an optimal experience, we recommend using <a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">Chrome</a> or <a href="https://www.mozilla.org/en-US/firefox/new/" target="_blank" rel="noopener noreferrer">Firefox</a> and preferably having an ad blocker installed like:
+           </p>
+           
+           <div class="adblock-links">
+             <a href="https://chromewebstore.google.com/detail/ublock-origin-lite/ddkjiahejlhfcafbddmgiahcphecmpfh?hl=en" target="_blank" rel="noopener noreferrer" class="adblock-link">
+               uBlock Origin Lite (Chrome)
+             </a>
+             <a href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin-lite-proxy/" target="_blank" rel="noopener noreferrer" class="adblock-link">
+               uBlock Origin Lite (Firefox)
+             </a>
+             <a href="https://chromewebstore.google.com/detail/adblock-plus-free-ad-bloc/cfhdojbkjhnklbpkdaibdccddilifddb?hl=en" target="_blank" rel="noopener noreferrer" class="adblock-link">
+               Adblock Plus (Chrome)
+             </a>
+             <a href="https://addons.mozilla.org/en-US/firefox/addon/adblock-plus/" target="_blank" rel="noopener noreferrer" class="adblock-link">
+               Adblock Plus (Firefox)
+             </a>
+           </div>
+
+           <div class="checkbox-container">
+             <label class="custom-checkbox">
+               <input type="checkbox" v-model="preventOptimizationModal">
+               <span class="checkmark"></span>
+               Don't show this again
+             </label>
+           </div>
+
+           <div class="modal-actions">
+              <button class="modal-btn cancel" @click="closeOptimizationModal">Cancel</button>
+              <button class="modal-btn continue" @click="proceedToVidSrc">Continue</button>
+           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Optimization Modal -->
+    <div v-if="showOptimizationModal" class="modal-overlay" @click.self="closeOptimizationModal">
+      <div class="optimization-modal">
+        <div class="modal-header">
+           <h3 style="flex: 1; text-align: left;">Quick Setup Tip</h3>
+           <button class="close-btn" @click="closeOptimizationModal">&times;</button>
+        </div>
+        
+        <div class="optimization-content">
+           <p class="optimization-text">
+             For an optimal experience, we recommend using <a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">Chrome</a> or <a href="https://www.mozilla.org/en-US/firefox/new/" target="_blank" rel="noopener noreferrer">Firefox</a> and preferably having an ad blocker installed like:
+           </p>
+           
+           <div class="adblock-links">
+             <a href="https://chromewebstore.google.com/detail/ublock-origin-lite/ddkjiahejlhfcafbddmgiahcphecmpfh?hl=en" target="_blank" rel="noopener noreferrer" class="adblock-link">
+               uBlock Origin Lite (Chrome)
+             </a>
+             <a href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin-lite-proxy/" target="_blank" rel="noopener noreferrer" class="adblock-link">
+               uBlock Origin Lite (Firefox)
+             </a>
+             <a href="https://chromewebstore.google.com/detail/adblock-plus-free-ad-bloc/cfhdojbkjhnklbpkdaibdccddilifddb?hl=en" target="_blank" rel="noopener noreferrer" class="adblock-link">
+               Adblock Plus (Chrome)
+             </a>
+             <a href="https://addons.mozilla.org/en-US/firefox/addon/adblock-plus/" target="_blank" rel="noopener noreferrer" class="adblock-link">
+               Adblock Plus (Firefox)
+             </a>
+           </div>
+
+           <div class="checkbox-container">
+             <label class="custom-checkbox">
+               <input type="checkbox" v-model="preventOptimizationModal">
+               <span class="checkmark"></span>
+               Don't show this again
+             </label>
+           </div>
+
+           <div class="modal-actions">
+              <button class="modal-btn cancel" @click="closeOptimizationModal">Cancel</button>
+              <button class="modal-btn continue" @click="proceedToVidSrc">Continue</button>
+           </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -466,6 +619,9 @@ export default {
       sundanceFilm: null,
       berlinaleFilm: null,
       isFestivalLoading: false,
+      isVidSrcAvailable: false,
+      showOptimizationModal: false,
+      preventOptimizationModal: false,
       currentIndex: 0,
       touchStartX: 0,
       touchEndX: 0,
@@ -627,7 +783,73 @@ export default {
             if (this.$refs.backdropRef && this.$refs.backdropRef.complete) this.isLoading = false;
            });
         }
+        
+        this.checkVidSrcAvailability();
+        
+        if (typeof window !== 'undefined') {
+            const prevent = localStorage.getItem('prevent_optimization_modal');
+            if (prevent === 'true') {
+                this.preventOptimizationModal = true;
+            }
+        }
+
         setTimeout(() => this.isLoading = false, 5000);
+    },
+    
+    async checkVidSrcAvailability() {
+      const type = this.typeForDb;
+      const imdbId = this.heroItem.external_ids?.imdb_id || this.item.external_ids?.imdb_id;
+      
+      if (!imdbId) {
+        this.isVidSrcAvailable = false;
+        return;
+      }
+      
+      this.isVidSrcAvailable = false;
+
+      try {
+        const { data } = await useFetch('/api/vidsrc', {
+            query: { type, imdbId }
+        });
+        
+        if (data.value && data.value.available) {
+            this.isVidSrcAvailable = true;
+        }
+      } catch (error) {
+        console.error('WatchOn: Error checking VidSRC availability:', error);
+        this.isVidSrcAvailable = false;
+      }
+    },
+    
+    openVidSrc() {
+      if (this.preventOptimizationModal) {
+          const type = this.typeForDb;
+          const imdbId = this.heroItem.external_ids?.imdb_id || this.item.external_ids?.imdb_id;
+          if (type && imdbId) {
+            window.open(`https://vidsrc.to/embed/${type}/${imdbId}`, '_blank');
+          }
+      } else {
+          this.showOptimizationModal = true;
+          document.body.style.overflow = 'hidden';
+      }
+    },
+
+    closeOptimizationModal() {
+        this.showOptimizationModal = false;
+        document.body.style.overflow = '';
+    },
+
+    proceedToVidSrc() {
+        if (this.preventOptimizationModal) {
+            localStorage.setItem('prevent_optimization_modal', 'true');
+        }
+        
+        const type = this.typeForDb;
+        const imdbId = this.heroItem.external_ids?.imdb_id || this.item.external_ids?.imdb_id;
+        if (type && imdbId) {
+            window.open(`https://vidsrc.to/embed/${type}/${imdbId}`, '_blank');
+        }
+        this.closeOptimizationModal();
     },
 
     onBackdropLoaded() { this.isLoading = false; },
@@ -1561,6 +1783,31 @@ export default {
   }
 }
 
+@keyframes shiningPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(139, 233, 253, 0.7);
+    border-color: #8BE9FD;
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(139, 233, 253, 0);
+    border-color: #fff;
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(139, 233, 253, 0);
+    border-color: #8BE9FD;
+  }
+}
+
+.shiningButton {
+  animation: shiningPulse 2s infinite;
+  
+  &:hover {
+    animation: none;
+  }
+}
+
+
+
 .shareButton {
   border-radius: 1.0rem;
   margin-top: 0;
@@ -2269,6 +2516,159 @@ export default {
   
   .review-textarea {
     font-size: 1.2rem;
+  }
+}
+
+.optimization-modal {
+  width: 100%;
+  max-width: 500px;
+  background: linear-gradient(to bottom right, #092739, #061720);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.optimization-content {
+  padding: 20px 25px 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  color: #fff;
+}
+
+.optimization-text {
+  font-size: 1.4rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+  
+  a {
+    color: #8BE9FD;
+    text-decoration: none;
+    font-weight: 500;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.adblock-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.adblock-link {
+  font-size: 1.2rem;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #8BE9FD;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+  }
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.8);
+  user-select: none;
+  position: relative;
+  
+  input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  .checkmark {
+    position: relative;
+    height: 20px;
+    width: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid #000;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  
+  &:hover input ~ .checkmark {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  input:checked ~ .checkmark {
+    background-color: #8BE9FD;
+    border-color: #8BE9FD;
+  }
+  
+  input:checked ~ .checkmark:after {
+    display: block;
+  }
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.modal-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 1.4rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.modal-btn.cancel {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  
+  &:hover {
+    color: #fff;
+  }
+}
+
+.modal-btn.continue {
+  background: #8BE9FD;
+  color: #000;
+  font-weight: 600;
+  
+  &:hover {
+    background: #fff; 
   }
 }
 </style>

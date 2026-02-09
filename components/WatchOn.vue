@@ -3,7 +3,7 @@
     <h4 class="section-title">Watch On</h4>
     <div class="links-grid">
       
-      <div v-if="imdbId" class="link-item">
+      <div v-if="imdbId && isVidSrcAvailable" class="link-item">
         <a
           :href="'https://vidsrc.to/embed/' + type + '/' + imdbId"
           target="_blank"
@@ -95,6 +95,7 @@ export default {
   data() {
     return {
       ytsUrl: null,
+      isVidSrcAvailable: false,
     };
   },
 
@@ -106,6 +107,7 @@ export default {
   },
 
   mounted() {
+    this.checkVidSrcAvailability();
     if (this.imdbId && this.type === 'movie') {
       this.fetchYTSUrl();
     }
@@ -113,6 +115,7 @@ export default {
 
   watch: {
     imdbId(newVal) {
+      this.checkVidSrcAvailability();
       if (newVal && this.type === 'movie') {
         this.fetchYTSUrl();
       }
@@ -120,6 +123,27 @@ export default {
   },
 
   methods: {
+    async checkVidSrcAvailability() {
+      if (!this.imdbId || !this.type) {
+        this.isVidSrcAvailable = false;
+        return;
+      }
+      
+      this.isVidSrcAvailable = false;
+
+      try {
+        const { data } = await useFetch('/api/vidsrc', {
+            query: { type: this.type, imdbId: this.imdbId }
+        });
+        
+        if (data.value && data.value.available) {
+            this.isVidSrcAvailable = true;
+        }
+      } catch (error) {
+        console.error('WatchOn: Error checking VidSRC availability:', error);
+        this.isVidSrcAvailable = false;
+      }
+    },
     async fetchYTSUrl() {
       if (!this.imdbId) return;
       
