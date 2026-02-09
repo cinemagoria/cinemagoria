@@ -86,6 +86,7 @@ export const poster = {
     poster_path() {
       const item = this.item;
       if (item.poster_path) {
+        if (item.poster_path.startsWith('http')) return item.poster_path;
         return `${apiImgUrl}/w500${item.poster_path}`;
       }
     },
@@ -97,6 +98,7 @@ export const backdrop = {
     backdrop() {
       const item = this.item;
       if (item.backdrop_path) {
+        if (item.backdrop_path.startsWith('http')) return item.backdrop_path;
         return `${apiImgUrl}/original${item.backdrop_path}`;
       }
     },
