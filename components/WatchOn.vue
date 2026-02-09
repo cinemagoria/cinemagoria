@@ -3,7 +3,7 @@
     <h4 class="section-title">Watch On</h4>
     <div class="links-grid">
       
-      <div v-if="imdbId" class="link-item">
+      <div v-if="imdbId && is***Available" class="link-item">
         <a
           :href="'https://***.to/embed/' + type + '/' + imdbId"
           target="_blank"
@@ -95,6 +95,7 @@ export default {
   data() {
     return {
       ***Url: null,
+      is***Available: false,
     };
   },
 
@@ -106,6 +107,7 @@ export default {
   },
 
   mounted() {
+    this.check***Availability();
     if (this.imdbId && this.type === 'movie') {
       this.fetch***Url();
     }
@@ -113,6 +115,7 @@ export default {
 
   watch: {
     imdbId(newVal) {
+      this.check***Availability();
       if (newVal && this.type === 'movie') {
         this.fetch***Url();
       }
@@ -120,6 +123,27 @@ export default {
   },
 
   methods: {
+    async check***Availability() {
+      if (!this.imdbId || !this.type) {
+        this.is***Available = false;
+        return;
+      }
+      
+      this.is***Available = false;
+
+      try {
+        const { data } = await useFetch('/api/***', {
+            query: { type: this.type, imdbId: this.imdbId }
+        });
+        
+        if (data.value && data.value.available) {
+            this.is***Available = true;
+        }
+      } catch (error) {
+        console.error('WatchOn: Error checking VidSRC availability:', error);
+        this.is***Available = false;
+      }
+    },
     async fetch***Url() {
       if (!this.imdbId) return;
       

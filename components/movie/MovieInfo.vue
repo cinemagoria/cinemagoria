@@ -322,9 +322,7 @@ export default {
       return releaseDate <= oneMonthFromNow;
     },
     shouldShowWatchOn() {
-       const hasProviders = this.providersToDisplay && this.providersToDisplay.length > 0;
-       const hasImdb = this.item.external_ids && this.item.external_ids.imdb_id;
-       return (hasProviders || hasImdb) && this.isReleasedOrCloseToRelease;
+       return true;
     },
     releaseStatusSuffix() {
       const context = getReleaseStatusContext(this.item, process.env.API_COUNTRY || 'US');
