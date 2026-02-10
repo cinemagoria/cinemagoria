@@ -180,7 +180,7 @@
 
                 <!-- Popover Menu -->
                 <transition name="fade">
-                  <div v-if="showAddListMenu" class="add-list-menu">
+                  <div v-if="showAddListMenu" class="add-list-menu" @wheel.stop>
                     <div class="menu-header">Guardar en</div>
                     
                     <button class="menu-option" @click.stop.prevent="handleToggleFavorite">

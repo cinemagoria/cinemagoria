@@ -196,6 +196,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'The Red Hangar',
         'Everybody Digs Bill Evans',
         'At the sea',
+        'Isabel',
         'Salvation',
         'Nightborn',
         'In a Whisper',
