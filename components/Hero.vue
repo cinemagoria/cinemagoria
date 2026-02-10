@@ -772,6 +772,7 @@ export default {
         if (this.hasAccessToken) {
             await this.checkMembership();
             this.checkUserRating();
+            await this.loadRatingFromRatingsEndpoint();
         }
         
         this.checkFestivalStatus();
