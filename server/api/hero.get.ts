@@ -43,6 +43,7 @@ export default defineEventHandler(async (event) => {
                 poster_path: row.poster_path,
                 backdrop_path: row.backdrop_path,
                 overview: row.overview,
+                available_watch: row.available_watch,
 
                 release_date: row.release_date,
                 first_air_date: row.release_date,
