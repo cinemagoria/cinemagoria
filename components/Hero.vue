@@ -689,6 +689,11 @@ export default {
       const type = this.typeForDb;
       const imdbId = this.heroItem.external_ids?.imdb_id || this.item.external_ids?.imdb_id;
       
+      if (this.isHomepage && this.heroItem?.available_watch) {
+          this.is***Available = true;
+          return;
+      }
+
       if (!imdbId) {
         this.is***Available = false;
         return;
@@ -714,7 +719,9 @@ export default {
       if (this.preventOptimizationModal) {
           const type = this.typeForDb;
           const imdbId = this.heroItem.external_ids?.imdb_id || this.item.external_ids?.imdb_id;
-          if (type && imdbId) {
+          if (this.isHomepage && this.heroItem?.available_watch) {
+             window.open(this.heroItem.available_watch, '_blank');
+          } else if (type && imdbId) {
             window.open(`https://***.to/embed/${type}/${imdbId}`, '_blank');
           }
       } else {
@@ -735,7 +742,9 @@ export default {
         
         const type = this.typeForDb;
         const imdbId = this.heroItem.external_ids?.imdb_id || this.item.external_ids?.imdb_id;
-        if (type && imdbId) {
+        if (this.isHomepage && this.heroItem?.available_watch) {
+             window.open(this.heroItem.available_watch, '_blank');
+        } else if (type && imdbId) {
             window.open(`https://***.to/embed/${type}/${imdbId}`, '_blank');
         }
         this.closeOptimizationModal();
