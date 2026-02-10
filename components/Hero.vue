@@ -10,7 +10,11 @@
       <div :class="$style.backdrop">
         <div>
           <div v-if="isHomepage" :class="$style.upcomingBadge">
-             UPCOMING
+             <transition name="fade" mode="out-in">
+               <span :key="isVidSrcAvailable ? 'released' : 'upcoming'">
+                 {{ isVidSrcAvailable ? 'RECENTLY RELEASED' : 'UPCOMING' }}
+               </span>
+             </transition>
           </div>
           <button
             v-if="trailer && !isLoading"
@@ -129,12 +133,14 @@
             </div>
             <br>
             <div :class="$style.buttonContainer">
-              <template v-if="isVidSrcAvailable">
+              <transition-group name="fade" mode="out-in">
+              <template v-if="isVidSrcAvailable" key="vidsrc-group">
                 <button
                   class="button button--icon"
                   :class="[$style.actionButton, $style.shiningButton]"
                   type="button"
-                  @click="openVidSrc">
+                  @click="openVidSrc"
+                  key="watch-now-btn">
                   <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 22v-20l18 10-18 10z" fill="currentColor" stroke="none"/></svg></span>
                   <span class="txt">Watch Now</span>
                 </button>
@@ -144,21 +150,24 @@
                   class="button button--icon"
                   :class="$style.actionButton"
                   type="button"
-                  @click="openModal">
+                  @click="openModal"
+                  key="trailer-btn">
                   <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 22v-20l18 10-18 10z" fill="currentColor" stroke="none"/></svg></span>
                   <span class="txt">Trailer</span>
                 </button>
               </template>
-
+              
               <button
                 v-else-if="trailer"
                 class="button button--icon"
                 :class="$style.actionButton"
                 type="button"
-                @click="openModal">
+                @click="openModal"
+                key="watch-trailer-btn">
                 <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 22v-20l18 10-18 10z" fill="currentColor" stroke="none"/></svg></span>
                 <span class="txt">Watch Trailer</span>
               </button>
+              </transition-group>
 
               <div class="add-to-list-wrapper" v-click-outside="closeAddListMenu" style="position: relative;">
                 <button
@@ -2810,12 +2819,36 @@ export default {
     font-weight: bold;
     font-size: 1.6rem;
 }
+/* Animations */
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.upcomingBadge span {
+  display: inline-block;
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; /* Bouncy pop */
+}
+
+/* Apply animation specifically to the button class to ensure it hits the element */
+.actionButton {
+   animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+   transform-origin: center center;
+   backface-visibility: hidden;
+}
 
 .fade-enter-active, .fade-leave-active {
-  transition: opacity 0.2s;
+  transition: opacity 0.3s, transform 0.3s;
 }
-  .fade-enter, .fade-leave-to {
+.fade-enter, .fade-leave-to {
   opacity: 0;
+  transform: scale(0.98);
 }
 
 .nav-arrows {
