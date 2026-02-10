@@ -71,12 +71,12 @@
           <div>
             <h1 :class="[$style.name, { [$style.nameHomepage]: isHomepage }, $style.hoverableName]">
               <template v-if="isSingle">
-                {{ name }}
+                {{ (isHomepage && heroItem.spanish_title) ? heroItem.spanish_title : name }}
               </template>
 
               <template v-else>
                 <nuxt-link :to="{ name: `${type}-id`, params: { id: heroItem.id } }">
-                  {{ name }}
+                  {{ (isHomepage && heroItem.spanish_title) ? heroItem.spanish_title : name }}
                 </nuxt-link>
               </template>
             </h1>

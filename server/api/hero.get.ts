@@ -37,6 +37,7 @@ export default defineEventHandler(async (event) => {
                 id: row.tmdb_id,
                 type: row.media_type,
                 title: row.title,
+                spanish_title: row.spanish_title,
                 name: row.title,
                 original_title: row.title,
 
