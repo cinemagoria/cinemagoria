@@ -28,6 +28,18 @@
              </div>
           </div>
         </nuxt-link>
+
+        <!-- Rotterdam 2026 -->
+        <nuxt-link to="/festival/rotterdam-2026" class="festival-card">
+          <div class="card-image-wrapper">
+             <img src="/rotterdam_backdrop_2026_eng.webp" alt="Rotterdam 2026" />
+             <div class="overlay"></div>
+             <div class="card-content">
+               <h2>Rotterdam 2026</h2>
+               <span class="explore-btn">Explore</span>
+             </div>
+          </div>
+        </nuxt-link>
       </div>
     </div>
   </main>

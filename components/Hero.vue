@@ -100,6 +100,11 @@
                     <span :class="$style.buttonText">SEE SCREENING<br>SCHEDULE</span>
                 </nuxt-link>
             </div>
+            <div v-else-if="rotterdamFilm" :class="$style.festivalBadgeContainer">
+                <nuxt-link to="/festival/rotterdam-2026" style="text-decoration: none; display: inline-block;">
+                    <RotterdamBadge />
+                </nuxt-link>
+            </div>
 
             <div :class="$style.meta">
               <div
@@ -540,6 +545,7 @@ import Modal from '~/components/Modal';
 import Loader from '~/components/Loader.vue';
 import SundanceBadge from '~/components/festival/SundanceBadge.vue';
 import BerlinaleBadge from '~/components/festival/BerlinaleBadge.vue';
+import RotterdamBadge from '~/components/festival/RotterdamBadge.vue';
 
 export default {
   components: {
@@ -547,6 +553,7 @@ export default {
     Loader,
     SundanceBadge,
     BerlinaleBadge,
+    RotterdamBadge,
   },
 
   mixins: [
@@ -627,6 +634,7 @@ export default {
       membership: { inWatchlist: false, lists: [] },
       sundanceFilm: null,
       berlinaleFilm: null,
+      rotterdamFilm: null,
       isFestivalLoading: false,
       isVidSrcAvailable: false,
       showOptimizationModal: false,
@@ -888,13 +896,15 @@ export default {
     async checkFestivalStatus() {
         const wasSundance = !!this.sundanceFilm;
         const wasBerlinale = !!this.berlinaleFilm;
+        const wasRotterdam = !!this.rotterdamFilm;
         
         this.sundanceFilm = null;
         this.berlinaleFilm = null;
+        this.rotterdamFilm = null;
         
         if (this.type !== 'movie') return;
         
-        if (wasSundance || wasBerlinale) {
+        if (wasSundance || wasBerlinale || wasRotterdam) {
             this.isFestivalLoading = true;
         }
 
@@ -922,6 +932,18 @@ export default {
                         await new Promise(resolve => setTimeout(resolve, 500));
                      }
                      this.berlinaleFilm = data.results[0];
+                }
+            }
+
+            const rotterdamResponse = await fetch(`/api/festival/rotterdam/films?tmdb_id=${this.id}`);
+            if (rotterdamResponse.ok) {
+                const data = await rotterdamResponse.json();
+                if (data.results && data.results.length > 0) {
+                     if (!wasRotterdam) {
+                        this.isFestivalLoading = true;
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                     }
+                     this.rotterdamFilm = data.results[0];
                 }
             }
             
