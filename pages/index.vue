@@ -10,7 +10,7 @@
 
     <FestivalsCarousel
       v-if="festivalsMovies && festivalsMovies.results.length"
-      title="Berlinale & Sundance Festivals 2026"
+      title="2026 Festival Selections"
       view-all-url="/festival"
       :items="festivalsMovies" />
 
@@ -149,22 +149,12 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
       return { results: allResults };
     };
     
-    const fetchSundanceMovies = async () => {
+    const fetchFestivalMovies = async (festivalName, limit = 1000) => {
         try {
-            const data = await $fetch('/api/festival/sundance/films?limit=100');
-            return data.results.map(f => ({ ...f, festival_source: 'sundance' }));
+            const data = await $fetch(`/api/festival/${festivalName}/films?limit=${limit}`);
+            return data.results.map(f => ({ ...f, festival_source: festivalName }));
         } catch (e) {
-            console.error('Sundance fetch error', e);
-            return [];
-        }
-    };
-
-    const fetchBerlinaleMovies = async () => {
-        try {
-            const data = await $fetch('/api/festival/berlinale/films?limit=100');
-            return data.results.map(f => ({ ...f, festival_source: 'berlinale' }));
-        } catch (e) {
-            console.error('Berlinale fetch error', e);
+            console.error(`${festivalName} fetch error`, e);
             return [];
         }
     };
@@ -179,35 +169,30 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         }
     };
 
-    const [sundanceList, berlinaleList, trendingMovies, trendingTv, featured] = await Promise.all([
-        fetchSundanceMovies(),
-        fetchBerlinaleMovies(),
+    const [sundanceList, berlinaleList, rotterdamList, trendingMovies, trendingTv, featured] = await Promise.all([
+        fetchFestivalMovies('sundance'),
+        fetchFestivalMovies('berlinale'),
+        fetchFestivalMovies('rotterdam'),
         fetchWithRefill('movie', 20, 3),
         fetchWithRefill('tv', 20, 6),
         fetchHero()
     ]);
     
-    const FEATURED_ORDER = [
+     const FEATURED_ORDER = [
         'Yellow Letters',
-        'A Prayer for the Dying',
-        'A Russian Winter',
         'Rosebush Pruning',
-        'WAX & GOLD',
-        'No Good Men',
-        'The Red Hangar',
-        'Everybody Digs Bill Evans',
-        'At the sea',
-        'Isabel',
         'Salvation',
-        'Nightborn',
-        'In a Whisper',
+        'The Red Hangar',
         'Rose',
         'Queen at sea',
-        'Chronicles from the Siege',
-        'The Day She Returns',
+        'A Prayer for the Dying',
+        'At the sea',
         'Allegro Pastell',
         'Four Minus Three',
+        'WAX & GOLD',
+        'No Good Men',
         'Lali',
+        'A Russian Winter',
         'The Hidden Face of The Earth',
         'The Weight',
         'Leviticus',
@@ -219,16 +204,33 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Time and Water',
         'In the Blink of An Eye',
         'Give Me the Ball!',
-        'Broken English',
-        'Antiheroine',
         'Saccharine',
         'Josephine',
-        'The Shitheads'
+        'A Useful Ghost',
+        'Tell Me What You Feel',
+        '100 Nights of Hero',
+        'Father Mother Sister Brother',
+        'Butterfly',
+        'Badak',
+        'Roid',
+        'Silent Friend',
+        'Nightmare\'s Advice',
+        'Romería',
+        '58th',
+        'The Wizard of the Kremlin',
+        'The Testament of Ann Lee',
+        'O profeta',
+        'The Stranger',
+        'Chronovisor',
+        'Movement Song',
+        'Whitetail',
+        'Supporting Role',
+        'The Arab'
     ];
-    
+
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
     
-    const allFestivalFilms = [...sundanceList, ...berlinaleList];
+    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList];
     
     let mixedFestivalFilms = allFestivalFilms.filter(f => {
         const t = norm(f.title);

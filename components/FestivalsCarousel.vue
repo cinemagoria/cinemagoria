@@ -69,11 +69,13 @@
 import carousel from '~/mixins/Carousel';
 import SundanceCard from '~/components/SundanceCard.vue';
 import BerlinaleCard from '~/components/BerlinaleCard.vue';
+import RotterdamCard from '~/components/RotterdamCard.vue';
 
 export default {
   components: {
     SundanceCard,
-    BerlinaleCard
+    BerlinaleCard,
+    RotterdamCard
   },
 
   mixins: [carousel],
@@ -110,8 +112,11 @@ export default {
       this.calculateState(count);
     },
     getCardComponent(item) {
-          if (item.festival_source === 'berlinale') return 'BerlinaleCard';
-          return 'SundanceCard';
+      const cardMap = {
+        berlinale: 'BerlinaleCard',
+        rotterdam: 'RotterdamCard',
+      };
+      return cardMap[item.festival_source] || 'SundanceCard';
     }
   },
 };
