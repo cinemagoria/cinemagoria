@@ -1,6 +1,27 @@
 import { createClient } from '@libsql/client'
 import { createError, defineEventHandler } from 'h3'
 
+interface ScheduleRow {
+    id: number;
+    festival_film_id: number;
+    start_time: string;
+    end_time: string | null;
+    venue: string | null;
+    is_online: number;
+    is_in_person: number;
+    is_sold_out: number;
+    timezone: string;
+    film_data: string;
+    screening_id: number;
+    film_id: number;
+    title: string;
+    image_url: string | null;
+    source_url: string | null;
+    director: string | null;
+    runtime_minutes: number | null;
+    tmdb_data: string | null;
+}
+
 export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig()
 
@@ -44,30 +65,31 @@ export default defineEventHandler(async (event) => {
 
         const result = await db.execute(sql)
 
-        const screenings = result.rows.map((row: any) => {
+        const screenings = result.rows.map((row) => {
+            const typedRow = row as unknown as ScheduleRow;
             let tmdbData: any = {}
             try {
-                tmdbData = typeof row.tmdb_data === 'string' ? JSON.parse(row.tmdb_data) : (row.tmdb_data || {})
+                tmdbData = typeof typedRow.tmdb_data === 'string' ? JSON.parse(typedRow.tmdb_data) : (typedRow.tmdb_data || {})
             } catch (e) {
                 tmdbData = {}
             }
 
             return {
-                id: row.screening_id,
-                start_time: row.start_time,
-                timezone: row.timezone,
-                is_in_person: Boolean(row.is_in_person),
-                is_online: Boolean(row.is_online),
-                is_sold_out: Boolean(row.is_sold_out),
-                venue: row.venue,
+                id: typedRow.screening_id,
+                start_time: typedRow.start_time,
+                timezone: typedRow.timezone,
+                is_in_person: !!typedRow.is_in_person,
+                is_online: !!typedRow.is_online,
+                is_sold_out: !!typedRow.is_sold_out,
+                venue: typedRow.venue,
                 film: {
-                    id: row.film_id,
-                    title: row.title,
-                    image_url: row.image_url,
-                    source_url: row.source_url,
-                    director: row.director,
-                    runtime: row.runtime_minutes,
-                    poster_path: row.image_url || (tmdbData?.tmdb_poster ? tmdbData.tmdb_poster : (tmdbData?.poster_path ? `https://image.tmdb.org/t/p/w500${tmdbData.poster_path}` : null))
+                    id: typedRow.film_id,
+                    title: typedRow.title,
+                    image_url: typedRow.image_url,
+                    source_url: typedRow.source_url,
+                    director: typedRow.director,
+                    runtime: typedRow.runtime_minutes,
+                    poster_path: typedRow.image_url || (tmdbData?.tmdb_poster ? tmdbData.tmdb_poster : (tmdbData?.poster_path ? `https://image.tmdb.org/t/p/w500${tmdbData.poster_path}` : null))
                 }
             }
         })
