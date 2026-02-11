@@ -71,11 +71,11 @@
                      
                       <div class="film-info">
                          <component 
-                            :is="screening.film.source_url ? 'a' : 'span'"
-                            :href="screening.film.source_url || ''"
-                            :target="screening.film.source_url ? '_blank' : ''"
+                            :is="isSafeUrl(screening.film.source_url) ? 'a' : 'span'"
+                            :href="isSafeUrl(screening.film.source_url) ? screening.film.source_url : ''"
+                            :target="isSafeUrl(screening.film.source_url) ? '_blank' : ''"
                             class="film-title"
-                            :class="{'no-link': !screening.film.source_url}"
+                            :class="{'no-link': !isSafeUrl(screening.film.source_url)}"
                          >
                             {{ screening.film.title }}
                          </component>
@@ -117,6 +117,18 @@ import { ref, computed, onMounted } from 'vue';
 import Loader from '~/components/Loader.vue';
 import Listing from '~/components/Listing.vue';
 import RotterdamCard from '~/components/RotterdamCard.vue';
+
+const API_FILM_LIMIT = 1000;
+
+const isSafeUrl = (url) => {
+    if (!url) return false;
+    try {
+        const parsed = new URL(url, window.location.origin);
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch {
+        return false;
+    }
+};
 
 const activeTab = ref('films');
 const loading = ref(true);
@@ -161,7 +173,7 @@ const isOpen = (date) => openDays.value.has(date);
 onMounted(async () => {
     try {
         const [filmsData, scheduleData] = await Promise.all([
-            $fetch('/api/festival/rotterdam/films?limit=1000&sort=title'),
+            $fetch(`/api/festival/rotterdam/films?limit=${API_FILM_LIMIT}&sort=title`),
             $fetch('/api/festival/rotterdam/schedule')
         ]);
         

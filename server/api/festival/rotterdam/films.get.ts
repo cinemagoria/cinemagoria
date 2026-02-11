@@ -1,6 +1,20 @@
 import { createError, defineEventHandler, getQuery } from 'h3'
 import { createClient } from '@libsql/client'
 
+interface DatabaseRow {
+    id: number;
+    tmdb_id: number | null;
+    imdb_id: string | null;
+    title: string;
+    description: string | null;
+    image_url: string | null;
+    runtime_minutes: number | null;
+    director: string | null;
+    section: string | null;
+    category: string | null;
+    tmdb_data: string | null;
+}
+
 export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig()
     const query = getQuery(event)
@@ -35,31 +49,30 @@ export default defineEventHandler(async (event) => {
 
         const result = await db.execute({ sql, args })
 
-        let films = result.rows.map((row: any) => {
+        let films = result.rows.map((row) => {
+            const typedRow = row as unknown as DatabaseRow;
             let tmdbData: any = {}
             try {
-                tmdbData = typeof row.tmdb_data === 'string' ? JSON.parse(row.tmdb_data) : (row.tmdb_data || {})
+                tmdbData = typeof typedRow.tmdb_data === 'string' ? JSON.parse(typedRow.tmdb_data) : (typedRow.tmdb_data || {})
             } catch (e) {
                 tmdbData = {}
             }
 
             return {
-                id: row.tmdb_id || row.id,
-                internal_id: row.id,
-                title: row.title,
-                overview: row.description || tmdbData.overview || '',
-                poster_path: (tmdbData.tmdb_poster ? tmdbData.tmdb_poster : (tmdbData.poster_path ? `https://image.tmdb.org/t/p/w500${tmdbData.poster_path}` : row.image_url)),
+                id: typedRow.tmdb_id || typedRow.id,
+                internal_id: typedRow.id,
+                title: typedRow.title,
+                overview: typedRow.description || tmdbData.overview || '',
+                poster_path: (tmdbData.tmdb_poster ? tmdbData.tmdb_poster : (tmdbData.poster_path ? `https://image.tmdb.org/t/p/w500${tmdbData.poster_path}` : typedRow.image_url)),
                 backdrop_path: tmdbData.backdrop_path ? `https://image.tmdb.org/t/p/w1280${tmdbData.backdrop_path}` : null,
                 release_date: tmdbData.release_date || tmdbData.tmdb_release_date || '',
                 vote_average: tmdbData.vote_average || 0,
-                runtime: row.runtime_minutes || tmdbData.runtime || 0,
+                runtime: typedRow.runtime_minutes || tmdbData.runtime || 0,
                 genres: tmdbData.genres || [],
-                director: row.director,
-                section: row.section || row.category,
-                imdb_id: row.imdb_id,
-                tmdb_id: row.tmdb_id,
-                _debug_tmdb_data: row.tmdb_data,
-                ...tmdbData
+                director: typedRow.director,
+                section: typedRow.section || typedRow.category,
+                imdb_id: typedRow.imdb_id,
+                tmdb_id: typedRow.tmdb_id
             }
         });
 

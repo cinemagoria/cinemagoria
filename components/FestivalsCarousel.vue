@@ -112,9 +112,11 @@ export default {
       this.calculateState(count);
     },
     getCardComponent(item) {
-          if (item.festival_source === 'berlinale') return 'BerlinaleCard';
-          if (item.festival_source === 'rotterdam') return 'RotterdamCard';
-          return 'SundanceCard';
+      const cardMap = {
+        berlinale: 'BerlinaleCard',
+        rotterdam: 'RotterdamCard',
+      };
+      return cardMap[item.festival_source] || 'SundanceCard';
     }
   },
 };
