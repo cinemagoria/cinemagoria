@@ -149,32 +149,12 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
       return { results: allResults };
     };
     
-    const fetchSundanceMovies = async () => {
+    const fetchFestivalMovies = async (festivalName, limit = 1000) => {
         try {
-            const data = await $fetch('/api/festival/sundance/films?limit=100');
-            return data.results.map(f => ({ ...f, festival_source: 'sundance' }));
+            const data = await $fetch(`/api/festival/${festivalName}/films?limit=${limit}`);
+            return data.results.map(f => ({ ...f, festival_source: festivalName }));
         } catch (e) {
-            console.error('Sundance fetch error', e);
-            return [];
-        }
-    };
-
-    const fetchBerlinaleMovies = async () => {
-        try {
-            const data = await $fetch('/api/festival/berlinale/films?limit=100');
-            return data.results.map(f => ({ ...f, festival_source: 'berlinale' }));
-        } catch (e) {
-            console.error('Berlinale fetch error', e);
-            return [];
-        }
-    };
-
-    const fetchRotterdamMovies = async () => {
-        try {
-            const data = await $fetch('/api/festival/rotterdam/films?limit=1000');
-            return data.results.map(f => ({ ...f, festival_source: 'rotterdam' }));
-        } catch (e) {
-            console.error('Rotterdam fetch error', e);
+            console.error(`${festivalName} fetch error`, e);
             return [];
         }
     };
@@ -190,9 +170,9 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
     };
 
     const [sundanceList, berlinaleList, rotterdamList, trendingMovies, trendingTv, featured] = await Promise.all([
-        fetchSundanceMovies(),
-        fetchBerlinaleMovies(),
-        fetchRotterdamMovies(),
+        fetchFestivalMovies('sundance'),
+        fetchFestivalMovies('berlinale'),
+        fetchFestivalMovies('rotterdam'),
         fetchWithRefill('movie', 20, 3),
         fetchWithRefill('tv', 20, 6),
         fetchHero()
