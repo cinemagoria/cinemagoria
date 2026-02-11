@@ -21,6 +21,7 @@ interface GoldenGlobe {
     nominee: string;
     film: string;
     won: number;
+    tmdb_id?: number;
 }
 
 interface FestivalAward {
@@ -82,9 +83,29 @@ export default defineEventHandler(async (event) => {
                 goldenBear = goldenBearData.filter(a => a.tmdb_id === tmdbId);
             }
 
-            if (title) {
+            if (tmdbId) {
+                goldenGlobes = goldenGlobesData.filter(a => a.tmdb_id === tmdbId);
+            }
+            else if (goldenGlobes.length === 0 && title) {
                 goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title));
 
+                if (goldenGlobes.length === 0 && tmdbId) {
+                    try {
+                        const config = useRuntimeConfig();
+                        const apiKey = config.public.apiKey;
+                        if (apiKey) {
+                            const tmdbRes: any = await $fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${apiKey}&language=en-US`);
+                            if (tmdbRes && tmdbRes.title && tmdbRes.title !== title) {
+                                goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, tmdbRes.title));
+                            }
+                        }
+                    } catch (e) {
+                        // ignore TMDB fetch error
+                    }
+                }
+            }
+
+            if (title) {
                 if (palme.length === 0) {
                     palme = palmeData.filter(a => equalsIgnoreCase(a.film_title, title));
                 }
@@ -94,26 +115,15 @@ export default defineEventHandler(async (event) => {
                 if (goldenBear.length === 0) {
                     goldenBear = goldenBearData.filter(a => equalsIgnoreCase(a.film_title, title));
                 }
-
-                if (goldenGlobes.length === 0 && tmdbId) {
-                    try {
-                        const config = useRuntimeConfig();
-                        const apiKey = config.public.apiKey;
-                        if (apiKey) {
-                            const tmdbRes: any = await $fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${apiKey}&language=en-US`);
-                            if (tmdbRes && tmdbRes.title && tmdbRes.title !== title) {
-                                const extraGG = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, tmdbRes.title));
-                                goldenGlobes = [...goldenGlobes, ...extraGG];
-                            }
-                        }
-                    } catch (e) {
-                        // ignore TMDB fetch error
-                    }
-                }
             }
 
-        } else if (type === 'tv' && title) {
-            goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title));
+        } else if (type === 'tv') {
+            if (tmdbId) {
+                goldenGlobes = goldenGlobesData.filter(a => a.tmdb_id === tmdbId);
+            }
+            else if (title) {
+                goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title));
+            }
 
         } else {
             if (tmdbId) {
