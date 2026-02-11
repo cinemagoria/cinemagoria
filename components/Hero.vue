@@ -39,7 +39,10 @@
             loading="eager"
             :class="$style.image"
             :alt="name"
-            :style="{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }"
+            :style="{ 
+              opacity: isHomepage ? (isHomepageContentReady ? 1 : 0) : (isLoading ? 0 : 1), 
+              transition: 'opacity 0.4s ease' 
+            }"
             @load="onBackdropLoaded"
             @error="onBackdropLoaded">
           <img
