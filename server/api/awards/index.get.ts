@@ -121,7 +121,7 @@ export default defineEventHandler(async (event) => {
             if (tmdbId) {
                 goldenGlobes = goldenGlobesData.filter(a => a.tmdb_id === tmdbId);
             }
-            if (goldenGlobes.length === 0 && title) {
+            else if (title) {
                 goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title));
             }
 
