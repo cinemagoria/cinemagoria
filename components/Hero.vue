@@ -2844,6 +2844,7 @@ export default {
   align-items: center;
   justify-content: center;
   transition: opacity 0.4s ease;
+  border-radius: 15px;
 }
 
 .add-list-menu {
