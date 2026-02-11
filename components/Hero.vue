@@ -4,9 +4,16 @@
     @touchend="handleTouchEnd"
     @wheel.prevent="handleWheel">
     <div :class="[$style.hero, { [$style.heroHomepage]: isHomepage }]">
-      <div v-if="isLoading" class="hero-loader" :class="{ 'hide-on-mobile-homepage': isHomepage }">
+      <!-- Unified Homepage Loader - covers everything during transitions -->
+      <div v-if="isHomepage && !isHomepageContentReady" class="unified-homepage-loader">
+        <Loader :size="70" />
+      </div>
+      
+      <!-- Regular loader for non-homepage pages -->
+      <div v-else-if="!isHomepage && isLoading" class="hero-loader">
         <Loader :size="60" />
       </div>
+      
       <div :class="$style.backdrop">
         <div>
           <div v-if="isHomepage" :class="$style.upcomingBadge">
@@ -45,9 +52,7 @@
             @load="onBackdropLoaded"
             @error="onBackdropLoaded">
 
-          <div v-if="isLoading && isHomepage" class="mobile-homepage-loader">
-             <Loader :size="60" />
-          </div>
+
 
             <div v-if="items && items.length > 1" class="nav-arrows">
                 <button
@@ -68,7 +73,11 @@
         </div>
       </div>
 
-      <div :class="$style.pane">
+      <div :class="$style.pane" :style="{ 
+        opacity: isHomepage && !isHomepageContentReady ? 0 : 1,
+        visibility: isHomepage && !isHomepageContentReady ? 'hidden' : 'visible',
+        transition: 'opacity 0.4s ease, visibility 0s linear' + (isHomepage && !isHomepageContentReady ? ' 0s' : ' 0.4s')
+      }">
         <transition
           appear
           name="hero">
@@ -85,10 +94,8 @@
               </template>
             </h1>
 
-            <div v-if="isFestivalLoading" :class="$style.festivalBadgeContainer" style="min-width: 150px;">
-                <Loader :size="30" />
-            </div>
-            <div v-else-if="sundanceFilm" :class="$style.festivalBadgeContainer">
+            <!-- Badges render without individual loader -->
+            <div v-if="sundanceFilm" :class="$style.festivalBadgeContainer">
                 <nuxt-link to="/festival/sundance-2026" style="text-decoration: none; display: inline-block;">
                     <SundanceBadge />
                 </nuxt-link>
@@ -138,7 +145,7 @@
             </div>
             <br>
             <div :class="$style.buttonContainer">
-              <transition-group name="fade" mode="out-in">
+              <transition-group name="fade" :class="{ 'no-transition': isHomepage && !isHomepageContentReady }">
               <template v-if="isVidSrcAvailable" key="vidsrc-group">
                 <button
                   class="button button--icon"
@@ -642,7 +649,14 @@ export default {
       currentIndex: 0,
       touchStartX: 0,
       touchEndX: 0,
-      lastWheelTime: 0
+      lastWheelTime: 0,
+      isHomepageContentReady: !this.isHomepage,
+      loadingStates: {
+        backdrop: true,
+        festivalBadge: false,
+        vidSrcCheck: true,
+        metadata: true
+      }
     };
   },
 
@@ -768,8 +782,19 @@ export default {
         this.currentIndex = (this.currentIndex - 1 + this.items.length) % this.items.length;
       }
     },
-    async updateHeroState() {
+    async updateHeroState() { 
+        if (this.isHomepage) {
+          this.isHomepageContentReady = false;
+          this.loadingStates = {
+            backdrop: true,
+            festivalBadge: false,
+            vidSrcCheck: true,
+            metadata: true
+          };
+        }
+        
         this.isLoading = true;
+        this.isVidSrcAvailable = false; 
         this.posterForDb = this.poster_path;
         this.nameForDb = this.name;
         this.idForDb = this.id;
@@ -802,8 +827,6 @@ export default {
            });
         }
         
-        this.checkVidSrcAvailability();
-        
         if (typeof window !== 'undefined') {
             const prevent = localStorage.getItem('prevent_optimization_modal');
             if (prevent === 'true') {
@@ -812,6 +835,24 @@ export default {
         }
 
         setTimeout(() => this.isLoading = false, 5000);
+        
+        await Promise.all([
+          this.checkVidSrcAvailability(),
+          this.checkFestivalStatus()
+        ]);
+        
+        if (this.isHomepage) {
+          this.loadingStates.metadata = false;
+          
+          setTimeout(() => {
+            if (this.loadingStates.backdrop) {
+              this.loadingStates.backdrop = false;
+              this.checkHomepageContentReady();
+            }
+          }, 100);
+          
+          this.checkHomepageContentReady();
+        }
     },
     
     async checkVidSrcAvailability() {
@@ -820,11 +861,19 @@ export default {
       
       if (this.isHomepage && this.heroItem?.available_watch) {
           this.isVidSrcAvailable = true;
+          if (this.isHomepage) {
+            this.loadingStates.vidSrcCheck = false;
+            this.checkHomepageContentReady();
+          }
           return;
       }
 
       if (!imdbId) {
         this.isVidSrcAvailable = false;
+        if (this.isHomepage) {
+          this.loadingStates.vidSrcCheck = false;
+          this.checkHomepageContentReady();
+        }
         return;
       }
       
@@ -841,6 +890,11 @@ export default {
       } catch (error) {
         console.error('WatchOn: Error checking VidSRC availability:', error);
         this.isVidSrcAvailable = false;
+      } finally {
+        if (this.isHomepage) {
+          this.loadingStates.vidSrcCheck = false;
+          this.checkHomepageContentReady();
+        }
       }
     },
     
@@ -879,7 +933,13 @@ export default {
         this.closeOptimizationModal();
     },
 
-    onBackdropLoaded() { this.isLoading = false; },
+    onBackdropLoaded() { 
+      this.isLoading = false;
+      if (this.isHomepage) {
+        this.loadingStates.backdrop = false;
+        this.checkHomepageContentReady();
+      }
+    },
 
     async checkMembership() {
       if (!this.userEmail || !this.id) return;
@@ -951,7 +1011,24 @@ export default {
             console.error('Error checking festival status:', e);
         } finally {
             this.isFestivalLoading = false;
+            if (this.isHomepage) {
+              this.loadingStates.festivalBadge = false;
+              this.checkHomepageContentReady();
+            }
         }
+    },
+    
+    checkHomepageContentReady() {
+      if (!this.isHomepage) return;
+      
+      const allReady = !this.loadingStates.backdrop && 
+                       !this.loadingStates.festivalBadge && 
+                       !this.loadingStates.vidSrcCheck && 
+                       !this.loadingStates.metadata;
+      
+      if (allReady) {
+        this.isHomepageContentReady = true;
+      }
     },
 
     async fetchUserLists() {
@@ -2751,6 +2828,21 @@ export default {
   }
 }
 
+.unified-homepage-loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.4s ease;
+}
+
 .add-list-menu {
   position: absolute;
   top: 100%;
@@ -2866,11 +2958,16 @@ export default {
 }
 
 .fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s, transform 0.3s;
+  transition: opacity 0.3s;
 }
-.fade-enter, .fade-leave-to {
+
+.fade-enter-from, .fade-leave-to {
   opacity: 0;
-  transform: scale(0.98);
+}
+
+/* Disable transitions during homepage loading to prevent visible button shifts */
+.no-transition * {
+  transition: none !important;
 }
 
 .nav-arrows {
