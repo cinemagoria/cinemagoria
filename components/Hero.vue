@@ -103,6 +103,11 @@
                     <SundanceBadge />
                 </nuxt-link>
             </div>
+            <div v-else-if="slamdanceFilm" :class="$style.festivalBadgeContainer">
+                <nuxt-link to="/festival/slamdance-2026" style="text-decoration: none; display: inline-block;">
+                    <SlamdanceBadge />
+                </nuxt-link>
+            </div>
             <div v-else-if="berlinaleFilm" :class="$style.festivalBadgeContainer">
                 <BerlinaleBadge />
                 <nuxt-link to="/festival/berlinale-2026" :class="$style.festivalLink">
@@ -437,6 +442,7 @@ import Filters from '~/mixins/Filters';
 import Modal from '~/components/Modal';
 import Loader from '~/components/Loader.vue';
 import SundanceBadge from '~/components/festival/SundanceBadge.vue';
+import SlamdanceBadge from '~/components/festival/SlamdanceBadge.vue';
 import BerlinaleBadge from '~/components/festival/BerlinaleBadge.vue';
 import RotterdamBadge from '~/components/festival/RotterdamBadge.vue';
 import { translateText } from '~/utils/api';
@@ -446,6 +452,7 @@ export default {
     Modal,
     Loader,
     SundanceBadge,
+    SlamdanceBadge,
     BerlinaleBadge,
     RotterdamBadge,
   },
@@ -527,6 +534,7 @@ export default {
       userLists: [],
       membership: { inWatchlist: false, lists: [] },
       sundanceFilm: null,
+      slamdanceFilm: null,
       berlinaleFilm: null,
       rotterdamFilm: null,
       isFestivalLoading: false,
@@ -854,23 +862,24 @@ export default {
          if (response.ok) {
              const data = await response.json();
              this.membership = data;
-             this.isFavorite = data.inWatchlist; 
          }
       } catch(e) { console.error(e); }
     },
 
     async checkFestivalStatus() {
         const wasSundance = !!this.sundanceFilm;
+        const wasSlamdance = !!this.slamdanceFilm;
         const wasBerlinale = !!this.berlinaleFilm;
         const wasRotterdam = !!this.rotterdamFilm;
         
         this.sundanceFilm = null;
+        this.slamdanceFilm = null;
         this.berlinaleFilm = null;
         this.rotterdamFilm = null;
         
         if (this.type !== 'movie') return;
         
-        if (wasSundance || wasBerlinale || wasRotterdam) {
+        if (wasSundance || wasSlamdance || wasBerlinale || wasRotterdam) {
             this.isFestivalLoading = true;
         }
 
@@ -886,6 +895,20 @@ export default {
                     this.sundanceFilm = data.results[0];
                     this.isFestivalLoading = false;
                     return; 
+                }
+            }
+
+            const slamdanceResponse = await fetch(`/api/festival/slamdance/films?tmdb_id=${this.id}`);
+            if (slamdanceResponse.ok) {
+                const data = await slamdanceResponse.json();
+                if (data.results && data.results.length > 0) {
+                     if (!wasSlamdance) {
+                        this.isFestivalLoading = true;
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                     }
+                    this.slamdanceFilm = data.results[0];
+                    this.isFestivalLoading = false;
+                    return;
                 }
             }
 

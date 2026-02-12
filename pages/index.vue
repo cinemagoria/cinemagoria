@@ -168,16 +168,30 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         }
     };
 
-    const [sundanceList, berlinaleList, rotterdamList, trendingMovies, trendingTv, featured] = await Promise.all([
+    const [sundanceList, berlinaleList, rotterdamList, slamdanceList, trendingMovies, trendingTv, featured] = await Promise.all([
         fetchFestivalMovies('sundance'),
         fetchFestivalMovies('berlinale'),
         fetchFestivalMovies('rotterdam'),
+        fetchFestivalMovies('slamdance'),
         fetchWithRefill('movie', 20, 3),
         fetchWithRefill('tv', 20, 6),
         fetchHero()
     ]);
     
     const FEATURED_ORDER = [
+        'Whisperings of the Moon', 
+        'The Bulldogs', 
+        'Dump of Untitled Pieces', 
+        'Danny Is My Boyfriend', 
+        'The Tallest Dwarf', 
+        'The Projectionist', 
+        'Tony Odyssey', 
+        'Three Colors: Pan-African', 
+        '50 Meters', 
+        'A Free Daughter of Free Kyrgyzstan', 
+        'Under The Rainbow: The Curious Crimes Of The Ruby Slippers', 
+        'You Look Fine', 
+        'Zumeca',
         'Yellow Letters',
         'Rosebush Pruning',
         'Salvation',
@@ -229,7 +243,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
     
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
     
-    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList];
+    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList];
     
     let mixedFestivalFilms = allFestivalFilms.filter(f => {
         const t = norm(f.title);
