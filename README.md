@@ -2,7 +2,9 @@
 
 Entercinema is a high-performance **Progressive Web Application (PWA)** engineered for modern viewers. By aggregating data from **TMDB, IMDb, MDBList, Trakt, and JustWatch**, it provides a centralized hub for intelligent search and cross-device synchronization.
 
+<!--
 ![EnterCinema Cover](https://www.ivanluna.dev/images/assets/entercinema-asset1.webp)
+-->
 
 ### Project Overview
 
@@ -17,9 +19,11 @@ Entercinema streamlines the entertainment lifecycle—from initial discovery to 
 
 Explore dedicated universes for Movies and TV Shows with instant context switching. The platform features optimized carousels for 'Now Playing', 'Upcoming', 'Popular', and 'Top Rated', alongside genre-based navigation (Drama, Sci-Fi, Animation, etc.) and exclusive feeds from followed production companies.
 
+<!--
 <div align="center">
   <img src="https://www.ivanluna.dev/images/assets/entercinema-asset2.webp" alt="Catalog Discovery" width="70%">
 </div>
+-->
 
 #### Advanced Notification Center
 
@@ -30,9 +34,11 @@ A real-time tracking engine for the content and creators you care about.
 * **Management Suite:** Features bulk actions, read/unread filtering, and a 60-second "undo" window for unfollowing.
 * **Infrastructure:** Powered by a Rust/LibSQL backend with automated daily cron-job validation (GitHub Actions).
 
+<!--
 <div align="center">
   <img src="https://www.ivanluna.dev/images/assets/entercinema-asset3.webp" alt="Notification Center" width="70%">
 </div>
+-->
 
 #### Precision Watchlist & Rating System
 
@@ -43,9 +49,11 @@ A robust personal library designed for active viewers.
 * **Global Rating Tool:** A universal modal allowing 1–10 scoring and text reviews from any page.
 * **Real-time Sync:** Instant state synchronization across devices via Turso.
 
+<!--
 <div align="center">
   <img src="https://www.ivanluna.dev/images/assets/entercinema-asset4.webp" alt="Watchlist" width="70%">
 </div>
+-->
 
 #### Custom List Management
 
@@ -66,9 +74,11 @@ A custom search architecture optimized for speed and accuracy.
 * **Universal Autocomplete:** Real-time results across movies, shows, and people.
 * **Curation:** Highlighting trending content specifically tailored for the 2024–2025 landscape.
 
+<!--
 <div align="center">
   <img src="https://www.ivanluna.dev/images/assets/entercinema-asset6.webp" alt="Advanced Search" width="70%">
 </div>
+-->
 
 #### Comprehensive Metadata Pages
 
@@ -77,9 +87,11 @@ A custom search architecture optimized for speed and accuracy.
 * **External Links:** Direct access to IMDb, Rotten Tomatoes, Trakt, and ***.
 * **Visual Media:** High-definition galleries and integrated trailer support.
 
+<!--
 <div align="center">
   <img src="https://www.ivanluna.dev/images/assets/entercinema-asset8.webp" alt="Deep Metadata" width="70%">
 </div>
+-->
 
 #### Industry News & Insights
 
@@ -89,9 +101,26 @@ Stay informed with a dedicated news section that aggregates the latest updates f
 * **RSS Integration:** Aggregated breaking news from top industry sources.
 * **Automated Updates:** Refreshed every 12 hours via GitHub Actions.
 
+<!--
 <div align="center">
   <img src="https://www.ivanluna.dev/images/assets/entercinema-asset5.webp" alt="Industry News" width="70%">
 </div>
+-->
+
+#### Global Festivals & Awards Tracking
+
+Stay connected with the pulse of the film industry through dedicated festival coverage and comprehensive awards data.
+
+* **Festival Circuit:** Deep integration for major festivals including **Sundance, Berlinale, Rotterdam, and Slamdance**, with progressive expansion planned.
+* **Awards Season:**
+    * **Oscars:** Complete historical data including nominees and winners.
+    * **Major Honors:** Tracking winners for **Golden Globes, Golden Lion (Venice), and Golden Bear (Berlinale)**.
+
+<!--
+<div align="center">
+  <img src="https://www.ivanluna.dev/images/assets/entercinema-asset9.webp" alt="Festivals & Awards" width="70%">
+</div>
+-->
 
 ### Technical Stack
 
@@ -111,9 +140,11 @@ Stay informed with a dedicated news section that aggregates the latest updates f
 * **Smart Routing:** Persistent return-to-origin behavior after login and pending action queuing.
 * **Localization:** Native support for English (EN) and Spanish (ES).
 
+<!--
 <div align="center">
   <img src="https://www.ivanluna.dev/images/assets/entercinema-asset7.webp" alt="Authentication" width="70%">
 </div>
+-->
 
 #### Performance Optimization
 
@@ -156,6 +187,17 @@ yarn start
 ---
 
 ### Version History
+
+#### v4.5.1 — Major Festival Integrations, Enhanced Award Recognition, and Streamlined Content Access (2026-02-12)
+
+* **Expanded Film Festival Support:** Dedicated pages and integration for Rotterdam and Slamdance 2026, plus Berlinale & Sundance enhancements.
+* **Enhanced Awards System:** Added support for Palme d'Or, Golden Lion, and Golden Bear with intelligent linking for films and series.
+* **"Watch Now" Integration:** Direct streaming access via StreamingSourceA with optimization recommendations.
+* **Revamped Hero Section:** Wheel/swipe navigation, dynamic "UPCOMING" badge, and improved responsiveness.
+* **UI Modernization:** Gradient borders, rounded corners, and refined scrollable lists for a polished tracking experience.
+* **Performance:** Concurrent awards data fetching and optimized external link checks.
+* **Bug Fixes:** Resolved Golden Globes duplicate title matching and improved Hero carousel responsiveness.
+
 
 #### v4.3.4 — Enhanced Productivity, Dynamic Content, and Core Performance (2026-01-16)
 
