@@ -74,7 +74,7 @@ export default defineEventHandler(async (event) => {
                 imdb_id: typedRow.imdb_id,
                 tmdb_id: typedRow.tmdb_id
             }
-        }); // Removed the >= 2025 year filter as IFFR might have older films in some sections (Cinema Regained)
+        });
 
         films = films.filter((f: any) => f.title)
 

@@ -68,12 +68,14 @@
 <script>
 import carousel from '~/mixins/Carousel';
 import SundanceCard from '~/components/SundanceCard.vue';
+import SlamdanceCard from '~/components/SlamdanceCard.vue';
 import BerlinaleCard from '~/components/BerlinaleCard.vue';
 import RotterdamCard from '~/components/RotterdamCard.vue';
 
 export default {
   components: {
     SundanceCard,
+    SlamdanceCard,
     BerlinaleCard,
     RotterdamCard
   },
@@ -115,6 +117,7 @@ export default {
       const cardMap = {
         berlinale: 'BerlinaleCard',
         rotterdam: 'RotterdamCard',
+        slamdance: 'SlamdanceCard',
       };
       return cardMap[item.festival_source] || 'SundanceCard';
     }
