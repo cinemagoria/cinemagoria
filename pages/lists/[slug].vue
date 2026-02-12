@@ -55,7 +55,7 @@
         </transition>
 
         <div v-if="items.length === 0 && !undoItem" class="empty-state">
-             <img src="/cinema-popcorn.svg" alt="Empty list" class="empty-state-icon">
+             <img src="/ui/cinema-popcorn.svg" alt="Empty list" class="empty-state-icon">
              <h3>Esta colección está vacía</h3>
              <p>Explora y añade películas o series!</p>
              <nuxt-link to="/" class="explore-btn">Explore Content</nuxt-link>
@@ -96,13 +96,13 @@
 
           <div v-if="itemsToShow.length === 0" class="no-results-state">
              <template v-if="filteredItems.length === 0 && hasActiveFilters">
-                <img src="/cinema-popcorn.svg" alt="No results" class="no-results-icon">
+                <img src="/ui/cinema-popcorn.svg" alt="No results" class="no-results-icon">
                 <h3>No se encontraron resultados</h3>
                 <p>No encontramos ningún contenido que coincida con tus filtros actuales.</p>
                 <button @click="clearAllFilters" class="refine-filters-btn">Limpiar todos los filtros</button>
              </template>
              <template v-else>
-                <img src="/cinema-popcorn.svg" alt="No content" class="empty-state-icon">
+                <img src="/ui/cinema-popcorn.svg" alt="No content" class="empty-state-icon">
                 <h3>Sin {{ filter === 'movies' ? 'Películas' : 'Series' }}</h3>
                 <p>¡Cambia de pestaña o agrega contenido!</p>
              </template>
@@ -180,7 +180,7 @@
                              <span class="vote-count" v-if="item.details.imdb_votes">({{ formatVoteCount(item.details.imdb_votes) }})</span>
                           </div>
                           <div v-else-if="item.details.starsForDb" class="rating-item">
-                             <img src="/tmdb.svg" alt="TMDB" class="rating-logo tmdb">
+                             <img src="/logos/platforms/tmdb.svg" alt="TMDB" class="rating-logo tmdb">
                              <span class="rating-score">{{ formatRating(item.details.starsForDb / 10) }}</span>
                              <span class="vote-count" v-if="item.details.vote_count">({{ formatVoteCount(item.details.vote_count) }})</span>
                           </div>
@@ -1265,7 +1265,7 @@ export default {
            this.$router.push(this.getLink(item));
         },
         getImageUrl(path) {
-           if (!path) return '/image_not_found_yet.webp';
+           if (!path) return '/image_not_found_yet_es.webp';
            if (path.startsWith('http')) return path; 
            return `${apiImgUrl}/w500${path}`;
         },
@@ -1273,7 +1273,7 @@ export default {
             this.imageLoadStates[id] = true;
         },
         handleImageError(e) {
-            e.target.src = '/image_not_found_yet.webp';
+            e.target.src = '/image_not_found_yet_es.webp';
         },
         
 

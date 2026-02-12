@@ -8,7 +8,7 @@
         </nuxt-link>
         <a href="https://festival.sundance.org/tickets/online" target="_blank" class="hero-backdrop">
             <img 
-              src="/sundance_backdrop_2026_es.webp" 
+              src="/festivals/sundance/sundance_backdrop_2026_es.webp" 
               alt="Fondo Sundance"
             />
             <div class="hero-overlay"></div>
@@ -91,9 +91,9 @@
                         :src="screening.film.poster_path" 
                         alt="Poster" 
                         loading="lazy" 
-                        @error="$event.target.src = '/image_not_found_yet.webp'"
+                        @error="$event.target.src = '/placeholders/image_not_found_yet_es.webp'"
                       />
-                      <img v-else src="/image_not_found_yet.webp" alt="No Poster" />
+                      <img v-else src="/placeholders/image_not_found_yet_es.webp" alt="No Poster" />
                   </div>
               </div>
             </div>

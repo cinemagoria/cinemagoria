@@ -223,8 +223,8 @@ export default {
   width: 23px !important;
   height: 23px !important;
   background-color: #F9CC71;
-  -webkit-mask: url('/***.png') no-repeat center / contain;
-  mask: url('/***.png') no-repeat center / contain;
+  -webkit-mask: url('/logos/platforms/***.png') no-repeat center / contain;
+  mask: url('/logos/platforms/***.png') no-repeat center / contain;
   transition: background-color 0.3s ease;
 }
 
@@ -269,8 +269,8 @@ export default {
   height: 23px !important;
   background-color: white;
   background: #69C145;
-  -webkit-mask: url('/***-logo.svg') no-repeat center / contain;
-  mask: url('/***-logo.svg') no-repeat center / contain;
+  -webkit-mask: url('/logos/streaming/***-logo.svg') no-repeat center / contain;
+  mask: url('/logos/streaming/***-logo.svg') no-repeat center / contain;
   transition: background-color 0.3s ease;
 }
 

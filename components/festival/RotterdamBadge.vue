@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.badge">
     <img 
-      src="/rotterdam_film_festival_2026_logo.png" 
+      src="/festivals/rotterdam/rotterdam_film_festival_2026_logo.png" 
       alt="Rotterdam Film Festival 2026" 
       :class="$style.logo"
     />

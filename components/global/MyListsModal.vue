@@ -33,7 +33,7 @@
                   @click="toggleWatchlist">
                   <div :class="$style.cardImage">
                      <div :class="$style.listIcon">
-                       <img src="/empty-list-placeholder.webp" :class="$style.listPlaceholderImg" alt="Watchlist" style="object-fit: cover; opacity: 0.8;" />
+                       <img src="/placeholders/empty-list-placeholder.webp" :class="$style.listPlaceholderImg" alt="Watchlist" style="object-fit: cover; opacity: 0.8;" />
                      </div>
                      <div v-if="watchlistSelected" :class="$style.addedIndicator">
                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
@@ -64,12 +64,12 @@
                               alt="Cover"
                             />
                             <div v-else :class="$style.plusPlaceholder">
-                                <img src="/plus_placeholder.webp" :class="$style.plusIcon" alt="+" />
+                                <img src="/placeholders/plus_placeholder.webp" :class="$style.plusIcon" alt="+" />
                             </div>
                         </div>
                      </div>
                      <div v-else :class="$style.listIcon">
-                       <img src="/empty-list-placeholder.webp" :class="$style.listPlaceholderImg" alt="List placeholder" />
+                       <img src="/placeholders/empty-list-placeholder.webp" :class="$style.listPlaceholderImg" alt="List placeholder" />
                      </div>
                      
 
@@ -133,7 +133,7 @@
 
                  <div :class="[$style.card, $style.createCard]" @click="openCreateModal">
                     <div :class="$style.createContent">
-                        <img src="/plus_placeholder.webp" :class="$style.createIcon" alt="+" />
+                        <img src="/placeholders/plus_placeholder.webp" :class="$style.createIcon" alt="+" />
                         <span :class="$style.createLabel">Crear Nueva Colección</span>
                     </div>
                  </div>

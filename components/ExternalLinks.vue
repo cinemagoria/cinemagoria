@@ -105,9 +105,9 @@
 
 <script>
 import { getMDBListRatings } from '~/utils/api';
-const rtIcon = '/rotten-tomatoes.svg';
-const lbIcon = '/letterboxd-mac-icon.png';
-const traktIcon = '/trakt-logo-small.svg';
+const rtIcon = '/logos/platforms/rotten-tomatoes.svg';
+const lbIcon = '/logos/platforms/letterboxd-mac-icon.png';
+const traktIcon = '/logos/platforms/trakt-logo-small.svg';
 
 export default {
   props: {

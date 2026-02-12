@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.badge">
     <img 
-      src="/sundance_film_festival_2026_logo.png" 
+      src="/festivals/sundance/sundance_film_festival_2026_logo.png" 
       alt="Sundance Film Festival 2026" 
       :class="$style.logo"
     />

@@ -9,7 +9,7 @@
 
       <img
         v-else
-        src="/image_not_found_yet_horizontal_es.webp"
+        src="/placeholders/image_not_found_yet_horizontal_es.webp"
         alt="Image not found"
         style="width: 100%; height: 100%; object-fit: cover; padding: 3rem;">
     </div>

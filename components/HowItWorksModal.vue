@@ -20,14 +20,14 @@
             <h4>Seguir a personas</h4>
             <p>Navega al perfil de cualquier actor, director, guionista o creador y haz clic en el botón "Seguir" para comenzar a recibir notificaciones. Se te notificará al instante sobre su trabajo reciente de los últimos 30 días, además de todos los próximos proyectos programados para estrenarse en los próximos 5 años. Nuestro sistema de notificaciones realiza comprobaciones automáticas cada 6 horas para asegurarse de que nunca te pierdas ningún lanzamiento.</p>
             <div :class="$style.guideImage">
-              <img src="/add-person-es.webp" alt="Guía para seguir a una persona">
+              <img src="/onboarding/add-person-es.webp" alt="Guía para seguir a una persona">
             </div>
           </div>
 
            <div :class="$style.guideCard">
             <p>Recibe alertas en tiempo real cada vez que alguien a quien sigues estrene una nueva película o proyecto.</p>
             <div :class="$style.guideImage">
-              <img src="/push-person-es.webp" alt="Push notifications for people guide">
+              <img src="/onboarding/push-person-es.webp" alt="Push notifications for people guide">
             </div>
           </div>
 
@@ -36,7 +36,7 @@
             <h4>Seguir series de TV</h4>
             <p>Accede a la ficha técnica de cualquier serie de TV y haz clic en el botón "Seguir episodios" para suscribirte a las notificaciones de episodios. Recibirás alertas oportunas de los episodios que se emitan dentro de un período de 7 días antes y después de su fecha de estreno programada. Esta función es ideal para mantenerse al día con las series en emisión sin perderse nuevos episodios. El sistema realiza actualizaciones automáticas cada 6 horas para mantener tus notificaciones al día.</p>
             <div :class="$style.guideImage">
-              <img src="/add-tv-show-es.webp" alt="Guía para seguir una serie de TV">
+              <img src="/onboarding/add-tv-show-es.webp" alt="Guía para seguir una serie de TV">
             </div>
           </div>
         </div>
@@ -44,7 +44,7 @@
           <div :class="$style.guideCard">
             <p>Obtén alertas cuando se estrenen nuevos episodios o temporadas de tus series seguidas. Mantente al día con los calendarios de emisión y no te pierdas ninguna novedad de tus programas favoritos.</p>
             <div :class="$style.guideImage">
-              <img src="/push-tv-show-es.webp" alt="Push notifications for TV shows guide">
+              <img src="/onboarding/push-tv-show-es.webp" alt="Push notifications for TV shows guide">
             </div>
           </div>
 

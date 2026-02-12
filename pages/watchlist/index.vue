@@ -15,7 +15,7 @@
         </div>
 
         <div v-else-if="showEmptyState" class="empty-state-container">
-          <img src="/cinema-popcorn.svg" alt="No favorites" class="empty-state-icon">
+          <img src="/ui/cinema-popcorn.svg" alt="No favorites" class="empty-state-icon">
           <h3>Aún no has agregado favoritos</h3>
           <p>
             Comienza a construir tu lista agregando 
@@ -68,13 +68,13 @@
           </div>
 
           <div v-if="showTabEmptyState" class="empty-state-container">
-            <img src="/cinema-popcorn.svg" alt="No content" class="empty-state-icon">
+            <img src="/ui/cinema-popcorn.svg" alt="No content" class="empty-state-icon">
             <h3>{{ emptyStateMessage }}</h3>
             <p>¡Cambia de pestaña para ver tus {{ filter === 'movies' ? 'series' : 'películas' }}!</p>
           </div>
           
           <div v-else-if="(filteredItems.length === 0 || itemsToShow.length === 0) && hasActiveFilters" class="no-results-state">
-            <img src="/cinema-popcorn.svg" alt="No results" class="no-results-icon">
+            <img src="/ui/cinema-popcorn.svg" alt="No results" class="no-results-icon">
             <h3>No se encontraron resultados</h3>
             <p>No pudimos encontrar contenido que coincida con tus filtros actuales.</p>
             <p class="suggestion">Intenta ajustar o limpiar algunos filtros para ver más resultados.</p>
@@ -241,7 +241,7 @@
                           <span class="vote-count" v-if="item.details.imdb_votes">({{ formatVoteCount(item.details.imdb_votes) }})</span>
                         </div>
                         <div v-else-if="item.details.starsForDb" class="rating-item">
-                          <img src="/tmdb.svg" alt="TMDB" class="rating-logo tmdb">
+                          <img src="/logos/platforms/tmdb.svg" alt="TMDB" class="rating-logo tmdb">
                           <span class="rating-score">{{ formatRating(item.details.starsForDb) }}</span>
                            <span class="vote-count" v-if="item.details.vote_count">({{ formatVoteCount(item.details.vote_count) }})</span>
                         </div>
@@ -595,7 +595,7 @@ export default {
       customYearEnd: null,
       currentYear: new Date().getFullYear(),
       selectedLanguage: 'english',
-      fallbackImageUrl: "/image_not_found_yet_es.webp",
+      fallbackImageUrl: "/placeholders/image_not_found_yet_es.webp",
       handleImageError: "this.src='/image_not_found_yet_es.webp'",
       userEmail: '',
       accessToken: '',

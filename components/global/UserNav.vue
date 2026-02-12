@@ -30,7 +30,7 @@
         </div>
 
         <div class="menu-item" @click="goToWatchlist">
-          <img src="/icon-watchlist.png" alt="Watchlist Icon" class="menu-icon">
+          <img src="/icons/icon-watchlist.png" alt="Watchlist Icon" class="menu-icon">
           <span class="menu-label">Mi Lista</span>
         </div>
 
@@ -50,14 +50,14 @@
         </div>
 
         <div class="menu-item" @click="goToSettings">
-          <img src="/icon-settings.png" alt="Settings Icon" class="menu-icon">
+          <img src="/icons/icon-settings.png" alt="Settings Icon" class="menu-icon">
           <span class="menu-label">Ajustes</span>
         </div>
 
         <div class="menu-divider"></div>
 
         <div class="menu-item language-switch-container">
-          <img src="/langpicker-icon.png" alt="Language Icon" class="menu-icon lang-icon">
+          <img src="/ui/langpicker-icon.png" alt="Language Icon" class="menu-icon lang-icon">
           <label class="language-switch">
             <input type="checkbox" :checked="currentLanguage === 'es'" @change="toggleLanguage">
             <span>Inglés</span>
@@ -68,7 +68,7 @@
         <div class="menu-divider"></div>
 
         <div class="menu-item" @click="signOut">
-          <img src="/icon-logout.png" alt="Logout Icon" class="menu-icon">
+          <img src="/icons/icon-logout.png" alt="Logout Icon" class="menu-icon">
           <span class="menu-label menu-label-logout">Cerrar sesión</span>
         </div>
       </div>
@@ -76,7 +76,7 @@
 
     <div v-else class="user-nav-logged-out">
       <button class="sign-in-button" @click="goToLogin" aria-label="Sign In">
-        <img src="/icon-login.png" alt="Login Icon" class="sign-in-icon">
+        <img src="/icons/icon-login.png" alt="Login Icon" class="sign-in-icon">
         <span class="sign-in-label">Ingresar</span>
       </button>
     </div>

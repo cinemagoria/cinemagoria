@@ -47,7 +47,7 @@
             @error="onBackdropLoaded">
           <img
             v-else
-            src="/no-data-es.webp"
+            src="/placeholders/no-data-es.webp"
             loading="eager"
             :class="$style.image"
             alt="No Data"

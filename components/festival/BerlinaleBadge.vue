@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.badge">
     <img 
-      src="/berlinale_film_festival_2026_logo.png" 
+      src="/festivals/berlinale/berlinale_film_festival_2026_logo.png" 
       alt="Berlinale Film Festival 2026" 
       :class="$style.logo"
     />

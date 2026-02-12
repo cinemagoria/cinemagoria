@@ -93,15 +93,15 @@ export default {
     return {
       apiImgUrl,
       customLogos: {
-        11: '/mubi-logo.svg',
-        15: '/hulu-logo.svg',
-        350: '/apple-tv-logo.svg',
-        8: '/netflix-logo.png',
-        9: '/amazon-prime-video-logo.png',
-        1899: '/hbo-max-logo.svg',
-        337: '/disney-logo.png',
-        386: '/peacock-logo.png',
-        99: '/shudder-logo.svg'
+        11: '/logos/streaming/mubi-logo.svg',
+        15: '/logos/streaming/hulu-logo.svg',
+        350: '/logos/streaming/apple-tv-logo.svg',
+        8: '/logos/streaming/netflix-logo.png',
+        9: '/logos/streaming/amazon-prime-video-logo.png',
+        1899: '/logos/streaming/hbo-max-logo.svg',
+        337: '/logos/streaming/disney-logo.png',
+        386: '/logos/streaming/peacock-logo.png',
+        99: '/logos/streaming/shudder-logo.svg'
       }
     };
   },

@@ -123,7 +123,7 @@
                                   />
                                   <img 
                                       v-else
-                                      src="/placeholder_news.webp" 
+                                      src="/placeholders/placeholder_news.webp" 
                                       :alt="item.title" 
                                       loading="lazy"
                                       class="img-lazy"
@@ -188,7 +188,7 @@
                           />
                           <img 
                               v-else
-                              src="/placeholder_news.webp" 
+                              src="/placeholders/placeholder_news.webp" 
                               :alt="item.title" 
                               loading="lazy"
                               class="img-lazy"

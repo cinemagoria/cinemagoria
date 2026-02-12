@@ -8,7 +8,7 @@
         <!-- Berlinale 2026 -->
         <nuxt-link to="/festival/berlinale-2026" class="festival-card">
           <div class="card-image-wrapper">
-             <img src="/berlinale_backdrop_2026_es.webp" alt="Berlinale 2026" />
+             <img src="/festivals/berlinale/berlinale_backdrop_2026_es.webp" alt="Berlinale 2026" />
              <div class="overlay"></div>
              <div class="card-content">
                <h2>Berlinale 2026</h2>
@@ -20,7 +20,7 @@
         <!-- Sundance 2026 -->
         <nuxt-link to="/festival/sundance-2026" class="festival-card">
           <div class="card-image-wrapper">
-             <img src="/sundance_backdrop_2026_es.webp" alt="Sundance 2026" />
+             <img src="/festivals/sundance/sundance_backdrop_2026_es.webp" alt="Sundance 2026" />
              <div class="overlay"></div>
              <div class="card-content">
                <h2>Sundance 2026</h2>
@@ -32,7 +32,7 @@
         <!-- Rotterdam 2026 -->
         <nuxt-link to="/festival/rotterdam-2026" class="festival-card">
           <div class="card-image-wrapper">
-             <img src="/rotterdam_backdrop_2026_es.webp" alt="Rotterdam 2026" />
+             <img src="/festivals/rotterdam/rotterdam_backdrop_2026_es.webp" alt="Rotterdam 2026" />
              <div class="overlay"></div>
              <div class="card-content">
                <h2>Rotterdam 2026</h2>

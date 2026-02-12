@@ -264,7 +264,7 @@ export default {
       undoTimeout: null,
       collapsedDepartments: {},
       imageLoadStates: {},
-      fallbackImageUrl: "/image_not_found_yet_es.webp"
+      fallbackImageUrl: "/placeholders/image_not_found_yet_es.webp"
     };
   },
   

@@ -5,7 +5,7 @@
 
     <div v-if="error" class="error-page-container">
       <div class="empty-state-container">
-        <img src="/cinema-popcorn.svg" alt="Serie no encontrada" class="empty-state-icon">
+        <img src="/ui/cinema-popcorn.svg" alt="Serie no encontrada" class="empty-state-icon">
         <h3>Serie no encontrada</h3>
         <p>Lo sentimos, no pudimos encontrar la serie que buscas. Puede que haya sido eliminada o que el enlace sea incorrecto.</p>
         <button @click="router.push('/')" class="refine-filters-btn">Volver al Inicio</button>
