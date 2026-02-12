@@ -8,7 +8,7 @@
         </nuxt-link>
         <a href="https://www.berlinale.de/en/home.html" target="_blank" class="hero-backdrop">
             <img 
-              src="/berlinale_backdrop_2026_eng.webp" 
+              src="/festivals/berlinale/berlinale_backdrop_2026_eng.webp" 
               alt="Berlinale Backdrop"
             />
             <div class="hero-overlay"></div>
@@ -97,9 +97,9 @@
                             :src="screening.film.poster_path" 
                             alt="Poster" 
                             loading="lazy" 
-                            @error="$event.target.src = '/image_not_found_yet.webp'"
+                            @error="$event.target.src = '/placeholders/image_not_found_yet.webp'"
                           />
-                          <img v-else src="/image_not_found_yet.webp" alt="No Poster" />
+                          <img v-else src="/placeholders/image_not_found_yet.webp" alt="No Poster" />
                       </div>
                   </div>
                 </div>

@@ -63,7 +63,7 @@
         </transition>
 
         <div v-if="items.length === 0 && !undoItem" class="empty-state">
-             <img src="/cinema-popcorn.svg" alt="Empty list" class="empty-state-icon">
+             <img src="/ui/cinema-popcorn.svg" alt="Empty list" class="empty-state-icon">
              <h3>This list is empty</h3>
              <p>Go explore and add some movies or TV shows!</p>
              <nuxt-link to="/" class="explore-btn">Explore Content</nuxt-link>
@@ -106,13 +106,13 @@
 
           <div v-if="itemsToShow.length === 0" class="no-results-state">
              <template v-if="filteredItems.length === 0 && hasActiveFilters">
-                <img src="/cinema-popcorn.svg" alt="No results" class="no-results-icon">
+                <img src="/ui/cinema-popcorn.svg" alt="No results" class="no-results-icon">
                 <h3>No Results Found</h3>
                 <p>We couldn't find any content matching your current filters.</p>
                 <button @click="clearAllFilters" class="refine-filters-btn">Clear All Filters</button>
              </template>
              <template v-else>
-                <img src="/cinema-popcorn.svg" alt="No content" class="empty-state-icon">
+                <img src="/ui/cinema-popcorn.svg" alt="No content" class="empty-state-icon">
                 <h3>No {{ filter === 'movies' ? 'Movies' : 'TV Shows' }}</h3>
                 <p>Switch tabs or add some content!</p>
              </template>
@@ -200,7 +200,7 @@
                              <span class="vote-count" v-if="item.details.imdb_votes">({{ formatVoteCount(item.details.imdb_votes) }})</span>
                           </div>
                           <div v-else-if="item.details.starsForDb" class="rating-item">
-                             <img src="/tmdb.svg" alt="TMDB" class="rating-logo tmdb">
+                             <img src="/logos/platforms/tmdb.svg" alt="TMDB" class="rating-logo tmdb">
                              <span class="rating-score">{{ formatRating(item.details.starsForDb / 10) }}</span>
                              <span class="vote-count" v-if="item.details.vote_count">({{ formatVoteCount(item.details.vote_count) }})</span>
                           </div>
@@ -1285,7 +1285,7 @@ export default {
            this.$router.push(this.getLink(item));
         },
         getImageUrl(path) {
-           if (!path) return '/image_not_found_yet.webp';
+           if (!path) return '/placeholders/image_not_found_yet.webp';
            if (path.startsWith('http')) return path; 
            return `${apiImgUrl}/w500${path}`;
         },
@@ -1293,7 +1293,7 @@ export default {
             this.imageLoadStates[id] = true;
         },
         handleImageError(e) {
-            e.target.src = '/image_not_found_yet.webp';
+            e.target.src = '/placeholders/image_not_found_yet.webp';
         },
         
 

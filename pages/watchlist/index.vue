@@ -15,7 +15,7 @@
         </div>
 
         <div v-else-if="showEmptyState" class="empty-state-container">
-          <img src="/cinema-popcorn.svg" alt="No favorites" class="empty-state-icon">
+          <img src="/ui/cinema-popcorn.svg" alt="No favorites" class="empty-state-icon">
           <h3>No favorites added yet</h3>
           <p>
             Start building your watchlist by adding 
@@ -73,13 +73,13 @@
           </div>
 
           <div v-if="showTabEmptyState" class="empty-state-container">
-            <img src="/cinema-popcorn.svg" alt="No content" class="empty-state-icon">
+            <img src="/ui/cinema-popcorn.svg" alt="No content" class="empty-state-icon">
             <h3>{{ emptyStateMessage }}</h3>
             <p>Switch tabs to see your {{ filter === 'movies' ? 'TV shows' : 'movies' }}!</p>
           </div>
           
           <div v-else-if="(filteredItems.length === 0 || itemsToShow.length === 0) && hasActiveFilters" class="no-results-state">
-            <img src="/cinema-popcorn.svg" alt="No results" class="no-results-icon">
+            <img src="/ui/cinema-popcorn.svg" alt="No results" class="no-results-icon">
             <h3>No Results Found</h3>
             <p>We couldn't find any content matching your current filters.</p>
             <p class="suggestion">Try adjusting or clearing some filters to see more results.</p>
@@ -259,7 +259,7 @@
                           <span class="vote-count" v-if="item.details.imdb_votes">({{ formatVoteCount(item.details.imdb_votes) }})</span>
                         </div>
                         <div v-else-if="item.details.starsForDb" class="rating-item">
-                          <img src="/tmdb.svg" alt="TMDB" class="rating-logo tmdb">
+                          <img src="/logos/platforms/tmdb.svg" alt="TMDB" class="rating-logo tmdb">
                           <span class="rating-score">{{ formatRating(item.details.starsForDb) }}</span>
                            <span class="vote-count" v-if="item.details.vote_count">({{ formatVoteCount(item.details.vote_count) }})</span>
                         </div>
@@ -640,7 +640,7 @@ export default {
       currentYear: new Date().getFullYear(),
       selectedLanguage: 'english',
       fallbackImageUrl: "/image_not_found_yet.webp",
-      handleImageError: "this.src='/image_not_found_yet.webp'",
+      handleImageError: "this.src='/placeholders/image_not_found_yet.webp'",
       userEmail: '',
       accessToken: '',
       isLoggedIn: false,
