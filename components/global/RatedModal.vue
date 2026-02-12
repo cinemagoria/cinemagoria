@@ -209,7 +209,7 @@ export default {
     },
 
     getPosterUrl(path) {
-      if (!path) return '/image_not_found_yet.webp';
+      if (!path) return '/placeholders/image_not_found_yet.webp';
       if (path.startsWith('http')) return path;
       return `https://image.tmdb.org/t/p/w500${path.startsWith('/') ? '' : '/'}${path}`;
     },

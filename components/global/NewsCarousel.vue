@@ -57,7 +57,7 @@
                   @error="onImageError(article)"
                   :style="{ opacity: loadingMap[article.id] ? 0 : 1 }"
               />
-              <img v-else src="/placeholder_news.webp" alt="Placeholder" class="article-image" />
+              <img v-else src="/placeholders/placeholder_news.webp" alt="Placeholder" class="article-image" />
             </NuxtLink>
 
             <div class="card-content">

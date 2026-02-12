@@ -66,7 +66,7 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#03496B' }
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/x-icon', href: '/icons/favicon.ico' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500' }
       ],
     }

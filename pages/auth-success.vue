@@ -6,7 +6,7 @@
       <div v-else>
         <p v-if="error" class="error">{{ error }}</p>
         <p class="welcome-label" v-else>Welcome, {{ name }}!</p>
-        <img src="/auth-success.svg" alt="Authentication Success" class="success-icon">
+        <img src="/ui/auth-success.svg" alt="Authentication Success" class="success-icon">
         <div class="redirect-message">
           <p>You will be automatically redirected in {{ countdown }} seconds...</p>
         </div>
