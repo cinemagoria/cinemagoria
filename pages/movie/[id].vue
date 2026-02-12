@@ -5,7 +5,7 @@
 
     <div v-if="error" class="error-page-container">
       <div class="empty-state-container">
-        <img src="/cinema-popcorn.svg" alt="Movie Not Found" class="empty-state-icon">
+        <img src="/ui/cinema-popcorn.svg" alt="Movie Not Found" class="empty-state-icon">
         <h3>Movie Not Found</h3>
         <p>Sorry, we couldn't find the movie you're looking for. It may have been removed or the link might be incorrect.</p>
         <button @click="router.push('/')" class="refine-filters-btn">Go Home</button>

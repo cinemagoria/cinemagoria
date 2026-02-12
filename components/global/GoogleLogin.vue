@@ -8,7 +8,7 @@
       :disabled="isLoading"
     >
       <div v-if="isLoading" class="loading-spinner"></div>
-      <img v-else src="/google-icon.svg" alt="Google" class="google-icon">
+      <img v-else src="/ui/google-icon.svg" alt="Google" class="google-icon">
       <span>{{ isLoading ? 'Accessing...' : buttonText }}</span>
     </button>
   </div>

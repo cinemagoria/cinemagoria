@@ -22,12 +22,12 @@
           :alt="name"
           :style="{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }"
           @load="onImageLoaded"
-          @error="$event.target.src = '/image_not_found_yet.webp'; onImageLoaded($event)">
+          @error="$event.target.src = '/placeholders/image_not_found_yet.webp'; onImageLoaded($event)">
 
         <img
           v-else
           ref="posterImage"
-          src="/image_not_found_yet.webp"
+          src="/placeholders/image_not_found_yet.webp"
           alt="Image not found"
           class="card__img--poster"
           style="width: 100%; height: 100%; object-fit: cover;"

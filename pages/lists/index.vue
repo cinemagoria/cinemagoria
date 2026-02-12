@@ -40,7 +40,7 @@
         </div>
         <img 
           v-show="!imageLoading"
-          src="/empty-list-placeholder.webp" 
+          src="/placeholders/empty-list-placeholder.webp" 
           alt="No lists" 
           class="empty-icon"
           @load="imageLoading = false"
@@ -69,12 +69,12 @@
                       alt="Cover"
                     />
                     <div v-else class="plus-placeholder">
-                        <img src="/plus_placeholder.webp" class="plus-icon" alt="+" />
+                        <img src="/placeholders/plus_placeholder.webp" class="plus-icon" alt="+" />
                     </div>
                 </div>
              </div>
              <div v-else class="empty-cover">
-               <img src="/empty-list-placeholder.webp" alt="Empty List" class="placeholder-img-match-modal" />
+               <img src="/placeholders/empty-list-placeholder.webp" alt="Empty List" class="placeholder-img-match-modal" />
              </div>
              
              <div v-if="editingListId !== list.id" class="privacy-badge">

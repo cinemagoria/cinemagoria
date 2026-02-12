@@ -7,7 +7,7 @@
           :to="{ name: 'index' }"
           aria-label="Home"
           @click.native="clearSearchBeforeNavigate">
-          <img src="/icon-medium.png" alt="Home" style="width: 32px; height: 32px;" class="home-icon" />
+          <img src="/icons/icon-medium.png" alt="Home" style="width: 32px; height: 32px;" class="home-icon" />
         </nuxt-link>
       </li>
       <li>
@@ -29,7 +29,7 @@
           :to="{ name: 'advancedsearch' }"
           aria-label="Advanced Search"
           @click.native="clearSearchBeforeNavigate">
-          <img src="/icon-advancedsearch.png" alt="Advanced Search" :class="$style.navIcon" />
+          <img src="/icons/icon-advancedsearch.png" alt="Advanced Search" :class="$style.navIcon" />
         </nuxt-link>
       </li>
       <li>
@@ -47,7 +47,7 @@
 
       <li v-if="!isLoggedIn">
         <nuxt-link exact to="/login" aria-label="Sign In" @click.native="clearSearchBeforeNavigate">
-          <img src="/icon-login.png" alt="Login" :class="$style.navIcon" />
+          <img src="/icons/icon-login.png" alt="Login" :class="$style.navIcon" />
         </nuxt-link>
       </li>
       <li v-else>
@@ -57,7 +57,7 @@
           aria-label="Watchlist"
           :class="{ 'nuxt-link-active': isWatchlistActive }"
         >
-          <img src="/icon-watchlist.png" alt="Watchlist" :class="$style.navIcon" />
+          <img src="/icons/icon-watchlist.png" alt="Watchlist" :class="$style.navIcon" />
         </a>
       </li>
     </ul>
@@ -77,7 +77,7 @@
         <div :class="$style.menuContent">
             <div v-if="listsPage === 1" :class="$style.menuItem" @click="navigateFromMenu('/watchlist')">
                 <div :class="$style.itemIcon">
-                   <img src="/empty-list-placeholder.webp" :class="$style.placeholderImgNav" alt="Watchlist" />
+                   <img src="/placeholders/empty-list-placeholder.webp" :class="$style.placeholderImgNav" alt="Watchlist" />
                 </div>
                 <span :class="$style.listName">Watchlist</span>
             </div>
@@ -101,14 +101,14 @@
                            />
                            <img 
                              v-else 
-                             src="/plus_placeholder.webp" 
+                             src="/placeholders/plus_placeholder.webp" 
                              :class="$style.coverImgNav" 
                              alt="Plus"
                            />
                        </div>
                    </div>
                    <div v-else :class="$style.fallbackIconNav">
-                       <img src="/empty-list-placeholder.webp" :class="$style.placeholderImgNav" alt="List" />
+                       <img src="/placeholders/empty-list-placeholder.webp" :class="$style.placeholderImgNav" alt="List" />
                    </div>
                 </div>
                 <span :class="$style.listName">{{ list.name }}</span>

@@ -17,7 +17,7 @@
             @error="handleImageError">
           <img
             v-else
-            src="/image_not_found_yet.webp"
+            src="/placeholders/image_not_found_yet.webp"
             alt="Image not found"
             style="width: 100%; height: 100%; object-fit: cover;"
             @load="onPosterLoaded"
@@ -133,8 +133,8 @@
                     </div>
                     <div :class="$style.reviewMeta">
                        <span v-if="review.source === 'User'" :class="$style.userBadge">YOU</span>
-                       <img v-else-if="review.source === 'Trakt'" src="/traktv-logo.svg" alt="Trakt" :class="$style.sourceLogo" />
-                       <img v-else src="/tmdb.svg" alt="TMDB" :class="$style.sourceLogoTMDB" />
+                       <img v-else-if="review.source === 'Trakt'" src="/logos/streaming/traktv-logo.svg" alt="Trakt" :class="$style.sourceLogo" />
+                       <img v-else src="/logos/platforms/tmdb.svg" alt="TMDB" :class="$style.sourceLogoTMDB" />
                        <span :class="$style.reviewDate">{{ formatCreatedAt(review.createdAt) }}</span>
                     </div>
                   </div>
@@ -439,7 +439,7 @@ export default {
     },
     handleImageError(e) {
       this.isPosterLoading = false;
-      e.target.src = '/image_not_found_yet.webp';
+      e.target.src = '/placeholders/image_not_found_yet.webp';
     },
     async fetchSecondaryData() {
       this.isLoadingRecommendations = true;

@@ -53,7 +53,7 @@
             @loadMore="loadMoreMovies" />
         </div>
         <div v-else-if="!moviesLoading" class="empty-state">
-           <img src="/cinema-popcorn.svg" alt="No results" class="empty-state-icon" style="height: 120px; margin-bottom: 20px; opacity: 0.5;">
+           <img src="/ui/cinema-popcorn.svg" alt="No results" class="empty-state-icon" style="height: 120px; margin-bottom: 20px; opacity: 0.5;">
            <h3 v-if="hasActiveFilters">No movies match your filters</h3>
            <p v-if="hasActiveFilters">Try adjusting your filters to see more results.</p>
            <p v-else>No movies found for this streaming provider.</p>
@@ -70,7 +70,7 @@
             @loadMore="loadMoreTVShows" />
         </div>
         <div v-else-if="!tvShowsLoading" class="empty-state">
-           <img src="/cinema-popcorn.svg" alt="No results" class="empty-state-icon" style="height: 120px; margin-bottom: 20px; opacity: 0.5;">
+           <img src="/ui/cinema-popcorn.svg" alt="No results" class="empty-state-icon" style="height: 120px; margin-bottom: 20px; opacity: 0.5;">
            <h3 v-if="hasActiveFilters">No TV shows match your filters</h3>
            <p v-if="hasActiveFilters">Try adjusting your filters to see more results.</p>
            <p v-else>No TV shows found for this streaming provider.</p>
