@@ -69,8 +69,6 @@
               <div v-else class="no-results-in-section">
                 <p>No hay títulos que coincidan con tus filtros.</p>
               </div>
-
-               <!-- Load More Button -->
               <div v-if="company.page < company.totalPages && !company.loadingMore" class="load-more-container">
                 <button @click="loadMore(company.id)" class="load-more-btn">
                    Cargar más
@@ -94,8 +92,6 @@
       <div v-else-if="!loading" class="no-results">
         <p style="text-align: center; color: white; margin-top: 2rem;">No se encontró contenido de las productoras que sigues.</p>
       </div>
-
-      <!-- Filter Modal -->
       <div v-if="filtersModalVisible" class="modal-overlay" @click="closeFiltersModal">
           <div class="filters-modal" @click.stop>
             <div class="modal-header">

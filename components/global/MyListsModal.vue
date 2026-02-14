@@ -76,7 +76,6 @@
                      <div v-if="isListSelected(list.id) && !Array.isArray(itemsToAdd)" :class="$style.addedIndicator">
                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
                      </div>
-                     <!-- Indicator for bulk mode -->
                      <div v-if="isListSelected(list.id) && Array.isArray(itemsToAdd)" :class="$style.addedIndicator">
                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
                      </div>
@@ -144,7 +143,6 @@
               </div>
           </div>
 
-          <!-- Footer for Bulk & Single Mode -->
           <div v-if="itemToAdd || Array.isArray(itemsToAdd)" :class="$style.modalFooter">
               <button @click="close" :class="$style.footerCancelBtn">Cancelar</button>
               <button @click="confirmBulkAdd" :class="$style.footerDoneBtn" :disabled="Array.isArray(itemsToAdd) && selectedListIds.length === 0">

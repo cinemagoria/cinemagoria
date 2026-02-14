@@ -47,10 +47,8 @@
               <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white;">Explorar Más</span>
             </div>
             
-            <!-- Exact structure replica for height matching -->
             <h2 class="card__name" style="color: transparent; user-select: none;">Spacer</h2>
             <div class="card__logo-container">
-               <!-- Empty container to match height -->
             </div>
           </nuxt-link>
         </div>

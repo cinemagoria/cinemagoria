@@ -4,12 +4,10 @@
     @touchend="handleTouchEnd"
     @wheel.prevent="handleWheel">
     <div :class="[$style.hero, { [$style.heroHomepage]: isHomepage }]">
-      <!-- Unified Homepage Loader - covers everything during transitions -->
       <div v-if="isHomepage && !isHomepageContentReady" class="unified-homepage-loader">
         <Loader :size="70" />
       </div>
       
-      <!-- Regular loader for non-homepage pages -->
       <div v-else-if="!isHomepage && isLoading" class="hero-loader">
         <Loader :size="60" />
       </div>
@@ -18,8 +16,8 @@
         <div>
           <div v-if="isHomepage" :class="$style.upcomingBadge">
              <transition name="fade" mode="out-in">
-               <span :key="is***Available ? 'released' : 'upcoming'">
-                 {{ is***Available ? 'ESTRENO' : 'PRÓXIMAMENTE' }}
+               <span key="upcoming">
+                 PRÓXIMAMENTE
                </span>
              </transition>
           </div>
@@ -97,7 +95,6 @@
               </template>
             </h1>
 
-            <!-- Badges render without individual loader -->
             <div v-if="sundanceFilm" :class="$style.festivalBadgeContainer">
                 <nuxt-link to="/festival/sundance-2026" style="text-decoration: none; display: inline-block;">
                     <SundanceBadge />
@@ -158,31 +155,10 @@
             <br>
             <div :class="$style.buttonContainer">
               <transition-group name="fade" :class="{ 'no-transition': isHomepage && !isHomepageContentReady }">
-              <template v-if="is***Available" key="***-group">
-                <button
-                  class="button button--icon"
-                  :class="[$style.actionButton, $style.shiningButton]"
-                  type="button"
-                  @click="open***"
-                  key="watch-now-btn">
-                  <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 22v-20l18 10-18 10z" fill="currentColor" stroke="none"/></svg></span>
-                  <span class="txt">Ver Ahora</span>
-                </button>
-                
-                <button
-                  v-if="trailer"
-                  class="button button--icon"
-                  :class="$style.actionButton"
-                  type="button"
-                  @click="openModal"
-                  key="trailer-btn">
-                  <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 22v-20l18 10-18 10z" fill="currentColor" stroke="none"/></svg></span>
-                  <span class="txt">Tráiler</span>
-                </button>
-              </template>
+
               
               <button
-                v-else-if="trailer"
+                v-if="trailer"
                 class="button button--icon"
                 :class="$style.actionButton"
                 type="button"
@@ -207,7 +183,6 @@
                   <span class="txt">{{ isInAnyList ? 'Guardado' : 'Añadir a...' }}</span>
                 </button>
 
-                <!-- Popover Menu -->
                 <transition name="fade">
                   <div v-if="showAddListMenu" class="add-list-menu" @wheel.stop>
                     <div class="menu-header">Guardar en</div>
@@ -388,49 +363,7 @@
       </div>
     </div>
 
-    <!-- Optimization Modal -->
-    <div v-if="showOptimizationModal" class="modal-overlay" @click.self="closeOptimizationModal">
-      <div class="optimization-modal">
-        <div class="modal-header">
-           <h3 style="flex: 1; text-align: left;">Configuración Recomendada</h3>
-           <button class="close-btn" @click="closeOptimizationModal">&times;</button>
-        </div>
-        
-        <div class="optimization-content">
-           <p class="optimization-text">
-             Para una óptima experiencia, recomendamos usar <a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">Chrome</a> o <a href="https://www.mozilla.org/en-US/firefox/new/" target="_blank" rel="noopener noreferrer">Firefox</a> y preferentemente tener instalado un bloqueador de anuncios como:
-           </p>
-           
-           <div class="adblock-links">
-             <a href="https://chromewebstore.google.com/detail/ublock-origin-lite/ddkjiahejlhfcafbddmgiahcphecmpfh?hl=es" target="_blank" rel="noopener noreferrer" class="adblock-link">
-               uBlock Origin Lite (Chrome)
-             </a>
-             <a href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=search" target="_blank" rel="noopener noreferrer" class="adblock-link">
-               uBlock Origin (Firefox)
-             </a>
-             <a href="https://chromewebstore.google.com/detail/adblock-plus-free-ad-bloc/cfhdojbkjhnklbpkdaibdccddilifddb?hl=es-419" target="_blank" rel="noopener noreferrer" class="adblock-link">
-               Adblock Plus (Chrome)
-             </a>
-             <a href="https://addons.mozilla.org/es-AR/firefox/addon/adblock-plus/" target="_blank" rel="noopener noreferrer" class="adblock-link">
-               Adblock Plus (Firefox)
-             </a>
-           </div>
 
-           <div class="checkbox-container">
-             <label class="custom-checkbox">
-               <input type="checkbox" v-model="preventOptimizationModal">
-               <span class="checkmark"></span>
-               No volver a mostrar
-             </label>
-           </div>
-
-           <div class="modal-actions">
-              <button class="modal-btn cancel" @click="closeOptimizationModal">Cancelar</button>
-              <button class="modal-btn continue" @click="proceedTo***">Continuar</button>
-           </div>
-        </div>
-      </div>
-    </div>
 
   </div>
 </template>
@@ -540,9 +473,7 @@ export default {
       isFestivalLoading: false,
       isTranslating: false,
       translatedOverview: null,
-      is***Available: false,
-      showOptimizationModal: false,
-      preventOptimizationModal: false,
+
       currentIndex: 0,
       touchStartX: 0,
       touchEndX: 0,
@@ -551,7 +482,6 @@ export default {
       loadingStates: {
         backdrop: true,
         festivalBadge: false,
-        
         metadata: true
       }
     };
@@ -609,12 +539,7 @@ export default {
     this.userEmail = email ? email.replace(/['"]+/g, '') : '';
     this.hasAccessToken = accessToken !== null;
     
-    if (typeof window !== 'undefined') {
-        const prevent = localStorage.getItem('prevent_optimization_modal');
-        if (prevent === 'true') {
-            this.preventOptimizationModal = true;
-        }
-    }
+
     
     this.updateHeroState();
 
@@ -698,7 +623,6 @@ export default {
         }
         
         this.isLoading = true;
-        this.is***Available = false;
         this.posterForDb = this.poster_path;
         this.nameForDb = this.name;
         this.idForDb = this.id;
@@ -735,7 +659,6 @@ export default {
         setTimeout(() => this.isLoading = false, 5000);
         
         await Promise.all([
-          this.check***Availability(),
           this.checkFestivalStatus()
         ]);
         
@@ -753,83 +676,8 @@ export default {
         }
     },
     
-    async check***Availability() {
-      const type = this.typeForDb;
-      const imdbId = this.heroItem.external_ids?.imdb_id || this.item.external_ids?.imdb_id;
-      
-      if (this.isHomepage && this.heroItem?.available_watch) {
-          this.is***Available = true;
-          if (this.isHomepage) {
-            this.loadingStates.vidSrcCheck = false;
-            this.checkHomepageContentReady();
-          }
-          return;
-      }
 
-      if (!imdbId) {
-        this.is***Available = false;
-        if (this.isHomepage) {
-          this.loadingStates.vidSrcCheck = false;
-          this.checkHomepageContentReady();
-        }
-        return;
-      }
-      
-      this.is***Available = false;
 
-      try {
-        const { data } = await useFetch('/api/***', {
-            query: { type, imdbId }
-        });
-        
-        if (data.value && data.value.available) {
-            this.is***Available = true;
-        }
-      } catch (error) {
-        console.error('WatchOn: Error checking StreamingSourceA availability:', error);
-        this.is***Available = false;
-      } finally {
-        if (this.isHomepage) {
-          this.loadingStates.vidSrcCheck = false;
-          this.checkHomepageContentReady();
-        }
-      }
-    },
-    
-    open***() {
-      if (this.preventOptimizationModal) {
-          const type = this.typeForDb;
-          const imdbId = this.heroItem.external_ids?.imdb_id || this.item.external_ids?.imdb_id;
-          if (this.isHomepage && this.heroItem?.available_watch) {
-             window.open(this.heroItem.available_watch, '_blank');
-          } else if (type && imdbId) {
-            window.open(`https://***.to/embed/${type}/${imdbId}`, '_blank');
-          }
-      } else {
-          this.showOptimizationModal = true;
-          document.body.style.overflow = 'hidden';
-      }
-    },
-
-    closeOptimizationModal() {
-        this.showOptimizationModal = false;
-        document.body.style.overflow = '';
-    },
-
-    proceedTo***() {
-        if (this.preventOptimizationModal) {
-            localStorage.setItem('prevent_optimization_modal', 'true');
-        }
-        
-        const type = this.typeForDb;
-        const imdbId = this.heroItem.external_ids?.imdb_id || this.item.external_ids?.imdb_id;
-        if (this.isHomepage && this.heroItem?.available_watch) {
-             window.open(this.heroItem.available_watch, '_blank');
-        } else if (type && imdbId) {
-            window.open(`https://***.to/embed/${type}/${imdbId}`, '_blank');
-        }
-        this.closeOptimizationModal();
-    },
     async handleTranslation() {
         const item = this.heroItem || this.item;
         if (item.overview && item.original_overview_language === 'en') {
@@ -951,7 +799,6 @@ export default {
       
       const allReady = !this.loadingStates.backdrop && 
                        !this.loadingStates.festivalBadge && 
-                       !this.loadingStates.vidSrcCheck && 
                        !this.loadingStates.metadata;
       
       if (allReady) {
@@ -2569,158 +2416,7 @@ export default {
   }
 }
 
-.optimization-modal {
-  width: 100%;
-  max-width: 500px;
-  background: linear-gradient(to bottom right, #092739, #061720);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-  display: flex;
-  flex-direction: column;
-}
 
-.optimization-content {
-  padding: 20px 25px 25px;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  color: #fff;
-}
-
-.optimization-text {
-  font-size: 1.4rem;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.9);
-  
-  a {
-    color: #8BE9FD;
-    text-decoration: none;
-    font-weight: 500;
-    
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-}
-
-.adblock-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.adblock-link {
-  font-size: 1.2rem;
-  padding: 6px 12px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  color: #8BE9FD;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  
-  &:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-  }
-}
-
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  margin-top: 5px;
-}
-
-.custom-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  font-size: 1.3rem;
-  color: rgba(255, 255, 255, 0.8);
-  user-select: none;
-  position: relative;
-  
-  input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
-  }
-  
-  .checkmark {
-    position: relative;
-    height: 20px;
-    width: 20px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-    transition: all 0.2s ease;
-  }
-
-  .checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-    left: 6px;
-    top: 2px;
-    width: 5px;
-    height: 10px;
-    border: solid #000;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-  }
-  
-  &:hover input ~ .checkmark {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-  
-  input:checked ~ .checkmark {
-    background-color: #8BE9FD;
-    border-color: #8BE9FD;
-  }
-  
-  input:checked ~ .checkmark:after {
-    display: block;
-  }
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 10px;
-}
-
-.modal-btn {
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 1.4rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
-}
-
-.modal-btn.cancel {
-  background: transparent;
-  color: rgba(255, 255, 255, 0.7);
-  
-  &:hover {
-    color: #fff;
-  }
-}
-
-.modal-btn.continue {
-  background: #8BE9FD;
-  color: #000;
-  font-weight: 600;
-  
-  &:hover {
-    background: #fff; 
-  }
-}
 </style>
 
 <style scoped>

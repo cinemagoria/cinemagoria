@@ -10,7 +10,6 @@
         :aria-label="isInAnyList ? 'Gestionar Listas' : 'Añadir a Lista'"
       >
         <transition name="list-fade" mode="out-in">
-          <!-- Plus icon -->
           <svg
             v-if="!isInAnyList"
             key="plus"
@@ -27,7 +26,6 @@
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
 
-          <!-- Check icon -->
           <svg
             v-else
             key="check"
@@ -44,9 +42,6 @@
           </svg>
         </transition>
       </button>
-
-      <!-- Dropdown Menu -->
-
     </div>
   </div>
 </template>

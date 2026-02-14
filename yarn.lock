@@ -6484,7 +6484,7 @@ vue@^3.5.25:
 web-streams-polyfill@^3.0.3:
   version "3.3.3"
   resolved "https://registry.npmjs.org/web-streams-polyfill/-/web-streams-polyfill-3.3.3.tgz"
-  integrity sha512-d2JWLCivmZ***Ioge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==
+  integrity sha512-d2JWLCivmZStreamingSourceCIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==
 
 webidl-conversions@^3.0.0:
   version "3.0.1"

@@ -68,7 +68,7 @@ A custom search architecture optimized for speed and accuracy.
 
 * **Typo-Tolerance:** Rust-based engine with "Did you mean?" suggestions.
 * **Universal Autocomplete:** Real-time results across movies, shows, and people.
-* **Curation:** Highlighting trending content specifically tailored for the 2024–2025 landscape.
+* **Curation:** Highlighting trending content specifically tailored for the 2024–2026 landscape.
 
 <div align="center">
   <img src="https://www.ivanluna.dev/images/assets/entercinema-asset6.webp" alt="Advanced Search" width="70%">
@@ -79,7 +79,7 @@ A custom search architecture optimized for speed and accuracy.
 
 * **Deep Data:** Access cast/crew details, runtimes, budgets, and original titles.
 * **Streaming Logic:** Integrated JustWatch API for localized "Where to Watch" data.
-* **External Links:** Direct access to IMDb, Rotten Tomatoes, Trakt, and ***.
+* **External Links:** Direct access to IMDb, Rotten Tomatoes, and Trakt.
 * **Visual Media:** High-definition galleries and integrated trailer support.
 
 <div align="center">
@@ -184,5 +184,5 @@ Full version history and changelogs are available at [entercinema.com/changelog]
 
 ### Attributions & Inspiration
 
-* Data and metadata provided by TMDB, IMDb, MDBList, Trakt, JustWatch, and ***.
+* Data and metadata provided by TMDB, IMDb, MDBList, Trakt, and JustWatch.
 * Inspired by the TasteJS Nuxt Movies project.

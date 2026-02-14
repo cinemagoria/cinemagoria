@@ -1133,35 +1133,7 @@ export function search(query, page = 1) {
     });
 };
 
-export function get***MovieByImdb(imdbId) {
-    return new Promise((resolve) => {
-        axios.get('https://***.bz/api/v2/list_movies.json', {
-            params: {
-                query_term: imdbId,
-                limit: 1,
-            },
-        }).then((response) => {
-            if (response.data.status === 'ok' && response.data.data.movie_count > 0) {
-                const movie = response.data.data.movies[0];
-                const title = movie.title_long
-                    .toLowerCase()
-                    .replace(/[^a-z0-9\s-]/g, '')
-                    .replace(/\s+/g, '-')
-                    .replace(/-+/g, '-');
 
-                resolve({
-                    slug: `${title}`,
-                    url: `https://***.bz/movies/${title}`,
-                    found: true
-                });
-            } else {
-                resolve({ found: false });
-            }
-        }).catch(() => {
-            resolve({ found: false });
-        });
-    });
-}
 
 export function getMDBListRatings(imdbId, type) {
     return new Promise((resolve, reject) => {

@@ -1,8 +1,6 @@
 <template>
   <div class="page-container">
     <div class="listing">
-      
-      <!-- Header matching pages/news/index.vue -->
       <nav class="navbar navbar-welcome">
         <h1 class="title-primary page-title">Productoras</h1>
         <h2 class="title-secondary page-subtitle">

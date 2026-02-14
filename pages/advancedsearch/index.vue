@@ -130,7 +130,6 @@
                 >
                   {{ country.name }}
                 </div>
-                <!-- Add other countries as needed, simplified for brevity -->
               </div>
             </div>
           </div>
