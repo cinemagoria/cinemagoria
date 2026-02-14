@@ -10,14 +10,11 @@
       <Footer />
     </div>
 
-    <!-- Global Modals -->
     <AuthModal ref="authModal" />
     <CookieConsent />
     <InstallPrompt />
     <RatedModal />
     <FollowingModal />
-    
-    <!-- Modals triggered by EventBus -->
     <QuickFavModal />
     <MyListsModal />
     <CreateListModal />

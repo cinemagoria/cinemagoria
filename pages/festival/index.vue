@@ -5,7 +5,6 @@
       <p class="title-secondary">Explore our curated selections from the world's leading film festivals.</p>
 
       <div class="festivals-grid">
-        <!-- Slamdance 2026 -->
         <nuxt-link to="/festival/slamdance-2026" class="festival-card">
           <div class="card-image-wrapper">
              <img src="/festivals/slamdance/slamdance_backdrop_2026_eng.webp" alt="Slamdance 2026" />
@@ -17,7 +16,6 @@
           </div>
         </nuxt-link>
 
-        <!-- Berlinale 2026 -->
         <nuxt-link to="/festival/berlinale-2026" class="festival-card">
           <div class="card-image-wrapper">
              <img src="/festivals/berlinale/berlinale_backdrop_2026_eng.webp" alt="Berlinale 2026" />
@@ -29,7 +27,6 @@
           </div>
         </nuxt-link>
 
-        <!-- Sundance 2026 -->
         <nuxt-link to="/festival/sundance-2026" class="festival-card">
           <div class="card-image-wrapper">
              <img src="/festivals/sundance/sundance_backdrop_2026_eng.webp" alt="Sundance 2026" />
@@ -41,7 +38,6 @@
           </div>
         </nuxt-link>
 
-        <!-- Rotterdam 2026 -->
         <nuxt-link to="/festival/rotterdam-2026" class="festival-card">
           <div class="card-image-wrapper">
              <img src="/festivals/rotterdam/rotterdam_backdrop_2026_eng.webp" alt="Rotterdam 2026" />

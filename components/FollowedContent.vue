@@ -70,7 +70,6 @@
                 <p>No titles match your filters for this company.</p>
               </div>
 
-               <!-- Load More Button -->
               <div v-if="company.page < company.totalPages && !company.loadingMore" class="load-more-container">
                 <button @click="loadMore(company.id)" class="load-more-btn">
                    Load More
@@ -95,7 +94,6 @@
         <p style="text-align: center; color: white; margin-top: 2rem;">No content found from your followed companies.</p>
       </div>
 
-      <!-- Filter Modal -->
       <div v-if="filtersModalVisible" class="modal-overlay" @click="closeFiltersModal">
           <div class="filters-modal" @click.stop>
             <div class="modal-header">

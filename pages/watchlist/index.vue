@@ -552,7 +552,6 @@
 
 
       </section>
-      <!-- Added Banner -->
       <transition name="fade">
         <div v-if="addedBannerVisible" class="added-banner">
           <div class="added-content">

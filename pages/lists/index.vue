@@ -131,8 +131,7 @@
           </div>
         </div>
       </div>
-      
-      <!-- Undo Banner -->
+
       <transition name="slide-up">
         <div v-if="undoList" class="undo-banner">
           <div class="undo-content">

@@ -45,7 +45,6 @@
     </div>
 
     <section class="spacing">
-      <!-- Movies Section -->
       <div v-if="activeTab === 'movies'" class="content-section">
         <div v-if="movies && movies.results && movies.results.length">
           <Listing
@@ -62,7 +61,6 @@
         </div>
       </div>
 
-      <!-- TV Shows Section -->
       <div v-if="activeTab === 'tvShows'" class="content-section">
         <div v-if="tvShows && tvShows.results && tvShows.results.length">
           <Listing
@@ -80,7 +78,6 @@
       </div>
     </section>
 
-    <!-- Filters Modal -->
     <div v-if="filtersModalVisible" class="modal-overlay" @click="closeFiltersModal">
       <div class="filters-modal" @click.stop>
         <div class="modal-header">

@@ -36,7 +36,6 @@
       </div>
 
       <div v-else>
-        <!-- Films Tab -->
         <div v-if="activeTab === 'films'" class="films-grid">
             <Listing 
                 v-if="films && films.results.length"
@@ -46,7 +45,6 @@
             />
         </div>
 
-        <!-- Schedule Tab -->
         <div v-if="activeTab === 'schedule'" class="schedule-container">
           <div v-for="(dayScreenings, date) in groupedScreenings" :key="date" class="schedule-day">
             <div class="day-header" @click="toggleDay(date)">

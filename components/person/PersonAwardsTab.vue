@@ -1,6 +1,5 @@
 <template>
   <div :class="$style.awardsContainer">
-    <!-- Oscars Section -->
     <div v-if="oscars.length" :class="$style.awardSection">
         <h3 :class="$style.awardLogo">
             <span :class="$style.goldText">OSCARS</span> ACADEMY AWARDS
@@ -37,7 +36,6 @@
         </div>
     </div>
 
-    <!-- Golden Globes Section -->
     <div v-if="goldenGlobes.length" :class="$style.awardSection">
         <h3 :class="$style.awardLogo">
             <span :class="$style.goldText">GOLDEN GLOBES</span>
@@ -73,7 +71,6 @@
             </table>
         </div>
     </div>
-    <!-- Palme d'Or Section -->
     <div v-if="palme.length" :class="$style.awardSection">
         <h3 :class="$style.awardLogo">
             <span :class="$style.goldText">CANNES</span> PALME D'OR
@@ -100,7 +97,6 @@
         </div>
     </div>
 
-    <!-- Golden Lion Section -->
     <div v-if="goldenLion.length" :class="$style.awardSection">
         <h3 :class="$style.awardLogo">
             <span :class="$style.goldText">VENICE</span> GOLDEN LION
@@ -127,7 +123,6 @@
         </div>
     </div>
 
-    <!-- Golden Bear Section -->
     <div v-if="goldenBear.length" :class="$style.awardSection">
         <h3 :class="$style.awardLogo">
             <span :class="$style.goldText">BERLIN</span> GOLDEN BEAR

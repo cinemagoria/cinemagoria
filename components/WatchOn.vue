@@ -3,49 +3,7 @@
     <h4 class="section-title">Watch On</h4>
     <div class="links-grid">
       
-      <div v-if="imdbId && is***Available" class="link-item">
-        <a
-          :href="'https://***.to/embed/' + type + '/' + imdbId"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Watch on StreamingSourceA"
-        >
-          <div class="link-icon ***-logo"></div>
-          <span class="label-style">StreamingSourceA</span>
-        </a>
-      </div>
 
-      <div v-if="imdbId" class="link-item">
-        <a
-          :href="***Link"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Watch on ***"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
-            viewBox="0 0 192 192"
-            class="link-icon ***-icon" 
-          >
-            <path d="M100.242 23.743a6 6 0 0 0-8.485 0L23.743 91.757a6 6 0 0 0 0 8.485l68.014 68.015a6 6 0 0 0 8.485 0l68.015-68.015a6 6 0 0 0 0-8.485l-68.015-68.014ZM80 71.83c0-2.44 2.758-3.86 4.744-2.442l33.838 24.17a3 3 0 0 1 0 4.883l-33.838 24.171C82.758 124.03 80 122.611 80 120.17V71.83Z"/>
-          </svg>
-          <span class="label-style">***</span>
-        </a>
-      </div>
-
-      <div v-if="***Url && type === 'movie'" class="link-item">
-        <a
-          :href="***Url"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Visit ***"
-        >
-          <div class="link-icon ***-logo"></div>
-          <span class="label-style">***</span>
-        </a>
-      </div>
 
       <div 
         v-for="(provider, index) in providers" 
@@ -73,7 +31,7 @@
 </template>
 
 <script>
-import { get***MovieByImdb } from '~/utils/api';
+
 
 export default {
   name: 'WatchOn',
@@ -94,66 +52,21 @@ export default {
 
   data() {
     return {
-      ***Url: null,
-      is***Available: false,
     };
   },
 
-  computed: {
-    ***Link() {
-      const contentType = this.type === "tv" ? "series" : "movie";
-      return `***://detail/${contentType}/${this.imdbId}`;
-    },
-  },
+
 
   mounted() {
-    this.check***Availability();
-    if (this.imdbId && this.type === 'movie') {
-      this.fetch***Url();
-    }
   },
 
   watch: {
     imdbId(newVal) {
-      this.check***Availability();
-      if (newVal && this.type === 'movie') {
-        this.fetch***Url();
-      }
     }
   },
 
   methods: {
-    async check***Availability() {
-      if (!this.imdbId || !this.type) {
-        this.is***Available = false;
-        return;
-      }
-      
-      this.is***Available = false;
 
-      try {
-        const { data } = await useFetch('/api/***', {
-            query: { type: this.type, imdbId: this.imdbId }
-        });
-        
-        if (data.value && data.value.available) {
-            this.is***Available = true;
-        }
-      } catch (error) {
-        console.error('WatchOn: Error checking StreamingSourceA availability:', error);
-        this.is***Available = false;
-      }
-    },
-    async fetch***Url() {
-      if (!this.imdbId) return;
-      
-      this.***Url = null;
-      
-      const result = await get***MovieByImdb(this.imdbId);
-      if (result.found) {
-        this.***Url = result.url;
-      }
-    }
   }
 };
 </script>
@@ -223,22 +136,7 @@ export default {
   word-break: break-word;
 }
 
-.link-item a:hover .***-logo {
-  transform: scale(1.1);
-}
 
-.***-logo {
-  width: 23px !important;
-  height: 23px !important;
-  background-color: #F9CC71;
-  -webkit-mask: url('/logos/platforms/***.png') no-repeat center / contain;
-  mask: url('/logos/platforms/***.png') no-repeat center / contain;
-  transition: background-color 0.3s ease;
-}
-
-.link-item a:hover .***-logo {
-  background-color: #8AE8FC;
-}
 
 @media (max-width: 600px) {
   .links-grid {
@@ -272,30 +170,5 @@ export default {
   background-color: rgba(0, 0, 0, 0.307);
 }
 
-.***-logo {
-  width: 23px !important;
-  height: 23px !important;
-  background-color: white;
-  background: #69C145;
-  -webkit-mask: url('/logos/streaming/***-logo.svg') no-repeat center / contain;
-  mask: url('/logos/streaming/***-logo.svg') no-repeat center / contain;
-  transition: background-color 0.3s ease;
-}
 
-.link-item a:hover .***-logo {
-  background-color: #8AE8FC;
-}
-
-.***-icon {
-  width: 28px !important;
-  height: 28px !important;
-  fill: #7B5BF5;
-  transition: fill 0.3s ease;
-}
-
-.link-item a:hover .***-icon {
-  fill: #8AE8FC;
-  background-color: transparent !important;
-  transform: none;
-}
 </style>

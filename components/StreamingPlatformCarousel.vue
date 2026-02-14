@@ -47,7 +47,6 @@
           </div>
         </NuxtLink>
 
-        <!-- 'Explore All' Card -->
         <div class="production-company-card explore-card" v-if="viewAllLink">
              <nuxt-link :to="viewAllLink" class="company-link">
                <div class="logo-container explore-container">
@@ -55,10 +54,6 @@
                </div>
              </nuxt-link>
         </div>
-
-
-
-
       </div>
 
       <button

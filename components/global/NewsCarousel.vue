@@ -37,7 +37,6 @@
           <div v-for="article in articles" :key="article.id" class="card">
             <div class="release-card">
             
-            <!-- Image Top -> Redirects to Internal Feed -->
             <NuxtLink 
               :to="{ path: '/news', query: { source: article.source?.name, highlight: article.id } }" 
               class="card-image-link" 
@@ -61,14 +60,11 @@
             </NuxtLink>
 
             <div class="card-content">
-              <!-- Meta: Source & Date -->
               <div class="card-meta">
                 <span v-if="article.source && article.source.name" class="source-badge">{{ article.source.name }}</span>
                 <span class="card-date">{{ formatDate(article.published_at) }}</span>
               </div>
 
-              <!-- Title -->
-              <!-- Title -> Redirects to Internal Feed -->
               <NuxtLink 
                 :to="{ path: '/news', query: { source: article.source?.name, highlight: article.id } }" 
                 class="card-title" 
@@ -77,12 +73,9 @@
                 {{ article.title }}
               </NuxtLink>
 
-              <!-- Description -->
               <p class="card-description">
                 {{ sanitizeDescription(article.description || article.summary) }}
               </p>
-
-
             </div>
 
           </div>

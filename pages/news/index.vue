@@ -11,8 +11,6 @@
 
     <div class="news-section">
       <div class="content-wrapper">
-        
-        <!-- Sidebar -->
         <aside class="news-sidebar">
           <div class="sidebar-card">
             
@@ -57,8 +55,6 @@
             </div>
           </div>
         </aside>
-
-        <!-- Main Content -->
         <div class="news-main">
           
           <div class="header-status">
@@ -87,23 +83,16 @@
               </span>
             </ClientOnly>
           </div>
-
-          <!-- Loading State -->
           <div v-if="pending" class="loading-grid">
              <div class="loader-container">
                 <Loader />
              </div>
           </div>
-
-          <!-- Error State -->
            <div v-else-if="error" class="error-container">
             <p>Failed to load news.</p>
             <button @click="refresh" class="retry-btn">Retry</button>
           </div>
-
-           <!-- News Grid (Success State) -->
             <div v-else>
-               <!-- Saved View -->
                <div v-if="isSavedView">
                   <div v-if="Object.keys(groupedSavedArticles).length > 0">
                     <div v-for="(group, sourceName) in groupedSavedArticles" :key="sourceName" class="source-group">
@@ -131,7 +120,6 @@
                                       class="img-lazy"
                                   />
                                    
-                                   <!-- Bookmark Button (Already Saved) -->
                                   <button 
                                     class="bookmark-btn is-saved"
                                     @click.prevent="toggleSave(item)"
@@ -169,7 +157,6 @@
                   </div>
                </div>
 
-               <!-- Standard Feed View -->
                <div v-else-if="newsItems.length > 0">
                   <div class="news-grid">
                     <div 
@@ -178,7 +165,6 @@
                       class="news-card"
                       :id="'news-item-' + item.id"
                     >
-                      <!-- Image / Video Area -->
                       <a :href="item.href" target="_blank" class="card-image" :class="{ 'has-video': item.video_id }">
                           <img 
                               v-if="item.image"
@@ -198,7 +184,6 @@
                           
                           <div class="card-source">{{ item.source.name }}</div>
 
-                           <!-- Bookmark Button -->
                           <button 
                             class="bookmark-btn"
                             :class="{ 'is-saved': isSaved(item) }"
@@ -232,7 +217,6 @@
                     </div>
                   </div>
 
-                  <!-- Infinite Scroll Trigger -->
                   <div ref="sentinel" class="sentinel" style="height: 20px; margin-top: 20px;"></div>
                </div>
                

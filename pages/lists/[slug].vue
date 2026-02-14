@@ -345,7 +345,6 @@
                 <div class="dropdown-option" :class="{ selected: selectedGenre === '' }" @click.stop="selectGenre('')">
                   All genres
                 </div>
-                <!-- Using slice to prevent huge lists in case of many genres -->
                 <div v-for="genre in uniqueSortedGenres" :key="genre" class="dropdown-option" :class="{ selected: selectedGenre === genre }" @click.stop="selectGenre(genre)">
                   {{ genre }}
                 </div>
