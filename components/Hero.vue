@@ -153,8 +153,8 @@
               </div>
             </div>
             <br>
-            <div :class="$style.buttonContainer">
-              <transition-group name="fade" :class="{ 'no-transition': isHomepage && !isHomepageContentReady }">
+            <div :class="[$style.buttonContainer, { 'no-transition': isHomepage && !isHomepageContentReady }]">
+              <transition-group name="fade">
 
               
               <button
