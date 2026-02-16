@@ -895,6 +895,14 @@ watch(userEmail, (val) => {
   .content-wrapper {
     flex-direction: column;
   }
+
+  .saved-articles-link {
+    width: fit-content;
+    margin: 0 0 15px 0;
+    border-radius: 50px;
+    padding: 8px 24px;
+    justify-content: center;
+  }
   
   .news-sidebar {
     width: 100%;
