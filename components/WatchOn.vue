@@ -1,5 +1,5 @@
 <template>
-  <div class="watch-on-container">
+  <div class="watch-on-container" v-if="providers && providers.length">
     <h4 class="section-title">Ver en</h4>
     <div class="links-grid">
       
