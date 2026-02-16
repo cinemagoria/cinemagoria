@@ -638,7 +638,7 @@ export default {
       customYearEnd: null,
       currentYear: new Date().getFullYear(),
       selectedLanguage: 'english',
-      fallbackImageUrl: "/image_not_found_yet.webp",
+      fallbackImageUrl: "/placeholders/image_not_found_yet.webp",
       handleImageError: "this.src='/placeholders/image_not_found_yet.webp'",
       userEmail: '',
       accessToken: '',
