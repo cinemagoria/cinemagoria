@@ -149,8 +149,8 @@
               {{ truncate(heroItem.overview, 200) }}
             </div>
             <br>
-            <div :class="$style.buttonContainer">
-              <transition-group name="fade" :class="{ 'no-transition': isHomepage && !isHomepageContentReady }">
+            <div :class="[$style.buttonContainer, { 'no-transition': isHomepage && !isHomepageContentReady }]">
+              <transition-group name="fade">
 
               
               <button
@@ -2602,7 +2602,7 @@ export default {
     font-weight: bold;
     font-size: 1.6rem;
 }
-/* Animations */
+
 @keyframes popIn {
   0% {
     opacity: 0;
@@ -2616,10 +2616,9 @@ export default {
 
 .upcomingBadge span {
   display: inline-block;
-  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; /* Bouncy pop */
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
 }
 
-/* Apply animation specifically to the button class to ensure it hits the element */
 .actionButton {
    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
    transform-origin: center center;
@@ -2634,7 +2633,6 @@ export default {
   opacity: 0;
 }
 
-/* Disable transitions during homepage loading to prevent visible button shifts */
 .no-transition * {
   transition: none !important;
 }
