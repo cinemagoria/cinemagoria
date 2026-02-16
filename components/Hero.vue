@@ -2563,7 +2563,6 @@ export default {
     font-size: 1.6rem;
 }
 
-/* Animations */
 @keyframes popIn {
   0% {
     opacity: 0;
@@ -2594,7 +2593,6 @@ export default {
   transform: scale(0.98);
 }
 
-/* Disable transitions during homepage loading to prevent visible button shifts */
 .no-transition * {
   transition: none !important;
 }

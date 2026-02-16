@@ -9,6 +9,7 @@ export default defineEventHandler(async (event) => {
     const lang = rawLang.substring(0, 2).toLowerCase()
 
     const source = query.source ? String(query.source) : null
+    const searchQuery = query.q ? String(query.q).trim() : null
 
     const dbUrl = config.rssDbUrl || config.imdbDbUrl
     const dbToken = config.rssDbToken || config.imdbDbToken
@@ -34,10 +35,18 @@ export default defineEventHandler(async (event) => {
         if (source) {
             sql += ` AND source = ?`
             args.push(source)
+        }
+
+        if (searchQuery) {
+            sql += ` AND (title LIKE ? OR description LIKE ?)`
+            args.push(`%${searchQuery}%`, `%${searchQuery}%`)
+            sql += ` ORDER BY published_at DESC LIMIT ? OFFSET ?`
+        } else if (source) {
             sql += ` ORDER BY published_at DESC LIMIT ? OFFSET ?`
         } else {
             sql += ` ORDER BY created_at DESC LIMIT ? OFFSET ?`
         }
+
         args.push(limit, offset)
 
         const result = await db.execute({ sql, args })
