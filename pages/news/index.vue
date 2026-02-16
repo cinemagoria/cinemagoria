@@ -14,10 +14,32 @@
         <aside class="news-sidebar">
           <div class="sidebar-card">
             
-            <NuxtLink :to="{ path: '/news', query: { view: 'saved' } }" class="saved-articles-link" :class="{ 'active': isSavedView }">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><line x1="12" x2="12" y1="7" y2="13"/><line x1="15" x2="9" y1="10" y2="10"/></svg>
-              <span>Saved Articles</span>
-            </NuxtLink>
+            <div class="sidebar-header-actions" :class="{ 'active': isSearchActive }">
+              <NuxtLink :to="{ path: '/news', query: { view: 'saved' } }" class="saved-articles-link" :class="{ 'active': isSavedView }">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z" clip-rule="evenodd" /></svg>
+                <span>Saved Articles</span>
+              </NuxtLink>
+
+              <div class="mobile-spacer" :class="{ 'collapsed': isSearchActive }"></div>
+
+              <div class="search-wrapper" :class="{ 'active': isSearchActive }">
+                  <button class="search-toggle-btn" @click="toggleSearch" :class="{ 'active': isSearchActive }" aria-label="Toggle Search">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  </button>
+                  
+                  <div class="search-input-container" :class="{ 'show': isSearchActive }">
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        placeholder="Search news..." 
+                        v-model="searchQuery"
+                    >
+                    <button class="clear-search-btn" @click="clearSearch" v-if="searchQuery">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </button>
+                  </div>
+              </div>
+            </div>
 
             <h3 class="sidebar-title">Sources</h3>
             <div class="sources-container-mobile">
@@ -248,15 +270,43 @@ const currentSources = computed(() => SOURCES[currentLang.value] || SOURCES['en'
 const route = useRoute();
 const router = useRouter();
 const selectedSource = ref(route.query.source || null);
+const searchQuery = ref('');
+const isSearchActive = ref(false);
+const debouncedSearchQuery = ref('');
+let searchTimeout = null;
+
+const toggleSearch = () => {
+  isSearchActive.value = !isSearchActive.value;
+  if (!isSearchActive.value) {
+    clearSearch();
+  } else {
+    nextTick(() => {
+      document.querySelector('.search-input')?.focus();
+    });
+  }
+};
+
+const clearSearch = () => {
+  searchQuery.value = '';
+  debouncedSearchQuery.value = '';
+};
+
+watch(searchQuery, (newVal) => {
+  if (searchTimeout) clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    debouncedSearchQuery.value = newVal;
+  }, 500);
+});
 
 const { data, pending, refresh, error } = await useFetch('/api/news', {
   query: computed(() => ({
     limit: selectedSource.value ? 100 : 200,
     source: selectedSource.value,
-    lang: currentLang.value
+    lang: currentLang.value,
+    q: debouncedSearchQuery.value
   })),
-  key: computed(() => `news-${currentLang.value}-${selectedSource.value || 'all'}`),
-  watch: [selectedSource],
+  key: computed(() => `news-${currentLang.value}-${selectedSource.value || 'all'}-${debouncedSearchQuery.value}`),
+  watch: [selectedSource, debouncedSearchQuery],
   lazy: true,
   server: false,
   dedupe: 'defer',
@@ -572,20 +622,57 @@ watch(userEmail, (val) => {
   flex-direction: column;
 }
 
+.sidebar-header-actions {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+  transition: padding-bottom 0.3s ease;
+}
+
+.sidebar-header-actions.active {
+  padding-bottom: 60px;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  position: static; 
+}
+
+.search-input-container {
+   position: absolute;
+   bottom: 0; 
+   left: 0;
+   width: 100%;
+   display: none; 
+   z-index: 10;
+}
+
+.search-input-container.show {
+  display: block;
+}
+
 .saved-articles-link {
   display: flex;
   align-items: center;
+  justify-content: center; 
   gap: 10px;
   background: rgba(139, 233, 253, 0.1);
   color: #8BE9FD;
-  padding: 12px 15px;
+  padding: 0; 
   border-radius: 10px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 14px;
-  margin-bottom: 20px;
   transition: all 0.2s ease;
   border: 1px solid rgba(139, 233, 253, 0.2);
+  flex-grow: 0; 
+  white-space: nowrap; 
+  height: 48px; 
+  width: 48px; 
+
+  span {
+    display: none; 
+  }
 
   &:hover {
     background: rgba(139, 233, 253, 0.2);
@@ -597,6 +684,73 @@ watch(userEmail, (val) => {
     background: rgba(139, 233, 253, 0.25);
     border-color: #8BE9FD;
     box-shadow: 0 0 10px rgba(139, 233, 253, 0.2);
+  }
+}
+
+.search-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(139, 233, 253, 0.1);
+  color: #8BE9FD;
+  padding: 0 12px; 
+  height: 48px; 
+  border-radius: 10px;
+  border: 1px solid rgba(139, 233, 253, 0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  width: 48px; 
+
+  &:hover {
+    background: rgba(139, 233, 253, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 233, 253, 0.1);
+  }
+
+  &.active {
+    background: rgba(139, 233, 253, 0.25);
+    border-color: #8BE9FD;
+  }
+}
+
+.search-input {
+  width: 100%;
+  background: rgba(16, 26, 35, 0.6);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  color: #fff;
+  padding: 10px 35px 10px 15px;
+  border-radius: 10px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #8BE9FD;
+    box-shadow: 0 0 0 2px rgba(139, 233, 253, 0.2);
+    background: rgba(16, 26, 35, 0.8);
+  }
+  
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+.clear-search-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    color: #fff;
   }
 }
 
@@ -899,12 +1053,86 @@ watch(userEmail, (val) => {
     flex-direction: column;
   }
 
+  .sidebar-header-actions {
+    justify-content: flex-start; 
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 0 10px; 
+    padding-bottom: 0 !important; 
+    flex-wrap: nowrap; 
+  }
+
+  .mobile-spacer {
+    display: block;
+    flex-grow: 1;
+    transition: flex-grow 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .mobile-spacer.collapsed {
+    flex-grow: 0;
+  }
+
+  .search-wrapper {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap; 
+    flex-grow: 0;
+    transition: flex-grow 0.4s ease;
+    width: auto;
+    position: relative; 
+  }
+  
+  .search-wrapper.active {
+    flex-grow: 1;
+    margin-left: 10px; 
+  }
+
   .saved-articles-link {
     width: fit-content;
-    margin: 0 0 15px 0;
-    border-radius: 50px;
+    height: auto; 
+    margin: 0; 
     padding: 8px 24px;
     justify-content: center;
+    flex-grow: 0; 
+    flex-shrink: 0; 
+    
+    span {
+      display: inline; 
+    }
+  }
+
+  .search-toggle-btn {
+    width: 40px; 
+    height: 40px;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .search-input-container {
+    padding: 0;
+    margin: 0;
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    display: block; 
+    position: relative; 
+    top: auto;
+    left: auto;
+    flex-basis: auto; 
+    margin-top: 0; 
+  }
+
+  .search-input-container.show {
+    width: 100%; 
+    opacity: 1;
+    margin-left: 10px;
+    flex-grow: 1; 
+  }
+
+  .search-input {
+      padding: 8px 30px 8px 12px;
+      height: 40px; 
   }
   
   .news-sidebar {

@@ -36,7 +36,6 @@
   }
 
   &:hover {
-      /* Matching Sundance hover effect */
       filter: brightness(0) saturate(100%) invert(84%) sepia(21%) saturate(1211%) hue-rotate(179deg) brightness(101%) contrast(104%);
       cursor: pointer;
   }

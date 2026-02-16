@@ -36,7 +36,6 @@
   }
 
   &:hover {
-      /* Hover effect similar to other badges, subtle brightness/contrast shift */
       filter: invert(1) brightness(1.2);
       cursor: pointer;
   }
