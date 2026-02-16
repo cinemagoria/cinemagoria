@@ -272,8 +272,7 @@ const router = useRouter();
 const selectedSource = ref(route.query.source || null);
 const searchQuery = ref('');
 const isSearchActive = ref(false);
-const debouncedSearchQuery = ref('');
-let searchTimeout = null;
+const debouncedSearchQuery = refDebounced(searchQuery, 500);
 
 const toggleSearch = () => {
   isSearchActive.value = !isSearchActive.value;
@@ -288,15 +287,7 @@ const toggleSearch = () => {
 
 const clearSearch = () => {
   searchQuery.value = '';
-  debouncedSearchQuery.value = '';
 };
-
-watch(searchQuery, (newVal) => {
-  if (searchTimeout) clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(() => {
-    debouncedSearchQuery.value = newVal;
-  }, 500);
-});
 
 const { data, pending, refresh, error } = await useFetch('/api/news', {
   query: computed(() => ({
