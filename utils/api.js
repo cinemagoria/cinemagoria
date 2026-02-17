@@ -1438,20 +1438,19 @@ export function getTvShowsByProvider(providerId, page = 1, filters = {}) {
         });
     });
 }
-export function searchNews(query, page = 1) {
-    return new Promise((resolve, reject) => {
-        axios.get('/api/news', {
+export async function searchNews(query, page = 1) {
+    try {
+        const response = await axios.get('/api/news', {
             params: {
                 q: query,
                 limit: 10,
                 page: page,
                 lang: getEnv('API_LANG')
             }
-        }).then((response) => {
-            resolve(response.data);
-        }).catch((error) => {
-            console.error("Error searching news:", error);
-            resolve({ results: [] });
         });
-    });
+        return response.data;
+    } catch (error) {
+        console.error("Error searching news:", error);
+        return { results: [] };
+    }
 }
