@@ -304,9 +304,8 @@ export default {
             const data = await searchNews(this.searchQuery, this.newsPage);
             
             if (data.results && data.results.length > 0) {
-                const newItems = data.results.filter(newItem => 
-                    !this.localNews.some(existingItem => existingItem.id === newItem.id)
-                );
+                const existingIds = new Set(this.localNews.map(item => item.id));
+                const newItems = data.results.filter(newItem => !existingIds.has(newItem.id));
                 
                 if (newItems.length === 0) {
                      this.hasMoreNews = false;
