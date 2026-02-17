@@ -14,7 +14,18 @@
       <h2 class="no-results__title">No se encontraron resultados para "{{ searchQuery }}"</h2>
       
       <div v-if="typoCheckInProgress" class="typo-checking">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="#2196f3" viewBox="0 0 44 44"><g fill="none" fill-rule="evenodd" stroke-width="2"><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="0s" calcMode="spline" dur="1.8s" keySplines="0.165, 0.84, 0.44, 1" keyTimes="0; 1" repeatCount="indefinite" values="1; 20"/><animate attributeName="stroke-opacity" begin="0s" calcMode="spline" dur="1.8s" keySplines="0.3, 0.61, 0.355, 1" keyTimes="0; 1" repeatCount="indefinite" values="1; 0"/></circle><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="-0.9s" calcMode="spline" dur="1.8s" keySplines="0.165, 0.84, 0.44, 1" keyTimes="0; 1" repeatCount="indefinite" values="1; 20"/><animate attributeName="stroke-opacity" begin="-0.9s" calcMode="spline" dur="1.8s" keySplines="0.3, 0.61, 0.355, 1" keyTimes="0; 1" repeatCount="indefinite" values="1; 0"/></circle></g></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 44 44" stroke="#2196f3">
+          <g fill="none" fill-rule="evenodd" stroke-width="2">
+            <circle cx="22" cy="22" r="1">
+              <animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/>
+              <animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="22" cy="22" r="1">
+              <animate attributeName="r" begin="-0.9s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/>
+              <animate attributeName="stroke-opacity" begin="-0.9s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/>
+            </circle>
+          </g>
+        </svg>
       </div>
       
       <div v-if="suggestedCorrection" class="suggestion">
@@ -22,18 +33,143 @@
       </div>
     </div>
 
-    <div class="listing__items">
-      <Card
-        v-for="item in items.results"
-        :key="`card-${item.id}`"
-        :item="item" />
+    <div v-if="localNews && localNews.length > 0" class="news-section">
+      <div class="section-header" @click="toggleSection('news')">
+        <h2 class="section-title">Noticias</h2>
+        <button class="expand-btn" :aria-label="collapsedSections.news ? 'Expandir' : 'Contraer'">
+            <svg v-if="collapsedSections.news" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-icon lucide-chevrons-down"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-icon lucide-chevrons-up"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
+        </button>
+      </div>
+      <div v-show="!collapsedSections.news" class="news-carousel-wrapper">
+        <button
+          class="news-nav news-nav--left"
+          aria-label="Anterior"
+          type="button"
+          :disabled="disableLeftNewsButton"
+          @click="scrollNewsCarousel('left')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"/></svg>
+        </button>
+
+        <div 
+          ref="newsCarousel"
+          class="news-carousel"
+          @scroll="onNewsScroll">
+           <div v-for="newsItem in sortedNews" :key="newsItem.id" class="news-carousel-item">
+              <NewsResultCard :item="newsItem" />
+           </div>
+           <div v-if="isLoadingNews" class="news-loading-indicator">
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 44 44" stroke="#8BE9FD"><g fill="none" fill-rule="evenodd" stroke-width="2"><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="-0.9s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="-0.9s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle></g></svg>
+           </div>
+        </div>
+
+        <button
+          class="news-nav news-nav--right"
+          aria-label="Siguiente"
+          type="button"
+          :disabled="disableRightNewsButton"
+          @click="scrollNewsCarousel('right')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div v-if="people.length > 0" class="category-section">
+      <div class="section-header" @click="toggleSection('people')">
+        <h2 class="section-title">Personas ({{ people.length }})</h2>
+        <button class="expand-btn" :aria-label="collapsedSections.people ? 'Expandir' : 'Contraer'">
+            <svg v-if="collapsedSections.people" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-icon lucide-chevrons-down"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-icon lucide-chevrons-up"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
+        </button>
+      </div>
+      <div v-show="!collapsedSections.people" class="listing__items">
+        <Card v-for="item in people" :key="`person-${item.id}`" :item="item" />
+      </div>
+    </div>
+
+    <div v-if="festivals.length > 0" class="category-section">
+      <div class="section-header" @click="toggleSection('festivals')">
+        <h2 class="section-title">Festivales ({{ festivals.length }})</h2>
+        <button class="expand-btn" :aria-label="collapsedSections.festivals ? 'Expandir' : 'Contraer'">
+            <svg v-if="collapsedSections.festivals" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-icon lucide-chevrons-down"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-icon lucide-chevrons-up"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
+        </button>
+      </div>
+      <div v-show="!collapsedSections.festivals" class="listing__items">
+        <Card v-for="item in festivals" :key="`festival-${item.id}`" :item="item" />
+      </div>
+    </div>
+
+    <div v-if="productionCompanies.length > 0" class="category-section">
+       <div class="section-header" @click="toggleSection('productionCompanies')">
+        <h2 class="section-title">Productoras ({{ productionCompanies.length }})</h2>
+        <button class="expand-btn" :aria-label="collapsedSections.productionCompanies ? 'Expandir' : 'Contraer'">
+            <svg v-if="collapsedSections.productionCompanies" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-icon lucide-chevrons-down"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-icon lucide-chevrons-up"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
+        </button>
+      </div>
+      <div v-show="!collapsedSections.productionCompanies" class="listing__items">
+        <Card v-for="item in productionCompanies" :key="`company-${item.id}`" :item="item" />
+      </div>
+    </div>
+
+    <div v-if="streamingServices.length > 0" class="category-section">
+      <div class="section-header" @click="toggleSection('streamingServices')">
+        <h2 class="section-title">Servicios de Streaming ({{ streamingServices.length }})</h2>
+        <button class="expand-btn" :aria-label="collapsedSections.streamingServices ? 'Expandir' : 'Contraer'">
+            <svg v-if="collapsedSections.streamingServices" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-icon lucide-chevrons-down"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-icon lucide-chevrons-up"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
+        </button>
+      </div>
+      <div v-show="!collapsedSections.streamingServices" class="listing__items">
+        <Card v-for="item in streamingServices" :key="`streaming-${item.id}`" :item="item" />
+      </div>
+    </div>
+
+    <div v-if="movies.length > 0" class="category-section">
+      <div class="section-header" @click="toggleSection('movies')">
+        <h2 class="section-title">Películas ({{ movies.length }})</h2>
+        <button class="expand-btn" :aria-label="collapsedSections.movies ? 'Expandir' : 'Contraer'">
+            <svg v-if="collapsedSections.movies" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-icon lucide-chevrons-down"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-icon lucide-chevrons-up"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
+        </button>
+      </div>
+      <div v-show="!collapsedSections.movies" class="listing__items">
+        <Card v-for="item in movies" :key="`movie-${item.id}`" :item="item" />
+      </div>
+    </div>
+
+    <div v-if="tvShows.length > 0" class="category-section">
+      <div class="section-header" @click="toggleSection('tvShows')">
+        <h2 class="section-title">Series de TV ({{ tvShows.length }})</h2>
+        <button class="expand-btn" :aria-label="collapsedSections.tvShows ? 'Expandir' : 'Contraer'">
+            <svg v-if="collapsedSections.tvShows" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-icon lucide-chevrons-down"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-icon lucide-chevrons-up"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
+        </button>
+      </div>
+      <div v-show="!collapsedSections.tvShows" class="listing__items">
+        <Card v-for="item in tvShows" :key="`tv-${item.id}`" :item="item" />
+      </div>
+    </div>
+
+    <div v-if="others.length > 0" class="category-section">
+      <div class="section-header" @click="toggleSection('others')">
+        <h2 class="section-title">Otros ({{ others.length }})</h2>
+        <button class="expand-btn" :aria-label="collapsedSections.others ? 'Expandir' : 'Contraer'">
+            <svg v-if="collapsedSections.others" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-icon lucide-chevrons-down"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-icon lucide-chevrons-up"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
+        </button>
+      </div>
+      <div v-show="!collapsedSections.others" class="listing__items">
+        <Card v-for="item in others" :key="`other-${item.id}`" :item="item" />
+      </div>
     </div>
 
     <div
       v-if="items.page < items.total_pages"
       class="listing__nav">
       <div v-if="loading">
-        <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" stroke="#2196f3" viewBox="0 0 44 44"><g fill="none" fill-rule="evenodd" stroke-width="2"><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="0s" calcMode="spline" dur="1.8s" keySplines="0.165, 0.84, 0.44, 1" keyTimes="0; 1" repeatCount="indefinite" values="1; 20"/><animate attributeName="stroke-opacity" begin="0s" calcMode="spline" dur="1.8s" keySplines="0.3, 0.61, 0.355, 1" keyTimes="0; 1" repeatCount="indefinite" values="1; 0"/></circle><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="-0.9s" calcMode="spline" dur="1.8s" keySplines="0.165, 0.84, 0.44, 1" keyTimes="0; 1" repeatCount="indefinite" values="1; 20"/><animate attributeName="stroke-opacity" begin="-0.9s" calcMode="spline" dur="1.8s" keySplines="0.3, 0.61, 0.355, 1" keyTimes="0; 1" repeatCount="indefinite" values="1; 0"/></circle></g></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44" stroke="#2196f3"><g fill="none" fill-rule="evenodd" stroke-width="2"><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="-0.9s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="-0.9s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle></g></svg>
       </div>
     </div>
 
@@ -43,12 +179,14 @@
 <script>
 import { debounce } from '~/mixins/Functions';
 import Card from '~/components/Card';
+import NewsResultCard from '~/components/search/NewsResultCard.vue';
 
 import axios from 'axios';
 
 export default {
   components: {
     Card,
+    NewsResultCard
   },
   props: {
     title: {
@@ -78,12 +216,62 @@ export default {
   data() {
     return {
       typoCheckInProgress: false,
-      suggestedCorrection: null
+      suggestedCorrection: null,
+      collapsedSections: {
+        news: false,
+        people: false,
+        festivals: false,
+        productionCompanies: false,
+        streamingServices: false,
+        movies: false,
+        tvShows: false,
+        others: false
+      },
+      localNews: [],
+      newsPage: 1,
+      hasMoreNews: true,
+      isLoadingNews: false,
+      disableLeftNewsButton: true,
+      disableRightNewsButton: false,
     };
   },
 
-  watch: {
+  computed: {
+    results() {
+        return this.items && this.items.results ? this.items.results : [];
+    },
+    people() {
+      return this.results.filter(i => i.media_type === 'person');
+    },
+    festivals() {
+      return this.results.filter(i => i.media_type === 'festival');
+    },
+    productionCompanies() {
+      return this.results.filter(i => i.media_type === 'production');
+    },
+    streamingServices() {
+      return this.results.filter(i => i.media_type === 'streaming');
+    },
+    movies() {
+      return this.results.filter(i => i.media_type === 'movie');
+    },
+    tvShows() {
+      return this.results.filter(i => i.media_type === 'tv');
+    },
+    others() {
+      const knownTypes = ['person', 'festival', 'production', 'streaming', 'movie', 'tv'];
+      return this.results.filter(i => !knownTypes.includes(i.media_type));
+    },
+    sortedNews() {
+      return [...this.localNews].sort((a, b) => {
+        const timeA = a.published_at ? new Date(a.published_at).getTime() : 0;
+        const timeB = b.published_at ? new Date(b.published_at).getTime() : 0;
+        return timeB - timeA;
+      });
+    }
+  },
 
+  watch: {
     'items.results': {
       handler(newResults) {
         if (newResults && newResults.length === 0 && !this.loading && this.searchQuery) {
@@ -91,6 +279,30 @@ export default {
         } else {
           this.suggestedCorrection = null;
         }
+      },
+      deep: true
+    },
+    'items.news': {
+      handler(newNews) {
+        if (newNews && newNews.length > 0) {
+             this.localNews = [...newNews];
+             
+             this.newsPage = 1;
+             this.hasMoreNews = true;
+             this.isLoadingNews = false;
+             this.$nextTick(() => {
+               this.updateNewsNavButtons();
+             });
+        }
+      },
+      immediate: true
+    },
+    searchQuery: {
+      handler() {
+        this.localNews = [];
+        this.newsPage = 1;
+        this.hasMoreNews = true;
+        this.isLoadingNews = false;
       }
     }
   },
@@ -107,6 +319,10 @@ export default {
   },
 
   methods: {
+    toggleSection(section) {
+        this.collapsedSections[section] = !this.collapsedSections[section];
+    },
+
     getScrollPosition: debounce(function() {
       if (this.items.page < this.items.total_pages) {
         const bottomOfWindow = (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 600;
@@ -118,6 +334,79 @@ export default {
 
     loadMore() {
       this.$emit('loadMore');
+    },
+
+    onNewsScroll(e) {
+        const { scrollLeft, scrollWidth, clientWidth } = e.target;
+        
+        this.updateNewsNavButtons();
+        
+        if (scrollWidth - (scrollLeft + clientWidth) < 200 && !this.isLoadingNews) {
+            this.loadMoreNews();
+        }
+    },
+
+    updateNewsNavButtons() {
+        if (!this.$refs.newsCarousel) return;
+        
+        const { scrollLeft, scrollWidth, clientWidth } = this.$refs.newsCarousel;
+        
+        this.disableLeftNewsButton = scrollLeft <= 10;
+        this.disableRightNewsButton = scrollLeft + clientWidth >= scrollWidth - 10;
+    },
+
+    scrollNewsCarousel(direction) {
+        if (!this.$refs.newsCarousel) return;
+        
+        const scrollAmount = 350;
+        const currentScroll = this.$refs.newsCarousel.scrollLeft;
+        
+        if (direction === 'left') {
+            this.$refs.newsCarousel.scrollTo({
+                left: currentScroll - scrollAmount,
+                behavior: 'smooth'
+            });
+        } else {
+            this.$refs.newsCarousel.scrollTo({
+                left: currentScroll + scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    },
+
+    async loadMoreNews() {
+        if (this.isLoadingNews || !this.hasMoreNews || !this.searchQuery) return;
+
+        this.isLoadingNews = true;
+        this.newsPage++;
+
+        try {
+            const { searchNews } = await import('~/utils/api');
+            const data = await searchNews(this.searchQuery, this.newsPage);
+            
+            if (data.results && data.results.length > 0) {
+                const newItems = data.results.filter(newItem => 
+                    !this.localNews.some(existingItem => existingItem.id === newItem.id)
+                );
+                
+                if (newItems.length === 0) {
+                     this.hasMoreNews = false;
+                } else {
+                    this.localNews = [...this.localNews, ...newItems];
+                    
+                    this.$nextTick(() => {
+                        this.updateNewsNavButtons();
+                    });
+                }
+            } else {
+                this.hasMoreNews = false;
+            }
+        } catch (error) {
+            console.error("Error al cargar más noticias:", error);
+            this.hasMoreNews = false;
+        } finally {
+            this.isLoadingNews = false;
+        }
     },
 
     async checkForTypos() {
@@ -223,5 +512,140 @@ export default {
 .discovery-link:hover {
   color: #fff;
   border-bottom-color: #fff;
+}
+
+.category-section {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 1rem;
+}
+
+.section-header:hover .section-title {
+    opacity: 0.8;
+}
+
+.section-title {
+  color: #8BE9FD;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0;
+  padding-left: 5px;
+  border-left: 3px solid #8BE9FD;
+  line-height: 1.2;
+}
+
+.expand-btn {
+  background: transparent;
+  border: none;
+  color: #8BE9FD;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.expand-btn:hover {
+  transform: scale(1.1);
+}
+
+
+.news-section {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.news-carousel-wrapper {
+  position: relative;
+}
+
+.news-carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 15px;
+  padding-bottom: 15px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.news-carousel::-webkit-scrollbar {
+  height: 6px;
+}
+
+.news-carousel::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.news-carousel::-webkit-scrollbar-thumb {
+  background: rgba(139, 233, 253, 0.3);
+  border-radius: 3px;
+}
+
+.news-carousel-item {
+  flex: 0 0 310px;
+  max-width: 310px;
+}
+
+.news-loading-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  height: 100%;
+}
+
+.news-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.news-nav:hover:not(:disabled) {
+  background: rgba(139, 233, 253, 0.2);
+  border-color: rgba(139, 233, 253, 0.6);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.news-nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.news-nav--left {
+  left: -20px;
+}
+
+.news-nav--right {
+  right: -20px;
+}
+
+@media (max-width: 768px) {
+  .news-nav {
+    display: none;
+  }
 }
 </style>

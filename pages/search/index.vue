@@ -21,7 +21,7 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router';
 import { useSearchStore } from '~/stores/search';
-import { search } from '~/utils/api';
+import { search, searchNews } from '~/utils/api';
 import SearchResults from '~/components/search/SearchResults.vue';
 
 const route = useRoute();
@@ -48,16 +48,24 @@ const title = computed(() => query.value ? `Resultados para: ${query.value}` : '
 const { data: searchData, refresh } = await useAsyncData(`search-${route.query.q}`, async () => {
   if (route.query.q) {
     try {
-       const data = await search(route.query.q, 1);
+       const [data, newsData] = await Promise.all([
+          search(route.query.q, 1),
+          searchNews(route.query.q)
+       ]);
+       
        if (!data.total_results) {
            return {
              results: [],
              page: 1,
              total_pages: 0,
-             total_results: 0
+             total_results: 0,
+             news: newsData.results || []
            };
        }
-       return data;
+       return { 
+         ...data, 
+         news: newsData.results || [] 
+       };
     } catch(e) {
         console.error(e);
         return null;
@@ -103,11 +111,7 @@ onBeforeRouteLeave((to, from, next) => {
 @use '~/assets/css/utilities/variables' as *;
 
 .page-search .main {
-  padding-top: 3rem;
-
-  @media (min-width: $breakpoint-large) {
-    padding-top: 8rem;
-  }
+  padding-top: 1rem;
 }
 
 .no-results-container {

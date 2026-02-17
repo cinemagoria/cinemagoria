@@ -1688,3 +1688,30 @@ export function getStreamingProviderBySlug(slug) {
         provider => provider.slug === slug
     ) || null;
 }
+
+export const SUPPORTED_FESTIVALS = [
+    {
+        id: 'sundance',
+        name: 'Sundance Film Festival 2026',
+        slug: 'sundance-2026',
+        logo_path: '/festivals/sundance/sundance_film_festival_2026_logo.png'
+    },
+    {
+        id: 'berlinale',
+        name: 'Berlinale Film Festival 2026',
+        slug: 'berlinale-2026',
+        logo_path: '/festivals/berlinale/berlinale_logo.png'
+    },
+    {
+        id: 'rotterdam',
+        name: 'Rotterdam Film Festival 2026',
+        slug: 'rotterdam-2026',
+        logo_path: '/festivals/rotterdam/rotterdam_logo.png'
+    },
+    {
+        id: 'slamdance',
+        name: 'Slamdance Film Festival 2026',
+        slug: 'slamdance-2026',
+        logo_path: '/festivals/slamdance/slamdance_film_festival_2026_logo.png'
+    }
+];

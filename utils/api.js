@@ -1,4 +1,4 @@
-import { SUPPORTED_PRODUCTION_COMPANIES, STREAMING_PROVIDERS } from '~/utils/constants';
+import { SUPPORTED_PRODUCTION_COMPANIES, STREAMING_PROVIDERS, SUPPORTED_FESTIVALS } from '~/utils/constants';
 
 const axios = {
     get: async (url, config = {}) => {
@@ -1077,7 +1077,24 @@ export function search(query, page = 1) {
 
         Promise.all([searchMulti, searchCompanies])
             .then(async ([multiResponse, companyResponse]) => {
-                multiResponse.data.results.forEach(item => {
+                const results = multiResponse.data.results;
+
+                const festivalMatch = SUPPORTED_FESTIVALS.find(f =>
+                    f.name.toLowerCase().includes(query.toLowerCase()) ||
+                    f.slug.toLowerCase().includes(query.toLowerCase())
+                );
+
+                if (festivalMatch) {
+                    results.unshift({
+                        id: festivalMatch.id,
+                        name: festivalMatch.name,
+                        media_type: 'festival',
+                        logo_path: festivalMatch.logo_path,
+                        slug: festivalMatch.slug
+                    });
+                }
+
+                results.forEach(item => {
                     if (item.vote_average) {
                         item.vote_average = parseFloat(item.vote_average).toFixed(1);
                     }
@@ -1688,6 +1705,24 @@ export function getTvShowsByProvider(providerId, page = 1, filters = {}) {
             resolve(response.data);
         }).catch((error) => {
             reject(error);
+        });
+    });
+}
+
+export function searchNews(query, page = 1) {
+    return new Promise((resolve, reject) => {
+        axios.get('/api/news', {
+            params: {
+                q: query,
+                limit: 10,
+                page: page,
+                lang: getEnv('API_LANG')
+            }
+        }).then((response) => {
+            resolve(response.data);
+        }).catch((error) => {
+            console.error("Error searching news:", error);
+            resolve({ results: [] });
         });
     });
 }
