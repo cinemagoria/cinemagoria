@@ -95,29 +95,6 @@
               </template>
             </h1>
 
-            <div v-if="sundanceFilm" :class="$style.festivalBadgeContainer">
-                <nuxt-link to="/festival/sundance-2026" style="text-decoration: none; display: inline-block;">
-                    <SundanceBadge />
-                </nuxt-link>
-            </div>
-            <div v-else-if="slamdanceFilm" :class="$style.festivalBadgeContainer">
-                <nuxt-link to="/festival/slamdance-2026" style="text-decoration: none; display: inline-block;">
-                    <SlamdanceBadge />
-                </nuxt-link>
-            </div>
-            <div v-else-if="berlinaleFilm" :class="$style.festivalBadgeContainer">
-                <BerlinaleBadge />
-                <nuxt-link to="/festival/berlinale-2026" :class="$style.festivalLink">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FBD378" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-range"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M17 14h-6"/><path d="M13 18H7"/><path d="M7 14h.01"/><path d="M17 18h.01"/></svg>
-                    <span :class="$style.buttonText">VER HORARIO<br>DE PROYECCIÓN</span>
-                </nuxt-link>
-            </div>
-            <div v-else-if="rotterdamFilm" :class="$style.festivalBadgeContainer">
-                <nuxt-link to="/festival/rotterdam-2026" style="text-decoration: none; display: inline-block;">
-                    <RotterdamBadge />
-                </nuxt-link>
-            </div>
-
             <div :class="$style.meta">
               <div
                 v-if="stars || item.vote_count"
@@ -152,7 +129,25 @@
                 {{ truncate(translatedOverview || heroItem.overview, 200) }}
               </div>
             </div>
-            <br>
+
+            <div v-if="activeFestivals.length > 0" :class="$style.festivalBadgeContainer">
+                <nuxt-link v-if="sundanceFilm" to="/festival/sundance-2026" style="text-decoration: none; display: inline-block;">
+                    <SundanceBadge />
+                </nuxt-link>
+                <nuxt-link v-if="slamdanceFilm" to="/festival/slamdance-2026" style="text-decoration: none; display: inline-block;">
+                    <SlamdanceBadge />
+                </nuxt-link>
+                <template v-if="berlinaleFilm">
+                    <BerlinaleBadge />
+                    <nuxt-link to="/festival/berlinale-2026" :class="$style.festivalLink">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FBD378" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-range"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M17 14h-6"/><path d="M13 18H7"/><path d="M7 14h.01"/><path d="M17 18h.01"/></svg>
+                        <span :class="$style.buttonText">VER HORARIO<br>DE PROYECCIÓN</span>
+                    </nuxt-link>
+                </template>
+                <nuxt-link v-if="rotterdamFilm" to="/festival/rotterdam-2026" style="text-decoration: none; display: inline-block;">
+                    <RotterdamBadge />
+                </nuxt-link>
+            </div>
             <div :class="[$style.buttonContainer, { 'no-transition': isHomepage && !isHomepageContentReady }]">
               <transition-group name="fade">
 
@@ -528,6 +523,14 @@ export default {
     },
     isInAnyList() {
         return this.isFavorite || (this.membership.lists && this.membership.lists.length > 0);
+    },
+    activeFestivals() {
+      const festivals = [];
+      if (this.sundanceFilm) festivals.push('sundance');
+      if (this.slamdanceFilm) festivals.push('slamdance');
+      if (this.berlinaleFilm) festivals.push('berlinale');
+      if (this.rotterdamFilm) festivals.push('rotterdam');
+      return festivals;
     }
   },
 
@@ -742,7 +745,6 @@ export default {
                      }
                     this.sundanceFilm = data.results[0];
                     this.isFestivalLoading = false;
-                    return; 
                 }
             }
 
@@ -756,7 +758,6 @@ export default {
                      }
                     this.slamdanceFilm = data.results[0];
                     this.isFestivalLoading = false;
-                    return;
                 }
             }
 
@@ -1393,7 +1394,9 @@ export default {
 .festivalBadgeContainer {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 15px;
+    margin-top: 1.5rem;
     margin-bottom: 15px;
 
     @media (max-width: 1023px) {
