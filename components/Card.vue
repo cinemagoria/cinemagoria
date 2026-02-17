@@ -11,14 +11,14 @@
           <Loader :size="40" />
         </div>
 
-        <QuickFav v-if="media !== 'production' && media !== 'person' && media !== 'streaming'" :item="item" />
+        <QuickFav v-if="media !== 'production' && media !== 'person' && media !== 'streaming' && media !== 'festival'" :item="item" />
 
         <img
           v-if="poster"
           ref="posterImage"
           :src="poster"
           loading="lazy"
-          :class="{ 'card__img--logo': media === 'production' || media === 'streaming' }"
+          :class="{ 'card__img--logo': media === 'production' || media === 'streaming', 'card__img--festival': media === 'festival' }"
           :alt="name"
           :style="{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }"
           @load="onImageLoaded"
@@ -36,15 +36,25 @@
 
           <div v-if="media === 'streaming'" class="card__badge">Streaming Service</div>
           <div v-if="media === 'production'" class="card__badge">Production Company</div>
+          <div v-if="media === 'festival'" class="card__badge">Festival</div>
       </div>
 
-      <h2 class="card__name">
+      <h2
+        class="card__name"
+        :class="{ 'card__name--rounded': !year && !hasRating }">
         {{ name }}
       </h2>
+
+      <div
+        v-if="year"
+        class="card__release-year"
+        :class="{ 'card__release-year--rounded': !hasRating }">
+        {{ year }}
+      </div>
       
 
       <div
-        v-if="!['person', 'streaming', 'production'].includes(media) && (stars || item.vote_average || item.imdb_rating)"
+        v-if="hasRating"
         class="card__rating">
         <div
           v-if="stars"
@@ -139,12 +149,21 @@ export default {
         if (this.item.media_type === 'streaming') {
             return { name: 'streaming-slug', params: { slug: this.item.slug } };
         }
+        if (this.item.media_type === 'festival') {
+            return { name: `festival-${this.item.slug}` };
+        }
         return { name: `${this.media}-id`, params: { id: this.item.id } };
     }
   },
 
   computed: {
+    hasRating() {
+      return !['person', 'streaming', 'production', 'festival'].includes(this.media) && (this.stars || this.item.vote_average || this.item.imdb_rating);
+    },
     poster () {
+      if (this.media === 'festival' && this.item.logo_path) {
+          return this.item.logo_path;
+      }
       if (this.item.poster_path) {
         if (this.item.poster_path.startsWith('http')) {
            return this.item.poster_path;
@@ -168,6 +187,25 @@ export default {
         return 'movie';
       }
     },
+
+    year () {
+      const date = this.item.release_date || this.item.first_air_date;
+      if (!date) return null;
+      
+      const startYear = new Date(date).getFullYear();
+      
+      if (this.media === 'tv') {
+        const endYear = this.item.end_date ? new Date(this.item.end_date).getFullYear() : null;
+        if (this.item.status === 'Ended' && endYear && endYear !== startYear) {
+          return `${startYear}-${endYear}`;
+        }
+        if (this.item.status === 'Returning Series') {
+           return `${startYear}-`;
+        }
+      }
+      
+      return startYear;
+    },
   },
 };
 </script>
@@ -176,6 +214,11 @@ export default {
 .card__link {
   display: block;
   position: relative;
+}
+
+.card__name--rounded {
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
 }
 
 .card__img {
@@ -198,6 +241,15 @@ export default {
   object-fit: contain !important;
   padding: 20px;
   background-color: #8BE9FD;
+  width: 100%;
+  height: 100%;
+}
+
+.card__img--festival {
+  object-fit: contain !important;
+  padding: 20px;
+  background-color: #fff;
+  filter: invert(1);
   width: 100%;
   height: 100%;
 }
@@ -247,5 +299,30 @@ export default {
     top: 5px;
     right: 5px;
   }
+}
+
+.card__release-year {
+  font-size: 1.3rem;
+  color: #fff !important;
+  text-align: center;
+  font-weight: 600;
+  background-color: #000;
+  position: relative;
+  top: -29px;
+  padding-bottom: 5px;
+  display: block;
+  z-index: 5;
+}
+
+.card__release-year--rounded {
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.card__rating {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0;
 }
 </style>
