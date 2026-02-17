@@ -74,96 +74,13 @@
       </div>
     </div>
 
-    <div v-if="people.length > 0" class="category-section">
-      <div class="section-header" @click="toggleSection('people')">
-        <h2 class="section-title">Personas ({{ people.length }})</h2>
-        <button class="expand-btn" :aria-label="collapsedSections.people ? 'Expandir' : 'Contraer'">
-            <svg v-if="collapsedSections.people" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-icon lucide-chevrons-down"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-icon lucide-chevrons-up"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
-        </button>
-      </div>
-      <div v-show="!collapsedSections.people" class="listing__items">
-        <Card v-for="item in people" :key="`person-${item.id}`" :item="item" />
-      </div>
-    </div>
-
-    <div v-if="festivals.length > 0" class="category-section">
-      <div class="section-header" @click="toggleSection('festivals')">
-        <h2 class="section-title">Festivales ({{ festivals.length }})</h2>
-        <button class="expand-btn" :aria-label="collapsedSections.festivals ? 'Expandir' : 'Contraer'">
-            <svg v-if="collapsedSections.festivals" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-icon lucide-chevrons-down"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-icon lucide-chevrons-up"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
-        </button>
-      </div>
-      <div v-show="!collapsedSections.festivals" class="listing__items">
-        <Card v-for="item in festivals" :key="`festival-${item.id}`" :item="item" />
-      </div>
-    </div>
-
-    <div v-if="productionCompanies.length > 0" class="category-section">
-       <div class="section-header" @click="toggleSection('productionCompanies')">
-        <h2 class="section-title">Productoras ({{ productionCompanies.length }})</h2>
-        <button class="expand-btn" :aria-label="collapsedSections.productionCompanies ? 'Expandir' : 'Contraer'">
-            <svg v-if="collapsedSections.productionCompanies" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-icon lucide-chevrons-down"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-icon lucide-chevrons-up"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
-        </button>
-      </div>
-      <div v-show="!collapsedSections.productionCompanies" class="listing__items">
-        <Card v-for="item in productionCompanies" :key="`company-${item.id}`" :item="item" />
-      </div>
-    </div>
-
-    <div v-if="streamingServices.length > 0" class="category-section">
-      <div class="section-header" @click="toggleSection('streamingServices')">
-        <h2 class="section-title">Servicios de Streaming ({{ streamingServices.length }})</h2>
-        <button class="expand-btn" :aria-label="collapsedSections.streamingServices ? 'Expandir' : 'Contraer'">
-            <svg v-if="collapsedSections.streamingServices" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-icon lucide-chevrons-down"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-icon lucide-chevrons-up"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
-        </button>
-      </div>
-      <div v-show="!collapsedSections.streamingServices" class="listing__items">
-        <Card v-for="item in streamingServices" :key="`streaming-${item.id}`" :item="item" />
-      </div>
-    </div>
-
-    <div v-if="movies.length > 0" class="category-section">
-      <div class="section-header" @click="toggleSection('movies')">
-        <h2 class="section-title">Películas ({{ movies.length }})</h2>
-        <button class="expand-btn" :aria-label="collapsedSections.movies ? 'Expandir' : 'Contraer'">
-            <svg v-if="collapsedSections.movies" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-icon lucide-chevrons-down"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-icon lucide-chevrons-up"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
-        </button>
-      </div>
-      <div v-show="!collapsedSections.movies" class="listing__items">
-        <Card v-for="item in movies" :key="`movie-${item.id}`" :item="item" />
-      </div>
-    </div>
-
-    <div v-if="tvShows.length > 0" class="category-section">
-      <div class="section-header" @click="toggleSection('tvShows')">
-        <h2 class="section-title">Series de TV ({{ tvShows.length }})</h2>
-        <button class="expand-btn" :aria-label="collapsedSections.tvShows ? 'Expandir' : 'Contraer'">
-            <svg v-if="collapsedSections.tvShows" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-icon lucide-chevrons-down"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-icon lucide-chevrons-up"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
-        </button>
-      </div>
-      <div v-show="!collapsedSections.tvShows" class="listing__items">
-        <Card v-for="item in tvShows" :key="`tv-${item.id}`" :item="item" />
-      </div>
-    </div>
-
-    <div v-if="others.length > 0" class="category-section">
-      <div class="section-header" @click="toggleSection('others')">
-        <h2 class="section-title">Otros ({{ others.length }})</h2>
-        <button class="expand-btn" :aria-label="collapsedSections.others ? 'Expandir' : 'Contraer'">
-            <svg v-if="collapsedSections.others" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-icon lucide-chevrons-down"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-icon lucide-chevrons-up"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
-        </button>
-      </div>
-      <div v-show="!collapsedSections.others" class="listing__items">
-        <Card v-for="item in others" :key="`other-${item.id}`" :item="item" />
-      </div>
-    </div>
+    <CategorySection title="Personas" :items="people" :collapsed="collapsedSections.people" key-prefix="person" @toggle="toggleSection('people')" />
+    <CategorySection title="Festivales" :items="festivals" :collapsed="collapsedSections.festivals" key-prefix="festival" @toggle="toggleSection('festivals')" />
+    <CategorySection title="Productoras" :items="productionCompanies" :collapsed="collapsedSections.productionCompanies" key-prefix="company" @toggle="toggleSection('productionCompanies')" />
+    <CategorySection title="Servicios de Streaming" :items="streamingServices" :collapsed="collapsedSections.streamingServices" key-prefix="streaming" @toggle="toggleSection('streamingServices')" />
+    <CategorySection title="Películas" :items="movies" :collapsed="collapsedSections.movies" key-prefix="movie" @toggle="toggleSection('movies')" />
+    <CategorySection title="Series de TV" :items="tvShows" :collapsed="collapsedSections.tvShows" key-prefix="tv" @toggle="toggleSection('tvShows')" />
+    <CategorySection title="Otros" :items="others" :collapsed="collapsedSections.others" key-prefix="other" @toggle="toggleSection('others')" />
 
     <div
       v-if="items.page < items.total_pages"
@@ -180,13 +97,15 @@
 import { debounce } from '~/mixins/Functions';
 import Card from '~/components/Card';
 import NewsResultCard from '~/components/search/NewsResultCard.vue';
+import CategorySection from '~/components/search/CategorySection.vue';
 
 import axios from 'axios';
 
 export default {
   components: {
     Card,
-    NewsResultCard
+    NewsResultCard,
+    CategorySection
   },
   props: {
     title: {
