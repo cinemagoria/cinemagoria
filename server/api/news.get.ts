@@ -38,12 +38,9 @@ export default defineEventHandler(async (event) => {
         if (searchQuery) {
             sql += ` AND (title LIKE ? OR description LIKE ?)`
             args.push(`%${searchQuery}%`, `%${searchQuery}%`)
-            sql += ` ORDER BY published_at DESC LIMIT ? OFFSET ?`
-        } else if (source) {
-            sql += ` ORDER BY published_at DESC LIMIT ? OFFSET ?`
-        } else {
-            sql += ` ORDER BY created_at DESC LIMIT ? OFFSET ?`
         }
+
+        sql += ` ORDER BY created_at DESC LIMIT ? OFFSET ?`
 
         args.push(limit, offset)
 
