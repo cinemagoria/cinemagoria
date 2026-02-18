@@ -5,6 +5,17 @@
       <p class="title-secondary">Explore our curated selections from the world's leading film festivals.</p>
 
       <div class="festivals-grid">
+        <nuxt-link to="/festival/sxsw-2026" class="festival-card">
+          <div class="card-image-wrapper">
+             <img src="/festivals/sxsw/sxsw_backdrop_2026_eng.webp" alt="SXSW 2026" />
+             <div class="overlay"></div>
+             <div class="card-content">
+               <h2>SXSW 2026</h2>
+               <span class="explore-btn">Explore</span>
+             </div>
+          </div>
+        </nuxt-link>
+
         <nuxt-link to="/festival/slamdance-2026" class="festival-card">
           <div class="card-image-wrapper">
              <img src="/festivals/slamdance/slamdance_backdrop_2026_eng.webp" alt="Slamdance 2026" />

@@ -71,13 +71,15 @@ import SundanceCard from '~/components/SundanceCard.vue';
 import SlamdanceCard from '~/components/SlamdanceCard.vue';
 import BerlinaleCard from '~/components/BerlinaleCard.vue';
 import RotterdamCard from '~/components/RotterdamCard.vue';
+import SxswCard from '~/components/festival/SxswCard.vue';
 
 export default {
   components: {
     SundanceCard,
     SlamdanceCard,
     BerlinaleCard,
-    RotterdamCard
+    RotterdamCard,
+    SxswCard
   },
 
   mixins: [carousel],
@@ -118,6 +120,7 @@ export default {
         berlinale: 'BerlinaleCard',
         rotterdam: 'RotterdamCard',
         slamdance: 'SlamdanceCard',
+        sxsw: 'SxswCard',
       };
       return cardMap[item.festival_source] || 'SundanceCard';
     }
