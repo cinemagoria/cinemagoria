@@ -78,7 +78,6 @@ export default {
     SundanceCard,
     SlamdanceCard,
     BerlinaleCard,
-    BerlinaleCard,
     RotterdamCard,
     SxswCard
   },
