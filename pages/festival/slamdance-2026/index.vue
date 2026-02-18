@@ -243,7 +243,7 @@ onMounted(async () => {
     left: 4px;
     height: calc(100% - 8px);
     width: calc((100% - 8px) / 2);
-    background: #8BE9FD; 
+    background: #FBD378; 
     border-radius: 16px;
     z-index: 1;
     transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
@@ -263,7 +263,7 @@ onMounted(async () => {
     background-color: transparent;
     display: flex;
     justify-content: center;
-    border: 1px solid #8BE9FD;
+    border: 1px solid #FBD378;
 }
 
 .back-link {
@@ -446,7 +446,7 @@ onMounted(async () => {
 .screening-card {
     display: flex;
     background: #0a161b;
-    border: 1px solid #8BE9FD;
+    border: 1px solid #FBD378;
     border-radius: 8px;
     padding: 1.5rem;
     margin-bottom: 1rem;
@@ -488,7 +488,7 @@ onMounted(async () => {
         margin-bottom: 0.5rem;
         
         &:hover {
-            color: #8BE9FD;
+            color: #FBD378;
         }
     }
     
