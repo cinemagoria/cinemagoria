@@ -364,6 +364,7 @@ import BerlinaleBadge from '~/components/festival/BerlinaleBadge.vue';
 import RotterdamBadge from '~/components/festival/RotterdamBadge.vue';
 import SxswBadge from '~/components/festival/SxswBadge.vue';
 import { translateText } from '~/utils/api';
+import { MANUAL_FESTIVAL_BADGES } from '~/utils/constants';
 
 export default {
   components: {
@@ -712,95 +713,107 @@ export default {
     },
 
     async checkFestivalStatus() {
-        const wasSundance = !!this.sundanceFilm;
-        const wasSlamdance = !!this.slamdanceFilm;
-        const wasBerlinale = !!this.berlinaleFilm;
-        const wasRotterdam = !!this.rotterdamFilm;
-        const wasSxsw = !!this.sxswFilm;
-        
-        this.sundanceFilm = null;
-        this.slamdanceFilm = null;
-        this.berlinaleFilm = null;
-        this.rotterdamFilm = null;
-        this.sxswFilm = null;
-        
-        if (this.type !== 'movie' && this.type !== 'tv') return;
-        
-        if (wasSundance || wasSlamdance || wasBerlinale || wasRotterdam || wasSxsw) {
-            this.isFestivalLoading = true;
+    const wasSundance = !!this.sundanceFilm;
+    const wasSlamdance = !!this.slamdanceFilm;
+    const wasBerlinale = !!this.berlinaleFilm;
+    const wasRotterdam = !!this.rotterdamFilm;
+    const wasSxsw = !!this.sxswFilm;
+
+    this.sundanceFilm = null;
+    this.slamdanceFilm = null;
+    this.berlinaleFilm = null;
+    this.rotterdamFilm = null;
+    this.sxswFilm = null;
+
+    if (this.type !== 'movie' && this.type !== 'tv') return;
+
+    if (wasSundance || wasSlamdance || wasBerlinale || wasRotterdam || wasSxsw) {
+        this.isFestivalLoading = true;
+    }
+
+    try {
+        const sundanceResponse = await fetch(`/api/festival/sundance/films?tmdb_id=${this.id}`);
+        if (sundanceResponse.ok) {
+            const data = await sundanceResponse.json();
+            if (data.results && data.results.length > 0) {
+                if (!wasSundance) {
+                    this.isFestivalLoading = true;
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                this.sundanceFilm = data.results[0];
+            }
         }
 
-        try {
-            const sundanceResponse = await fetch(`/api/festival/sundance/films?tmdb_id=${this.id}`);
-            if (sundanceResponse.ok) {
-                const data = await sundanceResponse.json();
-                if (data.results && data.results.length > 0) {
-                     if (!wasSundance) {
-                        this.isFestivalLoading = true;
-                        await new Promise(resolve => setTimeout(resolve, 500));
-                     }
-                    this.sundanceFilm = data.results[0];
-                    this.isFestivalLoading = false;
+        const slamdanceResponse = await fetch(`/api/festival/slamdance/films?tmdb_id=${this.id}`);
+        if (slamdanceResponse.ok) {
+            const data = await slamdanceResponse.json();
+            if (data.results && data.results.length > 0) {
+                if (!wasSlamdance) {
+                    this.isFestivalLoading = true;
+                    await new Promise(resolve => setTimeout(resolve, 500));
                 }
-            }
-
-            const slamdanceResponse = await fetch(`/api/festival/slamdance/films?tmdb_id=${this.id}`);
-            if (slamdanceResponse.ok) {
-                const data = await slamdanceResponse.json();
-                if (data.results && data.results.length > 0) {
-                     if (!wasSlamdance) {
-                        this.isFestivalLoading = true;
-                        await new Promise(resolve => setTimeout(resolve, 500));
-                     }
-                    this.slamdanceFilm = data.results[0];
-                }
-            }
-
-            const berlinaleResponse = await fetch(`/api/festival/berlinale/films?tmdb_id=${this.id}`);
-            if (berlinaleResponse.ok) {
-                const data = await berlinaleResponse.json();
-                if (data.results && data.results.length > 0) {
-                     if (!wasBerlinale) {
-                        this.isFestivalLoading = true;
-                        await new Promise(resolve => setTimeout(resolve, 500));
-                     }
-                     this.berlinaleFilm = data.results[0];
-                }
-            }
-
-            const rotterdamResponse = await fetch(`/api/festival/rotterdam/films?tmdb_id=${this.id}`);
-            if (rotterdamResponse.ok) {
-                const data = await rotterdamResponse.json();
-                if (data.results && data.results.length > 0) {
-                     if (!wasRotterdam) {
-                        this.isFestivalLoading = true;
-                        await new Promise(resolve => setTimeout(resolve, 500));
-                     }
-                     this.rotterdamFilm = data.results[0];
-                }
-            }
-
-            const sxswResponse = await fetch(`/api/festival/sxsw/films?tmdb_id=${this.id}`);
-            if (sxswResponse.ok) {
-                const data = await sxswResponse.json();
-                if (data.results && data.results.length > 0) {
-                     if (!wasSxsw) {
-                        this.isFestivalLoading = true;
-                        await new Promise(resolve => setTimeout(resolve, 500));
-                     }
-                     this.sxswFilm = data.results[0];
-                }
-            }
-        } catch (e) {
-            console.error('Error checking festival status:', e);
-        } finally {
-            this.isFestivalLoading = false;
-            if (this.isHomepage) {
-              this.loadingStates.festivalBadge = false;
-              this.checkHomepageContentReady();
+                this.slamdanceFilm = data.results[0];
             }
         }
-    },
+
+        const berlinaleResponse = await fetch(`/api/festival/berlinale/films?tmdb_id=${this.id}`);
+        if (berlinaleResponse.ok) {
+            const data = await berlinaleResponse.json();
+            if (data.results && data.results.length > 0) {
+                if (!wasBerlinale) {
+                    this.isFestivalLoading = true;
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                this.berlinaleFilm = data.results[0];
+            }
+        }
+
+        const rotterdamResponse = await fetch(`/api/festival/rotterdam/films?tmdb_id=${this.id}`);
+        if (rotterdamResponse.ok) {
+            const data = await rotterdamResponse.json();
+            if (data.results && data.results.length > 0) {
+                if (!wasRotterdam) {
+                    this.isFestivalLoading = true;
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                this.rotterdamFilm = data.results[0];
+            }
+        }
+
+        const sxswResponse = await fetch(`/api/festival/sxsw/films?tmdb_id=${this.id}`);
+        if (sxswResponse.ok) {
+            const data = await sxswResponse.json();
+            if (data.results && data.results.length > 0) {
+                if (!wasSxsw) {
+                    this.isFestivalLoading = true;
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                this.sxswFilm = data.results[0];
+            }
+        }
+
+        // check manual overrides
+        if (MANUAL_FESTIVAL_BADGES[this.id]) {
+            const manualFestivals = MANUAL_FESTIVAL_BADGES[this.id];
+            if (manualFestivals.includes('sundance') && !this.sundanceFilm) this.sundanceFilm = { title: this.name };
+            if (manualFestivals.includes('slamdance') && !this.slamdanceFilm) this.slamdanceFilm = { title: this.name };
+            if (manualFestivals.includes('berlinale') && !this.berlinaleFilm) this.berlinaleFilm = { title: this.name };
+            if (manualFestivals.includes('rotterdam') && !this.rotterdamFilm) this.rotterdamFilm = { title: this.name };
+            if (manualFestivals.includes('sxsw') && !this.sxswFilm) this.sxswFilm = { title: this.name };
+        }
+
+    } catch (e) {
+        console.error('Error checking festival status:', e);
+    } finally {
+        this.isFestivalLoading = false;
+        if (this.isHomepage) {
+            this.loadingStates.festivalBadge = false;
+            this.checkHomepageContentReady();
+        }
+    }
+},
+
+
     
     checkHomepageContentReady() {
       if (!this.isHomepage) return;
