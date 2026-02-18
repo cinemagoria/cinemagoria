@@ -797,7 +797,8 @@ export const SUPPORTED_PRODUCTION_COMPANIES = {
     171: { id: 171, name: 'Malpaso Productions', slug: 'malpaso', logo_path: '/bqLWwuNCHcY3IjB5e4o29h7l80D.png' },
     644: { id: 644, name: 'Alcor Films', slug: 'alcor' },
     19552: { id: 19552, name: 'Horseshoe Bay Productions', slug: 'horseshoe-bay' },
-    152: { id: 152, name: 'Icon Productions', slug: 'icon', logo_path: '/rC2pFo4IBQVSVZvucDLwMRvZHfi.png' },
+
+
     57235: { id: 57235, name: 'Best Icon Productions', slug: 'best-icon' },
     82995: { id: 82995, name: 'Lexicon Productions', slug: 'lexicon' },
     188133: { id: 188133, name: 'Kinicon Productions (GR)', slug: 'kinicon-gr' },
@@ -1721,4 +1722,10 @@ export const SUPPORTED_FESTIVALS = [
         logo_path: '/festivals/sxsw/sxsw_film_festival_2026_logo.png'
     }
 ];
+
+export const MANUAL_FESTIVAL_BADGES = {
+    1433583: ['berlinale'],
+    1458099: ['berlinale'],
+};
+
 

@@ -180,7 +180,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         fetchHero()
     ]);
     
-    const FEATURED_ORDER = [
+      const FEATURED_ORDER = [
         'Mike & Nick & Nick & Alice',
         'Mile End Kicks',
         'DreamQuil',
@@ -191,8 +191,6 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Obsession',
         'Ready or Not 2: Here I Come',
         'Margo\'s Got Money Troubles',
-        'Rock Springs',
-        'See You When I See You',
         'Sender',
         'Serling',
         'Stormbound',
@@ -201,7 +199,6 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Imposters',
         'Over Your Dead Body',
         'Seekers of Infinite Love',    
-        'Big Girls Don\'t Cry',
         'Pretty Lethal',
         'The Snake',
         'The Fox',
@@ -226,13 +223,15 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Leviticus',
         'The Undertone',
         'The Gallerist',
+        'The Only Living Pickpocket in New York',
         'Tuner',
         'The Invite',
-        'The Only Living Pickpocket in New York',
+        'Big Girls Don\'t Cry',
         'Time and Water',
         'In the Blink of An Eye',
         'Saccharine',
         'Josephine',
+        'Rock Springs',
         'A Useful Ghost',
         'Tell Me What You Feel',
         '100 Nights of Hero',
