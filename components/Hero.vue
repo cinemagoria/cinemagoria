@@ -491,7 +491,6 @@ export default {
       rotterdamFilm: null,
       sxswFilm: null,
       isFestivalLoading: false,
-      isFestivalLoading: false,
 
       currentIndex: 0,
       touchStartX: 0,
