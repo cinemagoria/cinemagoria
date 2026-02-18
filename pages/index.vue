@@ -168,30 +168,48 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         }
     };
 
-    const [sundanceList, berlinaleList, rotterdamList, slamdanceList, trendingMovies, trendingTv, featured] = await Promise.all([
+    const [sundanceList, berlinaleList, rotterdamList, slamdanceList, sxswList, trendingMovies, trendingTv, featured] = await Promise.all([
         fetchFestivalMovies('sundance'),
         fetchFestivalMovies('berlinale'),
         fetchFestivalMovies('rotterdam'),
         fetchFestivalMovies('slamdance'),
+        fetchFestivalMovies('sxsw'),
         fetchWithRefill('movie', 20, 3),
         fetchWithRefill('tv', 20, 6),
         fetchHero()
     ]);
     
     const FEATURED_ORDER = [
+        'Mike & Nick & Nick & Alice',
+        'Mile End Kicks',
+        'DreamQuil',
+        'I Love Boosters',
+        'Family Movie',
+        'Normal',
+        'Monitor',
+        'Obsession',
+        'Ready or Not 2: Here I Come',
+        'Margo\'s Got Money Troubles',
+        'Rock Springs',
+        'See You When I See You',
+        'Sender',
+        'Serling',
+        'Stormbound',
+        'Dead Eyes',
+        'Chasing Summer',
+        'Imposters',
+        'Over Your Dead Body',
+        'Seekers of Infinite Love',    
+        'Big Girls Don\'t Cry',
+        'Pretty Lethal',
+        'The Snake',
+        'The Fox',
+        'Black Zombie',
         'Whisperings of the Moon', 
         'The Bulldogs', 
         'Dump of Untitled Pieces', 
         'Danny Is My Boyfriend', 
-        'The Tallest Dwarf', 
         'The Projectionist', 
-        'Tony Odyssey', 
-        'Three Colors: Pan-African', 
-        '50 Meters', 
-        'A Free Daughter of Free Kyrgyzstan', 
-        'Under The Rainbow: The Curious Crimes Of The Ruby Slippers', 
-        'You Look Fine', 
-        'Zumeca',
         'Yellow Letters',
         'Rosebush Pruning',
         'Salvation',
@@ -202,11 +220,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'At the sea',
         'Allegro Pastell',
         'Four Minus Three',
-        'WAX & GOLD',
-        'No Good Men',
         'Lali',
-        'A Russian Winter',
-        'The Hidden Face of The Earth',
         'The Weight',
         'Leviticus',
         'The Undertone',
@@ -216,7 +230,6 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'The Only Living Pickpocket in New York',
         'Time and Water',
         'In the Blink of An Eye',
-        'Give Me the Ball!',
         'Saccharine',
         'Josephine',
         'A Useful Ghost',
@@ -225,16 +238,11 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Father Mother Sister Brother',
         'Butterfly',
         'Badak',
-        'Roid',
         'Silent Friend',
         'Nightmare\'s Advice',
         'Romería',
-        '58th',
         'The Wizard of the Kremlin',
         'The Testament of Ann Lee',
-        'O profeta',
-        'The Stranger',
-        'Chronovisor',
         'Movement Song',
         'Whitetail',
         'Supporting Role',
@@ -243,7 +251,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
     
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
     
-    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList];
+    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList];
     
     let mixedFestivalFilms = allFestivalFilms.filter(f => {
         const t = norm(f.title);

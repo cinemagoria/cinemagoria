@@ -362,6 +362,7 @@ import SundanceBadge from '~/components/festival/SundanceBadge.vue';
 import SlamdanceBadge from '~/components/festival/SlamdanceBadge.vue';
 import BerlinaleBadge from '~/components/festival/BerlinaleBadge.vue';
 import RotterdamBadge from '~/components/festival/RotterdamBadge.vue';
+import SxswBadge from '~/components/festival/SxswBadge.vue';
 import { translateText } from '~/utils/api';
 
 export default {
@@ -372,6 +373,7 @@ export default {
     SlamdanceBadge,
     BerlinaleBadge,
     RotterdamBadge,
+    SxswBadge,
   },
 
   mixins: [
@@ -454,6 +456,7 @@ export default {
       slamdanceFilm: null,
       berlinaleFilm: null,
       rotterdamFilm: null,
+      sxswFilm: null,
       isFestivalLoading: false,
       isTranslating: false,
       translatedOverview: null,
@@ -519,6 +522,7 @@ export default {
         { name: 'slamdance', film: this.slamdanceFilm, component: 'SlamdanceBadge', link: '/festival/slamdance-2026', isSimple: true },
         { name: 'berlinale', film: this.berlinaleFilm, component: 'BerlinaleBadge', link: '/festival/berlinale-2026', isSimple: true },
         { name: 'rotterdam', film: this.rotterdamFilm, component: 'RotterdamBadge', link: '/festival/rotterdam-2026', isSimple: true },
+        { name: 'sxsw', film: this.sxswFilm, component: 'SxswBadge', link: '/festival/sxsw-2026', isSimple: true },
       ];
       return festivalConfig.filter(f => f.film);
     }
@@ -712,15 +716,17 @@ export default {
         const wasSlamdance = !!this.slamdanceFilm;
         const wasBerlinale = !!this.berlinaleFilm;
         const wasRotterdam = !!this.rotterdamFilm;
+        const wasSxsw = !!this.sxswFilm;
         
         this.sundanceFilm = null;
         this.slamdanceFilm = null;
         this.berlinaleFilm = null;
         this.rotterdamFilm = null;
+        this.sxswFilm = null;
         
-        if (this.type !== 'movie') return;
+        if (this.type !== 'movie' && this.type !== 'tv') return;
         
-        if (wasSundance || wasSlamdance || wasBerlinale || wasRotterdam) {
+        if (wasSundance || wasSlamdance || wasBerlinale || wasRotterdam || wasSxsw) {
             this.isFestivalLoading = true;
         }
 
@@ -771,6 +777,18 @@ export default {
                         await new Promise(resolve => setTimeout(resolve, 500));
                      }
                      this.rotterdamFilm = data.results[0];
+                }
+            }
+
+            const sxswResponse = await fetch(`/api/festival/sxsw/films?tmdb_id=${this.id}`);
+            if (sxswResponse.ok) {
+                const data = await sxswResponse.json();
+                if (data.results && data.results.length > 0) {
+                     if (!wasSxsw) {
+                        this.isFestivalLoading = true;
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                     }
+                     this.sxswFilm = data.results[0];
                 }
             }
         } catch (e) {

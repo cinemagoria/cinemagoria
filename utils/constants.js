@@ -1713,5 +1713,11 @@ export const SUPPORTED_FESTIVALS = [
         name: 'Slamdance Film Festival 2026',
         slug: 'slamdance-2026',
         logo_path: '/festivals/slamdance/slamdance_film_festival_2026_logo.png'
+    },
+    {
+        id: 'sxsw',
+        name: 'SXSW Film & TV Festival 2026',
+        slug: 'sxsw-2026',
+        logo_path: '/festivals/sxsw/sxsw_film_festival_2026_logo.png'
     }
 ];

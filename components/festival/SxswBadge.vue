@@ -1,8 +1,8 @@
 <template>
   <div :class="$style.badge">
     <img 
-      src="/festivals/berlinale/berlinale_film_festival_2026_logo.png" 
-      alt="Berlinale Film Festival 2026" 
+      src="/festivals/sxsw/sxsw_film_festival_2026_logo.png" 
+      alt="Festival de Cine y TV SXSW 2026" 
       :class="$style.logo"
     />
   </div>
