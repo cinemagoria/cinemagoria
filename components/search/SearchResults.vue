@@ -33,6 +33,10 @@
       </div>
     </div>
 
+    <div v-if="items.results && items.results.length > 0 && items.results[0].matched_by_id" class="id-match-banner">
+        <span>Coincidencia por {{ items.results[0].matched_by_id }} ID</span>
+    </div>
+
     <div v-if="localNews && localNews.length > 0" class="news-section">
       <div class="section-header" @click="toggleSection('news')">
         <h2 class="section-title">Noticias</h2>
@@ -565,5 +569,17 @@ export default {
   .news-nav {
     display: none;
   }
+}
+
+.id-match-banner {
+    background: rgba(139, 233, 253, 0.15);
+    border: 1px solid rgba(139, 233, 253, 0.3);
+    color: #8BE9FD;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin: 0 0 20px 0;
+    text-align: left;
+    font-weight: 500;
+    width: fit-content;
 }
 </style>

@@ -231,6 +231,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Saccharine',
         'Josephine',
         'Rock Springs',
+        'American Doctor',
         'A Useful Ghost',
         'Tell Me What You Feel',
         '100 Nights of Hero',
