@@ -135,13 +135,6 @@
                     <nuxt-link v-if="festival.isSimple" :to="festival.link" style="text-decoration: none; display: inline-block;">
                         <component :is="festival.component" />
                     </nuxt-link>
-                    <template v-else-if="festival.name === 'berlinale'">
-                        <BerlinaleBadge />
-                        <nuxt-link to="/festival/berlinale-2026" :class="$style.festivalLink">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FBD378" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-range"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M17 14h-6"/><path d="M13 18H7"/><path d="M7 14h.01"/><path d="M17 18h.01"/></svg>
-                            <span :class="$style.buttonText">VER HORARIO<br>DE PROYECCIÓN</span>
-                        </nuxt-link>
-                    </template>
                 </template>
             </div>
             <div :class="[$style.buttonContainer, { 'no-transition': isHomepage && !isHomepageContentReady }]">
@@ -524,7 +517,7 @@ export default {
       const festivalConfig = [
         { name: 'sundance', film: this.sundanceFilm, component: 'SundanceBadge', link: '/festival/sundance-2026', isSimple: true },
         { name: 'slamdance', film: this.slamdanceFilm, component: 'SlamdanceBadge', link: '/festival/slamdance-2026', isSimple: true },
-        { name: 'berlinale', film: this.berlinaleFilm, component: 'BerlinaleBadge', link: '/festival/berlinale-2026', isSimple: false },
+        { name: 'berlinale', film: this.berlinaleFilm, component: 'BerlinaleBadge', link: '/festival/berlinale-2026', isSimple: true },
         { name: 'rotterdam', film: this.rotterdamFilm, component: 'RotterdamBadge', link: '/festival/rotterdam-2026', isSimple: true },
       ];
       return festivalConfig.filter(f => f.film);
