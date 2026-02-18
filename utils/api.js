@@ -941,7 +941,95 @@ export function getPerson(id) {
 };
 
 export function search(query, page = 1) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+        const imdbIdPattern = /^tt\d{7,8}$/;
+        const tmdbIdPattern = /^\d+$/;
+
+        let idSearchResults = [];
+        let matchedById = null;
+
+        if (imdbIdPattern.test(query)) {
+            try {
+                const findResponse = await axios.get(`${apiUrl}/find/${query}`, {
+                    params: {
+                        api_key: getEnv('API_KEY'),
+                        language: getEnv('API_LANG'),
+                        external_source: 'imdb_id'
+                    }
+                });
+
+                if (findResponse.data) {
+                    const results = [
+                        ...(findResponse.data.movie_results || []).map(r => ({ ...r, media_type: 'movie' })),
+                        ...(findResponse.data.tv_results || []).map(r => ({ ...r, media_type: 'tv' }))
+                    ];
+
+                    if (results.length > 0) {
+                        idSearchResults = results;
+                        matchedById = 'IMDB';
+                    }
+                }
+            } catch (e) {
+                console.error("Error searching by IMDb ID:", e);
+            }
+        } else if (tmdbIdPattern.test(query)) {
+            try {
+                const [movieResult, tvResult] = await Promise.allSettled([
+                    getMovie(query),
+                    getTvShow(query)
+                ]);
+
+                if (movieResult.status === 'fulfilled') {
+                    idSearchResults.push({ ...movieResult.value, media_type: 'movie' });
+                }
+
+                if (tvResult.status === 'fulfilled') {
+                    if (!idSearchResults.find(i => i.id === tvResult.value.id && i.media_type === 'movie')) { // Basic check, though IDs are unique per type usually
+                        idSearchResults.push({ ...tvResult.value, media_type: 'tv' });
+                    }
+                }
+
+                if (idSearchResults.length > 0) {
+                    matchedById = 'TMDB';
+                }
+            } catch (e) {
+                // Ignore 404s or other errors during ID probe
+            }
+        }
+
+        if (idSearchResults.length > 0) {
+            const enrichedIdResults = await Promise.all(
+                idSearchResults.map(async (item) => {
+                    try {
+                        if (matchedById === 'IMDB') {
+                            const endpoint = item.media_type === 'movie' ? 'movie' : 'tv';
+                            const detailsResponse = await axios.get(`${apiUrl}/${endpoint}/${item.id}`, {
+                                params: {
+                                    api_key: getEnv('API_KEY'),
+                                    append_to_response: 'external_ids'
+                                }
+                            });
+                            item.external_ids = detailsResponse.data.external_ids;
+                            return enrichWithIMDbRating(item);
+                        }
+                        return item;
+                    } catch (e) {
+                        return item;
+                    }
+                })
+            );
+
+            enrichedIdResults.forEach(item => item.matched_by_id = matchedById);
+
+            resolve({
+                page: 1,
+                results: enrichedIdResults,
+                total_pages: 1,
+                total_results: enrichedIdResults.length
+            });
+            return;
+        }
+
         const searchMulti = axios.get(`${apiUrl}/search/multi?include_adult=false`, {
             params: {
                 api_key: getEnv('API_KEY'),
