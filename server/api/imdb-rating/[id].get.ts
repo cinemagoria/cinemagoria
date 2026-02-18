@@ -42,6 +42,8 @@ export default defineEventHandler(async (event) => {
 
         if (result.rows && result.rows.length > 0) {
             const row = result.rows[0]
+            if (!row) return { found: false, source: 'tmdb' }
+
             const score = row.average_rating ? parseFloat(String(row.average_rating)) : 0
             const votes = row.num_votes ? parseInt(String(row.num_votes)) : 0
 
