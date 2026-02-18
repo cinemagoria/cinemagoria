@@ -1264,7 +1264,7 @@ export default {
            this.$router.push(this.getLink(item));
         },
         getImageUrl(path) {
-           if (!path) return '/image_not_found_yet_es.webp';
+           if (!path) return '/placeholders/image_not_found_yet_es.webp';
            if (path.startsWith('http')) return path; 
            return `${apiImgUrl}/w500${path}`;
         },
@@ -1272,7 +1272,7 @@ export default {
             this.imageLoadStates[id] = true;
         },
         handleImageError(e) {
-            e.target.src = '/image_not_found_yet_es.webp';
+            e.target.src = '/placeholders/image_not_found_yet_es.webp';
         },
         
 

@@ -595,7 +595,7 @@ export default {
       currentYear: new Date().getFullYear(),
       selectedLanguage: 'english',
       fallbackImageUrl: "/placeholders/image_not_found_yet_es.webp",
-      handleImageError: "this.src='/image_not_found_yet_es.webp'",
+      handleImageError: "this.src='/placeholders/image_not_found_yet_es.webp'",
       userEmail: '',
       accessToken: '',
       isLoggedIn: false,

@@ -22,7 +22,7 @@
           :alt="name"
           :style="{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }"
           @load="onImageLoaded"
-          @error="$event.target.src = '/image_not_found_yet_es.webp'; onImageLoaded($event)">
+          @error="$event.target.src = '/placeholders/image_not_found_yet_es.webp'; onImageLoaded($event)">
 
         <img
           v-else
