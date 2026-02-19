@@ -67,6 +67,14 @@ export default defineEventHandler(async (event) => {
     const equalsIgnoreCase = (source: string | undefined | null, target: string) =>
         source && source.toLowerCase() === target.toLowerCase();
 
+
+    const isTvCategory = (category: string) => {
+        if (!category) return false;
+        const lowerCategory = category.toLowerCase();
+        const keywords = ['television', 'series', 'tv', 'miniseries'];
+        return keywords.some(keyword => lowerCategory.includes(keyword));
+    };
+
     try {
         if (type === 'person' && name) {
             oscars = oscarsData.filter(a => includesIgnoreCase(a.nominee_name, name));
@@ -84,19 +92,19 @@ export default defineEventHandler(async (event) => {
             }
 
             if (tmdbId) {
-                goldenGlobes = goldenGlobesData.filter(a => a.tmdb_id === tmdbId);
+                goldenGlobes = goldenGlobesData.filter(a => a.tmdb_id === tmdbId && !isTvCategory(a.category));
             }
             else if (goldenGlobes.length === 0 && title) {
-                goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title));
+                goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title) && !isTvCategory(a.category));
 
-                if (goldenGlobes.length === 0 && tmdbId) {
+                if (goldenGlobes.length === 0 && tmdbId && Number.isInteger(tmdbId) && tmdbId > 0) {
                     try {
                         const config = useRuntimeConfig();
                         const apiKey = config.public.apiKey;
                         if (apiKey) {
                             const tmdbRes: any = await $fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${apiKey}&language=en-US`);
                             if (tmdbRes && tmdbRes.title && tmdbRes.title !== title) {
-                                goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, tmdbRes.title));
+                                goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, tmdbRes.title) && !isTvCategory(a.category));
                             }
                         }
                     } catch (e) {
@@ -119,13 +127,15 @@ export default defineEventHandler(async (event) => {
 
         } else if (type === 'tv') {
             if (tmdbId) {
-                goldenGlobes = goldenGlobesData.filter(a => a.tmdb_id === tmdbId);
+                goldenGlobes = goldenGlobesData.filter(a => a.tmdb_id === tmdbId && isTvCategory(a.category));
             }
             else if (title) {
-                goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title));
+                goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title) && isTvCategory(a.category));
             }
 
         } else {
+            // Mixed type or unknown - keep original behavior but maybe we should filter if we knew better?
+            // For now keeping it as is for "search" mode where type might not be specific
             if (tmdbId) {
                 oscars.push(...oscarsData.filter(a => a.tmdb_id === tmdbId));
                 palme.push(...palmeData.filter(a => a.tmdb_id === tmdbId));
