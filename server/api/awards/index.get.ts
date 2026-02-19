@@ -67,6 +67,13 @@ export default defineEventHandler(async (event) => {
     const equalsIgnoreCase = (source: string | undefined | null, target: string) =>
         source && source.toLowerCase() === target.toLowerCase();
 
+
+    const isTvCategory = (category: string) => {
+        if (!category) return false;
+        const keywords = ['Television', 'Series', 'TV', 'Miniseries'];
+        return keywords.some(keyword => category.includes(keyword));
+    };
+
     try {
         if (type === 'person' && name) {
             oscars = oscarsData.filter(a => includesIgnoreCase(a.nominee_name, name));
@@ -84,10 +91,10 @@ export default defineEventHandler(async (event) => {
             }
 
             if (tmdbId) {
-                goldenGlobes = goldenGlobesData.filter(a => a.tmdb_id === tmdbId);
+                goldenGlobes = goldenGlobesData.filter(a => a.tmdb_id === tmdbId && !isTvCategory(a.category));
             }
             else if (goldenGlobes.length === 0 && title) {
-                goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title));
+                goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title) && !isTvCategory(a.category));
 
                 if (goldenGlobes.length === 0 && tmdbId) {
                     try {
@@ -96,7 +103,7 @@ export default defineEventHandler(async (event) => {
                         if (apiKey) {
                             const tmdbRes: any = await $fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${apiKey}&language=en-US`);
                             if (tmdbRes && tmdbRes.title && tmdbRes.title !== title) {
-                                goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, tmdbRes.title));
+                                goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, tmdbRes.title) && !isTvCategory(a.category));
                             }
                         }
                     } catch (e) {
@@ -119,10 +126,10 @@ export default defineEventHandler(async (event) => {
 
         } else if (type === 'tv') {
             if (tmdbId) {
-                goldenGlobes = goldenGlobesData.filter(a => a.tmdb_id === tmdbId);
+                goldenGlobes = goldenGlobesData.filter(a => a.tmdb_id === tmdbId && isTvCategory(a.category));
             }
             else if (title) {
-                goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title));
+                goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title) && isTvCategory(a.category));
             }
 
         } else {
