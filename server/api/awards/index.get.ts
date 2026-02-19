@@ -70,8 +70,9 @@ export default defineEventHandler(async (event) => {
 
     const isTvCategory = (category: string) => {
         if (!category) return false;
-        const keywords = ['Television', 'Series', 'TV', 'Miniseries'];
-        return keywords.some(keyword => category.includes(keyword));
+        const lowerCategory = category.toLowerCase();
+        const keywords = ['television', 'series', 'tv', 'miniseries'];
+        return keywords.some(keyword => lowerCategory.includes(keyword));
     };
 
     try {
@@ -96,7 +97,7 @@ export default defineEventHandler(async (event) => {
             else if (goldenGlobes.length === 0 && title) {
                 goldenGlobes = goldenGlobesData.filter(a => equalsIgnoreCase(a.film, title) && !isTvCategory(a.category));
 
-                if (goldenGlobes.length === 0 && tmdbId) {
+                if (goldenGlobes.length === 0 && tmdbId && Number.isInteger(tmdbId) && tmdbId > 0) {
                     try {
                         const config = useRuntimeConfig();
                         const apiKey = config.public.apiKey;
