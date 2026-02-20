@@ -134,8 +134,6 @@ export default defineEventHandler(async (event) => {
             }
 
         } else {
-            // Mixed type or unknown - keep original behavior but maybe we should filter if we knew better?
-            // For now keeping it as is for "search" mode where type might not be specific
             if (tmdbId) {
                 oscars.push(...oscarsData.filter(a => a.tmdb_id === tmdbId));
                 palme.push(...palmeData.filter(a => a.tmdb_id === tmdbId));
