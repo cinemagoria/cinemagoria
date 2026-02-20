@@ -792,7 +792,6 @@ export default {
             }
         }
 
-        // check manual overrides
         if (MANUAL_FESTIVAL_BADGES[this.id]) {
             const manualFestivals = MANUAL_FESTIVAL_BADGES[this.id];
             if (manualFestivals.includes('sundance') && !this.sundanceFilm) this.sundanceFilm = { title: this.name };

@@ -236,7 +236,6 @@ export default {
     data: {
       handler() {
         this.$nextTick(() => {
-          // Removed equalizeHeights
         })
       },
       deep: true

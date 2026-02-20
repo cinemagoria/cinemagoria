@@ -136,7 +136,6 @@ const openDays = ref(new Set());
 
 const formatDate = (dateStr) => {
     const options = { weekday: 'long', month: 'long', day: 'numeric' };
-    // Use 'es-ES' for Spanish locale formatting
     return new Date(dateStr).toLocaleDateString('es-ES', options);
 };
 
