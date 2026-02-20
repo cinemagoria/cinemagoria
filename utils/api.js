@@ -991,7 +991,6 @@ export async function search(query, page = 1) {
             }
         } catch (e) {
             console.error("Error searching by TMDB ID:", e);
-            // Ignore 404s or other errors during ID probe
         }
     }
 
