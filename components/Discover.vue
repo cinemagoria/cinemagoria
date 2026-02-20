@@ -221,7 +221,7 @@
       </div>
 
       <div v-if="activeChips.length > 0" class="chips-row">
-        <div v-for="(chip, i) in activeChips" :key="i" class="chip">
+        <div v-for="chip in activeChips" :key="chip.type" class="chip">
           <span>{{ chip.label }}</span>
           <button class="chip-remove" @click="removeChip(chip)">×</button>
         </div>
@@ -289,7 +289,6 @@ const runtimeConfig = useRuntimeConfig();
 const apiKey = runtimeConfig.public.apiKey;
 const apiLang = runtimeConfig.public.apiLang || 'es-ES';
 const apiUrl = 'https://api.themoviedb.org/3';
-const imdbApiUrl = 'https://entercinema-favorites.vercel.app/api';
 
 const selectedType = ref(props.defaultType);
 const selectedGenre = ref('');
@@ -436,12 +435,6 @@ function applyClientSort(items, sortValue) {
 
 const currentGenres = computed(() =>
   selectedType.value === 'movie' ? movieGenres : tvGenres
-);
-
-const hasActiveFilters = computed(() =>
-  !!(selectedGenre.value || selectedCountry.value || selectedNetwork.value ||
-    yearFrom.value || yearTo.value || ratingMin.value || ratingMax.value ||
-    selectedSort.value !== 'imdb_rating.desc' || selectedLanguage.value || selectedProvider.value || selectedMinVotes.value !== 10)
 );
 
 const activeChips = computed(() => {
@@ -632,7 +625,7 @@ function buildParams(page) {
   if (yearTo.value) {
     params.set(isMovie ? 'primary_release_date.lte' : 'first_air_date.lte', `${yearTo.value}-12-31`);
   }
-  params.set('vote_average.gte', ratingMin.value || 4);
+  params.set('vote_average.gte', ratingMin.value || 0);
   if (ratingMax.value) params.set('vote_average.lte', ratingMax.value);
 
   if (isMovie) {
@@ -680,7 +673,8 @@ async function enrichItem(item, type) {
           item.imdb_votes = imdbData.votes;
           item.rating_source = 'imdb';
         }
-      } catch {
+      } catch (err) {
+        console.error(`Failed to fetch IMDb rating for ${imdbId}:`, err);
       }
     }
   } catch {
@@ -737,14 +731,15 @@ async function fetchResults(page = 1, reset = false) {
         allResults = allResults.filter(item => !EXCLUDED_TV_IDS.includes(item.id));
       }
 
-      if (ratingMin.value || ratingMax.value) {
-        const min = ratingMin.value ? parseFloat(ratingMin.value) : 0;
-        const max = ratingMax.value ? parseFloat(ratingMax.value) : 10;
-        allResults = allResults.filter(item => parseFloat(item.vote_average) >= min && parseFloat(item.vote_average) <= max);
-      }
-
       allResults.sort((a, b) => parseFloat(b.vote_average || 0) - parseFloat(a.vote_average || 0));
-      const enriched = await Promise.all(allResults.map(item => enrichItem(item, type)));
+      
+      const enriched = [];
+      const CHUNK_SIZE = 20;
+      for (let i = 0; i < allResults.length; i += CHUNK_SIZE) {
+        const chunk = allResults.slice(i, i + CHUNK_SIZE);
+        const chunkEnriched = await Promise.all(chunk.map(item => enrichItem(item, type)));
+        enriched.push(...chunkEnriched);
+      }
 
       let finalResults = enriched;
       if (ratingMin.value || ratingMax.value) {
@@ -770,14 +765,15 @@ async function fetchResults(page = 1, reset = false) {
         pageResults = pageResults.filter(item => !EXCLUDED_TV_IDS.includes(item.id));
       }
 
-      if (ratingMin.value || ratingMax.value) {
-        const min = ratingMin.value ? parseFloat(ratingMin.value) : 0;
-        const max = ratingMax.value ? parseFloat(ratingMax.value) : 10;
-        pageResults = pageResults.filter(item => parseFloat(item.vote_average) >= min && parseFloat(item.vote_average) <= max);
-      }
-
       pageResults.sort((a, b) => parseFloat(b.vote_average || 0) - parseFloat(a.vote_average || 0));
-      const enriched = await Promise.all(pageResults.map(item => enrichItem(item, type)));
+      
+      const enriched = [];
+      const CHUNK_SIZE = 20;
+      for (let i = 0; i < pageResults.length; i += CHUNK_SIZE) {
+        const chunk = pageResults.slice(i, i + CHUNK_SIZE);
+        const chunkEnriched = await Promise.all(chunk.map(item => enrichItem(item, type)));
+        enriched.push(...chunkEnriched);
+      }
 
       if (ratingMin.value || ratingMax.value) {
         const min = ratingMin.value ? parseFloat(ratingMin.value) : 0;
@@ -1121,7 +1117,7 @@ onBeforeUnmount(() => {
   gap: 0.4rem;
   box-sizing: border-box;
   width: 100%;
-  height: 40px !important;
+  height: 40px;
   min-height: 40px;
   padding: 0 1rem;
   background: rgba(255, 60, 60, 0.15);
