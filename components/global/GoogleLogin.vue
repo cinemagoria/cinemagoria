@@ -27,31 +27,35 @@ export default {
     }
   },
   data() {
-    return { isLoading: false }
+    return {
+      isLoading: false
+    }
   },
   methods: {
-    handleGoogleLogin() {
+    async handleGoogleLogin() {
       this.isLoading = true;
+      let redirecting = false;
+      
       this.$emit('google-login-start');
-
-      const origin = window.location.origin;
-      let state = 'en_prod';
-      if (origin.includes('localhost:3002')) state = 'stream_local';
-      else if (origin.includes('localhost:3001')) state = 'es_local';
-      else if (origin.includes('localhost:3000')) state = 'en_local';
-      else if (origin.includes('stream.entercinema.com')) state = 'stream_prod';
-      else if (origin.includes('es.entercinema.com')) state = 'es_prod';
-
-      const params = new URLSearchParams({
-        response_type: 'code',
-        client_id: this.config.public.googleClientId,
-        redirect_uri: 'https://entercinema-drf.vercel.app/auth/google/callback/',
-        scope: 'email profile',
-        access_type: 'offline',
-        state
-      });
-
-      window.location.href = `https://accounts.google.com/o/oauth2/auth?${params.toString()}`;
+      
+      try {
+        const response = await fetch(`${this.config.public.apiUrl}/auth/google/`);
+        const data = await response.json();
+        
+        if (data && data.login_url) {
+          redirecting = true;
+          window.location.href = data.login_url;
+        } else {
+          this.$emit('google-login-error');
+        }
+      } catch (error) {
+        console.error('Google login error:', error);
+        this.$emit('google-login-error');
+      } finally {
+        if (!redirecting) {
+          this.isLoading = false;
+        }
+      }
     }
   }
 }
@@ -68,9 +72,9 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 10px 20px;
-  background: linear-gradient(315deg, #0A1E26, #11323F, #1A4453);
+  background: linear-gradient(
+  315deg, #0A1E26, #11323F, #1A4453);
   color: #fff;
-  border: none;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
@@ -79,6 +83,7 @@ export default {
   width: 60%;
   margin: 0 auto;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  position: relative;
 }
 
 .google-login-button:hover:not(.loading) {
@@ -118,7 +123,9 @@ export default {
     font-size: 12px;
     padding: 8px 15px;
   }
-  .google-icon, .loading-spinner {
+  
+  .google-icon,
+  .loading-spinner {
     width: 16px;
     height: 16px;
   }
