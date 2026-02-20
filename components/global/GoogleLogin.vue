@@ -39,7 +39,17 @@ export default {
       this.$emit('google-login-start');
       
       try {
-        const response = await fetch(`${this.config.public.apiUrl}/auth/google/`);
+        const response = await fetch(`${this.config.public.apiUrl}/auth/google/`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Server returned status ${response.status}`);
+        }
+        
         const data = await response.json();
         
         if (data && data.login_url) {
