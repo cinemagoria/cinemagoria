@@ -3,9 +3,9 @@
     <UserNav @show-rated-modal="showRatedItems" />
     
     <div class="header-container">
-      <h1 class="title-primary" style="text-align: center; margin-bottom: 0.5rem;">TV Shows</h1>
+      <h1 class="title-primary" style="text-align: center; margin-bottom: 0.5rem;">Discover</h1>
       <p class="title-secondary" style="text-align: center; margin-bottom: 2rem;">
-        Find your next binge-worthy series, latest episodes, and more.
+        Find your next binge-worthy series with precision filters.
       </p>
 
       <div class="switcher-container">
@@ -16,8 +16,9 @@
           <span class="label-text">TV Shows</span>
         </label>
       </div>
+
+      <Discover defaultType="tv" />
     </div>
-    <br>
 
     <CustomListingCategoriesSeries
       :title="'Browse By Category'"
@@ -70,6 +71,7 @@ import UserNav from '@/components/global/UserNav.vue';
 import { getTvShows, getListItem, getFollowedProductionCompanies, getTvShowsByCompanies, getFollowedStreamingPlatforms, getTvShowsByProvider } from '~/utils/api';
 import ListingCarousel from '~/components/ListingCarousel.vue';
 import CustomListingCategoriesSeries from '~/components/CustomListingCategoriesSeries.vue';
+import Discover from '~/components/Discover.vue';
 
 const router = useRouter();
 const route = useRoute();

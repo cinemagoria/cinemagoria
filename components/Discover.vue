@@ -1,24 +1,8 @@
 <template>
   <main class="discover-page">
+    <p v-if="!selectedGenre" class="default-note">Select a genre to discover {{ selectedType === 'movie' ? 'Movies' : 'TV Shows' }}</p>
+
     <div class="discover-controls">
-      <div class="type-tabs">
-        <button
-          class="type-tab"
-          :class="{ 'type-tab--active': selectedType === 'movie' }"
-          @click="selectType('movie')"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="17" x2="22" y2="17"/></svg>
-          Movies
-        </button>
-        <button
-          class="type-tab"
-          :class="{ 'type-tab--active': selectedType === 'tv' }"
-          @click="selectType('tv')"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
-          TV Shows
-        </button>
-      </div>
 
       <div class="filters-grid" :class="{ 'filters-grid--disabled': !selectedType }">
 
@@ -26,11 +10,11 @@
           <span class="filter-label">Genre</span>
           <div class="custom-select" @click.stop="selectedType ? toggleDropdown('genre') : null">
             <div class="select-display" :class="{ 'select-display--active': selectedGenre }">
-              <span>{{ selectedGenre ? getGenreName(selectedGenre) : 'All genres' }}</span>
+              <span>{{ selectedGenre ? getGenreName(selectedGenre) : 'Select a genre' }}</span>
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" :class="{ 'arrow-up': dropdowns.genre }"><polyline points="6 9 12 15 18 9"/></svg>
             </div>
             <div v-if="dropdowns.genre" class="dropdown-options">
-              <div class="dropdown-option" @click.stop="selectGenre('')">All genres</div>
+              <div class="dropdown-option" @click.stop="selectGenre('')">Select a genre</div>
               <div
                 v-for="genre in currentGenres"
                 :key="genre.id"
@@ -42,7 +26,7 @@
           </div>
         </div>
 
-        <div class="filter-cell">
+        <div class="filter-cell" :class="{ 'filter-cell--disabled': !selectedGenre }">
           <span class="filter-label">Sort by</span>
           <div class="custom-select" @click.stop="selectedType ? toggleDropdown('sort') : null">
             <div class="select-display select-display--active">
@@ -61,7 +45,7 @@
           </div>
         </div>
 
-        <div class="filter-cell">
+        <div class="filter-cell" :class="{ 'filter-cell--disabled': !selectedGenre }">
           <span class="filter-label">Country</span>
           <div class="custom-select" @click.stop="selectedType ? toggleDropdown('country') : null">
             <div class="select-display" :class="{ 'select-display--active': selectedCountry }">
@@ -81,7 +65,7 @@
           </div>
         </div>
 
-        <div v-if="selectedType === 'tv'" class="filter-cell">
+        <div v-if="selectedType === 'tv'" class="filter-cell" :class="{ 'filter-cell--disabled': !selectedGenre }">
           <span class="filter-label">Network</span>
           <div class="custom-select" @click.stop="toggleDropdown('network')">
             <div class="select-display" :class="{ 'select-display--active': selectedNetwork }">
@@ -95,7 +79,7 @@
           </div>
         </div>
 
-        <div v-if="selectedType === 'movie'" class="filter-cell">
+        <div v-if="selectedType === 'movie'" class="filter-cell" :class="{ 'filter-cell--disabled': !selectedGenre }">
           <span class="filter-label">Streaming (US)</span>
           <div class="custom-select" @click.stop="toggleDropdown('provider')">
             <div class="select-display" :class="{ 'select-display--active': selectedProvider }">
@@ -109,7 +93,7 @@
           </div>
         </div>
 
-        <div class="filter-cell">
+        <div class="filter-cell" :class="{ 'filter-cell--disabled': !selectedGenre }">
           <span class="filter-label">Original Language</span>
           <div class="custom-select" @click.stop="selectedType ? toggleDropdown('language') : null">
             <div class="select-display" :class="{ 'select-display--active': selectedLanguage }">
@@ -129,7 +113,7 @@
           </div>
         </div>
 
-        <div v-if="selectedType === 'movie'" class="filter-cell">
+        <div v-if="selectedType === 'movie'" class="filter-cell" :class="{ 'filter-cell--disabled': !selectedGenre }">
           <span class="filter-label">Format</span>
           <div class="custom-select" @click.stop="toggleDropdown('format')">
             <div class="select-display select-display--active">
@@ -143,7 +127,7 @@
           </div>
         </div>
 
-        <div class="filter-cell">
+        <div class="filter-cell" :class="{ 'filter-cell--disabled': !selectedGenre }">
           <span class="filter-label">Year from</span>
           <div class="input-wrap">
             <span class="input-display">{{ yearFrom || '1888' }}</span>
@@ -159,7 +143,7 @@
           </div>
         </div>
 
-        <div class="filter-cell">
+        <div class="filter-cell" :class="{ 'filter-cell--disabled': !selectedGenre }">
           <span class="filter-label">Year to</span>
           <div class="input-wrap">
             <span class="input-display">{{ yearTo || currentYear }}</span>
@@ -175,7 +159,7 @@
           </div>
         </div>
 
-        <div class="filter-cell">
+        <div class="filter-cell" :class="{ 'filter-cell--disabled': !selectedGenre }">
           <span class="filter-label">Rating min</span>
           <div class="input-wrap">
             <span class="input-display">{{ ratingMin !== null ? ratingMin : '0' }}</span>
@@ -191,7 +175,7 @@
           </div>
         </div>
 
-        <div class="filter-cell">
+        <div class="filter-cell" :class="{ 'filter-cell--disabled': !selectedGenre }">
           <span class="filter-label">Rating max</span>
           <div class="input-wrap">
             <span class="input-display">{{ ratingMax !== null ? ratingMax : '10' }}</span>
@@ -207,7 +191,7 @@
           </div>
         </div>
 
-        <div class="filter-cell">
+        <div class="filter-cell" :class="{ 'filter-cell--disabled': !selectedGenre }">
           <span class="filter-label">Min Votes</span>
           <div class="custom-select" @click.stop="selectedType ? toggleDropdown('minVotes') : null">
             <div class="select-display" :class="{ 'select-display--active': selectedMinVotes !== 10 }">
@@ -226,7 +210,7 @@
           </div>
         </div>
 
-        <div v-if="hasActiveFilters" class="filter-cell filter-cell--clear">
+        <div v-if="activeChips.length > 0" class="filter-cell filter-cell--clear">
           <span class="filter-label">&nbsp;</span>
           <button class="clear-btn" @click="clearAllFilters">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -244,23 +228,16 @@
       </div>
     </div>
 
-    <div v-if="!selectedType" class="empty-state">
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <p>Select <strong>Movies</strong> or <strong>TV Shows</strong> to start discovering</p>
-    </div>
 
-    <div v-else-if="results.length > 0 || loading" class="results-section">
+    <div v-if="results.length > 0 || loading" class="results-section">
       <div class="results-meta" v-if="results.length > 0">
         <span>{{ results.length }} result{{ results.length !== 1 ? 's' : '' }} loaded</span>
       </div>
 
-      <div class="results-grid">
-        <Card
-          v-for="item in results"
-          :key="`${item.media_type}-${item.id}`"
-          :item="item"
-        />
-      </div>
+      <ListingCarousel
+        v-if="results.length > 0"
+        :items="{ results }"
+      />
 
       <div class="grid-loader" v-if="loading">
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 44 44" stroke="#8BE9FD"><g fill="none" fill-rule="evenodd" stroke-width="2"><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="-0.9s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="-0.9s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle></g></svg>
@@ -285,7 +262,15 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { countries } from '~/utils/countries';
-import Card from '~/components/Card.vue';
+import ListingCarousel from '~/components/ListingCarousel.vue';
+
+const props = defineProps({
+  defaultType: {
+    type: String,
+    required: true,
+    validator: (value) => ['movie', 'tv'].includes(value)
+  }
+});
 
 const route = useRoute();
 const router = useRouter();
@@ -307,7 +292,7 @@ const apiLang = runtimeConfig.public.apiLang || 'en-US';
 const apiUrl = 'https://api.themoviedb.org/3';
 const imdbApiUrl = 'https://entercinema-favorites.vercel.app/api';
 
-const selectedType = ref('');
+const selectedType = ref(props.defaultType);
 const selectedGenre = ref('');
 const selectedSort = ref('imdb_rating.desc');
 const selectedCountry = ref('');
@@ -457,13 +442,13 @@ const currentGenres = computed(() =>
 const hasActiveFilters = computed(() =>
   !!(selectedGenre.value || selectedCountry.value || selectedNetwork.value ||
     yearFrom.value || yearTo.value || ratingMin.value || ratingMax.value ||
-    selectedSort.value !== 'popularity.desc' || selectedLanguage.value || selectedProvider.value || selectedMinVotes.value !== 10)
+    selectedSort.value !== 'imdb_rating.desc' || selectedLanguage.value || selectedProvider.value || selectedMinVotes.value !== 10)
 );
 
 const activeChips = computed(() => {
   const chips = [];
   if (selectedGenre.value) chips.push({ label: getGenreName(selectedGenre.value), type: 'genre' });
-  if (selectedSort.value !== 'popularity.desc') chips.push({ label: getSortLabel(selectedSort.value), type: 'sort' });
+  if (selectedSort.value !== 'imdb_rating.desc') chips.push({ label: getSortLabel(selectedSort.value), type: 'sort' });
   if (selectedCountry.value) chips.push({ label: getCountryName(selectedCountry.value), type: 'country' });
   if (selectedNetwork.value) chips.push({ label: getNetworkLabel(selectedNetwork.value), type: 'network' });
   if (selectedProvider.value) chips.push({ label: getNetworkLabel(selectedProvider.value), type: 'provider' });
@@ -508,21 +493,6 @@ function toggleDropdown(key) {
 
 function closeAllDropdowns() {
   Object.keys(dropdowns.value).forEach(k => dropdowns.value[k] = false);
-}
-
-function selectType(type) {
-  if (selectedType.value === type) return;
-  selectedType.value = type;
-  selectedGenre.value = '';
-  selectedNetwork.value = '';
-  selectedProvider.value = '';
-  formatType.value = 'feature';
-  results.value = [];
-  searchPerformed.value = false;
-  currentPage.value = 1;
-  totalPages.value = 1;
-  syncToUrl();
-  fetchResults(1, true);
 }
 
 function selectGenre(id) {
@@ -598,7 +568,7 @@ function onRatingChange() {
 
 function clearAllFilters() {
   selectedGenre.value = '';
-  selectedSort.value = 'popularity.desc';
+  selectedSort.value = 'imdb_rating.desc';
   selectedCountry.value = '';
   selectedNetwork.value = '';
   selectedProvider.value = '';
@@ -615,7 +585,7 @@ function clearAllFilters() {
 function removeChip(chip) {
   switch (chip.type) {
     case 'genre': selectedGenre.value = ''; break;
-    case 'sort': selectedSort.value = 'popularity.desc'; break;
+    case 'sort': selectedSort.value = 'imdb_rating.desc'; break;
     case 'country': selectedCountry.value = ''; break;
     case 'network': selectedNetwork.value = ''; break;
     case 'provider': selectedProvider.value = ''; break;
@@ -730,7 +700,10 @@ async function fetchPageRaw(type, page) {
 }
 
 async function fetchResults(page = 1, reset = false) {
-  if (!selectedType.value) return;
+  if (!selectedType.value || !selectedGenre.value) {
+    results.value = [];
+    return;
+  }
   loading.value = true;
   if (reset) {
     results.value = [];
@@ -838,7 +811,7 @@ function syncToUrl() {
   const query = {};
   if (selectedType.value) query.type = selectedType.value;
   if (selectedGenre.value) query.genre = selectedGenre.value;
-  if (selectedSort.value !== 'popularity.desc') query.sort = selectedSort.value;
+  if (selectedSort.value !== 'imdb_rating.desc') query.sort = selectedSort.value;
   if (selectedCountry.value) query.country = selectedCountry.value;
   if (selectedNetwork.value) query.network = selectedNetwork.value;
   if (selectedProvider.value) query.provider = selectedProvider.value;
@@ -869,7 +842,7 @@ function loadFromUrl() {
   if (q.ratingMin) ratingMin.value = Number(q.ratingMin);
   if (q.ratingMax) ratingMax.value = Number(q.ratingMax);
 
-  if (selectedType.value) {
+  if (selectedGenre.value) {
     fetchResults(1, true);
   }
 }
@@ -889,10 +862,19 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
+
+.default-note {
+  text-align: center;
+  font-size: 13px;
+  color: #acafb5;
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+}
+
 .discover-page {
-  padding: 2rem 1.5rem 4rem;
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: 0 0 4rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .discover-controls {
@@ -900,7 +882,7 @@ onBeforeUnmount(() => {
   border: 1px solid rgba(127, 219, 241, 0.1);
   border-radius: 16px;
   padding: 1.5rem;
-  margin-bottom: 2rem;
+  margin: 0 1.5rem 2rem;
 }
 
 .type-tabs {
@@ -937,9 +919,21 @@ onBeforeUnmount(() => {
 
 .filters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   align-items: end;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(6, 1fr);
+  }
 
   &--disabled {
     opacity: 0.4;
@@ -955,6 +949,11 @@ onBeforeUnmount(() => {
 
   &--clear {
     justify-content: flex-end;
+  }
+
+  &--disabled {
+    opacity: 0.4;
+    pointer-events: none;
   }
 }
 
@@ -1184,40 +1183,46 @@ onBeforeUnmount(() => {
 }
 
 .results-section {
-  margin-top: 1rem;
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+
+  :deep(.listing) {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
 }
 
 .results-meta {
-  font-size: 1.3rem;
+  font-size: 1.8rem;
   color: #8BE9FD;
-  font-weight: 500;
-  margin-bottom: 1.5rem;
-}
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: 1.2rem;
+  margin-left: 1.5rem;
 
-.results-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 1.5rem;
-
-  @media (min-width: 640px) {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  @media (min-width: 768px) {
+    margin-left: 4rem;
   }
 
-  @media (min-width: 1024px) {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  @media (min-width: 1200px) {
+    font-size: 2.4rem;
+    margin-left: 5rem;
   }
 }
 
 .grid-loader {
   display: flex;
   justify-content: center;
-  padding: 2rem 0;
+  padding: 1rem 0 0 0;
 }
 
 .load-more-row {
   display: flex;
   justify-content: center;
-  padding: 2rem 0;
+  padding: 0.5rem 0 0 0;
 }
 
 .load-more-btn {
@@ -1238,7 +1243,7 @@ onBeforeUnmount(() => {
 
 .end-of-results {
   text-align: center;
-  padding: 2rem 0;
+  padding: 1rem 0 0 0;
   font-size: 1.3rem;
   color: #5a6472;
 }
@@ -1249,7 +1254,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  padding: 5rem 2rem;
+  padding: 1rem 1rem;
   color: #5a6472;
   text-align: center;
 

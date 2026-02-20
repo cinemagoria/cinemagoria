@@ -13,23 +13,9 @@
       <li>
         <nuxt-link
           :to="{ name: 'movie' }"
-          aria-label="Movies"
+          aria-label="Discover"
           @click.native="clearSearchBeforeNavigate">
-          <svg xmlns="http://www.w3.org/2000/svg" :class="$style.navIcon" viewBox="0 0 24 24">
-            <g fill="none" stroke="#fff" stroke-width="1.5" stroke-miterlimit="10" stroke-linejoin="round" stroke-linecap="round">
-              <path d="M3.2 12.8h19.6v9.5c0 .5-.4.9-1 .9H4.1c-.5 0-1-.4-1-.9v-9.5"/>
-              <path d="M3.3 13.1l-2-4.4c-.2-.5 0-1 .5-1.2L18 .8c.5-.2 1.1 0 1.3.5l1.8 4-17.5 7.3"/>
-              <path d="M15 2.1l-.9 6M8 4.7l-1.2 6.6"/>
-            </g>
-          </svg>
-        </nuxt-link>
-      </li>
-      <li>
-        <nuxt-link
-          :to="{ name: 'advancedsearch' }"
-          aria-label="Advanced Search"
-          @click.native="clearSearchBeforeNavigate">
-          <img src="/icons/icon-advancedsearch.png" alt="Advanced Search" :class="$style.navIcon" />
+          <svg xmlns="http://www.w3.org/2000/svg" :class="$style.navIcon" style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15.51 15.56a5 5 0 1 0 -3.51 1.44" /><path d="M18.832 17.86a9 9 0 1 0 -6.832 3.14" /><path d="M12 12v9" /></svg>
         </nuxt-link>
       </li>
       <li>
