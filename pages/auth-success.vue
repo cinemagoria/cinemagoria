@@ -1,3 +1,4 @@
+
 <template>
   <div class="auth-success-container">
     <div class="auth-success-card">
@@ -187,9 +188,10 @@ export default {
   position: relative;
   background: rgba(3, 4, 6, 0.6);
   border-radius: 20px;
-  padding: 48px 40px;
-  width: 100%;
-  max-width: 480px;
+  padding: 30px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 
               0 0 0 1px rgba(31, 84, 103, 0.5), 
               inset 0 0 20px rgba(139, 233, 253, 0.05);
@@ -213,6 +215,7 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  min-height: 420px;
 }
 
 .glow-text {
@@ -371,4 +374,13 @@ export default {
   opacity: 0;
   transform: translateY(-10px);
 }
+
+@media screen and (max-width: 576px) {
+  .auth-success-card {
+    width: 95%;
+    max-height: 95vh;
+    padding: 30px 20px;
+  }
+}
+
 </style>
