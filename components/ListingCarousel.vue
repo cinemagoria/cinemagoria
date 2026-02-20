@@ -100,6 +100,13 @@ export default {
     this.calculateState(count);
   },
 
+  watch: {
+    'items.results.length'(newVal) {
+      const count = this.viewAllUrl ? newVal + 1 : newVal;
+      this.calculateState(count);
+    }
+  },
+
   methods: {
     resizeEvent () {
       const count = this.viewAllUrl ? this.items.results.length + 1 : this.items.results.length;

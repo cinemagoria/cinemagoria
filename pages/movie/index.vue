@@ -3,9 +3,9 @@
     <UserNav @show-rated-modal="showRatedItems" />
     
     <div class="header-container">
-      <h1 class="title-primary" style="text-align: center; margin-bottom: 0.5rem;">Películas</h1>
+      <h1 class="title-primary" style="text-align: center; margin-bottom: 0.5rem;">Descubre</h1>
       <p class="title-secondary" style="text-align: center; margin-bottom: 2rem;">
-        Descubre los últimos éxitos de taquilla, clásicos y todo lo demás.
+        Encuentra tu próxima película favorita con filtros de precisión.
       </p>
 
       <div class="switcher-container">
@@ -17,8 +17,7 @@
         </label>
       </div>
     </div>
-    <br>
-
+    <Discover defaultType="movie" />
     <CustomListingCategoriesMovies
       :title="'Explorar por Categoría'"
       :view-all-url="null"/>
@@ -70,7 +69,7 @@ import UserNav from '@/components/global/UserNav.vue';
 import { getMovies, getListItem, getFollowedProductionCompanies, getMoviesByCompanies, getFollowedStreamingPlatforms, getMoviesByProvider } from '~/utils/api';
 import ListingCarousel from '~/components/ListingCarousel.vue';
 import CustomListingCategoriesMovies from '~/components/CustomListingCategoriesMovies.vue';
-
+import Discover from '~/components/Discover.vue';
 
 const router = useRouter();
 const route = useRoute();
