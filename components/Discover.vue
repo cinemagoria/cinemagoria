@@ -1,10 +1,10 @@
 <template>
   <main class="discover-page">
-    <p v-if="!selectedGenre" class="default-note">Selecciona un género para descubrir {{ selectedType === 'movie' ? 'Películas' : 'Series' }}</p>
+    <p v-if="props.filtersOpen && !selectedGenre" class="default-note">Selecciona un género para descubrir {{ selectedType === 'movie' ? 'Películas' : 'Series' }}</p>
 
-    <div class="discover-controls">
+    <div v-show="props.filtersOpen" class="discover-controls">
 
-      <div class="filters-grid" :class="{ 'filters-grid--disabled': !selectedType }">
+      <div v-show="props.filtersOpen" class="filters-grid" :class="{ 'filters-grid--disabled': !selectedType }">
 
         <div class="filter-cell">
           <span class="filter-label">Género</span>
@@ -264,11 +264,8 @@ import { countries } from '~/utils/countries';
 import ListingCarousel from '~/components/ListingCarousel.vue';
 
 const props = defineProps({
-  defaultType: {
-    type: String,
-    required: true,
-    validator: (value) => ['movie', 'tv'].includes(value)
-  }
+  defaultType: { type: String, required: true, validator: (value) => ['movie', 'tv'].includes(value) },
+  filtersOpen: { type: Boolean, default: false }
 });
 
 const route = useRoute();
@@ -860,7 +857,6 @@ onBeforeUnmount(() => {
 }
 
 .discover-page {
-  padding: 0 0 4rem;
   width: 100%;
   box-sizing: border-box;
 }

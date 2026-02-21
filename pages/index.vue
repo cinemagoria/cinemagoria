@@ -207,6 +207,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Dump of Untitled Pieces', 
         'Danny Is My Boyfriend', 
         'The Projectionist', 
+        'Zumeca',
         'Yellow Letters',
         'Rosebush Pruning',
         'Salvation',
