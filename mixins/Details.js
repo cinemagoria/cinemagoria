@@ -1,4 +1,4 @@
-import { apiImgUrl } from '~/utils/api';
+import { apiImgUrl, getHeroEnrichment } from '~/utils/api';
 
 export const id = {
   computed: {
@@ -82,6 +82,16 @@ export const yearEnd = {
 };
 
 export const poster = {
+  data() {
+    return { _enrichedPoster: null };
+  },
+  async mounted() {
+    if (!this.item?.poster_path) {
+      const enrichment = await getHeroEnrichment();
+      const match = enrichment.get(this.item?.id);
+      if (match?.poster_path) this._enrichedPoster = match.poster_path;
+    }
+  },
   computed: {
     poster_path() {
       const item = this.item;
@@ -89,17 +99,35 @@ export const poster = {
         if (item.poster_path.startsWith('http')) return item.poster_path;
         return `${apiImgUrl}/w500${item.poster_path}`;
       }
+      if (this._enrichedPoster) {
+        if (this._enrichedPoster.startsWith('http')) return this._enrichedPoster;
+        return `${apiImgUrl}/w500${this._enrichedPoster}`;
+      }
     },
   },
 };
 
 export const backdrop = {
+  data() {
+    return { _enrichedBackdrop: null };
+  },
+  async mounted() {
+    if (!this.item?.backdrop_path) {
+      const enrichment = await getHeroEnrichment();
+      const match = enrichment.get(this.item?.id);
+      if (match?.backdrop_path) this._enrichedBackdrop = match.backdrop_path;
+    }
+  },
   computed: {
     backdrop() {
       const item = this.item;
       if (item.backdrop_path) {
         if (item.backdrop_path.startsWith('http')) return item.backdrop_path;
         return `${apiImgUrl}/original${item.backdrop_path}`;
+      }
+      if (this._enrichedBackdrop) {
+        if (this._enrichedBackdrop.startsWith('http')) return this._enrichedBackdrop;
+        return `${apiImgUrl}/original${this._enrichedBackdrop}`;
       }
     },
   },
@@ -131,10 +159,29 @@ export const cert = {
 };
 
 export const trailer = {
+  data() {
+    return { _enrichedTrailerKey: null };
+  },
+  async mounted() {
+    const videos = this.item?.videos?.results || [];
+    const hasTrailer = videos.some(v => v.type === 'Trailer' || v.type === 'Teaser' || v.type === 'CustomPriority');
+    if (!hasTrailer) {
+      const enrichment = await getHeroEnrichment();
+      const match = enrichment.get(this.item?.id);
+      if (match?.trailer_key) this._enrichedTrailerKey = match.trailer_key;
+    }
+  },
   computed: {
     trailer() {
       const item = this.item;
       let videos = item.videos.results;
+
+      if (!videos.length && this._enrichedTrailerKey) {
+        return [{
+          name: 'Trailer',
+          src: `https://www.youtube.com/embed/${this._enrichedTrailerKey}?rel=0&showinfo=0&autoplay=1`,
+        }];
+      }
 
       if (!videos.length) return null;
 
@@ -151,7 +198,15 @@ export const trailer = {
         video = videos.find(v => v.type !== 'Featurette' && v.type !== 'CustomPriority');
       }
 
-      if (!video) return null;
+      if (!video) {
+        if (this._enrichedTrailerKey) {
+          return [{
+            name: 'Trailer',
+            src: `https://www.youtube.com/embed/${this._enrichedTrailerKey}?rel=0&showinfo=0&autoplay=1`,
+          }];
+        }
+        return null;
+      }
 
       return [{
         name: video.name,

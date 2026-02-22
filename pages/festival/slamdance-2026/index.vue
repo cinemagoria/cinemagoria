@@ -69,15 +69,13 @@
                      </div>
                      
                       <div class="film-info">
-                         <component 
-                            :is="screening.film.source_url ? 'a' : 'span'"
-                            :href="screening.film.source_url || ''"
-                            :target="screening.film.source_url ? '_blank' : ''"
+                         <a 
+                            href="https://slamdance.com/26-digital-program/"
+                            target="_blank"
                             class="film-title"
-                            :class="{'no-link': !screening.film.source_url}"
                          >
                             {{ screening.film.title }}
-                         </component>
+                         </a>
                          <div class="film-meta">
                              <span v-if="screening.film.director">Directed by {{ screening.film.director }}</span>
                              <span v-if="screening.film.director && screening.film.runtime"> • </span>
