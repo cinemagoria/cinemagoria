@@ -86,9 +86,9 @@ export const poster = {
     return { _enrichedPoster: null };
   },
   async mounted() {
-    if (!this.item?.poster_path) {
-      const enrichment = await getHeroEnrichment();
-      const match = enrichment.get(this.item?.id);
+    const enrichment = await getHeroEnrichment();
+    const match = enrichment.get(this.item?.id);
+    if (!this.item?.poster_path || match?.force_enrichment) {
       if (match?.poster_path) this._enrichedPoster = match.poster_path;
     }
   },
@@ -112,9 +112,9 @@ export const backdrop = {
     return { _enrichedBackdrop: null };
   },
   async mounted() {
-    if (!this.item?.backdrop_path) {
-      const enrichment = await getHeroEnrichment();
-      const match = enrichment.get(this.item?.id);
+    const enrichment = await getHeroEnrichment();
+    const match = enrichment.get(this.item?.id);
+    if (!this.item?.backdrop_path || match?.force_enrichment) {
       if (match?.backdrop_path) this._enrichedBackdrop = match.backdrop_path;
     }
   },
@@ -165,9 +165,9 @@ export const trailer = {
   async mounted() {
     const videos = this.item?.videos?.results || [];
     const hasTrailer = videos.some(v => v.type === 'Trailer' || v.type === 'Teaser' || v.type === 'CustomPriority');
-    if (!hasTrailer) {
-      const enrichment = await getHeroEnrichment();
-      const match = enrichment.get(this.item?.id);
+    const enrichment = await getHeroEnrichment();
+    const match = enrichment.get(this.item?.id);
+    if (!hasTrailer || match?.force_enrichment) {
       if (match?.trailer_key) this._enrichedTrailerKey = match.trailer_key;
     }
   },

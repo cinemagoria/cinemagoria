@@ -13,7 +13,7 @@ const db = createClient({
 });
 
 const result = await db.execute(`
-    SELECT tmdb_id, trailer_key, backdrop_path, poster_path
+    SELECT tmdb_id, trailer_key, backdrop_path, poster_path, force_enrichment
     FROM hero_selections
     WHERE tmdb_id IS NOT NULL
 `);
@@ -23,6 +23,7 @@ const data = result.rows.map(row => ({
     trailer_key: row.trailer_key || null,
     backdrop_path: row.backdrop_path || null,
     poster_path: row.poster_path || null,
+    force_enrichment: row.force_enrichment === 1,
 }));
 
 const outPath = join(__dirname, '..', 'public', 'data', 'hero-enrichment.json');
