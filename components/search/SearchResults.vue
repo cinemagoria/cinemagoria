@@ -37,6 +37,19 @@
         <span>Coincidencia por {{ items.results[0].matched_by_id }} ID</span>
     </div>
 
+    <div class="discover-search-bar">
+      <button
+        class="filters-toggle-btn"
+        :class="{ 'filters-toggle-btn--active': discoverOpen }"
+        @click="discoverOpen = !discoverOpen">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11.646 20.965a1.67 1.67 0 0 1 -1.321 -1.282a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c.728 .177 1.154 .71 1.279 1.303" /><path d="M14.985 11.694a3 3 0 1 0 -3.29 3.29" /><path d="M15 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M20.2 20.2l1.8 1.8" /></svg>
+        <span>Búsqueda Avanzada</span>
+      </button>
+      <transition name="discover-expand">
+        <DiscoverSearch v-if="discoverOpen" />
+      </transition>
+    </div>
+
     <div v-if="localNews && localNews.length > 0" class="news-section">
       <div class="section-header" @click="toggleSection('news')">
         <h2 class="section-title">Noticias</h2>
@@ -102,6 +115,7 @@ import { debounce } from '~/mixins/Functions';
 import Card from '~/components/Card';
 import NewsResultCard from '~/components/search/NewsResultCard.vue';
 import CategorySection from '~/components/search/CategorySection.vue';
+import DiscoverSearch from '~/components/search/DiscoverSearch.vue';
 
 import axios from 'axios';
 
@@ -109,7 +123,8 @@ export default {
   components: {
     Card,
     NewsResultCard,
-    CategorySection
+    CategorySection,
+    DiscoverSearch
   },
   props: {
     title: {
@@ -140,6 +155,7 @@ export default {
     return {
       typoCheckInProgress: false,
       suggestedCorrection: null,
+      discoverOpen: false,
       collapsedSections: {
         news: false,
         people: false,
@@ -581,5 +597,50 @@ export default {
     text-align: left;
     font-weight: 500;
     width: fit-content;
+}
+
+.discover-search-bar {
+  margin-bottom: 2rem;
+}
+
+.filters-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 38px;
+  padding: 0 1.2rem;
+  background: transparent;
+  border: 1px solid rgba(139, 233, 253, 0.25);
+  border-radius: 8px;
+  color: #8BE9FD;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 1.2rem;
+
+  svg {
+    stroke: #8BE9FD;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    border-color: rgba(139, 233, 253, 0.5);
+  }
+
+  &--active {
+    border-color: rgba(139, 233, 253, 0.5);
+    background: rgba(139, 233, 253, 0.07);
+  }
+}
+
+.discover-expand-enter-active,
+.discover-expand-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.discover-expand-enter-from,
+.discover-expand-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
 }
 </style>
