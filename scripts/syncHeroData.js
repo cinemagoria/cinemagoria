@@ -5,9 +5,11 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+const { TURSO_DATABASE_URL = '', TURSO_AUTH_TOKEN = '' } = process.env;
+
 const db = createClient({
-    url: process.env.TURSO_DATABASE_URL.trim(),
-    authToken: process.env.TURSO_AUTH_TOKEN.trim(),
+    url: TURSO_DATABASE_URL.trim(),
+    authToken: TURSO_AUTH_TOKEN.trim(),
 });
 
 const result = await db.execute(`

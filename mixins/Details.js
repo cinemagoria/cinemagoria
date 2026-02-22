@@ -88,7 +88,7 @@ export const poster = {
   async mounted() {
     if (!this.item?.poster_path) {
       const enrichment = await getHeroEnrichment();
-      const match = enrichment.find(e => e.tmdb_id === this.item?.id);
+      const match = enrichment.get(this.item?.id);
       if (match?.poster_path) this._enrichedPoster = match.poster_path;
     }
   },
@@ -114,7 +114,7 @@ export const backdrop = {
   async mounted() {
     if (!this.item?.backdrop_path) {
       const enrichment = await getHeroEnrichment();
-      const match = enrichment.find(e => e.tmdb_id === this.item?.id);
+      const match = enrichment.get(this.item?.id);
       if (match?.backdrop_path) this._enrichedBackdrop = match.backdrop_path;
     }
   },
@@ -167,7 +167,7 @@ export const trailer = {
     const hasTrailer = videos.some(v => v.type === 'Trailer' || v.type === 'Teaser' || v.type === 'CustomPriority');
     if (!hasTrailer) {
       const enrichment = await getHeroEnrichment();
-      const match = enrichment.find(e => e.tmdb_id === this.item?.id);
+      const match = enrichment.get(this.item?.id);
       if (match?.trailer_key) this._enrichedTrailerKey = match.trailer_key;
     }
   },
