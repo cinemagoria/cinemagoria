@@ -62,7 +62,8 @@ const apiUrl = 'https://api.themoviedb.org/3';
 export const apiImgUrl = 'https://image.tmdb.org/t/p';
 const EXCLUDED_TV_IDS = [276880];
 
-let _heroEnrichmentCache = null;
+
+let _heroEnrichmentPromise = null;
 
 export async function getHeroEnrichment() {
     if (!_heroEnrichmentPromise) {
@@ -73,6 +74,7 @@ export async function getHeroEnrichment() {
     }
     return _heroEnrichmentPromise;
 }
+
 
 const traktApiUrl = 'https://api.trakt.tv';
 
