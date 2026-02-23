@@ -249,13 +249,13 @@
     "trailer_key": "tJMdtxyt_EY",
     "backdrop_path": "https://horrorscreamsvideovault.co.uk/wp-content/uploads/2026/02/Spoiling-You-Poster-Art-Landscape-2048x1152.png",
     "poster_path": "/lQgXogR1YdkE4TGuzhOuzJsUDQZ.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1630293,
     "trailer_key": "vegDNzCyT4E",
     "backdrop_path": "https://m.media-amazon.com/images/M/MV5BZDcyNmYxMjMtMjRiNi00YWIzLWEzNzYtYzhiYjRkM2EwNjI3XkEyXkFqcGc@._V1_.jpg",
     "poster_path": "/2nDMLuBYzODbok1rb8TLGBKYhJD.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   }
 ]
