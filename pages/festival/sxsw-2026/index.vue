@@ -35,17 +35,48 @@
 
       <div v-else>
         <div v-if="activeTab === 'films'" class="films-grid">
-            <div class="listing">
-                <div class="listing__head">
-                    <h2 class="listing__title">Official Selection</h2>
+            <div v-if="features.length > 0" class="film-category">
+                <div class="category-header" @click="featuresOpen = !featuresOpen">
+                    <h2 class="listing__title category-title">
+                        Features
+                        <span class="category-count">({{ features.length }})</span>
+                    </h2>
+                    <button class="expand-btn" :aria-label="featuresOpen ? 'Collapse' : 'Expand'">
+                        <svg v-if="featuresOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-chevrons-down-up-icon lucide-list-chevrons-down-up"><path d="M3 5h8"/><path d="M3 12h8"/><path d="M3 19h8"/><path d="m15 5 3 3 3-3"/><path d="m15 19 3-3 3 3"/></svg>
+                        <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-collapse-icon lucide-list-collapse"><path d="M10 5h11"/><path d="M10 12h11"/><path d="M10 19h11"/><path d="m3 10 3-3-3-3"/><path d="m3 20 3-3-3-3"/></svg>
+                    </button>
                 </div>
-                <div class="listing__items">
-                    <SxswCard 
-                        v-for="item in films.results"
-                        :key="`card-${item.id}`"
-                        :item="item" 
-                    />
+                <transition name="slide">
+                    <div v-show="featuresOpen" class="listing__items">
+                        <SxswCard 
+                            v-for="item in features"
+                            :key="`feature-${item.id}`"
+                            :item="item" 
+                        />
+                    </div>
+                </transition>
+            </div>
+
+            <div v-if="shorts.length > 0" class="film-category">
+                <div class="category-header" @click="shortsOpen = !shortsOpen">
+                    <h2 class="listing__title category-title">
+                        Shorts
+                        <span class="category-count">({{ shorts.length }})</span>
+                    </h2>
+                    <button class="expand-btn" :aria-label="shortsOpen ? 'Collapse' : 'Expand'">
+                        <svg v-if="shortsOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-chevrons-down-up-icon lucide-list-chevrons-down-up"><path d="M3 5h8"/><path d="M3 12h8"/><path d="M3 19h8"/><path d="m15 5 3 3 3-3"/><path d="m15 19 3-3 3 3"/></svg>
+                        <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-collapse-icon lucide-list-collapse"><path d="M10 5h11"/><path d="M10 12h11"/><path d="M10 19h11"/><path d="m3 10 3-3-3-3"/><path d="m3 20 3-3-3-3"/></svg>
+                    </button>
                 </div>
+                <transition name="slide">
+                    <div v-show="shortsOpen" class="listing__items">
+                        <SxswCard 
+                            v-for="item in shorts"
+                            :key="`short-${item.id}`"
+                            :item="item" 
+                        />
+                    </div>
+                </transition>
             </div>
         </div>
 
@@ -54,7 +85,7 @@
             <div class="day-header" @click="toggleDay(date)">
                 <h2>{{ formatDate(date) }}</h2>
                 <div class="chevron" :class="{ 'closed': !isOpen(date) }">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FBD378" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FBD378" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
                 </div>
             </div>
             
@@ -123,6 +154,17 @@ const films = ref({ results: [] });
 const schedule = ref([]);
 const openDays = ref(new Set());
 
+const featuresOpen = ref(true);
+const shortsOpen = ref(true);
+
+const features = computed(() => {
+    return films.value?.results?.filter(f => !f.runtime || f.runtime >= 40) || [];
+});
+
+const shorts = computed(() => {
+    return films.value?.results?.filter(f => f.runtime > 0 && f.runtime < 40) || [];
+});
+
 const formatDate = (dateStr) => {
     const options = { weekday: 'long', month: 'long', day: 'numeric' };
     return new Date(dateStr).toLocaleDateString('en-US', options);
@@ -184,6 +226,66 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 @use '~/assets/css/utilities/variables' as *;
+
+.film-category {
+    margin-bottom: 2.5rem;
+}
+
+.category-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(139, 233, 253, 0.3);
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    transition: border-color 0.2s;
+    user-select: none;
+    
+    &:hover {
+        border-color: rgba(139, 233, 253, 0.6);
+    }
+}
+
+.category-title {
+    margin: 0 !important;
+}
+
+.category-count {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-left: 10px;
+    font-weight: normal;
+}
+
+.expand-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    
+    &:hover {
+        background: rgba(139, 233, 253, 0.15);
+        color: #8BE9FD;
+        border-color: rgba(139, 233, 253, 0.3);
+    }
+
+    svg {
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+        min-height: 20px;
+        display: block;
+    }
+}
 
 .header-container {
     display: flex;

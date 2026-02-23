@@ -11,6 +11,7 @@
              <div class="overlay"></div>
              <div class="card-content">
                <h2>SXSW 2026</h2>
+               <span class="festival-dates">Mar 12–18, 2026</span>
                <span class="explore-btn">Explore</span>
              </div>
           </div>
@@ -22,6 +23,19 @@
              <div class="overlay"></div>
              <div class="card-content">
                <h2>Slamdance 2026</h2>
+               <span class="festival-dates">Feb 19–26, 2026</span>
+               <span class="explore-btn">Explore</span>
+             </div>
+          </div>
+        </nuxt-link>
+
+        <nuxt-link to="/festival/romford-2026" class="festival-card">
+          <div class="card-image-wrapper">
+             <img src="/festivals/romford/romford_backdrop_2026_eng.webp" alt="Romford Horror Film Festival 2026" />
+             <div class="overlay"></div>
+             <div class="card-content">
+               <h2>Romford Horror 2026</h2>
+               <span class="festival-dates">Feb 19–22, 2026</span>
                <span class="explore-btn">Explore</span>
              </div>
           </div>
@@ -33,17 +47,7 @@
              <div class="overlay"></div>
              <div class="card-content">
                <h2>Berlinale 2026</h2>
-               <span class="explore-btn">Explore</span>
-             </div>
-          </div>
-        </nuxt-link>
-
-        <nuxt-link to="/festival/sundance-2026" class="festival-card">
-          <div class="card-image-wrapper">
-             <img src="/festivals/sundance/sundance_backdrop_2026_eng.webp" alt="Sundance 2026" />
-             <div class="overlay"></div>
-             <div class="card-content">
-               <h2>Sundance 2026</h2>
+               <span class="festival-dates">Feb 12–22, 2026</span>
                <span class="explore-btn">Explore</span>
              </div>
           </div>
@@ -55,6 +59,19 @@
              <div class="overlay"></div>
              <div class="card-content">
                <h2>Rotterdam 2026</h2>
+               <span class="festival-dates">Jan 29 – Feb 8, 2026</span>
+               <span class="explore-btn">Explore</span>
+             </div>
+          </div>
+        </nuxt-link>
+
+        <nuxt-link to="/festival/sundance-2026" class="festival-card">
+          <div class="card-image-wrapper">
+             <img src="/festivals/sundance/sundance_backdrop_2026_eng.webp" alt="Sundance 2026" />
+             <div class="overlay"></div>
+             <div class="card-content">
+               <h2>Sundance 2026</h2>
+               <span class="festival-dates">Jan 22 – Feb 1, 2026</span>
                <span class="explore-btn">Explore</span>
              </div>
           </div>
@@ -181,9 +198,20 @@
         font-size: 2rem;
         font-weight: 700;
         color: #8BE9FD;
-        margin: 0;
+        margin: 0 0 0.3rem;
         text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
+}
+
+.festival-dates {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #8BE9FD;
+    text-transform: uppercase;
+    margin-bottom: 0.9rem;
+    text-shadow: 0 1px 4px rgba(139, 233, 253, 0.3);
 }
 
 .explore-btn {

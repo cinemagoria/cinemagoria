@@ -6,10 +6,10 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             All Festivals
         </nuxt-link>
-        <a href="https://festival.sundance.org/tickets/online" target="_blank" class="hero-backdrop">
+        <a href="https://www.romfordhorrorfestival.com" target="_blank" class="hero-backdrop">
             <img 
-              src="/festivals/sundance/sundance_backdrop_2026_eng.webp" 
-              alt="Sundance Backdrop"
+              src="/festivals/romford/romford_backdrop_2026_eng.webp" 
+              alt="Romford Horror Film Festival Backdrop"
             />
             <div class="hero-overlay"></div>
         </a>
@@ -20,7 +20,7 @@
 
         <div class="segmented-control">
             <input type="radio" id="tab-films" value="films" v-model="activeTab">
-            <label for="tab-films" @click="activeTab = 'films'">Premieres</label>
+            <label for="tab-films" @click="activeTab = 'films'">Films</label>
             
             <input type="radio" id="tab-schedule" value="schedule" v-model="activeTab">
             <label for="tab-schedule" @click="activeTab = 'schedule'">Schedule</label>
@@ -50,7 +50,7 @@
                 </div>
                 <transition name="slide">
                     <div v-show="featuresOpen" class="listing__items">
-                        <SundanceCard 
+                        <RomfordCard 
                             v-for="item in features"
                             :key="`feature-${item.id}`"
                             :item="item" 
@@ -72,7 +72,7 @@
                 </div>
                 <transition name="slide">
                     <div v-show="shortsOpen" class="listing__items">
-                        <SundanceCard 
+                        <RomfordCard 
                             v-for="item in shorts"
                             :key="`short-${item.id}`"
                             :item="item" 
@@ -87,7 +87,7 @@
             <div class="day-header" @click="toggleDay(date)">
                 <h2>{{ formatDate(date) }}</h2>
                 <div class="chevron" :class="{ 'closed': !isOpen(date) }">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FBD378" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
                 </div>
             </div>
             
@@ -100,19 +100,21 @@
                      </div>
                      
                       <div class="film-info">
-                         <component 
-                            :is="screening.film.source_url ? 'a' : 'span'"
-                            :href="screening.film.source_url || ''"
-                            :target="screening.film.source_url ? '_blank' : ''"
+                         <a 
+                            href="https://www.romfordhorrorfestival.com"
+                            target="_blank"
                             class="film-title"
-                            :class="{'no-link': !screening.film.source_url}"
                          >
                             {{ screening.film.title }}
-                         </component>
+                         </a>
                          <div class="film-meta">
                              <span v-if="screening.film.director">Directed by {{ screening.film.director }}</span>
                              <span v-if="screening.film.director && screening.film.runtime"> • </span>
                              <span v-if="screening.film.runtime">{{ screening.film.runtime }} min</span>
+                         </div>
+                         <div v-if="screening.venue" class="venue-info">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                            {{ screening.venue }}
                          </div>
                          <div class="tags">
                              <span v-if="screening.is_in_person" class="tag in-person">In Person</span>
@@ -144,7 +146,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import Loader from '~/components/Loader.vue';
-import SundanceCard from '~/components/SundanceCard.vue';
+import RomfordCard from '~/components/RomfordCard.vue';
 
 const activeTab = ref('films');
 const loading = ref(true);
@@ -169,7 +171,10 @@ const formatDate = (dateStr) => {
 };
 
 const formatTime = (timeStr) => {
-    return new Date(timeStr).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    return new Date(timeStr).toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit'
+    });
 };
 
 const groupedScreenings = computed(() => {
@@ -199,8 +204,8 @@ const isOpen = (date) => openDays.value.has(date);
 onMounted(async () => {
     try {
         const [filmsData, scheduleData] = await Promise.all([
-            $fetch('/api/festival/sundance/films?limit=200&sort=title'),
-            $fetch('/api/festival/sundance/schedule')
+            $fetch('/api/festival/romford/films?limit=200&sort=title'),
+            $fetch('/api/festival/romford/schedule')
         ]);
         
         films.value = filmsData;
@@ -298,30 +303,6 @@ onMounted(async () => {
     align-items: center;
 }
 
-.buy-tickets-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: #8BE9FD;
-    color: #000;
-    padding: 0 20px;
-    height: 40px;
-    border-radius: 16px;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 1.1rem;
-    transition: transform 0.2s, opacity 0.2s;
-    
-    &:hover {
-        transform: scale(1.05);
-        opacity: 0.9;
-    }
-    
-    span {
-        white-space: nowrap;
-    }
-}
-
 .segmented-control {
     position: relative;
     display: flex;
@@ -362,7 +343,7 @@ onMounted(async () => {
     left: 4px;
     height: calc(100% - 8px);
     width: calc((100% - 8px) / 2);
-    background: #8BE9FD;
+    background: #FBD378; 
     border-radius: 16px;
     z-index: 1;
     transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
@@ -382,7 +363,7 @@ onMounted(async () => {
     background-color: transparent;
     display: flex;
     justify-content: center;
-    border: 1px solid #8BE9FD;
+    border: 1px solid #FBD378;
 }
 
 .back-link {
@@ -518,7 +499,7 @@ onMounted(async () => {
 .screening-card {
     display: flex;
     background: #0a161b;
-    border: 1px solid #8BE9FD;
+    border: 1px solid #FBD378;
     border-radius: 8px;
     padding: 1.5rem;
     margin-bottom: 1rem;
@@ -560,7 +541,7 @@ onMounted(async () => {
         margin-bottom: 0.5rem;
         
         &:hover {
-            color: #8BE9FD;
+            color: #FBD378;
         }
     }
     
@@ -568,6 +549,19 @@ onMounted(async () => {
         font-size: 1.05rem;
         color: #aaa;
         margin-bottom: 0.8rem;
+    }
+    
+    .venue-info {
+        font-size: 1.25rem;
+        color: #ccc;
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        
+        svg {
+            min-width: 18px;
+        }
     }
 }
 

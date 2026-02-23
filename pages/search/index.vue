@@ -115,7 +115,6 @@ onBeforeRouteLeave((to, from, next) => {
 }
 
 .no-results-container {
-  min-height: 50vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
