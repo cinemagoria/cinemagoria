@@ -385,7 +385,6 @@ export default {
 <style scoped>
 .no-results {
   text-align: center;
-  padding: 3rem 1rem;
   color: #fff;
   margin: 2rem auto;
   max-width: 600px;
