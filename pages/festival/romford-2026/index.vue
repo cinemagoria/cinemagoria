@@ -6,10 +6,10 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             Volver a Festivales
         </nuxt-link>
-        <a href="https://www.berlinale.de/en/home.html" target="_blank" class="hero-backdrop">
+        <a href="https://www.romfordhorrorfestival.com" target="_blank" class="hero-backdrop">
             <img 
-              src="/festivals/berlinale/berlinale_backdrop_2026_es.webp" 
-              alt="Berlinale Backdrop"
+              src="/festivals/romford/romford_backdrop_2026_es.webp" 
+              alt="Fondo Romford Horror Film Festival"
             />
             <div class="hero-overlay"></div>
         </a>
@@ -20,10 +20,10 @@
 
         <div class="segmented-control">
             <input type="radio" id="tab-films" value="films" v-model="activeTab">
-            <label for="tab-films" @click="activeTab = 'films'">Estrenos</label>
+            <label for="tab-films" @click="activeTab = 'films'">Películas</label>
             
             <input type="radio" id="tab-schedule" value="schedule" v-model="activeTab">
-            <label for="tab-schedule" @click="activeTab = 'schedule'">Programación</label>
+            <label for="tab-schedule" @click="activeTab = 'schedule'">Horarios</label>
             
             <div class="glider" :class="activeTab"></div>
         </div>
@@ -50,7 +50,7 @@
                 </div>
                 <transition name="slide">
                     <div v-show="featuresOpen" class="listing__items">
-                        <BerlinaleCard 
+                        <RomfordCard 
                             v-for="item in features"
                             :key="`feature-${item.id}`"
                             :item="item" 
@@ -72,7 +72,7 @@
                 </div>
                 <transition name="slide">
                     <div v-show="shortsOpen" class="listing__items">
-                        <BerlinaleCard 
+                        <RomfordCard 
                             v-for="item in shorts"
                             :key="`short-${item.id}`"
                             :item="item" 
@@ -87,7 +87,7 @@
             <div class="day-header" @click="toggleDay(date)">
                 <h2>{{ formatDate(date) }}</h2>
                 <div class="chevron" :class="{ 'closed': !isOpen(date) }">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FBD378" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
                 </div>
             </div>
             
@@ -100,15 +100,13 @@
                      </div>
                      
                       <div class="film-info">
-                         <component 
-                            :is="screening.film.source_url ? 'a' : 'span'"
-                            :href="screening.film.source_url || ''"
-                            :target="screening.film.source_url ? '_blank' : ''"
+                         <a 
+                            href="https://www.romfordhorrorfestival.com"
+                            target="_blank"
                             class="film-title"
-                            :class="{'no-link': !screening.film.source_url}"
                          >
                             {{ screening.film.title }}
-                         </component>
+                         </a>
                          <div class="film-meta">
                              <span v-if="screening.film.director">Dirigida por {{ screening.film.director }}</span>
                              <span v-if="screening.film.director && screening.film.runtime"> • </span>
@@ -119,7 +117,7 @@
                             {{ screening.venue }}
                          </div>
                          <div class="tags">
-                             <span v-if="screening.is_in_person" class="tag in-person">Presencial</span>
+                             <span v-if="screening.is_in_person" class="tag in-person">En persona</span>
                              <span v-if="screening.is_online" class="tag online">Online</span>
                              <span v-if="screening.is_sold_out" class="tag sold-out">Agotado</span>
                          </div>
@@ -148,7 +146,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import Loader from '~/components/Loader.vue';
-import BerlinaleCard from '~/components/BerlinaleCard.vue';
+import RomfordCard from '~/components/RomfordCard.vue';
 
 const activeTab = ref('films');
 const loading = ref(true);
@@ -168,15 +166,15 @@ const shorts = computed(() => {
 });
 
 const formatDate = (dateStr) => {
-    const options = { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'Europe/Berlin' };
-    return new Date(dateStr).toLocaleDateString('es-ES', options);
+    const options = { weekday: 'long', month: 'long', day: 'numeric' };
+    const date = new Date(dateStr).toLocaleDateString('es-ES', options);
+    return date.charAt(0).toUpperCase() + date.slice(1);
 };
 
 const formatTime = (timeStr) => {
     return new Date(timeStr).toLocaleTimeString('es-ES', { 
         hour: '2-digit', 
-        minute: '2-digit',
-        timeZone: 'Europe/Berlin'
+        minute: '2-digit'
     });
 };
 
@@ -207,8 +205,8 @@ const isOpen = (date) => openDays.value.has(date);
 onMounted(async () => {
     try {
         const [filmsData, scheduleData] = await Promise.all([
-            $fetch('/api/festival/berlinale/films?limit=200&sort=title'),
-            $fetch('/api/festival/berlinale/schedule')
+            $fetch('/api/festival/romford/films?limit=200&sort=title'),
+            $fetch('/api/festival/romford/schedule')
         ]);
         
         films.value = filmsData;
@@ -220,7 +218,7 @@ onMounted(async () => {
         }
         
     } catch (e) {
-        console.error('Error fetching festival data', e);
+        console.error('Error al cargar los datos del festival', e);
     } finally {
         loading.value = false;
     }
@@ -346,7 +344,7 @@ onMounted(async () => {
     left: 4px;
     height: calc(100% - 8px);
     width: calc((100% - 8px) / 2);
-    background: #8BE9FD;
+    background: #FBD378; 
     border-radius: 16px;
     z-index: 1;
     transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
@@ -366,7 +364,7 @@ onMounted(async () => {
     background-color: transparent;
     display: flex;
     justify-content: center;
-    border: 1px solid #8BE9FD;
+    border: 1px solid #FBD378;
 }
 
 .back-link {
@@ -473,8 +471,7 @@ onMounted(async () => {
     h2 {
         font-size: 1.8rem;
         margin: 0;
-            text-transform: capitalize;
-        }
+    }
     
     .chevron {
         transition: transform 0.3s ease;
@@ -503,7 +500,7 @@ onMounted(async () => {
 .screening-card {
     display: flex;
     background: #0a161b;
-    border: 1px solid #8BE9FD;
+    border: 1px solid #FBD378;
     border-radius: 8px;
     padding: 1.5rem;
     margin-bottom: 1rem;
@@ -545,7 +542,7 @@ onMounted(async () => {
         margin-bottom: 0.5rem;
         
         &:hover {
-            color: #8BE9FD;
+            color: #FBD378;
         }
     }
     

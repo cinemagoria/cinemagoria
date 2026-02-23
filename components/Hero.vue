@@ -363,6 +363,7 @@ import SlamdanceBadge from '~/components/festival/SlamdanceBadge.vue';
 import BerlinaleBadge from '~/components/festival/BerlinaleBadge.vue';
 import RotterdamBadge from '~/components/festival/RotterdamBadge.vue';
 import SxswBadge from '~/components/festival/SxswBadge.vue';
+import RomfordBadge from '~/components/festival/RomfordBadge.vue';
 import { translateText } from '~/utils/api';
 import { MANUAL_FESTIVAL_BADGES } from '~/utils/constants';
 
@@ -375,6 +376,7 @@ export default {
     BerlinaleBadge,
     RotterdamBadge,
     SxswBadge,
+    RomfordBadge,
   },
 
   mixins: [
@@ -458,6 +460,7 @@ export default {
       berlinaleFilm: null,
       rotterdamFilm: null,
       sxswFilm: null,
+      romfordFilm: null,
       isFestivalLoading: false,
       isTranslating: false,
       translatedOverview: null,
@@ -524,6 +527,7 @@ export default {
         { name: 'berlinale', film: this.berlinaleFilm, component: 'BerlinaleBadge', link: '/festival/berlinale-2026', isSimple: true },
         { name: 'rotterdam', film: this.rotterdamFilm, component: 'RotterdamBadge', link: '/festival/rotterdam-2026', isSimple: true },
         { name: 'sxsw', film: this.sxswFilm, component: 'SxswBadge', link: '/festival/sxsw-2026', isSimple: true },
+        { name: 'romford', film: this.romfordFilm, component: 'RomfordBadge', link: '/festival/romford-2026', isSimple: true },
       ];
       return festivalConfig.filter(f => f.film);
     }
@@ -718,16 +722,18 @@ export default {
     const wasBerlinale = !!this.berlinaleFilm;
     const wasRotterdam = !!this.rotterdamFilm;
     const wasSxsw = !!this.sxswFilm;
+    const wasRomford = !!this.romfordFilm;
 
     this.sundanceFilm = null;
     this.slamdanceFilm = null;
     this.berlinaleFilm = null;
     this.rotterdamFilm = null;
     this.sxswFilm = null;
+    this.romfordFilm = null;
 
     if (this.type !== 'movie' && this.type !== 'tv') return;
 
-    if (wasSundance || wasSlamdance || wasBerlinale || wasRotterdam || wasSxsw) {
+    if (wasSundance || wasSlamdance || wasBerlinale || wasRotterdam || wasSxsw || wasRomford) {
         this.isFestivalLoading = true;
     }
 
@@ -792,6 +798,18 @@ export default {
             }
         }
 
+        const romfordResponse = await fetch(`/api/festival/romford/films?tmdb_id=${this.id}`);
+        if (romfordResponse.ok) {
+            const data = await romfordResponse.json();
+            if (data.results && data.results.length > 0) {
+                if (!wasRomford) {
+                    this.isFestivalLoading = true;
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                this.romfordFilm = data.results[0];
+            }
+        }
+
         if (MANUAL_FESTIVAL_BADGES[this.id]) {
             const manualFestivals = MANUAL_FESTIVAL_BADGES[this.id];
             if (manualFestivals.includes('sundance') && !this.sundanceFilm) this.sundanceFilm = { title: this.name };
@@ -799,6 +817,7 @@ export default {
             if (manualFestivals.includes('berlinale') && !this.berlinaleFilm) this.berlinaleFilm = { title: this.name };
             if (manualFestivals.includes('rotterdam') && !this.rotterdamFilm) this.rotterdamFilm = { title: this.name };
             if (manualFestivals.includes('sxsw') && !this.sxswFilm) this.sxswFilm = { title: this.name };
+            if (manualFestivals.includes('romford') && !this.romfordFilm) this.romfordFilm = { title: this.name };
         }
 
     } catch (e) {

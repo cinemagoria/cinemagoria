@@ -72,6 +72,7 @@ import SlamdanceCard from '~/components/SlamdanceCard.vue';
 import BerlinaleCard from '~/components/BerlinaleCard.vue';
 import RotterdamCard from '~/components/RotterdamCard.vue';
 import SxswCard from '~/components/festival/SxswCard.vue';
+import RomfordCard from '~/components/RomfordCard.vue';
 
 export default {
   components: {
@@ -79,7 +80,8 @@ export default {
     SlamdanceCard,
     BerlinaleCard,
     RotterdamCard,
-    SxswCard
+    SxswCard,
+    RomfordCard
   },
 
   mixins: [carousel],
@@ -121,6 +123,7 @@ export default {
         rotterdam: 'RotterdamCard',
         slamdance: 'SlamdanceCard',
         sxsw: 'SxswCard',
+        romford: 'RomfordCard',
       };
       return cardMap[item.festival_source] || 'SundanceCard';
     }
