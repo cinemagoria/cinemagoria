@@ -245,13 +245,6 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 1630293,
-    "trailer_key": "vegDNzCyT4E",
-    "backdrop_path": "https://m.media-amazon.com/images/M/MV5BZDcyNmYxMjMtMjRiNi00YWIzLWEzNzYtYzhiYjRkM2EwNjI3XkEyXkFqcGc@._V1_.jpg",
-    "poster_path": "/2nDMLuBYzODbok1rb8TLGBKYhJD.jpg",
-    "force_enrichment": true
-  },
-  {
     "tmdb_id": 1083381,
     "trailer_key": "tKGhxMi50y8",
     "backdrop_path": "/hhBqc8n9WaGizwMglvGZcDKzguK.jpg",
@@ -263,6 +256,20 @@
     "trailer_key": "4bSKM9WWT08",
     "backdrop_path": "/eVyHdSC53TJhwPxhpG1P8mtsKqY.jpg",
     "poster_path": null,
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 843342,
+    "trailer_key": "TXTA2CUWmsE",
+    "backdrop_path": "/s8JEKHgD26NaMU20PluSJsZusqu.jpg",
+    "poster_path": "/9hyE2dkQjuoKDwUNDBCV98NhYGm.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 277439,
+    "trailer_key": null,
+    "backdrop_path": "/ymBorUGu1Iji0eaDtDnVjqe5gWe.jpg",
+    "poster_path": "/2mhTMJPEQDQ3pfuRBc00SprHwn0.jpg",
     "force_enrichment": false
   }
 ]
