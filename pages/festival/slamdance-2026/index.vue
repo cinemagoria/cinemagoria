@@ -87,7 +87,7 @@
             <div class="day-header" @click="toggleDay(date)">
                 <h2>{{ formatDate(date) }}</h2>
                 <div class="chevron" :class="{ 'closed': !isOpen(date) }">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FBD378" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
                 </div>
             </div>
             
@@ -344,7 +344,7 @@ onMounted(async () => {
     left: 4px;
     height: calc(100% - 8px);
     width: calc((100% - 8px) / 2);
-    background: #FBD378; 
+    background: #8BE9FD; 
     border-radius: 16px;
     z-index: 1;
     transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
@@ -364,7 +364,7 @@ onMounted(async () => {
     background-color: transparent;
     display: flex;
     justify-content: center;
-    border: 1px solid #FBD378;
+    border: 1px solid #8BE9FD;
 }
 
 .back-link {
@@ -547,7 +547,7 @@ onMounted(async () => {
 .screening-card {
     display: flex;
     background: #0a161b;
-    border: 1px solid #FBD378;
+    border: 1px solid #8BE9FD;
     border-radius: 8px;
     padding: 1.5rem;
     margin-bottom: 1rem;
@@ -589,7 +589,7 @@ onMounted(async () => {
         margin-bottom: 0.5rem;
         
         &:hover {
-            color: #FBD378;
+            color: #8BE9FD;
         }
     }
     
