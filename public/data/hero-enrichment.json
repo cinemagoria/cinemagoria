@@ -9,9 +9,9 @@
   {
     "tmdb_id": 1159831,
     "trailer_key": "QyLhkoGeSl4",
-    "backdrop_path": "/pMlCbasyAqBLV18CLEkDm07VKtn.jpg",
+    "backdrop_path": "https://m.media-amazon.com/images/M/MV5BNjYzM2JmN2MtZWRhNC00NmMzLWFiODAtMzI0ZDZiMjNhNDU5XkEyXkFqcGc@._V1_.jpg",
     "poster_path": "/vu1cbpWza1F0OSUTqVMlJYcNgC2.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1275779,
@@ -155,23 +155,16 @@
   },
   {
     "tmdb_id": 1285895,
-    "trailer_key": "O1HxsqX4S3g",
+    "trailer_key": "otyq-mDQMKM",
     "backdrop_path": "/tDG3iVhR4gZOTtXoBEtqZgNrD1U.jpg",
     "poster_path": "/iCLsQ34OMyOS1zN8yUhE59SZnfK.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1618196,
     "trailer_key": "_S9Ibcw18pE",
     "backdrop_path": "https://hollywoodtimes.net/wp-content/uploads/2026/02/The-Bulldogs_3-1536x640.jpg",
     "poster_path": "/5faOcuKhkIHZ9bNimlByZYrOvaG.jpg",
-    "force_enrichment": false
-  },
-  {
-    "tmdb_id": 1383453,
-    "trailer_key": "VoYZ8GfQ1Ig",
-    "backdrop_path": "https://assets.poff.ee/img/F_8_Dump_of_Untitled_Pieces_6b6b60473e_big_16_9.jpeg",
-    "poster_path": "/radph8yQNOcQ1PZEw1J1BkhNrpw.jpg",
     "force_enrichment": false
   },
   {
@@ -233,7 +226,7 @@
   {
     "tmdb_id": 1318413,
     "trailer_key": "zdM4tdLQBg0",
-    "backdrop_path": "https://mr.comingsoon.it/imgdb/video/49056_big.jpg",
+    "backdrop_path": "/q7ZgPZIqSYm3UlrdCldkYzjGOCI.jpg",
     "poster_path": "/hldYf1KAWZwkRw2UOCOwWUzBVtt.jpg",
     "force_enrichment": false
   },
@@ -257,5 +250,19 @@
     "backdrop_path": "https://m.media-amazon.com/images/M/MV5BZDcyNmYxMjMtMjRiNi00YWIzLWEzNzYtYzhiYjRkM2EwNjI3XkEyXkFqcGc@._V1_.jpg",
     "poster_path": "/2nDMLuBYzODbok1rb8TLGBKYhJD.jpg",
     "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1083381,
+    "trailer_key": "tKGhxMi50y8",
+    "backdrop_path": "/hhBqc8n9WaGizwMglvGZcDKzguK.jpg",
+    "poster_path": "/65x9FGRRD3zCnMJsaLD0TEJttzG.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 288672,
+    "trailer_key": "4bSKM9WWT08",
+    "backdrop_path": "/eVyHdSC53TJhwPxhpG1P8mtsKqY.jpg",
+    "poster_path": null,
+    "force_enrichment": false
   }
 ]
