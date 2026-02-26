@@ -13,22 +13,20 @@
       <div :class="$style.modalBody">
         <div :class="$style.intro">
         <h3>Get Personalized Notifications</h3>
-        <p>
-          Stay ahead of every release by following people, production companies, and TV series of interest. The platform delivers automatic notifications about new projects and episodes, with updates synchronized every 6 hours.
-        </p>
+        <p>Follow people, production companies, streaming platforms, and TV shows to get automatic notifications about new projects and episodes, updated every 6 hours.</p>
         </div>
 
         <div :class="$style.guideSection">
           <div :class="$style.guideCard">
             <h4>Following People</h4>
-            <p>Navigate to any actor, director, writer, or creator profile and click the "Follow" button to start receiving notifications. You'll be instantly notified about their recent work from the past 30 days, plus all upcoming projects scheduled for release within the next 5 years. Our notification system runs automated checks every 6 hours to ensure you never miss an announcement.</p>
+            <p>Go to any actor, director, or creator profile and click "Follow". You'll get notified about their recent and upcoming projects, with checks every 6 hours.</p>
             <div :class="$style.guideImage">
               <img src="/onboarding/add-person-en.webp" alt="Follow person guide">
             </div>
           </div>
 
           <div :class="$style.guideCard">
-            <p>Get real-time alerts whenever someone you follow releases a new movie or project.</p>
+            <p>Get notified whenever someone you follow releases a new movie or project.</p>
             <div :class="$style.guideImage">
               <img src="/onboarding/push-person-en.webp" alt="Push notifications for people guide">
             </div>
@@ -36,14 +34,14 @@
 
           <div :class="$style.guideCard">
             <h4>Following TV Shows</h4>
-            <p>Access any TV series page and click the "Follow Episodes" button to subscribe to episode notifications. You'll receive timely alerts for episodes airing within a 7-day window before and after their scheduled release date. This feature is ideal for staying current with ongoing series without missing new episodes. The system performs automatic updates every 6 hours to keep your notifications fresh.</p>
+            <p>Go to any TV series page and click "Follow Episodes". You'll get alerts for episodes within a 7-day window of their air date, updated every 6 hours.</p>
             <div :class="$style.guideImage">
               <img src="/onboarding/add-tv-show-en.webp" alt="Follow TV show guide">
             </div>
           </div>
 
           <div :class="$style.guideCard">
-            <p>Receive timely notifications when new episodes or seasons of your followed series are released. Stay up to date with airing schedules and never miss the latest from your favorite shows.</p>
+            <p>Get notified when new episodes or seasons of your followed series are released.</p>
             <div :class="$style.guideImage">
               <img src="/onboarding/push-tv-show-en.webp" alt="Push notifications for TV shows guide">
             </div>
@@ -91,7 +89,7 @@ export default {
   border: 1px solid rgba(127, 219, 241, 0.3);
   width: 100%;
   max-width: 900px;
-  max-height: 90vh;
+  max-height: 85vh;
   display: flex;
   flex-direction: column;
 }
@@ -100,7 +98,7 @@ export default {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  padding: 2rem;
+  padding: 0.6rem 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
   h2 {
@@ -134,21 +132,25 @@ export default {
 
 .intro {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 
   h3 {
-    font-size: 2rem;
+    font-size: 1.9rem;
     color: #8BE9FD;
-    margin: 0 0 1rem 0;
-    bottom: 2rem;
+    margin: 0 0 0.8rem 0;
     position: relative;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 
   p {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     color: rgba(255, 255, 255, 0.7);
-    line-height: 1.6;
+    line-height: 1.5;
     margin: 0;
+    max-width: 520px;
+    margin: 0 auto;
   }
 }
 
@@ -242,28 +244,54 @@ export default {
 }
 
 @media (max-width: 768px) {
+  .modalOverlay {
+    padding: 0.8rem;
+    align-items: flex-start;
+    padding-top: 4rem;
+  }
+
   .modalContent {
-    max-width: 95%;
+    max-width: 100%;
+    max-height: 90vh;
   }
 
-  .intro h3 {
-    font-size: 1.8rem;
+  .modalBody {
+    padding: 1rem;
   }
 
-  .intro p {
-    font-size: 1.4rem;
-  }
+  .intro {
+    margin-bottom: 1.2rem;
 
-  .guideCard {
-    padding: 1.5rem;
-
-    h4 {
-      font-size: 1.6rem;
+    h3 {
+      font-size: 1.5rem;
+      line-height: 1.3;
+      white-space: normal;
+      word-break: break-word;
+      overflow-wrap: break-word;
     }
 
     p {
-      font-size: 1.3rem;
+      font-size: 1.25rem;
     }
+  }
+
+  .guideCard {
+    padding: 0.9rem;
+
+    h4 {
+      font-size: 1.4rem;
+      margin: 0.6rem 0 0.5rem 0;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin: 0 0 0.9rem 0;
+    }
+  }
+
+  .footer {
+    margin-top: 1.2rem;
+    padding-top: 1rem;
   }
 
   .guideIcon {
