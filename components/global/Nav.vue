@@ -519,7 +519,7 @@ export default {
     left: 10px;
     right: 10px;
     border-radius: 15px;
-    height: 250px;
+    height: 220px;
 
     @media (min-width: $breakpoint-large) {
         top: 0; 
@@ -616,8 +616,7 @@ export default {
     flex: 1;
     overflow-y: hidden;
     overflow-x: auto;
-    padding: 1rem;
-    padding-bottom: 2rem;
+    padding: 0.8rem 1rem;
     display: flex;
     flex-direction: row;
     gap: 1.5rem;
@@ -647,8 +646,8 @@ export default {
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.2s;
-    min-width: 140px;
-    max-width: 140px;
+    min-width: 110px;
+    max-width: 110px;
     text-align: center;
     
     &:hover {
@@ -669,12 +668,12 @@ export default {
     }
 
     .itemIcon {
-        width: 120px;
-        height: 120px;
+        width: 90px;
+        height: 90px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 0.8rem;
+        margin-bottom: 0.5rem;
         margin-right: 0;
         flex-shrink: 0;
         border-radius: 8px;
