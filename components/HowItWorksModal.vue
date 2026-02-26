@@ -9,23 +9,23 @@
 
       <div :class="$style.modalBody">
         <div :class="$style.intro">
-         <h3>Recibe notificaciones personalizadas</h3>
+         <h3>Recibe Notificaciones Personalizadas</h3>
         <p>
-          Seguimiento de intérpretes, equipos creativos y series de TV, con notificaciones automáticas sobre nuevos proyectos y episodios. Actualizaciones cada 6 horas.
+          Sigue a personas, productoras, plataformas de streaming y series de TV para recibir notificaciones automáticas sobre nuevos proyectos y episodios, con actualizaciones cada 6 horas.
         </p>
         </div>
 
         <div :class="$style.guideSection">
           <div :class="$style.guideCard">
-            <h4>Seguir a personas</h4>
-            <p>Navega al perfil de cualquier actor, director, guionista o creador y haz clic en el botón "Seguir" para comenzar a recibir notificaciones. Se te notificará al instante sobre su trabajo reciente de los últimos 30 días, además de todos los próximos proyectos programados para estrenarse en los próximos 5 años. Nuestro sistema de notificaciones realiza comprobaciones automáticas cada 6 horas para asegurarse de que nunca te pierdas ningún lanzamiento.</p>
+            <h4>Seguir a Personas</h4>
+            <p>Visita el perfil de cualquier actor, director o creador y haz clic en "Seguir". Recibirás notificaciones sobre sus proyectos recientes y próximos, con actualizaciones cada 6 horas.</p>
             <div :class="$style.guideImage">
               <img src="/onboarding/add-person-es.webp" alt="Guía para seguir a una persona">
             </div>
           </div>
 
            <div :class="$style.guideCard">
-            <p>Recibe alertas en tiempo real cada vez que alguien a quien sigues estrene una nueva película o proyecto.</p>
+            <p>Recibe una notificación cada vez que alguien a quien sigues estrena una nueva película o proyecto.</p>
             <div :class="$style.guideImage">
               <img src="/onboarding/push-person-es.webp" alt="Push notifications for people guide">
             </div>
@@ -33,8 +33,8 @@
 
 
           <div :class="$style.guideCard">
-            <h4>Seguir series de TV</h4>
-            <p>Accede a la ficha técnica de cualquier serie de TV y haz clic en el botón "Seguir episodios" para suscribirte a las notificaciones de episodios. Recibirás alertas oportunas de los episodios que se emitan dentro de un período de 7 días antes y después de su fecha de estreno programada. Esta función es ideal para mantenerse al día con las series en emisión sin perderse nuevos episodios. El sistema realiza actualizaciones automáticas cada 6 horas para mantener tus notificaciones al día.</p>
+            <h4>Seguir Series de TV</h4>
+            <p>Ve a la página de cualquier serie de TV y haz clic en "Seguir episodios". Recibirás alertas de episodios en una ventana de 7 días alrededor de su fecha de estreno, con actualizaciones cada 6 horas.</p>
             <div :class="$style.guideImage">
               <img src="/onboarding/add-tv-show-es.webp" alt="Guía para seguir una serie de TV">
             </div>
@@ -42,14 +42,14 @@
         </div>
 
           <div :class="$style.guideCard">
-            <p>Obtén alertas cuando se estrenen nuevos episodios o temporadas de tus series seguidas. Mantente al día con los calendarios de emisión y no te pierdas ninguna novedad de tus programas favoritos.</p>
+            <p>Recibe notificaciones cuando se estrenen nuevos episodios o temporadas de las series que sigues.</p>
             <div :class="$style.guideImage">
               <img src="/onboarding/push-tv-show-es.webp" alt="Push notifications for TV shows guide">
             </div>
           </div>
 
         <div :class="$style.footer">
-          <button class="got-it-button" @click="$emit('close')" :class="$style.gotItButton">Cerrar</button>
+          <button class="got-it-button" @click="$emit('close')" :class="$style.gotItButton">Entendido</button>
         </div>
       </div>
     </div>
@@ -89,7 +89,7 @@ export default {
   border: 1px solid rgba(127, 219, 241, 0.3);
   width: 100%;
   max-width: 900px;
-  max-height: 90vh;
+  max-height: 85vh;
   display: flex;
   flex-direction: column;
 }
@@ -98,7 +98,7 @@ export default {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  padding: 2rem;
+  padding: 0.6rem 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
   h2 {
@@ -132,21 +132,25 @@ export default {
 
 .intro {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 
   h3 {
-    font-size: 2rem;
+    font-size: 1.9rem;
     color: #8BE9FD;
-    margin: 0 0 1rem 0;
-    bottom: 2rem;
+    margin: 0 0 0.8rem 0;
     position: relative;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 
   p {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     color: rgba(255, 255, 255, 0.7);
-    line-height: 1.6;
+    line-height: 1.5;
     margin: 0;
+    max-width: 520px;
+    margin: 0 auto;
   }
 }
 
@@ -240,28 +244,54 @@ export default {
 }
 
 @media (max-width: 768px) {
+  .modalOverlay {
+    padding: 0.8rem;
+    align-items: flex-start;
+    padding-top: 4rem;
+  }
+
   .modalContent {
-    max-width: 95%;
+    max-width: 100%;
+    max-height: 90vh;
   }
 
-  .intro h3 {
-    font-size: 1.8rem;
+  .modalBody {
+    padding: 1rem;
   }
 
-  .intro p {
-    font-size: 1.4rem;
-  }
+  .intro {
+    margin-bottom: 1.2rem;
 
-  .guideCard {
-    padding: 1.5rem;
-
-    h4 {
-      font-size: 1.6rem;
+    h3 {
+      font-size: 1.5rem;
+      line-height: 1.3;
+      white-space: normal;
+      word-break: break-word;
+      overflow-wrap: break-word;
     }
 
     p {
-      font-size: 1.3rem;
+      font-size: 1.25rem;
     }
+  }
+
+  .guideCard {
+    padding: 0.9rem;
+
+    h4 {
+      font-size: 1.4rem;
+      margin: 0.6rem 0 0.5rem 0;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin: 0 0 0.9rem 0;
+    }
+  }
+
+  .footer {
+    margin-top: 1.2rem;
+    padding-top: 1rem;
   }
 
   .guideIcon {

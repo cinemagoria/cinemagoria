@@ -9,38 +9,40 @@
           </div>
 
           <p class="title-secondary">
-            Mantente al día sobre el nuevo contenido de las personas, productoras y series que sigues.<button @click="openHowItWorksModal" class="help-icon-button"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg></button>
+            Mantente al día sobre el nuevo contenido de las personas, productoras, servicios de streaming y series que sigues.<button @click="openHowItWorksModal" class="help-icon-button"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg></button>
           </p>
 
           <div class="header-actions">
-            <button 
-              @click="openFollowingModal" 
-              class="following-button-primary">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <polyline points="16 11 18 13 22 9"/>
-              </svg>
-              <span>Siguiendo ({{ totalFollowingCount }})</span>
-            </button>
-            <button 
-                v-if="unreadCount > 0"
-                @click="markAllAsRead" 
-                class="mark-all-button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="9 11 12 14 22 4"/>
-                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            <div class="header-actions-left">
+              <button 
+                @click="openFollowingModal" 
+                class="following-button-primary"
+                title="Siguiendo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <polyline points="16 11 18 13 22 9"/>
                 </svg>
-                <span>Marcar todo leído</span>
+                <span class="following-count">{{ totalFollowingCount }}</span>
               </button>
-            <div class="secondary-actions">
-              <label class="filter-switch">
-                <input type="checkbox" :checked="!showUnreadOnly" @change="toggleFilter">
-                <span>Solo no leídos</span>
-                <span>Mostrar todo</span>
-              </label>
-              
+
+              <div class="filter-switch-three">
+                <button :class="['filter-btn', { active: filterMode === 'unread' }]" @click="setFilter('unread')">No leídos</button>
+                <button :class="['filter-btn', { active: filterMode === 'all' }]" @click="setFilter('all')">Todos</button>
+              </div>
             </div>
+
+            <button 
+              v-if="unreadCount > 0"
+              @click="markAllAsRead" 
+              class="mark-all-button"
+              title="Marcar todo leído">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="9 11 12 14 22 4"/>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+              </svg>
+              <span>Marcar leído</span>
+            </button>
           </div>
 
         <HowItWorksModal 
@@ -254,7 +256,7 @@ export default {
       isMenuOpen: false,
       notifications: [],
       loading: true,
-      showUnreadOnly: true,
+      filterMode: 'unread',
       followsApiUrl: 'https://entercinema-follows-rust.vercel.app',
       showFollowingModal: false,
       totalFollowingCount: 0,
@@ -276,6 +278,9 @@ export default {
   computed: {
     unreadCount() {
       return this.notifications.filter(n => !n.read).length;
+    },
+    showUnreadOnly() {
+      return this.filterMode === 'unread';
     }
   },
 
@@ -401,7 +406,8 @@ export default {
     async fetchNotifications() {
       this.loading = true;
       try {
-        const url = `${this.followsApiUrl}/notifications?user_email=${encodeURIComponent(this.userEmail)}${this.showUnreadOnly ? '&unread_only=true' : ''}&page=${this.currentPage}&per_page=${this.perPage}`;
+        const unreadParam = this.filterMode === 'unread' ? '&unread_only=true' : '';
+        const url = `${this.followsApiUrl}/notifications?user_email=${encodeURIComponent(this.userEmail)}${unreadParam}&page=${this.currentPage}&per_page=${this.perPage}`;
         const response = await fetch(url);
         
         if (!response.ok) throw new Error('Failed to fetch notifications');
@@ -425,9 +431,15 @@ export default {
     },
 
     toggleFilter() {
-    this.showUnreadOnly = !this.showUnreadOnly;
-    this.currentPage = 1;
-    this.fetchNotifications();
+      this.showUnreadOnly = !this.showUnreadOnly;
+      this.currentPage = 1;
+      this.fetchNotifications();
+    },
+
+    setFilter(mode) {
+      this.filterMode = mode;
+      this.currentPage = 1;
+      this.fetchNotifications();
     },
 
     goToPage(pageNumber) {
@@ -881,33 +893,88 @@ button {
   max-width: 1200px;
 }
 
-.following-button-primary {
-  padding: 0.8rem 1.6rem;
-  border-radius: 15px;
-  background: #8BE9FD;
-  color: #000;
-  border: none;
-  font-size: 1.4rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(139, 233, 253, 0.3);
-  white-space: nowrap;
+.actions-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.header-actions-left {
   display: flex;
   align-items: center;
   gap: 0.8rem;
 }
 
-.following-button-primary:hover {
-  background: #7DD4E8;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(139, 233, 253, 0.4);
+.following-button-primary {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  background: rgba(139, 233, 253, 0.1);
+  color: #8BE9FD;
+  border: 1.5px solid rgba(139, 233, 253, 0.35);
+  font-size: 1.3rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
 }
 
-.secondary-actions {
-  display: flex;
-  gap: 1rem;
+.following-count {
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #8BE9FD;
 }
+
+.filter-switch-three {
+  display: flex;
+  border-radius: 20px;
+  border: 1.5px solid rgba(139, 233, 253, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  overflow: hidden;
+  align-self: stretch;
+  flex-shrink: 0;
+  /* Desktop: más ancho */
+  width: 180px;
+}
+
+.filter-switch-three .filter-btn {
+  padding: 0 !important;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 300ms ease-in-out;
+  white-space: nowrap;
+  flex: 1;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 0;
+}
+
+.filter-switch-three .filter-btn.active {
+  background: #8BE9FD;
+  color: #000;
+  font-weight: 600;
+}
+
+.following-button-primary:hover {
+  background: rgba(139, 233, 253, 0.22);
+  border-color: rgba(139, 233, 253, 0.7);
+  transform: translateY(-1px);
+}
+
+
 
 .filter-switch {
   --_switch-bg-clr: rgba(0, 0, 0, 0);
@@ -980,29 +1047,31 @@ button {
 
 .filter-button,
 .mark-all-button {
-  padding: 0.8rem 0.6rem;
-  border-radius: 15px;
-  border: 2px solid #8BE9FD;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 1.5px solid rgba(139, 233, 253, 0.3);
   background: transparent;
-  color: #8BE9FD;
-  font-size: 1.4rem;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 1.2rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 0.1rem;
+  gap: 0.5rem;
+  flex-shrink: 0;
 }
-
 
 .filter-button:hover,
 .mark-all-button:hover {
-  background: rgba(139, 233, 253, 0.1);
+  background: rgba(139, 233, 253, 0.08);
+  border-color: rgba(139, 233, 253, 0.55);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .filter-button.active {
-  background: #8BE9FD;
-  color: #000;
+  background: rgba(139, 233, 253, 0.2);
+  border-color: #8BE9FD;
 }
 
 
@@ -1038,11 +1107,7 @@ button {
   font-weight: 500;
 }
 
-.mark-all-button {
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-}
+
 
 
 .notifications-list {
@@ -1316,9 +1381,7 @@ button {
   }
   
 
-  .mark-all-button {
-    padding: 0.7rem 1.4rem;
-  }
+
   
   .notification-item {
     padding: 1.5rem;
@@ -1418,30 +1481,40 @@ button {
     margin-left: 1.5rem;
   }
   
-    .header-actions {
-    flex-direction: column;
-    align-items: center;
+  .header-actions {
+    gap: 0.6rem;
+    flex-wrap: wrap;
   }
-  
+
+  .header-actions-left {
+    gap: 0.5rem;
+    flex: 1;
+    justify-content: flex-start;
+  }
+
+  .actions-left {
+    gap: 0.5rem;
+  }
+
   .following-button-primary {
-    width: 100%;
-    max-width: 300px;
-    text-align: center;
-    justify-content: center;
+    padding: 0.45rem 0.8rem;
+    font-size: 1.2rem;
   }
-  
-  
-  .secondary-actions {
-    flex-direction: column;
-    width: 100%;
-    max-width: 300px;
-  }
-  
+
   .mark-all-button {
-    width: 100%;
-    max-width: 300px;
-    justify-content: center;
-    align-items: center;
+    padding: 0.45rem 0.8rem;
+    font-size: 1.1rem;
+  }
+
+  .filter-switch-three {
+    /* Mobile: ancho fijo y compacto (NO flex: 1) */
+    width: 120px;
+    flex-shrink: 0;
+  }
+
+  .filter-switch-three .filter-btn {
+    font-size: 1.1rem;
+    padding: 0 !important;
   }
 }
 
