@@ -428,13 +428,13 @@ useHead({
   cursor: pointer;
   transition: all 0.18s ease;
   min-width: 120px;
-  &:hover { border-color: rgba(255,215,0,0.35); background: rgba(255,215,0,0.06); transform: translateY(-2px); }
+  &:hover { border-color: rgba(139, 233, 253,0.35); background: rgba(139, 233, 253,0.06); transform: translateY(-2px); }
 }
 
 .awardCardActive {
-  border-color: #FFD700;
-  background: rgba(255,215,0,0.1);
-  box-shadow: 0 0 18px rgba(255,215,0,0.18);
+  border-color: #8BE9FD;
+  background: rgba(139, 233, 253,0.1);
+  box-shadow: 0 0 18px rgba(139, 233, 253,0.18);
 }
 
 .awardName { font-size: 1.3rem; font-weight: 700; color: #fff; text-align: center; }
@@ -456,9 +456,9 @@ useHead({
   overflow-x: auto;
   padding-bottom: 0.5rem;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255,215,0,0.3) transparent;
+  scrollbar-color: rgba(139, 233, 253,0.3) transparent;
   &::-webkit-scrollbar        { height: 3px; }
-  &::-webkit-scrollbar-thumb  { background: rgba(255,215,0,0.3); border-radius: 999px; }
+  &::-webkit-scrollbar-thumb  { background: rgba(139, 233, 253,0.3); border-radius: 999px; }
 }
 
 .yearChip {
@@ -472,13 +472,13 @@ useHead({
   cursor: pointer;
   transition: all 0.13s ease;
   white-space: nowrap;
-  &:hover { border-color: rgba(255,215,0,0.4); color: #FFD700; }
+  &:hover { border-color: rgba(139, 233, 253,0.4); color: #8BE9FD; }
 }
 
 .yearChipActive {
-  border-color: #FFD700;
-  background: rgba(255,215,0,0.13);
-  color: #FFD700;
+  border-color: #8BE9FD;
+  background: rgba(139, 233, 253,0.13);
+  color: #8BE9FD;
   font-weight: 600;
 }
 
@@ -486,15 +486,15 @@ useHead({
   display: flex;
   align-items: center;
   gap: 2rem;
-  background: rgba(255,215,0,0.05);
-  border: 1px solid rgba(255,215,0,0.13);
+  background: rgba(139, 233, 253,0.05);
+  border: 1px solid rgba(139, 233, 253,0.13);
   border-radius: 10px;
   padding: 1.1rem 2rem;
   margin-bottom: 3rem;
 }
 
 .statItem  { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; }
-.statNum   { font-size: 2rem; font-weight: 800; color: #FFD700; line-height: 1; }
+.statNum   { font-size: 2rem; font-weight: 800; color: #8BE9FD; line-height: 1; }
 .statLabel { font-size: 1rem; color: #bbb; text-transform: uppercase; letter-spacing: 0.5px; }
 .statDivider { width: 1px; height: 34px; background: rgba(255,255,255,0.15); }
 
@@ -517,7 +517,7 @@ useHead({
   display: inline-block;
   width: 3px;
   height: 1.2em;
-  background: #FFD700;
+  background: #8BE9FD;
   border-radius: 2px;
   flex-shrink: 0;
 }
@@ -559,7 +559,7 @@ useHead({
 .countryTh { width: 120px; }
 
 .winnerRow {
-  background: linear-gradient(90deg, rgba(255,215,0,0.09) 0%, transparent 100%);
+  background: linear-gradient(90deg, rgba(139, 233, 253,0.09) 0%, transparent 100%);
   td { color: #fff; }
 }
 
