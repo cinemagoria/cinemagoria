@@ -1,7 +1,7 @@
 <template>
   <main :class="$style.page">
     <nav :class="$style.header">
-      <h1 class="title-primary page-title">Awards Indexer</h1>
+      <h1 class="title-primary page-title">Awards</h1>
       <h2 class="title-secondary page-subtitle">
         Browse all major film awards — winners &amp; nominees
       </h2>
@@ -121,7 +121,7 @@
               <thead>
                 <tr>
                   <th>Film / Series</th>
-                  <th>Person</th>
+                  <th>Person/s</th>
                   <th :class="$style.resultTh">Result</th>
                 </tr>
               </thead>
@@ -205,8 +205,6 @@ const AWARDS = [
 
 const route = useRoute();
 const router = useRouter();
-const config = useRuntimeConfig();
-const apiKey = config.public.apiKey;
 
 const selectedAward = ref(route.query.award || 'oscars');
 const selectedYear  = ref(route.query.year  || '');
@@ -269,14 +267,14 @@ function navigateToMedia(tmdbId, category) {
 async function searchPerson(name) {
   if (!name) return;
   try {
-    const res  = await fetch(`https://api.themoviedb.org/3/search/person?api_key=${apiKey}&query=${encodeURIComponent(name)}&language=en-US`);
+    const res  = await fetch(`/api/search/person?query=${encodeURIComponent(name)}`);
     const json = await res.json();
     if (json.results?.length) router.push(`/person/${json.results[0].id}`);
   } catch (e) { console.error('person search error', e); }
 }
 
 useHead({
-  title: 'Awards Indexer | Entercinema',
+  title: 'Awards | Entercinema',
   meta: [{ name: 'description', content: 'Browse all major film awards — Oscars, Golden Globes, Cannes, Venice and Berlin.' }]
 });
 </script>
@@ -350,7 +348,7 @@ useHead({
 
 .awardSub {
   font-size: 1.05rem;
-  color: #555;
+  color: #B7B7B7;
 }
 
 // ─── Year scroller ───────────────────────────────────────────────────────────
@@ -498,7 +496,7 @@ useHead({
   font-size: 1.1rem;
 }
 
-.mutedCell { color: #444; }
+.mutedCell { color: #B7B7B7; }
 
 .winnerBadge {
   background: #FFD700;
@@ -512,13 +510,13 @@ useHead({
 }
 
 .nomineeBadge {
-  color: #444;
+  color: #B7B7B7;
   font-size: 1rem;
   text-transform: uppercase;
 }
 
 // ─── Empty ───────────────────────────────────────────────────────────────────
-.empty { text-align: center; color: #444; font-size: 1.4rem; padding: 5rem 0; }
+.empty { text-align: center; color: #B7B7B7; font-size: 1.4rem; padding: 5rem 0; }
 
 // ─── Responsive ──────────────────────────────────────────────────────────────
 @media (max-width: 768px) {

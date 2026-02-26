@@ -1,12 +1,28 @@
 import awardsData from '../../data/awards.json';
 
-const oscarsData = (awardsData as any).oscars || [];
-const goldenGlobesData = (awardsData as any).goldenGlobes || [];
-const palmeData = (awardsData as any).palme || [];
-const goldenLionData = (awardsData as any).goldenLion || [];
-const goldenBearData = (awardsData as any).goldenBear || [];
+interface AwardItem {
+    id: number;
+    year?: string;
+    year_award?: number;
+    category?: string;
+    film_title?: string;
+    original_title?: string;
+    director?: string;
+    country?: string;
+    nominee_name?: string;
+    film?: string;
+    nominee?: string;
+    won: boolean;
+    tmdb_id?: number;
+}
 
-const AWARD_MAP: Record<string, any[]> = {
+const oscarsData: AwardItem[] = (awardsData as any).oscars || [];
+const goldenGlobesData: AwardItem[] = (awardsData as any).goldenGlobes || [];
+const palmeData: AwardItem[] = (awardsData as any).palme || [];
+const goldenLionData: AwardItem[] = (awardsData as any).goldenLion || [];
+const goldenBearData: AwardItem[] = (awardsData as any).goldenBear || [];
+
+const AWARD_MAP: Record<string, AwardItem[]> = {
     oscars: oscarsData,
     goldenGlobes: goldenGlobesData,
     palme: palmeData,
@@ -14,10 +30,11 @@ const AWARD_MAP: Record<string, any[]> = {
     goldenBear: goldenBearData,
 };
 
-const getYearField = (award: string, item: any): string => {
+const getYearField = (award: string, item: AwardItem): string => {
     if (award === 'goldenGlobes') return String(item.year_award ?? '');
     return String(item.year ?? '');
 };
+
 
 export default defineEventHandler((event) => {
     const query = getQuery(event);
