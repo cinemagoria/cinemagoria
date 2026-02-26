@@ -550,29 +550,41 @@ export default {
         if (!this.userEmail) return;
 
         try {
-          const [peopleResponse, tvResponse] = await Promise.all([
+          const [peopleResponse, tvResponse, streamingResponse, companiesResponse] = await Promise.all([
             fetch(`https://entercinema-follows-rust.vercel.app/follows/list?user_email=${encodeURIComponent(this.userEmail)}`),
-            fetch(`https://entercinema-follows-rust.vercel.app/tv-follows/list?user_email=${encodeURIComponent(this.userEmail)}`)
+            fetch(`https://entercinema-follows-rust.vercel.app/tv-follows/list?user_email=${encodeURIComponent(this.userEmail)}`),
+            fetch(`https://entercinema-follows-rust.vercel.app/streaming-follows/list?user_email=${encodeURIComponent(this.userEmail)}`),
+            fetch(`https://entercinema-follows-rust.vercel.app/company-follows/list?user_email=${encodeURIComponent(this.userEmail)}`)
           ]);
 
-          let peopleCount = 0;
-          let tvCount = 0;
+          let total = 0;
 
           if (peopleResponse.ok) {
-            const peopleData = await peopleResponse.json();
-            peopleCount = peopleData.follows?.length || 0;
+            const d = await peopleResponse.json();
+            total += (d.follows || []).length;
           }
 
           if (tvResponse.ok) {
-            const tvData = await tvResponse.json();
-            tvCount = tvData.tv_follows?.length || 0;
+            const d = await tvResponse.json();
+            total += (d.tv_follows || []).length;
           }
 
-          this.totalFollowingCount = peopleCount + tvCount;
+          if (streamingResponse.ok) {
+            const d = await streamingResponse.json();
+            total += (d.streaming_follows || []).length;
+          }
+
+          if (companiesResponse.ok) {
+            const d = await companiesResponse.json();
+            total += (d.company_follows || []).length;
+          }
+
+          this.totalFollowingCount = total;
         } catch (error) {
           console.error('Error fetching following count:', error);
         }
       },
+
 
       openFollowingModal() {
         this.$bus.$emit('show-following-modal');
