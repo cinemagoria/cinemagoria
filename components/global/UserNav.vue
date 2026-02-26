@@ -279,7 +279,7 @@ export default {
     },
 
     goToFestivals() {
-      this.$router.push('/festivals');
+      this.$router.push('/festival');
       this.isMenuOpen = false;
     },
 
