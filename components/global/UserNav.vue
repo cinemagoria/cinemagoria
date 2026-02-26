@@ -22,6 +22,19 @@
           <span class="user-email">{{ truncatedEmail }}</span>
         </div>
 
+        <!-- Stats row: Rated + Following counts -->
+        <div class="stats-row">
+          <div class="stat-item" @click="showRatedModal" title="Valoraciones">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="stat-icon" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
+            <span class="stat-count">{{ ratedCount }}</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item" @click="showFollowingModal" title="Siguiendo">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="stat-icon" viewBox="0 0 24 24"><path d="m16 11 2 2 4-4m-6 12v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <span class="stat-count">{{ followingCount }}</span>
+          </div>
+        </div>
+
         <div class="menu-divider"></div>
 
         <div class="menu-item" @click="goToHome">
@@ -34,19 +47,19 @@
           <span class="menu-label">Mi Lista</span>
         </div>
 
-        <div class="menu-item" @click="showRatedModal">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="menu-icon" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
-          <span class="menu-label">Valoraciones</span>
-        </div>
-
-        <div class="menu-item" @click="showFollowingModal">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="menu-icon" viewBox="0 0 24 24"><path d="m16 11 2 2 4-4m-6 12v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-          <span class="menu-label">Siguiendo</span>
-        </div>
-
         <div class="menu-item" @click="goToLists">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="menu-icon" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
           <span class="menu-label">Colecciones</span>
+        </div>
+
+        <div class="menu-item" @click="goToFestivals">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" class="menu-icon" viewBox="0 0 24 24"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 5l0 2" /><path d="M15 11l0 2" /><path d="M15 17l0 2" /><path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2" /></svg>
+          <span class="menu-label">Festivales</span>
+        </div>
+
+        <div class="menu-item" @click="goToAwards">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" class="menu-icon" viewBox="0 0 24 24"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 21l8 0" /><path d="M12 17l0 4" /><path d="M7 4l10 0" /><path d="M17 4v8a5 5 0 0 1 -10 0v-8" /><path d="M5 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M19 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /></svg>
+          <span class="menu-label">Premios</span>
         </div>
 
         <div class="menu-item" @click="goToSettings">
@@ -107,9 +120,9 @@ export default {
       isMenuOpen: false,
       currentLanguage: 'es',
       unreadCount: 0,
-      unreadCount: 0,
       notificationInterval: null,
-
+      ratedCount: 0,
+      followingCount: 0,
     };
   },
 
@@ -135,6 +148,7 @@ export default {
       window.addEventListener('auth-changed', this.checkAuthStatus);
     }
     this.checkAuthStatus();
+    this.fetchUserStats();
     this.$nextTick(() => {
       document.addEventListener('click', this.handleClickOutside);
     });
@@ -259,6 +273,16 @@ export default {
       this.isMenuOpen = false;
     },
 
+    goToAwards() {
+      this.$router.push('/awards');
+      this.isMenuOpen = false;
+    },
+
+    goToFestivals() {
+      this.$router.push('/festivals');
+      this.isMenuOpen = false;
+    },
+
     goToSettings() {
       this.$router.push('/settings');
       this.isMenuOpen = false;
@@ -266,6 +290,60 @@ export default {
 
     goToLogin() {
       this.$router.push('/login');
+    },
+
+    async fetchUserStats() {
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail) return;
+      try {
+        const tursoUrl = this.$config.public.tursoBackendUrl || 'https://entercinema-favorites.vercel.app/api';
+        const followsUrl = 'https://entercinema-follows-rust.vercel.app';
+
+        const [ratingsRes, peopleRes, tvRes, streamingRes, companiesRes] = await Promise.all([
+          fetch(`${tursoUrl}/ratings/${encodeURIComponent(userEmail)}`),
+          fetch(`${followsUrl}/follows/list?user_email=${encodeURIComponent(userEmail)}`),
+          fetch(`${followsUrl}/tv-follows/list?user_email=${encodeURIComponent(userEmail)}`),
+          fetch(`${followsUrl}/streaming-follows/list?user_email=${encodeURIComponent(userEmail)}`),
+          fetch(`${followsUrl}/company-follows/list?user_email=${encodeURIComponent(userEmail)}`)
+        ]);
+
+        if (ratingsRes.ok) {
+          const d = await ratingsRes.json();
+          const fav = d.favorites_json || {};
+          const movies = (fav.movies || []).filter(m => {
+            const key = Object.keys(m)[0];
+            const r = m[key]?.details?.userRatingForDb;
+            return r && r !== '-' && parseInt(r) > 0;
+          }).length;
+          const tv = (fav.tv || []).filter(t => {
+            const key = Object.keys(t)[0];
+            const r = t[key]?.details?.userRatingForDb;
+            return r && r !== '-' && parseInt(r) > 0;
+          }).length;
+          this.ratedCount = movies + tv;
+        }
+
+        let totalFollowing = 0;
+        if (peopleRes.ok) {
+          const d = await peopleRes.json();
+          totalFollowing += (d.follows || []).length;
+        }
+        if (tvRes.ok) {
+          const d = await tvRes.json();
+          totalFollowing += (d.tv_follows || []).length;
+        }
+        if (streamingRes.ok) {
+          const d = await streamingRes.json();
+          totalFollowing += (d.streaming_follows || []).length;
+        }
+        if (companiesRes.ok) {
+          const d = await companiesRes.json();
+          totalFollowing += (d.company_follows || []).length;
+        }
+        this.followingCount = totalFollowing;
+      } catch (e) {
+        // silently fail
+      }
     },
 
     signOut() {
@@ -481,6 +559,63 @@ export default {
   border: 1px solid rgba(255, 255, 255, 0.18);
   z-index: 1001;
   overflow: hidden;
+}
+
+.stats-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 8px 15px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.stat-item:hover {
+  background: rgba(139, 233, 253, 0.1);
+}
+
+.stat-item:hover .stat-icon {
+  color: #8BE9FD;
+  stroke: #8BE9FD;
+}
+
+.stat-icon {
+  width: 14px;
+  height: 14px;
+  color: #94999d;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+
+.stat-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94999d;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.stat-item:hover .stat-count {
+  color: #8BE9FD;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
 }
 
 .email-item {

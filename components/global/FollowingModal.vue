@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" :class="$style.modalOverlay" @click.self="close">
+  <div v-if="isVisible" :class="$style.modalOverlay" @click.self="close">
     <div :class="$style.modalWrapper">
       <div :class="$style.modalContent">
         <div :class="$style.modalHeader">
@@ -254,6 +254,7 @@ export default {
   },
   data() {
     return {
+      isVisible: false,
       activeTab: 'people',
       people: [],
       tvShows: [],
@@ -269,9 +270,6 @@ export default {
   },
   
   computed: {
-    visible() {
-      return this.$route.query.following === 'true';
-    },
     groupedPeople() {
       const groups = {};
       this.people.forEach(p => {
@@ -304,21 +302,11 @@ export default {
       handler(val) {
         if (val) this.activeTab = val;
       }
-    },
-    visible: {
-      handler(val) {
-        if (val) {
-          this.fetchData();
-        }
-      }
     }
   },
 
   mounted() {
     this.$bus.$on('show-following-modal', this.show);
-    if (this.visible) {
-      this.fetchData();
-    }
   },
 
   beforeDestroy() {
@@ -341,15 +329,12 @@ export default {
       return `${this.undoItem.name} dejado de seguir`;
     },
     show() {
-      this.$router.push({
-        query: { ...this.$route.query, following: 'true' }
-      });
+      this.isVisible = true;
+      this.fetchData();
     },
 
     close() {
-      if (this.visible) {
-        this.$router.back();
-      }
+      this.isVisible = false;
     },
 
     async fetchData() {

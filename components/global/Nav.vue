@@ -15,7 +15,7 @@
           :to="{ name: 'movie' }"
           aria-label="Descubre"
           @click.native="clearSearchBeforeNavigate">
-          <svg xmlns="http://www.w3.org/2000/svg" :class="$style.navIcon" style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15.51 15.56a5 5 0 1 0 -3.51 1.44" /><path d="M18.832 17.86a9 9 0 1 0 -6.832 3.14" /><path d="M12 12v9" /></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" :class="$style.navIcon" style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.364 19.364a9 9 0 1 0 -12.728 0" /><path d="M15.536 16.536a5 5 0 1 0 -7.072 0" /><path d="M11 13a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
         </nuxt-link>
       </li>
       <li>
@@ -23,7 +23,7 @@
           :to="{ name: 'news' }"
           aria-label="Noticias"
           @click.native="clearSearchBeforeNavigate">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :class="$style.navIcon" viewBox="0 0 24 24"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" :class="$style.navIcon" viewBox="0 0 24 24"><path d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z" /></svg>
         </nuxt-link>
       </li>
 
@@ -39,7 +39,7 @@
           aria-label="Mi Lista"
           :class="{ 'nuxt-link-active': isWatchlistActive }"
         >
-          <img src="/icons/icon-watchlist.png" alt="Mi Lista" :class="$style.navIcon" />
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" :class="$style.navIcon" viewBox="0 0 24 24"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4" /><path d="M14 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4" /><path d="M4 15a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4" /><path d="M14 17h6m-3 -3v6" /></svg>
         </a>
       </li>
     </ul>
@@ -47,7 +47,12 @@
     <transition name="slide-fade">
       <div v-if="showListsMenu" :class="$style.listsMenu" v-click-outside="closeListsMenu">
         <div :class="$style.menuHeader">
-            <h3 :class="$style.menuTitle">Mis Colecciones</h3>
+            <button :class="$style.createListBtn" @click="openCreateListModal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            </button>
+            <button :class="$style.menuTitle" @click="navigateFromMenu('/lists')">
+                Mis Colecciones
+            </button>
         </div>
         
         <div :class="$style.closeButtonContainer">
@@ -336,6 +341,11 @@ export default {
         this.$router.push(path);
     },
 
+    openCreateListModal() {
+        this.showListsMenu = false;
+        this.$bus.$emit('show-create-list-modal');
+    },
+
     clearSearchBeforeNavigate() {
       this.$bus.$emit('clear-search');
     },
@@ -529,23 +539,61 @@ export default {
 .menuHeader {
     padding: 1rem 1.5rem;
     border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
     
+    .createListBtn {
+        flex: 0 0 auto;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #8BE9FD;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        color: #000;
+        transition: background 0.2s ease, transform 0.15s ease;
+
+        &:hover {
+            background: #73cde0;
+            transform: scale(1.04);
+        }
+    }
+
     .menuTitle {
         margin: 0;
+        width: fit-content;
         font-size: 1.2rem;
         color: #8BE9FD;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 1.5px;
         line-height: 1;
-        white-space: nowrap; 
-        overflow: hidden;
-        text-overflow: ellipsis;
+        white-space: nowrap;
+        background: rgba(139, 233, 253, 0.07);
+        border: 1px solid rgba(139, 233, 253, 0.28);
+        border-radius: 15px;
+        padding: 7px 18px;
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: inherit;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        transition: background 0.2s ease, border-color 0.2s ease;
+
+        &:hover {
+            background: rgba(139, 233, 253, 0.14);
+            border-color: rgba(139, 233, 253, 0.5);
+        }
     }
 }
 
 .closeButtonContainer {
     position: absolute;
-    top: 1rem;
+    top: 1.8rem;
     right: 1.5rem;
     z-index: 10;
 }
