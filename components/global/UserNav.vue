@@ -298,7 +298,7 @@ export default {
       if (!userEmail) return;
       try {
         const tursoUrl = this.$config.public.tursoBackendUrl || 'https://entercinema-favorites.vercel.app/api';
-        const followsUrl = 'https://entercinema-follows-rust.vercel.app';
+        const followsUrl = this.$config.public.followsBackendUrl || 'https://entercinema-follows-rust.vercel.app';
 
         const [ratingsRes, peopleRes, tvRes, streamingRes, companiesRes] = await Promise.all([
           fetch(`${tursoUrl}/ratings/${encodeURIComponent(userEmail)}`),
@@ -312,14 +312,14 @@ export default {
           const d = await ratingsRes.json();
           const fav = d.favorites_json || {};
           const movies = (fav.movies || []).filter(m => {
-            const key = Object.keys(m)[0];
-            const r = m[key]?.details?.userRatingForDb;
-            return r && r !== '-' && parseInt(r) > 0;
+            const itemValue = Object.values(m)[0];
+            const r = itemValue?.details?.userRatingForDb;
+            return r && r !== '-' && parseInt(r, 10) > 0;
           }).length;
           const tv = (fav.tv || []).filter(t => {
-            const key = Object.keys(t)[0];
-            const r = t[key]?.details?.userRatingForDb;
-            return r && r !== '-' && parseInt(r) > 0;
+            const itemValue = Object.values(t)[0];
+            const r = itemValue?.details?.userRatingForDb;
+            return r && r !== '-' && parseInt(r, 10) > 0;
           }).length;
           this.ratedCount = movies + tv;
         }
@@ -343,7 +343,7 @@ export default {
         }
         this.followingCount = totalFollowing;
       } catch (e) {
-        // silently fail
+        console.error('Failed to fetch user stats:', e);
       }
     },
 
