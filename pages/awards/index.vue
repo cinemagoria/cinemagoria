@@ -1,7 +1,7 @@
 <template>
   <main :class="$style.page">
     <nav :class="$style.header">
-      <h1 class="title-primary page-title">Indexador de Premios</h1>
+      <h1 class="title-primary page-title">Premios</h1>
       <h2 class="title-secondary page-subtitle">
         Explora los grandes premios del cine — ganadores y nominados
       </h2>
@@ -121,7 +121,7 @@
               <thead>
                 <tr>
                   <th>Película / Serie</th>
-                  <th>Persona</th>
+                  <th>Persona/s</th>
                   <th :class="$style.resultTh">Resultado</th>
                 </tr>
               </thead>
@@ -204,8 +204,6 @@ const AWARDS = [
 
 const route   = useRoute();
 const router  = useRouter();
-const config  = useRuntimeConfig();
-const apiKey  = config.public.apiKey;
 
 const selectedAward = ref(route.query.award || 'oscars');
 const selectedYear  = ref(route.query.year  || '');
@@ -266,7 +264,7 @@ function navigateToMedia(tmdbId, category) {
 async function searchPerson(name) {
   if (!name) return;
   try {
-    const res  = await fetch(`https://api.themoviedb.org/3/search/person?api_key=${apiKey}&query=${encodeURIComponent(name)}&language=es-ES`);
+    const res  = await fetch(`/api/search/person?query=${encodeURIComponent(name)}`);
     const json = await res.json();
     if (json.results?.length) router.push(`/person/${json.results[0].id}`);
   } catch (e) { console.error('person search error', e); }
@@ -275,6 +273,31 @@ async function searchPerson(name) {
 const translateCategory = (category) => {
   if (!category) return '';
   const t = {
+    // ── Oscars (nombres modernos) ─────────────────────────────────────────
+    'Actor in a Leading Role': 'Mejor Actor',
+    'Actor in a Supporting Role': 'Mejor Actor de Reparto',
+    'Actress in a Leading Role': 'Mejor Actriz',
+    'Actress in a Supporting Role': 'Mejor Actriz de Reparto',
+    'Animated Feature Film': 'Mejor Película de Animación',
+    'Animated Short Film': 'Mejor Cortometraje de Animación',
+    'Casting': 'Mejor Casting',
+    'Cinematography': 'Mejor Fotografía',
+    'Costume Design': 'Mejor Diseño de Vestuario',
+    'Directing': 'Mejor Dirección',
+    'Documentary Feature Film': 'Mejor Documental',
+    'Documentary Short Film': 'Mejor Cortometraje Documental',
+    'Film Editing': 'Mejor Montaje',
+    'International Feature Film': 'Mejor Película Internacional',
+    'Live Action Short Film': 'Mejor Cortometraje de Acción Real',
+    'Makeup and Hairstyling': 'Mejor Maquillaje y Peluquería',
+    'Music (Original Score)': 'Mejor Banda Sonora Original',
+    'Music (Original Song)': 'Mejor Canción Original',
+    'Production Design': 'Mejor Diseño de Producción',
+    'Sound': 'Mejor Sonido',
+    'Visual Effects': 'Mejores Efectos Visuales',
+    'Writing (Adapted Screenplay)': 'Mejor Guion Adaptado',
+    'Writing (Original Screenplay)': 'Mejor Guion Original',
+    // ── Oscars (nombres históricos) ───────────────────────────────────────
     'Best Picture': 'Mejor Película',
     'Best Actor': 'Mejor Actor',
     'Best Actress': 'Mejor Actriz',
@@ -306,23 +329,42 @@ const translateCategory = (category) => {
     'Best Original Song': 'Mejor Canción Original',
     'Best Original Story': 'Mejor Historia Original',
     'Unique and Artistic Production': 'Producción Única y Artística',
+    // ── Golden Globes (nombres modernos) ──────────────────────────────────
+    'Best Motion Picture - Drama': 'Mejor Película - Drama',
+    'Best Motion Picture - Musical or Comedy': 'Mejor Película - Musical o Comedia',
+    'Best Motion Picture - Animated': 'Mejor Película de Animación',
+    'Best Motion Picture - Non-English Language': 'Mejor Película en Lengua No Inglesa',
+    'Best Motion Picture - Foreign Language': 'Mejor Película en Lengua Extranjera',
+    'Best Actor - Motion Picture Drama': 'Mejor Actor - Drama',
+    'Best Actress - Motion Picture Drama': 'Mejor Actriz - Drama',
+    'Best Actor - Motion Picture Musical or Comedy': 'Mejor Actor - Musical o Comedia',
+    'Best Actress - Motion Picture Musical or Comedy': 'Mejor Actriz - Musical o Comedia',
+    'Best Supporting Actor - Motion Picture': 'Mejor Actor de Reparto',
+    'Best Supporting Actress - Motion Picture': 'Mejor Actriz de Reparto',
+    'Best Director - Motion Picture': 'Mejor Director',
+    'Best Screenplay - Motion Picture': 'Mejor Guion',
+    'Best Original Score - Motion Picture': 'Mejor Banda Sonora Original',
+    'Best Original Song - Motion Picture': 'Mejor Canción Original',
+    'Cinematic and Box Office Achievement': 'Logro Cinematográfico y de Taquilla',
+    // ── Golden Globes TV ──────────────────────────────────────────────────
+    'Best Television Series - Drama': 'Mejor Serie TV - Drama',
+    'Best Television Series - Musical or Comedy': 'Mejor Serie TV - Musical o Comedia',
+    'Best Mini-Series or Motion Picture Made for Television': 'Mejor Miniserie o Película para TV',
+    'Best Miniseries or Television Film': 'Mejor Miniserie o Película de TV',
+    'Best Actor - Television Series Drama': 'Mejor Actor - Serie TV Drama',
+    'Best Actress - Television Series Drama': 'Mejor Actriz - Serie TV Drama',
+    'Best Actor - Television Series Musical or Comedy': 'Mejor Actor - Serie TV Musical o Comedia',
+    'Best Actress - Television Series Musical or Comedy': 'Mejor Actriz - Serie TV Musical o Comedia',
+    'Best Actor - Miniseries or Television Film': 'Mejor Actor - Miniserie o Película de TV',
+    'Best Actress - Miniseries or Television Film': 'Mejor Actriz - Miniserie o Película de TV',
+    'Best Supporting Actor - Television': 'Mejor Actor de Reparto - TV',
+    'Best Supporting Actress - Television': 'Mejor Actriz de Reparto - TV',
     'Best Performance by an Actor in a Motion Picture - Drama': 'Mejor Actor - Drama',
     'Best Performance by an Actress in a Motion Picture - Drama': 'Mejor Actriz - Drama',
     'Best Performance by an Actor in a Motion Picture - Musical or Comedy': 'Mejor Actor - Musical o Comedia',
     'Best Performance by an Actress in a Motion Picture - Musical or Comedy': 'Mejor Actriz - Musical o Comedia',
     'Best Performance by an Actor in a Supporting Role in any Motion Picture': 'Mejor Actor de Reparto',
     'Best Performance by an Actress in a Supporting Role in any Motion Picture': 'Mejor Actriz de Reparto',
-    'Best Director - Motion Picture': 'Mejor Director',
-    'Best Screenplay - Motion Picture': 'Mejor Guion',
-    'Best Original Score - Motion Picture': 'Mejor Banda Sonora Original',
-    'Best Original Song - Motion Picture': 'Mejor Canción Original',
-    'Best Motion Picture - Drama': 'Mejor Película - Drama',
-    'Best Motion Picture - Musical or Comedy': 'Mejor Película - Musical o Comedia',
-    'Best Motion Picture - Animated': 'Mejor Película de Animación',
-    'Best Motion Picture - Foreign Language': 'Mejor Película en Lengua Extranjera',
-    'Best Television Series - Drama': 'Mejor Serie TV - Drama',
-    'Best Television Series - Musical or Comedy': 'Mejor Serie TV - Musical o Comedia',
-    'Best Mini-Series or Motion Picture Made for Television': 'Mejor Miniserie o Película para TV',
     'Best Performance by an Actor In A Television Series - Drama': 'Mejor Actor en Serie TV - Drama',
     'Best Performance by an Actress In A Television Series - Drama': 'Mejor Actriz en Serie TV - Drama',
     'Best Performance by an Actor In A Television Series - Musical or Comedy': 'Mejor Actor en Serie TV - Musical o Comedia',
@@ -396,7 +438,7 @@ useHead({
 }
 
 .awardName { font-size: 1.3rem; font-weight: 700; color: #fff; text-align: center; }
-.awardSub  { font-size: 1.05rem; color: #555; }
+.awardSub  { font-size: 1.05rem; color: #B7B7B7; }
 
 .yearSection { margin-bottom: 2.5rem; }
 
@@ -532,7 +574,7 @@ useHead({
 }
 
 .originalTitle { color: #555; font-size: 1.1rem; }
-.mutedCell     { color: #444; }
+.mutedCell     { color: #B7B7B7; }
 
 .winnerBadge {
   background: #FFD700;
@@ -545,9 +587,9 @@ useHead({
   white-space: nowrap;
 }
 
-.nomineeBadge { color: #444; font-size: 1rem; text-transform: uppercase; }
+.nomineeBadge { color: #B7B7B7; font-size: 1rem; text-transform: uppercase; }
 
-.empty { text-align: center; color: #444; font-size: 1.4rem; padding: 5rem 0; }
+.empty { text-align: center; color: #B7B7B7; font-size: 1.4rem; padding: 5rem 0; }
 
 @media (max-width: 768px) {
   .page { padding: 0 1.5rem 5rem; }
