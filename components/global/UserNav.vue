@@ -19,7 +19,11 @@
 
       <div v-if="isMenuOpen" class="dropdown-menu">
         <div class="menu-item email-item">
-          <span class="user-email">{{ truncatedEmail }}</span>
+          <div class="user-email-block">
+            <NuxtLink v-if="userAlias" :to="`/u/${userAlias}`" class="alias-link" @click="isMenuOpen = false">@{{ userAlias }}</NuxtLink>
+            <span class="user-email">{{ truncatedEmail }}</span>
+            <NuxtLink v-if="!userAlias" to="/settings" class="set-alias-btn" @click="isMenuOpen = false">Configura tu alias</NuxtLink>
+          </div>
         </div>
 
         <!-- Stats row: Rated + Following counts -->
@@ -99,23 +103,16 @@
 
 <script>
 
-
-
+const DRF_API = 'https://entercinema-drf.vercel.app';
 
 export default {
   name: 'UserNav',
-
-  methods: {
-  },
-  setup() {
-    const supabase = useSupabaseClient()
-    return { supabase }
-  },
   
   data() {
     return {
       isLoggedIn: false,
       userEmail: '',
+      userAlias: '',
       userAvatar: '/avatars/avatar-ss0.png',
       isMenuOpen: false,
       currentLanguage: 'es',
@@ -143,9 +140,18 @@ export default {
     this.fetchUnreadCount();
     this.notificationInterval = setInterval(this.fetchUnreadCount, 30000);
 
+    // Restore cached avatar immediately to avoid flash
+    if (process.client) {
+      const cached = localStorage.getItem('user_avatar');
+      if (cached) this.userAvatar = cached;
+    }
+
     if (typeof window !== 'undefined') {
       window.addEventListener('notifications-updated', this.fetchUnreadCount);
       window.addEventListener('auth-changed', this.checkAuthStatus);
+      window.addEventListener('alias-updated', this.handleAliasUpdate);
+      window.addEventListener('following-updated', this.fetchUserStats);
+      window.addEventListener('avatar-updated', this.handleAvatarUpdate);
     }
     this.checkAuthStatus();
     this.fetchUserStats();
@@ -163,6 +169,9 @@ export default {
     if (typeof window !== 'undefined') {
       window.removeEventListener('notifications-updated', this.fetchUnreadCount);
       window.removeEventListener('auth-changed', this.checkAuthStatus);
+      window.removeEventListener('alias-updated', this.handleAliasUpdate);
+      window.removeEventListener('following-updated', this.fetchUserStats);
+      window.removeEventListener('avatar-updated', this.handleAvatarUpdate);
     }
   },
 
@@ -173,6 +182,7 @@ export default {
       
       this.isLoggedIn = !!accessToken;
       this.userEmail = email || '';
+      this.userAlias = localStorage.getItem('alias') || '';
 
       const hostname = window.location.hostname;
       this.currentLanguage = hostname.startsWith('es.') ? 'es' : 'en';
@@ -212,17 +222,22 @@ export default {
     },
     async fetchUserAvatar(email) {
       try {
-        const { data, error } = await this.supabase
-          .from('user_data')
-          .select('avatar')
-          .eq('email', email);
-
-        if (error) throw error;
-
-        this.userAvatar = data[0]?.avatar || '/avatars/avatar-ss0.png';
+        const resp = await fetch(`${DRF_API}/auth/profile-by-email/?email=${encodeURIComponent(email)}`);
+        if (resp.ok) {
+          const data = await resp.json();
+          const avatar = data.avatar_url || '/avatars/avatar-ss0.png';
+          this.userAvatar = avatar;
+          localStorage.setItem('user_avatar', avatar);
+        }
       } catch (error) {
         console.error('Error fetching user avatar:', error);
-        this.userAvatar = '/avatars/avatar-ss0.png';
+      }
+    },
+
+    handleAvatarUpdate(event) {
+      if (event && event.detail) {
+        this.userAvatar = event.detail;
+        localStorage.setItem('user_avatar', event.detail);
       }
     },
 
@@ -292,6 +307,12 @@ export default {
       this.$router.push('/login');
     },
 
+    handleAliasUpdate(event) {
+      if (event && event.detail !== undefined) {
+        this.userAlias = event.detail;
+      }
+    },
+
     async fetchUserStats() {
       const userEmail = localStorage.getItem('email');
       if (!userEmail) return;
@@ -299,12 +320,14 @@ export default {
         const tursoUrl = this.$config.public.tursoBackendUrl || 'https://entercinema-favorites.vercel.app/api';
         const followsUrl = this.$config.public.followsBackendUrl || 'https://entercinema-follows-rust.vercel.app';
 
-        const [ratingsRes, peopleRes, tvRes, streamingRes, companiesRes] = await Promise.all([
+        const [ratingsRes, peopleRes, tvRes, streamingRes, companiesRes, usersRes, profileRes] = await Promise.all([
           fetch(`${tursoUrl}/ratings/${encodeURIComponent(userEmail)}`),
           fetch(`${followsUrl}/follows/list?user_email=${encodeURIComponent(userEmail)}`),
           fetch(`${followsUrl}/tv-follows/list?user_email=${encodeURIComponent(userEmail)}`),
           fetch(`${followsUrl}/streaming-follows/list?user_email=${encodeURIComponent(userEmail)}`),
-          fetch(`${followsUrl}/company-follows/list?user_email=${encodeURIComponent(userEmail)}`)
+          fetch(`${followsUrl}/company-follows/list?user_email=${encodeURIComponent(userEmail)}`),
+          fetch(`${followsUrl}/user-follows/list?user_email=${encodeURIComponent(userEmail)}`),
+          fetch(`${followsUrl}/profile-by-email?user_email=${encodeURIComponent(userEmail)}`)
         ]);
 
         if (ratingsRes.ok) {
@@ -340,7 +363,19 @@ export default {
           const d = await companiesRes.json();
           totalFollowing += (d.company_follows || []).length;
         }
+        if (usersRes.ok) {
+          const d = await usersRes.json();
+          totalFollowing += (d.following || []).length;
+        }
         this.followingCount = totalFollowing;
+
+        if (profileRes.ok) {
+          const p = await profileRes.json();
+          if (p && p.alias) {
+            this.userAlias = p.alias;
+            localStorage.setItem('alias', p.alias);
+          }
+        }
       } catch (e) {
         console.error('Failed to fetch user stats:', e);
       }
@@ -628,9 +663,50 @@ export default {
   background-color: transparent;
 }
 
+.user-email-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.alias-link {
+  font-size: 15px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+  transition: all 0.2s ease;
+}
+
+.alias-link:hover {
+  color: #8BE9FD;
+  text-decoration: none;
+}
+
+.set-alias-btn {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  padding: 4px 10px;
+  margin-top: 4px;
+  transition: all 0.2s ease;
+}
+
+.set-alias-btn:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border-color: rgba(255,255,255,0.25);
+}
+
 .user-email {
-  font-size: 13px;
-  color: #ffffff;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
   font-family: 'Roboto', sans-serif;
   font-weight: 500;
   text-align: center;

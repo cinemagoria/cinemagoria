@@ -91,6 +91,29 @@
       </div>
     </div>
 
+    <div v-if="userResults.length > 0" class="user-search-section">
+      <div class="section-header" @click="collapsedSections.users = !collapsedSections.users">
+        <h2 class="section-title">Usuarios</h2>
+        <button class="expand-btn" :aria-label="collapsedSections.users ? 'Expandir' : 'Contraer'">
+          <svg v-if="collapsedSections.users" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
+          <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
+        </button>
+      </div>
+      <div v-show="!collapsedSections.users" class="user-search-grid">
+        <NuxtLink
+          v-for="u in userResults"
+          :key="u.email"
+          :to="u.alias ? `/u/${u.alias}` : '#'"
+          class="user-search-card">
+          <img :src="u.avatar || '/avatars/avatar-ss0.png'" :alt="u.alias || u.first_name" class="user-search-avatar" />
+          <div class="user-search-info">
+            <span class="user-search-alias">{{ u.alias ? `@${u.alias}` : (u.first_name || u.email) }}</span>
+            <span v-if="u.bio" class="user-search-bio">{{ u.bio }}</span>
+          </div>
+        </NuxtLink>
+      </div>
+    </div>
+
     <CategorySection title="Personas" :items="people" :collapsed="collapsedSections.people" key-prefix="person" @toggle="toggleSection('people')" />
     <CategorySection title="Festivales" :items="festivals" :collapsed="collapsedSections.festivals" key-prefix="festival" @toggle="toggleSection('festivals')" />
     <CategorySection title="Productoras" :items="productionCompanies" :collapsed="collapsedSections.productionCompanies" key-prefix="company" @toggle="toggleSection('productionCompanies')" />
@@ -164,7 +187,8 @@ export default {
         streamingServices: false,
         movies: false,
         tvShows: false,
-        others: false
+        others: false,
+        users: false
       },
       localNews: [],
       newsPage: 1,
@@ -172,6 +196,7 @@ export default {
       isLoadingNews: false,
       disableLeftNewsButton: true,
       disableRightNewsButton: false,
+      userResults: [],
     };
   },
 
@@ -237,11 +262,12 @@ export default {
       immediate: true
     },
     searchQuery: {
-      handler() {
+      handler(q) {
         this.localNews = [];
         this.newsPage = 1;
         this.hasMoreNews = true;
         this.isLoadingNews = false;
+        this.fetchUserResults(q);
       }
     }
   },
@@ -251,6 +277,7 @@ export default {
     if (this.items.results && this.items.results.length === 0 && !this.loading && this.searchQuery) {
       this.checkForTypos();
     }
+    if (this.searchQuery) this.fetchUserResults(this.searchQuery);
   },
 
   beforeDestroy() {
@@ -374,9 +401,20 @@ export default {
           path: '/search',
           query: { q: this.suggestedCorrection }
         });
-        
         this.$bus.$emit('update-search-query', this.suggestedCorrection);
       }
+    },
+
+    async fetchUserResults(q) {
+      this.userResults = [];
+      if (!q || q.trim().length < 2) return;
+      try {
+        const resp = await fetch(`https://entercinema-follows-rust.vercel.app/user-search?q=${encodeURIComponent(q.trim())}&limit=6`);
+        if (resp.ok) {
+          const data = await resp.json();
+          this.userResults = data.users || [];
+        }
+      } catch(e) { /* non-fatal */ }
     }
   },
 };
@@ -642,4 +680,18 @@ export default {
   opacity: 0;
   transform: translateY(-8px);
 }
+
+.user-search-section { margin-top: 2rem; margin-bottom: 2rem; }
+.user-search-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
+.user-search-card {
+  display: flex; align-items: center; gap: 1rem;
+  background: rgba(0,0,0,0.25); border: 1px solid rgba(139,233,253,0.12);
+  border-radius: 10px; padding: 0.9rem 1.2rem; text-decoration: none;
+  transition: border-color 0.2s, background 0.2s;
+  &:hover { border-color: rgba(139,233,253,0.4); background: rgba(139,233,253,0.06); }
+}
+.user-search-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(139,233,253,0.3); flex-shrink: 0; }
+.user-search-info { display: flex; flex-direction: column; min-width: 0; }
+.user-search-alias { font-size: 1.3rem; font-weight: 600; color: #8BE9FD; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-search-bio { font-size: 1.1rem; color: rgba(255,255,255,0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 </style>

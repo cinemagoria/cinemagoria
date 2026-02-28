@@ -27,6 +27,11 @@
               </button>
 
               <div class="filter-switch-three">
+                <button :class="['filter-btn', { active: viewMode === 'notifications' }]" @click="viewMode = 'notifications'">Notificaciones</button>
+                <button :class="['filter-btn', { active: viewMode === 'activity' }]" @click="switchToActivity">Actividad</button>
+              </div>
+
+              <div v-if="viewMode === 'notifications'" class="filter-switch-three">
                 <button :class="['filter-btn', { active: filterMode === 'unread' }]" @click="setFilter('unread')">No leídos</button>
                 <button :class="['filter-btn', { active: filterMode === 'all' }]" @click="setFilter('all')">Todos</button>
               </div>
@@ -52,6 +57,55 @@
 
         <div v-if="loading" class="loader-container">
           <Loader />
+        </div>
+
+        <div v-else-if="viewMode === 'activity'" class="notifications-list activity-feed">
+          <div v-if="activityLoading" class="loader-container"><Loader /></div>
+          <div v-else-if="activityItems.length === 0" class="no-notifications">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+            <p>Aún sin actividad de usuarios que seguís.</p>
+            <p class="sub-text">Seguí a otros usuarios para ver sus calificaciones y listas aquí.</p>
+          </div>
+          <template v-else>
+            <div v-for="item in activityItems" :key="item.id" class="notification-item activity-item">
+              <div class="notification-icon" style="cursor:default;">
+                <img
+                  :src="item.avatar || '/avatars/avatar-ss0.png'"
+                  :alt="item.alias || item.first_name"
+                  class="person-profile-image"
+                />
+              </div>
+              <div class="notification-content">
+                <div class="notification-text">
+                  <div class="notification-title">
+                    <strong>
+                      <NuxtLink v-if="item.alias" :to="`/u/${item.alias}`">@{{ item.alias }}</NuxtLink>
+                      <span v-else>{{ item.first_name || item.user_email }}</span>
+                    </strong>
+                    <span class="has-release">
+                      {{ item.activity_type === 'rating' ? ' calificó' : item.activity_type === 'review' ? ' reseñó' : ' creó una lista' }}
+                    </span>
+                  </div>
+                  <div v-if="item.item_name" class="notification-media" style="cursor:pointer;" @click="navigateToItem(item)">
+                    {{ item.item_name }}
+                    <span v-if="item.rating" style="color:#8BE9FD;font-weight:600;"> &middot; {{ item.rating }}/10</span>
+                  </div>
+                  <div v-else-if="item.list_name" class="notification-media">
+                    <NuxtLink :to="item.list_slug ? `/list/${item.list_slug}` : '#'">{{ item.list_name }}</NuxtLink>
+                  </div>
+                  <div v-if="item.review" class="notification-overview" style="margin-top:4px;">
+                    {{ item.review }}
+                  </div>
+                </div>
+              </div>
+              <div class="time-ago">{{ getTimeAgo(item.created_at) }}</div>
+            </div>
+            <div v-if="activityHasMore" style="text-align:center;margin-top:1.5rem;">
+              <button class="mark-all-button" @click="loadMoreActivity">Cargar más</button>
+            </div>
+          </template>
         </div>
 
         <div v-else-if="notifications.length === 0" class="no-notifications">
@@ -270,6 +324,11 @@ export default {
       deleteModalVisible: false,
       notificationToDelete: null,
       tvFollowsCache: [],
+      viewMode: 'notifications',
+      activityItems: [],
+      activityPage: 1,
+      activityLoading: false,
+      activityHasMore: false,
     };
   },
   setup() {
@@ -315,6 +374,39 @@ export default {
   },
 
   methods: {
+    async fetchActivityFeed(reset = false) {
+        if (!this.userEmail) return;
+        this.activityLoading = true;
+        if (reset) { this.activityItems = []; this.activityPage = 1; }
+        try {
+          const resp = await fetch(
+            `${this.followsApiUrl}/activity/feed?user_email=${encodeURIComponent(this.userEmail)}&page=${this.activityPage}&per_page=20`
+          );
+          if (resp.ok) {
+            const data = await resp.json();
+            this.activityItems = [...this.activityItems, ...(data.items || [])];
+            this.activityHasMore = (data.items || []).length === 20;
+          }
+        } catch(e) { console.error('Error en feed de actividad', e); }
+        finally { this.activityLoading = false; }
+      },
+
+      switchToActivity() {
+        this.viewMode = 'activity';
+        if (this.activityItems.length === 0) this.fetchActivityFeed(true);
+      },
+
+      async loadMoreActivity() {
+        this.activityPage++;
+        await this.fetchActivityFeed();
+      },
+
+      navigateToItem(item) {
+        if (item.item_type && item.item_id) {
+          this.$router.push(`/${item.item_type}/${item.item_id}`);
+        }
+      },
+
     handlePersonClick(notification) {
       if (this.isTvFollow(notification.person_id)) {
         this.$router.push(`/tv/${notification.person_id}`);
