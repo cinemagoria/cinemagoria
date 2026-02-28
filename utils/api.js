@@ -1548,3 +1548,68 @@ export async function searchNews(query, page = 1) {
         return { results: [] };
     }
 }
+
+export async function followUser(followerEmail, followedEmail) {
+    return $fetch(`${FOLLOWS_API_URL}/user-follows/add`, {
+        method: 'POST',
+        body: { follower_email: followerEmail, followed_email: followedEmail }
+    });
+}
+
+export async function unfollowUser(followerEmail, followedEmail) {
+    return $fetch(`${FOLLOWS_API_URL}/user-follows/remove`, {
+        method: 'DELETE',
+        params: { follower_email: followerEmail, followed_email: followedEmail }
+    });
+}
+
+export async function getUserFollowing(userEmail) {
+    try {
+        const r = await $fetch(`${FOLLOWS_API_URL}/user-follows/list`, { params: { user_email: userEmail } });
+        return r.following ?? [];
+    } catch { return []; }
+}
+
+export async function getUserFollowers(userEmail) {
+    try {
+        const r = await $fetch(`${FOLLOWS_API_URL}/user-follows/followers`, { params: { user_email: userEmail } });
+        return r.followers ?? [];
+    } catch { return []; }
+}
+
+export async function searchUsers(query, limit = 10) {
+    try {
+        const r = await $fetch(`${FOLLOWS_API_URL}/users/search`, { params: { q: query, limit } });
+        return r.users ?? [];
+    } catch { return []; }
+}
+
+export async function getPublicProfile(alias, viewerEmail = null) {
+    try {
+        const params = viewerEmail ? { viewer_email: viewerEmail } : {};
+        return await $fetch(`${FOLLOWS_API_URL}/profile/${alias}`, { params });
+    } catch { return null; }
+}
+
+export async function setUserAlias(userEmail, alias, bio = null) {
+    return $fetch(`${FOLLOWS_API_URL}/alias`, {
+        method: 'POST',
+        body: { user_email: userEmail, alias, bio }
+    });
+}
+
+export async function updateUserPrivacy(userEmail, settings) {
+    return $fetch(`${FOLLOWS_API_URL}/privacy`, {
+        method: 'POST',
+        body: { user_email: userEmail, ...settings }
+    });
+}
+
+export async function getActivityFeed(userEmail, page = 1) {
+    try {
+        const r = await $fetch(`${FOLLOWS_API_URL}/activity/feed`, {
+            params: { user_email: userEmail, page, per_page: 20 }
+        });
+        return r;
+    } catch { return { items: [], page: 1 }; }
+}

@@ -38,6 +38,11 @@
             :class="[{ [$style.active]: activeTab === 'streaming' }]">
             <span :class="$style.tabLabel">Streaming Services ({{ streamingCount }})</span>
           </button>
+          <button 
+            @click="activeTab = 'users'" 
+            :class="[{ [$style.active]: activeTab === 'users' }]">
+            <span :class="$style.tabLabel">Users ({{ usersCount }})</span>
+          </button>
         </div>
 
         <div class="undo-bar-container">
@@ -234,6 +239,30 @@
               <p>Not following any streaming services yet</p>
             </div>
           </div>
+          <div v-else-if="activeTab === 'users'" :class="$style.usersTab">
+            <div :class="$style.userList">
+              <div 
+                v-for="user in userFollows" 
+                :key="user.email"
+                :class="$style.userRow">
+                <img 
+                  :src="user.avatar || '/avatars/avatar-ss0.png'" 
+                  :alt="user.alias || user.first_name"
+                  :class="$style.userAvatar"
+                />
+                <div :class="$style.userInfo">
+                  <NuxtLink :to="user.alias ? `/u/${user.alias}` : '#'" :class="$style.userAlias" @click="close">
+                    {{ user.alias ? `@${user.alias}` : (user.first_name || user.email) }}
+                  </NuxtLink>
+                  <span v-if="user.first_name" :class="$style.userName">{{ user.first_name }}</span>
+                </div>
+                <button @click="unfollowUser(user)" :class="$style.unfollowButton">Unfollow</button>
+              </div>
+            </div>
+            <div v-if="userFollows.length === 0" :class="$style.emptyState">
+              <p>Not following any users yet</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -267,6 +296,7 @@ export default {
       tvShows: [],
       companies: [],
       streamingServices: [],
+      userFollows: [],
       loading: false,
       undoItem: null,
       undoTimeout: null,
@@ -297,6 +327,9 @@ export default {
     },
     streamingCount() {
         return this.streamingServices.length;
+    },
+    usersCount() {
+        return this.userFollows.length;
     },
     followsApiUrl() {
         return 'https://entercinema-follows-rust.vercel.app';
@@ -379,6 +412,15 @@ export default {
         }
 
         this.companies = await getFollowedProductionCompanies(userEmail);
+
+        // Load user follows
+        try {
+          const uResp = await fetch(`${this.followsApiUrl}/user-follows/list?user_email=${encodeURIComponent(userEmail)}`);
+          if (uResp.ok) {
+            const d = await uResp.json();
+            this.userFollows = d.following || [];
+          }
+        } catch(e) { /* non-fatal */ }
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -486,6 +528,23 @@ export default {
       }
     },
 
+    async unfollowUser(user) {
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail) return;
+      this.userFollows = this.userFollows.filter(u => u.email !== user.email);
+      try {
+        await fetch(
+          `${this.followsApiUrl}/user-follows/remove?follower_email=${encodeURIComponent(userEmail)}&followed_email=${encodeURIComponent(user.email)}`,
+          { method: 'DELETE' }
+        );
+        this.$emit('unfollow-updated');
+        if (typeof window !== 'undefined') window.dispatchEvent(new Event('following-updated'));
+      } catch (error) {
+        console.error('Error unfollowing user:', error);
+        this.userFollows.push(user);
+      }
+    },
+
     startUndoTimer() {
       if (this.undoTimeout) {
         clearTimeout(this.undoTimeout);
@@ -574,14 +633,17 @@ export default {
     },
 
     openPerson(personId) {
+      this.close();
       this.$router.push(`/person/${personId}`);
     },
 
     openCompany(companyId) {
+      this.close();
       this.$router.push(`/production/${companyId}`);
     },
 
     openStreaming(providerId) {
+      this.close();
       const providerConst = STREAMING_PROVIDERS.find(p => p.id === providerId);
       
       if (providerConst && providerConst.slug) {
@@ -593,6 +655,7 @@ export default {
     },
 
     openTvShow(tvId) {
+      this.close();
       this.$router.push(`/tv/${tvId}`);
     },
 
@@ -987,4 +1050,70 @@ padding: 1rem 2rem;
   margin: 0 auto;
   position: relative;
 }
+
+/* ── Users tab ──────────────────────────────────────────────────────────── */
+.usersTab {
+  padding: 0.5rem 0;
+}
+
+.userList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.userRow {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  /* Fix for the unfollow button in this specific context */
+  .unfollowButton {
+    width: auto;
+    min-width: 100px;
+    padding: 8px 16px;
+    margin-left: auto;
+  }
+}
+
+.userAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid rgba(139, 233, 253, 0.3);
+}
+
+.userInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.userAlias {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #8BE9FD;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:hover { text-decoration: underline; }
+}
+
+.userName {
+  font-size: 1.15rem;
+  color: rgba(255,255,255,0.55);
+}
+/* ──────────────────────────────────────────────────────────────────────── */
 </style>

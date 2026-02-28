@@ -161,13 +161,6 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 1618196,
-    "trailer_key": "_S9Ibcw18pE",
-    "backdrop_path": "https://hollywoodtimes.net/wp-content/uploads/2026/02/The-Bulldogs_3-1536x640.jpg",
-    "poster_path": "/5faOcuKhkIHZ9bNimlByZYrOvaG.jpg",
-    "force_enrichment": false
-  },
-  {
     "tmdb_id": 240740,
     "trailer_key": "RSpvGC0_XLM",
     "backdrop_path": "/tCswYJni0nG6fOHekBgi20fcG1G.jpg",
@@ -278,5 +271,26 @@
     "backdrop_path": "/yf7OJzxWAg0LRFUMyp0Jpa2sRKY.jpg",
     "poster_path": "/hGXJQiZjFspvhGhzM1bzlgOg7Ib.jpg",
     "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1240889,
+    "trailer_key": "o8Wi3ZwdODA",
+    "backdrop_path": "/5dbLRlAeIh4U3hyj4i4S4shv9AW.jpg",
+    "poster_path": "/AhEYtXa1csweudaRivYtg0bdBpu.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 254417,
+    "trailer_key": null,
+    "backdrop_path": "/7c2nC558PNGgojD3EJH2b53G9Fw.jpg",
+    "poster_path": "/ih047xC2TV6WbIevtms0Pp1XMe7.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1532477,
+    "trailer_key": "mSkuzxi8hG4",
+    "backdrop_path": "/4J4OlqCWFF6b9F4HuMxWmWlneBF.jpg",
+    "poster_path": "/kFIVqcaHcGfMEBBLMmp4DlbQaGb.jpg",
+    "force_enrichment": true
   }
 ]
