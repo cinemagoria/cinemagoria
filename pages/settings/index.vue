@@ -115,6 +115,16 @@
                   <span class="toggle-slider"></span>
                 </label>
               </div>
+              <div class="toggle-row">
+                <div>
+                  <span class="toggle-label">Mostrar cantidad de seguidores/seguidos públicamente</span>
+                  <span class="toggle-desc">Otros pueden ver cuántos seguidores y seguidos tenés en tu perfil.</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" v-model="privacyFollowersCount" @change="savePrivacy" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
               <p v-if="privacySaved" class="field-success" style="margin-top:0.5rem;">Configuración de privacidad guardada.</p>
               <div class="profile-actions-row">
                 <button @click="saveProfile" :disabled="savingProfile" class="action-button secondary">
@@ -228,6 +238,7 @@ export default {
       savingProfile: false,
       privacyReviews: true,
       privacyLists: true,
+      privacyFollowersCount: true,
       privacySaved: false,
       avatars: [
         '/avatars/avatar-ss0.png',
@@ -398,6 +409,7 @@ export default {
           this.bio = d.bio || '';
           this.privacyReviews = d.privacy_reviews === 1 || d.privacy_reviews === true;
           this.privacyLists = d.privacy_lists === 1 || d.privacy_lists === true;
+          this.privacyFollowersCount = d.privacy_followers_count === undefined ? true : (d.privacy_followers_count === 1 || d.privacy_followers_count === true);
         }
       } catch(e) { /* no-op */ }
     },
@@ -445,7 +457,8 @@ export default {
           body: JSON.stringify({
             user_email: this.userEmail,
             privacy_reviews: this.privacyReviews ? 1 : 0,
-            privacy_lists: this.privacyLists ? 1 : 0
+            privacy_lists: this.privacyLists ? 1 : 0,
+            privacy_followers_count: this.privacyFollowersCount ? 1 : 0
           })
         });
         if (resp.ok) {
