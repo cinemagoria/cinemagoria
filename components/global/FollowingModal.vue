@@ -41,7 +41,7 @@
           <button 
             @click="activeTab = 'users'" 
             :class="[{ [$style.active]: activeTab === 'users' }]">
-            <span :class="$style.tabLabel">Users ({{ usersCount }})</span>
+            <span :class="$style.tabLabel">Users ({{ usersCount }} / {{ followersCount }})</span>
           </button>
         </div>
 
@@ -240,7 +240,22 @@
             </div>
           </div>
           <div v-else-if="activeTab === 'users'" :class="$style.usersTab">
-            <div :class="$style.userList">
+            <!-- Sub-tabs: Following / Followers -->
+            <div :class="$style.subTabs">
+              <button
+                :class="[$style.subTabBtn, { [$style.subTabActive]: userSubTab === 'following' }]"
+                @click="userSubTab = 'following'">
+                Following ({{ usersCount }})
+              </button>
+              <button
+                :class="[$style.subTabBtn, { [$style.subTabActive]: userSubTab === 'followers' }]"
+                @click="switchToFollowers">
+                Followers ({{ followersCount }})
+              </button>
+            </div>
+
+            <!-- Following list -->
+            <div v-if="userSubTab === 'following'" :class="$style.userList">
               <div 
                 v-for="user in userFollows" 
                 :key="user.email"
@@ -259,8 +274,40 @@
                 <button @click="unfollowUser(user)" :class="$style.unfollowButton">Unfollow</button>
               </div>
             </div>
-            <div v-if="userFollows.length === 0" :class="$style.emptyState">
+            <div v-if="userSubTab === 'following' && userFollows.length === 0" :class="$style.emptyState">
               <p>Not following any users yet</p>
+            </div>
+
+            <!-- Followers list -->
+            <div v-if="userSubTab === 'followers'">
+              <div v-if="followersLoading" :class="$style.loader" style="padding:2rem 0;">
+                <Loader :size="44" color="#8BE9FD" />
+              </div>
+              <div v-else :class="$style.userList">
+                <div
+                  v-for="follower in userFollowers"
+                  :key="follower.email"
+                  :class="$style.userRow">
+                  <img
+                    :src="follower.avatar || '/avatars/avatar-ss0.png'"
+                    :alt="follower.alias || follower.first_name || follower.email"
+                    :class="$style.userAvatar"
+                  />
+                  <div :class="$style.userInfo">
+                    <NuxtLink
+                      :to="follower.alias ? `/u/${follower.alias}` : '#'"
+                      :class="$style.userAlias"
+                      @click="close"
+                    >
+                      {{ follower.alias ? `@${follower.alias}` : (follower.first_name || follower.email) }}
+                    </NuxtLink>
+                    <span v-if="follower.first_name" :class="$style.userName">{{ follower.first_name }}</span>
+                  </div>
+                </div>
+              </div>
+              <div v-if="!followersLoading && userFollowers.length === 0" :class="$style.emptyState">
+                <p>No followers yet</p>
+              </div>
             </div>
           </div>
         </div>
@@ -292,11 +339,15 @@ export default {
     return {
       isVisible: false,
       activeTab: 'people',
+      userSubTab: 'following',
       people: [],
       tvShows: [],
       companies: [],
       streamingServices: [],
       userFollows: [],
+      userFollowers: [],
+      followersLoading: false,
+      followersLoaded: false,
       loading: false,
       undoItem: null,
       undoTimeout: null,
@@ -330,6 +381,9 @@ export default {
     },
     usersCount() {
         return this.userFollows.length;
+    },
+    followersCount() {
+        return this.userFollowers.length;
     },
     followsApiUrl() {
         return 'https://entercinema-follows-rust.vercel.app';
@@ -371,6 +425,7 @@ export default {
 
     show() {
       this.isVisible = true;
+      this.userSubTab = 'following';
       this.fetchData();
     },
 
@@ -383,6 +438,7 @@ export default {
       if (!userEmail) return;
 
       this.loading = true;
+      this.followersLoaded = false;
       try {
         const [peopleResponse, tvResponse, streamingResponse] = await Promise.all([
           fetch(`${this.followsApiUrl}/follows/list?user_email=${encodeURIComponent(userEmail)}`),
@@ -413,7 +469,7 @@ export default {
 
         this.companies = await getFollowedProductionCompanies(userEmail);
 
-        // Load user follows
+        // Load user following
         try {
           const uResp = await fetch(`${this.followsApiUrl}/user-follows/list?user_email=${encodeURIComponent(userEmail)}`);
           if (uResp.ok) {
@@ -425,6 +481,31 @@ export default {
         console.error('Error fetching data:', error);
       } finally {
         this.loading = false;
+      }
+    },
+
+    async switchToFollowers() {
+      this.userSubTab = 'followers';
+      if (!this.followersLoaded) {
+        await this.fetchFollowers();
+      }
+    },
+
+    async fetchFollowers() {
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail) return;
+      this.followersLoading = true;
+      try {
+        const resp = await fetch(`${this.followsApiUrl}/user-follows/followers?user_email=${encodeURIComponent(userEmail)}`);
+        if (resp.ok) {
+          const d = await resp.json();
+          this.userFollowers = d.followers || [];
+          this.followersLoaded = true;
+        }
+      } catch(e) {
+        console.error('Error fetching followers:', e);
+      } finally {
+        this.followersLoading = false;
       }
     },
 
@@ -1055,6 +1136,37 @@ padding: 1rem 2rem;
 .usersTab {
   padding: 0.5rem 0;
 }
+
+.subTabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 0.8rem;
+}
+
+.subTabBtn {
+  background: transparent;
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  color: rgba(255,255,255,0.6);
+  border-radius: 20px;
+  padding: 0.4rem 1.2rem;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: #8BE9FD;
+    color: #8BE9FD;
+  }
+}
+
+.subTabActive {
+  background: rgba(139, 233, 253, 0.15);
+  border-color: #8BE9FD;
+  color: #8BE9FD;
+}
+
 
 .userList {
   display: flex;

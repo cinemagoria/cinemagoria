@@ -122,119 +122,140 @@
             v-for="notification in notifications" 
             :key="notification.id"
             :class="['notification-item', { unread: !notification.read }]">
-            <div 
-              class="notification-icon" 
-              @click.stop="notification.profile_path ? handlePersonClick(notification) : null"
-              :style="notification.profile_path ? 'cursor: pointer;' : ''">
-              <img 
-                v-if="notification.person_id && (notification.profile_path || getStreamingProvider(notification.person_id))" 
-                :src="getProfileImage(notification)" 
-                :alt="notification.person_name"
-                :class="['person-profile-image', { 'company-logo': isCompany(notification.person_id) || getStreamingProvider(notification.person_id) }]">
-              <svg v-else-if="notification.media_type === 'movie'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>
-              </svg>
-              <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="black">
-                <path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .89-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.11-.9-2-2-2zm0 14H3V8h18v12zM9 10v8l7-4z"/>
-              </svg>
-            </div>
 
-            <div class="notification-content">
-              <div class="notification-text">
-                <div class="notification-title">
-                  <strong 
-                    @click.stop="notification.media_type === 'episode' ? handleContentClick(notification) : handlePersonClick(notification)" 
-                    style="cursor: pointer; text-decoration: underline; text-decoration-color: rgba(139, 233, 253, 0.3);">
-                    {{ notification.person_name }}
-                  </strong>
-                  <span class="has-release"> has a new release </span>
-                </div>
-                <div 
-                  class="notification-media" 
-                  @click.stop="handleContentClick(notification)"
-                  style="cursor: pointer;">
-                  {{ notification.media_title }}
-                </div>
-                
-                <div 
-                  v-if="getFallbackImageUrl(notification)" 
-                  class="notification-poster"
-                  @click.stop="handleContentClick(notification)"
-                  style="cursor: pointer;">
-                  <img :src="getFallbackImageUrl(notification)" :alt="notification.media_title">
-                </div>
-                
-                <div v-if="notification.character" class="notification-character">
-                  <span style="color:#d0d0d0 !important;">as </span>{{ notification.character }}
-                </div>
-                 <div class="notification-meta">
-                  <span class="media-badge">
-                    {{ notification.media_type === 'movie' ? 'Movie' : notification.media_type === 'tv' ? 'TV Show' : 'Episode' }}
-                  </span>
-                  <div class="info-container">
-                    <label class="release-date">Release: <span class="only-date">{{ formatDate(notification.release_date) }}</span></label>
-
+            <!-- ── New Follower notification ────────────────────────── -->
+            <template v-if="notification.notification_type === 'new_follower'">
+              <div class="notification-icon" style="cursor:default;">
+                <img
+                  v-if="notification.poster_path"
+                  :src="notification.poster_path"
+                  :alt="notification.person_name"
+                  class="person-profile-image"
+                >
+                <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </div>
+              <div class="notification-content">
+                <div class="notification-text">
+                  <div class="notification-title">
+                    <strong>
+                      <!-- overview stores follower_email for profile linking -->
+                      <NuxtLink
+                        v-if="notification.overview"
+                        :to="getFollowerProfileLink(notification)"
+                        style="color:#8BE9FD;text-decoration:underline;text-decoration-color:rgba(139,233,253,0.3);"
+                      >{{ notification.person_name }}</NuxtLink>
+                      <span v-else>{{ notification.person_name }}</span>
+                    </strong>
+                    <span class="has-release"> started following you</span>
+                  </div>
+                  <div class="notification-meta" style="margin-top:4px;">
+                    <span class="media-badge" style="background:rgba(139,233,253,0.15);color:#8BE9FD;">New follower</span>
                   </div>
                 </div>
-                <div v-if="notification.overview && notification.overview.length > 0" class="notification-overview">
-                  {{ notification.overview }}
-                </div>
-               
               </div>
-            </div>
-            <div class="time-ago">{{ getTimeAgo(notification.created_at) }}</div>
-            <div class="notification-tabs">
-              <button 
-                @click.stop="openDeleteModal(notification.id)"
-                class="tab-delete-btn"
-                title="Delete">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M10 11v6"/>
-                  <path d="M14 11v6"/>
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
-                  <path d="M3 6h18"/>
-                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                </svg>
-              </button>
+              <div class="time-ago">{{ getTimeAgo(notification.created_at) }}</div>
+              <div class="notification-tabs">
+                <button @click.stop="openDeleteModal(notification.id)" class="tab-delete-btn" title="Delete">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 11v6"/><path d="M14 11v6"/>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                    <path d="M3 6h18"/>
+                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                  </svg>
+                </button>
+                <button v-if="!notification.read" @click.stop="markAsRead(notification.id)" :disabled="animatingRead === notification.id" class="tab-check-btn">
+                  <svg v-if="animatingRead === notification.id" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="checkmark-svg"><polyline points="20 6 9 17 4 12" class="checkmark-path"/></svg>
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>
+                </button>
+                <button v-if="notification.read && !showUnreadOnly" @click.stop="markAsUnread(notification.id)" class="tab-check-btn active">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </button>
+              </div>
+            </template>
 
-              <button 
-                v-if="!notification.read"
-                @click.stop="markAsRead(notification.id)"
-                :disabled="animatingRead === notification.id"
-                class="tab-check-btn">
-                <svg 
-                  v-if="animatingRead === notification.id"
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  stroke-width="3"
-                  class="checkmark-svg">
-                  <polyline points="20 6 9 17 4 12" class="checkmark-path"/>
+            <!-- ── Standard release notification ───────────────────── -->
+            <template v-else>
+              <div 
+                class="notification-icon" 
+                @click.stop="notification.profile_path ? handlePersonClick(notification) : null"
+                :style="notification.profile_path ? 'cursor: pointer;' : ''">
+                <img 
+                  v-if="notification.person_id && (notification.profile_path || getStreamingProvider(notification.person_id))" 
+                  :src="getProfileImage(notification)" 
+                  :alt="notification.person_name"
+                  :class="['person-profile-image', { 'company-logo': isCompany(notification.person_id) || getStreamingProvider(notification.person_id) }]">
+                <svg v-else-if="notification.media_type === 'movie'" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>
                 </svg>
-                <svg 
-                  v-else
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="16" 
-                  height="16" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  stroke-width="2">
-                  <circle cx="12" cy="12" r="9"/>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="black">
+                  <path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .89-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.11-.9-2-2-2zm0 14H3V8h18v12zM9 10v8l7-4z"/>
                 </svg>
-              </button>
+              </div>
+              <div class="notification-content">
+                <div class="notification-text">
+                  <div class="notification-title">
+                    <strong 
+                      @click.stop="notification.media_type === 'episode' ? handleContentClick(notification) : handlePersonClick(notification)" 
+                      style="cursor: pointer; text-decoration: underline; text-decoration-color: rgba(139, 233, 253, 0.3);">
+                      {{ notification.person_name }}
+                    </strong>
+                    <span class="has-release"> has a new release </span>
+                  </div>
+                  <div 
+                    class="notification-media" 
+                    @click.stop="handleContentClick(notification)"
+                    style="cursor: pointer;">
+                    {{ notification.media_title }}
+                  </div>
+                  <div 
+                    v-if="getFallbackImageUrl(notification)" 
+                    class="notification-poster"
+                    @click.stop="handleContentClick(notification)"
+                    style="cursor: pointer;">
+                    <img :src="getFallbackImageUrl(notification)" :alt="notification.media_title">
+                  </div>
+                  <div v-if="notification.character" class="notification-character">
+                    <span style="color:#d0d0d0 !important;">as </span>{{ notification.character }}
+                  </div>
+                  <div class="notification-meta">
+                    <span class="media-badge">
+                      {{ notification.media_type === 'movie' ? 'Movie' : notification.media_type === 'tv' ? 'TV Show' : 'Episode' }}
+                    </span>
+                    <div class="info-container">
+                      <label class="release-date">Release: <span class="only-date">{{ formatDate(notification.release_date) }}</span></label>
+                    </div>
+                  </div>
+                  <div v-if="notification.overview && notification.overview.length > 0" class="notification-overview">
+                    {{ notification.overview }}
+                  </div>
+                </div>
+              </div>
+              <div class="time-ago">{{ getTimeAgo(notification.created_at) }}</div>
+              <div class="notification-tabs">
+                <button @click.stop="openDeleteModal(notification.id)" class="tab-delete-btn" title="Delete">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 11v6"/><path d="M14 11v6"/>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                    <path d="M3 6h18"/>
+                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                  </svg>
+                </button>
+                <button v-if="!notification.read" @click.stop="markAsRead(notification.id)" :disabled="animatingRead === notification.id" class="tab-check-btn">
+                  <svg v-if="animatingRead === notification.id" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="checkmark-svg"><polyline points="20 6 9 17 4 12" class="checkmark-path"/></svg>
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>
+                </button>
+                <button v-if="notification.read && !showUnreadOnly" @click.stop="markAsUnread(notification.id)" class="tab-check-btn active">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </button>
+              </div>
+            </template>
 
-              <button 
-                v-if="notification.read && !showUnreadOnly"
-                @click.stop="markAsUnread(notification.id)"
-                class="tab-check-btn active">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M20 6 9 17l-5-5"/>
-                </svg>
-              </button>
-            </div>
           </div>
         </div>
+
 
         <div v-if="deleteModalVisible" class="modal-overlay" @click.self="closeDeleteModal">
           <div class="delete-modal">
@@ -677,6 +698,21 @@ export default {
         }
       },
 
+
+      // Build the profile link for a new_follower notification.
+      // overview = follower_email; person_name = alias or first_name.
+      // If person_name looks like an alias (no spaces), link to /u/<alias>.
+      // Otherwise fall back to the email stored in overview (no public profile link available).
+      getFollowerProfileLink(notification) {
+        const name = notification.person_name || ''
+        const email = notification.overview || ''
+        // If name has no spaces and no @ it's likely an alias
+        if (name && !name.includes(' ') && !name.includes('@')) {
+          return `/u/${name}`
+        }
+        // No alias — no public profile page we can link to
+        return '#'
+      },
 
       openFollowingModal() {
         this.$bus.$emit('show-following-modal');

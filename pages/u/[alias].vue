@@ -237,8 +237,12 @@ useSeoMeta({
           <span v-if="profile.alias" class="profile-alias">@{{ profile.alias }}</span>
           <p v-if="profile.bio" class="profile-bio">{{ profile.bio }}</p>
           <div class="profile-stats">
-            <span><strong>{{ profile.followers_count }}</strong> followers</span>
-            <span><strong>{{ profile.following_count }}</strong> following</span>
+            <span>
+              <strong>{{ profile.followers_count === -1 ? '—' : profile.followers_count }}</strong> followers
+            </span>
+            <span>
+              <strong>{{ profile.following_count === -1 ? '—' : profile.following_count }}</strong> following
+            </span>
           </div>
           <button
             v-if="viewerEmail && !isOwner"
