@@ -384,6 +384,8 @@ export default {
     signOut() {
       localStorage.removeItem('email');
       localStorage.removeItem('access_token');
+      localStorage.removeItem('alias');
+      localStorage.removeItem('user_avatar');
       window.location.href = '/';
     },
 

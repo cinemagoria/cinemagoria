@@ -300,7 +300,8 @@ export default {
       this.errorMessage = '';
       
       try {
-        const data = await $fetch('https://entercinema-drf.vercel.app/login/', {
+        const config = useRuntimeConfig();
+        const data = await $fetch(`${config.public.apiUrl}/auth/login/`, {
           method: 'POST',
           body: {
             email: this.loginEmail,
@@ -330,7 +331,8 @@ export default {
       this.errorMessage = '';
       
       try {
-        await $fetch('https://entercinema-drf.vercel.app/api/register/', {
+        const config = useRuntimeConfig();
+        await $fetch(`${config.public.apiUrl}/auth/register/`, {
           method: 'POST',
           body: {
             name: this.registerName,
@@ -341,7 +343,7 @@ export default {
         
         this.showSuccessMessage = true;
       } catch (error) {
-        if (error.response && error.response.status === 500) {
+        if (error.response && error.response.status === 400) {
           this.errorMessage = 'Ya existe un usuario con este correo electrónico.';
         } else {
           this.errorMessage = 'Ocurrió un error. Por favor intenta de nuevo.';
