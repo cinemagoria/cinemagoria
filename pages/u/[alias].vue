@@ -42,7 +42,13 @@ watch(() => profile.value?.is_following, (val) => {
 }, { immediate: true })
 
 watch(() => profile.value?.avatar, (val) => {
-  if (val) avatarSrc.value = val
+  if (val && !val.startsWith('http')) {
+    avatarSrc.value = val
+  } else if (val && val.startsWith('/avatars/')) {
+    avatarSrc.value = val
+  } else if (!val || val.startsWith('https://lh3.googleusercontent.com') || val.startsWith('https://') ) {
+    avatarSrc.value = '/avatars/avatar-ss0.png'
+  }
 }, { immediate: true })
 
 async function toggleFollow() {
@@ -422,8 +428,8 @@ useSeoMeta({
   padding: 0.5rem 1.4rem;
   border-radius: 8px;
   border: none;
-  background: #e50914;
-  color: #fff;
+  background: #8BE9FD;
+  color: #000;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
@@ -432,9 +438,9 @@ useSeoMeta({
 }
 
 .follow-btn:hover {
-  background: #f40612;
+  background: #6ae0f9;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
+  box-shadow: 0 4px 12px rgba(139, 233, 253, 0.3);
 }
 
 .follow-btn.following {
