@@ -50,7 +50,9 @@ watchEffect(async () => {
       .select('avatar')
       .eq('email', profile.value.email)
       .single()
-    if (data?.avatar) avatarSrc.value = data.avatar
+    if (data?.avatar && !data.avatar.startsWith('https://lh3.googleusercontent.com')) {
+      avatarSrc.value = data.avatar
+    }
   } catch {}
 })
 
@@ -431,8 +433,8 @@ useSeoMeta({
   padding: 0.5rem 1.4rem;
   border-radius: 8px;
   border: none;
-  background: #e50914;
-  color: #fff;
+  background: #8BE9FD;
+  color: #000;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
@@ -441,9 +443,9 @@ useSeoMeta({
 }
 
 .follow-btn:hover {
-  background: #f40612;
+  background: #6ae0f9;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
+  box-shadow: 0 4px 12px rgba(139, 233, 253, 0.3);
 }
 
 .follow-btn.following {
