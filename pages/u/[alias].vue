@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute, useNuxtApp } from '#app'
 import { followUser, unfollowUser } from '~/utils/api'
 
@@ -17,25 +17,39 @@ const listsPage = ref(1)
 const listsPerPage = 10
 const reviewsPerPage = 5
 
+const FOLLOWS_API = 'https://entercinema-follows-rust.vercel.app'
+const FAVORITES_API = 'https://entercinema-favorites.vercel.app/api'
+
+const { data: profile, pending, error, refresh: refreshProfile } = await useFetch(
+  `${FOLLOWS_API}/profile/${alias}`,
+  { server: true, query: { viewer_email: '' } }
+)
+
 onMounted(async () => {
   if (process.client) {
     viewerEmail.value = localStorage.getItem('email') || null
     viewerAlias.value = localStorage.getItem('alias') || null
+
+    if (viewerEmail.value) {
+      try {
+        const freshProfile = await $fetch(`${FOLLOWS_API}/profile/${alias}`, {
+          params: { viewer_email: viewerEmail.value }
+        })
+        if (freshProfile) {
+          profile.value = freshProfile
+        }
+      } catch (e) {
+        console.error('[onMounted] freshProfile fetch failed:', e)
+      }
+    }
   }
 })
-
-const FOLLOWS_API = 'https://entercinema-follows-rust.vercel.app'
-const FAVORITES_API = 'https://entercinema-favorites.vercel.app/api'
-
-const { data: profile, pending, error } = await useFetch(
-  `${FOLLOWS_API}/profile/${alias}`,
-  { query: computed(() => ({ viewer_email: viewerEmail.value })) }
-)
 
 const isOwner = computed(() => !!viewerEmail.value && !!profile.value?.email && viewerEmail.value === profile.value.email)
 
 const isFollowing = ref(false)
 const followLoading = ref(false)
+const followError = ref(null)
 
 watch(() => profile.value?.is_following, (val) => {
   isFollowing.value = val ?? false
@@ -54,19 +68,33 @@ watch(() => profile.value?.avatar, (val) => {
 }, { immediate: true })
 
 async function toggleFollow() {
-  if (!viewerEmail.value || !profile.value?.email) return
+  console.log('[toggleFollow] called', { viewer: viewerEmail.value, target: profile.value?.email })
+  if (!viewerEmail.value) {
+    console.warn('[toggleFollow] aborted: no viewerEmail')
+    return
+  }
+  if (!profile.value?.email) {
+    console.warn('[toggleFollow] aborted: no profile.email', profile.value)
+    return
+  }
   followLoading.value = true
+  followError.value = null
   try {
     if (isFollowing.value) {
-      await unfollowUser(viewerEmail.value, profile.value.email)
+      const res = await unfollowUser(viewerEmail.value, profile.value.email)
+      console.log('[toggleFollow] unfollow response:', res)
       isFollowing.value = false
     } else {
-      await followUser(viewerEmail.value, profile.value.email)
+      const res = await followUser(viewerEmail.value, profile.value.email)
+      console.log('[toggleFollow] follow response:', res)
       isFollowing.value = true
     }
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new Event('following-updated'))
     }
+  } catch (e) {
+    console.error('[toggleFollow] ERROR:', e)
+    followError.value = e?.data?.error || e?.message || JSON.stringify(e) || 'Error desconocido'
   } finally {
     followLoading.value = false
   }
@@ -260,6 +288,7 @@ useSeoMeta({
           >
             {{ followLoading ? '...' : isFollowing ? 'Following' : 'Follow' }}
           </button>
+          <span v-if="followError" style="color: #ff6b6b; font-size: 0.8rem; margin-top: 4px;">{{ followError }}</span>
         </div>
       </div>
 
@@ -347,7 +376,7 @@ useSeoMeta({
       </div>
 
       <div v-if="!profile.privacy_reviews && !profile.privacy_lists" class="private-notice">
-        <p>This user's profile is private.</p>
+        <p>This profile is private.</p>
       </div>
     </div>
   </main>
@@ -511,7 +540,6 @@ useSeoMeta({
     gap: 1rem;
   }
 }
-
 .profile-section {
   margin-top: 2.5rem;
 }
