@@ -872,6 +872,24 @@ export function getTraktReviews(id, type) {
     });
 };
 
+export async function getECReviews(itemType, itemId) {
+    try {
+        const data = await $fetch(`https://entercinema-favorites.vercel.app/api/ec-reviews/${itemType}/${itemId}`);
+        if (!data || !data.reviews || !data.reviews.length) return [];
+        return data.reviews.map(r => ({
+            authorName: r.displayName,
+            authorRating: r.rating,
+            content: r.review,
+            createdAt: r.createdAt,
+            source: 'EnterCinema',
+            url: null,
+            showFullContent: false
+        }));
+    } catch (e) {
+        return [];
+    }
+}
+
 export function getTvShowRecommended(id, page = 1) {
     return new Promise((resolve, reject) => {
         axios.get(`${apiUrl}/tv/${id}/recommendations`, {

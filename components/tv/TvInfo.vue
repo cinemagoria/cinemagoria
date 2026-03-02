@@ -145,6 +145,7 @@
                     <div :class="$style.reviewMeta">
                        <span v-if="review.source === 'User'" :class="$style.userBadge">TÚ</span>
                        <img v-else-if="review.source === 'Trakt'" src="/logos/platforms/trakt-logo-small.svg" alt="Trakt" :class="$style.sourceLogo" />
+                       <span v-else-if="review.source === 'EnterCinema'" :class="$style.ecBadge">EC</span>
                        <img v-else src="/logos/platforms/tmdb.svg" alt="TMDB" :class="$style.sourceLogoTMDB" />
                        <span :class="$style.reviewDate">{{ formatCreatedAt(review.createdAt) }}</span>
                     </div>
@@ -221,7 +222,7 @@
 </template>
 
 <script>
-import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTraktReviews, getTvShowRecommended, getPerson, getIMDbRatingFromDB, enrichTVShowWithIMDbRating, translateReviewsBatch, translateText } from '~/utils/api'; 
+import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTraktReviews, getECReviews, getTvShowRecommended, getPerson, getIMDbRatingFromDB, enrichTVShowWithIMDbRating, translateReviewsBatch, translateText } from '~/utils/api'; 
 import { name, creators } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
 import WatchOn from '~/components/WatchOn';
@@ -582,6 +583,7 @@ export default {
           const traktReviewsPromise = this.item.external_ids?.imdb_id 
             ? getTraktReviews(this.item.external_ids.imdb_id, 'show') 
             : Promise.resolve([]);
+          const ecReviewsPromise = getECReviews('tv', this.item.id);
 
           let userReviewPromise = Promise.resolve(null);
           const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
@@ -591,19 +593,17 @@ export default {
               userReviewPromise = fetch(`${tursoUrl}/membership/${userEmail}/tv/${this.item.id}`)
                 .then(res => res.json())
                 .then(data => data.userRating)
-                .catch(e => {
-                    console.error('Error fetching user review:', e);
-                    return null;
-                });
+                .catch(() => null);
           }
 
-          const [tmdbResult, traktResult, userReviewResult] = await Promise.allSettled([tmdbReviewsPromise, traktReviewsPromise, userReviewPromise]);
+          const [tmdbResult, traktResult, ecResult, userReviewResult] = await Promise.allSettled([tmdbReviewsPromise, traktReviewsPromise, ecReviewsPromise, userReviewPromise]);
           
           const tmdbReviews = tmdbResult.status === 'fulfilled' ? tmdbResult.value : [];
           const traktReviews = traktResult.status === 'fulfilled' ? traktResult.value : [];
+          const ecReviews = ecResult.status === 'fulfilled' ? ecResult.value : [];
           const userRatingData = userReviewResult.status === 'fulfilled' ? userReviewResult.value : null;
 
-          const allReviews = [...tmdbReviews, ...traktReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          let allReviews = [...tmdbReviews, ...traktReviews, ...ecReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
           if (userRatingData && userRatingData.review) {
               const userReview = {
@@ -615,6 +615,7 @@ export default {
                   showFullContent: true, 
                   url: null
               };
+              allReviews = allReviews.filter(r => r.source !== 'EnterCinema' || r.authorName !== userRatingData.displayName);
               allReviews.unshift(userReview);
           }
 
@@ -630,7 +631,6 @@ export default {
              this.reviews = [];
           }
         } catch (error) {
-          console.error("Error fetching reviews", error);
           this.reviews = [];
         } finally {
           this.isTranslating = false;
@@ -922,6 +922,16 @@ export default {
   font-weight: bold;
   font-size: 1.1rem;
   border: 1px solid #8BE9FD;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+
+.ecBadge {
+  color: #f5a623;
+  font-weight: bold;
+  font-size: 1.1rem;
+  border: 1px solid #f5a623;
   padding: 2px 6px;
   border-radius: 4px;
   letter-spacing: 1px;
