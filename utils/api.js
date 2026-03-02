@@ -1598,7 +1598,7 @@ export async function getUserFollowers(userEmail) {
 
 export async function searchUsers(query, limit = 10) {
     try {
-        const r = await $fetch(`${FOLLOWS_API_URL}/users/search`, { params: { q: query, limit } });
+        const r = await $fetch(`${FOLLOWS_API_URL}/user-search`, { params: { q: query, limit } });
         return r.users ?? [];
     } catch { return []; }
 }
