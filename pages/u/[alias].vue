@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute, useNuxtApp } from '#app'
 import { followUser, unfollowUser } from '~/utils/api'
 

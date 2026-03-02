@@ -1511,6 +1511,8 @@ export async function enrichTVShowWithIMDbRating(item) {
 }
 
 
+const FOLLOWS_API_URL = 'https://entercinema-follows-rust.vercel.app';
+
 export async function followProductionCompany(userEmail, companyId, companyName, logoPath, originCountry) {
     const response = await $fetch(`${FOLLOWS_API_URL}/company-follows/add`, {
         method: 'POST',
