@@ -41,20 +41,17 @@ watch(() => profile.value?.is_following, (val) => {
   isFollowing.value = val ?? false
 }, { immediate: true })
 
-const { $supabase } = useNuxtApp()
-watchEffect(async () => {
-  if (!profile.value?.email) return
-  try {
-    const { data } = await $supabase
-      .from('user_data')
-      .select('avatar')
-      .eq('email', profile.value.email)
-      .single()
-    if (data?.avatar && !data.avatar.startsWith('https://lh3.googleusercontent.com')) {
-      avatarSrc.value = data.avatar
-    }
-  } catch {}
-})
+watch(() => profile.value?.avatar, (val) => {
+  if (!val || val.trim() === '') {
+    avatarSrc.value = '/avatars/avatar-ss0.png'
+  } else if (val.startsWith('https://lh3.googleusercontent.com')) {
+    // Block stale Google OAuth avatars — DRF already sets a local avatar for google users
+    avatarSrc.value = '/avatars/avatar-ss0.png'
+  } else {
+    // Allow relative paths (/avatars/...) and custom HTTPS URLs
+    avatarSrc.value = val
+  }
+}, { immediate: true })
 
 async function toggleFollow() {
   if (!viewerEmail.value || !profile.value?.email) return

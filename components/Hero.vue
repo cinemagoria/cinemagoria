@@ -320,10 +320,10 @@
               v-model="userReview"
               :placeholder="selectedRating > 0 ? ratingDescriptions[selectedRating - 1] : 'Selecciona una valoración primero'"
               class="review-textarea"
-              maxlength="500"
+              maxlength="2000"
               :disabled="selectedRating === 0"
             ></textarea>
-            <div class="char-count">{{ userReview.length }}/500</div>
+            <div class="char-count">{{ userReview.length }}/2000</div>
           </div>
           
           <div class="rating-modal-buttons">
@@ -958,6 +958,7 @@ export default {
       try {
         await this.updateUserRatingAndReview(this.selectedRating, this.userReview);
         this.closeRatingModal();
+        this.$bus.$emit('rated-items-updated');
       } catch (error) {
         console.error('Error saving rating and review:', error);
         alert('Hubo un error al guardar tu valoración y reseña. Por favor, inténtalo de nuevo.');

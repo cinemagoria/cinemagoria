@@ -47,7 +47,7 @@
               >
             </div>
             <div class="rated-item-info">
-              <h4 class="rated-item-title">{{ item.details.nameForDb }}</h4>
+              <h4 class="rated-item-title" @click="navigateToItem(item)" style="cursor:pointer;">{{ item.details.nameForDb }}</h4>
               <div class="rated-item-meta">
                 <span>{{ item.details.yearStartForDb }}</span>
                 <div class="rated-item-rating">
@@ -106,10 +106,10 @@
               v-model="userReview"
               :placeholder="selectedRating > 0 ? ratingDescriptions[selectedRating - 1] : 'Selecciona una valoración primero'"
               class="review-textarea"
-              maxlength="500"
+              maxlength="2000"
               :disabled="selectedRating === 0"
             ></textarea>
-            <div class="char-count">{{ userReview.length }}/500</div>
+            <div class="char-count">{{ userReview.length }}/2000</div>
           </div>
           
           <div class="rating-modal-buttons">
@@ -431,6 +431,14 @@ export default {
         console.error('Error removing rating:', error);
         alert('Hubo un error al eliminar tu valoración. Por favor intenta de nuevo.');
       }
+    },
+
+    navigateToItem(item) {
+      if (!item?.details) return;
+      const { typeForDb, idForDb } = item.details;
+      if (!typeForDb || !idForDb) return;
+      this.close();
+      this.$router.push(`/${typeForDb}/${idForDb}`);
     }
   }
 };

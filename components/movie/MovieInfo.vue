@@ -425,6 +425,11 @@ export default {
 
   mounted() {
     this.checkImageLoaded();
+    this.$bus.$on('rated-items-updated', this.fetchReviews);
+  },
+
+  beforeDestroy() {
+    this.$bus.$off('rated-items-updated', this.fetchReviews);
   },
 
   methods: {
@@ -639,7 +644,10 @@ export default {
         const ecReviews = ecResult.status === 'fulfilled' ? ecResult.value : [];
         const userRatingData = userReviewResult.status === 'fulfilled' ? userReviewResult.value : null;
 
-        let allReviews = [...tmdbReviews, ...traktReviews, ...ecReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        // EC reviews first, then others sorted by date
+        const otherReviews = [...tmdbReviews, ...traktReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        const ecSorted = [...ecReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        let allReviews = [...ecSorted, ...otherReviews];
         
         if (userRatingData && userRatingData.review) {
             const userReview = {
@@ -651,7 +659,8 @@ export default {
                 showFullContent: true,
                 url: null
             };
-            allReviews = allReviews.filter(r => r.source !== 'EnterCinema' || r.authorName !== userRatingData.displayName);
+            // Remove any existing user review to prevent duplication
+            allReviews = allReviews.filter(r => r.source !== 'User');
             allReviews.unshift(userReview);
         }
 
@@ -1079,7 +1088,7 @@ export default {
   height: 24px;
   display: block;
   border-radius: 4px;
-  margin-top: 3px;
+  margin-top: -4px;
   opacity: 0.9;
 }
 
