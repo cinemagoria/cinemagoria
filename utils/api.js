@@ -878,11 +878,12 @@ export async function getECReviews(itemType, itemId) {
         if (!data || !data.reviews || !data.reviews.length) return [];
         return data.reviews.map(r => ({
             authorName: r.displayName,
+            authorAlias: r.alias || null,
             authorRating: r.rating,
             content: r.review,
             createdAt: r.createdAt,
             source: 'EnterCinema',
-            url: null,
+            url: r.alias ? `/u/${r.alias}` : null,
             showFullContent: false
         }));
     } catch (e) {

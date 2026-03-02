@@ -134,7 +134,11 @@
               <li v-for="(review, index) in reviews" :key="index" :class="$style.reviewCard">
                   <div :class="$style.reviewHeader">
                     <div :class="$style.reviewAuthor">
-                      <strong>{{ review.authorName }}</strong>
+                      <component
+                        :is="review.source === 'EnterCinema' && review.url ? 'a' : 'strong'"
+                        :href="review.source === 'EnterCinema' && review.url ? review.url : undefined"
+                        :class="review.source === 'EnterCinema' ? $style.ecAuthorName : null"
+                      >{{ review.authorName }}</component>
                       <div v-if="review.authorRating" :class="$style.reviewRatingContainer">
                         <div :class="$style.stars">
                           <div :style="{ width: `${review.authorRating * 10}%` }" />
@@ -145,7 +149,7 @@
                     <div :class="$style.reviewMeta">
                        <span v-if="review.source === 'User'" :class="$style.userBadge">TÚ</span>
                        <img v-else-if="review.source === 'Trakt'" src="/logos/platforms/trakt-logo-small.svg" alt="Trakt" :class="$style.sourceLogo" />
-                       <span v-else-if="review.source === 'EnterCinema'" :class="$style.ecBadge">EC</span>
+                       <img v-else-if="review.source === 'EnterCinema'" src="/icons/icon-medium.png" alt="EnterCinema" :class="$style.ecIcon" />
                        <img v-else src="/logos/platforms/tmdb.svg" alt="TMDB" :class="$style.sourceLogoTMDB" />
                        <span :class="$style.reviewDate">{{ formatCreatedAt(review.createdAt) }}</span>
                     </div>
@@ -927,14 +931,26 @@ export default {
   letter-spacing: 1px;
 }
 
-.ecBadge {
-  color: #f5a623;
-  font-weight: bold;
-  font-size: 1.1rem;
-  border: 1px solid #f5a623;
-  padding: 2px 6px;
+.ecIcon {
+  width: 24px;
+  height: 24px;
+  display: block;
   border-radius: 4px;
-  letter-spacing: 1px;
+  margin-top: 3px;
+  opacity: 0.9;
+}
+
+.ecAuthorName {
+  font-size: 1.6rem;
+  color: #8BE9FD;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .sourceLogo {
