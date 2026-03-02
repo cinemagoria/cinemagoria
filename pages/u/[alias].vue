@@ -17,25 +17,37 @@ const listsPage = ref(1)
 const listsPerPage = 10
 const reviewsPerPage = 5
 
+const FOLLOWS_API = 'https://entercinema-follows-rust.vercel.app'
+const FAVORITES_API = 'https://entercinema-favorites.vercel.app/api'
+
+const { data: profile, pending, error, refresh: refreshProfile } = await useFetch(
+  `${FOLLOWS_API}/profile/${alias}`,
+  { server: true, query: { viewer_email: '' } }
+)
+
 onMounted(async () => {
   if (process.client) {
     viewerEmail.value = localStorage.getItem('email') || null
     viewerAlias.value = localStorage.getItem('alias') || null
+
+    if (viewerEmail.value) {
+      try {
+        const freshProfile = await $fetch(`${FOLLOWS_API}/profile/${alias}`, {
+          params: { viewer_email: viewerEmail.value }
+        })
+        if (freshProfile) {
+          profile.value = freshProfile
+        }
+      } catch {}
+    }
   }
 })
-
-const FOLLOWS_API = 'https://entercinema-follows-rust.vercel.app'
-const FAVORITES_API = 'https://entercinema-favorites.vercel.app/api'
-
-const { data: profile, pending, error } = await useFetch(
-  `${FOLLOWS_API}/profile/${alias}`,
-  { query: computed(() => ({ viewer_email: viewerEmail.value })) }
-)
 
 const isOwner = computed(() => !!viewerEmail.value && !!profile.value?.email && viewerEmail.value === profile.value.email)
 
 const isFollowing = ref(false)
 const followLoading = ref(false)
+const followError = ref(null)
 
 watch(() => profile.value?.is_following, (val) => {
   isFollowing.value = val ?? false
@@ -56,6 +68,7 @@ watch(() => profile.value?.avatar, (val) => {
 async function toggleFollow() {
   if (!viewerEmail.value || !profile.value?.email) return
   followLoading.value = true
+  followError.value = null
   try {
     if (isFollowing.value) {
       await unfollowUser(viewerEmail.value, profile.value.email)
@@ -67,6 +80,9 @@ async function toggleFollow() {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new Event('following-updated'))
     }
+  } catch (e) {
+    console.error('[toggleFollow] error:', e)
+    followError.value = e?.message || 'Error'
   } finally {
     followLoading.value = false
   }
