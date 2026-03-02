@@ -650,6 +650,7 @@ export default {
         let allReviews = [...ecSorted, ...otherReviews];
         
         if (userRatingData && userRatingData.review) {
+            const userAlias = import.meta.client ? localStorage.getItem('alias') : null;
             const userReview = {
                 authorName: 'Tu Reseña',
                 authorRating: userRatingData.score,
@@ -659,8 +660,11 @@ export default {
                 showFullContent: true,
                 url: null
             };
-            // Remove any existing user review to prevent duplication
-            allReviews = allReviews.filter(r => r.source !== 'User');
+            allReviews = allReviews.filter(r => {
+                if (r.source === 'User') return false;
+                if (r.source === 'EnterCinema' && userAlias && r.authorAlias === userAlias) return false;
+                return true;
+            });
             allReviews.unshift(userReview);
         }
 

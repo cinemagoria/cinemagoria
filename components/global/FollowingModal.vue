@@ -418,7 +418,9 @@ export default {
     show() {
       this.isVisible = true;
       this.userSubTab = 'following';
+      this.followersLoaded = false;
       this.fetchData();
+      this.fetchFollowers();
     },
 
     close() {

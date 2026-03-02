@@ -68,33 +68,25 @@ watch(() => profile.value?.avatar, (val) => {
 }, { immediate: true })
 
 async function toggleFollow() {
-  console.log('[toggleFollow] called', { viewer: viewerEmail.value, target: profile.value?.email })
-  if (!viewerEmail.value) {
-    console.warn('[toggleFollow] aborted: no viewerEmail')
-    return
-  }
-  if (!profile.value?.email) {
-    console.warn('[toggleFollow] aborted: no profile.email', profile.value)
-    return
-  }
+  if (!viewerEmail.value || !profile.value?.email) return
   followLoading.value = true
   followError.value = null
   try {
     if (isFollowing.value) {
-      const res = await unfollowUser(viewerEmail.value, profile.value.email)
-      console.log('[toggleFollow] unfollow response:', res)
+      await unfollowUser(viewerEmail.value, profile.value.email)
       isFollowing.value = false
+      if (profile.value.followers_count > 0) profile.value.followers_count--
     } else {
-      const res = await followUser(viewerEmail.value, profile.value.email)
-      console.log('[toggleFollow] follow response:', res)
+      await followUser(viewerEmail.value, profile.value.email)
       isFollowing.value = true
+      profile.value.followers_count++
     }
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new Event('following-updated'))
     }
   } catch (e) {
     console.error('[toggleFollow] ERROR:', e)
-    followError.value = e?.data?.error || e?.message || JSON.stringify(e) || 'Error desconocido'
+    followError.value = e?.data?.error || e?.message || 'Error'
   } finally {
     followLoading.value = false
   }
