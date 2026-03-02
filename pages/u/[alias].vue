@@ -38,7 +38,9 @@ onMounted(async () => {
         if (freshProfile) {
           profile.value = freshProfile
         }
-      } catch {}
+      } catch (e) {
+        console.error('[onMounted] freshProfile fetch failed:', e)
+      }
     }
   }
 })
@@ -66,23 +68,33 @@ watch(() => profile.value?.avatar, (val) => {
 }, { immediate: true })
 
 async function toggleFollow() {
-  if (!viewerEmail.value || !profile.value?.email) return
+  console.log('[toggleFollow] called', { viewer: viewerEmail.value, target: profile.value?.email })
+  if (!viewerEmail.value) {
+    console.warn('[toggleFollow] aborted: no viewerEmail')
+    return
+  }
+  if (!profile.value?.email) {
+    console.warn('[toggleFollow] aborted: no profile.email', profile.value)
+    return
+  }
   followLoading.value = true
   followError.value = null
   try {
     if (isFollowing.value) {
-      await unfollowUser(viewerEmail.value, profile.value.email)
+      const res = await unfollowUser(viewerEmail.value, profile.value.email)
+      console.log('[toggleFollow] unfollow response:', res)
       isFollowing.value = false
     } else {
-      await followUser(viewerEmail.value, profile.value.email)
+      const res = await followUser(viewerEmail.value, profile.value.email)
+      console.log('[toggleFollow] follow response:', res)
       isFollowing.value = true
     }
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new Event('following-updated'))
     }
   } catch (e) {
-    console.error('[toggleFollow] error:', e)
-    followError.value = e?.message || 'Error'
+    console.error('[toggleFollow] ERROR:', e)
+    followError.value = e?.data?.error || e?.message || JSON.stringify(e) || 'Error desconocido'
   } finally {
     followLoading.value = false
   }
@@ -276,6 +288,7 @@ useSeoMeta({
           >
             {{ followLoading ? '...' : isFollowing ? 'Siguiendo' : 'Seguir' }}
           </button>
+          <span v-if="followError" style="color: #ff6b6b; font-size: 0.8rem; margin-top: 4px;">{{ followError }}</span>
         </div>
       </div>
 
