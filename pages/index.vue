@@ -1,6 +1,5 @@
 <template>
   <main class="main">
-    <UserNav @show-rated-modal="showRatedItems" />
 
     <Hero
       v-if="featured && featured.length"
@@ -44,7 +43,6 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
-import UserNav from '@/components/global/UserNav';
 import { getTrending, getMovie, getTvShow, getListItem, translateText } from '~/utils/api';
 import Hero from '~/components/Hero';
 import ListingsCarousel from '~/components/ListingCarousel';
@@ -59,11 +57,6 @@ const userEmail = ref('');
 const hasAccessToken = ref(false);
 const isLoggedIn = ref(false);
 const userName = ref('');
-const ratedItemsModalVisible = ref(false);
-
-const showRatedItems = () => {
-  ratedItemsModalVisible.value = true;
-};
 
 const { data: pageData, error: pageError } = await useAsyncData('homepage', async () => {
   try {

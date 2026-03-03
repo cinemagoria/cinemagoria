@@ -24,6 +24,7 @@
 
         <div v-if="activeTab === 'login'" class="form-container">
           <p class="modal-description">Inicia sesión para acceder a más funcionalidades</p>
+          <p class="modal-subtitle">No se requiere tarjeta de crédito ni débito. Acceso totalmente gratuito.</p>
           
           <form @submit.prevent="handleLogin">
             <GoogleLogin 
@@ -78,6 +79,7 @@
 
         <div v-if="activeTab === 'register'" class="form-container">
           <p class="modal-description">Cree una cuenta para acceder a mas funcionalidades</p>
+          <p class="modal-subtitle">No se requiere tarjeta de crédito ni débito. Acceso totalmente gratuito.</p>
           
           <form @submit.prevent="handleRegister">
             <GoogleLogin 
@@ -236,6 +238,12 @@ export default {
   mounted() {
     if (typeof window !== 'undefined') {
       window.addEventListener('open-auth-modal', this.handleOpenEvent);
+      
+      // Check for persistent instruction (e.g., from middleware redirection)
+      if (sessionStorage.getItem('open_auth_modal') === 'true') {
+        this.open();
+        sessionStorage.removeItem('open_auth_modal');
+      }
     }
   },
   beforeDestroy() {
@@ -459,7 +467,16 @@ export default {
   text-align: center;
   color: #a8d8e4;
   font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.modal-subtitle {
+  text-align: center;
+  color: #7FDBF1;
+  font-size: 12px;
   margin-bottom: 20px;
+  opacity: 0.9;
+  font-weight: 500;
 }
 
 .tabs {
