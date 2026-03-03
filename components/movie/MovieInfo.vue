@@ -214,6 +214,7 @@
 <script>
 import { apiImgUrl, getMovieProviders, getMovieReviews, getTraktReviews, getECReviews, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating } from '~/utils/api'; 
 import { getReleaseStatusContext } from '~/utils/helpers';
+import DOMPurify from 'dompurify';
 import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants'; 
 import { name, directors } from '~/mixins/Details';
 import Filters from '~/mixins/Filters';
@@ -570,10 +571,10 @@ export default {
     formatContent(content, index, showFullContent) {
       if (!content) return '';
       content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/_([^_]+)_/g, (match, p1) => p1.toUpperCase());
-      if (showFullContent) return content; 
+      if (showFullContent) return import.meta.client ? DOMPurify.sanitize(content) : content;
       const words = content.split(' ');
       if (words.length > 200) content = words.slice(0, 200).join(' ');
-      return content;
+      return import.meta.client ? DOMPurify.sanitize(content) : content;
     },
     formatCreatedAt(createdAt) {
       if (!createdAt) return '';

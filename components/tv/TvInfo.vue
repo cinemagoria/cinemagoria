@@ -221,6 +221,7 @@
 
 <script>
 import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTraktReviews, getECReviews, getTvShowRecommended, getPerson, getIMDbRatingFromDB, enrichTVShowWithIMDbRating } from '~/utils/api'; 
+import DOMPurify from 'dompurify';
 import { name, creators } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
 import WatchOn from '~/components/WatchOn';
@@ -275,7 +276,7 @@ export default {
   computed: {
     reviewCount() { return this.reviews.length; },
     isLoggedIn() {
-      if (process.client) {
+      if (import.meta.client) {
          return localStorage.getItem('access_token') !== null;
       }
       return false;
@@ -555,10 +556,10 @@ export default {
     formatContent(content, index, showFullContent) {
       if (!content) return '';
       content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/_([^_]+)_/g, (match, p1) => p1.toUpperCase());
-      if (showFullContent) return content;
+      if (showFullContent) return import.meta.client ? DOMPurify.sanitize(content) : content;
       const words = content.split(' ');
       if (words.length > 200) content = words.slice(0, 200).join(' ');
-      return content;
+      return import.meta.client ? DOMPurify.sanitize(content) : content;
     },
     formatCreatedAt(createdAt) {
       if (!createdAt) return '';
