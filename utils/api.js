@@ -771,6 +771,25 @@ export function getTraktReviews(id, type) {
     });
 };
 
+export async function getECReviews(itemType, itemId) {
+    try {
+        const data = await $fetch(`https://entercinema-favorites.vercel.app/api/ec-reviews/${itemType}/${itemId}`);
+        if (!data || !data.reviews || !data.reviews.length) return [];
+        return data.reviews.map(r => ({
+            authorName: r.displayName,
+            authorAlias: r.alias || null,
+            authorRating: r.rating,
+            content: r.review,
+            createdAt: r.createdAt,
+            source: 'EnterCinema',
+            url: r.alias ? `/u/${r.alias}` : null,
+            showFullContent: false
+        }));
+    } catch (e) {
+        return [];
+    }
+}
+
 export function getTvShowRecommended(id, page = 1) {
     return new Promise((resolve, reject) => {
         axios.get(`${apiUrl}/tv/${id}/recommendations`, {
@@ -1547,4 +1566,69 @@ export async function searchNews(query, page = 1) {
         console.error("Error searching news:", error);
         return { results: [] };
     }
+}
+
+export async function followUser(followerEmail, followedEmail) {
+    return $fetch(`${FOLLOWS_API_URL}/user-follows/add`, {
+        method: 'POST',
+        body: { follower_email: followerEmail, followed_email: followedEmail }
+    });
+}
+
+export async function unfollowUser(followerEmail, followedEmail) {
+    return $fetch(`${FOLLOWS_API_URL}/user-follows/remove`, {
+        method: 'DELETE',
+        body: { follower_email: followerEmail, followed_email: followedEmail }
+    });
+}
+
+export async function getUserFollowing(userEmail) {
+    try {
+        const r = await $fetch(`${FOLLOWS_API_URL}/user-follows/list`, { params: { user_email: userEmail } });
+        return r.following ?? [];
+    } catch { return []; }
+}
+
+export async function getUserFollowers(userEmail) {
+    try {
+        const r = await $fetch(`${FOLLOWS_API_URL}/user-follows/followers`, { params: { user_email: userEmail } });
+        return r.followers ?? [];
+    } catch { return []; }
+}
+
+export async function searchUsers(query, limit = 10) {
+    try {
+        const r = await $fetch(`${FOLLOWS_API_URL}/user-search`, { params: { q: query, limit } });
+        return r.users ?? [];
+    } catch { return []; }
+}
+
+export async function getPublicProfile(alias, viewerEmail = null) {
+    try {
+        const params = viewerEmail ? { viewer_email: viewerEmail } : {};
+        return await $fetch(`${FOLLOWS_API_URL}/profile/${alias}`, { params });
+    } catch { return null; }
+}
+
+export async function setUserAlias(userEmail, alias, bio = null) {
+    return $fetch(`${FOLLOWS_API_URL}/alias`, {
+        method: 'POST',
+        body: { user_email: userEmail, alias, bio }
+    });
+}
+
+export async function updateUserPrivacy(userEmail, settings) {
+    return $fetch(`${FOLLOWS_API_URL}/privacy`, {
+        method: 'POST',
+        body: { user_email: userEmail, ...settings }
+    });
+}
+
+export async function getActivityFeed(userEmail, page = 1) {
+    try {
+        const r = await $fetch(`${FOLLOWS_API_URL}/activity/feed`, {
+            params: { user_email: userEmail, page, per_page: 20 }
+        });
+        return r;
+    } catch { return { items: [], page: 1 }; }
 }

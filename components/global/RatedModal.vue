@@ -32,7 +32,7 @@
         </div>
         
         <div v-else-if="filteredRatedItems && filteredRatedItems.length > 0" class="rated-items-list">
-          <div v-for="(item, index) in filteredRatedItems" :key="index" class="rated-item">
+        <div v-for="(item, index) in filteredRatedItems" :key="index" class="rated-item">
             <div class="rated-item-image-container">
               <div v-if="isImageLoading(item)" class="card-loader">
                 <Loader :size="30" />
@@ -47,7 +47,7 @@
               >
             </div>
             <div class="rated-item-info">
-              <h4 class="rated-item-title">{{ item.details.nameForDb }}</h4>
+              <h4 class="rated-item-title" @click="navigateToItem(item)">{{ item.details.nameForDb }}</h4>
               <div class="rated-item-meta">
                 <span>{{ item.details.yearStartForDb }}</span>
                 <div class="rated-item-rating">
@@ -108,10 +108,10 @@
               v-model="userReview"
               :placeholder="selectedRating > 0 ? ratingDescriptions[selectedRating - 1] : 'Select a rating first'"
               class="review-textarea"
-              maxlength="500"
+              maxlength="2000"
               :disabled="selectedRating === 0"
             ></textarea>
-            <div class="char-count">{{ userReview.length }}/500</div>
+            <div class="char-count">{{ userReview.length }}/2000</div>
           </div>
           
           <div class="rating-modal-buttons">
@@ -433,6 +433,14 @@ export default {
         console.error('Error removing rating:', error);
         alert('There was an error removing your rating. Please try again.');
       }
+    },
+
+    navigateToItem(item) {
+      if (!item?.details) return;
+      const { typeForDb, idForDb } = item.details;
+      if (!typeForDb || !idForDb) return;
+      this.close();
+      this.$router.push(`/${typeForDb}/${idForDb}`);
     }
   }
 };
@@ -636,6 +644,7 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: pointer;
 }
 
 .rated-item-meta {

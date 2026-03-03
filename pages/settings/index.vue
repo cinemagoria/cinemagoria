@@ -86,6 +86,83 @@
             </div>
           </div>
 
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <h3>Public Profile</h3>
+              <p>Set your alias, bio and privacy preferences.</p>
+            </div>
+            <div class="settings-card-body">
+              <div class="field-row">
+                <label>Alias</label>
+                <div class="input-with-prefix">
+                  <span class="prefix">@</span>
+                  <input
+                    v-model="alias"
+                    type="text"
+                    placeholder="yourname"
+                    maxlength="30"
+                    class="settings-input"
+                  />
+                </div>
+                <p v-if="aliasError" class="field-error">{{ aliasError }}</p>
+                <p v-if="aliasSuccess" class="field-success">{{ aliasSuccess }}</p>
+              </div>
+              <div class="field-row">
+                <label>Bio</label>
+                <textarea
+                  v-model="bio"
+                  placeholder="A short bio about yourself…"
+                  maxlength="160"
+                  rows="3"
+                  class="settings-input"
+                />
+              </div>
+              <div class="settings-divider"></div>
+              <div class="toggle-row">
+                <div>
+                  <span class="toggle-label">Show my reviews publicly</span>
+                  <span class="toggle-desc">Others can see your rated reviews on your profile.</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" v-model="privacyReviews" @change="savePrivacy" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div>
+                  <span class="toggle-label">Show my lists publicly</span>
+                  <span class="toggle-desc">Others can see your public lists on your profile.</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" v-model="privacyLists" @change="savePrivacy" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div>
+                  <span class="toggle-label">Show follower/following count publicly</span>
+                  <span class="toggle-desc">Others can see your follower and following counts on your profile.</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" v-model="privacyFollowersCount" @change="savePrivacy" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <p v-if="privacySaved" class="field-success" style="margin-top:0.5rem;">Privacy settings saved.</p>
+              <div class="profile-actions-row">
+                <button @click="saveProfile" :disabled="savingProfile" class="action-button secondary">
+                  <svg v-if="!savingProfile" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="spinner-icon" style="animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                  {{ savingProfile ? 'Saving…' : 'Save Profile' }}
+                </button>
+                <NuxtLink v-if="alias" :to="`/u/${alias}`" class="view-profile-btn" target="_blank">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  View Profile
+                </NuxtLink>
+              </div>
+            </div>
+          </div>
+
           <div class="actions-container">
             <div class="danger-zone">
               <div class="danger-header">
@@ -133,27 +210,21 @@
       <div class="delete-modal">
         <div class="modal-header">
           <h3>Delete Account</h3>
-          <button class="close-btn" @click="closeDeleteModal" type="button">×</button>
+          <button class="close-btn" @click="closeDeleteModal" :disabled="deleteLoading" type="button">×</button>
         </div>
-        
         <div class="delete-modal-content">
           <div class="exclamation-svg">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" x2="12" y1="8" y2="12"/>
-              <line x1="12" x2="12.01" y1="16" y2="16"/>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
           </div>
-          <p class="delete-message">CONFIRM PERMANENT DELETION OF YOUR ACCOUNT?</p>
-          <p class="delete-warning">By confirming, your account will initiate the deletion process. Please be aware that closing the account associated with <strong>{{ userEmail }}</strong> is irreversible.</p>
-          <p class="delete-info">You will have a 72-hour window to reverse this action by reaching out to <strong>hello@entercinema.com</strong>. If no reactivation request is made within this timeframe, your account will be permanently deleted.</p>
-          
+          <p class="delete-message">This action is irreversible.</p>
+          <p class="delete-warning">Your account and all associated data will be permanently deleted.</p>
+          <p v-if="deleteError" class="field-error" style="margin-bottom:1rem;">{{ deleteError }}</p>
           <div class="delete-actions">
-            <button @click="closeDeleteModal" class="cancel-btn" type="button">
+            <button @click="closeDeleteModal" class="cancel-btn" :disabled="deleteLoading" type="button">
               <span class="label-button-modal">Cancel</span>
             </button>
-            <button @click="confirmDelete" class="confirm-delete-btn" type="button">
-              <span class="label-button-modal">Confirm</span>
+            <button @click="confirmDelete" class="confirm-delete-btn" :disabled="deleteLoading" type="button">
+              <span class="label-button-modal">{{ deleteLoading ? 'Deleting…' : 'Delete' }}</span>
             </button>
           </div>
         </div>
@@ -164,26 +235,8 @@
 
 <script>
 
-
-async function getUserAvatar(userEmail) {
-  try {
-    const supabase = useSupabaseClient();
-    const { data, error } = await supabase
-      .from('user_data')
-      .select('avatar')
-      .eq('email', userEmail);
-      
-    if (error) {
-      throw new Error('Error fetching user avatar:', error.message);
-    }
-
-    const userAvatar = data[0]?.avatar || '/avatars/avatar-ss0.png';
-    return userAvatar;
-  } catch (error) {
-    console.error('Error fetching user avatar:', error);
-    return '/avatars/avatar-ss0.png';
-  }
-}
+const FOLLOWS_API = 'https://entercinema-follows-rust.vercel.app';
+const DRF_API = 'https://entercinema-drf.vercel.app';
 
 export default {
   head () {
@@ -202,7 +255,18 @@ export default {
       isModalOpen: false,
       userAvatar: '/avatars/avatar-ss0.png',
       isDeleteModalOpen: false,
+      deleteLoading: false,
+      deleteError: '',
       userEmail: '',
+      alias: '',
+      bio: '',
+      aliasError: '',
+      aliasSuccess: '',
+      savingProfile: false,
+      privacyReviews: true,
+      privacyLists: true,
+      privacyFollowersCount: true,
+      privacySaved: false,
       avatars: [
         '/avatars/avatar-ss0.png',
         '/avatars/avatar-ss1.png',
@@ -236,9 +300,7 @@ export default {
       ]
     }
   },
-  setup() {
-    return { supabase: useSupabaseClient() }
-  },
+
   computed: {
     firstName() {
       return this.userData ? this.userData.first_name : '';
@@ -251,6 +313,20 @@ export default {
     },
     lastLoginDate() {
       return this.userData ? this.formatDate(this.userData.last_login) : '';
+    }
+  },
+  mounted() {
+    if (process.client) {
+      if (localStorage.getItem('access_token')) {
+        this.userEmail = localStorage.getItem('email');
+        if (this.userEmail) {
+          this.fetchUserDb();
+          this.fetchSocialProfile();
+        }
+      } else {
+        const locOrigin = window.location.origin;
+        window.location.href = `${locOrigin}/login`;
+      }
     }
   },
   methods: {
@@ -281,40 +357,26 @@ export default {
     },
 
     async confirmDelete() {
+      this.deleteLoading = true;
+      this.deleteError = '';
       try {
-        const { data: existingRequests, error: requestError } = await this.supabase
-          .from('requests')
-          .select('*')
-          .eq('email', this.userEmail)
-          .eq('is_executed', 'false');
-
-        if (requestError) {
-          throw new Error('Error fetching existing requests:', requestError.message);
+        const resp = await fetch(`${DRF_API}/auth/delete-account/`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: this.userEmail, token_email: this.userEmail })
+        });
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          this.deleteError = err.error || 'Could not delete account.';
+          return;
         }
-
-        const { data, error } = await this.supabase
-          .from('requests')
-          .insert([
-            { email: this.userEmail, action: 'delete account', is_executed: 'false' }
-          ]);
-
-        if (error) {
-          throw new Error('Error creating account deletion request:', error.message);
-        }
-
-        this.isDeleteModalOpen = false;
-        this.showConfirmationMessage();
+        ['access_token','email','alias','user_avatar'].forEach(k => localStorage.removeItem(k));
+        window.location.href = `${window.location.origin}/login`;
       } catch (error) {
         console.error('Error confirming account deletion:', error);
-      }
-    },
-
-    showConfirmationMessage() {
-      if (process.client) {
-        const locOrigin = window.location.origin;
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('email');
-        window.location.href = `${locOrigin}/login`; 
+        this.deleteError = 'Network error. Please try again.';
+      } finally {
+        this.deleteLoading = false;
       }
     },
 
@@ -330,15 +392,15 @@ export default {
 
     async updateUserAvatar(avatar) {
       try {
-        if (!this.userEmail) {
-          throw new Error('User email is not defined.');
-        }
-        const { error } = await this.supabase
-          .from('user_data')
-          .update({ avatar })
-          .eq('email', this.userEmail);
-        if (error) {
-          throw new Error('Error updating user avatar:', error.message);
+        if (!this.userEmail) return;
+        await fetch(`${FOLLOWS_API}/avatar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_email: this.userEmail, avatar_url: avatar })
+        });
+        localStorage.setItem('user_avatar', avatar);
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('avatar-updated', { detail: avatar }));
         }
       } catch (error) {
         console.error('Error updating user avatar:', error);
@@ -347,57 +409,15 @@ export default {
 
     async fetchUserDb() {
       try {
-        const { data, error } = await this.supabase
-          .from('auth_user')
-          .select('*')
-          .eq('email', this.userEmail);
-        
-        if (error) {
-          throw new Error('Error connecting to the database: ' + error.message);
+        const resp = await fetch(`${DRF_API}/auth/profile-by-email/?email=${encodeURIComponent(this.userEmail)}`);
+        if (resp.ok) {
+          const data = await resp.json();
+          this.userData = data;
+          this.userAvatar = data.avatar_url || '/avatars/avatar-ss0.png';
+          this.lastActiveDate = this.formatDate(new Date().toISOString());
         }
-        
-        this.userData = data[0];
-        this.userAvatar = await getUserAvatar(this.userEmail);
-        this.createOrUpdateUserData();
       } catch (error) {
-        console.error('Error connecting to the database:', error);
-      }
-    },
-
-    async createOrUpdateUserData() {
-      try {
-        const currentDate = new Date().toISOString(); 
-        const formattedLastActive = this.formatDate(currentDate);
-        const userDataToUpdate = {
-          email: this.userEmail,
-          first_name: this.firstName,
-          date_joined: this.joinedDate,
-          last_login: this.lastLoginDate,
-          last_active: formattedLastActive
-        };
-
-        const { data: existingUserData, error } = await this.supabase
-          .from('user_data')
-          .select('*')
-          .eq('email', this.userEmail);
-
-        if (error) {
-          throw new Error('Error checking for existing user data:', error);
-        }
-
-        if (existingUserData && existingUserData.length > 0) {
-          await this.supabase
-            .from('user_data')
-            .update(userDataToUpdate)
-            .eq('email', this.userEmail);
-        } else {
-          await this.supabase
-            .from('user_data')
-            .insert([userDataToUpdate]); 
-        }
-        this.lastActiveDate = formattedLastActive;
-      } catch (error) {
-        console.error('Error creating or updating user data:', error);
+        console.error('Error fetching user data:', error);
       }
     },
 
@@ -410,19 +430,76 @@ export default {
         ('0' + date.getUTCMinutes()).slice(-2) + ':' +
         ('0' + date.getUTCSeconds()).slice(-2);
       return formattedDate + ' (UTC)';
-    }
-  },
-  mounted() {
-    try {
-      if (process.client) {
-        const email = localStorage.getItem('email');
-        const accessToken = localStorage.getItem('access_token');
-        this.userEmail = email || '';
-        this.isLoggedIn = accessToken !== null;
-        this.fetchUserDb();
+    },
+
+    async fetchSocialProfile() {
+      if (!this.userEmail) return;
+      const FOLLOWS_API = 'https://entercinema-follows-rust.vercel.app';
+      try {
+        const r = await fetch(`${FOLLOWS_API}/profile-by-email?user_email=${encodeURIComponent(this.userEmail)}`);
+        if (r.ok) {
+          const d = await r.json();
+          this.alias = d.alias || '';
+          this.bio = d.bio || '';
+          this.privacyReviews = d.privacy_reviews === 1 || d.privacy_reviews === true;
+          this.privacyLists = d.privacy_lists === 1 || d.privacy_lists === true;
+          this.privacyFollowersCount = d.privacy_followers_count === undefined ? true : (d.privacy_followers_count === 1 || d.privacy_followers_count === true);
+        }
+      } catch(e) { console.error('Error fetching social profile:', e); }
+    },
+
+    async saveProfile() {
+      this.aliasError = '';
+      this.aliasSuccess = '';
+      const aliasVal = (this.alias || '').trim();
+      if (aliasVal && !/^[a-zA-Z0-9_-]{2,30}$/.test(aliasVal)) {
+        this.aliasError = 'Alias must be 2-30 chars, letters/numbers/underscore/hyphen only.';
+        return;
       }
-    } catch (error) {
-      console.error('Error on mount:', error);
+      this.savingProfile = true;
+      const FOLLOWS_API = 'https://entercinema-follows-rust.vercel.app';
+      try {
+        const resp = await fetch(`${FOLLOWS_API}/alias`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_email: this.userEmail, alias: aliasVal || null, bio: this.bio || null })
+        });
+        if (resp.ok) {
+          this.aliasSuccess = 'Profile saved!';
+          localStorage.setItem('alias', aliasVal || '');
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('alias-updated', { detail: aliasVal || '' }));
+          }
+        } else {
+          const err = await resp.json().catch(() => ({}));
+          this.aliasError = err.error || 'Could not save alias. It may already be taken.';
+        }
+      } catch(e) {
+        this.aliasError = 'Network error.';
+      } finally {
+        this.savingProfile = false;
+      }
+    },
+
+    async savePrivacy() {
+      const FOLLOWS_API = 'https://entercinema-follows-rust.vercel.app';
+      this.privacySaved = false;
+      try {
+        const resp = await fetch(`${FOLLOWS_API}/privacy`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_email: this.userEmail,
+            privacy_reviews: this.privacyReviews ? 1 : 0,
+            privacy_lists: this.privacyLists ? 1 : 0,
+            privacy_followers_count: this.privacyFollowersCount ? 1 : 0
+          })
+        });
+        if (resp.ok) {
+          this.privacySaved = true;
+          setTimeout(() => { this.privacySaved = false; }, 2500);
+        }
+      } catch(e) { console.error('Error saving privacy settings:', e); }
     }
   }
 }
@@ -589,18 +666,27 @@ export default {
 }
 
 .action-button {
-  padding: 1rem 2rem;
+  padding: 0.7rem 1.8rem;
   border: none;
   border-radius: 8px;
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 1.3rem;
+  font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 0.8rem;
   transition: all 0.3s ease;
-  min-width: 150px;
+  min-width: 140px;
   justify-content: center;
+  box-sizing: border-box;
+  height: 42px;
+}
+
+@media (max-width: 600px) {
+  .action-button {
+    width: 100%;
+    min-width: unset;
+  }
 }
 
 .action-button.secondary {
@@ -900,6 +986,17 @@ export default {
   .action-button {
     width: 100%;
   }
+
+  .profile-actions-row {
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 2rem;
+  }
+
+  .view-profile-btn {
+    width: 100%;
+    min-width: unset;
+  }
 }
 
 @media (max-width: 576px) {
@@ -944,5 +1041,222 @@ export default {
 
 .label-button-modal {
   margin: 0 auto;
+}
+
+.settings-card {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
+  border: 1px solid rgba(139, 233, 253, 0.12);
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.settings-card-header {
+  padding: 1.5rem 2rem 1rem;
+  border-bottom: 1px solid rgba(139, 233, 253, 0.08);
+}
+
+.settings-card-header h3 {
+  color: #8BE9FD;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 0 0 0.4rem 0;
+}
+
+.settings-card-header p {
+  color: rgba(255,255,255,0.55);
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.settings-card-body {
+  padding: 1.5rem 2rem;
+}
+
+.field-row {
+  margin-bottom: 1.4rem;
+}
+
+.field-row label {
+  display: block;
+  font-size: 1.3rem;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 0.5rem;
+}
+
+.input-with-prefix {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(139, 233, 253, 0.2);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.prefix {
+  padding: 0.8rem 1rem;
+  color: #8BE9FD;
+  font-size: 1.4rem;
+  background: rgba(139, 233, 253, 0.07);
+  border-right: 1px solid rgba(139, 233, 253, 0.15);
+}
+
+.settings-input {
+  flex: 1;
+  background: transparent;
+  border: 1px solid rgba(139, 233, 253, 0.2);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 1.35rem;
+  padding: 0.8rem 1rem;
+  width: 100%;
+}
+
+.input-with-prefix .settings-input {
+  border: none;
+  border-radius: 0;
+}
+
+textarea.settings-input {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.field-error {
+  color: #FF6B6B;
+  font-size: 1.2rem;
+  margin: 0.4rem 0 0;
+}
+
+.field-success {
+  color: #8BE9FD;
+  font-size: 1.2rem;
+  margin: 0.4rem 0 0;
+}
+
+.settings-divider {
+  border: none;
+  border-top: 1px solid rgba(139, 233, 253, 0.1);
+  margin: 1.25rem 0;
+}
+
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  gap: 1.5rem;
+}
+
+.toggle-row:last-of-type {
+  border-bottom: none;
+}
+
+.toggle-label {
+  display: block;
+  font-size: 1.35rem;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 0.2rem;
+}
+
+.toggle-desc {
+  display: block;
+  font-size: 1.15rem;
+  color: rgba(255,255,255,0.45);
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255,255,255,0.15);
+  border-radius: 24px;
+  transition: background 0.2s;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background: #8BE9FD;
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+}
+
+.profile-actions-row {
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.view-profile-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  background: #8BE9FD;
+  border: 2px solid #8BE9FD;
+  color: #000;
+  padding: 0.7rem 1.8rem;
+  border-radius: 8px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+  text-decoration: none;
+  box-sizing: border-box;
+  height: 42px; /* Reduced height */
+}
+
+@media (max-width: 600px) {
+  .profile-actions-row {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .view-profile-btn {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+.view-profile-btn:hover {
+  background: #7DD4E8;
+  border-color: #7DD4E8;
+  color: #000;
+  transform: translateY(-2px);
+}
+@keyframes spin {
+  100% { transform: rotate(360deg); }
 }
 </style>

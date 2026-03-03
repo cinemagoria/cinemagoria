@@ -85,7 +85,10 @@ const loadMore = () => {
   loading.value = true;
 
   search(query.value, items.value.page + 1).then((response) => {
-    items.value.results = items.value.results.concat(response.results);
+    const existingIds = new Set(items.value.results.map(r => `${r.id}-${r.media_type}`));
+    const newResults = (response.results || []).filter(r => !existingIds.has(`${r.id}-${r.media_type}`));
+    
+    items.value.results = items.value.results.concat(newResults);
     items.value.page = response.page;
     loading.value = false;
   }).catch(() => {

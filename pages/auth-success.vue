@@ -45,7 +45,6 @@
 <script>
 import { syncUserToTurso } from '~/services/userSync';
 
-
 export default {
   data() {
     return {
@@ -56,9 +55,6 @@ export default {
       name: null,
       countdown: 3
     }
-  },
-  setup() {
-    return { supabase: useSupabaseClient() }
   },
   async mounted() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -81,6 +77,10 @@ export default {
       localStorage.setItem('email', this.email);
       localStorage.setItem('name', this.name);
       localStorage.setItem('auth_provider', urlParams.get('auth_provider') || 'native');
+
+      // Clear stale session cache so UserNav never inherits the previous user's data
+      localStorage.removeItem('user_avatar');
+      localStorage.removeItem('alias');
       
       syncUserToTurso({
           email: this.email,
@@ -91,15 +91,6 @@ export default {
       
       this.forceNavUpdate();
 
-      const { data, error } = await this.supabase
-        .from('user_data')
-        .select('*')
-        .eq('email', this.email);
-        
-      if (error) {
-        throw new Error('Error verifying user data');
-      }
-      
       this.loading = false;
       const countdownInterval = setInterval(() => {
         this.countdown--;

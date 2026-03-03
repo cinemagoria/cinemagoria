@@ -30,11 +30,10 @@ logs
 .tmp/
 credentials.json
 token.json
-
+entercinema-v2_*.sql
 directives/README.md
 execution/README.md
 .gitignore
-entercinema-v2.sql
 GEMINI.md
 AGENTS.md
 CLAUDE.md
