@@ -182,23 +182,21 @@
       <div class="delete-modal">
         <div class="modal-header">
           <h3>Eliminar Cuenta</h3>
-          <button class="close-btn" @click="closeDeleteModal" type="button">×</button>
+          <button class="close-btn" @click="closeDeleteModal" :disabled="deleteLoading" type="button">×</button>
         </div>
-        
         <div class="delete-modal-content">
           <div class="exclamation-svg">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" stroke="#ff6b6b" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="none" stroke="#ff6b6b" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
           </div>
-          <p class="delete-message">¿CONFIRMA LA ELIMINACIÓN PERMANENTE DE SU CUENTA?</p>
-          <p class="delete-warning">Su cuenta entrará en proceso de eliminación. Tenga en cuenta que el cierre de la cuenta asociada a <strong>{{ userEmail }}</strong> será irreversible.</p>
-          <p class="delete-info">Tiene 72 horas para revertir la acción comunicándose a <strong>hello@entercinema.com</strong>. Si no hay solicitud de restablecimiento en ese plazo, la cuenta se eliminará definitivamente.</p>
-          
+          <p class="delete-message">Esta acción es irreversible.</p>
+          <p class="delete-warning">Se eliminarán permanentemente tu cuenta y todos los datos asociados.</p>
+          <p v-if="deleteError" class="field-error" style="margin-bottom:1rem;">{{ deleteError }}</p>
           <div class="delete-actions">
-            <button @click="closeDeleteModal" class="cancel-btn" type="button">
+            <button @click="closeDeleteModal" class="cancel-btn" :disabled="deleteLoading" type="button">
               <span class="label-button-modal">Cancelar</span>
             </button>
-            <button @click="confirmDelete" class="confirm-delete-btn" type="button">
-              <span class="label-button-modal">Confirmar</span>
+            <button @click="confirmDelete" class="confirm-delete-btn" :disabled="deleteLoading" type="button">
+              <span class="label-button-modal">{{ deleteLoading ? 'Eliminando…' : 'Eliminar' }}</span>
             </button>
           </div>
         </div>
@@ -230,6 +228,8 @@ export default {
       isModalOpen: false,
       userAvatar: '/avatars/avatar-ss0.png',
       isDeleteModalOpen: false,
+      deleteLoading: false,
+      deleteError: '',
       userEmail: '',
       alias: '',
       bio: '',
@@ -329,20 +329,26 @@ export default {
     },
 
     async confirmDelete() {
+      this.deleteLoading = true;
+      this.deleteError = '';
       try {
-        this.isDeleteModalOpen = false;
-        this.showConfirmationMessage();
+        const resp = await fetch(`${DRF_API}/auth/delete-account/`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: this.userEmail, token_email: this.userEmail })
+        });
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          this.deleteError = err.error || 'No se pudo eliminar la cuenta.';
+          return;
+        }
+        ['access_token','email','alias','user_avatar'].forEach(k => localStorage.removeItem(k));
+        window.location.href = `${window.location.origin}/login`;
       } catch (error) {
         console.error('Error confirming account deletion:', error);
-      }
-    },
-
-    showConfirmationMessage() {
-      if (process.client) {
-        const locOrigin = window.location.origin;
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('email');
-        window.location.href = `${locOrigin}/login`; 
+        this.deleteError = 'Error de red. Intená de nuevo.';
+      } finally {
+        this.deleteLoading = false;
       }
     },
 
@@ -411,7 +417,7 @@ export default {
           this.privacyLists = d.privacy_lists === 1 || d.privacy_lists === true;
           this.privacyFollowersCount = d.privacy_followers_count === undefined ? true : (d.privacy_followers_count === 1 || d.privacy_followers_count === true);
         }
-      } catch(e) { /* no-op */ }
+      } catch(e) { console.error('Error fetching social profile:', e); }
     },
 
     async saveProfile() {
@@ -465,7 +471,7 @@ export default {
           this.privacySaved = true;
           setTimeout(() => { this.privacySaved = false; }, 2500);
         }
-      } catch(e) { /* non-fatal */ }
+      } catch(e) { console.error('Error saving privacy settings:', e); }
     }
   }
 }

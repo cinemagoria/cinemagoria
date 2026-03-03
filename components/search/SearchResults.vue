@@ -414,7 +414,7 @@ export default {
           const data = await resp.json();
           this.userResults = data.users || [];
         }
-      } catch(e) { /* non-fatal */ }
+      } catch(e) { console.error('Error fetching user search results:', e); }
     }
   },
 };

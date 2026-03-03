@@ -1852,7 +1852,7 @@ export async function followUser(followerEmail, followedEmail) {
 export async function unfollowUser(followerEmail, followedEmail) {
     return $fetch(`${FOLLOWS_API_URL}/user-follows/remove`, {
         method: 'DELETE',
-        params: { follower_email: followerEmail, followed_email: followedEmail }
+        body: { follower_email: followerEmail, followed_email: followedEmail }
     });
 }
 

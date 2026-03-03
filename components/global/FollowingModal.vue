@@ -467,7 +467,7 @@ export default {
             const d = await uResp.json();
             this.userFollows = d.following || [];
           }
-        } catch(e) { /* no-op */ }
+        } catch(e) { console.error('Error fetching user follows:', e); }
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {

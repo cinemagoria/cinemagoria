@@ -648,6 +648,7 @@ export default {
              this.reviews = [];
           }
         } catch (error) {
+          console.error('Error fetching reviews:', error);
           this.reviews = [];
         } finally {
           this.isTranslating = false;
