@@ -1,6 +1,5 @@
 <template>
   <main class="main">
-    <UserNav @show-rated-modal="showRatedItems" />
     
     <div class="header-container">
       <h1 class="title-primary" style="text-align: center; margin-bottom: 0.5rem;">Discover</h1>
@@ -71,7 +70,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import UserNav from '@/components/global/UserNav.vue';
 import { getMovies, getListItem, getFollowedProductionCompanies, getMoviesByCompanies, getFollowedStreamingPlatforms, getMoviesByProvider } from '~/utils/api';
 import ListingCarousel from '~/components/ListingCarousel.vue';
 import CustomListingCategoriesMovies from '~/components/CustomListingCategoriesMovies.vue';
@@ -90,7 +88,6 @@ useHead({
 
 const followedMovies = ref(null);
 const followedStreaming = ref(null);
-const ratedItemsModalVisible = ref(false);
 const filtersOpen = ref(false);
 
 const { data: moviesData } = await useAsyncData('movies-home', async () => {
@@ -129,9 +126,6 @@ const navigateToTvShows = () => {
   router.push({ name: 'tv' });
 };
 
-const showRatedItems = () => {
-  ratedItemsModalVisible.value = true;
-};
 
 const fetchFollowedContent = async () => {
   if (typeof window === 'undefined') return;

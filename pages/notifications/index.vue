@@ -1,7 +1,6 @@
 <template>
   <main class="main">
     <section class="notifications-section">
-      <UserNav @show-rated-modal="showRatedItems" />
       <div v-if="isLoggedIn" class="notifications-container">
         <div class="notifications-header">
           <div class="header-top" style="display: flex; align-items: center;">
@@ -304,7 +303,6 @@
 </template>
 
 <script>
-import UserNav from '@/components/global/UserNav';
 
 import FollowingModal from '~/components/global/FollowingModal.vue';
 import HowItWorksModal from '~/components/HowItWorksModal.vue';
@@ -321,7 +319,6 @@ export default {
     };
   },
   components: {
-    UserNav,
     FollowingModal,
     HowItWorksModal,
     Loader: () => import('@/components/Loader')
@@ -376,15 +373,6 @@ export default {
       await this.fetchTvFollowsForCache();
     } else {
       this.loading = false;
-      const hasAttemptedLogin = sessionStorage.getItem('notifications_login_attempted');
-      
-      if (hasAttemptedLogin) {
-        sessionStorage.removeItem('notifications_login_attempted');
-        this.$router.push('/');
-      } else {
-        sessionStorage.setItem('notifications_login_attempted', 'true');
-        this.goToLogin();
-      }
     }
   },
 
@@ -497,9 +485,6 @@ export default {
       } catch (error) {
         console.error('Error fetching TV follows for cache:', error);
       }
-    },
-    showRatedItems() {
-      this.ratedItemsModalVisible = true;
     },
     async getUserAvatar() {
       try {
@@ -654,9 +639,7 @@ export default {
       return null;
     },
 
-    goToLogin() {
-        this.$router.push('/login');
-    },
+
 
 
     async fetchFollowingCount() {
