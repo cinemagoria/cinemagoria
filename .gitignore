@@ -32,7 +32,7 @@ token.json
 directives/README.md
 execution/README.md
 .gitignore
-entercinema-v2.sql
+entercinema-v2_*.sql
 GEMINI.md
 AGENTS.md
 CLAUDE.md
