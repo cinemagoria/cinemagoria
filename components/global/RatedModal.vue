@@ -47,7 +47,7 @@
               >
             </div>
             <div class="rated-item-info">
-              <h4 class="rated-item-title" @click="navigateToItem(item)" style="cursor:pointer;">{{ item.details.nameForDb }}</h4>
+              <h4 class="rated-item-title" @click="navigateToItem(item)">{{ item.details.nameForDb }}</h4>
               <div class="rated-item-meta">
                 <span>{{ item.details.yearStartForDb }}</span>
                 <div class="rated-item-rating">
@@ -644,6 +644,7 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: pointer;
 }
 
 .rated-item-meta {

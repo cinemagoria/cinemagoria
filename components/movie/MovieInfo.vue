@@ -637,6 +637,7 @@ export default {
 
         this.reviews = allReviews;
       } catch (error) {
+        console.error('Error fetching reviews:', error);
         this.reviews = [];
       }
     },
