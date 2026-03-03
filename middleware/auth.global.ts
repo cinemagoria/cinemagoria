@@ -16,7 +16,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
     if (isProtected && !accessToken) {
         sessionStorage.setItem('open_auth_modal', 'true')
-        window.dispatchEvent(new CustomEvent('open-auth-modal'))
 
         if (to.path !== '/') {
             return navigateTo('/')

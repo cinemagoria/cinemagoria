@@ -54,7 +54,6 @@ export default {
   data() {
     return {
       authToken: null,
-      authInterval: null,
     };
   },
 
@@ -71,12 +70,14 @@ export default {
 
   mounted() {
     this.checkAuthStatus();
-    this.authInterval = setInterval(this.checkAuthStatus, 1000);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('auth-changed', this.checkAuthStatus);
+    }
   },
 
   beforeUnmount() {
-    if (this.authInterval) {
-      clearInterval(this.authInterval);
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('auth-changed', this.checkAuthStatus);
     }
   },
 
@@ -91,23 +92,20 @@ export default {
     },
     getEnglishLink() {
       if (typeof window === 'undefined') return 'https://entercinema.com';
-      let host = window.location.host;
-      if (host.includes('es.')) {
-        host = host.replace('es.', '');
-      } else if (host.includes(':3001')) {
-        host = host.replace(':3001', ':3000');
-      }
-      return `${window.location.protocol}//${host}`;
+      const { protocol, host } = window.location;
+      const newHost = host.replace('es.', '').replace(':3001', ':3000');
+      return `${protocol}//${newHost}`;
     },
     getSpanishLink() {
       if (typeof window === 'undefined') return 'https://es.entercinema.com';
-      let host = window.location.host;
+      const { protocol, host } = window.location;
+      let newHostStyle = host;
       if (host.includes(':3000')) {
-        host = host.replace(':3000', ':3001');
+        newHostStyle = host.replace(':3000', ':3001');
       } else if (!host.includes('es.') && !host.includes('localhost')) {
-        host = 'es.' + host;
+        newHostStyle = 'es.' + host;
       }
-      return `${window.location.protocol}//${host}`;
+      return `${protocol}//${newHostStyle}`;
     }
   }
 };
@@ -299,10 +297,14 @@ export default {
   &:hover {
     color: #fff;
   }
-}
 
-.activeLang {
-  color: #8BE9FD !important;
+  &.activeLang {
+    color: #8BE9FD;
+    
+    &:hover {
+      color: #8BE9FD;
+    }
+  }
 }
 
 .langSeparator {
