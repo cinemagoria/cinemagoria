@@ -34,6 +34,13 @@
             and 
             <a target="_blank" href="https://www.justwatch.com/" rel="noopener" style="margin: 0 4px; font-size: 11px;">JustWatch.</a>
          </div>
+
+         <div v-if="!isLoggedIn" :class="$style.languageSwitcher">
+            <a :href="getEnglishLink()" :class="[$style.langLink, { [$style.activeLang]: !isSpanish }]">ENGLISH</a>
+            <span :class="$style.langSeparator">|</span>
+            <a :href="getSpanishLink()" :class="[$style.langLink, { [$style.activeLang]: isSpanish }]">SPANISH</a>
+         </div>
+
          <div :class="$style.copyright">
              &copy; {{ new Date().getFullYear() }} ENTERCINEMA.COM
          </div>
@@ -41,6 +48,68 @@
     </div>
   </footer>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      authToken: null,
+    };
+  },
+
+  computed: {
+    isLoggedIn() {
+      return this.authToken !== null;
+    },
+    isSpanish() {
+      if (typeof window === 'undefined') return false;
+      const host = window.location.host;
+      return host.includes('es.') || host.includes(':3001');
+    }
+  },
+
+  mounted() {
+    this.checkAuthStatus();
+    if (typeof window !== 'undefined') {
+      window.addEventListener('auth-changed', this.checkAuthStatus);
+    }
+  },
+
+  beforeUnmount() {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('auth-changed', this.checkAuthStatus);
+    }
+  },
+
+  methods: {
+    checkAuthStatus() {
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('access_token');
+        if (token !== this.authToken) {
+          this.authToken = token;
+        }
+      }
+    },
+    getEnglishLink() {
+      if (typeof window === 'undefined') return 'https://entercinema.com';
+      const { protocol, host } = window.location;
+      const newHost = host.replace('es.', '').replace(':3001', ':3000');
+      return `${protocol}//${newHost}`;
+    },
+    getSpanishLink() {
+      if (typeof window === 'undefined') return 'https://es.entercinema.com';
+      const { protocol, host } = window.location;
+      let newHostStyle = host;
+      if (host.includes(':3000')) {
+        newHostStyle = host.replace(':3000', ':3001');
+      } else if (!host.includes('es.') && !host.includes('localhost')) {
+        newHostStyle = 'es.' + host;
+      }
+      return `${protocol}//${newHostStyle}`;
+    }
+  }
+};
+</script>
 
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
@@ -208,5 +277,37 @@
   font-size: 1.2rem;
   color: #80868b;
   margin-top: 0.5rem;
+}
+
+.languageSwitcher {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.langLink {
+  color: #80868b;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #fff;
+  }
+
+  &.activeLang {
+    color: #8BE9FD;
+    
+    &:hover {
+      color: #8BE9FD;
+    }
+  }
+}
+
+.langSeparator {
+  color: rgba(255, 255, 255, 0.2);
 }
 </style>
