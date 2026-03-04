@@ -544,26 +544,6 @@
 import UserNav from '@/components/global/UserNav';
 
 
-async function getUserName(userEmail) {
-  try {
-    const supabase = useSupabaseClient();
-    const { data, error } = await supabase
-      .from('user_data')
-      .select('first_name')
-      .eq('email', userEmail);
-      
-    if (error) {
-      throw new Error('Error fetching user first name:', error.message);
-    }
-
-    const userName = data[0]?.first_name|| '';
-    return userName;
-    
-  } catch (error) {
-    console.error('Error fetching user first_name:', error);
-  }
-}
-
 export default {
   components: {
     UserNav,
@@ -665,9 +645,7 @@ export default {
       undoPayload: null
     };
   },
-  setup() {
-    return { supabase: useSupabaseClient() }
-  },
+
   async mounted() {
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');
@@ -763,22 +741,7 @@ export default {
 
     this.filteredSeriesDetails = filteredSeriesDetails;
     
-    try {
-      const { data, error } = await this.supabase
-        .from('notifications') 
-        .upsert([{
-          user_email: this.userEmail,
-          series_releases_details: this.filteredSeriesDetails, 
-        }], { 
-          onConflict: ['user_email'], 
-        });
 
-      if (error) {
-        throw new Error('Error al guardar en la base de datos: ' + error.message);
-      }
-    } catch (error) {
-      console.error('Error al guardar en la base de datos:', error.message);
-    }
     this.$bus.$on('rated-items-updated', this.checkData);
     this.$bus.$on('favorites-updated', this.checkData);
     this.$bus.$on('lists-updated', this.onListsUpdated);
@@ -1706,16 +1669,12 @@ export default {
     },
     async fetchUserFirstName() {
       try {
-        const { data, error } = await this.supabase
-          .from('auth_user')
-          .select('first_name')
-          .eq('email', this.userEmail);
-        
-        if (error) {
-          throw new Error('Error connecting to the database: ' + error.message);
+        const drfUrl = this.$config.public.drfBackendUrl;
+        const res = await fetch(`${drfUrl}/profile/?email=${encodeURIComponent(this.userEmail)}`);
+        if (res.ok) {
+          const data = await res.json();
+          this.userFirstName = data.first_name || null;
         }
-        
-        this.userFirstName = data.length > 0 ? data[0].first_name : null;
       } catch (error) {
         console.error('Error fetching user first name:', error);
       }

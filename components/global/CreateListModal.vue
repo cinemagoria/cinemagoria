@@ -100,31 +100,19 @@ export default {
       let ownerName = localStorage.getItem('name');
       
       if (!ownerName && userEmail) {
-          try {
-             const supabase = useSupabaseClient();
-             
-             const { data: authData } = await supabase
-               .from('auth_user')
-               .select('first_name')
-               .eq('email', userEmail)
-               .single();
-               
-             if (authData && authData.first_name) ownerName = authData.first_name;
-             else {
-                 const { data: userData } = await supabase
-                   .from('user_data')
-                   .select('first_name')
-                   .eq('email', userEmail)
-                   .single();
-                   
-                 if (userData && userData.first_name) ownerName = userData.first_name;
-             }
-             
-             if (ownerName) localStorage.setItem('name', ownerName);
-             else ownerName = userEmail.split('@')[0];
-          } catch (e) {
-              ownerName = userEmail.split('@')[0];
+        try {
+          const drfUrl = this.$config.public.drfBackendUrl;
+          const res = await fetch(`${drfUrl}/profile/?email=${encodeURIComponent(userEmail)}`);
+          if (res.ok) {
+            const data = await res.json();
+            ownerName = data.first_name || userEmail.split('@')[0];
+            localStorage.setItem('name', ownerName);
+          } else {
+            ownerName = userEmail.split('@')[0];
           }
+        } catch (e) {
+          ownerName = userEmail.split('@')[0];
+        }
       }
 
       try {

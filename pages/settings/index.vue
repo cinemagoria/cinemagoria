@@ -281,10 +281,10 @@ export default {
       return this.userData ? this.userData.email : '';
     },
     joinedDate() {
-      return this.userData ? this.formatDate(this.userData.date_joined) : '';
+      return this.userData ? this.formatDate(this.userData.created_at) : '';
     },
     lastLoginDate() {
-      return this.userData ? this.formatDate(this.userData.last_login) : '';
+      return this.userData && this.userData.last_login ? this.formatDate(this.userData.last_login) : 'Sin registro de acceso';
     }
   },
   mounted() {
