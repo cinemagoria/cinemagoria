@@ -88,7 +88,7 @@
                 <label>Bio</label>
                 <textarea
                   v-model="bio"
-                  placeholder="Una breve bio sobre vos…"
+                  placeholder="Una breve bio sobre usted…"
                   maxlength="160"
                   rows="3"
                   class="settings-input"
