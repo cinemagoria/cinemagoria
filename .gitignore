@@ -49,3 +49,4 @@ scripts/check-diffs.sh
 scripts/sync-repos.sh
 public/robots.txt
 scripts/main-snapshot.json
+SYNC.md
