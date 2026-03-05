@@ -48,3 +48,4 @@ public/sitemap.xml
 scripts/check-diffs.sh
 scripts/sync-repos.sh
 public/robots.txt
+scripts/main-snapshot.json
