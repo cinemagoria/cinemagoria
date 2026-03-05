@@ -1723,10 +1723,12 @@ export const SUPPORTED_FESTIVALS = [
     }
 ];
 
+
 export const MANUAL_FESTIVAL_BADGES = {
     1433583: ['berlinale'],
     1458099: ['berlinale'],
     1363387: ['berlinale'],
+    1422562: ['berlinale'],
 };
 
 
