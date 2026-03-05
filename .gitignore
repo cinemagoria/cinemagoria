@@ -43,3 +43,8 @@ scripts/sync-repos-es.js
 scripts/check-diffs-es.sh
 .gitignore
 scripts/build-translation-cache.js
+public/robots.txt
+public/sitemap.xml
+scripts/check-diffs.sh
+scripts/sync-repos.sh
+public/robots.txt
