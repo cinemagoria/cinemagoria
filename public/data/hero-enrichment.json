@@ -306,5 +306,12 @@
     "backdrop_path": "https://i.ytimg.com/vi/DxnQb95vx6Q/maxresdefault.jpg",
     "poster_path": "/o7MYJveV146pg2HQbQuv2LFK09y.jpg",
     "force_enrichment": true
+  },
+  {
+    "tmdb_id": 154385,
+    "trailer_key": "Kkblp-rebfY",
+    "backdrop_path": "https://cdn.theplaylist.net/wp-content/uploads/2026/01/21114838/Beef-2-first-look1.jpg",
+    "poster_path": "/4b4v7RnPhNyPEaVGFarEuo74r8W.jpg",
+    "force_enrichment": true
   }
 ]
