@@ -1722,10 +1722,14 @@ export const SUPPORTED_FESTIVALS = [
         logo_path: '/festivals/sxsw/sxsw_film_festival_2026_logo.png'
     }
 ];
+
+
 export const MANUAL_FESTIVAL_BADGES = {
     1433583: ['berlinale'],
     1458099: ['berlinale'],
     1363387: ['berlinale'],
     1422562: ['berlinale'],
+    1599249: ['rotterdam'],
 };
+
 
