@@ -210,20 +210,6 @@
     "force_enrichment": false
   },
   {
-    "tmdb_id": 1596278,
-    "trailer_key": null,
-    "backdrop_path": "/yPQA2LHKOzLb4e2iu5M0vj7F5H8.jpg",
-    "poster_path": "/yoVguTCYILbqoswLRIFnRyair7c.jpg",
-    "force_enrichment": false
-  },
-  {
-    "tmdb_id": 1318413,
-    "trailer_key": "zdM4tdLQBg0",
-    "backdrop_path": "/q7ZgPZIqSYm3UlrdCldkYzjGOCI.jpg",
-    "poster_path": "/hldYf1KAWZwkRw2UOCOwWUzBVtt.jpg",
-    "force_enrichment": false
-  },
-  {
     "tmdb_id": 1618199,
     "trailer_key": "T0MHDa2t_Qg",
     "backdrop_path": "https://3chismesy1cafe.com/wp-content/uploads/2026/01/Pelicula-.jpeg",
@@ -274,10 +260,10 @@
   },
   {
     "tmdb_id": 1240889,
-    "trailer_key": "o8Wi3ZwdODA",
+    "trailer_key": "NdrOjjByVMA",
     "backdrop_path": "/5dbLRlAeIh4U3hyj4i4S4shv9AW.jpg",
     "poster_path": "/AhEYtXa1csweudaRivYtg0bdBpu.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 254417,
@@ -298,6 +284,27 @@
     "trailer_key": "xkPbV3IRe4Y",
     "backdrop_path": "/lIvkPPTAHBpKhifdczZH0s8eozB.jpg",
     "poster_path": "/wsX9R9OG3lOAv4nTlX1TPihmQLH.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1389881,
+    "trailer_key": "icNFGk0enVU",
+    "backdrop_path": "https://i.ibb.co/hRpRP3M2/thecure.png",
+    "poster_path": "/g8vwBv50KnBASBJ4to4iKN7VGQU.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1599249,
+    "trailer_key": "KNdIQCBvWhI",
+    "backdrop_path": "/tHB3bhKTy7JxR0BL6vuWfgB5vQV.jpg",
+    "poster_path": "/cNbpR6hE1rIeb13xCFmv75PVaAx.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1571900,
+    "trailer_key": "DxnQb95vx6Q",
+    "backdrop_path": "https://i.ytimg.com/vi/DxnQb95vx6Q/maxresdefault.jpg",
+    "poster_path": "/o7MYJveV146pg2HQbQuv2LFK09y.jpg",
+    "force_enrichment": true
   }
 ]
