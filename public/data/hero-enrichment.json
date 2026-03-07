@@ -231,13 +231,6 @@
     "force_enrichment": false
   },
   {
-    "tmdb_id": 288672,
-    "trailer_key": "4bSKM9WWT08",
-    "backdrop_path": "/eVyHdSC53TJhwPxhpG1P8mtsKqY.jpg",
-    "poster_path": null,
-    "force_enrichment": false
-  },
-  {
     "tmdb_id": 843342,
     "trailer_key": "TXTA2CUWmsE",
     "backdrop_path": "/s8JEKHgD26NaMU20PluSJsZusqu.jpg",
@@ -271,13 +264,6 @@
     "backdrop_path": "/7c2nC558PNGgojD3EJH2b53G9Fw.jpg",
     "poster_path": "/ih047xC2TV6WbIevtms0Pp1XMe7.jpg",
     "force_enrichment": false
-  },
-  {
-    "tmdb_id": 1532477,
-    "trailer_key": "mSkuzxi8hG4",
-    "backdrop_path": "/4J4OlqCWFF6b9F4HuMxWmWlneBF.jpg",
-    "poster_path": "/kFIVqcaHcGfMEBBLMmp4DlbQaGb.jpg",
-    "force_enrichment": true
   },
   {
     "tmdb_id": 1596335,
