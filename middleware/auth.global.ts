@@ -44,8 +44,8 @@ export default defineNuxtRouteMiddleware((to, from) => {
     // If the user was NOT already on the homepage (e.g. direct URL or navigating
     // from another page), redirect them to '/' so the auth modal has a clean
     // backdrop. For users already on '/', just abort — the modal is already open.
-    const currentPath = from?.path ?? '/'
-    if (currentPath !== '/') {
+    const fromPath = from?.path ?? '/'
+    if (fromPath !== '/') {
         return navigateTo('/')
     }
 
