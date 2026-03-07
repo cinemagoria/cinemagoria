@@ -110,15 +110,32 @@ export const poster = {
 
 export const backdrop = {
   data() {
-    return { _enrichedBackdrop: null, _forceBackdrop: false };
+    return { _enrichedBackdrop: null, _forceBackdrop: false, _backdropItemId: null };
   },
   async mounted() {
-    const enrichment = await getHeroEnrichment();
-    const match = enrichment.get(this.item?.id);
-    if (!this.item?.backdrop_path || match?.force_enrichment) {
-      if (match?.backdrop_path) {
-        this._enrichedBackdrop = match.backdrop_path;
-        this._forceBackdrop = match.force_enrichment || false;
+    await this._loadBackdropEnrichment();
+  },
+  watch: {
+    'item.id'(newId) {
+      if (newId !== this._backdropItemId) {
+        this._enrichedBackdrop = null;
+        this._forceBackdrop = false;
+        this._loadBackdropEnrichment();
+      }
+    }
+  },
+  methods: {
+    async _loadBackdropEnrichment() {
+      const item = this.item;
+      if (!item?.id) return;
+      this._backdropItemId = item.id;
+      const enrichment = await getHeroEnrichment();
+      const match = enrichment.get(item.id);
+      if (!item.backdrop_path || match?.force_enrichment) {
+        if (match?.backdrop_path) {
+          this._enrichedBackdrop = match.backdrop_path;
+          this._forceBackdrop = match.force_enrichment || false;
+        }
       }
     }
   },
