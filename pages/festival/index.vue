@@ -1,5 +1,15 @@
+<script setup>
+const showContent = ref(false)
+
+onMounted(() => {
+    if (typeof window !== 'undefined' && localStorage.getItem('access_token')) {
+        showContent.value = true
+    }
+})
+</script>
+
 <template>
-  <main class="main">
+  <main v-if="showContent" class="main">
     <div class="container">
       <h1 class="title-primary">Festivales de Cine</h1>
       <p class="title-secondary">Explora nuestras selecciones curadas de los festivales más importantes del mundo.</p>

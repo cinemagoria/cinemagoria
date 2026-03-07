@@ -59,10 +59,8 @@ watch(() => profile.value?.avatar, (val) => {
   if (!val || val.trim() === '') {
     avatarSrc.value = '/avatars/avatar-ss0.png'
   } else if (val.startsWith('https://lh3.googleusercontent.com')) {
-    // Block stale Google OAuth avatars — DRF already sets a local avatar for google users
     avatarSrc.value = '/avatars/avatar-ss0.png'
   } else {
-    // Allow relative paths (/avatars/...) and custom HTTPS URLs
     avatarSrc.value = val
   }
 }, { immediate: true })

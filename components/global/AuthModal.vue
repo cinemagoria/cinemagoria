@@ -393,7 +393,7 @@ export default {
   justify-content: center;
   align-items: center;
   z-index: 999999999999;
-  animation: fadeIn 0.3s ease;
+  animation: fadeIn 0.12s ease;
 }
 
 @keyframes fadeIn {
@@ -412,7 +412,7 @@ export default {
   -webkit-backdrop-filter: blur(15px);
   border-radius: 16px;
   border: 1px solid rgba(127, 219, 241, 0.3);
-  animation: slideUp 0.4s ease;
+  animation: slideUp 0.12s ease;
 }
 
 @keyframes slideUp {

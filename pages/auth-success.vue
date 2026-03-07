@@ -78,7 +78,6 @@ export default {
       localStorage.setItem('name', this.name);
       localStorage.setItem('auth_provider', urlParams.get('auth_provider') || 'native');
       
-      // Clear stale session cache so UserNav never inherits the previous user's data
       localStorage.removeItem('user_avatar');
       localStorage.removeItem('alias');
       
