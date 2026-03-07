@@ -77,15 +77,32 @@ export const yearEnd = {
 
 export const poster = {
   data() {
-    return { _enrichedPoster: null, _forcePoster: false };
+    return { _enrichedPoster: null, _forcePoster: false, _posterItemId: null };
   },
   async mounted() {
-    const enrichment = await getHeroEnrichment();
-    const match = enrichment.get(this.item?.id);
-    if (!this.item?.poster_path || match?.force_enrichment) {
-      if (match?.poster_path) {
-        this._enrichedPoster = match.poster_path;
-        this._forcePoster = match.force_enrichment || false;
+    await this._loadPosterEnrichment();
+  },
+  watch: {
+    'item.id'(newId) {
+      if (newId !== this._posterItemId) {
+        this._enrichedPoster = null;
+        this._forcePoster = false;
+        this._loadPosterEnrichment();
+      }
+    }
+  },
+  methods: {
+    async _loadPosterEnrichment() {
+      const item = this.item;
+      if (!item?.id) return;
+      this._posterItemId = item.id;
+      const enrichment = await getHeroEnrichment();
+      const match = enrichment.get(item.id);
+      if (!item.poster_path || match?.force_enrichment) {
+        if (match?.poster_path) {
+          this._enrichedPoster = match.poster_path;
+          this._forcePoster = match.force_enrichment || false;
+        }
       }
     }
   },
@@ -178,17 +195,34 @@ export const cert = {
 
 export const trailer = {
   data() {
-    return { _enrichedTrailerKey: null, _forceTrailer: false };
+    return { _enrichedTrailerKey: null, _forceTrailer: false, _trailerItemId: null };
   },
   async mounted() {
-    const videos = this.item?.videos?.results || [];
-    const hasTrailer = videos.some(v => v.type === 'Trailer' || v.type === 'Teaser' || v.type === 'CustomPriority');
-    const enrichment = await getHeroEnrichment();
-    const match = enrichment.get(this.item?.id);
-    if (!hasTrailer || match?.force_enrichment) {
-      if (match?.trailer_key) {
-        this._enrichedTrailerKey = match.trailer_key;
-        this._forceTrailer = match.force_enrichment || false;
+    await this._loadTrailerEnrichment();
+  },
+  watch: {
+    'item.id'(newId) {
+      if (newId !== this._trailerItemId) {
+        this._enrichedTrailerKey = null;
+        this._forceTrailer = false;
+        this._loadTrailerEnrichment();
+      }
+    }
+  },
+  methods: {
+    async _loadTrailerEnrichment() {
+      const item = this.item;
+      if (!item?.id) return;
+      this._trailerItemId = item.id;
+      const videos = item?.videos?.results || [];
+      const hasTrailer = videos.some(v => v.type === 'Trailer' || v.type === 'Teaser' || v.type === 'CustomPriority');
+      const enrichment = await getHeroEnrichment();
+      const match = enrichment.get(item.id);
+      if (!hasTrailer || match?.force_enrichment) {
+        if (match?.trailer_key) {
+          this._enrichedTrailerKey = match.trailer_key;
+          this._forceTrailer = match.force_enrichment || false;
+        }
       }
     }
   },
