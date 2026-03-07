@@ -1,18 +1,13 @@
 <template>
   <main class="main">
-    <SearchResults
-      v-if="items && items.results.length"
-      :title="title"
-      :items="items"
-      :loading="loading"
-      :searchQuery="query"
-      @loadMore="loadMore" />
-    
-    <div v-else-if="items && items.results && !items.results.length && !loading" class="no-results-container">
+    <div :class="{ 'no-results-container': items && items.results && !items.results.length && !loading }">
       <SearchResults
-        :items="{results: [], page: 1, total_pages: 0}"
+        v-if="items && items.results"
+        :title="title"
+        :items="items"
         :loading="loading"
-        :searchQuery="query" />
+        :searchQuery="query"
+        @loadMore="loadMore" />
     </div>
   </main>
 </template>
