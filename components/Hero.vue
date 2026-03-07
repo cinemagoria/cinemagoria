@@ -32,6 +32,7 @@
 
           <img
             v-if="backdrop"
+            :key="heroItem.id"
             ref="backdropRef"
             :src="backdrop"
             loading="eager"
@@ -45,6 +46,7 @@
             @error="onBackdropLoaded">
           <img
             v-else
+            :key="'no-backdrop-' + heroItem.id"
             src="/placeholders/no-data-es.webp"
             loading="eager"
             :class="$style.image"
@@ -605,11 +607,13 @@ export default {
     },
     nextItem() {
       if (this.items.length > 1) {
+        this.isLoading = true;
         this.currentIndex = (this.currentIndex + 1) % this.items.length;
       }
     },
     prevItem() {
       if (this.items.length > 1) {
+        this.isLoading = true;
         this.currentIndex = (this.currentIndex - 1 + this.items.length) % this.items.length;
       }
     },
