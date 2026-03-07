@@ -471,7 +471,6 @@ export default {
 
         this.companies = await getFollowedProductionCompanies(userEmail);
 
-        // Load user following
         try {
           const uResp = await fetch(`${this.followsApiUrl}/user-follows/list?user_email=${encodeURIComponent(userEmail)}`);
           if (uResp.ok) {

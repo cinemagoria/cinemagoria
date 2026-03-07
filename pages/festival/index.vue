@@ -1,5 +1,17 @@
+<script setup>
+const showContent = ref(false)
+
+onMounted(() => {
+    if (typeof window !== 'undefined' && localStorage.getItem('access_token')) {
+        showContent.value = true
+    }
+    // If no token, the middleware already dispatched open-auth-modal;
+    // content stays hidden so the user never sees festival content without auth.
+})
+</script>
+
 <template>
-  <main class="main">
+  <main v-if="showContent" class="main">
     <div class="container">
       <h1 class="title-primary">Film Festivals</h1>
       <p class="title-secondary">Explore our curated selections from the world's leading film festivals.</p>

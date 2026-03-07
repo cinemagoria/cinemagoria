@@ -819,7 +819,6 @@ function syncToUrl() {
 
 function loadFromUrl() {
   const q = route.query;
-  // if (q.type) selectedType.value = q.type;
   if (q.genre) selectedGenre.value = Number(q.genre);
   if (q.sort) selectedSort.value = q.sort;
   if (q.country) selectedCountry.value = q.country;

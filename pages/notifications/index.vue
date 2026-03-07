@@ -681,19 +681,12 @@ export default {
         }
       },
 
-
-      // Build the profile link for a new_follower notification.
-      // overview = follower_email; person_name = alias or first_name.
-      // If person_name looks like an alias (no spaces), link to /u/<alias>.
-      // Otherwise fall back to the email stored in overview (no public profile link available).
       getFollowerProfileLink(notification) {
         const name = notification.person_name || ''
         const email = notification.overview || ''
-        // If name has no spaces and no @ it's likely an alias
         if (name && !name.includes(' ') && !name.includes('@')) {
           return `/u/${name}`
         }
-        // No alias — no public profile page we can link to
         return '#'
       },
 

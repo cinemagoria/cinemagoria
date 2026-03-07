@@ -612,7 +612,6 @@ export default {
         const ecReviews = ecResult.status === 'fulfilled' ? ecResult.value : [];
         const userRatingData = userReviewResult.status === 'fulfilled' ? userReviewResult.value : null;
 
-        // EC reviews first, then others sorted by date
         const otherReviews = [...tmdbReviews, ...traktReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         const ecSorted = [...ecReviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         let allReviews = [...ecSorted, ...otherReviews];
