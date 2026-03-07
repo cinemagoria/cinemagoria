@@ -43,26 +43,21 @@ export default defineEventHandler((event) => {
 
     const data = AWARD_MAP[award] ?? oscarsData;
 
-    // Extract sorted unique years (desc)
     const yearsSet = new Set<string>();
     for (const item of data) {
         const y = getYearField(award, item);
         if (y) yearsSet.add(y);
     }
     const years = Array.from(yearsSet).sort((a, b) => {
-        // Handle formats like "1927/28" by extracting leading number
         const numA = parseInt(a);
         const numB = parseInt(b);
         return numB - numA;
     });
 
-    // Determine the year to use: query param, or most recent
     const selectedYear = year && yearsSet.has(year) ? year : years[0];
 
-    // Filter items for the selected year
     const items = data.filter((item: any) => getYearField(award, item) === selectedYear);
 
-    // Extract unique categories from the filtered items
     const categoriesSet = new Set<string>();
     for (const item of items) {
         if (item.category) categoriesSet.add(item.category);

@@ -282,7 +282,6 @@ useHead({
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
 
-// ─── Page shell ─────────────────────────────────────────────────────────────
 .page {
   min-height: 100vh;
   padding: 0 3rem 6rem;
@@ -290,7 +289,6 @@ useHead({
   margin: 0 auto;
 }
 
-// ─── Header (reuses global title-primary / title-secondary) ─────────────────
 .header {
   text-align: center;
   padding-top: 30px;
@@ -304,7 +302,6 @@ useHead({
   }
 }
 
-// ─── Award selector ──────────────────────────────────────────────────────────
 .awardSelector {
   display: flex;
   gap: 0.8rem;
@@ -351,7 +348,6 @@ useHead({
   color: #B7B7B7;
 }
 
-// ─── Year scroller ───────────────────────────────────────────────────────────
 .yearSection { margin-bottom: 2.5rem; }
 
 .yearLabel {
@@ -394,7 +390,6 @@ useHead({
   font-weight: 600;
 }
 
-// ─── Stats bar ───────────────────────────────────────────────────────────────
 .statsBar {
   display: flex;
   align-items: center;
@@ -411,13 +406,10 @@ useHead({
 .statLabel { font-size: 1rem; color: #bbb; text-transform: uppercase; letter-spacing: 0.5px; }
 .statDivider { width: 1px; height: 34px; background: rgba(255,255,255,0.15); }
 
-// ─── Loader ──────────────────────────────────────────────────────────────────
 .loaderBox { display: flex; justify-content: center; padding: 5rem 0; }
 
-// ─── Results ─────────────────────────────────────────────────────────────────
 .results { display: flex; flex-direction: column; gap: 2.8rem; }
 
-// ─── Category block ──────────────────────────────────────────────────────────
 .categoryTitle {
   display: flex;
   align-items: center;
@@ -439,7 +431,6 @@ useHead({
   flex-shrink: 0;
 }
 
-// ─── Table ───────────────────────────────────────────────────────────────────
 .tableWrapper {
   border-radius: 8px;
   background: rgba(0,0,0,0.22);
@@ -515,10 +506,8 @@ useHead({
   text-transform: uppercase;
 }
 
-// ─── Empty ───────────────────────────────────────────────────────────────────
 .empty { text-align: center; color: #B7B7B7; font-size: 1.4rem; padding: 5rem 0; }
 
-// ─── Responsive ──────────────────────────────────────────────────────────────
 @media (max-width: 768px) {
   .page { padding: 0 1.5rem 5rem; }
   .awardSelector { gap: 0.5rem; }
