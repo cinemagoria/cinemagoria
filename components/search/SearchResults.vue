@@ -10,7 +10,7 @@
       </h2>
     </div>
 
-    <div v-if="items.results && items.results.length === 0 && !loading" class="no-results">
+    <div v-if="items.results && items.results.length === 0 && !loading && userResults.length === 0 && localNews.length === 0 && !isLoadingUsers" class="no-results">
       <h2 class="no-results__title">No results found for "{{ searchQuery }}"</h2>
       
       <div v-if="typoCheckInProgress" class="typo-checking">
@@ -115,30 +115,22 @@
       </div>
     </div>
 
-    <CategorySection title="People" :items="people" :collapsed="collapsedSections.people" key-prefix="person" @toggle="toggleSection('people')" />
+    <CategoryCarousel title="Movies" :items="movies" key-prefix="movie" :has-more="hasMore" :loading="loading" @loadMore="$emit('loadMore')" />
+    <CategoryCarousel title="TV Shows" :items="tvShows" key-prefix="tv" :has-more="hasMore" :loading="loading" @loadMore="$emit('loadMore')" />
+    <CategoryCarousel title="People" :items="people" key-prefix="person" :has-more="hasMore" :loading="loading" @loadMore="$emit('loadMore')" />
+    <CategoryCarousel title="Streaming Services" :items="streamingServices" key-prefix="streaming" :has-more="hasMore" :loading="loading" @loadMore="$emit('loadMore')" />
+    <CategoryCarousel title="Production Companies" :items="productionCompanies" key-prefix="company" :has-more="hasMore" :loading="loading" @loadMore="$emit('loadMore')" />
     <CategorySection title="Festivals" :items="festivals" :collapsed="collapsedSections.festivals" key-prefix="festival" @toggle="toggleSection('festivals')" />
-    <CategorySection title="Production Companies" :items="productionCompanies" :collapsed="collapsedSections.productionCompanies" key-prefix="company" @toggle="toggleSection('productionCompanies')" />
-    <CategorySection title="Streaming Services" :items="streamingServices" :collapsed="collapsedSections.streamingServices" key-prefix="streaming" @toggle="toggleSection('streamingServices')" />
-    <CategorySection title="Movies" :items="movies" :collapsed="collapsedSections.movies" key-prefix="movie" @toggle="toggleSection('movies')" />
-    <CategorySection title="TV Shows" :items="tvShows" :collapsed="collapsedSections.tvShows" key-prefix="tv" @toggle="toggleSection('tvShows')" />
     <CategorySection title="Others" :items="others" :collapsed="collapsedSections.others" key-prefix="other" @toggle="toggleSection('others')" />
-
-    <div
-      v-if="items.page < items.total_pages"
-      class="listing__nav">
-      <div v-if="loading">
-        <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44" stroke="#2196f3"><g fill="none" fill-rule="evenodd" stroke-width="2"><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="-0.9s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="-0.9s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle></g></svg>
-      </div>
-    </div>
 
   </div>
 </template>
 
 <script>
-import { debounce } from '~/mixins/Functions';
 import Card from '~/components/Card';
 import NewsResultCard from '~/components/search/NewsResultCard.vue';
 import CategorySection from '~/components/search/CategorySection.vue';
+import CategoryCarousel from '~/components/search/CategoryCarousel.vue';
 import DiscoverSearch from '~/components/search/DiscoverSearch.vue';
 
 import axios from 'axios';
@@ -148,6 +140,7 @@ export default {
     Card,
     NewsResultCard,
     CategorySection,
+    CategoryCarousel,
     DiscoverSearch
   },
   props: {
@@ -182,12 +175,7 @@ export default {
       discoverOpen: false,
       collapsedSections: {
         news: false,
-        people: false,
         festivals: false,
-        productionCompanies: false,
-        streamingServices: false,
-        movies: false,
-        tvShows: false,
         others: false,
         users: false
       },
@@ -198,6 +186,7 @@ export default {
       disableLeftNewsButton: true,
       disableRightNewsButton: false,
       userResults: [],
+      isLoadingUsers: false,
     };
   },
 
@@ -205,23 +194,26 @@ export default {
     results() {
         return this.items && this.items.results ? this.items.results : [];
     },
+    hasMore() {
+      return this.items && this.items.page < this.items.total_pages;
+    },
     people() {
-      return this.results.filter(i => i.media_type === 'person');
+      return this.results.filter(i => i.media_type === 'person').sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
     },
     festivals() {
       return this.results.filter(i => i.media_type === 'festival');
     },
     productionCompanies() {
-      return this.results.filter(i => i.media_type === 'production');
+      return this.results.filter(i => i.media_type === 'production').sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
     },
     streamingServices() {
-      return this.results.filter(i => i.media_type === 'streaming');
+      return this.results.filter(i => i.media_type === 'streaming').sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
     },
     movies() {
-      return this.results.filter(i => i.media_type === 'movie');
+      return this.results.filter(i => i.media_type === 'movie').sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
     },
     tvShows() {
-      return this.results.filter(i => i.media_type === 'tv');
+      return this.results.filter(i => i.media_type === 'tv').sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
     },
     others() {
       const knownTypes = ['person', 'festival', 'production', 'streaming', 'movie', 'tv'];
@@ -274,33 +266,15 @@ export default {
   },
 
   mounted() {
-    window.addEventListener('scroll', this.getScrollPosition);
     if (this.items.results && this.items.results.length === 0 && !this.loading && this.searchQuery) {
       this.checkForTypos();
     }
     if (this.searchQuery) this.fetchUserResults(this.searchQuery);
   },
 
-  beforeDestroy() {
-    window.removeEventListener('scroll', this.getScrollPosition);
-  },
-
   methods: {
     toggleSection(section) {
         this.collapsedSections[section] = !this.collapsedSections[section];
-    },
-
-    getScrollPosition: debounce(function() {
-      if (this.items.page < this.items.total_pages) {
-        const bottomOfWindow = (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 600;
-        if (bottomOfWindow && !this.loading) this.loadMore();
-      } else {
-        window.removeEventListener('scroll', this.getScrollPosition);
-      }
-    }, 50),
-
-    loadMore() {
-      this.$emit('loadMore');
     },
 
     onNewsScroll(e) {
@@ -408,7 +382,11 @@ export default {
 
     async fetchUserResults(q) {
       this.userResults = [];
-      if (!q || q.trim().length < 2) return;
+      this.isLoadingUsers = true;
+      if (!q || q.trim().length < 2) {
+        this.isLoadingUsers = false;
+        return;
+      }
       try {
         const resp = await fetch(`https://entercinema-follows-rust.vercel.app/user-search?q=${encodeURIComponent(q.trim())}&limit=6`);
         if (resp.ok) {
@@ -416,6 +394,9 @@ export default {
           this.userResults = data.users || [];
         }
       } catch(e) { console.error('Error fetching user search results:', e); }
+      finally {
+        this.isLoadingUsers = false;
+      }
     }
   },
 };
