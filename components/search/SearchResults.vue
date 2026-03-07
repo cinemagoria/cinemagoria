@@ -383,11 +383,10 @@ export default {
     async fetchUserResults(q) {
       this.userResults = [];
       this.isLoadingUsers = true;
-      if (!q || q.trim().length < 2) {
-        this.isLoadingUsers = false;
-        return;
-      }
       try {
+        if (!q || q.trim().length < 2) {
+          return;
+        }
         const resp = await fetch(`https://entercinema-follows-rust.vercel.app/user-search?q=${encodeURIComponent(q.trim())}&limit=6`);
         if (resp.ok) {
           const data = await resp.json();

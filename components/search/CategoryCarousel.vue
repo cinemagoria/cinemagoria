@@ -43,6 +43,7 @@
 
 <script>
 import Card from '~/components/Card';
+import { debounce } from '~/mixins/Functions';
 
 export default {
   name: 'CategoryCarousel',
@@ -89,7 +90,7 @@ export default {
       this.disableRight = el.scrollLeft + el.clientWidth >= el.scrollWidth - 10;
     },
 
-    onScroll() {
+    onScroll: debounce(function() {
       this.updateNav();
       const el = this.$refs.track;
       if (!el) return;
@@ -97,7 +98,7 @@ export default {
       if (nearEnd && this.hasMore && !this.loading) {
         this.$emit('loadMore');
       }
-    },
+    }, 50),
 
     scroll(direction) {
       const el = this.$refs.track;
@@ -207,7 +208,7 @@ export default {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
   backdrop-filter: blur(4px);
 }
 
