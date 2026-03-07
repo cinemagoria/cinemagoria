@@ -7,24 +7,10 @@
     "force_enrichment": false
   },
   {
-    "tmdb_id": 1159831,
-    "trailer_key": "QyLhkoGeSl4",
-    "backdrop_path": "https://m.media-amazon.com/images/M/MV5BNjYzM2JmN2MtZWRhNC00NmMzLWFiODAtMzI0ZDZiMjNhNDU5XkEyXkFqcGc@._V1_.jpg",
-    "poster_path": "/vu1cbpWza1F0OSUTqVMlJYcNgC2.jpg",
-    "force_enrichment": true
-  },
-  {
     "tmdb_id": 1275779,
     "trailer_key": "DLv9WFOe6GU",
     "backdrop_path": "/5p6BsJtnPbglYN15MuiUEppPl0f.jpg",
     "poster_path": "/AnJ8IQJI23hNpYXVNaythu061Ru.jpg",
-    "force_enrichment": false
-  },
-  {
-    "tmdb_id": 1480387,
-    "trailer_key": "j6uDeBYDHu4",
-    "backdrop_path": "/711jYfJrsY5x2R0Yh0pFeJTPWA7.jpg",
-    "poster_path": "/fuUdMZ7I0Dla9O8yS7Cu1Csder6.jpg",
     "force_enrichment": false
   },
   {
@@ -77,24 +63,10 @@
     "force_enrichment": false
   },
   {
-    "tmdb_id": 687163,
-    "trailer_key": "tvd7UUHzdhA",
-    "backdrop_path": "https://image.tmdb.org/t/p/original/6BI8cpbzCjwZRoLxiFILrzMIxtZ.jpg",
-    "poster_path": "/iOb2fjXLbpJgyQXe46n1WtGCnaa.jpg",
-    "force_enrichment": false
-  },
-  {
     "tmdb_id": 1228710,
     "trailer_key": "_pa1KLXuW0Y",
-    "backdrop_path": "/7OedxK0BvSKJ0ZWCPRYADViTBx6.jpg",
+    "backdrop_path": "https://i0.wp.com/www.thewrap.com/wp-content/uploads/2025/02/1200_675_the_mandalorian_s3_1_6e2bbafc.jpg",
     "poster_path": "/4VzOI3yFHi2rukXptJmSVazh9vs.jpg",
-    "force_enrichment": false
-  },
-  {
-    "tmdb_id": 875828,
-    "trailer_key": "_Dfc89TY-aA",
-    "backdrop_path": "/61BiigHOW0ReOZvV039UfeFM2gW.jpg",
-    "poster_path": "/gRMalasZEzsZi4w2VFuYusfSfqf.jpg",
     "force_enrichment": false
   },
   {
@@ -106,10 +78,10 @@
   },
   {
     "tmdb_id": 1102883,
-    "trailer_key": "6VLbjGVXMYI",
-    "backdrop_path": "/isKS6cjAbvfNoCI3pzHsLn1LZmx.jpg",
+    "trailer_key": "NWzkypKucMw",
+    "backdrop_path": "https://www.joblo.com/wp-content/uploads/2026/03/mother-mary.jpg",
     "poster_path": "/qMgUI6pxkPtIuoXX4DcJ6X7bdt2.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1315657,
@@ -123,13 +95,6 @@
     "trailer_key": "tlSDDuWxO_0",
     "backdrop_path": "/woG8V9IU8Vb7pNw9pUBXTTezOxZ.jpg",
     "poster_path": "/4cD7KeABHyzeJmzdA6QKe36fp2d.jpg",
-    "force_enrichment": false
-  },
-  {
-    "tmdb_id": 1107166,
-    "trailer_key": "pwq8gwdVxts",
-    "backdrop_path": "/j1NCNvi9NWGrgAXaZKUANAcLjAT.jpg",
-    "poster_path": "/zNfoMfpOgsfZ9axV0UzNFKVh0wG.jpg",
     "force_enrichment": false
   },
   {
@@ -154,20 +119,6 @@
     "force_enrichment": false
   },
   {
-    "tmdb_id": 1285895,
-    "trailer_key": "otyq-mDQMKM",
-    "backdrop_path": "/tDG3iVhR4gZOTtXoBEtqZgNrD1U.jpg",
-    "poster_path": "/iCLsQ34OMyOS1zN8yUhE59SZnfK.jpg",
-    "force_enrichment": true
-  },
-  {
-    "tmdb_id": 240740,
-    "trailer_key": "RSpvGC0_XLM",
-    "backdrop_path": "/tCswYJni0nG6fOHekBgi20fcG1G.jpg",
-    "poster_path": "/zvkcHCJUPqv7R9ukaiDNkm75jy.jpg",
-    "force_enrichment": false
-  },
-  {
     "tmdb_id": 1450527,
     "trailer_key": "0nyUCq9k7_0",
     "backdrop_path": "/ucrlyDVzOm1sGc02vaL84uxsqyY.jpg",
@@ -184,7 +135,7 @@
   {
     "tmdb_id": 1337592,
     "trailer_key": "v5D_0BJD6CU",
-    "backdrop_path": "/dfoeaH5k9dBi9PZdHCQ6znrQJHp.jpg",
+    "backdrop_path": "https://www.dodmagazine.es/wp-content/uploads/2026/02/erupcja-pelicula.jpg",
     "poster_path": "/1OMiyrpkZvu5YmWbPBtwDQHZsu1.jpg",
     "force_enrichment": false
   },
@@ -210,13 +161,6 @@
     "force_enrichment": false
   },
   {
-    "tmdb_id": 1618199,
-    "trailer_key": "T0MHDa2t_Qg",
-    "backdrop_path": "https://3chismesy1cafe.com/wp-content/uploads/2026/01/Pelicula-.jpeg",
-    "poster_path": "/8HrIQkUakn3UIrptVvTXqHJZpFr.jpg",
-    "force_enrichment": false
-  },
-  {
     "tmdb_id": 1300954,
     "trailer_key": "tJMdtxyt_EY",
     "backdrop_path": "https://horrorscreamsvideovault.co.uk/wp-content/uploads/2026/02/Spoiling-You-Poster-Art-Landscape-2048x1152.png",
@@ -228,13 +172,6 @@
     "trailer_key": "tKGhxMi50y8",
     "backdrop_path": "/hhBqc8n9WaGizwMglvGZcDKzguK.jpg",
     "poster_path": "/65x9FGRRD3zCnMJsaLD0TEJttzG.jpg",
-    "force_enrichment": false
-  },
-  {
-    "tmdb_id": 288672,
-    "trailer_key": "4bSKM9WWT08",
-    "backdrop_path": "/eVyHdSC53TJhwPxhpG1P8mtsKqY.jpg",
-    "poster_path": null,
     "force_enrichment": false
   },
   {
@@ -252,20 +189,6 @@
     "force_enrichment": false
   },
   {
-    "tmdb_id": 1400731,
-    "trailer_key": "M1XnsyjsnC8",
-    "backdrop_path": "/yf7OJzxWAg0LRFUMyp0Jpa2sRKY.jpg",
-    "poster_path": "/hGXJQiZjFspvhGhzM1bzlgOg7Ib.jpg",
-    "force_enrichment": false
-  },
-  {
-    "tmdb_id": 1240889,
-    "trailer_key": "NdrOjjByVMA",
-    "backdrop_path": "/5dbLRlAeIh4U3hyj4i4S4shv9AW.jpg",
-    "poster_path": "/AhEYtXa1csweudaRivYtg0bdBpu.jpg",
-    "force_enrichment": true
-  },
-  {
     "tmdb_id": 254417,
     "trailer_key": null,
     "backdrop_path": "/7c2nC558PNGgojD3EJH2b53G9Fw.jpg",
@@ -273,24 +196,10 @@
     "force_enrichment": false
   },
   {
-    "tmdb_id": 1532477,
-    "trailer_key": "mSkuzxi8hG4",
-    "backdrop_path": "/4J4OlqCWFF6b9F4HuMxWmWlneBF.jpg",
-    "poster_path": "/kFIVqcaHcGfMEBBLMmp4DlbQaGb.jpg",
-    "force_enrichment": true
-  },
-  {
     "tmdb_id": 1596335,
     "trailer_key": "xkPbV3IRe4Y",
     "backdrop_path": "/lIvkPPTAHBpKhifdczZH0s8eozB.jpg",
     "poster_path": "/wsX9R9OG3lOAv4nTlX1TPihmQLH.jpg",
-    "force_enrichment": true
-  },
-  {
-    "tmdb_id": 1389881,
-    "trailer_key": "icNFGk0enVU",
-    "backdrop_path": "https://i.ibb.co/hRpRP3M2/thecure.png",
-    "poster_path": "/g8vwBv50KnBASBJ4to4iKN7VGQU.jpg",
     "force_enrichment": true
   },
   {
@@ -303,7 +212,7 @@
   {
     "tmdb_id": 1571900,
     "trailer_key": "DxnQb95vx6Q",
-    "backdrop_path": "https://i.ytimg.com/vi/DxnQb95vx6Q/maxresdefault.jpg",
+    "backdrop_path": "https://img.youtube.com/vi/DxnQb95vx6Q/maxres2.jpg",
     "poster_path": "/o7MYJveV146pg2HQbQuv2LFK09y.jpg",
     "force_enrichment": true
   },
@@ -312,6 +221,48 @@
     "trailer_key": "Kkblp-rebfY",
     "backdrop_path": "https://cdn.theplaylist.net/wp-content/uploads/2026/01/21114838/Beef-2-first-look1.jpg",
     "poster_path": "/4b4v7RnPhNyPEaVGFarEuo74r8W.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1120382,
+    "trailer_key": "mIIDNvrNpJo",
+    "backdrop_path": "https://cdn.sanity.io/images/j0wdmpyb/production/29a03ed5beb68c32771d90c933e853f74ac40ea0-4000x1676.webp",
+    "poster_path": "/rqkPxYa8lpGkHo0uAwLWKhKSbqP.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1376484,
+    "trailer_key": "OVJAzrfvAps",
+    "backdrop_path": "/8BHZ6wUtvYlzib44dqPheODJZ2x.jpg",
+    "poster_path": "/sHewWBdFBJ1IDIvzCEpLOaeqTb9.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1141491,
+    "trailer_key": "L533VxOnGMY",
+    "backdrop_path": "/q0ff2gr4TZrBZ9aMfpCmHSyf1iq.jpg",
+    "poster_path": "/jSREnLzAfq51mpmxRXDbk8dJ72u.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1510435,
+    "trailer_key": "NxED5C10zUI",
+    "backdrop_path": "/rrqRYsnNbEKblq6X4oV5VhVMlxd.jpg",
+    "poster_path": "/tHLx6Kovze6JFslYfm5pOg9hGwU.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1421903,
+    "trailer_key": null,
+    "backdrop_path": "https://altsinema.com/wp-content/uploads/2025/07/lily-rose-depp-4.jpg",
+    "poster_path": "/6hFPW8XfkirlocgGr0n7BorAoOW.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1510284,
+    "trailer_key": "Kd1uLSEqgCs",
+    "backdrop_path": "https://m.media-amazon.com/images/M/MV5BZDkxNjBmNjEtMGMxNC00OGE3LWFkZjMtMDA1ZjUzM2E5MzkwXkEyXkFqcGdeQXRyYW5zY29kZS13b3JrZmxvdw@@._V1_.jpg",
+    "poster_path": "/g9baCq4fXi4PN6P9mev735hYlgk.jpg",
     "force_enrichment": true
   }
 ]
