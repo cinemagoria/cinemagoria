@@ -193,6 +193,7 @@ export default {
 
       if (this.isLoggedIn && email) {
         this.fetchUserAvatar(email);
+        this.fetchUserStats();
       }
     },
     async fetchUnreadCount() {
