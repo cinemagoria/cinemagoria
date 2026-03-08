@@ -1,11 +1,13 @@
 export const SOURCES = {
     en: [
         'Bloody Disgusting',
+        'CinemaBlend',
         'Collider',
         'ComingSoon.net',
         'Dark Horizons',
         'Deadline',
         'Dread Central',
+        'Fangoria',
         'Hollywood Reporter',
         'Horror Society',
         'HorrorBuzz',
@@ -22,6 +24,8 @@ export const SOURCES = {
 
 export const SOURCE_URLS = {
     'Bloody Disgusting': 'https://bloody-disgusting.com/',
+    'CinemaBlend': 'https://www.cinemablend.com/',
+    'Fangoria': 'https://www.fangoria.com/',
     'Collider': 'https://collider.com/',
     'ComingSoon.net': 'https://www.comingsoon.net/',
     'Dark Horizons': 'https://www.darkhorizons.com/',
