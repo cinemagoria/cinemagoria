@@ -1550,6 +1550,33 @@ export async function getFollowedProductionCompanies(userEmail) {
 const CACHE_PREFIX = 'trans_cache_v1_';
 const BATCH_DELIMITER = ' ||| ';
 
+const PRESERVED_WORDS = [];
+
+function replacePreservedWords(text) {
+    let modifiedText = text;
+    const wordMap = {};
+
+    PRESERVED_WORDS.forEach((word, index) => {
+        const placeholder = `__PRESERVED_${index}__`;
+        const regex = new RegExp(`\\b${word}\\b`, 'g');
+        if (regex.test(modifiedText)) {
+            wordMap[placeholder] = word;
+            modifiedText = modifiedText.replace(regex, placeholder);
+        }
+    });
+
+    return { modifiedText, wordMap };
+}
+
+function restorePreservedWords(text, wordMap) {
+    let restoredText = text;
+    for (const [placeholder, word] of Object.entries(wordMap)) {
+        const regex = new RegExp(placeholder, 'gi');
+        restoredText = restoredText.replace(regex, word);
+    }
+    return restoredText;
+}
+
 export async function translateReviewsBatch(reviews) {
     if (!reviews || reviews.length === 0) {
         return [];
@@ -1592,25 +1619,27 @@ export async function translateReviewsBatch(reviews) {
     }
 
     const combinedQuery = textsToTranslate.join(BATCH_DELIMITER);
+    const { modifiedText: finalQuery, wordMap } = replacePreservedWords(combinedQuery);
 
     try {
-        const response = await axios.post('https://free-google-translator.p.rapidapi.com/external-api/free-google-translator',
+        const response = await axios.post('https://deep-translate1.p.rapidapi.com/language/translate/v2',
             {
-                from: 'en',
-                to: 'es',
-                query: combinedQuery
+                source: 'en',
+                target: 'es',
+                q: finalQuery
             },
             {
                 headers: {
-                    'x-rapidapi-host': 'free-google-translator.p.rapidapi.com',
+                    'x-rapidapi-host': 'deep-translate1.p.rapidapi.com',
                     'x-rapidapi-key': getEnv('rapidApiKey'),
                     'Content-Type': 'application/json'
                 }
             }
         );
 
-        if (response.data && response.data.translation) {
-            const translatedText = response.data.translation;
+        if (response.data && response.data.data && response.data.data.translations && response.data.data.translations.translatedText && response.data.data.translations.translatedText.length > 0) {
+            let translatedText = response.data.data.translations.translatedText[0];
+            translatedText = restorePreservedWords(translatedText, wordMap);
             const translatedParts = translatedText.split(BATCH_DELIMITER.trim());
 
             if (translatedParts.length === textsToTranslate.length) {
@@ -1662,23 +1691,26 @@ export async function translateText(text) {
     }
 
     try {
-        const response = await axios.post('https://free-google-translator.p.rapidapi.com/external-api/free-google-translator',
+        const { modifiedText: finalQuery, wordMap } = replacePreservedWords(text);
+
+        const response = await axios.post('https://deep-translate1.p.rapidapi.com/language/translate/v2',
             {
-                from: 'en',
-                to: 'es',
-                query: text
+                source: 'en',
+                target: 'es',
+                q: finalQuery
             },
             {
                 headers: {
-                    'x-rapidapi-host': 'free-google-translator.p.rapidapi.com',
+                    'x-rapidapi-host': 'deep-translate1.p.rapidapi.com',
                     'x-rapidapi-key': getEnv('rapidApiKey'),
                     'Content-Type': 'application/json'
                 }
             }
         );
 
-        if (response.data && response.data.translation) {
-            const translation = response.data.translation;
+        if (response.data && response.data.data && response.data.data.translations && response.data.data.translations.translatedText && response.data.data.translations.translatedText.length > 0) {
+            let translation = response.data.data.translations.translatedText[0];
+            translation = restorePreservedWords(translation, wordMap);
             if (import.meta.client) {
                 try {
                     const cacheKey = CACHE_PREFIX + btoa(unescape(encodeURIComponent(text.slice(0, 50) + text.length)));
