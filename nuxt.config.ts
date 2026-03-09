@@ -1,6 +1,5 @@
 import { fileURLToPath } from 'url'
 
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   alias: {
     '~/api': fileURLToPath(new URL('./utils/api.js', import.meta.url))
@@ -8,6 +7,15 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: false },
   debug: false,
+
+  routeRules: {
+    '/api/hero': { cache: { maxAge: 1800 } },
+    '/api/news': { cache: { maxAge: 300 } },
+    '/api/imdb-rating/**': { cache: { maxAge: 86400 } },
+    '/api/festival/**': { cache: { maxAge: 3600 } },
+    '/api/awards/**': { cache: { maxAge: 3600 } },
+    '/api/search/**': { cache: { maxAge: 60 } },
+  },
 
   modules: [
     '@pinia/nuxt',
