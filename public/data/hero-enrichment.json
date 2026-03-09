@@ -65,21 +65,21 @@
   {
     "tmdb_id": 1228710,
     "trailer_key": "_pa1KLXuW0Y",
-    "backdrop_path": "https://i0.wp.com/www.thewrap.com/wp-content/uploads/2025/02/1200_675_the_mandalorian_s3_1_6e2bbafc.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087227/entercinema/backdrops/hero_1228710.jpg",
     "poster_path": "/4VzOI3yFHi2rukXptJmSVazh9vs.jpg",
     "force_enrichment": false
   },
   {
     "tmdb_id": 1314481,
     "trailer_key": "9c-DrMe8o5Q",
-    "backdrop_path": "https://clxicons.com/wp-content/uploads/2026/02/The-Devil-Wears-Prada-2-estreno-su-primer-trailer-.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087228/entercinema/backdrops/hero_1314481.jpg",
     "poster_path": "/DCeVQf830rhxqrDgz3qvk7U7s6.jpg",
     "force_enrichment": false
   },
   {
     "tmdb_id": 1102883,
     "trailer_key": "NWzkypKucMw",
-    "backdrop_path": "https://www.joblo.com/wp-content/uploads/2026/03/mother-mary.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087229/entercinema/backdrops/hero_1102883.jpg",
     "poster_path": "/qMgUI6pxkPtIuoXX4DcJ6X7bdt2.jpg",
     "force_enrichment": true
   },
@@ -100,7 +100,7 @@
   {
     "tmdb_id": 1325734,
     "trailer_key": "0ZDzsH3XGFA",
-    "backdrop_path": "https://image.tmdb.org/t/p/original/gJE1D1pLROAGWiHYbZrhSTYfhju.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087231/entercinema/backdrops/hero_1325734.jpg",
     "poster_path": "/yPV87cvDabRMTZs6NIbZLOufBLR.jpg",
     "force_enrichment": false
   },
@@ -114,7 +114,7 @@
   {
     "tmdb_id": 1168719,
     "trailer_key": "72SfEyxoZrA",
-    "backdrop_path": "https://i.ytimg.com/vi/MKvHM7Y6fD4/maxresdefault.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087233/entercinema/backdrops/hero_1168719.jpg",
     "poster_path": "/a6bfCJSFSnrDhCSL2v3Kmv6DBQk.jpg",
     "force_enrichment": true
   },
@@ -135,7 +135,7 @@
   {
     "tmdb_id": 1337592,
     "trailer_key": "v5D_0BJD6CU",
-    "backdrop_path": "https://www.dodmagazine.es/wp-content/uploads/2026/02/erupcja-pelicula.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087235/entercinema/backdrops/hero_1337592.jpg",
     "poster_path": "/1OMiyrpkZvu5YmWbPBtwDQHZsu1.jpg",
     "force_enrichment": false
   },
@@ -149,7 +149,7 @@
   {
     "tmdb_id": 258036,
     "trailer_key": "LCRc1Y4YFE0",
-    "backdrop_path": "https://images.cds.amcn.com/amcn/tve/Audacity_FirstLookTeaser_AMCTalk_1200.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087236/entercinema/backdrops/hero_258036.jpg",
     "poster_path": "/8EjsGlHWWxguKr2UyFgVQIgx3Qe.jpg",
     "force_enrichment": true
   },
@@ -163,7 +163,7 @@
   {
     "tmdb_id": 1300954,
     "trailer_key": "tJMdtxyt_EY",
-    "backdrop_path": "https://horrorscreamsvideovault.co.uk/wp-content/uploads/2026/02/Spoiling-You-Poster-Art-Landscape-2048x1152.png",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087237/entercinema/backdrops/hero_1300954.jpg",
     "poster_path": "/lQgXogR1YdkE4TGuzhOuzJsUDQZ.jpg",
     "force_enrichment": true
   },
@@ -212,7 +212,7 @@
   {
     "tmdb_id": 1571900,
     "trailer_key": "DxnQb95vx6Q",
-    "backdrop_path": "https://img.youtube.com/vi/DxnQb95vx6Q/maxres2.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087239/entercinema/backdrops/hero_1571900.jpg",
     "poster_path": "/o7MYJveV146pg2HQbQuv2LFK09y.jpg",
     "force_enrichment": true
   },
@@ -226,7 +226,7 @@
   {
     "tmdb_id": 1120382,
     "trailer_key": "mIIDNvrNpJo",
-    "backdrop_path": "https://cdn.sanity.io/images/j0wdmpyb/production/29a03ed5beb68c32771d90c933e853f74ac40ea0-4000x1676.webp",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087240/entercinema/backdrops/hero_1120382.jpg",
     "poster_path": "/rqkPxYa8lpGkHo0uAwLWKhKSbqP.jpg",
     "force_enrichment": true
   },
@@ -247,28 +247,28 @@
   {
     "tmdb_id": 1421903,
     "trailer_key": null,
-    "backdrop_path": "https://altsinema.com/wp-content/uploads/2025/07/lily-rose-depp-4.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087241/entercinema/backdrops/hero_1421903.jpg",
     "poster_path": "/6hFPW8XfkirlocgGr0n7BorAoOW.jpg",
     "force_enrichment": true
   },
   {
     "tmdb_id": 1510284,
     "trailer_key": "Kd1uLSEqgCs",
-    "backdrop_path": "https://m.media-amazon.com/images/M/MV5BZDkxNjBmNjEtMGMxNC00OGE3LWFkZjMtMDA1ZjUzM2E5MzkwXkEyXkFqcGdeQXRyYW5zY29kZS13b3JrZmxvdw@@._V1_.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087243/entercinema/backdrops/hero_1510284.jpg",
     "poster_path": "/g9baCq4fXi4PN6P9mev735hYlgk.jpg",
     "force_enrichment": true
   },
   {
     "tmdb_id": 1122573,
     "trailer_key": "nufP15iN4GE",
-    "backdrop_path": "https://tv-azteca-brightspot.s3.amazonaws.com/8c/73/024fc73843c8aa30fa47b9d34f06/a7-2026-03-06t162402-368.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087245/entercinema/backdrops/hero_1122573.jpg",
     "poster_path": "/ul88wtOV4OSK065m6Cd1nh3rXBg.jpg",
     "force_enrichment": true
   },
   {
     "tmdb_id": 1429348,
     "trailer_key": "aYCze1vl2jU",
-    "backdrop_path": "https://pbs.twimg.com/amplify_video_thumb/2002735117777657856/img/QER6DJlaaLLJfbzX.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087246/entercinema/backdrops/hero_1429348.jpg",
     "poster_path": "/c7p06jlv8Lp2B5HjUhmFRTRaqJS.jpg",
     "force_enrichment": true
   },
