@@ -65,21 +65,21 @@
   {
     "tmdb_id": 1228710,
     "trailer_key": "_pa1KLXuW0Y",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087227/entercinema/backdrops/hero_1228710.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773090056/entercinema/backdrops/hero_1228710.jpg",
     "poster_path": "/4VzOI3yFHi2rukXptJmSVazh9vs.jpg",
     "force_enrichment": false
   },
   {
     "tmdb_id": 1314481,
     "trailer_key": "9c-DrMe8o5Q",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087228/entercinema/backdrops/hero_1314481.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773090057/entercinema/backdrops/hero_1314481.jpg",
     "poster_path": "/DCeVQf830rhxqrDgz3qvk7U7s6.jpg",
     "force_enrichment": false
   },
   {
     "tmdb_id": 1102883,
     "trailer_key": "NWzkypKucMw",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087229/entercinema/backdrops/hero_1102883.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773090059/entercinema/backdrops/hero_1102883.jpg",
     "poster_path": "/qMgUI6pxkPtIuoXX4DcJ6X7bdt2.jpg",
     "force_enrichment": true
   },
@@ -100,7 +100,7 @@
   {
     "tmdb_id": 1325734,
     "trailer_key": "0ZDzsH3XGFA",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087231/entercinema/backdrops/hero_1325734.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773090060/entercinema/backdrops/hero_1325734.jpg",
     "poster_path": "/yPV87cvDabRMTZs6NIbZLOufBLR.jpg",
     "force_enrichment": false
   },
@@ -114,7 +114,7 @@
   {
     "tmdb_id": 1168719,
     "trailer_key": "72SfEyxoZrA",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087233/entercinema/backdrops/hero_1168719.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773090062/entercinema/backdrops/hero_1168719.jpg",
     "poster_path": "/a6bfCJSFSnrDhCSL2v3Kmv6DBQk.jpg",
     "force_enrichment": true
   },
@@ -135,7 +135,7 @@
   {
     "tmdb_id": 1337592,
     "trailer_key": "v5D_0BJD6CU",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087235/entercinema/backdrops/hero_1337592.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773090064/entercinema/backdrops/hero_1337592.jpg",
     "poster_path": "/1OMiyrpkZvu5YmWbPBtwDQHZsu1.jpg",
     "force_enrichment": false
   },
@@ -149,7 +149,7 @@
   {
     "tmdb_id": 258036,
     "trailer_key": "LCRc1Y4YFE0",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087236/entercinema/backdrops/hero_258036.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773090068/entercinema/backdrops/hero_258036.jpg",
     "poster_path": "/8EjsGlHWWxguKr2UyFgVQIgx3Qe.jpg",
     "force_enrichment": true
   },
@@ -163,7 +163,7 @@
   {
     "tmdb_id": 1300954,
     "trailer_key": "tJMdtxyt_EY",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087237/entercinema/backdrops/hero_1300954.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773090070/entercinema/backdrops/hero_1300954.jpg",
     "poster_path": "/lQgXogR1YdkE4TGuzhOuzJsUDQZ.jpg",
     "force_enrichment": true
   },
@@ -212,7 +212,7 @@
   {
     "tmdb_id": 1571900,
     "trailer_key": "DxnQb95vx6Q",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087239/entercinema/backdrops/hero_1571900.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773090071/entercinema/backdrops/hero_1571900.jpg",
     "poster_path": "/o7MYJveV146pg2HQbQuv2LFK09y.jpg",
     "force_enrichment": true
   },
@@ -226,7 +226,7 @@
   {
     "tmdb_id": 1120382,
     "trailer_key": "mIIDNvrNpJo",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087240/entercinema/backdrops/hero_1120382.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773090072/entercinema/backdrops/hero_1120382.jpg",
     "poster_path": "/rqkPxYa8lpGkHo0uAwLWKhKSbqP.jpg",
     "force_enrichment": true
   },
@@ -247,28 +247,28 @@
   {
     "tmdb_id": 1421903,
     "trailer_key": null,
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087241/entercinema/backdrops/hero_1421903.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773090073/entercinema/backdrops/hero_1421903.jpg",
     "poster_path": "/6hFPW8XfkirlocgGr0n7BorAoOW.jpg",
     "force_enrichment": true
   },
   {
     "tmdb_id": 1510284,
     "trailer_key": "Kd1uLSEqgCs",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087243/entercinema/backdrops/hero_1510284.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773090074/entercinema/backdrops/hero_1510284.jpg",
     "poster_path": "/g9baCq4fXi4PN6P9mev735hYlgk.jpg",
     "force_enrichment": true
   },
   {
     "tmdb_id": 1122573,
     "trailer_key": "nufP15iN4GE",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087245/entercinema/backdrops/hero_1122573.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773090075/entercinema/backdrops/hero_1122573.jpg",
     "poster_path": "/ul88wtOV4OSK065m6Cd1nh3rXBg.jpg",
     "force_enrichment": true
   },
   {
     "tmdb_id": 1429348,
     "trailer_key": "aYCze1vl2jU",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773087246/entercinema/backdrops/hero_1429348.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773090078/entercinema/backdrops/hero_1429348.jpg",
     "poster_path": "/c7p06jlv8Lp2B5HjUhmFRTRaqJS.jpg",
     "force_enrichment": true
   },
