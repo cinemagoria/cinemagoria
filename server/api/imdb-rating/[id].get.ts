@@ -9,14 +9,11 @@ export default defineEventHandler(async (event) => {
         "Access-Control-Expose-Headers": "*"
     })
 
-    setResponseHeader(event, 'Cache-Control', 'public, max-age=86400, s-maxage=86400')
-
     if (getMethod(event) === 'OPTIONS') {
         event.node.res.statusCode = 204
         return
     }
 
-    const start = Date.now()
     const id = getRouterParam(event, 'id')
     const config = useRuntimeConfig()
 
@@ -25,7 +22,6 @@ export default defineEventHandler(async (event) => {
     }
 
     if (!config.imdbDbUrl || !config.imdbDbToken) {
-        console.error('Missing Turso DB credentials')
         return { found: false, error: 'Database configuration missing' }
     }
 
@@ -57,7 +53,6 @@ export default defineEventHandler(async (event) => {
             return { found: false, source: 'tmdb' }
         }
     } catch (error: any) {
-        console.error(`[IMDb] Error fetching rating for ${id}:`, error)
         return { found: false, source: 'tmdb', error: error.message || 'Unknown error' }
     }
 })
