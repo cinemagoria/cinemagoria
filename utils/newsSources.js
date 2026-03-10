@@ -2,7 +2,6 @@ export const SOURCES = {
     es: [
         'Abandomoviez',
         'Cine O\'culto',
-        'Cine PREMIERE',
         'CineMaldito',
         'CineyTele',
         'eCartelera',
@@ -21,7 +20,6 @@ export const SOURCE_URLS = {
     'Abandomoviez': 'https://abandomoviez.net/',
     'Cine O\'culto': 'https://cineoculto.com/',
     'CineMaldito': 'https://www.cinemaldito.com/',
-    'Cine PREMIERE': 'https://www.cinepremiere.com.mx/',
     'CineyTele': 'https://www.cineytele.com/',
     'eCartelera': 'https://www.ecartelera.com/',
     'El Séptimo Arte': 'https://www.elseptimoarte.net/',
