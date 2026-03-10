@@ -47,7 +47,6 @@
               </div>
               
               <img 
-                  v-if="article.image" 
                   :src="article.image" 
                   :alt="article.title" 
                   class="article-image" 
@@ -56,7 +55,6 @@
                   @error="onImageError(article)"
                   :style="{ opacity: loadingMap[article.id] ? 0 : 1 }"
               />
-              <img v-else src="/placeholders/placeholder_news.webp" alt="Placeholder" class="article-image" />
             </NuxtLink>
 
             <div class="card-content">
@@ -126,6 +124,8 @@ export default {
     articles() {
       if (!this.data) return []
       let allItems = this.data.results || this.data.articles || []
+
+      allItems = allItems.filter(item => !!item.image);
       
       const dateLimit = new Date();
       dateLimit.setDate(dateLimit.getDate() - 7);

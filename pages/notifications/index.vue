@@ -25,6 +25,8 @@
                 <span class="following-count">{{ totalFollowingCount }}</span>
               </button>
 
+              <span class="header-actions-divider"></span>
+
               <div class="filter-switch-three">
                 <button :class="['filter-btn', { active: viewMode === 'notifications' }]" @click="viewMode = 'notifications'">Notificaciones</button>
                 <button :class="['filter-btn', { active: viewMode === 'activity' }]" @click="switchToActivity">Actividad</button>
@@ -975,9 +977,15 @@ button {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: 1rem;
   width: 100%;
   max-width: 1200px;
+  padding: 0.6rem 1rem;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 14px;
+  border: 1px solid rgba(139, 233, 253, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .actions-left {
@@ -989,19 +997,29 @@ button {
 .header-actions-left {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.6rem;
+  flex-wrap: nowrap;
+}
+
+.header-actions-divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(139, 233, 253, 0.2);
+  flex-shrink: 0;
+  margin: 0 0.2rem;
 }
 
 .following-button-primary {
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  background: rgba(139, 233, 253, 0.1);
+  padding: 0 1rem;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(139, 233, 253, 0.08);
   color: #8BE9FD;
-  border: 1.5px solid rgba(139, 233, 253, 0.35);
-  font-size: 1.3rem;
+  border: 1px solid rgba(139, 233, 253, 0.25);
+  font-size: 1.25rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
   white-space: nowrap;
   display: flex;
   align-items: center;
@@ -1010,7 +1028,7 @@ button {
 }
 
 .following-count {
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: 700;
   line-height: 1;
   color: #8BE9FD;
@@ -1018,35 +1036,32 @@ button {
 
 .filter-switch-three {
   display: flex;
-  border-radius: 20px;
-  border: 1.5px solid rgba(139, 233, 253, 0.3);
-  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  border-radius: 10px;
+  border: 1px solid rgba(139, 233, 253, 0.2);
   overflow: hidden;
-  align-self: stretch;
   flex-shrink: 0;
-  /* Desktop: más ancho */
-  width: 180px;
+  height: 34px;
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .filter-switch-three .filter-btn {
-  padding: 0 !important;
+  padding: 0 1.1rem !important;
   background: transparent;
   border: none;
   border-radius: 0;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.5);
   font-size: 1.2rem;
   cursor: pointer;
-  transition: all 300ms ease-in-out;
+  transition: background 200ms ease, color 200ms ease;
   white-space: nowrap;
-  flex: 1;
-  text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
-  min-height: 0;
+}
+
+.filter-switch-three .filter-btn + .filter-btn {
+  border-left: 1px solid rgba(139, 233, 253, 0.15);
 }
 
 .filter-switch-three .filter-btn.active {
@@ -1056,9 +1071,8 @@ button {
 }
 
 .following-button-primary:hover {
-  background: rgba(139, 233, 253, 0.22);
-  border-color: rgba(139, 233, 253, 0.7);
-  transform: translateY(-1px);
+  background: rgba(139, 233, 253, 0.15);
+  border-color: rgba(139, 233, 253, 0.5);
 }
 
 
@@ -1134,14 +1148,15 @@ button {
 
 .filter-button,
 .mark-all-button {
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  border: 1.5px solid rgba(139, 233, 253, 0.3);
-  background: transparent;
-  color: rgba(255, 255, 255, 0.55);
+  padding: 0 1rem;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(139, 233, 253, 0.2);
+  background: rgba(139, 233, 253, 0.05);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 1.2rem;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
   white-space: nowrap;
   display: flex;
   align-items: center;
@@ -1151,9 +1166,9 @@ button {
 
 .filter-button:hover,
 .mark-all-button:hover {
-  background: rgba(139, 233, 253, 0.08);
-  border-color: rgba(139, 233, 253, 0.55);
-  color: rgba(255, 255, 255, 0.85);
+  background: rgba(139, 233, 253, 0.1);
+  border-color: rgba(139, 233, 253, 0.4);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .filter-button.active {
@@ -1569,39 +1584,46 @@ button {
   }
   
   .header-actions {
-    gap: 0.6rem;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    padding: 0.7rem 0.8rem;
   }
 
   .header-actions-left {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 0.5rem;
-    flex: 1;
-    justify-content: flex-start;
+    width: 100%;
   }
 
-  .actions-left {
-    gap: 0.5rem;
+  .header-actions > .mark-all-button {
+    align-self: flex-end;
+  }
+
+  .header-actions-divider {
+    display: none;
   }
 
   .following-button-primary {
-    padding: 0.45rem 0.8rem;
+    height: 32px;
     font-size: 1.2rem;
   }
 
   .mark-all-button {
-    padding: 0.45rem 0.8rem;
-    font-size: 1.1rem;
+    height: 32px;
+    font-size: 1.15rem;
   }
 
   .filter-switch-three {
-    /* Mobile: ancho fijo y compacto (NO flex: 1) */
-    width: 120px;
-    flex-shrink: 0;
+    height: 32px;
+    flex: 1;
   }
 
   .filter-switch-three .filter-btn {
     font-size: 1.1rem;
-    padding: 0 !important;
+    padding: 0 0.8rem !important;
   }
 }
 
