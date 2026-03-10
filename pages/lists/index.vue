@@ -578,7 +578,7 @@ export default {
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
   cursor: pointer;
-  width: 90%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   
