@@ -28,14 +28,7 @@ logs
 .tmp/
 credentials.json
 token.json
-
-directives/README.md
-execution/README.md
-.gitignore
 entercinema-v2_*.sql
-GEMINI.md
-AGENTS.md
-CLAUDE.md
 scripts/translation-cache.json
 scripts/sync-repos-es.sh
 scripts/sync-repos-es.js
