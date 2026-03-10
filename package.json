@@ -22,7 +22,7 @@
     "@vueuse/core": "^14.2.1",
     "@vueuse/nuxt": "^14.2.1",
     "axios": "^1.13.5",
-    "dompurify": "^3.3.1",
+    "dompurify": "^3.3.2",
     "markdown-it": "^14.1.1",
     "mitt": "^3.0.1",
     "nodemailer": "^7.0.11",
