@@ -292,5 +292,26 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773335548/entercinema/backdrops/hero_1401106.jpg",
     "poster_path": "/sMaKK8HAWfyp8vOyxFWUKgSPDKg.jpg",
     "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1300968,
+    "trailer_key": "MPjxijuBuSo",
+    "backdrop_path": "/kYiBCmE9xX447kkwSdUEyyCxqBL.jpg",
+    "poster_path": "/kONfwpf0AZzvL1zqjZV9C89g1PY.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1284186,
+    "trailer_key": null,
+    "backdrop_path": "/3kYnfR6PN20bD4zshZfGza6jA6f.jpg",
+    "poster_path": "/9vzTjBGeUMp7YrlhcYLi5Cz35Vo.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1506134,
+    "trailer_key": null,
+    "backdrop_path": "/m2P3gHamoyL87pY9ldInE4wyUrt.jpg",
+    "poster_path": "/AuyEPIqVTaSz1i4Gs5Q8bdp4AWK.jpg",
+    "force_enrichment": false
   }
 ]
