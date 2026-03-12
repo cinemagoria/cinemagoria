@@ -240,9 +240,9 @@
   {
     "tmdb_id": 1177767,
     "trailer_key": "mzaCmw_VrlI",
-    "backdrop_path": "/1Es1fV6Wn4ArpqTRTPs8ydpEkiw.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773335904/entercinema/backdrops/hero_1177767.jpg",
     "poster_path": "/43MWCvPawXXnyvMRf6J9hvZ7wf0.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1439881,
@@ -282,14 +282,14 @@
   {
     "tmdb_id": 1229930,
     "trailer_key": "iwu3f4j2krU",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773331930/entercinema/backdrops/hero_1229930.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773335325/entercinema/backdrops/hero_1229930.jpg",
     "poster_path": "/aRA9ohkjmUh2ooGbj8p1WIs8vJ8.jpg",
     "force_enrichment": true
   },
   {
     "tmdb_id": 1401106,
     "trailer_key": "HlqPLzoyefc",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773333628/entercinema/backdrops/hero_1401106.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773335548/entercinema/backdrops/hero_1401106.jpg",
     "poster_path": "/sMaKK8HAWfyp8vOyxFWUKgSPDKg.jpg",
     "force_enrichment": true
   }
