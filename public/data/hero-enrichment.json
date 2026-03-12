@@ -128,7 +128,7 @@
   {
     "tmdb_id": 1339713,
     "trailer_key": "yybtztMB-Ww",
-    "backdrop_path": "/u5BkYDM5gfK4wINfoIFMAcEUKhx.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773338289/entercinema/backdrops/hero_1339713.jpg",
     "poster_path": "/o8bcymsakK9YtqxiJT8QDfrpyTs.jpg",
     "force_enrichment": false
   },
