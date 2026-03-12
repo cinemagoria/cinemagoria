@@ -21,7 +21,6 @@ export default defineEventHandler(async (event) => {
         const result = await db.execute(`
             SELECT * FROM hero_selections 
             WHERE title IS NOT NULL 
-            AND poster_path IS NOT NULL 
             AND backdrop_path IS NOT NULL
         `)
 
