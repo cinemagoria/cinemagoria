@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     '/api/festival/**': { cache: { maxAge: 3600 } },
     '/api/awards/**': { cache: { maxAge: 3600 } },
     '/api/search/**': { cache: { maxAge: 60 } },
+    '/search': { ssr: false },
     '/movie/**': { isr: 3600 },
     '/tv/**': { isr: 3600 },
     '/': { isr: 1800 },
