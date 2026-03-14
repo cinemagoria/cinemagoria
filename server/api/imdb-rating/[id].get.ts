@@ -6,7 +6,8 @@ export default defineEventHandler(async (event) => {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Credentials": "true",
         "Access-Control-Allow-Headers": "*",
-        "Access-Control-Expose-Headers": "*"
+        "Access-Control-Expose-Headers": "*",
+        "Cache-Control": "public, max-age=86400, s-maxage=86400"
     })
 
     if (getMethod(event) === 'OPTIONS') {
