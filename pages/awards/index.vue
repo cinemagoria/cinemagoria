@@ -380,7 +380,7 @@ const translateCategory = (category) => {
 };
 
 useHead({
-  title: 'Premios | Entercinema',
+  title: 'Premios | Cinemagoria',
   meta: [{ name: 'description', content: 'Explora todos los grandes premios del cine: Oscars, Globos de Oro, Cannes, Venecia y Berlín.' }]
 });
 </script>
