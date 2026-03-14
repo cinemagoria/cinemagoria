@@ -59,7 +59,7 @@ import MarkdownIt from 'markdown-it';
 export default {
   head() {
     return {
-      title: 'EnterCinema - Changelog',
+      title: 'Cinemagoria - Changelog',
       meta: [
         { hid: 'og:title', property: 'og:title', content: 'Changelog' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
@@ -98,7 +98,7 @@ export default {
       this.loading = true;
       this.error = null;
       try {
-        const response = await fetch('https://api.github.com/repos/imprvhub/entercinema/releases');
+        const response = await fetch('https://api.github.com/repos/imprvhub/cinemagoria/releases');
         if (!response.ok) {
           throw new Error('Error al obtener versiones');
         }

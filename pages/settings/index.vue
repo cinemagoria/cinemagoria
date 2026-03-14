@@ -208,13 +208,13 @@
 <script>
 
 
-const FOLLOWS_API = 'https://entercinema-follows-rust.vercel.app';
-const DRF_API = 'https://entercinema-drf.vercel.app';
+const FOLLOWS_API = 'https://cinemagoria-follows-rust.vercel.app';
+const DRF_API = 'https://auth.cinemagoria.com';
 
 export default {
   head () {
     return {
-      title: 'EnterCinema - Account Settings.',
+      title: 'Cinemagoria - Account Settings.',
       meta: [
         { hid: 'og:title', property: 'og:title', content: 'Account Settings' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
@@ -406,7 +406,7 @@ export default {
 
     async fetchSocialProfile() {
       if (!this.userEmail) return;
-      const FOLLOWS_API = 'https://entercinema-follows-rust.vercel.app';
+      const FOLLOWS_API = 'https://cinemagoria-follows-rust.vercel.app';
       try {
         const r = await fetch(`${FOLLOWS_API}/profile-by-email?user_email=${encodeURIComponent(this.userEmail)}`);
         if (r.ok) {
@@ -429,7 +429,7 @@ export default {
         return;
       }
       this.savingProfile = true;
-      const FOLLOWS_API = 'https://entercinema-follows-rust.vercel.app';
+      const FOLLOWS_API = 'https://cinemagoria-follows-rust.vercel.app';
       try {
         const resp = await fetch(`${FOLLOWS_API}/alias`, {
           method: 'POST',
@@ -454,7 +454,7 @@ export default {
     },
 
     async savePrivacy() {
-      const FOLLOWS_API = 'https://entercinema-follows-rust.vercel.app';
+      const FOLLOWS_API = 'https://cinemagoria-follows-rust.vercel.app';
       this.privacySaved = false;
       try {
         const resp = await fetch(`${FOLLOWS_API}/privacy`, {

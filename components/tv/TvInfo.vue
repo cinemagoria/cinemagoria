@@ -135,9 +135,9 @@
                   <div :class="$style.reviewHeader">
                     <div :class="$style.reviewAuthor">
                       <component
-                        :is="review.source === 'EnterCinema' && review.url ? 'a' : 'strong'"
-                        :href="review.source === 'EnterCinema' && review.url ? review.url : undefined"
-                        :class="review.source === 'EnterCinema' ? $style.ecAuthorName : null"
+                        :is="review.source === 'Cinemagoria' && review.url ? 'a' : 'strong'"
+                        :href="review.source === 'Cinemagoria' && review.url ? review.url : undefined"
+                        :class="review.source === 'Cinemagoria' ? $style.ecAuthorName : null"
                       >{{ review.authorName }}</component>
                       <div v-if="review.authorRating" :class="$style.reviewRatingContainer">
                         <div :class="$style.stars">
@@ -149,7 +149,7 @@
                     <div :class="$style.reviewMeta">
                        <span v-if="review.source === 'User'" :class="$style.userBadge">TÚ</span>
                        <img v-else-if="review.source === 'Trakt'" src="/logos/platforms/trakt-logo-small.svg" alt="Trakt" :class="$style.sourceLogo" />
-                       <img v-else-if="review.source === 'EnterCinema'" src="/icons/icon-medium.png" alt="EnterCinema" :class="$style.ecIcon" />
+                       <img v-else-if="review.source === 'Cinemagoria'" src="/icons/icon-medium.png" alt="Cinemagoria" :class="$style.ecIcon" />
                        <img v-else src="/logos/platforms/tmdb.svg" alt="TMDB" :class="$style.sourceLogoTMDB" />
                        <span :class="$style.reviewDate">{{ formatCreatedAt(review.createdAt) }}</span>
                     </div>
@@ -521,7 +521,7 @@ export default {
       const userEmail = localStorage.getItem('email');
       if (!userEmail) return;
       try {
-        const response = await fetch(`https://entercinema-follows-rust.vercel.app/tv-follows/list?user_email=${encodeURIComponent(userEmail)}`);
+        const response = await fetch(`https://cinemagoria-follows-rust.vercel.app/tv-follows/list?user_email=${encodeURIComponent(userEmail)}`);
         if (!response.ok) return;
         const data = await response.json();
         if (data.success && data.tv_follows) {
@@ -535,10 +535,10 @@ export default {
       this.followTvLoading = true;
       try {
         if (this.isFollowingTv) {
-          const response = await fetch(`https://entercinema-follows-rust.vercel.app/tv-follows/remove?user_email=${encodeURIComponent(userEmail)}&tv_id=${this.item.id}`, { method: 'DELETE' });
+          const response = await fetch(`https://cinemagoria-follows-rust.vercel.app/tv-follows/remove?user_email=${encodeURIComponent(userEmail)}&tv_id=${this.item.id}`, { method: 'DELETE' });
           if (response.ok) this.isFollowingTv = false;
         } else {
-          const response = await fetch(`https://entercinema-follows-rust.vercel.app/tv-follows/add`, {
+          const response = await fetch(`https://cinemagoria-follows-rust.vercel.app/tv-follows/add`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -599,7 +599,7 @@ export default {
           const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
           
           if (userEmail) {
-              const tursoUrl = this.$config.public.tursoBackendUrl || 'https://entercinema-favorites.vercel.app/api';
+              const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
               userReviewPromise = fetch(`${tursoUrl}/membership/${userEmail}/tv/${this.item.id}`)
                 .then(res => res.json())
                 .then(data => data.userRating)
@@ -630,7 +630,7 @@ export default {
               };
               allReviews = allReviews.filter(r => {
                   if (r.source === 'User') return false;
-                  if (r.source === 'EnterCinema' && userAlias && r.authorAlias === userAlias) return false;
+                  if (r.source === 'Cinemagoria' && userAlias && r.authorAlias === userAlias) return false;
                   return true;
               });
               allReviews.unshift(userReview);

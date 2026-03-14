@@ -46,9 +46,9 @@ const sortedCompanies = computed(() => {
 });
 
 useHead({
-  title: 'Todas las Productoras - EnterCinema',
+  title: 'Todas las Productoras - Cinemagoria',
   meta: [
-    { name: 'description', content: 'Explora todas las productoras disponibles en EnterCinema.' }
+    { name: 'description', content: 'Explora todas las productoras disponibles en Cinemagoria.' }
   ]
 });
 </script>

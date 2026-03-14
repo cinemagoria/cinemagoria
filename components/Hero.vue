@@ -641,8 +641,8 @@ export default {
         this.genresForDb = currentItem.genres ? currentItem.genres.map(genre => genre.name).join(', ') : '';
         this.addedAt = new Date();
         
-        this.shareTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde EnterCinema!";
-        this.customTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde EnterCinema!";
+        this.shareTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde Cinemagoria!";
+        this.customTitle = "¡Quisiera compartirte '" + this.nameForDb + "' desde Cinemagoria!";
         this.customMessage = 'Sinopsis: ' + currentItem.overview + '\n\nExplora opciones de streaming...';
         
         if (this.hasAccessToken) {

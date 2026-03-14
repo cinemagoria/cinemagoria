@@ -1,6 +1,6 @@
 
 const config = {
-    tursoBackendUrl: import.meta.env.VITE_TURSO_BACKEND_URL || 'https://entercinema-favorites.vercel.app'
+    tursoBackendUrl: import.meta.env.VITE_TURSO_BACKEND_URL || 'https://cinemagoria-favorites.vercel.app'
 };
 
 export async function syncUserToTurso(user) {

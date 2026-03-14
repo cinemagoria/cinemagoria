@@ -133,9 +133,9 @@
                   <div :class="$style.reviewHeader">
                     <div :class="$style.reviewAuthor">
                       <component
-                        :is="review.source === 'EnterCinema' && review.url ? 'a' : 'strong'"
-                        :href="review.source === 'EnterCinema' && review.url ? review.url : undefined"
-                        :class="review.source === 'EnterCinema' ? $style.ecAuthorName : null"
+                        :is="review.source === 'Cinemagoria' && review.url ? 'a' : 'strong'"
+                        :href="review.source === 'Cinemagoria' && review.url ? review.url : undefined"
+                        :class="review.source === 'Cinemagoria' ? $style.ecAuthorName : null"
                       >{{ review.authorName }}</component>
                       <div v-if="review.authorRating" :class="$style.reviewRatingContainer">
                         <div :class="$style.stars">
@@ -147,7 +147,7 @@
                     <div :class="$style.reviewMeta">
                        <span v-if="review.source === 'User'" :class="$style.userBadge">TÚ</span>
                        <img v-else-if="review.source === 'Trakt'" src="/logos/streaming/traktv-logo.svg" alt="Trakt" :class="$style.sourceLogo" />
-                       <img v-else-if="review.source === 'EnterCinema'" src="/icons/icon-medium.png" alt="EnterCinema" :class="$style.ecIcon" />
+                       <img v-else-if="review.source === 'Cinemagoria'" src="/icons/icon-medium.png" alt="Cinemagoria" :class="$style.ecIcon" />
                        <img v-else src="/logos/platforms/tmdb.svg" alt="TMDB" :class="$style.sourceLogoTMDB" />
                        <span :class="$style.reviewDate">{{ formatCreatedAt(review.createdAt) }}</span>
                     </div>
@@ -631,7 +631,7 @@ export default {
         const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
         
         if (userEmail) {
-             const tursoUrl = this.$config.public.tursoBackendUrl || 'https://entercinema-favorites.vercel.app/api';
+             const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
              userReviewPromise = fetch(`${tursoUrl}/membership/${userEmail}/movie/${this.item.id}`)
                .then(res => res.json())
                .then(data => data.userRating)
@@ -662,7 +662,7 @@ export default {
             };
             allReviews = allReviews.filter(r => {
                 if (r.source === 'User') return false;
-                if (r.source === 'EnterCinema' && userAlias && r.authorAlias === userAlias) return false;
+                if (r.source === 'Cinemagoria' && userAlias && r.authorAlias === userAlias) return false;
                 return true;
             });
             allReviews.unshift(userReview);

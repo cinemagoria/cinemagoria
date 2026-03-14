@@ -379,7 +379,7 @@ export default {
         return this.userFollowers.length;
     },
     followsApiUrl() {
-        return 'https://entercinema-follows-rust.vercel.app';
+        return 'https://cinemagoria-follows-rust.vercel.app';
     }
   },
 

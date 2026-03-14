@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
         from: `"${name}" <${process.env.CONTACT_FORM_ID}>`,
         to: process.env.CONTACT_FORM_ID,
         replyTo: email,
-        subject: subject ? `EnterCinema Contact: ${subject}` : 'EnterCinema Contact Form Submission',
+        subject: subject ? `Cinemagoria Contact: ${subject}` : 'Cinemagoria Contact Form Submission',
         text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
         html: `
       <h3>New Contact Message</h3>

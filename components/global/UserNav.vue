@@ -103,7 +103,7 @@
 
 <script>
 
-const DRF_API = 'https://entercinema-drf.vercel.app';
+const DRF_API = 'https://auth.cinemagoria.com';
 
 export default {
   name: 'UserNav',
@@ -318,8 +318,8 @@ export default {
       const userEmail = localStorage.getItem('email');
       if (!userEmail) return;
       try {
-        const tursoUrl = this.$config.public.tursoBackendUrl || 'https://entercinema-favorites.vercel.app/api';
-        const followsUrl = this.$config.public.followsBackendUrl || 'https://entercinema-follows-rust.vercel.app';
+        const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
+        const followsUrl = this.$config.public.followsBackendUrl || 'https://cinemagoria-follows-rust.vercel.app';
 
         const [ratingsRes, peopleRes, tvRes, streamingRes, companiesRes, usersRes, profileRes] = await Promise.all([
           fetch(`${tursoUrl}/ratings/${encodeURIComponent(userEmail)}`),

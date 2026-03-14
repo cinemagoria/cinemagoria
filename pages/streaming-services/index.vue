@@ -46,7 +46,7 @@ const sortedProviders = computed(() => {
 });
 
 useHead({
-  title: 'Plataformas de Streaming - EnterCinema',
+  title: 'Plataformas de Streaming - Cinemagoria',
   meta: [
     { name: 'description', content: 'Descubre las principales plataformas de streaming disponibles.' }
   ]

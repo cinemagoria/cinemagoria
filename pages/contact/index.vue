@@ -89,7 +89,7 @@ import UserNav from '@/components/global/UserNav';
 export default {
   head() {
     return {
-      title: 'EnterCinema - Contactar Soporte',
+      title: 'Cinemagoria - Contactar Soporte',
       meta: [
         { hid: 'og:title', property: 'og:title', content: 'Contactar Soporte' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },

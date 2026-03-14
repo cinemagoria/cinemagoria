@@ -79,10 +79,10 @@ const router = useRouter();
 const route = useRoute();
 
 useHead({
-  title: 'EnterCinema - TV Shows',
+  title: 'Cinemagoria - TV Shows',
   meta: [
     { property: 'og:title', content: 'TV Shows' },
-    { property: 'og:url', content: `https://es.entercinema.com${route.path}` },
+    { property: 'og:url', content: `https://es.cinemagoria.com${route.path}` },
   ],
 });
 

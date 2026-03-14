@@ -24,10 +24,10 @@ const router = useRouter();
 const searchStore = useSearchStore();
 
 useHead({
-  title: 'EnterCinema - Search',
+  title: 'Cinemagoria - Search',
   meta: [
     { property: 'og:title', content: 'Search' },
-    { property: 'og:url', content: `https://es.entercinema.com${route.path}` },
+    { property: 'og:url', content: `https://es.cinemagoria.com${route.path}` },
   ],
   bodyAttrs: {
     class: 'page page-search',

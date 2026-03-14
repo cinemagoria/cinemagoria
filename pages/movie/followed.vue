@@ -11,7 +11,7 @@ export default {
   },
   head() {
     return {
-      title: 'EnterCinema - Productoras Seguidas',
+      title: 'Cinemagoria - Productoras Seguidas',
     };
   },
 };

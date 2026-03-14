@@ -567,8 +567,8 @@ export default {
             lazy: true
         });
 
-        const listTitle = () => seoData.value?.list?.name ? `${seoData.value.list.name} | EnterCinema` : 'EnterCinema Lista';
-        const listDescription = () => seoData.value?.list?.description || 'Mira esta lista curada en EnterCinema.';
+        const listTitle = () => seoData.value?.list?.name ? `${seoData.value.list.name} | Cinemagoria` : 'Cinemagoria Lista';
+        const listDescription = () => seoData.value?.list?.description || 'Mira esta lista curada en Cinemagoria.';
 
         useSeoMeta({
             title: listTitle,
@@ -582,7 +582,7 @@ export default {
                          return poster.startsWith('http') ? poster : `https://image.tmdb.org/t/p/w500${poster}`;
                      }
                 }
-                return 'https://entercinema.com/cinema-popcorn.svg';
+                return 'https://cinemagoria.com/cinema-popcorn.svg';
             },
             twitterCard: 'summary_large_image',
         });
@@ -1346,8 +1346,8 @@ export default {
 
         openShareModal() {
             this.shareModalVisible = true;
-            this.customTitle = "¡Mirá esta colección '" + this.list.name + "' en EnterCinema!";
-            this.customMessage = "¡Encontré esta colección '" + this.list.name + "' en EnterCinema!";
+            this.customTitle = "¡Mirá esta colección '" + this.list.name + "' en Cinemagoria!";
+            this.customMessage = "¡Encontré esta colección '" + this.list.name + "' en Cinemagoria!";
         },
         closeShareModal() { this.shareModalVisible = false; },
         

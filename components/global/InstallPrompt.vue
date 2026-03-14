@@ -4,7 +4,7 @@
     style="border-radius:12px;"
     class="alert alert--default alert--bottom">
     
-    <p>¿Quiere <a href="#" @click.prevent="install">Añadir a 'EnterCinema' en su pantalla de inicio?</a></p>
+    <p>¿Quiere <a href="#" @click.prevent="install">Añadir a 'Cinemagoria' en su pantalla de inicio?</a></p>
 
     <button
       class="alert__close"

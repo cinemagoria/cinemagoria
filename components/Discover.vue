@@ -272,10 +272,10 @@ const route = useRoute();
 const router = useRouter();
 
 useHead({
-  title: 'EnterCinema - Descubrir',
+  title: 'Cinemagoria - Descubrir',
   meta: [
     { property: 'og:title', content: 'Descubrir' },
-    { property: 'og:url', content: `https://es.entercinema.com${route.path}` },
+    { property: 'og:url', content: `https://es.cinemagoria.com${route.path}` },
   ],
   bodyAttrs: {
     class: 'page page-discover',

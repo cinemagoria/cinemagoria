@@ -11,7 +11,7 @@
           <button class="button button--icon" @click="redirectToHome">
             <span class="txt">Back</span>
           </button>
-          <a href="https://github.com/entercinema/entercinema/blob/es/README.md" target="_blank" class="info button button--icon">
+          <a href="https://github.com/cinemagoria/cinemagoria/blob/es/README.md" target="_blank" class="info button button--icon">
             <span class="txt">More Information</span>
           </a>
         </div>
@@ -23,7 +23,7 @@
   export default {
     head () {
       return {
-        title: 'EnterCinema - Work in progress.',
+        title: 'Cinemagoria - Work in progress.',
         meta: [
           { hid: 'og:title', property: 'og:title', content: 'Work in progress' },
           { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
