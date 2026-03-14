@@ -1,20 +1,20 @@
-# EnterCinema
+# Cinemagoria
 
 > **Current Version:** v4.7.0 — Production Ready  
 > **Release Date:** February 23, 2026  
-> **Repository:** [github.com/entercinema/entercinema](https://github.com/entercinema/entercinema)  
+> **Repository:** [github.com/cinemagoria/cinemagoria](https://github.com/cinemagoria/cinemagoria)  
 > **Lead Developer:** [@imprvhub](https://github.com/imprvhub) (Iván Luna)  
 > **In development since:** March 27, 2024
 
 ---
 
-![EnterCinema Cover](https://www.ivanluna.dev/images/assets/entercinema-asset1.webp)
+![Cinemagoria Cover](https://www.ivanluna.dev/images/assets/cinemagoria-asset1.webp)
 
 ---
 
 ## Table of Contents
 
-1. [What is EnterCinema?](#1-what-is-entercinema)
+1. [What is Cinemagoria?](#1-what-is-cinemagoria)
 2. [Core Technical Architecture](#2-core-technical-architecture)
 3. [Data Sources & External Integrations](#3-data-sources--external-integrations)
 4. [Search & Content Discovery](#4-search--content-discovery)
@@ -40,17 +40,17 @@
 
 ---
 
-## 1. What is EnterCinema?
+## 1. What is Cinemagoria?
 
-EnterCinema is a comprehensive, community-oriented film and TV discovery platform that aggregates metadata, ratings, reviews, festival data, award histories, streaming availability, soundtrack information, and curated content from multiple authoritative third-party sources into a single, deeply integrated user experience.
+Cinemagoria is a comprehensive, community-oriented film and TV discovery platform that aggregates metadata, ratings, reviews, festival data, award histories, streaming availability, soundtrack information, and curated content from multiple authoritative third-party sources into a single, deeply integrated user experience.
 
 The platform is designed for film enthusiasts who want more than basic search: real-time festival circuit coverage, historical award recognition, production company tracking, personalized watchlists and custom lists, content-specific streaming provider discovery, and follow-based notification workflows for new releases from favorite talent and TV shows.
 
-EnterCinema operates as a public-facing web application with full user account support, cross-device data synchronization, and a rich personalization layer. It has been under continuous active development since its initial commit on **March 27, 2024**, and has undergone two major architectural overhauls.
+Cinemagoria operates as a public-facing web application with full user account support, cross-device data synchronization, and a rich personalization layer. It has been under continuous active development since its initial commit on **March 27, 2024**, and has undergone two major architectural overhauls.
 
 ### Platform Philosophy
 
-- **Aggregation over exclusivity:** EnterCinema pulls from IMDb, TMDB, MusicBrainz, Trakt.tv, Rotten Tomatoes, JustWatch, and MDBList rather than maintaining its own content catalog.
+- **Aggregation over exclusivity:** Cinemagoria pulls from IMDb, TMDB, MusicBrainz, Trakt.tv, Rotten Tomatoes, JustWatch, and MDBList rather than maintaining its own content catalog.
 - **Festival-first discovery:** The platform maintains dedicated pages, APIs, and components for international film festivals — Sundance, Berlinale, Rotterdam, Slamdance, SXSW, and Romford as of v4.7.0. (Future Expansion)
 - **Personalization without lock-in:** Users manage watchlists, custom lists with full privacy controls, and follow-based notification feeds — all transparent and user-controlled.
 - **Performance as a feature:** News load times dropped from ~10 seconds to under 50ms in v4.3.4. Hero data is server-side selected. Awards are served from local JSON. `Promise.all` / `Promise.allSettled` concurrent patterns are used throughout.
@@ -129,7 +129,7 @@ GET  /cron/check-releases               → Automated release detection job
 
 ## 3. Data Sources & External Integrations
 
-EnterCinema does not host its own content catalog. All media metadata, ratings, reviews, soundtracks, and streaming availability are sourced from third-party APIs.
+Cinemagoria does not host its own content catalog. All media metadata, ratings, reviews, soundtracks, and streaming availability are sourced from third-party APIs.
 
 | Source | Data Provided | Notes |
 |---|---|---|
@@ -156,7 +156,7 @@ EnterCinema does not host its own content catalog. All media metadata, ratings, 
 ### 4.1 Global Search (v4.7.0 — Comprehensive Overhaul)
 
 <div align="center">
-  <img src="https://www.ivanluna.dev/images/assets/entercinema-asset10.webp" alt="Powerful Search" width="70%">
+  <img src="https://www.ivanluna.dev/images/assets/cinemagoria-asset10.webp" alt="Powerful Search" width="70%">
 </div>
 
 The search system was completely reimagined in v4.7.0:
@@ -178,7 +178,7 @@ The search system was completely reimagined in v4.7.0:
 ### 4.2 Discover Component (v4.7.0)
 
 <div align="center">
-  <img src="https://www.ivanluna.dev/images/assets/entercinema-asset2.webp" alt="Catalog Discovery" width="70%">
+  <img src="https://www.ivanluna.dev/images/assets/cinemagoria-asset2.webp" alt="Catalog Discovery" width="70%">
 </div>
 
 The previous standalone `/advanced-search` page has been **deprecated and removed** as of v4.7.0. It is fully replaced by the unified **Discover component**, integrated directly into Movie and TV show pages.
@@ -213,10 +213,10 @@ The Discover component provides:
 ## 5. Film Festival Coverage
 
 <div align="center">
-  <img src="https://www.ivanluna.dev/images/assets/entercinema-asset9.webp" alt="Festivals & Awards" width="70%">
+  <img src="https://www.ivanluna.dev/images/assets/cinemagoria-asset9.webp" alt="Festivals & Awards" width="70%">
 </div>
 
-EnterCinema provides dedicated, deep integration for major international film festivals. Each festival has its own page, API endpoints, card components, badge components, and carousel integration.
+Cinemagoria provides dedicated, deep integration for major international film festivals. Each festival has its own page, API endpoints, card components, badge components, and carousel integration.
 
 ### 5.1 Supported Festivals (as of v4.7.0)
 
@@ -369,7 +369,7 @@ The homepage features carousels for:
 ## 8. Movie & TV Show Detail Pages
 
 <div align="center">
-  <img src="https://www.ivanluna.dev/images/assets/entercinema-asset8.webp" alt="Deep Metadata" width="70%">
+  <img src="https://www.ivanluna.dev/images/assets/cinemagoria-asset8.webp" alt="Deep Metadata" width="70%">
 </div>
 
 ### 8.1 Metadata & Information Display
@@ -452,7 +452,7 @@ Integrated on actor, director, and writer pages to subscribe to new release noti
 
 ## 10. Original Soundtrack (OST) Integration
 
-Introduced in v4.1.0. EnterCinema integrates with **MusicBrainz** for comprehensive OST data on movie and TV show detail pages.
+Introduced in v4.1.0. Cinemagoria integrates with **MusicBrainz** for comprehensive OST data on movie and TV show detail pages.
 
 ### 10.1 Features
 
@@ -469,7 +469,7 @@ Soundtrack components are streamlined for maintainability. Album selection logic
 ## 11. Watchlist & List Management
 
 <div align="center">
-  <img src="https://www.ivanluna.dev/images/assets/entercinema-asset4.webp" alt="Watchlist" width="70%">
+  <img src="https://www.ivanluna.dev/images/assets/cinemagoria-asset4.webp" alt="Watchlist" width="70%">
 </div>
 
 ### 11.1 Watchlist
@@ -655,7 +655,7 @@ Only renders when providers are genuinely available for the content item. Title 
 ## 15. Follow & Notification System
 
 <div align="center">
-  <img src="https://www.ivanluna.dev/images/assets/entercinema-asset3.webp" alt="Notification Center" width="70%">
+  <img src="https://www.ivanluna.dev/images/assets/cinemagoria-asset3.webp" alt="Notification Center" width="70%">
 </div>
 
 ### 15.1 What Can Be Followed
@@ -725,7 +725,7 @@ Notifications sync in real-time across devices via Turso/LibSQL with proper user
 ## 16. Cinema News Section
 
 <div align="center">
-  <img src="https://www.ivanluna.dev/images/assets/entercinema-asset5.webp" alt="Industry News" width="70%">
+  <img src="https://www.ivanluna.dev/images/assets/cinemagoria-asset5.webp" alt="Industry News" width="70%">
 </div>
 
 ### 16.1 Architecture
@@ -773,7 +773,7 @@ Notifications sync in real-time across devices via Turso/LibSQL with proper user
 ## 17. Authentication System
 
 <div align="center">
-  <img src="https://www.ivanluna.dev/images/assets/entercinema-asset7.webp" alt="Authentication" width="70%">
+  <img src="https://www.ivanluna.dev/images/assets/cinemagoria-asset7.webp" alt="Authentication" width="70%">
 </div>
 
 ### 17.1 Auth Flow
@@ -1022,7 +1022,7 @@ GET /cron/check-releases
 
 ## 22. Internationalization
 
-EnterCinema supports **English (EN)** and **Español (ES)** via subdomain-based language switching.
+Cinemagoria supports **English (EN)** and **Español (ES)** via subdomain-based language switching.
 
 - **Language switcher:** Animated dual-label toggle in `UserNav` with `#8BE9FD` active state
 - **Subdomain routing:** EN/ES handled in `UserNav` centralized logic
@@ -1037,8 +1037,8 @@ EnterCinema supports **English (EN)** and **Español (ES)** via subdomain-based 
 ### 23.1 Setup
 
 ```bash
-git clone https://github.com/entercinema/entercinema.git
-cd entercinema
+git clone https://github.com/cinemagoria/cinemagoria.git
+cd cinemagoria
 yarn install
 ```
 
@@ -1206,7 +1206,7 @@ yarn install   # Install/update all dependencies
 
 ## Support & Feedback
 
-For issues or suggestions: [Create a new issue on GitHub](https://github.com/entercinema/entercinema/issues/new)
+For issues or suggestions: [Create a new issue on GitHub](https://github.com/cinemagoria/cinemagoria/issues/new)
 
 ---
 
@@ -1219,5 +1219,5 @@ For issues or suggestions: [Create a new issue on GitHub](https://github.com/ent
 
 ---
 
-*EnterCinema — Built for film enthusiasts, by film enthusiasts.*  
+*Cinemagoria — Built for film enthusiasts, by film enthusiasts.*  
 *In continuous development since March 27, 2024.*

@@ -313,7 +313,7 @@ import { SUPPORTED_PRODUCTION_COMPANIES, STREAMING_PROVIDERS } from '~/utils/con
 export default {
   head () {
     return {
-      title: 'EnterCinema - Notifications Center.',
+      title: 'Cinemagoria - Notifications Center.',
       meta: [
         { hid: 'og:title', property: 'og:title', content: 'Notifications Center' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
@@ -334,7 +334,7 @@ export default {
       loading: true,
       showUnreadOnly: true,
       filterMode: 'unread',
-      followsApiUrl: 'https://entercinema-follows-rust.vercel.app',
+      followsApiUrl: 'https://cinemagoria-follows-rust.vercel.app',
       showFollowingModal: false,
       totalFollowingCount: 0,
       showHowItWorksModal: false,
@@ -649,10 +649,10 @@ export default {
 
         try {
           const [peopleResponse, tvResponse, streamingResponse, companiesResponse] = await Promise.all([
-            fetch(`https://entercinema-follows-rust.vercel.app/follows/list?user_email=${encodeURIComponent(this.userEmail)}`),
-            fetch(`https://entercinema-follows-rust.vercel.app/tv-follows/list?user_email=${encodeURIComponent(this.userEmail)}`),
-            fetch(`https://entercinema-follows-rust.vercel.app/streaming-follows/list?user_email=${encodeURIComponent(this.userEmail)}`),
-            fetch(`https://entercinema-follows-rust.vercel.app/company-follows/list?user_email=${encodeURIComponent(this.userEmail)}`)
+            fetch(`https://cinemagoria-follows-rust.vercel.app/follows/list?user_email=${encodeURIComponent(this.userEmail)}`),
+            fetch(`https://cinemagoria-follows-rust.vercel.app/tv-follows/list?user_email=${encodeURIComponent(this.userEmail)}`),
+            fetch(`https://cinemagoria-follows-rust.vercel.app/streaming-follows/list?user_email=${encodeURIComponent(this.userEmail)}`),
+            fetch(`https://cinemagoria-follows-rust.vercel.app/company-follows/list?user_email=${encodeURIComponent(this.userEmail)}`)
           ]);
 
           let total = 0;

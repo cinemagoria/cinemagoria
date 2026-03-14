@@ -46,9 +46,9 @@ const sortedProviders = computed(() => {
 });
 
 useHead({
-  title: 'All Streaming Services - EnterCinema',
+  title: 'All Streaming Services - Cinemagoria',
   meta: [
-    { name: 'description', content: 'Browse all streaming services available on EnterCinema.' }
+    { name: 'description', content: 'Browse all streaming services available on Cinemagoria.' }
   ]
 });
 </script>

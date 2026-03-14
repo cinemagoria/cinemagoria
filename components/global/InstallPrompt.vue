@@ -4,7 +4,7 @@
     style="border-radius:12px;"
     class="alert alert--default alert--bottom">
     
-    <p>Do you want to <a href="#" @click.prevent="install">Add 'EnterCinema' in your home screen?</a></p>
+    <p>Do you want to <a href="#" @click.prevent="install">Add 'Cinemagoria' in your home screen?</a></p>
 
     <button
       class="alert__close"

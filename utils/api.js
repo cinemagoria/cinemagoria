@@ -773,7 +773,7 @@ export function getTraktReviews(id, type) {
 
 export async function getECReviews(itemType, itemId) {
     try {
-        const data = await $fetch(`https://entercinema-favorites.vercel.app/api/ec-reviews/${itemType}/${itemId}`);
+        const data = await $fetch(`https://cinemagoria-favorites.vercel.app/api/ec-reviews/${itemType}/${itemId}`);
         if (!data || !data.reviews || !data.reviews.length) return [];
         return data.reviews.map(r => ({
             authorName: r.displayName,
@@ -781,7 +781,7 @@ export async function getECReviews(itemType, itemId) {
             authorRating: r.rating,
             content: r.review,
             createdAt: r.createdAt,
-            source: 'EnterCinema',
+            source: 'Cinemagoria',
             url: r.alias ? `/u/${r.alias}` : null,
             showFullContent: false
         }));
@@ -1392,7 +1392,7 @@ export async function enrichTVShowWithIMDbRating(item) {
     return enrichWithIMDbRating(item);
 }
 
-const FOLLOWS_API_URL = 'https://entercinema-follows-rust.vercel.app';
+const FOLLOWS_API_URL = 'https://cinemagoria-follows-rust.vercel.app';
 
 export async function followProductionCompany(userEmail, companyId, companyName, logoPath, originCountry) {
     const response = await $fetch(`${FOLLOWS_API_URL}/company-follows/add`, {

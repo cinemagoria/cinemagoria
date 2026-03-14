@@ -17,8 +17,8 @@ const listsPage = ref(1)
 const listsPerPage = 10
 const reviewsPerPage = 5
 
-const FOLLOWS_API = 'https://entercinema-follows-rust.vercel.app'
-const FAVORITES_API = 'https://entercinema-favorites.vercel.app/api'
+const FOLLOWS_API = 'https://cinemagoria-follows-rust.vercel.app'
+const FAVORITES_API = 'https://cinemagoria-favorites.vercel.app/api'
 
 const { data: profile, pending, error, refresh: refreshProfile } = await useFetch(
   `${FOLLOWS_API}/profile/${alias}`,
@@ -228,7 +228,7 @@ function formatReviewDate(tsOrDateString) {
 }
 
 useSeoMeta({
-  title: computed(() => profile.value?.alias ? `@${profile.value.alias} — EnterCinema` : 'Profile — EnterCinema'),
+  title: computed(() => profile.value?.alias ? `@${profile.value.alias} — Cinemagoria` : 'Profile — Cinemagoria'),
   ogTitle: computed(() => `@${profile.value?.alias ?? alias}`),
 })
 </script>

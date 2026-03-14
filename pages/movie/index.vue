@@ -79,10 +79,10 @@ const router = useRouter();
 const route = useRoute();
 
 useHead({
-  title: 'EnterCinema - Movies',
+  title: 'Cinemagoria - Movies',
   meta: [
     { property: 'og:title', content: 'Movies' },
-    { property: 'og:url', content: `https://entercinema.com${route.path}` },
+    { property: 'og:url', content: `https://cinemagoria.com${route.path}` },
   ],
 });
 

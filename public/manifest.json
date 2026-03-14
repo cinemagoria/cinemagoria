@@ -1,6 +1,6 @@
 {
-  "name": "EnterCinema",
-  "short_name": "EnterCinema",
+  "name": "Cinemagoria",
+  "short_name": "Cinemagoria",
   "description": "The moment you discover what to watch.",
   "start_url": "/",
   "display": "standalone",

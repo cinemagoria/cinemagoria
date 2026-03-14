@@ -46,9 +46,9 @@ const sortedCompanies = computed(() => {
 });
 
 useHead({
-  title: 'All Production Companies - EnterCinema',
+  title: 'All Production Companies - Cinemagoria',
   meta: [
-    { name: 'description', content: 'Browse all production companies available on EnterCinema.' }
+    { name: 'description', content: 'Browse all production companies available on Cinemagoria.' }
   ]
 });
 </script>

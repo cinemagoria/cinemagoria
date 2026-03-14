@@ -292,7 +292,7 @@ useHead({
     { property: 'og:description', content: metaDescription },
     { name: 'description', content: metaDescription },
     { property: 'og:image', content: metaImage },
-    { property: 'og:url', content: `https://entercinema.com${route.path}` },
+    { property: 'og:url', content: `https://cinemagoria.com${route.path}` },
   ],
   bodyAttrs: {
     class: 'topnav-active',

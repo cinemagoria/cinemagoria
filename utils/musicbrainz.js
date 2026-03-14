@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const BASE_URL = 'https://musicbrainz.org/ws/2';
-const USER_AGENT = 'EnterCinema/1.0 ( https://entercinema.com )';
+const USER_AGENT = 'Cinemagoria/1.0 ( https://cinemagoria.com )';
 
 export async function searchSoundtracks(query, year) {
     try {

@@ -130,7 +130,7 @@ export default {
       isFollowing: false,
       followLoading: false,
       userEmail: null,
-      followsApiUrl: 'https://entercinema-follows-rust.vercel.app'
+      followsApiUrl: 'https://cinemagoria-follows-rust.vercel.app'
     };
   },
   computed: {
@@ -245,7 +245,7 @@ export default {
           if (this.person.known_for_department === 'Directing') personType = 'director';
           else if (this.person.known_for_department === 'Writing') personType = 'writer';
           
-          const response = await fetch(`https://entercinema-follows-rust.vercel.app/follows/add`, {
+          const response = await fetch(`https://cinemagoria-follows-rust.vercel.app/follows/add`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

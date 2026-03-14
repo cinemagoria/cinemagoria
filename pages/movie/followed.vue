@@ -11,7 +11,7 @@ export default {
   },
   head() {
     return {
-      title: 'EnterCinema - Followed Companies',
+      title: 'Cinemagoria - Followed Companies',
     };
   },
 };

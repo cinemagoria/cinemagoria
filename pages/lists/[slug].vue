@@ -595,8 +595,8 @@ export default {
             lazy: true
         });
 
-        const listTitle = () => seoData.value?.list?.name ? `${seoData.value.list.name} | EnterCinema` : 'EnterCinema List';
-        const listDescription = () => seoData.value?.list?.description || 'Check out this curated list on EnterCinema.';
+        const listTitle = () => seoData.value?.list?.name ? `${seoData.value.list.name} | Cinemagoria` : 'Cinemagoria List';
+        const listDescription = () => seoData.value?.list?.description || 'Check out this curated list on Cinemagoria.';
 
         useSeoMeta({
             title: listTitle,
@@ -610,7 +610,7 @@ export default {
                          return poster.startsWith('http') ? poster : `https://image.tmdb.org/t/p/w500${poster}`;
                      }
                 }
-                return 'https://entercinema.com/cinema-popcorn.svg';
+                return 'https://cinemagoria.com/cinema-popcorn.svg';
             },
             twitterCard: 'summary_large_image',
         });
@@ -1367,8 +1367,8 @@ export default {
 
         openShareModal() {
             this.shareModalVisible = true;
-            this.customTitle = "Check out this list '" + this.list.name + "' on EnterCinema!";
-            this.customMessage = "I found this list '" + this.list.name + "' with " + this.items.length + " items on EnterCinema. Take a look!";
+            this.customTitle = "Check out this list '" + this.list.name + "' on Cinemagoria!";
+            this.customMessage = "I found this list '" + this.list.name + "' with " + this.items.length + " items on Cinemagoria. Take a look!";
         },
         closeShareModal() { this.shareModalVisible = false; },
         

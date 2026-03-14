@@ -30,7 +30,7 @@ logs
 .tmp/
 credentials.json
 token.json
-entercinema-v2_*.sql
+cinemagoria-v2_*.sql
 backup/awards_backup.sql
 scripts/backup_awards.ts
 sync-enrichment-data-all-repos.sh

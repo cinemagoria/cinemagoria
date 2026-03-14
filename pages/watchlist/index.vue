@@ -599,7 +599,7 @@ export default {
 
   head () {
     return {
-      title: 'EnterCinema - Watchlist.',
+      title: 'Cinemagoria - Watchlist.',
       meta: [
         { hid: 'og:title', property: 'og:title', content: 'Watchlist' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
@@ -628,7 +628,7 @@ export default {
 
   data() {
     return {
-      tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://entercinema-favorites.vercel.app/api',
+      tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://cinemagoria-favorites.vercel.app/api',
       isLoadingFavorites: false, 
       orderMode: 'latest-added',
       genreDropdownOpen: false,

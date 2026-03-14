@@ -150,7 +150,7 @@ export default {
   
   data() {
     return {
-      tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://entercinema-favorites.vercel.app/api',
+      tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://cinemagoria-favorites.vercel.app/api',
       visible: false,
       currentTab: 'movies',
       moviesFetched: [],

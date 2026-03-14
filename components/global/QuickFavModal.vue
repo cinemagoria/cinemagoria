@@ -25,7 +25,7 @@ export default {
     return {
       visible: false,
       item: null,
-      tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://entercinema-favorites.vercel.app/api',
+      tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://cinemagoria-favorites.vercel.app/api',
       userEmail: '',
     };
   },

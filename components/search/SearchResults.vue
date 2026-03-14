@@ -356,7 +356,7 @@ export default {
         this.typoCheckInProgress = true;
         this.suggestedCorrection = null;
 
-        const response = await axios.post('https://entercinema-assistant-rust.vercel.app/api/typo', {
+        const response = await axios.post('https://cinemagoria-assistant-rust.vercel.app/api/typo', {
           query: this.searchQuery
         });
         
@@ -387,7 +387,7 @@ export default {
         if (!q || q.trim().length < 2) {
           return;
         }
-        const resp = await fetch(`https://entercinema-follows-rust.vercel.app/user-search?q=${encodeURIComponent(q.trim())}&limit=6`);
+        const resp = await fetch(`https://cinemagoria-follows-rust.vercel.app/user-search?q=${encodeURIComponent(q.trim())}&limit=6`);
         if (resp.ok) {
           const data = await resp.json();
           this.userResults = data.users || [];
