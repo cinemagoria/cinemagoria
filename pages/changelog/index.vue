@@ -4,7 +4,7 @@
     <nav class="navbar navbar-welcome">
       <h1 class="title-primary" style="color: #8BE9FD !important; margin-top:30px; margin-bottom:10px; display:flex; justify-content: center;">Changelog</h1>
       <h2 class="title-secondary" style="color: rgb(172, 175, 181); font-size: 14px; max-width: 600px; margin: 20px auto 0;">
-        Latest updates and improvements from Entercinema.
+        Latest updates and improvements from Cinemagoria.
       </h2>
     </nav>
 

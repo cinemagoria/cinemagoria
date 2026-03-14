@@ -274,7 +274,7 @@ async function searchPerson(name) {
 }
 
 useHead({
-  title: 'Awards | Entercinema',
+  title: 'Awards | Cinemagoria',
   meta: [{ name: 'description', content: 'Browse all major film awards — Oscars, Golden Globes, Cannes, Venice and Berlin.' }]
 });
 </script>
