@@ -175,6 +175,9 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
     ]);
     
       const FEATURED_ORDER = [
+        'The Peril at Pincer Point',
+        'Drag',
+        'The Rise of the Red Hot Chili Peppers: Our Brother, Hillel',
         'Mike & Nick & Nick & Alice',
         'Mile End Kicks',
         'DreamQuil',
@@ -204,7 +207,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Zumeca',
         'Spoiling You',
         'Mr. Whispers',
-        'They Wait In Shadows',
+        'House of Abraham',
         'Yellow Letters',
         'Rosebush Pruning',
         'Salvation',
@@ -244,8 +247,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'In the Blink of An Eye',
         'Saccharine',
         'Josephine',
-        'Rock Springs',
-        'American Doctor'
+        'Rock Springs'
     ];
 
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
