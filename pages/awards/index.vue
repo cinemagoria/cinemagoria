@@ -27,7 +27,7 @@
         <button
           v-for="y in years"
           :key="y"
-          :class="[$style.yearChip, selectedYear === y && $style.yearChipActive]"
+          :class="[$style.yearChip, activeYear === y && $style.yearChipActive]"
           @click="selectYear(y)"
         >
           {{ y }}
@@ -216,16 +216,17 @@ const { data, pending } = await useAsyncData(
   { watch: [selectedAward, selectedYear] }
 );
 
+if (data.value?.selectedYear && !selectedYear.value) {
+  selectedYear.value = data.value.selectedYear;
+}
+
 const years      = computed(() => data.value?.years      ?? []);
 const categories = computed(() => data.value?.categories ?? []);
+const activeYear  = computed(() => data.value?.selectedYear || selectedYear.value);
 const items      = computed(() => {
   const raw = data.value?.items ?? [];
   return raw.filter(i => (i.film_title || i.film || i.nominee_name || i.nominee || '').trim() !== '');
 });
-
-watch(data, (val) => {
-  if (val?.selectedYear && !selectedYear.value) selectedYear.value = val.selectedYear;
-}, { immediate: true });
 
 const currentAward = computed(() => AWARDS.find(a => a.key === selectedAward.value) || AWARDS[0]);
 const isFestival   = computed(() => ['palme', 'goldenLion', 'goldenBear'].includes(selectedAward.value));

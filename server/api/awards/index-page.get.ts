@@ -1,5 +1,4 @@
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import rawAwardsData from '../../data/awards.json';
 
 interface AwardItem {
     id: number;
@@ -13,48 +12,37 @@ interface AwardItem {
     nominee_name?: string;
     film?: string;
     nominee?: string;
-    won: boolean;
+    won: number | boolean;
     tmdb_id?: number;
 }
 
+const awardsData = rawAwardsData as unknown as Record<string, AwardItem[]>;
+
 const getYearField = (award: string, item: AwardItem): string => {
-    if (award === 'goldenGlobes') return String(item.year_award ?? '');
+    if (award === 'goldenGlobes') return String((item as any).year_award ?? '');
     return String(item.year ?? '');
 };
-
-function loadAwardsData() {
-    const filePath = resolve(process.cwd(), 'server/data/awards.json');
-    const raw = readFileSync(filePath, 'utf-8');
-    return JSON.parse(raw) as Record<string, AwardItem[]>;
-}
 
 export default defineEventHandler((event) => {
     const query = getQuery(event);
     const award = (query.award as string) || 'oscars';
     const year = query.year as string | undefined;
 
-    const awardsData = loadAwardsData();
     const data: AwardItem[] = awardsData[award] ?? awardsData['oscars'] ?? [];
 
-    // Extract sorted unique years (desc)
     const yearsSet = new Set<string>();
     for (const item of data) {
         const y = getYearField(award, item);
         if (y) yearsSet.add(y);
     }
-    const years = Array.from(yearsSet).sort((a, b) => {
-        const numA = parseInt(a);
-        const numB = parseInt(b);
-        return numB - numA;
-    });
+    const years = Array.from(yearsSet).sort((a, b) => parseInt(b) - parseInt(a));
 
-    // Determine the year to use: query param, or most recent
     const selectedYear = year && yearsSet.has(year) ? year : years[0];
 
-    // Filter items for the selected year
-    const items = data.filter((item: any) => getYearField(award, item) === selectedYear);
+    const items = data
+        .filter((item: any) => getYearField(award, item) === selectedYear)
+        .map((item: any) => ({ ...item, won: Boolean(item.won) }));
 
-    // Extract unique categories from the filtered items
     const categoriesSet = new Set<string>();
     for (const item of items) {
         if (item.category) categoriesSet.add(item.category);
