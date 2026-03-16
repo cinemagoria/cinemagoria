@@ -209,7 +209,7 @@ const selectedAward = ref(route.query.award || 'oscars');
 const selectedYear  = ref(route.query.year  || '');
 
 const { data, pending } = await useAsyncData(
-  'awards-index',
+  () => `awards-${selectedAward.value}-${selectedYear.value || 'latest'}`,
   () => $fetch('/api/awards/index-page', {
     params: { award: selectedAward.value, year: selectedYear.value || undefined }
   }),
@@ -218,7 +218,10 @@ const { data, pending } = await useAsyncData(
 
 const years      = computed(() => data.value?.years      ?? []);
 const categories = computed(() => data.value?.categories ?? []);
-const items      = computed(() => data.value?.items      ?? []);
+const items      = computed(() => {
+  const raw = data.value?.items ?? [];
+  return raw.filter(i => (i.film_title || i.film || i.nominee_name || i.nominee || '').trim() !== '');
+});
 
 watch(data, (val) => {
   if (val?.selectedYear && !selectedYear.value) selectedYear.value = val.selectedYear;

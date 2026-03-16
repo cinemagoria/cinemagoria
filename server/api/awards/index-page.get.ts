@@ -1,4 +1,5 @@
-import awardsData from '../../data/awards.json';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
 interface AwardItem {
     id: number;
@@ -16,32 +17,24 @@ interface AwardItem {
     tmdb_id?: number;
 }
 
-const oscarsData: AwardItem[] = (awardsData as any).oscars || [];
-const goldenGlobesData: AwardItem[] = (awardsData as any).goldenGlobes || [];
-const palmeData: AwardItem[] = (awardsData as any).palme || [];
-const goldenLionData: AwardItem[] = (awardsData as any).goldenLion || [];
-const goldenBearData: AwardItem[] = (awardsData as any).goldenBear || [];
-
-const AWARD_MAP: Record<string, AwardItem[]> = {
-    oscars: oscarsData,
-    goldenGlobes: goldenGlobesData,
-    palme: palmeData,
-    goldenLion: goldenLionData,
-    goldenBear: goldenBearData,
-};
-
 const getYearField = (award: string, item: AwardItem): string => {
     if (award === 'goldenGlobes') return String(item.year_award ?? '');
     return String(item.year ?? '');
 };
 
+function loadAwardsData() {
+    const filePath = resolve(process.cwd(), 'server/data/awards.json');
+    const raw = readFileSync(filePath, 'utf-8');
+    return JSON.parse(raw) as Record<string, AwardItem[]>;
+}
 
 export default defineEventHandler((event) => {
     const query = getQuery(event);
     const award = (query.award as string) || 'oscars';
     const year = query.year as string | undefined;
 
-    const data = AWARD_MAP[award] ?? oscarsData;
+    const awardsData = loadAwardsData();
+    const data: AwardItem[] = awardsData[award] ?? awardsData['oscars'] ?? [];
 
     // Extract sorted unique years (desc)
     const yearsSet = new Set<string>();
@@ -50,7 +43,6 @@ export default defineEventHandler((event) => {
         if (y) yearsSet.add(y);
     }
     const years = Array.from(yearsSet).sort((a, b) => {
-        // Handle formats like "1927/28" by extracting leading number
         const numA = parseInt(a);
         const numB = parseInt(b);
         return numB - numA;

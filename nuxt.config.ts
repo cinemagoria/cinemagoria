@@ -13,7 +13,6 @@ export default defineNuxtConfig({
     '/api/news': { cache: { maxAge: 300 } },
     '/api/imdb-rating/**': { cache: { maxAge: 86400 } },
     '/api/festival/**': { cache: { maxAge: 3600 } },
-    '/api/awards/**': { cache: { maxAge: 3600 } },
     '/api/search/**': { cache: { maxAge: 60 } },
     '/search': { ssr: false },
     '/watchlist': { ssr: false },

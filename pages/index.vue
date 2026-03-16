@@ -1,11 +1,15 @@
 <template>
   <main class="main">
+    <br>
+    <OscarsLiveBanner v-if="showOscarsBanner" />
 
     <Hero
       v-if="featured && featured.length"
       :items="featured"
       :initial-item="featured[0]"
       :is-homepage="true" />
+
+    <OscarsCarousel v-if="showOscarsBanner" />
 
     <FestivalsCarousel
       v-if="festivalsMovies && festivalsMovies.results.length"
@@ -51,7 +55,16 @@ import FeatureDescription from '~/components/FeatureDescription';
 import NewsCarousel from '~/components/global/NewsCarousel';
 import ProductionCompanyCarousel from '~/components/ProductionCompanyCarousel';
 import StreamingPlatformCarousel from '~/components/StreamingPlatformCarousel';
+import OscarsLiveBanner from '~/components/OscarsLiveBanner';
+import OscarsCarousel from '~/components/OscarsCarousel';
 import { SUPPORTED_PRODUCTION_COMPANIES, POPULAR_PRODUCTION_COMPANIES_IDS, STREAMING_PROVIDERS, POPULAR_STREAMING_IDS } from '~/utils/constants';
+
+// ─── Óscar 98 — ventana de visibilidad ───────────────────────────────────────
+// Mostrar desde la ceremonia (15 mar 2026 21:00 ARG = UTC-3) hasta 20 mar 00:00 ARG
+const OSCARS_START  = new Date('2026-03-16T00:00:00Z');
+const OSCARS_EXPIRY = new Date('2026-03-20T03:00:00Z');
+const _now = new Date();
+const showOscarsBanner = computed(() => _now >= OSCARS_START && _now < OSCARS_EXPIRY);
 
 const userEmail = ref('');
 const hasAccessToken = ref(false);
