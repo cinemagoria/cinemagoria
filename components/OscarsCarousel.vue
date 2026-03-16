@@ -53,13 +53,13 @@
               <!-- Nombre → página de persona o película -->
               <nuxt-link
                 v-if="nom.person_id"
-                :to="`/persona/${nom.person_id}`"
+                :to="`/person/${nom.person_id}`"
                 class="oscars-card__nominee-name"
                 :class="{ 'oscars-card__nominee-name--winner': nom.won }"
               >{{ nom.name }}</nuxt-link>
               <nuxt-link
                 v-else
-                :to="`/pelicula/${nom.film_id}`"
+                :to="`/movie/${nom.film_id}`"
                 class="oscars-card__nominee-name"
                 :class="{ 'oscars-card__nominee-name--winner': nom.won }"
               >{{ nom.name }}</nuxt-link>
@@ -67,7 +67,7 @@
               <!-- Título de la película -->
               <nuxt-link
                 v-if="nom.person_id && nom.film"
-                :to="`/pelicula/${nom.film_id}`"
+                :to="`/movie/${nom.film_id}`"
                 class="oscars-card__nominee-film"
                 :class="{ 'oscars-card__nominee-film--winner': nom.won }"
               >{{ nom.film }}</nuxt-link>
@@ -179,43 +179,7 @@ export default {
             { name: 'Inga Ibsdotter Lilleaas', film: 'Valor Sentimental', film_id: 1124566, person_id: null    },
           ],
         },
-        {
-          name: 'Guion Original',
-          nominees: [
-            { name: 'Ryan Coogler',         film: 'Sinners',               film_id: 1233413, person_id: 1056121, won: true },
-            { name: 'Ari Aster',            film: 'Weapons',               film_id: 1078605, person_id: 1337680 },
-            { name: 'Sean Baker',           film: 'Anora',                 film_id: 1064213, person_id: 99329   },
-            { name: 'Coralie Fargeat',      film: 'The Substance',         film_id: 933260,  person_id: 1271566 },
-            { name: 'Brady Corbet',         film: 'The Brutalist',         film_id: 912649,  person_id: 55011   },
-          ],
-        },
-        {
-          name: 'Guion Adaptado',
-          nominees: [
-            { name: 'Paul Thomas Anderson', film: 'Una Batalla Tras Otra', film_id: 1054867, person_id: 4762,   won: true },
-            { name: 'Chloé Zhao',           film: 'Hamnet',                film_id: 858024,  person_id: 1395183 },
-            { name: 'Joachim Trier',        film: 'Valor Sentimental',     film_id: 1124566, person_id: 71609   },
-            { name: 'James Mangold',        film: 'Un Hombre Completo',    film_id: 1064978, person_id: 24009   },
-          ],
-        },
-        {
-          name: 'Fotografía',
-          nominees: [
-            { name: 'Autumn Durald Arkapaw', film: 'Sinners',           film_id: 1233413, person_id: null, won: true },
-            { name: 'Lol Crawley',           film: 'The Brutalist',     film_id: 912649,  person_id: null },
-            { name: 'Greig Fraser',          film: 'Hamnet',            film_id: 858024,  person_id: null },
-            { name: 'Robbie Ryan',           film: 'Valor Sentimental', film_id: 1124566, person_id: null },
-          ],
-        },
-        {
-          name: 'Banda Sonora Original',
-          nominees: [
-            { name: 'Ludwig Göransson', film: 'Sinners',           film_id: 1233413, person_id: 1218729, won: true },
-            { name: 'Jonny Greenwood',  film: 'The Brutalist',     film_id: 912649,  person_id: null     },
-            { name: 'Daniel Blumberg',  film: 'The Substance',     film_id: 933260,  person_id: null     },
-            { name: 'Bryce Dessner',    film: 'Hamnet',            film_id: 858024,  person_id: null     },
-          ],
-        },
+
       ],
     };
   },
