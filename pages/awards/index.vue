@@ -27,7 +27,7 @@
         <button
           v-for="y in years"
           :key="y"
-          :class="[$style.yearChip, selectedYear === y && $style.yearChipActive]"
+          :class="[$style.yearChip, activeYear === y && $style.yearChipActive]"
           @click="selectYear(y)"
         >
           {{ y }}
@@ -210,7 +210,7 @@ const selectedAward = ref(route.query.award || 'oscars');
 const selectedYear  = ref(route.query.year  || '');
 
 const { data, pending } = await useAsyncData(
-  'awards-index',
+  () => `awards-${selectedAward.value}-${selectedYear.value || 'latest'}`,
   () => $fetch('/api/awards/index-page', {
     params: { award: selectedAward.value, year: selectedYear.value || undefined }
   }),
@@ -219,11 +219,11 @@ const { data, pending } = await useAsyncData(
 
 const years      = computed(() => data.value?.years      ?? []);
 const categories = computed(() => data.value?.categories ?? []);
-const items      = computed(() => data.value?.items      ?? []);
-
-watch(data, (val) => {
-  if (val?.selectedYear && !selectedYear.value) selectedYear.value = val.selectedYear;
-}, { immediate: true });
+const activeYear  = computed(() => data.value?.selectedYear || selectedYear.value);
+const items      = computed(() => {
+  const raw = data.value?.items ?? [];
+  return raw.filter(i => (i.film_title || i.film || i.nominee_name || i.nominee || '').trim() !== '');
+});
 
 const currentAward = computed(() => AWARDS.find(a => a.key === selectedAward.value) || AWARDS[0]);
 const isFestival   = computed(() => ['palme', 'goldenLion', 'goldenBear'].includes(selectedAward.value));

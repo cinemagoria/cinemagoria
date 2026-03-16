@@ -20,6 +20,17 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+// Force our custom pattern background even when the OS/browser is in dark mode.
+// Without this, the browser UA dark-mode stylesheet overrides html background with system grey.
+@media (prefers-color-scheme: dark) {
+  html,
+  body {
+    background: $base-bg !important;
+    color: $base-font-color !important;
+    color-scheme: dark;
+  }
+}
+
 
 ::-moz-selection {
   text-shadow: none;

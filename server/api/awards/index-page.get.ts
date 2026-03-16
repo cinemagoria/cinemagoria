@@ -1,4 +1,4 @@
-import awardsData from '../../data/awards.json';
+import rawAwardsData from '../../data/awards.json';
 
 interface AwardItem {
     id: number;
@@ -12,36 +12,23 @@ interface AwardItem {
     nominee_name?: string;
     film?: string;
     nominee?: string;
-    won: boolean;
+    won: number | boolean;
     tmdb_id?: number;
 }
 
-const oscarsData: AwardItem[] = (awardsData as any).oscars || [];
-const goldenGlobesData: AwardItem[] = (awardsData as any).goldenGlobes || [];
-const palmeData: AwardItem[] = (awardsData as any).palme || [];
-const goldenLionData: AwardItem[] = (awardsData as any).goldenLion || [];
-const goldenBearData: AwardItem[] = (awardsData as any).goldenBear || [];
-
-const AWARD_MAP: Record<string, AwardItem[]> = {
-    oscars: oscarsData,
-    goldenGlobes: goldenGlobesData,
-    palme: palmeData,
-    goldenLion: goldenLionData,
-    goldenBear: goldenBearData,
-};
+const awardsData = rawAwardsData as unknown as Record<string, AwardItem[]>;
 
 const getYearField = (award: string, item: AwardItem): string => {
-    if (award === 'goldenGlobes') return String(item.year_award ?? '');
+    if (award === 'goldenGlobes') return String((item as any).year_award ?? '');
     return String(item.year ?? '');
 };
-
 
 export default defineEventHandler((event) => {
     const query = getQuery(event);
     const award = (query.award as string) || 'oscars';
     const year = query.year as string | undefined;
 
-    const data = AWARD_MAP[award] ?? oscarsData;
+    const data: AwardItem[] = awardsData[award] ?? awardsData['oscars'] ?? [];
 
     const yearsSet = new Set<string>();
     for (const item of data) {
@@ -56,7 +43,9 @@ export default defineEventHandler((event) => {
 
     const selectedYear = year && yearsSet.has(year) ? year : years[0];
 
-    const items = data.filter((item: any) => getYearField(award, item) === selectedYear);
+    const items = data
+        .filter((item: any) => getYearField(award, item) === selectedYear)
+        .map((item: any) => ({ ...item, won: Boolean(item.won) }));
 
     const categoriesSet = new Set<string>();
     for (const item of items) {
