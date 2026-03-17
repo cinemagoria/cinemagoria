@@ -9,7 +9,7 @@
       :initial-item="featured[0]"
       :is-homepage="true" />
 
-    <OscarsCarousel v-if="showOscarsBanner" />
+
 
     <FestivalsCarousel
       v-if="festivalsMovies && festivalsMovies.results.length"

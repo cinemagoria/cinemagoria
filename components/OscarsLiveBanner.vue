@@ -12,6 +12,10 @@
           aria-hidden="true"
         />
         <div class="oscars-banner__title-block">
+          <div class="oscars-banner__title">
+            <span class="oscars-banner__edition">98ª</span>
+            <span class="oscars-banner__academy-text">Premios Óscar</span>
+          </div>
           <div class="oscars-banner__eyebrow">
             <span v-if="isLive" class="oscars-banner__live-pill">
               <span class="oscars-banner__live-dot" aria-hidden="true" />
@@ -20,10 +24,6 @@
             <span v-else class="oscars-banner__results-pill">
               RESULTADOS
             </span>
-          </div>
-          <div class="oscars-banner__title">
-            <span class="oscars-banner__edition">98ª</span>
-            <span class="oscars-banner__academy-text">Premios Óscar</span>
           </div>
         </div>
       </div>
@@ -114,16 +114,15 @@ export default {
 .oscars-banner {
   position: relative;
   width: 100%;
-  background: #000;
-  border-bottom: 1px solid rgba(201, 168, 76, 0.3);
-  border-top: 1px solid rgba(201, 168, 76, 0.12);
+  border-radius: 15px;
+  border: 1px solid transparent;
+  background: linear-gradient(#000, #000) padding-box,
+              linear-gradient(to right, #1E5164, #8AE8FC) border-box;
   overflow: hidden;
   z-index: 10;
-  border-radius: 15px;
   padding-left: 10px;
   padding-right: 10px;
   margin-top: 2px;
-  border: 1px solid #8BE9FD;
 }
 
 .oscars-banner__shimmer {
@@ -288,11 +287,11 @@ export default {
   object-fit: contain;
   flex-shrink: 0;
   filter: drop-shadow(0 0 4px rgba(201, 168, 76, 0.5));
-  opacity: 0.9;
+  opacity: 1;
 }
 
 .oscars-banner__ticker-cat {
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.95);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -300,7 +299,7 @@ export default {
 .oscars-banner__ticker-div {
   color: #8BE9FD;
   font-weight: 300;
-  opacity: 0.6;
+  opacity: 0.9;
   font-size: 11px;
 }
 
@@ -311,7 +310,7 @@ export default {
 }
 
 .oscars-banner__ticker-film {
-  color: rgba(139, 233, 253, 0.65);
+  color: rgba(139, 233, 253, 0.9);
   font-weight: 400;
   white-space: nowrap;
   font-style: italic;
