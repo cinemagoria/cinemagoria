@@ -11,8 +11,7 @@
       :initial-item="featured[0]"
       :is-homepage="true" />
 
-    <!-- Oscars awards carousel — sits above festival selections -->
-    <OscarsCarousel v-if="showOscarsBanner" />
+
 
     <FestivalsCarousel
       v-if="festivalsMovies && festivalsMovies.results.length"
