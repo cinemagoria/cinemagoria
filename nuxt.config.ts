@@ -83,14 +83,21 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Cinemagoria',
+      title: 'Cinemagoria – The moment you discover what to watch',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { key: 'description', name: 'description', content: 'Cinemagoria - The moment you discover what to watch.' },
-        { name: 'theme-color', content: '#03496B' }
+        { key: 'description', name: 'description', content: 'Cinemagoria is a film and TV discovery platform. Browse movies, series, festival coverage, awards, and streaming availability in one place.' },
+        { name: 'theme-color', content: '#03496B' },
+        { property: 'og:title', content: 'Cinemagoria – The moment you discover what to watch' },
+        { property: 'og:description', content: 'Browse movies, series, festival coverage, awards, and streaming availability in one place.' },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:url', content: 'https://cinemagoria.com' },
+        { property: 'og:image', content: 'https://cinemagoria.com/og-image.jpg' },
+        { name: 'twitter:card', content: 'summary_large_image' },
       ],
       link: [
+        { rel: 'canonical', href: 'https://cinemagoria.com' },
         { rel: 'icon', type: 'image/x-icon', href: '/icons/favicon.ico' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500' }
       ],
