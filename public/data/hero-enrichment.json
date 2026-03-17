@@ -1,12 +1,5 @@
 [
   {
-    "tmdb_id": 1275779,
-    "trailer_key": "DLv9WFOe6GU",
-    "backdrop_path": "/5p6BsJtnPbglYN15MuiUEppPl0f.jpg",
-    "poster_path": "/AnJ8IQJI23hNpYXVNaythu061Ru.jpg",
-    "force_enrichment": false
-  },
-  {
     "tmdb_id": 1433583,
     "trailer_key": null,
     "backdrop_path": "/tD4qifPSyyhPCgZ0W4fNTcVDD2r.jpg",
@@ -154,13 +147,6 @@
     "force_enrichment": false
   },
   {
-    "tmdb_id": 843342,
-    "trailer_key": "TXTA2CUWmsE",
-    "backdrop_path": "/s8JEKHgD26NaMU20PluSJsZusqu.jpg",
-    "poster_path": "/9hyE2dkQjuoKDwUNDBCV98NhYGm.jpg",
-    "force_enrichment": false
-  },
-  {
     "tmdb_id": 277439,
     "trailer_key": null,
     "backdrop_path": "/ymBorUGu1Iji0eaDtDnVjqe5gWe.jpg",
@@ -200,13 +186,6 @@
     "trailer_key": "Kkblp-rebfY",
     "backdrop_path": "https://cdn.theplaylist.net/wp-content/uploads/2026/01/21114838/Beef-2-first-look1.jpg",
     "poster_path": "/4b4v7RnPhNyPEaVGFarEuo74r8W.jpg",
-    "force_enrichment": true
-  },
-  {
-    "tmdb_id": 1120382,
-    "trailer_key": "mIIDNvrNpJo",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1773090072/cinemagoria/backdrops/hero_1120382.jpg",
-    "poster_path": "/rqkPxYa8lpGkHo0uAwLWKhKSbqP.jpg",
     "force_enrichment": true
   },
   {
@@ -312,6 +291,27 @@
     "trailer_key": null,
     "backdrop_path": "/m2P3gHamoyL87pY9ldInE4wyUrt.jpg",
     "poster_path": "/AuyEPIqVTaSz1i4Gs5Q8bdp4AWK.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1275779,
+    "trailer_key": "SCYT8vb2siQ",
+    "backdrop_path": "/5p6BsJtnPbglYN15MuiUEppPl0f.jpg",
+    "poster_path": "/7RYO0KTXIJ0rS0LqnCQLxeNR3P3.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1297467,
+    "trailer_key": null,
+    "backdrop_path": "/uVIEqHPFjab9iKLpRjHReToTad2.jpg",
+    "poster_path": "/dxgcsMjFSJkNUbSjRpRs8UYui2H.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1291595,
+    "trailer_key": null,
+    "backdrop_path": "/yoBvGHXCSsgI93ozbcvYAg1LPiy.jpg",
+    "poster_path": "/vvfDx4wp9jOfW08KuHI7pNVqXLD.jpg",
     "force_enrichment": false
   }
 ]
