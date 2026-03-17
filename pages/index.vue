@@ -167,6 +167,13 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
     const fetchHero = async () => { 
         try {
              const data = await $fetch('/api/hero');
+             if (data.result && Array.isArray(data.result)) {
+                 const duneIndex = data.result.findIndex(item => item.id == 1170608);
+                 if (duneIndex > -1) {
+                     const dune = data.result.splice(duneIndex, 1)[0];
+                     data.result.unshift(dune);
+                 }
+             }
              return data.result;
         } catch (e) {
              console.error('Hero fetch error', e);
