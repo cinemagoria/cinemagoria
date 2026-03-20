@@ -28,8 +28,14 @@
               <span class="header-actions-divider"></span>
 
               <div class="filter-switch-three">
-                <button :class="['filter-btn', { active: viewMode === 'notifications' }]" @click="viewMode = 'notifications'">Notifications</button>
-                <button :class="['filter-btn', { active: viewMode === 'activity' }]" @click="switchToActivity">Activity</button>
+                <button :class="['filter-btn', 'icon-on-mobile', { active: viewMode === 'notifications' }]" @click="viewMode = 'notifications'">
+                  <span class="btn-text">Notifications</span>
+                  <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
+                </button>
+                <button :class="['filter-btn', 'icon-on-mobile', { active: viewMode === 'activity' }]" @click="switchToActivity">
+                  <span class="btn-text">Activity</span>
+                  <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>
+                </button>
               </div>
 
               <div v-if="viewMode === 'notifications'" class="filter-switch-three">
@@ -1003,17 +1009,23 @@ button {
 .header-actions {
   display: flex;
   flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   width: 100%;
   max-width: 1200px;
-  padding: 0.6rem 1rem;
-  background: rgba(0, 0, 0, 0.25);
-  border-radius: 14px;
-  border: 1px solid rgba(139, 233, 253, 0.12);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  padding: 0.6rem 0;
+  background: transparent;
+  border: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.header-actions::-webkit-scrollbar {
+  display: none;
 }
 
 .actions-left {
@@ -1027,6 +1039,7 @@ button {
   align-items: center;
   gap: 0.6rem;
   flex-wrap: nowrap;
+  flex-shrink: 0;
 }
 
 .header-actions-divider {
@@ -1063,22 +1076,28 @@ button {
 }
 
 .filter-switch-three {
-  display: flex;
-  border-radius: 10px;
-  border: 1px solid rgba(139, 233, 253, 0.2);
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  border-radius: 15px;
+  border: 1px solid rgba(139, 233, 253, 0.28);
   overflow: hidden;
   flex-shrink: 0;
   height: 34px;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(139, 233, 253, 0.07);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 .filter-switch-three .filter-btn {
-  padding: 0 1.1rem !important;
+  padding: 0 1.2rem !important;
   background: transparent;
   border: none;
   border-radius: 0;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 1.2rem;
+  color: #8BE9FD;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: background 200ms ease, color 200ms ease;
   white-space: nowrap;
@@ -1089,13 +1108,26 @@ button {
 }
 
 .filter-switch-three .filter-btn + .filter-btn {
-  border-left: 1px solid rgba(139, 233, 253, 0.15);
+  border-left: 1px solid rgba(139, 233, 253, 0.28);
 }
 
 .filter-switch-three .filter-btn.active {
-  background: #8BE9FD;
-  color: #000;
+  background: rgba(139, 233, 253, 0.2);
+  color: #fff;
   font-weight: 600;
+}
+
+.btn-icon {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .icon-on-mobile .btn-text {
+    display: none;
+  }
+  .icon-on-mobile .btn-icon {
+    display: block;
+  }
 }
 
 .following-button-primary:hover {
@@ -1190,6 +1222,7 @@ button {
   align-items: center;
   gap: 0.5rem;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .filter-button:hover,
@@ -1611,24 +1644,7 @@ button {
     margin-left: 1.5rem;
   }
   
-  .header-actions {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
-    padding: 0.7rem 0.8rem;
-  }
 
-  .header-actions-left {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-    width: 100%;
-  }
-
-  .header-actions > .mark-all-button {
-    align-self: flex-end;
-  }
 
   .header-actions-divider {
     display: none;
