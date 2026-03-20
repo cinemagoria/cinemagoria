@@ -158,7 +158,15 @@
                     <span v-if="!review.showFullContent && review.content.split(' ').length > 200" :class="$style.readMore" @click="toggleReadMore(review)">..[Leer Más]</span>
                   </div>
 
-                  <div :class="$style.reviewActions">
+                  <div v-if="review.source === 'User'" :class="$style.userReviewActions">
+                    <button :class="$style.editReviewBtn" @click="openEditRatingModal(review)" title="Editar reseña" style="width: 32px !important; height: 32px !important; padding: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important;">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px !important; height: 18px !important; display: block !important; min-width: 18px !important; min-height: 18px !important; stroke: #8BE9FD !important; stroke-width: 2.5px !important; visibility: visible !important; opacity: 1 !important;"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+                    </button>
+                    <button :class="$style.deleteReviewBtn" @click="showDeleteReviewModal = true" title="Eliminar reseña" style="width: 32px !important; height: 32px !important; padding: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important;">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px !important; height: 18px !important; display: block !important; min-width: 18px !important; min-height: 18px !important; stroke: #FF6B6B !important; stroke-width: 2.5px !important; visibility: visible !important; opacity: 1 !important;"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    </button>
+                  </div>
+                  <div v-else :class="$style.reviewActions">
                     <button :class="$style.toggleTranslationBtn" @click="review.showTranslation = !review.showTranslation">
                       {{ review.showTranslation ? 'Ver Original' : 'Ver Traducción' }}
                     </button>
@@ -173,6 +181,52 @@
       </div>
     </div>
     
+
+    <!-- Delete review confirmation modal -->
+    <div v-if="showDeleteReviewModal" class="movie-info-modal-overlay" @click.self="showDeleteReviewModal = false">
+      <div class="movie-info-delete-modal">
+        <div class="movie-info-modal-header">
+          <h3>Eliminar reseña</h3>
+          <button class="movie-info-close-btn" @click="showDeleteReviewModal = false">×</button>
+        </div>
+        <div class="movie-info-delete-body">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="#ff6b6b" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+          <p class="movie-info-delete-warning">¿Confirma que desea eliminar la reseña y la valoración de <strong>{{ item.title || item.name }}</strong>?</p>
+          <p class="movie-info-delete-warning" style="font-size: 1.1rem; opacity: 0.8; margin-top: -5px;">Esta acción es irreversible.</p>
+        </div>
+        <div class="movie-info-delete-actions">
+          <button class="movie-info-cancel-btn" @click="showDeleteReviewModal = false">Cancelar</button>
+          <button class="movie-info-confirm-delete-btn" @click="deleteReview">Eliminar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit review / rate modal -->
+    <div v-if="ratingModalVisible" class="movie-info-modal-overlay" @click.self="closeRatingModal">
+      <div class="movie-info-rating-modal">
+        <div class="movie-info-modal-header">
+          <h3>Valorar '{{ item.title || item.name }}'</h3>
+          <button class="movie-info-close-btn" @click="closeRatingModal">×</button>
+        </div>
+        <div class="movie-info-rating-content">
+          <div class="movie-info-rating-selector">
+            <div class="movie-info-rating-numbers">
+              <button v-for="n in 10" :key="n" @click="setRating(n)" @mouseover="previewRating(n)" @mouseout="resetPreview()"
+                :class="['movie-info-rating-btn', {'movie-info-rating-btn-active': n <= (hoverRating || selectedRating)}]">{{ n }}</button>
+            </div>
+          </div>
+          <div class="movie-info-review-section">
+            <textarea v-model="editUserReview" placeholder="Añadir una reseña..." class="movie-info-review-textarea" maxlength="2000" :disabled="selectedRating === 0"></textarea>
+            <div class="movie-info-char-count">{{ editUserReview.length }}/2000</div>
+          </div>
+          <div class="movie-info-modal-buttons">
+            <button @click="removeRatingAndReview" class="movie-info-remove-btn">Borrar</button>
+            <button @click="saveEditedReview" class="movie-info-save-btn" :disabled="selectedRating === 0">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <slot name="before-recommendations"></slot>
     
     <div v-if="hasAnyRecommendations" class="recommendations-wrapper">
@@ -286,6 +340,13 @@ export default {
       isLoadingRecommendations: true,
       isTranslatingSynopsis: false,
       translatedOverview: null,
+
+      // Review quick actions
+      showDeleteReviewModal: false,
+      ratingModalVisible: false,
+      selectedRating: 0,
+      hoverRating: 0,
+      editUserReview: '',
     };
   },
 
@@ -589,6 +650,58 @@ export default {
     async enrichWithIMDbRatings(items) {
       if (!items?.length) return items;
       return await Promise.all(items.map(item => enrichMovieWithIMDbRating(item)));
+    },
+    openEditRatingModal(review) {
+      this.selectedRating = review.authorRating || 0;
+      this.editUserReview = review.content || '';
+      this.hoverRating = 0;
+      this.ratingModalVisible = true;
+    },
+    closeRatingModal() {
+      this.ratingModalVisible = false;
+      this.selectedRating = 0;
+      this.hoverRating = 0;
+      this.editUserReview = '';
+    },
+    setRating(n) { this.selectedRating = n; },
+    previewRating(n) { this.hoverRating = n; },
+    resetPreview() { this.hoverRating = 0; },
+    async saveEditedReview() {
+      if (this.selectedRating === 0) return;
+      const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+      if (!userEmail) return;
+      const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
+      try {
+        const resp = await fetch(`${tursoUrl}/favorites/rating/${userEmail}/movie/${this.item.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rating: this.selectedRating, review: this.editUserReview.trim() })
+        });
+        if (!resp.ok) throw new Error('Error saving');
+        this.closeRatingModal();
+        this.$bus.$emit('rated-items-updated');
+        await this.fetchReviews();
+      } catch (e) { console.error(e); }
+    },
+    async removeRatingAndReview() {
+      const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+      if (!userEmail) return;
+      const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
+      try {
+        const resp = await fetch(`${tursoUrl}/favorites/rating/${userEmail}/movie/${this.item.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rating: null, review: '' })
+        });
+        if (!resp.ok) throw new Error('Error removing');
+        this.closeRatingModal();
+        this.$bus.$emit('rated-items-updated');
+        await this.fetchReviews();
+      } catch (e) { console.error(e); }
+    },
+    async deleteReview() {
+      this.showDeleteReviewModal = false;
+      await this.removeRatingAndReview();
     },
     toggleFullReviews() { this.showFullReviews = !this.showFullReviews; },
     formatGenres(genres) { return genres.map(genre => `<a href="/genre/${genre.id}/movie">${genre.name}</a>`).join(', '); },
@@ -967,6 +1080,66 @@ export default {
   }
 }
 
+
+.userReviewActions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: flex-end;
+  margin-top: 0.8rem;
+}
+
+.editReviewBtn,
+.deleteReviewBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  
+  svg {
+    stroke-width: 2px;
+    width: 20px;
+    height: 20px;
+    fill: none;
+    transition: all 0.2s ease;
+  }
+}
+
+.editReviewBtn {
+  color: rgba(139, 233, 253, 0.7);
+  border-color: rgba(139, 233, 253, 0.25);
+  
+  svg { stroke: rgba(139, 233, 253, 0.8); }
+
+  &:hover {
+    background: rgba(139, 233, 253, 0.12);
+    color: #8BE9FD;
+    border-color: rgba(139, 233, 253, 0.5);
+    transform: translateY(-1px);
+    svg { stroke: #8BE9FD; }
+  }
+}
+
+.deleteReviewBtn {
+  color: rgba(255, 107, 107, 0.7);
+  border-color: rgba(255, 107, 107, 0.25);
+
+  svg { stroke: rgba(255, 107, 107, 0.8); }
+
+  &:hover {
+    background: rgba(255, 107, 107, 0.12);
+    color: #FF6B6B;
+    border-color: rgba(255, 107, 107, 0.5);
+    transform: translateY(-1px);
+    svg { stroke: #FF6B6B; }
+  }
+}
+
 .noReviews {
   text-align: center;
   font-size: 1.6rem;
@@ -1269,5 +1442,276 @@ export default {
     opacity: 0.3;
     pointer-events: none;
   }
+}
+</style>
+
+<style>
+/* ── Embedded review modals (MovieInfo) ─────────────────────── */
+.movie-info-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 20px;
+}
+
+.movie-info-delete-modal,
+.movie-info-rating-modal {
+  width: 100%;
+  max-width: 400px;
+  background: linear-gradient(135deg, rgba(6, 47, 64, 0.98) 0%, rgba(10, 30, 40, 0.99) 100%);
+  border: 1px solid rgba(127, 219, 241, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px 0 rgba(31, 104, 135, 0.6);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  overflow: hidden;
+}
+
+.movie-info-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.movie-info-modal-header h3 {
+  color: #8BE9FD;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 300px;
+}
+
+.movie-info-close-btn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 3rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.movie-info-close-btn:hover { color: #fff; }
+
+.movie-info-delete-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 20px 16px;
+  gap: 12px;
+}
+
+.movie-info-delete-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  margin: 0;
+}
+
+.movie-info-delete-warning {
+  font-size: 1.3rem;
+  color: rgba(255,255,255,0.65);
+  text-align: center;
+  margin: 0;
+}
+
+.movie-info-delete-warning strong { color: #FF6B6B; }
+
+.movie-info-delete-actions {
+  display: flex;
+  gap: 10px;
+  padding: 12px 20px 20px;
+  justify-content: center;
+}
+
+.movie-info-cancel-btn,
+.movie-info-confirm-delete-btn {
+  padding: 0.7rem 1.8rem;
+  border-radius: 8px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid;
+}
+
+.movie-info-cancel-btn {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.7);
+  border-color: rgba(255,255,255,0.15);
+}
+
+.movie-info-cancel-btn:hover {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+}
+
+.movie-info-confirm-delete-btn {
+  background: rgba(255, 107, 107, 0.12);
+  color: #FF6B6B;
+  border-color: rgba(255, 107, 107, 0.45);
+}
+
+.movie-info-confirm-delete-btn:hover {
+  background: rgba(255, 107, 107, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255,107,107,0.25);
+}
+
+.movie-info-rating-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.movie-info-rating-selector { width: 100%; }
+
+.movie-info-rating-numbers {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.movie-info-rating-numbers::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 2px;
+  background: rgba(255,255,255,0.07);
+  transform: translateY(-50%);
+  z-index: 0;
+}
+
+.movie-info-rating-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: #041019;
+  color: rgba(255,255,255,0.6);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.movie-info-rating-btn-active {
+  background: #8BE9FD;
+  color: #000;
+  transform: scale(1.15);
+  box-shadow: 0 0 10px rgba(139,233,253,0.5);
+}
+
+.movie-info-rating-btn:hover { transform: scale(1.15); }
+
+.movie-info-review-section {
+  width: 100%;
+  position: relative;
+}
+
+.movie-info-review-textarea {
+  width: 100%;
+  height: 160px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 12px;
+  color: #fff;
+  font-size: 1.3rem;
+  resize: none;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.movie-info-review-textarea:focus {
+  outline: none;
+  border-color: rgba(139,233,253,0.5);
+}
+
+.movie-info-review-textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.movie-info-char-count {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.35);
+}
+
+.movie-info-modal-buttons {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.movie-info-save-btn,
+.movie-info-remove-btn {
+  flex: 1;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.movie-info-save-btn {
+  background: rgba(139, 233, 253, 0.12);
+  color: #8BE9FD;
+  border-color: rgba(139, 233, 253, 0.35);
+}
+
+.movie-info-save-btn:hover {
+  background: rgba(139, 233, 253, 0.22);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139,233,253,0.2);
+}
+
+.movie-info-save-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.movie-info-remove-btn {
+  background: rgba(255, 107, 107, 0.1);
+  color: #FF6B6B;
+  border-color: rgba(255, 107, 107, 0.35);
+}
+
+.movie-info-remove-btn:hover {
+  background: rgba(255, 107, 107, 0.22);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255,107,107,0.2);
 }
 </style>

@@ -40,22 +40,6 @@
 
             <div class="detail-item">
               <div class="detail-label">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><path d="M16 2v4M8 2v4m-5 4h18"/></svg>
-                <span>Fecha de Registro</span>
-              </div>
-              <div class="detail-value">{{ joinedDate }}</div>
-            </div>
-
-            <div class="detail-item">
-              <div class="detail-label">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4m-5-4 5-5-5-5m5 5H3"/></svg>
-                <span>Último Acceso</span>
-              </div>
-              <div class="detail-value">{{ lastLoginDate }}</div>
-            </div>
-
-            <div class="detail-item">
-              <div class="detail-label">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                 <span>Última Actividad</span>
               </div>
@@ -279,12 +263,6 @@ export default {
     },
     email() {
       return this.userData ? this.userData.email : '';
-    },
-    joinedDate() {
-      return this.userData ? this.formatDate(this.userData.created_at) : '';
-    },
-    lastLoginDate() {
-      return this.userData && this.userData.last_login ? this.formatDate(this.userData.last_login) : 'Sin registro de acceso';
     }
   },
   mounted() {

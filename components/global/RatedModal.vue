@@ -749,10 +749,13 @@ export default {
 .rating-modal {
   width: 100%;
   max-width: 360px;
-  background: linear-gradient(to bottom right, #092739, #061720);
-  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(6, 47, 64, 0.98) 0%, rgba(10, 30, 40, 0.99) 100%);
+  border: 1px solid rgba(127, 219, 241, 0.3);
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 12px 40px 0 rgba(31, 104, 135, 0.6);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   display: flex;
   flex-direction: column;
 }
@@ -826,7 +829,7 @@ export default {
 
 .review-textarea {
   width: 100%;
-  height: 100px;
+  height: 160px;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
@@ -863,44 +866,47 @@ export default {
 }
 
 .save-btn {
-  background: #8BE9FD;
-  color: #000;
-  border: none;
-  font-size: 14px;
+  background: rgba(139, 233, 253, 0.12);
+  color: #8BE9FD;
+  border: 1px solid rgba(139, 233, 253, 0.35);
+  font-size: 1.3rem;
   font-weight: 600;
-  padding: 10px 0;
+  padding: 0.8rem 0;
   cursor: pointer;
   transition: all 0.2s ease;
-  border-radius: 30px;
+  border-radius: 8px;
   flex: 1;
-  max-width: 120px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .save-btn:hover {
-  background: #7AD6E9;
+  background: rgba(139, 233, 253, 0.22);
   transform: translateY(-1px);
-  box-shadow: 0 5px 15px rgba(139, 233, 253, 0.3);
+  box-shadow: 0 4px 12px rgba(139, 233, 253, 0.2);
 }
 
 .save-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
+  transform: none;
 }
 
 .remove-rating-btn {
-  background: rgba(255, 0, 0, 0.2);
-  color: #fff;
-  border: 1px solid rgba(255, 0, 0, 0.4);
-  font-size: 13px;
+  background: rgba(255, 107, 107, 0.1);
+  color: #FF6B6B;
+  border: 1px solid rgba(255, 107, 107, 0.35);
+  font-size: 1.3rem;
   font-weight: 600;
-  padding: 10px 0;
+  padding: 0.8rem 0;
   cursor: pointer;
   transition: all 0.2s ease;
-  border-radius: 30px;
+  border-radius: 8px;
   flex: 1;
-  max-width: 120px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .loader {
