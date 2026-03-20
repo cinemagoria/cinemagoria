@@ -63,7 +63,7 @@
             alt="Rotten Tomatoes" 
             class="link-icon rt-icon"
           />
-          <span class="label-style">{{ tomatoMeter.score }}% Tomatometer</span>
+          <span class="label-style">{{ tomatoMeter.score }}% Rotten Tomatoes</span>
         </a>
       </div>
       

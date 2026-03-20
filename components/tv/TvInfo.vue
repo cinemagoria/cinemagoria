@@ -157,7 +157,15 @@
                     <span v-if="!review.showFullContent && review.content.split(' ').length > 200" :class="$style.readMore" @click="toggleReadMore(review)">..[Read More]</span>
                   </div>
 
-                  <div :class="$style.reviewActions" v-if="review.url">
+                  <div v-if="review.source === 'User'" :class="$style.userReviewActions">
+                    <button :class="$style.editReviewBtn" @click="openEditRatingModal(review)" title="Edit review" style="width: 32px !important; height: 32px !important; padding: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important;">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px !important; height: 18px !important; display: block !important; min-width: 18px !important; min-height: 18px !important; stroke: #8BE9FD !important; stroke-width: 2.5px !important; visibility: visible !important; opacity: 1 !important;"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+                    </button>
+                    <button :class="$style.deleteReviewBtn" @click="showDeleteReviewModal = true" title="Delete review" style="width: 32px !important; height: 32px !important; padding: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important;">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 18px !important; height: 18px !important; display: block !important; min-width: 18px !important; min-height: 18px !important; stroke: #FF6B6B !important; stroke-width: 2.5px !important; visibility: visible !important; opacity: 1 !important;"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    </button>
+                  </div>
+                  <div v-else-if="review.url" :class="$style.reviewActions">
                     <a :href="review.url" target="_blank" rel="noopener noreferrer" :class="$style.viewReviewButton">
                       View Review
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
@@ -165,6 +173,63 @@
                   </div>
               </li>
           </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete review confirmation modal -->
+    <div v-if="showDeleteReviewModal" class="movie-info-modal-overlay" @click.self="showDeleteReviewModal = false">
+      <div class="movie-info-delete-modal">
+        <div class="movie-info-modal-header">
+          <h3>Delete Review</h3>
+          <button class="movie-info-close-btn" @click="showDeleteReviewModal = false">×</button>
+        </div>
+        <div class="movie-info-delete-body">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="#ff6b6b" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+          <p class="movie-info-delete-warning">Are you sure you want to delete your review and rating for <strong>{{ item.name || item.title }}</strong>?</p>
+          <p class="movie-info-delete-warning" style="font-size: 1.1rem; opacity: 0.8; margin-top: -5px;">This action cannot be undone.</p>
+        </div>
+        <div class="movie-info-delete-actions">
+          <button class="movie-info-cancel-btn" @click="showDeleteReviewModal = false">Cancel</button>
+          <button class="movie-info-confirm-delete-btn" @click="deleteReview">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit review / rate modal -->
+    <div v-if="ratingModalVisible" class="movie-info-modal-overlay" @click.self="closeRatingModal">
+      <div class="movie-info-rating-modal">
+        <div class="movie-info-modal-header">
+          <h3>Rate '{{ item.name || item.title }}'</h3>
+          <button class="movie-info-close-btn" @click="closeRatingModal">×</button>
+        </div>
+        <div class="movie-info-rating-content">
+          <div class="movie-info-rating-selector">
+            <div class="movie-info-rating-numbers">
+              <button
+                v-for="n in 10"
+                :key="n"
+                @click="setRating(n)"
+                @mouseover="previewRating(n)"
+                @mouseout="resetPreview()"
+                :class="['movie-info-rating-btn', { 'movie-info-rating-btn-active': n <= (hoverRating || selectedRating) }]"
+              >{{ n }}</button>
+            </div>
+          </div>
+          <div class="movie-info-review-section">
+            <textarea
+              v-model="editUserReview"
+              placeholder="Write your review here…"
+              class="movie-info-review-textarea"
+              maxlength="2000"
+              :disabled="selectedRating === 0"
+            ></textarea>
+            <div class="movie-info-char-count">{{ editUserReview.length }}/2000</div>
+          </div>
+          <div class="movie-info-modal-buttons">
+            <button @click="removeRatingAndReview" class="movie-info-remove-btn">Remove Rating</button>
+            <button @click="saveEditedReview" class="movie-info-save-btn" :disabled="selectedRating === 0">Save</button>
+          </div>
         </div>
       </div>
     </div>
@@ -270,6 +335,13 @@ export default {
       creatorItems: null,
       activeTab: null,
       isLoadingRecommendations: true,
+
+      // Review quick actions
+      showDeleteReviewModal: false,
+      ratingModalVisible: false,
+      selectedRating: 0,
+      hoverRating: 0,
+      editUserReview: '',
     };
   },
 
@@ -540,6 +612,60 @@ export default {
         }
       } catch (error) { console.error(error); } finally { this.followTvLoading = false; }
     },
+    //  ── Review quick-action methods ──────────────────────────────
+    openEditRatingModal(review) {
+      this.selectedRating = review.authorRating || 0;
+      this.editUserReview = review.content || '';
+      this.hoverRating = 0;
+      this.ratingModalVisible = true;
+    },
+    closeRatingModal() {
+      this.ratingModalVisible = false;
+      this.selectedRating = 0;
+      this.hoverRating = 0;
+      this.editUserReview = '';
+    },
+    setRating(n) { this.selectedRating = n; },
+    previewRating(n) { this.hoverRating = n; },
+    resetPreview() { this.hoverRating = 0; },
+    async saveEditedReview() {
+      if (this.selectedRating === 0) return;
+      const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+      if (!userEmail) return;
+      const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
+      try {
+        const resp = await fetch(`${tursoUrl}/favorites/rating/${userEmail}/tv/${this.item.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rating: this.selectedRating, review: this.editUserReview.trim() })
+        });
+        if (!resp.ok) throw new Error('Error saving');
+        this.closeRatingModal();
+        this.$bus.$emit('rated-items-updated');
+        await this.fetchReviews();
+      } catch (e) { console.error(e); }
+    },
+    async removeRatingAndReview() {
+      const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+      if (!userEmail) return;
+      const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
+      try {
+        const resp = await fetch(`${tursoUrl}/favorites/rating/${userEmail}/tv/${this.item.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rating: null, review: '' })
+        });
+        if (!resp.ok) throw new Error('Error removing');
+        this.closeRatingModal();
+        this.$bus.$emit('rated-items-updated');
+        await this.fetchReviews();
+      } catch (e) { console.error(e); }
+    },
+    async deleteReview() {
+      this.showDeleteReviewModal = false;
+      await this.removeRatingAndReview();
+    },
+    //  ─────────────────────────────────────────────────────────────
     toggleFullReviews() { this.showFullReviews = !this.showFullReviews; },
     formatGenres (genres) { 
       return genres.map(genre => {
@@ -993,6 +1119,57 @@ export default {
   svg {
     width: 14px;
     height: 14px;
+  }
+}
+
+.userReviewActions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: flex-end;
+  margin-top: 0.8rem;
+}
+
+.editReviewBtn,
+.deleteReviewBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  
+  svg {
+    stroke-width: 2px;
+    width: 20px;
+    height: 20px;
+    fill: none;
+    transition: all 0.2s ease;
+  }
+}
+
+.editReviewBtn {
+  color: rgba(139, 233, 253, 0.7);
+  border-color: rgba(139, 233, 253, 0.25);
+  &:hover {
+    background: rgba(139, 233, 253, 0.12);
+    color: #8BE9FD;
+    border-color: rgba(139, 233, 253, 0.5);
+    transform: translateY(-1px);
+  }
+}
+
+.deleteReviewBtn {
+  color: rgba(255, 107, 107, 0.7);
+  border-color: rgba(255, 107, 107, 0.25);
+  &:hover {
+    background: rgba(255, 107, 107, 0.12);
+    color: #FF6B6B;
+    border-color: rgba(255, 107, 107, 0.5);
+    transform: translateY(-1px);
   }
 }
 
