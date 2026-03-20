@@ -296,9 +296,9 @@
   {
     "tmdb_id": 258036,
     "trailer_key": "ryijrW6nKgA",
-    "backdrop_path": "/6qOt2ZKapVk9bt5tr1V6LfrKrZn.jpg",
+    "backdrop_path": "/4X86dOxMsrZudL0PdsMv30NGBWZ.jpg",
     "poster_path": "/A3SsqMkLOEBwAEbyj26llRoE1Zn.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 843342,
