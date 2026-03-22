@@ -219,7 +219,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Seekers of Infinite Love',    
         'Pretty Lethal',
         'The Snake',
-        'The Fox',
+        
         'Black Zombie',
         'Whisperings of the Moon', 
         'The Bulldogs', 
