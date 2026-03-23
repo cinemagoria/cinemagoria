@@ -114,32 +114,7 @@ export default {
         data.results = data.results.map(item => {
           item.vote_average = 0;
           item.imdb_rating = 0;
-
-          if (item.id === 85552 || item.name === 'Euphoria' || item.title === 'Euphoria') {
-            return {
-              ...item,
-              name: 'Euphoria S03',
-              title: 'Euphoria S03',
-              first_air_date: '2026-04-12',
-              release_date: '2026-04-12'
-            };
-          }
-          if (item.id === 112160 || item.name === 'Beef' || item.name === 'BEEF' || item.name === 'Bronca' || item.title === 'BEEF') {
-            return {
-              ...item,
-              name: 'BEEF S02',
-              title: 'BEEF S02',
-              first_air_date: '2026-04-16',
-              release_date: '2026-04-16'
-            };
-          }
           return item;
-        });
-
-        data.results.sort((a, b) => {
-          const dateA = new Date(a.release_date || a.first_air_date || '1970-01-01');
-          const dateB = new Date(b.release_date || b.first_air_date || '1970-01-01');
-          return dateB - dateA;
         });
       }
 
