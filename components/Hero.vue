@@ -684,8 +684,17 @@ export default {
               this.checkHomepageContentReady();
             }
           }, 100);
-          
+
           this.checkHomepageContentReady();
+
+          setTimeout(() => {
+            if (!this.isHomepageContentReady) {
+              this.loadingStates.backdrop = false;
+              this.loadingStates.festivalBadge = false;
+              this.loadingStates.metadata = false;
+              this.isHomepageContentReady = true;
+            }
+          }, 5000);
         }
     },
     
