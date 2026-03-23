@@ -19,9 +19,6 @@
           A curated selection of what hasn&rsquo;t surfaced yet &mdash; premieres, unseen releases, and titles up to a year ahead.
         </p>
 
-        <p class="noir-modal-text noir-modal-highlight">
-          If you&rsquo;re watching it in theaters, it left N.O.I.R at least a month ago.
-        </p>
       </div>
 
       <div class="noir-modal-footer">
