@@ -35,6 +35,15 @@
         </div>
       </transition>
 
+      <transition name="fade">
+        <div v-if="cloneError" class="undoBarContainer">
+          <div class="undoBar undoBar--error">
+            <span>{{ cloneError }}</span>
+            <div class="timer-line timer-line--error"></div>
+          </div>
+        </div>
+      </transition>
+
       <div v-if="loading" class="noir-archive-loader">
         <Loader :size="60" />
       </div>
@@ -72,6 +81,7 @@ export default {
       showNoirModal: false,
       cloning: false,
       cloneSuccess: false,
+      cloneError: null,
       newlyCreatedListSlug: null,
     };
   },
@@ -181,7 +191,8 @@ export default {
         }, 4000);
       } catch (e) {
         console.error('Clone failed:', e);
-        alert('Error al clonar el archivo a una colecci\u00F3n.');
+        this.cloneError = 'Error al clonar el archivo a una colección.';
+        setTimeout(() => { this.cloneError = null; }, 4000);
       } finally {
         this.cloning = false;
       }
@@ -302,6 +313,15 @@ export default {
   height: 2px;
   background: #8BE9FD;
   animation: shrink 4s linear forwards;
+}
+
+.undoBar--error {
+  background: linear-gradient(90deg, rgba(255, 85, 85, 0.2) 0%, rgba(204, 0, 0, 0.2) 100%);
+  border-bottom-color: #ff5555;
+}
+
+.timer-line--error {
+  background: #ff5555;
 }
 
 @keyframes shrink {
