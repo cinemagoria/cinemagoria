@@ -1,0 +1,32 @@
+name: Sync N.O.I.R Historical
+
+on:
+  schedule:
+    - cron: '30 0 */3 * *'
+  workflow_run:
+    workflows: ["Sync Hero Enrichment Data"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install @libsql/client
+
+      - name: Sync noir historical
+        run: node scripts/syncNoirHistorical.js
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}

@@ -21,8 +21,14 @@ jobs:
       - name: Install dependencies
         run: npm install @libsql/client
 
-      - name: Run sync script
+      - name: Sync hero enrichment
         run: node scripts/syncHeroData.js
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+
+      - name: Sync noir enrichment
+        run: node scripts/syncNoirEnrichmentData.js
         env:
           TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
@@ -31,6 +37,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/data/hero-enrichment.json
-          git diff --cached --quiet || git commit -m "chore: update hero-enrichment.json"
+          git add public/data/hero-enrichment.json public/data/noir-enrichment.json
+          git diff --cached --quiet || git commit -m "chore: update enrichment data"
           git push

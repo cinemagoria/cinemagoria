@@ -62,15 +62,39 @@ export const apiImgUrl = 'https://image.tmdb.org/t/p';
 const EXCLUDED_TV_IDS = [276880];
 
 let _heroEnrichmentPromise = null;
+let _noirEnrichmentPromise = null;
+
+function _buildEnrichmentMap(data) {
+    const map = new Map();
+    for (const item of data) {
+        if (item.media_type) {
+            map.set(`${item.tmdb_id}-${item.media_type}`, item);
+        }
+        if (!map.has(item.tmdb_id)) {
+            map.set(item.tmdb_id, item);
+        }
+    }
+    return map;
+}
 
 export async function getHeroEnrichment() {
     if (!_heroEnrichmentPromise) {
         _heroEnrichmentPromise = fetch('/data/hero-enrichment.json')
             .then(res => res.ok ? res.json() : [])
-            .then(data => new Map(data.map(item => [item.tmdb_id, item])))
+            .then(_buildEnrichmentMap)
             .catch(() => new Map());
     }
     return _heroEnrichmentPromise;
+}
+
+export async function getNoirEnrichment() {
+    if (!_noirEnrichmentPromise) {
+        _noirEnrichmentPromise = fetch('/data/noir-enrichment.json')
+            .then(res => res.ok ? res.json() : [])
+            .then(_buildEnrichmentMap)
+            .catch(() => new Map());
+    }
+    return _noirEnrichmentPromise;
 }
 
 const traktApiUrl = 'https://api.trakt.tv';
