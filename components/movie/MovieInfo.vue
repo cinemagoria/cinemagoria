@@ -732,6 +732,7 @@ export default {
       } catch (error) { this.localProviders = []; }
     },
     async fetchReviews() {
+      if (!import.meta.client) return;
       this.isTranslating = true;
       try {
         const tmdbReviewsPromise = getMovieReviews(this.item.id);
@@ -800,6 +801,7 @@ export default {
       }
     },
     async handleSynopsisTranslation() {
+        if (!import.meta.client) return;
         if (this.item.overview && this.item.original_overview_language === 'en') {
             this.isTranslatingSynopsis = true;
             try {

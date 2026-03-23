@@ -1629,6 +1629,7 @@ function _setCache(text, translation) {
 }
 
 async function _callGemini(userPrompt) {
+    if (!import.meta.client) return null;
     const apiKey = getEnv('geminiApiKey');
     if (!apiKey) {
         console.error('GEMINI_API_KEY not configured');

@@ -701,6 +701,7 @@ export default {
 
 
     async handleTranslation() {
+        if (!import.meta.client) return;
         const item = this.heroItem || this.item;
         if (item.overview && item.original_overview_language === 'en') {
             this.isTranslating = true;

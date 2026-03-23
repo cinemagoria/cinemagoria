@@ -700,6 +700,7 @@ export default {
       } catch (error) { this.localProviders = []; }
     },
     async fetchReviews() {
+        if (!import.meta.client) return;
         this.isTranslating = true;
         try {
           const tmdbReviewsPromise = getTvShowReviews(this.item.id);
@@ -780,6 +781,7 @@ export default {
       return map[status] || status;
     },
     async handleSynopsisTranslation() {
+        if (!import.meta.client) return;
         if (this.item.overview && this.item.original_overview_language === 'en') {
             this.isTranslatingSynopsis = true;
             try {

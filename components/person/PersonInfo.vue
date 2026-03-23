@@ -210,6 +210,7 @@ export default {
   },
   methods: {
     async handleTranslation() {
+        if (!import.meta.client) return;
         if (this.person.biography && this.person.original_biography_language === 'en') {
             this.isTranslating = true;
             try {
