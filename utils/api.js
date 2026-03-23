@@ -50,6 +50,7 @@ const getEnv = (key) => {
             'API_YOUTUBE_KEY': config.apiYoutubeKey,
             'MDBLIST_API': useRuntimeConfig().public.mdblistApi || process.env.MDBLIST_API,
             'rapidApiKey': config.rapidApiKey,
+            'geminiApiKey': config.geminiApiKey,
         };
         return mapping[key] || process.env[key];
     } catch (e) {
@@ -1571,178 +1572,93 @@ export async function getFollowedProductionCompanies(userEmail) {
     }
 }
 
-const CACHE_PREFIX = 'trans_cache_v1_';
-const BATCH_DELIMITER = ' ||| ';
+const CACHE_PREFIX = 'trans_cache_v3_';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
-const PRESERVED_WORDS = [];
+const TRANSLATE_SYSTEM_PROMPT = `Eres un traductor profesional de cine y televisión especializado en inglés a español latinoamericano. Tu trabajo es producir traducciones naturales, fluidas y culturalmente apropiadas.
 
-function replacePreservedWords(text) {
-    let modifiedText = text;
-    const wordMap = {};
+REGLAS ESTRICTAS:
+- Traducir ÚNICAMENTE al español latinoamericano neutro (no español de España)
+- Mantener nombres propios de personas, personajes, lugares y títulos de películas/series en su idioma original (NO traducir "Breaking Bad", "Tony Stark", "New York", etc.)
+- Preservar el tono y registro del texto original (si es formal, traducir formal; si es coloquial, traducir coloquial)
+- NO agregar explicaciones, notas, comillas, ni texto adicional
+- NO incluir prefijos como "Traducción:" o "Aquí está la traducción:"
+- Responder EXCLUSIVAMENTE con el texto traducido, nada más
+- Mantener el formato original (saltos de línea, puntuación)
+- Usar terminología cinematográfica correcta en español (ej: "cinematografía" no "fotografía", "guion" no "libreto")`;
 
-    PRESERVED_WORDS.forEach((word, index) => {
-        const placeholder = `__PRESERVED_${index}__`;
-        const regex = new RegExp(`\\b${word}\\b`, 'g');
-        if (regex.test(modifiedText)) {
-            wordMap[placeholder] = word;
-            modifiedText = modifiedText.replace(regex, placeholder);
-        }
-    });
+const TRANSLATE_OVERVIEW_PROMPT = `Traduce la siguiente sinopsis/descripción de una película o serie de televisión del inglés al español latinoamericano. Responde SOLO con la traducción, sin explicaciones ni texto adicional:
 
-    return { modifiedText, wordMap };
+`;
+
+const TRANSLATE_REVIEW_PROMPT = `Traduce la siguiente reseña/crítica cinematográfica del inglés al español latinoamericano. Mantén el estilo y opinión del autor original. Responde SOLO con la traducción, sin explicaciones ni texto adicional:
+
+`;
+
+function _getTranslationCacheKey(text) {
+    return CACHE_PREFIX + btoa(unescape(encodeURIComponent(text.slice(0, 50) + text.length)));
 }
 
-function restorePreservedWords(text, wordMap) {
-    let restoredText = text;
-    for (const [placeholder, word] of Object.entries(wordMap)) {
-        const regex = new RegExp(placeholder, 'gi');
-        restoredText = restoredText.replace(regex, word);
+function _getCached(text) {
+    if (!import.meta.client) return null;
+    try {
+        return localStorage.getItem(_getTranslationCacheKey(text));
+    } catch (e) {
+        return null;
     }
-    return restoredText;
 }
 
-export async function translateReviewsBatch(reviews) {
-    if (!reviews || reviews.length === 0) {
-        return [];
+function _setCache(text, translation) {
+    if (!import.meta.client) return;
+    try {
+        localStorage.setItem(_getTranslationCacheKey(text), translation);
+    } catch (e) {
+        // Ignore localStorage errors
     }
+}
 
-    const contents = reviews.map(r => r.content || '');
-    const translations = new Array(contents.length).fill(null);
-    const indicesToTranslate = [];
-    const textsToTranslate = [];
-
-    contents.forEach((text, index) => {
-        if (!text.trim()) {
-            translations[index] = '';
-            return;
-        }
-
-        if (import.meta.client) {
-            try {
-                const cacheKey = CACHE_PREFIX + btoa(unescape(encodeURIComponent(text.slice(0, 50) + text.length)));
-                const cached = localStorage.getItem(cacheKey);
-
-                if (cached) {
-                    translations[index] = cached;
-                } else {
-                    indicesToTranslate.push(index);
-                    textsToTranslate.push(text);
-                }
-            } catch (e) {
-                indicesToTranslate.push(index);
-                textsToTranslate.push(text);
-            }
-        } else {
-            indicesToTranslate.push(index);
-            textsToTranslate.push(text);
-        }
-    });
-
-    if (indicesToTranslate.length === 0) {
-        return translations;
+async function _callGemini(userPrompt) {
+    const apiKey = getEnv('geminiApiKey');
+    if (!apiKey) {
+        console.error('GEMINI_API_KEY not configured');
+        return null;
     }
-
-    const combinedQuery = textsToTranslate.join(BATCH_DELIMITER);
-    const { modifiedText: finalQuery, wordMap } = replacePreservedWords(combinedQuery);
 
     try {
-        const response = await axios.post('https://deep-translate1.p.rapidapi.com/language/translate/v2',
-            {
-                source: 'en',
-                target: 'es',
-                q: finalQuery
-            },
-            {
-                headers: {
-                    'x-rapidapi-host': 'deep-translate1.p.rapidapi.com',
-                    'x-rapidapi-key': getEnv('rapidApiKey'),
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
+        const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                system_instruction: { parts: [{ text: TRANSLATE_SYSTEM_PROMPT }] },
+                contents: [{ parts: [{ text: userPrompt }] }],
+                generationConfig: { temperature: 0.1, maxOutputTokens: 4096 },
+            }),
+        });
 
-        if (response.data && response.data.data && response.data.data.translations && response.data.data.translations.translatedText && response.data.data.translations.translatedText.length > 0) {
-            let translatedText = response.data.data.translations.translatedText[0];
-            translatedText = restorePreservedWords(translatedText, wordMap);
-            const translatedParts = translatedText.split(BATCH_DELIMITER.trim());
-
-            if (translatedParts.length === textsToTranslate.length) {
-                translatedParts.forEach((trans, i) => {
-                    const originalIndex = indicesToTranslate[i];
-                    translations[originalIndex] = trans.trim();
-
-                    if (import.meta.client) {
-                        try {
-                            const text = textsToTranslate[i];
-                            const cacheKey = CACHE_PREFIX + btoa(unescape(encodeURIComponent(text.slice(0, 50) + text.length)));
-                            localStorage.setItem(cacheKey, trans.trim());
-                        } catch (e) {
-                            // Ignore localStorage errors
-                        }
-                    }
-                });
-            } else {
-                indicesToTranslate.forEach((originalIndex, i) => {
-                    translations[originalIndex] = textsToTranslate[i];
-                });
-            }
-
-        } else {
-            throw new Error('Invalid response format');
+        if (!response.ok) {
+            console.error('Gemini API error:', response.status);
+            return null;
         }
 
+        const result = await response.json();
+        const content = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+        return content ? content.trim() : null;
     } catch (error) {
-        console.error('Translation Error', error);
-        indicesToTranslate.forEach((originalIndex, i) => {
-            translations[originalIndex] = textsToTranslate[i];
-        });
+        console.error('Gemini fetch error:', error);
+        return null;
     }
-
-    return translations;
 }
 
 export async function translateText(text) {
     if (!text || !text.trim()) return '';
 
-    if (import.meta.client) {
-        try {
-            const cacheKey = CACHE_PREFIX + btoa(unescape(encodeURIComponent(text.slice(0, 50) + text.length)));
-            const cached = localStorage.getItem(cacheKey);
-            if (cached) return cached;
-        } catch (e) {
-            // Ignore
-        }
-    }
+    const cached = _getCached(text);
+    if (cached) return cached;
 
     try {
-        const { modifiedText: finalQuery, wordMap } = replacePreservedWords(text);
-
-        const response = await axios.post('https://deep-translate1.p.rapidapi.com/language/translate/v2',
-            {
-                source: 'en',
-                target: 'es',
-                q: finalQuery
-            },
-            {
-                headers: {
-                    'x-rapidapi-host': 'deep-translate1.p.rapidapi.com',
-                    'x-rapidapi-key': getEnv('rapidApiKey'),
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
-
-        if (response.data && response.data.data && response.data.data.translations && response.data.data.translations.translatedText && response.data.data.translations.translatedText.length > 0) {
-            let translation = response.data.data.translations.translatedText[0];
-            translation = restorePreservedWords(translation, wordMap);
-            if (import.meta.client) {
-                try {
-                    const cacheKey = CACHE_PREFIX + btoa(unescape(encodeURIComponent(text.slice(0, 50) + text.length)));
-                    localStorage.setItem(cacheKey, translation);
-                } catch (e) {
-                    // Ignore
-                }
-            }
+        const translation = await _callGemini(TRANSLATE_OVERVIEW_PROMPT + text);
+        if (translation) {
+            _setCache(text, translation);
             return translation;
         }
     } catch (error) {
@@ -1750,6 +1666,47 @@ export async function translateText(text) {
     }
 
     return text;
+}
+
+export async function translateReviewsBatch(reviews) {
+    if (!reviews || reviews.length === 0) return [];
+
+    const contents = reviews.map(r => r.content || '');
+    const translations = new Array(contents.length).fill(null);
+    const indicesToTranslate = [];
+
+    contents.forEach((text, index) => {
+        if (!text.trim()) {
+            translations[index] = '';
+            return;
+        }
+        const cached = _getCached(text);
+        if (cached) {
+            translations[index] = cached;
+        } else {
+            indicesToTranslate.push(index);
+        }
+    });
+
+    if (indicesToTranslate.length === 0) return translations;
+
+    for (const originalIndex of indicesToTranslate) {
+        const text = contents[originalIndex];
+        try {
+            const translation = await _callGemini(TRANSLATE_REVIEW_PROMPT + text);
+            if (translation) {
+                _setCache(text, translation);
+                translations[originalIndex] = translation;
+            } else {
+                translations[originalIndex] = text;
+            }
+        } catch (error) {
+            console.error('Review translation error', error);
+            translations[originalIndex] = text;
+        }
+    }
+
+    return translations;
 }
 
 export function translateReview(reviewContent) {

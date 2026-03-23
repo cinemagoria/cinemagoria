@@ -19,9 +19,6 @@
           Una selecci&oacute;n de lo que todav&iacute;a no se estren&oacute; &mdash; t&iacute;tulos hasta un a&ntilde;o antes de su lanzamiento.
         </p>
 
-        <p class="noir-modal-text noir-modal-highlight">
-          Si ya lo est&aacute;s viendo en el cine, sali&oacute; de N.O.I.R hace m&iacute;nimo un mes.
-        </p>
       </div>
 
       <div class="noir-modal-footer">

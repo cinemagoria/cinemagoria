@@ -77,6 +77,8 @@ export default defineNuxtConfig({
       assistantBackendUrl: process.env.ASSISTANT_BACKEND_URL || "https://cinemagoria-assistant-rust.vercel.app/api",
       mdblistApi: process.env.MDBLIST_API,
       rapidApiKey: process.env.RAPIDAPI_KEY,
+      orApiKey: process.env.OR_API_KEY,
+      geminiApiKey: process.env.GEMINI_API_KEY,
       newsAggregatorUrl: process.env.NEWS_AGGREGATOR_URL || "https://cinemagoria-rss-aggregator.vercel.app/news",
     }
   },
