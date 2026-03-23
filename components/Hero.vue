@@ -12,15 +12,18 @@
         <Loader :size="60" />
       </div>
       
+      <nuxt-link v-if="isHomepage" to="/noir" :class="$style.noirBadgeHistory" title="Histórico de N.O.I.R">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+      </nuxt-link>
+
       <div :class="$style.backdrop">
         <div>
-          <div v-if="isHomepage" :class="$style.upcomingBadge">
-             <transition name="fade" mode="out-in">
-               <span key="upcoming">
-                 PRÓXIMAMENTE
-               </span>
-             </transition>
+          <div v-if="isHomepage" :class="$style.noirBadgeGroup">
+            <button :class="$style.noirBadgeLabel" @click="showNoirModal = true">
+              EN N.O.I.R
+            </button>
           </div>
+          <NoirModal v-if="showNoirModal" @close="showNoirModal = false" />
           <button
             v-if="trailer && !isLoading"
             :class="$style.play"
@@ -368,6 +371,7 @@ import SxswBadge from '~/components/festival/SxswBadge.vue';
 import RomfordBadge from '~/components/festival/RomfordBadge.vue';
 import { translateText } from '~/utils/api';
 import { MANUAL_FESTIVAL_BADGES } from '~/utils/constants';
+import NoirModal from '~/components/NoirModal.vue';
 
 export default {
   components: {
@@ -379,6 +383,7 @@ export default {
     RotterdamBadge,
     SxswBadge,
     RomfordBadge,
+    NoirModal,
   },
 
   mixins: [
@@ -467,6 +472,7 @@ export default {
       isTranslating: false,
       translatedOverview: null,
 
+      showNoirModal: false,
       currentIndex: 0,
       touchStartX: 0,
       touchEndX: 0,
@@ -662,7 +668,9 @@ export default {
            });
         }
         
-        setTimeout(() => this.isLoading = false, 5000);
+        setTimeout(() => this.isLoading = false, 2000);
+
+        this.preloadAdjacentBackdrops();
         
         await Promise.all([
           this.checkFestivalStatus()
@@ -701,12 +709,30 @@ export default {
         }
     },
 
-    onBackdropLoaded() { 
+    onBackdropLoaded() {
       this.isLoading = false;
       if (this.isHomepage) {
         this.loadingStates.backdrop = false;
         this.checkHomepageContentReady();
       }
+    },
+
+    preloadAdjacentBackdrops() {
+      if (!this.isHomepage || !this.items || this.items.length <= 1) return;
+      const apiImg = 'https://image.tmdb.org/t/p';
+      const indicesToPreload = [
+        (this.currentIndex + 1) % this.items.length,
+        (this.currentIndex - 1 + this.items.length) % this.items.length
+      ];
+      indicesToPreload.forEach(idx => {
+        const item = this.items[idx];
+        if (item && item.backdrop_path) {
+          const img = new Image();
+          img.src = item.backdrop_path.startsWith('http')
+            ? item.backdrop_path
+            : `${apiImg}/original${item.backdrop_path}`;
+        }
+      });
     },
 
     async checkMembership() {
@@ -1956,26 +1982,87 @@ export default {
   }
 }
 
-.upcomingBadge {
+.noirBadgeGroup {
     position: absolute;
     top: 2rem;
     right: 2rem;
     z-index: 20;
-    color: #8BE9FD;
-    border: 1px solid #8BE9FD;
-    border-radius: 15px;
-    padding: 0.5rem 1.5rem;
-    font-weight: 600;
-    font-size: 1.2rem;
-    letter-spacing: 1px;
-    background: #000;
-    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
 
     @media (max-width: 600px) {
         top: 1.5rem;
         right: 1.5rem;
-        font-size: 1rem;
-        padding: 0.4rem 1.2rem;
+        gap: 0.4rem;
+    }
+}
+
+.noirBadgeHistory {
+    position: absolute;
+    top: 2rem;
+    left: 1.5rem;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: #8BE9FD;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    border: 1px solid #8BE9FD;
+    border-radius: 12px;
+    background: #000;
+    text-decoration: none;
+
+    &:hover {
+        background: rgba(139, 233, 253, 0.12);
+    }
+
+    @media (min-width: $breakpoint-small) {
+        left: 4rem;
+    }
+
+    @media (min-width: $breakpoint-large) {
+        left: 5rem;
+    }
+
+    @media (max-width: 600px) {
+        top: 1.5rem;
+        left: 1.5rem;
+        width: 32px;
+        height: 32px;
+
+        svg {
+            width: 15px;
+            height: 15px;
+        }
+    }
+}
+
+.noirBadgeLabel {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1.2rem;
+    color: #8BE9FD;
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 0.8px;
+    cursor: pointer;
+    background: #000;
+    border: 1px solid #8BE9FD;
+    border-radius: 15px;
+    font-family: inherit;
+    white-space: nowrap;
+    transition: background 0.3s ease;
+
+
+
+    @media (max-width: 600px) {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.9rem;
+        letter-spacing: 0.5px;
     }
 }
 

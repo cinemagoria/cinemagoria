@@ -49,7 +49,6 @@ const getEnv = (key) => {
             'TRAKT_CLIENT_ID': config.traktClientId,
             'API_YOUTUBE_KEY': config.apiYoutubeKey,
             'MDBLIST_API': useRuntimeConfig().public.mdblistApi || process.env.MDBLIST_API,
-            'rapidApiKey': config.rapidApiKey,
         };
         return mapping[key] || process.env[key];
     } catch (e) {
@@ -62,36 +61,58 @@ const apiUrl = 'https://api.themoviedb.org/3';
 export const apiImgUrl = 'https://image.tmdb.org/t/p';
 const EXCLUDED_TV_IDS = [276880];
 
-
 let _heroEnrichmentPromise = null;
+let _noirEnrichmentPromise = null;
+
+function _buildEnrichmentMap(data) {
+    const map = new Map();
+    for (const item of data) {
+        if (item.media_type) {
+            map.set(`${item.tmdb_id}-${item.media_type}`, item);
+        }
+        if (!map.has(item.tmdb_id)) {
+            map.set(item.tmdb_id, item);
+        }
+    }
+    return map;
+}
 
 export async function getHeroEnrichment() {
     if (!_heroEnrichmentPromise) {
         _heroEnrichmentPromise = fetch('/data/hero-enrichment.json')
             .then(res => res.ok ? res.json() : [])
-            .then(data => new Map(data.map(item => [item.tmdb_id, item])))
+            .then(_buildEnrichmentMap)
             .catch(() => new Map());
     }
     return _heroEnrichmentPromise;
 }
 
+export async function getNoirEnrichment() {
+    if (!_noirEnrichmentPromise) {
+        _noirEnrichmentPromise = fetch('/data/noir-enrichment.json')
+            .then(res => res.ok ? res.json() : [])
+            .then(_buildEnrichmentMap)
+            .catch(() => new Map());
+    }
+    return _noirEnrichmentPromise;
+}
 
 const traktApiUrl = 'https://api.trakt.tv';
 
 const lists = {
     movie: [
-        { title: 'Películas en Tendencia', query: 'trending' },
-        { title: 'Películas Populares', query: 'popular' },
-        { title: 'Películas Mejor Valoradas', query: 'top_rated' },
-        { title: 'Próximas Películas', query: 'upcoming' },
-        { title: 'Películas en Cartelera', query: 'now_playing' },
+        { title: 'Popular Movies', query: 'trending' },
+        { title: 'Popular Movies', query: 'popular' },
+        { title: 'Top Rated Movies', query: 'top_rated' },
+        { title: 'Upcoming Movies', query: 'upcoming' },
+        { title: 'Now Playing Movies', query: 'now_playing' },
     ],
     tv: [
-        { title: 'Series de TV en Tendencia', query: 'trending' },
-        { title: 'Series de TV Populares', query: 'popular' },
-        { title: 'Series de TV Mejor Valoradas', query: 'top_rated' },
-        { title: 'Series de TV en Emisión Actualmente', query: 'on_the_air' },
-        { title: 'Series de TV que se Emiten Hoy', query: 'airing_today' },
+        { title: 'Popular TV Shows', query: 'trending' },
+        { title: 'Popular TV Shows', query: 'popular' },
+        { title: 'Top Rated TV Shows', query: 'top_rated' },
+        { title: 'Currently Airing TV Shows', query: 'on_the_air' },
+        { title: 'TV Shows Airing Today', query: 'airing_today' },
     ],
 };
 
@@ -366,67 +387,18 @@ export function getMovies(query, page = 1) {
 
 export function getMovie(id) {
     return new Promise((resolve, reject) => {
-        const mainRequest = axios.get(`${apiUrl}/movie/${id}`, {
+        axios.get(`${apiUrl}/movie/${id}`, {
             params: {
                 api_key: getEnv('API_KEY'),
                 language: getEnv('API_LANG'),
                 append_to_response: 'videos,credits,images,external_ids,release_dates',
-                include_image_language: 'es,en,null',
+                include_image_language: 'en',
             },
-        });
-
-        const extraVideosRequest = axios.get(`${apiUrl}/movie/${id}/videos`, {
-            params: {
-                api_key: getEnv('API_KEY'),
-                language: 'en-US'
-            }
-        }).catch(() => ({ data: { results: [] } }));
-
-        Promise.all([mainRequest, extraVideosRequest]).then(async ([response, videoResponse]) => {
+        }).then(async (response) => {
             const responseData = response.data;
-
             if (!responseData || responseData.success === false) {
                 reject(new Error(responseData?.status_message || 'Movie not found'));
                 return;
-            }
-
-            if (!responseData.overview && getEnv('API_LANG') !== 'en-US') {
-                try {
-                    const fallbackResponse = await axios.get(`${apiUrl}/movie/${id}`, {
-                        params: {
-                            api_key: getEnv('API_KEY'),
-                            language: 'en-US',
-                        },
-                    });
-                    if (fallbackResponse.data.overview) {
-                        responseData.overview = fallbackResponse.data.overview;
-                        responseData.original_overview_language = 'en';
-                    }
-                } catch (e) {
-                    console.warn('Failed to fetch fallback overview', e);
-                }
-            }
-
-            if (videoResponse.data && videoResponse.data.results) {
-                const currentIds = new Set((responseData.videos.results || []).map(v => v.id));
-                const newVideos = videoResponse.data.results.filter(v => !currentIds.has(v.id));
-                responseData.videos = {
-                    ...responseData.videos,
-                    results: [...(responseData.videos.results || []), ...newVideos]
-                };
-            }
-
-            const sortImages = (imgs) => {
-                if (!imgs) return [];
-                return imgs.sort((a, b) => {
-                    const score = (lang) => (lang === 'es' || lang === 'es-ES') ? 2 : (lang === null ? 1 : 0);
-                    return score(b.iso_639_1) - score(a.iso_639_1);
-                });
-            };
-
-            if (responseData.images) {
-                if (responseData.images.backdrops) responseData.images.backdrops = sortImages(responseData.images.backdrops);
-                if (responseData.images.posters) responseData.images.posters = sortImages(responseData.images.posters);
             }
             const [providersResult, reviewsResult] = await Promise.allSettled([
                 getMovieProviders(id),
@@ -492,7 +464,7 @@ export function getMovieReleaseDates(id) {
 
 export function getMovieReviews(id) {
     return new Promise((resolve, reject) => {
-        axios.get(`${apiUrl}/movie/${id}/reviews?language=${getEnv('API_LANG')}&page=1`, {
+        axios.get(`${apiUrl}/movie/${id}/reviews?language=en-US&page=1`, {
             params: {
                 api_key: getEnv('API_KEY'),
             },
@@ -692,67 +664,18 @@ export function getTvShows(query, page = 1) {
 
 export function getTvShow(id) {
     return new Promise((resolve, reject) => {
-        const mainRequest = axios.get(`${apiUrl}/tv/${id}`, {
+        axios.get(`${apiUrl}/tv/${id}`, {
             params: {
                 api_key: getEnv('API_KEY'),
                 language: getEnv('API_LANG'),
                 append_to_response: 'videos,credits,images,external_ids,content_ratings',
-                include_image_language: 'es,en,null',
+                include_image_language: 'en',
             },
-        });
-
-        const extraVideosRequest = axios.get(`${apiUrl}/tv/${id}/videos`, {
-            params: {
-                api_key: getEnv('API_KEY'),
-                language: 'en-US'
-            }
-        }).catch(() => ({ data: { results: [] } }));
-
-        Promise.all([mainRequest, extraVideosRequest]).then(async ([response, videoResponse]) => {
+        }).then(async (response) => {
             const responseData = response.data;
-
             if (!responseData || responseData.success === false) {
                 reject(new Error(responseData?.status_message || 'TV Show not found'));
                 return;
-            }
-
-            if (!responseData.overview && getEnv('API_LANG') !== 'en-US') {
-                try {
-                    const fallbackResponse = await axios.get(`${apiUrl}/tv/${id}`, {
-                        params: {
-                            api_key: getEnv('API_KEY'),
-                            language: 'en-US',
-                        },
-                    });
-                    if (fallbackResponse.data.overview) {
-                        responseData.overview = fallbackResponse.data.overview;
-                        responseData.original_overview_language = 'en';
-                    }
-                } catch (e) {
-                    console.warn('Failed to fetch fallback overview', e);
-                }
-            }
-
-            if (videoResponse.data && videoResponse.data.results) {
-                const currentIds = new Set((responseData.videos.results || []).map(v => v.id));
-                const newVideos = videoResponse.data.results.filter(v => !currentIds.has(v.id));
-                responseData.videos = {
-                    ...responseData.videos,
-                    results: [...(responseData.videos.results || []), ...newVideos]
-                };
-            }
-
-            const sortImages = (imgs) => {
-                if (!imgs) return [];
-                return imgs.sort((a, b) => {
-                    const score = (lang) => (lang === 'es' || lang === 'es-ES') ? 2 : (lang === null ? 1 : 0);
-                    return score(b.iso_639_1) - score(a.iso_639_1);
-                });
-            };
-
-            if (responseData.images) {
-                if (responseData.images.backdrops) responseData.images.backdrops = sortImages(responseData.images.backdrops);
-                if (responseData.images.posters) responseData.images.posters = sortImages(responseData.images.posters);
             }
             try {
                 const providers = await getTVShowProviders(id);
@@ -792,7 +715,7 @@ export function getTvShow(id) {
 
 export function getTvShowReviews(id) {
     return new Promise((resolve, reject) => {
-        axios.get(`${apiUrl}/tv/${id}/reviews?language=${getEnv('API_LANG')}&page=1`, {
+        axios.get(`${apiUrl}/tv/${id}/reviews?language=en-US&page=1`, {
             params: {
                 api_key: getEnv('API_KEY'),
             },
@@ -1058,24 +981,7 @@ export function getPerson(id) {
                 append_to_response: 'images,combined_credits,external_ids',
                 include_image_language: 'en,null',
             },
-        }).then(async (response) => {
-            if (!response.data.biography && getEnv('API_LANG') !== 'en-US') {
-                try {
-                    const fallbackResponse = await axios.get(`${apiUrl}/person/${id}`, {
-                        params: {
-                            api_key: getEnv('API_KEY'),
-                            language: 'en-US',
-                        },
-                    });
-                    if (fallbackResponse.data.biography) {
-                        response.data.biography = fallbackResponse.data.biography;
-                        response.data.original_biography_language = 'en';
-                    }
-                } catch (e) {
-                    console.warn('Failed to fetch fallback biography', e);
-                }
-            }
-
+        }).then((response) => {
             response.data.combined_credits.cast.forEach(role => {
                 role.vote_average = role.vote_average.toFixed(1);
             });
@@ -1510,7 +1416,6 @@ export async function enrichTVShowWithIMDbRating(item) {
     return enrichWithIMDbRating(item);
 }
 
-
 const FOLLOWS_API_URL = 'https://cinemagoria-follows-rust.vercel.app';
 
 export async function followProductionCompany(userEmail, companyId, companyName, logoPath, originCountry) {
@@ -1546,192 +1451,6 @@ export async function getFollowedProductionCompanies(userEmail) {
         return [];
     }
 }
-
-const CACHE_PREFIX = 'trans_cache_v1_';
-const BATCH_DELIMITER = ' ||| ';
-
-const PRESERVED_WORDS = [];
-
-function replacePreservedWords(text) {
-    let modifiedText = text;
-    const wordMap = {};
-
-    PRESERVED_WORDS.forEach((word, index) => {
-        const placeholder = `__PRESERVED_${index}__`;
-        const regex = new RegExp(`\\b${word}\\b`, 'g');
-        if (regex.test(modifiedText)) {
-            wordMap[placeholder] = word;
-            modifiedText = modifiedText.replace(regex, placeholder);
-        }
-    });
-
-    return { modifiedText, wordMap };
-}
-
-function restorePreservedWords(text, wordMap) {
-    let restoredText = text;
-    for (const [placeholder, word] of Object.entries(wordMap)) {
-        const regex = new RegExp(placeholder, 'gi');
-        restoredText = restoredText.replace(regex, word);
-    }
-    return restoredText;
-}
-
-export async function translateReviewsBatch(reviews) {
-    if (!reviews || reviews.length === 0) {
-        return [];
-    }
-
-    const contents = reviews.map(r => r.content || '');
-    const translations = new Array(contents.length).fill(null);
-    const indicesToTranslate = [];
-    const textsToTranslate = [];
-
-    contents.forEach((text, index) => {
-        if (!text.trim()) {
-            translations[index] = '';
-            return;
-        }
-
-        if (import.meta.client) {
-            try {
-                const cacheKey = CACHE_PREFIX + btoa(unescape(encodeURIComponent(text.slice(0, 50) + text.length)));
-                const cached = localStorage.getItem(cacheKey);
-
-                if (cached) {
-                    translations[index] = cached;
-                } else {
-                    indicesToTranslate.push(index);
-                    textsToTranslate.push(text);
-                }
-            } catch (e) {
-                indicesToTranslate.push(index);
-                textsToTranslate.push(text);
-            }
-        } else {
-            indicesToTranslate.push(index);
-            textsToTranslate.push(text);
-        }
-    });
-
-    if (indicesToTranslate.length === 0) {
-        return translations;
-    }
-
-    const combinedQuery = textsToTranslate.join(BATCH_DELIMITER);
-    const { modifiedText: finalQuery, wordMap } = replacePreservedWords(combinedQuery);
-
-    try {
-        const response = await axios.post('https://deep-translate1.p.rapidapi.com/language/translate/v2',
-            {
-                source: 'en',
-                target: 'es',
-                q: finalQuery
-            },
-            {
-                headers: {
-                    'x-rapidapi-host': 'deep-translate1.p.rapidapi.com',
-                    'x-rapidapi-key': getEnv('rapidApiKey'),
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
-
-        if (response.data && response.data.data && response.data.data.translations && response.data.data.translations.translatedText && response.data.data.translations.translatedText.length > 0) {
-            let translatedText = response.data.data.translations.translatedText[0];
-            translatedText = restorePreservedWords(translatedText, wordMap);
-            const translatedParts = translatedText.split(BATCH_DELIMITER.trim());
-
-            if (translatedParts.length === textsToTranslate.length) {
-                translatedParts.forEach((trans, i) => {
-                    const originalIndex = indicesToTranslate[i];
-                    translations[originalIndex] = trans.trim();
-
-                    if (import.meta.client) {
-                        try {
-                            const text = textsToTranslate[i];
-                            const cacheKey = CACHE_PREFIX + btoa(unescape(encodeURIComponent(text.slice(0, 50) + text.length)));
-                            localStorage.setItem(cacheKey, trans.trim());
-                        } catch (e) {
-                            // Ignore localStorage errors
-                        }
-                    }
-                });
-            } else {
-                indicesToTranslate.forEach((originalIndex, i) => {
-                    translations[originalIndex] = textsToTranslate[i];
-                });
-            }
-
-        } else {
-            throw new Error('Invalid response format');
-        }
-
-    } catch (error) {
-        console.error('Translation Error', error);
-        indicesToTranslate.forEach((originalIndex, i) => {
-            translations[originalIndex] = textsToTranslate[i];
-        });
-    }
-
-    return translations;
-}
-
-export async function translateText(text) {
-    if (!text || !text.trim()) return '';
-
-    if (import.meta.client) {
-        try {
-            const cacheKey = CACHE_PREFIX + btoa(unescape(encodeURIComponent(text.slice(0, 50) + text.length)));
-            const cached = localStorage.getItem(cacheKey);
-            if (cached) return cached;
-        } catch (e) {
-            // Ignore
-        }
-    }
-
-    try {
-        const { modifiedText: finalQuery, wordMap } = replacePreservedWords(text);
-
-        const response = await axios.post('https://deep-translate1.p.rapidapi.com/language/translate/v2',
-            {
-                source: 'en',
-                target: 'es',
-                q: finalQuery
-            },
-            {
-                headers: {
-                    'x-rapidapi-host': 'deep-translate1.p.rapidapi.com',
-                    'x-rapidapi-key': getEnv('rapidApiKey'),
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
-
-        if (response.data && response.data.data && response.data.data.translations && response.data.data.translations.translatedText && response.data.data.translations.translatedText.length > 0) {
-            let translation = response.data.data.translations.translatedText[0];
-            translation = restorePreservedWords(translation, wordMap);
-            if (import.meta.client) {
-                try {
-                    const cacheKey = CACHE_PREFIX + btoa(unescape(encodeURIComponent(text.slice(0, 50) + text.length)));
-                    localStorage.setItem(cacheKey, translation);
-                } catch (e) {
-                    // Ignore
-                }
-            }
-            return translation;
-        }
-    } catch (error) {
-        console.error('Translation Error', error);
-    }
-
-    return text;
-}
-
-export function translateReview(reviewContent) {
-    return Promise.resolve(reviewContent);
-}
-
 export async function followStreamingPlatform(userEmail, providerId, providerName, logoPath) {
     const response = await $fetch(`${FOLLOWS_API_URL}/streaming-follows/add`, {
         method: 'POST',
@@ -1856,7 +1575,6 @@ export function getTvShowsByProvider(providerId, page = 1, filters = {}) {
         });
     });
 }
-
 export async function searchNews(query, page = 1) {
     try {
         const response = await axios.get('/api/news', {
