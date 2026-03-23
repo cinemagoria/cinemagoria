@@ -714,15 +714,24 @@ export default {
         
         if (this.isHomepage) {
           this.loadingStates.metadata = false;
-          
+
           setTimeout(() => {
             if (this.loadingStates.backdrop) {
               this.loadingStates.backdrop = false;
               this.checkHomepageContentReady();
             }
           }, 100);
-          
+
           this.checkHomepageContentReady();
+
+          setTimeout(() => {
+            if (!this.isHomepageContentReady) {
+              this.loadingStates.backdrop = false;
+              this.loadingStates.festivalBadge = false;
+              this.loadingStates.metadata = false;
+              this.isHomepageContentReady = true;
+            }
+          }, 5000);
         }
     },
     
