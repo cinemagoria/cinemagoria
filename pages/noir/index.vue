@@ -44,6 +44,18 @@
         </div>
       </transition>
 
+      <transition name="fade">
+        <div v-if="showReplaceConfirm" class="undoBarContainer">
+          <div class="undoBar undoBar--confirm">
+            <span>You already cloned N.O.I.R today. Replace?</span>
+            <div class="confirm-actions">
+              <button @click="confirmReplace" class="confirmButton confirmButton--yes">Replace</button>
+              <button @click="cancelReplace" class="confirmButton confirmButton--no">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </transition>
+
       <div v-if="loading" class="noir-archive-loader">
         <Loader :size="60" />
       </div>
@@ -83,6 +95,8 @@ export default {
       cloneSuccess: false,
       cloneError: null,
       newlyCreatedListSlug: null,
+      showReplaceConfirm: false,
+      existingNoirListId: null,
     };
   },
 
@@ -148,10 +162,65 @@ export default {
 
       this.cloning = true;
       this.cloneSuccess = false;
+      this.showReplaceConfirm = false;
 
       try {
-        const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        const listsRes = await fetch(`${this.tursoBackendUrl}/lists/user/${encodeURIComponent(userEmail)}`);
+        if (listsRes.ok) {
+          const userLists = await listsRes.json();
+          const todayStr = new Date().toISOString().slice(0, 10);
+          const existingNoir = (userLists.lists || userLists || []).find(l => {
+            if (l.name !== 'N.O.I.R Archive') return false;
+            const createdDate = l.created_at ? new Date(typeof l.created_at === 'number' ? l.created_at * 1000 : l.created_at).toISOString().slice(0, 10) : null;
+            return createdDate === todayStr;
+          });
 
+          if (existingNoir) {
+            this.existingNoirListId = existingNoir.id;
+            this.showReplaceConfirm = true;
+            this.cloning = false;
+            return;
+          }
+        }
+
+        await this._createNoirList(userEmail);
+      } catch (e) {
+        console.error('Clone failed:', e);
+        this.cloneError = 'Failed to clone archive to list.';
+        setTimeout(() => { this.cloneError = null; }, 4000);
+        this.cloning = false;
+      }
+    },
+
+    async confirmReplace() {
+      const userEmail = localStorage.getItem('email')?.replace(/['"]+/g, '');
+      this.showReplaceConfirm = false;
+      this.cloning = true;
+
+      try {
+        if (this.existingNoirListId) {
+          await fetch(`${this.tursoBackendUrl}/lists/${this.existingNoirListId}?userEmail=${encodeURIComponent(userEmail)}`, {
+            method: 'DELETE',
+          });
+        }
+        await this._createNoirList(userEmail);
+      } catch (e) {
+        console.error('Replace failed:', e);
+        this.cloneError = 'Failed to replace existing list.';
+        setTimeout(() => { this.cloneError = null; }, 4000);
+        this.cloning = false;
+      }
+    },
+
+    cancelReplace() {
+      this.showReplaceConfirm = false;
+      this.existingNoirListId = null;
+    },
+
+    async _createNoirList(userEmail) {
+      let createdListId = null;
+      try {
+        const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         let ownerName = localStorage.getItem('name') || userEmail.split('@')[0];
 
         const createRes = await fetch(`${this.tursoBackendUrl}/lists`, {
@@ -169,28 +238,43 @@ export default {
         if (!createRes.ok) throw new Error('Failed to create list');
         const listData = await createRes.json();
         const newList = listData.list || listData;
+        createdListId = newList.id;
 
-        const mappedItems = this.archiveItems.results.map(item => ({
-          ...mapItemToDbPayload(item),
-          topLevel: true,
-        }));
+        const mappedItems = this.archiveItems.results
+          .map(item => ({ ...mapItemToDbPayload(item), topLevel: true }))
+          .filter(Boolean);
 
         this.newlyCreatedListSlug = newList.slug;
 
-        await fetch(`${this.tursoBackendUrl}/lists/${newList.id}/items`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ items: mappedItems, userEmail }),
-        });
+        const BATCH_SIZE = 30;
+        for (let i = 0; i < mappedItems.length; i += BATCH_SIZE) {
+          const batch = mappedItems.slice(i, i + BATCH_SIZE);
+          const itemsRes = await fetch(`${this.tursoBackendUrl}/lists/${newList.id}/items`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items: batch, userEmail }),
+          });
+
+          if (!itemsRes.ok) {
+            const errText = await itemsRes.text().catch(() => '');
+            console.error(`Items batch ${Math.floor(i / BATCH_SIZE) + 1} failed:`, itemsRes.status, errText);
+            throw new Error(`Failed to add items (${itemsRes.status})`);
+          }
+        }
 
         this.cloneSuccess = true;
         this.$bus.$emit('lists-updated');
 
-        setTimeout(() => { 
-          this.cloneSuccess = false; 
+        setTimeout(() => {
+          this.cloneSuccess = false;
         }, 4000);
       } catch (e) {
         console.error('Clone failed:', e);
+        if (createdListId) {
+          try {
+            await fetch(`${this.tursoBackendUrl}/lists/${createdListId}?userEmail=${encodeURIComponent(userEmail)}`, { method: 'DELETE' });
+          } catch (_) {}
+        }
         this.cloneError = 'Failed to clone archive to list.';
         setTimeout(() => { this.cloneError = null; }, 4000);
       } finally {
@@ -322,6 +406,50 @@ export default {
 
 .timer-line--error {
   background: #ff5555;
+}
+
+.undoBar--confirm {
+  background: linear-gradient(90deg, rgba(255, 183, 77, 0.2) 0%, rgba(204, 136, 0, 0.2) 100%);
+  border-bottom-color: #ffb74d;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 0.8rem;
+  margin-left: 1.5rem;
+  flex-shrink: 0;
+}
+
+.confirmButton {
+  padding: 0.5rem 1.4rem;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid;
+}
+
+.confirmButton--yes {
+  background: rgba(139, 233, 253, 0.15);
+  border-color: rgba(139, 233, 253, 0.4);
+  color: #8BE9FD;
+}
+
+.confirmButton--yes:hover {
+  background: rgba(139, 233, 253, 0.25);
+  border-color: #8BE9FD;
+}
+
+.confirmButton--no {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.confirmButton--no:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 @keyframes shrink {
