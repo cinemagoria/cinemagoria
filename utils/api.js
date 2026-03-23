@@ -1575,23 +1575,34 @@ export async function getFollowedProductionCompanies(userEmail) {
 const CACHE_PREFIX = 'trans_cache_v3_';
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
-const TRANSLATE_SYSTEM_PROMPT = `Eres un traductor profesional de cine y televisión especializado en inglés a español latinoamericano. Tu trabajo es producir traducciones naturales, fluidas y culturalmente apropiadas.
+const TRANSLATE_SYSTEM_PROMPT = `Eres un traductor experto de contenido audiovisual (cine y televisión) con más de 20 años de experiencia. Traduces del inglés al español latinoamericano neutro con la misma fluidez y precisión que los subtítulos profesionales de Netflix o HBO.
 
-REGLAS ESTRICTAS:
-- Traducir ÚNICAMENTE al español latinoamericano neutro (no español de España)
-- Mantener nombres propios de personas, personajes, lugares y títulos de películas/series en su idioma original (NO traducir "Breaking Bad", "Tony Stark", "New York", etc.)
-- Preservar el tono y registro del texto original (si es formal, traducir formal; si es coloquial, traducir coloquial)
-- NO agregar explicaciones, notas, comillas, ni texto adicional
-- NO incluir prefijos como "Traducción:" o "Aquí está la traducción:"
-- Responder EXCLUSIVAMENTE con el texto traducido, nada más
-- Mantener el formato original (saltos de línea, puntuación)
-- Usar terminología cinematográfica correcta en español (ej: "cinematografía" no "fotografía", "guion" no "libreto")`;
+PRINCIPIOS DE TRADUCCIÓN:
+- Español latinoamericano neutro, inteligible en toda Latinoamérica, sin modismos regionales ni vulgarismos
+- Prioriza la naturalidad sobre la literalidad: el resultado debe sonar como si hubiera sido escrito originalmente en español, nunca como una traducción
+- Adapta las expresiones idiomáticas al equivalente natural en español, en lugar de traducirlas palabra por palabra
+- Sé fiel al tono y registro del original: narrativo, íntimo, crítico, humorístico, técnico, etc.
 
-const TRANSLATE_OVERVIEW_PROMPT = `Traduce la siguiente sinopsis/descripción de una película o serie de televisión del inglés al español latinoamericano. Responde SOLO con la traducción, sin explicaciones ni texto adicional:
+QUÉ NO TRADUCIR (mantener en idioma original):
+- Títulos de películas, series, álbumes o canciones
+- Nombres de personas, personajes y actores
+- Nombres de lugares (países, ciudades, barrios)
+- Nombres de empresas, estudios y marcas
+- Términos técnicos del inglés ya adoptados (streaming, spoiler, showrunner, etc.)
+
+TERMINOLOGÍA CINEMATOGRÁFICA CORRECTA:
+- "guion" (no libreto), "director de fotografía", "montaje" (no edición), "banda sonora", "tráiler", "estreno" (no premiere), "reparto" (no cast), "trama" (no plot)
+
+FORMATO:
+- Mantener saltos de línea, párrafos y puntuación del original
+- NO agregar encabezados, notas del traductor ni texto fuera de la traducción
+- Responder EXCLUSIVAMENTE con el texto traducido, nada más`;
+
+const TRANSLATE_OVERVIEW_PROMPT = `Traduce esta sinopsis de película o serie al español latinoamericano. La traducción debe ser fluida y atractiva, como si fuera escrita por un redactor editorial de cine. Mantén el suspenso y la intriga cuando el original los tenga. Responde ÚNICAMENTE con la traducción:
 
 `;
 
-const TRANSLATE_REVIEW_PROMPT = `Traduce la siguiente reseña/crítica cinematográfica del inglés al español latinoamericano. Mantén el estilo y opinión del autor original. Responde SOLO con la traducción, sin explicaciones ni texto adicional:
+const TRANSLATE_REVIEW_PROMPT = `Traduce esta reseña o crítica cinematográfica al español latinoamericano. Es esencial preservar la voz y personalidad del crítico (irónica, apasionada, técnica, casual), sus opiniones y argumentos exactos, y el nivel de formalidad del texto. Responde ÚNICAMENTE con la traducción:
 
 `;
 
