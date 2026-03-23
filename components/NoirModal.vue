@@ -38,8 +38,6 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
-
 .noir-modal-overlay {
   position: fixed;
   top: 0;
