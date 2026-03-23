@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   sync:
@@ -30,3 +30,17 @@ jobs:
           TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+
+      - name: Regenerate noir-enrichment.json
+        run: node scripts/syncNoirEnrichmentData.js
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+
+      - name: Commit updated noir-enrichment.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/data/noir-enrichment.json
+          git diff --staged --quiet || git commit -m "chore(data): update noir-enrichment.json after historical sync"
+          git push
