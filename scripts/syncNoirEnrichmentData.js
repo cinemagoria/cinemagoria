@@ -14,7 +14,7 @@ const db = createClient({
 
 const result = await db.execute(`
     SELECT tmdb_id, media_type, trailer_key, backdrop_path, poster_path, force_enrichment
-    FROM hero_selections
+    FROM noir_historical
     WHERE tmdb_id IS NOT NULL
 `);
 
@@ -27,9 +27,9 @@ const data = result.rows.map(row => ({
     force_enrichment: row.force_enrichment === 1,
 }));
 
-const outPath = join(__dirname, '..', 'public', 'data', 'hero-enrichment.json');
+const outPath = join(__dirname, '..', 'public', 'data', 'noir-enrichment.json');
 mkdirSync(dirname(outPath), { recursive: true });
 writeFileSync(outPath, JSON.stringify(data, null, 2));
 
-console.log(`hero-enrichment.json updated with ${data.length} entries`);
+console.log(`noir-enrichment.json updated with ${data.length} entries`);
 process.exit(0);

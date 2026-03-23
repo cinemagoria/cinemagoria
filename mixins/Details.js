@@ -1,4 +1,26 @@
-import { apiImgUrl, getHeroEnrichment } from '~/utils/api';
+import { apiImgUrl, getHeroEnrichment, getNoirEnrichment } from '~/utils/api';
+
+function getItemMediaType(item) {
+  if (item.type) return item.type === 'movie' ? 'movie' : 'tv';
+  if (item.media_type) return item.media_type;
+  // title = movie, name = tv (TMDB convention)
+  return item.title ? 'movie' : 'tv';
+}
+
+function getEnrichmentMatch(enrichment, item) {
+  const mediaType = getItemMediaType(item);
+  return enrichment.get(`${item.id}-${mediaType}`) || enrichment.get(item.id);
+}
+
+// Hierarchy: hero_selections (highest) > noir_historical > TMDB (lowest)
+async function getBestEnrichmentMatch(item) {
+  const heroEnrichment = await getHeroEnrichment();
+  const heroMatch = getEnrichmentMatch(heroEnrichment, item);
+  if (heroMatch) return heroMatch;
+
+  const noirEnrichment = await getNoirEnrichment();
+  return getEnrichmentMatch(noirEnrichment, item) || null;
+}
 
 export const id = {
   computed: {
@@ -96,8 +118,7 @@ export const poster = {
       const item = this.item;
       if (!item?.id) return;
       this._posterItemId = item.id;
-      const enrichment = await getHeroEnrichment();
-      const match = enrichment.get(item.id);
+      const match = await getBestEnrichmentMatch(item);
       if (!item.poster_path || match?.force_enrichment) {
         if (match?.poster_path) {
           this._enrichedPoster = match.poster_path;
@@ -146,8 +167,7 @@ export const backdrop = {
       const item = this.item;
       if (!item?.id) return;
       this._backdropItemId = item.id;
-      const enrichment = await getHeroEnrichment();
-      const match = enrichment.get(item.id);
+      const match = await getBestEnrichmentMatch(item);
       if (!item.backdrop_path || match?.force_enrichment) {
         if (match?.backdrop_path) {
           this._enrichedBackdrop = match.backdrop_path;
@@ -216,8 +236,7 @@ export const trailer = {
       this._trailerItemId = item.id;
       const videos = item?.videos?.results || [];
       const hasTrailer = videos.some(v => v.type === 'Trailer' || v.type === 'Teaser' || v.type === 'CustomPriority');
-      const enrichment = await getHeroEnrichment();
-      const match = enrichment.get(item.id);
+      const match = await getBestEnrichmentMatch(item);
       if (!hasTrailer || match?.force_enrichment) {
         if (match?.trailer_key) {
           this._enrichedTrailerKey = match.trailer_key;
