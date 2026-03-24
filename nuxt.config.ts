@@ -9,6 +9,11 @@ export default defineNuxtConfig({
   debug: false,
 
   routeRules: {
+    '/sitemap.xml': { cache: { maxAge: 3600 } },
+    '/sitemap-static.xml': { cache: { maxAge: 86400 } },
+    '/sitemap-movies-*.xml': { cache: { maxAge: 86400 } },
+    '/sitemap-tv-*.xml': { cache: { maxAge: 86400 } },
+    '/sitemap-persons.xml': { cache: { maxAge: 86400 } },
     '/api/hero': { cache: { maxAge: 1800 } },
     '/api/news': { cache: { maxAge: 300 } },
     '/api/imdb-rating/**': { cache: { maxAge: 86400 } },
@@ -89,10 +94,20 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { key: 'description', name: 'description', content: 'Cinemagoria - El momento en el que descubres qué ver.' },
-        { name: 'theme-color', content: '#03496B' }
+        { key: 'description', name: 'description', content: 'Cinemagoria - El momento en el que descubres qué ver. Explora películas, series, festivales, premios y disponibilidad en streaming.' },
+        { name: 'theme-color', content: '#03496B' },
+        { property: 'og:title', content: 'Cinemagoria – El momento en el que descubres qué ver' },
+        { property: 'og:description', content: 'Explora películas, series, festivales, premios y disponibilidad en streaming en un solo lugar.' },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:url', content: 'https://es.cinemagoria.com' },
+        { property: 'og:image', content: 'https://es.cinemagoria.com/og-image.jpg' },
+        { name: 'twitter:card', content: 'summary_large_image' },
       ],
       link: [
+        { rel: 'canonical', href: 'https://es.cinemagoria.com' },
+        { rel: 'alternate', hreflang: 'en', href: 'https://cinemagoria.com' },
+        { rel: 'alternate', hreflang: 'es', href: 'https://es.cinemagoria.com' },
+        { rel: 'alternate', hreflang: 'x-default', href: 'https://cinemagoria.com' },
         { rel: 'icon', type: 'image/x-icon', href: '/icons/favicon.ico' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap' }
