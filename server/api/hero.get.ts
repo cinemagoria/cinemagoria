@@ -43,6 +43,7 @@ export default defineEventHandler(async (event) => {
                 poster_path: row.poster_path,
                 backdrop_path: row.backdrop_path,
                 overview: row.overview,
+                spanish_desc: row.spanish_desc || null,
                 available_watch: row.available_watch,
 
                 release_date: row.release_date,
@@ -86,7 +87,7 @@ export default defineEventHandler(async (event) => {
                         { iso_3166_1: 'US', rating: cert || '' }
                     ]
                 },
-                original_overview_language: 'en'
+                original_overview_language: row.spanish_desc ? 'es' : 'en'
             };
         }));
 

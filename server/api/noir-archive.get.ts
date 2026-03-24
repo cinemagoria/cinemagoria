@@ -27,10 +27,12 @@ export default defineEventHandler(async (event) => {
             id: row.tmdb_id,
             type: row.media_type,
             title: row.title,
+            spanish_title: row.spanish_title || null,
             name: row.title,
             poster_path: row.poster_path,
             backdrop_path: row.backdrop_path,
             overview: row.overview,
+            spanish_desc: row.spanish_desc || null,
             release_date: row.release_date,
             first_air_date: row.media_type === 'tv' ? row.release_date : undefined,
             vote_average: row.vote_average,
@@ -41,7 +43,8 @@ export default defineEventHandler(async (event) => {
             genres: row.genres ? String(row.genres).split(', ').map(g => ({ name: g })) : [],
             runtime: row.runtime,
             media_type: row.media_type,
-            added_to_noir_at: row.added_to_noir_at
+            added_to_noir_at: row.added_to_noir_at,
+            original_overview_language: row.spanish_desc ? 'es' : 'en'
         }))
 
         return {

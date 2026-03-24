@@ -280,7 +280,7 @@
 </template>
 
 <script>
-import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTraktReviews, getECReviews, getTvShowRecommended, getPerson, getIMDbRatingFromDB, enrichTVShowWithIMDbRating, translateReviewsBatch, translateText } from '~/utils/api'; 
+import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTraktReviews, getECReviews, getTvShowRecommended, getPerson, getIMDbRatingFromDB, enrichTVShowWithIMDbRating, translateReviewsBatchWithCache, translateText } from '~/utils/api'; 
 import DOMPurify from 'dompurify';
 import { name, creators } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
@@ -751,7 +751,7 @@ export default {
           }
 
           if (allReviews.length > 0) {
-            const translations = await translateReviewsBatch(allReviews);
+            const translations = await translateReviewsBatchWithCache(allReviews, this.item.id, 'tv');
             
             this.reviews = allReviews.map((review, index) => ({
               ...review,
@@ -785,7 +785,7 @@ export default {
         if (this.item.overview && this.item.original_overview_language === 'en') {
             this.isTranslatingSynopsis = true;
             try {
-                this.translatedOverview = await translateText(this.item.overview);
+                this.translatedOverview = await translateText(this.item.overview, this.item.id, 'tv');
             } catch (error) {
                 console.error('Synopsis translation failed', error);
             } finally {

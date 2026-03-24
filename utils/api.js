@@ -50,7 +50,13 @@ const getEnv = (key) => {
             'API_YOUTUBE_KEY': config.apiYoutubeKey,
             'MDBLIST_API': useRuntimeConfig().public.mdblistApi || process.env.MDBLIST_API,
             'rapidApiKey': config.rapidApiKey,
+            'orApiKey': config.orApiKey,
             'geminiApiKey': config.geminiApiKey,
+            'geminiApiKey2': config.geminiApiKey2,
+            'geminiApiKey3': config.geminiApiKey3,
+            'geminiApiKey4': config.geminiApiKey4,
+            'geminiApiKey5': config.geminiApiKey5,
+            'geminiApiKey6': config.geminiApiKey6,
         };
         return mapping[key] || process.env[key];
     } catch (e) {
@@ -1628,53 +1634,156 @@ function _setCache(text, translation) {
     }
 }
 
+// --- Gemini multi-key rotation ---
+let _geminiKeyIndex = 0;
+
+function _getGeminiKeys() {
+    const keys = [
+        getEnv('geminiApiKey'),
+        getEnv('geminiApiKey2'),
+        getEnv('geminiApiKey3'),
+        getEnv('geminiApiKey4'),
+        getEnv('geminiApiKey5'),
+        getEnv('geminiApiKey6'),
+    ].filter(Boolean);
+    return keys;
+}
+
 async function _callGemini(userPrompt) {
     if (!import.meta.client) return null;
-    const apiKey = getEnv('geminiApiKey');
-    if (!apiKey) {
-        console.error('GEMINI_API_KEY not configured');
+    const keys = _getGeminiKeys();
+    if (keys.length === 0) {
+        console.error('No GEMINI_API_KEY configured');
         return null;
     }
 
-    try {
-        const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                system_instruction: { parts: [{ text: TRANSLATE_SYSTEM_PROMPT }] },
-                contents: [{ parts: [{ text: userPrompt }] }],
-                generationConfig: { temperature: 0.1, maxOutputTokens: 4096 },
-            }),
-        });
+    for (let attempt = 0; attempt < keys.length; attempt++) {
+        const keyIdx = (_geminiKeyIndex + attempt) % keys.length;
+        const apiKey = keys[keyIdx];
 
-        if (!response.ok) {
-            console.error('Gemini API error:', response.status);
-            return null;
+        try {
+            const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    system_instruction: { parts: [{ text: TRANSLATE_SYSTEM_PROMPT }] },
+                    contents: [{ parts: [{ text: userPrompt }] }],
+                    generationConfig: { temperature: 0.1, maxOutputTokens: 4096 },
+                }),
+            });
+
+            if (response.status === 429) {
+                console.warn(`Gemini key ${keyIdx + 1} rate limited, rotating...`);
+                _geminiKeyIndex = (keyIdx + 1) % keys.length;
+                continue;
+            }
+
+            if (!response.ok) {
+                console.error('Gemini API error:', response.status);
+                return null;
+            }
+
+            _geminiKeyIndex = keyIdx; // stick with working key
+            const result = await response.json();
+            const content = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+            return content ? content.trim() : null;
+        } catch (error) {
+            console.error(`Gemini key ${keyIdx + 1} error:`, error);
+            _geminiKeyIndex = (keyIdx + 1) % keys.length;
+            continue;
         }
+    }
+    console.error('All Gemini keys exhausted');
+    return null;
+}
 
-        const result = await response.json();
-        const content = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-        return content ? content.trim() : null;
-    } catch (error) {
-        console.error('Gemini fetch error:', error);
+// --- OpenRouter fallback ---
+async function _translateWithOpenRouter(text) {
+    if (!text || !text.trim()) return null;
+    if (!import.meta.client) return null;
+    const apiKey = getEnv('orApiKey');
+    if (!apiKey) return null;
+
+    try {
+        const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'arcee-ai/trinity-large-preview:free',
+                messages: [
+                    { role: 'system', content: TRANSLATE_SYSTEM_PROMPT },
+                    { role: 'user', content: TRANSLATE_REVIEW_PROMPT + text }
+                ]
+            })
+        });
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data?.choices?.[0]?.message?.content?.trim() || null;
+    } catch (e) {
+        console.error('OpenRouter translate error:', e);
         return null;
     }
 }
 
-export async function translateText(text) {
+// Overviews cache helpers
+async function _fetchCachedOverview(tmdbId, mediaType) {
+    try {
+        const data = await $fetch('/api/overview-cache', {
+            params: { tmdb_id: tmdbId, media_type: mediaType }
+        });
+        return data?.found ? data.contentEs : null;
+    } catch { return null; }
+}
+
+async function _saveCachedOverview(tmdbId, mediaType, contentEn, contentEs) {
+    try {
+        const hash = _reviewContentHash(contentEn); // reuse hash function
+        await $fetch('/api/overview-cache', {
+            method: 'POST',
+            body: { tmdb_id: tmdbId, media_type: mediaType, content_en: contentEn, content_es: contentEs, content_hash: hash }
+        });
+    } catch (e) {
+        console.error('Failed to save overview to cache:', e);
+    }
+}
+
+export async function translateText(text, tmdbId = null, mediaType = null) {
     if (!text || !text.trim()) return '';
 
+    // 1. DB cache (if tmdbId provided)
+    if (tmdbId && mediaType) {
+        const dbCached = await _fetchCachedOverview(tmdbId, mediaType);
+        if (dbCached) {
+            _setCache(text, dbCached); // also save to localStorage
+            return dbCached;
+        }
+    }
+
+    // 2. localStorage cache
     const cached = _getCached(text);
     if (cached) return cached;
 
+    // 3. Translate: Gemini (6 keys) → OpenRouter
+    let translation = null;
     try {
-        const translation = await _callGemini(TRANSLATE_OVERVIEW_PROMPT + text);
-        if (translation) {
-            _setCache(text, translation);
-            return translation;
+        translation = await _callGemini(TRANSLATE_OVERVIEW_PROMPT + text);
+        if (!translation) {
+            translation = await _translateWithOpenRouter(text);
         }
     } catch (error) {
         console.error('Translation Error', error);
+    }
+
+    if (translation) {
+        _setCache(text, translation);
+        // Save to DB in background (if tmdbId provided)
+        if (tmdbId && mediaType) {
+            _saveCachedOverview(tmdbId, mediaType, text, translation);
+        }
+        return translation;
     }
 
     return text;
@@ -1723,6 +1832,274 @@ export async function translateReviewsBatch(reviews) {
 
 export function translateReview(reviewContent) {
     return Promise.resolve(reviewContent);
+}
+
+// --- Reviews Cache System ---
+
+function _reviewContentHash(text) {
+    // Simple hash for browser: first 500 chars + length -> base64
+    const raw = (text || '').slice(0, 500) + (text || '').length;
+    return btoa(unescape(encodeURIComponent(raw))).replace(/[+/=]/g, '').slice(0, 32);
+}
+
+export async function fetchCachedReviews(tmdbId, mediaType) {
+    try {
+        const data = await $fetch(`/api/reviews-cache`, {
+            params: { tmdb_id: tmdbId, media_type: mediaType }
+        });
+        return data?.reviews || [];
+    } catch {
+        return [];
+    }
+}
+
+async function saveCachedReview(tmdbId, mediaType, review, contentEs) {
+    try {
+        await $fetch('/api/reviews-cache', {
+            method: 'POST',
+            body: {
+                tmdb_id: tmdbId,
+                media_type: mediaType,
+                source: review.source,
+                author_name: review.authorName || 'Anonymous',
+                content_en: review.content,
+                content_es: contentEs,
+                content_hash: _reviewContentHash(review.content),
+                author_rating: review.authorRating || null,
+                author_avatar: review.authorAvatar || null,
+                author_alias: review.authorAlias || null,
+                review_url: review.url || null,
+                created_at: review.createdAt || null
+            }
+        });
+    } catch (e) {
+        console.error('Failed to save review to cache:', e);
+    }
+}
+
+// --- Gemini batch translation (1 call for N reviews via structured JSON prompt) ---
+async function _translateBatchWithGemini(texts) {
+    if (!texts || texts.length === 0) return null;
+    if (!import.meta.client) return null;
+
+    // Build a numbered JSON for the prompt
+    const numbered = {};
+    texts.forEach((t, i) => { numbered[i] = t; });
+
+    const batchPrompt = `Traduce TODAS las siguientes reseñas cinematográficas al español latinoamericano. Preserva la voz de cada crítico.
+
+IMPORTANTE: Responde EXCLUSIVAMENTE con un JSON válido, con las mismas claves numéricas y los valores traducidos. Sin explicaciones, sin markdown, sin backticks.
+
+${JSON.stringify(numbered, null, 2)}`;
+
+    try {
+        const raw = await _callGemini(batchPrompt);
+        if (!raw) return null;
+
+        // Clean possible markdown wrappers
+        const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+        const parsed = JSON.parse(cleaned);
+
+        return texts.map((_, i) => parsed[i] || parsed[String(i)] || null);
+    } catch (e) {
+        console.error('Gemini batch parse error:', e);
+        return null;
+    }
+}
+
+// --- OpenRouter batch translation (1 call for N reviews) ---
+async function _translateBatchWithOpenRouter(texts) {
+    if (!texts || texts.length === 0) return null;
+    if (!import.meta.client) return null;
+    const apiKey = getEnv('orApiKey');
+    if (!apiKey) return null;
+
+    const numbered = {};
+    texts.forEach((t, i) => { numbered[i] = t; });
+
+    const batchPrompt = `Traduce TODAS las siguientes reseñas cinematográficas al español latinoamericano. Preserva la voz de cada crítico.
+
+IMPORTANTE: Responde EXCLUSIVAMENTE con un JSON válido, con las mismas claves numéricas y los valores traducidos. Sin explicaciones, sin markdown, sin backticks.
+
+${JSON.stringify(numbered, null, 2)}`;
+
+    try {
+        const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'arcee-ai/trinity-large-preview:free',
+                messages: [
+                    { role: 'system', content: TRANSLATE_SYSTEM_PROMPT },
+                    { role: 'user', content: batchPrompt }
+                ]
+            })
+        });
+        if (!res.ok) return null;
+        const data = await res.json();
+        const raw = data?.choices?.[0]?.message?.content?.trim();
+        if (!raw) return null;
+
+        const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+        const parsed = JSON.parse(cleaned);
+
+        return texts.map((_, i) => parsed[i] || parsed[String(i)] || null);
+    } catch (e) {
+        console.error('OpenRouter batch parse error:', e);
+        return null;
+    }
+}
+
+// --- RapidAPI batch translation (1 call for N reviews) ---
+async function _translateBatchWithRapidAPI(texts) {
+    if (!texts || texts.length === 0) return null;
+    const apiKey = getEnv('rapidApiKey');
+    if (!apiKey) return null;
+
+    // Build JSON object: { "0": "text1", "1": "text2", ... }
+    const jsonPayload = {};
+    texts.forEach((text, i) => { jsonPayload[String(i)] = text; });
+
+    try {
+        const res = await fetch('https://google-translate113.p.rapidapi.com/api/v1/translator/json', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-rapidapi-host': 'google-translate113.p.rapidapi.com',
+                'x-rapidapi-key': apiKey
+            },
+            body: JSON.stringify({
+                from: 'en',
+                to: 'es',
+                json: jsonPayload
+            })
+        });
+        if (!res.ok) {
+            console.warn('RapidAPI batch error:', res.status);
+            return null;
+        }
+        const data = await res.json();
+        const trans = data?.trans;
+        if (!trans) return null;
+
+        // Reconstruct array from keyed response
+        return texts.map((_, i) => trans[String(i)] || null);
+    } catch (e) {
+        console.error('RapidAPI batch error:', e);
+        return null;
+    }
+}
+
+export async function translateReviewsBatchWithCache(reviews, tmdbId, mediaType) {
+    if (!reviews || reviews.length === 0) return [];
+    if (!import.meta.client) return reviews.map(r => r.content);
+
+    // 1. Fetch all cached reviews for this title from DB
+    const cached = await fetchCachedReviews(tmdbId, mediaType);
+    const cacheMap = new Map();
+    for (const c of cached) {
+        cacheMap.set(c.contentHash, c.contentEs);
+    }
+
+    const translations = new Array(reviews.length).fill(null);
+    const needsTranslation = []; // indices that need translation
+
+    reviews.forEach((review, index) => {
+        const content = review.content || '';
+        if (!content.trim()) { translations[index] = ''; return; }
+
+        const hash = _reviewContentHash(content);
+
+        // Check DB cache first
+        if (cacheMap.has(hash)) {
+            translations[index] = cacheMap.get(hash);
+            return;
+        }
+
+        // Check localStorage cache
+        const localCached = _getCached(content);
+        if (localCached) {
+            translations[index] = localCached;
+            return;
+        }
+
+        needsTranslation.push(index);
+    });
+
+    if (needsTranslation.length === 0) return translations;
+
+    console.log(`[Reviews] ${needsTranslation.length} need translation, ${reviews.length - needsTranslation.length} cached`);
+
+    // 2. Try RapidAPI batch first (1 API call for ALL uncached reviews)
+    const textsToTranslate = needsTranslation.map(idx => reviews[idx].content);
+    const batchResults = await _translateBatchWithRapidAPI(textsToTranslate);
+
+    const stillNeedTranslation = []; // indices that RapidAPI failed
+
+    if (batchResults) {
+        batchResults.forEach((translated, batchIdx) => {
+            const reviewIdx = needsTranslation[batchIdx];
+            if (translated) {
+                translations[reviewIdx] = translated;
+                _setCache(reviews[reviewIdx].content, translated);
+                saveCachedReview(tmdbId, mediaType, reviews[reviewIdx], translated);
+            } else {
+                stillNeedTranslation.push(reviewIdx);
+            }
+        });
+    } else {
+        // RapidAPI failed entirely, all need fallback
+        stillNeedTranslation.push(...needsTranslation);
+    }
+
+    if (stillNeedTranslation.length === 0) return translations;
+
+    // 3. Fallback: Gemini batch (multi-key rotation) → OpenRouter batch
+    const remainingTexts = stillNeedTranslation.map(idx => reviews[idx].content);
+    let batchTranslations = await _translateBatchWithGemini(remainingTexts);
+
+    const afterGemini = []; // indices still unresolved
+
+    if (batchTranslations) {
+        batchTranslations.forEach((translated, batchIdx) => {
+            const reviewIdx = stillNeedTranslation[batchIdx];
+            if (translated) {
+                translations[reviewIdx] = translated;
+                _setCache(reviews[reviewIdx].content, translated);
+                saveCachedReview(tmdbId, mediaType, reviews[reviewIdx], translated);
+            } else {
+                afterGemini.push(reviewIdx);
+            }
+        });
+    } else {
+        afterGemini.push(...stillNeedTranslation);
+    }
+
+    if (afterGemini.length === 0) return translations;
+
+    // 4. Last resort: OpenRouter batch
+    const orTexts = afterGemini.map(idx => reviews[idx].content);
+    const orResults = await _translateBatchWithOpenRouter(orTexts);
+
+    if (orResults) {
+        orResults.forEach((translated, batchIdx) => {
+            const reviewIdx = afterGemini[batchIdx];
+            if (translated) {
+                translations[reviewIdx] = translated;
+                _setCache(reviews[reviewIdx].content, translated);
+                saveCachedReview(tmdbId, mediaType, reviews[reviewIdx], translated);
+            } else {
+                translations[reviewIdx] = reviews[reviewIdx].content;
+            }
+        });
+    } else {
+        afterGemini.forEach(idx => { translations[idx] = reviews[idx].content; });
+    }
+
+    return translations;
 }
 
 export async function followStreamingPlatform(userEmail, providerId, providerName, logoPath) {

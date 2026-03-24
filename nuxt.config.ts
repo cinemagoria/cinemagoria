@@ -84,6 +84,11 @@ export default defineNuxtConfig({
       rapidApiKey: process.env.RAPIDAPI_KEY,
       orApiKey: process.env.OR_API_KEY,
       geminiApiKey: process.env.GEMINI_API_KEY,
+      geminiApiKey2: process.env.GEMINI_API_KEY2,
+      geminiApiKey3: process.env.GEMINI_API_KEY3,
+      geminiApiKey4: process.env.GEMINI_API_KEY4,
+      geminiApiKey5: process.env.GEMINI_API_KEY5,
+      geminiApiKey6: process.env.GEMINI_API_KEY6,
       newsAggregatorUrl: process.env.NEWS_AGGREGATOR_URL || "https://cinemagoria-rss-aggregator.vercel.app/news",
     }
   },

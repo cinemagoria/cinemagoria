@@ -89,12 +89,12 @@
           <div>
             <h1 :class="[$style.name, { [$style.nameHomepage]: isHomepage }, $style.hoverableName]">
               <template v-if="isSingle">
-                {{ (isHomepage && heroItem.spanish_title) ? heroItem.spanish_title : name }}
+                {{ heroItem.spanish_title || name }}
               </template>
 
               <template v-else>
                 <nuxt-link :to="{ name: `${type}-id`, params: { id: heroItem.id } }">
-                  {{ (isHomepage && heroItem.spanish_title) ? heroItem.spanish_title : name }}
+                  {{ heroItem.spanish_title || name }}
                 </nuxt-link>
               </template>
             </h1>
@@ -130,7 +130,7 @@
                   <Loader :size="30" />
               </div>
               <div :style="isTranslating ? { opacity: 0.5, filter: 'blur(2px)' } : {}">
-                {{ truncate(translatedOverview || heroItem.overview, 200) }}
+                {{ truncate(translatedOverview || heroItem.spanish_desc || heroItem.overview, 200) }}
               </div>
             </div>
 
@@ -656,6 +656,8 @@ export default {
             await this.loadRatingFromRatingsEndpoint();
         }
         
+        this.translatedOverview = null;
+
         this.checkFestivalStatus();
         this.handleTranslation();
 
@@ -703,10 +705,23 @@ export default {
     async handleTranslation() {
         if (!import.meta.client) return;
         const item = this.heroItem || this.item;
+
+        // Homepage: use spanish_desc from DB (pre-translated via Gemini in scripts)
+        if (this.isHomepage) {
+            if (item.spanish_desc) {
+                this.translatedOverview = item.spanish_desc;
+            } else {
+                this.translatedOverview = null;
+            }
+            this.isTranslating = false;
+            return;
+        }
+
+        // Detail pages: translate on-the-fly if overview is in English
         if (item.overview && item.original_overview_language === 'en') {
             this.isTranslating = true;
             try {
-                this.translatedOverview = await translateText(item.overview);
+                this.translatedOverview = await translateText(item.overview, item.id, this.type);
             } catch (error) {
                 console.error('Translation failed', error);
             } finally {

@@ -278,7 +278,7 @@
 </template>
 
 <script>
-import { apiImgUrl, getMovieProviders, getMovieReviews, getTraktReviews, getECReviews, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating, translateReviewsBatch, translateText } from '~/utils/api'; 
+import { apiImgUrl, getMovieProviders, getMovieReviews, getTraktReviews, getECReviews, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating, translateReviewsBatchWithCache, translateText } from '~/utils/api'; 
 import { getReleaseStatusContext } from '~/utils/helpers';
 import DOMPurify from 'dompurify';
 import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants'; 
@@ -783,7 +783,7 @@ export default {
         }
 
         if (allReviews.length > 0) {
-          const translations = await translateReviewsBatch(allReviews);
+          const translations = await translateReviewsBatchWithCache(allReviews, this.item.id, 'movie');
           
           this.reviews = allReviews.map((review, index) => ({
             ...review,
@@ -805,7 +805,7 @@ export default {
         if (this.item.overview && this.item.original_overview_language === 'en') {
             this.isTranslatingSynopsis = true;
             try {
-                this.translatedOverview = await translateText(this.item.overview);
+                this.translatedOverview = await translateText(this.item.overview, this.item.id, 'movie');
             } catch (error) {
                 console.error('Synopsis translation failed', error);
             } finally {
