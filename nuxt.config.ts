@@ -9,6 +9,11 @@ export default defineNuxtConfig({
   debug: false,
 
   routeRules: {
+    '/sitemap.xml': { cache: { maxAge: 3600 } },
+    '/sitemap-static.xml': { cache: { maxAge: 86400 } },
+    '/sitemap-movies-*.xml': { cache: { maxAge: 86400 } },
+    '/sitemap-tv-*.xml': { cache: { maxAge: 86400 } },
+    '/sitemap-persons.xml': { cache: { maxAge: 86400 } },
     '/api/hero': { cache: { maxAge: 1800 } },
     '/api/news': { cache: { maxAge: 300 } },
     '/api/imdb-rating/**': { cache: { maxAge: 86400 } },
@@ -98,6 +103,9 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'canonical', href: 'https://cinemagoria.com' },
+        { rel: 'alternate', hreflang: 'en', href: 'https://cinemagoria.com' },
+        { rel: 'alternate', hreflang: 'es', href: 'https://es.cinemagoria.com' },
+        { rel: 'alternate', hreflang: 'x-default', href: 'https://cinemagoria.com' },
         { rel: 'icon', type: 'image/x-icon', href: '/icons/favicon.ico' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap' }
