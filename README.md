@@ -1,14 +1,15 @@
 # Cinemagoria
 
-> **Current Version:** v4.7.0 — Production Ready  
-> **Release Date:** February 23, 2026  
-> **Repository:** [github.com/cinemagoria/cinemagoria](https://github.com/cinemagoria/cinemagoria)  
-> **Lead Developer:** [@imprvhub](https://github.com/imprvhub) (Iván Luna)  
+> **Current Version:** v4.8.0 — Production Ready
+> **Release Date:** March 25, 2026
+> **Status:** A New Era of Social Features, Awards, and Performance
+> **Repository:** [github.com/cinemagoria/cinemagoria](https://github.com/cinemagoria/cinemagoria)
+> **Lead Developer:** [@imprvhub](https://github.com/imprvhub) (Iván Luna)
 > **In development since:** March 27, 2024
 
 ---
 
-![Cinemagoria Cover](https://www.ivanluna.dev/images/assets/cinemagoria-asset1.webp)
+![Cinemagoria Cover](https://ivanluna.dev/images/assets/cinemagoria-asset1.webp)
 
 ---
 
@@ -20,12 +21,12 @@
 4. [Search & Content Discovery](#4-search--content-discovery)
 5. [Film Festival Coverage](#5-film-festival-coverage)
 6. [Awards System](#6-awards-system)
-7. [Hero Section & Homepage](#7-hero-section--homepage)
+7. [Hero Section, Homepage & N.O.I.R. Archive](#7-hero-section-homepage--noir-archive)
 8. [Movie & TV Show Detail Pages](#8-movie--tv-show-detail-pages)
 9. [Person Profiles](#9-person-profiles)
 10. [Original Soundtrack (OST) Integration](#10-original-soundtrack-ost-integration)
 11. [Watchlist & List Management](#11-watchlist--list-management)
-12. [User Ratings & Reviews](#12-user-ratings--reviews)
+12. [User Profiles, Ratings & Reviews](#12-user-profiles-ratings--reviews)
 13. [Production Company Pages](#13-production-company-pages)
 14. [Streaming Platform Support](#14-streaming-platform-support)
 15. [Follow & Notification System](#15-follow--notification-system)
@@ -46,13 +47,13 @@ Cinemagoria is a comprehensive, community-oriented film and TV discovery platfor
 
 The platform is designed for film enthusiasts who want more than basic search: real-time festival circuit coverage, historical award recognition, production company tracking, personalized watchlists and custom lists, content-specific streaming provider discovery, and follow-based notification workflows for new releases from favorite talent and TV shows.
 
-Cinemagoria operates as a public-facing web application with full user account support, cross-device data synchronization, and a rich personalization layer. It has been under continuous active development since its initial commit on **March 27, 2024**, and has undergone two major architectural overhauls.
+Cinemagoria operates as a public-facing web application with full user account support, public user profiles, cross-device data synchronization, and a rich personalization layer. It has been under continuous active development since its initial commit on **March 27, 2024**, and has undergone two major architectural overhauls.
 
 ### Platform Philosophy
 
 - **Aggregation over exclusivity:** Cinemagoria pulls from IMDb, TMDB, MusicBrainz, Trakt.tv, Rotten Tomatoes, JustWatch, and MDBList rather than maintaining its own content catalog.
 - **Festival-first discovery:** The platform maintains dedicated pages, APIs, and components for international film festivals — Sundance, Berlinale, Rotterdam, Slamdance, SXSW, and Romford as of v4.7.0. (Future Expansion)
-- **Personalization without lock-in:** Users manage watchlists, custom lists with full privacy controls, and follow-based notification feeds — all transparent and user-controlled.
+- **Personalization without lock-in:** Users manage public or private profiles, watchlists, custom lists with full privacy controls, and follow-based notification feeds — all transparent and user-controlled.
 - **Performance as a feature:** News load times dropped from ~10 seconds to under 50ms in v4.3.4. Hero data is server-side selected. Awards are served from local JSON. `Promise.all` / `Promise.allSettled` concurrent patterns are used throughout.
 
 ---
@@ -81,9 +82,10 @@ Cinemagoria operates as a public-facing web application with full user account s
 
 | Layer | Technology |
 |---|---|
-| Deployment | Vercel (serverless, migrated from Netlify in v3.0.0) |
-| Primary database | Turso (LibSQL) — favorites, ratings, news curation, notifications, follows |
-| Secondary database | Supabase — auth, user data, advanced search |
+| Deployment | Vercel (serverless) |
+| Primary database | Turso (LibSQL) — favorites, ratings, news curation, notifications, follows, user profiles, activity feeds |
+| Secondary database | Supabase — auth only (user data fetching removed in v4.8.0) |
+| Performance Edge | Extensive route caching (`maxAge`) & ISR configurations (v4.8.0) |
 | Serverless constraint | 5-second execution timeout on all Vercel API routes |
 | CORS | Explicit headers configured per Vercel environment |
 | Typo detection service | `api/typo.rs` — dedicated Rust-based endpoint |
@@ -96,8 +98,8 @@ All API calls use Nuxt 3's `$fetch` with a custom axios shim for backward compat
 **Key server-side API endpoints (current as of v4.7.0):**
 
 ```
-GET  /api/hero                          → Server-side random hero item selection
-GET  /api/awards                        → Awards data (Oscar, GoldenGlobe, PalmedOr, GoldenLion, GoldenBear)
+GET  /api/hero                          → Server-side random hero item selection (Cached: 30m)
+GET  /api/awards                        → Awards data including historical overview (Cached: 1h)
 GET  /api/festival/berlinale/schedule   → Daily grouped Berlinale schedule with venues
 GET  /api/festival/rotterdam-2026
 GET  /api/festival/slamdance-2026
@@ -114,6 +116,12 @@ GET  /cron/check-releases               → Automated release detection job
 ```
 
 ### 2.4 Key Architectural Decisions
+
+**API Caching and SSR Optimization (v4.8.0):** Significant reduction in infrastructure usage via intelligent caching rules for API endpoints. ISR configurations for major routes (movie, TV, root), with client-side rendering specifically enabled for interactive routes like `/search`.
+
+**Event-Driven Authentication (v4.8.0):** Replaced polling mechanisms with event-driven authentication status updates, streamlining middleware logic for a more responsive global state.
+
+**Dynamic SEO and Sitemaps (v4.8.0):** Implementation of dynamic and split sitemap generation using server routes, improving discoverability over legacy static sitemaps.
 
 **News curation decoupling (v4.3.4):** RSS fetching and AI analysis moved to a GitHub Actions scheduled background process. The frontend reads pre-computed results from Turso, reducing load times from ~10s to <50ms.
 
@@ -156,12 +164,12 @@ Cinemagoria does not host its own content catalog. All media metadata, ratings, 
 ### 4.1 Global Search (v4.7.0 — Comprehensive Overhaul)
 
 <div align="center">
-  <img src="https://www.ivanluna.dev/images/assets/cinemagoria-asset10.webp" alt="Powerful Search" width="70%">
+  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset10.webp" alt="Powerful Search" width="70%">
 </div>
 
 The search system was completely reimagined in v4.7.0:
 
-**Categorized search results:** Queries intelligently categorize results across multiple content types. Results are visually separated by category (movies, TV shows, people, news, festivals, production companies) via a dedicated `CategorySection` component extracted for modularity.
+**Categorized search results (v4.8.0):** Queries intelligently categorize results across multiple content types. Results are visually separated by category (movies, TV shows, people, news, festivals, production companies) using the powerful new `CategoryCarousel` component, utilizing horizontal carousels for seamless exploration.
 
 **Integrated news & festival search:** News articles and festival-related content are included in multi-search results. Festival content is displayed prominently on content cards when relevant.
 
@@ -178,7 +186,7 @@ The search system was completely reimagined in v4.7.0:
 ### 4.2 Discover Component (v4.7.0)
 
 <div align="center">
-  <img src="https://www.ivanluna.dev/images/assets/cinemagoria-asset2.webp" alt="Catalog Discovery" width="70%">
+  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset2.webp" alt="Catalog Discovery" width="70%">
 </div>
 
 The previous standalone `/advanced-search` page has been **deprecated and removed** as of v4.7.0. It is fully replaced by the unified **Discover component**, integrated directly into Movie and TV show pages.
@@ -213,7 +221,7 @@ The Discover component provides:
 ## 5. Film Festival Coverage
 
 <div align="center">
-  <img src="https://www.ivanluna.dev/images/assets/cinemagoria-asset9.webp" alt="Festivals & Awards" width="70%">
+  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset9.webp" alt="Festivals & Awards" width="70%">
 </div>
 
 Cinemagoria provides dedicated, deep integration for major international film festivals. Each festival has its own page, API endpoints, card components, badge components, and carousel integration.
@@ -262,19 +270,27 @@ Each supported festival has its own dedicated Vue components:
 
 ---
 
-## 6. Awards System
+## 6. Awards System (v4.8.0 Overhaul)
+
+<div align="center">
+  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset6.webp" alt="Awards & Accolades" width="70%">
+</div>
+
+Explore the world of film accolades with our comprehensive awards section, featuring a dedicated Awards Index page and person search integration.
 
 ### 6.1 Supported Awards (as of v4.7.0)
 
 | Award | Coverage |
 |---|---|
-| Academy Awards (Oscars) | Full historical coverage: inaugural ceremony (1929) → 2025 |
+| Academy Awards (Oscars) | Full historical coverage: inaugural ceremony (1929) → 98th Academy Awards (2026) |
 | Golden Globe Awards | Full historical coverage: first ceremony (1944) → 2026 |
 | Cannes Film Festival — Palme d'Or | Full historical coverage (added in v4.5.1) |
 | Venice Film Festival — Golden Lion | Full historical coverage (added in v4.5.1) |
 | Berlin Film Festival — Golden Bear | Full historical coverage (added in v4.5.1) |
 
 ### 6.2 Awards Architecture
+
+**Awards Index Page (v4.8.0):** A dedicated index page providing a historical overview of film awards, powered by expanded API endpoints and a person search integration for enhanced data lookup.
 
 **Data source:** Local JSON file (migrated from Turso in v4.5.1) — addresses performance issues with large datasets while keeping the public `/api/awards` endpoint unchanged.
 
@@ -303,7 +319,7 @@ Award links dynamically route to the correct `/movie/:id` or `/tv/:id`. The syst
 
 ---
 
-## 7. Hero Section & Homepage
+## 7. Hero Section, Homepage & N.O.I.R. Archive
 
 ### 7.1 Server-Side Hero Selection
 
@@ -364,12 +380,19 @@ The homepage features carousels for:
 - Cinema news articles
 - Featured content with titled order lists (titles added in v4.7.0)
 
+### 7.7 N.O.I.R. Archive (v4.8.0)
+
+Dive into a curated collection of historical titles with our N.O.I.R. (Nothing Out Is Ready) feature.
+- **Archive Page**: Dedicated space for historical titles preserved in the N.O.I.R. collection.
+- **Homepage Integration**: Badges and a modal trigger integrated directly into the homepage hero section.
+- **Automated Sync**: A GitHub Actions workflow ensures N.O.I.R. historical and enrichment data is automatically synced.
+
 ---
 
 ## 8. Movie & TV Show Detail Pages
 
 <div align="center">
-  <img src="https://www.ivanluna.dev/images/assets/cinemagoria-asset8.webp" alt="Deep Metadata" width="70%">
+  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset8.webp" alt="Deep Metadata" width="70%">
 </div>
 
 ### 8.1 Metadata & Information Display
@@ -469,7 +492,7 @@ Soundtrack components are streamlined for maintainability. Album selection logic
 ## 11. Watchlist & List Management
 
 <div align="center">
-  <img src="https://www.ivanluna.dev/images/assets/cinemagoria-asset4.webp" alt="Watchlist" width="70%">
+  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset4.webp" alt="Watchlist" width="70%">
 </div>
 
 ### 11.1 Watchlist
@@ -564,9 +587,16 @@ Quick-access list management from any content card:
 
 ---
 
-## 12. User Ratings & Reviews
+## 12. User Profiles, Ratings & Reviews (v4.8.0 Overhaul)
 
-### 12.1 Rating System
+### 12.1 Public User Profiles & Activity
+
+Introduced in v4.8.0, users can now engage with the cinemagoria community through personalized profiles.
+- **Public Profiles:** Showcase user activity, favorite movies, and reviews.
+- **Follower/Following Management:** Users can follow others, manage their lists directly in the following modal, and set privacy controls for follower/following counts.
+- **Activity Feed:** See interactions within the community via a dedicated user activity feed.
+
+### 12.2 Rating System
 
 **Scale:** 1–10 circular selector.
 
@@ -580,7 +610,11 @@ Quick-access list management from any content card:
 
 **`loadRatingFromRatingsEndpoint`:** Loads user ratings independently from watchlist logic.
 
-### 12.2 Reviews
+### 12.3 Reviews (Enhanced in v4.8.0)
+
+**Integrated display:** Cinemagoria reviews are integrated directly into movie and TV show detail pages with enhanced display for authors and sources.
+**User control:** Authenticated users have 'Edit' and 'Remove' actions for their contributions.
+**Extended Limits:** Increased character limits allow for more detailed feedback. DOMPurify implemented for robust XSS protection on review content.
 
 **User reviews:** Written from a blank slate (automatic population removed in v4.3.1). Users have full control over review content.
 
@@ -588,7 +622,7 @@ Quick-access list management from any content card:
 
 **`favorites_json` API response:** User ratings and reviews parsed from this response structure.
 
-### 12.3 RatedModal
+### 12.4 RatedModal
 
 - Displayed globally via UserNav or watchlist badges
 - Grid of rated items with refined columns, gaps, border-radius, padding, font sizes
@@ -655,7 +689,7 @@ Only renders when providers are genuinely available for the content item. Title 
 ## 15. Follow & Notification System
 
 <div align="center">
-  <img src="https://www.ivanluna.dev/images/assets/cinemagoria-asset3.webp" alt="Notification Center" width="70%">
+  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset3.webp" alt="Notification Center" width="70%">
 </div>
 
 ### 15.1 What Can Be Followed
@@ -725,7 +759,7 @@ Notifications sync in real-time across devices via Turso/LibSQL with proper user
 ## 16. Cinema News Section
 
 <div align="center">
-  <img src="https://www.ivanluna.dev/images/assets/cinemagoria-asset5.webp" alt="Industry News" width="70%">
+  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset5.webp" alt="Industry News" width="70%">
 </div>
 
 ### 16.1 Architecture
@@ -773,7 +807,7 @@ Notifications sync in real-time across devices via Turso/LibSQL with proper user
 ## 17. Authentication System
 
 <div align="center">
-  <img src="https://www.ivanluna.dev/images/assets/cinemagoria-asset7.webp" alt="Authentication" width="70%">
+  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset7.webp" alt="Authentication" width="70%">
 </div>
 
 ### 17.1 Auth Flow
@@ -798,6 +832,7 @@ Global reusable component eliminating ~700+ lines of duplicated CSS across 7+ pa
 
 Manages:
 - Authentication state (`isLoggedIn`, `userEmail`, `userAvatar`)
+- **Stats Row (v4.8.0):** Displays rated and following counts directly in the user menu
 - Language switching (EN/ES subdomain)
 - Profile menu and dropdown behavior
 - Sticky positioning: `z-index: 1000`
@@ -806,11 +841,16 @@ Manages:
 
 ### 17.4 Security
 
+- XSS content protection utilizing DOMPurify for user reviews (v4.8.0)
 - Input sanitization on all user-facing forms
 - Stricter access controls for list management (owner validation)
 - Protected API endpoints with auth requirement
 - Cross-device sync with proper authorization
 - Console and debugger statements auto-dropped in production builds
+
+### 17.5 Account Management
+
+- **Account Deletion (v4.8.0):** Users can now permanently delete their accounts with full API integration, complete with loading states and error handling for safety.
 
 ---
 
@@ -818,7 +858,7 @@ Manages:
 
 ### 18.1 Color Scheme
 
-- **Primary accent:** Cyan (`#7FDBF1` / `#8BE9FD`) — used for interactive elements, hover states, star ratings, active selections, IMDb rating stars
+- **Primary accent:** Cyan (`#8BE9FD`) — visually refreshed in v4.8.0 for festival and awards pages, interactive elements, hover states, star ratings, active selections, and IMDb rating stars
 - **Backgrounds:** Semi-transparent dark (`rgba`-based) with blur effects on movie grids, headers, footers, card backgrounds
 - **Borders:** `rgba`-based with gradient borders on Hero and search form fields
 - **Notification unread badge:** `#FF5252`
@@ -1197,9 +1237,6 @@ yarn install   # Install/update all dependencies
 
 - Some older festival film listings may still be undergoing content enrichment for the latest media assets
 - The Discover component's filtering capabilities are being continuously refined based on user feedback
-- External link availability (Tomatometer, Watch On, etc.) depends on third-party platform catalogs and API availability
-- Rotten Tomatoes Tomatometer subject to RT content coverage
-- 17 remaining minor Vue-related dependency vulnerabilities (expected framework-level, no upstream patches available)
 - API rate limits may affect external link availability during high-traffic periods
 
 ---
@@ -1210,7 +1247,7 @@ For issues or suggestions: [Create a new issue on GitHub](https://github.com/cin
 
 ---
 
-## Release Authorization (v4.7.0)
+## Release Authorization (v4.8.0)
 
 - **Approved by:** @imprvhub
 - **Architecture Review:** Complete
@@ -1221,3 +1258,7 @@ For issues or suggestions: [Create a new issue on GitHub](https://github.com/cin
 
 *Cinemagoria — Built for film enthusiasts, by film enthusiasts.*  
 *In continuous development since March 27, 2024.*
+
+---
+
+**Full Changelog**: https://github.com/cinemagoria/cinemagoria/compare/v4.7.0...v4.8.0
