@@ -69,6 +69,63 @@ const apiUrl = 'https://api.themoviedb.org/3';
 export const apiImgUrl = 'https://image.tmdb.org/t/p';
 const EXCLUDED_TV_IDS = [276880];
 
+// Detect non-Latin script titles (Hindi, Korean, Japanese, Arabic, Chinese, Thai, etc.)
+// Returns true if the title contains characters outside Latin/common punctuation ranges
+function _hasNonLatinScript(text) {
+    if (!text) return false;
+    // Allow: Latin, Latin Extended, spaces, digits, common punctuation
+    return /[^\u0000-\u024F\u1E00-\u1EFF\u2000-\u206F\u2100-\u214F\d\s.,!?:;'"()\-–—/&@#$%+='"""''…·•½¼¾°ºª×÷]/.test(text);
+}
+
+// Fetch English title fallback for a movie or TV show with non-Latin title
+async function _fetchEnglishTitleFallback(id, mediaType) {
+    try {
+        const res = await axios.get(`${apiUrl}/${mediaType}/${id}`, {
+            params: { api_key: getEnv('API_KEY'), language: 'en-US' }
+        });
+        return mediaType === 'movie' ? res.data.title : res.data.name;
+    } catch { return null; }
+}
+
+// Fix non-Latin titles in list items
+// Step 1 (sync): try original_title/original_name fallback (0 API calls)
+// Step 2 (async): if still non-Latin, fetch en-US title (1 API call per item that needs it)
+function _fixNonLatinTitleInList(item, mediaType) {
+    const titleField = (mediaType === 'movie' || item.title) ? 'title' : null;
+    const nameField = (mediaType === 'tv' || item.name) ? 'name' : null;
+
+    if (titleField && _hasNonLatinScript(item[titleField])) {
+        if (item.original_title && !_hasNonLatinScript(item.original_title)) {
+            item[titleField] = item.original_title;
+        } else {
+            item._needsEnTitleFetch = true;
+        }
+    }
+    if (nameField && _hasNonLatinScript(item[nameField])) {
+        if (item.original_name && !_hasNonLatinScript(item.original_name)) {
+            item[nameField] = item.original_name;
+        } else {
+            item._needsEnTitleFetch = true;
+        }
+    }
+}
+
+// Batch-fix remaining non-Latin titles that need en-US fetch
+async function _fixNonLatinTitlesAsync(items, mediaType) {
+    const needsFetch = items.filter(i => i._needsEnTitleFetch);
+    if (needsFetch.length === 0) return;
+
+    await Promise.all(needsFetch.map(async (item) => {
+        const type = item.media_type || mediaType;
+        const enTitle = await _fetchEnglishTitleFallback(item.id, type);
+        if (enTitle && !_hasNonLatinScript(enTitle)) {
+            if (type === 'movie') item.title = enTitle;
+            else item.name = enTitle;
+        }
+        delete item._needsEnTitleFetch;
+    }));
+}
+
 
 let _heroEnrichmentPromise = null;
 let _noirEnrichmentPromise = null;
@@ -371,6 +428,7 @@ export function getMovies(query, page = 1) {
         }).then(async (response) => {
             response.data.results.forEach(item => {
                 item.vote_average = parseFloat(item.vote_average).toFixed(1);
+                _fixNonLatinTitleInList(item, 'movie');
             });
 
             const enrichedResults = await Promise.all(
@@ -387,6 +445,7 @@ export function getMovies(query, page = 1) {
             );
 
             response.data.results = enrichedResults;
+            await _fixNonLatinTitlesAsync(response.data.results, 'movie');
             resolve(response.data);
         })
             .catch((error) => {
@@ -421,20 +480,28 @@ export function getMovie(id) {
                 return;
             }
 
-            if (!responseData.overview && getEnv('API_LANG') !== 'en-US') {
-                try {
-                    const fallbackResponse = await axios.get(`${apiUrl}/movie/${id}`, {
-                        params: {
-                            api_key: getEnv('API_KEY'),
-                            language: 'en-US',
-                        },
-                    });
-                    if (fallbackResponse.data.overview) {
-                        responseData.overview = fallbackResponse.data.overview;
-                        responseData.original_overview_language = 'en';
+            if (getEnv('API_LANG') !== 'en-US') {
+                const needsOverviewFallback = !responseData.overview;
+                const needsTitleFallback = _hasNonLatinScript(responseData.title);
+
+                if (needsOverviewFallback || needsTitleFallback) {
+                    try {
+                        const fallbackResponse = await axios.get(`${apiUrl}/movie/${id}`, {
+                            params: {
+                                api_key: getEnv('API_KEY'),
+                                language: 'en-US',
+                            },
+                        });
+                        if (needsOverviewFallback && fallbackResponse.data.overview) {
+                            responseData.overview = fallbackResponse.data.overview;
+                            responseData.original_overview_language = 'en';
+                        }
+                        if (needsTitleFallback && fallbackResponse.data.title && !_hasNonLatinScript(fallbackResponse.data.title)) {
+                            responseData.title = fallbackResponse.data.title;
+                        }
+                    } catch (e) {
+                        console.warn('Failed to fetch en-US fallback', e);
                     }
-                } catch (e) {
-                    console.warn('Failed to fetch fallback overview', e);
                 }
             }
 
@@ -660,6 +727,7 @@ export function getMovieRecommended(id, page = 1) {
         }).then(async (response) => {
             response.data.results.forEach(item => {
                 item.vote_average = parseFloat(item.vote_average).toFixed(1);
+                _fixNonLatinTitleInList(item, 'movie');
             });
 
             const enrichedResults = await Promise.all(
@@ -676,6 +744,7 @@ export function getMovieRecommended(id, page = 1) {
             );
 
             response.data.results = enrichedResults;
+            await _fixNonLatinTitlesAsync(response.data.results, 'movie');
             resolve(response.data);
         })
             .catch((error) => {
@@ -697,6 +766,7 @@ export function getTvShows(query, page = 1) {
 
             response.data.results.forEach(item => {
                 item.vote_average = parseFloat(item.vote_average).toFixed(1);
+                _fixNonLatinTitleInList(item, 'tv');
             });
 
             const enrichedResults = await Promise.all(
@@ -713,6 +783,7 @@ export function getTvShows(query, page = 1) {
             );
 
             response.data.results = enrichedResults;
+            await _fixNonLatinTitlesAsync(response.data.results, 'tv');
             resolve(response.data);
         })
             .catch((error) => {
@@ -747,20 +818,28 @@ export function getTvShow(id) {
                 return;
             }
 
-            if (!responseData.overview && getEnv('API_LANG') !== 'en-US') {
-                try {
-                    const fallbackResponse = await axios.get(`${apiUrl}/tv/${id}`, {
-                        params: {
-                            api_key: getEnv('API_KEY'),
-                            language: 'en-US',
-                        },
-                    });
-                    if (fallbackResponse.data.overview) {
-                        responseData.overview = fallbackResponse.data.overview;
-                        responseData.original_overview_language = 'en';
+            if (getEnv('API_LANG') !== 'en-US') {
+                const needsOverviewFallback = !responseData.overview;
+                const needsTitleFallback = _hasNonLatinScript(responseData.name);
+
+                if (needsOverviewFallback || needsTitleFallback) {
+                    try {
+                        const fallbackResponse = await axios.get(`${apiUrl}/tv/${id}`, {
+                            params: {
+                                api_key: getEnv('API_KEY'),
+                                language: 'en-US',
+                            },
+                        });
+                        if (needsOverviewFallback && fallbackResponse.data.overview) {
+                            responseData.overview = fallbackResponse.data.overview;
+                            responseData.original_overview_language = 'en';
+                        }
+                        if (needsTitleFallback && fallbackResponse.data.name && !_hasNonLatinScript(fallbackResponse.data.name)) {
+                            responseData.name = fallbackResponse.data.name;
+                        }
+                    } catch (e) {
+                        console.warn('Failed to fetch en-US fallback', e);
                     }
-                } catch (e) {
-                    console.warn('Failed to fetch fallback overview', e);
                 }
             }
 
@@ -933,6 +1012,7 @@ export function getTvShowRecommended(id, page = 1) {
         }).then(async (response) => {
             response.data.results.forEach(item => {
                 item.vote_average = parseFloat(item.vote_average).toFixed(1);
+                _fixNonLatinTitleInList(item, 'tv');
             });
 
             const enrichedResults = await Promise.all(
@@ -949,6 +1029,7 @@ export function getTvShowRecommended(id, page = 1) {
             );
 
             response.data.results = enrichedResults;
+            await _fixNonLatinTitlesAsync(response.data.results, 'tv');
             resolve(response.data);
         })
             .catch((error) => {
@@ -988,6 +1069,7 @@ export function getTrending(media, page = 1) {
 
             response.data.results.forEach(item => {
                 item.vote_average = parseFloat(item.vote_average).toFixed(1);
+                _fixNonLatinTitleInList(item, media);
             });
 
             const enrichedResults = await Promise.all(
@@ -1005,6 +1087,7 @@ export function getTrending(media, page = 1) {
             );
 
             response.data.results = enrichedResults;
+            await _fixNonLatinTitlesAsync(response.data.results, media);
             resolve(response.data);
         })
             .catch((error) => {
@@ -1025,6 +1108,7 @@ export function getMediaByGenre(media, genre, page = 1) {
         }).then(async (response) => {
             response.data.results.forEach(item => {
                 item.vote_average = parseFloat(item.vote_average).toFixed(1);
+                _fixNonLatinTitleInList(item, media);
             });
 
             const enrichedResults = await Promise.all(
@@ -1041,6 +1125,7 @@ export function getMediaByGenre(media, genre, page = 1) {
             );
 
             response.data.results = enrichedResults;
+            await _fixNonLatinTitlesAsync(response.data.results, media);
             resolve(response.data);
         })
             .catch((error) => {
@@ -1056,7 +1141,16 @@ export function getCredits(id, type) {
                 api_key: getEnv('API_KEY'),
                 language: getEnv('API_LANG'),
             },
-        }).then((response) => {
+        }).then(async (response) => {
+            const mediaType = type.includes('movie') ? 'movie' : 'tv';
+            if (response.data.cast) {
+                response.data.cast.forEach(item => _fixNonLatinTitleInList(item, mediaType));
+                await _fixNonLatinTitlesAsync(response.data.cast, mediaType);
+            }
+            if (response.data.crew) {
+                response.data.crew.forEach(item => _fixNonLatinTitleInList(item, mediaType));
+                await _fixNonLatinTitlesAsync(response.data.crew, mediaType);
+            }
             resolve(response.data);
         })
             .catch((error) => {
@@ -1246,6 +1340,8 @@ export async function search(query, page = 1) {
             if (item.vote_average) {
                 item.vote_average = parseFloat(item.vote_average).toFixed(1);
             }
+            if (item.media_type === 'movie') _fixNonLatinTitleInList(item, 'movie');
+            else if (item.media_type === 'tv') _fixNonLatinTitleInList(item, 'tv');
         });
 
         const enrichedMultiResults = await Promise.all(
@@ -1290,6 +1386,7 @@ export async function search(query, page = 1) {
         }
 
         multiResponse.data.results = [...streamingResults, ...companyResults, ...enrichedMultiResults];
+        await _fixNonLatinTitlesAsync(multiResponse.data.results);
         return multiResponse.data;
     } catch (error) {
         throw error;
@@ -1358,6 +1455,7 @@ export function getMoviesByProductionCompany(companyId, page = 1, filters = {}) 
         axios.get(`${apiUrl}/discover/movie`, { params }).then(async (response) => {
             response.data.results.forEach(item => {
                 item.vote_average = parseFloat(item.vote_average).toFixed(1);
+                _fixNonLatinTitleInList(item, 'movie');
             });
 
             const enrichedResults = await Promise.all(
@@ -1374,6 +1472,7 @@ export function getMoviesByProductionCompany(companyId, page = 1, filters = {}) 
             );
 
             response.data.results = enrichedResults;
+            await _fixNonLatinTitlesAsync(response.data.results, 'movie');
             resolve(response.data);
         }).catch((error) => {
             reject(error);
@@ -1404,6 +1503,7 @@ export function getTVShowsByProductionCompany(companyId, page = 1, filters = {})
 
             response.data.results.forEach(item => {
                 item.vote_average = parseFloat(item.vote_average).toFixed(1);
+                _fixNonLatinTitleInList(item, 'tv');
             });
 
             const enrichedResults = await Promise.all(
@@ -1420,6 +1520,7 @@ export function getTVShowsByProductionCompany(companyId, page = 1, filters = {})
             );
 
             response.data.results = enrichedResults;
+            await _fixNonLatinTitlesAsync(response.data.results, 'tv');
             resolve(response.data);
         }).catch((error) => {
             reject(error);
@@ -1441,6 +1542,7 @@ export function getMoviesByCompanies(companyIds, page = 1) {
         }).then(async (response) => {
             response.data.results.forEach(item => {
                 item.vote_average = parseFloat(item.vote_average).toFixed(1);
+                _fixNonLatinTitleInList(item, 'movie');
             });
 
             const enrichedResults = await Promise.all(
@@ -1457,6 +1559,7 @@ export function getMoviesByCompanies(companyIds, page = 1) {
             );
 
             response.data.results = enrichedResults;
+            await _fixNonLatinTitlesAsync(response.data.results, 'movie');
             resolve(response.data);
         }).catch((error) => {
             reject(error);
@@ -1479,6 +1582,7 @@ export function getTvShowsByCompanies(companyIds, page = 1) {
 
             response.data.results.forEach(item => {
                 item.vote_average = parseFloat(item.vote_average).toFixed(1);
+                _fixNonLatinTitleInList(item, 'tv');
             });
 
             const enrichedResults = await Promise.all(
@@ -1495,6 +1599,7 @@ export function getTvShowsByCompanies(companyIds, page = 1) {
             );
 
             response.data.results = enrichedResults;
+            await _fixNonLatinTitlesAsync(response.data.results, 'tv');
             resolve(response.data);
         }).catch((error) => {
             reject(error);
@@ -1750,9 +1855,30 @@ async function _saveCachedOverview(tmdbId, mediaType, contentEn, contentEs) {
     }
 }
 
+// In-flight deduplication: prevents Hero.vue and MovieInfo/TvInfo from
+// translating the same overview simultaneously (saves 1 API call per visit)
+const _inflightTranslations = new Map();
+
 export async function translateText(text, tmdbId = null, mediaType = null) {
     if (!text || !text.trim()) return '';
 
+    // Deduplicate: if same tmdbId+type is already being translated, reuse that promise
+    const dedupeKey = (tmdbId && mediaType) ? `${tmdbId}-${mediaType}` : null;
+    if (dedupeKey && _inflightTranslations.has(dedupeKey)) {
+        return _inflightTranslations.get(dedupeKey);
+    }
+
+    const promise = _translateTextInner(text, tmdbId, mediaType);
+
+    if (dedupeKey) {
+        _inflightTranslations.set(dedupeKey, promise);
+        promise.finally(() => _inflightTranslations.delete(dedupeKey));
+    }
+
+    return promise;
+}
+
+async function _translateTextInner(text, tmdbId, mediaType) {
     // 1. DB cache (if tmdbId provided)
     if (tmdbId && mediaType) {
         const dbCached = await _fetchCachedOverview(tmdbId, mediaType);
@@ -1762,9 +1888,14 @@ export async function translateText(text, tmdbId = null, mediaType = null) {
         }
     }
 
-    // 2. localStorage cache
+    // 2. localStorage cache — if found, also persist to DB for other users
     const cached = _getCached(text);
-    if (cached) return cached;
+    if (cached) {
+        if (tmdbId && mediaType) {
+            _saveCachedOverview(tmdbId, mediaType, text, cached);
+        }
+        return cached;
+    }
 
     // 3. Translate: Gemini (6 keys) → OpenRouter
     let translation = null;
@@ -2157,6 +2288,7 @@ export function getMoviesByProvider(providerId, page = 1, filters = {}) {
         axios.get(`${apiUrl}/discover/movie`, { params }).then(async (response) => {
             response.data.results.forEach(item => {
                 item.vote_average = parseFloat(item.vote_average).toFixed(1);
+                _fixNonLatinTitleInList(item, 'movie');
             });
 
             const enrichedResults = await Promise.all(
@@ -2173,6 +2305,7 @@ export function getMoviesByProvider(providerId, page = 1, filters = {}) {
             );
 
             response.data.results = enrichedResults;
+            await _fixNonLatinTitlesAsync(response.data.results, 'movie');
             resolve(response.data);
         }).catch((error) => {
             reject(error);
@@ -2204,6 +2337,7 @@ export function getTvShowsByProvider(providerId, page = 1, filters = {}) {
 
             response.data.results.forEach(item => {
                 item.vote_average = parseFloat(item.vote_average).toFixed(1);
+                _fixNonLatinTitleInList(item, 'tv');
             });
 
             const enrichedResults = await Promise.all(
@@ -2220,6 +2354,7 @@ export function getTvShowsByProvider(providerId, page = 1, filters = {}) {
             );
 
             response.data.results = enrichedResults;
+            await _fixNonLatinTitlesAsync(response.data.results, 'tv');
             resolve(response.data);
         }).catch((error) => {
             reject(error);
