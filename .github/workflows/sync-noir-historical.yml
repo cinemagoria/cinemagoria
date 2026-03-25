@@ -1,11 +1,6 @@
 name: Sync N.O.I.R Historical
 
 on:
-  schedule:
-    - cron: '30 0 */3 * *'
-  workflow_run:
-    workflows: ["Sync Hero Enrichment Data"]
-    types: [completed]
   workflow_dispatch:
 
 permissions:
