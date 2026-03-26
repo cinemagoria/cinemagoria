@@ -14,7 +14,7 @@
       
       <div :class="$style.backdrop">
         <div>
-          <div v-if="isHomepage" :class="$style.noirBadgeGroup">
+          <div v-if="isHomepage || isNoirTitle" :class="$style.noirBadgeGroup">
             <nuxt-link to="/noir" :class="$style.noirBadgeImg" title="N.O.I.R">
               <img src="/ui/noir-selection-500x500.webp" alt="N.O.I.R" :class="$style.noirBadgeImgEl" />
             </nuxt-link>
@@ -367,6 +367,7 @@ import SxswBadge from '~/components/festival/SxswBadge.vue';
 import RomfordBadge from '~/components/festival/RomfordBadge.vue';
 import { translateText } from '~/utils/api';
 import { MANUAL_FESTIVAL_BADGES } from '~/utils/constants';
+import { getHeroEnrichment, getNoirEnrichment } from '~/utils/api';
 import NoirModal from '~/components/NoirModal.vue';
 
 export default {
@@ -469,6 +470,7 @@ export default {
       translatedOverview: null,
 
       showNoirModal: false,
+      isNoirTitle: false,
       currentIndex: 0,
       touchStartX: 0,
       touchEndX: 0,
@@ -548,6 +550,7 @@ export default {
 
     
     this.updateHeroState();
+    this.checkNoirStatus();
 
     this.$bus.$on('favorites-updated', this.checkMembership);
     this.$bus.$on('lists-updated', this.checkMembership);
@@ -557,6 +560,7 @@ export default {
     heroItem(val) {
       if (val) {
         this.updateHeroState();
+        this.checkNoirStatus();
       }
     }
   },
@@ -568,6 +572,15 @@ export default {
   },
 
   methods: {
+    async checkNoirStatus() {
+      if (this.isHomepage) return;
+      const tmdbId = this.heroItem?.id;
+      if (!tmdbId) { this.isNoirTitle = false; return; }
+      const mediaType = this.type;
+      const key = `${tmdbId}-${mediaType}`;
+      const [heroMap, noirMap] = await Promise.all([getHeroEnrichment(), getNoirEnrichment()]);
+      this.isNoirTitle = heroMap.has(key) || heroMap.has(tmdbId) || noirMap.has(key) || noirMap.has(tmdbId);
+    },
     handleTouchStart(e) {
       if (!this.isHomepage || this.items.length <= 1) return;
       this.touchStartX = e.changedTouches[0].screenX;
