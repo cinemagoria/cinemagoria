@@ -2018,12 +2018,12 @@ export default {
 
 .noirBadgeGroup {
     position: absolute;
-    top: 0.6rem;
+    top: 1.2rem;
     right: 2rem;
     z-index: 20;
 
     @media (max-width: 600px) {
-        top: 0.4rem;
+        top: 1rem;
         right: 1.5rem;
     }
 }

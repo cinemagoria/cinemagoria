@@ -21,7 +21,7 @@
         <div class="noir-modal-divider"></div>
 
         <p class="noir-modal-text">
-          Una selecci&oacute;n de lo que todav&iacute;a no se estren&oacute; &mdash; t&iacute;tulos hasta un a&ntilde;o antes de su lanzamiento.
+          De estrenos anticipados a un archivo permanente. Una selecci&oacute;n curada de estrenos exclusivos desde 2024.
         </p>
 
       </div>
