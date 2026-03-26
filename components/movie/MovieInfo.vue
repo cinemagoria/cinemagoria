@@ -38,7 +38,7 @@
               <div :class="$style.value">{{ item.original_title }}</div>
             </li>
             <li v-if="item.release_date">
-              <div :class="$style.label">Released</div>
+              <div :class="$style.label">{{ releaseDateLabel(item.release_date) }}</div>
               <div :class="$style.value">{{ fullDate(item.release_date) }}</div>
             </li>
             <li v-if="item.runtime">
@@ -64,13 +64,13 @@
             <li v-if="item.status">
               <div :class="$style.label">Status</div>
               <div :class="$style.value">
-                {{ item.status }}
-                <span 
-                  v-if="releaseStatusSuffix" 
+                {{ displayStatus.text }}
+                <span
+                  v-if="displayStatus.detail"
                   :class="$style.releaseLink"
                   @click="$emit('open-releases')"
                 >
-                  {{ releaseStatusSuffix }}
+                  {{ displayStatus.detail }}
                 </span>
               </div>
             </li>
@@ -401,18 +401,28 @@ export default {
     shouldShowWatchOn() {
        return true;
     },
-    releaseStatusSuffix() {
+    displayStatus() {
       const context = getReleaseStatusContext(this.item, process.env.API_COUNTRY || 'US');
-      
+
       switch (context) {
-        case 'FESTIVALS_AND_THEATRICAL_ONLY':
-          return ' (Festivals and Theatrical Only)';
-        case 'THEATRICAL_ONLY':
-          return ' (Theatrical Only)';
-        case 'FESTIVALS_ONLY':
-          return ' (Festivals Only)';
+        case 'THEATRICAL_TODAY_WITH_FESTIVALS':
+          return { text: 'In Theaters Today', detail: '(Festival Premiere)' };
+        case 'THEATRICAL_TODAY':
+          return { text: 'In Theaters Today', detail: '' };
+        case 'IN_THEATERS_WITH_FESTIVALS':
+          return { text: 'In Theaters', detail: '(Festival Premiere)' };
+        case 'IN_THEATERS':
+          return { text: 'In Theaters', detail: '' };
+        case 'PRE_RELEASE_FESTIVALS_THEATRICAL_SOON':
+          return { text: 'Pre-Release', detail: '(Festivals)' };
+        case 'THEATRICAL_UPCOMING':
+          return { text: 'Coming to Theaters', detail: '' };
+        case 'FESTIVALS_ONLY_PAST':
+          return { text: 'Pre-Release', detail: '(Festivals)' };
+        case 'FESTIVALS_ONLY_FUTURE':
+          return { text: 'Pre-Release', detail: '(Festivals)' };
         default:
-          return '';
+          return { text: this.item.status, detail: '' };
       }
     },
     winnerOscars() {
@@ -492,6 +502,13 @@ export default {
       if (img && img.complete && img.naturalHeight !== 0) {
         this.onPosterLoaded();
       }
+    },
+    releaseDateLabel(date) {
+      if (!date) return 'Released';
+      const today = new Date(); today.setHours(0,0,0,0);
+      const d = new Date(date + 'T00:00:00'); d.setHours(0,0,0,0);
+      if (d.getTime() === today.getTime()) return 'Releases Today';
+      return d > today ? 'Releases' : 'Released';
     },
     fullDate(date) {
       if (!date) return 'N/A';

@@ -43,15 +43,40 @@ export function getReleaseStatusContext(item, targetCountry = 'US') {
 
     if (types.has(4) || types.has(5) || types.has(6)) return null;
 
+    const today = new Date(); today.setHours(0,0,0,0);
+
     const hasTheatrical = types.has(2) || types.has(3);
     const hasPremiere = types.has(1);
 
+    const theatricalDates = allDates.filter(d => d.type === 2 || d.type === 3).map(d => new Date(d.release_date));
+    const premiereDates = allDates.filter(d => d.type === 1).map(d => new Date(d.release_date));
+
+    const earliestTheatrical = theatricalDates.length ? new Date(Math.min(...theatricalDates)) : null;
+    const earliestPremiere = premiereDates.length ? new Date(Math.min(...premiereDates)) : null;
+
+    if (earliestTheatrical) earliestTheatrical.setHours(0,0,0,0);
+    if (earliestPremiere) earliestPremiere.setHours(0,0,0,0);
+
+    const theatricalIsToday = earliestTheatrical && earliestTheatrical.getTime() === today.getTime();
+    const theatricalIsPast = earliestTheatrical && earliestTheatrical < today;
+    const theatricalIsFuture = earliestTheatrical && earliestTheatrical > today;
+    const premiereIsPast = earliestPremiere && earliestPremiere <= today;
+
     if (hasTheatrical) {
-        if (hasPremiere) return 'FESTIVALS_AND_THEATRICAL_ONLY';
-        return 'THEATRICAL_ONLY';
+        if (theatricalIsToday) {
+            return hasPremiere ? 'THEATRICAL_TODAY_WITH_FESTIVALS' : 'THEATRICAL_TODAY';
+        }
+        if (theatricalIsPast) {
+            return hasPremiere ? 'IN_THEATERS_WITH_FESTIVALS' : 'IN_THEATERS';
+        }
+        if (theatricalIsFuture) {
+            return premiereIsPast ? 'PRE_RELEASE_FESTIVALS_THEATRICAL_SOON' : 'THEATRICAL_UPCOMING';
+        }
     }
 
-    if (hasPremiere) return 'FESTIVALS_ONLY';
+    if (hasPremiere) {
+        return premiereIsPast ? 'FESTIVALS_ONLY_PAST' : 'FESTIVALS_ONLY_FUTURE';
+    }
 
     return null;
 }
