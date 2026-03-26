@@ -2015,12 +2015,12 @@ export default {
 
 .noirBadgeGroup {
     position: absolute;
-    top: 2rem;
+    top: 0.6rem;
     right: 2rem;
     z-index: 20;
 
     @media (max-width: 600px) {
-        top: 1.5rem;
+        top: 0.4rem;
         right: 1.5rem;
     }
 }
@@ -2050,13 +2050,13 @@ export default {
     }
 
     @media (max-width: 600px) {
-        width: 72px;
-        height: 72px;
+        width: 61px;
+        height: 61px;
     }
 
     @media (max-width: 400px) {
-        width: 62px;
-        height: 62px;
+        width: 53px;
+        height: 53px;
     }
 }
 

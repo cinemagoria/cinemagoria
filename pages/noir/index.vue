@@ -18,13 +18,6 @@
         </p>
       </div>
 
-      <div v-if="!loading && archiveItems && archiveItems.results && archiveItems.results.length" class="clone-bar">
-        <button @click="cloneToList" class="clone-button" :disabled="cloning">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-download-icon lucide-cloud-download"><path d="M12 13v8l-4-4"/><path d="m12 21 4-4"/><path d="M4.393 15.269A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.436 8.284"/></svg>
-          {{ cloning ? 'Cloning...' : 'Clone to List' }}
-        </button>
-      </div>
-
       <transition name="fade">
         <div v-if="cloneSuccess" class="undoBarContainer">
           <div class="undoBar">
@@ -56,12 +49,67 @@
         </div>
       </transition>
 
+      <div v-if="!loading && hasResults" class="toolbar">
+        <label class="switch" @click.prevent="sortMode = sortMode === 'date' ? 'alpha' : 'date'">
+          <input type="checkbox" :checked="sortMode === 'alpha'">
+          <span>Date</span>
+          <span>A-Z</span>
+        </label>
+
+        <button @click="cloneToList" class="clone-button" :disabled="cloning">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 13v8l-4-4"/><path d="m12 21 4-4"/><path d="M4.393 15.269A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.436 8.284"/></svg>
+          {{ cloning ? 'Cloning...' : 'Clone to List' }}
+        </button>
+      </div>
+
       <div v-if="loading" class="noir-archive-loader">
         <Loader :size="60" />
       </div>
 
-      <div v-else-if="archiveItems && archiveItems.results && archiveItems.results.length">
-        <Listing :items="archiveItems" />
+      <div v-else-if="hasResults">
+        <!-- Movies -->
+        <div v-if="sortedMovies.length" class="noir-category">
+          <div class="section-header" @click="collapsed.movies = !collapsed.movies">
+            <h2 class="section-title">Movies <span class="section-count">({{ sortedMovies.length }})</span></h2>
+            <button class="expand-btn" :aria-label="collapsed.movies ? 'Expand' : 'Collapse'">
+              <svg v-if="collapsed.movies" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
+              <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
+            </button>
+          </div>
+          <div v-show="!collapsed.movies">
+            <div class="listing__items">
+              <Card v-for="item in moviesWithDate" :key="'movie-' + item.id" :item="item" />
+            </div>
+            <div v-if="moviesWithoutDate.length" class="no-date-separator">
+              <span class="no-date-label">Date to be confirmed</span>
+            </div>
+            <div v-if="moviesWithoutDate.length" class="listing__items">
+              <Card v-for="item in moviesWithoutDate" :key="'movie-nd-' + item.id" :item="item" />
+            </div>
+          </div>
+        </div>
+
+        <!-- TV Shows -->
+        <div v-if="sortedTv.length" class="noir-category">
+          <div class="section-header" @click="collapsed.tv = !collapsed.tv">
+            <h2 class="section-title">TV Shows <span class="section-count">({{ sortedTv.length }})</span></h2>
+            <button class="expand-btn" :aria-label="collapsed.tv ? 'Expand' : 'Collapse'">
+              <svg v-if="collapsed.tv" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
+              <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
+            </button>
+          </div>
+          <div v-show="!collapsed.tv">
+            <div class="listing__items">
+              <Card v-for="item in tvWithDate" :key="'tv-' + item.id" :item="item" />
+            </div>
+            <div v-if="tvWithoutDate.length" class="no-date-separator">
+              <span class="no-date-label">Date to be confirmed</span>
+            </div>
+            <div v-if="tvWithoutDate.length" class="listing__items">
+              <Card v-for="item in tvWithoutDate" :key="'tv-nd-' + item.id" :item="item" />
+            </div>
+          </div>
+        </div>
       </div>
 
       <div v-else class="empty-state">
@@ -74,14 +122,14 @@
 </template>
 
 <script>
-import Listing from '~/components/Listing';
+import Card from '~/components/Card';
 import Loader from '~/components/Loader.vue';
 import NoirModal from '~/components/NoirModal.vue';
 import { mapItemToDbPayload } from '~/utils/itemMapper';
 
 export default {
   components: {
-    Listing,
+    Card,
     Loader,
     NoirModal,
   },
@@ -91,6 +139,8 @@ export default {
       archiveItems: null,
       loading: true,
       showNoirModal: false,
+      sortMode: 'date',
+      collapsed: { movies: false, tv: false },
       cloning: false,
       cloneSuccess: false,
       cloneError: null,
@@ -104,12 +154,35 @@ export default {
     tursoBackendUrl() {
       return this.$config.public.tursoBackendUrl;
     },
+    hasResults() {
+      return this.archiveItems && this.archiveItems.results && this.archiveItems.results.length;
+    },
+    sortedMovies() {
+      const mode = this.sortMode;
+      return this._sortAndLabel(this._filterByType('movie'), mode);
+    },
+    sortedTv() {
+      const mode = this.sortMode;
+      return this._sortAndLabel(this._filterByType('tv'), mode);
+    },
+    moviesWithDate() {
+      return this.sortedMovies.filter(i => i.release_date || i.first_air_date);
+    },
+    moviesWithoutDate() {
+      return this.sortedMovies.filter(i => !i.release_date && !i.first_air_date);
+    },
+    tvWithDate() {
+      return this.sortedTv.filter(i => i.release_date || i.first_air_date);
+    },
+    tvWithoutDate() {
+      return this.sortedTv.filter(i => !i.release_date && !i.first_air_date);
+    },
   },
 
   async mounted() {
     try {
       const data = await $fetch('/api/noir-archive');
-      
+
       if (data && data.results) {
         data.results = data.results.map(item => {
           item.vote_average = 0;
@@ -128,6 +201,38 @@ export default {
   },
 
   methods: {
+    _filterByType(type) {
+      if (!this.hasResults) return [];
+      return this.archiveItems.results.filter(item => {
+        const mt = item.media_type || item.type || (item.name ? 'tv' : 'movie');
+        return mt === type;
+      });
+    },
+    _sortAndLabel(items, mode) {
+      let sorted;
+      if (mode === 'alpha') {
+        sorted = [...items].sort((a, b) => {
+          const nameA = (a.title || a.name || '').toLowerCase();
+          const nameB = (b.title || b.name || '').toLowerCase();
+          return nameA.localeCompare(nameB, 'en');
+        });
+      } else {
+        const withDate = items.filter(i => i.release_date || i.first_air_date);
+        const withoutDate = items.filter(i => !i.release_date && !i.first_air_date);
+        withDate.sort((a, b) => {
+          const da = new Date(a.release_date || a.first_air_date);
+          const db = new Date(b.release_date || b.first_air_date);
+          return db - da;
+        });
+        if (withoutDate.length && withDate.length) {
+          withoutDate[0] = { ...withoutDate[0], _noDateLabel: true };
+        } else if (withoutDate.length && !withDate.length) {
+          withoutDate[0] = { ...withoutDate[0], _noDateLabel: true };
+        }
+        sorted = [...withDate, ...withoutDate];
+      }
+      return sorted;
+    },
     async cloneToList() {
       const userEmail = localStorage.getItem('email')?.replace(/['"]+/g, '');
       if (!userEmail) {
@@ -262,7 +367,7 @@ export default {
     return {
       title: 'N.O.I.R Archive - Cinemagoria',
       meta: [
-        { hid: 'description', name: 'description', content: 'Historical titles curated for N.O.I.R — Cinemagoria\'s most exclusive selection of upcoming movies and TV shows.' }
+        { hid: 'description', name: 'description', content: 'Historical titles curated for N.O.I.R \u2014 Cinemagoria\'s most exclusive selection of upcoming movies and TV shows.' }
       ]
     };
   },
@@ -289,14 +394,6 @@ export default {
 
 .help-icon-button:hover {
   opacity: 0.7;
-}
-
-.clone-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
 }
 
 .clone-button {
@@ -452,6 +549,176 @@ export default {
   padding: 4rem 2rem;
   color: rgba(255, 255, 255, 0.5);
   font-size: 1.4rem;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 0;
+}
+
+.switch {
+  --_switch-padding: 3px;
+  --_slider-bg-clr-on: #8BE9FD;
+  color: rgba(255, 255, 255, 0.7);
+  width: fit-content;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  position: relative;
+  isolation: isolate;
+  border-radius: 25px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 104, 135, 0.37);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.switch input[type="checkbox"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.switch > span {
+  display: grid;
+  place-content: center;
+  transition: all 300ms ease-in-out;
+  padding: 10px 20px;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.switch::before,
+.switch::after {
+  content: "";
+  position: absolute;
+  border-radius: inherit;
+  transition: inset 150ms ease-in-out;
+}
+
+.switch::before {
+  background-color: var(--_slider-bg-clr-on);
+  inset: var(--_switch-padding) 50% var(--_switch-padding) var(--_switch-padding);
+  transition: inset 500ms cubic-bezier(0.47, 1.64, 0.41, 0.8), background-color 500ms ease-in-out;
+  z-index: 0;
+  border-radius: 22px;
+}
+
+.switch::after {
+  background-color: rgba(0, 0, 0, 0);
+  inset: 0;
+  z-index: -1;
+}
+
+.switch:hover {
+  transform: translateY(-1px);
+}
+
+.switch:has(input:checked)::before {
+  inset: var(--_switch-padding) var(--_switch-padding) var(--_switch-padding) 50%;
+}
+
+.switch > span:first-of-type {
+  color: #000;
+  font-weight: 600;
+}
+
+.switch:has(input:checked) > span:first-of-type {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 400;
+}
+
+.switch:has(input:checked) > span:last-of-type {
+  color: #000;
+  font-weight: 600;
+}
+
+.switch > span:last-of-type {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 400;
+}
+
+.noir-category {
+  margin-bottom: 2.5rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 1rem;
+}
+
+.section-header:hover .section-title {
+  opacity: 0.8;
+}
+
+.section-title {
+  color: #8BE9FD;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0;
+  padding-left: 5px;
+  border-left: 3px solid #8BE9FD;
+  line-height: 1.2;
+}
+
+.section-count {
+  font-weight: 400;
+  font-size: 1.2rem;
+  opacity: 0.6;
+}
+
+.expand-btn {
+  background: transparent;
+  border: none;
+  color: #8BE9FD;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.expand-btn:hover {
+  transform: scale(1.1);
+}
+
+.no-date-separator {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.no-date-separator::before,
+.no-date-separator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(139, 233, 253, 0.15);
+}
+
+.no-date-label {
+  color: rgba(139, 233, 253, 0.85);
+  font-size: 1.1rem;
+  font-style: italic;
+  white-space: nowrap;
 }
 
 @media (max-width: 768px) {
