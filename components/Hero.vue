@@ -15,12 +15,9 @@
       <div :class="$style.backdrop">
         <div>
           <div v-if="isHomepage" :class="$style.noirBadgeGroup">
-            <nuxt-link to="/noir" :class="$style.noirBadgeHistory" title="Histórico de N.O.I.R">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+            <nuxt-link to="/noir" :class="$style.noirBadgeImg" title="N.O.I.R">
+              <img src="/ui/noir-selection-500x500.svg" alt="N.O.I.R" :class="$style.noirBadgeImgEl" />
             </nuxt-link>
-            <button :class="$style.noirBadgeLabel" @click="showNoirModal = true">
-              EN N.O.I.R
-            </button>
           </div>
           <NoirModal v-if="showNoirModal" @close="showNoirModal = false" />
           <button
@@ -2011,96 +2008,45 @@ export default {
     top: 2rem;
     right: 2rem;
     z-index: 20;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
 
     @media (max-width: 600px) {
         top: 1.5rem;
         right: 1.5rem;
-        gap: 0.4rem;
     }
 }
 
-.noirBadgeHistory {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    color: #8BE9FD;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    border: 1px solid #8BE9FD;
-    border-radius: 12px;
-    background: #000;
+.noirBadgeImg {
+    display: block;
     text-decoration: none;
-    box-sizing: border-box;
-    flex-shrink: 0;
+    cursor: pointer;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 
-    @media (max-width: 768px) {
-        width: 34px;
-        height: 34px;
-    }
-
-    @media (max-width: 600px) {
-        width: 32px;
-        height: 32px;
-
-        svg {
-            width: 15px;
-            height: 15px;
-        }
-    }
-
-    @media (max-width: 400px) {
-        width: 30px;
-        height: 30px;
-
-        svg {
-            width: 14px;
-            height: 14px;
-        }
+    &:hover {
+        opacity: 0.85;
+        transform: scale(1.05);
     }
 }
 
-.noirBadgeLabel {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 36px;
-    padding: 0 1.2rem;
-    color: #8BE9FD;
-    font-weight: 600;
-    font-size: 1.1rem;
-    letter-spacing: 0.8px;
-    cursor: pointer;
-    background: #000;
-    border: 1px solid #8BE9FD;
-    border-radius: 12px;
-    font-family: inherit;
-    white-space: nowrap;
-    transition: background 0.3s ease;
-    box-sizing: border-box;
+.noirBadgeImgEl {
+    width: 77px;
+    height: 77px;
+    border-radius: 14px;
+    object-fit: cover;
+    filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.9)) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.8)) drop-shadow(0 1px 4px rgba(0, 0, 0, 0.7));
 
     @media (max-width: 768px) {
-        font-size: 0.95rem;
-        min-height: 34px;
-        padding: 0 1rem;
-        letter-spacing: 0.5px;
+        width: 82px;
+        height: 82px;
     }
 
     @media (max-width: 600px) {
-        font-size: 0.85rem;
-        min-height: 32px;
-        padding: 0 0.9rem;
+        width: 72px;
+        height: 72px;
     }
 
     @media (max-width: 400px) {
-        font-size: 0.75rem;
-        min-height: 30px;
-        padding: 0 0.7rem;
-        letter-spacing: 0.3px;
+        width: 62px;
+        height: 62px;
     }
 }
 

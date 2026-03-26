@@ -10,8 +10,13 @@
       </button>
 
       <div class="noir-modal-body">
-        <h2 class="noir-modal-title">N.O.I.R.</h2>
-        <p class="noir-modal-subtitle">Nothing Out Is Ready</p>
+        <div class="noir-modal-header">
+          <img src="/ui/noir-selection-500x500.svg" alt="N.O.I.R" class="noir-modal-logo" />
+          <div>
+            <h2 class="noir-modal-title">N.O.I.R.</h2>
+            <p class="noir-modal-subtitle">Nothing Out Is Ready</p>
+          </div>
+        </div>
 
         <div class="noir-modal-divider"></div>
 
@@ -100,22 +105,41 @@ export default {
   margin-top: 10px;
 }
 
+.noir-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.noir-modal-logo {
+  width: 82px;
+  height: 82px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
+  align-self: center;
+  margin-top: 6px;
+}
+
 .noir-modal-title {
   font-size: 36px;
   font-weight: 800;
   color: #ffffff;
-  margin: 0 0 6px 0;
+  margin: 0 0 4px 0;
   letter-spacing: 4px;
   text-shadow: 0 0 20px rgba(139, 233, 253, 0.3);
+  text-align: left;
 }
 
 .noir-modal-subtitle {
   font-size: 16px;
   font-weight: 400;
   color: #8BE9FD;
-  margin: 0 0 4px 0;
+  margin: -8px 0 0 0;
   font-style: italic;
   letter-spacing: 0.5px;
+  text-align: left;
 }
 
 .noir-modal-subtitle-es {
@@ -189,6 +213,13 @@ export default {
   .noir-modal-card {
     width: 95%;
     padding: 35px 20px 25px;
+  }
+  .noir-modal-logo {
+    width: 50px;
+    height: 50px;
+  }
+  .noir-modal-header {
+    gap: 12px;
   }
   .noir-modal-title {
     font-size: 28px;
