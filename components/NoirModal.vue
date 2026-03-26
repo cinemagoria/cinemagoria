@@ -21,7 +21,7 @@
         <div class="noir-modal-divider"></div>
 
         <p class="noir-modal-text">
-          A curated selection of what hasn&rsquo;t surfaced yet &mdash; premieres, unseen releases, and titles up to a year ahead.
+          From future premieres to a permanent archive. A curated selection of exclusive previews from 2024 onwards.
         </p>
 
       </div>
