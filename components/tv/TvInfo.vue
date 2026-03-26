@@ -43,11 +43,11 @@
               <div :class="$style.value">{{ item.original_name }}</div>
             </li>
             <li v-if="item.first_air_date">
-              <div :class="$style.label">Primera Emisión</div>
+              <div :class="$style.label">{{ airDateLabel(item.first_air_date, 'first') }}</div>
               <div :class="$style.value">{{ fullDate(item.first_air_date) }}</div>
             </li>
             <li v-if="item.last_air_date">
-              <div :class="$style.label">Última Emisión</div>
+              <div :class="$style.label">{{ airDateLabel(item.last_air_date, 'last') }}</div>
               <div :class="$style.value">{{ fullDate(item.last_air_date) }}</div>
             </li>
             <li v-if="item.episode_run_time && item.episode_run_time.length">
@@ -489,6 +489,18 @@ export default {
         return languageNames.of(iso);
       } catch (e) {
         return iso;
+      }
+    },
+    airDateLabel(date, type) {
+      if (!date) return type === 'first' ? 'Primera Emisión' : 'Última Emisión';
+      const today = new Date(); today.setHours(0,0,0,0);
+      const d = new Date(date + 'T00:00:00'); d.setHours(0,0,0,0);
+      if (type === 'first') {
+        if (d.getTime() === today.getTime()) return 'Se Estrena Hoy';
+        return d > today ? 'Se Estrena' : 'Primera Emisión';
+      } else {
+        if (d.getTime() === today.getTime()) return 'Se Emite Hoy';
+        return d > today ? 'Próxima Emisión' : 'Última Emisión';
       }
     },
     fullDate(date) {
