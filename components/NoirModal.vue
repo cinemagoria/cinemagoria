@@ -24,6 +24,62 @@
           From future premieres to a permanent archive. A curated selection of exclusive previews from 2024 onwards.
         </p>
 
+        <button v-if="!showManifesto" class="noir-manifesto-toggle" @click="showManifesto = true">
+          Read manifesto
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+
+        <transition name="manifesto-expand">
+          <div v-if="showManifesto" class="noir-manifesto">
+            <div class="noir-manifesto-divider"></div>
+            <div class="noir-manifesto-content">
+              <transition :name="slideDirection" mode="out-in">
+                <div :key="currentStep" class="noir-manifesto-step">
+                  <h4 class="noir-manifesto-step-title">{{ manifesto[currentStep].numeral }}. {{ manifesto[currentStep].title }}</h4>
+                  <div class="noir-manifesto-lines">
+                    <p v-for="(line, i) in manifesto[currentStep].lines" :key="i" class="noir-manifesto-line">
+                      {{ line }}
+                    </p>
+                  </div>
+                </div>
+              </transition>
+            </div>
+            <div class="noir-manifesto-nav">
+              <button
+                class="noir-manifesto-arrow"
+                :class="{ 'noir-manifesto-arrow--disabled': currentStep === 0 }"
+                :disabled="currentStep === 0"
+                @click="prevStep"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="15 18 9 12 15 6"/>
+                </svg>
+              </button>
+              <div class="noir-manifesto-dots">
+                <span
+                  v-for="(_, i) in manifesto"
+                  :key="i"
+                  class="noir-manifesto-dot"
+                  :class="{ 'noir-manifesto-dot--active': i === currentStep }"
+                  @click="currentStep = i"
+                />
+              </div>
+              <button
+                class="noir-manifesto-arrow"
+                :class="{ 'noir-manifesto-arrow--disabled': currentStep === manifesto.length - 1 }"
+                :disabled="currentStep === manifesto.length - 1"
+                @click="nextStep"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 18 15 12 9 6"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </transition>
+
       </div>
 
       <div class="noir-modal-footer">
@@ -35,7 +91,60 @@
 
 <script>
 export default {
-  name: 'NoirModal'
+  name: 'NoirModal',
+  data() {
+    return {
+      showManifesto: false,
+      currentStep: 0,
+      slideDirection: 'slide-left',
+      manifesto: [
+        {
+          numeral: 'I',
+          title: 'Nothing Out Is Ready',
+          lines: [
+            'Commercial cinema lives off immediate impact.',
+            'N.O.I.R. is built on anticipation.',
+            'We stand for what is latent and independent.',
+            'What is \u201cready\u201d already belongs to the past.',
+            'We believe a work in its purest state is one that has not yet been fully absorbed.'
+          ]
+        },
+        {
+          numeral: 'II',
+          title: 'Selection Criteria',
+          lines: [
+            'We don\u2019t collect titles. We identify signals.',
+            'We move within that threshold moment, when a work has not yet fully surfaced.',
+            'If a title doesn\u2019t propose something through its language or cultural impact, it doesn\u2019t belong in this selection.',
+            'We look for what is original, unsettling, and genuine.'
+          ]
+        },
+        {
+          numeral: 'III',
+          title: 'In Constant Motion',
+          lines: [
+            'This selection is constantly evolving.',
+            'Titles enter, rotate, and leave as time moves forward.',
+            'Nothing is lost. What leaves N.O.I.R. becomes part of its archive.'
+          ]
+        }
+      ]
+    };
+  },
+  methods: {
+    nextStep() {
+      if (this.currentStep < this.manifesto.length - 1) {
+        this.slideDirection = 'slide-left';
+        this.currentStep++;
+      }
+    },
+    prevStep() {
+      if (this.currentStep > 0) {
+        this.slideDirection = 'slide-right';
+        this.currentStep--;
+      }
+    }
+  }
 };
 </script>
 
@@ -63,12 +172,28 @@ export default {
   padding: 40px 30px 30px;
   width: 90%;
   max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5),
               0 0 0 1px rgba(31, 84, 103, 0.5),
               inset 0 0 20px rgba(139, 233, 253, 0.05);
   backdrop-filter: blur(20px);
   text-align: center;
   animation: noirFloatIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: max-height 0.4s ease;
+}
+
+.noir-modal-card::-webkit-scrollbar {
+  width: 4px;
+}
+
+.noir-modal-card::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.noir-modal-card::-webkit-scrollbar-thumb {
+  background: rgba(139, 233, 253, 0.2);
+  border-radius: 4px;
 }
 
 .noir-modal-glow-line {
@@ -157,10 +282,184 @@ export default {
   margin: 0 0 14px 0;
 }
 
-.noir-modal-highlight {
+/* Manifesto Toggle */
+.noir-manifesto-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
   color: #8BE9FD;
-  font-weight: 400;
-  font-style: italic;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.noir-manifesto-toggle:hover {
+  background: rgba(139, 233, 253, 0.08);
+  transform: translateY(1px);
+}
+
+.noir-manifesto-toggle svg {
+  transition: transform 0.3s ease;
+}
+
+.noir-manifesto-toggle:hover svg {
+  transform: translateY(2px);
+}
+
+/* Manifesto Section */
+.noir-manifesto {
+  margin-top: 8px;
+}
+
+.noir-manifesto-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139, 233, 253, 0.2), transparent);
+  margin: 0 0 20px 0;
+}
+
+.noir-manifesto-content {
+  min-height: 160px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.noir-manifesto-step {
+  width: 100%;
+  text-align: center;
+}
+
+.noir-manifesto-step-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 12px 0;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.noir-manifesto-lines {
+  max-width: 360px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.noir-manifesto-line {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.55;
+  margin: 0 0 4px 0;
+}
+
+/* Navigation */
+.noir-manifesto-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.noir-manifesto-arrow {
+  background: none;
+  border: 1px solid rgba(139, 233, 253, 0.2);
+  color: #8BE9FD;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.noir-manifesto-arrow:hover:not(:disabled) {
+  background: rgba(139, 233, 253, 0.1);
+  border-color: rgba(139, 233, 253, 0.4);
+}
+
+.noir-manifesto-arrow--disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
+.noir-manifesto-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.noir-manifesto-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(139, 233, 253, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.noir-manifesto-dot--active {
+  background: #8BE9FD;
+  box-shadow: 0 0 8px rgba(139, 233, 253, 0.5);
+  transform: scale(1.3);
+}
+
+/* Transitions */
+.manifesto-expand-enter-active {
+  animation: expandIn 0.4s ease;
+}
+
+.manifesto-expand-leave-active {
+  animation: expandIn 0.3s ease reverse;
+}
+
+@keyframes expandIn {
+  from {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    max-height: 400px;
+    transform: translateY(0);
+  }
+}
+
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: all 0.25s ease;
+}
+
+.slide-left-enter-from {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.slide-left-leave-to {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.slide-right-enter-from {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.slide-right-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
 }
 
 .noir-modal-footer {
@@ -222,6 +521,12 @@ export default {
   }
   .noir-modal-text {
     font-size: 13px;
+  }
+  .noir-manifesto-content {
+    min-height: 200px;
+  }
+  .noir-manifesto-line {
+    font-size: 12px;
   }
 }
 </style>

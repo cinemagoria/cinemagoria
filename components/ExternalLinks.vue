@@ -125,6 +125,22 @@
           <span class="label-style">Instagram</span>
         </a>
       </div>
+      <div v-if="tmdbId && (currentPageType === 'movie' || currentPageType === 'tv')" class="link-item">
+        <a
+          :href="`https://www.themoviedb.org/${currentPageType}/${tmdbId}`"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Visit TMDB"
+        >
+          <img
+            :src="tmdbIcon"
+            alt="TMDB"
+            class="link-icon tmdb-icon"
+          />
+          <span class="label-style">TMDB</span>
+        </a>
+      </div>
+
       <div v-if="links.homepage" class="link-item">
         <a
           :href="links.homepage"
@@ -156,6 +172,7 @@ import { getMDBListRatings } from '~/utils/api';
 const rtIcon = '/logos/platforms/rotten-tomatoes.svg';
 const lbIcon = '/logos/platforms/letterboxd-mac-icon.png';
 const traktIcon = '/logos/platforms/trakt-logo-small.svg';
+const tmdbIcon = '/logos/platforms/tmdb.svg';
 
 export default {
   props: {
@@ -175,6 +192,7 @@ export default {
       rtIcon,
       lbIcon,
       traktIcon,
+      tmdbIcon,
       tomatoMeter: {
         found: false,
         score: null,
@@ -195,6 +213,11 @@ export default {
     },
     imdb() {
       return this.media === "person" ? "name" : "title";
+    },
+    tmdbId() {
+      const path = this.$route ? this.$route.path : '';
+      const match = path.match(/\/(movie|tv)\/(\d+)/);
+      return match ? match[2] : null;
     },
   },
 
@@ -261,29 +284,30 @@ export default {
   padding: 10px 12px;
   background-color: rgba(255, 255, 255, 0.027);
   border-radius: 8px;
+  border: 1px solid transparent;
   color: #ffffff;
   text-decoration: none;
-  transition: background-color 0.3s ease, transform 0.1s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   box-sizing: border-box;
   height: 100%;
 }
 
 .link-item a:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  transform: translateX(4px);
-  color: #8AE8FC;
+  background-color: rgba(139, 233, 253, 0.05);
+  border-color: #8BE9FD;
+  box-shadow: 0 0 8px rgba(139, 233, 253, 0.3);
+}
+
+.link-item a:hover .label-style {
+  color: #8BE9FD;
 }
 
 .link-icon {
   flex-shrink: 0;
   width: 20px;
   height: 20px;
-  transition: transform 0.3s ease;
 }
 
-.link-item a:hover .link-icon {
-  transform: scale(1.1);
-}
 
 .label-style {
   font-size: 14px;
@@ -297,36 +321,16 @@ export default {
   .links-grid {
     grid-template-columns: 1fr 1fr;
   }
-  
+
   .label-style {
     font-size: 12px;
   }
 }
 
-.rt-icon, .lb-icon {
+.rt-icon, .lb-icon, .trakt-icon, .tmdb-icon {
   width: 22px !important;
   height: 22px !important;
-  transition: filter 0.3s ease, transform 0.3s ease;
   margin-right: 6px;
   object-fit: contain;
-}
-
-.link-item a:hover .rt-icon,
-.link-item a:hover .lb-icon {
-  filter: brightness(0) saturate(100%) invert(88%) sepia(21%) saturate(935%) hue-rotate(176deg) brightness(101%) contrast(101%);
-  transform: scale(1.1);
-}
-
-.trakt-icon {
-  width: 22px !important;
-  height: 22px !important;
-  transition: filter 0.3s ease, transform 0.3s ease;
-  margin-right: 6px;
-  object-fit: contain;
-}
-
-.link-item a:hover .trakt-icon {
-  filter: brightness(0) saturate(100%) invert(88%) sepia(21%) saturate(935%) hue-rotate(176deg) brightness(101%) contrast(101%);
-  transform: scale(1.1);
 }
 </style>

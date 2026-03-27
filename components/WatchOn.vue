@@ -102,18 +102,23 @@ export default {
   padding: 10px 12px;
   background-color: rgba(255, 255, 255, 0.027);
   border-radius: 8px;
+  border: 1px solid transparent;
   color: #ffffff;
   text-decoration: none;
-  transition: background-color 0.3s ease, transform 0.1s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   box-sizing: border-box;
   height: auto;
   min-height: 44px;
 }
 
 .link-item a:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  transform: translateX(4px);
-  color: #8AE8FC;
+  background-color: rgba(139, 233, 253, 0.05);
+  border-color: #8BE9FD;
+  box-shadow: 0 0 8px rgba(139, 233, 253, 0.3);
+}
+
+.link-item a:hover .label-style {
+  color: #8BE9FD;
 }
 
 .link-icon, .provider-icon {
@@ -153,18 +158,25 @@ export default {
   padding: 10px 12px;
   background-color: rgba(255, 255, 255, 0.027);
   border-radius: 8px;
+  border: 1px solid transparent;
   color: #ffffff;
   box-sizing: border-box;
   height: auto;
   min-height: 44px;
   cursor: default;
   opacity: 0.8;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .link-item.tmdb-provider .provider-content:hover {
   opacity: 1;
-  background-color: rgba(0, 0, 0, 0.307);
+  background-color: rgba(139, 233, 253, 0.05);
+  border-color: #8BE9FD;
+  box-shadow: 0 0 8px rgba(139, 233, 253, 0.3);
+}
+
+.link-item.tmdb-provider .provider-content:hover .label-style {
+  color: #8BE9FD;
 }
 
 
