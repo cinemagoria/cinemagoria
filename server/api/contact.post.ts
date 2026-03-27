@@ -1,5 +1,18 @@
 import { createClient } from '@libsql/client'
 
+function sanitize(str: string): string {
+    return str
+        .replace(/[<>]/g, '')
+        .replace(/javascript:/gi, '')
+        .replace(/on\w+\s*=/gi, '')
+        .replace(/data:/gi, '')
+        .trim()
+}
+
+function isValidEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
 export default defineEventHandler(async (event) => {
     const body = await readBody(event)
     const { name, email, subject, message } = body
@@ -8,6 +21,25 @@ export default defineEventHandler(async (event) => {
         throw createError({
             statusCode: 400,
             statusMessage: 'Missing required fields'
+        })
+    }
+
+    const cleanName = sanitize(String(name)).slice(0, 100)
+    const cleanEmail = String(email).trim().slice(0, 254)
+    const cleanSubject = subject ? sanitize(String(subject)).slice(0, 200) : null
+    const cleanMessage = sanitize(String(message)).slice(0, 5000)
+
+    if (!cleanName || !cleanMessage) {
+        throw createError({
+            statusCode: 400,
+            statusMessage: 'Invalid input'
+        })
+    }
+
+    if (!isValidEmail(cleanEmail)) {
+        throw createError({
+            statusCode: 400,
+            statusMessage: 'Invalid email address'
         })
     }
 
@@ -30,7 +62,7 @@ export default defineEventHandler(async (event) => {
     try {
         await db.execute({
             sql: 'INSERT INTO contact_form (name, email, subject, message) VALUES (?, ?, ?, ?)',
-            args: [name, email, subject || null, message]
+            args: [cleanName, cleanEmail, cleanSubject, cleanMessage]
         })
         return { success: true, message: 'Message sent successfully' }
     } catch (error) {
