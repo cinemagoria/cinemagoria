@@ -2051,11 +2051,11 @@ export default {
 }
 
 .noirBadgeImgEl {
-    width: 77px;
-    height: 77px;
+    width: 73px;
+    height: 73px;
     border-radius: 14px;
     object-fit: cover;
-    filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.9)) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.8)) drop-shadow(0 1px 4px rgba(0, 0, 0, 0.7));
+    filter: drop-shadow(0 5px 12px rgba(0, 0, 0, 0.75)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.65));
 
     @media (max-width: 768px) {
         width: 82px;
