@@ -98,7 +98,7 @@ export default {
       this.loading = true;
       this.error = null;
       try {
-        const response = await fetch('https://api.github.com/repos/imprvhub/cinemagoria/releases');
+        const response = await fetch('https://api.github.com/repos/cinemagoria/cinemagoria/releases');
         if (!response.ok) {
           throw new Error('Failed to fetch releases');
         }
