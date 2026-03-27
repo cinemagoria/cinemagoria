@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer'
+import { createClient } from '@libsql/client'
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event)
@@ -11,39 +11,33 @@ export default defineEventHandler(async (event) => {
         })
     }
 
-    const transporter = nodemailer.createTransport({
-        host: 'smtp.hostinger.com',
-        port: 465,
-        secure: true,
-        auth: {
-            user: process.env.CONTACT_FORM_ID,
-            pass: process.env.CONTACT_FORM_KEY,
-        },
-    });
+    const config = useRuntimeConfig()
+    const dbUrl = config.rssDbUrl
+    const dbToken = config.rssDbToken
 
-    const mailOptions = {
-        from: `"${name}" <${process.env.CONTACT_FORM_ID}>`,
-        to: process.env.CONTACT_FORM_ID,
-        replyTo: email,
-        subject: subject ? `Cinemagoria Contact: ${subject}` : 'Cinemagoria Contact Form Submission',
-        text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
-        html: `
-      <h3>New Contact Message</h3>
-      <p><strong>Name:</strong> ${name}</p>
-      <p><strong>Email:</strong> ${email}</p>
-      <p><strong>Message:</strong></p>
-      <p>${message.replace(/\n/g, '<br>')}</p>
-    `,
-    };
-
-    try {
-        await transporter.sendMail(mailOptions);
-        return { success: true, message: 'Email sent successfully' }
-    } catch (error) {
-        console.error('Contact form error:', error);
+    if (!dbUrl || !dbToken) {
         throw createError({
             statusCode: 500,
-            statusMessage: (error as any).message || 'Error sending email'
+            statusMessage: 'Database configuration missing'
+        })
+    }
+
+    const db = createClient({
+        url: dbUrl.trim(),
+        authToken: dbToken.trim()
+    })
+
+    try {
+        await db.execute({
+            sql: 'INSERT INTO contact_form (name, email, subject, message) VALUES (?, ?, ?, ?)',
+            args: [name, email, subject || null, message]
+        })
+        return { success: true, message: 'Message sent successfully' }
+    } catch (error) {
+        console.error('Contact form error:', error)
+        throw createError({
+            statusCode: 500,
+            statusMessage: 'Error saving message'
         })
     }
 })
