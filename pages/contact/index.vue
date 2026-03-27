@@ -268,9 +268,9 @@ export default {
   animation: fadeIn 0.5s ease-out;
 
   &.success {
-    background: rgba(46, 204, 113, 0.15);
-    color: #2ecc71;
-    border: 1px solid rgba(46, 204, 113, 0.3);
+    background: rgba(139, 233, 253, 0.1);
+    color: #8BE9FD;
+    border: 1px solid rgba(139, 233, 253, 0.3);
   }
 
   &.error {
