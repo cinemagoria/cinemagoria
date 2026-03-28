@@ -48,14 +48,6 @@
     "force_enrichment": false
   },
   {
-    "tmdb_id": 1228710,
-    "media_type": "movie",
-    "trailer_key": "_pa1KLXuW0Y",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1774466121/cinemagoria/backdrops/hero_1228710_v2.webp",
-    "poster_path": "/4VzOI3yFHi2rukXptJmSVazh9vs.jpg",
-    "force_enrichment": false
-  },
-  {
     "tmdb_id": 1102883,
     "media_type": "movie",
     "trailer_key": "NWzkypKucMw",
@@ -96,14 +88,6 @@
     "force_enrichment": false
   },
   {
-    "tmdb_id": 1083381,
-    "media_type": "movie",
-    "trailer_key": "tKGhxMi50y8",
-    "backdrop_path": "/s5MydZwtdcYL2g0JUbbCDlXajTL.jpg",
-    "poster_path": "/65x9FGRRD3zCnMJsaLD0TEJttzG.jpg",
-    "force_enrichment": true
-  },
-  {
     "tmdb_id": 277439,
     "media_type": "tv",
     "trailer_key": null,
@@ -134,14 +118,6 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1774466128/cinemagoria/backdrops/hero_278624_v2.webp",
     "poster_path": "/ofCvVm41X2iUwAZ3ErpkldnItLP.jpg",
     "force_enrichment": true
-  },
-  {
-    "tmdb_id": 1300968,
-    "media_type": "movie",
-    "trailer_key": "MPjxijuBuSo",
-    "backdrop_path": "/8QGPCd5l8UbPYWrf62ptNRbRP6z.jpg",
-    "poster_path": "/kONfwpf0AZzvL1zqjZV9C89g1PY.jpg",
-    "force_enrichment": false
   },
   {
     "tmdb_id": 1284186,
@@ -264,14 +240,6 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 1314481,
-    "media_type": "movie",
-    "trailer_key": "e9HXmMnUEdE",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1774599588/cinemagoria/backdrops/hero_1314481.webp",
-    "poster_path": "/p35IoKfBtJDNiWJMO8ZEtIMZSfW.jpg",
-    "force_enrichment": false
-  },
-  {
     "tmdb_id": 1153576,
     "media_type": "movie",
     "trailer_key": "tV2qoDVnfxs",
@@ -334,22 +302,6 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1774666492/cinemagoria/backdrops/hero_1474628.webp",
     "poster_path": "/2TmWYXesOwCq7zPTDjvjLivJw2S.jpg",
     "force_enrichment": true
-  },
-  {
-    "tmdb_id": 1477836,
-    "media_type": "movie",
-    "trailer_key": "cDJd9ZUE55E",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1774666956/cinemagoria/backdrops/hero_1477836.webp",
-    "poster_path": "/wxqKxi6ttaaECVkAMmuuFu0hToa.jpg",
-    "force_enrichment": false
-  },
-  {
-    "tmdb_id": 1418657,
-    "media_type": "movie",
-    "trailer_key": "7rXJdyv5cRQ",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1774667744/cinemagoria/backdrops/hero_1418657.webp",
-    "poster_path": "/pD7QFG1JZOsUtHWMXNQNtE9mMkc.jpg",
-    "force_enrichment": false
   },
   {
     "tmdb_id": 1125822,
