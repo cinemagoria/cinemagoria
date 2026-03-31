@@ -314,7 +314,7 @@ export default {
     },
 
     handleImgError(e) {
-        e.target.src = '/plus_placeholder.webp';
+        e.target.src = '/placeholders/plus_placeholder.webp';
     },
     
     checkScreenSize() {
