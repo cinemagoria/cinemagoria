@@ -365,6 +365,7 @@ import BerlinaleBadge from '~/components/festival/BerlinaleBadge.vue';
 import RotterdamBadge from '~/components/festival/RotterdamBadge.vue';
 import SxswBadge from '~/components/festival/SxswBadge.vue';
 import RomfordBadge from '~/components/festival/RomfordBadge.vue';
+import BifffBadge from '~/components/festival/BifffBadge.vue';
 import { translateText } from '~/utils/api';
 import { MANUAL_FESTIVAL_BADGES } from '~/utils/constants';
 import { getHeroEnrichment, getNoirEnrichment } from '~/utils/api';
@@ -380,6 +381,7 @@ export default {
     RotterdamBadge,
     SxswBadge,
     RomfordBadge,
+    BifffBadge,
     NoirModal,
   },
 
@@ -465,6 +467,7 @@ export default {
       rotterdamFilm: null,
       sxswFilm: null,
       romfordFilm: null,
+      bifffFilm: null,
       isFestivalLoading: false,
       isTranslating: false,
       translatedOverview: null,
@@ -534,6 +537,7 @@ export default {
         { name: 'rotterdam', film: this.rotterdamFilm, component: 'RotterdamBadge', link: '/festival/rotterdam-2026', isSimple: true },
         { name: 'sxsw', film: this.sxswFilm, component: 'SxswBadge', link: '/festival/sxsw-2026', isSimple: true },
         { name: 'romford', film: this.romfordFilm, component: 'RomfordBadge', link: '/festival/romford-2026', isSimple: true },
+        { name: 'bifff', film: this.bifffFilm, component: 'BifffBadge', link: '/festival/bifff-2026', isSimple: true },
       ];
       return festivalConfig.filter(f => f.film);
     }
@@ -787,6 +791,7 @@ export default {
     const wasRotterdam = !!this.rotterdamFilm;
     const wasSxsw = !!this.sxswFilm;
     const wasRomford = !!this.romfordFilm;
+    const wasBifff = !!this.bifffFilm;
 
     this.sundanceFilm = null;
     this.slamdanceFilm = null;
@@ -794,10 +799,11 @@ export default {
     this.rotterdamFilm = null;
     this.sxswFilm = null;
     this.romfordFilm = null;
+    this.bifffFilm = null;
 
     if (this.type !== 'movie' && this.type !== 'tv') return;
 
-    if (wasSundance || wasSlamdance || wasBerlinale || wasRotterdam || wasSxsw || wasRomford) {
+    if (wasSundance || wasSlamdance || wasBerlinale || wasRotterdam || wasSxsw || wasRomford || wasBifff) {
         this.isFestivalLoading = true;
     }
 
@@ -874,6 +880,18 @@ export default {
             }
         }
 
+        const bifffResponse = await fetch(`/api/festival/bifff/films?tmdb_id=${this.id}`);
+        if (bifffResponse.ok) {
+            const data = await bifffResponse.json();
+            if (data.results && data.results.length > 0) {
+                if (!wasBifff) {
+                    this.isFestivalLoading = true;
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                this.bifffFilm = data.results[0];
+            }
+        }
+
         if (MANUAL_FESTIVAL_BADGES[this.id]) {
             const manualFestivals = MANUAL_FESTIVAL_BADGES[this.id];
             if (manualFestivals.includes('sundance') && !this.sundanceFilm) this.sundanceFilm = { title: this.name };
@@ -882,6 +900,7 @@ export default {
             if (manualFestivals.includes('rotterdam') && !this.rotterdamFilm) this.rotterdamFilm = { title: this.name };
             if (manualFestivals.includes('sxsw') && !this.sxswFilm) this.sxswFilm = { title: this.name };
             if (manualFestivals.includes('romford') && !this.romfordFilm) this.romfordFilm = { title: this.name };
+            if (manualFestivals.includes('bifff') && !this.bifffFilm) this.bifffFilm = { title: this.name };
         }
 
     } catch (e) {
