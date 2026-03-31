@@ -208,9 +208,9 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'American Dollhouse',
         'Mickey',
         'Forbidden Fruits',
-        'Margo\'s Got Money Troubles',
+        
         'Imposters',
-        'The Audacity',
+        
         'Stages',
         'Ugly Cry',
         'Wishful Thinking',
@@ -277,7 +277,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'In the Blink of An Eye',
         'Josephine',
         'Saccharine',
-        'The Moment',
+        
     ];
     
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
