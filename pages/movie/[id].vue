@@ -108,7 +108,8 @@ const awardsData = ref({ oscars: [], goldenGlobes: [], palme: [], goldenLion: []
 const { data: movieData, error } = await useAsyncData(`movie-${route.params.id}`, async () => {
   try {
     const item = await getMovie(route.params.id);
-    if (item.adult) {
+    const ADULT_EXCEPTIONS = [1401106];
+    if (item.adult && !ADULT_EXCEPTIONS.includes(item.id)) {
       throw new Error('This movie is not available');
     }
     return { item };
