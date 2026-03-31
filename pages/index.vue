@@ -208,9 +208,9 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'American Dollhouse',
         'Mickey',
         'Forbidden Fruits',
-        
+        'Margo\'s Got Money Troubles',
         'Imposters',
-        
+        'The Audacity',
         'Stages',
         'Ugly Cry',
         'Wishful Thinking',
