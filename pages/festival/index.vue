@@ -17,6 +17,18 @@ onMounted(() => {
       <p class="title-secondary">Explore our curated selections from the world's leading film festivals.</p>
 
       <div class="festivals-grid">
+        <nuxt-link to="/festival/bifff-2026" class="festival-card">
+          <div class="card-image-wrapper">
+             <img src="/festivals/bifff/bifff_backdrop_2026_eng.webp" alt="BIFFF 2026" />
+             <div class="overlay"></div>
+             <div class="card-content">
+               <h2>BIFFF 2026</h2>
+               <span class="festival-dates">Apr 3–16, 2026</span>
+               <span class="explore-btn">Explore</span>
+             </div>
+          </div>
+        </nuxt-link>
+
         <nuxt-link to="/festival/sxsw-2026" class="festival-card">
           <div class="card-image-wrapper">
              <img src="/festivals/sxsw/sxsw_backdrop_2026_eng.webp" alt="SXSW 2026" />
@@ -192,7 +204,7 @@ onMounted(() => {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 35%, rgba(0,0,0,0.2) 65%, transparent 100%);
     pointer-events: none;
 }
 
@@ -217,7 +229,7 @@ onMounted(() => {
 
 .festival-dates {
     display: block;
-    font-size: 0.95rem;
+    font-size: 1.15rem;
     font-weight: 600;
     letter-spacing: 0.06em;
     color: #8BE9FD;
