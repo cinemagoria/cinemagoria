@@ -184,37 +184,50 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         }
     };
 
-    const [sundanceList, berlinaleList, rotterdamList, slamdanceList, sxswList, romfordList, trendingMovies, trendingTv, featured] = await Promise.all([
+    const [sundanceList, berlinaleList, rotterdamList, slamdanceList, sxswList, romfordList, bifffList, trendingMovies, trendingTv, featured] = await Promise.all([
         fetchFestivalMovies('sundance'),
         fetchFestivalMovies('berlinale'),
         fetchFestivalMovies('rotterdam'),
         fetchFestivalMovies('slamdance'),
         fetchFestivalMovies('sxsw'),
         fetchFestivalMovies('romford'),
+        fetchFestivalMovies('bifff'),
         fetchWithRefill('movie', 20, 3),
         fetchWithRefill('tv', 20, 6),
         fetchHero()
     ]);
     
       const FEATURED_ORDER = [
+        // bifff 2026
+        'The Forbidden City',
+        'Mārama',
+        'Orfeo',
+        'Nirvanna the Band the Show the Movie',
+        'Tristes Tropiques',
+        'Sicko',
+        'Sister',
+        'Corporate Retreat',
+        'Appofeniacs',
+        'Flush',
+        'Steal Away',
+        'Stronger Than the Devil',
+        'Feels Like Home',
         // sxsw 2026
-        'Love Language',
+        'Hokum',
         'Chili Finger',
         'I Love Boosters',
         'Mile End Kicks',
+        'The Audacity',
         'Obsession',
-        'The Fox',
+        'Love Language',
         'Stormbound',
         'Dead Eyes',
         'Seekers of Infinite Love',
-        'Monitor',
+        'Never After Dark',
+        'Imposters',
         'American Dollhouse',
         'Mickey',
         'Forbidden Fruits',
-        'Margo\'s Got Money Troubles',
-        'Imposters',
-        'The Audacity',
-        'Stages',
         'Ugly Cry',
         'Wishful Thinking',
         'Sender',        
@@ -222,8 +235,6 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Whisperings of the Moon', 
         'The Bulldogs', 
         'Dump of Untitled Pieces', 
-        'Danny Is My Boyfriend', 
-        'The Projectionist',
         'Zumeca',
         // romford 2026
         'Spoiling You',
@@ -285,7 +296,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
 
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
     
-    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList, ...romfordList];
+    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList, ...romfordList, ...bifffList];
     
     let mixedFestivalFilms = allFestivalFilms.filter(f => {
         const t = norm(f.title);
