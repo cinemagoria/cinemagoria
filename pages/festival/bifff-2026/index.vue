@@ -167,7 +167,8 @@ const shorts = computed(() => {
 
 const formatDate = (dateStr) => {
     const options = { weekday: 'long', month: 'long', day: 'numeric' };
-    const date = new Date(dateStr).toLocaleDateString('es-ES', options);
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const date = new Date(year, month - 1, day).toLocaleDateString('es-ES', options);
     return date.charAt(0).toUpperCase() + date.slice(1);
 };
 
