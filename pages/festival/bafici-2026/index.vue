@@ -244,6 +244,7 @@ const schedule = ref([]);
 const openDays = ref(new Set());
 const infoSlide = ref(0);
 const slideDirection = ref('carousel-next');
+// Slide count is intentionally hardcoded — slides are static template content, not data-driven.
 const prevSlide = () => { slideDirection.value = 'carousel-prev'; infoSlide.value = (infoSlide.value - 1 + 4) % 4; };
 const nextSlide = () => { slideDirection.value = 'carousel-next'; infoSlide.value = (infoSlide.value + 1) % 4; };
 const goToSlide = (i) => { slideDirection.value = i > infoSlide.value ? 'carousel-next' : 'carousel-prev'; infoSlide.value = i; };
@@ -269,7 +270,8 @@ const formatDate = (dateStr) => {
 const formatTime = (timeStr) => {
     return new Date(timeStr).toLocaleTimeString('es-ES', { 
         hour: '2-digit', 
-        minute: '2-digit'
+        minute: '2-digit',
+        timeZone: 'America/Argentina/Buenos_Aires'
     });
 };
 
@@ -308,8 +310,10 @@ onMounted(async () => {
         schedule.value = scheduleData.results || [];
         
         if (schedule.value.length > 0) {
-            const dates = new Set(schedule.value.map(s => s.start_time.split('T')[0]));
-            dates.forEach(d => openDays.value.add(d));
+            const dates = [...new Set(schedule.value.map(s => s.start_time.split('T')[0]))].sort();
+            if (dates.length > 0) {
+                openDays.value.add(dates[0]);
+            }
         }
         
     } catch (e) {
