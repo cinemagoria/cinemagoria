@@ -1,4 +1,4 @@
-import { apiImgUrl, getHeroEnrichment, getNoirEnrichment } from '~/utils/api';
+import { apiImgUrl, getHeroEnrichment, getNoirEnrichment, getCustomEnrichment } from '~/utils/api';
 
 function getItemMediaType(item) {
   if (item.type) return item.type === 'movie' ? 'movie' : 'tv';
@@ -10,6 +10,12 @@ function getItemMediaType(item) {
 function getEnrichmentMatch(enrichment, item) {
   const mediaType = getItemMediaType(item);
   return enrichment.get(`${item.id}-${mediaType}`) || enrichment.get(item.id);
+}
+
+// Per-field overrides from title_overrides table (highest priority)
+async function getCustomOverrideMatch(item) {
+  const customEnrichment = await getCustomEnrichment();
+  return getEnrichmentMatch(customEnrichment, item) || null;
 }
 
 // Hierarchy: hero_selections (highest) > noir_historical > TMDB (lowest)
@@ -118,6 +124,15 @@ export const poster = {
       const item = this.item;
       if (!item?.id) return;
       this._posterItemId = item.id;
+
+      // title_overrides: per-field override, always wins if poster_path is set
+      const custom = await getCustomOverrideMatch(item);
+      if (custom?.poster_path) {
+        this._enrichedPoster = custom.poster_path;
+        this._forcePoster = true;
+        return;
+      }
+
       const match = await getBestEnrichmentMatch(item);
       if (!item.poster_path || match?.force_enrichment) {
         if (match?.poster_path) {
@@ -167,6 +182,15 @@ export const backdrop = {
       const item = this.item;
       if (!item?.id) return;
       this._backdropItemId = item.id;
+
+      // title_overrides: per-field override, always wins if backdrop_path is set
+      const custom = await getCustomOverrideMatch(item);
+      if (custom?.backdrop_path) {
+        this._enrichedBackdrop = custom.backdrop_path;
+        this._forceBackdrop = true;
+        return;
+      }
+
       const match = await getBestEnrichmentMatch(item);
       if (!item.backdrop_path || match?.force_enrichment) {
         if (match?.backdrop_path) {
@@ -234,6 +258,15 @@ export const trailer = {
       const item = this.item;
       if (!item?.id) return;
       this._trailerItemId = item.id;
+
+      // title_overrides: per-field override, always wins if trailer_key is set
+      const custom = await getCustomOverrideMatch(item);
+      if (custom?.trailer_key) {
+        this._enrichedTrailerKey = custom.trailer_key;
+        this._forceTrailer = true;
+        return;
+      }
+
       const videos = item?.videos?.results || [];
       const hasTrailer = videos.some(v => v.type === 'Trailer' || v.type === 'Teaser' || v.type === 'CustomPriority');
       const match = await getBestEnrichmentMatch(item);

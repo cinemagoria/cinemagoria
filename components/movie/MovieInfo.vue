@@ -281,7 +281,7 @@ import { apiImgUrl, getMovieProviders, getMovieReviews, getTraktReviews, getECRe
 import { getReleaseStatusContext } from '~/utils/helpers';
 import DOMPurify from 'dompurify';
 import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants'; 
-import { name, directors } from '~/mixins/Details';
+import { name, directors, poster as posterMixin } from '~/mixins/Details';
 import Filters from '~/mixins/Filters';
 import ExternalLinks from '~/components/ExternalLinks';
 import WatchOn from '~/components/WatchOn';
@@ -302,6 +302,7 @@ export default {
     Filters,
     name,
     directors,
+    posterMixin,
   ],
 
   props: {
@@ -348,11 +349,8 @@ export default {
       return this.reviews.length;
     },
     poster () {
-      if (this.item.poster_path) {
-        return `${apiImgUrl}/w500${this.item.poster_path}`;
-      } else {
-        return false;
-      }
+      if (this.poster_path) return this.poster_path;
+      return false;
     },
     showOriginalTitle() {
       const localizedTitle = this.item.title;

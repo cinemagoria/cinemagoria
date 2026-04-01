@@ -201,18 +201,18 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
       const FEATURED_ORDER = [
         // bafici 2026
         'Heysel 85',
-        'In-I In Motion',
         'No Mercy',
+        'In-I In Motion',
         'Los caminantes de la calle',
-        'Silent Rebellion',
-        'Phantoms of July',
+        'El infierno está encantador - Gulp. 1985',
+        'Sorella di clausura',
+        'Forest High',
         'Hair, Paper, Water...',
 
         // bifff 2026
-        'The Forbidden City',
-        'Mārama',
         'Orfeo',
         'Nirvanna the Band the Show the Movie',
+        'Mārama',
         'Sister',
         'Corporate Retreat',
         'Tristes Tropiques',

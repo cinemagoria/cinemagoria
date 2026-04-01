@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     if (!dbUrl || !dbToken) {
         throw createError({
             statusCode: 500,
-            statusMessage: 'Database configuration missing'
+            statusMessage: 'Internal server error: required service configuration is unavailable'
         })
     }
 
@@ -40,6 +40,7 @@ export default defineEventHandler(async (event) => {
             try {
                 tmdbData = typeof row.tmdb_data === 'string' ? JSON.parse(row.tmdb_data) : (row.tmdb_data || {})
             } catch (e) {
+                console.warn(`[BAFICI] Failed to parse tmdb_data for film id=${row.id}:`, e instanceof Error ? e.message : 'Unknown parse error')
                 tmdbData = {}
             }
 
@@ -131,10 +132,11 @@ export default defineEventHandler(async (event) => {
         }
 
     } catch (error: any) {
-        console.error('BAFICI Films Fetch Error:', error)
+        const safeMessage = error instanceof Error ? error.message : 'Unknown error'
+        console.error('[BAFICI] Films fetch failed:', safeMessage)
         throw createError({
             statusCode: 500,
-            statusMessage: `Failed to fetch BAFICI films: ${error.message || error}`,
+            statusMessage: 'Failed to fetch BAFICI films',
         })
     }
 })
