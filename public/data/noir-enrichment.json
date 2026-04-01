@@ -130,10 +130,10 @@
   {
     "tmdb_id": 277439,
     "media_type": "tv",
-    "trailer_key": null,
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1774466153/cinemagoria/backdrops/noir_277439_v2.webp",
+    "trailer_key": "dSnichjB3-o",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1775072907/cinemagoria/backdrops/noir_277439.webp",
     "poster_path": "/2OF7RaJf3ODzxmOShmbHo7hTmSy.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 254417,
