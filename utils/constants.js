@@ -1730,6 +1730,7 @@ export const MANUAL_FESTIVAL_BADGES = {
     1363387: ['berlinale'],
     1422562: ['berlinale'],
     1599249: ['rotterdam'],
+    1447885: ['berlinale'],
 };
 
 
