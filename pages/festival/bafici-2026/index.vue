@@ -17,6 +17,9 @@
 
       <div class="switcher-container">
         <div class="segmented-control">
+            <input type="radio" id="tab-info" value="info" v-model="activeTab">
+            <label for="tab-info" @click="activeTab = 'info'">Info</label>
+
             <input type="radio" id="tab-films" value="films" v-model="activeTab">
             <label for="tab-films" @click="activeTab = 'films'">Estrenos</label>
             
@@ -81,15 +84,147 @@
         </div>
 
         <div v-if="activeTab === 'schedule'" class="schedule-container">
-          <div class="schedule-empty-state">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            <h2 class="schedule-empty-title">Programación por confirmar</h2>
-            <p class="schedule-empty-desc">La grilla oficial de BAFICI 27 estará disponible una vez publicada por el festival.</p>
+          <div v-for="(dayScreenings, date) in groupedScreenings" :key="date" class="schedule-day">
+            <div class="day-header" @click="toggleDay(date)">
+                <h2>{{ formatDate(date) }}</h2>
+                <div class="chevron" :class="{ 'closed': !isOpen(date) }">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+            </div>
+            
+            <transition name="slide">
+                <div v-show="isOpen(date)" class="screenings-list">
+                  <div v-for="screening in dayScreenings" :key="screening.id" class="screening-card">
+                     <div class="time-block">
+                        <span class="time">{{ formatTime(screening.start_time) }}</span>
+                        <span class="timezone">{{ screening.timezone }}</span>
+                     </div>
+                     
+                      <div class="film-info">
+                         <a 
+                            :href="screening.film.source_url || 'https://bafici.org'"
+                            target="_blank"
+                            class="film-title"
+                         >
+                            {{ screening.film.title }}
+                         </a>
+                         <div class="film-meta">
+                             <span v-if="screening.film.director">Dirigida por {{ screening.film.director }}</span>
+                             <span v-if="screening.film.director && screening.film.runtime"> • </span>
+                             <span v-if="screening.film.runtime">{{ screening.film.runtime }} min</span>
+                         </div>
+                         <div v-if="screening.venue" class="venue-info">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                            {{ screening.venue }}
+                         </div>
+                         <div class="tags">
+                             <span v-if="screening.is_in_person" class="tag in-person">En persona</span>
+                             <span v-if="screening.is_online" class="tag online">Online</span>
+                             <span v-if="screening.is_sold_out" class="tag sold-out">Agotado</span>
+                         </div>
+                      </div>
+                      
+                      <div class="poster-mini">
+                          <img 
+                            v-if="screening.film.poster_path" 
+                            :src="screening.film.poster_path" 
+                            alt="Poster" 
+                            loading="lazy" 
+                            @error="$event.target.src = '/placeholders/image_not_found_yet_es.webp'"
+                          />
+                          <img v-else src="/placeholders/image_not_found_yet_es.webp" alt="No Poster" />
+                      </div>
+                  </div>
+                </div>
+            </transition>
+          </div>
+        </div>
+
+        <div v-if="activeTab === 'info'" class="info-container">
+          <div class="carousel-wrapper">
+            <button class="carousel-arrow left" @click="prevSlide" aria-label="Anterior">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+
+            <div class="carousel-track">
+              <transition :name="slideDirection" mode="out-in">
+                <div class="carousel-card" :key="infoSlide">
+                  <!-- Slide 0: Venta de Entradas -->
+                  <template v-if="infoSlide === 0">
+                    <div class="carousel-card-header">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                      <h3>Venta de Entradas</h3>
+                    </div>
+                    <p class="carousel-desc">Comprá tus entradas online en <a href="https://bafici.org" target="_blank" class="accent-link">bafici.org</a> o personalmente en el <strong>Teatro San Martín</strong>, de 10 a 21:30 h. En el resto de las sedes, las boleterías abren 30 min antes de la primera función.</p>
+                    <ul class="price-list">
+                      <li><span class="price-label">Entrada general</span><span class="price-value">$5.000</span></li>
+                      <li><span class="price-label">Estudiantes y jubilados</span><span class="price-value">$3.500</span></li>
+                      <li><span class="price-label">Abono BAFICI (10 entradas)</span><span class="price-value">$30.000</span></li>
+                    </ul>
+                    <div class="promo-box">
+                      <span class="promo-tag">PROMO</span>
+                      <p><strong>Banco Ciudad:</strong> 2×1 abonando con tarjeta de débito o crédito (sujeto a disponibilidad).</p>
+                    </div>
+                  </template>
+
+                  <!-- Slide 1: Actividades Gratuitas -->
+                  <template v-if="infoSlide === 1">
+                    <div class="carousel-card-header">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                      <h3>Actividades y Proyecciones Gratuitas</h3>
+                    </div>
+                    <div class="activity-type">
+                      <span class="badge gr">GR</span>
+                      <p><strong>Con Reserva:</strong> Las entradas podrán solicitarse desde 48 horas antes, a partir de las 10 h en bafici.org, y en el Teatro San Martín y restantes boleterías del Festival, dentro de su horario de funcionamiento.</p>
+                    </div>
+                    <div class="activity-type">
+                      <span class="badge gs">GS</span>
+                      <p><strong>Sin Reserva:</strong> El ingreso a las actividades y proyecciones gratuitas sin reserva es por orden de llegada y está sujeto a la capacidad del espacio. No se requiere acreditación para ingresar.</p>
+                    </div>
+                  </template>
+
+                  <!-- Slide 2: Sedes -->
+                  <template v-if="infoSlide === 2">
+                    <div class="carousel-card-header">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                      <h3>Sedes — 27° BAFICI</h3>
+                    </div>
+                    <div class="venue-list">
+                      <div class="venue-item"><strong>Teatro San Martín</strong><span>Sala Lugones, Hall Alcón, Casacuberta y Coronado — Av. Corrientes 1530</span></div>
+                      <div class="venue-item"><strong>Cine Teatro Alvear</strong><span>Av. Corrientes 1659</span></div>
+                      <div class="venue-item"><strong>Centro Cultural 25 de Mayo</strong><span>Av. Triunvirato 4444</span></div>
+                      <div class="venue-item"><strong>Cinépolis Plaza Houssay</strong><span>Salas 1, 2, 3 y 4 — Av. Córdoba 2135</span></div>
+                      <div class="venue-item"><strong>Cinépolis Recoleta</strong><span>Salas 2 y 3 — Vicente López 2050</span></div>
+                      <div class="venue-item"><strong>CineArte Cacodelphia</strong><span>Salas 1, 2 y 3 — Av. Pres. Roque Sáenz Peña 1150</span></div>
+                      <div class="venue-item"><strong>Cine Gaumont</strong><span>Sala Leonardo Favio — Av. Rivadavia 1635</span></div>
+                      <div class="venue-item"><strong>Usina del Arte</strong><span>Agustín R. Caffarena 1</span></div>
+                      <div class="venue-item"><strong>Museo del Cine</strong><span>Agustín R. Caffarena 51</span></div>
+                    </div>
+                  </template>
+
+                  <!-- Slide 3: Información Importante -->
+                  <template v-if="infoSlide === 3">
+                    <div class="carousel-card-header">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                      <h3>Información Importante</h3>
+                    </div>
+                    <ul class="bullet-list">
+                      <li>Al momento de comprar tus entradas, es necesario contemplar el tiempo entre películas ya que, una vez comenzada la función, no podrás entrar a la sala y tu entrada perderá validez.</li>
+                      <li>Todas las películas de la programación del 27° BAFICI no habladas en español cuentan con subtitulado en español.</li>
+                      <li>Todas las películas de la programación del 27° BAFICI son aptas para mayores de 18 años, con excepción de las películas de <strong>Baficito</strong>, que son aptas para todo público.</li>
+                    </ul>
+                  </template>
+                </div>
+              </transition>
+            </div>
+
+            <button class="carousel-arrow right" @click="nextSlide" aria-label="Siguiente">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </div>
+
+          <div class="carousel-dots">
+            <button v-for="i in 4" :key="i" class="dot" :class="{ active: infoSlide === i - 1 }" @click="goToSlide(i - 1)" :aria-label="`Diapositiva ${i}`"></button>
           </div>
         </div>
       </div>
@@ -105,6 +240,13 @@ import BaficiCard from '~/components/BaficiCard.vue';
 const activeTab = ref('films');
 const loading = ref(true);
 const films = ref({ results: [] });
+const schedule = ref([]);
+const openDays = ref(new Set());
+const infoSlide = ref(0);
+const slideDirection = ref('carousel-next');
+const prevSlide = () => { slideDirection.value = 'carousel-prev'; infoSlide.value = (infoSlide.value - 1 + 4) % 4; };
+const nextSlide = () => { slideDirection.value = 'carousel-next'; infoSlide.value = (infoSlide.value + 1) % 4; };
+const goToSlide = (i) => { slideDirection.value = i > infoSlide.value ? 'carousel-next' : 'carousel-prev'; infoSlide.value = i; };
 
 const featuresOpen = ref(true);
 const shortsOpen = ref(true);
@@ -117,10 +259,59 @@ const shorts = computed(() => {
     return films.value?.results?.filter(f => f.runtime > 0 && f.runtime < 40) || [];
 });
 
+const formatDate = (dateStr) => {
+    const options = { weekday: 'long', month: 'long', day: 'numeric' };
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const date = new Date(year, month - 1, day).toLocaleDateString('es-ES', options);
+    return date.charAt(0).toUpperCase() + date.slice(1);
+};
+
+const formatTime = (timeStr) => {
+    return new Date(timeStr).toLocaleTimeString('es-ES', { 
+        hour: '2-digit', 
+        minute: '2-digit'
+    });
+};
+
+const groupedScreenings = computed(() => {
+    if (!schedule.value) return {};
+    const groups = {};
+    schedule.value.forEach(s => {
+        const dateKey = s.start_time.split('T')[0];
+        if (!groups[dateKey]) groups[dateKey] = [];
+        groups[dateKey].push(s);
+    });
+    return Object.keys(groups).sort().reduce((obj, key) => {
+        obj[key] = groups[key];
+        return obj;
+    }, {});
+});
+
+const toggleDay = (date) => {
+    if (openDays.value.has(date)) {
+        openDays.value.delete(date);
+    } else {
+        openDays.value.add(date);
+    }
+}
+
+const isOpen = (date) => openDays.value.has(date);
+
 onMounted(async () => {
     try {
-        const filmsData = await $fetch('/api/festival/bafici/films?limit=500&sort=title');
+        const [filmsData, scheduleData] = await Promise.all([
+            $fetch('/api/festival/bafici/films?limit=500&sort=title'),
+            $fetch('/api/festival/bafici/schedule')
+        ]);
+        
         films.value = filmsData;
+        schedule.value = scheduleData.results || [];
+        
+        if (schedule.value.length > 0) {
+            const dates = new Set(schedule.value.map(s => s.start_time.split('T')[0]));
+            dates.forEach(d => openDays.value.add(d));
+        }
+        
     } catch (e) {
         console.error('Error fetching BAFICI festival data', e);
     } finally {
@@ -216,7 +407,7 @@ onMounted(async () => {
     padding: 4px;
     height: 48px;
     align-items: center;
-    min-width: 300px;
+    min-width: 420px;
 }
 
 .segmented-control input[type="radio"] {
@@ -247,15 +438,16 @@ onMounted(async () => {
     top: 4px;
     left: 4px;
     height: calc(100% - 8px);
-    width: calc((100% - 8px) / 2);
+    width: calc((100% - 8px) / 3);
     background: #8BE9FD; 
     border-radius: 16px;
     z-index: 1;
     transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
-.segmented-control .glider.films { transform: translateX(0); }
-.segmented-control .glider.schedule { transform: translateX(100%); }
+.segmented-control .glider.info { transform: translateX(0); }
+.segmented-control .glider.films { transform: translateX(100%); }
+.segmented-control .glider.schedule { transform: translateX(200%); }
 
 
 .festival-hero {
@@ -352,39 +544,207 @@ onMounted(async () => {
     padding: 3rem;
 }
 
-.schedule-container {
+.schedule-container, .info-container {
     max-width: 1000px;
     margin: 0 auto;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
 }
 
-.schedule-empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 4rem 2rem;
-    margin: 2rem auto;
-    max-width: 500px;
-    background: rgba(139, 233, 253, 0.03);
-    border: 1px solid rgba(139, 233, 253, 0.15);
-    border-radius: 16px;
+/* ── Carousel ─────────────────────────────── */
+.carousel-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
-.schedule-empty-title {
-    font-size: 1.6rem;
+.carousel-track {
+  flex: 1;
+  min-height: 340px;
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(139, 233, 253, 0.18);
+  border-radius: 20px;
+  padding: 2.2rem 2.5rem;
+  backdrop-filter: blur(12px);
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.8;
+  min-height: 300px;
+
+  strong { color: #fff; }
+}
+
+.carousel-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1.4rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(139, 233, 253, 0.14);
+
+  h3 {
+    font-size: 1.35rem;
     font-weight: 700;
     color: #8BE9FD;
-    margin: 1.5rem 0 0.8rem;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 }
 
-.schedule-empty-desc {
-    font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.6);
-    line-height: 1.6;
-    margin: 0;
+.carousel-desc {
+  font-size: 1.08rem;
+  margin-bottom: 1rem;
+}
+
+.carousel-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(139, 233, 253, 0.25);
+  background: rgba(0, 0, 0, 0.4);
+  color: #8BE9FD;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+  backdrop-filter: blur(6px);
+
+  &:hover {
+    background: rgba(139, 233, 253, 0.15);
+    border-color: #8BE9FD;
+    transform: scale(1.1);
+  }
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 1.4rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(139, 233, 253, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+
+  &.active {
+    background: #8BE9FD;
+    box-shadow: 0 0 10px rgba(139, 233, 253, 0.5);
+    transform: scale(1.25);
+  }
+
+  &:hover:not(.active) {
+    background: rgba(139, 233, 253, 0.45);
+  }
+}
+
+/* Slide transitions */
+.carousel-next-enter-active,
+.carousel-next-leave-active,
+.carousel-prev-enter-active,
+.carousel-prev-leave-active {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carousel-next-enter-from { opacity: 0; transform: translateX(60px); }
+.carousel-next-leave-to   { opacity: 0; transform: translateX(-60px); }
+.carousel-prev-enter-from { opacity: 0; transform: translateX(-60px); }
+.carousel-prev-leave-to   { opacity: 0; transform: translateX(60px); }
+
+@media (max-width: 600px) {
+  .carousel-wrapper { gap: 0.5rem; }
+  .carousel-card { padding: 1.5rem 1.2rem; min-height: 280px; }
+  .carousel-card-header h3 { font-size: 1.15rem; }
+  .carousel-arrow { width: 36px; height: 36px; }
+  .carousel-arrow svg { width: 18px; height: 18px; }
+}
+
+/* ── Shared card content styles ───────────── */
+.price-list {
+  list-style: none; padding: 0; margin: 1rem 0;
+  li { display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0; border-bottom: 1px dashed rgba(255,255,255,0.08); &:last-child { border: none; } }
+  .price-label { color: rgba(255,255,255,0.7); font-size: 1.05rem; }
+  .price-value { color: #8BE9FD; font-weight: 700; font-size: 1.1rem; }
+}
+
+.promo-box {
+  background: rgba(139, 233, 253, 0.08);
+  border-left: 3px solid #8BE9FD;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin-top: 1rem;
+  position: relative;
+  .promo-tag { position: absolute; top: 0; right: 0; background: #8BE9FD; color: #000; font-size: 0.65rem; font-weight: 800; padding: 3px 10px; border-bottom-left-radius: 6px; }
+  p { margin: 0; font-size: 1rem; }
+}
+
+.activity-type {
+  display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.2rem; &:last-child { margin-bottom: 0; }
+  .badge { padding: 4px 12px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; flex-shrink: 0; margin-top: 3px;
+    &.gr { background: #8BE9FD; color: #000; }
+    &.gs { border: 1px solid #8BE9FD; color: #8BE9FD; }
+  }
+  p { margin: 0; font-size: 1.02rem; }
+}
+
+.venue-list {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.9rem;
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+  .venue-item { font-size: 0.98rem; padding: 0.7rem 0.9rem; background: rgba(255,255,255,0.04); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);
+    strong { color: #8BE9FD; display: block; margin-bottom: 3px; font-size: 1.02rem; }
+    span { color: rgba(255,255,255,0.7); }
+  }
+}
+
+.bullet-list {
+  padding-left: 1.4rem; font-size: 1.02rem;
+  li { margin-bottom: 1rem; line-height: 1.7; &::marker { color: #8BE9FD; } }
+}
+
+.accent-link {
+  color: #8BE9FD; text-decoration: none; font-weight: 600; border-bottom: 1px solid transparent; transition: border-color 0.2s;
+  &:hover { border-color: #8BE9FD; }
+}
+
+.day-header {
+    font-size: 1.8rem;
+    color: #fff;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.5rem;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    
+    h2 {
+        font-size: 1.8rem;
+        margin: 0;
+    }
+    
+    .chevron {
+        transition: transform 0.3s ease;
+        
+        &.closed {
+            transform: rotate(-90deg);
+        }
+    }
 }
 
 .slide-enter-active,
@@ -402,15 +762,120 @@ onMounted(async () => {
   margin-bottom: 0;
 }
 
+.screening-card {
+    display: flex;
+    background: #0a161b;
+    border: 1px solid #8BE9FD;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    gap: 1.5rem;
+    transition: transform 0.2s;
+}
+
+.time-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    border-right: 1px solid #333;
+    padding-right: 1.5rem;
+    
+    .time {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #fff;
+    }
+    .timezone {
+        font-size: 0.92rem;
+        color: #888;
+    }
+}
+
+.film-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+    .film-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #fff;
+        text-decoration: none;
+        margin-bottom: 0.5rem;
+        
+        &:hover {
+            color: #8BE9FD;
+        }
+    }
+    
+    .film-meta {
+        font-size: 1.05rem;
+        color: #aaa;
+        margin-bottom: 0.8rem;
+    }
+    
+    .venue-info {
+        font-size: 1.25rem;
+        color: #ccc;
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        
+        svg {
+            min-width: 18px;
+        }
+    }
+}
+
+.tags {
+    display: flex;
+    gap: 0.5rem;
+    
+    .tag {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+        text-transform: uppercase;
+        
+        &.in-person { background: rgba(52, 152, 219, 0.2); }
+        &.online { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+        &.sold-out { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+    }
+}
+
+.poster-mini {
+    width: 60px;
+    height: 90px;
+    
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+}
+
 @media (max-width: 600px) {
-    .schedule-empty-state {
-        padding: 3rem 1.5rem;
+    .screening-card {
+        flex-direction: column; 
+        gap: 1rem;
     }
-    .schedule-empty-title {
-        font-size: 1.3rem;
+    .time-block {
+        border-right: none;
+        border-bottom: 1px solid #333;
+        padding-right: 0;
+        padding-bottom: 1rem;
+        flex-direction: row;
+        gap: 1rem;
+        width: 100%;
     }
-    .schedule-empty-desc {
-        font-size: 1rem;
+    .poster-mini {
+        display: none;
     }
 }
 </style>
