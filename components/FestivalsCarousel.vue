@@ -74,6 +74,7 @@ import RotterdamCard from '~/components/RotterdamCard.vue';
 import SxswCard from '~/components/festival/SxswCard.vue';
 import RomfordCard from '~/components/RomfordCard.vue';
 import BifffCard from '~/components/BifffCard.vue';
+import BaficiCard from '~/components/BaficiCard.vue';
 
 export default {
   components: {
@@ -83,7 +84,8 @@ export default {
     RotterdamCard,
     SxswCard,
     RomfordCard,
-    BifffCard
+    BifffCard,
+    BaficiCard
   },
 
   mixins: [carousel],
@@ -127,6 +129,7 @@ export default {
         sxsw: 'SxswCard',
         romford: 'RomfordCard',
         bifff: 'BifffCard',
+        bafici: 'BaficiCard',
       };
       return cardMap[item.festival_source] || 'SundanceCard';
     }

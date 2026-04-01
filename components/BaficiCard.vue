@@ -45,9 +45,9 @@
 
       <div class="card__logo-container">
         <img 
-            src="/festivals/rotterdam/rotterdam_film_festival_2026_logo.png" 
-            alt="Rotterdam Selection" 
-            class="card__rotterdam-logo"
+            src="/festivals/bafici/bafici_film_festival_2026_logo.png" 
+            alt="BAFICI Selection" 
+            class="card__bafici-logo"
         />
       </div>
     </nuxt-link>
@@ -248,7 +248,7 @@ export default {
     height: 60px;
 }
 
-.card__rotterdam-logo {
+.card__bafici-logo {
     height: 50px;
     width: auto;
     filter: invert(1);
