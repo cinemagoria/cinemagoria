@@ -22,12 +22,12 @@
           :alt="name"
           :style="{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.5s ease' }"
           @load="onImageLoaded"
-          @error="$event.target.src = '/image_not_found_yet_es.webp'; onImageLoaded($event)">
+          @error="$event.target.src = '/placeholders/image_not_found_yet.webp'; onImageLoaded($event)">
 
         <img
           v-else
           ref="posterImage"
-          src="/placeholders/image_not_found_yet_es.webp"
+          src="/placeholders/image_not_found_yet.webp"
           alt="Image not found"
           class="card__img--poster"
           style="width: 100%; height: 100%; object-fit: cover;"
@@ -45,9 +45,9 @@
 
       <div class="card__logo-container">
         <img 
-            src="/festivals/sundance/sundance_film_festival_2026_logo.png" 
-            alt="Sundance Selection" 
-            class="card__sundance-logo"
+            src="/festivals/bafici/bafici_film_festival_2026_logo.png" 
+            alt="BAFICI Selection" 
+            class="card__bafici-logo"
         />
       </div>
     </nuxt-link>
@@ -248,7 +248,7 @@ export default {
     height: 60px;
 }
 
-.card__sundance-logo {
+.card__bafici-logo {
     height: 50px;
     width: auto;
     filter: invert(1);

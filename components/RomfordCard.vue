@@ -56,7 +56,7 @@
 
 <script>
 import { apiImgUrl } from '~/utils/api';
-import { name, stars } from '~/mixins/Details';
+import { name, stars, poster as posterMixin } from '~/mixins/Details';
 import QuickFav from '~/components/global/QuickFav';
 import CardActions from '~/components/global/CardActions.vue';
 import Loader from '~/components/Loader.vue';
@@ -70,6 +70,7 @@ export default {
   mixins: [
     name,
     stars,
+    posterMixin,
   ],
 
   props: {
@@ -132,12 +133,8 @@ export default {
 
   computed: {
     poster () {
-      if (this.item.poster_path) {
-        if (this.item.poster_path.startsWith('http')) {
-           return this.item.poster_path;
-        }
-        return `${apiImgUrl}/w500${this.item.poster_path}`;
-      } else if (this.item.profile_path) {
+      if (this.poster_path) return this.poster_path;
+      if (this.item.profile_path) {
         return `${apiImgUrl}/w500${this.item.profile_path}`;
       } else if (this.item.logo_path) {
         return `${apiImgUrl}/w500${this.item.logo_path}`;

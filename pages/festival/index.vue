@@ -15,6 +15,18 @@ onMounted(() => {
       <p class="title-secondary">Explora nuestras selecciones curadas de los festivales más importantes del mundo.</p>
 
       <div class="festivals-grid">
+        <nuxt-link to="/festival/bafici-2026" class="festival-card">
+          <div class="card-image-wrapper">
+             <img src="/festivals/bafici/bafici_backdrop_2026_es.webp" alt="BAFICI 2026" />
+             <div class="overlay"></div>
+             <div class="card-content">
+               <h2>BAFICI 2026</h2>
+               <span class="festival-dates">16–27 abr 2026</span>
+               <span class="explore-btn">Explorar</span>
+             </div>
+          </div>
+        </nuxt-link>
+
         <nuxt-link to="/festival/bifff-2026" class="festival-card">
           <div class="card-image-wrapper">
              <img src="/festivals/bifff/bifff_backdrop_2026_es.webp" alt="BIFFF 2026" />

@@ -129,6 +129,7 @@ async function _fixNonLatinTitlesAsync(items, mediaType) {
 
 let _heroEnrichmentPromise = null;
 let _noirEnrichmentPromise = null;
+let _customEnrichmentPromise = null;
 
 function _buildEnrichmentMap(data) {
     const map = new Map();
@@ -161,6 +162,16 @@ export async function getNoirEnrichment() {
             .catch(() => new Map());
     }
     return _noirEnrichmentPromise;
+}
+
+export async function getCustomEnrichment() {
+    if (!_customEnrichmentPromise) {
+        _customEnrichmentPromise = fetch('/data/custom-enrichment.json')
+            .then(res => res.ok ? res.json() : [])
+            .then(_buildEnrichmentMap)
+            .catch(() => new Map());
+    }
+    return _customEnrichmentPromise;
 }
 
 

@@ -282,7 +282,7 @@
 <script>
 import { apiImgUrl, getTVShowProviders, getTvShowReviews, getTraktReviews, getECReviews, getTvShowRecommended, getPerson, getIMDbRatingFromDB, enrichTVShowWithIMDbRating, translateReviewsBatchWithCache, translateText } from '~/utils/api'; 
 import DOMPurify from 'dompurify';
-import { name, creators } from '~/mixins/Details';
+import { name, creators, poster as posterMixin } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
 import WatchOn from '~/components/WatchOn';
 import ListingCarousel from '~/components/ListingCarousel';
@@ -299,6 +299,7 @@ export default {
   mixins: [
     name,
     creators,
+    posterMixin,
   ],
 
   props: {
@@ -354,7 +355,7 @@ export default {
       return false;
     },
     poster () {
-      if (this.item.poster_path) return `${apiImgUrl}/w500${this.item.poster_path}`;
+      if (this.poster_path) return this.poster_path;
       return false;
     },
     showOriginalTitle() {
