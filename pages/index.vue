@@ -205,10 +205,8 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Sorella di clausura',
         'Forest High',
         'Hair, Paper, Water...',
-
         // bifff 2026
         'Orfeo',
-        'Nirvanna the Band the Show the Movie',
         'Mārama',
         'Sister',
         'Corporate Retreat',
@@ -230,20 +228,17 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Stormbound',
         'Dead Eyes',
         'Seekers of Infinite Love',
+        'Never After Dark',
         'Imposters',
         'American Dollhouse',
         'Mickey',
-        'Forbidden Fruits',
-        'Margo\'s Got Money Troubles',
         'Ugly Cry',
         'Wishful Thinking',
-        'Sender',         
+        'Sender',        
         // slamdance 2026
         'Whisperings of the Moon', 
         'The Bulldogs', 
         'Dump of Untitled Pieces', 
-        'Danny Is My Boyfriend', 
-        'The Projectionist',
         'Zumeca',
         // romford 2026
         'Spoiling You',
@@ -300,7 +295,6 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'In the Blink of An Eye',
         'Josephine',
         'Saccharine',
-        
     ];
     
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
