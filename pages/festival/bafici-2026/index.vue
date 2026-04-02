@@ -156,7 +156,10 @@
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
                       <h3>Ticket Sales</h3>
                     </div>
-                    <p class="carousel-desc">Get your tickets online at <a href="https://bafici.org" target="_blank" class="accent-link">bafici.org</a> or in person at <strong>Teatro San Martín</strong>, 10 AM – 9:30 PM. At other venues, box offices open 30 min before the first screening.</p>
+                    <p class="carousel-desc" style="margin-bottom: 0.8rem;">
+                      <strong>Presale:</strong> Tickets available online from April 6 at 10 AM via <a href="https://bafici.org" target="_blank" class="accent-link">bafici.org</a> or at <strong>Teatro San Martín</strong> (10 AM – 9:30 PM).<br><br>
+                      <strong>Box Office (Apr 16–26):</strong> Available online or at Teatro San Martín (10 AM – 9:30 PM). At other venues, from 30 min before the first screening until the start of the last.
+                    </p>
                     <ul class="price-list">
                       <li><span class="price-label">General admission</span><span class="price-value">$5,000</span></li>
                       <li><span class="price-label">Students &amp; Retirees</span><span class="price-value">$3,500</span></li>
@@ -210,9 +213,10 @@
                       <h3>Important Notice</h3>
                     </div>
                     <ul class="bullet-list">
-                      <li>When purchasing your tickets, allow time between films — once a screening has started, late entry is not permitted and your ticket becomes void.</li>
-                      <li>All non-Spanish language films in the 27° BAFICI programme include Spanish subtitles.</li>
+                      <li>When purchasing your tickets, allow time between films — once a screening has started, late entry is not permitted and your ticket becomes void. Films will start promptly as scheduled.</li>
+                      <li>All non-Spanish language films in the 27° BAFICI programme include Spanish subtitles. Baficito films with dialogue are screened in their original language with Spanish subtitles.</li>
                       <li>All films in the 27° BAFICI programme are suitable for audiences 18 and over, with the exception of <strong>Baficito</strong> section films, which are suitable for all ages.</li>
+                      <li>Pursuant to Article 4 of Law 3,546, a free quota is available for people with disabilities, accessible by presenting their CUD at the box office 30 minutes before the screening.</li>
                     </ul>
                   </template>
                 </div>
