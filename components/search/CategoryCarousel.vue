@@ -199,7 +199,7 @@ export default {
   top: 50%;
   transform: translateY(-60%);
   z-index: 10;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.9);
   border: 1px solid rgba(139, 233, 253, 0.3);
   border-radius: 50%;
   width: 45px;

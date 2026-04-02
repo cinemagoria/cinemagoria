@@ -706,6 +706,9 @@ export default {
       if (!userEmail) return;
       const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
       try {
+        if (this.selectedRating > 0 || this.editUserReview.trim() !== '') {
+          this.progressPercentage = 100;
+        }
         if (this.selectedRating > 0) {
           const resp = await fetch(`${tursoUrl}/favorites/rating/${userEmail}/movie/${this.item.id}`, {
             method: 'PUT',
