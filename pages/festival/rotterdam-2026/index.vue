@@ -19,8 +19,11 @@
 
 
         <div class="segmented-control">
+            <input type="radio" id="tab-info" value="info" v-model="activeTab">
+            <label for="tab-info" @click="activeTab = 'info'">Info</label>
+
             <input type="radio" id="tab-films" value="films" v-model="activeTab">
-            <label for="tab-films" @click="activeTab = 'films'">Peliculas</label>
+            <label for="tab-films" @click="activeTab = 'films'">Catálogo</label>
             
             <input type="radio" id="tab-schedule" value="schedule" v-model="activeTab">
             <label for="tab-schedule" @click="activeTab = 'schedule'">Calendario</label>
@@ -137,6 +140,95 @@
             </transition>
           </div>
         </div>
+
+        <div v-if="activeTab === 'info'" class="info-container">
+          <div class="carousel-wrapper">
+            <button class="carousel-arrow left" @click="prevSlide" aria-label="Anterior">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+
+            <div class="carousel-track">
+              <transition :name="slideDirection" mode="out-in">
+                <div class="carousel-card" :key="infoSlide">
+                  <!-- Slide 0: Venta de Entradas -->
+                  <template v-if="infoSlide === 0">
+                    <div class="carousel-card-header">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                      <h3>Venta de Entradas</h3>
+                    </div>
+                    <p class="carousel-desc">La venta de entradas para IFFR 2026 comienza el <strong>jueves 15 de enero a las 20:00</strong> a través de <a href="https://iffr.com" target="_blank" class="accent-link">IFFR.com</a>.</p>
+                    <ul class="bullet-list">
+                      <li>Iniciar sesión o crear una cuenta en IFFR.com</li>
+                      <li>Seleccionar películas</li>
+                      <li>Pagar con iDEAL o tarjeta de crédito</li>
+                      <li>Recibir confirmación y entrada electrónica por email</li>
+                    </ul>
+                  </template>
+
+                  <!-- Slide 1: Precios -->
+                  <template v-if="infoSlide === 1">
+                    <div class="carousel-card-header">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                      <h3>Precios 2026</h3>
+                    </div>
+                    <ul class="price-list">
+                      <li><span class="price-label">Entrada general</span><span class="price-value">€13,50</span></li>
+                      <li><span class="price-label">Cortos y mediometrajes</span><span class="price-value">€9,50</span></li>
+                      <li><span class="price-label">On Demand</span><span class="price-value">€8,50</span></li>
+                      <li><span class="price-label">Big Talks</span><span class="price-value">€13,50</span></li>
+                      <li><span class="price-label">Tiger Talks</span><span class="price-value">€5,00</span></li>
+                      <li><span class="price-label">Art Directions (Instalaciones)</span><span class="price-value">€7,50</span></li>
+                      <li><span class="price-label">Art Directions (Inmersiva)</span><span class="price-value">€12,50</span></li>
+                      <li><span class="price-label">Noche de Apertura / Clausura</span><span class="price-value">€25,00</span></li>
+                    </ul>
+                  </template>
+
+                  <!-- Slide 2: Cuenta y Programa -->
+                  <template v-if="infoSlide === 2">
+                    <div class="carousel-card-header">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                      <h3>Cuenta y Programa</h3>
+                    </div>
+                    <p class="carousel-desc">Se recomienda crear una cuenta en IFFR.com antes de explorar el programa. Permite comprar entradas, guardar favoritas y crear una agenda personalizada.</p>
+                    <ul class="bullet-list">
+                      <li>Publicación del programa: <strong>9 de enero</strong></li>
+                      <li>Revista del festival disponible desde: <strong>10 de enero</strong></li>
+                      <li>Versión digital disponible: <strong>17 de enero</strong></li>
+                      <li>PDF descargable en IFFR.com</li>
+                    </ul>
+                  </template>
+
+                  <!-- Slide 3: Acceso y Soporte -->
+                  <template v-if="infoSlide === 3">
+                    <div class="carousel-card-header">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                      <h3>Acceso y Soporte</h3>
+                    </div>
+                    <ul class="bullet-list">
+                      <li>Entradas se agregan a tu cuenta tras la compra</li>
+                      <li>Email de confirmación con enlace al e-ticket</li>
+                      <li>Acceso mediante código QR (no es necesario imprimir)</li>
+                      <li>Entradas con descuento requieren acreditación válida</li>
+                      <li>Los miembros Tiger pueden usar su pase digital</li>
+                    </ul>
+                    <div class="promo-box">
+                      <span class="promo-tag">PRENSA</span>
+                      <p>Reserva de entradas para prensa e industria abre el <strong>miércoles 14 de enero a las 10:00</strong>. Puntos de asistencia en <strong>de Doelen</strong> y <strong>LantarenVenster</strong>.</p>
+                    </div>
+                  </template>
+                </div>
+              </transition>
+            </div>
+
+            <button class="carousel-arrow right" @click="nextSlide" aria-label="Siguiente">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </div>
+
+          <div class="carousel-dots">
+            <button v-for="i in 4" :key="i" class="dot" :class="{ active: infoSlide === i - 1 }" @click="goToSlide(i - 1)" :aria-label="`Diapositiva ${i}`"></button>
+          </div>
+        </div>
       </div>
     </div>
   </main>
@@ -161,6 +253,11 @@ const isSafeUrl = (url) => {
 };
 
 const activeTab = ref('films');
+const infoSlide = ref(0);
+const slideDirection = ref('carousel-next');
+const prevSlide = () => { slideDirection.value = 'carousel-prev'; infoSlide.value = (infoSlide.value - 1 + 4) % 4; };
+const nextSlide = () => { slideDirection.value = 'carousel-next'; infoSlide.value = (infoSlide.value + 1) % 4; };
+const goToSlide = (i) => { slideDirection.value = i > infoSlide.value ? 'carousel-next' : 'carousel-prev'; infoSlide.value = i; };
 const loading = ref(true);
 const films = ref({ results: [] });
 const schedule = ref([]);
@@ -179,11 +276,11 @@ const shorts = computed(() => {
 
 const formatDate = (dateStr) => {
     const options = { weekday: 'long', month: 'long', day: 'numeric' };
-    return new Date(dateStr).toLocaleDateString('es-ES', options);
+    return new Date(dateStr).toLocaleDateString('en-US', options);
 };
 
 const formatTime = (timeStr) => {
-    return new Date(timeStr).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    return new Date(timeStr).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 };
 
 const groupedScreenings = computed(() => {
@@ -344,7 +441,7 @@ onMounted(async () => {
     padding: 4px;
     height: 48px;
     align-items: center;
-    min-width: 300px;
+    min-width: 420px;
 }
 
 .segmented-control input[type="radio"] {
@@ -375,15 +472,16 @@ onMounted(async () => {
     top: 4px;
     left: 4px;
     height: calc(100% - 8px);
-    width: calc((100% - 8px) / 2);
+    width: calc((100% - 8px) / 3);
     background: #8BE9FD;
     border-radius: 16px;
     z-index: 1;
     transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
-.segmented-control .glider.films { transform: translateX(0); }
-.segmented-control .glider.schedule { transform: translateX(100%); }
+.segmented-control .glider.info { transform: translateX(0); }
+.segmented-control .glider.films { transform: translateX(100%); }
+.segmented-control .glider.schedule { transform: translateX(200%); }
 
 
 .festival-hero {
@@ -480,7 +578,7 @@ onMounted(async () => {
     padding: 3rem;
 }
 
-.schedule-container {
+.schedule-container, .info-container {
     max-width: 1000px;
     margin: 0 auto;
     padding-left: 0.5rem;
@@ -631,5 +729,155 @@ onMounted(async () => {
     .poster-mini {
         display: none;
     }
+}
+
+/* ── Carousel ─────────────────────────────── */
+.carousel-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.carousel-track {
+  flex: 1;
+  min-height: 340px;
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(139, 233, 253, 0.18);
+  border-radius: 20px;
+  padding: 2.2rem 2.5rem;
+  backdrop-filter: blur(12px);
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.8;
+  min-height: 300px;
+
+  strong { color: #fff; }
+}
+
+.carousel-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1.4rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(139, 233, 253, 0.14);
+
+  h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #8BE9FD;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+}
+
+.carousel-desc {
+  font-size: 1.08rem;
+  margin-bottom: 1rem;
+}
+
+.carousel-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(139, 233, 253, 0.25);
+  background: rgba(0, 0, 0, 0.4);
+  color: #8BE9FD;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+  backdrop-filter: blur(6px);
+
+  &:hover {
+    background: rgba(139, 233, 253, 0.15);
+    border-color: #8BE9FD;
+    transform: scale(1.1);
+  }
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 1.4rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(139, 233, 253, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+
+  &.active {
+    background: #8BE9FD;
+    box-shadow: 0 0 10px rgba(139, 233, 253, 0.5);
+    transform: scale(1.25);
+  }
+
+  &:hover:not(.active) {
+    background: rgba(139, 233, 253, 0.45);
+  }
+}
+
+.carousel-next-enter-active,
+.carousel-next-leave-active,
+.carousel-prev-enter-active,
+.carousel-prev-leave-active {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carousel-next-enter-from { opacity: 0; transform: translateX(60px); }
+.carousel-next-leave-to   { opacity: 0; transform: translateX(-60px); }
+.carousel-prev-enter-from { opacity: 0; transform: translateX(-60px); }
+.carousel-prev-leave-to   { opacity: 0; transform: translateX(60px); }
+
+@media (max-width: 600px) {
+  .carousel-wrapper { gap: 0.5rem; }
+  .carousel-card { padding: 1.5rem 1.2rem; min-height: 280px; }
+  .carousel-card-header h3 { font-size: 1.15rem; }
+  .carousel-arrow { width: 36px; height: 36px; }
+  .carousel-arrow svg { width: 18px; height: 18px; }
+}
+
+/* ── Shared card content styles ───────────── */
+.price-list {
+  list-style: none; padding: 0; margin: 1rem 0;
+  li { display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0; border-bottom: 1px dashed rgba(255,255,255,0.08); &:last-child { border: none; } }
+  .price-label { color: rgba(255,255,255,0.7); font-size: 1.05rem; }
+  .price-value { color: #8BE9FD; font-weight: 700; font-size: 1.1rem; }
+}
+
+.promo-box {
+  background: rgba(139, 233, 253, 0.08);
+  border-left: 3px solid #8BE9FD;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin-top: 1rem;
+  position: relative;
+  .promo-tag { position: absolute; top: 0; right: 0; background: #8BE9FD; color: #000; font-size: 0.65rem; font-weight: 800; padding: 3px 10px; border-bottom-left-radius: 6px; }
+  p { margin: 0; font-size: 1rem; }
+}
+
+.bullet-list {
+  padding-left: 1.4rem; font-size: 1.02rem;
+  li { margin-bottom: 1rem; line-height: 1.7; &::marker { color: #8BE9FD; } }
+}
+
+.accent-link {
+  color: #8BE9FD; text-decoration: none; font-weight: 600; border-bottom: 1px solid transparent; transition: border-color 0.2s;
+  &:hover { border-color: #8BE9FD; }
 }
 </style>
