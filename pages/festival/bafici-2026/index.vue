@@ -21,7 +21,7 @@
             <label for="tab-info" @click="activeTab = 'info'">Info</label>
 
             <input type="radio" id="tab-films" value="films" v-model="activeTab">
-            <label for="tab-films" @click="activeTab = 'films'">Premieres</label>
+            <label for="tab-films" @click="activeTab = 'films'">Catalog</label>
             
             <input type="radio" id="tab-schedule" value="schedule" v-model="activeTab">
             <label for="tab-schedule" @click="activeTab = 'schedule'">Schedule</label>

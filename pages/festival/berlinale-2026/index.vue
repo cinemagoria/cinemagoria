@@ -19,12 +19,15 @@
 
 
         <div class="segmented-control">
+            <input type="radio" id="tab-info" value="info" v-model="activeTab">
+            <label for="tab-info" @click="activeTab = 'info'">Info</label>
+
             <input type="radio" id="tab-films" value="films" v-model="activeTab">
-            <label for="tab-films" @click="activeTab = 'films'">Premieres</label>
-            
+            <label for="tab-films" @click="activeTab = 'films'">Catalog</label>
+
             <input type="radio" id="tab-schedule" value="schedule" v-model="activeTab">
             <label for="tab-schedule" @click="activeTab = 'schedule'">Schedule</label>
-            
+
             <div class="glider" :class="activeTab"></div>
         </div>
       </div>
@@ -140,6 +143,75 @@
             </transition>
           </div>
         </div>
+
+        <div v-if="activeTab === 'info'" class="info-container">
+          <div class="carousel-wrapper">
+            <button class="carousel-arrow left" @click="prevSlide" aria-label="Previous">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+
+            <div class="carousel-track">
+              <transition :name="slideDirection" mode="out-in">
+                <div class="carousel-card" :key="infoSlide">
+                  <!-- Slide 0: General Information & Ticket Presale -->
+                  <template v-if="infoSlide === 0">
+                    <div class="carousel-card-header">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                      <h3>General Information</h3>
+                    </div>
+                    <p class="carousel-desc"><strong>Dates:</strong> February 12 – February 22, 2026</p>
+                    <p class="carousel-desc">Tickets are available online via the Berlinale programme. Sales open at <strong>10:00 AM, three days before each screening</strong>. Tickets can also be purchased at cinema box offices.</p>
+                    <ul class="bullet-list">
+                      <li>Maximum 2 tickets per person per screening</li>
+                      <li>Up to 5 tickets for Generation programme screenings</li>
+                      <li>Tickets for Berlinale Audience Day (February 22) and Uber Eats Music Hall available from <strong>February 9, 2026</strong></li>
+                    </ul>
+                  </template>
+
+                  <!-- Slide 1: Payment & Access + Ticket Prices -->
+                  <template v-if="infoSlide === 1">
+                    <div class="carousel-card-header">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                      <h3>Ticket Prices</h3>
+                    </div>
+                    <p class="carousel-desc">Payment via Credit Card, PayPal, Apple Pay, Google Pay or Wero. Printed ticket or mobile QR code accepted for entry.</p>
+                    <ul class="price-list">
+                      <li><span class="price-label">Regular Screenings</span><span class="price-value">€15 – €20</span></li>
+                      <li><span class="price-label">Generation Programme</span><span class="price-value">€9 / €6</span></li>
+                      <li><span class="price-label">Audience Day (Feb 22)</span><span class="price-value">€11 / €8</span></li>
+                    </ul>
+                  </template>
+
+                  <!-- Slide 2: Concessions -->
+                  <template v-if="infoSlide === 2">
+                    <div class="carousel-card-header">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                      <h3>Concessions</h3>
+                    </div>
+                    <p class="carousel-desc">Discounts available (subject to availability) for:</p>
+                    <ul class="bullet-list">
+                      <li>Students and pupils</li>
+                      <li>People with disabilities</li>
+                      <li>Unemployed individuals</li>
+                      <li>Recipients of citizen's income</li>
+                      <li>Berlin Ticket holders</li>
+                      <li>Federal Voluntary Service participants</li>
+                    </ul>
+                    <p class="carousel-desc">Valid proof required at venue entrance.</p>
+                  </template>
+                </div>
+              </transition>
+            </div>
+
+            <button class="carousel-arrow right" @click="nextSlide" aria-label="Next">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </div>
+
+          <div class="carousel-dots">
+            <button v-for="i in 3" :key="i" class="dot" :class="{ active: infoSlide === i - 1 }" @click="goToSlide(i - 1)" :aria-label="`Slide ${i}`"></button>
+          </div>
+        </div>
       </div>
     </div>
   </main>
@@ -151,6 +223,11 @@ import Loader from '~/components/Loader.vue';
 import BerlinaleCard from '~/components/BerlinaleCard.vue';
 
 const activeTab = ref('films');
+const infoSlide = ref(0);
+const slideDirection = ref('carousel-next');
+const prevSlide = () => { slideDirection.value = 'carousel-prev'; infoSlide.value = (infoSlide.value - 1 + 3) % 3; };
+const nextSlide = () => { slideDirection.value = 'carousel-next'; infoSlide.value = (infoSlide.value + 1) % 3; };
+const goToSlide = (i) => { slideDirection.value = i > infoSlide.value ? 'carousel-next' : 'carousel-prev'; infoSlide.value = i; };
 const loading = ref(true);
 const films = ref({ results: [] });
 const schedule = ref([]);
@@ -314,7 +391,7 @@ onMounted(async () => {
     padding: 4px;
     height: 48px;
     align-items: center;
-    min-width: 300px;
+    min-width: 420px;
 }
 
 .segmented-control input[type="radio"] {
@@ -345,15 +422,16 @@ onMounted(async () => {
     top: 4px;
     left: 4px;
     height: calc(100% - 8px);
-    width: calc((100% - 8px) / 2);
+    width: calc((100% - 8px) / 3);
     background: #8BE9FD;
     border-radius: 16px;
     z-index: 1;
     transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
-.segmented-control .glider.films { transform: translateX(0); }
-.segmented-control .glider.schedule { transform: translateX(100%); }
+.segmented-control .glider.info { transform: translateX(0); }
+.segmented-control .glider.films { transform: translateX(100%); }
+.segmented-control .glider.schedule { transform: translateX(200%); }
 
 
 .festival-hero {
@@ -450,7 +528,7 @@ onMounted(async () => {
     padding: 3rem;
 }
 
-.schedule-container {
+.schedule-container, .info-container {
     max-width: 1000px;
     margin: 0 auto;
     padding-left: 0.5rem;
@@ -614,5 +692,154 @@ onMounted(async () => {
     .poster-mini {
         display: none;
     }
+}
+
+/* ── Carousel ─────────────────────────────── */
+.carousel-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.carousel-track {
+  flex: 1;
+  min-height: 340px;
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(139, 233, 253, 0.18);
+  border-radius: 20px;
+  padding: 2.2rem 2.5rem;
+  backdrop-filter: blur(12px);
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.8;
+  min-height: 300px;
+
+  strong { color: #fff; }
+}
+
+.carousel-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1.4rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(139, 233, 253, 0.14);
+
+  h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #8BE9FD;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+}
+
+.carousel-desc {
+  font-size: 1.08rem;
+  margin-bottom: 1rem;
+}
+
+.carousel-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(139, 233, 253, 0.25);
+  background: rgba(0, 0, 0, 0.4);
+  color: #8BE9FD;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+  backdrop-filter: blur(6px);
+
+  &:hover {
+    background: rgba(139, 233, 253, 0.15);
+    border-color: #8BE9FD;
+    transform: scale(1.1);
+  }
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 1.4rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(139, 233, 253, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+
+  &.active {
+    background: #8BE9FD;
+    box-shadow: 0 0 10px rgba(139, 233, 253, 0.5);
+    transform: scale(1.25);
+  }
+
+  &:hover:not(.active) {
+    background: rgba(139, 233, 253, 0.45);
+  }
+}
+
+/* Slide transitions */
+.carousel-next-enter-active,
+.carousel-next-leave-active,
+.carousel-prev-enter-active,
+.carousel-prev-leave-active {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carousel-next-enter-from { opacity: 0; transform: translateX(60px); }
+.carousel-next-leave-to   { opacity: 0; transform: translateX(-60px); }
+.carousel-prev-enter-from { opacity: 0; transform: translateX(-60px); }
+.carousel-prev-leave-to   { opacity: 0; transform: translateX(60px); }
+
+@media (max-width: 600px) {
+  .carousel-wrapper { gap: 0.5rem; }
+  .carousel-card { padding: 1.5rem 1.2rem; min-height: 280px; }
+  .carousel-card-header h3 { font-size: 1.15rem; }
+  .carousel-arrow { width: 36px; height: 36px; }
+  .carousel-arrow svg { width: 18px; height: 18px; }
+}
+
+/* ── Shared card content styles ───────────── */
+.price-list {
+  list-style: none; padding: 0; margin: 1rem 0;
+  li { display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0; border-bottom: 1px dashed rgba(255,255,255,0.08); &:last-child { border: none; } }
+  .price-label { color: rgba(255,255,255,0.7); font-size: 1.05rem; }
+  .price-value { color: #8BE9FD; font-weight: 700; font-size: 1.1rem; }
+}
+
+.venue-list {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.9rem;
+  @media (max-width: 600px) { grid-template-columns: 1fr; }
+  .venue-item { font-size: 0.98rem; padding: 0.7rem 0.9rem; background: rgba(255,255,255,0.04); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06);
+    strong { color: #8BE9FD; display: block; margin-bottom: 3px; font-size: 1.02rem; }
+    span { color: rgba(255,255,255,0.7); }
+  }
+}
+
+.bullet-list {
+  padding-left: 1.4rem; font-size: 1.02rem;
+  li { margin-bottom: 1rem; line-height: 1.7; &::marker { color: #8BE9FD; } }
+}
+
+.accent-link {
+  color: #8BE9FD; text-decoration: none; font-weight: 600; border-bottom: 1px solid transparent; transition: border-color 0.2s;
+  &:hover { border-color: #8BE9FD; }
 }
 </style>
