@@ -208,10 +208,8 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Sorella di clausura',
         'Forest High',
         'Hair, Paper, Water...',
-
         // bifff 2026
         'Orfeo',
-        'Nirvanna the Band the Show the Movie',
         'Mārama',
         'Sister',
         'Corporate Retreat',
@@ -237,7 +235,6 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Imposters',
         'American Dollhouse',
         'Mickey',
-        'Forbidden Fruits',
         'Ugly Cry',
         'Wishful Thinking',
         'Sender',        
@@ -301,7 +298,6 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'In the Blink of An Eye',
         'Josephine',
         'Saccharine',
-        
     ];
 
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
