@@ -205,6 +205,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'In-I In Motion',
         'Los caminantes de la calle',
         'El infierno está encantador - Gulp. 1985',
+        'Nova \'78',
         'Sorella di clausura',
         'Forest High',
         'Hair, Paper, Water...',
