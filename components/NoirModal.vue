@@ -21,7 +21,7 @@
         <div class="noir-modal-divider"></div>
 
         <p class="noir-modal-text">
-          From future premieres to a permanent archive. A curated selection of exclusive previews from 2024 onwards.
+          From early premieres to a permanent archive: a curated Cinemagoria selection of emerging titles from 2024 onwards.
         </p>
 
         <button v-if="!showManifesto" class="noir-manifesto-toggle" @click="showManifesto = true">
@@ -98,37 +98,35 @@ export default {
       currentStep: 0,
       slideDirection: 'slide-left',
       manifesto: [
-        {
-          numeral: 'I',
-          title: 'Nothing Out Is Ready',
-          lines: [
-            'Commercial cinema lives off immediate impact.',
-            'N.O.I.R. is built on anticipation.',
-            'We stand for what is latent and independent.',
-            'What is \u201cready\u201d already belongs to the past.',
-            'We believe a work in its purest state is one that has not yet been fully absorbed.'
-          ]
-        },
-        {
-          numeral: 'II',
-          title: 'Selection Criteria',
-          lines: [
-            'We don\u2019t collect titles. We identify signals.',
-            'We move within that threshold moment, when a work has not yet fully surfaced.',
-            'If a title doesn\u2019t propose something through its language or cultural impact, it doesn\u2019t belong in this selection.',
-            'We look for what is original, unsettling, and genuine.'
-          ]
-        },
-        {
-          numeral: 'III',
-          title: 'In Constant Motion',
-          lines: [
-            'This selection is constantly evolving.',
-            'Titles enter, rotate, and leave as time moves forward.',
-            'Nothing is lost. What leaves N.O.I.R. becomes part of its archive.'
-          ]
-        }
-      ]
+      {
+        numeral: 'I',
+        title: 'Nothing Is Ready',
+        lines: [
+          'Commercial cinema thrives on immediate impact. N.O.I.R. is built on anticipation.',
+          'A work that has not yet been assimilated.',
+          'It reclaims the latent and the independent.',
+          'What is “ready” already belongs to the past.',
+        ]
+      },
+      {
+        numeral: 'II',
+        title: 'Selection Criteria',
+        lines: [
+          'Titles are not accumulated: signals are identified.',
+          'The focus lies within that prior threshold. If a title does not propose something through its cultural influence or transcendence, it does not belong in this selection.',
+          'The search is for what is original, unsettling, and genuine — what lingers in the imaginary.'
+        ]
+      },
+      {
+        numeral: 'III',
+        title: 'In Constant Motion',
+        lines: [
+          'The selection remains in constant evolution.',
+          'Titles enter, rotate, and withdraw over time.',
+          'Nothing is lost: what leaves N.O.I.R. becomes part of its archive.'
+        ]
+      }
+    ]
     };
   },
   methods: {
