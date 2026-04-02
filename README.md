@@ -1,6 +1,6 @@
 # Cinemagoria
 
-> **Current Version:** v4.9.0 — Production Ready
+> **Current Version:** v4.9.1 — Production Ready
 > **Release Date:** April 2, 2026
 > **Repository:** [github.com/cinemagoria/cinemagoria](https://github.com/cinemagoria/cinemagoria)
 > **Lead Developer:** [@imprvhub](https://github.com/imprvhub) (Iván Luna)
