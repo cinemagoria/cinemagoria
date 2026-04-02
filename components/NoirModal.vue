@@ -21,7 +21,7 @@
         <div class="noir-modal-divider"></div>
 
         <p class="noir-modal-text">
-          De estrenos anticipados a un archivo permanente. Una selecci&oacute;n curada de estrenos exclusivos desde 2024.
+          De estrenos anticipados a un archivo permanente: una selección de Cinemagoria que reúne lo mejor del cine emergente desde 2024.
         </p>
 
         <button v-if="!showManifesto" class="noir-manifesto-toggle" @click="showManifesto = true">
@@ -105,8 +105,8 @@ export default {
             'El cine comercial vive del impacto inmediato.',
             'N.O.I.R. se construye desde la anticipaci\u00f3n.',
             'Reivindicamos lo latente y lo independiente.',
+            'Creemos que la obra en su estado m\u00e1s puro es la que a\u00fan no ha sido asimilada.',
             'Lo que est\u00e1 \u201clisto\u201d ya pertenece al pasado.',
-            'Creemos que la obra en su estado m\u00e1s puro es la que a\u00fan no ha sido asimilada.'
           ]
         },
         {
@@ -114,9 +114,8 @@ export default {
           title: 'Criterio de selecci\u00f3n',
           lines: [
             'No acumulamos t\u00edtulos: identificamos se\u00f1ales.',
-            'Nos movemos en ese umbral previo, cuando una obra todav\u00eda no ha sido completamente estrenada.',
-            'Si un t\u00edtulo no propone algo desde su lenguaje o su influencia cultural, no forma parte de esta selecci\u00f3n.',
-            'Buscamos lo original, lo inc\u00f3modo y lo genuino.'
+            'Nos movemos en ese umbral previo. Si un t\u00edtulo no propone algo desde su influencia cultural o trascendencia, no forma parte de esta selecci\u00f3n.',
+            'Buscamos lo original, lo inc\u00f3modo y lo genuino. Lo que queda en el imaginario.'
           ]
         },
         {

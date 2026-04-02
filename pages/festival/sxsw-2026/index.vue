@@ -38,6 +38,7 @@
 
       <div v-else>
         <div v-if="activeTab === 'films'" class="films-grid">
+            <div class="disclaimer-bar"><FestivalDataDisclaimer /></div>
             <div v-if="features.length > 0" class="film-category">
                 <div class="category-header" @click="featuresOpen = !featuresOpen">
                     <h2 class="listing__title category-title">
@@ -216,6 +217,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import Loader from '~/components/Loader.vue';
+import FestivalDataDisclaimer from '~/components/FestivalDataDisclaimer.vue';
 import SxswCard from '~/components/festival/SxswCard.vue';
 
 const activeTab = ref('films');
