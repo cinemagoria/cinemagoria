@@ -21,7 +21,7 @@ onMounted(() => {
              <div class="overlay"></div>
              <div class="card-content">
                <h2>BAFICI 2026</h2>
-               <span class="festival-dates">16–27 abr 2026</span>
+               <span class="festival-dates">15–26 abr 2026</span>
                <span class="explore-btn">Explorar</span>
              </div>
           </div>
