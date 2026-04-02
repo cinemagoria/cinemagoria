@@ -26,7 +26,7 @@
           </div>
         </div>
 
-        <!-- Stats row: Rated + Following counts -->
+        <!-- Stats row: Rated + Following + Progress counts -->
         <div class="stats-row">
           <div class="stat-item" @click="showRatedModal" title="Valoraciones">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="stat-icon" viewBox="0 0 16 16"><path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/></svg>
@@ -36,6 +36,11 @@
           <div class="stat-item" @click="showFollowingModal" title="Siguiendo">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="stat-icon" viewBox="0 0 24 24"><path d="m16 11 2 2 4-4m-6 12v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
             <span class="stat-count">{{ followingCount }}</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item" @click="showTrackingModal" title="Progreso de Visionado">
+            <svg class="stat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+            <span class="stat-count">{{ progressCount }}</span>
           </div>
         </div>
 
@@ -120,6 +125,7 @@ export default {
       notificationInterval: null,
       ratedCount: 0,
       followingCount: 0,
+      progressCount: 0,
     };
   },
 
@@ -152,6 +158,7 @@ export default {
       window.addEventListener('alias-updated', this.handleAliasUpdate);
       window.addEventListener('following-updated', this.fetchUserStats);
       window.addEventListener('avatar-updated', this.handleAvatarUpdate);
+      window.addEventListener('progress-updated', this.fetchUserStats);
     }
     this.checkAuthStatus();
     this.fetchUserStats();
@@ -172,6 +179,7 @@ export default {
       window.removeEventListener('alias-updated', this.handleAliasUpdate);
       window.removeEventListener('following-updated', this.fetchUserStats);
       window.removeEventListener('avatar-updated', this.handleAvatarUpdate);
+      window.removeEventListener('progress-updated', this.fetchUserStats);
     }
   },
 
@@ -284,6 +292,11 @@ export default {
       this.isMenuOpen = false;
     },
 
+    showTrackingModal() {
+      this.$bus.$emit('open-tracking-modal');
+      this.isMenuOpen = false;
+    },
+
     goToLists() {
       this.$router.push('/lists');
       this.isMenuOpen = false;
@@ -321,14 +334,15 @@ export default {
         const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
         const followsUrl = this.$config.public.followsBackendUrl || 'https://cinemagoria-follows-rust.vercel.app';
 
-        const [ratingsRes, peopleRes, tvRes, streamingRes, companiesRes, usersRes, profileRes] = await Promise.all([
+        const [ratingsRes, peopleRes, tvRes, streamingRes, companiesRes, usersRes, profileRes, progressRes] = await Promise.all([
           fetch(`${tursoUrl}/ratings/${encodeURIComponent(userEmail)}`),
           fetch(`${followsUrl}/follows/list?user_email=${encodeURIComponent(userEmail)}`),
           fetch(`${followsUrl}/tv-follows/list?user_email=${encodeURIComponent(userEmail)}`),
           fetch(`${followsUrl}/streaming-follows/list?user_email=${encodeURIComponent(userEmail)}`),
           fetch(`${followsUrl}/company-follows/list?user_email=${encodeURIComponent(userEmail)}`),
           fetch(`${followsUrl}/user-follows/list?user_email=${encodeURIComponent(userEmail)}`),
-          fetch(`${followsUrl}/profile-by-email?user_email=${encodeURIComponent(userEmail)}`)
+          fetch(`${followsUrl}/profile-by-email?user_email=${encodeURIComponent(userEmail)}`),
+          fetch(`/api/progress/${encodeURIComponent(userEmail)}`).catch(() => null)
         ]);
 
         if (ratingsRes.ok) {
@@ -375,6 +389,21 @@ export default {
           if (p && p.alias) {
             this.userAlias = p.alias;
             localStorage.setItem('alias', p.alias);
+          }
+        }
+
+        if (progressRes && progressRes.ok) {
+          const progData = await progressRes.json();
+          if (Array.isArray(progData)) {
+            const uniqueMedia = new Set();
+            for (const item of progData) {
+              if (item.media_type === 'episode') {
+                uniqueMedia.add(`tv_${item.tv_id}`);
+              } else {
+                uniqueMedia.add(`movie_${item.media_id}`);
+              }
+            }
+            this.progressCount = uniqueMedia.size;
           }
         }
       } catch (e) {

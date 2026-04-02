@@ -194,7 +194,7 @@
         <div class="movie-info-delete-body">
           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="#ff6b6b" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
           <p class="movie-info-delete-warning">¿Confirma que desea eliminar la reseña y la valoración de <strong>{{ item.name || item.title }}</strong>?</p>
-          <p class="movie-info-delete-warning" style="font-size: 1.1rem; opacity: 0.8; margin-top: -5px;">Esta acción es irreversible.</p>
+          <p class="movie-info-delete-warning" style="font-size: 1.1rem; opacity: 0.8; margin-top: -5px;">Esta acción es irreversible. El progreso de visionado por episodio no será afectado.</p>
         </div>
         <div class="movie-info-delete-actions">
           <button class="movie-info-cancel-btn" @click="showDeleteReviewModal = false">Cancelar</button>
@@ -218,12 +218,12 @@
             </div>
           </div>
           <div class="movie-info-review-section">
-            <textarea v-model="editUserReview" placeholder="Añadir una reseña..." class="movie-info-review-textarea" maxlength="2000" :disabled="selectedRating === 0"></textarea>
+            <textarea v-model="editUserReview" placeholder="Añadir una reseña..." class="movie-info-review-textarea" maxlength="2000"></textarea>
             <div class="movie-info-char-count">{{ editUserReview.length }}/2000</div>
           </div>
           <div class="movie-info-modal-buttons">
             <button @click="removeRatingAndReview" class="movie-info-remove-btn">Borrar</button>
-            <button @click="saveEditedReview" class="movie-info-save-btn" :disabled="selectedRating === 0">Guardar</button>
+            <button @click="saveEditedReview" class="movie-info-save-btn">Guardar</button>
           </div>
         </div>
       </div>
@@ -645,17 +645,18 @@ export default {
     previewRating(n) { this.hoverRating = n; },
     resetPreview() { this.hoverRating = 0; },
     async saveEditedReview() {
-      if (this.selectedRating === 0) return;
       const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
       if (!userEmail) return;
       const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
       try {
-        const resp = await fetch(`${tursoUrl}/favorites/rating/${userEmail}/tv/${this.item.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ rating: this.selectedRating, review: this.editUserReview.trim() })
-        });
-        if (!resp.ok) throw new Error('Error saving');
+        if (this.selectedRating > 0 || this.editUserReview.trim() !== '') {
+          const resp = await fetch(`${tursoUrl}/favorites/rating/${userEmail}/tv/${this.item.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rating: this.selectedRating > 0 ? this.selectedRating : null, review: this.editUserReview.trim() })
+          });
+          if (!resp.ok) throw new Error('Error saving');
+        }
         this.closeRatingModal();
         this.$bus.$emit('rated-items-updated');
         await this.fetchReviews();

@@ -99,7 +99,7 @@ const open = ref(false);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.9);
   backdrop-filter: blur(6px);
   padding: 1rem;
 }

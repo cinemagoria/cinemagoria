@@ -68,8 +68,9 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch, onMounted, nextTick, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useNuxtApp } from '#app';
 import UserNav from '@/components/global/UserNav.vue';
 import { apiImgUrl, getTvShow } from '~/utils/api';
 import TopNav from '~/components/global/TopNav.vue';
@@ -86,6 +87,7 @@ import { searchSoundtracks } from '~/utils/musicbrainz';
 
 const route = useRoute();
 const router = useRouter();
+const { $bus } = useNuxtApp();
 
 const showRatedItems = () => {
   ratedItemsModalVisible.value = true;
@@ -94,6 +96,26 @@ const showRatedItems = () => {
 const navClicked = (label) => {
   activeMenu.value = label;
 };
+
+const navigateToEpisodes = () => {
+  activeMenu.value = 'episodios';
+  nextTick(() => {
+    setTimeout(() => {
+      const episodesSection = document.querySelector('.spacing');
+      if (episodesSection) {
+        episodesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  });
+};
+
+onMounted(() => {
+  $bus.$on('navigate-to-episodes', navigateToEpisodes);
+});
+
+onBeforeUnmount(() => {
+  $bus.$off('navigate-to-episodes', navigateToEpisodes);
+});
 
 const ratedItemsModalVisible = ref(false);
 const activeMenu = ref('sinopsis');

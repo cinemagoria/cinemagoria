@@ -215,13 +215,39 @@
                 :class="['movie-info-rating-btn', {'movie-info-rating-btn-active': n <= (hoverRating || selectedRating)}]">{{ n }}</button>
             </div>
           </div>
+
+          <div class="mpb-section">
+            <div class="mpb-section-label">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              TU PROGRESO
+            </div>
+            <div class="mpb-row">
+              <div class="mpb-circle-wrap">
+                <svg class="mpb-svg" viewBox="0 0 120 120">
+                  <defs><linearGradient id="pgM" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8AE8FC"/><stop offset="100%" stop-color="#50C8E8"/></linearGradient></defs>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(138,232,252,0.1)" stroke-width="6"/>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke="url(#pgM)" stroke-width="6" stroke-linecap="round" :stroke-dasharray="2 * Math.PI * 52" :stroke-dashoffset="2 * Math.PI * 52 * (1 - progressPercentage / 100)" style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .35s ease"/>
+                </svg>
+                <div class="mpb-pct"><span class="mpb-pct-num">{{ progressPercentage }}</span><span class="mpb-pct-sign">%</span></div>
+              </div>
+              <div class="mpb-controls">
+                <input type="range" class="mpb-slider" min="0" max="100" step="1" v-model.number="progressPercentage" />
+                <div v-if="item.runtime" class="mpb-times">
+                  <div class="mpb-time"><span class="mpb-time-label">Visto</span><span class="mpb-time-val">{{ progressElapsed }}</span></div>
+                  <div class="mpb-time"><span class="mpb-time-label">Restante</span><span class="mpb-time-val">{{ progressRemaining }}</span></div>
+                </div>
+                <div v-else class="mpb-times"><span class="mpb-no-dur">Duración no disponible</span></div>
+              </div>
+            </div>
+          </div>
+
           <div class="movie-info-review-section">
-            <textarea v-model="editUserReview" placeholder="Añadir una reseña..." class="movie-info-review-textarea" maxlength="2000" :disabled="selectedRating === 0"></textarea>
+            <textarea v-model="editUserReview" placeholder="Añadir una reseña..." class="movie-info-review-textarea" maxlength="2000"></textarea>
             <div class="movie-info-char-count">{{ editUserReview.length }}/2000</div>
           </div>
           <div class="movie-info-modal-buttons">
             <button @click="removeRatingAndReview" class="movie-info-remove-btn">Borrar</button>
-            <button @click="saveEditedReview" class="movie-info-save-btn" :disabled="selectedRating === 0">Guardar</button>
+            <button @click="saveEditedReview" class="movie-info-save-btn">Guardar</button>
           </div>
         </div>
       </div>
@@ -348,10 +374,20 @@ export default {
       selectedRating: 0,
       hoverRating: 0,
       editUserReview: '',
+
+      progressPercentage: 0,
     };
   },
 
   computed: {
+    progressElapsed() {
+      if (!this.item.runtime) return '0m';
+      return this.fmtMin(this.item.runtime * this.progressPercentage / 100);
+    },
+    progressRemaining() {
+      if (!this.item.runtime) return '0m';
+      return this.fmtMin(this.item.runtime - (this.item.runtime * this.progressPercentage / 100));
+    },
     reviewCount() {
       return this.reviews.length;
     },
@@ -470,6 +506,7 @@ export default {
         this.fetchSecondaryData();
         this.fetchProviders();
         this.fetchReviews();
+        this.loadProgress();
         this.handleSynopsisTranslation();
       }
     },
@@ -681,18 +718,56 @@ export default {
     setRating(n) { this.selectedRating = n; },
     previewRating(n) { this.hoverRating = n; },
     resetPreview() { this.hoverRating = 0; },
+    async loadProgress() {
+      const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+      if (!userEmail) return;
+      try {
+        const resp = await fetch(`/api/progress/${encodeURIComponent(userEmail)}/movie/${this.item.id}`);
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data.found) this.progressPercentage = data.progress_percentage || 0;
+        }
+      } catch (e) { }
+    },
+    async saveProgress() {
+      const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+      if (!userEmail) return;
+      const elapsed = this.item.runtime ? Math.round(this.item.runtime * this.progressPercentage / 100) : 0;
+      const total = this.item.runtime || 0;
+      try {
+        await fetch(`/api/progress/${encodeURIComponent(userEmail)}/movie/${this.item.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ progress_percentage: this.progressPercentage, elapsed_minutes: elapsed, total_duration_minutes: total })
+        });
+        window.dispatchEvent(new CustomEvent('progress-updated'));
+      } catch (e) { }
+    },
+    fmtMin(m) {
+      const r = Math.round(m || 0);
+      if (r < 0) return '0m';
+      if (r < 60) return `${r}m`;
+      const h = Math.floor(r / 60);
+      const rm = r % 60;
+      return rm > 0 ? `${h}h ${rm}m` : `${h}h`;
+    },
     async saveEditedReview() {
-      if (this.selectedRating === 0) return;
       const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
       if (!userEmail) return;
       const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
       try {
-        const resp = await fetch(`${tursoUrl}/favorites/rating/${userEmail}/movie/${this.item.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ rating: this.selectedRating, review: this.editUserReview.trim() })
-        });
-        if (!resp.ok) throw new Error('Error saving');
+        if (this.selectedRating > 0 || this.editUserReview.trim() !== '') {
+          this.progressPercentage = 100;
+        }
+        if (this.selectedRating > 0) {
+          const resp = await fetch(`${tursoUrl}/favorites/rating/${userEmail}/movie/${this.item.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rating: this.selectedRating, review: this.editUserReview.trim() })
+          });
+          if (!resp.ok) throw new Error('Error saving');
+        }
+        await this.saveProgress();
         this.closeRatingModal();
         this.$bus.$emit('rated-items-updated');
         await this.fetchReviews();
@@ -709,8 +784,10 @@ export default {
           body: JSON.stringify({ rating: null, review: '' })
         });
         if (!resp.ok) throw new Error('Error removing');
+        await fetch(`/api/progress/${encodeURIComponent(userEmail)}/movie/${this.item.id}`, { method: 'DELETE' }).catch(() => {});
         this.closeRatingModal();
         this.$bus.$emit('rated-items-updated');
+        window.dispatchEvent(new CustomEvent('progress-updated'));
         await this.fetchReviews();
       } catch (e) { console.error(e); }
     },

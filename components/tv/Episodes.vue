@@ -26,7 +26,8 @@
       <EpisodesItem
         v-for="episode in activeEpisodes"
         :key="`episode-${episode.id}`"
-        :episode="episode" />
+        :episode="episode"
+        :user-email="userEmail" />
     </div>
   </div>
 </template>
@@ -51,6 +52,7 @@ export default {
     return {
       activeSeason: this.numberOfSeasons,
       activeEpisodes: null,
+      userEmail: '',
     };
   },
 
@@ -76,6 +78,9 @@ export default {
   },
 
   mounted () {
+    if (import.meta.client) {
+      this.userEmail = localStorage.getItem('email')?.replace(/['\"]+/g, '') || '';
+    }
     this.getEpisodes();
   },
 
