@@ -326,5 +326,13 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1775073374/cinemagoria/backdrops/hero_1616174.webp",
     "poster_path": "/9XoQ4KIOzgR93kqMq1iMpgGuqc1.jpg",
     "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1662038,
+    "media_type": "movie",
+    "trailer_key": "U2gEmpLDPEs",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1775106632/cinemagoria/backdrops/hero_1662038.webp",
+    "poster_path": null,
+    "force_enrichment": true
   }
 ]
