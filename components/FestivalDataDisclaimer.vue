@@ -21,11 +21,11 @@
 
             <p class="disclaimer-text">The number of features and shorts displayed here may not match the festival's official lineup. Our catalog is built from publicly available metadata and third-party sources, which may not cover every title, particularly short films, experimental works, or regional entries.</p>
 
-            <p class="disclaimer-text">This is a technical limitation, not an editorial choice. We don't censor, or intentionally omit any film.</p>
+            <p class="disclaimer-text">This is a technical limitation, not an editorial choice. We don't censor, or intentionally omit any film. <nuxt-link to="/usage-policies" target="_blank" class="accent-link">Read full usage policies</nuxt-link>.</p>
 
-            <nuxt-link to="/usage-policies" class="disclaimer-link" @click="open = false">
-              Read full usage policies
-            </nuxt-link>
+            <button class="disclaimer-got-it" @click="open = false">
+              Got it
+            </button>
           </div>
         </div>
       </transition>
@@ -158,27 +158,36 @@ const open = ref(false);
   text-align: center;
 }
 
-.disclaimer-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin-top: 1.2rem;
-  padding: 10px 20px;
-  background: rgba(139, 233, 253, 0.08);
-  border: 1px solid rgba(139, 233, 253, 0.2);
-  border-radius: 12px;
+.accent-link {
   color: #8BE9FD;
   text-decoration: none;
-  font-size: 0.88rem;
-  font-weight: 600;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.accent-link:hover {
+  text-decoration: underline;
+}
+
+.disclaimer-got-it {
+  display: block;
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 12px;
+  background: #8BE9FD;
+  color: #0a161b; /* Dark text for contrast */
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
   transition: all 0.25s ease;
 }
 
-.disclaimer-link:hover {
-  background: rgba(139, 233, 253, 0.15);
-  border-color: rgba(139, 233, 253, 0.4);
-  transform: translateY(-1px);
+.disclaimer-got-it:hover {
+  background: #fff;
+  transform: translateY(-2px);
 }
 
 /* Transitions */
