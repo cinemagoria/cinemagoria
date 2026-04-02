@@ -156,7 +156,10 @@
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
                       <h3>Venta de Entradas</h3>
                     </div>
-                    <p class="carousel-desc">Comprá tus entradas online en <a href="https://bafici.org" target="_blank" class="accent-link">bafici.org</a> o personalmente en el <strong>Teatro San Martín</strong>, de 10 a 21:30 h. En el resto de las sedes, las boleterías abren 30 min antes de la primera función.</p>
+                    <p class="carousel-desc" style="margin-bottom: 0.8rem;">
+                      <strong>PREVENTA:</strong> Entradas online desde el 6 de abril a las 10 h en <a href="https://bafici.org" target="_blank" class="accent-link">bafici.org</a> o en el <strong>Teatro San Martín</strong> (10 a 21.30 h).<br><br>
+                      <strong>BOLETERÍAS (16 al 26 abr):</strong> Entradas online o en el Teatro San Martín (10 a 21.30 h). En lás demás sedes, desde 30 min antes de la primera función hasta el inicio de la última.
+                    </p>
                     <ul class="price-list">
                       <li><span class="price-label">Entrada general</span><span class="price-value">$5.000</span></li>
                       <li><span class="price-label">Estudiantes y jubilados</span><span class="price-value">$3.500</span></li>
@@ -210,9 +213,10 @@
                       <h3>Información Importante</h3>
                     </div>
                     <ul class="bullet-list">
-                      <li>Al momento de comprar tus entradas, es necesario contemplar el tiempo entre películas ya que, una vez comenzada la función, no podrás entrar a la sala y tu entrada perderá validez.</li>
-                      <li>Todas las películas de la programación del 27° BAFICI no habladas en español cuentan con subtitulado en español.</li>
+                      <li>Al momento de comprar tus entradas, es necesario contemplar el tiempo entre películas. Las películas comenzarán puntualmente. Una vez comenzada la función, no podrás entrar a la sala y tu entrada perderá validez.</li>
+                      <li>Todas las películas de la programación del 27° BAFICI no habladas en español cuentan con subtitulado en español. Las películas de <strong>Baficito</strong> que contengan diálogo son habladas en idioma original con subtítulos en español.</li>
                       <li>Todas las películas de la programación del 27° BAFICI son aptas para mayores de 18 años, con excepción de las películas de <strong>Baficito</strong>, que son aptas para todo público.</li>
+                      <li>En cumplimiento con el Artículo 4 de la Ley 3.546, habrá un cupo gratuito para personas con discapacidad acreditándose mediante el CUD en boletería. El cupo se habilitará 30 minutos antes del comienzo de cada función.</li>
                     </ul>
                   </template>
                 </div>
