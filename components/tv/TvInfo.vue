@@ -117,6 +117,8 @@
           />
         </div>
 
+
+
         <div class="reviews-section" v-if="reviews && reviews.length">
           <br>
           <div :class="$style.reviewsHeader">
@@ -187,7 +189,7 @@
         <div class="movie-info-delete-body">
           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="#ff6b6b" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
           <p class="movie-info-delete-warning">Are you sure you want to delete your review and rating for <strong>{{ item.name || item.title }}</strong>?</p>
-          <p class="movie-info-delete-warning" style="font-size: 1.1rem; opacity: 0.8; margin-top: -5px;">This action cannot be undone.</p>
+          <p class="movie-info-delete-warning" style="font-size: 1.1rem; opacity: 0.8; margin-top: -5px;">This action cannot be undone. Episode viewing progress tracked separately will not be affected.</p>
         </div>
         <div class="movie-info-delete-actions">
           <button class="movie-info-cancel-btn" @click="showDeleteReviewModal = false">Cancel</button>
@@ -216,19 +218,19 @@
               >{{ n }}</button>
             </div>
           </div>
+
           <div class="movie-info-review-section">
             <textarea
               v-model="editUserReview"
               placeholder="Write your review here…"
               class="movie-info-review-textarea"
               maxlength="2000"
-              :disabled="selectedRating === 0"
             ></textarea>
             <div class="movie-info-char-count">{{ editUserReview.length }}/2000</div>
           </div>
           <div class="movie-info-modal-buttons">
             <button @click="removeRatingAndReview" class="movie-info-remove-btn">Remove Rating</button>
-            <button @click="saveEditedReview" class="movie-info-save-btn" :disabled="selectedRating === 0">Save</button>
+            <button @click="saveEditedReview" class="movie-info-save-btn">Save</button>
           </div>
         </div>
       </div>
@@ -298,6 +300,7 @@ export default {
     WatchOn,
     ListingCarousel,
     AwardsTab: () => import('~/components/common/AwardsTab'),
+
     Loader: () => import('~/components/Loader'),
   },
 
@@ -343,6 +346,9 @@ export default {
       selectedRating: 0,
       hoverRating: 0,
       editUserReview: '',
+
+      // Progress tracking
+      progressPercentage: 0,
     };
   },
 
@@ -364,6 +370,10 @@ export default {
       return localizedTitle && originalTitle && localizedTitle !== originalTitle;
     },
     providersToDisplay() { return this.localProviders !== null ? this.localProviders : this.providers; },
+    episodeDuration() {
+      const rt = this.item.episode_run_time;
+      return (rt && rt.length > 0) ? rt[0] : 0;
+    },
     currentRecommendationList() {
       if (this.activeTab === 'similar') return this.recommended;
       if (this.activeTab === 'creator') return this.creatorItems;
@@ -427,6 +437,14 @@ export default {
       if (lionCount > 0) parts.push(`${lionCount} Golden Lion${lionCount > 1 ? 's' : ''}`);
       if (bearCount > 0) parts.push(`${bearCount} Golden Bear${bearCount > 1 ? 's' : ''}`);
       return parts.join(', ');
+    },
+    progressElapsed() {
+      if (!this.episodeDuration) return '0m';
+      return this.fmtMin(this.episodeDuration * this.progressPercentage / 100);
+    },
+    progressRemaining() {
+      if (!this.episodeDuration) return '0m';
+      return this.fmtMin(this.episodeDuration - (this.episodeDuration * this.progressPercentage / 100));
     },
   },
 
@@ -642,17 +660,18 @@ export default {
     previewRating(n) { this.hoverRating = n; },
     resetPreview() { this.hoverRating = 0; },
     async saveEditedReview() {
-      if (this.selectedRating === 0) return;
       const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
       if (!userEmail) return;
       const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
       try {
-        const resp = await fetch(`${tursoUrl}/favorites/rating/${userEmail}/tv/${this.item.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ rating: this.selectedRating, review: this.editUserReview.trim() })
-        });
-        if (!resp.ok) throw new Error('Error saving');
+        if (this.selectedRating > 0) {
+          const resp = await fetch(`${tursoUrl}/favorites/rating/${userEmail}/tv/${this.item.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rating: this.selectedRating, review: this.editUserReview.trim() })
+          });
+          if (!resp.ok) throw new Error('Error saving');
+        }
         this.closeRatingModal();
         this.$bus.$emit('rated-items-updated');
         await this.fetchReviews();
@@ -679,6 +698,17 @@ export default {
       await this.removeRatingAndReview();
     },
     //  ─────────────────────────────────────────────────────────────
+    onProgressUpdated(payload) {
+      // reserved
+    },
+    fmtMin(m) {
+      const r = Math.round(m || 0);
+      if (r < 0) return '0m';
+      if (r < 60) return `${r}m`;
+      const h = Math.floor(r / 60);
+      const rm = r % 60;
+      return rm > 0 ? `${h}h ${rm}m` : `${h}h`;
+    },
     toggleFullReviews() { this.showFullReviews = !this.showFullReviews; },
     formatGenres (genres) { 
       return genres.map(genre => {

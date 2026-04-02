@@ -876,6 +876,23 @@ export function getTvShowEpisodes(id, season) {
     });
 };
 
+export function getEpisode(tvId, season, episode) {
+    return new Promise((resolve, reject) => {
+        axios.get(`${apiUrl}/tv/${tvId}/season/${season}/episode/${episode}`, {
+            params: {
+                api_key: getEnv('API_KEY'),
+                language: getEnv('API_LANG'),
+                append_to_response: 'images',
+            },
+        }).then((response) => {
+            resolve(response.data);
+        })
+        .catch((error) => {
+            reject(error);
+        });
+    });
+};
+
 export function getTrending(media, page = 1) {
     return new Promise((resolve, reject) => {
         axios.get(`${apiUrl}/trending/${media}/week`, {

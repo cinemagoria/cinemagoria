@@ -123,6 +123,11 @@
               </div>
             </div>
 
+            <button v-if="hasTrackedProgress" :class="$style.trackInfoPill" @click="handleTrackingPillClick">
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-circle" style="margin-right: 6px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+               <span>{{ trackingInfoText }}</span>
+            </button>
+
             <div :class="$style.desc">
               {{ truncate(heroItem.overview, 200) }}
             </div>
@@ -134,6 +139,7 @@
                     </nuxt-link>
                 </template>
             </div>
+            
             <div :class="[$style.buttonContainer, { 'no-transition': isHomepage && !isHomepageContentReady }]">
               <transition-group name="fade">
 
@@ -345,13 +351,38 @@
             </div>
           </div>
           
+          <!-- Progress tracking -->
+          <div v-if="type === 'movie'" class="mpb-section">
+            <div class="mpb-section-label">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              VIEWING PROGRESS
+            </div>
+            <div class="mpb-row">
+              <div class="mpb-circle-wrap">
+                <svg class="mpb-svg" viewBox="0 0 120 120">
+                  <defs><linearGradient id="pgH" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8AE8FC"/><stop offset="100%" stop-color="#50C8E8"/></linearGradient></defs>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(138,232,252,0.1)" stroke-width="6"/>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke="url(#pgH)" stroke-width="6" stroke-linecap="round" :stroke-dasharray="2 * Math.PI * 52" :stroke-dashoffset="2 * Math.PI * 52 * (1 - progressPercentage / 100)" style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .35s ease"/>
+                </svg>
+                <div class="mpb-pct"><span class="mpb-pct-num">{{ progressPercentage }}</span><span class="mpb-pct-sign">%</span></div>
+              </div>
+              <div class="mpb-controls">
+                <input type="range" class="mpb-slider" min="0" max="100" step="1" v-model.number="progressPercentage" />
+                <div v-if="heroItem.runtime" class="mpb-times">
+                  <div class="mpb-time"><span class="mpb-time-label">Watched</span><span class="mpb-time-val">{{ progressElapsed }}</span></div>
+                  <div class="mpb-time"><span class="mpb-time-label">Remaining</span><span class="mpb-time-val">{{ progressRemaining }}</span></div>
+                </div>
+                <div v-else class="mpb-times"><span class="mpb-no-dur">Duration not available</span></div>
+              </div>
+            </div>
+          </div>
+
           <div class="review-section">
             <textarea
               v-model="userReview"
               :placeholder="selectedRating > 0 ? ratingDescriptions[selectedRating - 1] : 'Select a rating first'"
               class="review-textarea"
               maxlength="2000"
-              :disabled="selectedRating === 0"
             ></textarea>
             <div class="char-count">{{ userReview.length }}/2000</div>
           </div>
@@ -368,7 +399,6 @@
             <button 
               @click="saveRatingAndReview" 
               class="save-btn"
-              :disabled="selectedRating === 0"
             >
               <span style="position:relative; margin:0 auto;">Save</span>
             </button>
@@ -518,7 +548,12 @@ export default {
         festivalBadge: false,
         
         metadata: true
-      }
+      },
+
+      // Progress tracking
+      progressPercentage: 0,
+      trackedEpisodesCount: 0,
+      trackedSeasonData: [],  // [{season_number, tracked, total}]
     };
   },
 
@@ -576,7 +611,45 @@ export default {
         { name: 'bafici', film: this.baficiFilm, component: 'BaficiBadge', link: '/festival/bafici-2026', isSimple: true },
       ];
       return festivalConfig.filter(f => f.film);
-    }
+    },
+    hasTrackedProgress() {
+       return (this.type === 'movie' && this.progressPercentage > 0) || (this.type === 'tv' && this.trackedEpisodesCount > 0);
+    },
+    trackingInfoText() {
+       if (this.type === 'movie') {
+          return `Viewed: ${this.progressPercentage}%`;
+       }
+       // TV show — build an informative label
+       const seasons = this.trackedSeasonData;
+       if (!seasons || seasons.length === 0) {
+          return `${this.trackedEpisodesCount} episode${this.trackedEpisodesCount !== 1 ? 's' : ''} tracked`;
+       }
+       // If only 1 season tracked, show detail for that season
+       if (seasons.length === 1) {
+          const s = seasons[0];
+          if (s.allComplete) {
+             return `Season ${s.season_number} completed`;
+          }
+          return `${s.tracked} of ${s.total || '?'} episodes tracked (S${s.season_number})`;
+       }
+       // Multiple seasons
+       const completedSeasons = seasons.filter(s => s.allComplete);
+       if (completedSeasons.length === seasons.length) {
+          return `${completedSeasons.length} seasons completed`;
+       }
+       const seasonLabels = seasons.map(s => `S${s.season_number}: ${s.tracked}`).join(', ');
+       return `${this.trackedEpisodesCount} episodes tracked (${seasonLabels})`;
+    },
+    progressElapsed() {
+      const rt = this.heroItem.runtime;
+      if (!rt) return '0m';
+      return this.fmtMin(rt * this.progressPercentage / 100);
+    },
+    progressRemaining() {
+      const rt = this.heroItem.runtime;
+      if (!rt) return '0m';
+      return this.fmtMin(rt - (rt * this.progressPercentage / 100));
+    },
   },
 
   async mounted() {
@@ -610,6 +683,14 @@ export default {
   },
 
   methods: {
+    fmtMin(m) {
+      const r = Math.round(m || 0);
+      if (r < 0) return '0m';
+      if (r < 60) return `${r}m`;
+      const h = Math.floor(r / 60);
+      const rm = r % 60;
+      return rm > 0 ? `${h}h ${rm}m` : `${h}h`;
+    },
     async checkNoirStatus() {
       if (this.isHomepage) return;
       const tmdbId = this.heroItem?.id;
@@ -703,6 +784,7 @@ export default {
             await this.checkMembership();
             this.checkUserRating();
             await this.loadRatingFromRatingsEndpoint();
+            this.loadProgress();
         }
         
         this.checkFestivalStatus();
@@ -1006,6 +1088,16 @@ export default {
         this.$bus.$emit('show-create-list-modal', this.heroItem);
     },
 
+    handleTrackingPillClick() {
+      if (this.type === 'movie') {
+        // Movies: open the rate modal (which includes progress tracking)
+        this.hasUserRating ? this.showRatingDetails() : this.openRatingModal();
+      } else {
+        // TV shows: navigate to the Episodes tab
+        this.$bus.$emit('navigate-to-episodes');
+      }
+    },
+
     openModal() {
       if (this.trailer && this.trailer[0]) {
         const videoId = this.trailer[0].src.match(/embed\/([^?]+)/)[1];
@@ -1021,6 +1113,7 @@ export default {
     
     openRatingModal() {
       this.ratingModalVisible = true;
+      this.loadProgress();
     },
     
     closeRatingModal() {
@@ -1044,25 +1137,23 @@ export default {
       if (this.hasUserRating) {
         this.selectedRating = parseInt(this.userRatingForDb);
         this.ratingModalVisible = true;
+        this.loadProgress();
         if (this.userReview) {
           this.activeTab = 'review';
         }
       } else {
         this.ratingModalVisible = true;
+        this.loadProgress();
         this.activeTab = 'rating';
       }
     },
     
     async saveRatingAndReview() {
-      if (this.selectedRating === 0) {
-        alert('Please select a rating between 1 and 10');
-        return;
-      }
-
-
-      
       try {
-        await this.updateUserRatingAndReview(this.selectedRating, this.userReview);
+        if (this.selectedRating > 0) {
+          await this.updateUserRatingAndReview(this.selectedRating, this.userReview);
+        }
+        await this.saveProgress();
         this.closeRatingModal();
         this.$bus.$emit('rated-items-updated');
       } catch (error) {
@@ -1098,6 +1189,10 @@ export default {
 
         this.closeRatingModal();
         this.$bus.$emit('rated-items-updated');
+        
+        const mediaType = this.type === 'movie' ? 'movie' : 'episode';
+        await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/${mediaType}/${this.id}`, { method: 'DELETE' }).catch(() => {});
+        
       } catch (error) {
         console.error('Error removing rating:', error);
         alert('There was an error removing your rating. Please try again.');
@@ -1245,6 +1340,66 @@ export default {
       }
     },
 
+    //  ── Progress tracking persistence ────────────────────────────
+    async loadProgress() {
+      if (!this.userEmail) return;
+      
+      try {
+        if (this.type === 'movie') {
+          const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/movie/${this.id}`);
+          if (resp.ok) {
+            const data = await resp.json();
+            if (data.found) {
+              this.progressPercentage = data.progress_percentage || 0;
+            } else {
+              this.progressPercentage = 0;
+            }
+          }
+        } else {
+          // For TV show, get total tracked episodes for this show
+          const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}`);
+          if (resp.ok) {
+            const rows = await resp.json();
+            // The API returns rows[] directly (array)
+            const arr = Array.isArray(rows) ? rows : (rows.items || []);
+            const eps = arr.filter(i => i.media_type === 'episode' && String(i.tv_id) === String(this.id));
+            this.trackedEpisodesCount = eps.length;
+
+            // Build per-season breakdown
+            const seasonMap = {};
+            for (const ep of eps) {
+              const sn = ep.season_number || 0;
+              if (!seasonMap[sn]) seasonMap[sn] = { season_number: sn, tracked: 0, complete: 0 };
+              seasonMap[sn].tracked++;
+              if (Number(ep.progress_percentage) >= 100) seasonMap[sn].complete++;
+            }
+            // Try to get total episodes per season from the heroItem
+            const totalSeasons = this.heroItem?.number_of_seasons || 0;
+            const seasonDetails = Object.values(seasonMap).sort((a, b) => a.season_number - b.season_number);
+            for (const s of seasonDetails) {
+               s.total = null; // we don't know the exact count from progress data
+               s.allComplete = s.complete === s.tracked && s.tracked > 0;
+            }
+            this.trackedSeasonData = seasonDetails;
+          }
+        }
+      } catch (e) { /* silent */ }
+    },
+    async saveProgress() {
+      if (!this.userEmail) return;
+      const mediaType = this.type === 'movie' ? 'movie' : 'episode';
+      const rt = this.heroItem.runtime || 0;
+      const elapsed = rt ? Math.round(rt * this.progressPercentage / 100) : 0;
+      try {
+        await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/${mediaType}/${this.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ progress_percentage: this.progressPercentage, elapsed_minutes: elapsed, total_duration_minutes: rt })
+        });
+      } catch (e) { /* silent */ }
+    },
+    //  ─────────────────────────────────────────────────────────────
+
     async copyToClipboard() {
       try {
         await navigator.clipboard.writeText(this.shareUrl);
@@ -1336,6 +1491,10 @@ export default {
           }
 
           await this.loadRatingFromRatingsEndpoint();
+          
+          const mediaType = this.type === 'movie' ? 'movie' : 'episode';
+          await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/${mediaType}/${this.id}`, { method: 'DELETE' }).catch(() => {});
+          
         } else {
           const response = await fetch(`${this.tursoBackendUrl}/favorites`, {
             method: 'POST',
@@ -2124,6 +2283,43 @@ export default {
         color: #8BE9FD;
     }
 }
+
+.trackInfoPill {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 1.8rem;
+  padding: 8px 16px;
+  background: rgba(138, 232, 252, 0.08);
+  border: 1px solid rgba(138, 232, 252, 0.25);
+  border-radius: 20px;
+  color: #8AE8FC;
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  letter-spacing: 0.02em;
+
+  &:hover {
+    background: rgba(138, 232, 252, 0.18);
+    border-color: rgba(138, 232, 252, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(138, 232, 252, 0.15);
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: #{$breakpoint-small - 1px}) {
+    font-size: 1.15rem;
+    padding: 6px 12px;
+    margin-top: 1.2rem;
+  }
+
+  @media (min-width: 1650px) {
+    font-size: 0.85vw;
+  }
+}
 </style>
 
 <style>
@@ -2857,4 +3053,22 @@ export default {
 }
 
 
+/* ── Progress tracking in modal ──────────────────────────── */
+.mpb-section { width:100%; background:rgba(0,0,0,0.15); border:1px solid rgba(138,232,252,0.1); border-radius:10px; padding:14px 16px; }
+.mpb-section-label { display:flex; align-items:center; gap:6px; font-size:1.05rem; font-weight:700; letter-spacing:0.08em; color:rgba(255,255,255,0.55); text-transform:uppercase; margin-bottom:12px; }
+.mpb-row { display:flex; align-items:center; gap:16px; }
+.mpb-circle-wrap { position:relative; width:80px; height:80px; flex-shrink:0; }
+.mpb-svg { width:100%; height:100%; }
+.mpb-pct { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; line-height:1; }
+.mpb-pct-num { font-size:1.8rem; font-weight:700; color:#fff; }
+.mpb-pct-sign { font-size:1rem; color:rgba(138,232,252,0.8); font-weight:600; }
+.mpb-controls { flex:1; min-width:0; }
+.mpb-slider { -webkit-appearance:none; appearance:none; width:100%; height:5px; border-radius:3px; background:rgba(138,232,252,0.12); outline:none; cursor:pointer; margin-bottom:10px; }
+.mpb-slider::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:#8AE8FC; border:2px solid rgba(10,30,38,0.9); cursor:pointer; box-shadow:0 0 6px rgba(138,232,252,0.4); }
+.mpb-slider::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:#8AE8FC; border:2px solid rgba(10,30,38,0.9); cursor:pointer; }
+.mpb-times { display:flex; justify-content:space-between; }
+.mpb-time { display:flex; flex-direction:column; gap:1px; }
+.mpb-time-label { font-size:1rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.05em; font-weight:600; }
+.mpb-time-val { font-size:1.3rem; color:#fff; font-weight:600; }
+.mpb-no-dur { font-size:1.1rem; color:rgba(255,255,255,0.3); font-style:italic; }
 </style>

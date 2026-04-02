@@ -14,6 +14,7 @@
     <CookieConsent />
     <InstallPrompt />
     <RatedModal />
+    <ProgressTrackingModal />
     <FollowingModal />
     <QuickFavModal />
     <MyListsModal />
@@ -29,6 +30,7 @@ import AuthModal from '~/components/global/AuthModal.vue'
 import CookieConsent from '~/components/global/CookieConsent.vue'
 import InstallPrompt from '~/components/global/InstallPrompt.vue'
 import RatedModal from '~/components/global/RatedModal.vue'
+import ProgressTrackingModal from '~/components/global/ProgressTrackingModal.vue'
 import FollowingModal from '~/components/global/FollowingModal.vue'
 import QuickFavModal from '~/components/global/QuickFavModal.vue'
 import MyListsModal from '~/components/global/MyListsModal.vue'

@@ -103,13 +103,13 @@
             </div>
           </div>
           
+
           <div class="review-section">
             <textarea
               v-model="userReview"
               :placeholder="selectedRating > 0 ? ratingDescriptions[selectedRating - 1] : 'Select a rating first'"
               class="review-textarea"
               maxlength="2000"
-              :disabled="selectedRating === 0"
             ></textarea>
             <div class="char-count">{{ userReview.length }}/2000</div>
           </div>
@@ -126,7 +126,6 @@
             <button 
               @click="saveRatingAndReview" 
               class="save-btn"
-              :disabled="selectedRating === 0"
             >
               <span style="position:relative; margin:0 auto;">Save</span>
             </button>
@@ -356,38 +355,27 @@ export default {
     },
 
     async saveRatingAndReview() {
-      if (this.selectedRating === 0) {
-        alert('Please select a rating between 1 and 10');
-        return;
-      }
-
-
-
       try {
         const item = this.currentRatingItem;
         const { typeForDb, idForDb } = item.details;
-
-        const response = await fetch(
-          `${this.tursoBackendUrl}/favorites/rating/${this.userEmail}/${typeForDb}/${idForDb}`,
-          {
-            method: 'PUT',
-            headers: { 
-              'Content-Type': 'application/json' 
-            },
-            body: JSON.stringify({
-              rating: this.selectedRating,
-              review: this.userReview.trim(),
-              item: item.details
-            })
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error('Error updating rating: ' + response.statusText);
+        
+        if (this.selectedRating > 0) {
+          const response = await fetch(
+            `${this.tursoBackendUrl}/favorites/rating/${this.userEmail}/${typeForDb}/${idForDb}`,
+            {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                rating: this.selectedRating,
+                review: this.userReview.trim(),
+                item: item.details
+              })
+            }
+          );
+          if (!response.ok) throw new Error('Error updating rating');
+          item.details.userRatingForDb = this.selectedRating.toString();
+          item.details.userReview = this.userReview.trim();
         }
-
-        item.details.userRatingForDb = this.selectedRating.toString();
-        item.details.userReview = this.userReview.trim();
 
         this.closeRatingModal();
         await this.fetchRatedItems();
@@ -981,4 +969,5 @@ export default {
   position: relative;
   font-size: 1.6rem;
 }
+
 </style>

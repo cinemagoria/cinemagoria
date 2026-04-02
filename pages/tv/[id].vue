@@ -15,7 +15,7 @@
     <template v-else>
       <Hero v-if="item && item.id" :initial-item="item" />
 
-      <MediaNav :menu="menu" @clicked="navClicked" />
+      <MediaNav :menu="menu" :active-label="activeMenu" @clicked="navClicked" />
 
       <template v-if="activeMenu === 'overview'">
         <TvInfo 
@@ -68,7 +68,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import UserNav from '@/components/global/UserNav.vue';
 import { apiImgUrl, getTvShow } from '~/utils/api';
@@ -86,9 +86,23 @@ import { searchSoundtracks } from '~/utils/musicbrainz';
 
 const route = useRoute();
 const router = useRouter();
+const { $bus } = useNuxtApp();
 
 const showRatedItems = () => {
   ratedItemsModalVisible.value = true;
+};
+
+const navigateToEpisodes = () => {
+  activeMenu.value = 'episodes';
+  nextTick(() => {
+    // Scroll to the episodes section (the .spacing div that wraps Episodes component)
+    setTimeout(() => {
+      const episodesSection = document.querySelector('.spacing');
+      if (episodesSection) {
+        episodesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  });
 };
 
 const navClicked = (label) => {
@@ -225,6 +239,14 @@ watch(item, async () => {
     createMenu();
   }
 }, { immediate: true });
+
+onMounted(() => {
+  $bus.$on('navigate-to-episodes', navigateToEpisodes);
+});
+
+onUnmounted(() => {
+  $bus.$off('navigate-to-episodes', navigateToEpisodes);
+});
 
 useHead({
   title: metaTitle,
