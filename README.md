@@ -1,8 +1,7 @@
 # Cinemagoria
 
-> **Current Version:** v4.8.0 — Production Ready
-> **Release Date:** March 25, 2026
-> **Status:** A New Era of Social Features, Awards, and Performance
+> **Current Version:** v4.9.0 — Production Ready
+> **Release Date:** April 2, 2026
 > **Repository:** [github.com/cinemagoria/cinemagoria](https://github.com/cinemagoria/cinemagoria)
 > **Lead Developer:** [@imprvhub](https://github.com/imprvhub) (Iván Luna)
 > **In development since:** March 27, 2024
@@ -26,7 +25,7 @@
 9. [Person Profiles](#9-person-profiles)
 10. [Original Soundtrack (OST) Integration](#10-original-soundtrack-ost-integration)
 11. [Watchlist & List Management](#11-watchlist--list-management)
-12. [User Profiles, Ratings & Reviews](#12-user-profiles-ratings--reviews)
+12. [User Profiles, Ratings, Reviews & Progress Tracking](#12-user-profiles-ratings-reviews--progress-tracking)
 13. [Production Company Pages](#13-production-company-pages)
 14. [Streaming Platform Support](#14-streaming-platform-support)
 15. [Follow & Notification System](#15-follow--notification-system)
@@ -587,7 +586,7 @@ Quick-access list management from any content card:
 
 ---
 
-## 12. User Profiles, Ratings & Reviews (v4.8.0 Overhaul)
+## 12. User Profiles, Ratings, Reviews & Progress Tracking (v4.8.0-4.9.0 Overhaul)
 
 ### 12.1 Public User Profiles & Activity
 
@@ -628,6 +627,20 @@ Introduced in v4.8.0, users can now engage with the cinemagoria community throug
 - Grid of rated items with refined columns, gaps, border-radius, padding, font sizes
 - Rating badge and review text layout optimized for readability
 - Max-height with custom scrollbar for review text
+
+### 12.5 Media Progress Tracking (v4.9.0)
+
+A comprehensive system for tracking watch progress independently from watchlists and ratings.
+
+**Global Progress Tracking Dashboard:**
+- `ProgressTrackingModal` accessible from the User Navigation menu.
+- Groups and visually differentiates active tracked movies and active tracked TV series (down to individual nested season/episodes).
+- Unified, glassmorphic UI matching `RatedModal`.
+
+**Granular Episode & Movie Tracking:**
+- Dynamic circular progress trackers on individual TV Episodes and Hero Banners.
+- Users can update continuous progress precisely (e.g. 50% watched) rather than relying on boolean toggles.
+- Real-time reactivity via global `$bus` and `window.dispatchEvent` keeps tracking pills and User Navigation stats synchronously updated globally across all nested models.
 
 ---
 
@@ -1247,7 +1260,7 @@ For issues or suggestions: [Create a new issue on GitHub](https://github.com/cin
 
 ---
 
-## Release Authorization (v4.8.0)
+## Release Authorization (v4.9.0)
 
 - **Approved by:** @imprvhub
 - **Architecture Review:** Complete
@@ -1261,4 +1274,4 @@ For issues or suggestions: [Create a new issue on GitHub](https://github.com/cin
 
 ---
 
-**Full Changelog**: https://github.com/cinemagoria/cinemagoria/compare/v4.7.0...v4.8.0
+**Full Changelog**: https://github.com/cinemagoria/cinemagoria/compare/v4.8.0...v4.9.0
