@@ -109,6 +109,8 @@
           />
         </div>
 
+
+
         <div class="reviews-section" v-if="reviews && reviews.length">
           <br>
           <div :class="$style.reviewsHeader">
@@ -179,7 +181,7 @@
         <div class="movie-info-delete-body">
           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="#ff6b6b" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
           <p class="movie-info-delete-warning">Are you sure you want to delete your review and rating for <strong>{{ item.title || item.name }}</strong>?</p>
-          <p class="movie-info-delete-warning" style="font-size: 1.1rem; opacity: 0.8; margin-top: -5px;">This action cannot be undone.</p>
+          <p class="movie-info-delete-warning" style="font-size: 1.1rem; opacity: 0.8; margin-top: -5px;">This action cannot be undone. Your viewing progress for this title will also be deleted.</p>
         </div>
         <div class="movie-info-delete-actions">
           <button class="movie-info-cancel-btn" @click="showDeleteReviewModal = false">Cancel</button>
@@ -208,19 +210,44 @@
               >{{ n }}</button>
             </div>
           </div>
+
+          <!-- Progress tracking -->
+          <div class="mpb-section">
+            <div class="mpb-section-label">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              VIEWING PROGRESS
+            </div>
+            <div class="mpb-row">
+              <div class="mpb-circle-wrap">
+                <svg class="mpb-svg" viewBox="0 0 120 120">
+                  <defs><linearGradient id="pgM" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8AE8FC"/><stop offset="100%" stop-color="#50C8E8"/></linearGradient></defs>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(138,232,252,0.1)" stroke-width="6"/>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke="url(#pgM)" stroke-width="6" stroke-linecap="round" :stroke-dasharray="2 * Math.PI * 52" :stroke-dashoffset="2 * Math.PI * 52 * (1 - progressPercentage / 100)" style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .35s ease"/>
+                </svg>
+                <div class="mpb-pct"><span class="mpb-pct-num">{{ progressPercentage }}</span><span class="mpb-pct-sign">%</span></div>
+              </div>
+              <div class="mpb-controls">
+                <input type="range" class="mpb-slider" min="0" max="100" step="1" v-model.number="progressPercentage" />
+                <div v-if="item.runtime" class="mpb-times">
+                  <div class="mpb-time"><span class="mpb-time-label">Watched</span><span class="mpb-time-val">{{ progressElapsed }}</span></div>
+              <div class="mpb-time"><span class="mpb-time-label">Remaining</span><span class="mpb-time-val">{{ progressRemaining }}</span></div>
+                </div>
+                <div v-else class="mpb-times"><span class="mpb-no-dur">Duration not available</span></div>
+              </div>
+            </div>
+          </div>
           <div class="movie-info-review-section">
             <textarea
               v-model="editUserReview"
               placeholder="Write your review here…"
               class="movie-info-review-textarea"
               maxlength="2000"
-              :disabled="selectedRating === 0"
             ></textarea>
             <div class="movie-info-char-count">{{ editUserReview.length }}/2000</div>
           </div>
           <div class="movie-info-modal-buttons">
-            <button @click="removeRatingAndReview" class="movie-info-remove-btn">Remove</button>
-            <button @click="saveEditedReview" class="movie-info-save-btn" :disabled="selectedRating === 0">Save</button>
+            <button @click="removeRatingAndReview" class="movie-info-remove-btn">Remove Rating</button>
+            <button @click="saveEditedReview" class="movie-info-save-btn">Save</button>
           </div>
         </div>
       </div>
@@ -295,6 +322,7 @@ export default {
     WatchOn,
     ListingCarousel,
     AwardsTab: () => import('~/components/common/AwardsTab'),
+
     Loader: () => import('~/components/Loader'),
   },
 
@@ -341,6 +369,9 @@ export default {
       selectedRating: 0,
       hoverRating: 0,
       editUserReview: '',
+
+      // Progress tracking
+      progressPercentage: 0,
     };
   },
 
@@ -452,6 +483,14 @@ export default {
       
       return parts.join(', ');
     },
+    progressElapsed() {
+      if (!this.item.runtime) return '0m';
+      return this.fmtMin(this.item.runtime * this.progressPercentage / 100);
+    },
+    progressRemaining() {
+      if (!this.item.runtime) return '0m';
+      return this.fmtMin(this.item.runtime - (this.item.runtime * this.progressPercentage / 100));
+    },
   },
 
   watch: {
@@ -463,6 +502,7 @@ export default {
         this.fetchSecondaryData();
         this.fetchProviders();
         this.fetchReviews();
+        this.loadProgress();
       }
     },
     activeTab() {
@@ -650,6 +690,7 @@ export default {
       this.editUserReview = review.content || '';
       this.hoverRating = 0;
       this.ratingModalVisible = true;
+      this.loadProgress();
     },
     closeRatingModal() {
       this.ratingModalVisible = false;
@@ -661,17 +702,19 @@ export default {
     previewRating(n) { this.hoverRating = n; },
     resetPreview() { this.hoverRating = 0; },
     async saveEditedReview() {
-      if (this.selectedRating === 0) return;
       const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
       if (!userEmail) return;
       const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
       try {
-        const resp = await fetch(`${tursoUrl}/favorites/rating/${userEmail}/movie/${this.item.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ rating: this.selectedRating, review: this.editUserReview.trim() })
-        });
-        if (!resp.ok) throw new Error('Error saving');
+        if (this.selectedRating > 0) {
+          const resp = await fetch(`${tursoUrl}/favorites/rating/${userEmail}/movie/${this.item.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rating: this.selectedRating, review: this.editUserReview.trim() })
+          });
+          if (!resp.ok) throw new Error('Error saving');
+        }
+        await this.saveProgress();
         this.closeRatingModal();
         this.$bus.$emit('rated-items-updated');
         await this.fetchReviews();
@@ -688,8 +731,12 @@ export default {
           body: JSON.stringify({ rating: null, review: '' })
         });
         if (!resp.ok) throw new Error('Error removing');
+        
+        await fetch(`/api/progress/${encodeURIComponent(userEmail)}/movie/${this.item.id}`, { method: 'DELETE' }).catch(() => {});
+        
         this.closeRatingModal();
         this.$bus.$emit('rated-items-updated');
+        window.dispatchEvent(new CustomEvent('progress-updated'));
         await this.fetchReviews();
       } catch (e) { console.error(e); }
     },
@@ -698,6 +745,43 @@ export default {
       await this.removeRatingAndReview();
     },
     //  ─────────────────────────────────────────────────────────────
+    //  ── Progress tracking persistence ────────────────────────────
+    async loadProgress() {
+      const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+      if (!userEmail) return;
+      try {
+        const resp = await fetch(`/api/progress/${encodeURIComponent(userEmail)}/movie/${this.item.id}`);
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data.found) {
+            this.progressPercentage = data.progress_percentage || 0;
+          }
+        }
+      } catch (e) { /* silent */ }
+    },
+    async saveProgress() {
+      const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
+      if (!userEmail) return;
+      const elapsed = this.item.runtime ? Math.round(this.item.runtime * this.progressPercentage / 100) : 0;
+      const total = this.item.runtime || 0;
+      try {
+        await fetch(`/api/progress/${encodeURIComponent(userEmail)}/movie/${this.item.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ progress_percentage: this.progressPercentage, elapsed_minutes: elapsed, total_duration_minutes: total })
+        });
+        window.dispatchEvent(new CustomEvent('progress-updated'));
+      } catch (e) { /* silent */ }
+    },
+    //  ─────────────────────────────────────────────────────────────
+    fmtMin(m) {
+      const r = Math.round(m || 0);
+      if (r < 0) return '0m';
+      if (r < 60) return `${r}m`;
+      const h = Math.floor(r / 60);
+      const rm = r % 60;
+      return rm > 0 ? `${h}h ${rm}m` : `${h}h`;
+    },
     toggleFullReviews() { this.showFullReviews = !this.showFullReviews; },
     formatGenres(genres) { return genres.map(genre => `<a href="/genre/${genre.id}/movie">${genre.name}</a>`).join(', '); },
     formatProductionCompanies(companies) {
@@ -1673,4 +1757,81 @@ export default {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(255,107,107,0.2);
 }
+
+/* ── Progress tracking in modal ──────────────────────────── */
+.mpb-section {
+  width: 100%;
+  background: rgba(0,0,0,0.15);
+  border: 1px solid rgba(138,232,252,0.1);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.mpb-section-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.55);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.mpb-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.mpb-circle-wrap {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+}
+.mpb-svg { width: 100%; height: 100%; }
+.mpb-pct {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  text-align: center;
+  line-height: 1;
+}
+.mpb-pct-num { font-size: 1.8rem; font-weight: 700; color: #fff; }
+.mpb-pct-sign { font-size: 1rem; color: rgba(138,232,252,0.8); font-weight: 600; }
+.mpb-controls { flex: 1; min-width: 0; }
+.mpb-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(138,232,252,0.12);
+  outline: none;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+.mpb-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: #8AE8FC;
+  border: 2px solid rgba(10,30,38,0.9);
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(138,232,252,0.4);
+}
+.mpb-slider::-moz-range-thumb {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: #8AE8FC;
+  border: 2px solid rgba(10,30,38,0.9);
+  cursor: pointer;
+}
+.mpb-times {
+  display: flex;
+  justify-content: space-between;
+}
+.mpb-time { display: flex; flex-direction: column; gap: 1px; }
+.mpb-time-label { font-size: 1rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+.mpb-time-val { font-size: 1.3rem; color: #fff; font-weight: 600; }
+.mpb-no-dur { font-size: 1.1rem; color: rgba(255,255,255,0.3); font-style: italic; }
 </style>
