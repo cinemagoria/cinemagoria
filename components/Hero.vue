@@ -1349,7 +1349,7 @@ export default {
       
       try {
         if (this.type === 'movie') {
-          const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/movie/${this.id}`);
+          const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/movie/${this.id}?_t=${Date.now()}`);
           if (resp.ok) {
             const data = await resp.json();
             if (data.found) {
@@ -1360,7 +1360,7 @@ export default {
           }
         } else {
           // For TV show, get total tracked episodes for this show
-          const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}`);
+          const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}?_t=${Date.now()}`);
           if (resp.ok) {
             const rows = await resp.json();
             // The API returns rows[] directly (array)
@@ -1399,6 +1399,7 @@ export default {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ progress_percentage: this.progressPercentage, elapsed_minutes: elapsed, total_duration_minutes: rt })
         });
+        window.dispatchEvent(new Event('progress-updated'));
       } catch (e) { /* silent */ }
     },
     //  ─────────────────────────────────────────────────────────────

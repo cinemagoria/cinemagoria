@@ -5,5 +5,12 @@
     "poster_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1775041514/cinemagoria/posters/poster_1661556.webp",
     "backdrop_path": null,
     "trailer_key": null
+  },
+  {
+    "tmdb_id": 154385,
+    "media_type": "tv",
+    "poster_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1775244647/cinemagoria/posters/poster_noir_154385.webp",
+    "backdrop_path": null,
+    "trailer_key": null
   }
 ]

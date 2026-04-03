@@ -341,7 +341,7 @@ export default {
           fetch(`${followsUrl}/company-follows/list?user_email=${encodeURIComponent(userEmail)}`),
           fetch(`${followsUrl}/user-follows/list?user_email=${encodeURIComponent(userEmail)}`),
           fetch(`${followsUrl}/profile-by-email?user_email=${encodeURIComponent(userEmail)}`),
-          fetch(`/api/progress/${encodeURIComponent(userEmail)}`).catch(() => null)
+          fetch(`/api/progress/${encodeURIComponent(userEmail)}?_t=${Date.now()}`).catch(() => null)
         ]);
 
         if (ratingsRes.ok) {
