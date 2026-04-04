@@ -1,14 +1,6 @@
-import { createClient } from '@libsql/client'
+import { useDb } from '~/server/utils/db'
 
 export default defineEventHandler(async (event) => {
-    const config = useRuntimeConfig()
-    const dbUrl = config.rssDbUrl
-    const dbToken = config.rssDbToken
-
-    if (!dbUrl || !dbToken) {
-        throw createError({ statusCode: 500, statusMessage: 'Database configuration missing' })
-    }
-
     const userId = decodeURIComponent(event.context.params?.userId || '')
     const mediaType = event.context.params?.mediaType || ''
     const mediaId = event.context.params?.mediaId || ''
@@ -25,13 +17,13 @@ export default defineEventHandler(async (event) => {
     const percentage = Math.min(100, Math.max(0, Math.round(body.progress_percentage || 0)))
     const elapsed = Math.max(0, Math.round(body.elapsed_minutes || 0))
     const total = Math.max(0, Math.round(body.total_duration_minutes || 0))
-    
+
     // Extensions for TV Series tracking
     const tvId = body.tv_id || null;
     const seasonNumber = body.season_number || null;
     const episodeNumber = body.episode_number || null;
 
-    const db = createClient({ url: dbUrl.trim(), authToken: dbToken.trim() })
+    const db = useDb()
 
     try {
         await db.execute({

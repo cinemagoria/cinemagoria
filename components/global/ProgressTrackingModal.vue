@@ -322,9 +322,7 @@ export default {
       this.isOpen = true;
       document.body.style.overflow = 'hidden';
       
-      if (!this.groupedMovies.length && !this.groupedTvShows.length) {
-        this.fetchTrackedItems();
-      }
+      this.fetchTrackedItems();
     },
     
     closeModal() {
@@ -333,7 +331,7 @@ export default {
     },
     
     onImageLoad(itemId) {
-      this.imageLoadingStates[itemId] = true;
+      this.imageLoadingStates = { ...this.imageLoadingStates, [itemId]: true };
     },
     
     handleScroll() {
@@ -460,7 +458,7 @@ export default {
         
         const payload = { 
           progress_percentage: this.tempProgressPercentage, 
-          elapsed_minutes: 0, 
+          elapsed_minutes: durHelper ? Math.round(durHelper * this.tempProgressPercentage / 100) : 0,
           total_duration_minutes: durHelper 
         };
         

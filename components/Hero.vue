@@ -1132,13 +1132,13 @@ export default {
       if (!this.userEmail) return;
       try {
         if (this.type === 'movie') {
-          const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/movie/${this.id}`);
+          const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/movie/${this.id}?_t=${Date.now()}`);
           if (resp.ok) {
             const data = await resp.json();
             this.progressPercentage = data.found ? (data.progress_percentage || 0) : 0;
           }
         } else {
-          const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}`);
+          const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}?_t=${Date.now()}`);
           if (resp.ok) {
             const rows = await resp.json();
             const arr = Array.isArray(rows) ? rows : (rows.items || []);
@@ -1171,12 +1171,15 @@ export default {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ progress_percentage: this.progressPercentage, elapsed_minutes: elapsed, total_duration_minutes: rt })
         });
+        window.dispatchEvent(new Event('progress-updated'));
       } catch (e) { }
     },
     async saveRatingAndReview() {
       try {
-        if (this.type === 'movie' && (this.selectedRating > 0 || this.userReview.trim() !== '')) {
-          this.progressPercentage = 100;
+        if (this.type === 'movie' && this.selectedRating > 0) {
+          if (this.progressPercentage === 0 || this.progressPercentage >= 80) {
+            this.progressPercentage = 100;
+          }
         }
         if (this.selectedRating > 0) {
           await this.updateUserRatingAndReview(this.selectedRating, this.userReview);

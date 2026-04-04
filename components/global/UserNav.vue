@@ -158,7 +158,7 @@ export default {
       window.addEventListener('alias-updated', this.handleAliasUpdate);
       window.addEventListener('following-updated', this.fetchUserStats);
       window.addEventListener('avatar-updated', this.handleAvatarUpdate);
-      window.addEventListener('progress-updated', this.fetchUserStats);
+      window.addEventListener('progress-updated', this.fetchProgressCount);
     }
     this.checkAuthStatus();
     this.fetchUserStats();
@@ -179,7 +179,7 @@ export default {
       window.removeEventListener('alias-updated', this.handleAliasUpdate);
       window.removeEventListener('following-updated', this.fetchUserStats);
       window.removeEventListener('avatar-updated', this.handleAvatarUpdate);
-      window.removeEventListener('progress-updated', this.fetchUserStats);
+      window.removeEventListener('progress-updated', this.fetchProgressCount);
     }
   },
 
@@ -342,7 +342,7 @@ export default {
           fetch(`${followsUrl}/company-follows/list?user_email=${encodeURIComponent(userEmail)}`),
           fetch(`${followsUrl}/user-follows/list?user_email=${encodeURIComponent(userEmail)}`),
           fetch(`${followsUrl}/profile-by-email?user_email=${encodeURIComponent(userEmail)}`),
-          fetch(`/api/progress/${encodeURIComponent(userEmail)}`).catch(() => null)
+          fetch(`/api/progress/${encodeURIComponent(userEmail)}?_t=${Date.now()}`).catch(() => null)
         ]);
 
         if (ratingsRes.ok) {
@@ -408,6 +408,30 @@ export default {
         }
       } catch (e) {
         console.error('Failed to fetch user stats:', e);
+      }
+    },
+
+    async fetchProgressCount() {
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail) return;
+      try {
+        const resp = await fetch(`/api/progress/${encodeURIComponent(userEmail)}?_t=${Date.now()}`);
+        if (resp && resp.ok) {
+          const progData = await resp.json();
+          if (Array.isArray(progData)) {
+            const uniqueMedia = new Set();
+            for (const item of progData) {
+              if (item.media_type === 'episode') {
+                uniqueMedia.add(`tv_${item.tv_id}`);
+              } else {
+                uniqueMedia.add(`movie_${item.media_id}`);
+              }
+            }
+            this.progressCount = uniqueMedia.size;
+          }
+        }
+      } catch (e) {
+        console.error('Failed to fetch progress count:', e);
       }
     },
 

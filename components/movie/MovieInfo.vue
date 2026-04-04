@@ -558,7 +558,7 @@ export default {
       }
     },
     handleImageError(e) {
-      e.target.src = '/image_not_found_yet_es.webp';
+      e.target.src = '/placeholders/image_not_found_yet_es.webp';
       this.isPosterLoading = false;
     },
     onPosterLoaded() {
