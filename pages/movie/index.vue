@@ -79,9 +79,11 @@ const router = useRouter();
 const route = useRoute();
 
 useHead({
-  title: 'Cinemagoria - Movies',
+  title: 'Cinemagoria — Movies: Now Playing, Upcoming & Top Rated',
   meta: [
-    { property: 'og:title', content: 'Movies' },
+    { name: 'description', content: 'Explore movies on Cinemagoria — now playing, upcoming releases, top rated, and popular films. Filter by genre, year, country, and streaming availability.' },
+    { property: 'og:title', content: 'Cinemagoria — Movies: Now Playing, Upcoming & Top Rated' },
+    { property: 'og:description', content: 'Explore movies on Cinemagoria — now playing, upcoming releases, top rated, and popular films.' },
     { property: 'og:url', content: `https://cinemagoria.com${route.path}` },
   ],
 });

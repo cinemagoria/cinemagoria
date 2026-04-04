@@ -1,4 +1,13 @@
 <script setup>
+useHead({
+  title: 'Cinemagoria — Film Festivals: Curated Selections from World Festivals',
+  meta: [
+    { name: 'description', content: 'Explore curated selections from the world\'s leading film festivals on Cinemagoria — BAFICI, BIFFF, Cannes, Venice, Berlin, and more.' },
+    { property: 'og:title', content: 'Cinemagoria — Film Festivals' },
+    { property: 'og:description', content: 'Curated selections from the world\'s leading film festivals.' },
+  ],
+})
+
 const showContent = ref(false)
 
 onMounted(() => {

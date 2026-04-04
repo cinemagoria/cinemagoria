@@ -88,13 +88,13 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Cinemagoria – The moment you discover what to watch',
+      title: 'Cinemagoria — Film & TV Discovery Platform',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { key: 'description', name: 'description', content: 'Cinemagoria is a film and TV discovery platform. Browse movies, series, festival coverage, awards, and streaming availability in one place.' },
         { name: 'theme-color', content: '#03496B' },
-        { property: 'og:title', content: 'Cinemagoria – The moment you discover what to watch' },
+        { property: 'og:title', content: 'Cinemagoria — Film & TV Discovery Platform' },
         { property: 'og:description', content: 'Browse movies, series, festival coverage, awards, and streaming availability in one place.' },
         { property: 'og:type', content: 'website' },
         { property: 'og:url', content: 'https://cinemagoria.com' },

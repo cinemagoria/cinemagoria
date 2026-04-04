@@ -365,7 +365,7 @@ export default {
 
   head() {
     return {
-      title: 'N.O.I.R Archive - Cinemagoria',
+      title: 'Cinemagoria — N.O.I.R Archive',
       meta: [
         { hid: 'description', name: 'description', content: 'Historical titles curated for N.O.I.R \u2014 Cinemagoria\'s most exclusive selection of upcoming movies and TV shows.' }
       ]

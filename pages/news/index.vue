@@ -259,6 +259,15 @@ import UserNav from '@/components/global/UserNav';
 import Loader from '@/components/Loader';
 import striptags from 'striptags';
 import { SOURCES, SOURCE_URLS } from '~/utils/newsSources';
+
+useHead({
+  title: 'Cinemagoria — Latest Film & TV News',
+  meta: [
+    { name: 'description', content: 'Stay up to date with the latest film, television, and entertainment industry news. Aggregated daily briefing powered by Cinemagoria.' },
+    { property: 'og:title', content: 'Cinemagoria — Latest Film & TV News' },
+    { property: 'og:description', content: 'Your daily briefing on film, television, and the entertainment industry.' },
+  ],
+})
 import { formatDate as formatDateHelper, handleImageError as handleImageErrorHelper } from '~/utils/helpers';
 
 const config = useRuntimeConfig();

@@ -10,14 +10,20 @@ useHead({
             '@type': 'Organization',
             '@id': 'https://cinemagoria.com/#organization',
             name: 'Cinemagoria',
+            alternateName: 'Cinemagoria Film & TV Discovery',
             url: 'https://cinemagoria.com',
+            description: 'Film and TV discovery platform — browse movies, series, festival coverage, awards, and streaming availability in one place.',
+            foundingDate: '2023',
             logo: {
               '@type': 'ImageObject',
               url: 'https://cinemagoria.com/icons/icon-192x192.png',
               width: 192,
               height: 192,
             },
-            sameAs: [],
+            sameAs: [
+              'https://github.com/cinemagoria',
+              'https://es.cinemagoria.com',
+            ],
           },
           {
             '@type': 'WebSite',
@@ -26,6 +32,7 @@ useHead({
             name: 'Cinemagoria',
             description: 'Cinemagoria is a film and TV discovery platform. Browse movies, series, festival coverage, awards, and streaming availability in one place.',
             publisher: { '@id': 'https://cinemagoria.com/#organization' },
+            inLanguage: 'en',
             potentialAction: {
               '@type': 'SearchAction',
               target: {

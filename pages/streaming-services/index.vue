@@ -46,7 +46,7 @@ const sortedProviders = computed(() => {
 });
 
 useHead({
-  title: 'All Streaming Services - Cinemagoria',
+  title: 'Cinemagoria — All Streaming Services',
   meta: [
     { name: 'description', content: 'Browse all streaming services available on Cinemagoria.' }
   ]

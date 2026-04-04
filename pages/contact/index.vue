@@ -89,9 +89,10 @@ import UserNav from '@/components/global/UserNav';
 export default {
   head() {
     return {
-      title: 'Cinemagoria - Contact Support',
+      title: 'Cinemagoria — Contact Support',
       meta: [
-        { hid: 'og:title', property: 'og:title', content: 'Contact Support' },
+        { hid: 'description', name: 'description', content: 'Need help with Cinemagoria? Contact our support team for questions about your account, watchlists, streaming availability, or any platform issues.' },
+        { hid: 'og:title', property: 'og:title', content: 'Cinemagoria — Contact Support' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
       ],
     };

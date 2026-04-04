@@ -274,7 +274,7 @@ async function searchPerson(name) {
 }
 
 useHead({
-  title: 'Awards | Cinemagoria',
+  title: 'Cinemagoria — Awards: Oscars, Golden Globes, Cannes, Venice & Berlin',
   meta: [{ name: 'description', content: 'Browse all major film awards — Oscars, Golden Globes, Cannes, Venice and Berlin.' }]
 });
 </script>

@@ -50,9 +50,10 @@ import UserNav from '@/components/global/UserNav';
 export default {
   head () {
     return {
-      title: 'Cinemagoria - Usage Policies & Privacy Agreement.',
+      title: 'Cinemagoria — Usage Policies & Privacy Agreement',
       meta: [
-        { hid: 'og:title', property: 'og:title', content: 'Usage Policies & Privacy Agreement' },
+        { hid: 'description', name: 'description', content: 'Cinemagoria usage policies, terms of service, and privacy agreement. Learn how we handle your data and what our platform terms cover.' },
+        { hid: 'og:title', property: 'og:title', content: 'Cinemagoria — Usage Policies & Privacy Agreement' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
       ],
     };
