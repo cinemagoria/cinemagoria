@@ -1,14 +1,6 @@
-import { createClient } from '@libsql/client'
+import { useDb } from '~/server/utils/db'
 
 export default defineEventHandler(async (event) => {
-    const config = useRuntimeConfig()
-    const dbUrl = config.rssDbUrl
-    const dbToken = config.rssDbToken
-
-    if (!dbUrl || !dbToken) {
-        throw createError({ statusCode: 500, statusMessage: 'Database configuration missing' })
-    }
-
     const userId = decodeURIComponent(event.context.params?.userId || '')
     const mediaType = event.context.params?.mediaType || ''
     const mediaId = event.context.params?.mediaId || ''
@@ -21,7 +13,7 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 400, statusMessage: 'Invalid media_type' })
     }
 
-    const db = createClient({ url: dbUrl.trim(), authToken: dbToken.trim() })
+    const db = useDb()
 
     try {
         const result = await db.execute({
