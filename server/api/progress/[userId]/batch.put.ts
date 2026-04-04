@@ -36,13 +36,13 @@ export default defineEventHandler(async (event) => {
                                     updated_at = datetime('now')`,
                 args: [
                     userId,
-                    parseInt(ep.media_id),
+                    Number(ep.media_id),
                     percentage,
                     elapsed,
                     dur,
-                    parseInt(ep.tv_id),
-                    parseInt(ep.season_number),
-                    parseInt(ep.episode_number)
+                    Number(ep.tv_id),
+                    Number(ep.season_number),
+                    Number(ep.episode_number)
                 ]
             }
         })
