@@ -10,14 +10,20 @@ useHead({
             '@type': 'Organization',
             '@id': 'https://cinemagoria.com/#organization',
             name: 'Cinemagoria',
+            alternateName: 'Cinemagoria — Plataforma de Descubrimiento de Cine y TV',
             url: 'https://cinemagoria.com',
+            description: 'Plataforma de descubrimiento de cine y TV — explora películas, series, festivales, premios y disponibilidad en streaming.',
+            foundingDate: '2023',
             logo: {
               '@type': 'ImageObject',
               url: 'https://cinemagoria.com/icons/icon-192x192.png',
               width: 192,
               height: 192,
             },
-            sameAs: [],
+            sameAs: [
+              'https://github.com/cinemagoria',
+              'https://cinemagoria.com',
+            ],
           },
           {
             '@type': 'WebSite',

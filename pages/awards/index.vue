@@ -384,7 +384,7 @@ const translateCategory = (category) => {
 };
 
 useHead({
-  title: 'Premios | Cinemagoria',
+  title: 'Cinemagoria — Premios: Oscars, Globos de Oro, Cannes, Venecia y Berlín',
   meta: [{ name: 'description', content: 'Explora todos los grandes premios del cine: Oscars, Globos de Oro, Cannes, Venecia y Berlín.' }]
 });
 </script>

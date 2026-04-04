@@ -59,12 +59,12 @@ import MarkdownIt from 'markdown-it';
 export default {
   head() {
     return {
-      title: 'Cinemagoria - Changelog',
+      title: 'Cinemagoria — Changelog: Notas de Versión y Actualizaciones',
       meta: [
-        { hid: 'og:title', property: 'og:title', content: 'Changelog' },
+        { hid: 'description', name: 'description', content: 'Changelog de Cinemagoria — últimas versiones, nuevas funciones, correcciones y mejoras de la plataforma.' },
+        { hid: 'og:title', property: 'og:title', content: 'Cinemagoria — Changelog' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
       ],
-
     };
   },
   components: {

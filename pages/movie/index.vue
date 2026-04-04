@@ -78,9 +78,11 @@ const router = useRouter();
 const route = useRoute();
 
 useHead({
-  title: 'Cinemagoria - Movies',
+  title: 'Cinemagoria — Películas: En Cartelera, Próximos Estrenos y Mejor Valoradas',
   meta: [
-    { property: 'og:title', content: 'Movies' },
+    { name: 'description', content: 'Explora películas en Cinemagoria — en cartelera, próximos estrenos, mejor valoradas y populares. Filtra por género, año, país y disponibilidad en streaming.' },
+    { property: 'og:title', content: 'Cinemagoria — Películas: En Cartelera, Próximos Estrenos y Mejor Valoradas' },
+    { property: 'og:description', content: 'Explora películas en Cinemagoria — en cartelera, próximos estrenos, mejor valoradas y populares.' },
     { property: 'og:url', content: `https://es.cinemagoria.com${route.path}` },
   ],
 });

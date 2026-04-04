@@ -46,7 +46,7 @@ const sortedCompanies = computed(() => {
 });
 
 useHead({
-  title: 'Todas las Productoras - Cinemagoria',
+  title: 'Cinemagoria — Todas las Productoras',
   meta: [
     { name: 'description', content: 'Explora todas las productoras disponibles en Cinemagoria.' }
   ]

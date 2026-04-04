@@ -15,9 +15,13 @@ export default defineEventHandler(async (event) => {
     { loc: '/advancedsearch', priority: '0.7', changefreq: 'weekly' },
     { loc: '/awards', priority: '0.7', changefreq: 'weekly' },
     { loc: '/news', priority: '0.8', changefreq: 'daily' },
+    { loc: '/noir', priority: '0.8', changefreq: 'weekly' },
+    { loc: '/festival', priority: '0.8', changefreq: 'weekly' },
     { loc: '/streaming-services', priority: '0.7', changefreq: 'weekly' },
     { loc: '/production-companies', priority: '0.6', changefreq: 'monthly' },
+    { loc: '/contact', priority: '0.3', changefreq: 'monthly' },
     { loc: '/usage-policies', priority: '0.2', changefreq: 'monthly' },
+    { loc: '/changelog', priority: '0.3', changefreq: 'monthly' },
   ]
 
   const movieGenres = [28, 12, 16, 35, 80, 99, 18, 10751, 14, 36, 27, 10402, 9648, 10749, 878, 10770, 53, 10752, 37]

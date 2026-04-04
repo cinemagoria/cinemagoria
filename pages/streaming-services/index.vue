@@ -46,7 +46,7 @@ const sortedProviders = computed(() => {
 });
 
 useHead({
-  title: 'Plataformas de Streaming - Cinemagoria',
+  title: 'Cinemagoria — Plataformas de Streaming',
   meta: [
     { name: 'description', content: 'Descubre las principales plataformas de streaming disponibles.' }
   ]

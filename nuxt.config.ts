@@ -95,13 +95,13 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Cinemagoria',
+      title: 'Cinemagoria — Descubre Películas y Series',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { key: 'description', name: 'description', content: 'Cinemagoria - El momento en el que descubres qué ver. Explora películas, series, festivales, premios y disponibilidad en streaming.' },
         { name: 'theme-color', content: '#03496B' },
-        { property: 'og:title', content: 'Cinemagoria – El momento en el que descubres qué ver' },
+        { property: 'og:title', content: 'Cinemagoria — Descubre Películas y Series' },
         { property: 'og:description', content: 'Explora películas, series, festivales, premios y disponibilidad en streaming en un solo lugar.' },
         { property: 'og:type', content: 'website' },
         { property: 'og:url', content: 'https://es.cinemagoria.com' },

@@ -366,7 +366,7 @@ export default {
 
   head() {
     return {
-      title: 'Histórico de N.O.I.R - Cinemagoria',
+      title: 'Cinemagoria — Histórico de N.O.I.R',
       meta: [
         { hid: 'description', name: 'description', content: 'T\u00EDtulos hist\u00F3ricos curados para N.O.I.R \u2014 la selecci\u00F3n m\u00E1s exclusiva de Cinemagoria.' }
       ]

@@ -1,4 +1,13 @@
 <script setup>
+useHead({
+  title: 'Cinemagoria — Festivales de Cine: Selecciones Curadas de Festivales del Mundo',
+  meta: [
+    { name: 'description', content: 'Explora selecciones curadas de los festivales de cine más importantes del mundo en Cinemagoria — BAFICI, BIFFF, Cannes, Venecia, Berlín y más.' },
+    { property: 'og:title', content: 'Cinemagoria — Festivales de Cine' },
+    { property: 'og:description', content: 'Selecciones curadas de los festivales de cine más importantes del mundo.' },
+  ],
+})
+
 const showContent = ref(false)
 
 onMounted(() => {
