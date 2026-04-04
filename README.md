@@ -1,6 +1,6 @@
 # Cinemagoria
 
-> **Current Version:** v4.8.0 — Production Ready
+> **Current Version:** v4.9.2 — Production Ready
 > **Release Date:** March 25, 2026
 > **Status:** A New Era of Social Features, Awards, and Performance
 > **Repository:** [github.com/cinemagoria/cinemagoria](https://github.com/cinemagoria/cinemagoria)
