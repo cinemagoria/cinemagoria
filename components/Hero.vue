@@ -1150,8 +1150,10 @@ export default {
     
     async saveRatingAndReview() {
       try {
-        if (this.type === 'movie' && (this.selectedRating > 0 || this.userReview.trim() !== '')) {
-          this.progressPercentage = 100;
+        if (this.type === 'movie' && this.selectedRating > 0) {
+          if (this.progressPercentage === 0 || this.progressPercentage >= 80) {
+            this.progressPercentage = 100;
+          }
         }
         if (this.selectedRating > 0) {
           await this.updateUserRatingAndReview(this.selectedRating, this.userReview);

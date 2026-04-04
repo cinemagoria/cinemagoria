@@ -95,6 +95,10 @@ export default {
     userEmail: {
       type: String,
       default: '',
+    },
+    initialProgress: {
+      type: Number,
+      default: -1,
     }
   },
   
@@ -118,14 +122,23 @@ export default {
   },
 
   mounted() {
-    if (this.userEmail) {
+    if (this.initialProgress >= 0) {
+      this.localProgress = this.initialProgress;
+      this.progressPercentage = this.initialProgress;
+    } else if (this.userEmail) {
       this.loadProgress();
     }
   },
-  
+
   watch: {
     userEmail(newVal) {
-      if (newVal) this.loadProgress();
+      if (newVal && this.initialProgress < 0) this.loadProgress();
+    },
+    initialProgress(newVal) {
+      if (newVal >= 0) {
+        this.localProgress = newVal;
+        this.progressPercentage = newVal;
+      }
     },
     showModal(newVal) {
       if (newVal) {
