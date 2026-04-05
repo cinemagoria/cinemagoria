@@ -24,7 +24,7 @@
 
         <div v-if="activeTab === 'login'" class="form-container">
           <p class="modal-description">Please sign in to access more features</p>
-          <p class="modal-subtitle">No credit or debit card required. It's completely free.</p>
+          <p class="modal-subtitle">No credit or debit card required.</p>
           
           <form @submit.prevent="handleLogin">
             <GoogleLogin 
@@ -79,7 +79,7 @@
 
         <div v-if="activeTab === 'register'" class="form-container">
           <p class="modal-description">Create an account to access more features</p>
-          <p class="modal-subtitle">No credit or debit card required. It's completely free.</p>
+          <p class="modal-subtitle">No credit or debit card required.</p>
           
           <form @submit.prevent="handleRegister">
             <GoogleLogin 
@@ -463,7 +463,7 @@ export default {
 
 .modal-description {
   text-align: center;
-  color: #a8d8e4;
+  color: #fff;
   font-size: 14px;
   margin-bottom: 8px;
 }
