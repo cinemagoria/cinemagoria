@@ -85,23 +85,23 @@
 </template>
 
 <script setup lang="ts">
-import { marked } from 'marked'
+import MarkdownIt from 'markdown-it'
+
+const md = new MarkdownIt({ breaks: true })
 
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
-// Fetch article from API
 const { data, pending, error } = await useFetch(`/api/article/${slug.value}`, {
   key: `article-${slug.value}`,
 })
 
 const article = computed(() => (data.value as any)?.article || null)
 
-// Render markdown body
 const renderedBody = computed(() => {
   if (!article.value?.body_en) return ''
   try {
-    return marked(article.value.body_en, { breaks: true })
+    return md.render(article.value.body_en)
   } catch {
     return article.value.body_en
   }
