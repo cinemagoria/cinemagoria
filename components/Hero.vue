@@ -1382,8 +1382,9 @@ export default {
             const totalSeasons = this.heroItem?.number_of_seasons || 0;
             const seasonDetails = Object.values(seasonMap).sort((a, b) => a.season_number - b.season_number);
             for (const s of seasonDetails) {
-               s.total = null; // we don't know the exact count from progress data
-               s.allComplete = s.complete === s.tracked && s.tracked > 0;
+               const seasonObj = (this.heroItem?.seasons || []).find(x => x.season_number === s.season_number);
+               s.total = seasonObj ? seasonObj.episode_count : null;
+               s.allComplete = s.complete === s.total && s.total > 0;
             }
             this.trackedSeasonData = seasonDetails;
           }
