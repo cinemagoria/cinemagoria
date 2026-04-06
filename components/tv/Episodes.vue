@@ -21,20 +21,30 @@
 
       <button
         v-if="userEmail && activeEpisodes && activeEpisodes.length"
-        :class="$style.markSeasonBtn"
+        :class="[$style.markSeasonBtn, { [$style.unmarkBtn]: isSeasonFullyWatched }]"
         :disabled="markingSeasonBusy"
         @click="markSeasonAsWatched">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        {{ markingSeasonBusy ? 'Guardando...' : 'Marcar temporada como vista' }}
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline v-if="!isSeasonFullyWatched" points="20 6 9 17 4 12"/>
+          <template v-else>
+             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </template>
+        </svg>
+        {{ markingSeasonBusy ? 'Guardando...' : (isSeasonFullyWatched ? 'Desmarcar temporada' : 'Marcar temporada como vista') }}
       </button>
 
       <button
         v-if="userEmail && numberOfSeasons > 1"
-        :class="$style.markSeriesBtn"
+        :class="[$style.markSeriesBtn, { [$style.unmarkBtn]: isSeriesFullyWatched }]"
         :disabled="markingSeriesBusy"
         @click="markSeriesAsWatched">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        {{ markingSeriesBusy ? 'Guardando...' : 'Marcar serie completa' }}
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline v-if="!isSeriesFullyWatched" points="20 6 9 17 4 12"/>
+          <template v-else>
+             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </template>
+        </svg>
+        {{ markingSeriesBusy ? 'Guardando...' : (isSeriesFullyWatched ? 'Desmarcar serie completa' : 'Marcar serie completa') }}
       </button>
     </div>
 
@@ -66,6 +76,10 @@ export default {
       type: Number,
       required: true,
     },
+    totalEpisodes: {
+      type: Number,
+      default: 0,
+    },
   },
 
   data () {
@@ -80,6 +94,17 @@ export default {
   },
 
   computed: {
+    isSeasonFullyWatched() {
+      if (!this.activeEpisodes || this.activeEpisodes.length === 0) return false;
+      return this.activeEpisodes.every(ep => this.episodeProgressMap[ep.id] >= 100);
+    },
+
+    isSeriesFullyWatched() {
+      if (!this.totalEpisodes) return false;
+      const watchedCount = Object.values(this.episodeProgressMap).filter(p => p >= 100).length;
+      return watchedCount > 0 && watchedCount >= this.totalEpisodes;
+    },
+
     episodeCount () {
       return `${this.activeEpisodes.length} ${this.activeEpisodes.length > 1 ? 'Episodios' : 'Episodio'}`;
     },
@@ -149,6 +174,8 @@ export default {
     async markSeasonAsWatched() {
       if (!this.userEmail || !this.activeEpisodes?.length) return;
       this.markingSeasonBusy = true;
+      const isUnmarking = this.isSeasonFullyWatched;
+      const targetPct = isUnmarking ? 0 : 100;
       try {
         const tvId = this.$route.params.id;
         const episodes = this.activeEpisodes.map(ep => ({
@@ -162,12 +189,12 @@ export default {
         await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/batch`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ episodes, percentage: 100 }),
+          body: JSON.stringify({ episodes, percentage: targetPct }),
         });
 
         const updated = {};
         for (const ep of this.activeEpisodes) {
-          updated[ep.id] = 100;
+          updated[ep.id] = targetPct;
         }
         this.episodeProgressMap = { ...this.episodeProgressMap, ...updated };
         window.dispatchEvent(new CustomEvent('progress-updated'));
@@ -208,15 +235,18 @@ export default {
 
         if (allEpisodes.length === 0) return;
 
+        const isUnmarking = this.isSeriesFullyWatched;
+        const targetPct = isUnmarking ? 0 : 100;
+
         await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/batch`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ episodes: allEpisodes, percentage: 100 }),
+          body: JSON.stringify({ episodes: allEpisodes, percentage: targetPct }),
         });
 
         const updated = {};
         for (const ep of allEpisodes) {
-          updated[ep.media_id] = 100;
+          updated[ep.media_id] = targetPct;
         }
         this.episodeProgressMap = { ...this.episodeProgressMap, ...updated };
         window.dispatchEvent(new CustomEvent('progress-updated'));
@@ -301,6 +331,17 @@ export default {
   &:hover:not(:disabled) {
     background: rgba(80, 200, 232, 0.18);
     border-color: rgba(80, 200, 232, 0.45);
+  }
+}
+
+.unmarkBtn {
+  color: #EB5757;
+  border-color: rgba(235, 87, 87, 0.25);
+  background: rgba(235, 87, 87, 0.08);
+
+  &:hover:not(:disabled) {
+    background: rgba(235, 87, 87, 0.18) !important;
+    border-color: rgba(235, 87, 87, 0.45) !important;
   }
 }
 </style>

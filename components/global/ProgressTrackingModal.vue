@@ -53,13 +53,13 @@
                     @error="onImageLoad(item.media_id)"
                     :class="{ 'is-loaded': imageLoadingStates[item.media_id] }"
                   />
-                  <div class="poster-overlay">
-                    <button class="edit-btn" @click="openTrackingModal(item)" title="Editar Progreso" aria-label="Editar Progreso">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+                  <div class="edit-overlay-btn">
+                    <button class="edit-btn-fixed" @click="openTrackingModal(item)" title="Editar Progreso" aria-label="Editar Progreso">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
                     </button>
                   </div>
                   <div class="item-info">
-                    <span class="item-title">{{ item.details ? item.details.title : '' }}</span>
+                    <span class="item-title item-title-link" @click="navigateToMovie(item.media_id)">{{ item.details ? item.details.title : '' }}</span>
                     <span class="item-rating">
                       <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                       {{ item.progress_percentage }}%
@@ -81,7 +81,7 @@
 
               <!-- NIVEL 1: LISTA DE SERIES -->
               <div v-else-if="!activeTvShow" class="rated-items-grid">
-                <div v-for="show in groupedTvShows" :key="`tv-${show.id}`" class="rated-item-card tv-card" @click="openTvShow(show)">
+                <div v-for="show in groupedTvShows" :key="`tv-${show.id}`" class="rated-item-card tv-card">
                   <div v-if="!imageLoadingStates['tv-'+show.id]" class="poster-skeleton"></div>
                   <img 
                     :src="show.details && show.details.poster_path ? `https://image.tmdb.org/t/p/w200${show.details.poster_path}` : '/placeholders/image_not_found_yet_es.webp'" 
@@ -91,8 +91,13 @@
                     @error="onImageLoad('tv-'+show.id)"
                     :class="{ 'is-loaded': imageLoadingStates['tv-'+show.id] }"
                   />
+                  <div class="edit-overlay-btn">
+                    <button class="edit-btn-fixed" @click.stop="openTvShow(show)" title="Ver Episodios" aria-label="Ver Episodios">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+                    </button>
+                  </div>
                   <div class="item-info">
-                    <span class="item-title">{{ show.details ? show.details.name : '' }}</span>
+                    <span class="item-title item-title-link" @click.stop="navigateToTvShow(show.id)">{{ show.details ? show.details.name : '' }}</span>
                     <span class="item-rating">
                       <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                       {{ show.trackedCount }} {{ show.trackedCount === 1 ? 'episodio' : 'episodios' }} registrados
@@ -106,7 +111,7 @@
                 <div class="breadcrumb-header">
                   <button class="back-btn" @click="activeTvShow = null">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-                    Volver a Series
+                    <span class="back-text">Volver a Series</span>
                   </button>
                   <h3 class="active-title" @click="navigateToTvShow(activeTvShow.id)" title="Ir a la página de la serie">{{ activeTvShow.details?.name }}</h3>
                 </div>
@@ -131,20 +136,20 @@
                     <div v-for="ep in season.episodes" :key="`ep-${ep.media_id}`" class="rated-item-card episode-card">
                       <div v-if="!imageLoadingStates[ep.media_id]" class="poster-skeleton"></div>
                       <img 
-                        :src="ep.details && ep.details.still_path ? `https://image.tmdb.org/t/p/w300${ep.details.still_path}` : '/placeholders/image_not_found_yet_es.webp'" 
+                        :src="ep.details && ep.details.still_path ? `https://image.tmdb.org/t/p/w300${ep.details.still_path}` : '/placeholders/image_not_found_yet_horizontal_es.webp'" 
                         :alt="ep.details ? ep.details.name : 'Episodio'" 
                         class="poster-image still-image"
                         @load="onImageLoad(ep.media_id)"
                         @error="onImageLoad(ep.media_id)"
-                        :class="{ 'is-loaded': imageLoadingStates[ep.media_id] }"
+                        :class="{ 'is-loaded': imageLoadingStates[ep.media_id], 'is-placeholder-img': !(ep.details && ep.details.still_path) }"
                       />
-                      <div class="poster-overlay">
-                        <button class="edit-btn" @click="openTrackingModal(ep)" title="Editar Progreso" aria-label="Editar Progreso">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
+                      <div class="edit-overlay-btn">
+                        <button class="edit-btn-fixed" @click="openTrackingModal(ep)" title="Editar Progreso" aria-label="Editar Progreso">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
                         </button>
                       </div>
                       <div class="item-info">
-                        <span class="item-title">{{ ep.details ? ep.details.name : '' }}</span>
+                        <span class="item-title item-title-link" @click.stop="navigateToTvShow(activeTvShow.id)">{{ ep.details ? ep.details.name : '' }}</span>
                         <span class="item-subtitle">T{{ ep.season_number }} E{{ ep.episode_number }}</span>
                         <span class="item-rating">
                           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -167,12 +172,12 @@
         <div class="modal-header sub-modal-header">
           <h3 v-if="currentTrackedItem?.media_type === 'episode'">
              Progreso:
-             <span class="highlight" v-if="activeTvShow">{{ activeTvShow.details?.name }}</span>
+             <span class="highlight highlight-link" v-if="activeTvShow" @click="navigateToTvShow(activeTvShow.id)">{{ activeTvShow.details?.name }}</span>
              <span class="highlight" v-else>Episodios</span>
              <span style="opacity: 0.7; font-size: 0.85em; font-weight: 400; margin-left: 4px;"> - T{{ currentTrackedItem.season_number }} E{{ currentTrackedItem.episode_number }}</span>
           </h3>
           <h3 v-else>
-             Progreso: <span class="highlight">{{ currentTrackedItem?.details?.title || currentTrackedItem?.details?.name }}</span>
+             Progreso: <span class="highlight highlight-link" @click="navigateToMovie(currentTrackedItem?.media_id)">{{ currentTrackedItem?.details?.title || currentTrackedItem?.details?.name }}</span>
           </h3>
           <button class="close-btn" style="font-size: 2.5rem; width: 30px; height: 30px; display:flex; align-items:flex-start; margin-top:-5px;" @click="closeTrackingModal">×</button>
         </div>
@@ -307,6 +312,12 @@ export default {
       if (!id) return;
       this.closeModal();
       this.$router.push(`/tv/${id}`);
+    },
+
+    navigateToMovie(id) {
+      if (!id) return;
+      this.closeModal();
+      this.$router.push(`/movie/${id}`);
     },
 
     toggleSeason(number) {
@@ -762,63 +773,42 @@ export default {
   opacity: 1;
 }
 
-.poster-overlay {
+.poster-image.is-placeholder-img {
+  padding: 18px;
+  object-fit: contain;
+}
+
+/* ── Always-visible edit button (top-right corner) ──── */
+.edit-overlay-btn {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  top: 6px;
+  right: 6px;
+  z-index: 3;
+}
+
+.edit-btn-fixed {
   display: flex;
-  justify-content: center;
   align-items: center;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  z-index: 2;
-  border-radius: 12px;
-}
-
-@media (max-width: 768px) {
-  .poster-overlay {
-    opacity: 1;
-    background: transparent;
-  }
-  .edit-btn {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    background-color: rgba(0, 0, 0, 0.6) !important;
-    border: 1px solid rgba(255,255,255,0.2) !important;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-  }
-}
-
-.rated-item-card:hover .poster-overlay {
-  opacity: 1;
-}
-
-.edit-btn {
-  background-color: #8ae8fc;
-  color: #000;
-  border: none;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: #fff;
+  border: 1px solid rgba(138, 232, 252, 0.3);
   border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
   cursor: pointer;
-  transform: scale(0.9);
-  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
-.rated-item-card:hover .edit-btn {
-  transform: scale(1);
-}
-
-.edit-btn:hover {
-  background-color: #ffffff;
+.edit-btn-fixed:hover {
+  background-color: rgba(13, 18, 24, 0.95);
+  border-color: #8AE8FC;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 
 .item-info {
@@ -832,6 +822,15 @@ export default {
   flex-direction: column;
   z-index: 2;
   pointer-events: none;
+}
+
+.item-title-link {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.item-title-link:active {
+  text-decoration: underline;
 }
 
 .item-title {
@@ -1078,6 +1077,17 @@ export default {
   color: #8BE9FD;
 }
 
+.highlight-link {
+  cursor: pointer;
+  transition: text-decoration 0.2s ease;
+}
+
+.highlight-link:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
 .rating-content {
   padding: 20px 28px 24px;
   display: flex;
@@ -1251,8 +1261,13 @@ export default {
 }
 
 @media (max-width: 600px) {
+  .modal-overlay {
+    padding: 10px;
+  }
+
   .modal-content {
-    max-height: 95vh;
+    max-height: 80vh;
+    max-height: 80dvh;
     border-radius: 12px;
   }
 
@@ -1272,14 +1287,24 @@ export default {
   }
 
   .breadcrumb-header {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: wrap;
+    align-items: center;
     gap: 8px;
+  }
+
+  .back-btn {
+    padding: 8px;
+  }
+
+  .back-btn .back-text {
+    display: none;
   }
 
   .active-title {
     font-size: 1.2rem;
+    white-space: normal;
+    flex: 1 1 auto;
+    text-align: center;
   }
 
   .season-title-info {

@@ -1153,8 +1153,9 @@ export default {
             }
             const seasonDetails = Object.values(seasonMap).sort((a, b) => a.season_number - b.season_number);
             for (const s of seasonDetails) {
-              s.total = null;
-              s.allComplete = s.complete === s.tracked && s.tracked > 0;
+               const seasonObj = (this.heroItem?.seasons || []).find(x => x.season_number === s.season_number);
+               s.total = seasonObj ? seasonObj.episode_count : null;
+               s.allComplete = s.complete === s.total && s.total > 0;
             }
             this.trackedSeasonData = seasonDetails;
           }

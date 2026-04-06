@@ -35,7 +35,7 @@
       </template>
 
       <template v-if="activeMenu === 'episodios' && showEpisodes">
-        <Episodes :number-of-seasons="item.number_of_seasons" />
+        <Episodes :number-of-seasons="item.number_of_seasons" :total-episodes="item.number_of_episodes" />
       </template>
 
       <template v-if="activeMenu === 'videos' && showVideos">
