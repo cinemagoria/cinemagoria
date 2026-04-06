@@ -100,31 +100,18 @@ export default {
       manifesto: [
         {
           numeral: 'I',
-          title: 'Nada est\u00e1 listo',
+          title: 'Preliminal',
           lines: [
-            'El cine comercial vive del impacto inmediato.',
-            'N.O.I.R. se construye desde la anticipaci\u00f3n.',
-            'Reivindicamos lo latente y lo independiente.',
-            'Creemos que la obra en su estado m\u00e1s puro es la que a\u00fan no ha sido asimilada.',
-            'Lo que est\u00e1 \u201clisto\u201d ya pertenece al pasado.',
+            'N.O.I.R. habita en lo que no se ha definido, se sitúa antes de que ocurra.',
+            'Nos interesa el cine en su estado previo a la asimilación.'
           ]
         },
         {
           numeral: 'II',
           title: 'Criterio de selecci\u00f3n',
           lines: [
-            'No acumulamos t\u00edtulos: identificamos se\u00f1ales.',
-            'Nos movemos en ese umbral previo. Si un t\u00edtulo no propone algo desde su influencia cultural o trascendencia, no forma parte de esta selecci\u00f3n.',
-            'Buscamos lo original, lo inc\u00f3modo y lo genuino. Lo que queda en el imaginario.'
-          ]
-        },
-        {
-          numeral: 'III',
-          title: 'En constante movimiento',
-          lines: [
-            'La selecci\u00f3n est\u00e1 en constante evoluci\u00f3n.',
-            'Los t\u00edtulos ingresan, rotan y se retiran.',
-            'Nada se pierde: lo que deja N.O.I.R. pasa a integrar su hist\u00f3rico.'
+            'No hacemos un catálogo, reconocemos señales. Solo permanece lo que irrumpe y trasciende.',
+            'La selección nunca es fija, evoluciona, se desplaza. Nada desaparece, todo se transforma en histórico.'
           ]
         }
       ]

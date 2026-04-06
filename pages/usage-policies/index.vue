@@ -8,38 +8,150 @@
       <br>
       <div>
         <h2 class="title-secondary custom-center" style="font-size: 12px; position:relative; bottom:15px;"><strong>Vigencia desde:</strong> 27 de marzo de 2024</h2>
+
         <h2 class="text-center custom-center"><strong>1. INTRODUCCIÓN</strong></h2>
-        <h2 class="text-center">ESTA PLATAFORMA TÉCNICA DEMOSTRATIVA, PROPORCIONADA SIN NINGÚN TIPO DE GARANTÍA, ESTÁ DESTINADA ÚNICAMENTE AL USO PERSONAL EN LÍNEA, CON FINES NO COMERCIALES Y SIN ÁNIMO DE LUCRO. LEA COMPLETAMENTE ESTE ACUERDO ANTES DE UTILIZAR LA PLATAFORMA. AL ACCEDER O UTILIZAR ESTA PLATAFORMA —INCLUIDOS SU DOMINIO, CONTENIDO O CUALQUIER INTERACCIÓN (COMO HACER CLIC EN ENLACES)— USTED RECONOCE Y DECLARA QUE ACEPTA ESTE ACUERDO DE USUARIO Y QUE TIENE 18 AÑOS DE EDAD O MÁS. SU ACCESO Y USO IMPLICAN LA ACEPTACIÓN PLENA Y SIN MODIFICACIONES DE TODOS LOS TÉRMINOS Y CONDICIONES AQUÍ ESTABLECIDOS, LOS CUALES ENTRAN EN VIGOR DE INMEDIATO.</h2>
-        <h2 class="text-center">Si no está de acuerdo con estos términos, simplemente absténgase de utilizar la plataforma y cierre todas sus ventanas. No podrá acceder ni utilizar esta plataforma si usted (o su tutor legal) no puede celebrar un contrato vinculante, o en cualquier jurisdicción donde este acuerdo no sea exigible. Al permitir el acceso a la plataforma desde su dispositivo o red, usted manifiesta su conformidad con las presentes Políticas de Uso.</h2>
-        <h2 class="text-center">El usuario se compromete a utilizar la plataforma únicamente conforme a las leyes aplicables y a los derechos aquí establecidos. No está permitido: -INTENTAR VULNERAR O INTERFERIR CON LAS MEDIDAS DE SEGURIDAD DE LA PLATAFORMA. -USARLA DE FORMA QUE PUEDA DAÑARLA O AFECTAR SU RENDIMIENTO. -DESENSAMBLAR, DESCOMPILAR O REALIZAR INGENIERÍA INVERSA SOBRE NINGUNA PARTE DE LA MISMA.</h2>
+
+        <h2 class="text-center">
+          ESTA PLATAFORMA TÉCNICA DEMOSTRATIVA SE PROPORCIONA SIN GARANTÍAS DE NINGÚN TIPO Y ESTÁ DESTINADA EXCLUSIVAMENTE A USO PERSONAL EN LÍNEA, CON FINES NO COMERCIALES Y SIN ÁNIMO DE LUCRO. LEA DETENIDAMENTE ESTE ACUERDO ANTES DE UTILIZAR LA PLATAFORMA. AL ACCEDER O UTILIZAR ESTE SITIO —INCLUYENDO SU DOMINIO, CONTENIDO O CUALQUIER INTERACCIÓN— USTED DECLARA QUE ACEPTA ESTE ACUERDO DE USUARIO Y QUE TIENE 18 AÑOS DE EDAD O MÁS. EL USO DE LA PLATAFORMA IMPLICA LA ACEPTACIÓN PLENA Y SIN RESERVAS DE LOS PRESENTES TÉRMINOS Y CONDICIONES, QUE ENTRAN EN VIGOR DE FORMA INMEDIATA.
+        </h2>
+
+        <h2 class="text-center">
+          El usuario se compromete a utilizar la plataforma conforme a la legislación aplicable y a los términos aquí establecidos. Queda prohibido: intentar vulnerar o interferir con los sistemas de seguridad; utilizar la plataforma de forma que afecte su funcionamiento o rendimiento; desensamblar, descompilar o realizar ingeniería inversa sobre cualquier componente de la misma.
+        </h2>
+
+        <h2 class="text-center">
+          Si no está de acuerdo con estos términos, deberá abstenerse de utilizar la plataforma y cerrar todas sus ventanas.
+        </h2>
+
         <h2 class="text-center custom-center"><strong>2. EXENCIÓN DE RESPONSABILIDAD SOBRE EL USO</strong></h2>
-        <h2 class="text-center">Cinemagoria recopila y presenta información de entretenimiento disponible públicamente para ofrecer resultados de búsqueda, recomendaciones y metadatos sobre películas y series. Si bien se procura garantizar la exactitud y relevancia de los datos, ocasionalmente pueden aparecer errores, información incompleta o descripciones de contenido que incluyan contenido maduro.</h2>
 
-        <h2 class="text-center">El uso e interpretación de cualquier resultado, metadato o información de terceros es responsabilidad exclusiva del usuario. <strong>EN NINGÚN CASO Cinemagoria, SUS COLABORADORES O AFILIADOS SERÁN RESPONSABLES DE DAÑOS INDIRECTOS, INCIDENTALES, ESPECIALES, CONSECUENCIALES O PUNITIVOS QUE SURJAN DEL USO DE LA PLATAFORMA O DE CUALQUIER DATO PROCESADO A TRAVÉS DE ELLA.</strong></h2>
+        <h2 class="text-center">
+          Cinemagoria recopila y presenta información de entretenimiento disponible públicamente con el objetivo de ofrecer resultados de búsqueda, recomendaciones y metadatos sobre películas y series. Aunque se procura mantener la exactitud y relevancia de los datos, pueden existir errores, omisiones o referencias a contenido sensible o para adultos.
+        </h2>
+
+        <h2 class="text-center">
+          El uso e interpretación de cualquier resultado, metadato o información de terceros es responsabilidad exclusiva del usuario. <strong>EN NINGÚN CASO Cinemagoria, SUS COLABORADORES O AFILIADOS SERÁN RESPONSABLES POR DAÑOS INDIRECTOS, INCIDENTALES, ESPECIALES, CONSECUENCIALES O PUNITIVOS DERIVADOS DEL USO DE LA PLATAFORMA O DE LOS DATOS PROCESADOS A TRAVÉS DE ELLA.</strong>
+        </h2>
+
         <h2 class="text-center custom-center"><strong>3. ENLACES EXTERNOS Y CONTENIDO DE TERCEROS</strong></h2>
-        <h2 class="text-center">Algunas secciones de esta plataforma pueden incluir referencias externas generados automáticamente hacia dominios o aplicaciones de terceros donde podría encontrarse contenido audiovisual o metadatos relacionados. Dichos enlaces se generan de forma programática mediante APIs de código abierto o protocolos estándar, basados en identificadores públicos (por ejemplo, identificadores de IMDb), y se ofrecen <strong>exclusivamente con fines informativos y de indexación</strong>.</h2>
-        <h2 class="text-center">Cinemagoria no aloja, almacena, transmite ni reproduce contenidos audiovisuales. La plataforma funciona únicamente como un <strong>indexador sin fines de lucro de información de acceso público</strong>. Las URL externas o los enlaces de protocolo (como aquellos que pueden abrir aplicaciones de medios externas) se muestran automáticamente como parte de los metadatos obtenidos de fuentes públicas, sin selección ni intervención manual.</h2>
-        <h2 class="text-center">El acceso a cualquier dominio externo, servicio de streaming o plataforma de medios de terceros a través de enlaces mostrados en Cinemagoria es completamente opcional y queda bajo la exclusiva responsabilidad del usuario. Cinemagoria no tiene control técnico ni editorial sobre la legalidad, el contenido o el funcionamiento de esos destinos y <strong>NO PROMUEVE, FOMENTA NI RESPALDA NINGUNA FORMA DE INFRACCIÓN DE DERECHOS DE AUTOR NI DE DISTRIBUCIÓN NO AUTORIZADA DE contenidos PROTEGIDAS</strong>.</h2>
-        <h2 class="text-center">Cualquier visualización, transmisión o descarga de contenido que ocurra tras seguir un enlace externo se rige exclusivamente por los términos de servicio, políticas de privacidad y leyes aplicables del sitio o servicio correspondiente. Cinemagoria y sus colaboradores no asumen responsabilidad alguna por la naturaleza, exactitud o legalidad del contenido de terceros ni por las consecuencias derivadas del acceso del usuario a dichos sitios.</h2>
-        <h2 class="text-center">Estas referencias externas se incluyen <strong>de buena fe</strong> con el único propósito de enriquecer la experiencia del usuario, conectándolo con fuentes legítimas de metadatos e información contextual. La intención de la plataforma es <strong>facilitar el descubrimiento, no la distribución</strong>.</h2>
-        <h2 class="text-center custom-center"><strong>4. POLÍTICA DE PRIVACIDAD</strong></h2>
-        <h2 class="text-center">Cinemagoria no vende ni comparte información personal con fines comerciales. Los datos que el usuario proporcione de manera voluntaria (por ejemplo, durante el registro o autenticación) se utilizan únicamente para ofrecer funciones personalizadas como listas, preferencias o sincronización de cuenta.</h2>
-        <h2 class="text-center">La autenticación se gestiona mediante <strong>Google OAuth</strong> y sistemas nativos de registro. No se comparte información sensible con terceros.</h2>
-        <h2 class="text-center">Cinemagoria puede registrar datos analíticos anónimos con el fin de mejorar la experiencia de uso, pero nunca realiza perfilamientos individuales ni identifica usuarios.</h2>
-        <h2 class="text-center custom-center"><strong>5. FUENTES DE DATOS Y ATRIBUCIONES</strong></h2>
-        <h2 class="text-center">La plataforma integra información proveniente de diversas APIs públicas y proveedores de metadatos. Todas las marcas, logotipos y activos son propiedad de sus respectivos titulares. Los datos se muestran bajo criterios de uso legítimo y sin fines comerciales.</h2>
-        <h2 class="text-center"><strong>Cobertura de Datos de Festivales:</strong> Cinemagoria consolida las programaciones de festivales mediante la recopilación automatizada de metadatos provenientes de APIs de terceros y datasets públicos. Si bien los largometrajes y títulos de alto perfil suelen estar correctamente indexados, la disponibilidad de datos para cortometrajes, producciones experimentales o obras de distribución regional puede ser inconsistente o incompleta. En consecuencia, el número de películas visualizadas para un festival determinado puede diferir de su programación oficial. Esta discrepancia es el resultado directo de las limitaciones técnicas de los datos externos y no refleja una selección editorial, censura u omisión intencionada. Cinemagoria no garantiza la integridad total del catálogo de ningún evento y opera estrictamente bajo las restricciones técnicas de la metadata pública accesible.</h2>
-        <h2 class="text-center"><strong>Agregación de Noticias e Integridad del Tráfico:</strong> Los titulares de noticias, resúmenes y miniaturas asociadas se agregan a partir de fuentes RSS públicas estrictamente con <strong>fines de indexación y descubrimiento</strong>. Cinemagoria opera bajo una estricta <strong>política de no modificación</strong>: el contenido se muestra exactamente tal como lo suministra la fuente de origen, sin alteraciones editoriales. <strong>No ofrecemos un lector interno, páginas almacenadas en caché ni modos de lectura simplificada.</strong> Es imposible acceder o leer el contenido completo del artículo dentro de la infraestructura de Cinemagoria; cualquier interacción con una noticia redirige al usuario automática e inmediatamente a la <strong>plataforma web de la publicación original</strong>, garantizando que el 100% del tráfico, las impresiones publicitarias y la monetización permanezcan con el propietario del contenido. Las imágenes en miniatura se muestran bajo los principios de Uso Justo (<em>Fair Use</em>) únicamente para fines de identificación visual. Funcionamos como un conducto técnico neutral para conectar a los lectores con el periodismo original. Los editores que deseen excluir su contenido (<em>opt-out</em>) pueden ponerse en contacto con nosotros en la dirección de correo electrónico indicada en la <strong>Sección 8</strong>.</h2>
-        <h2 class="text-center">Los iconos y SVG están bajo licencia de Creative Commons Attribution 4.0 International License. Atribución: Font Awesome Free 5.2.0 by @FontAwesome. Obtenga más información en <a href="https://fontawesome.com" target="_blank">Font Awesome</a>, CC BY 4.0 a través de Wikimedia Commons. Los datos sobre películas y programas de televisión son proporcionados por <a href="https://www.themoviedb.org/" target="_blank">TMDB</a>. Los datos sobre proveedores de transmisión, redes y plataformas son proporcionados por <a href="https://www.justwatch.com" target="_blank">JustWatch</a>. Los datos adicionales son proporcionados por <a href="https://mdblist.com" target="_blank">MDBList</a>. Las reseñas de películas y series están complementadas por <a href="https://trakt.tv" target="_blank">Trakt</a>.</h2>
-        <h2 class="text-center custom-center"><strong>6. CONDICIONES GENERALES</strong></h2>
-        <h2 class="text-center">Cinemagoria es un proyecto demostrativo sin fines de lucro en desarrollo continuo y se reserva el derecho de actualizar o modificar estas Políticas de Uso en cualquier momento sin previo aviso. El uso continuado de la plataforma implica la aceptación de la versión más reciente de este acuerdo.</h2>
-        <h2 class="text-center custom-center"><strong>7. USO DE COOKIES</strong></h2>
-        <h2 class="text-center">AL UTILIZAR NUESTRO SITIO WEB, USTED ACEPTA EL USO DE COOKIES. NUESTRA POLÍTICA DE COOKIES PROPORCIONA DETALLES SOBRE QUÉ SON LAS COOKIES, CÓMO LAS UTILIZAMOS, LA PARTICIPACIÓN DE SOCIOS DE TERCEROS, SUS OPCIONES DE COOKIES Y INFORMACIÓN ADICIONAL. LAS COOKIES SON PEQUEÑOS FRAGMENTOS DE TEXTO ENVIADOS A SU NAVEGADOR WEB DESDE UN SITIO WEB VISITADO. SE ALMACENAN EN SU NAVEGADOR, PERMITIENDO QUE EL SITIO WEB O TERCEROS LO RECONOZCAN, SIMPLIFICANDO SUS VISITAS SUBSECUENTES Y MEJORANDO LA UTILIDAD DEL SITIO WEB. DURANTE SU USO DEL SITIO WEB, PODEMOS COLOCAR VARIOS ARCHIVOS DE COOKIES EN SU NAVEGADOR WEB, QUE SIRVEN PARA FINES ESENCIALES Y ANALÍTICOS. ADEMÁS DE LOS NUESTROS, PODEMOS UTILIZAR COOKIES DE TERCEROS PARA INFORMAR ESTADÍSTICAS DE USO DEL SITIO WEB, ENTREGAR ANUNCIOS, ETC. SI DESEA ELIMINAR O RECHAZAR LAS COOKIES, CONSULTE LAS PÁGINAS DE AYUDA DE SU NAVEGADOR. TENGA EN CUENTA QUE TALES ACCIONES PUEDEN LIMITAR FUNCIONES, ALMACENAMIENTO DE PREFERENCIAS Y VISUALIZACIÓN DE PÁGINAS. PARA NAVEGADORES POPULARES COMO GOOGLE CHROME, OPERA, MOZILLA FIREFOX Y SAFARI, PUEDE ENCONTRAR INSTRUCCIONES ESPECÍFICAS EN SUS RESPECTIVAS PÁGINAS DE SOPORTE. EXPLORE <a href="https://allaboutcookies.org" target="_blank">ALLABOUTCOOKIES.ORG</a> Y <a href="https://networkadvertising.org" target="_blank">NETWORKADVERTISING.ORG</a> PARA OBTENER INFORMACIÓN COMPRENSIVA.</h2>
-        <h2 class="text-center custom-center"><strong>8. CONTACTO</strong></h2>
-        <h2 class="text-center">PARA CUALQUIER CONSULTA O DUDA SOBRE ESTE ACUERDO DE USUARIO, TÉRMINOS Y CONDICIONES O POLÍTICAS DE PRIVACIDAD, POR FAVOR ENVÍE UN CORREO ELECTRÓNICO A <strong>hello@cinemagoria.com.</strong></h2>
-        <h2 class="title-secondary custom-center" style="font-size: 12px; margin-top:20px;"><strong>Última actualización:</strong> 2 de Abril del 2026</h2>
-      </div>
 
+        <h2 class="text-center">
+          Algunas secciones pueden incluir enlaces generados automáticamente hacia dominios o aplicaciones de terceros donde podría encontrarse contenido audiovisual o metadatos relacionados. Estos enlaces se generan de forma programática mediante APIs abiertas o protocolos estándar, basados en identificadores públicos (como IMDb ID), y se ofrecen <strong>exclusivamente con fines informativos y de indexación</strong>.
+        </h2>
+
+        <h2 class="text-center">
+          Cinemagoria no aloja, almacena, transmite ni reproduce contenido audiovisual. La plataforma funciona únicamente como un <strong>indexador sin fines de lucro de información de acceso público</strong>. Las URL externas o enlaces de protocolo se muestran automáticamente como parte de metadatos obtenidos de fuentes públicas, sin intervención editorial.
+        </h2>
+
+        <h2 class="text-center">
+          El acceso a servicios o plataformas externas es opcional y bajo exclusiva responsabilidad del usuario. Cinemagoria no ejerce control sobre la legalidad, contenido o funcionamiento de dichos servicios y <strong>NO PROMUEVE NI RESPALDA LA INFRACCIÓN DE DERECHOS DE AUTOR NI LA DISTRIBUCIÓN NO AUTORIZADA DE CONTENIDO PROTEGIDO</strong>.
+        </h2>
+
+        <h2 class="text-center">
+          Cualquier acción realizada en sitios de terceros se rige por sus propios términos y políticas. Cinemagoria no asume responsabilidad por el contenido externo ni por las consecuencias derivadas de su acceso.
+        </h2>
+
+        <h2 class="text-center">
+          Estas referencias se incluyen <strong>de buena fe</strong> con el objetivo de enriquecer la experiencia del usuario. La plataforma está orientada al descubrimiento, no a la distribución.
+        </h2>
+
+        <h2 class="text-center custom-center"><strong>4. POLÍTICA DE PRIVACIDAD</strong></h2>
+
+        <h2 class="text-center">
+          Cinemagoria no vende ni comparte datos personales con fines comerciales. La información proporcionada voluntariamente se utiliza exclusivamente para funcionalidades como listas, preferencias o sincronización de cuenta.
+        </h2>
+
+        <h2 class="text-center">
+          La autenticación se gestiona mediante <strong>Google OAuth</strong> y sistemas propios. No se comparten datos sensibles con terceros.
+        </h2>
+
+        <h2 class="text-center">
+          Pueden recopilarse datos analíticos anónimos con fines de mejora del servicio.
+        </h2>
+
+        <h2 class="text-center custom-center"><strong>5. FUENTES DE DATOS Y ATRIBUCIONES</strong></h2>
+
+        <h2 class="text-center">
+          La plataforma integra datos provenientes de APIs públicas y proveedores de metadatos. Todas las marcas y activos pertenecen a sus respectivos titulares. La información se presenta bajo criterios de uso legítimo y sin fines comerciales. Los titulares de derechos o editores que deseen solicitar la exclusión de su contenido (<em>opt-out</em>) pueden ponerse en contacto según lo indicado en la <strong>Sección 8</strong>.
+        </h2>
+
+        <h2 class="text-center">
+          <strong>Cobertura de Datos de Festivales:</strong> Cinemagoria recopila programaciones a partir de fuentes públicas. La disponibilidad de datos puede ser incompleta, especialmente en el caso de cortometrajes. Como resultado, la cantidad de títulos mostrados para un festival puede diferir de su programación oficial. Estas diferencias responden a limitaciones técnicas y no a decisiones editoriales.
+        </h2>
+
+        <h2 class="text-center">
+          <strong>Agregación de Noticias:</strong> Los contenidos se obtienen de fuentes RSS públicas con fines de indexación. Cinemagoria no modifica las noticias de origen y muestra únicamente la información proporcionada por dichas fuentes (como título, descripción y metadatos). No es posible leer artículos completos dentro de la plataforma: toda interacción redirige al sitio original, siendo este el único entorno donde puede accederse al contenido íntegro, garantizando que el tráfico, las impresiones y la monetización correspondan exclusivamente al medio editorial. Adicionalmente, la plataforma puede publicar contenidos editoriales propios generados de forma automatizada o asistida, los cuales se ofrecen con fines informativos y pueden contener errores, omisiones o imprecisiones. Las imágenes se utilizan únicamente con fines de identificación bajo principios de uso legítimo.
+        </h2>
+
+        <h2 class="text-center">
+          Iconos y recursos gráficos bajo licencia Creative Commons Attribution 4.0. Datos proporcionados por TMDB, JustWatch, MDBList y Trakt.
+        </h2>
+
+        <h2 class="text-center custom-center"><strong>6. CONDICIONES GENERALES</strong></h2>
+
+        <h2 class="text-center">
+          Cinemagoria es un proyecto en desarrollo continuo y se reserva el derecho de modificar estos términos en cualquier momento. El uso continuado implica la aceptación de la versión vigente.
+        </h2>
+
+        <h2 id="cookies" class="text-center custom-center"><strong>7. USO DE COOKIES</strong></h2>
+
+        <h2 class="text-center">
+          Esta plataforma utiliza cookies y tecnologías similares de almacenamiento local. Puedes gestionar tus preferencias en cualquier momento desde el enlace de configuración de cookies en el pie de página o el banner de consentimiento mostrado en tu primera visita.
+        </h2>
+
+        <div class="cookie-table-wrapper">
+          <table class="cookie-table">
+            <thead>
+              <tr>
+                <th>Categoría</th>
+                <th>Propósito</th>
+                <th>Ejemplos</th>
+                <th>Duración</th>
+                <th>Obligatoria</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Esenciales</strong></td>
+                <td>Autenticación, gestión de sesión, seguridad y funcionalidad básica del sitio</td>
+                <td>Tokens de inicio de sesión, protección CSRF, preferencias de consentimiento</td>
+                <td>Sesión – 1 año</td>
+                <td>Sí</td>
+              </tr>
+              <tr>
+                <td><strong>Analíticas</strong></td>
+                <td>Estadísticas de uso para entender cómo se utiliza la plataforma e identificar áreas de mejora</td>
+                <td>Páginas visitadas, patrones de navegación, uso de funciones</td>
+                <td>Hasta 2 años</td>
+                <td>No — opt-in</td>
+              </tr>
+              <tr>
+                <td><strong>Personalización</strong></td>
+                <td>Recuerda preferencias y contexto de navegación para una experiencia adaptada</td>
+                <td>Secciones visitadas recientemente</td>
+                <td>Hasta 1 año</td>
+                <td>No — opt-in</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="text-center" style="margin-top: 10px;">
+          <strong>Terceros:</strong> Esta plataforma no vende ni comparte datos de cookies con terceros con fines publicitarios. Si se activan servicios de analítica, los datos anonimizados podrán ser procesados por proveedores externos de analítica bajo sus respectivas políticas de privacidad.
+        </h2>
+
+        <h2 class="text-center">
+          <strong>Gestión de preferencias:</strong> Puedes cambiar tus preferencias de cookies en cualquier momento haciendo clic en "Preferencias de Cookies" en el pie de página del sitio. También puedes gestionar las cookies desde la configuración de tu navegador — ten en cuenta que desactivar las cookies esenciales puede afectar el funcionamiento del sitio.
+        </h2>
+
+        <h2 class="text-center custom-center"><strong>8. CONTACTO</strong></h2>
+
+        <h2 class="text-center">
+          Para consultas sobre estos términos o políticas, puede escribir a <strong>hello@cinemagoria.com</strong>.
+        </h2>
+
+        <h2 class="title-secondary custom-center" style="font-size: 12px; margin-top:20px;"><strong>Última actualización:</strong> 6 de Abril del 2026</h2>
+      </div>
     </section>
   </main>  
 </template>
@@ -112,5 +224,47 @@ export default {
 
   .custom-center {
     text-align: center;
+  }
+
+  .cookie-table-wrapper {
+    max-width: 800px;
+    margin: 0 auto 20px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .cookie-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    line-height: 1.6;
+  }
+
+  .cookie-table th,
+  .cookie-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    vertical-align: top;
+  }
+
+  .cookie-table th {
+    color: #fafafa;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .cookie-table td {
+    color: #97999a;
+  }
+
+  .cookie-table td strong {
+    color: #fafafa;
+  }
+
+  .cookie-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
   }
 </style>
