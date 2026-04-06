@@ -100,33 +100,22 @@ export default {
       manifesto: [
       {
         numeral: 'I',
-        title: 'Nothing Is Ready',
+        title: 'Preliminal',
         lines: [
-          'Commercial cinema thrives on immediate impact. N.O.I.R. is built on anticipation.',
-          'A work that has not yet been assimilated.',
-          'It reclaims the latent and the independent.',
-          'What is “ready” already belongs to the past.',
+          'N.O.I.R. dwells in the undefined, it exists before it.',
+          'The work matters in its state prior to assimilation.'
         ]
       },
       {
         numeral: 'II',
         title: 'Selection Criteria',
         lines: [
-          'Titles are not accumulated: signals are identified.',
-          'The focus lies within that prior threshold. If a title does not propose something through its cultural influence or transcendence, it does not belong in this selection.',
-          'The search is for what is original, unsettling, and genuine — what lingers in the imaginary.'
-        ]
-      },
-      {
-        numeral: 'III',
-        title: 'In Constant Motion',
-        lines: [
-          'The selection remains in constant evolution.',
-          'Titles enter, rotate, and withdraw over time.',
-          'Nothing is lost: what leaves N.O.I.R. becomes part of its archive.'
+          'Not a catalog, but a recognition of signals. Only what disrupts and transcends remains.',
+          'The selection is never static, it evolves and shifts. Nothing disappears, everything becomes part of the archive.'
         ]
       }
     ]
+
     };
   },
   methods: {

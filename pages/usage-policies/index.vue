@@ -7,40 +7,152 @@
       <h1 class="title-primary text-center" style="font-size: 20px; margin-top: 10px;"><b>Usage Policies & Privacy Agreement</b></h1>
       <br>
       <div>
-        <h2 class="title-secondary custom-center" style="font-size: 12px;"><strong>Effective Date:</strong> March 27, 2024</h2>
-        <h2 class="text-center custom-center"><strong>1. INTRODUCTION</strong></h2>
-        <h2 class="text-center">THIS DEMONSTRATIVE TECHNICAL PLATFORM, PROVIDED WITHOUT ANY WARRANTY, IS INTENDED SOLELY FOR IMMEDIATE PERSONAL ONLINE VIEWING, FOR NON-COMMERCIAL AND NONPROFIT PURPOSES. PLEASE READ THIS ENTIRE AGREEMENT BEFORE USING THIS PLATFORM. BY ACCESSING OR USING THIS PLATFORM, INCLUDING ITS DOMAIN NAME(S), CONTENT, OR ANY INTERACTION (SUCH AS CLICKING ON LINKS), YOU ACKNOWLEDGE AND DECLARE THAT YOU ACCEPT THIS USER AGREEMENT AND THAT YOU ARE 18 YEARS OF AGE OR OLDER. YOUR ACCESS AND USE INDICATE YOUR ACKNOWLEDGMENT, ACCEPTANCE, AND UNCONDITIONAL AGREEMENT TO ALL THE TERMS AND CONDITIONS SET FORTH HEREIN WITHOUT MODIFICATION, AND THIS AGREEMENT TAKES EFFECT IMMEDIATELY.</h2>
-        <h2 class="text-center">To reject these terms, simply refrain from using the platform and close all its windows. You may not access or use this platform if you (or your legal guardian) cannot enter into a binding contract, or in any jurisdiction where this agreement is not enforceable. By allowing access to this platform through your device or network, you consent and agree to be bound by these Usage Policies.</h2>
-        <h2 class="text-center">You agree to use the platform only in accordance with applicable laws and the rights herein granted. You may not: -ATTEMPT TO BYPASS OR INTERFERE WITH THE PLATFORM'S SECURITY MEASURES. -USE THE PLATFORM IN A MANNER THAT MAY HARM OR IMPAIR ITS PERFORMANCE. -DISASSEMBLE, REVERSE ENGINEER, OR DECOMPILE ANY PART OF THE PLATFORM.</h2>
-        <h2 class="text-center custom-center"><strong>2. DISCLAIMER FOR USE</strong></h2>
-        <h2 class="text-center">Cinemagoria aggregates publicly available entertainment data to deliver search results, recommendations, and metadata for movies and TV shows. While every effort is made to ensure data accuracy and relevance, the information displayed may occasionally contain inaccuracies, incomplete metadata, or media descriptions of a mature nature.</h2>
+          <h2 class="title-secondary custom-center" style="font-size: 12px; position:relative; bottom:15px;"><strong>Effective date:</strong> March 27, 2024</h2>
 
-        <h2 class="text-center">Users are solely responsible for interpreting and acting upon metadata or third-party information. <strong>IN NO EVENT SHALL Cinemagoria, ITS CONTRIBUTORS, OR AFFILIATES BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF OR RELATED TO YOUR USE OF THE PLATFORM OR ANY ANALYTICS DATA PROCESSED THROUGH IT.</strong></h2>
-        <h2 class="text-center custom-center"><strong>3. EXTERNAL LINKS & THIRD-PARTY CONTENT</strong></h2>
-        <h2 class="text-center">Certain sections of this platform may include automatically generated external references to third-party domains and applications where audiovisual content or related metadata may be available. Such links are generated programmatically through open APIs or standard URI protocols based on publicly available identifiers (for example, IMDb IDs) and are provided <strong>solely for informational and indexing purposes</strong>.</h2>
-        <h2 class="text-center">Cinemagoria does not host, store, stream, or reproduce any audiovisual works. The platform functions exclusively as a <strong>non-profit indexer of publicly accessible information</strong>. External URLs and protocol links (such as those that may open external media applications) are displayed automatically as part of metadata retrieved from public sources, without manual curation or selection.</h2>
-        <h2 class="text-center">Accessing any external domain, streaming hub, or third-party media service through links displayed on Cinemagoria is entirely optional and performed at the user's sole discretion. Cinemagoria has no technical or editorial control over the legality, content, or functionality of those destinations, and <strong>DOES NOT PROMOTE, ENCOURAGE, OR ENDORSE ANY FORM OF COPYRIGHT INFRINGEMENT OR UNAUTHORIZED DISTRIBUTION OF PROTECTED WORKS</strong>.</h2>
-        <h2 class="text-center">Any viewing, streaming, or downloading activity that occurs after following an external link is governed exclusively by the respective third party's terms of service, privacy policy, and applicable local laws. Cinemagoria and its contributors assume no responsibility or liability for the nature, accuracy, or lawfulness of third-party content or for any consequences arising from the user's access to it.</h2>
-        <h2 class="text-center">These external references are included <strong>in good faith</strong> to enrich the user's browsing experience by connecting them with legitimate metadata and contextual information sources. The platform's intent is to <strong>facilitate discovery, not distribution</strong>.</h2>
-        <h2 class="text-center custom-center"><strong>4. PRIVACY POLICY</strong></h2>
-        <h2 class="text-center">Cinemagoria does not sell or share user data for any commercial purpose. Any personal information voluntarily provided (e.g., during registration or authentication) is used exclusively to deliver personalized functionality such as watchlists, preferences, and account synchronization.</h2>
-        <h2 class="text-center">Authentication is handled through <strong>Google OAuth</strong> and native registration systems. No sensitive personal data is shared with external parties.</h2>
-        <h2 class="text-center">While Cinemagoria may log anonymous analytical data to improve usability, it never profiles or identifies individual users.</h2>
-        <h2 class="text-center custom-center"><strong>5. DATA SOURCES & ATTRIBUTIONS</strong></h2>
-        <h2 class="text-center">The platform integrates data from multiple public APIs and metadata providers. All trademarks, logos, and assets remain the property of their respective owners. Data is displayed under fair use and non-commercial terms.</h2>
-        <h2 class="text-center"><strong>Festival Data Coverage:</strong> Cinemagoria aggregates festival lineups by leveraging automated metadata from third-party APIs and public datasets. While feature-length and high-profile titles are generally well-indexed, the availability of data for short films, experimental productions, or regional entries may be inconsistent or incomplete. Consequently, the film counts displayed for any given festival may vary from the official program. This discrepancy is a direct result of external data limitations and does not reflect editorial selection, censorship, or intentional omission. Cinemagoria does not guarantee a comprehensive catalog for any event and operates strictly within the technical constraints of accessible public metadata.</h2>
-        <h2 class="text-center"><strong>News Aggregation & Traffic Integrity:</strong> News headlines, summaries, and associated thumbnails are aggregated from public RSS feeds strictly for <strong>indexing and discovery purposes</strong>. Cinemagoria operates under a strict <strong>non-modification policy</strong>: content is displayed exactly as provided by the source feed, without editorial alteration. <strong>We do not offer an internal reader, cached pages, or simplified reading modes.</strong> It is impossible to access or read the full article content within the Cinemagoria infrastructure; any interaction with a news item redirects the user automatically and immediately to the <strong>original publication's web platform</strong>, ensuring that 100% of traffic, ad impressions, and monetization remain with the content owner. Thumbnails are displayed under Fair Use principles solely for visual identification. We function as a neutral technical conduit to connect readers with original journalism. Publishers wishing to opt-out may contact us at the email address indicated in <strong>Section 8</strong>.</h2>
-        <h2 class="text-center">Icons and SVGs are licensed under Creative Commons Attribution 4.0 International License. Attribution: Font Awesome Free 5.2.0 by @FontAwesome. Learn more at <a href="https://fontawesome.com" target="_blank">Font Awesome</a>, CC BY 4.0 via Wikimedia Commons. Movie and TV show data is provided by <a href="https://www.themoviedb.org/" target="_blank">TMDB</a>. Streaming provider, network, and platform data is provided by <a href="https://www.justwatch.com" target="_blank">JustWatch</a>. Additional data is provided by <a href="https://mdblist.com" target="_blank">MDBList</a>. Reviews of films and series are complemented by <a href="https://trakt.tv" target="_blank">Trakt</a>.</h2>
-        <h2 class="text-center custom-center"><strong>6. GENERAL CONDITIONS</strong></h2>
-        <h2 class="text-center">Cinemagoria is an ongoing non-profit demonstration project and reserves the right to update or modify these Usage Policies without prior notice. Continued use of the platform signifies acceptance of the most current version.</h2>
-        <h2 class="text-center custom-center"><strong>7. COOKIE USAGE</strong></h2>
-        <h2 class="text-center">BY USING OUR WEBSITE, YOU CONSENT TO THE USE OF COOKIES. OUR COOKIE POLICY PROVIDES DETAILS ON WHAT COOKIES ARE, HOW WE USE THEM, THIRD-PARTY INVOLVEMENT, YOUR COOKIE CHOICES, AND ADDITIONAL INFORMATION. COOKIES ARE SMALL TEXT FILES SENT TO YOUR WEB BROWSER FROM A VISITED WEBSITE. THEY ARE STORED IN YOUR BROWSER, ALLOWING THE WEBSITE OR THIRD PARTIES TO RECOGNIZE YOU, SIMPLIFYING SUBSEQUENT VISITS AND ENHANCING WEBSITE UTILITY. DURING YOUR USE OF THE WEBSITE, WE MAY PLACE VARIOUS COOKIE FILES IN YOUR WEB BROWSER, SERVING ESSENTIAL AND ANALYTICAL PURPOSES. IN ADDITION TO OURS, WE MAY USE THIRD-PARTY COOKIES TO REPORT WEBSITE USAGE STATISTICS, DELIVER ADVERTISEMENTS, ETC. IF YOU WISH TO DELETE OR REJECT COOKIES, CONSULT YOUR BROWSER'S HELP PAGES. PLEASE NOTE THAT SUCH ACTIONS MAY LIMIT FEATURES, PREFERENCE STORAGE, AND PAGE VIEWING. FOR POPULAR BROWSERS SUCH AS GOOGLE CHROME, OPERA, MOZILLA FIREFOX, AND SAFARI, YOU CAN FIND SPECIFIC INSTRUCTIONS ON THEIR RESPECTIVE SUPPORT PAGES. EXPLORE <a href="https://allaboutcookies.org" target="_blank">ALLABOUTCOOKIES.ORG</a> AND <a href="https://networkadvertising.org" target="_blank">NETWORKADVERTISING.ORG</a> FOR COMPREHENSIVE INFORMATION.</h2>
-        <h2 class="text-center custom-center"><strong>8. CONTACT</strong></h2>
-        <h2 class="text-center">FOR ANY INQUIRIES OR CONCERNS REGARDING THIS USER AGREEMENT, TERMS AND CONDITIONS, OR PRIVACY POLICIES, PLEASE EMAIL <strong>hello@cinemagoria.com.</strong></h2>
-        <h2 class="title-secondary custom-center" style="font-size: 12px; margin-top:20px;"><strong>Last Updated:</strong> April 2, 2026</h2>
+          <h2 class="text-center custom-center"><strong>1. INTRODUCTION</strong></h2>
+
+          <h2 class="text-center">
+            THIS DEMONSTRATIVE TECHNICAL PLATFORM IS PROVIDED WITHOUT WARRANTIES OF ANY KIND AND IS INTENDED SOLELY FOR PERSONAL, NON-COMMERCIAL USE. PLEASE READ THIS AGREEMENT CAREFULLY BEFORE USING THE PLATFORM. BY ACCESSING OR USING THIS SITE —INCLUDING ITS DOMAIN, CONTENT, OR ANY INTERACTION— YOU ACKNOWLEDGE THAT YOU ACCEPT THIS USER AGREEMENT AND THAT YOU ARE AT LEAST 18 YEARS OF AGE. USE OF THE PLATFORM CONSTITUTES FULL AND UNRESERVED ACCEPTANCE OF THESE TERMS AND CONDITIONS, WHICH TAKE EFFECT IMMEDIATELY.
+          </h2>
+
+          <h2 class="text-center">
+            Users agree to use the platform in accordance with applicable laws and these terms. The following is prohibited: attempting to breach or interfere with security systems; using the platform in a way that may impair its performance; disassembling, decompiling, or reverse engineering any part of the platform.
+          </h2>
+
+          <h2 class="text-center">
+            If you do not agree with these terms, you must refrain from using the platform and close all related windows.
+          </h2>
+
+          <h2 class="text-center custom-center"><strong>2. DISCLAIMER OF USE</strong></h2>
+
+          <h2 class="text-center">
+            Cinemagoria collects and presents publicly available entertainment information in order to provide search results, recommendations, and metadata for films and series. While accuracy and relevance are prioritized, errors, omissions, or references to sensitive or mature content may occur.
+          </h2>
+
+          <h2 class="text-center">
+            The use and interpretation of any results, metadata, or third-party information is the sole responsibility of the user. <strong>IN NO EVENT SHALL Cinemagoria, ITS CONTRIBUTORS, OR AFFILIATES BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING FROM THE USE OF THE PLATFORM OR ANY DATA PROCESSED THROUGH IT.</strong>
+          </h2>
+
+          <h2 class="text-center custom-center"><strong>3. EXTERNAL LINKS AND THIRD-PARTY CONTENT</strong></h2>
+
+          <h2 class="text-center">
+            Certain sections may include automatically generated links to third-party domains or applications where audiovisual content or related metadata may be available. These links are generated programmatically through public APIs or standard protocols, based on public identifiers (such as IMDb ID, TMDB ID, etc.), and are provided <strong>strictly for informational and indexing purposes</strong>.
+          </h2>
+
+          <h2 class="text-center">
+            Cinemagoria does not host, store, transmit, or reproduce audiovisual content. The platform operates solely as a <strong>non-profit indexer of publicly available information</strong>. External URLs and protocol links are displayed automatically as part of metadata obtained from public sources, without editorial intervention.
+          </h2>
+
+          <h2 class="text-center">
+            Access to external services or platforms is optional and at the user’s sole discretion. Cinemagoria does not control the legality, content, or operation of such services and <strong>DOES NOT PROMOTE OR SUPPORT COPYRIGHT INFRINGEMENT OR UNAUTHORIZED DISTRIBUTION OF PROTECTED CONTENT</strong>.
+          </h2>
+
+          <h2 class="text-center">
+            Any actions taken on third-party sites are governed by their respective terms and policies. Cinemagoria assumes no responsibility for external content or for any consequences arising from access to such sites.
+          </h2>
+
+          <h2 class="text-center">
+            These references are provided <strong>in good faith</strong> to enhance the user experience. The platform is designed for discovery, not distribution.
+          </h2>
+
+          <h2 class="text-center custom-center"><strong>4. PRIVACY POLICY</strong></h2>
+
+          <h2 class="text-center">
+            Cinemagoria does not sell or share personal data for commercial purposes. Information provided voluntarily is used exclusively for features such as lists, preferences, and account synchronization.
+          </h2>
+
+          <h2 class="text-center">
+            Authentication is handled through <strong>Google OAuth</strong> and internal systems. No sensitive data is shared with third parties.
+          </h2>
+
+          <h2 class="text-center">
+            Anonymous analytical data may be collected to improve the service.
+          </h2>
+
+          <h2 class="text-center custom-center"><strong>5. DATA SOURCES AND ATTRIBUTIONS</strong></h2>
+
+          <h2 class="text-center">
+            The platform integrates data from public APIs and metadata providers. All trademarks and assets belong to their respective owners. Information is presented under fair use principles and for non-commercial purposes. Rights holders or publishers who wish to request content removal (<em>opt-out</em>) may contact us as indicated in <strong>Section 8</strong>.
+          </h2>
+
+          <h2 class="text-center">
+            <strong>Festival Data Coverage:</strong> Cinemagoria collects festival lineups from public sources. Data availability may be incomplete, particularly for short films or works with limited presence in public sources. As a result, the number of titles displayed for a given festival may differ from its official program. These differences reflect technical limitations of external data sources and not editorial decisions.
+          </h2>
+
+          <h2 class="text-center">
+            <strong>News Aggregation:</strong> Content is sourced from public RSS feeds for indexing purposes. Cinemagoria does not modify source material and only displays the information provided (such as titles, descriptions, and metadata). Full articles cannot be read within the platform; all interactions redirect to the original publisher, ensuring that traffic, impressions, and monetization remain with the source. Additionally, the platform may publish its own editorial content generated or assisted through automated processes, which is provided for informational purposes and may contain errors, omissions, or inaccuracies. Images are displayed solely for identification under fair use principles.
+          </h2>
+
+          <h2 class="text-center">
+            Icons and visual assets are licensed under Creative Commons Attribution 4.0. Data provided by TMDB, JustWatch, MDBList, and Trakt.
+          </h2>
+
+          <h2 class="text-center custom-center"><strong>6. GENERAL CONDITIONS</strong></h2>
+
+          <h2 class="text-center">
+            Cinemagoria is an ongoing project under continuous development and reserves the right to modify these terms at any time. Continued use implies acceptance of the current version.
+          </h2>
+
+          <h2 id="cookies" class="text-center custom-center"><strong>7. COOKIE POLICY</strong></h2>
+
+          <h2 class="text-center">
+            This platform uses cookies and similar client-side storage technologies. You can manage your preferences at any time using the cookie settings available in the site footer or the consent banner shown on your first visit.
+          </h2>
+
+          <div class="cookie-table-wrapper">
+            <table class="cookie-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Purpose</th>
+                  <th>Examples</th>
+                  <th>Duration</th>
+                  <th>Required</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Essential</strong></td>
+                  <td>Authentication, session management, security, and core site functionality</td>
+                  <td>Login tokens, CSRF protection, consent preferences</td>
+                  <td>Session – 1 year</td>
+                  <td>Yes</td>
+                </tr>
+                <tr>
+                  <td><strong>Analytics</strong></td>
+                  <td>Usage statistics to understand how the platform is used and identify areas for improvement</td>
+                  <td>Page views, navigation patterns, feature usage</td>
+                  <td>Up to 2 years</td>
+                  <td>No — opt-in</td>
+                </tr>
+                <tr>
+                  <td><strong>Personalization</strong></td>
+                  <td>Remembers browsing context for a tailored experience</td>
+                  <td>Recently visited sections</td>
+                  <td>Up to 1 year</td>
+                  <td>No — opt-in</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 class="text-center" style="margin-top: 10px;">
+            <strong>Third parties:</strong> This platform does not sell or share cookie data with third parties for advertising purposes. If analytics services are enabled, anonymized data may be processed by third-party analytics providers under their respective privacy policies.
+          </h2>
+
+          <h2 class="text-center">
+            <strong>Managing your choices:</strong> You can change your cookie preferences at any time by clicking "Cookie Preferences" in the site footer. You may also manage cookies through your browser settings — note that disabling essential cookies may affect site functionality.
+          </h2>
+
+          <h2 class="text-center custom-center"><strong>8. CONTACT</strong></h2>
+
+          <h2 class="text-center">
+            For inquiries regarding these terms or policies, please contact <strong>hello@cinemagoria.com</strong>.
+          </h2>
+
+          <h2 class="title-secondary custom-center" style="font-size: 12px; margin-top:20px;"><strong>Last updated:</strong> April 6, 2026</h2>
       </div>
       <br>
-
     </section>
   </main>  
 </template>
@@ -113,5 +225,47 @@ export default {
 
   .custom-center {
     text-align: center;
+  }
+
+  .cookie-table-wrapper {
+    max-width: 800px;
+    margin: 0 auto 20px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .cookie-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    line-height: 1.6;
+  }
+
+  .cookie-table th,
+  .cookie-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    vertical-align: top;
+  }
+
+  .cookie-table th {
+    color: #fafafa;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .cookie-table td {
+    color: #97999a;
+  }
+
+  .cookie-table td strong {
+    color: #fafafa;
+  }
+
+  .cookie-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
   }
 </style>

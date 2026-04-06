@@ -8,6 +8,7 @@
             <li><nuxt-link to="/contact">Contact</nuxt-link></li>
             <li><nuxt-link to="/changelog">Latest Updates</nuxt-link></li>
             <li><nuxt-link to="/usage-policies">Privacy & Terms</nuxt-link></li>
+            <li><a href="#" @click.prevent="openCookiePreferences">Cookie Preferences</a></li>
           </ul>
         </div>
 
@@ -50,6 +51,8 @@
 </template>
 
 <script>
+import { useConsentStore } from '~/stores/consent'
+
 export default {
   data() {
     return {
@@ -95,6 +98,10 @@ export default {
       const { protocol, host } = window.location;
       const newHost = host.replace('es.', '').replace(':3001', ':3000');
       return `${protocol}//${newHost}`;
+    },
+    openCookiePreferences() {
+      const consent = useConsentStore()
+      consent.openPreferences()
     },
     getSpanishLink() {
       if (typeof window === 'undefined') return 'https://es.cinemagoria.com';

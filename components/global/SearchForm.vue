@@ -50,6 +50,7 @@
 <script>
 import { mapState, mapActions } from 'pinia';
 import { useSearchStore } from '~/stores/search';
+import { useConsentStore } from '~/stores/consent';
 import lodash from 'lodash';
 const { debounce } = lodash;
 import UserNav from './UserNav.vue';
@@ -173,6 +174,7 @@ beforeDestroy() {
   methods: {
     goToRoute() {
       if (this.query) {
+        this.logSearch(this.query);
         this.$router.push({
           name: 'search',
           query: { q: this.query },
@@ -181,6 +183,22 @@ beforeDestroy() {
         this.$router.push({
           path: this.fromPage,
         });
+      }
+    },
+
+    logSearch(term) {
+      try {
+        const consent = useConsentStore();
+        const analytics = consent.isAllowed('analytics');
+        const payload = { query: term, analytics };
+
+        if (analytics) {
+          payload.email = localStorage.getItem('email') || '';
+        }
+
+        $fetch('/api/search-log', { method: 'POST', body: payload }).catch(() => {});
+      } catch {
+        // never block search for a log failure
       }
     },
     clearSearch() {
