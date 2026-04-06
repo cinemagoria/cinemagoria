@@ -11,7 +11,7 @@
         v-else
         src="/placeholders/image_not_found_yet_horizontal.webp"
         alt="Image not found"
-        style="width: 100%; height: 100%; object-fit: cover; padding: 3rem;">
+        style="width: 100%; height: 100%; object-fit: contain; padding: 24px; box-sizing: border-box;">
         
       <div v-if="userEmail" :class="$style.trackOverlayBtn">
         <button :class="$style.trackBtnAbsolute" @click="showModal = true" aria-label="Track Progress" title="Track Progress">
