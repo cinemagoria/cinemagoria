@@ -23,7 +23,8 @@ export default defineNuxtRouteMiddleware((to, from) => {
         '/awards',
         '/settings',
         '/notifications',
-        '/production-companies'
+        '/production-companies',
+        '/noir'
     ]
 
     const isProtected = protectedPaths.some(p => to.path.startsWith(p))
