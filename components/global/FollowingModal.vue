@@ -923,7 +923,7 @@ export default {
 }
 
 .departmentGroup {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 .departmentTitle {
@@ -936,11 +936,12 @@ export default {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+  gap: 12px;
+  padding: 10px 0;
 
   @media (min-width: $breakpoint-medium) {
-    grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   }
 }
 
@@ -963,8 +964,8 @@ export default {
 .cardImage {
   position: relative;
   background: #8be8fd;
-  border-radius: 12px;
-  padding-top: 150%;
+  border-radius: 10px;
+  padding-top: 140%;
   cursor: pointer;
   overflow: hidden;
 
@@ -1013,12 +1014,12 @@ export default {
 }
 
 .cardContent {
-  padding: 0.9rem;
+  padding: 0.4rem 0.5rem;
 
   h4 {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     color: #fff;
-    margin: 0 0 0.6rem 0;
+    margin: 0 0 0.35rem 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1027,18 +1028,18 @@ export default {
 }
 
 .status {
-  font-size: 1rem;
+  font-size: 0.85rem;
   color: #8F989E;
-  margin: 0 0 0.6rem 0;
+  margin: 0 0 0.35rem 0;
 }
 
 .unfollowButton {
   background: rgba(255, 0, 0, 0.2);
   color: #fff;
   border: 1px solid rgba(255, 0, 0, 0.4);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
-  padding: 8px 0;
+  padding: 5px 0;
   cursor: pointer;
   transition: all 0.2s ease;
   border-radius: 24px;
@@ -1094,6 +1095,23 @@ padding: 1rem 2rem;
   display: flex;
   flex-direction: column;
   max-height: 90vh;
+
+  @media (max-width: 600px) {
+    max-height: 80vh;
+    max-height: 80dvh;
+  }
+}
+
+@media (max-width: 600px) {
+  .modalOverlay {
+    padding: 10px;
+  }
+
+  .modalContent {
+    max-height: 80vh;
+    max-height: 80dvh;
+    border-radius: 12px;
+  }
 }
 
 .modalHeader {
