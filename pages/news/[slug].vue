@@ -84,19 +84,17 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import MarkdownIt from 'markdown-it'
 
 const md = new MarkdownIt({ breaks: true })
-
 const route = useRoute()
-const slug = computed(() => route.params.slug as string)
 
-const { data, pending, error } = await useFetch(`/api/article/${slug.value}`, {
-  key: `article-es-${slug.value}`,
-})
+const { data, pending, error } = await useAsyncData(`article-es-${route.params.slug}`, () =>
+  $fetch(`/api/article/${route.params.slug}`)
+)
 
-const article = computed(() => (data.value as any)?.article || null)
+const article = computed(() => data.value?.article || null)
 
 const renderedBody = computed(() => {
   if (!article.value?.body_es) return ''
@@ -107,7 +105,7 @@ const renderedBody = computed(() => {
   }
 })
 
-function formatDate(dateStr: string): string {
+function formatDate(dateStr) {
   if (!dateStr) return ''
   try {
     return new Date(dateStr).toLocaleDateString('es-ES', {
@@ -120,7 +118,6 @@ function formatDate(dateStr: string): string {
   }
 }
 
-// SEO — Spanish
 useHead(() => {
   if (!article.value) return {}
   return {
