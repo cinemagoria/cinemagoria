@@ -915,10 +915,16 @@ export default {
   box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
+  .modal-overlay {
+    padding: 10px;
+  }
+
   .rated-items-modal {
     max-width: 100%;
-    height: 90vh;
+    max-height: 80vh;
+    max-height: 80dvh;
+    border-radius: 12px;
   }
   
   .rated-items-list {
