@@ -20,7 +20,8 @@ export default defineEventHandler(async (event) => {
     try {
         const result = await db.execute({
             sql: `SELECT id, slug, title_en, body_en, description_en, title_es, body_es, description_es,
-                         image_url, sources_json, topics_json, published_at, created_at, is_visible
+                         image_url, sources_json, topics_json, published_at, created_at, is_visible,
+                         trailer_youtube_id
                   FROM cinemagoria_articles
                   WHERE slug = ? AND is_visible = 1
                   LIMIT 1`,
@@ -49,6 +50,7 @@ export default defineEventHandler(async (event) => {
                 topics: row.topics_json ? JSON.parse(row.topics_json as string) : [],
                 published_at: row.published_at,
                 created_at: row.created_at,
+                trailer_youtube_id: row.trailer_youtube_id || null,
             }
         }
     } catch (error: any) {
