@@ -18,10 +18,10 @@
   {
     "tmdb_id": 950028,
     "media_type": "movie",
-    "trailer_key": null,
-    "backdrop_path": "/kLA1GqiOEyVgXxgNqLoCr7bYcqu.jpg",
+    "trailer_key": "OJ19I9q_hOQ",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1775623757/cinemagoria/backdrops/hero_950028.webp",
     "poster_path": "/ri3Iqax58Hkonl9lAO6R1dZ33YI.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1368337,
