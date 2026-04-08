@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     const result = await db.execute({
         sql: `SELECT slug, title_en, title_es, description_en, description_es, image_url, published_at
               FROM cinemagoria_articles
-              WHERE is_visible >= 0
+              WHERE is_visible = 1 AND is_cinemagoria = 1
               ORDER BY published_at DESC
               LIMIT 50`,
         args: []

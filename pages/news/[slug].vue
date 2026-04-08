@@ -111,10 +111,20 @@
           <div class="article-main">
             <div class="article-card">
               <header class="article-header">
+                <NuxtLink to="/news" class="mobile-back-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                  News
+                </NuxtLink>
                 <time :datetime="article.published_at" class="article-date">
                   {{ formatDate(article.published_at) }}
                 </time>
                 <h1 class="article-title">{{ article.title_en }}</h1>
+
+                <!-- Cover image inline for mobile -->
+                <div v-if="article.image_url" class="mobile-hero">
+                  <img :src="article.image_url" :alt="article.title_en" loading="eager" />
+                </div>
+
                 <p class="article-lead">{{ article.description_en }}</p>
 
                 <div v-if="article.topics?.length" class="article-tags">
@@ -764,14 +774,65 @@ useHead(() => {
   100% { background-position: -200% 0; }
 }
 
+/* ── Mobile-only elements (hidden on desktop) ───────────────────── */
+.mobile-back-btn {
+  display: none;
+}
+
+.mobile-hero {
+  display: none;
+}
+
 /* ── Responsive ──────────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .content-wrapper {
     flex-direction: column;
   }
 
+  /* Sidebar goes AFTER the article */
   .article-sidebar {
     width: 100%;
+    order: 2;
+  }
+
+  .article-main {
+    order: 1;
+  }
+
+  /* Hide external hero on mobile */
+  .article-hero {
+    display: none;
+  }
+
+  /* Show inline hero inside article card */
+  .mobile-hero {
+    display: block;
+    margin: 16px 0;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .mobile-hero img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 10px;
+  }
+
+  /* Show back button on mobile */
+  .mobile-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #8BE9FD;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 12px;
+  }
+
+  .mobile-back-btn:hover {
+    opacity: 0.8;
   }
 
   .sidebar-card {
@@ -807,15 +868,6 @@ useHead(() => {
 
   .article-body {
     font-size: 16px;
-  }
-
-  .article-hero {
-    width: 100%;
-    border-radius: 0;
-    border: none;
-    background: none;
-    margin-top: 0;
-    padding-bottom: 50%;
   }
 }
 
