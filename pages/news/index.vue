@@ -311,7 +311,7 @@ const currentLang = ref(config.public.apiLang || 'es');
 const currentSources = computed(() => SOURCES[currentLang.value] || SOURCES['es']);
 const route = useRoute();
 const router = useRouter();
-const selectedSource = ref(route.query.source || null);
+const selectedSource = ref(route.query.source || 'Cinemagoria');
 const searchQuery = ref('');
 const isSearchActive = ref(false);
 const debouncedSearchQuery = refDebounced(searchQuery, 500);

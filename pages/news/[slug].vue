@@ -127,6 +127,20 @@
                 <span>Por Cinemagoria Lab</span>
               </div>
 
+              <!-- Trailer embed -->
+              <div v-if="article.trailer_youtube_id" class="article-trailer">
+                <div class="trailer-wrapper">
+                  <iframe
+                    :src="`https://www.youtube.com/embed/${article.trailer_youtube_id}`"
+                    title="Trailer"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                  ></iframe>
+                </div>
+              </div>
+
+              <!-- Body -->
               <div class="article-body" v-html="renderedBody"></div>
             </div>
           </div>
@@ -412,6 +426,28 @@ useHead(() => {
 .article-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
 .tag { font-size: 13px; font-weight: 600; color: #80868b; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); padding: 5px 14px; border-radius: 20px; }
 .article-divider { margin: 32px 0; height: 1px; background: linear-gradient(90deg, rgba(139,233,253,0.4), transparent 80%); }
+
+.article-trailer {
+  margin: 28px 0;
+}
+
+.trailer-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #000;
+}
+
+.trailer-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
 
 .article-byline { display: flex; align-items: center; gap: 8px; margin-bottom: 32px; font-size: 13px; font-weight: 600; color: #80868b; }
 .byline-logo { width: 18px; height: 18px; border-radius: 3px; }
