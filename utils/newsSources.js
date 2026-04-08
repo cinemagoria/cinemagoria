@@ -23,6 +23,7 @@ export const SOURCES = {
 };
 
 export const SOURCE_URLS = {
+    'Cinemagoria': 'https://cinemagoria.com/',
     'Bloody Disgusting': 'https://bloody-disgusting.com/',
     'CinemaBlend': 'https://www.cinemablend.com/',
     'Fangoria': 'https://www.fangoria.com/',

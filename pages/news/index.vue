@@ -53,15 +53,23 @@
               </button>
               
               <div class="sources-list" ref="sourcesListRef" :class="{ 'expanded': isSourcesExpanded }">
-                 <button 
-                  class="source-btn" 
+                <button
+                  class="source-btn source-btn-cinemagoria"
+                  :class="{ active: selectedSource === 'Cinemagoria' }"
+                  @click="setSource('Cinemagoria')"
+                >
+                  Cinemagoria
+                </button>
+                <div class="sources-separator"></div>
+                <button
+                  class="source-btn"
                   :class="{ active: !selectedSource }"
                   @click="setSource(null)"
                 >
                   All Sources
                 </button>
-                <button 
-                  v-for="source in currentSources" 
+                <button
+                  v-for="source in currentSources"
                   :key="source"
                   class="source-btn"
                   :class="{ active: selectedSource === source }"
@@ -82,10 +90,14 @@
           <div class="header-status">
             <h2 class="status-title" v-if="isSavedView">Saved Articles</h2>
             <h2 class="status-title" v-else-if="selectedSource">
-              Latest from 
-              <a 
-                :href="getSourceUrl(selectedSource)" 
-                target="_blank" 
+              Latest from
+              <NuxtLink v-if="selectedSource === 'Cinemagoria'" to="/news" class="source-link-header">
+                {{ selectedSource }}
+              </NuxtLink>
+              <a
+                v-else
+                :href="getSourceUrl(selectedSource)"
+                target="_blank"
                 class="source-link-header"
               >
                 {{ selectedSource }}
@@ -187,11 +199,29 @@
                       class="news-card"
                       :id="'news-item-' + item.id"
                     >
-                      <a :href="item.href" target="_blank" class="card-image" :class="{ 'has-video': item.video_id }">
-                          <img 
+                      <NuxtLink v-if="item.is_internal" :to="item.href" class="card-image">
+                          <img
                               v-if="item.image"
-                              :src="item.image" 
-                              :alt="item.title" 
+                              :src="item.image"
+                              :alt="item.title"
+                              loading="lazy"
+                          />
+                          <div class="card-source">{{ item.source.name }}</div>
+                          <button
+                            class="bookmark-btn"
+                            :class="{ 'is-saved': isSaved(item) }"
+                            @click.prevent="toggleSave(item)"
+                            :title="isSaved(item) ? 'Remove from Saved' : 'Read Later'"
+                          >
+                            <svg v-if="!isSaved(item)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><line x1="12" x2="12" y1="7" y2="13"/><line x1="15" x2="9" y1="10" y2="10"/></svg>
+                            <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="is-saved-icon"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/><path d="m9 10 2 2 4-4"/></svg>
+                          </button>
+                      </NuxtLink>
+                      <a v-else :href="item.href" target="_blank" class="card-image" :class="{ 'has-video': item.video_id }">
+                          <img
+                              v-if="item.image"
+                              :src="item.image"
+                              :alt="item.title"
                               loading="lazy"
                               @error="onImageError($event, item)"
                               class="img-lazy"
@@ -223,14 +253,18 @@
                         </div>
                         
                         <h3>
-                            <a :href="item.href" target="_blank" class="card-title-link">{{ item.title }}</a>
+                            <NuxtLink v-if="item.is_internal" :to="item.href" class="card-title-link">{{ item.title }}</NuxtLink>
+                            <a v-else :href="item.href" target="_blank" class="card-title-link">{{ item.title }}</a>
                         </h3>
-                        
+
                         <p class="card-desc">
                           {{ sanitizeDescription(item.description) }}
                         </p>
                         <div class="card-footer">
-                          <a :href="item.href" target="_blank" class="read-link">
+                          <NuxtLink v-if="item.is_internal" :to="item.href" class="read-link">
+                            Read Article
+                          </NuxtLink>
+                          <a v-else :href="item.href" target="_blank" class="read-link">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rss-icon lucide-rss"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
                             Read Article
                           </a>
@@ -809,6 +843,22 @@ watch(userEmail, (val) => {
   color: #8BE9FD;
   border-color: rgba(139, 233, 253, 0.3);
   font-weight: 600;
+}
+
+.source-btn-cinemagoria {
+  color: #fff;
+  font-weight: 600;
+}
+
+.source-btn-cinemagoria.active {
+  background: rgba(139, 233, 253, 0.2);
+  color: #8BE9FD;
+  border-color: rgba(139, 233, 253, 0.4);
+}
+
+.sources-separator {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin: 6px 10px;
 }
 
 .news-main {

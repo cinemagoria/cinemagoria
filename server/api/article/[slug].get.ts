@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
             sql: `SELECT id, slug, title_en, body_en, description_en, title_es, body_es, description_es,
                          image_url, sources_json, topics_json, published_at, created_at, is_visible
                   FROM cinemagoria_articles
-                  WHERE slug = ? AND is_visible >= 0
+                  WHERE slug = ? AND is_visible = 1
                   LIMIT 1`,
             args: [slug]
         })
