@@ -1805,15 +1805,17 @@ async function _callGemini(userPrompt) {
                 }),
             });
 
-            if (response.status === 429) {
-                console.warn(`Gemini key ${keyIdx + 1} rate limited, rotating...`);
+            if (response.status === 429 || response.status === 503 || response.status === 500) {
+                console.warn(`Gemini key ${keyIdx + 1} returned ${response.status}, rotating...`);
                 _geminiKeyIndex = (keyIdx + 1) % keys.length;
                 continue;
             }
 
             if (!response.ok) {
-                console.error('Gemini API error:', response.status);
-                return null;
+                const errBody = await response.text().catch(() => '');
+                console.error(`Gemini API error: ${response.status}`, errBody);
+                _geminiKeyIndex = (keyIdx + 1) % keys.length;
+                continue;
             }
 
             _geminiKeyIndex = keyIdx; // stick with working key
@@ -1831,34 +1833,61 @@ async function _callGemini(userPrompt) {
 }
 
 // --- OpenRouter fallback ---
+const OR_TRANSLATE_MODELS = [
+    'arcee-ai/trinity-large-preview:free',
+    'google/gemini-2.0-flash-exp:free',
+    'meta-llama/llama-3.3-70b-instruct:free',
+];
+
 async function _translateWithOpenRouter(text) {
     if (!text || !text.trim()) return null;
     if (!import.meta.client) return null;
     const apiKey = getEnv('orApiKey');
     if (!apiKey) return null;
 
-    try {
-        const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: 'arcee-ai/trinity-large-preview:free',
-                messages: [
-                    { role: 'system', content: TRANSLATE_SYSTEM_PROMPT },
-                    { role: 'user', content: TRANSLATE_REVIEW_PROMPT + text }
-                ]
-            })
-        });
-        if (!res.ok) return null;
-        const data = await res.json();
-        return data?.choices?.[0]?.message?.content?.trim() || null;
-    } catch (e) {
-        console.error('OpenRouter translate error:', e);
-        return null;
+    for (const model of OR_TRANSLATE_MODELS) {
+        try {
+            const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model,
+                    messages: [
+                        { role: 'system', content: TRANSLATE_SYSTEM_PROMPT },
+                        { role: 'user', content: TRANSLATE_REVIEW_PROMPT + text }
+                    ]
+                })
+            });
+
+            if (res.status === 429) {
+                console.warn(`OpenRouter model ${model} rate limited, trying next...`);
+                continue;
+            }
+
+            if (!res.ok) {
+                const errBody = await res.text().catch(() => '');
+                console.warn(`OpenRouter model ${model} error ${res.status}: ${errBody}, trying next...`);
+                continue;
+            }
+
+            const data = await res.json();
+            if (data?.error) {
+                console.warn(`OpenRouter model ${model} returned error:`, data.error, '- trying next...');
+                continue;
+            }
+
+            const content = data?.choices?.[0]?.message?.content?.trim();
+            if (content) return content;
+        } catch (e) {
+            console.error(`OpenRouter model ${model} exception:`, e);
+        }
     }
+
+    console.error('All OpenRouter models exhausted');
+    return null;
 }
 
 // Overviews cache helpers
