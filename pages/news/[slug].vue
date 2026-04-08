@@ -133,7 +133,7 @@
               <div v-if="article.trailer_youtube_id" class="article-trailer">
                 <div class="trailer-wrapper">
                   <iframe
-                    :src="\`https://www.youtube.com/embed/\${article.trailer_youtube_id}\`"
+                    :src="`https://www.youtube.com/embed/${article.trailer_youtube_id}`"
                     title="Trailer"
                     frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
