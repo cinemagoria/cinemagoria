@@ -139,19 +139,7 @@ export default {
         return pubDate >= dateLimit;
       });
 
-      const seenSources = new Set();
-      const distinctItems = [];
-
-      for (const item of allItems) {
-        const sourceName = item.source ? item.source.name : 'Unknown';
-        if (!seenSources.has(sourceName)) {
-            seenSources.add(sourceName);
-            distinctItems.push(item);
-        }
-      }
-
-
-      return distinctItems.sort((a, b) => {
+      return allItems.sort((a, b) => {
         return new Date(b.published_at) - new Date(a.published_at);
       });
     }
@@ -161,7 +149,7 @@ export default {
       try {
         this.pending = true;
         this.error = null;
-        const data = await $fetch('/api/news');
+        const data = await $fetch('/api/news', { params: { source: 'Cinemagoria' } });
         this.data = data;
         if (data && data.results) {
           data.results.forEach(a => {

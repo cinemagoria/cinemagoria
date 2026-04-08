@@ -5,10 +5,10 @@
         <div :class="$style.column">
           <h4 :class="$style.heading">Recursos</h4>
           <ul :class="$style.links">
-            <li><nuxt-link to="/contact">Contacto</nuxt-link></li>
             <li><nuxt-link to="/changelog">Últimas Novedades</nuxt-link></li>
-            <li><nuxt-link to="/usage-policies">Privacidad y Términos</nuxt-link></li>
             <li><a href="#" @click.prevent="openCookiePreferences">Preferencias de Cookies</a></li>
+            <li><nuxt-link to="/usage-policies">Privacidad y Términos</nuxt-link></li>
+            <li><nuxt-link to="/contact">Contacto</nuxt-link></li>
           </ul>
         </div>
 
@@ -19,6 +19,9 @@
               </a>
               <a href="mailto:hello@cinemagoria.com" aria-label="Email">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M0 3v18h24V3zm21.518 2L12 12.713 2.482 5zM2 19V7.183l10 8.104 10-8.104V19z"/></svg>
+              </a>
+              <a href="/api/article/rss" target="_blank" rel="noopener" aria-label="RSS Feed">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
               </a>
            </div>
         </div>
