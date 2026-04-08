@@ -17,6 +17,7 @@ export const SOURCES = {
 };
 
 export const SOURCE_URLS = {
+    'Cinemagoria': 'https://cinemagoria.com/',
     'Abandomoviez': 'https://abandomoviez.net/',
     'Cine O\'culto': 'https://cineoculto.com/',
     'CineMaldito': 'https://www.cinemaldito.com/',
