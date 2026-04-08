@@ -1918,5 +1918,13 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1775669122/cinemagoria/backdrops/noir_1598323.webp",
     "poster_path": "/t40m4IhBRcs0wW13YpWenZxaJ7I.jpg",
     "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1029639,
+    "media_type": "movie",
+    "trailer_key": "eBc9lMilNRM",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1775668269/cinemagoria/backdrops/hero_1029639.webp",
+    "poster_path": "/aiva43A64GM59u2rUYc9HK02NP7.jpg",
+    "force_enrichment": true
   }
 ]
