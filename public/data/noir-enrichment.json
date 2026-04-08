@@ -18,10 +18,10 @@
   {
     "tmdb_id": 950028,
     "media_type": "movie",
-    "trailer_key": null,
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1774466136/cinemagoria/backdrops/noir_950028_v2.webp",
+    "trailer_key": "OJ19I9q_hOQ",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1775623759/cinemagoria/backdrops/noir_950028.webp",
     "poster_path": "/vJRFj5ri9Zm7Tg0Tn7pBmOtXqKb.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1458099,
