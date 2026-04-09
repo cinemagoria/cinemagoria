@@ -181,7 +181,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         }
     };
 
-    const [sundanceList, berlinaleList, rotterdamList, slamdanceList, sxswList, romfordList, bifffList, baficiList, trendingMovies, trendingTv, featured] = await Promise.all([
+    const [sundanceList, berlinaleList, rotterdamList, slamdanceList, sxswList, romfordList, bifffList, baficiList, cannesList, trendingMovies, trendingTv, featured] = await Promise.all([
         fetchFestivalMovies('sundance'),
         fetchFestivalMovies('berlinale'),
         fetchFestivalMovies('rotterdam'),
@@ -190,15 +190,25 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         fetchFestivalMovies('romford'),
         fetchFestivalMovies('bifff'),
         fetchFestivalMovies('bafici'),
+        fetchFestivalMovies('cannes'),
         fetchWithRefill('movie', 20, 3),
         fetchWithRefill('tv', 20, 6),
         fetchHero()
     ]);
     
       const FEATURED_ORDER = [
-        'The Ozu Diaries',
-        'Un balcon à Limoges',
-        'Phantoms of July',
+        // cannes 2026
+        'Gentle Monster',
+        'Colony',
+        'Parallel Tales',
+        'Minotaur',
+        'Fjord',
+        'Fatherland',
+        'Visitation',
+        'Full Phil',
+        'All of a Sudden',
+        'Teenage Sex and Death at Camp Miasma',
+        'Bitter Christmas',
         // bafici 2026
         'In-I In Motion',
         'Heysel 85',
@@ -208,11 +218,8 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Sorella di clausura',
         'Nova \'78',
         'Forest High',
-        'Hair, Paper, Water...',
         // bifff 2026
-        'Orfeo',
         'Mārama',
-        'Sister',
         'Corporate Retreat',
         'Tristes Tropiques',
         'Sicko',
@@ -240,8 +247,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Wishful Thinking',
         'Sender',        
         // slamdance 2026
-        'Whisperings of the Moon', 
-        'The Bulldogs', 
+        'Whisperings of the Moon',
         'Dump of Untitled Pieces', 
         'Zumeca',
         // romford 2026
@@ -304,7 +310,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
     
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
     
-    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList, ...romfordList, ...bifffList, ...baficiList];
+    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList, ...romfordList, ...bifffList, ...baficiList, ...cannesList];
     
     let mixedFestivalFilms = allFestivalFilms.filter(f => {
         const t = norm(f.title);
