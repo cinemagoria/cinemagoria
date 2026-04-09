@@ -50,6 +50,17 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
           Noticias
         </NuxtLink>
+        <ClientOnly>
+          <button
+            class="hero-save-btn"
+            :class="{ 'is-saved': isArticleSaved }"
+            @click="toggleSave"
+            :title="isArticleSaved ? 'Eliminar de guardados' : 'Guardar artículo'"
+          >
+            <svg v-if="!isArticleSaved" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><line x1="12" x2="12" y1="7" y2="13"/><line x1="15" x2="9" y1="10" y2="10"/></svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="is-saved-icon"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/><path d="m9 10 2 2 4-4"/></svg>
+          </button>
+        </ClientOnly>
       </div>
 
       <div class="news-section">
@@ -167,9 +178,100 @@ import MarkdownIt from 'markdown-it'
 
 const md = new MarkdownIt({ breaks: true })
 const route = useRoute()
+const config = useRuntimeConfig()
+const { $bus } = useNuxtApp()
 const isMounted = ref(false)
+const isArticleSaved = ref(false)
+const savedLink = ref(null)
 
-onMounted(() => { isMounted.value = true })
+onMounted(async () => {
+  isMounted.value = true
+  await checkSavedStatus()
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('auth-changed', checkSavedStatus)
+  }
+})
+
+onUnmounted(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('auth-changed', checkSavedStatus)
+  }
+})
+
+async function checkSavedStatus() {
+  const email = localStorage.getItem('email')?.replace(/['"]+/g, '')
+  if (email) {
+    try {
+      const res = await fetch(`${config.public.tursoBackendUrl}/news/saved/${email}`)
+      const data = await res.json()
+      if (data.success && data.articles) {
+        const match = data.articles.find(a => a.link === `/news/${route.params.slug}` || a.link?.includes(route.params.slug))
+        if (match) {
+          isArticleSaved.value = true
+          savedLink.value = match.link
+        } else {
+          isArticleSaved.value = false
+          savedLink.value = null
+        }
+      }
+    } catch (e) {
+      console.error('Error checking saved status:', e)
+    }
+  } else {
+    isArticleSaved.value = false
+    savedLink.value = null
+  }
+}
+
+async function toggleSave() {
+  const email = localStorage.getItem('email')?.replace(/['"]+/g, '')
+  if (!email) {
+    $bus.$emit('show-auth-modal')
+    return
+  }
+
+  const link = `/news/${route.params.slug}`
+  const wasSaved = isArticleSaved.value
+  isArticleSaved.value = !wasSaved
+
+  try {
+    const url = `${config.public.tursoBackendUrl}/news/saved`
+    const method = wasSaved ? 'DELETE' : 'POST'
+
+    let body
+    if (wasSaved) {
+      body = { userEmail: email, link: savedLink.value || link }
+    } else {
+      body = {
+        userEmail: email,
+        article: {
+          title: article.value?.title_es || '',
+          link: link,
+          image: article.value?.image_url || '',
+          source: 'Cinemagoria',
+          published_at: article.value?.published_at,
+        }
+      }
+    }
+
+    const response = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+    if (!response.ok) throw new Error('Failed to update')
+
+    if (wasSaved) {
+      savedLink.value = null
+    } else {
+      savedLink.value = link
+    }
+  } catch (e) {
+    console.error('Error toggling save:', e)
+    isArticleSaved.value = wasSaved
+  }
+}
 
 const { data, pending, error } = await useAsyncData(`article-es-${route.params.slug}`, () =>
   $fetch(`/api/article/${route.params.slug}`)
@@ -285,17 +387,15 @@ useHead(() => {
   background: linear-gradient(#000, #000) padding-box,
               linear-gradient(to right, #1E5164, #8AE8FC) border-box;
   overflow: hidden;
-  height: 0;
-  padding-bottom: 35%;
+  aspect-ratio: 21 / 9;
+  max-height: 500px;
 }
 
 .hero-img {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center center;
   display: block;
 }
 
@@ -325,6 +425,48 @@ useHead(() => {
   font-weight: 500;
   text-decoration: none;
   transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.hero-save-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hero-save-btn:hover {
+  background: rgba(139, 233, 253, 0.2);
+  border-color: #8BE9FD;
+  color: #8BE9FD;
+  transform: scale(1.08);
+}
+
+.hero-save-btn.is-saved {
+  background: #8BE9FD;
+  border-color: #8BE9FD;
+  color: #000;
+}
+
+.hero-save-btn.is-saved:hover {
+  background: #a5eefe;
+  transform: scale(1.08);
+}
+
+.hero-save-btn .is-saved-icon {
+  stroke: #000;
 }
 
 .hero-back-btn:hover {
@@ -549,6 +691,6 @@ useHead(() => {
 }
 
 @media (min-width: 901px) and (max-width: 1200px) {
-  .article-hero { padding-bottom: 40%; }
+  .article-hero { max-height: 400px; }
 }
 </style>
