@@ -309,7 +309,7 @@ const showSchedulePending = computed(() => schedule.value.length === 0);
 
 const formatDate = (dateStr) => {
     const options = { weekday: 'long', month: 'long', day: 'numeric' };
-    return new Date(dateStr).toLocaleDateString('es-ES', options);
+    return new Date(dateStr + 'T00:00:00').toLocaleDateString('es-ES', options);
 };
 
 const formatTime = (timeStr) => {
