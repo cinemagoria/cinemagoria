@@ -199,31 +199,35 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         fetchHero()
     ]);
     
-      const FEATURED_ORDER = [
+     const FEATURED_ORDER = [
         // cannes 2026
         'Gentle Monster',
         'Colony',
-        'Parallel Tales',
         'Minotaur',
-        'Fjord',
+        'Parallel Tales',
         'Fatherland',
+        'Fjord',
         'Visitation',
-        'Full Phil',
-        'All of a Sudden',
-        'Teenage Sex and Death at Camp Miasma',
         'Bitter Christmas',
+        'All of a Sudden',
+        'Full Phil',
+        'The Unknown',
+        'Hope|cannes',
+        'Teenage Sex and Death at Camp Miasma',
+        'Her Private Hell',
         // bafici 2026
-        'In-I In Motion',
-        'Heysel 85',
         'Los caminantes de la calle',
+        'In-I In Motion',
         'No Mercy',
-        'El infierno está encantador - Gulp. 1985',
+        'Heysel 85',
         'Sorella di clausura',
         'Nova \'78',
         'Forest High',
+        'The Ozu Diaries',
+        'El infierno está encantador - Gulp. 1985',
         // bifff 2026
-        'Mārama',
         'Corporate Retreat',
+        'Mārama',
         'Tristes Tropiques',
         'Sicko',
         'Appofeniacs',
@@ -237,15 +241,15 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'I Love Boosters',
         'Mile End Kicks',
         'The Audacity',
+        'Never After Dark',
         'Obsession',
         'Love Language',
-        'Stormbound',
-        'Dead Eyes',
-        'Seekers of Infinite Love',
-        'Never After Dark',
         'Imposters',
         'American Dollhouse',
         'Mickey',
+        'Stormbound',
+        'Seekers of Infinite Love',
+        'Dead Eyes',
         'Ugly Cry',
         'Wishful Thinking',
         'Sender',        
@@ -255,19 +259,18 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Zumeca',
         // romford 2026
         'Spoiling You',
-        'House of Abraham',
         // berlinale 2026
         'Yellow Letters',
         'Rose',
-        'If I Were Alive',
-        'In a Whisper',
-        'Isabel',
         'Nina Roza',
-        'A Prayer for the Dying',
         'Queen at sea',
+        'In a Whisper',
+        'If I Were Alive',
+        'A Prayer for the Dying',
         'Paradise',
         'Wolfram',
         'At the sea',
+        'Salvation',
         'Narciso',
         'Lali',
         'The Red Hangar',
@@ -292,6 +295,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Supporting Role',
         'Badak',
         // sundance 2026
+        'To Hold a Mountain',
         'The Weight',
         'Shame and Money',
         'undertone',
@@ -302,7 +306,6 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Tuner',
         'The Invite',
         'The Gallerist',
-        'To Hold a Mountain',
         'Chasing Summer',
         'Big Girls Don\'t Cry',
         'Time and Water',
@@ -310,7 +313,6 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Josephine',
         'Saccharine',
     ];
-
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
     
     const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList, ...romfordList, ...bifffList, ...baficiList, ...cannesList];
@@ -319,20 +321,28 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         const t = norm(f.title);
         if (f.title.includes('Kurtulu')) return true; 
         if (f.title.includes('A voix basse') || f.title.includes('À voix basse')) return true;
-        return FEATURED_ORDER.some(o => norm(o) === t);
+        return FEATURED_ORDER.some(o => {
+            const [oTitle, oFest] = o.split('|');
+            if (oFest) return norm(oTitle) === t && f.festival_source === oFest;
+            return norm(oTitle) === t;
+        });
     });
     
     mixedFestivalFilms.sort((a, b) => {
-        const getIdx = (title) => {
+        const getIdx = (title, festival) => {
              const t = norm(title);
              if (title.includes('Kurtulu')) return FEATURED_ORDER.findIndex(x => x.startsWith('Kurtul'));
              if (title.includes('voix basse')) return FEATURED_ORDER.findIndex(x => x.includes('voix basse'));
              
-             return FEATURED_ORDER.findIndex(o => norm(o) === t);
+             return FEATURED_ORDER.findIndex(o => {
+                 const [oTitle, oFest] = o.split('|');
+                 if (oFest) return norm(oTitle) === t && festival === oFest;
+                 return norm(oTitle) === t;
+             });
         };
         
-        let idxA = getIdx(a.title);
-        let idxB = getIdx(b.title);
+        let idxA = getIdx(a.title, a.festival_source);
+        let idxB = getIdx(b.title, b.festival_source);
         
         if (idxA === -1) idxA = 999;
         if (idxB === -1) idxB = 999;
