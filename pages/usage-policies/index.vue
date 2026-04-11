@@ -80,7 +80,7 @@
         </h2>
 
         <h2 class="text-center">
-          <strong>Agregación de Noticias:</strong> Los contenidos se obtienen de fuentes RSS públicas con fines de indexación. Cinemagoria no modifica las noticias de origen y muestra únicamente la información proporcionada por dichas fuentes (como título, descripción y metadatos). No es posible leer artículos completos dentro de la plataforma: toda interacción redirige al sitio original, siendo este el único entorno donde puede accederse al contenido íntegro, garantizando que el tráfico, las impresiones y la monetización correspondan exclusivamente al medio editorial. Adicionalmente, la plataforma puede publicar contenidos editoriales propios generados de forma automatizada o asistida, los cuales se ofrecen con fines informativos y pueden contener errores, omisiones o imprecisiones. Las imágenes se utilizan únicamente con fines de identificación bajo principios de uso legítimo.
+          <strong>Agregación de Noticias:</strong> Los contenidos se obtienen de fuentes RSS públicas con fines de indexación. Cinemagoria no modifica las noticias de origen y muestra únicamente la información proporcionada por dichas fuentes (como título, descripción y metadatos), en el formato en que estas son distribuidas. No es posible leer artículos completos dentro de la plataforma: toda interacción redirige al sitio original, siendo este el único entorno donde puede accederse al contenido íntegro, garantizando que el tráfico, las impresiones y la monetización correspondan exclusivamente al medio editorial. Adicionalmente, la plataforma puede publicar contenidos editoriales propios generados de forma automatizada o asistida a partir de múltiples fuentes públicas. Dichos contenidos pueden implicar procesos de síntesis, reformulación o estructuración automática de la información original, sin que ello implique una reproducción literal ni una correspondencia exacta con las fuentes de origen, y se ofrecen exclusivamente con fines informativos, pudiendo contener errores, omisiones, imprecisiones, inconsistencias o interpretaciones no intencionales respecto de las fuentes de origen. Las imágenes se utilizan únicamente con fines de identificación bajo principios de uso legítimo.
         </h2>
 
         <h2 class="text-center">
@@ -150,7 +150,7 @@
           Para consultas sobre estos términos o políticas, puede escribir a <strong>hello@cinemagoria.com</strong>.
         </h2>
 
-        <h2 class="title-secondary custom-center" style="font-size: 12px; margin-top:20px;"><strong>Última actualización:</strong> 6 de Abril del 2026</h2>
+        <h2 class="title-secondary custom-center" style="font-size: 12px; margin-top:20px;"><strong>Última actualización:</strong> 11 de Abril del 2026</h2>
       </div>
     </section>
   </main>  
