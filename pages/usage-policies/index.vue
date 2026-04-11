@@ -80,7 +80,7 @@
           </h2>
 
           <h2 class="text-center">
-            <strong>News Aggregation:</strong> Content is sourced from public RSS feeds for indexing purposes. Cinemagoria does not modify source material and only displays the information provided (such as titles, descriptions, and metadata). Full articles cannot be read within the platform; all interactions redirect to the original publisher, ensuring that traffic, impressions, and monetization remain with the source. Additionally, the platform may publish its own editorial content generated or assisted through automated processes, which is provided for informational purposes and may contain errors, omissions, or inaccuracies. Images are displayed solely for identification under fair use principles.
+            <strong>News Aggregation:</strong> Content is obtained from publicly available RSS feeds for indexing purposes. Cinemagoria does not modify original news content and displays only the information provided by such sources (such as title, description, and metadata), in the format in which it is distributed. Full articles cannot be read within the platform: all interactions redirect to the original site, which is the sole environment where the complete content can be accessed, ensuring that traffic, impressions, and monetization remain exclusively with the original publisher. Additionally, the platform may publish its own editorial content generated in an automated or assisted manner from multiple public sources. Such content may involve processes of synthesis, reformulation, or automated structuring of the original information, without implying literal reproduction or exact correspondence with the source material, and is provided exclusively for informational purposes, and may contain errors, omissions, inaccuracies, inconsistencies, or unintentional interpretations relative to the original sources. Images are used solely for identification purposes under fair use principles.
           </h2>
 
           <h2 class="text-center">
@@ -150,7 +150,7 @@
             For inquiries regarding these terms or policies, please contact <strong>hello@cinemagoria.com</strong>.
           </h2>
 
-          <h2 class="title-secondary custom-center" style="font-size: 12px; margin-top:20px;"><strong>Last updated:</strong> April 6, 2026</h2>
+          <h2 class="title-secondary custom-center" style="font-size: 12px; margin-top:20px;"><strong>Last updated:</strong> April 11, 2026</h2>
       </div>
       <br>
     </section>
