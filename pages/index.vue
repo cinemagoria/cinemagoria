@@ -196,7 +196,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         fetchHero()
     ]);
     
-        const FEATURED_ORDER = [
+    const FEATURED_ORDER = [
         // cannes 2026
         'Gentle Monster',
         'Colony',
@@ -205,6 +205,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Fatherland',
         'Fjord',
         'Visitation',
+        'El Partido',
         'Bitter Christmas',
         'All of a Sudden',
         'Full Phil',
