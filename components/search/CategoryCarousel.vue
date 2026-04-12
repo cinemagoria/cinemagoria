@@ -23,8 +23,15 @@
         <div v-for="item in items" :key="`${keyPrefix}-${item.id}`" class="carousel-item">
           <Card :item="item" />
         </div>
-        <div v-if="loading && hasMore" class="carousel-loader">
-          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 44 44" stroke="#8BE9FD"><g fill="none" fill-rule="evenodd" stroke-width="2"><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="-0.9s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="-0.9s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle></g></svg>
+        <div v-if="hasMore" class="carousel-load-more" :style="{ height: cardHeight + 'px' }">
+          <button
+            class="load-more-btn"
+            :disabled="categoryLoading"
+            @click.stop="$emit('loadMore')"
+          >
+            <svg v-if="categoryLoading" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 44 44" stroke="#8BE9FD"><g fill="none" fill-rule="evenodd" stroke-width="2"><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="0s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="0s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle><circle cx="22" cy="22" r="1"><animate attributeName="r" begin="-0.9s" dur="1.8s" values="1; 20" calcMode="spline" keyTimes="0; 1" keySplines="0.165, 0.84, 0.44, 1" repeatCount="indefinite"/><animate attributeName="stroke-opacity" begin="-0.9s" dur="1.8s" values="1; 0" calcMode="spline" keyTimes="0; 1" keySplines="0.3, 0.61, 0.355, 1" repeatCount="indefinite"/></circle></g></svg>
+            <span v-else>Cargar Más</span>
+          </button>
         </div>
       </div>
 
@@ -55,6 +62,7 @@ export default {
     keyPrefix: { type: String, required: true },
     hasMore: { type: Boolean, default: false },
     loading: { type: Boolean, default: false },
+    categoryLoading: { type: Boolean, default: false },
   },
 
   emits: ['loadMore'],
@@ -64,22 +72,32 @@ export default {
       collapsed: false,
       disableLeft: true,
       disableRight: false,
+      cardHeight: 0,
     };
   },
 
   watch: {
     items() {
-      this.$nextTick(() => this.updateNav());
+      this.$nextTick(() => {
+        this.updateNav();
+        this.calcCardHeight();
+      });
     },
     collapsed(val) {
       if (!val) {
-        this.$nextTick(() => this.updateNav());
+        this.$nextTick(() => {
+          this.updateNav();
+          this.calcCardHeight();
+        });
       }
     },
   },
 
   mounted() {
-    this.$nextTick(() => this.updateNav());
+    this.$nextTick(() => {
+      this.updateNav();
+      this.calcCardHeight();
+    });
   },
 
   methods: {
@@ -90,14 +108,23 @@ export default {
       this.disableRight = el.scrollLeft + el.clientWidth >= el.scrollWidth - 10;
     },
 
+    calcCardHeight() {
+      const track = this.$refs.track;
+      if (!track) return;
+      const firstCard = track.querySelector('.carousel-item');
+      if (!firstCard) return;
+      const cardTop = firstCard.getBoundingClientRect().top;
+      const lastEl = firstCard.querySelector('.card__rating') 
+        || firstCard.querySelector('.card__release-year') 
+        || firstCard.querySelector('.card__name');
+      if (lastEl) {
+        const h = lastEl.getBoundingClientRect().bottom - cardTop;
+        if (h > 0) this.cardHeight = h;
+      }
+    },
+
     onScroll: debounce(function() {
       this.updateNav();
-      const el = this.$refs.track;
-      if (!el) return;
-      const nearEnd = el.scrollWidth - (el.scrollLeft + el.clientWidth) < 300;
-      if (nearEnd && this.hasMore && !this.loading) {
-        this.$emit('loadMore');
-      }
     }, 50),
 
     scroll(direction) {
@@ -249,10 +276,39 @@ export default {
   }
 }
 
-.carousel-loader {
-  flex: 0 0 60px;
+.carousel-load-more {
+  flex: 0 0 120px;
   display: flex;
+}
+
+.load-more-btn {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(139, 233, 253, 0.06) 0%, rgba(139, 233, 253, 0.02) 100%);
+  border: 1px dashed rgba(139, 233, 253, 0.25);
+  color: #8BE9FD;
+  font-size: 1.15rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  line-height: 1.3;
+  padding: 10px;
+  gap: 8px;
+}
+
+.load-more-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(139, 233, 253, 0.12) 0%, rgba(139, 233, 253, 0.05) 100%);
+  border-color: rgba(139, 233, 253, 0.5);
+  transform: scale(1.03);
+}
+
+.load-more-btn:disabled {
+  cursor: wait;
+  opacity: 0.7;
 }
 </style>
