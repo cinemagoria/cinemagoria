@@ -178,6 +178,35 @@
                 </div>
               </div>
 
+              <!-- Carousel -->
+              <div v-if="article.carousel_assets?.length" class="article-carousel">
+                <div class="carousel-viewport" ref="carouselViewport">
+                  <div class="carousel-track" :style="{ transform: `translateX(-${carouselIndex * 100}%)` }">
+                    <div v-for="(img, i) in article.carousel_assets" :key="i" class="carousel-slide">
+                      <img :src="img" :alt="`${article.title_en} — image ${i + 1}`" loading="lazy" />
+                    </div>
+                  </div>
+                </div>
+                <div v-if="article.carousel_assets.length > 1" class="carousel-controls">
+                  <button class="carousel-btn" :disabled="carouselIndex === 0" @click="carouselIndex--" aria-label="Previous image">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M14 6l-6 6l6 6v-12" /></svg>
+                  </button>
+                  <div class="carousel-dots">
+                    <button
+                      v-for="(_, i) in article.carousel_assets"
+                      :key="i"
+                      class="carousel-dot"
+                      :class="{ active: i === carouselIndex }"
+                      @click="carouselIndex = i"
+                      :aria-label="`Go to image ${i + 1}`"
+                    ></button>
+                  </div>
+                  <button class="carousel-btn" :disabled="carouselIndex === article.carousel_assets.length - 1" @click="carouselIndex++" aria-label="Next image">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M10 18l6 -6l-6 -6v12" /></svg>
+                  </button>
+                </div>
+              </div>
+
               <!-- Body -->
               <div class="article-body" v-html="renderedBody"></div>
             </div>
@@ -201,6 +230,8 @@ const isMounted = ref(false)
 const isArticleSaved = ref(false)
 const savedLink = ref(null)
 const userEmail = ref(null)
+const carouselIndex = ref(0)
+const carouselViewport = ref(null)
 
 const handleAuthChange = () => {
   const email = localStorage.getItem('email')?.replace(/['"]+/g, '')
@@ -846,6 +877,100 @@ useHead(() => {
 
 .article-body :deep(li) {
   margin-bottom: 10px;
+}
+
+/* ── Carousel ──────────────────────────────────────────────────── */
+.article-carousel {
+  margin: 28px 0;
+}
+
+.carousel-viewport {
+  overflow: hidden;
+  border-radius: 10px;
+  background: #000;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.carousel-slide {
+  min-width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.carousel-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  min-height: 56px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(139, 233, 253, 0.15);
+  border: 1.5px solid rgba(139, 233, 253, 0.4);
+  color: #8BE9FD;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.carousel-btn svg {
+  min-width: 36px;
+  min-height: 36px;
+  flex-shrink: 0;
+}
+
+.carousel-btn:hover:not(:disabled) {
+  background: rgba(139, 233, 253, 0.2);
+  border-color: #8BE9FD;
+}
+
+.carousel-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.carousel-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.carousel-dot.active {
+  background: #8BE9FD;
+  box-shadow: 0 0 6px rgba(139, 233, 253, 0.4);
+}
+
+.carousel-dot:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.4);
 }
 
 /* ── Not Found ─────────────────────────────────────────────────── */
