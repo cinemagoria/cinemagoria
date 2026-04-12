@@ -202,24 +202,25 @@ const isArticleSaved = ref(false)
 const savedLink = ref(null)
 const userEmail = ref(null)
 
-onMounted(async () => {
-  isMounted.value = true
+const handleAuthChange = () => {
   const email = localStorage.getItem('email')?.replace(/['"]+/g, '')
   userEmail.value = email || null
+  checkSavedStatus()
+}
+
+onMounted(async () => {
+  isMounted.value = true
+  handleAuthChange()
   await checkSavedStatus()
 
   if (typeof window !== 'undefined') {
-    window.addEventListener('auth-changed', () => {
-      const newEmail = localStorage.getItem('email')?.replace(/['"]+/g, '')
-      userEmail.value = newEmail || null
-      checkSavedStatus()
-    })
+    window.addEventListener('auth-changed', handleAuthChange)
   }
 })
 
 onUnmounted(() => {
   if (typeof window !== 'undefined') {
-    window.removeEventListener('auth-changed', checkSavedStatus)
+    window.removeEventListener('auth-changed', handleAuthChange)
   }
 })
 

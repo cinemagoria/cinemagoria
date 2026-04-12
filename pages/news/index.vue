@@ -392,6 +392,9 @@ onUnmounted(() => {
   if (observer) {
     observer.disconnect();
   }
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('auth-changed', handleAuthChange);
+  }
 });
 
 watch([newsItems, () => route.query.highlight], ([items, highlightId]) => {
@@ -508,22 +511,21 @@ async function fetchSavedArticlesList() {
     }
 }
 
+const handleAuthChange = () => {
+  const email = localStorage.getItem('email');
+  userEmail.value = email || null;
+  if (isSavedView.value) fetchSavedArticlesList();
+};
+
 onMounted(() => {
   if (typeof window !== 'undefined') {
-    const email = localStorage.getItem('email');
-    userEmail.value = email || null;
+    handleAuthChange();
     
     if (isSavedView.value && userEmail.value) {
         fetchSavedArticlesList();
-    } else if (isSavedView.value && !userEmail.value) {
-         // Potentially redirect or just show empty states
     }
 
-    window.addEventListener('auth-changed', () => {
-       const newEmail = localStorage.getItem('email');
-       userEmail.value = newEmail || null;
-       if (isSavedView.value) fetchSavedArticlesList();
-    });
+    window.addEventListener('auth-changed', handleAuthChange);
   }
 });
 
