@@ -31,21 +31,35 @@
       <div v-if="suggestedCorrection" class="suggestion">
         <p>Did you mean: <a href="#" @click.prevent="useCorrection">{{ suggestedCorrection }}</a>?</p>
       </div>
+
+      <div class="search-guide-cta">
+        <p>Didn't find what you were looking for?</p>
+      </div>
     </div>
+
+    <SearchGuideModal v-if="showSearchGuide" @close="showSearchGuide = false" />
 
     <div v-if="items.results && items.results.length > 0 && items.results[0].matched_by_id" class="id-match-banner">
         <span>Coincidencia por {{ items.results[0].matched_by_id }} ID</span>
     </div>
 
 
-    <div class="discover-search-bar">
-      <button
-        class="filters-toggle-btn"
-        :class="{ 'filters-toggle-btn--active': discoverOpen }"
-        @click="discoverOpen = !discoverOpen">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11.646 20.965a1.67 1.67 0 0 1 -1.321 -1.282a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c.728 .177 1.154 .71 1.279 1.303" /><path d="M14.985 11.694a3 3 0 1 0 -3.29 3.29" /><path d="M15 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M20.2 20.2l1.8 1.8" /></svg>
-        <span>Advanced Search</span>
-      </button>
+    <div class="discover-search-bar" :class="{ 'discover-search-bar--centered': items.results && items.results.length === 0 && !loading && userResults.length === 0 && localNews.length === 0 }">
+      <div class="discover-search-bar__buttons">
+        <button
+          class="filters-toggle-btn"
+          @click="showSearchGuide = true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /><path d="M10 13l0 .01" /><path d="M10 10a1.5 1.5 0 1 0 -1.14 -2.474" /></svg>
+          <span>Search Guide</span>
+        </button>
+        <button
+          class="filters-toggle-btn"
+          :class="{ 'filters-toggle-btn--active': discoverOpen }"
+          @click="discoverOpen = !discoverOpen">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11.646 20.965a1.67 1.67 0 0 1 -1.321 -1.282a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c.728 .177 1.154 .71 1.279 1.303" /><path d="M14.985 11.694a3 3 0 1 0 -3.29 3.29" /><path d="M15 18a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M20.2 20.2l1.8 1.8" /></svg>
+          <span>Advanced Search</span>
+        </button>
+      </div>
       <transition name="discover-expand">
         <DiscoverSearch v-if="discoverOpen" />
       </transition>
@@ -132,6 +146,7 @@ import NewsResultCard from '~/components/search/NewsResultCard.vue';
 import CategorySection from '~/components/search/CategorySection.vue';
 import CategoryCarousel from '~/components/search/CategoryCarousel.vue';
 import DiscoverSearch from '~/components/search/DiscoverSearch.vue';
+import SearchGuideModal from '~/components/search/SearchGuideModal.vue';
 
 import axios from 'axios';
 
@@ -141,7 +156,8 @@ export default {
     NewsResultCard,
     CategorySection,
     CategoryCarousel,
-    DiscoverSearch
+    DiscoverSearch,
+    SearchGuideModal
   },
   props: {
     title: {
@@ -173,6 +189,7 @@ export default {
       typoCheckInProgress: false,
       suggestedCorrection: null,
       discoverOpen: false,
+      showSearchGuide: false,
       collapsedSections: {
         news: false,
         festivals: false,
@@ -198,22 +215,22 @@ export default {
       return this.items && this.items.page < this.items.total_pages;
     },
     people() {
-      return this.results.filter(i => i.media_type === 'person').sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+      return this.results.filter(i => i.media_type === 'person').sort((a, b) => (b._contextScore || 0) - (a._contextScore || 0));
     },
     festivals() {
       return this.results.filter(i => i.media_type === 'festival');
     },
     productionCompanies() {
-      return this.results.filter(i => i.media_type === 'production').sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+      return this.results.filter(i => i.media_type === 'production').sort((a, b) => (b._contextScore || 0) - (a._contextScore || 0));
     },
     streamingServices() {
-      return this.results.filter(i => i.media_type === 'streaming').sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+      return this.results.filter(i => i.media_type === 'streaming').sort((a, b) => (b._contextScore || 0) - (a._contextScore || 0));
     },
     movies() {
-      return this.results.filter(i => i.media_type === 'movie').sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+      return this.results.filter(i => i.media_type === 'movie').sort((a, b) => (b._contextScore || 0) - (a._contextScore || 0));
     },
     tvShows() {
-      return this.results.filter(i => i.media_type === 'tv').sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+      return this.results.filter(i => i.media_type === 'tv').sort((a, b) => (b._contextScore || 0) - (a._contextScore || 0));
     },
     others() {
       const knownTypes = ['person', 'festival', 'production', 'streaming', 'movie', 'tv'];
@@ -722,5 +739,54 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.search-guide-cta {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.search-guide-cta p {
+  font-size: 1.4rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.search-guide-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 38px;
+  padding: 0 1.2rem;
+  background: transparent;
+  border: 1px solid rgba(139, 233, 253, 0.25);
+  border-radius: 8px;
+  color: #8BE9FD;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  svg { stroke: #8BE9FD; flex-shrink: 0; }
+  &:hover { border-color: rgba(139, 233, 253, 0.5); background: rgba(139, 233, 253, 0.07); }
+}
+
+.discover-search-bar__buttons {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.discover-search-bar--centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .discover-search-bar__buttons {
+    justify-content: center;
+  }
+}
 </style>
+
 

@@ -1023,6 +1023,88 @@ export function getPerson(id) {
     });
 };
 
+function parseSearchContext(rawQuery) {
+    const yearMatch = rawQuery.match(/\b(19\d{2}|20\d{2})\b/);
+    const year = yearMatch ? yearMatch[1] : null;
+    
+    let baseQuery = rawQuery;
+    let personQuery = null;
+    
+    if (rawQuery.includes('+')) {
+        const parts = rawQuery.split('+').map(p => p.trim()).filter(Boolean);
+        if (parts.length >= 2) {
+            baseQuery = parts[0];
+            personQuery = parts.slice(1).join(' ').trim();
+        }
+    } else if (year) {
+        baseQuery = rawQuery.replace(yearMatch[0], '').replace(/\s{2,}/g, ' ').trim();
+    }
+    
+    return { baseQuery, year, personQuery, originalQuery: rawQuery };
+}
+
+async function _detectPersonContext(personQuery) {
+    try {
+        const personResponse = await axios.get(`${apiUrl}/search/person`, {
+            params: {
+                api_key: getEnv('API_KEY'),
+                query: personQuery,
+                language: getEnv('API_LANG'),
+            }
+        });
+        
+        const persons = personResponse.data.results || [];
+        if (persons.length === 0) return { personCreditIds: new Set(), personName: null };
+        
+        const topPerson = persons[0];
+
+        try {
+            const personDetail = await axios.get(`${apiUrl}/person/${topPerson.id}`, {
+                params: {
+                    api_key: getEnv('API_KEY'),
+                    append_to_response: 'combined_credits',
+                    language: getEnv('API_LANG'),
+                }
+            });
+            const credits = personDetail.data.combined_credits || {};
+            const allCreditIds = new Set();
+            (credits.cast || []).forEach(c => allCreditIds.add(c.id));
+            (credits.crew || []).forEach(c => allCreditIds.add(c.id));
+            return { personCreditIds: allCreditIds, personName: topPerson.name };
+        } catch(e) {
+            const creditIds = new Set((topPerson.known_for || []).map(k => k.id));
+            return { personCreditIds: creditIds, personName: topPerson.name };
+        }
+    } catch (e) {
+        return { personCreditIds: new Set(), personName: null };
+    }
+}
+
+function _scoreResults(results, context) {
+    const { year, personCreditIds } = context;
+    
+    results.forEach(item => {
+        let score = 0;
+        
+        if (year && (item.media_type === 'movie' || item.media_type === 'tv')) {
+            const releaseDate = item.release_date || item.first_air_date || '';
+            if (releaseDate.startsWith(year)) {
+                score += 100;
+            }
+        }
+        
+        if (personCreditIds && personCreditIds.size > 0 && (item.media_type === 'movie' || item.media_type === 'tv')) {
+            if (personCreditIds.has(item.id)) {
+                score += 200;
+            }
+        }
+        
+        item._contextScore = score;
+    });
+    
+    return results;
+}
+
 export async function search(query, page = 1) {
     const imdbIdPattern = /^tt\d{7,}$/;
     const tmdbIdPattern = /^\d+$/;
@@ -1109,12 +1191,20 @@ export async function search(query, page = 1) {
         };
     }
 
+    const context = parseSearchContext(query);
+    const searchQuery = context.baseQuery || query;
+
+    let personContext = { personCreditIds: new Set(), personName: null };
+    if (page === 1 && context.personQuery) {
+        personContext = await _detectPersonContext(context.personQuery);
+    }
+
     try {
         const searchMulti = axios.get(`${apiUrl}/search/multi?include_adult=false`, {
             params: {
                 api_key: getEnv('API_KEY'),
                 language: getEnv('API_LANG'),
-                query,
+                query: searchQuery,
                 page,
             },
         });
@@ -1122,12 +1212,25 @@ export async function search(query, page = 1) {
         const searchCompanies = axios.get(`${apiUrl}/search/company`, {
             params: {
                 api_key: getEnv('API_KEY'),
-                query,
+                query: searchQuery,
                 page,
             },
         });
 
-        const [multiResponse, companyResponse] = await Promise.all([searchMulti, searchCompanies]);
+        let [multiResponse, companyResponse] = await Promise.all([searchMulti, searchCompanies]);
+        
+        if (multiResponse.data.results.length === 0 && searchQuery !== query) {
+            const fallbackMulti = await axios.get(`${apiUrl}/search/multi?include_adult=false`, {
+                params: {
+                    api_key: getEnv('API_KEY'),
+                    language: getEnv('API_LANG'),
+                    query: query,
+                    page,
+                },
+            });
+            multiResponse = fallbackMulti;
+        }
+
         const results = multiResponse.data.results;
 
         const festivalMatch = SUPPORTED_FESTIVALS.find(f =>
@@ -1192,7 +1295,16 @@ export async function search(query, page = 1) {
                 }));
         }
 
-        multiResponse.data.results = [...streamingResults, ...companyResults, ...enrichedMultiResults];
+        const allResults = [...streamingResults, ...companyResults, ...enrichedMultiResults];
+        
+        if (page === 1) {
+            _scoreResults(allResults, {
+                year: context.year,
+                personCreditIds: personContext.personCreditIds
+            });
+        }
+
+        multiResponse.data.results = allResults;
         return multiResponse.data;
     } catch (error) {
         throw error;
