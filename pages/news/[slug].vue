@@ -156,6 +156,34 @@
                 <div v-if="article.topics?.length" class="article-tags">
                   <span v-for="topic in article.topics" :key="topic" class="tag">{{ topic }}</span>
                 </div>
+
+                <!-- Related TMDB entities -->
+                <div v-if="relatedEntities.length" class="related-entities">
+                  <h4 class="related-entities-label">IN THIS ARTICLE:</h4>
+                  <div class="related-entities-list">
+                    <a
+                      v-for="entity in relatedEntities"
+                      :key="`${entity.type}-${entity.id}`"
+                      :href="`/${entity.type === 'tv' ? 'tv' : entity.type}/${entity.id}`"
+                      target="_blank"
+                      class="related-entity"
+                    >
+                      <img
+                        v-if="entity.image"
+                        :src="entity.image"
+                        :alt="entity.name"
+                        class="related-entity-img"
+                        loading="lazy"
+                      />
+                      <div v-else class="related-entity-img related-entity-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                      </div>
+                      <div class="related-entity-info">
+                        <span class="related-entity-name">{{ entity.name }}</span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
               </header>
 
               <div class="article-divider"></div>
@@ -221,6 +249,7 @@
 <script setup>
 import UserNav from '@/components/global/UserNav';
 import MarkdownIt from 'markdown-it'
+import { apiImgUrl } from '@/utils/api'
 
 const md = new MarkdownIt({ breaks: true })
 const route = useRoute()
@@ -337,6 +366,43 @@ const { data, pending, error } = await useAsyncData(`article-${route.params.slug
 )
 
 const article = computed(() => data.value?.article || null)
+
+const relatedEntities = ref([])
+
+async function fetchRelatedEntities() {
+  const ids = article.value?.related_tmdb_ids
+  if (!ids?.length) { relatedEntities.value = []; return }
+
+  const config_ = useRuntimeConfig()
+  const apiKey = config_.public.apiKey
+
+  const results = await Promise.all(
+    ids.map(async (entity) => {
+      try {
+        const endpoint = entity.type === 'movie'
+          ? `https://api.themoviedb.org/3/movie/${entity.id}`
+          : entity.type === 'tv'
+            ? `https://api.themoviedb.org/3/tv/${entity.id}`
+            : `https://api.themoviedb.org/3/person/${entity.id}`
+
+        const res = await $fetch(endpoint, { params: { api_key: apiKey } })
+
+        const name = res.title || res.name || 'Unknown'
+        const imagePath = entity.type === 'person' ? res.profile_path : res.poster_path
+        const image = imagePath ? `${apiImgUrl}/w185${imagePath}` : null
+
+        return { type: entity.type, id: entity.id, name, image }
+      } catch {
+        return null
+      }
+    })
+  )
+  relatedEntities.value = results.filter(Boolean)
+}
+
+watch(article, (val) => {
+  if (val?.related_tmdb_ids?.length) fetchRelatedEntities()
+}, { immediate: true })
 
 const SOURCE_NAMES = {
   'deadline.com': 'Deadline',
@@ -769,6 +835,108 @@ useHead(() => {
   padding: 5px 14px;
   border-radius: 20px;
   letter-spacing: 0.02em;
+}
+
+/* ── Related TMDB entities ──────────────────────────────────────── */
+.related-entities {
+  margin-top: 24px;
+}
+
+.related-entities-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8BE9FD;
+  margin: 0 0 14px;
+}
+
+.related-entities-list {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.related-entities-list::-webkit-scrollbar {
+  display: none;
+}
+
+.related-entity {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  flex-shrink: 0;
+  width: 110px;
+  scroll-snap-align: start;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.related-entity:hover {
+  border-color: #8BE9FD;
+}
+
+.related-entity-img {
+  width: 100%;
+  height: 165px;
+  object-fit: cover;
+  background: #0d0d0d;
+  display: block;
+}
+
+.related-entity-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: #444;
+}
+
+.related-entity-info {
+  background: rgba(0, 0, 0, 0.9);
+  padding: 10px 6px;
+}
+
+.related-entity-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: #8BE9FD;
+  text-align: center;
+  line-height: 1.3;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  transition: color 0.3s ease;
+}
+
+.related-entity:hover .related-entity-name {
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .related-entity {
+    width: 90px;
+    border-radius: 8px;
+  }
+  .related-entity-img {
+    height: 135px;
+  }
+  .related-entity-info {
+    padding: 8px 4px;
+  }
+  .related-entity-name {
+    font-size: 11px;
+    max-width: 90px;
+  }
 }
 
 /* ── Divider ─────────────────────────────────────────────────────── */
