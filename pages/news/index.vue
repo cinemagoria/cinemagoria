@@ -15,7 +15,7 @@
           <div class="sidebar-card">
             
             <div class="sidebar-header-actions" :class="{ 'active': isSearchActive }">
-              <NuxtLink :to="{ path: '/news', query: { view: 'saved' } }" class="saved-articles-link" :class="{ 'active': isSavedView }">
+              <NuxtLink v-if="userEmail" :to="{ path: '/news', query: { view: 'saved' } }" class="saved-articles-link" :class="{ 'active': isSavedView }">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z" clip-rule="evenodd" /></svg>
                 <span>Artículos Guardados</span>
               </NuxtLink>
@@ -207,6 +207,7 @@
                           />
                           <div class="card-source">{{ item.source.name }}</div>
                           <button
+                            v-if="userEmail"
                             class="bookmark-btn"
                             :class="{ 'is-saved': isSaved(item) }"
                             @click.prevent="toggleSave(item)"
@@ -236,6 +237,7 @@
                           <div class="card-source">{{ item.source.name }}</div>
 
                           <button 
+                            v-if="userEmail"
                             class="bookmark-btn"
                             :class="{ 'is-saved': isSaved(item) }"
                             @click.prevent="toggleSave(item)"
@@ -389,6 +391,9 @@ onUnmounted(() => {
   if (observer) {
     observer.disconnect();
   }
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('auth-changed', handleAuthChange);
+  }
 });
 
 watch([newsItems, () => route.query.highlight], ([items, highlightId]) => {
@@ -506,20 +511,21 @@ async function fetchSavedArticlesList() {
     }
 }
 
+const handleAuthChange = () => {
+  const email = localStorage.getItem('email');
+  userEmail.value = email || null;
+  if (isSavedView.value) fetchSavedArticlesList();
+};
+
 onMounted(() => {
   if (typeof window !== 'undefined') {
-    const email = localStorage.getItem('email');
-    userEmail.value = email || null;
+    handleAuthChange();
     
     if (isSavedView.value && userEmail.value) {
         fetchSavedArticlesList();
     }
 
-    window.addEventListener('auth-changed', () => {
-       const newEmail = localStorage.getItem('email');
-       userEmail.value = newEmail || null;
-       if (isSavedView.value) fetchSavedArticlesList();
-    });
+    window.addEventListener('auth-changed', handleAuthChange);
   }
 });
 

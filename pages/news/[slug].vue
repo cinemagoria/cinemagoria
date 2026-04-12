@@ -52,6 +52,7 @@
         </NuxtLink>
         <ClientOnly>
           <button
+            v-if="userEmail"
             class="hero-save-btn"
             :class="{ 'is-saved': isArticleSaved }"
             @click="toggleSave"
@@ -120,10 +121,24 @@
           <div class="article-main">
             <div class="article-card">
               <header class="article-header">
-                <NuxtLink to="/news" class="mobile-back-btn">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                  Noticias
-                </NuxtLink>
+                <div class="mobile-header-row">
+                  <NuxtLink to="/news" class="mobile-back-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                    Noticias
+                  </NuxtLink>
+                  <ClientOnly>
+                    <button
+                      v-if="userEmail"
+                      class="mobile-save-btn"
+                      :class="{ 'is-saved': isArticleSaved }"
+                      @click="toggleSave"
+                      :title="isArticleSaved ? 'Eliminar de guardados' : 'Guardar artículo'"
+                    >
+                      <svg v-if="!isArticleSaved" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><line x1="12" x2="12" y1="7" y2="13"/><line x1="15" x2="9" y1="10" y2="10"/></svg>
+                      <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="is-saved-icon"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/><path d="m9 10 2 2 4-4"/></svg>
+                    </button>
+                  </ClientOnly>
+                </div>
                 <time :datetime="article.published_at" class="article-date">
                   {{ formatDate(article.published_at) }}
                 </time>
@@ -183,19 +198,27 @@ const { $bus } = useNuxtApp()
 const isMounted = ref(false)
 const isArticleSaved = ref(false)
 const savedLink = ref(null)
+const userEmail = ref(null)
+
+const handleAuthChange = () => {
+  const email = localStorage.getItem('email')?.replace(/['"]+/g, '')
+  userEmail.value = email || null
+  checkSavedStatus()
+}
 
 onMounted(async () => {
   isMounted.value = true
+  handleAuthChange()
   await checkSavedStatus()
 
   if (typeof window !== 'undefined') {
-    window.addEventListener('auth-changed', checkSavedStatus)
+    window.addEventListener('auth-changed', handleAuthChange)
   }
 })
 
 onUnmounted(() => {
   if (typeof window !== 'undefined') {
-    window.removeEventListener('auth-changed', checkSavedStatus)
+    window.removeEventListener('auth-changed', handleAuthChange)
   }
 })
 
@@ -672,6 +695,14 @@ useHead(() => {
   display: none;
 }
 
+.mobile-save-btn {
+  display: none;
+}
+
+.mobile-header-row {
+  display: none;
+}
+
 @media (max-width: 900px) {
   .content-wrapper { flex-direction: column; }
   .article-sidebar { width: 100%; order: 2; }
@@ -679,8 +710,32 @@ useHead(() => {
   .article-hero { display: none; }
   .mobile-hero { display: block; margin: 16px 0; border-radius: 10px; overflow: hidden; }
   .mobile-hero img { width: 100%; height: auto; display: block; border-radius: 10px; }
-  .mobile-back-btn { display: inline-flex; align-items: center; gap: 4px; color: #8BE9FD; font-size: 14px; font-weight: 600; text-decoration: none; margin-bottom: 12px; }
+  .mobile-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .mobile-back-btn { display: inline-flex; align-items: center; gap: 4px; color: #8BE9FD; font-size: 14px; font-weight: 600; text-decoration: none; margin-bottom: 0; }
   .mobile-back-btn:hover { opacity: 0.8; }
+  .mobile-save-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(139, 233, 253, 0.1);
+    border: 1px solid rgba(139, 233, 253, 0.2);
+    color: #8BE9FD;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    margin-bottom: 0;
+  }
+  .mobile-save-btn:hover { background: rgba(139, 233, 253, 0.2); border-color: #8BE9FD; }
+  .mobile-save-btn.is-saved { background: #8BE9FD; border-color: #8BE9FD; color: #000; }
+  .mobile-save-btn .is-saved-icon { stroke: #000; }
   .sidebar-card { position: static; display: flex; flex-wrap: wrap; gap: 12px; padding: 15px; }
   .sidebar-title { width: 100%; margin-top: 8px !important; }
   .sidebar-meta-list { flex-direction: row; flex-wrap: wrap; gap: 16px; }
