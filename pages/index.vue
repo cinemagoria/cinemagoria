@@ -208,6 +208,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Fatherland',
         'Fjord',
         'Visitation',
+        'El Partido',
         'Bitter Christmas',
         'All of a Sudden',
         'Full Phil',
@@ -313,6 +314,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Josephine',
         'Saccharine',
     ];
+    
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
     
     const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList, ...romfordList, ...bifffList, ...baficiList, ...cannesList];
