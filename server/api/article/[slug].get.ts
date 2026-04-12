@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
         const result = await db.execute({
             sql: `SELECT id, slug, title_en, body_en, description_en, title_es, body_es, description_es,
                          image_url, sources_json, topics_json, published_at, created_at, is_visible,
-                         trailer_youtube_id
+                         trailer_youtube_id, carousel_assets
                   FROM cinemagoria_articles
                   WHERE slug = ? AND is_visible = 1
                   LIMIT 1`,
@@ -51,6 +51,7 @@ export default defineEventHandler(async (event) => {
                 published_at: row.published_at,
                 created_at: row.created_at,
                 trailer_youtube_id: row.trailer_youtube_id || null,
+                carousel_assets: row.carousel_assets ? (row.carousel_assets as string).split(',').map(u => u.trim()).filter(Boolean) : [],
             }
         }
     } catch (error: any) {
