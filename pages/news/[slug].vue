@@ -164,7 +164,7 @@
                     <a
                       v-for="entity in relatedEntities"
                       :key="`${entity.type}-${entity.id}`"
-                      :href="`/${entity.type === 'tv' ? 'tv' : entity.type}/${entity.id}`"
+                      :href="`/${entity.type}/${entity.id}`"
                       target="_blank"
                       class="related-entity"
                     >
@@ -370,11 +370,11 @@ const article = computed(() => data.value?.article || null)
 const relatedEntities = ref([])
 
 async function fetchRelatedEntities() {
+  relatedEntities.value = []
   const ids = article.value?.related_tmdb_ids
-  if (!ids?.length) { relatedEntities.value = []; return }
+  if (!ids?.length) return
 
-  const config_ = useRuntimeConfig()
-  const apiKey = config_.public.apiKey
+  const apiKey = config.public.apiKey
 
   const results = await Promise.all(
     ids.map(async (entity) => {
@@ -400,8 +400,8 @@ async function fetchRelatedEntities() {
   relatedEntities.value = results.filter(Boolean)
 }
 
-watch(article, (val) => {
-  if (val?.related_tmdb_ids?.length) fetchRelatedEntities()
+watch(article, () => {
+  if (process.client) fetchRelatedEntities()
 }, { immediate: true })
 
 const SOURCE_NAMES = {
