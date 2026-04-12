@@ -180,7 +180,7 @@
 
               <!-- Carousel -->
               <div v-if="article.carousel_assets?.length" class="article-carousel">
-                <div class="carousel-viewport" ref="carouselViewport">
+                <div class="carousel-viewport">
                   <div class="carousel-track" :style="{ transform: `translateX(-${carouselIndex * 100}%)` }">
                     <div v-for="(img, i) in article.carousel_assets" :key="i" class="carousel-slide">
                       <img :src="img" :alt="`${article.title_en} — image ${i + 1}`" loading="lazy" />
@@ -231,7 +231,10 @@ const isArticleSaved = ref(false)
 const savedLink = ref(null)
 const userEmail = ref(null)
 const carouselIndex = ref(0)
-const carouselViewport = ref(null)
+
+watch(() => route.params.slug, () => {
+  carouselIndex.value = 0
+})
 
 const handleAuthChange = () => {
   const email = localStorage.getItem('email')?.replace(/['"]+/g, '')
