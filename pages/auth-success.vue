@@ -163,13 +163,16 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  min-height: 100dvh;
   background-color: #030406;
-  background-image: 
+  background-image:
     radial-gradient(circle at 15% 50%, rgba(31, 84, 103, 0.15), transparent 25%),
     radial-gradient(circle at 85% 30%, rgba(139, 233, 253, 0.1), transparent 25%);
   padding: 20px;
+  box-sizing: border-box;
   font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  margin: -8px;
+  margin: 0;
+  overflow: hidden;
 }
 
 .auth-success-card {
@@ -179,10 +182,9 @@ export default {
   padding: 30px;
   width: 90%;
   max-width: 500px;
-  max-height: 90vh;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 
-              0 0 0 1px rgba(31, 84, 103, 0.5), 
-              inset 0 0 20px rgba(139, 233, 253, 0.05); 
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5),
+              0 0 0 1px rgba(31, 84, 103, 0.5),
+              inset 0 0 20px rgba(139, 233, 253, 0.05);
   backdrop-filter: blur(20px);
   text-align: center;
   overflow: hidden;
@@ -365,8 +367,45 @@ export default {
 @media screen and (max-width: 576px) {
   .auth-success-card {
     width: 95%;
-    max-height: 95vh;
-    padding: 30px 20px;
+    padding: 24px 16px;
+  }
+  .success-icon-wrapper {
+    width: 130px;
+    height: 130px;
+    margin-bottom: 24px;
+  }
+  .success-icon {
+    width: 110px;
+    height: 110px;
+  }
+  .glow-text {
+    font-size: 22px;
+  }
+  .subtitle {
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  .redirect-container {
+    margin-top: 20px;
+    padding: 12px;
+  }
+}
+
+@media screen and (max-height: 640px) {
+  .success-icon-wrapper {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 16px;
+  }
+  .success-icon {
+    width: 80px;
+    height: 80px;
+  }
+  .glow-text {
+    font-size: 20px;
+  }
+  .redirect-container {
+    margin-top: 16px;
   }
 }
 
