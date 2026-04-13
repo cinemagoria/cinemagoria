@@ -163,13 +163,16 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  min-height: 100dvh;
   background-color: #030406;
-  background-image: 
+  background-image:
     radial-gradient(circle at 15% 50%, rgba(31, 84, 103, 0.15), transparent 25%),
     radial-gradient(circle at 85% 30%, rgba(139, 233, 253, 0.1), transparent 25%);
   padding: 20px;
+  box-sizing: border-box;
   font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  margin: -8px;
+  margin: 0;
+  overflow: hidden;
 }
 
 .auth-success-card {
@@ -179,9 +182,8 @@ export default {
   padding: 30px;
   width: 90%;
   max-width: 500px;
-  max-height: 90vh;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 
-              0 0 0 1px rgba(31, 84, 103, 0.5), 
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5),
+              0 0 0 1px rgba(31, 84, 103, 0.5),
               inset 0 0 20px rgba(139, 233, 253, 0.05);
   backdrop-filter: blur(20px);
   text-align: center;
@@ -203,7 +205,6 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 420px;
 }
 
 .glow-text {
