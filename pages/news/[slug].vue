@@ -191,8 +191,8 @@
                 <span>Por Cinemagoria Lab</span>
               </div>
 
-              <!-- Trailer embed -->
-              <div v-if="article.trailer_youtube_id" class="article-trailer">
+              <!-- Trailer embed (solo cuando no hay carousel) -->
+              <div v-if="article.trailer_youtube_id && !article.carousel_assets?.length" class="article-trailer">
                 <div class="trailer-wrapper">
                   <iframe
                     :src="`https://www.youtube.com/embed/${article.trailer_youtube_id}`"
@@ -212,29 +212,42 @@
                       <img :src="img" :alt="`${article.title_es} — imagen ${i + 1}`" loading="lazy" />
                     </div>
                   </div>
+                  <template v-if="article.carousel_assets.length > 1">
+                    <button class="carousel-btn carousel-btn-prev" :disabled="carouselIndex === 0" @click="carouselIndex--" aria-label="Imagen anterior">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M14 6l-6 6l6 6v-12" /></svg>
+                    </button>
+                    <button class="carousel-btn carousel-btn-next" :disabled="carouselIndex === article.carousel_assets.length - 1" @click="carouselIndex++" aria-label="Siguiente imagen">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M10 18l6 -6l-6 -6v12" /></svg>
+                    </button>
+                  </template>
                 </div>
-                <div v-if="article.carousel_assets.length > 1" class="carousel-controls">
-                  <button class="carousel-btn" :disabled="carouselIndex === 0" @click="carouselIndex--" aria-label="Imagen anterior">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M14 6l-6 6l6 6v-12" /></svg>
-                  </button>
-                  <div class="carousel-dots">
-                    <button
-                      v-for="(_, i) in article.carousel_assets"
-                      :key="i"
-                      class="carousel-dot"
-                      :class="{ active: i === carouselIndex }"
-                      @click="carouselIndex = i"
-                      :aria-label="`Ir a imagen ${i + 1}`"
-                    ></button>
-                  </div>
-                  <button class="carousel-btn" :disabled="carouselIndex === article.carousel_assets.length - 1" @click="carouselIndex++" aria-label="Siguiente imagen">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M10 18l6 -6l-6 -6v12" /></svg>
-                  </button>
+                <div v-if="article.carousel_assets.length > 1" class="carousel-dots">
+                  <button
+                    v-for="(_, i) in article.carousel_assets"
+                    :key="i"
+                    class="carousel-dot"
+                    :class="{ active: i === carouselIndex }"
+                    @click="carouselIndex = i"
+                    :aria-label="`Ir a imagen ${i + 1}`"
+                  ></button>
                 </div>
               </div>
 
               <!-- Body -->
               <div class="article-body" v-html="renderedBody"></div>
+
+              <!-- Trailer al final (cuando hay carousel y trailer) -->
+              <div v-if="article.trailer_youtube_id && article.carousel_assets?.length" class="article-trailer">
+                <div class="trailer-wrapper">
+                  <iframe
+                    :src="`https://www.youtube.com/embed/${article.trailer_youtube_id}`"
+                    title="Trailer"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                  ></iframe>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -741,21 +754,30 @@ useHead(() => {
 
 /* ── Carousel ── */
 .article-carousel { margin: 28px 0; }
-.carousel-viewport { overflow: hidden; border-radius: 10px; background: #000; }
+.carousel-viewport { position: relative; overflow: hidden; border-radius: 10px; background: #000; }
 .carousel-track { display: flex; transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
 .carousel-slide { min-width: 100%; aspect-ratio: 16 / 9; }
 .carousel-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.carousel-controls { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 12px; }
 .carousel-btn {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
   display: flex; align-items: center; justify-content: center;
-  min-width: 56px; min-height: 56px; width: 56px; height: 56px; border-radius: 50%;
-  background: rgba(139, 233, 253, 0.15); border: 1.5px solid rgba(139, 233, 253, 0.4);
-  color: #8BE9FD; cursor: pointer; transition: all 0.2s ease; flex-shrink: 0;
+  width: 36px; height: 36px; min-width: 36px; min-height: 36px; border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45); border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff; cursor: pointer; transition: all 0.2s ease; flex-shrink: 0;
+  backdrop-filter: blur(4px);
 }
-.carousel-btn svg { min-width: 36px; min-height: 36px; flex-shrink: 0; }
-.carousel-btn:hover:not(:disabled) { background: rgba(139, 233, 253, 0.2); border-color: #8BE9FD; }
-.carousel-btn:disabled { opacity: 0.3; cursor: default; }
-.carousel-dots { display: flex; gap: 8px; }
+.carousel-btn-prev { left: 10px; }
+.carousel-btn-next { right: 10px; }
+.carousel-btn svg { min-width: 20px; min-height: 20px; flex-shrink: 0; }
+.carousel-btn:hover:not(:disabled) { background: rgba(0, 0, 0, 0.65); border-color: rgba(255, 255, 255, 0.3); }
+.carousel-btn:disabled { opacity: 0.25; cursor: default; }
+@media (max-width: 768px) {
+  .carousel-btn { width: 30px; height: 30px; min-width: 30px; min-height: 30px; }
+  .carousel-btn svg { min-width: 16px; min-height: 16px; }
+  .carousel-btn-prev { left: 6px; }
+  .carousel-btn-next { right: 6px; }
+}
+.carousel-dots { display: flex; justify-content: center; gap: 8px; margin-top: 12px; }
 .carousel-dot {
   width: 8px; height: 8px; border-radius: 50%;
   background: rgba(255, 255, 255, 0.2); border: none; padding: 0;
