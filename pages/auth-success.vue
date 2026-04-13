@@ -367,8 +367,45 @@ export default {
 @media screen and (max-width: 576px) {
   .auth-success-card {
     width: 95%;
-    max-height: 95vh;
-    padding: 30px 20px;
+    padding: 24px 16px;
+  }
+  .success-icon-wrapper {
+    width: 130px;
+    height: 130px;
+    margin-bottom: 24px;
+  }
+  .success-icon {
+    width: 110px;
+    height: 110px;
+  }
+  .glow-text {
+    font-size: 22px;
+  }
+  .subtitle {
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  .redirect-container {
+    margin-top: 20px;
+    padding: 12px;
+  }
+}
+
+@media screen and (max-height: 640px) {
+  .success-icon-wrapper {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 16px;
+  }
+  .success-icon {
+    width: 80px;
+    height: 80px;
+  }
+  .glow-text {
+    font-size: 20px;
+  }
+  .redirect-container {
+    margin-top: 16px;
   }
 }
 
