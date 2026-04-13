@@ -2094,5 +2094,21 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776047472/cinemagoria/backdrops/noir_1651162.webp",
     "poster_path": "/mV0Phnxv4V8QdYM2PVd2QI4Ylvs.jpg",
     "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1553969,
+    "media_type": "movie",
+    "trailer_key": "g9B_DOrir-s",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776045788/cinemagoria/backdrops/hero_1553969.webp",
+    "poster_path": "/9rOCIYYT8Q76FHgl3Nm5ofuc6TQ.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1664760,
+    "media_type": "movie",
+    "trailer_key": "MlaDnWvMBws",
+    "backdrop_path": "/ptBZVnF4cHnS7VdfCJ3iHWsYmOK.jpg",
+    "poster_path": "/egHpZwmlfOQtRpTQJCZRlwpI4PJ.jpg",
+    "force_enrichment": false
   }
 ]
