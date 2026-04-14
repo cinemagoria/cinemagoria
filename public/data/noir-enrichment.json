@@ -1720,14 +1720,6 @@
     "force_enrichment": false
   },
   {
-    "tmdb_id": 224941,
-    "media_type": "tv",
-    "trailer_key": null,
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1774789274/cinemagoria/backdrops/noir_224941.webp",
-    "poster_path": "/1poL3gRMc2tt82fazUzCBtOZjgR.jpg",
-    "force_enrichment": false
-  },
-  {
     "tmdb_id": 298425,
     "media_type": "tv",
     "trailer_key": "MFGic50-O-0",
@@ -2109,6 +2101,14 @@
     "trailer_key": "jxU8FU3o75A",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776142314/cinemagoria/backdrops/noir_1291595.webp",
     "poster_path": "/yBqyJlKMgbmIcTKVLCgtAYBQx6Z.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 224941,
+    "media_type": "tv",
+    "trailer_key": "cL-HUAbenBk",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1774789274/cinemagoria/backdrops/noir_224941.webp",
+    "poster_path": "/1poL3gRMc2tt82fazUzCBtOZjgR.jpg",
     "force_enrichment": true
   }
 ]
