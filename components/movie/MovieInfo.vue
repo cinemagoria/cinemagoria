@@ -26,9 +26,9 @@
       </div>
       
       <div :class="$style.right">
-        <div v-if="item.overview" :class="$style.overview">
+        <div v-if="item.overview || MANUAL_OVERVIEWS[item.id]" :class="$style.overview">
           <h2 :class="$style.title">Storyline</h2>
-          <div v-html="item.overview" />
+          <div v-html="item.overview || MANUAL_OVERVIEWS[item.id]" />
         </div>
 
         <div :class="$style.stats">
@@ -307,7 +307,7 @@
 import { apiImgUrl, getMovieProviders, getMovieReviews, getTraktReviews, getECReviews, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating } from '~/utils/api'; 
 import { getReleaseStatusContext } from '~/utils/helpers';
 import DOMPurify from 'dompurify';
-import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants'; 
+import { SUPPORTED_PRODUCTION_COMPANIES, MANUAL_OVERVIEWS } from '~/utils/constants';
 import { name, directors, poster as posterMixin } from '~/mixins/Details';
 import Filters from '~/mixins/Filters';
 import ExternalLinks from '~/components/ExternalLinks';

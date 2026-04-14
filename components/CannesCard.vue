@@ -44,6 +44,13 @@
 
       <div class="card__logo-container">
         <img
+          v-if="isCriticsChoice"
+          src="/festivals/cannes/sc_cannes_film_festival_2026_logo.png"
+          alt="Cannes Film Festival – Critics' Choice"
+          class="card__cannes-logo"
+        >
+        <img
+          v-else
           src="/festivals/cannes/cannes_film_festival_2026_logo.png"
           alt="Cannes Film Festival selection"
           class="card__cannes-logo"
@@ -76,6 +83,10 @@ export default {
     item: {
       type: Object,
       required: true,
+    },
+    category: {
+      type: String,
+      default: '',
     },
     context: {
       type: String,
@@ -131,6 +142,9 @@ export default {
   },
 
   computed: {
+    isCriticsChoice () {
+      return String(this.item?.section || this.item?.category || '').toUpperCase().includes('CRITICS');
+    },
     poster () {
       if (this.poster_path) return this.poster_path;
       if (this.item.profile_path) {
