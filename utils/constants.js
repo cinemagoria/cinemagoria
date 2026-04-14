@@ -1753,13 +1753,7 @@ export const MANUAL_OVERVIEWS = {
 };
 
 export const MANUAL_FESTIVAL_BADGES = {
-    1433583: ['berlinale'],
-    1458099: ['berlinale'],
-    1363387: ['berlinale'],
-    1422562: ['berlinale'],
-    1599249: ['rotterdam'],
-    1447885: ['berlinale'],
-    1414395: ['berlinale'],
+    // Add tmdb_id: ['festival'] entries here for films needing manual badge support
 };
 
 
