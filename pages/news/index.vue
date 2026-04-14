@@ -11,81 +11,42 @@
 
     <div class="news-section">
       <div class="content-wrapper">
-        <aside class="news-sidebar">
-          <div class="sidebar-card">
-            
-            <div class="sidebar-header-actions" :class="{ 'active': isSearchActive }">
+        <div class="news-main">
+          <div class="news-toolbar" :class="{ 'search-active': isSearchActive }">
+            <div class="toolbar-left">
+              <button v-if="showBackButton" class="back-btn" @click="goHome" aria-label="Back to Cinemagoria news">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                <span class="action-label">Back</span>
+              </button>
+
               <NuxtLink v-if="userEmail" :to="{ path: '/news', query: { view: 'saved' } }" class="saved-articles-link" :class="{ 'active': isSavedView }">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z" clip-rule="evenodd" /></svg>
-                <span>Saved Articles</span>
+                <span class="action-label">Saved Articles</span>
               </NuxtLink>
-
-              <div class="mobile-spacer" :class="{ 'collapsed': isSearchActive }"></div>
-
-              <div class="search-wrapper" :class="{ 'active': isSearchActive }">
-                  <button class="search-toggle-btn" @click="toggleSearch" :class="{ 'active': isSearchActive }" aria-label="Toggle Search">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                  </button>
-                  
-                  <div class="search-input-container" :class="{ 'show': isSearchActive }">
-                    <input 
-                        type="text" 
-                        class="search-input" 
-                        placeholder="Search news..." 
-                        v-model="searchQuery"
-                    >
-                    <button class="clear-search-btn" @click="clearSearch" v-if="searchQuery">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                    </button>
-                  </div>
-              </div>
             </div>
 
-            <h3 class="sidebar-title">Sources</h3>
-            <div class="sources-container-mobile">
-              <button class="expand-btn" @click="toggleSourcesExpansion" :aria-label="isSourcesExpanded ? 'Collapse' : 'Expand'">
-                 <svg v-if="!isSourcesExpanded" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-down-icon lucide-chevrons-down"><path d="m7 6 5 5 5-5"/><path d="m7 13 5 5 5-5"/></svg>
-                 <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-up-icon lucide-chevrons-up"><path d="m17 11-5-5-5 5"/><path d="m17 18-5-5-5 5"/></svg>
-              </button>
+            <div class="toolbar-right" :class="{ 'active': isSearchActive }">
+              <div class="search-wrapper" :class="{ 'active': isSearchActive }">
+                <button class="search-toggle-btn" @click="toggleSearch" :class="{ 'active': isSearchActive }" aria-label="Toggle Search">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <span class="action-label">Search</span>
+                </button>
 
-              <button class="scroll-arrow left" @click="scrollSources('left')" aria-label="Scroll Left" v-if="!isSourcesExpanded">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-              </button>
-              
-              <div class="sources-list" ref="sourcesListRef" :class="{ 'expanded': isSourcesExpanded }">
-                <button
-                  class="source-btn source-btn-cinemagoria"
-                  :class="{ active: selectedSource === 'Cinemagoria' }"
-                  @click="setSource('Cinemagoria')"
-                >
-                  Cinemagoria
-                </button>
-                <div class="sources-separator"></div>
-                <button
-                  class="source-btn"
-                  :class="{ active: !selectedSource }"
-                  @click="setSource(null)"
-                >
-                  All Sources
-                </button>
-                <button
-                  v-for="source in currentSources"
-                  :key="source"
-                  class="source-btn"
-                  :class="{ active: selectedSource === source }"
-                  @click="setSource(source)"
-                >
-                  {{ source }}
-                </button>
+                <div class="search-input-container" :class="{ 'show': isSearchActive }">
+                  <input
+                    type="text"
+                    class="search-input"
+                    placeholder="Search news..."
+                    v-model="searchQuery"
+                  >
+                  <button class="clear-search-btn" @click="clearSearch" v-if="searchQuery">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                  </button>
+                </div>
               </div>
-
-              <button class="scroll-arrow right" @click="scrollSources('right')" aria-label="Scroll Right" v-if="!isSourcesExpanded">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-              </button>
             </div>
           </div>
-        </aside>
-        <div class="news-main">
+
           
           <div class="header-status">
             <h2 class="status-title" v-if="isSavedView">Saved Articles</h2>
@@ -311,7 +272,10 @@ const { $store, $bus } = useNuxtApp();
 const currentLang = ref(config.public.apiLang || 'en');
 
 
-const currentSources = computed(() => SOURCES[currentLang.value] || SOURCES['en']);
+// Third-party RSS sources are deprecated from the sidebar UI (editorial shift to
+// Cinemagoria-generated content). Their ingestion and search indexing remain intact;
+// only the sidebar listing is hidden. SOURCES is kept imported for reference/history.
+const currentSources = computed(() => []);
 const route = useRoute();
 const router = useRouter();
 const selectedSource = ref(route.query.source || 'Cinemagoria');
@@ -330,18 +294,41 @@ const toggleSearch = () => {
   }
 };
 
+const showBackButton = computed(() => {
+  return isSavedView.value
+    || !!debouncedSearchQuery.value
+    || (selectedSource.value && selectedSource.value !== 'Cinemagoria');
+});
+
+function goHome() {
+  selectedSource.value = 'Cinemagoria';
+  if (isSearchActive.value) {
+    isSearchActive.value = false;
+    searchQuery.value = '';
+  }
+  if (route.query.view === 'saved' || route.query.source) {
+    const query = { ...route.query };
+    delete query.view;
+    delete query.source;
+    router.push({ query });
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 const clearSearch = () => {
   searchQuery.value = '';
 };
 
 const { data, pending, refresh, error } = await useFetch('/api/news', {
   query: computed(() => ({
-    limit: selectedSource.value ? 100 : 200,
-    source: selectedSource.value,
+    // While searching, drop the source filter so historical third-party articles
+    // are also returned. Cinemagoria items are still surfaced first via sort below.
+    limit: debouncedSearchQuery.value ? 200 : (selectedSource.value ? 100 : 200),
+    source: debouncedSearchQuery.value ? undefined : selectedSource.value,
     lang: currentLang.value,
     q: debouncedSearchQuery.value
   })),
-  key: computed(() => `news-${currentLang.value}-${selectedSource.value || 'all'}-${debouncedSearchQuery.value}`),
+  key: computed(() => `news-${currentLang.value}-${debouncedSearchQuery.value ? 'search' : (selectedSource.value || 'all')}-${debouncedSearchQuery.value}`),
   watch: [selectedSource, debouncedSearchQuery],
   lazy: true,
   server: false,
@@ -351,7 +338,13 @@ const { data, pending, refresh, error } = await useFetch('/api/news', {
 const newsItems = computed(() => {
   if (!data.value) return [];
   const items = data.value.results || data.value || [];
+  const isSearching = !!debouncedSearchQuery.value;
   return [...items].sort((a, b) => {
+    if (isSearching) {
+      const aCine = (a.source?.name || a.source) === 'Cinemagoria' ? 0 : 1;
+      const bCine = (b.source?.name || b.source) === 'Cinemagoria' ? 0 : 1;
+      if (aCine !== bCine) return aCine - bCine;
+    }
     const dateA = new Date(a.published_at || 0).getTime();
     const dateB = new Date(b.published_at || 0).getTime();
     return dateB - dateA;
@@ -905,8 +898,115 @@ watch(userEmail, (val) => {
 
 .news-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 25px;
+}
+
+.news-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 12px 18px;
+  background: rgba(16, 26, 35, 0.85);
+  border: 1px solid hsla(0, 0%, 100%, .18);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  position: relative;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.news-toolbar .back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  background: rgba(139, 233, 253, 0.1);
+  color: #8BE9FD;
+  border: 1px solid rgba(139, 233, 253, 0.2);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.news-toolbar .back-btn:hover {
+  background: rgba(139, 233, 253, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 233, 253, 0.1);
+}
+
+.news-toolbar .back-btn .action-label {
+  display: inline;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.news-toolbar .saved-articles-link {
+  width: auto;
+  height: 44px;
+  padding: 0 18px;
+  gap: 8px;
+}
+
+.news-toolbar .saved-articles-link .action-label {
+  display: inline;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.news-toolbar .search-toggle-btn {
+  width: auto;
+  height: 44px;
+  padding: 0 18px;
+  gap: 8px;
+}
+
+.news-toolbar .search-toggle-btn .action-label {
+  display: inline;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.news-toolbar .search-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: width 0.3s ease;
+}
+
+.news-toolbar .search-input-container {
+  position: static;
+  display: block;
+  width: 0;
+  overflow: hidden;
+  opacity: 0;
+  margin-left: 0;
+  transition: width 0.35s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease, margin-left 0.3s ease;
+}
+
+.news-toolbar .search-input-container.show {
+  width: 280px;
+  opacity: 1;
+  margin-left: 10px;
 }
 
 .news-card {
@@ -1331,9 +1431,52 @@ watch(userEmail, (val) => {
     gap: 5px;
     font-size: 16px;
   }
-  
+
   .count-badge {
     align-self: center;
+  }
+}
+
+/* Responsive for new news-toolbar (sources deprecated on mobile) */
+@media (max-width: 1024px) {
+  .news-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .news-toolbar {
+    padding: 10px 12px;
+  }
+
+  .news-toolbar .saved-articles-link,
+  .news-toolbar .search-toggle-btn,
+  .news-toolbar .back-btn {
+    width: 44px;
+    padding: 0;
+    gap: 0;
+  }
+
+  .news-toolbar .saved-articles-link .action-label,
+  .news-toolbar .search-toggle-btn .action-label,
+  .news-toolbar .back-btn .action-label {
+    display: none;
+  }
+
+  .news-toolbar .search-input-container.show {
+    width: 100%;
+  }
+
+  .news-toolbar.search-active .toolbar-right {
+    flex-grow: 1;
+  }
+
+  .news-toolbar.search-active .search-wrapper {
+    flex-grow: 1;
+  }
+
+  .news-grid {
+    grid-template-columns: 1fr;
   }
 }
 
