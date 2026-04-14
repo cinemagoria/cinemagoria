@@ -154,7 +154,8 @@ export default {
     },
 
     isCriticsChoice () {
-      return String(this.category || '').toUpperCase().includes('CRITICS');
+      const source = this.category || this.item?.festival_source || this.item?.section || this.item?.category || '';
+      return String(source).toUpperCase().includes('CRITICS');
     },
 
     media () {

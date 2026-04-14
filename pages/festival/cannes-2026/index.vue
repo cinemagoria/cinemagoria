@@ -503,7 +503,40 @@ onMounted(async () => {
     padding: 4px;
     height: 48px;
     align-items: center;
-    min-width: 420px;
+    width: 650px;
+    max-width: calc(100vw - 40px);
+}
+
+@media (max-width: 768px) {
+    .segmented-control {
+        border-radius: 12px;
+        height: 44px;
+        width: calc(100vw - 40px);
+    }
+    .segmented-control label {
+        font-size: 0.85rem !important;
+        line-height: 36px !important;
+        padding: 0 2px;
+        white-space: nowrap;
+    }
+    .segmented-control label[for="tab-critics"] {
+        font-size: 0 !important;
+    }
+    .segmented-control label[for="tab-critics"]::after {
+        content: "Crítica";
+        font-size: 0.85rem;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .segmented-control .glider {
+        border-radius: 10px !important;
+    }
 }
 
 .segmented-control input[type="radio"] {
@@ -515,7 +548,7 @@ onMounted(async () => {
     z-index: 2;
     flex: 1;
     text-align: center;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
     transition: color 0.3s;

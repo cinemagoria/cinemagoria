@@ -380,6 +380,7 @@ export default {
   },
 
   computed: {
+    MANUAL_OVERVIEWS() { return MANUAL_OVERVIEWS; },
     progressElapsed() {
       if (!this.item.runtime) return '0m';
       return this.fmtMin(this.item.runtime * this.progressPercentage / 100);
