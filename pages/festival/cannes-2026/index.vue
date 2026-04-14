@@ -25,6 +25,9 @@
             <input type="radio" id="tab-films" value="films" v-model="activeTab">
             <label for="tab-films" @click="activeTab = 'films'">Catálogo</label>
 
+            <input type="radio" id="tab-critics" value="critics" v-model="activeTab">
+            <label for="tab-critics" @click="activeTab = 'critics'">Semana de la Crítica</label>
+
             <input type="radio" id="tab-schedule" value="schedule" v-model="activeTab">
             <label for="tab-schedule" @click="activeTab = 'schedule'">Horarios</label>
 
@@ -62,9 +65,42 @@
                             v-for="item in (filmsByCategory[cat] || [])"
                             :key="`${cat}-${item.id}`"
                             :item="item"
+                            :category="cat"
                         />
                     </div>
                 </transition>
+            </div>
+        </div>
+
+        <div v-if="activeTab === 'critics'" class="films-grid">
+            <div class="disclaimer-bar"><FestivalDataDisclaimer /></div>
+            <div v-if="criticsWeekFilms.length > 0" class="film-category">
+                <div class="category-header" @click="toggleCriticsOpen">
+                    <h2 class="listing__title category-title">
+                        Semana de la Crítica
+                        <span class="category-count">({{ criticsWeekFilms.length }})</span>
+                    </h2>
+                    <button class="expand-btn" :aria-label="criticsOpen ? 'Collapse' : 'Expand'">
+                        <svg v-if="criticsOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-chevrons-down-up-icon lucide-list-chevrons-down-up"><path d="M3 5h8"/><path d="M3 12h8"/><path d="M3 19h8"/><path d="m15 5 3 3 3-3"/><path d="m15 19 3-3 3 3"/></svg>
+                        <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-collapse-icon lucide-list-collapse"><path d="M10 5h11"/><path d="M10 12h11"/><path d="M10 19h11"/><path d="m3 10 3-3-3-3"/><path d="m3 20 3-3-3-3"/></svg>
+                    </button>
+                </div>
+                <transition name="slide">
+                    <div v-show="criticsOpen" class="listing__items">
+                        <CannesCard
+                            v-for="item in criticsWeekFilms"
+                            :key="`critics-${item.id}`"
+                            :item="item"
+                            category="CRITICS' CHOICE"
+                        />
+                    </div>
+                </transition>
+            </div>
+            <div v-else class="schedule-pending">
+                <div class="schedule-pending-inner">
+                    <h2 class="schedule-pending-title">Sin películas aún</h2>
+                    <p class="schedule-pending-text">Las selecciones de la Semana de la Crítica aparecerán aquí cuando sean anunciadas.</p>
+                </div>
             </div>
         </div>
 
@@ -249,7 +285,7 @@ const CATEGORY_ORDER = [
     'UN CERTAIN REGARD',
     'SPECIAL SCREENINGS',
     'MIDNIGHT SCREENINGS',
-    'CANNES PREMIERE'
+    'CANNES PREMIERE',
 ];
 
 const CATEGORY_LABELS_ES = {
@@ -274,16 +310,26 @@ const films = ref({ results: [] });
 const scheduleResponse = ref(null);
 const openDays = ref(new Set());
 const categoryOpen = ref({});
+const criticsOpen = ref(true);
+const toggleCriticsOpen = () => { criticsOpen.value = !criticsOpen.value; };
 
 const filmsByCategory = computed(() => {
     const map = Object.fromEntries(CATEGORY_ORDER.map((c) => [c, []]));
     map.OTHER = [];
     for (const f of films.value?.results || []) {
         const key = String(f.section || f.category || '').toUpperCase().trim();
+        if (key.includes('CRITICS')) continue;
         if (key && map[key]) map[key].push(f);
         else map.OTHER.push(f);
     }
     return map;
+});
+
+const criticsWeekFilms = computed(() => {
+    return (films.value?.results || []).filter((f) => {
+        const key = String(f.section || f.category || '').toUpperCase().trim();
+        return key.includes('CRITICS');
+    });
 });
 
 const orderedCategories = computed(() => {
@@ -488,7 +534,7 @@ onMounted(async () => {
     top: 4px;
     left: 4px;
     height: calc(100% - 8px);
-    width: calc((100% - 8px) / 3);
+    width: calc((100% - 8px) / 4);
     background: #8BE9FD; 
     border-radius: 16px;
     z-index: 1;
@@ -497,7 +543,8 @@ onMounted(async () => {
 
 .segmented-control .glider.info { transform: translateX(0); }
 .segmented-control .glider.films { transform: translateX(100%); }
-.segmented-control .glider.schedule { transform: translateX(200%); }
+.segmented-control .glider.critics { transform: translateX(200%); }
+.segmented-control .glider.schedule { transform: translateX(300%); }
 
 
 .festival-hero {

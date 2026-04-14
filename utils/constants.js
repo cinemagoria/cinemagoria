@@ -1748,6 +1748,10 @@ export const SUPPORTED_FESTIVALS = [
 ];
 
 
+export const MANUAL_OVERVIEWS = {
+    1666712: "Un documental que reúne a jugadores de Argentina e Inglaterra para reconstruir el partido de fútbol que ambas selecciones jugaron en 1986, tras la Guerra de las Malvinas. Testimonios de entrenadores, árbitros, hinchas, músicos y políticos, junto con imágenes de archivo inéditas, entretejen la belleza del juego con los hechos históricos que, siglos antes, pusieron en marcha el conflicto entre ambos países.",
+};
+
 export const MANUAL_FESTIVAL_BADGES = {
     1433583: ['berlinale'],
     1458099: ['berlinale'],

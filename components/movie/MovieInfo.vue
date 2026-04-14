@@ -26,13 +26,13 @@
       </div>
       
       <div :class="$style.right">
-        <div v-if="item.overview" :class="$style.overview">
+        <div v-if="item.overview || MANUAL_OVERVIEWS[item.id]" :class="$style.overview">
           <h2 :class="$style.title">Sinopsis</h2>
           <div style="position: relative; min-height: 50px;">
              <div v-if="isTranslatingSynopsis" style="position: absolute; top:0; left:0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 2;">
                 <Loader :size="30" />
             </div>
-            <div :style="isTranslatingSynopsis ? { opacity: 0.5, filter: 'blur(2px)' } : {}" v-html="translatedOverview || item.overview" />
+            <div :style="isTranslatingSynopsis ? { opacity: 0.5, filter: 'blur(2px)' } : {}" v-html="MANUAL_OVERVIEWS[item.id] || translatedOverview || item.overview" />
           </div>
         </div>
 
@@ -307,7 +307,7 @@
 import { apiImgUrl, getMovieProviders, getMovieReviews, getTraktReviews, getECReviews, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating, translateReviewsBatchWithCache, translateText } from '~/utils/api'; 
 import { getReleaseStatusContext } from '~/utils/helpers';
 import DOMPurify from 'dompurify';
-import { SUPPORTED_PRODUCTION_COMPANIES } from '~/utils/constants'; 
+import { SUPPORTED_PRODUCTION_COMPANIES, MANUAL_OVERVIEWS } from '~/utils/constants'; 
 import { name, directors, poster as posterMixin } from '~/mixins/Details';
 import Filters from '~/mixins/Filters';
 import ExternalLinks from '~/components/ExternalLinks';

@@ -133,6 +133,7 @@ export default {
         bifff: 'BifffCard',
         bafici: 'BaficiCard',
         cannes: 'CannesCard',
+        'cannes-critics-choice': 'CannesCard',
       };
       return cardMap[item.festival_source] || 'SundanceCard';
     }
