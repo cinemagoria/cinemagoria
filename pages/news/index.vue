@@ -19,7 +19,7 @@
                 <span class="action-label">Volver</span>
               </button>
 
-              <NuxtLink v-if="userEmail" :to="{ path: '/news', query: { view: 'saved' } }" class="saved-articles-link" :class="{ 'active': isSavedView }">
+              <NuxtLink v-if="userEmail" :to="{ path: '/news', query: { view: 'saved' } }" class="saved-articles-link" :class="{ 'active': isSavedView }" aria-label="Artículos Guardados">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z" clip-rule="evenodd" /></svg>
                 <span class="action-label">Artículos Guardados</span>
               </NuxtLink>
@@ -253,7 +253,7 @@
 import UserNav from '@/components/global/UserNav';
 import Loader from '@/components/Loader';
 import striptags from 'striptags';
-import { SOURCES, SOURCE_URLS } from '~/utils/newsSources';
+import { SOURCE_URLS } from '~/utils/newsSources';
 
 useHead({
   title: 'Cinemagoria — Últimas Noticias de Cine y TV',
@@ -271,10 +271,6 @@ const currentLang = ref(config.public.apiLang || 'es');
 
 
 
-// Fuentes RSS de terceros deprecadas del sidebar (alineación editorial con el motor
-// propio de Cinemagoria). La ingesta y el indexado para búsqueda se mantienen intactos;
-// solo se oculta el listado del sidebar. Se conserva el import de SOURCES como referencia.
-const currentSources = computed(() => []);
 const route = useRoute();
 const router = useRouter();
 const selectedSource = ref(route.query.source || 'Cinemagoria');
@@ -295,7 +291,7 @@ const toggleSearch = () => {
 
 const showBackButton = computed(() => {
   return isSavedView.value
-    || !!debouncedSearchQuery.value
+    || (isSearchActive.value && !!debouncedSearchQuery.value)
     || (selectedSource.value && selectedSource.value !== 'Cinemagoria');
 });
 
@@ -319,16 +315,25 @@ const clearSearch = () => {
 };
 
 const { data, pending, refresh, error } = await useFetch('/api/news', {
-  query: computed(() => ({
-    // Durante búsqueda, quitamos el filtro de source para que aparezcan también
-    // artículos históricos de third parties. Cinemagoria se prioriza vía sort abajo.
-    limit: debouncedSearchQuery.value ? 200 : (selectedSource.value ? 100 : 200),
-    source: debouncedSearchQuery.value ? undefined : selectedSource.value,
-    lang: currentLang.value,
-    q: debouncedSearchQuery.value
-  })),
-  key: computed(() => `news-${currentLang.value}-${debouncedSearchQuery.value ? 'search' : (selectedSource.value || 'all')}-${debouncedSearchQuery.value}`),
-  watch: [selectedSource, debouncedSearchQuery],
+  query: computed(() => {
+    // Gateamos en isSearchActive para que al cerrar la barra de búsqueda el
+    // fetch vuelva al feed normal de inmediato en vez de esperar el debounce
+    // de 500ms. Durante búsqueda, quitamos el filtro de source para que
+    // aparezcan también artículos históricos de third parties. Cinemagoria
+    // se prioriza vía el sort de abajo.
+    const isSearching = isSearchActive.value && !!debouncedSearchQuery.value;
+    return {
+      limit: isSearching ? 200 : (selectedSource.value ? 100 : 200),
+      source: isSearching ? undefined : selectedSource.value,
+      lang: currentLang.value,
+      q: isSearching ? debouncedSearchQuery.value : undefined
+    };
+  }),
+  key: computed(() => {
+    const isSearching = isSearchActive.value && !!debouncedSearchQuery.value;
+    return `news-${currentLang.value}-${isSearching ? 'search' : (selectedSource.value || 'all')}-${isSearching ? debouncedSearchQuery.value : ''}`;
+  }),
+  watch: [selectedSource, debouncedSearchQuery, isSearchActive],
   lazy: true,
   server: false,
   dedupe: 'defer',
@@ -337,7 +342,7 @@ const { data, pending, refresh, error } = await useFetch('/api/news', {
 const newsItems = computed(() => {
   if (!data.value) return [];
   const items = data.value.results || data.value || [];
-  const isSearching = !!debouncedSearchQuery.value;
+  const isSearching = isSearchActive.value && !!debouncedSearchQuery.value;
   return [...items].sort((a, b) => {
     if (isSearching) {
       const aCine = (a.source?.name || a.source) === 'Cinemagoria' ? 0 : 1;
