@@ -580,6 +580,7 @@ export default {
   },
 
   computed: {
+    MANUAL_OVERVIEWS() { return MANUAL_OVERVIEWS; },
     heroItem() {
       if (this.items && this.items.length > 0) {
         return this.items[this.currentIndex];
@@ -1016,17 +1017,13 @@ export default {
             if (data.results && data.results.length > 0) {
                 const film = data.results[0];
                 const isCriticsChoice = String(film.section || film.category || '').toUpperCase().includes("CRITICS");
+                if (isCriticsChoice ? !wasCannesCriticsChoice : !wasCannes) {
+                    this.isFestivalLoading = true;
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
                 if (isCriticsChoice) {
-                    if (!wasCannesCriticsChoice) {
-                        this.isFestivalLoading = true;
-                        await new Promise(resolve => setTimeout(resolve, 500));
-                    }
                     this.cannesCriticsChoiceFilm = film;
                 } else {
-                    if (!wasCannes) {
-                        this.isFestivalLoading = true;
-                        await new Promise(resolve => setTimeout(resolve, 500));
-                    }
                     this.cannesFilm = film;
                 }
             }

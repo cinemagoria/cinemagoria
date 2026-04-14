@@ -143,7 +143,8 @@ export default {
 
   computed: {
     isCriticsChoice () {
-      return String(this.item?.section || this.item?.category || '').toUpperCase().includes('CRITICS');
+      const source = this.category || this.item?.festival_source || this.item?.section || this.item?.category || '';
+      return String(source).toUpperCase().includes('CRITICS');
     },
     poster () {
       if (this.poster_path) return this.poster_path;

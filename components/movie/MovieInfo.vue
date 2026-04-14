@@ -376,6 +376,7 @@ export default {
   },
 
   computed: {
+    MANUAL_OVERVIEWS() { return MANUAL_OVERVIEWS; },
     reviewCount() {
       return this.reviews.length;
     },
