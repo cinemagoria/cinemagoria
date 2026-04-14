@@ -1748,6 +1748,10 @@ export const SUPPORTED_FESTIVALS = [
 ];
 
 
+export const MANUAL_OVERVIEWS = {
+    1666712: "A documentary that brings together players from Argentina and England to reconstruct the football match both national teams played in 1986, in the aftermath of the Falklands War. Testimonies from coaches, referees, fans, musicians and politicians, along with previously unseen archive footage, weave the beauty of the game with the historical events that, centuries earlier, set the conflict between both countries in motion.",
+};
+
 export const MANUAL_FESTIVAL_BADGES = {
     1433583: ['berlinale'],
     1458099: ['berlinale'],

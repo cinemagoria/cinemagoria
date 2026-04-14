@@ -76,6 +76,7 @@ import RomfordCard from '~/components/RomfordCard.vue';
 import BifffCard from '~/components/BifffCard.vue';
 import BaficiCard from '~/components/BaficiCard.vue';
 import CannesCard from '~/components/CannesCard.vue';
+import CannesCriticsChoiceCard from '~/components/CannesCard.vue';
 
 export default {
   components: {
@@ -87,7 +88,8 @@ export default {
     RomfordCard,
     BifffCard,
     BaficiCard,
-    CannesCard
+    CannesCard,
+    CannesCriticsChoiceCard,
   },
 
   mixins: [carousel],
@@ -133,6 +135,7 @@ export default {
         bifff: 'BifffCard',
         bafici: 'BaficiCard',
         cannes: 'CannesCard',
+        'cannes-critics-choice': 'CannesCriticsChoiceCard',
       };
       return cardMap[item.festival_source] || 'SundanceCard';
     }
