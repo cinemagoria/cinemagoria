@@ -96,14 +96,6 @@
     "force_enrichment": false
   },
   {
-    "tmdb_id": 1291595,
-    "media_type": "movie",
-    "trailer_key": null,
-    "backdrop_path": "/yoBvGHXCSsgI93ozbcvYAg1LPiy.jpg",
-    "poster_path": "/vvfDx4wp9jOfW08KuHI7pNVqXLD.jpg",
-    "force_enrichment": false
-  },
-  {
     "tmdb_id": 1170608,
     "media_type": "movie",
     "trailer_key": "3_9vCamtuPY",
@@ -200,14 +192,6 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 1598312,
-    "media_type": "movie",
-    "trailer_key": "nkA5TYpoggM",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1774840517/cinemagoria/backdrops/hero_1598312.webp",
-    "poster_path": "/rkcLQHSnCJDXmmBrgMosiyM53ZI.jpg",
-    "force_enrichment": true
-  },
-  {
     "tmdb_id": 1535733,
     "media_type": "movie",
     "trailer_key": "gxHWz8K0XnI",
@@ -230,14 +214,6 @@
     "backdrop_path": "/yx0sfeYOoXol2fjT22SXo9YyviI.jpg",
     "poster_path": "/5lcxWLVAEICkFpuAiV1aMy7ZZj3.jpg",
     "force_enrichment": false
-  },
-  {
-    "tmdb_id": 1029639,
-    "media_type": "movie",
-    "trailer_key": "eBc9lMilNRM",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1775668269/cinemagoria/backdrops/hero_1029639.webp",
-    "poster_path": "/aiva43A64GM59u2rUYc9HK02NP7.jpg",
-    "force_enrichment": true
   },
   {
     "tmdb_id": 215528,
@@ -280,11 +256,19 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 1664760,
+    "tmdb_id": 1291595,
     "media_type": "movie",
-    "trailer_key": "MlaDnWvMBws",
-    "backdrop_path": "/ptBZVnF4cHnS7VdfCJ3iHWsYmOK.jpg",
-    "poster_path": "/egHpZwmlfOQtRpTQJCZRlwpI4PJ.jpg",
-    "force_enrichment": false
+    "trailer_key": "jxU8FU3o75A",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776142143/cinemagoria/backdrops/hero_1291595.webp",
+    "poster_path": "/yBqyJlKMgbmIcTKVLCgtAYBQx6Z.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1666712,
+    "media_type": "movie",
+    "trailer_key": null,
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776142704/cinemagoria/backdrops/hero_1666712.webp",
+    "poster_path": "/e5PVS1QgYS5DxHZeBWTKdxYMyou.jpg",
+    "force_enrichment": true
   }
 ]
