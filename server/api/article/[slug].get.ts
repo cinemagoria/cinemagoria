@@ -17,6 +17,8 @@ export default defineEventHandler(async (event) => {
 
     const db = createClient({ url: dbUrl, authToken: dbToken })
 
+    setResponseHeader(event, 'Cache-Control', 'no-store')
+
     try {
         const result = await db.execute({
             sql: `SELECT id, slug, title_en, body_en, description_en, title_es, body_es, description_es,
