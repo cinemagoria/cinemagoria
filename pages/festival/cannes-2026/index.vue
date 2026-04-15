@@ -351,7 +351,7 @@ const acidFilms = computed(() => {
 
 const parallelOpen = ref({ critics: true, quinzaine: true, acid: true });
 const isParallelOpen = (k) => parallelOpen.value[k] !== false;
-const toggleParallelOpen = (k) => { parallelOpen.value = { ...parallelOpen.value, [k]: !isParallelOpen(k) }; };
+const toggleParallelOpen = (k) => { parallelOpen.value[k] = !isParallelOpen(k); };
 const parallelSections = computed(() => [
     { key: 'critics', label: "Critics' Week", films: criticsWeekFilms.value, categoryProp: "CRITICS' CHOICE", emptyText: "No Critics' Week selections announced yet." },
     { key: 'quinzaine', label: "Quinzaine des Cinéastes", films: quinzaineFilms.value, categoryProp: 'QUINZAINE', emptyText: "No Quinzaine des Cinéastes selections announced yet." },
