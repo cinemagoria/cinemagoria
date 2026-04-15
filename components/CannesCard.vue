@@ -44,9 +44,21 @@
 
       <div class="card__logo-container">
         <img
-          v-if="isCriticsChoice"
+          v-if="cannesSection === 'critics'"
           src="/festivals/cannes/sc_cannes_film_festival_2026_logo.png"
-          alt="Cannes Film Festival – Critics' Choice"
+          alt="Cannes Film Festival – Critics' Week selection"
+          class="card__cannes-logo"
+        >
+        <img
+          v-else-if="cannesSection === 'quinzaine'"
+          src="/festivals/cannes/quinzaine_cannes_film_festival_2026_logo.png"
+          alt="Cannes Film Festival – Quinzaine des Cinéastes selection"
+          class="card__cannes-logo"
+        >
+        <img
+          v-else-if="cannesSection === 'acid'"
+          src="/festivals/cannes/acid_cannes_film_festival_2026_logo.png"
+          alt="Cannes Film Festival – ACID selection"
           class="card__cannes-logo"
         >
         <img
@@ -142,9 +154,13 @@ export default {
   },
 
   computed: {
-    isCriticsChoice () {
+    cannesSection () {
       const source = this.category || this.item?.festival_source || this.item?.section || this.item?.category || '';
-      return String(source).toUpperCase().includes('CRITICS');
+      const up = String(source).toUpperCase();
+      if (up.includes('CRITICS')) return 'critics';
+      if (up.includes('QUINZAINE') || up.includes('DIRECTORS') || up.includes('FORTNIGHT')) return 'quinzaine';
+      if (up.includes('ACID')) return 'acid';
+      return '';
     },
     poster () {
       if (this.poster_path) return this.poster_path;
