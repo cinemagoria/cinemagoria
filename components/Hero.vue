@@ -434,6 +434,8 @@ import BifffBadge from '~/components/festival/BifffBadge.vue';
 import BaficiBadge from '~/components/festival/BaficiBadge.vue';
 import CannesBadge from '~/components/festival/CannesBadge.vue';
 import CannesCriticsChoiceBadge from '~/components/festival/CannesCriticsChoiceBadge.vue';
+import CannesQuinzaineBadge from '~/components/festival/CannesQuinzaineBadge.vue';
+import CannesAcidBadge from '~/components/festival/CannesAcidBadge.vue';
 import { MANUAL_FESTIVAL_BADGES, MANUAL_OVERVIEWS } from '~/utils/constants';
 import { getHeroEnrichment, getNoirEnrichment } from '~/utils/api';
 import NoirModal from '~/components/NoirModal.vue';
@@ -451,6 +453,8 @@ export default {
     BifffBadge,
     CannesBadge,
     CannesCriticsChoiceBadge,
+    CannesQuinzaineBadge,
+    CannesAcidBadge,
     BaficiBadge,
     NoirModal,
   },
@@ -539,6 +543,8 @@ export default {
       bifffFilm: null,
       cannesFilm: null,
       cannesCriticsChoiceFilm: null,
+      cannesQuinzaineFilm: null,
+      cannesAcidFilm: null,
       baficiFilm: null,
       isFestivalLoading: false,
 
@@ -617,7 +623,9 @@ export default {
         { name: 'bifff', film: this.bifffFilm, component: 'BifffBadge', link: '/festival/bifff-2026', isSimple: true },
         // Critics' Choice badge takes precedence over regular Cannes badge
         { name: 'cannes-critics-choice', film: this.cannesCriticsChoiceFilm, component: 'CannesCriticsChoiceBadge', link: '/festival/cannes-2026', isSimple: true },
-        { name: 'cannes', film: this.cannesFilm && !this.cannesCriticsChoiceFilm ? this.cannesFilm : null, component: 'CannesBadge', link: '/festival/cannes-2026', isSimple: true },
+        { name: 'cannes-quinzaine', film: this.cannesQuinzaineFilm && !this.cannesCriticsChoiceFilm ? this.cannesQuinzaineFilm : null, component: 'CannesQuinzaineBadge', link: '/festival/cannes-2026', isSimple: true },
+        { name: 'cannes-acid', film: this.cannesAcidFilm && !this.cannesCriticsChoiceFilm && !this.cannesQuinzaineFilm ? this.cannesAcidFilm : null, component: 'CannesAcidBadge', link: '/festival/cannes-2026', isSimple: true },
+        { name: 'cannes', film: this.cannesFilm && !this.cannesCriticsChoiceFilm && !this.cannesQuinzaineFilm && !this.cannesAcidFilm ? this.cannesFilm : null, component: 'CannesBadge', link: '/festival/cannes-2026', isSimple: true },
         { name: 'bafici', film: this.baficiFilm, component: 'BaficiBadge', link: '/festival/bafici-2026', isSimple: true },
       ];
       return festivalConfig.filter(f => f.film);
@@ -895,6 +903,8 @@ export default {
     const wasBifff = !!this.bifffFilm;
     const wasCannes = !!this.cannesFilm;
     const wasCannesCriticsChoice = !!this.cannesCriticsChoiceFilm;
+    const wasCannesQuinzaine = !!this.cannesQuinzaineFilm;
+    const wasCannesAcid = !!this.cannesAcidFilm;
     const wasBafici = !!this.baficiFilm;
 
     this.sundanceFilm = null;
@@ -906,11 +916,13 @@ export default {
     this.bifffFilm = null;
     this.cannesFilm = null;
     this.cannesCriticsChoiceFilm = null;
+    this.cannesQuinzaineFilm = null;
+    this.cannesAcidFilm = null;
     this.baficiFilm = null;
 
     if (this.type !== 'movie' && this.type !== 'tv') return;
 
-    if (wasSundance || wasSlamdance || wasBerlinale || wasRotterdam || wasSxsw || wasRomford || wasBifff || wasCannes || wasCannesCriticsChoice || wasBafici) {
+    if (wasSundance || wasSlamdance || wasBerlinale || wasRotterdam || wasSxsw || wasRomford || wasBifff || wasCannes || wasCannesCriticsChoice || wasCannesQuinzaine || wasCannesAcid || wasBafici) {
         this.isFestivalLoading = true;
     }
 
@@ -1016,13 +1028,21 @@ export default {
             const data = await cannesResponse.json();
             if (data.results && data.results.length > 0) {
                 const film = data.results[0];
-                const isCriticsChoice = String(film.section || film.category || '').toUpperCase().includes("CRITICS");
-                if (isCriticsChoice ? !wasCannesCriticsChoice : !wasCannes) {
+                const sectionUp = String(film.section || film.category || '').toUpperCase();
+                const isCriticsChoice = sectionUp.includes("CRITICS");
+                const isQuinzaine = sectionUp.includes("QUINZAINE") || sectionUp.includes("DIRECTORS") || sectionUp.includes("FORTNIGHT");
+                const isAcid = sectionUp.includes("ACID");
+                const wasMatching = isCriticsChoice ? wasCannesCriticsChoice : isQuinzaine ? wasCannesQuinzaine : isAcid ? wasCannesAcid : wasCannes;
+                if (!wasMatching) {
                     this.isFestivalLoading = true;
                     await new Promise(resolve => setTimeout(resolve, 500));
                 }
                 if (isCriticsChoice) {
                     this.cannesCriticsChoiceFilm = film;
+                } else if (isQuinzaine) {
+                    this.cannesQuinzaineFilm = film;
+                } else if (isAcid) {
+                    this.cannesAcidFilm = film;
                 } else {
                     this.cannesFilm = film;
                 }
@@ -1039,6 +1059,8 @@ export default {
             if (manualFestivals.includes('romford') && !this.romfordFilm) this.romfordFilm = { title: this.name };
             if (manualFestivals.includes('bifff') && !this.bifffFilm) this.bifffFilm = { title: this.name };
             if (manualFestivals.includes('cannes-critics-choice') && !this.cannesCriticsChoiceFilm) this.cannesCriticsChoiceFilm = { title: this.name };
+            if (manualFestivals.includes('cannes-quinzaine') && !this.cannesQuinzaineFilm) this.cannesQuinzaineFilm = { title: this.name };
+            if (manualFestivals.includes('cannes-acid') && !this.cannesAcidFilm) this.cannesAcidFilm = { title: this.name };
             if (manualFestivals.includes('cannes') && !this.cannesFilm) this.cannesFilm = { title: this.name };
             if (manualFestivals.includes('bafici') && !this.baficiFilm) this.baficiFilm = { title: this.name };
         }

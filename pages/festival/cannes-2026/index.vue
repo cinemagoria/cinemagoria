@@ -23,10 +23,10 @@
             <label for="tab-info" @click="activeTab = 'info'">Info</label>
 
             <input type="radio" id="tab-films" value="films" v-model="activeTab">
-            <label for="tab-films" @click="activeTab = 'films'">Catalog</label>
+            <label for="tab-films" @click="activeTab = 'films'">Official Selection</label>
 
             <input type="radio" id="tab-critics" value="critics" v-model="activeTab">
-            <label for="tab-critics" @click="activeTab = 'critics'">Critics' Week</label>
+            <label for="tab-critics" @click="activeTab = 'critics'">Parallel Sections</label>
 
             <input type="radio" id="tab-schedule" value="schedule" v-model="activeTab">
             <label for="tab-schedule" @click="activeTab = 'schedule'">Schedule</label>
@@ -72,35 +72,36 @@
             </div>
         </div>
 
-        <div v-if="activeTab === 'critics'" class="films-grid">
+                        <div v-if="activeTab === 'critics'" class="films-grid">
             <div class="disclaimer-bar"><FestivalDataDisclaimer /></div>
-            <div v-if="criticsWeekFilms.length > 0" class="film-category">
-                <div class="category-header" @click="toggleCriticsOpen">
+            <div
+              v-for="ps in parallelSections"
+              :key="ps.key"
+              class="film-category"
+            >
+                <div class="category-header" @click="toggleParallelOpen(ps.key)">
                     <h2 class="listing__title category-title">
-                        Critics' Week
-                        <span class="category-count">({{ criticsWeekFilms.length }})</span>
+                        {{ ps.label }}
+                        <span class="category-count">({{ ps.films.length }})</span>
                     </h2>
-                    <button class="expand-btn" :aria-label="criticsOpen ? 'Collapse' : 'Expand'">
-                        <svg v-if="criticsOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-chevrons-down-up-icon lucide-list-chevrons-down-up"><path d="M3 5h8"/><path d="M3 12h8"/><path d="M3 19h8"/><path d="m15 5 3 3 3-3"/><path d="m15 19 3-3 3 3"/></svg>
+                    <button class="expand-btn" :aria-label="isParallelOpen(ps.key) ? 'Collapse' : 'Expand'">
+                        <svg v-if="isParallelOpen(ps.key)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-chevrons-down-up-icon lucide-list-chevrons-down-up"><path d="M3 5h8"/><path d="M3 12h8"/><path d="M3 19h8"/><path d="m15 5 3 3 3-3"/><path d="m15 19 3-3 3 3"/></svg>
                         <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-collapse-icon lucide-list-collapse"><path d="M10 5h11"/><path d="M10 12h11"/><path d="M10 19h11"/><path d="m3 10 3-3-3-3"/><path d="m3 20 3-3-3-3"/></svg>
                     </button>
                 </div>
                 <transition name="slide">
-                    <div v-show="criticsOpen" class="listing__items">
-                        <CannesCard
-                            v-for="item in criticsWeekFilms"
-                            :key="`critics-${item.id}`"
-                            :item="item"
-                            category="CRITICS' CHOICE"
-                        />
+                    <div v-show="isParallelOpen(ps.key)">
+                        <div v-if="ps.films.length > 0" class="listing__items">
+                            <CannesCard
+                                v-for="item in ps.films"
+                                :key="`${ps.key}-${item.id}`"
+                                :item="item"
+                                :category="ps.categoryProp"
+                            />
+                        </div>
+                        <div v-else class="parallel-empty">{{ ps.emptyText }}</div>
                     </div>
                 </transition>
-            </div>
-            <div v-else class="schedule-pending">
-                <div class="schedule-pending-inner">
-                    <h2 class="schedule-pending-title">No films yet</h2>
-                    <p class="schedule-pending-text">Critics' Week selections will appear here when announced.</p>
-                </div>
             </div>
         </div>
 
@@ -319,6 +320,8 @@ const filmsByCategory = computed(() => {
     for (const f of films.value?.results || []) {
         const key = String(f.section || f.category || '').toUpperCase().trim();
         if (key.includes('CRITICS')) continue;
+        if (key.includes('QUINZAINE') || key.includes('DIRECTORS') || key.includes('FORTNIGHT')) continue;
+        if (key.includes('ACID')) continue;
         if (key && map[key]) map[key].push(f);
         else map.OTHER.push(f);
     }
@@ -331,6 +334,29 @@ const criticsWeekFilms = computed(() => {
         return key.includes('CRITICS');
     });
 });
+
+const quinzaineFilms = computed(() => {
+    return (films.value?.results || []).filter((f) => {
+        const key = String(f.section || f.category || '').toUpperCase().trim();
+        return key.includes('QUINZAINE') || key.includes('DIRECTORS') || key.includes('FORTNIGHT');
+    });
+});
+
+const acidFilms = computed(() => {
+    return (films.value?.results || []).filter((f) => {
+        const key = String(f.section || f.category || '').toUpperCase().trim();
+        return key.includes('ACID');
+    });
+});
+
+const parallelOpen = ref({ critics: true, quinzaine: true, acid: true });
+const isParallelOpen = (k) => parallelOpen.value[k] !== false;
+const toggleParallelOpen = (k) => { parallelOpen.value = { ...parallelOpen.value, [k]: !isParallelOpen(k) }; };
+const parallelSections = computed(() => [
+    { key: 'critics', label: "Critics' Week", films: criticsWeekFilms.value, categoryProp: "CRITICS' CHOICE", emptyText: "No Critics' Week selections announced yet." },
+    { key: 'quinzaine', label: "Quinzaine des Cinéastes", films: quinzaineFilms.value, categoryProp: 'QUINZAINE', emptyText: "No Quinzaine des Cinéastes selections announced yet." },
+    { key: 'acid', label: "ACID", films: acidFilms.value, categoryProp: 'ACID', emptyText: "No ACID selections announced yet." },
+]);
 
 const orderedCategories = computed(() => {
     const out = CATEGORY_ORDER.filter((c) => (filmsByCategory.value[c] || []).length > 0);
@@ -493,17 +519,22 @@ onMounted(async () => {
     justify-content: center;
     gap: 1.5rem;
     align-items: center;
+    width: 100%;
+    padding: 0 1rem;
+    box-sizing: border-box;
 }
 
 .segmented-control {
     position: relative;
     display: flex;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px; 
+    border-radius: 20px;
     padding: 4px;
     height: 48px;
     align-items: center;
-    min-width: 420px;
+    width: 100%;
+    max-width: 760px;
+    box-sizing: border-box;
 }
 
 .segmented-control input[type="radio"] {
@@ -515,14 +546,27 @@ onMounted(async () => {
     z-index: 2;
     flex: 1;
     text-align: center;
-    font-size: 1.1rem;
+    font-size: clamp(0.68rem, 1.9vw, 1.05rem);
     color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
     transition: color 0.3s;
     font-weight: 600;
     line-height: 40px;
     white-space: nowrap;
+    padding: 0 0.35rem;
     user-select: none;
+    min-width: 0;
+}
+
+@media (max-width: 420px) {
+    .segmented-control label {
+        font-size: 0.7rem;
+        padding: 0 0.15rem;
+        letter-spacing: -0.01em;
+    }
+    .segmented-control {
+        height: 44px;
+    }
 }
 
 .segmented-control input:checked + label {
@@ -1050,4 +1094,17 @@ onMounted(async () => {
     border-radius: 12px;
   }
 }
+
+
+
+
+.parallel-empty {
+    padding: 1.5rem 1rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+}
+
 </style>
