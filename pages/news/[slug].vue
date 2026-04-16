@@ -233,10 +233,12 @@
                 </div>
               </div>
 
-              <!-- Body -->
-              <div class="article-body" v-html="renderedBody"></div>
+              <!-- Body (first half — or full body when there's no split) -->
+              <div class="article-body" v-html="bodyParts.before"></div>
 
-              <!-- Carousel at the end (when both trailer and carousel exist) -->
+              <!-- Carousel in the middle (when both trailer and carousel exist).
+                   If no <h2> subtitles are found, bodyParts.after is empty and
+                   this block ends up effectively at the end of the body. -->
               <div v-if="article.trailer_youtube_id && article.carousel_assets?.length" class="article-carousel">
                 <div class="carousel-viewport">
                   <div class="carousel-track" :style="{ transform: `translateX(-${carouselIndex * 100}%)` }">
@@ -264,6 +266,9 @@
                   ></button>
                 </div>
               </div>
+
+              <!-- Body (second half — only shown when body was split at an <h2>) -->
+              <div v-if="bodyParts.after" class="article-body" v-html="bodyParts.after"></div>
             </div>
           </div>
         </div>
@@ -486,6 +491,26 @@ const renderedBody = computed(() => {
   } catch {
     return article.value.body_en
   }
+})
+
+// Split the rendered body in two halves at the middle <h2> (## subtitles)
+// so the carousel can be inserted in the middle when both trailer and
+// carousel exist. Falls back to a single part (carousel at the end) when
+// there are no <h2> headings or when the condition isn't met.
+const bodyParts = computed(() => {
+  const html = renderedBody.value
+  if (!html) return { before: '', after: '' }
+  const hasBoth = !!(article.value?.trailer_youtube_id && article.value?.carousel_assets?.length)
+  if (!hasBoth) return { before: html, after: '' }
+  const h2Regex = /<h2[\s>]/gi
+  const indices = []
+  let m
+  while ((m = h2Regex.exec(html)) !== null) {
+    indices.push(m.index)
+  }
+  if (indices.length === 0) return { before: html, after: '' }
+  const midIdx = indices[Math.floor(indices.length / 2)]
+  return { before: html.slice(0, midIdx), after: html.slice(midIdx) }
 })
 
 function formatDate(dateStr) {
