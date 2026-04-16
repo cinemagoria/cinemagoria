@@ -9,7 +9,7 @@
       <button @click="refresh" class="retry-btn">Retry</button>
     </div>
 
-    <template v-else>
+    <template v-else-if="articles.length">
       <div class="listing__head">
         <h2 class="listing__title">Latest News</h2>
         <NuxtLink to="/news" class="listing__explore">
@@ -17,75 +17,74 @@
         </NuxtLink>
       </div>
 
-      <div class="carousel">
+      <div class="carousel" @mouseenter="pauseAutoScroll" @mouseleave="resumeAutoScroll" @touchstart="pauseAutoScroll" @touchend="resumeAutoScroll">
         <button
           class="carousel__nav carousel__nav--left"
           aria-label="Previous"
           type="button"
-          :disabled="disableLeftButton"
-          @click="manualMove('left')">
+          @click="moveToClickEvent('left')">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"/></svg>
         </button>
 
         <div
           ref="carouselElement"
-          class="carousel__items"
-          @scroll="scrollEvent"
-          @mouseenter="pauseAutoplay"
-          @mouseleave="resumeAutoplay">
+          class="carousel__items carousel__items--continuous"
+          @scroll="scrollEvent">
           
-          <div v-for="article in articles" :key="article.id" class="card">
-            <div class="release-card">
-            
-            <NuxtLink 
-              :to="{ path: '/news', query: { source: article.source?.name, highlight: article.id } }" 
-              class="card-image-link" 
-              :class="{ 'has-video': article.video_id }"
-            >
-              <div v-if="loadingMap[article.id]" class="card-loader">
-                <Loader :size="40" />
+          <div v-for="gi in duplicationCount" :key="'group-' + gi" class="carousel__group" :aria-hidden="gi !== 1 ? 'true' : null">
+            <div v-for="article in articles" :key="gi + '-' + article.id" class="card">
+              <div class="release-card">
+
+                <NuxtLink 
+                  :to="{ path: '/news', query: { source: article.source?.name, highlight: article.id } }" 
+                  class="card-image-link" 
+                  :class="{ 'has-video': article.video_id }"
+                >
+                  <div v-if="loadingMap[article.id]" class="card-loader">
+                    <Loader :size="40" />
+                  </div>
+                  
+                  <img 
+                      :src="article.image" 
+                      :alt="article.title" 
+                      class="article-image" 
+                      loading="lazy"
+                      @load="onImageLoad(article.id)"
+                      @error="onImageError(article)"
+                      :style="{ opacity: loadingMap[article.id] ? 0 : 1 }"
+                  />
+                </NuxtLink>
+
+                <div class="card-content">
+                  <div class="card-meta">
+                    <span v-if="article.source && article.source.name" class="source-badge">{{ article.source.name }}</span>
+                    <span class="card-date">{{ formatDate(article.published_at) }}</span>
+                  </div>
+
+                  <NuxtLink 
+                    :to="{ path: '/news', query: { source: article.source?.name, highlight: article.id } }" 
+                    class="card-title" 
+                    :title="article.title"
+                  >
+                    {{ article.title }}
+                  </NuxtLink>
+
+                  <p class="card-description">
+                    {{ sanitizeDescription(article.description || article.summary) }}
+                  </p>
+                </div>
+
               </div>
-              
-              <img 
-                  :src="article.image" 
-                  :alt="article.title" 
-                  class="article-image" 
-                  loading="lazy"
-                  @load="onImageLoad(article.id)"
-                  @error="onImageError(article)"
-                  :style="{ opacity: loadingMap[article.id] ? 0 : 1 }"
-              />
-            </NuxtLink>
-
-            <div class="card-content">
-              <div class="card-meta">
-                <span v-if="article.source && article.source.name" class="source-badge">{{ article.source.name }}</span>
-                <span class="card-date">{{ formatDate(article.published_at) }}</span>
-              </div>
-
-              <NuxtLink 
-                :to="{ path: '/news', query: { source: article.source?.name, highlight: article.id } }" 
-                class="card-title" 
-                :title="article.title"
-              >
-                {{ article.title }}
-              </NuxtLink>
-
-              <p class="card-description">
-                {{ sanitizeDescription(article.description || article.summary) }}
-              </p>
             </div>
+          </div>
 
-          </div>
-          </div>
         </div>
 
         <button
           class="carousel__nav carousel__nav--right"
           aria-label="Next"
           type="button"
-          :disabled="disableRightButton"
-          @click="manualMove('right')">
+          @click="moveToClickEvent('right')">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"/></svg>
         </button>
       </div>
@@ -95,21 +94,19 @@
 
 <script>
 import Loader from '@/components/Loader';
-import carousel from '~/mixins/Carousel';
+import ContinuousCarousel from '~/mixins/ContinuousCarousel';
 import striptags from 'striptags';
 import { formatDate, handleImageError } from '~/utils/helpers';
 
-const AUTOPLAY_INTERVAL = 15000;
-
 export default {
   name: 'NewsCarousel',
-  mixins: [carousel],
+  mixins: [ContinuousCarousel],
   components: {
     Loader
   },
   data() {
     return {
-      autoplayInterval: null,
+      autoScrollSpeed: 0.8,
       data: null,
       pending: true,
       error: null,
@@ -162,12 +159,10 @@ export default {
       } finally {
         this.pending = false;
         this.$nextTick(() => {
-          if (this.articles.length > 0) {
-            this.calculateState(this.articles.length);
-            if (typeof window !== 'undefined') {
-              this.startAutoplay();
-            }
-          }
+          setTimeout(() => {
+            this.calculateState();
+            this.startAutoScroll();
+          }, 600);
         });
       }
     },
@@ -187,71 +182,113 @@ export default {
     onImageError(article) {
        this.loadingMap[article.id] = false;
        handleImageError(article);
-    },
-    resizeEvent () {
-      this.calculateState(this.articles.length);
-    },
-    manualMove(direction) {
-      this.moveToClickEvent(direction);
-      this.resetAutoplay();
-    },
-    startAutoplay() {
-      if (this.autoplayInterval) clearInterval(this.autoplayInterval);
-      this.autoplayInterval = setInterval(() => {
-        if (!this.disableRightButton) {
-           this.moveToClickEvent('right');
-        } else {
-           this.moveTo(0);
-        }
-      }, AUTOPLAY_INTERVAL); 
-    },
-    pauseAutoplay() {
-      if (this.autoplayInterval) clearInterval(this.autoplayInterval);
-    },
-    resumeAutoplay() {
-      this.startAutoplay();
-    },
-    resetAutoplay() {
-      this.pauseAutoplay();
-      this.resumeAutoplay();
-    },
-  },
-  beforeUnmount() {
-    if (this.autoplayInterval) clearInterval(this.autoplayInterval);
+    }
   },
   watch: {
-    data: {
-      handler() {
-        this.$nextTick(() => {
-          // Removed equalizeHeights
-        })
+    articles: {
+      handler(newVal) {
+        if (newVal && newVal.length > 0) {
+          this.$nextTick(() => {
+            setTimeout(() => {
+              this.calculateState();
+              this.startAutoScroll();
+            }, 600);
+          });
+        }
       },
-      deep: true
+      immediate: true
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-:deep(.carousel__items) {
-  display: flex;
-  align-items: stretch;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
+.strong {
+  color: #8BE9FD;
 }
 
-:deep(.card) {
-  padding-right: 24px !important;
-  height: auto !important;
-  display: block !important;
-  flex-shrink: 0;
-}
-@media (max-width: 767px) {
-  :deep(.card) {
-    width: 85vw !important;
-    max-width: 350px;
+.carousel {
+  position: relative;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black 4%,
+    black 96%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black 4%,
+    black 96%,
+    transparent 100%
+  );
+  
+  &__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    background: rgba(0,0,0,0.5);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.3s, opacity 0.3s;
+    
+    &:hover {
+        background: rgba(0,0,0,0.8);
+    }
+    
+    &--left {
+      left: 0;
+    }
+
+    &--right {
+      right: 0;
+    }
+  }
+  
+  &__items {
+    display: flex;
+    align-items: stretch;
+    overflow-x: auto;
+    padding-bottom: 20px;
+    
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar { 
+      display: none; 
+    }
+  }
+
+  &__group {
+    display: flex;
+    flex-shrink: 0;
   }
 }
+
+.card {
+  width: 320px;
+  flex-shrink: 0;
+  padding-right: 24px;
+  display: flex;
+
+  &:first-child {
+    margin-left: 0 !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .card {
+    width: 280px;
+  }
+}
+
 .release-card {
   background: rgba(16, 26, 35, 0.85);
   border: 1px solid hsla(0, 0%, 100%, .18);
@@ -261,12 +298,10 @@ export default {
   overflow: hidden; 
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   
-  display: flex !important; 
+  display: flex;
   flex-direction: column;
   width: 100%;
   
-  height: 100%;
-
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 40px 0 rgba(139, 233, 253, 0.15);
@@ -306,12 +341,6 @@ export default {
 
 .release-card:hover .article-image {
   transform: scale(1.05);
-}
-
-.article-image-placeholder {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
 }
 
 .card-content {
@@ -362,10 +391,6 @@ export default {
   }
 }
 
-.strong {
-  color: #8BE9FD
-}
-
 .card-description {
   font-size: 14px;
   color: #b0b0b0;
@@ -379,34 +404,6 @@ export default {
   text-overflow: ellipsis;
   
   margin-bottom: auto;
-}
-
-.card-footer {
-  margin-top: 15px;
-  display: flex;
-  justify-content: flex-end;
-  flex-shrink: 0;
-}
-
-.read-more-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #8BE9FD;
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  
-  border: 1px solid #8BE9FD;
-  background: transparent;
-  padding: 6px 12px;
-  border-radius: 6px;
-
-  &:hover {
-    background: rgba(139, 233, 253, 0.1);
-    text-decoration: none;
-  }
 }
 
 @media (max-width: 600px) {

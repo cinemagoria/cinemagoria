@@ -13,54 +13,46 @@
       </h2>
     </div>
 
-    <div class="carousel">
+    <div class="carousel" @mouseenter="pauseAutoScroll" @mouseleave="resumeAutoScroll" @touchstart="pauseAutoScroll" @touchend="resumeAutoScroll">
       <button
         class="carousel__nav carousel__nav--left"
         aria-label="Previous"
         type="button"
-        :disabled="disableLeftButton"
         @click="moveToClickEvent('left')">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"/></svg>
       </button>
 
       <div
         ref="carouselElement"
-        class="carousel__items"
+        class="carousel__items carousel__items--continuous"
         @scroll="scrollEvent">
         
-        
-        <NuxtLink
-          v-for="platform in items"
-          :key="platform.id"
-          :to="`/streaming/${platform.slug}`"
-          class="production-company-card"
-        >
-          <div class="logo-container">
-            <img 
-              v-if="getLogoUrl(platform)" 
-              :src="getLogoUrl(platform)" 
-              :alt="platform.name" 
-              :class="['company-logo', { 'company-logo--large': platform.id === 11 || platform.id === 99 }]"
-              loading="lazy"
-            >
-            <span v-else class="company-name">{{ platform.name }}</span>
-          </div>
-        </NuxtLink>
-
-        <div class="production-company-card explore-card" v-if="viewAllLink">
-             <nuxt-link :to="viewAllLink" class="company-link">
-               <div class="logo-container explore-container">
-                 <span>Explore All</span>
-               </div>
-             </nuxt-link>
+        <div v-for="gi in duplicationCount" :key="'group-' + gi" class="carousel__group" :aria-hidden="gi !== 1 ? 'true' : null">
+          <NuxtLink
+            v-for="platform in items"
+            :key="gi + '-' + platform.id"
+            :to="`/streaming/${platform.slug}`"
+            class="production-company-card"
+          >
+            <div class="logo-container">
+              <img 
+                v-if="getLogoUrl(platform)" 
+                :src="getLogoUrl(platform)" 
+                :alt="platform.name" 
+                :class="['company-logo', { 'company-logo--large': platform.id === 11 || platform.id === 99 }]"
+                loading="lazy"
+              >
+              <span v-else class="company-name">{{ platform.name }}</span>
+            </div>
+          </NuxtLink>
         </div>
+
       </div>
 
       <button
         class="carousel__nav carousel__nav--right"
         aria-label="Next"
         type="button"
-        :disabled="disableRightButton"
         @click="moveToClickEvent('right')">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"/></svg>
       </button>
@@ -69,11 +61,11 @@
 </template>
 
 <script>
-import carousel from '~/mixins/Carousel';
+import ContinuousCarousel from '~/mixins/ContinuousCarousel';
 import { apiImgUrl } from '~/utils/api';
 
 export default {
-  mixins: [carousel],
+  mixins: [ContinuousCarousel],
   props: {
     items: {
       type: Array,
@@ -86,6 +78,7 @@ export default {
   },
   data() {
     return {
+      autoScrollSpeed: 0.8,
       apiImgUrl,
       customLogos: {
         11: '/logos/streaming/mubi-logo.svg',
@@ -100,18 +93,7 @@ export default {
       }
     };
   },
-  computed: {
-    totalItems() {
-      return this.items.length + (this.viewAllLink ? 1 : 0);
-    }
-  },
-  mounted() {
-    this.calculateState(this.totalItems);
-  },
   methods: {
-    resizeEvent() {
-      this.calculateState(this.totalItems);
-    },
     getLogoUrl(platform) {
       const customLogo = this.customLogos[platform.id];
       if (customLogo) {
@@ -146,6 +128,20 @@ export default {
 
 .carousel {
   position: relative;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black 4%,
+    black 96%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black 4%,
+    black 96%,
+    transparent 100%
+  );
   
   &__nav {
     position: absolute;
@@ -163,15 +159,10 @@ export default {
     cursor: pointer;
     transition: background 0.3s, opacity 0.3s;
     
-    &:hover:not(:disabled) {
+    &:hover {
         background: rgba(0,0,0,0.8);
     }
     
-    &:disabled {
-        opacity: 0;
-        cursor: default;
-    }
-
     &--left {
       left: 0;
     }
@@ -185,7 +176,6 @@ export default {
     display: flex;
     align-items: stretch;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
     padding-bottom: 20px;
     
     scrollbar-width: none; 
@@ -193,6 +183,11 @@ export default {
     &::-webkit-scrollbar { 
       display: none; 
     }
+  }
+
+  &__group {
+    display: flex;
+    flex-shrink: 0;
   }
 }
 
@@ -207,7 +202,6 @@ export default {
   transition: transform 0.3s ease;
   background: #333;
   margin-right: 20px;
-  scroll-snap-align: start;
   text-decoration: none;
   
   &:hover {
@@ -215,15 +209,7 @@ export default {
   }
 
   &:first-child {
-    margin-left: 15px;
-
-    @media (min-width: $breakpoint-small) {
-      margin-left: 40px;
-    }
-
-    @media (min-width: $breakpoint-large) {
-      margin-left: 50px;
-    }
+    margin-left: 0 !important;
   }
 }
 
@@ -265,6 +251,12 @@ export default {
     &:hover {
         background: #111;
     }
+}
+.company-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
 }
 
 .explore-container {

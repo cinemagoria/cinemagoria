@@ -15,49 +15,42 @@
       </nuxt-link>
     </div>
 
-    <div class="carousel">
+    <div class="carousel" @mouseenter="pauseAutoScroll" @mouseleave="resumeAutoScroll" @touchstart="pauseAutoScroll" @touchend="resumeAutoScroll">
       <button
         class="carousel__nav carousel__nav--left"
         aria-label="Previous"
         type="button"
-        :disabled="disableLeftButton"
         @click="moveToClickEvent('left')">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"/></svg>
       </button>
 
       <div
         ref="carouselElement"
-        class="carousel__items"
+        class="carousel__items carousel__items--continuous"
         @scroll="scrollEvent">
         
-        <div
-          v-for="company in items"
-          :key="company.id"
-          class="production-company-card"
-        >
-          <nuxt-link 
-            :to="`/production/${company.slug}`"
-            class="company-link"
+        <div v-for="gi in duplicationCount" :key="'group-' + gi" class="carousel__group" :aria-hidden="gi !== 1 ? 'true' : null">
+          <div
+            v-for="company in items"
+            :key="gi + '-' + company.id"
+            class="production-company-card"
           >
-            <div class="logo-container">
-               <img 
-                 v-if="company.logo_path" 
-                 :src="`${apiImgUrl}/w500${company.logo_path}`" 
-                 :alt="company.name" 
-                 class="company-logo"
-                 loading="lazy"
-               />
-               <span v-else class="company-name">{{ company.name }}</span>
-            </div>
-          </nuxt-link>
-        </div>
-
-        <div class="production-company-card explore-card" v-if="viewAllLink">
-             <nuxt-link :to="viewAllLink" class="company-link explore-link">
-               <div class="logo-container explore-container">
-                 <span>Explore All</span>
-               </div>
-             </nuxt-link>
+            <nuxt-link
+              :to="`/production/${company.slug}`"
+              class="company-link"
+            >
+              <div class="logo-container">
+                <img
+                  v-if="company.logo_path"
+                  :src="`${apiImgUrl}/w500${company.logo_path}`"
+                  :alt="company.name"
+                  class="company-logo"
+                  loading="lazy"
+                />
+                <span v-else class="company-name">{{ company.name }}</span>
+              </div>
+            </nuxt-link>
+          </div>
         </div>
 
       </div>
@@ -66,7 +59,6 @@
         class="carousel__nav carousel__nav--right"
         aria-label="Next"
         type="button"
-        :disabled="disableRightButton"
         @click="moveToClickEvent('right')">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"/></svg>
       </button>
@@ -75,11 +67,11 @@
 </template>
 
 <script>
-import carousel from '~/mixins/Carousel';
+import ContinuousCarousel from '~/mixins/ContinuousCarousel';
 import { apiImgUrl } from '~/utils/api';
 
 export default {
-  mixins: [carousel],
+  mixins: [ContinuousCarousel],
   props: {
     items: {
       type: Array,
@@ -92,21 +84,9 @@ export default {
   },
   data() {
     return {
-      apiImgUrl
+      autoScrollSpeed: 0.8,
+      apiImgUrl,
     };
-  },
-  computed: {
-    totalItems() {
-      return this.items.length + (this.viewAllLink ? 1 : 0);
-    }
-  },
-  mounted() {
-    this.calculateState(this.totalItems);
-  },
-  methods: {
-    resizeEvent() {
-      this.calculateState(this.totalItems);
-    }
   }
 };
 </script>
@@ -115,11 +95,25 @@ export default {
 @use '~/assets/css/utilities/variables' as *;
 
 .strong {
-    color: #8BE9FD;
+  color: #8BE9FD;
 }
 
 .carousel {
   position: relative;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black 4%,
+    black 96%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black 4%,
+    black 96%,
+    transparent 100%
+  );
   
   &__nav {
     position: absolute;
@@ -137,15 +131,10 @@ export default {
     cursor: pointer;
     transition: background 0.3s, opacity 0.3s;
     
-    &:hover:not(:disabled) {
+    &:hover {
         background: rgba(0,0,0,0.8);
     }
     
-    &:disabled {
-        opacity: 0;
-        cursor: default;
-    }
-
     &--left {
       left: 0;
     }
@@ -159,7 +148,6 @@ export default {
     display: flex;
     align-items: stretch;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
     padding-bottom: 20px;
     
     scrollbar-width: none; 
@@ -168,11 +156,15 @@ export default {
       display: none; 
     }
   }
+
+  &__group {
+    display: flex;
+    flex-shrink: 0;
+  }
 }
 
-
 .production-company-card {
-  width: 250px; 
+  width: 250px;
   height: 140px;
   flex-shrink: 0;
   border-radius: 12px;
@@ -180,22 +172,13 @@ export default {
   transition: transform 0.3s ease;
   background: #8BE9FD;
   margin-right: 20px;
-  scroll-snap-align: start;
-  
+
   &:hover {
     transform: scale(1.03);
   }
 
   &:first-child {
-    margin-left: 15px;
-
-    @media (min-width: $breakpoint-small) {
-      margin-left: 40px;
-    }
-
-    @media (min-width: $breakpoint-large) {
-      margin-left: 50px;
-    }
+    margin-left: 0 !important;
   }
 }
 
@@ -227,25 +210,5 @@ export default {
   font-weight: bold;
   font-size: 1.2rem;
   text-align: center;
-}
-
-.explore-card {
-    background: #000;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    
-    &:hover {
-        background: #111;
-    }
-}
-
-.explore-container {
-    flex-direction: column;
-    gap: 10px;
-    color: #fff;
-    font-weight: 500;
-    font-size: 1.3rem;
-    @media (min-width: $breakpoint-large) {
-      font-size: 1.6rem;
-    }
 }
 </style>

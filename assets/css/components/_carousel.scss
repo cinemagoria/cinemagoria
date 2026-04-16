@@ -109,6 +109,11 @@
     scroll-padding: 50px;
   }
 
+  &--continuous {
+    scroll-snap-type: none !important;
+    scroll-behavior: auto !important;
+  }
+
   &::-webkit-scrollbar {
     display: none;
   }
@@ -223,5 +228,16 @@
     @media (min-width: $breakpoint-large) {
       margin-right: 42px;
     }
+  }
+}
+
+/* Continuous Carousel Overrides - Must be at the end to shadow defaults */
+.carousel__items--continuous {
+  scroll-snap-type: none !important;
+  scroll-behavior: auto !important;
+
+  .card:first-child,
+  .production-company-card:first-child {
+    margin-left: 0 !important;
   }
 }
