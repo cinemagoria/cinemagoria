@@ -1912,14 +1912,6 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 1375646,
-    "media_type": "movie",
-    "trailer_key": "MWb6g8bBXdU",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1775773997/cinemagoria/backdrops/noir_1375646.webp",
-    "poster_path": "/3pKJMW5xehwaxpQdF7oIZnyhIfo.jpg",
-    "force_enrichment": true
-  },
-  {
     "tmdb_id": 1473148,
     "media_type": "movie",
     "trailer_key": null,
@@ -2022,14 +2014,6 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1775844435/cinemagoria/backdrops/noir_1524977.webp",
     "poster_path": "/2iMQkDFQBaPbA2U0dhlpJO6R9m8.jpg",
     "force_enrichment": false
-  },
-  {
-    "tmdb_id": 1666712,
-    "media_type": "movie",
-    "trailer_key": null,
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1775940723/cinemagoria/backdrops/noir_1666712.webp",
-    "poster_path": "/e5PVS1QgYS5DxHZeBWTKdxYMyou.jpg",
-    "force_enrichment": true
   },
   {
     "tmdb_id": 1443374,
@@ -2195,8 +2179,24 @@
     "tmdb_id": 1536720,
     "media_type": "movie",
     "trailer_key": "p0ozZtaUWgE",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776326802/cinemagoria/backdrops/hero_1536720.webp",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776332782/cinemagoria/backdrops/noir_1536720.webp",
     "poster_path": "/4XqjJ4iobn199K9Ox1rUREjV8lN.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1375646,
+    "media_type": "movie",
+    "trailer_key": "LW6dpj1uCK8",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776359512/cinemagoria/backdrops/noir_1375646.webp",
+    "poster_path": "/3pKJMW5xehwaxpQdF7oIZnyhIfo.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1666712,
+    "media_type": "movie",
+    "trailer_key": "Y5q_fAffnv4",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776360446/cinemagoria/backdrops/noir_1666712.webp",
+    "poster_path": "/e5PVS1QgYS5DxHZeBWTKdxYMyou.jpg",
     "force_enrichment": true
   }
 ]
