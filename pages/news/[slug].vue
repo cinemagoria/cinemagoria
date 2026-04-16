@@ -191,8 +191,8 @@
                 <span>By Cinemagoria Lab</span>
               </div>
 
-              <!-- Trailer embed (only when there's no carousel) -->
-              <div v-if="article.trailer_youtube_id && !article.carousel_assets?.length" class="article-trailer">
+              <!-- Trailer embed (always at top when trailer exists) -->
+              <div v-if="article.trailer_youtube_id" class="article-trailer">
                 <div class="trailer-wrapper">
                   <iframe
                     :src="`https://www.youtube.com/embed/${article.trailer_youtube_id}`"
@@ -204,8 +204,8 @@
                 </div>
               </div>
 
-              <!-- Carousel -->
-              <div v-if="article.carousel_assets?.length" class="article-carousel">
+              <!-- Carousel at top (only when there's no trailer) -->
+              <div v-if="article.carousel_assets?.length && !article.trailer_youtube_id" class="article-carousel">
                 <div class="carousel-viewport">
                   <div class="carousel-track" :style="{ transform: `translateX(-${carouselIndex * 100}%)` }">
                     <div v-for="(img, i) in article.carousel_assets" :key="i" class="carousel-slide">
@@ -236,16 +236,32 @@
               <!-- Body -->
               <div class="article-body" v-html="renderedBody"></div>
 
-              <!-- Trailer at the end (when both carousel and trailer exist) -->
-              <div v-if="article.trailer_youtube_id && article.carousel_assets?.length" class="article-trailer">
-                <div class="trailer-wrapper">
-                  <iframe
-                    :src="`https://www.youtube.com/embed/${article.trailer_youtube_id}`"
-                    title="Trailer"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen
-                  ></iframe>
+              <!-- Carousel at the end (when both trailer and carousel exist) -->
+              <div v-if="article.trailer_youtube_id && article.carousel_assets?.length" class="article-carousel">
+                <div class="carousel-viewport">
+                  <div class="carousel-track" :style="{ transform: `translateX(-${carouselIndex * 100}%)` }">
+                    <div v-for="(img, i) in article.carousel_assets" :key="i" class="carousel-slide">
+                      <img :src="img" :alt="`${article.title_en} — image ${i + 1}`" loading="lazy" />
+                    </div>
+                  </div>
+                  <template v-if="article.carousel_assets.length > 1">
+                    <button class="carousel-btn carousel-btn-prev" :disabled="carouselIndex === 0" @click="carouselIndex--" aria-label="Previous image">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M14 6l-6 6l6 6v-12" /></svg>
+                    </button>
+                    <button class="carousel-btn carousel-btn-next" :disabled="carouselIndex === article.carousel_assets.length - 1" @click="carouselIndex++" aria-label="Next image">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M10 18l6 -6l-6 -6v12" /></svg>
+                    </button>
+                  </template>
+                </div>
+                <div v-if="article.carousel_assets.length > 1" class="carousel-dots">
+                  <button
+                    v-for="(_, i) in article.carousel_assets"
+                    :key="i"
+                    class="carousel-dot"
+                    :class="{ active: i === carouselIndex }"
+                    @click="carouselIndex = i"
+                    :aria-label="`Go to image ${i + 1}`"
+                  ></button>
                 </div>
               </div>
             </div>
