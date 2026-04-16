@@ -58,7 +58,7 @@ watch(() => profile.value?.is_following, (val) => {
 watch(() => profile.value?.avatar, (val) => {
   if (!val || val.trim() === '') {
     avatarSrc.value = '/avatars/avatar-ss0.png'
-  } else if (val.startsWith('https://lh3.googleusercontent.com')) {
+  } else if ((() => { try { return new URL(val).origin === 'https://lh3.googleusercontent.com' } catch { return false } })()) {
     avatarSrc.value = '/avatars/avatar-ss0.png'
   } else {
     avatarSrc.value = val

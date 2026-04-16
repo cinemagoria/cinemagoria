@@ -1,12 +1,19 @@
 import { createClient } from '@libsql/client'
 
 function sanitize(str: string): string {
-    return str
+    let result = str
         .replace(/[<>]/g, '')
         .replace(/javascript:/gi, '')
-        .replace(/on\w+\s*=/gi, '')
+        .replace(/vbscript:/gi, '')
         .replace(/data:/gi, '')
-        .trim()
+
+    let prev = ''
+    while (prev !== result) {
+        prev = result
+        result = result.replace(/on\w+\s*=/gi, '')
+    }
+
+    return result.trim()
 }
 
 function isValidEmail(email: string): boolean {
