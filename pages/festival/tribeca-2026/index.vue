@@ -282,8 +282,10 @@ function toggleCategoryOpen (cat) {
 }
 
 const formatDate = (dateStr) => {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
     const options = { weekday: 'long', month: 'long', day: 'numeric' };
-    return new Date(dateStr).toLocaleDateString('es-ES', options);
+    return date.toLocaleDateString('es-ES', options);
 };
 
 const formatTime = (timeStr) => {
@@ -313,7 +315,7 @@ const toggleDay = (date) => {
     } else {
         openDays.value.add(date);
     }
-}
+};
 
 const isOpen = (date) => openDays.value.has(date);
 
