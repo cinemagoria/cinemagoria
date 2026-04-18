@@ -24,6 +24,18 @@ onMounted(() => {
       <p class="title-secondary">Explora nuestras selecciones curadas de los festivales más importantes del mundo.</p>
 
       <div class="festivals-grid">
+        <nuxt-link to="/festival/tribeca-2026" class="festival-card">
+          <div class="card-image-wrapper">
+             <img src="/festivals/tribeca/tribeca_backdrop_2026_es.webp" alt="Festival de Tribeca 2026" />
+             <div class="overlay"></div>
+             <div class="card-content">
+               <h2>Tribeca 2026</h2>
+               <span class="festival-dates">3–14 jun 2026</span>
+               <span class="explore-btn">Explorar</span>
+             </div>
+          </div>
+        </nuxt-link>
+
         <nuxt-link to="/festival/cannes-2026" class="festival-card">
           <div class="card-image-wrapper">
              <img src="/festivals/cannes/cannes_backdrop_2026_es.webp" alt="Festival de Cannes 2026" />

@@ -389,6 +389,7 @@ import Modal from '~/components/Modal';
 import Loader from '~/components/Loader.vue';
 import SundanceBadge from '~/components/festival/SundanceBadge.vue';
 import SlamdanceBadge from '~/components/festival/SlamdanceBadge.vue';
+import TribecaBadge from '~/components/festival/TribecaBadge.vue';
 import BerlinaleBadge from '~/components/festival/BerlinaleBadge.vue';
 import RotterdamBadge from '~/components/festival/RotterdamBadge.vue';
 import SxswBadge from '~/components/festival/SxswBadge.vue';
@@ -410,6 +411,7 @@ export default {
     Loader,
     SundanceBadge,
     SlamdanceBadge,
+    TribecaBadge,
     BerlinaleBadge,
     RotterdamBadge,
     SxswBadge,
@@ -501,6 +503,7 @@ export default {
       membership: { inWatchlist: false, lists: [] },
       sundanceFilm: null,
       slamdanceFilm: null,
+      tribecaFilm: null,
       berlinaleFilm: null,
       rotterdamFilm: null,
       sxswFilm: null,
@@ -581,6 +584,7 @@ export default {
       const festivalConfig = [
         { name: 'sundance', film: this.sundanceFilm, component: 'SundanceBadge', link: '/festival/sundance-2026', isSimple: true },
         { name: 'slamdance', film: this.slamdanceFilm, component: 'SlamdanceBadge', link: '/festival/slamdance-2026', isSimple: true },
+        { name: 'tribeca', film: this.tribecaFilm, component: 'TribecaBadge', link: '/festival/tribeca-2026', isSimple: true },
         { name: 'berlinale', film: this.berlinaleFilm, component: 'BerlinaleBadge', link: '/festival/berlinale-2026', isSimple: true },
         { name: 'rotterdam', film: this.rotterdamFilm, component: 'RotterdamBadge', link: '/festival/rotterdam-2026', isSimple: true },
         { name: 'sxsw', film: this.sxswFilm, component: 'SxswBadge', link: '/festival/sxsw-2026', isSimple: true },
@@ -873,6 +877,7 @@ export default {
     async checkFestivalStatus() {
     const wasSundance = !!this.sundanceFilm;
     const wasSlamdance = !!this.slamdanceFilm;
+    const wasTribeca = !!this.tribecaFilm;
     const wasBerlinale = !!this.berlinaleFilm;
     const wasRotterdam = !!this.rotterdamFilm;
     const wasSxsw = !!this.sxswFilm;
@@ -886,6 +891,7 @@ export default {
 
     this.sundanceFilm = null;
     this.slamdanceFilm = null;
+    this.tribecaFilm = null;
     this.berlinaleFilm = null;
     this.rotterdamFilm = null;
     this.sxswFilm = null;
@@ -899,7 +905,7 @@ export default {
 
     if (this.type !== 'movie' && this.type !== 'tv') return;
 
-    if (wasSundance || wasSlamdance || wasBerlinale || wasRotterdam || wasSxsw || wasRomford || wasBifff || wasCannes || wasCannesCriticsChoice || wasCannesQuinzaine || wasCannesAcid || wasBafici) {
+    if (wasSundance || wasSlamdance || wasTribeca || wasBerlinale || wasRotterdam || wasSxsw || wasRomford || wasBifff || wasCannes || wasCannesCriticsChoice || wasCannesQuinzaine || wasCannesAcid || wasBafici) {
         this.isFestivalLoading = true;
     }
 
@@ -925,6 +931,18 @@ export default {
                     await new Promise(resolve => setTimeout(resolve, 500));
                 }
                 this.slamdanceFilm = data.results[0];
+            }
+        }
+
+        const tribecaResponse = await fetch(`/api/festival/tribeca/films?tmdb_id=${this.id}`);
+        if (tribecaResponse.ok) {
+            const data = await tribecaResponse.json();
+            if (data.results && data.results.length > 0) {
+                if (!wasTribeca) {
+                    this.isFestivalLoading = true;
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                this.tribecaFilm = data.results[0];
             }
         }
 
@@ -1030,6 +1048,7 @@ export default {
             const manualFestivals = MANUAL_FESTIVAL_BADGES[this.id];
             if (manualFestivals.includes('sundance') && !this.sundanceFilm) this.sundanceFilm = { title: this.name };
             if (manualFestivals.includes('slamdance') && !this.slamdanceFilm) this.slamdanceFilm = { title: this.name };
+            if (manualFestivals.includes('tribeca') && !this.tribecaFilm) this.tribecaFilm = { title: this.name };
             if (manualFestivals.includes('berlinale') && !this.berlinaleFilm) this.berlinaleFilm = { title: this.name };
             if (manualFestivals.includes('rotterdam') && !this.rotterdamFilm) this.rotterdamFilm = { title: this.name };
             if (manualFestivals.includes('sxsw') && !this.sxswFilm) this.sxswFilm = { title: this.name };
