@@ -190,19 +190,27 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         fetchHero()
     ]);
     
-    const FEATURED_ORDER = [
+     const FEATURED_ORDER = [
         // tribeca 2026
+        'Only What We Carry',
+        'Funk',   
+        'In the Hand of Dante',
+        'One Woman, one bra',
+        'Turn It Up!',
+        'Just Look Up',
+        'Sad Girlz',
+        'The Last Day',
         // cannes 2026
-        'Gentle Monster',
         'Colony',
         'Minotaur',
-        'Parallel Tales',
         'Fatherland',
         'Fjord',
         'Visitation',
         'El Partido',
+        'Parallel Tales',
         'Bitter Christmas',
         'All of a Sudden',
+        'Gentle Monster',
         'Full Phil',
         'The Unknown',
         'Hope|cannes',
@@ -210,7 +218,6 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Her Private Hell',
         // bafici 2026
         'Los caminantes de la calle',
-        'In-I In Motion',
         'No Mercy',
         'Sorella di clausura',
         'Nova \'78',
@@ -222,17 +229,15 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Sicko',
         // sxsw 2026
         'Hokum',
-        'Chili Finger',
-        'Never After Dark',
         'Obsession',
+        'Never After Dark',
         'Stormbound',
+        'Chili Finger',
         'Dead Eyes',
         'Ugly Cry',
-        'Wishful Thinking',
-        'Sender',        
+        'Wishful Thinking',       
         // slamdance 2026
         'Whisperings of the Moon',
-        'Dump of Untitled Pieces', 
         'Zumeca',
         // romford 2026
         'Spoiling You',
@@ -244,10 +249,9 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Heysel 85',
         'In a Whisper',
         'If I Were Alive',
-        'A Prayer for the Dying',
+        'Forest High',
         'Paradise',
         'At the sea',
-        'Forest High',
         'Salvation',
         'Narciso',
         'Lali',
@@ -261,9 +265,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Butterfly',
         'Fuori',
         'Sore: A Wife from the Future',
-        'The History of Sound',
         'Late Fame',
-        'Badak',
         // sundance 2026
         'To Hold a Mountain',
         'The Weight',
@@ -274,9 +276,9 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Leviticus',
         'The AI Doc: Or How I Became an Apocaloptimist',  
         'Tuner',
-        'The Invite',
         'Time and Water',
         'Josephine',
+        'The Invite',
         'Saccharine',
     ];
     
