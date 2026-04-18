@@ -177,7 +177,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         }
     };
 
-    const [sundanceList, berlinaleList, rotterdamList, slamdanceList, sxswList, romfordList, bifffList, baficiList, cannesList, trendingMovies, trendingTv, featured] = await Promise.all([
+    const [sundanceList, berlinaleList, rotterdamList, slamdanceList, sxswList, romfordList, bifffList, baficiList, cannesList, tribecaList, trendingMovies, trendingTv, featured] = await Promise.all([
         fetchFestivalMovies('sundance'),
         fetchFestivalMovies('berlinale'),
         fetchFestivalMovies('rotterdam'),
@@ -187,12 +187,14 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         fetchFestivalMovies('bifff'),
         fetchFestivalMovies('bafici'),
         fetchFestivalMovies('cannes'),
+        fetchFestivalMovies('tribeca'),
         fetchWithRefill('movie', 20, 3),
         fetchWithRefill('tv', 20, 6),
         fetchHero()
     ]);
     
      const FEATURED_ORDER = [
+        // tribeca 2026
         // cannes 2026
         'Gentle Monster',
         'Colony',
@@ -283,7 +285,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
     
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
     
-    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList, ...romfordList, ...bifffList, ...baficiList, ...cannesList];
+    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList, ...romfordList, ...bifffList, ...baficiList, ...cannesList, ...tribecaList];
     
     let mixedFestivalFilms = allFestivalFilms.filter(f => {
         const t = norm(f.title);

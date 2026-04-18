@@ -69,6 +69,7 @@
 import carousel from '~/mixins/Carousel';
 import SundanceCard from '~/components/SundanceCard.vue';
 import SlamdanceCard from '~/components/SlamdanceCard.vue';
+import TribecaCard from '~/components/TribecaCard.vue';
 import BerlinaleCard from '~/components/BerlinaleCard.vue';
 import RotterdamCard from '~/components/RotterdamCard.vue';
 import SxswCard from '~/components/festival/SxswCard.vue';
@@ -82,6 +83,7 @@ export default {
   components: {
     SundanceCard,
     SlamdanceCard,
+    TribecaCard,
     BerlinaleCard,
     RotterdamCard,
     SxswCard,
@@ -130,6 +132,7 @@ export default {
         berlinale: 'BerlinaleCard',
         rotterdam: 'RotterdamCard',
         slamdance: 'SlamdanceCard',
+        tribeca: 'TribecaCard',
         sxsw: 'SxswCard',
         romford: 'RomfordCard',
         bifff: 'BifffCard',
