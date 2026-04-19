@@ -1,5 +1,5 @@
 <template>
-  <div class="listing listing--carousel">
+  <div :class="['listing', 'listing--carousel', { 'listing--compact': compact }]">
     <div
       v-if="title || viewAllUrl"
       class="listing__head">
@@ -93,6 +93,12 @@ export default {
       type: Object,
       required: true,
     },
+
+    compact: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   mounted () {
@@ -126,6 +132,48 @@ export default {
 .listing__explore:hover,
 .listing__explore:hover strong {
   color: #A2EDFD !important;
+}
+
+/* Compact mode — tarjetas más pequeñas para películas / series de tendencia
+   en la homepage. Afecta al selector global .carousel__items .card vía :deep(). */
+.listing--compact :deep(.carousel__items .card) {
+  width: calc(.25 * (100% - 22px));
+}
+
+@media (min-width: 576px) {
+  .listing--compact :deep(.carousel__items .card) {
+    width: calc(.2 * (100% - 72px));
+  }
+}
+
+@media (min-width: 840px) {
+  .listing--compact :deep(.carousel__items .card) {
+    width: calc(.16667 * (100% - 72px));
+  }
+}
+
+@media (min-width: 1200px) {
+  .listing--compact :deep(.carousel__items .card) {
+    width: calc(.14286 * (100% - 92px));
+  }
+}
+
+@media (min-width: 1500px) {
+  .listing--compact :deep(.carousel__items .card) {
+    width: calc(.125 * (100% - 92px));
+  }
+}
+
+@media (min-width: 1800px) {
+  .listing--compact :deep(.carousel__items .card) {
+    width: calc(.1111 * (100% - 92px));
+  }
+}
+
+@media (min-width: 2500px) {
+  .listing--compact :deep(.carousel__items .card) {
+    width: calc(.1 * (100% - 92px));
+  }
 }
 </style>
 <style>

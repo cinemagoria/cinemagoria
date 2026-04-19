@@ -1,67 +1,62 @@
 <template>
-  <div class="listing listing--carousel">
+  <div class="listing listing--infinite">
     <div
       v-if="items && items.length"
       class="listing__head">
       <h2 class="listing__title">
         Plataformas Streaming Populares
-        <NuxtLink 
-          v-if="viewAllLink" 
-          :to="viewAllLink" 
-          class="explore-all"
-        >Explorar Todo</NuxtLink>
+        <NuxtLink
+          v-if="viewAllLink"
+          :to="viewAllLink"
+          class="explore-all">Explorar Todo</NuxtLink>
       </h2>
     </div>
 
     <div class="carousel">
       <button
         class="carousel__nav carousel__nav--left"
-        aria-label="Previous"
+        aria-label="Anterior"
         type="button"
-        :disabled="disableLeftButton"
-        @click="moveToClickEvent('left')">
+        @click="nudge(-1)">
+        <!-- eslint-disable-next-line -->
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"/></svg>
       </button>
 
       <div
-        ref="carouselElement"
-        class="carousel__items"
-        @scroll="scrollEvent">
-        
-        
-        <NuxtLink
-          v-for="platform in items"
-          :key="platform.id"
-          :to="`/streaming/${platform.slug}`"
-          class="production-company-card"
-        >
-          <div class="logo-container">
-            <img 
-              v-if="getLogoUrl(platform)" 
-              :src="getLogoUrl(platform)" 
-              :alt="platform.name" 
-              :class="['company-logo', { 'company-logo--large': platform.id === 11 || platform.id === 99 }]"
-              loading="lazy"
-            >
-            <span v-else class="company-name">{{ platform.name }}</span>
-          </div>
-        </NuxtLink>
-
-        <div class="production-company-card explore-card" v-if="viewAllLink">
-             <nuxt-link :to="viewAllLink" class="company-link">
-               <div class="logo-container explore-container">
-                 <span>Explorar Más</span>
-               </div>
-             </nuxt-link>
+        ref="viewport"
+        class="inf__viewport">
+        <div
+          ref="track"
+          class="inf__track"
+          :class="{ 'is-manual': isManual }"
+          :style="{
+            animationDelay: `${seek}s`,
+            '--manual-x': `${manualX}px`,
+          }">
+          <NuxtLink
+            v-for="(platform, i) in duplicated"
+            :key="`sp-${i}-${platform.id}`"
+            :to="`/streaming/${platform.slug}`"
+            class="sp-card">
+            <div class="sp-logo">
+              <img
+                v-if="getLogoUrl(platform)"
+                :src="getLogoUrl(platform)"
+                :alt="platform.name"
+                :class="['sp-logo__img', { 'sp-logo__img--large': platform.id === 11 || platform.id === 99 }]"
+                loading="lazy">
+              <span v-else class="sp-name">{{ platform.name }}</span>
+            </div>
+          </NuxtLink>
         </div>
       </div>
 
       <button
         class="carousel__nav carousel__nav--right"
-        aria-label="Next"
+        aria-label="Siguiente"
         type="button"
-        :disabled="disableRightButton"
-        @click="moveToClickEvent('right')">
+        @click="nudge(1)">
+        <!-- eslint-disable-next-line -->
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"/></svg>
       </button>
     </div>
@@ -69,24 +64,26 @@
 </template>
 
 <script>
-import carousel from '~/mixins/Carousel';
+import infiniteScroll from '~/mixins/InfiniteScroll';
 import { apiImgUrl } from '~/utils/api';
 
 export default {
-  mixins: [carousel],
+  mixins: [infiniteScroll],
+
   props: {
     items: {
       type: Array,
-      required: true
+      required: true,
     },
     viewAllLink: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
-  data() {
+  data () {
     return {
       apiImgUrl,
+      infiniteDuration: 69,
       customLogos: {
         11: '/logos/streaming/mubi-logo.svg',
         15: '/logos/streaming/hulu-logo.svg',
@@ -96,35 +93,47 @@ export default {
         1899: '/logos/streaming/hbo-max-logo.svg',
         337: '/logos/streaming/disney-logo.png',
         386: '/logos/streaming/peacock-logo.png',
-        99: '/logos/streaming/shudder-logo.svg'
-      }
+        99: '/logos/streaming/shudder-logo.svg',
+      },
     };
   },
   computed: {
-    totalItems() {
-      return this.items.length + (this.viewAllLink ? 1 : 0);
-    }
-  },
-  mounted() {
-    this.calculateState(this.totalItems);
+    duplicated () {
+      return [...this.items, ...this.items];
+    },
   },
   methods: {
-    resizeEvent() {
-      this.calculateState(this.totalItems);
-    },
-    getLogoUrl(platform) {
+    getLogoUrl (platform) {
       const customLogo = this.customLogos[platform.id];
-      if (customLogo) {
-        return customLogo;
-      }
+      if (customLogo) return customLogo;
       return platform.logo_path ? `${apiImgUrl}/w500${platform.logo_path}` : null;
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped lang="scss">
 @use '~/assets/css/utilities/variables' as *;
+
+.listing {
+  margin-bottom: 2.5rem;
+}
+
+/* Stretch the gradient arrow panels to cover the full carousel height. */
+.carousel {
+  position: relative;
+
+  :deep(.carousel__nav) {
+    top: 0;
+    bottom: 0;
+  }
+
+  :deep(.carousel__nav--left),
+  :deep(.carousel__nav--right) {
+    bottom: 0;
+    margin-bottom: 0;
+  }
+}
 
 .listing__title {
   display: flex;
@@ -133,101 +142,86 @@ export default {
 }
 
 .explore-all {
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   color: #8BE9FD;
   text-decoration: none;
   font-weight: 500;
   margin-left: 1rem;
-  
+
   &:hover {
     text-decoration: underline;
+    color: #A2EDFD;
   }
 }
 
-.carousel {
-  position: relative;
-  
-  &__nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 5;
-    background: rgba(0,0,0,0.5);
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.3s, opacity 0.3s;
-    
-    &:hover:not(:disabled) {
-        background: rgba(0,0,0,0.8);
-    }
-    
-    &:disabled {
-        opacity: 0;
-        cursor: default;
-    }
+.inf__viewport {
+  overflow: hidden;
+  padding: 8px 0 18px;
+  touch-action: pan-y;
+  cursor: grab;
 
-    &--left {
-      left: 0;
-    }
-
-    &--right {
-      right: 0;
-    }
+  &:active {
+    cursor: grabbing;
   }
-  
-  &__items {
-    display: flex;
-    align-items: stretch;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding-bottom: 20px;
-    
-    scrollbar-width: none; 
-    -ms-overflow-style: none;
-    &::-webkit-scrollbar { 
-      display: none; 
-    }
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 80px,
+    #000 calc(100% - 80px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 80px,
+    #000 calc(100% - 80px),
+    transparent 100%
+  );
+}
+
+.inf__track {
+  display: flex;
+  align-items: stretch;
+  width: max-content;
+  gap: 20px;
+  animation: inf-scroll-sp 69s linear infinite;
+  will-change: transform;
+
+  &:hover,
+  &:focus-within {
+    animation-play-state: paused;
+  }
+
+  &.is-manual {
+    animation: none;
+    transform: translate3d(var(--manual-x, 0px), 0, 0);
+    transition: transform 0.08s linear;
   }
 }
 
+@keyframes inf-scroll-sp {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
 
-.production-company-card {
+.sp-card {
   display: block;
-  width: 180px;
-  height: 100px;
-  flex-shrink: 0;
+  flex: 0 0 auto;
+  width: 170px;
+  height: 95px;
   border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.3s ease;
   background: #333;
-  margin-right: 20px;
-  scroll-snap-align: start;
   text-decoration: none;
-  
+  transition: transform 0.3s ease;
+
   &:hover {
     transform: scale(1.05);
   }
-
-  &:first-child {
-    margin-left: 15px;
-
-    @media (min-width: $breakpoint-small) {
-      margin-left: 40px;
-    }
-
-    @media (min-width: $breakpoint-large) {
-      margin-left: 50px;
-    }
-  }
 }
 
-.logo-container {
+.sp-logo {
   width: 100%;
   height: 100%;
   display: flex;
@@ -237,45 +231,30 @@ export default {
   background: #8BE9FD;
 }
 
-.company-logo {
+.sp-logo__img {
   max-width: 120px;
   max-height: 60px;
   width: auto;
   height: auto;
   object-fit: contain;
   filter: brightness(0);
-  
+
   &--large {
     max-width: 220px;
     max-height: 110px;
   }
 }
 
-.company-name {
+.sp-name {
   color: #fff;
-  font-weight: bold;
+  font-weight: 700;
   font-size: 1rem;
   text-align: center;
 }
 
-.explore-card {
-    background: #000;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    
-    &:hover {
-        background: #111;
-    }
-}
-
-.explore-container {
-    flex-direction: column;
-    gap: 10px;
-    color: #fff;
-    font-weight: 500;
-    font-size: 1.1rem;
-    background: transparent;
-    @media (min-width: $breakpoint-large) {
-      font-size: 1.3rem;
-    }
+@media (prefers-reduced-motion: reduce) {
+  .inf__track {
+    animation: none;
+  }
 }
 </style>

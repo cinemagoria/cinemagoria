@@ -233,6 +233,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/* Stretch the gradient arrow panels to cover the full carousel height.
+   The global defaults leave a visible gap against the tall news cards. */
+.carousel {
+  position: relative;
+
+  :deep(.carousel__nav) {
+    top: 0;
+    bottom: 0;
+  }
+
+  :deep(.carousel__nav--left),
+  :deep(.carousel__nav--right) {
+    bottom: 0;
+    margin-bottom: 0;
+  }
+}
+
 :deep(.carousel__items) {
   display: flex;
   align-items: stretch;

@@ -1,5 +1,5 @@
 <template>
-  <div class="listing listing--carousel">
+  <div class="listing listing--infinite">
     <div
       v-if="items && items.length"
       class="listing__head">
@@ -20,203 +20,198 @@
         class="carousel__nav carousel__nav--left"
         aria-label="Anterior"
         type="button"
-        :disabled="disableLeftButton"
-        @click="moveToClickEvent('left')">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5" d="M17.9 23.2 6.1 12 17.9.8"/></svg>
+        @click="nudge(-1)">
+        <!-- eslint-disable-next-line -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"/></svg>
       </button>
 
       <div
-        ref="carouselElement"
-        class="carousel__items"
-        @scroll="scrollEvent">
-        
+        ref="viewport"
+        class="inf__viewport">
         <div
-          v-for="company in items"
-          :key="company.id"
-          class="production-company-card"
-        >
-          <nuxt-link 
-            :to="`/production/${company.slug}`"
-            class="company-link"
-          >
-            <div class="logo-container">
-               <img 
-                 v-if="company.logo_path" 
-                 :src="`${apiImgUrl}/w500${company.logo_path}`" 
-                 :alt="company.name" 
-                 class="company-logo"
-                 loading="lazy"
-               />
-               <span v-else class="company-name">{{ company.name }}</span>
-            </div>
-          </nuxt-link>
+          ref="track"
+          class="inf__track"
+          :class="{ 'is-manual': isManual }"
+          :style="{
+            animationDelay: `${seek}s`,
+            '--manual-x': `${manualX}px`,
+          }">
+          <div
+            v-for="(company, i) in duplicated"
+            :key="`pc-${i}-${company.id}`"
+            class="pc-card">
+            <nuxt-link
+              :to="`/production/${company.slug}`"
+              class="pc-link">
+              <div class="pc-logo">
+                <img
+                  v-if="company.logo_path"
+                  :src="`${apiImgUrl}/w500${company.logo_path}`"
+                  :alt="company.name"
+                  class="pc-logo__img"
+                  loading="lazy">
+                <span v-else class="pc-name">{{ company.name }}</span>
+              </div>
+            </nuxt-link>
+          </div>
         </div>
-
-        <div class="production-company-card explore-card" v-if="viewAllLink">
-             <nuxt-link :to="viewAllLink" class="company-link explore-link">
-               <div class="logo-container explore-container">
-                 <span>Explorar Más</span>
-               </div>
-             </nuxt-link>
-        </div>
-
       </div>
 
       <button
         class="carousel__nav carousel__nav--right"
         aria-label="Siguiente"
         type="button"
-        :disabled="disableRightButton"
-        @click="moveToClickEvent('right')">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5" d="M6.1 23.2 17.9 12 6.1.8"/></svg>
+        @click="nudge(1)">
+        <!-- eslint-disable-next-line -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"/></svg>
       </button>
     </div>
   </div>
 </template>
 
 <script>
-import carousel from '~/mixins/Carousel';
+import infiniteScroll from '~/mixins/InfiniteScroll';
 import { apiImgUrl } from '~/utils/api';
 
 export default {
-  mixins: [carousel],
+  mixins: [infiniteScroll],
+
   props: {
     items: {
       type: Array,
-      required: true
+      required: true,
     },
     viewAllLink: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
-  data() {
+  data () {
     return {
-      apiImgUrl
+      apiImgUrl,
+      infiniteDuration: 69,
     };
   },
   computed: {
-    totalItems() {
-      return this.items.length + (this.viewAllLink ? 1 : 0);
-    }
+    duplicated () {
+      return [...this.items, ...this.items];
+    },
   },
-  mounted() {
-    this.calculateState(this.totalItems);
-  },
-  methods: {
-    resizeEvent() {
-      this.calculateState(this.totalItems);
-    }
-  }
 };
 </script>
 
 <style scoped lang="scss">
 @use '~/assets/css/utilities/variables' as *;
 
-.strong {
-    color: #8BE9FD;
+.listing {
+  margin-bottom: 2.5rem;
 }
 
+/* Stretch the gradient arrow panels to cover the full carousel height. */
 .carousel {
   position: relative;
-  
-  &__nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 5;
-    background: rgba(0,0,0,0.5);
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.3s, opacity 0.3s;
-    
-    &:hover:not(:disabled) {
-        background: rgba(0,0,0,0.8);
-    }
-    
-    &:disabled {
-        opacity: 0;
-        cursor: default;
-    }
 
-    &--left {
-      left: 0;
-    }
-
-    &--right {
-      right: 0;
-    }
+  :deep(.carousel__nav) {
+    top: 0;
+    bottom: 0;
   }
-  
-  &__items {
-    display: flex;
-    align-items: stretch;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding-bottom: 20px;
-    scrollbar-width: none; 
-    -ms-overflow-style: none;
-    &::-webkit-scrollbar { 
-      display: none; 
-    }
+
+  :deep(.carousel__nav--left),
+  :deep(.carousel__nav--right) {
+    bottom: 0;
+    margin-bottom: 0;
   }
 }
-:deep(.carousel__items) {
+
+.strong {
+  color: #8BE9FD;
+}
+
+.listing__explore,
+.listing__explore strong {
+  color: #8BE9FD !important;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.listing__explore:hover,
+.listing__explore:hover strong {
+  color: #A2EDFD !important;
+}
+
+.inf__viewport {
+  overflow: hidden;
+  padding: 8px 0 18px;
+  touch-action: pan-y;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 80px,
+    #000 calc(100% - 80px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 80px,
+    #000 calc(100% - 80px),
+    transparent 100%
+  );
+}
+
+.inf__track {
   display: flex;
   align-items: stretch;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding-bottom: 20px;
-  scrollbar-width: none; 
-  -ms-overflow-style: none;
-  &::-webkit-scrollbar { 
-    display: none; 
+  width: max-content;
+  gap: 20px;
+  animation: inf-scroll-pc 69s linear infinite;
+  will-change: transform;
+
+  &:hover,
+  &:focus-within {
+    animation-play-state: paused;
+  }
+
+  &.is-manual {
+    animation: none;
+    transform: translate3d(var(--manual-x, 0px), 0, 0);
+    transition: transform 0.08s linear;
   }
 }
 
-.production-company-card {
-  width: 250px; 
-  height: 140px;
-  flex-shrink: 0;
+@keyframes inf-scroll-pc {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+.pc-card {
+  flex: 0 0 auto;
+  width: 230px;
+  height: 130px;
   border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.3s ease;
   background: #8BE9FD;
-  margin-right: 20px;
-  scroll-snap-align: start;
-  
+  transition: transform 0.3s ease;
+
   &:hover {
     transform: scale(1.03);
   }
-
-  &:first-child {
-    margin-left: 15px;
-
-    @media (min-width: $breakpoint-small) {
-      margin-left: 40px;
-    }
-
-    @media (min-width: $breakpoint-large) {
-      margin-left: 50px;
-    }
-  }
 }
 
-.company-link {
+.pc-link {
   display: block;
   width: 100%;
   height: 100%;
   text-decoration: none;
 }
 
-.logo-container {
+.pc-logo {
   width: 100%;
   height: 100%;
   display: flex;
@@ -225,37 +220,23 @@ export default {
   padding: 1rem;
 }
 
-.company-logo {
+.pc-logo__img {
   max-width: 80%;
   max-height: 80%;
   object-fit: contain;
   filter: brightness(0);
 }
 
-.company-name {
+.pc-name {
   color: #000;
-  font-weight: bold;
-  font-size: 1.2rem;
+  font-weight: 700;
+  font-size: 1.1rem;
   text-align: center;
 }
 
-.explore-card {
-    background: #000;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    
-    &:hover {
-        background: #111;
-    }
-}
-
-.explore-container {
-    flex-direction: column;
-    gap: 10px;
-    color: #fff;
-    font-weight: 500;
-    font-size: 1.3rem;
-    @media (min-width: $breakpoint-large) {
-      font-size: 1.6rem;
-    }
+@media (prefers-reduced-motion: reduce) {
+  .inf__track {
+    animation: none;
+  }
 }
 </style>

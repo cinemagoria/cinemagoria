@@ -1,5 +1,5 @@
 <template>
-  <div class="listing listing--carousel">
+  <div class="listing listing--infinite">
     <div
       v-if="title || viewAllUrl"
       class="listing__head">
@@ -20,44 +20,37 @@
     <div class="carousel">
       <button
         class="carousel__nav carousel__nav--left"
-        aria-label="Previous"
+        aria-label="Anterior"
         type="button"
-        :disabled="disableLeftButton"
-        @click="moveToClickEvent('left')">
+        @click="nudge(-1)">
         <!-- eslint-disable-next-line -->
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"/></svg>
       </button>
 
       <div
-        ref="carouselElement"
-        class="carousel__items carousel__items--flex"
-        @scroll="scrollEvent">
-        <component
-            v-for="item in items.results"
-            :key="`card-${item.id}`"
-            :is="getCardComponent(item)" 
-            :item="item" 
-        />
-
+        ref="viewport"
+        class="inf__viewport">
         <div
-          v-if="viewAllUrl"
-          class="card card--explore">
-          <nuxt-link
-            :to="viewAllUrl"
-            class="card__link">
-            <div class="card__img">
-              <span>Explorar Todo</span>
-            </div>
-          </nuxt-link>
+          ref="track"
+          class="inf__track"
+          :class="{ 'is-manual': isManual }"
+          :style="{
+            animationDelay: `${seek}s`,
+            '--manual-x': `${manualX}px`,
+          }">
+          <component
+            v-for="(item, i) in duplicated"
+            :key="`card-${i}-${item.id}`"
+            :is="getCardComponent(item)"
+            :item="item" />
         </div>
       </div>
 
       <button
         class="carousel__nav carousel__nav--right"
-        aria-label="Next"
+        aria-label="Siguiente"
         type="button"
-        :disabled="disableRightButton"
-        @click="moveToClickEvent('right')">
+        @click="nudge(1)">
         <!-- eslint-disable-next-line -->
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"/></svg>
       </button>
@@ -66,7 +59,7 @@
 </template>
 
 <script>
-import carousel from '~/mixins/Carousel';
+import infiniteScroll from '~/mixins/InfiniteScroll';
 import SundanceCard from '~/components/SundanceCard.vue';
 import SlamdanceCard from '~/components/SlamdanceCard.vue';
 import TribecaCard from '~/components/TribecaCard.vue';
@@ -89,10 +82,10 @@ export default {
     RomfordCard,
     BifffCard,
     BaficiCard,
-    CannesCard
+    CannesCard,
   },
 
-  mixins: [carousel],
+  mixins: [infiniteScroll],
 
   props: {
     title: {
@@ -100,32 +93,31 @@ export default {
       required: false,
       default: '',
     },
-
     viewAllUrl: {
       type: [String, Object],
       required: false,
-      default: function () {
-        return null;
-      },
+      default: null,
     },
-
     items: {
       type: Object,
       required: true,
     },
   },
 
-  mounted () {
-    const count = this.viewAllUrl ? this.items.results.length + 1 : this.items.results.length;
-    this.calculateState(count);
+  data () {
+    return {
+      infiniteDuration: 69,
+    };
+  },
+
+  computed: {
+    duplicated () {
+      return [...this.items.results, ...this.items.results];
+    },
   },
 
   methods: {
-    resizeEvent () {
-      const count = this.viewAllUrl ? this.items.results.length + 1 : this.items.results.length;
-      this.calculateState(count);
-    },
-    getCardComponent(item) {
+    getCardComponent (item) {
       const cardMap = {
         berlinale: 'BerlinaleCard',
         rotterdam: 'RotterdamCard',
@@ -136,14 +128,20 @@ export default {
         bifff: 'BifffCard',
         bafici: 'BaficiCard',
         cannes: 'CannesCard',
-        'cannes-critics-choice': 'CannesCard',
       };
       return cardMap[item.festival_source] || 'SundanceCard';
-    }
+    },
   },
 };
 </script>
-<style scoped>
+
+<style scoped lang="scss">
+@use '~/assets/css/utilities/variables' as *;
+
+.listing {
+  margin-bottom: 2.5rem;
+}
+
 .listing__explore,
 .listing__explore strong {
   color: #8BE9FD !important;
@@ -156,45 +154,82 @@ export default {
   color: #A2EDFD !important;
 }
 
-.carousel__items--flex {
-  display: flex !important;
+.inf__viewport {
+  overflow: hidden;
+  padding: 8px 0;
+  touch-action: pan-y;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 90px,
+    #000 calc(100% - 90px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 90px,
+    #000 calc(100% - 90px),
+    transparent 100%
+  );
+}
+
+.inf__track {
+  display: flex;
   align-items: stretch;
+  width: max-content;
+  gap: 12px;
+  animation: inf-scroll-fest 69s linear infinite;
+  will-change: transform;
+
+  &:hover,
+  &:focus-within {
+    animation-play-state: paused;
+  }
+
+  &.is-manual {
+    animation: none;
+    transform: translate3d(var(--manual-x, 0px), 0, 0);
+    transition: transform 0.08s linear;
+  }
 }
 
-.carousel__items--flex .card {
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
+@keyframes inf-scroll-fest {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
 }
 
-.card--explore .card__link {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  height: 100%;
+.inf__track :deep(.card) {
+  flex: 0 0 auto;
+  width: 150px;
+  margin: 0 !important;
+
+  @media (min-width: $breakpoint-xsmall) {
+    width: 180px;
+  }
+  @media (min-width: $breakpoint-medium) {
+    width: 210px;
+  }
+  @media (min-width: $breakpoint-large) {
+    width: 230px;
+  }
+  @media (min-width: 1500px) {
+    width: 250px;
+  }
+  @media (min-width: 1800px) {
+    width: 270px;
+  }
 }
 
-.card--explore .card__img {
-  flex: 1;
-  padding-top: 0 !important;
-  height: calc(100% - 30px) !important;
-  flex-basis: calc(100% - 30px);
-  flex-grow: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #000;
-  border-radius: 15px;
-}
-
-.card--explore .card__img span {
-  position: static;
-  width: auto;
-  height: auto;
-  font-weight: 700;
-  color: #fff;
-  font-size: 1.3rem; 
-  display: block; 
+@media (prefers-reduced-motion: reduce) {
+  .inf__track {
+    animation: none;
+  }
 }
 </style>
