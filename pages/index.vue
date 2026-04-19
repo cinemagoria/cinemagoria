@@ -11,7 +11,7 @@
       :initial-item="featured[0]"
       :is-homepage="true" />
 
-
+    <NewsCarousel />
 
     <FestivalsCarousel
       v-if="festivalsMovies && festivalsMovies.results.length"
@@ -23,27 +23,27 @@
       v-if="trendingMovies && trendingMovies.results.length"
       :title="trendingMoviesTitle"
       :view-all-url="trendingMoviesUrl"
-      :items="trendingMovies" />
+      :items="trendingMovies"
+      compact />
 
     <ListingCarousel
       v-if="trendingTv && trendingTv.results.length"
       :title="trendingTvTitle"
       :view-all-url="trendingTvUrl"
-      :items="trendingTv" />
+      :items="trendingTv"
+      compact />
 
-    <ProductionCompanyCarousel 
+    <ProductionCompanyCarousel
       v-if="popularProductionCompanies.length"
       :items="popularProductionCompanies"
       view-all-link="/production-companies"
     />
 
-    <StreamingPlatformCarousel 
+    <StreamingPlatformCarousel
       v-if="popularStreamingProviders.length"
       :items="popularStreamingProviders"
       view-all-link="/streaming-services"
     />
-
-    <NewsCarousel />
   </main>
 </template>
 
