@@ -3,7 +3,34 @@
     @touchstart="handleTouchStart"
     @touchend="handleTouchEnd"
     @wheel.prevent="handleWheel">
+    <div
+      v-if="isHomepage && autoAdvanceEnabled && items && items.length > 1"
+      :class="$style.autoAdvanceBar">
+      <div :class="$style.autoAdvanceBarTrack">
+        <div
+          :key="`auto-advance-fill-${currentIndex}`"
+          :class="[
+            $style.autoAdvanceBarFill, 
+            { 
+              [$style.autoAdvanceBarFillPaused]: autoAdvancePaused,
+              [$style.autoAdvanceBarFillLoading]: !isHomepageContentReady
+            }
+          ]"></div>
+      </div>
+      <button
+        type="button"
+        :class="$style.autoAdvanceToggle"
+        :aria-label="autoAdvancePaused ? 'Resume auto-advance' : 'Pause auto-advance'"
+        :title="autoAdvancePaused ? 'Resume' : 'Pause'"
+        @click="toggleAutoAdvance">
+        <!-- Pause icon -->
+        <svg v-if="!autoAdvancePaused" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="12" height="12"><rect x="4" y="3" width="4" height="14" rx="1" fill="#fff" /><rect x="12" y="3" width="4" height="14" rx="1" fill="#fff" /></svg>
+        <!-- Play icon -->
+        <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="12" height="12"><polygon points="5,3 17,10 5,17" fill="#fff" /></svg>
+      </button>
+    </div>
     <div :class="[$style.hero, { [$style.heroHomepage]: isHomepage }]">
+
       <div v-if="isHomepage && !isHomepageContentReady" class="unified-homepage-loader">
         <Loader :size="70" />
       </div>
@@ -12,7 +39,7 @@
         <Loader :size="60" />
       </div>
       
-      <div :class="$style.backdrop">
+      <div :class="$style.backdrop" @click="handleBackdropClick">
         <div>
           <div v-if="isHomepage || isNoirTitle" :class="$style.noirBadgeGroup">
             <nuxt-link to="/noir" :class="$style.noirBadgeImg" title="N.O.I.R">
@@ -554,6 +581,11 @@ export default {
       showNoirModal: false,
       isNoirTitle: false,
       currentIndex: 0,
+      autoAdvanceEnabled: true,
+      autoAdvanceTimer: null,
+      autoAdvancePaused: false,
+      autoAdvanceStartTime: null,
+      autoAdvanceRemainingTime: 15000,
       touchStartX: 0,
       touchEndX: 0,
       lastWheelTime: 0,
@@ -694,6 +726,12 @@ export default {
       if (val) {
         this.updateHeroState();
         this.checkNoirStatus();
+        this.resetAutoAdvance();
+      }
+    },
+    isHomepageContentReady(val) {
+      if (val && this.isHomepage) {
+        this.startAutoAdvance();
       }
     }
   },
@@ -702,6 +740,11 @@ export default {
     this.$bus.$off('favorites-updated', this.checkMembership);
     this.$bus.$off('lists-updated', this.checkMembership);
     this.$bus.$off('new-list-created', this.handleNewList);
+    this.stopAutoAdvance();
+  },
+
+  beforeUnmount() {
+    this.stopAutoAdvance();
   },
 
   methods: {
@@ -772,6 +815,50 @@ export default {
         this.isLoading = true;
         this.currentIndex = (this.currentIndex - 1 + this.items.length) % this.items.length;
       }
+    },
+    startAutoAdvance() {
+      if (!this.isHomepage) return;
+      if (!this.items || this.items.length <= 1) return;
+      if (!this.autoAdvanceEnabled) return;
+      if (this.autoAdvancePaused) return;
+      if (!this.isHomepageContentReady) return;
+
+      this.stopAutoAdvance();
+      this.autoAdvanceStartTime = Date.now();
+      this.autoAdvanceTimer = setTimeout(() => {
+        this.autoAdvanceRemainingTime = 15000;
+        this.nextItem();
+      }, this.autoAdvanceRemainingTime);
+    },
+    stopAutoAdvance() {
+      if (this.autoAdvanceTimer) {
+        clearTimeout(this.autoAdvanceTimer);
+        this.autoAdvanceTimer = null;
+      }
+    },
+    resetAutoAdvance() {
+      this.autoAdvanceRemainingTime = 15000;
+      this.autoAdvancePaused = false;
+      this.startAutoAdvance();
+    },
+    toggleAutoAdvance() {
+      if (this.autoAdvancePaused) {
+        // Resume
+        this.autoAdvancePaused = false;
+        this.startAutoAdvance();
+      } else {
+        // Pause — calculate remaining time
+        if (this.autoAdvanceStartTime) {
+          const elapsed = Date.now() - this.autoAdvanceStartTime;
+          this.autoAdvanceRemainingTime = Math.max(0, this.autoAdvanceRemainingTime - elapsed);
+        }
+        this.autoAdvancePaused = true;
+        this.stopAutoAdvance();
+      }
+    },
+    handleBackdropClick() {
+      if (!this.isHomepage || !this.autoAdvanceEnabled || !this.items || this.items.length <= 1) return;
+      this.toggleAutoAdvance();
     },
     async updateHeroState() { 
         if (this.isHomepage) {
@@ -1865,7 +1952,7 @@ export default {
   border: 1px solid transparent;
   background: linear-gradient(#000, #000) padding-box,
               linear-gradient(to right, #1E5164, #8AE8FC) border-box;
-  margin-top: 20px;
+  margin-top: 10px;
   touch-action: pan-y;
 }
 
@@ -2255,6 +2342,70 @@ export default {
   span {
     margin-right: 0.9rem;
   }
+}
+
+.autoAdvanceBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 14px;
+  margin: 10px 0 0px 0;
+  background: #000;
+  pointer-events: none;
+}
+
+.autoAdvanceBarTrack {
+  flex: 1 1 auto;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.autoAdvanceBarFill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(to right, #1E5164, #8AE8FC);
+  animation: hero-auto-advance 15s linear forwards;
+  transform-origin: left center;
+}
+
+.autoAdvanceBarFillPaused {
+  animation-play-state: paused;
+}
+
+.autoAdvanceBarFillLoading {
+  animation: none !important;
+  width: 0 !important;
+}
+
+.autoAdvanceToggle {
+  pointer-events: auto;
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.45);
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  opacity: 0.75;
+  transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    background: rgba(0, 0, 0, 0.7);
+  }
+}
+
+@keyframes hero-auto-advance {
+  from { width: 0; }
+  to { width: 100%; }
 }
 
 .desc {

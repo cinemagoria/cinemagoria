@@ -1,5 +1,5 @@
 <template>
-  <div class="listing listing--infinite">
+  <div class="listing listing--carousel">
     <div
       v-if="title || viewAllUrl"
       class="listing__head">
@@ -22,35 +22,31 @@
         class="carousel__nav carousel__nav--left"
         aria-label="Previous"
         type="button"
-        @click="nudge(-1)">
+        :disabled="disableLeftButton"
+        @click="manualMove('left')">
         <!-- eslint-disable-next-line -->
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"/></svg>
       </button>
 
       <div
-        ref="viewport"
-        class="inf__viewport">
-        <div
-          ref="track"
-          class="inf__track"
-          :class="{ 'is-manual': isManual }"
-          :style="{
-            animationDelay: `${seek}s`,
-            '--manual-x': `${manualX}px`,
-          }">
-          <component
-            v-for="(item, i) in duplicated"
-            :key="`card-${i}-${item.id}`"
-            :is="getCardComponent(item)"
-            :item="item" />
-        </div>
+        ref="carouselElement"
+        class="carousel__items"
+        @scroll="scrollEvent"
+        @mouseenter="pauseAutoplay"
+        @mouseleave="resumeAutoplay">
+        <component
+          v-for="item in items.results"
+          :key="item.id"
+          :is="getCardComponent(item)"
+          :item="item" />
       </div>
 
       <button
         class="carousel__nav carousel__nav--right"
         aria-label="Next"
         type="button"
-        @click="nudge(1)">
+        :disabled="disableRightButton"
+        @click="manualMove('right')">
         <!-- eslint-disable-next-line -->
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"/></svg>
       </button>
@@ -59,7 +55,7 @@
 </template>
 
 <script>
-import infiniteScroll from '~/mixins/InfiniteScroll';
+import carousel from '~/mixins/Carousel';
 import SundanceCard from '~/components/SundanceCard.vue';
 import SlamdanceCard from '~/components/SlamdanceCard.vue';
 import TribecaCard from '~/components/TribecaCard.vue';
@@ -72,7 +68,13 @@ import BaficiCard from '~/components/BaficiCard.vue';
 import CannesCard from '~/components/CannesCard.vue';
 import CannesCriticsChoiceCard from '~/components/CannesCard.vue';
 
+const AUTOPLAY_INTERVAL = 5000;
+
 export default {
+  name: 'FestivalsCarousel',
+
+  mixins: [carousel],
+
   components: {
     SundanceCard,
     SlamdanceCard,
@@ -86,8 +88,6 @@ export default {
     CannesCard,
     CannesCriticsChoiceCard,
   },
-
-  mixins: [infiniteScroll],
 
   props: {
     title: {
@@ -108,15 +108,23 @@ export default {
 
   data () {
     return {
-      // Must match the CSS `animation` duration on `.inf__track` below.
-      infiniteDuration: 69,
+      autoplayInterval: null,
     };
   },
 
-  computed: {
-    duplicated () {
-      return [...this.items.results, ...this.items.results];
-    },
+  mounted () {
+    this.$nextTick(() => {
+      if (this.items && this.items.results && this.items.results.length > 0) {
+        this.calculateState(this.items.results.length);
+        if (typeof window !== 'undefined') {
+          this.startAutoplay();
+        }
+      }
+    });
+  },
+
+  beforeUnmount () {
+    if (this.autoplayInterval) clearInterval(this.autoplayInterval);
   },
 
   methods: {
@@ -134,6 +142,35 @@ export default {
         'cannes-critics-choice': 'CannesCriticsChoiceCard',
       };
       return cardMap[item.festival_source] || 'SundanceCard';
+    },
+    resizeEvent () {
+      if (this.items && this.items.results) {
+        this.calculateState(this.items.results.length);
+      }
+    },
+    manualMove (direction) {
+      this.moveToClickEvent(direction);
+      this.resetAutoplay();
+    },
+    startAutoplay () {
+      if (this.autoplayInterval) clearInterval(this.autoplayInterval);
+      this.autoplayInterval = setInterval(() => {
+        if (!this.disableRightButton) {
+          this.moveToClickEvent('right');
+        } else {
+          this.moveTo(0);
+        }
+      }, AUTOPLAY_INTERVAL);
+    },
+    pauseAutoplay () {
+      if (this.autoplayInterval) clearInterval(this.autoplayInterval);
+    },
+    resumeAutoplay () {
+      this.startAutoplay();
+    },
+    resetAutoplay () {
+      this.pauseAutoplay();
+      this.resumeAutoplay();
     },
   },
 };
@@ -158,66 +195,20 @@ export default {
   color: #A2EDFD !important;
 }
 
-/* Viewport — clips the duplicated track and fades the edges. */
-.inf__viewport {
-  overflow: hidden;
-  padding: 8px 0;
-  touch-action: pan-y;           /* let vertical page scroll pass through */
-  cursor: grab;
-
-  &:active {
-    cursor: grabbing;
-  }
-
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0,
-    #000 90px,
-    #000 calc(100% - 90px),
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent 0,
-    #000 90px,
-    #000 calc(100% - 90px),
-    transparent 100%
-  );
-}
-
-/* Track — CSS animation drives the infinite loop; switches to a manual
-   translate while the user is dragging / wheeling. */
-.inf__track {
+:deep(.carousel__items) {
   display: flex;
   align-items: stretch;
-  width: max-content;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
   gap: 12px;
-  animation: inf-scroll-fest 69s linear infinite;
-  will-change: transform;
-
-  &:hover,
-  &:focus-within {
-    animation-play-state: paused;
-  }
-
-  &.is-manual {
-    animation: none;
-    transform: translate3d(var(--manual-x, 0px), 0, 0);
-    transition: transform 0.08s linear;
-  }
+  padding: 8px 0;
 }
 
-@keyframes inf-scroll-fest {
-  from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(-50%, 0, 0); }
-}
-
-/* Card sizing inside the track — mirrors the legacy carousel widths so the
-   visual footprint of each festival card is preserved. */
-.inf__track :deep(.card) {
+:deep(.card) {
   flex: 0 0 auto;
   width: 150px;
   margin: 0 !important;
+  scroll-snap-align: start;
 
   @media (min-width: $breakpoint-xsmall) {
     width: 180px;
@@ -233,13 +224,6 @@ export default {
   }
   @media (min-width: 1800px) {
     width: 270px;
-  }
-}
-
-/* Accessibility — honour reduced-motion by cancelling the autoplay animation. */
-@media (prefers-reduced-motion: reduce) {
-  .inf__track {
-    animation: none;
   }
 }
 </style>
