@@ -67,7 +67,13 @@ const getEnv = (key) => {
 
 const apiUrl = 'https://api.themoviedb.org/3';
 export const apiImgUrl = 'https://image.tmdb.org/t/p';
-const EXCLUDED_TV_IDS = [276880];
+// ─── Listas de exclusión curadas ─────────────────────────────────────────
+// Añadí IDs de TMDB acá para excluir títulos específicos de los carouseles
+// de Popular Movies / Popular TV en la homepage (y cualquier otra
+// invocación de getTrending).
+export const EXCLUDED_MOVIE_IDS = [969681, 931285, 1265609, 696393, 1523145, 1641319, 1307373, 1444249, 1416391, 840464, 936075, 1623125, 1239134, 1108427, 1446616, 980431, 1084577, 83533, 1226863, 1613798, 1049471, 1327819, 1297842, 1084242, 1236153, 1659087, 1290821, 1472951, 1234731, 1493859];
+export const EXCLUDED_TV_IDS = [269161, 259819, 300131, 312474, 276880, 281010, 314784, 297557, 260463, 258865, 196950, 295357, 301507, 289424, 295778, 279471];
+
 
 // Detect non-Latin script titles (Hindi, Korean, Japanese, Arabic, Chinese, Thai, etc.)
 // Returns true if the title contains characters outside Latin/common punctuation ranges
@@ -1076,13 +1082,14 @@ export function getEpisode(tvId, season, episode) {
         }).then((response) => {
             resolve(response.data);
         })
-        .catch((error) => {
-            reject(error);
-        });
+            .catch((error) => {
+                reject(error);
+            });
     });
 };
 
-export function getTrending(media, page = 1) {
+export function getTrending(media, page = 1, options = {}) {
+    const { skipEnrichment = false } = options;
     return new Promise((resolve, reject) => {
         axios.get(`${apiUrl}/trending/${media}/week`, {
             params: {
@@ -1091,14 +1098,28 @@ export function getTrending(media, page = 1) {
                 page,
             },
         }).then(async (response) => {
+            // Apply curated exclusion lists before any downstream work.
             if (media === 'tv') {
                 response.data.results = response.data.results.filter(item => !EXCLUDED_TV_IDS.includes(item.id));
+            } else if (media === 'movie') {
+                response.data.results = response.data.results.filter(item => !EXCLUDED_MOVIE_IDS.includes(item.id));
             }
 
             response.data.results.forEach(item => {
                 item.vote_average = parseFloat(item.vote_average).toFixed(1);
                 _fixNonLatinTitleInList(item, media);
             });
+
+            // `skipEnrichment: true` evita los roundtrips a TMDB details +
+            // IMDb rating por item. Los callers que no necesitan
+            // `external_ids` o `imdb_rating` (p.ej. los carouseles de la
+            // homepage) deberían pasarlo en true — caso contrario disparamos
+            // 2 HTTP extra por result × N results por página × M páginas.
+            if (skipEnrichment) {
+                await _fixNonLatinTitlesAsync(response.data.results, media);
+                resolve(response.data);
+                return;
+            }
 
             const enrichedResults = await Promise.all(
                 response.data.results.map(async (item) => {
@@ -1245,10 +1266,10 @@ export function getPerson(id) {
 function parseSearchContext(rawQuery) {
     const yearMatch = rawQuery.match(/\b(19\d{2}|20\d{2})\b/);
     const year = yearMatch ? yearMatch[1] : null;
-    
+
     let baseQuery = rawQuery;
     let personQuery = null;
-    
+
     if (rawQuery.includes('+')) {
         const parts = rawQuery.split('+').map(p => p.trim()).filter(Boolean);
         if (parts.length >= 2) {
@@ -1258,7 +1279,7 @@ function parseSearchContext(rawQuery) {
     } else if (year) {
         baseQuery = rawQuery.replace(yearMatch[0], '').replace(/\s{2,}/g, ' ').trim();
     }
-    
+
     return { baseQuery, year, personQuery, originalQuery: rawQuery };
 }
 
@@ -1271,10 +1292,10 @@ async function _detectPersonContext(personQuery) {
                 language: getEnv('API_LANG'),
             }
         });
-        
+
         const persons = personResponse.data.results || [];
         if (persons.length === 0) return { personCreditIds: new Set(), personName: null };
-        
+
         const topPerson = persons[0];
 
         try {
@@ -1290,7 +1311,7 @@ async function _detectPersonContext(personQuery) {
             (credits.cast || []).forEach(c => allCreditIds.add(c.id));
             (credits.crew || []).forEach(c => allCreditIds.add(c.id));
             return { personCreditIds: allCreditIds, personName: topPerson.name };
-        } catch(e) {
+        } catch (e) {
             const creditIds = new Set((topPerson.known_for || []).map(k => k.id));
             return { personCreditIds: creditIds, personName: topPerson.name };
         }
@@ -1301,26 +1322,26 @@ async function _detectPersonContext(personQuery) {
 
 function _scoreResults(results, context) {
     const { year, personCreditIds } = context;
-    
+
     results.forEach(item => {
         let score = 0;
-        
+
         if (year && (item.media_type === 'movie' || item.media_type === 'tv')) {
             const releaseDate = item.release_date || item.first_air_date || '';
             if (releaseDate.startsWith(year)) {
                 score += 100;
             }
         }
-        
+
         if (personCreditIds && personCreditIds.size > 0 && (item.media_type === 'movie' || item.media_type === 'tv')) {
             if (personCreditIds.has(item.id)) {
                 score += 200;
             }
         }
-        
+
         item._contextScore = score;
     });
-    
+
     return results;
 }
 
@@ -1437,7 +1458,7 @@ export async function search(query, page = 1) {
         });
 
         let [multiResponse, companyResponse] = await Promise.all([searchMulti, searchCompanies]);
-        
+
         if (multiResponse.data.results.length === 0 && searchQuery !== query) {
             const fallbackMulti = await axios.get(`${apiUrl}/search/multi?include_adult=false`, {
                 params: {
@@ -1517,7 +1538,7 @@ export async function search(query, page = 1) {
         }
 
         const allResults = [...streamingResults, ...companyResults, ...enrichedMultiResults];
-        
+
         if (page === 1) {
             _scoreResults(allResults, {
                 year: context.year,

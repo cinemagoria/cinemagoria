@@ -1,6 +1,6 @@
 <template>
   <main class="main">
-    <br>
+    <!-- Oscars 2026 live coverage — visible 5 days from March 15 -->
     <OscarsLiveBanner v-if="showOscarsBanner" />
 
     <Hero
@@ -86,58 +86,26 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
       });
     };
     
-    const filterCarouselItems = (items, mediaType) => {
-      const minRating = 6.0;
-      
-      return items.filter(item => {
-        const genreIds = item.genre_ids || [];
-        const hasAnimation = genreIds.includes(16);
-        
-        const hasImdb = item.rating_source === 'imdb';
-        const imdbRating = item.imdb_rating ? parseFloat(item.imdb_rating) : 0;
-
-        return !hasAnimation && hasImdb && imdbRating >= minRating;
-      });
-    };
-    
-    const fetchWithRefill = async (mediaType, minItems = 20, maxPages = 5) => {
+    const fetchWithRefill = async (mediaType, minItems = 20, maxPages = 3) => {
       let allResults = [];
       const seenIds = new Set();
-      let asianShowCount = 0;
       let currentBatch = 1;
       const batchSize = 3;
-      
+
       while (allResults.length < minItems && currentBatch <= maxPages) {
         const pagesToFetch = [];
         for (let i = 0; i < batchSize && currentBatch <= maxPages; i++) {
           pagesToFetch.push(currentBatch++);
         }
-        
+
         const batchResults = await Promise.all(
-          pagesToFetch.map(page => getTrending(mediaType, page))
+          pagesToFetch.map(page => getTrending(mediaType, page, { skipEnrichment: true }))
         );
-        
+
         for (const data of batchResults) {
           if (data?.results) {
             const yearFiltered = filterRecentYears(data.results);
-            let carouselFiltered = filterCarouselItems(yearFiltered, mediaType);
-            
-            if (mediaType === 'tv') {
-              carouselFiltered = carouselFiltered.filter(item => {
-                const isAsian = ['ko', 'zh', 'ja'].includes(item.original_language);
-                
-                if (isAsian) {
-                  if (asianShowCount < 1) {
-                    asianShowCount++;
-                    return true;
-                  }
-                  return false;
-                }
-                return true;
-              });
-            }
-            
-            for (const item of carouselFiltered) {
+            for (const item of yearFiltered) {
               if (!seenIds.has(item.id)) {
                 seenIds.add(item.id);
                 allResults.push(item);
@@ -145,12 +113,12 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
             }
           }
         }
-        
+
         if (allResults.length >= minItems) {
           break;
         }
       }
-      
+
       return { results: allResults };
     };
     
@@ -186,7 +154,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         fetchFestivalMovies('cannes'),
         fetchFestivalMovies('tribeca'),
         fetchWithRefill('movie', 20, 3),
-        fetchWithRefill('tv', 20, 6),
+        fetchWithRefill('tv', 20, 3),
         fetchHero()
     ]);
     

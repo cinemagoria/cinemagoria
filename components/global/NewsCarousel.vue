@@ -100,7 +100,7 @@ import carousel from '~/mixins/Carousel';
 import striptags from 'striptags';
 import { formatDate, handleImageError } from '~/utils/helpers';
 
-const AUTOPLAY_INTERVAL = 15000;
+const AUTOPLAY_INTERVAL = 5000;
 
 export default {
   name: 'NewsCarousel',
@@ -128,7 +128,7 @@ export default {
       allItems = allItems.filter(item => !!item.image);
       
       const dateLimit = new Date();
-      dateLimit.setDate(dateLimit.getDate() - 7);
+      dateLimit.setDate(dateLimit.getDate() - 15);
       
       allItems.sort((a, b) => {
         return new Date(b.published_at) - new Date(a.published_at);
