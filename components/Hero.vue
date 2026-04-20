@@ -8,14 +8,9 @@
       :class="$style.autoAdvanceBar">
       <div :class="$style.autoAdvanceBarTrack">
         <div
+          v-if="isHomepageContentReady"
           :key="`auto-advance-fill-${currentIndex}`"
-          :class="[
-            $style.autoAdvanceBarFill, 
-            { 
-              [$style.autoAdvanceBarFillPaused]: autoAdvancePaused,
-              [$style.autoAdvanceBarFillLoading]: !isHomepageContentReady
-            }
-          ]"></div>
+          :class="[$style.autoAdvanceBarFill, { [$style.autoAdvanceBarFillPaused]: autoAdvancePaused }]"></div>
       </div>
       <button
         type="button"
@@ -88,14 +83,14 @@
                 class="arrow-nav left"
                 aria-label="Previous"
                 type="button"
-                @click="prevItem">
+                @click.stop="prevItem">
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"/></svg>
                 </button>
                 <button
                 class="arrow-nav right"
                 aria-label="Next"
                 type="button"
-                @click="nextItem">
+                @click.stop="nextItem">
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"/></svg>
                 </button>
             </div>
@@ -2333,11 +2328,6 @@ export default {
 
 .autoAdvanceBarFillPaused {
   animation-play-state: paused;
-}
-
-.autoAdvanceBarFillLoading {
-  animation: none !important;
-  width: 0 !important;
 }
 
 .autoAdvanceToggle {
