@@ -2230,5 +2230,13 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776711057/cinemagoria/backdrops/noir_1520504.webp",
     "poster_path": "/wd7UYJw7saZbuynBfma3owuS18j.jpg",
     "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1569780,
+    "media_type": "movie",
+    "trailer_key": null,
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776556773/cinemagoria/backdrops/hero_1569780.webp",
+    "poster_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776556907/cinemagoria/posters/poster_hero_1569780.webp",
+    "force_enrichment": true
   }
 ]
