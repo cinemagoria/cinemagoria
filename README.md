@@ -11,7 +11,7 @@ The platform is built around four principles:
 
 - **Aggregation over exclusivity** — no in-house catalog; trusted third-party sources only.
 - **Festival-first discovery** — dedicated coverage of major international film festivals.
-- **Personalization without lock-in** — public/private profiles, custom lists, transparent controls.
+- **Personalization without lock-in** — public/private profiles, custom lists, transparent controls with granular cookie consent management.
 - **Performance as a feature** — pre-computed data, server-side selection, concurrent fetching.
 
 ---
@@ -56,14 +56,14 @@ The N.O.I.R. badge — rendered in the top-right corner of each backdrop in `Her
   <img src="https://ivanluna.dev/images/assets/cinemagoria-asset9.webp" alt="Festivals" width="70%">
 </div>
 
-Dedicated coverage for major international festivals — Sundance, Berlinale, Rotterdam, Slamdance, SXSW, Romford, BIFFF, BAFICI, Cannes (and more coming) — each with its own page, API endpoints, card and badge components, and homepage carousel. The hero section supports multiple simultaneous festival premiere badges, and Berlinale ships with an interactive timezone-aware schedule.
+Dedicated coverage for major international festivals — Sundance, Berlinale, Rotterdam, Slamdance, SXSW, Romford, BIFFF, BAFICI, Tribeca, Cannes (with Critics' Choice, Quinzaine des Cinéastes and ACID parallel sections) and more — each with its own page, API endpoints, card and badge components, and homepage carousel. The hero section supports multiple simultaneous festival premiere badges with display precedence, and Berlinale ships with an interactive timezone-aware schedule.
 
 ### Search & Discovery
 <div align="center">
   <img src="https://ivanluna.dev/images/assets/cinemagoria-asset10.webp" alt="Search" width="70%">
 </div>
 
-Categorized multi-search across movies, TV shows, people, news, festivals and production companies — visually separated by category through horizontal carousels. Supports direct IMDb / TMDb ID lookup, embedded Discover filters and Rust-backed typo detection.
+Categorized multi-search across movies, TV shows, people, news, festivals and production companies — visually separated by category through horizontal carousels. Contextual query parsing extracts year and person signals to score results by relevance, with a built-in search guide modal for best practices. Supports direct IMDb / TMDb ID lookup, embedded Discover filters and Rust-backed typo detection.
 
 ### Catalog Discovery
 <div align="center">
@@ -105,7 +105,7 @@ Follow people (actors, directors, writers), TV shows, production companies and s
   <img src="https://ivanluna.dev/images/assets/cinemagoria-asset5.webp" alt="News" width="70%">
 </div>
 
-Cinemagoria now runs its own AI-assisted editorial engine for cinema news — articles are curated, ranked and surfaced through an in-house pipeline rather than served raw from third-party feeds. The frontend reads pre-computed results from Turso (sub-50ms load times), with article search, source grouping, saved articles and a homepage news carousel.
+Cinemagoria now runs its own AI-assisted editorial engine for cinema news — articles are curated, ranked and surfaced through an in-house pipeline rather than served raw from third-party feeds. Article pages feature YouTube trailer embeds, multi-asset image carousels, and related TMDB movies, TV shows and people for discoverability. The frontend reads pre-computed results from Turso (sub-50ms load times), with article search, saved articles, an RSS feed for Cinemagoria-sourced content and a homepage news carousel.
 
 ### Authentication
 <div align="center">
