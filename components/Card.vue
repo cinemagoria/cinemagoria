@@ -192,12 +192,11 @@ export default {
       const startYear = new Date(date).getFullYear();
       
       if (this.media === 'tv') {
-        const endYear = this.item.end_date ? new Date(this.item.end_date).getFullYear() : null;
-        if (this.item.status === 'Ended' && endYear && endYear !== startYear) {
+        const lastDate = this.item.last_air_date || this.item.end_date;
+        const endYear = lastDate ? new Date(lastDate).getFullYear() : null;
+        const isFinished = ['Ended', 'Canceled'].includes(this.item.status);
+        if (isFinished && endYear && endYear !== startYear) {
           return `${startYear}-${endYear}`;
-        }
-        if (this.item.status === 'Returning Series') {
-           return `${startYear}-`;
         }
       }
       

@@ -210,7 +210,7 @@ export default {
 :deep(.card) {
   flex: 0 0 auto;
   width: 170px;
-  margin: 0 !important;
+  padding: 0 !important;
   scroll-snap-align: start;
 }
 

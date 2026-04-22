@@ -62,8 +62,54 @@ export const apiImgUrl = 'https://image.tmdb.org/t/p';
 // ─── Curated exclusion lists ─────────────────────────────────────────────
 // Add TMDB IDs here to remove specific titles from the homepage Popular
 // Movies / Popular TV carousels (and anywhere else that calls getTrending).
-export const EXCLUDED_MOVIE_IDS = [969681, 931285, 1265609, 696393, 1523145, 1641319, 1307373, 1444249, 1416391, 840464, 936075, 1623125, 1239134, 1108427, 1446616, 980431, 1084577, 83533, 1226863, 1613798, 1049471, 1327819, 1297842, 1084242, 1236153, 1659087, 1290821, 1472951, 1234731, 1493859];
-export const EXCLUDED_TV_IDS = [269161, 259819, 300131, 312474, 276880, 281010, 314784, 297557, 260463, 258865, 196950, 295357, 301507, 289424, 295778, 279471];
+export const EXCLUDED_MOVIE_IDS = [969681, 931285, 1273221, 1265609, 696393, 1523145, 1641319, 1307373, 1444249, 1416391, 840464, 936075, 1623125, 1239134, 1108427, 1446616, 980431, 1084577, 83533, 1226863, 1613798, 1049471, 1327819, 1297842, 1084242, 1236153, 1659087, 1290821, 1472951, 1234731, 1493859, 1290417, 1511057, 1383731, 1414413, 1159559, 1204680, 1084244, 1658464, 1301421, 1400336, 1674749];
+export const EXCLUDED_TV_IDS = [269161, 289219, 318880, 316973, 316544, 259819, 300131, 312474, 276880, 281010, 314784, 297557, 260463, 258865, 196950, 295357, 301507, 289424, 295778, 279471, 287011, 278573, 274671, 278275, 224263, 292121, 293697, 315595];
+export const PROMOTED_MOVIE_IDS = [1083381, 1102883, 1228710, 1304313, 1325734, 1480387, 1159831, 855435, 1032892, 1599249, 1291626, 1439881, 1462735, 1107166, 1401106, 1120382, 1001386, 843342, 524635, 1288072, 1124566, 1116201,];
+export const PROMOTED_TV_IDS = [85552, 124364, 154385, 258036, 245318, 245927, 259731, 108181, 287527, 312939, 254071];
+
+// ─── Promoted items in-memory cache ──────────────────────────────────────
+// Fetched once from TMDB and reused on every subsequent call (0 extra API hits).
+const _promotedMoviesCache = new Map();
+const _promotedTvCache = new Map();
+
+async function _fetchAndCachePromoted(ids, mediaType, cache) {
+    const uncached = ids.filter(id => !cache.has(id));
+    if (uncached.length === 0) return;
+    await Promise.all(uncached.map(async (id) => {
+        try {
+            const endpoint = mediaType === 'movie' ? 'movie' : 'tv';
+            const res = await axios.get(`${apiUrl}/${endpoint}/${id}`, {
+                params: {
+                    api_key: getEnv('API_KEY'),
+                    language: getEnv('API_LANG'),
+                    append_to_response: 'external_ids'
+                }
+            });
+            const item = res.data;
+            item.media_type = mediaType;
+            item.vote_average = parseFloat(item.vote_average).toFixed(1);
+            await enrichWithIMDbRating(item);
+            cache.set(id, item);
+        } catch (e) {
+            console.warn(`Failed to fetch promoted ${mediaType} ${id}`, e);
+        }
+    }));
+}
+
+function _prependPromoted(results, promotedIds, cache) {
+    const promotedIdSet = new Set(promotedIds);
+    const promoted = promotedIds.filter(id => cache.has(id)).map(id => ({ ...cache.get(id), _promoted: true }));
+    const filtered = results.filter(item => !promotedIdSet.has(item.id));
+    return [...promoted, ...filtered];
+}
+
+export async function getPromotedItems(mediaType) {
+    const ids = mediaType === 'movie' ? PROMOTED_MOVIE_IDS : PROMOTED_TV_IDS;
+    const cache = mediaType === 'movie' ? _promotedMoviesCache : _promotedTvCache;
+    if (ids.length === 0) return [];
+    await _fetchAndCachePromoted(ids, mediaType, cache);
+    return ids.filter(id => cache.has(id)).map(id => ({ ...cache.get(id), _promoted: true, media_type: mediaType }));
+}
 
 let _heroEnrichmentPromise = null;
 let _noirEnrichmentPromise = null;
