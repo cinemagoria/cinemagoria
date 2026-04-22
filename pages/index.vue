@@ -13,9 +13,15 @@
 
     <FestivalsCarousel
       v-if="festivalsMovies && festivalsMovies.results.length"
-      title="Panorama de Festivales 2026"
+      title="Selección de Festivales"
       view-all-url="/festival"
       :items="festivalsMovies" />
+
+    <ProductionCompanyCarousel
+      v-if="popularProductionCompanies.length"
+      :items="popularProductionCompanies"
+      view-all-link="/production-companies"
+    />
 
     <ListingCarousel
       v-if="trendingMovies && trendingMovies.results.length"
@@ -24,30 +30,24 @@
       :items="trendingMovies"
       compact />
 
+    <StreamingPlatformCarousel
+      v-if="popularStreamingProviders.length"
+      :items="popularStreamingProviders"
+      view-all-link="/streaming-services"
+    />
+
     <ListingCarousel
       v-if="trendingTv && trendingTv.results.length"
       :title="trendingTvTitle"
       :view-all-url="trendingTvUrl"
       :items="trendingTv"
       compact />
-
-    <ProductionCompanyCarousel
-      v-if="popularProductionCompanies.length"
-      :items="popularProductionCompanies"
-      view-all-link="/production-companies"
-    />
-
-    <StreamingPlatformCarousel
-      v-if="popularStreamingProviders.length"
-      :items="popularStreamingProviders"
-      view-all-link="/streaming-services"
-    />
   </main>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
-import { getTrending, getMovie, getTvShow, getListItem, translateText } from '~/utils/api';
+import { getTrending, getMovie, getTvShow, getListItem, translateText, getPromotedItems } from '~/utils/api';
 import Hero from '~/components/Hero';
 import ListingsCarousel from '~/components/ListingCarousel';
 import FestivalsCarousel from '~/components/FestivalsCarousel';
@@ -78,6 +78,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
       const previousYear = currentYear - 1;
       
       return items.filter(item => {
+        if (item._promoted) return true;
         const dateField = item.release_date || item.first_air_date;
         if (!dateField) return false;
         
@@ -117,6 +118,30 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         if (allResults.length >= minItems) {
           break;
         }
+      }
+
+      // Prepend promoted items (fetched once, cached in memory)
+      const promoted = await getPromotedItems(mediaType);
+      if (promoted.length > 0) {
+        const promotedIdSet = new Set(promoted.map(p => p.id));
+        allResults = allResults.filter(item => !promotedIdSet.has(item.id));
+        allResults = [...promoted, ...allResults];
+      }
+
+      if (mediaType === 'movie') {
+        const currentYear = new Date().getFullYear();
+        const currentItems = [];
+        const olderItems = [];
+        for (const item of allResults) {
+          const dateField = item.release_date || item.first_air_date;
+          const year = dateField ? new Date(dateField).getFullYear() : currentYear;
+          if (year >= currentYear) {
+            currentItems.push(item);
+          } else {
+            olderItems.push(item);
+          }
+        }
+        allResults = [...currentItems, ...olderItems];
       }
 
       return { results: allResults };
@@ -246,6 +271,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Tuner',
         'Time and Water',
         'Josephine',
+        'One in a Million',
         'The Invite',
         'Saccharine',
     ];
@@ -308,9 +334,9 @@ const festivalsMovies = computed(() => pageData.value?.festivalsMovies);
 const trendingMovies = computed(() => pageData.value?.trendingMovies);
 const trendingTv = computed(() => pageData.value?.trendingTv);
 
-const trendingMoviesTitle = computed(() => getListItem('movie', 'trending').title);
+const trendingMoviesTitle = computed(() => 'Películas Destacadas');
 const trendingMoviesUrl = computed(() => '/movie');
-const trendingTvTitle = computed(() => getListItem('tv', 'trending').title);
+const trendingTvTitle = computed(() => 'Series Destacadas');
 const trendingTvUrl = computed(() => '/tv');
 
 const popularProductionCompanies = computed(() => {
