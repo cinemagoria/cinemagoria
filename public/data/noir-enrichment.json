@@ -2228,7 +2228,47 @@
     "media_type": "movie",
     "trailer_key": null,
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776556773/cinemagoria/backdrops/hero_1569780.webp",
-    "poster_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776556907/cinemagoria/posters/poster_hero_1569780.webp",
+    "poster_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776851186/cinemagoria/posters/poster_1569780.webp",
     "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1339210,
+    "media_type": "movie",
+    "trailer_key": "gFGIJRGK510",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776847314/cinemagoria/backdrops/noir_1339210.webp",
+    "poster_path": "/uRh6MJcNg5yi5upQQFUrcZb2LEK.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1212763,
+    "media_type": "movie",
+    "trailer_key": "YYkUkyfjUKg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776849364/cinemagoria/backdrops/noir_1212763.webp",
+    "poster_path": "/6STiyzQmAktD7tvJI65Citj8q3h.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1421979,
+    "media_type": "movie",
+    "trailer_key": "iKJI5XGZh9o",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776850592/cinemagoria/backdrops/noir_1421979.webp",
+    "poster_path": "/vDk4hXklfneXGazpyW1RXTnyG4h.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 125988,
+    "media_type": "tv",
+    "trailer_key": "C9-_VVX9BvE",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776850748/cinemagoria/backdrops/noir_125988.webp",
+    "poster_path": "/fDMTqUcEh6qJwWZP1SHTfoaqsCy.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1434583,
+    "media_type": "movie",
+    "trailer_key": "iTqBXD3lCgk",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776852058/cinemagoria/backdrops/noir_1434583.webp",
+    "poster_path": "/sr8ThgofYbG9VUVNGlcR5zg2yAT.jpg",
+    "force_enrichment": false
   }
 ]
