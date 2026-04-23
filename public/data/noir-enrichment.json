@@ -746,10 +746,10 @@
   {
     "tmdb_id": 1363387,
     "media_type": "movie",
-    "trailer_key": "iaWe8fLJTbs",
+    "trailer_key": "uIY13LD3RUY",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1774466232/cinemagoria/backdrops/noir_1363387_v2.webp",
     "poster_path": "/p3lCqqo42YZgwsFAQvX2JKfMc1l.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1299329,
