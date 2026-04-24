@@ -48,7 +48,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { getTrending, getMovie, getTvShow, getListItem, getPromotedItems } from '~/utils/api';
+import { getMovie, getTvShow, getListItem } from '~/utils/api';
 import Hero from '~/components/Hero';
 import ListingCarousel from '~/components/ListingCarousel';
 import FestivalsCarousel from '~/components/FestivalsCarousel';
@@ -75,78 +75,17 @@ const userName = ref('');
 
 const { data: pageData, error: pageError } = await useAsyncData('homepage', async () => {
   try {
-    const filterRecentYears = (items) => {
-      const currentYear = new Date().getFullYear();
-      const previousYear = currentYear - 1;
-      
-      return items.filter(item => {
-        if (item._promoted) return true;
-        const dateField = item.release_date || item.first_air_date;
-        if (!dateField) return false;
-        
-        const year = new Date(dateField).getFullYear();
-        return year === currentYear || year === previousYear;
-      });
-    };
-    
-    const fetchWithRefill = async (mediaType, minItems = 20, maxPages = 3) => {
-      let allResults = [];
-      const seenIds = new Set();
-      let currentBatch = 1;
-      const batchSize = 3;
-
-      while (allResults.length < minItems && currentBatch <= maxPages) {
-        const pagesToFetch = [];
-        for (let i = 0; i < batchSize && currentBatch <= maxPages; i++) {
-          pagesToFetch.push(currentBatch++);
-        }
-
-        const batchResults = await Promise.all(
-          pagesToFetch.map(page => getTrending(mediaType, page, { skipEnrichment: true }))
-        );
-
-        for (const data of batchResults) {
-          if (data?.results) {
-            const yearFiltered = filterRecentYears(data.results);
-            for (const item of yearFiltered) {
-              if (!seenIds.has(item.id)) {
-                seenIds.add(item.id);
-                allResults.push(item);
-              }
-            }
-          }
-        }
-
-        if (allResults.length >= minItems) {
-          break;
-        }
+    // Spotlight carousels are pre-curated by scripts/curateSpotlight.mjs every
+    // 48h and baked into public/data/*.json. Pipeline: TMDB pool → genre/date
+    // hard filter → IMDb ≥ 5.0 gate → score → Gemini 2.5-flash curation pass.
+    const fetchSpotlight = async (file) => {
+      try {
+        const data = await $fetch(file);
+        return { results: data?.results ?? [] };
+      } catch (e) {
+        console.error(`Spotlight fetch error (${file}):`, e);
+        return { results: [] };
       }
-
-      // Prepend promoted items (fetched once, cached in memory)
-      const promoted = await getPromotedItems(mediaType);
-      if (promoted.length > 0) {
-        const promotedIdSet = new Set(promoted.map(p => p.id));
-        allResults = allResults.filter(item => !promotedIdSet.has(item.id));
-        allResults = [...promoted, ...allResults];
-      }
-
-      if (mediaType === 'movie') {
-        const currentYear = new Date().getFullYear();
-        const currentItems = [];
-        const olderItems = [];
-        for (const item of allResults) {
-          const dateField = item.release_date || item.first_air_date;
-          const year = dateField ? new Date(dateField).getFullYear() : currentYear;
-          if (year >= currentYear) {
-            currentItems.push(item);
-          } else {
-            olderItems.push(item);
-          }
-        }
-        allResults = [...currentItems, ...olderItems];
-      }
-
-      return { results: allResults };
     };
     
     const fetchFestivalMovies = async (festivalName, limit = 1000) => {
@@ -180,8 +119,8 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         fetchFestivalMovies('bafici'),
         fetchFestivalMovies('cannes'),
         fetchFestivalMovies('tribeca'),
-        fetchWithRefill('movie', 20, 3),
-        fetchWithRefill('tv', 20, 3),
+        fetchSpotlight('/data/spotlight-movies.json'),
+        fetchSpotlight('/data/spotlight-tv.json'),
         fetchHero()
     ]);
     

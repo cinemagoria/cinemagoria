@@ -1,0 +1,5 @@
+{
+  "_doc": "Manual hard-exclude list for the Spotlight carousels on the homepage. Edit anytime — the next curateSpotlight run respects it. TMDB IDs only.",
+  "movie": [],
+  "tv": []
+}

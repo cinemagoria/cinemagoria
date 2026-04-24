@@ -1,0 +1,5 @@
+{
+  "_doc": "Manual pin list for the Spotlight carousels. IDs listed here are forced to the top of the carousel in the given order, even if they did not survive the normal pipeline. Skipped if the ID is currently in hero_selections.",
+  "movie": [],
+  "tv": []
+}

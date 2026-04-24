@@ -1,0 +1,63 @@
+name: Curate Spotlight Carousels
+
+# Runs every 48h at 09:15 UTC (≈ 3-4 AM US Central, off-peak for us-central1
+# Vertex AI servers). Also triggerable manually via the Actions tab.
+on:
+  schedule:
+    - cron: '15 9 */2 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  curate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install script deps
+        run: npm install @libsql/client google-auth-library
+
+      - name: Curate spotlight
+        run: node scripts/curateSpotlight.mjs
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          IMDB_DB_URL: ${{ secrets.IMDB_DB_URL }}
+          IMDB_DB_TOKEN: ${{ secrets.IMDB_DB_TOKEN }}
+          GCP_SERVICE_ACCOUNT_JSON: ${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}
+
+      - name: Commit to main branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/data/spotlight-movies.json public/data/spotlight-tv.json
+          if git diff --cached --quiet; then
+            echo "No spotlight changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: refresh spotlight carousels (automated)"
+          git push origin main
+
+      - name: Mirror JSONs to es branch
+        run: |
+          git fetch origin es
+          git checkout es
+          # Take the freshly generated JSONs from main.
+          git checkout main -- public/data/spotlight-movies.json public/data/spotlight-tv.json
+          git add public/data/spotlight-movies.json public/data/spotlight-tv.json
+          if git diff --cached --quiet; then
+            echo "es branch already in sync."
+            exit 0
+          fi
+          git commit -m "chore: sync spotlight carousels from main (automated)"
+          git push origin es
