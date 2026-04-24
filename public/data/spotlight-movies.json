@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-24T15:27:32.727Z",
+  "generated_at": "2026-04-24T15:34:53.212Z",
   "engine_version": "2.0.0",
   "media_type": "movie",
   "count": 22,
@@ -46,8 +46,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 99.03,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Psychological thriller, foreign crime drama.",
       "_pinned": false,
       "_noir_match": true
     },
@@ -78,8 +78,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 85.92,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Character-driven, foreign arthouse drama.",
       "_pinned": false,
       "_noir_match": true
     },
@@ -115,8 +115,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 83.66,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Gritty crime drama, historical context.",
       "_pinned": false,
       "_noir_match": true
     },
@@ -157,8 +157,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 73.65,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Elevated horror, sci-fi thriller.",
       "_pinned": false,
       "_noir_match": false
     },
@@ -194,8 +194,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 73.46,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Character-driven drama, cerebral fantasy.",
       "_pinned": false,
       "_noir_match": true
     },
@@ -236,8 +236,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 72.62,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Foreign crime thriller, noir elements.",
       "_pinned": false,
       "_noir_match": false
     },
@@ -278,52 +278,10 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 72.38,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Dark thriller, crime, psychological elements.",
       "_pinned": false,
       "_noir_match": false
-    },
-    {
-      "id": 1325734,
-      "media_type": "movie",
-      "title": "The Drama",
-      "title_es": "El drama",
-      "overview": "A happily engaged couple is put to the test when an unexpected turn sends their wedding week off the rails.",
-      "overview_es": "Una pareja, en los días previos a su boda, se enfrenta a una crisis cuando unas inesperadas revelaciones desbaratan lo que uno de ellos creía saber sobre el otro.",
-      "poster_path": "/ikcNOWB6Qo1ER1H1BJL6Vf0W22s.jpg",
-      "backdrop_path": "/1oKLEA9JOhvaBwLpqjROisvWMy7.jpg",
-      "vote_average": "7.0",
-      "genre_ids": [
-        10749,
-        35,
-        18
-      ],
-      "genres": [
-        {
-          "id": 10749,
-          "name": "Romance"
-        },
-        {
-          "id": 35,
-          "name": "Comedy"
-        },
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt33071426",
-      "release_date": "2026-03-26",
-      "imdb_rating": 7.5,
-      "imdb_votes": 26733,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 71.85,
-      "_verdict": null,
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
     },
     {
       "id": 950396,
@@ -362,8 +320,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 71.66,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Sci-fi thriller, mysterious elements.",
       "_pinned": false,
       "_noir_match": true
     },
@@ -399,8 +357,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 71.59,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Character-driven drama, psychological thriller.",
       "_pinned": false,
       "_noir_match": false
     },
@@ -436,8 +394,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 71.03,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Cerebral sci-fi, ideas-driven narrative.",
       "_pinned": false,
       "_noir_match": false
     },
@@ -483,8 +441,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 70.66,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Gritty police procedural, foreign crime.",
       "_pinned": false,
       "_noir_match": false
     },
@@ -520,8 +478,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 70.47,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Elevated horror, mystery, suspense.",
       "_pinned": false,
       "_noir_match": false
     },
@@ -562,8 +520,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 69.9,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Cerebral sci-fi thriller, dark comedy.",
       "_pinned": false,
       "_noir_match": false
     },
@@ -604,8 +562,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 69.53,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Whodunit mystery, suspense, dark comedy.",
       "_pinned": false,
       "_noir_match": false
     },
@@ -646,8 +604,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 69.52,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Dark character study, foreign crime.",
       "_pinned": false,
       "_noir_match": false
     },
@@ -683,8 +641,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 69.25,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Historical drama, critical lens.",
       "_pinned": false,
       "_noir_match": false
     },
@@ -725,8 +683,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 67.98,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Gritty crime drama, character-driven.",
       "_pinned": false,
       "_noir_match": false
     },
@@ -767,8 +725,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 67.33,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Elevated horror, action thriller.",
       "_pinned": false,
       "_noir_match": false
     },
@@ -814,45 +772,8 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 66.69,
-      "_verdict": null,
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": false
-    },
-    {
-      "id": 911430,
-      "media_type": "movie",
-      "title": "F1",
-      "title_es": "F1 la película",
-      "overview": "Racing legend Sonny Hayes is coaxed out of retirement to lead a struggling Formula 1 team—and mentor a young hotshot driver—while chasing one more chance at glory.",
-      "overview_es": "El mítico piloto Sonny Hayes vuelve de su retiro, persuadido para liderar un equipo de Fórmula 1 en apuros y guiar a su joven promesa, en busca de una nueva oportunidad de éxito.",
-      "poster_path": "/vqBmyAj0Xm9LnS1xe1MSlMAJyHq.jpg",
-      "backdrop_path": "/rZWkXnIyTLzUJpHSUpOb7vgB0BL.jpg",
-      "vote_average": "7.8",
-      "genre_ids": [
-        28,
-        18
-      ],
-      "genres": [
-        {
-          "id": 28,
-          "name": "Action"
-        },
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt16311594",
-      "release_date": "2025-06-25",
-      "imdb_rating": 7.6,
-      "imdb_votes": 349179,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 66.69,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Cerebral sci-fi, crime thriller.",
       "_pinned": false,
       "_noir_match": false
     },
@@ -893,8 +814,87 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 66.14,
-      "_verdict": null,
-      "_reasoning": null,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Stylized action, crime thriller.",
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 1242419,
+      "media_type": "movie",
+      "title": "Roofman",
+      "title_es": "Roofman: Un ladrón en el tejado",
+      "overview": "A former Army Ranger and struggling father turns to robbing McDonald’s restaurants by cutting holes in their roofs, earning him the nickname \"Roofman.\" After escaping prison, he secretly lives inside a Toys “R” Us for six months, surviving undetected while planning his next move. But when he falls for a divorced mom drawn to his undeniable charm, his double life begins to unravel, setting off a compelling and suspenseful game of cat and mouse as his past closes in.",
+      "overview_es": "La historia real de Jeffrey Manchester (Tatum), un criminal que asaltó más de 60 McDonald's entrando por un agujero que hacía en el techo en medio de la noche. Tras ser arrestado, escapó de prisión y vivió escondido en una tienda de Toys R Us durante aproximadamente seis meses.",
+      "poster_path": "/wXDFtcnYtevleGzCmAD2ReQnJ4l.jpg",
+      "backdrop_path": "/2YOnE2qmoyyOUqQsFit12gDSauk.jpg",
+      "vote_average": "7.1",
+      "genre_ids": [
+        80,
+        35,
+        18
+      ],
+      "genres": [
+        {
+          "id": 80,
+          "name": "Crime"
+        },
+        {
+          "id": 35,
+          "name": "Comedy"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt4627382",
+      "release_date": "2025-10-08",
+      "imdb_rating": 6.9,
+      "imdb_votes": 70777,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 66.1,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Character-driven crime drama, dark comedy.",
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 1368166,
+      "media_type": "movie",
+      "title": "The Housemaid",
+      "title_es": "La asistenta",
+      "overview": "Trying to escape her past, Millie Calloway accepts a job as a live-in housemaid for the wealthy Nina and Andrew Winchester. But what begins as a dream job quickly unravels into something far more dangerous—a sexy, seductive game of secrets, scandal, and power.",
+      "overview_es": "Una joven (Sydney Sweeney), con un pasado complicado comienza a trabajar como asistenta en la lujosa casa de los Winchester. A medida que se adentra en la vida de la familia, descubrirá secretos oscuros que pondrán en peligro su seguridad, pero quizá ya sea demasiado tarde... Adaptación de la novela de Freida McFadden.",
+      "poster_path": "/cWsBscZzwu5brg9YjNkGewRUvJX.jpg",
+      "backdrop_path": "/zTnAnYIn0Iv3cn0ZHlzLhou3ybm.jpg",
+      "vote_average": "7.2",
+      "genre_ids": [
+        9648,
+        53
+      ],
+      "genres": [
+        {
+          "id": 9648,
+          "name": "Mystery"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt27543632",
+      "release_date": "2025-12-18",
+      "imdb_rating": 6.8,
+      "imdb_votes": 133074,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 66.05,
+      "_verdict": "cinemagoria",
+      "_reasoning": "Psychological thriller, secrets, suspense.",
       "_pinned": false,
       "_noir_match": false
     }
