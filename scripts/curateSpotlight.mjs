@@ -364,7 +364,7 @@ async function imdbRatingGate(candidates, mediaType, imdbDb) {
 
 // ─── 4. Scoring ──────────────────────────────────────────────────────────────
 
-function scoreCandidate(c, mediaType) {
+function scoreCandidate(c, mediaType, noirIds, heroBlockedIds) {
     let score = 0;
 
     // IMDb rating is the anchor (max contribution ~50).
@@ -373,23 +373,26 @@ function scoreCandidate(c, mediaType) {
     // Vote-count log boost (taste-makers vs obscure).
     score += Math.log10(Math.max(c.imdb_votes, 10)) * 2;
 
-    // Genre affinity — stronger penalties to actually filter pochoclero.
+    // Genre affinity — smarter: don't penalize Action/Adventure if combined with
+    // a core genre (Horror+Action like Sinners, Thriller+Action like Colony).
     const genreIds = c.genre_ids || (c.genres || []).map((g) => g.id);
-    let hasBoostGenre = false;
+    let boostCount = 0;
+    let penaltyCount = 0;
     for (const g of genreIds) {
-        if (GENRE_BOOST.has(g)) { score += 6; hasBoostGenre = true; }
-        else if (GENRE_HEAVY_PENALTY.has(g)) score -= 12;
-        else if (GENRE_LIGHT_PENALTY.has(g)) score -= 6;
+        if (GENRE_BOOST.has(g)) { score += 5; boostCount++; }
+        else if (GENRE_HEAVY_PENALTY.has(g)) { score -= 10; penaltyCount++; }
+        else if (GENRE_LIGHT_PENALTY.has(g)) penaltyCount++;
+    }
+    // Only apply light penalties if no boost genre is present.
+    // This prevents Horror+Action from being penalized for Action.
+    if (boostCount === 0) {
+        score -= penaltyCount * 5;
+        score -= 6; // no cinemagoria-aligned genre at all
     }
 
-    // If no cinemagoria-aligned genre at all, penalize.
-    if (!hasBoostGenre) score -= 8;
-
-    // Blockbuster penalty: extreme popularity + ratings plateau = pochoclero.
-    // TMDB popularity is noisy but spikes for franchise releases.
-    if ((c.popularity ?? 0) > 200 && c.imdb_rating < 7.0) score -= 10;
-    if ((c.popularity ?? 0) > 400) score -= 8;
-    if ((c.popularity ?? 0) > 800) score -= 6;
+    // Blockbuster penalty: extreme popularity = likely pochoclero.
+    if ((c.popularity ?? 0) > 200 && c.imdb_rating < 7.0) score -= 8;
+    if ((c.popularity ?? 0) > 500) score -= 6;
 
     // Freshness: lean toward "last 12 months".
     const dateKey = mediaType === 'movie' ? 'release_date' : 'first_air_date';
@@ -399,7 +402,6 @@ function scoreCandidate(c, mediaType) {
         if (ageMonths >= 1 && ageMonths <= 12) score += 5;
         else if (ageMonths < 1) score += 3;
         else if (ageMonths > 12 && ageMonths <= 18) score += 1;
-        // older than 18 months: no bonus
     }
 
     // For TV, bonus if still airing / recently concluded.
@@ -407,9 +409,18 @@ function scoreCandidate(c, mediaType) {
         const lastAired = c.last_air_date;
         if (lastAired) {
             const lastAiredAge = (NOW - new Date(lastAired)) / (1000 * 60 * 60 * 24 * 30);
-            if (lastAiredAge <= 3) score += 4; // currently airing or just ended
+            if (lastAiredAge <= 3) score += 4;
             else if (lastAiredAge <= 6) score += 2;
         }
+    }
+
+    // ★ NOIR HISTORICAL BOOST — the strongest signal.
+    // If this candidate is in noir_historical but NOT in hero_selections,
+    // it's a title Cinemagoria editorially selected. Massive boost.
+    const key = `${c.id}-${mediaType}`;
+    if (noirIds.has(key) && !heroBlockedIds.has(key)) {
+        score += 20;
+        c._noir_match = true;
     }
 
     return score;
@@ -530,51 +541,57 @@ function briefOf(it, i, media) {
     };
 }
 
-function buildUnifiedGeminiPrompt(movieSlice, tvSlice) {
+function buildUnifiedGeminiPrompt(movieSlice, tvSlice, heroExamples) {
     const briefMovies = movieSlice.map((it, i) => briefOf(it, i, 'movie'));
     const briefTv = tvSlice.map((it, i) => briefOf(it, i, 'tv'));
 
-    // IMPORTANT: Keep the prompt tight and ask for VERY short reasons.
-    // Long reasons cause Gemini to exceed output token limits, truncating the
-    // JSON and causing parse failures. Max 8-10 words per reason.
-    return `You are the senior content curator for CINEMAGORIA, a cinephile-oriented site. Evaluate movies and TV shows for the homepage "Spotlight" carousels.
+    // Build examples string from real hero_selections
+    const exampleLines = (heroExamples || []).slice(0, 25).map(
+        (h) => `  - ${h.title} (${h.genres}) [${h.media_type}]`
+    ).join('\n');
 
-ACCEPT ("cinemagoria"):
-- Elevated/arthouse horror, A24-style, indie horror, psychological horror
-- Sci-fi with ideas-driven narratives (not franchise spectacle)
-- Festival-tier drama, character-driven, adult
-- Psychological thrillers, slow-burn, noir, neo-noir
-- Mystery, suspense
-- Documentaries (social, political, investigative)
+    return `You are the senior content curator for CINEMAGORIA, a cinephile-oriented site focused on elevated genre cinema. Evaluate candidates for the homepage "Spotlight" carousels.
+
+Here are REAL titles currently featured on Cinemagoria's homepage (hero section). These define the editorial taste:
+${exampleLines}
+
+ACCEPT ("cinemagoria") — titles that match this editorial identity:
+- Elevated horror, A24-style, psychological horror, indie horror, body horror
+- Sci-fi with ideas-driven narratives, dystopian, cerebral
+- Festival-tier drama, character-driven, auteur, adult themes
+- Psychological thrillers, slow-burn, noir, neo-noir, crime drama
+- Mystery, suspense, police procedural with grit
+- Documentaries (social, political, investigative, artistic)
 - War/history with critical or artistic lens
-- Foreign arthouse / festival cinema
-- Auteur-driven (A24, Neon, Mubi, IFC, Criterion directors)
+- Foreign arthouse / festival cinema (Cannes, Sundance, Berlinale)
+- Action is OK ONLY when combined with horror, thriller, crime, or sci-fi (e.g. Colony, Sinners)
 
 REJECT ("pochoclero"):
-- Franchise sequels/prequels, superhero/Marvel/DC
-- Kids, family, YA/teen content
-- Fantasy epics, fairy-tale adaptations, musical fantasy (e.g. Wicked)
+- Superhero/Marvel/DC (Daredevil, Peacemaker, etc.)
+- Kids, family, YA/teen content (Heartstopper, teen dramas)
+- Fantasy epics, musical fantasy, fairy-tale (Wicked, Knight of Seven Kingdoms)
 - Generic rom-coms, Hallmark romances
-- Mainstream action blockbusters, CGI spectacle
-- Reality TV, game shows, celebrity comedy vehicles
-- Daredevil, Peacemaker, Reacher, Night Agent — action/superhero franchises
-- Heartstopper, teen romance shows
+- Mainstream action-only blockbusters without genre depth
+- Reality TV, game shows, celebrity vehicles
+- Procedural network TV without edge (NCIS, FBI, etc.)
+- Pochoclero horror franchises that are mass-market (Welcome to Derry S1 = borderline OK but stale if old)
+- Shows/films that already feel "passé" or oversaturated (hype died months ago)
 
 BORDERLINE → "neutral"
 
 RULES:
-- Output ONLY valid JSON, no markdown fences.
-- Keep each "reason" to MAX 8 WORDS. This is critical.
+- Output ONLY valid JSON, no markdown.
+- Keep each "reason" to MAX 6 WORDS.
 - Identify by media + idx (0-based, independent per list).
 
 MOVIES:
 ${JSON.stringify(briefMovies)}
 
-TV SHOWS:
+TV:
 ${JSON.stringify(briefTv)}
 
-JSON format:
-{"decisions":[{"media":"movie","idx":0,"verdict":"cinemagoria","reason":"max 8 words"},{"media":"tv","idx":0,"verdict":"pochoclero","reason":"max 8 words"}]}`;
+JSON:
+{"decisions":[{"media":"movie","idx":0,"verdict":"cinemagoria","reason":"6 words max"}]}`;
 }
 
 async function callGemini(prompt) {
@@ -623,7 +640,7 @@ async function callGemini(prompt) {
     return parseGeminiJSON(content);
 }
 
-async function geminiCurateBoth(movieCandidates, tvCandidates) {
+async function geminiCurateBoth(movieCandidates, tvCandidates, heroExamples) {
     const movieSlice = movieCandidates.slice(0, GEMINI_INPUT_LIMIT);
     const tvSlice = tvCandidates.slice(0, GEMINI_INPUT_LIMIT);
 
@@ -631,7 +648,7 @@ async function geminiCurateBoth(movieCandidates, tvCandidates) {
         return { movies: [], tv: [] };
     }
 
-    const prompt = buildUnifiedGeminiPrompt(movieSlice, tvSlice);
+    const prompt = buildUnifiedGeminiPrompt(movieSlice, tvSlice, heroExamples);
     log('gemini', `unified call: ${movieSlice.length} movies + ${tvSlice.length} tv (1 request)`);
 
     let parsed;
@@ -735,6 +752,7 @@ async function enrichAll(items, mediaType) {
                     _verdict: src._verdict || null,
                     _reasoning: src._reasoning || null,
                     _pinned: src._pinned || false,
+                    _noir_match: src._noir_match || false,
                 };
             } catch (e) {
                 log('warn', `enrich ${mediaType}/${src.id} failed: ${e.message}`);
@@ -757,6 +775,42 @@ async function loadHeroBlockedIds(mainDb) {
     }
     log('hero', `hero_selections currently blocks ${set.size} titles`);
     return set;
+}
+
+// ─── Turso: noir_historical (editorial cross-reference) ──────────────────────
+// noir_historical contains ALL titles that Cinemagoria has editorially selected
+// (current hero + past hero). If a TMDB candidate appears in noir but NOT in
+// hero_selections, it's a strong signal it belongs in spotlight.
+
+async function loadNoirHistoricalIds(mainDb) {
+    const r = await mainDb.execute(
+        `SELECT tmdb_id, media_type, title, genres, release_date FROM noir_historical WHERE removed_from_noir_at IS NULL`
+    );
+    const map = new Map(); // key: "tmdb_id-media_type"
+    for (const row of r.rows) {
+        const mt = row.media_type || 'movie';
+        map.set(`${Number(row.tmdb_id)}-${mt}`, {
+            tmdb_id: Number(row.tmdb_id),
+            media_type: mt,
+            title: row.title,
+            genres: row.genres,
+            release_date: row.release_date,
+        });
+    }
+    log('noir', `noir_historical has ${map.size} active titles`);
+    return map;
+}
+
+// Load hero_selections with title+genres for Gemini prompt examples
+async function loadHeroExamples(mainDb) {
+    const r = await mainDb.execute(
+        `SELECT tmdb_id, media_type, title, genres FROM hero_selections WHERE tmdb_id IS NOT NULL ORDER BY id DESC`
+    );
+    return r.rows.map((row) => ({
+        title: row.title,
+        genres: row.genres,
+        media_type: row.media_type || 'movie',
+    }));
 }
 
 // ─── Manual overrides ────────────────────────────────────────────────────────
@@ -831,7 +885,7 @@ async function applyManualPins(finalList, mediaType, pinnedIds, heroBlockedIds, 
 
 // ─── Main orchestration per media type (split around the unified Gemini call) ─
 
-async function curateUpToGemini(mediaType, heroBlockedIds, manualExcluded, imdbDb) {
+async function curateUpToGemini(mediaType, heroBlockedIds, manualExcluded, imdbDb, noirIds) {
     log(mediaType, '--- START ---');
 
     let pool = await fetchCandidates(mediaType);
@@ -846,8 +900,12 @@ async function curateUpToGemini(mediaType, heroBlockedIds, manualExcluded, imdbD
 
     const afterImdb = await imdbRatingGate(afterHard, mediaType, imdbDb);
 
-    for (const c of afterImdb) c._score = scoreCandidate(c, mediaType);
+    // Score with noir cross-reference
+    for (const c of afterImdb) c._score = scoreCandidate(c, mediaType, noirIds, heroBlockedIds);
     afterImdb.sort((a, b) => b._score - a._score);
+
+    const noirMatches = afterImdb.filter((c) => c._noir_match).length;
+    log(mediaType, `noir matches in pool: ${noirMatches}`);
 
     const afterDiversity = applyDiversityCap(afterImdb, mediaType);
     log(mediaType, `after diversity cap: ${afterDiversity.length}`);
@@ -906,6 +964,8 @@ async function main() {
     const imdbDb = createClient({ url: IMDB_URL, authToken: IMDB_TOKEN });
 
     const heroBlockedIds = await loadHeroBlockedIds(mainDb);
+    const noirIds = await loadNoirHistoricalIds(mainDb);
+    const heroExamples = await loadHeroExamples(mainDb);
 
     const excludedRaw = readJsonSafe(join(ROOT, 'data', 'spotlight-manual-excluded.json'), { movie: [], tv: [] });
     const pinnedRaw = readJsonSafe(join(ROOT, 'data', 'spotlight-manual-pinned.json'), { movie: [], tv: [] });
@@ -916,14 +976,16 @@ async function main() {
 
     // Phase 1 — run the cheap, deterministic pipeline for both media types in
     // parallel (fetch → hard filter → IMDb gate → score → diversity cap).
+    // Now includes noir_historical cross-referencing for score boosts.
     const [afterDiversityMovies, afterDiversityTv] = await Promise.all([
-        curateUpToGemini('movie', heroBlockedIds, excludedMovies, imdbDb),
-        curateUpToGemini('tv', heroBlockedIds, excludedTv, imdbDb),
+        curateUpToGemini('movie', heroBlockedIds, excludedMovies, imdbDb, noirIds),
+        curateUpToGemini('tv', heroBlockedIds, excludedTv, imdbDb, noirIds),
     ]);
 
     // Phase 2 — ONE Gemini call for both lists at once.
+    // Passes hero_selections examples so Gemini learns Cinemagoria's taste.
     const { movies: afterGeminiMovies, tv: afterGeminiTv } =
-        await geminiCurateBoth(afterDiversityMovies, afterDiversityTv);
+        await geminiCurateBoth(afterDiversityMovies, afterDiversityTv, heroExamples);
 
     // Phase 3 — enrichment + manual pins, in parallel again.
     const [movies, tv] = await Promise.all([
@@ -936,14 +998,14 @@ async function main() {
 
     const payloadMovie = {
         generated_at: new Date().toISOString(),
-        engine_version: '1.0.0',
+        engine_version: '2.0.0',
         media_type: 'movie',
         count: movies.length,
         results: movies,
     };
     const payloadTv = {
         generated_at: new Date().toISOString(),
-        engine_version: '1.0.0',
+        engine_version: '2.0.0',
         media_type: 'tv',
         count: tv.length,
         results: tv,

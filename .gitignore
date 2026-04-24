@@ -34,3 +34,6 @@ cinemagoria-v2_*.sql
 backup/awards_backup.sql
 scripts/backup_awards.ts
 sync-enrichment-data-all-repos.sh
+# Reference data files (not for deployment)
+public/data/hero_selections.json
+public/data/noir_historical.json
