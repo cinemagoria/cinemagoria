@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-04-24T14:40:09.615Z",
-  "engine_version": "1.0.0",
+  "generated_at": "2026-04-24T15:27:32.727Z",
+  "engine_version": "2.0.0",
   "media_type": "movie",
   "count": 22,
   "results": [
@@ -45,10 +45,159 @@
       "imdb_votes": 32835,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 83.03,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Psychological thriller, character-driven drama, foreign.",
-      "_pinned": false
+      "_score": 99.03,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": true
+    },
+    {
+      "id": 1124566,
+      "media_type": "movie",
+      "title": "Sentimental Value",
+      "title_es": "Valor sentimental",
+      "overview": "Sisters Nora and Agnes reunite with their estranged father, the charismatic Gustav, a once-renowned director who offers stage actress Nora a role in what he hopes will be his comeback film. When Nora turns it down, she soon discovers he has given her part to an eager young Hollywood star.",
+      "overview_es": "Una exploración íntima y conmovedora de la familia, los recuerdos y el poder reconciliador del arte.",
+      "poster_path": "/pz9NCWxxOk3o0W3v1Zkhawrwb4i.jpg",
+      "backdrop_path": "/oLgtpxK4aGZ7S8aiE3rDwahqkL2.jpg",
+      "vote_average": "7.5",
+      "genre_ids": [
+        18
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "no",
+      "imdb_id": "tt27714581",
+      "release_date": "2025-08-20",
+      "imdb_rating": 7.7,
+      "imdb_votes": 72823,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 85.92,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": true
+    },
+    {
+      "id": 875828,
+      "media_type": "movie",
+      "title": "Peaky Blinders: The Immortal Man",
+      "title_es": "Peaky Blinders: El hombre inmortal",
+      "overview": "After his estranged son gets embroiled in a Nazi plot, self-exiled gangster Tommy Shelby must return to Birmingham to save his family — and his nation.",
+      "overview_es": "El gánster Tommy Shelby regresa a Birmingham para salvar a su familia —y a su país— cuando su hijo, del que se ha distanciado, se ve envuelto en un complot nazi.",
+      "poster_path": "/gRMalasZEzsZi4w2VFuYusfSfqf.jpg",
+      "backdrop_path": "/aouxo2EaR7QSGBBUNTITuW0lj4z.jpg",
+      "vote_average": "7.2",
+      "genre_ids": [
+        80,
+        18
+      ],
+      "genres": [
+        {
+          "id": 80,
+          "name": "Crime"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt15574124",
+      "release_date": "2026-03-05",
+      "imdb_rating": 6.5,
+      "imdb_votes": 67365,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 83.66,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": true
+    },
+    {
+      "id": 1272837,
+      "media_type": "movie",
+      "title": "28 Years Later: The Bone Temple",
+      "title_es": "28 años después: El templo de los huesos",
+      "overview": "Dr. Kelson finds himself in a shocking new relationship - with consequences that could change the world as they know it - and Spike's encounter with Jimmy Crystal becomes a nightmare he can't escape.",
+      "overview_es": "El Dr. Kelson (Ralph Fiennes) se ve envuelto en una nueva y sorprendente relación, cuyas consecuencias podrían cambiar el mundo tal y como se conoce. Por otra parte, el encuentro de Spike (Alfie Williams) con el Gran Lord Jimmy Crystal (Jack O'Connell) se convierte en una pesadilla de la que el chico no puede escapar. En este mundo, los infectados ya no son la mayor amenaza para la supervivencia, ya que la inhumanidad de los supervivientes puede ser aún más extraña y aterradora.",
+      "poster_path": "/kK1BGkG3KAvWB0WMV1DfOx9yTMZ.jpg",
+      "backdrop_path": "/hHDNOlATHhre4eZ7aYz5cdyJLik.jpg",
+      "vote_average": "7.1",
+      "genre_ids": [
+        27,
+        53,
+        878
+      ],
+      "genres": [
+        {
+          "id": 27,
+          "name": "Horror"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        },
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt32141377",
+      "release_date": "2026-01-14",
+      "imdb_rating": 7.3,
+      "imdb_votes": 84121,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 73.65,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 842924,
+      "media_type": "movie",
+      "title": "The Life of Chuck",
+      "title_es": "La vida de Chuck",
+      "overview": "In this extraordinary story of an ordinary man, Charles 'Chuck' Krantz experiences the wonder of love, the heartbreak of loss, and the multitudes contained in all of us.",
+      "overview_es": "Inspirado en un relato de Stephen King, narra tres episodios vinculados al personaje Charles Krantz, siguiendo un orden inverso: desde su fallecimiento a los 39 años debido a un tumor cerebral, hasta su niñez en una casa que se creía embrujada.",
+      "poster_path": "/oumprkO9bThExP8NwxBIBnvBu2v.jpg",
+      "backdrop_path": "/1SgD8XMa6dDSBKbPU4TDe2cmfGK.jpg",
+      "vote_average": "7.3",
+      "genre_ids": [
+        14,
+        18
+      ],
+      "genres": [
+        {
+          "id": 14,
+          "name": "Fantasy"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt12908150",
+      "release_date": "2025-06-05",
+      "imdb_rating": 7.3,
+      "imdb_votes": 67402,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 73.46,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": true
     },
     {
       "id": 1220564,
@@ -86,159 +235,11 @@
       "imdb_votes": 51227,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 75.62,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Foreign arthouse, character-driven drama, thriller.",
-      "_pinned": false
-    },
-    {
-      "id": 1317288,
-      "media_type": "movie",
-      "title": "Marty Supreme",
-      "title_es": "Marty Supreme",
-      "overview": "Marty Mauser, a young man with a dream no one respects, goes to hell and back in pursuit of greatness.",
-      "overview_es": "Biopic de Marty Reisman, un buscavidas convertido en campeón de ping pong, desde que empezó a jugar por apuestas en Manhattan hasta ganar 22 títulos importantes y convertirse en el más veterano en ganar una competición nacional de deportes de raqueta, con 67 años.",
-      "poster_path": "/lYWEXbQgRTR4ZQleSXAgRbxAjvq.jpg",
-      "backdrop_path": "/3iMoYSbI72Nwsvi7uSpqReLJVa6.jpg",
-      "vote_average": "7.4",
-      "genre_ids": [
-        18,
-        53
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 53,
-          "name": "Thriller"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt32916440",
-      "release_date": "2025-12-19",
-      "imdb_rating": 7.7,
-      "imdb_votes": 156128,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 73.59,
-      "_verdict": "neutral",
-      "_reasoning": "Vague overview, could be character-driven drama.",
-      "_pinned": false
-    },
-    {
-      "id": 1078605,
-      "media_type": "movie",
-      "title": "Weapons",
-      "title_es": "Weapons",
-      "overview": "When all but one child from the same class mysteriously vanish on the same night at exactly the same time, a community is left questioning who or what is behind their disappearance.",
-      "overview_es": "Cuando todos los alumnos de una misma clase, salvo uno, desaparecen misteriosamente la misma noche y exactamente a la misma hora, la pequeña ciudad donde viven se pregunta quién o qué está detrás de su desaparición.",
-      "poster_path": "/cpf7vsRZ0MYRQcnLWteD5jK9ymT.jpg",
-      "backdrop_path": "/8VyTWJrNEyV2MTWvniDVp0MpOAe.jpg",
-      "vote_average": "7.3",
-      "genre_ids": [
-        27,
-        9648
-      ],
-      "genres": [
-        {
-          "id": 27,
-          "name": "Horror"
-        },
-        {
-          "id": 9648,
-          "name": "Mystery"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt26581740",
-      "release_date": "2025-08-04",
-      "imdb_rating": 7.4,
-      "imdb_votes": 343462,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 72.47,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Mystery, psychological horror.",
-      "_pinned": false
-    },
-    {
-      "id": 1214931,
-      "media_type": "movie",
-      "title": "Nuremberg",
-      "title_es": "Núremberg",
-      "overview": "In postwar Germany, an American psychiatrist must determine whether Nazi prisoners are fit to go on trial for war crimes, and finds himself in a complex battle of intellect and ethics with Hermann Göring, Hitler's right-hand man.",
-      "overview_es": "Tras el fin de la II Guerra Mundial, con ocasión de los cruciales e inminentes juicios de Nuremberg contra el derrotado régimen Nazi, el psiquiatra estadounidense Douglas Kelley (Malek), encargado de determinar si los oficiales nazis prisioneros son aptos para ser juzgados por sus crímenes de guerra, se ve inmerso en una compleja batalla de ingenio dialéctico con Hermann Göring (Crowe), mano derecha de Hitler. Basada en el libro \"El nazi y el psiquiatra\", de Jack El-Hai.",
-      "poster_path": "/7cWTGH2svfNHWVRjsfKIBob9pDj.jpg",
-      "backdrop_path": "/bf5TG9RODkPXmtJSgf8Iymof1wl.jpg",
-      "vote_average": "7.4",
-      "genre_ids": [
-        36,
-        18
-      ],
-      "genres": [
-        {
-          "id": 36,
-          "name": "History"
-        },
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt29567915",
-      "release_date": "2025-11-06",
-      "imdb_rating": 7.4,
-      "imdb_votes": 83996,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 71.25,
-      "_verdict": "cinemagoria",
-      "_reasoning": "War/history with critical lens, adult drama.",
-      "_pinned": false
-    },
-    {
-      "id": 1426776,
-      "media_type": "movie",
-      "title": "STRAW",
-      "title_es": "Harta",
-      "overview": "What will be her last straw? A devastatingly bad day pushes a hardworking single mother to the breaking point — and into a shocking act of desperation.",
-      "overview_es": "¿Cuál será la gota que colme el vaso? Un día devastador lleva al límite a una madre soltera y trabajadora, y la empuja a cometer un impactante acto de desesperación.",
-      "poster_path": "/t3cmnXYtxJb9vVL1ThvT2CWSe1n.jpg",
-      "backdrop_path": "/fnbWrDx8w8Reau4F1tFqoGuGmDZ.jpg",
-      "vote_average": "7.7",
-      "genre_ids": [
-        53,
-        18,
-        80
-      ],
-      "genres": [
-        {
-          "id": 53,
-          "name": "Thriller"
-        },
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 80,
-          "name": "Crime"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt32550101",
-      "release_date": "2025-06-05",
-      "imdb_rating": 6.5,
-      "imdb_votes": 30930,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 70.98,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Character-driven drama, psychological thriller.",
-      "_pinned": false
+      "_score": 72.62,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
     },
     {
       "id": 1054867,
@@ -276,70 +277,77 @@
       "imdb_votes": 390414,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 68.38,
-      "_verdict": "neutral",
-      "_reasoning": "Mix of genres, unclear tone.",
-      "_pinned": false
+      "_score": 72.38,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
     },
     {
-      "id": 1061699,
+      "id": 1325734,
       "media_type": "movie",
-      "title": "The Six Triple Eight",
-      "title_es": "Seis Triple Ocho",
-      "overview": "During World War II, the US Army's only all-Black, all-women battalion takes on an impossible mission: sorting through a three-year backlog of 17 million pieces of mail that hadn't been delivered to American soldiers and finish within six months.",
-      "overview_es": "855 mujeres se unieron a la guerra para solucionar el retraso de tres años de correo no entregado. Enfrentadas a la discriminación y a un país devastado por la guerra, consiguieron clasificar antes de tiempo más de diecisiete millones de piezas de correo.",
-      "poster_path": "/7tvAnzZj9e9AjdoHaN9jshm2Cjw.jpg",
-      "backdrop_path": "/4FnbeuCnsN3MT6omPrivl2ttJ8o.jpg",
-      "vote_average": "7.5",
+      "title": "The Drama",
+      "title_es": "El drama",
+      "overview": "A happily engaged couple is put to the test when an unexpected turn sends their wedding week off the rails.",
+      "overview_es": "Una pareja, en los días previos a su boda, se enfrenta a una crisis cuando unas inesperadas revelaciones desbaratan lo que uno de ellos creía saber sobre el otro.",
+      "poster_path": "/ikcNOWB6Qo1ER1H1BJL6Vf0W22s.jpg",
+      "backdrop_path": "/1oKLEA9JOhvaBwLpqjROisvWMy7.jpg",
+      "vote_average": "7.0",
       "genre_ids": [
-        18,
-        10752,
-        36
+        10749,
+        35,
+        18
       ],
       "genres": [
         {
+          "id": 10749,
+          "name": "Romance"
+        },
+        {
+          "id": 35,
+          "name": "Comedy"
+        },
+        {
           "id": 18,
           "name": "Drama"
-        },
-        {
-          "id": 10752,
-          "name": "War"
-        },
-        {
-          "id": 36,
-          "name": "History"
         }
       ],
       "original_language": "en",
-      "imdb_id": "tt24458622",
-      "release_date": "2024-12-06",
-      "imdb_rating": 6.7,
-      "imdb_votes": 31807,
+      "imdb_id": "tt33071426",
+      "release_date": "2026-03-26",
+      "imdb_rating": 7.5,
+      "imdb_votes": 26733,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 68.21,
-      "_verdict": "cinemagoria",
-      "_reasoning": "War/history with critical lens, character-driven drama.",
-      "_pinned": false
+      "_score": 71.85,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": true
     },
     {
-      "id": 1368166,
+      "id": 950396,
       "media_type": "movie",
-      "title": "The Housemaid",
-      "title_es": "La asistenta",
-      "overview": "Trying to escape her past, Millie Calloway accepts a job as a live-in housemaid for the wealthy Nina and Andrew Winchester. But what begins as a dream job quickly unravels into something far more dangerous—a sexy, seductive game of secrets, scandal, and power.",
-      "overview_es": "Una joven (Sydney Sweeney), con un pasado complicado comienza a trabajar como asistenta en la lujosa casa de los Winchester. A medida que se adentra en la vida de la familia, descubrirá secretos oscuros que pondrán en peligro su seguridad, pero quizá ya sea demasiado tarde... Adaptación de la novela de Freida McFadden.",
-      "poster_path": "/cWsBscZzwu5brg9YjNkGewRUvJX.jpg",
-      "backdrop_path": "/zTnAnYIn0Iv3cn0ZHlzLhou3ybm.jpg",
-      "vote_average": "7.2",
+      "title": "The Gorge",
+      "title_es": "El abismo secreto",
+      "overview": "Two highly trained operatives grow close from a distance after being sent to guard opposite sides of a mysterious gorge. When an evil below emerges, they must work together to survive what lies within.",
+      "overview_es": "Mandan a dos operativos de élite a vigilar lados opuestos de un misterioso abismo y allí intiman desde la distancia, pero deberán aunar fuerzas para sobrevivir al mal que esconde el abismo.",
+      "poster_path": "/7iMBZzVZtG0oBug4TfqDb9ZxAOa.jpg",
+      "backdrop_path": "/9nhjGaFLKtddDPtPaX5EmKqsWdH.jpg",
+      "vote_average": "7.6",
       "genre_ids": [
-        9648,
+        10749,
+        878,
         53
       ],
       "genres": [
         {
-          "id": 9648,
-          "name": "Mystery"
+          "id": 10749,
+          "name": "Romance"
+        },
+        {
+          "id": 878,
+          "name": "Science Fiction"
         },
         {
           "id": 53,
@@ -347,16 +355,91 @@
         }
       ],
       "original_language": "en",
-      "imdb_id": "tt27543632",
-      "release_date": "2025-12-18",
-      "imdb_rating": 6.8,
-      "imdb_votes": 133074,
+      "imdb_id": "tt13654226",
+      "release_date": "2025-02-13",
+      "imdb_rating": 6.7,
+      "imdb_votes": 169032,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 68.05,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Psychological thriller, mystery, slow-burn.",
-      "_pinned": false
+      "_score": 71.66,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": true
+    },
+    {
+      "id": 1317288,
+      "media_type": "movie",
+      "title": "Marty Supreme",
+      "title_es": "Marty Supreme",
+      "overview": "Marty Mauser, a young man with a dream no one respects, goes to hell and back in pursuit of greatness.",
+      "overview_es": "Biopic de Marty Reisman, un buscavidas convertido en campeón de ping pong, desde que empezó a jugar por apuestas en Manhattan hasta ganar 22 títulos importantes y convertirse en el más veterano en ganar una competición nacional de deportes de raqueta, con 67 años.",
+      "poster_path": "/lYWEXbQgRTR4ZQleSXAgRbxAjvq.jpg",
+      "backdrop_path": "/3iMoYSbI72Nwsvi7uSpqReLJVa6.jpg",
+      "vote_average": "7.4",
+      "genre_ids": [
+        18,
+        53
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt32916440",
+      "release_date": "2025-12-19",
+      "imdb_rating": 7.7,
+      "imdb_votes": 156128,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 71.59,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 687163,
+      "media_type": "movie",
+      "title": "Project Hail Mary",
+      "title_es": "Proyecto Salvación",
+      "overview": "Science teacher Ryland Grace wakes up on a spaceship light years from home with no recollection of who he is or how he got there. As his memory returns, he begins to uncover his mission: solve the riddle of the mysterious substance causing the sun to die out. He must call on his scientific knowledge and unorthodox ideas to save everything on Earth from extinction… but an unexpected friendship means he may not have to do it alone.",
+      "overview_es": "El profesor de ciencias Ryland Grace se despierta en una nave espacial a años luz de casa sin recordar quién es ni cómo ha llegado hasta allí. A medida que recupera la memoria, empieza a descubrir su misión: resolver el enigma de la misteriosa sustancia que provoca la extinción del sol. Deberá recurrir a sus conocimientos científicos y a sus ideas poco ortodoxas para salvar todo lo que hay en la Tierra de la extinción... pero una amistad inesperada significa que quizá no tenga que hacerlo solo.",
+      "poster_path": "/yihdXomYb5kTeSivtFndMy5iDmf.jpg",
+      "backdrop_path": "/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg",
+      "vote_average": "8.2",
+      "genre_ids": [
+        878,
+        12
+      ],
+      "genres": [
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        },
+        {
+          "id": 12,
+          "name": "Adventure"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt12042730",
+      "release_date": "2026-03-15",
+      "imdb_rating": 8.4,
+      "imdb_votes": 207175,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 71.03,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
     },
     {
       "id": 1419406,
@@ -399,144 +482,48 @@
       "imdb_votes": 10654,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 67.66,
-      "_verdict": "neutral",
-      "_reasoning": "Action-heavy, but foreign crime drama.",
-      "_pinned": false
+      "_score": 70.66,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
     },
     {
-      "id": 1171145,
+      "id": 1078605,
       "media_type": "movie",
-      "title": "Crime 101",
-      "title_es": "Ruta de escape",
-      "overview": "When an elusive thief whose high-stakes heists unfold along the iconic 101 freeway in Los Angeles eyes the score of a lifetime, with hopes of this being his final job, his path collides with a disillusioned insurance broker who is facing her own crossroads. Determined to crack the case, a relentless detective closes in on the operation, raising the stakes even higher.",
-      "overview_es": "Davis es un escurridizo ladrón cuyos atracos de alto riesgo tienen desconcertada a la policía. Davis está planeando su mayor golpe, con la esperanza de que sea el último, cuando se cruza en su camino Sharon, una desilusionada ejecutiva de seguros con la que se ve obligado a trabajar, y Orman un ladrón rival, con métodos mucho más inquietantes que los de Davis. A medida que se acerca el golpe multimillonario, el implacable teniente Lubesnik, se acerca a la operación, aumentando considerablemente el riesgo de lo que está en juego y difuminando la línea entre cazador y presa. Pronto, cada uno tendrá que aceptar el coste de sus decisiones asumiendo que no hay vuelta atrás.",
-      "poster_path": "/tVvpFIoteRHNnoZMhdnwIVwJpCA.jpg",
-      "backdrop_path": "/vG42HeYtoTFflqwP42wYD7tBuNr.jpg",
-      "vote_average": "7.0",
-      "genre_ids": [
-        80,
-        53
-      ],
-      "genres": [
-        {
-          "id": 80,
-          "name": "Crime"
-        },
-        {
-          "id": 53,
-          "name": "Thriller"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt32430579",
-      "release_date": "2026-02-11",
-      "imdb_rating": 6.8,
-      "imdb_votes": 55863,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 67.29,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Neo-noir, suspense, character-driven crime.",
-      "_pinned": false
-    },
-    {
-      "id": 1124566,
-      "media_type": "movie",
-      "title": "Sentimental Value",
-      "title_es": "Valor sentimental",
-      "overview": "Sisters Nora and Agnes reunite with their estranged father, the charismatic Gustav, a once-renowned director who offers stage actress Nora a role in what he hopes will be his comeback film. When Nora turns it down, she soon discovers he has given her part to an eager young Hollywood star.",
-      "overview_es": "Una exploración íntima y conmovedora de la familia, los recuerdos y el poder reconciliador del arte.",
-      "poster_path": "/pz9NCWxxOk3o0W3v1Zkhawrwb4i.jpg",
-      "backdrop_path": "/oLgtpxK4aGZ7S8aiE3rDwahqkL2.jpg",
-      "vote_average": "7.5",
-      "genre_ids": [
-        18
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "no",
-      "imdb_id": "tt27714581",
-      "release_date": "2025-08-20",
-      "imdb_rating": 7.7,
-      "imdb_votes": 72823,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 66.92,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Character-driven drama, adult themes.",
-      "_pinned": false
-    },
-    {
-      "id": 687163,
-      "media_type": "movie",
-      "title": "Project Hail Mary",
-      "title_es": "Proyecto Salvación",
-      "overview": "Science teacher Ryland Grace wakes up on a spaceship light years from home with no recollection of who he is or how he got there. As his memory returns, he begins to uncover his mission: solve the riddle of the mysterious substance causing the sun to die out. He must call on his scientific knowledge and unorthodox ideas to save everything on Earth from extinction… but an unexpected friendship means he may not have to do it alone.",
-      "overview_es": "El profesor de ciencias Ryland Grace se despierta en una nave espacial a años luz de casa sin recordar quién es ni cómo ha llegado hasta allí. A medida que recupera la memoria, empieza a descubrir su misión: resolver el enigma de la misteriosa sustancia que provoca la extinción del sol. Deberá recurrir a sus conocimientos científicos y a sus ideas poco ortodoxas para salvar todo lo que hay en la Tierra de la extinción... pero una amistad inesperada significa que quizá no tenga que hacerlo solo.",
-      "poster_path": "/yihdXomYb5kTeSivtFndMy5iDmf.jpg",
-      "backdrop_path": "/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg",
-      "vote_average": "8.2",
-      "genre_ids": [
-        878,
-        12
-      ],
-      "genres": [
-        {
-          "id": 878,
-          "name": "Science Fiction"
-        },
-        {
-          "id": 12,
-          "name": "Adventure"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt12042730",
-      "release_date": "2026-03-15",
-      "imdb_rating": 8.4,
-      "imdb_votes": 207175,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 66.03,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Ideas-driven sci-fi, mystery.",
-      "_pinned": false
-    },
-    {
-      "id": 1241983,
-      "media_type": "movie",
-      "title": "Train Dreams",
-      "title_es": "Sueños de trenes",
-      "overview": "A logger leads a life of quiet grace as he experiences love and loss during an era of monumental change in early 20th-century America.",
-      "overview_es": "Un leñador introvertido pero afable se topa con el amor y la pérdida durante una época de cambios colosales en los EE. UU. de principios del siglo XX.",
-      "poster_path": "/oHTNNQzoWUUnswz8F0bwZetEKgj.jpg",
-      "backdrop_path": "/u5NWHVhZ6HWc1fXnqn82cMar5St.jpg",
+      "title": "Weapons",
+      "title_es": "Weapons",
+      "overview": "When all but one child from the same class mysteriously vanish on the same night at exactly the same time, a community is left questioning who or what is behind their disappearance.",
+      "overview_es": "Cuando todos los alumnos de una misma clase, salvo uno, desaparecen misteriosamente la misma noche y exactamente a la misma hora, la pequeña ciudad donde viven se pregunta quién o qué está detrás de su desaparición.",
+      "poster_path": "/cpf7vsRZ0MYRQcnLWteD5jK9ymT.jpg",
+      "backdrop_path": "/8VyTWJrNEyV2MTWvniDVp0MpOAe.jpg",
       "vote_average": "7.3",
       "genre_ids": [
-        18
+        27,
+        9648
       ],
       "genres": [
         {
-          "id": 18,
-          "name": "Drama"
+          "id": 27,
+          "name": "Horror"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
         }
       ],
       "original_language": "en",
-      "imdb_id": "tt29768334",
-      "release_date": "2025-11-05",
-      "imdb_rating": 7.5,
-      "imdb_votes": 101515,
+      "imdb_id": "tt26581740",
+      "release_date": "2025-08-04",
+      "imdb_rating": 7.4,
+      "imdb_votes": 343462,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 66.01,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Character-driven drama, historical context.",
-      "_pinned": false
+      "_score": 70.47,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
     },
     {
       "id": 701387,
@@ -574,46 +561,11 @@
       "imdb_votes": 177129,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 65.9,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Ideas-driven sci-fi, psychological thriller.",
-      "_pinned": false
-    },
-    {
-      "id": 875828,
-      "media_type": "movie",
-      "title": "Peaky Blinders: The Immortal Man",
-      "title_es": "Peaky Blinders: El hombre inmortal",
-      "overview": "After his estranged son gets embroiled in a Nazi plot, self-exiled gangster Tommy Shelby must return to Birmingham to save his family — and his nation.",
-      "overview_es": "El gánster Tommy Shelby regresa a Birmingham para salvar a su familia —y a su país— cuando su hijo, del que se ha distanciado, se ve envuelto en un complot nazi.",
-      "poster_path": "/gRMalasZEzsZi4w2VFuYusfSfqf.jpg",
-      "backdrop_path": "/aouxo2EaR7QSGBBUNTITuW0lj4z.jpg",
-      "vote_average": "7.2",
-      "genre_ids": [
-        80,
-        18
-      ],
-      "genres": [
-        {
-          "id": 80,
-          "name": "Crime"
-        },
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt15574124",
-      "release_date": "2026-03-05",
-      "imdb_rating": 6.5,
-      "imdb_votes": 67365,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 65.66,
-      "_verdict": "neutral",
-      "_reasoning": "Franchise extension, but period crime drama.",
-      "_pinned": false
+      "_score": 69.9,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
     },
     {
       "id": 812583,
@@ -651,10 +603,11 @@
       "imdb_votes": 232240,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 65.53,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Mystery, suspense, auteur-driven.",
-      "_pinned": false
+      "_score": 69.53,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
     },
     {
       "id": 639988,
@@ -692,41 +645,132 @@
       "imdb_votes": 57219,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 65.52,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Character-driven, psychological thriller, foreign.",
-      "_pinned": false
+      "_score": 69.52,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
     },
     {
-      "id": 1151031,
+      "id": 1214931,
       "media_type": "movie",
-      "title": "Bring Her Back",
-      "title_es": "Devuélvemela",
-      "overview": "Following the death of their father, a brother and sister are sent to live with a foster mother, only to learn that she is hiding a terrifying secret.",
-      "overview_es": "Un hermano y su hermana descubren un aterrador ritual en la apartada casa de su nueva madre adoptiva. Lo que parece un hogar seguro pronto se convierte en una pesadilla, donde figuras siniestras, extrañas imágenes en vídeo y sucesos paranormales los rodean.",
-      "poster_path": "/1Q3GlCXGYWELifxANYZ5OVMRVZl.jpg",
-      "backdrop_path": "/2IIKts2A9vnUdM9tTC76B8tDmuZ.jpg",
-      "vote_average": "7.3",
+      "title": "Nuremberg",
+      "title_es": "Núremberg",
+      "overview": "In postwar Germany, an American psychiatrist must determine whether Nazi prisoners are fit to go on trial for war crimes, and finds himself in a complex battle of intellect and ethics with Hermann Göring, Hitler's right-hand man.",
+      "overview_es": "Tras el fin de la II Guerra Mundial, con ocasión de los cruciales e inminentes juicios de Nuremberg contra el derrotado régimen Nazi, el psiquiatra estadounidense Douglas Kelley (Malek), encargado de determinar si los oficiales nazis prisioneros son aptos para ser juzgados por sus crímenes de guerra, se ve inmerso en una compleja batalla de ingenio dialéctico con Hermann Göring (Crowe), mano derecha de Hitler. Basada en el libro \"El nazi y el psiquiatra\", de Jack El-Hai.",
+      "poster_path": "/7cWTGH2svfNHWVRjsfKIBob9pDj.jpg",
+      "backdrop_path": "/bf5TG9RODkPXmtJSgf8Iymof1wl.jpg",
+      "vote_average": "7.4",
       "genre_ids": [
-        27
+        36,
+        18
+      ],
+      "genres": [
+        {
+          "id": 36,
+          "name": "History"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt29567915",
+      "release_date": "2025-11-06",
+      "imdb_rating": 7.4,
+      "imdb_votes": 83996,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 69.25,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 1426776,
+      "media_type": "movie",
+      "title": "STRAW",
+      "title_es": "Harta",
+      "overview": "What will be her last straw? A devastatingly bad day pushes a hardworking single mother to the breaking point — and into a shocking act of desperation.",
+      "overview_es": "¿Cuál será la gota que colme el vaso? Un día devastador lleva al límite a una madre soltera y trabajadora, y la empuja a cometer un impactante acto de desesperación.",
+      "poster_path": "/t3cmnXYtxJb9vVL1ThvT2CWSe1n.jpg",
+      "backdrop_path": "/fnbWrDx8w8Reau4F1tFqoGuGmDZ.jpg",
+      "vote_average": "7.7",
+      "genre_ids": [
+        53,
+        18,
+        80
+      ],
+      "genres": [
+        {
+          "id": 53,
+          "name": "Thriller"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 80,
+          "name": "Crime"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt32550101",
+      "release_date": "2025-06-05",
+      "imdb_rating": 6.5,
+      "imdb_votes": 30930,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 67.98,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 1233413,
+      "media_type": "movie",
+      "title": "Sinners",
+      "title_es": "Los pecadores",
+      "overview": "Trying to leave their troubled lives behind, twin brothers return to their hometown to start again, only to discover that an even greater evil is waiting to welcome them back.",
+      "overview_es": "Tratando de dejar atrás sus problemáticas vidas, dos hermanos gemelos regresan a su pueblo natal para empezar de nuevo, solo para descubrir que un mal aún mayor les espera para darles la bienvenida.",
+      "poster_path": "/705nQHqe4JGdEisrQmVYmXyjs1U.jpg",
+      "backdrop_path": "/nAxGnGHOsfzufThz20zgmRwKur3.jpg",
+      "vote_average": "7.5",
+      "genre_ids": [
+        27,
+        28,
+        53
       ],
       "genres": [
         {
           "id": 27,
           "name": "Horror"
+        },
+        {
+          "id": 28,
+          "name": "Action"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
         }
       ],
       "original_language": "en",
-      "imdb_id": "tt32246771",
-      "release_date": "2025-05-28",
-      "imdb_rating": 7.1,
-      "imdb_votes": 121979,
+      "imdb_id": "tt31193180",
+      "release_date": "2025-04-16",
+      "imdb_rating": 7.5,
+      "imdb_votes": 464552,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 63.77,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Psychological horror, suspense.",
-      "_pinned": false
+      "_score": 67.33,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
     },
     {
       "id": 1236153,
@@ -769,75 +813,30 @@
       "imdb_votes": 55882,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 63.69,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Ideas-driven sci-fi, psychological thriller.",
-      "_pinned": false
+      "_score": 66.69,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
     },
     {
-      "id": 1233413,
+      "id": 911430,
       "media_type": "movie",
-      "title": "Sinners",
-      "title_es": "Los pecadores",
-      "overview": "Trying to leave their troubled lives behind, twin brothers return to their hometown to start again, only to discover that an even greater evil is waiting to welcome them back.",
-      "overview_es": "Tratando de dejar atrás sus problemáticas vidas, dos hermanos gemelos regresan a su pueblo natal para empezar de nuevo, solo para descubrir que un mal aún mayor les espera para darles la bienvenida.",
-      "poster_path": "/705nQHqe4JGdEisrQmVYmXyjs1U.jpg",
-      "backdrop_path": "/nAxGnGHOsfzufThz20zgmRwKur3.jpg",
-      "vote_average": "7.5",
+      "title": "F1",
+      "title_es": "F1 la película",
+      "overview": "Racing legend Sonny Hayes is coaxed out of retirement to lead a struggling Formula 1 team—and mentor a young hotshot driver—while chasing one more chance at glory.",
+      "overview_es": "El mítico piloto Sonny Hayes vuelve de su retiro, persuadido para liderar un equipo de Fórmula 1 en apuros y guiar a su joven promesa, en busca de una nueva oportunidad de éxito.",
+      "poster_path": "/vqBmyAj0Xm9LnS1xe1MSlMAJyHq.jpg",
+      "backdrop_path": "/rZWkXnIyTLzUJpHSUpOb7vgB0BL.jpg",
+      "vote_average": "7.8",
       "genre_ids": [
-        27,
         28,
-        53
-      ],
-      "genres": [
-        {
-          "id": 27,
-          "name": "Horror"
-        },
-        {
-          "id": 28,
-          "name": "Action"
-        },
-        {
-          "id": 53,
-          "name": "Thriller"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt31193180",
-      "release_date": "2025-04-16",
-      "imdb_rating": 7.5,
-      "imdb_votes": 464552,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 63.33,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Elevated horror, psychological thriller.",
-      "_pinned": false
-    },
-    {
-      "id": 1242419,
-      "media_type": "movie",
-      "title": "Roofman",
-      "title_es": "Roofman: Un ladrón en el tejado",
-      "overview": "A former Army Ranger and struggling father turns to robbing McDonald’s restaurants by cutting holes in their roofs, earning him the nickname \"Roofman.\" After escaping prison, he secretly lives inside a Toys “R” Us for six months, surviving undetected while planning his next move. But when he falls for a divorced mom drawn to his undeniable charm, his double life begins to unravel, setting off a compelling and suspenseful game of cat and mouse as his past closes in.",
-      "overview_es": "La historia real de Jeffrey Manchester (Tatum), un criminal que asaltó más de 60 McDonald's entrando por un agujero que hacía en el techo en medio de la noche. Tras ser arrestado, escapó de prisión y vivió escondido en una tienda de Toys R Us durante aproximadamente seis meses.",
-      "poster_path": "/wXDFtcnYtevleGzCmAD2ReQnJ4l.jpg",
-      "backdrop_path": "/2YOnE2qmoyyOUqQsFit12gDSauk.jpg",
-      "vote_average": "7.1",
-      "genre_ids": [
-        80,
-        35,
         18
       ],
       "genres": [
         {
-          "id": 80,
-          "name": "Crime"
-        },
-        {
-          "id": 35,
-          "name": "Comedy"
+          "id": 28,
+          "name": "Action"
         },
         {
           "id": 18,
@@ -845,16 +844,59 @@
         }
       ],
       "original_language": "en",
-      "imdb_id": "tt4627382",
-      "release_date": "2025-10-08",
-      "imdb_rating": 6.9,
-      "imdb_votes": 70777,
+      "imdb_id": "tt16311594",
+      "release_date": "2025-06-25",
+      "imdb_rating": 7.6,
+      "imdb_votes": 349179,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 62.1,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Character-driven crime drama, dark comedy.",
-      "_pinned": false
+      "_score": 66.69,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 541671,
+      "media_type": "movie",
+      "title": "Ballerina",
+      "title_es": "Ballerina",
+      "overview": "Taking place during the events of John Wick: Chapter 3 – Parabellum, Eve Macarro begins her training in the assassin traditions of the Ruska Roma.",
+      "overview_es": "Eve Macarro es una asesina entrenada por la Ruska Roma desde su infancia, la misma organización criminal encargada del adiestramiento de John Wick. En esta violenta historia de venganza, Eve intentará por todos los medios averiguar quién está detrás del asesinato de su padre. En su lucha por conocer la verdad, tendrá que atenerse a las normas de la Alta Mesa y, por supuesto, a las del Hotel Continental, donde descubrirá que existen secretos ocultos sobre su pasado.",
+      "poster_path": "/2VUmvqsHb6cEtdfscEA6fqqVzLg.jpg",
+      "backdrop_path": "/1yktYsxkmUtUFTUnCAUaqG6FEiz.jpg",
+      "vote_average": "7.2",
+      "genre_ids": [
+        28,
+        53,
+        80
+      ],
+      "genres": [
+        {
+          "id": 28,
+          "name": "Action"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        },
+        {
+          "id": 80,
+          "name": "Crime"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt7181546",
+      "release_date": "2025-06-04",
+      "imdb_rating": 6.8,
+      "imdb_votes": 148341,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 66.14,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
     }
   ]
 }
