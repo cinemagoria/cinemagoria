@@ -301,6 +301,70 @@ function applyDiversityCap(list, mediaType) {
     return out;
 }
 
+// ─── Robust JSON parser for Gemini responses ─────────────────────────────────
+// Ported from cinemagoria-rss-aggregator/scripts/generate-articles.ts. Gemini
+// occasionally emits invalid JSON (unescaped backslashes, unescaped inner
+// double quotes inside string values, trailing commas, or truncation). The
+// sequence tries strict parse → sanitize escapes → full repair before giving
+// up. In practice this recovers ~100% of the malformed payloads we've seen.
+
+function sanitizeJSONEscapes(s) {
+    // Replace any `\X` where X is NOT one of the valid JSON escape chars with
+    // `\\X`. This fixes Gemini's habit of emitting literal backslashes inside
+    // string values (e.g. file paths, regex fragments).
+    return s.replace(/\\(?!["\\\/bfnrtu])/g, '\\\\');
+}
+
+function repairJSON(raw) {
+    let s = raw;
+    // Strip trailing commas before } or ]
+    s = s.replace(/,\s*}/g, '}').replace(/,\s*]/g, ']');
+    // Balance braces/brackets if the response looks truncated
+    if (!s.trimEnd().endsWith('}')) {
+        const openBraces = (s.match(/{/g) || []).length;
+        const closeBraces = (s.match(/}/g) || []).length;
+        const openBrackets = (s.match(/\[/g) || []).length;
+        const closeBrackets = (s.match(/]/g) || []).length;
+        s += ']'.repeat(Math.max(0, openBrackets - closeBrackets));
+        s += '}'.repeat(Math.max(0, openBraces - closeBraces));
+    }
+    // Escape unescaped inner double quotes inside string values
+    s = s.replace(/:\s*"([^"]*?)(?:"|$)/g, (m, content) => {
+        const escaped = content.replace(/(?<!\\)"/g, '\\"');
+        return `: "${escaped}"`;
+    });
+    return s;
+}
+
+function parseGeminiJSON(raw) {
+    let clean = raw.replace(/```json/g, '').replace(/```/g, '').trim();
+    try {
+        return JSON.parse(clean);
+    } catch (e1) {
+        log('gemini', `strict parse failed (${e1.message}); trying sanitize…`);
+        try {
+            return JSON.parse(sanitizeJSONEscapes(clean));
+        } catch (e2) {
+            log('gemini', `sanitize failed (${e2.message}); trying full repair…`);
+            try {
+                return JSON.parse(repairJSON(sanitizeJSONEscapes(clean)));
+            } catch (e3) {
+                // Show context around the reported parse position to help debug.
+                const posMatch = e3.message.match(/position (\d+)/);
+                if (posMatch) {
+                    const pos = Number(posMatch[1]);
+                    const start = Math.max(0, pos - 120);
+                    const end = Math.min(clean.length, pos + 120);
+                    log('gemini', `context around pos ${pos}: ...${clean.slice(start, end)}...`);
+                }
+                log('gemini', `first 300 chars: ${clean.slice(0, 300)}`);
+                log('gemini', `last 300 chars: ${clean.slice(-300)}`);
+                throw e3;
+            }
+        }
+    }
+}
+
 // ─── 5. Gemini curator ───────────────────────────────────────────────────────
 //
 // UNIFIED CALL. We follow cinemagoria-rss-aggregator/scripts/generate-articles.ts:
@@ -412,9 +476,13 @@ async function callGemini(prompt) {
         throw new Error(`Gemini ${response.status}: ${err.slice(0, 300)}`);
     }
     const result = await response.json();
+    if (result.usageMetadata) {
+        const u = result.usageMetadata;
+        log('gemini', `tokens — prompt: ${u.promptTokenCount}, completion: ${u.candidatesTokenCount}, total: ${u.totalTokenCount}`);
+    }
     const content = result.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!content) throw new Error('Gemini returned empty content');
-    return JSON.parse(content);
+    return parseGeminiJSON(content);
 }
 
 async function geminiCurateBoth(movieCandidates, tvCandidates) {

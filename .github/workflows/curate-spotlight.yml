@@ -24,7 +24,9 @@ jobs:
           node-version: '20'
 
       - name: Install script deps
-        run: npm install @libsql/client google-auth-library
+        # --no-save so package.json / lock stay clean and the later
+        # `git checkout es` mirror step doesn't abort with "local changes".
+        run: npm install --no-save @libsql/client google-auth-library
 
       - name: Curate spotlight
         run: node scripts/curateSpotlight.mjs
@@ -50,6 +52,10 @@ jobs:
 
       - name: Mirror JSONs to es branch
         run: |
+          # Drop any residue in the working tree (e.g. node_modules install
+          # artifacts) so the branch switch doesn't abort.
+          git reset --hard HEAD
+          git clean -fd
           git fetch origin es
           git checkout es
           # Take the freshly generated JSONs from main.
