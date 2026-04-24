@@ -1,9 +1,53 @@
 {
-  "generated_at": "2026-04-24T16:19:10.597Z",
+  "generated_at": "2026-04-24T16:45:31.927Z",
   "engine_version": "3.0.0",
   "media_type": "tv",
   "count": 22,
   "results": [
+    {
+      "id": 259265,
+      "media_type": "tv",
+      "title": "Something Very Bad Is Going to Happen",
+      "title_es": "Algo terrible está a punto de suceder",
+      "overview": "A bride has a feeling that something horrifying will happen at her wedding — and the closer to the altar she gets, the worse it becomes.",
+      "overview_es": "Una novia presiente que algo terrible ocurrirá en su boda... y cuanto más se acerca al altar, peor se vuelve todo.",
+      "poster_path": "/tuj37DlqEqib8sTO4h3nHJeTAJ2.jpg",
+      "backdrop_path": "/1bdq9FKVyBUpOM9qE09WgG9o8Ek.jpg",
+      "vote_average": "6.5",
+      "genre_ids": [
+        18,
+        9648,
+        10765
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        },
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt32937780",
+      "first_air_date": "2026-03-26",
+      "last_air_date": "2026-03-26",
+      "status": "Ended",
+      "imdb_rating": 6.8,
+      "imdb_votes": 20786,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 9000,
+      "_verdict": "noir",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": true
+    },
     {
       "id": 85552,
       "media_type": "tv",
@@ -28,6 +72,8 @@
       "first_air_date": "2019-06-16",
       "last_air_date": "2026-04-19",
       "status": "Returning Series",
+      "imdb_rating": 8.2,
+      "imdb_votes": 297860,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -65,238 +111,8 @@
       "first_air_date": "2026-04-05",
       "last_air_date": "2026-04-05",
       "status": "Returning Series",
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 259265,
-      "media_type": "tv",
-      "title": "Something Very Bad Is Going to Happen",
-      "title_es": "Algo terrible está a punto de suceder",
-      "overview": "A bride has a feeling that something horrifying will happen at her wedding — and the closer to the altar she gets, the worse it becomes.",
-      "overview_es": "Una novia presiente que algo terrible ocurrirá en su boda... y cuanto más se acerca al altar, peor se vuelve todo.",
-      "poster_path": "/tuj37DlqEqib8sTO4h3nHJeTAJ2.jpg",
-      "backdrop_path": "/1bdq9FKVyBUpOM9qE09WgG9o8Ek.jpg",
-      "vote_average": "6.5",
-      "genre_ids": [
-        18,
-        9648,
-        10765
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 9648,
-          "name": "Mystery"
-        },
-        {
-          "id": 10765,
-          "name": "Sci-Fi & Fantasy"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt32937780",
-      "first_air_date": "2026-03-26",
-      "last_air_date": "2026-03-26",
-      "status": "Ended",
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 95396,
-      "media_type": "tv",
-      "title": "Severance",
-      "title_es": "Separación",
-      "overview": "Mark leads a team of office workers whose memories have been surgically divided between their work and personal lives. When a mysterious colleague appears outside of work, it begins a journey to discover the truth about their jobs.",
-      "overview_es": "Mark Scout dirige un equipo en Lumon Industries cuyos empleados se han sometido a un procedimiento quirúrgico que separa sus recuerdos entre trabajo y vida personal. Este arriesgado experimento de conciliación es puesto en tela de juicio cuando Mark se encuentra envuelto en un misterio que le obligará a confrontar la verdadera naturaleza de su trabajo... y de sí mismo.",
-      "poster_path": "/pPHpeI2X1qEd1CS1SeyrdhZ4qnT.jpg",
-      "backdrop_path": "/ixgFmf1X59PUZam2qbAfskx2gQr.jpg",
-      "vote_average": "8.4",
-      "genre_ids": [
-        18,
-        9648,
-        10765
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 9648,
-          "name": "Mystery"
-        },
-        {
-          "id": 10765,
-          "name": "Sci-Fi & Fantasy"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt11280740",
-      "first_air_date": "2022-02-17",
-      "last_air_date": "2025-03-20",
-      "status": "Returning Series",
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 245927,
-      "media_type": "tv",
-      "title": "Paradise",
-      "title_es": "Paradise",
-      "overview": "The tranquility in a serene, wealthy community inhabited by some of the world's most prominent individuals explodes when a shocking murder occurs and a high stakes investigation unfolds.",
-      "overview_es": "En una serena comunidad habitada por algunas de las personas más prominentes del mundo, la tranquilidad estalla cuando se produce un espeluznante asesinato y se desencadena una investigación de alto riesgo. Xavier Collins, jefe del Servicio Secreto de la Casa Blanca, es rápidamente investigado por la muerte del presidente, al que descubre junto a su cama.",
-      "poster_path": "/l8RqfhqEk04W5sSOjQ9zeWU1DyM.jpg",
-      "backdrop_path": "/5QsLvWh8J1mXl1W05wNJknMmhzR.jpg",
-      "vote_average": "7.5",
-      "genre_ids": [
-        80,
-        18
-      ],
-      "genres": [
-        {
-          "id": 80,
-          "name": "Crime"
-        },
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt27444205",
-      "first_air_date": "2025-01-26",
-      "last_air_date": "2026-03-30",
-      "status": "Returning Series",
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 304510,
-      "media_type": "tv",
-      "title": "Reykjavík Fusion",
-      "title_es": "Reykjavík Fusion",
-      "overview": "Jonas, a talented chef, attempts to clear his name and win back his family after wrongful imprisonment. As society turns its back on the ex-convict, his last resort is to commit his first crime. By accepting dirty money to set up a fine-dining restaurant, he’s forced to run a money-launder operation to pay it back - not only putting his parole in jeopardy but also his own life and the ones he loves.",
-      "overview_es": "Jónas (Ólafur Darri Ólafsson) es un chef de gran talento que sale de prisión tras ser acusado de incendiar su antiguo restaurante. Decidido a reconstruir su vida, lucha por recuperar la custodia de sus hijos y el respeto de su ex mujer, a quien aún ama. Pero el mundo exterior no se lo pone fácil: rechazado por la sociedad y sin oportunidades laborales, se ve obligado a aceptar dinero ilícito de un antiguo compañero de celda para abrir un nuevo restaurante.",
-      "poster_path": "/pYRgime9WExTtlmhurNvSWf61tz.jpg",
-      "backdrop_path": "/zHh0ieGLKlR0bUk7gVpJ72CwHeS.jpg",
-      "vote_average": "6.6",
-      "genre_ids": [
-        80,
-        18
-      ],
-      "genres": [
-        {
-          "id": 80,
-          "name": "Crime"
-        },
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "is",
-      "imdb_id": "tt31862843",
-      "first_air_date": "2025-09-25",
-      "last_air_date": "2025-10-30",
-      "status": "Ended",
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 298425,
-      "media_type": "tv",
-      "title": "The Lady",
-      "title_es": "The Lady",
-      "overview": "Jane Andrews' life changes overnight when she lands a dream job in Buckingham Palace and bonds with the Duchess of York.",
-      "overview_es": "Jane Andrews' life changes overnight when she lands a dream job in Buckingham Palace and bonds with the Duchess of York.",
-      "poster_path": "/lcEfyYrds6ptNeZsqyj51qkUav.jpg",
-      "backdrop_path": "/y1Xg6NPRD8QFbgOVer16ynjGYUp.jpg",
-      "vote_average": "6.8",
-      "genre_ids": [
-        18,
-        80
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 80,
-          "name": "Crime"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt34885250",
-      "first_air_date": "2026-02-22",
-      "last_air_date": "2026-03-02",
-      "status": "Ended",
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 245318,
-      "media_type": "tv",
-      "title": "Margo's Got Money Troubles",
-      "title_es": "Margo tiene problemas de dinero",
-      "overview": "The daughter of a former Hooter's waitress and an ex-pro wrestler, Margo is a recent college dropout and aspiring writer. Faced with a new baby, mounting pile of bills, and dwindling number of ways to pay them, Margo must find a way forward.",
-      "overview_es": "La escritora en ciernes Margo Millet se queda embarazada, lo que la obliga a dejar la universidad y la lleva a la ruina. Pero cuando aparece su padre, un ex luchador profesional con el que no tenía relación, Margo halla una forma inesperada de rentabilizar su talento para contar historias.",
-      "poster_path": "/5iVWUVfxOS1JFudntvPcLyHBw9y.jpg",
-      "backdrop_path": "/5O9CNnYuH1U0L3ym7q7q93eH99u.jpg",
-      "vote_average": "8.0",
-      "genre_ids": [
-        18,
-        35
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 35,
-          "name": "Comedy"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt31137273",
-      "first_air_date": "2026-04-14",
-      "last_air_date": "2026-04-21",
-      "status": "Returning Series",
+      "imdb_rating": 5.1,
+      "imdb_votes": 375,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -339,43 +155,8 @@
       "first_air_date": "2026-03-11",
       "last_air_date": "2026-03-11",
       "status": "Returning Series",
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 279603,
-      "media_type": "tv",
-      "title": "Patience",
-      "title_es": "Patience",
-      "overview": "Patience Evans works in the Criminal Records Office in the city of York. She views the world in a unique way because she has a special gift – she is autistic. Patience has a special interest in solving puzzles and a secret fascination and talent for criminology—her unique perspective allows her to connect the dots through clues in a way others simply cannot.\n\nDetective Inspector Bea Metcalf recognizes her talents and takes her under her wing. Patience helps the police tackle a series of challenging cases by bringing her unique insight to crimefighting.",
-      "overview_es": "Una archivista autista con talento, se adentra en un mundo impredecible cuando la detective Bea descubre sus singulares habilidades para resolver crímenes.",
-      "poster_path": "/kJAKX5QVCbQYxrdlq0jFUA45zuj.jpg",
-      "backdrop_path": "/mPhSRv8Ni5Izz3B90TQZhA4Il16.jpg",
-      "vote_average": "7.3",
-      "genre_ids": [
-        18,
-        80
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 80,
-          "name": "Crime"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt31495377",
-      "first_air_date": "2025-01-08",
-      "last_air_date": "2026-01-29",
-      "status": "Returning Series",
+      "imdb_rating": 6,
+      "imdb_votes": 14663,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -413,6 +194,8 @@
       "first_air_date": "2023-04-06",
       "last_air_date": "2026-04-16",
       "status": "Returning Series",
+      "imdb_rating": 8,
+      "imdb_votes": 163392,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -422,38 +205,126 @@
       "_noir_match": true
     },
     {
-      "id": 250307,
+      "id": 95396,
       "media_type": "tv",
-      "title": "The Pitt",
-      "title_es": "The Pitt",
-      "overview": "The staff of Pittsburgh's Trauma Medical Center work around the clock to save lives in an overcrowded and underfunded emergency department.",
-      "overview_es": "The Pitt ofrece una visión realista de los retos a los que se enfrenta el personal sanitario en los Estados Unidos de hoy, visto a través de la lente de los héroes de primera línea que trabajan en un hospital de la actualidad en Pittsburgh, Pensilvania.",
-      "poster_path": "/kvFSpESyBZMjaeOJDx7RS3P1jey.jpg",
-      "backdrop_path": "/z3BkMbCy5ajZPMyKEUwsPHuz2cV.jpg",
-      "vote_average": "8.7",
+      "title": "Severance",
+      "title_es": "Separación",
+      "overview": "Mark leads a team of office workers whose memories have been surgically divided between their work and personal lives. When a mysterious colleague appears outside of work, it begins a journey to discover the truth about their jobs.",
+      "overview_es": "Mark Scout dirige un equipo en Lumon Industries cuyos empleados se han sometido a un procedimiento quirúrgico que separa sus recuerdos entre trabajo y vida personal. Este arriesgado experimento de conciliación es puesto en tela de juicio cuando Mark se encuentra envuelto en un misterio que le obligará a confrontar la verdadera naturaleza de su trabajo... y de sí mismo.",
+      "poster_path": "/pPHpeI2X1qEd1CS1SeyrdhZ4qnT.jpg",
+      "backdrop_path": "/ixgFmf1X59PUZam2qbAfskx2gQr.jpg",
+      "vote_average": "8.4",
       "genre_ids": [
+        18,
+        9648,
+        10765
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        },
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt11280740",
+      "first_air_date": "2022-02-17",
+      "last_air_date": "2025-03-20",
+      "status": "Returning Series",
+      "imdb_rating": 8.6,
+      "imdb_votes": 385366,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 9000,
+      "_verdict": "noir",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": true
+    },
+    {
+      "id": 245927,
+      "media_type": "tv",
+      "title": "Paradise",
+      "title_es": "Paradise",
+      "overview": "The tranquility in a serene, wealthy community inhabited by some of the world's most prominent individuals explodes when a shocking murder occurs and a high stakes investigation unfolds.",
+      "overview_es": "En una serena comunidad habitada por algunas de las personas más prominentes del mundo, la tranquilidad estalla cuando se produce un espeluznante asesinato y se desencadena una investigación de alto riesgo. Xavier Collins, jefe del Servicio Secreto de la Casa Blanca, es rápidamente investigado por la muerte del presidente, al que descubre junto a su cama.",
+      "poster_path": "/l8RqfhqEk04W5sSOjQ9zeWU1DyM.jpg",
+      "backdrop_path": "/5QsLvWh8J1mXl1W05wNJknMmhzR.jpg",
+      "vote_average": "7.5",
+      "genre_ids": [
+        80,
         18
       ],
       "genres": [
+        {
+          "id": 80,
+          "name": "Crime"
+        },
         {
           "id": 18,
           "name": "Drama"
         }
       ],
       "original_language": "en",
-      "imdb_id": "tt31938062",
-      "first_air_date": "2025-01-09",
-      "last_air_date": "2026-04-16",
+      "imdb_id": "tt27444205",
+      "first_air_date": "2025-01-26",
+      "last_air_date": "2026-03-30",
       "status": "Returning Series",
-      "imdb_rating": 8.9,
-      "imdb_votes": 136701,
+      "imdb_rating": 7.9,
+      "imdb_votes": 75673,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 72.67,
-      "_verdict": "neutral",
+      "_score": 9000,
+      "_verdict": "noir",
       "_reasoning": null,
       "_pinned": false,
-      "_noir_match": false
+      "_noir_match": true
+    },
+    {
+      "id": 245318,
+      "media_type": "tv",
+      "title": "Margo's Got Money Troubles",
+      "title_es": "Margo tiene problemas de dinero",
+      "overview": "The daughter of a former Hooter's waitress and an ex-pro wrestler, Margo is a recent college dropout and aspiring writer. Faced with a new baby, mounting pile of bills, and dwindling number of ways to pay them, Margo must find a way forward.",
+      "overview_es": "La escritora en ciernes Margo Millet se queda embarazada, lo que la obliga a dejar la universidad y la lleva a la ruina. Pero cuando aparece su padre, un ex luchador profesional con el que no tenía relación, Margo halla una forma inesperada de rentabilizar su talento para contar historias.",
+      "poster_path": "/5iVWUVfxOS1JFudntvPcLyHBw9y.jpg",
+      "backdrop_path": "/5O9CNnYuH1U0L3ym7q7q93eH99u.jpg",
+      "vote_average": "8.0",
+      "genre_ids": [
+        18,
+        35
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 35,
+          "name": "Comedy"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt31137273",
+      "first_air_date": "2026-04-14",
+      "last_air_date": "2026-04-21",
+      "status": "Returning Series",
+      "imdb_rating": 6.9,
+      "imdb_votes": 634,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 9000,
+      "_verdict": "noir",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": true
     },
     {
       "id": 87917,
@@ -660,7 +531,7 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 70.33,
-      "_verdict": "neutral",
+      "_verdict": "cinemagoria",
       "_reasoning": null,
       "_pinned": false,
       "_noir_match": false
@@ -699,6 +570,89 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 69.9,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 56570,
+      "media_type": "tv",
+      "title": "Outlander",
+      "title_es": "Outlander",
+      "overview": "The story of Claire Randall, a married combat nurse from 1945 who is mysteriously swept back in time to 1743, where she is immediately thrown into an unknown world where her life is threatened. When she is forced to marry Jamie, a chivalrous and romantic young Scottish warrior, a passionate affair is ignited that tears Claire's heart between two vastly different men in two irreconcilable lives.",
+      "overview_es": "Sigue la historia de Claire Randall, una enfermera de combate casada en los años 40, que misteriosamente es arrastrada atrás en el tiempo hasta 1743, donde se lanza de inmediato a un mundo desconocido, viéndose amenazada su propia vida. Cuando se ve obligada a casarse con Jamie Fraser, un joven guerrero escocés caballeroso y romántico, Claire comienza un pasional triángulo entre dos hombres muy diferentes con dos vidas irreconciliables.",
+      "poster_path": "/bxBmfyzK0ARF9hqf2pbFWsddH14.jpg",
+      "backdrop_path": "/nf3Vlxm3C9U1aKUUQHmKFZmxPSc.jpg",
+      "vote_average": "8.2",
+      "genre_ids": [
+        18,
+        10765
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt3006802",
+      "first_air_date": "2014-08-09",
+      "last_air_date": "2026-04-17",
+      "status": "Returning Series",
+      "imdb_rating": 8.3,
+      "imdb_votes": 199564,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 69.4,
+      "_verdict": "neutral",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 129552,
+      "media_type": "tv",
+      "title": "The Night Agent",
+      "title_es": "El agente nocturno",
+      "overview": "Brought together by a midnight phone call, an FBI agent and a cybersecurity expert must unravel an ever-growing web of political conspiracies.",
+      "overview_es": "Unidos por una llamada a medianoche, un agente del FBI y una experta en ciberseguridad deben desentrañar una intrincada red de conspiraciones políticas.",
+      "poster_path": "/4c5yUNcaff4W4aPrkXE6zr7papX.jpg",
+      "backdrop_path": "/gklrevVndG98GHGDwfm8y8kxESo.jpg",
+      "vote_average": "7.7",
+      "genre_ids": [
+        10759,
+        18,
+        9648
+      ],
+      "genres": [
+        {
+          "id": 10759,
+          "name": "Action & Adventure"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt13918776",
+      "first_air_date": "2023-03-23",
+      "last_air_date": "2026-02-19",
+      "status": "Returning Series",
+      "imdb_rating": 7.4,
+      "imdb_votes": 159617,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 68.81,
       "_verdict": "cinemagoria",
       "_reasoning": null,
       "_pinned": false,
@@ -855,6 +809,84 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 65.28,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 198102,
+      "media_type": "tv",
+      "title": "Hijack",
+      "title_es": "Hijack",
+      "overview": "Expert negotiator Sam Nelson is in for the ride of his life—and so is everyone on board with him—after a group of hijackers take control. Sam will try every move in his playbook to take them down...as the stakes grow higher by the second.",
+      "overview_es": "El negociador Sam Nelson va a vivir el viaje de su vida cuando un grupo de secuestradores toma el control. Sam agotará sus tácticas, pero la situación es límite.",
+      "poster_path": "/2C51clnxQdiqPDeqQlXcUx70hse.jpg",
+      "backdrop_path": "/aRZ7k1M3AdjVv8n3Fi6cAkEdpYY.jpg",
+      "vote_average": "7.6",
+      "genre_ids": [
+        18
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt19854762",
+      "first_air_date": "2023-06-28",
+      "last_air_date": "2026-03-04",
+      "status": "Returning Series",
+      "imdb_rating": 7.3,
+      "imdb_votes": 92194,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 62.73,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 90802,
+      "media_type": "tv",
+      "title": "The Sandman",
+      "title_es": "Sandman",
+      "overview": "After years of imprisonment, Morpheus — the King of Dreams — embarks on a journey across worlds to find what was stolen from him and restore his power.",
+      "overview_es": "Después de pasar años encarcelado, Morfeo (el Rey de los Sueños) emprende un viaje por diferentes mundos para encontrar lo que le fue arrebatado y recuperar su poder.",
+      "poster_path": "/q54qEgagGOYCq5D1903eBVMNkbo.jpg",
+      "backdrop_path": "/i8taDLjpF8cCbp53N8kOFt1LSkW.jpg",
+      "vote_average": "7.9",
+      "genre_ids": [
+        10765,
+        18,
+        10759
+      ],
+      "genres": [
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 10759,
+          "name": "Action & Adventure"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt1751634",
+      "first_air_date": "2022-08-05",
+      "last_air_date": "2025-07-31",
+      "status": "Ended",
+      "imdb_rating": 7.6,
+      "imdb_votes": 208903,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 61.24,
       "_verdict": "cinemagoria",
       "_reasoning": null,
       "_pinned": false,
