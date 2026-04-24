@@ -655,11 +655,40 @@ async function finishCurate(mediaType, afterGemini, manualPinned, heroBlockedIds
 
 // ─── Entry ───────────────────────────────────────────────────────────────────
 
+// Validate a libsql/turso URL and log only its shape (never the value). GitHub
+// masks exact secret matches, not substrings, so we deliberately print scheme
+// + length + last-4 to help diagnose paste errors (missing `libsql://` prefix,
+// stray quotes, trailing newline) without leaking the database host.
+function validateLibsqlUrl(name, value) {
+    if (!value) throw new Error(`Missing ${name}`);
+    const len = value.length;
+    const last4 = value.slice(-4);
+    const scheme = (value.match(/^([a-zA-Z][a-zA-Z0-9+\-.]*):\/\//) || [])[1] || null;
+    log('secret', `${name}: len=${len}, scheme=${scheme ?? '<none>'}, ends_with="${last4}"`);
+    if (!scheme) {
+        throw new Error(
+            `${name} has no URL scheme — expected a value starting with "libsql://". ` +
+            `Got len=${len}. Check the GitHub secret: it may be missing the "libsql://" prefix, ` +
+            `have surrounding quotes, or include a leading newline.`
+        );
+    }
+    if (!['libsql', 'http', 'https', 'ws', 'wss'].includes(scheme.toLowerCase())) {
+        throw new Error(`${name} has unexpected scheme "${scheme}" — should be "libsql".`);
+    }
+}
+
 async function main() {
     if (!TMDB_API_KEY) throw new Error('Missing API_KEY (TMDB)');
     if (!TURSO_URL || !TURSO_TOKEN) throw new Error('Missing TURSO_DATABASE_URL / TURSO_AUTH_TOKEN');
     if (!IMDB_URL || !IMDB_TOKEN) throw new Error('Missing IMDB_DB_URL / IMDB_DB_TOKEN');
     if (!GCP_JSON) throw new Error('Missing GCP_SERVICE_ACCOUNT_JSON');
+
+    // Pre-flight validation so we fail with a clear message if a secret is malformed.
+    validateLibsqlUrl('TURSO_DATABASE_URL', TURSO_URL);
+    validateLibsqlUrl('IMDB_DB_URL', IMDB_URL);
+    log('secret', `TURSO_AUTH_TOKEN: len=${TURSO_TOKEN.length}`);
+    log('secret', `IMDB_DB_TOKEN: len=${IMDB_TOKEN.length}`);
+    log('secret', `GCP_SERVICE_ACCOUNT_JSON: len=${GCP_JSON.length}`);
 
     const mainDb = createClient({ url: TURSO_URL, authToken: TURSO_TOKEN });
     const imdbDb = createClient({ url: IMDB_URL, authToken: IMDB_TOKEN });
