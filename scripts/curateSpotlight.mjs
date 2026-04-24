@@ -53,19 +53,84 @@ const MIN_IMDB_RATING = 5.0;
 const MIN_IMDB_VOTES = 1000;
 const MIN_TMDB_VOTES = 500;
 
-// Genre buckets (TMDB genre IDs — identical for movie & tv where they overlap)
-const GENRE_HARD_EXCLUDE = new Set([16, 10751]);           // Animation, Family
-const GENRE_HEAVY_PENALTY = new Set([]);                    // (reserved for future heavy penalties)
-const GENRE_LIGHT_PENALTY = new Set([35, 28, 12]);          // Comedy, Action, Adventure
-const GENRE_BOOST = new Set([27, 18, 53, 9648, 10752, 36, 99, 878]); // Horror, Drama, Thriller, Mystery, War, History, Documentary, Sci-Fi
+// Genre buckets — TMDB uses DIFFERENT IDs for movies vs TV.
+// Movie-only: 28=Action, 12=Adventure, 14=Fantasy, 878=Sci-Fi, 10752=War, 36=History, 10749=Romance, 10402=Music, 10770=TV Movie
+// TV-only:    10759=Action&Adventure, 10762=Kids, 10764=Reality, 10765=Sci-Fi&Fantasy, 10766=Soap, 10767=Talk, 10763=News, 10768=War&Politics
+// Shared:     16=Animation, 10751=Family, 35=Comedy, 18=Drama, 27=Horror, 53=Thriller, 9648=Mystery, 99=Documentary, 80=Crime
+const GENRE_HARD_EXCLUDE = new Set([
+    16,     // Animation
+    10751,  // Family
+    10770,  // TV Movie
+    10762,  // Kids (TV)
+    10764,  // Reality (TV)
+    10766,  // Soap (TV)
+    10767,  // Talk (TV)
+    10763,  // News (TV)
+]);
+const GENRE_HEAVY_PENALTY = new Set([
+    14,     // Fantasy (movie)
+    10749,  // Romance (movie)
+    10402,  // Music (movie)
+]);
+const GENRE_LIGHT_PENALTY = new Set([
+    35,     // Comedy
+    28,     // Action (movie)
+    12,     // Adventure (movie)
+    10759,  // Action & Adventure (TV)
+]);
+// Note: 10765 (TV Sci-Fi & Fantasy) is intentionally NOT in any set — it mixes
+// a boosted genre (Sci-Fi) with a penalized one (Fantasy). Gemini handles that nuance.
+const GENRE_BOOST = new Set([
+    27,     // Horror
+    18,     // Drama
+    53,     // Thriller
+    9648,   // Mystery
+    10752,  // War (movie)
+    10768,  // War & Politics (TV)
+    36,     // History (movie)
+    99,     // Documentary
+    878,    // Sci-Fi (movie)
+    80,     // Crime
+]);
 
 // Freshness windows
 const NOW = new Date();
 const CURRENT_YEAR = NOW.getFullYear();
-const MOVIE_WINDOW_YEARS = 3;
-const TV_WINDOW_YEARS = 4;
+const CURRENT_MONTH = NOW.getMonth() + 1; // 1-12
+
+// Movies: dynamic rolling window.
+// If we're before June, include from Nov 1 of (year-2) to today.
+// If we're June or later, include from Jan 1 of (year-1) to today.
+// This gives ~13-18 months of coverage, never showing 2-3 year old films.
+const MOVIE_WINDOW_START = (() => {
+    if (CURRENT_MONTH < 6) {
+        return `${CURRENT_YEAR - 2}-11-01`;
+    }
+    return `${CURRENT_YEAR - 1}-01-01`;
+})();
+
+// TV: shows whose last_air_date is within the last 18 months are fresh.
+// Shows that started before 2018 are fine as long as they aired recently.
+const TV_LAST_AIRED_CUTOFF_MONTHS = 18;
 
 const LANG_DIVERSITY_CAP = 2; // max ja or ko TV shows in final list
+
+// Franchise / pochoclero keyword detection in titles
+const POCHOCLERO_TITLE_PATTERNS = [
+    /\b(?:Part|Chapter)\s+(?:Three|Four|Five|Six|Seven|Eight|Nine|Ten|[3-9]|\d{2,})\b/i,
+    /\bVol\.?\s*[3-9]\b/i,
+];
+
+// Known pochoclero franchise keywords (lowercased substrings)
+const POCHOCLERO_FRANCHISE_KEYWORDS = [
+    'marvel', 'avengers', 'spider-man', 'spider man',
+    'fast & furious', 'fast and furious', 'furious',
+    'transformers', 'minions', 'despicable me',
+    'shrek', 'kung fu panda', 'ice age', 'trolls',
+    'paw patrol', 'barbie', 'lego',
+    'mission: impossible', 'mission impossible',
+    'expendables', 'xxx:',
+];
 
 // ─── Small helpers ───────────────────────────────────────────────────────────
 
@@ -133,10 +198,12 @@ async function fetchCandidates(mediaType) {
     // Discover: popularity-sorted, with a release window, min vote count.
     // This widens the pool beyond trending (which is heavily skewed to blockbusters).
     const discoverPath = mediaType === 'movie' ? '/discover/movie' : '/discover/tv';
-    const windowYears = mediaType === 'movie' ? MOVIE_WINDOW_YEARS : TV_WINDOW_YEARS;
-    const minYear = CURRENT_YEAR - windowYears;
     const dateGteField = mediaType === 'movie' ? 'primary_release_date.gte' : 'first_air_date.gte';
     const dateLteField = mediaType === 'movie' ? 'primary_release_date.lte' : 'first_air_date.lte';
+
+    // For movies, use the dynamic rolling window; for TV, look back 4 years on first_air_date
+    // (the real freshness filter for TV is last_air_date, applied in hardFilterLocal).
+    const discoverGte = mediaType === 'movie' ? MOVIE_WINDOW_START : `${CURRENT_YEAR - 4}-01-01`;
 
     const sortOptions = ['popularity.desc', 'vote_average.desc'];
     for (const sort of sortOptions) {
@@ -146,7 +213,7 @@ async function fetchCandidates(mediaType) {
                     language: 'en-US',
                     sort_by: sort,
                     include_adult: false,
-                    [dateGteField]: `${minYear}-01-01`,
+                    [dateGteField]: discoverGte,
                     [dateLteField]: todayISO(),
                     'vote_count.gte': MIN_TMDB_VOTES,
                     page: p,
@@ -160,13 +227,41 @@ async function fetchCandidates(mediaType) {
     return [...pool.values()];
 }
 
+// ─── 1b. Hydrate TV candidates with last_air_date ────────────────────────────
+// TMDB list endpoints (trending, discover) do NOT include last_air_date.
+// We need it for the TV freshness filter, so we batch-fetch the detail endpoint.
+
+async function hydrateTvLastAired(candidates) {
+    const CONCURRENCY = 8;
+    const queue = [...candidates];
+    async function worker() {
+        while (queue.length) {
+            const c = queue.shift();
+            try {
+                const detail = await tmdb(`/tv/${c.id}`, { language: 'en-US' });
+                c.last_air_date = detail.last_air_date || null;
+                c.status = detail.status || null;
+            } catch {
+                c.last_air_date = c.first_air_date || null;
+            }
+        }
+    }
+    await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+    log('hydrate', `tv: fetched last_air_date for ${candidates.length} candidates`);
+    return candidates;
+}
+
 // ─── 2. Hard filters ─────────────────────────────────────────────────────────
 
-function hardFilterLocal(candidates, mediaType, heroBlockedIds, manuallyExcluded) {
-    const windowYears = mediaType === 'movie' ? MOVIE_WINDOW_YEARS : TV_WINDOW_YEARS;
-    const minYear = CURRENT_YEAR - windowYears;
-    const dateKey = mediaType === 'movie' ? 'release_date' : 'first_air_date';
+function isFranchisePochoclero(title) {
+    if (!title) return false;
+    const lower = title.toLowerCase();
+    if (POCHOCLERO_FRANCHISE_KEYWORDS.some((kw) => lower.includes(kw))) return true;
+    if (POCHOCLERO_TITLE_PATTERNS.some((re) => re.test(title))) return true;
+    return false;
+}
 
+function hardFilterLocal(candidates, mediaType, heroBlockedIds, manuallyExcluded) {
     return candidates.filter((c) => {
         if (manuallyExcluded.has(c.id)) return false;
         if (heroBlockedIds.has(`${c.id}-${mediaType}`)) return false;
@@ -176,10 +271,27 @@ function hardFilterLocal(candidates, mediaType, heroBlockedIds, manuallyExcluded
         const genreIds = c.genre_ids || (c.genres || []).map((g) => g.id);
         if (genreIds.some((g) => GENRE_HARD_EXCLUDE.has(g))) return false;
 
-        // Freshness + released
-        const y = yearOf(c[dateKey]);
-        if (!y || y < minYear) return false;
-        if (!isReleased(c[dateKey])) return false;
+        // Franchise / pochoclero title detection
+        const title = c.title || c.name || '';
+        if (isFranchisePochoclero(title)) return false;
+
+        if (mediaType === 'movie') {
+            // Movies: must be within the dynamic rolling window
+            const rd = c.release_date;
+            if (!rd) return false;
+            if (!isReleased(rd)) return false;
+            if (rd < MOVIE_WINDOW_START) return false;
+        } else {
+            // TV: use last_air_date for freshness. A show that started in 2018
+            // but last aired in 2026 is fresh. A show that last aired in 2022 is not.
+            const lastAired = c.last_air_date || c.first_air_date;
+            if (!lastAired) return false;
+            const cutoffDate = new Date(NOW);
+            cutoffDate.setMonth(cutoffDate.getMonth() - TV_LAST_AIRED_CUTOFF_MONTHS);
+            if (new Date(lastAired) < cutoffDate) return false;
+            // Also must have started airing (not future-only)
+            if (c.first_air_date && !isReleased(c.first_air_date)) return false;
+        }
 
         // TMDB vote floor (trending sometimes returns barely-rated stuff)
         if ((c.vote_count ?? 0) < MIN_TMDB_VOTES) return false;
@@ -261,26 +373,43 @@ function scoreCandidate(c, mediaType) {
     // Vote-count log boost (taste-makers vs obscure).
     score += Math.log10(Math.max(c.imdb_votes, 10)) * 2;
 
-    // Genre affinity.
+    // Genre affinity — stronger penalties to actually filter pochoclero.
     const genreIds = c.genre_ids || (c.genres || []).map((g) => g.id);
+    let hasBoostGenre = false;
     for (const g of genreIds) {
-        if (GENRE_BOOST.has(g)) score += 6;
-        else if (GENRE_HEAVY_PENALTY.has(g)) score -= 15;
-        else if (GENRE_LIGHT_PENALTY.has(g)) score -= 4;
+        if (GENRE_BOOST.has(g)) { score += 6; hasBoostGenre = true; }
+        else if (GENRE_HEAVY_PENALTY.has(g)) score -= 12;
+        else if (GENRE_LIGHT_PENALTY.has(g)) score -= 6;
     }
+
+    // If no cinemagoria-aligned genre at all, penalize.
+    if (!hasBoostGenre) score -= 8;
 
     // Blockbuster penalty: extreme popularity + ratings plateau = pochoclero.
     // TMDB popularity is noisy but spikes for franchise releases.
-    if ((c.popularity ?? 0) > 300 && c.imdb_rating < 7.0) score -= 8;
-    if ((c.popularity ?? 0) > 600) score -= 6;
+    if ((c.popularity ?? 0) > 200 && c.imdb_rating < 7.0) score -= 10;
+    if ((c.popularity ?? 0) > 400) score -= 8;
+    if ((c.popularity ?? 0) > 800) score -= 6;
 
-    // Freshness: lean toward "last 18 months" but not brand-new.
+    // Freshness: lean toward "last 12 months".
     const dateKey = mediaType === 'movie' ? 'release_date' : 'first_air_date';
-    const y = yearOf(c[dateKey]);
-    if (y) {
-        const ageMonths = (NOW - new Date(c[dateKey])) / (1000 * 60 * 60 * 24 * 30);
-        if (ageMonths >= 2 && ageMonths <= 24) score += 3;
-        else if (ageMonths < 2) score += 1;
+    const dateStr = c[dateKey];
+    if (dateStr) {
+        const ageMonths = (NOW - new Date(dateStr)) / (1000 * 60 * 60 * 24 * 30);
+        if (ageMonths >= 1 && ageMonths <= 12) score += 5;
+        else if (ageMonths < 1) score += 3;
+        else if (ageMonths > 12 && ageMonths <= 18) score += 1;
+        // older than 18 months: no bonus
+    }
+
+    // For TV, bonus if still airing / recently concluded.
+    if (mediaType === 'tv') {
+        const lastAired = c.last_air_date;
+        if (lastAired) {
+            const lastAiredAge = (NOW - new Date(lastAired)) / (1000 * 60 * 60 * 24 * 30);
+            if (lastAiredAge <= 3) score += 4; // currently airing or just ended
+            else if (lastAiredAge <= 6) score += 2;
+        }
     }
 
     return score;
@@ -319,8 +448,23 @@ function repairJSON(raw) {
     let s = raw;
     // Strip trailing commas before } or ]
     s = s.replace(/,\s*}/g, '}').replace(/,\s*]/g, ']');
-    // Balance braces/brackets if the response looks truncated
-    if (!s.trimEnd().endsWith('}')) {
+
+    // If the response is truncated mid-string or mid-object, try to salvage
+    // by removing the last incomplete object and closing the structures.
+    // Common pattern: truncated inside a "reason" string value.
+    const trimmed = s.trimEnd();
+    if (!trimmed.endsWith('}')) {
+        // Try to find the last complete object (ends with }) and cut there
+        const lastCompleteObj = s.lastIndexOf('}');
+        if (lastCompleteObj > 0) {
+            // Check if we're inside the decisions array
+            const afterLastObj = s.slice(lastCompleteObj + 1).trim();
+            // If after the last } there's a comma or incomplete content, cut it
+            if (afterLastObj.startsWith(',') || afterLastObj.length > 0) {
+                s = s.slice(0, lastCompleteObj + 1);
+            }
+        }
+        // Now balance braces/brackets
         const openBraces = (s.match(/{/g) || []).length;
         const closeBraces = (s.match(/}/g) || []).length;
         const openBrackets = (s.match(/\[/g) || []).length;
@@ -390,53 +534,47 @@ function buildUnifiedGeminiPrompt(movieSlice, tvSlice) {
     const briefMovies = movieSlice.map((it, i) => briefOf(it, i, 'movie'));
     const briefTv = tvSlice.map((it, i) => briefOf(it, i, 'tv'));
 
-    return `You are the senior content curator for CINEMAGORIA, a cinephile-oriented site. You evaluate both movies and TV shows for the homepage "Spotlight" carousels.
+    // IMPORTANT: Keep the prompt tight and ask for VERY short reasons.
+    // Long reasons cause Gemini to exceed output token limits, truncating the
+    // JSON and causing parse failures. Max 8-10 words per reason.
+    return `You are the senior content curator for CINEMAGORIA, a cinephile-oriented site. Evaluate movies and TV shows for the homepage "Spotlight" carousels.
 
-CINEMAGORIA's editorial identity — what belongs on the homepage:
-- Horror (elevated/arthouse horror, A24-style, indie horror, psychological horror)
-- Science fiction with conceptual/ideas-driven narratives
-- Drama (festival-tier, character-driven, adult)
-- Thrillers (psychological, slow-burn, noir)
-- Mystery, suspense, neo-noir
-- Documentaries (social, political, investigative, art)
-- War, history (with a critical or artistic lens)
-- Foreign arthouse / festival cinema (Cannes, Berlinale, Rotterdam, BIFFF, Sundance, Tribeca-tier)
-- Auteur-driven productions (indie directors, A24, Neon, Mubi, IFC, Criterion)
-- K/J content ONLY if it's arthouse/genre-standout (not mass-market drama/romance)
+ACCEPT ("cinemagoria"):
+- Elevated/arthouse horror, A24-style, indie horror, psychological horror
+- Sci-fi with ideas-driven narratives (not franchise spectacle)
+- Festival-tier drama, character-driven, adult
+- Psychological thrillers, slow-burn, noir, neo-noir
+- Mystery, suspense
+- Documentaries (social, political, investigative)
+- War/history with critical or artistic lens
+- Foreign arthouse / festival cinema
+- Auteur-driven (A24, Neon, Mubi, IFC, Criterion directors)
 
-What does NOT belong (REJECT as "pochoclero"):
-- Franchise sequels/prequels (Scream N, Saw N, M3GAN sequels, Expendables, etc.)
-- Superhero / Marvel / DC
-- Kids and family content
-- Generic romantic comedies, Hallmark-style romances
-- Teen drama aimed at under-18 audiences
-- Mainstream action-adventure blockbusters (Fast & Furious, Mission Impossible sequels, big-budget CGI spectacle)
-- Reality-adjacent content, game shows
-- Shallow celebrity vehicles, star-driven comedy
+REJECT ("pochoclero"):
+- Franchise sequels/prequels, superhero/Marvel/DC
+- Kids, family, YA/teen content
+- Fantasy epics, fairy-tale adaptations, musical fantasy (e.g. Wicked)
+- Generic rom-coms, Hallmark romances
+- Mainstream action blockbusters, CGI spectacle
+- Reality TV, game shows, celebrity comedy vehicles
+- Daredevil, Peacemaker, Reacher, Night Agent — action/superhero franchises
+- Heartstopper, teen romance shows
 
-Edge cases — classify as "neutral" when:
-- The title is a borderline genre piece that could go either way
-- Mainstream but with meaningful auteur credentials
-- Popular but the quality is ambiguous
+BORDERLINE → "neutral"
 
-For each item, output strictly: "cinemagoria" | "neutral" | "pochoclero".
-Also give a short 1-sentence reasoning.
-
-Identify each decision by BOTH its \`media\` ("movie" or "tv") AND its \`idx\`. The two lists use independent 0-based indices; a movie idx=3 is a different item than a tv idx=3.
+RULES:
+- Output ONLY valid JSON, no markdown fences.
+- Keep each "reason" to MAX 8 WORDS. This is critical.
+- Identify by media + idx (0-based, independent per list).
 
 MOVIES:
-${JSON.stringify(briefMovies, null, 2)}
+${JSON.stringify(briefMovies)}
 
 TV SHOWS:
-${JSON.stringify(briefTv, null, 2)}
+${JSON.stringify(briefTv)}
 
-Respond ONLY with valid JSON of the form:
-{
-  "decisions": [
-    { "media": "movie", "idx": 0, "verdict": "cinemagoria" | "neutral" | "pochoclero", "reason": "..." },
-    { "media": "tv",    "idx": 0, "verdict": "cinemagoria" | "neutral" | "pochoclero", "reason": "..." }
-  ]
-}`;
+JSON format:
+{"decisions":[{"media":"movie","idx":0,"verdict":"cinemagoria","reason":"max 8 words"},{"media":"tv","idx":0,"verdict":"pochoclero","reason":"max 8 words"}]}`;
 }
 
 async function callGemini(prompt) {
@@ -451,8 +589,8 @@ async function callGemini(prompt) {
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
         generationConfig: {
             responseMimeType: 'application/json',
-            maxOutputTokens: 16000,
-            temperature: 0.3,
+            maxOutputTokens: 24000,
+            temperature: 0.2,
         },
     });
 
@@ -696,7 +834,13 @@ async function applyManualPins(finalList, mediaType, pinnedIds, heroBlockedIds, 
 async function curateUpToGemini(mediaType, heroBlockedIds, manualExcluded, imdbDb) {
     log(mediaType, '--- START ---');
 
-    const pool = await fetchCandidates(mediaType);
+    let pool = await fetchCandidates(mediaType);
+
+    // TV candidates need last_air_date hydrated before the hard filter can use it.
+    if (mediaType === 'tv') {
+        pool = await hydrateTvLastAired(pool);
+    }
+
     const afterHard = hardFilterLocal(pool, mediaType, heroBlockedIds, manualExcluded);
     log(mediaType, `after local hard filter: ${afterHard.length}`);
 
