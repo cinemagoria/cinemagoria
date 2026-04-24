@@ -281,7 +281,7 @@ import UserNav from '@/components/global/UserNav';
 import MarkdownIt from 'markdown-it'
 import { apiImgUrl } from '@/utils/api'
 
-const md = new MarkdownIt({ breaks: true })
+const md = new MarkdownIt({ breaks: true, html: true })
 const route = useRoute()
 const config = useRuntimeConfig()
 const { $bus } = useNuxtApp()
