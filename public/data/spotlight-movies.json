@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-24T15:34:53.212Z",
+  "generated_at": "2026-04-24T16:03:03.659Z",
   "engine_version": "2.0.0",
   "media_type": "movie",
   "count": 22,
@@ -45,41 +45,9 @@
       "imdb_votes": 32835,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 99.03,
+      "_score": 95.03,
       "_verdict": "cinemagoria",
-      "_reasoning": "Psychological thriller, foreign crime drama.",
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1124566,
-      "media_type": "movie",
-      "title": "Sentimental Value",
-      "title_es": "Valor sentimental",
-      "overview": "Sisters Nora and Agnes reunite with their estranged father, the charismatic Gustav, a once-renowned director who offers stage actress Nora a role in what he hopes will be his comeback film. When Nora turns it down, she soon discovers he has given her part to an eager young Hollywood star.",
-      "overview_es": "Una exploración íntima y conmovedora de la familia, los recuerdos y el poder reconciliador del arte.",
-      "poster_path": "/pz9NCWxxOk3o0W3v1Zkhawrwb4i.jpg",
-      "backdrop_path": "/oLgtpxK4aGZ7S8aiE3rDwahqkL2.jpg",
-      "vote_average": "7.5",
-      "genre_ids": [
-        18
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "no",
-      "imdb_id": "tt27714581",
-      "release_date": "2025-08-20",
-      "imdb_rating": 7.7,
-      "imdb_votes": 72823,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 85.92,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Character-driven, foreign arthouse drama.",
+      "_reasoning": null,
       "_pinned": false,
       "_noir_match": true
     },
@@ -114,9 +82,41 @@
       "imdb_votes": 67365,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 83.66,
+      "_score": 86.66,
       "_verdict": "cinemagoria",
-      "_reasoning": "Gritty crime drama, historical context.",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": true
+    },
+    {
+      "id": 1124566,
+      "media_type": "movie",
+      "title": "Sentimental Value",
+      "title_es": "Valor sentimental",
+      "overview": "Sisters Nora and Agnes reunite with their estranged father, the charismatic Gustav, a once-renowned director who offers stage actress Nora a role in what he hopes will be his comeback film. When Nora turns it down, she soon discovers he has given her part to an eager young Hollywood star.",
+      "overview_es": "Una exploración íntima y conmovedora de la familia, los recuerdos y el poder reconciliador del arte.",
+      "poster_path": "/pz9NCWxxOk3o0W3v1Zkhawrwb4i.jpg",
+      "backdrop_path": "/oLgtpxK4aGZ7S8aiE3rDwahqkL2.jpg",
+      "vote_average": "7.5",
+      "genre_ids": [
+        18
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "no",
+      "imdb_id": "tt27714581",
+      "release_date": "2025-08-20",
+      "imdb_rating": 7.7,
+      "imdb_votes": 72823,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 81.92,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
       "_pinned": false,
       "_noir_match": true
     },
@@ -156,209 +156,9 @@
       "imdb_votes": 84121,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 73.65,
+      "_score": 76.65,
       "_verdict": "cinemagoria",
-      "_reasoning": "Elevated horror, sci-fi thriller.",
-      "_pinned": false,
-      "_noir_match": false
-    },
-    {
-      "id": 842924,
-      "media_type": "movie",
-      "title": "The Life of Chuck",
-      "title_es": "La vida de Chuck",
-      "overview": "In this extraordinary story of an ordinary man, Charles 'Chuck' Krantz experiences the wonder of love, the heartbreak of loss, and the multitudes contained in all of us.",
-      "overview_es": "Inspirado en un relato de Stephen King, narra tres episodios vinculados al personaje Charles Krantz, siguiendo un orden inverso: desde su fallecimiento a los 39 años debido a un tumor cerebral, hasta su niñez en una casa que se creía embrujada.",
-      "poster_path": "/oumprkO9bThExP8NwxBIBnvBu2v.jpg",
-      "backdrop_path": "/1SgD8XMa6dDSBKbPU4TDe2cmfGK.jpg",
-      "vote_average": "7.3",
-      "genre_ids": [
-        14,
-        18
-      ],
-      "genres": [
-        {
-          "id": 14,
-          "name": "Fantasy"
-        },
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt12908150",
-      "release_date": "2025-06-05",
-      "imdb_rating": 7.3,
-      "imdb_votes": 67402,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 73.46,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Character-driven drama, cerebral fantasy.",
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1220564,
-      "media_type": "movie",
-      "title": "The Secret Agent",
-      "title_es": "El agente secreto",
-      "overview": "Brazil, 1977. Marcelo, a technology expert in his early 40s, is on the run. Hoping to reunite with his son, he travels to Recife during Carnival but soon realizes that the city is not the safe haven he was expecting.",
-      "overview_es": "En Brasil, en 1977, Marcelo, un especialista en tecnología que huye de un pasado misterioso, regresa a Recife en busca de paz, pero se da cuenta de que la ciudad está lejos del refugio que busca.",
-      "poster_path": "/rZqolYhxMEe6TZZTjSmFw9crDTD.jpg",
-      "backdrop_path": "/eeGRpU64sIrRApjWXvTpK5Lep2K.jpg",
-      "vote_average": "7.3",
-      "genre_ids": [
-        80,
-        18,
-        53
-      ],
-      "genres": [
-        {
-          "id": 80,
-          "name": "Crime"
-        },
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 53,
-          "name": "Thriller"
-        }
-      ],
-      "original_language": "pt",
-      "imdb_id": "tt27847051",
-      "release_date": "2025-07-23",
-      "imdb_rating": 7.2,
-      "imdb_votes": 51227,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 72.62,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Foreign crime thriller, noir elements.",
-      "_pinned": false,
-      "_noir_match": false
-    },
-    {
-      "id": 1054867,
-      "media_type": "movie",
-      "title": "One Battle After Another",
-      "title_es": "Una batalla tras otra",
-      "overview": "Washed-up revolutionary Bob exists in a state of stoned paranoia, surviving off-grid with his spirited, self-reliant daughter, Willa. When his evil nemesis resurfaces after 16 years and she goes missing, the former radical scrambles to find her, father and daughter both battling the consequences of his past.",
-      "overview_es": "Un ex revolucionario, tras años apartado de la lucha, se ve obligado a volver a la acción para enfrentar a viejos enemigos en un ambiente cargado de tensión política, racismo y violencia militar... Adaptación modernizada de la novela 'Vineland', de Thomas Pynchon (1990), sobre los movimientos radicales de los años sesenta.",
-      "poster_path": "/lbBWwxBht4JFP5PsuJ5onpMqugW.jpg",
-      "backdrop_path": "/hiazLNa1UXuX35OTnMQRKOx3eTk.jpg",
-      "vote_average": "7.4",
-      "genre_ids": [
-        53,
-        80,
-        35
-      ],
-      "genres": [
-        {
-          "id": 53,
-          "name": "Thriller"
-        },
-        {
-          "id": 80,
-          "name": "Crime"
-        },
-        {
-          "id": 35,
-          "name": "Comedy"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt30144839",
-      "release_date": "2025-09-23",
-      "imdb_rating": 7.7,
-      "imdb_votes": 390414,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 72.38,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Dark thriller, crime, psychological elements.",
-      "_pinned": false,
-      "_noir_match": false
-    },
-    {
-      "id": 950396,
-      "media_type": "movie",
-      "title": "The Gorge",
-      "title_es": "El abismo secreto",
-      "overview": "Two highly trained operatives grow close from a distance after being sent to guard opposite sides of a mysterious gorge. When an evil below emerges, they must work together to survive what lies within.",
-      "overview_es": "Mandan a dos operativos de élite a vigilar lados opuestos de un misterioso abismo y allí intiman desde la distancia, pero deberán aunar fuerzas para sobrevivir al mal que esconde el abismo.",
-      "poster_path": "/7iMBZzVZtG0oBug4TfqDb9ZxAOa.jpg",
-      "backdrop_path": "/9nhjGaFLKtddDPtPaX5EmKqsWdH.jpg",
-      "vote_average": "7.6",
-      "genre_ids": [
-        10749,
-        878,
-        53
-      ],
-      "genres": [
-        {
-          "id": 10749,
-          "name": "Romance"
-        },
-        {
-          "id": 878,
-          "name": "Science Fiction"
-        },
-        {
-          "id": 53,
-          "name": "Thriller"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt13654226",
-      "release_date": "2025-02-13",
-      "imdb_rating": 6.7,
-      "imdb_votes": 169032,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 71.66,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Sci-fi thriller, mysterious elements.",
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1317288,
-      "media_type": "movie",
-      "title": "Marty Supreme",
-      "title_es": "Marty Supreme",
-      "overview": "Marty Mauser, a young man with a dream no one respects, goes to hell and back in pursuit of greatness.",
-      "overview_es": "Biopic de Marty Reisman, un buscavidas convertido en campeón de ping pong, desde que empezó a jugar por apuestas en Manhattan hasta ganar 22 títulos importantes y convertirse en el más veterano en ganar una competición nacional de deportes de raqueta, con 67 años.",
-      "poster_path": "/lYWEXbQgRTR4ZQleSXAgRbxAjvq.jpg",
-      "backdrop_path": "/3iMoYSbI72Nwsvi7uSpqReLJVa6.jpg",
-      "vote_average": "7.4",
-      "genre_ids": [
-        18,
-        53
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 53,
-          "name": "Thriller"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt32916440",
-      "release_date": "2025-12-19",
-      "imdb_rating": 7.7,
-      "imdb_votes": 156128,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 71.59,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Character-driven drama, psychological thriller.",
+      "_reasoning": null,
       "_pinned": false,
       "_noir_match": false
     },
@@ -393,38 +193,28 @@
       "imdb_votes": 207175,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 71.03,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Cerebral sci-fi, ideas-driven narrative.",
+      "_score": 74.03,
+      "_verdict": "neutral",
+      "_reasoning": null,
       "_pinned": false,
       "_noir_match": false
     },
     {
-      "id": 1419406,
+      "id": 1317288,
       "media_type": "movie",
-      "title": "The Shadow's Edge",
-      "title_es": "Escuadrón letal",
-      "overview": "Macau Police brings the tracking expert police officer out of retirement to help catch a dangerous group of professional thieves.",
-      "overview_es": "Unos astutos y traicioneros ladrones desafian a la Policía Judicial de Macao. La Policía, que se encontraba en una dura batalla, invita de nuevo al experto en rastreo Huang De Zhong, retirado desde hace muchos años, a unir fuerzas con la joven élite del Departamento de Investigación Criminal de la Policía Judicial. Bajo la colisión de las técnicas tradicionales de rastreo y la alta tecnología, la policía y los criminales luchan con ingenio y valentía, y se lanzan a un duelo entre el bien y el mal parecido al juego del gato y el ratón.",
-      "poster_path": "/e0RU6KpdnrqFxDKlI3NOqN8nHL6.jpg",
-      "backdrop_path": "/4BtL2vvEufDXDP4u6xQjjQ1Y2aT.jpg",
-      "vote_average": "7.2",
+      "title": "Marty Supreme",
+      "title_es": "Marty Supreme",
+      "overview": "Marty Mauser, a young man with a dream no one respects, goes to hell and back in pursuit of greatness.",
+      "overview_es": "Biopic de Marty Reisman, un buscavidas convertido en campeón de ping pong, desde que empezó a jugar por apuestas en Manhattan hasta ganar 22 títulos importantes y convertirse en el más veterano en ganar una competición nacional de deportes de raqueta, con 67 años.",
+      "poster_path": "/lYWEXbQgRTR4ZQleSXAgRbxAjvq.jpg",
+      "backdrop_path": "/3iMoYSbI72Nwsvi7uSpqReLJVa6.jpg",
+      "vote_average": "7.4",
       "genre_ids": [
-        28,
-        80,
         18,
         53
       ],
       "genres": [
         {
-          "id": 28,
-          "name": "Action"
-        },
-        {
-          "id": 80,
-          "name": "Crime"
-        },
-        {
           "id": 18,
           "name": "Drama"
         },
@@ -433,300 +223,16 @@
           "name": "Thriller"
         }
       ],
-      "original_language": "zh",
-      "imdb_id": "tt34610311",
-      "release_date": "2025-08-16",
-      "imdb_rating": 7.1,
-      "imdb_votes": 10654,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 70.66,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Gritty police procedural, foreign crime.",
-      "_pinned": false,
-      "_noir_match": false
-    },
-    {
-      "id": 1078605,
-      "media_type": "movie",
-      "title": "Weapons",
-      "title_es": "Weapons",
-      "overview": "When all but one child from the same class mysteriously vanish on the same night at exactly the same time, a community is left questioning who or what is behind their disappearance.",
-      "overview_es": "Cuando todos los alumnos de una misma clase, salvo uno, desaparecen misteriosamente la misma noche y exactamente a la misma hora, la pequeña ciudad donde viven se pregunta quién o qué está detrás de su desaparición.",
-      "poster_path": "/cpf7vsRZ0MYRQcnLWteD5jK9ymT.jpg",
-      "backdrop_path": "/8VyTWJrNEyV2MTWvniDVp0MpOAe.jpg",
-      "vote_average": "7.3",
-      "genre_ids": [
-        27,
-        9648
-      ],
-      "genres": [
-        {
-          "id": 27,
-          "name": "Horror"
-        },
-        {
-          "id": 9648,
-          "name": "Mystery"
-        }
-      ],
       "original_language": "en",
-      "imdb_id": "tt26581740",
-      "release_date": "2025-08-04",
-      "imdb_rating": 7.4,
-      "imdb_votes": 343462,
+      "imdb_id": "tt32916440",
+      "release_date": "2025-12-19",
+      "imdb_rating": 7.7,
+      "imdb_votes": 156128,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 70.47,
+      "_score": 71.59,
       "_verdict": "cinemagoria",
-      "_reasoning": "Elevated horror, mystery, suspense.",
-      "_pinned": false,
-      "_noir_match": false
-    },
-    {
-      "id": 701387,
-      "media_type": "movie",
-      "title": "Bugonia",
-      "title_es": "Bugonia",
-      "overview": "Two conspiracy obsessed young men kidnap the high-powered CEO of a major company, convinced that she is an alien intent on destroying planet Earth.",
-      "overview_es": "Dos jóvenes obsesionados con las conspiraciones secuestran a la directora ejecutiva de una reconocida empresa porque están convencidos de que es un alienígena decidido a destruir la Tierra. Remake del film coreano \"Save the Green Planet\".",
-      "poster_path": "/oxgsAQDAAxA92mFGYCZllgWkH9J.jpg",
-      "backdrop_path": "/tN3pTxkQoP96wtaEahYuRVdUWb2.jpg",
-      "vote_average": "7.4",
-      "genre_ids": [
-        878,
-        53,
-        35
-      ],
-      "genres": [
-        {
-          "id": 878,
-          "name": "Science Fiction"
-        },
-        {
-          "id": 53,
-          "name": "Thriller"
-        },
-        {
-          "id": 35,
-          "name": "Comedy"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt12300742",
-      "release_date": "2025-10-23",
-      "imdb_rating": 7.4,
-      "imdb_votes": 177129,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 69.9,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Cerebral sci-fi thriller, dark comedy.",
-      "_pinned": false,
-      "_noir_match": false
-    },
-    {
-      "id": 812583,
-      "media_type": "movie",
-      "title": "Wake Up Dead Man: A Knives Out Mystery",
-      "title_es": "Puñales por la espalda: De entre los muertos",
-      "overview": "When young priest Jud Duplenticy is sent to assist charismatic firebrand Monsignor Jefferson Wicks, it’s clear that all is not well in the pews. After a sudden and seemingly impossible murder rocks the town, the lack of an obvious suspect prompts local police chief Geraldine Scott to join forces with renowned detective Benoit Blanc to unravel a mystery that defies all logic.",
-      "overview_es": "El detective Benoit Blanc se une a un joven y honesto sacerdote para investigar un crimen totalmente imposible en la iglesia de un pequeño pueblo con una oscura historia.",
-      "poster_path": "/qCOGGi8JBVEZMc3DVby8rUivyXz.jpg",
-      "backdrop_path": "/fiRDzpcJe7qz3yIR43hdXIE3NHv.jpg",
-      "vote_average": "7.2",
-      "genre_ids": [
-        53,
-        9648,
-        35
-      ],
-      "genres": [
-        {
-          "id": 53,
-          "name": "Thriller"
-        },
-        {
-          "id": 9648,
-          "name": "Mystery"
-        },
-        {
-          "id": 35,
-          "name": "Comedy"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt14364480",
-      "release_date": "2025-11-26",
-      "imdb_rating": 7.3,
-      "imdb_votes": 232240,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 69.53,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Whodunit mystery, suspense, dark comedy.",
-      "_pinned": false,
-      "_noir_match": false
-    },
-    {
-      "id": 639988,
-      "media_type": "movie",
-      "title": "No Other Choice",
-      "title_es": "No hay otra opción",
-      "overview": "After being laid off and humiliated by a ruthless job market, a veteran paper mill manager descends into violence in a desperate bid to reclaim his dignity.",
-      "overview_es": "La historia sigue a un hombre de mediana edad llamado Man-su que se embarca decidido en una búsqueda de trabajo tras ser despedido inesperadamente de la compañía de papel en la que trabajó durante 25 años. \"Si no hay una vacante para mí, tendré que crear una para que me contraten. No hay otra opción\". Adaptación de la novela \"The Ax\" de Donald E. Westlake, que ya fue llevada al cine en la película \"Arcadia\", dirigida por Costa-Gavras en 2005.",
-      "poster_path": "/sBpxTGLzKnvPSVtL5yQYpSxvKEb.jpg",
-      "backdrop_path": "/s6aB9kjxNg0mu2361IkCUSpyHJV.jpg",
-      "vote_average": "7.5",
-      "genre_ids": [
-        35,
-        80,
-        53
-      ],
-      "genres": [
-        {
-          "id": 35,
-          "name": "Comedy"
-        },
-        {
-          "id": 80,
-          "name": "Crime"
-        },
-        {
-          "id": 53,
-          "name": "Thriller"
-        }
-      ],
-      "original_language": "ko",
-      "imdb_id": "tt1527793",
-      "release_date": "2025-09-24",
-      "imdb_rating": 7.5,
-      "imdb_votes": 57219,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 69.52,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Dark character study, foreign crime.",
-      "_pinned": false,
-      "_noir_match": false
-    },
-    {
-      "id": 1214931,
-      "media_type": "movie",
-      "title": "Nuremberg",
-      "title_es": "Núremberg",
-      "overview": "In postwar Germany, an American psychiatrist must determine whether Nazi prisoners are fit to go on trial for war crimes, and finds himself in a complex battle of intellect and ethics with Hermann Göring, Hitler's right-hand man.",
-      "overview_es": "Tras el fin de la II Guerra Mundial, con ocasión de los cruciales e inminentes juicios de Nuremberg contra el derrotado régimen Nazi, el psiquiatra estadounidense Douglas Kelley (Malek), encargado de determinar si los oficiales nazis prisioneros son aptos para ser juzgados por sus crímenes de guerra, se ve inmerso en una compleja batalla de ingenio dialéctico con Hermann Göring (Crowe), mano derecha de Hitler. Basada en el libro \"El nazi y el psiquiatra\", de Jack El-Hai.",
-      "poster_path": "/7cWTGH2svfNHWVRjsfKIBob9pDj.jpg",
-      "backdrop_path": "/bf5TG9RODkPXmtJSgf8Iymof1wl.jpg",
-      "vote_average": "7.4",
-      "genre_ids": [
-        36,
-        18
-      ],
-      "genres": [
-        {
-          "id": 36,
-          "name": "History"
-        },
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt29567915",
-      "release_date": "2025-11-06",
-      "imdb_rating": 7.4,
-      "imdb_votes": 83996,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 69.25,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Historical drama, critical lens.",
-      "_pinned": false,
-      "_noir_match": false
-    },
-    {
-      "id": 1426776,
-      "media_type": "movie",
-      "title": "STRAW",
-      "title_es": "Harta",
-      "overview": "What will be her last straw? A devastatingly bad day pushes a hardworking single mother to the breaking point — and into a shocking act of desperation.",
-      "overview_es": "¿Cuál será la gota que colme el vaso? Un día devastador lleva al límite a una madre soltera y trabajadora, y la empuja a cometer un impactante acto de desesperación.",
-      "poster_path": "/t3cmnXYtxJb9vVL1ThvT2CWSe1n.jpg",
-      "backdrop_path": "/fnbWrDx8w8Reau4F1tFqoGuGmDZ.jpg",
-      "vote_average": "7.7",
-      "genre_ids": [
-        53,
-        18,
-        80
-      ],
-      "genres": [
-        {
-          "id": 53,
-          "name": "Thriller"
-        },
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 80,
-          "name": "Crime"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt32550101",
-      "release_date": "2025-06-05",
-      "imdb_rating": 6.5,
-      "imdb_votes": 30930,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 67.98,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Gritty crime drama, character-driven.",
-      "_pinned": false,
-      "_noir_match": false
-    },
-    {
-      "id": 1233413,
-      "media_type": "movie",
-      "title": "Sinners",
-      "title_es": "Los pecadores",
-      "overview": "Trying to leave their troubled lives behind, twin brothers return to their hometown to start again, only to discover that an even greater evil is waiting to welcome them back.",
-      "overview_es": "Tratando de dejar atrás sus problemáticas vidas, dos hermanos gemelos regresan a su pueblo natal para empezar de nuevo, solo para descubrir que un mal aún mayor les espera para darles la bienvenida.",
-      "poster_path": "/705nQHqe4JGdEisrQmVYmXyjs1U.jpg",
-      "backdrop_path": "/nAxGnGHOsfzufThz20zgmRwKur3.jpg",
-      "vote_average": "7.5",
-      "genre_ids": [
-        27,
-        28,
-        53
-      ],
-      "genres": [
-        {
-          "id": 27,
-          "name": "Horror"
-        },
-        {
-          "id": 28,
-          "name": "Action"
-        },
-        {
-          "id": 53,
-          "name": "Thriller"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt31193180",
-      "release_date": "2025-04-16",
-      "imdb_rating": 7.5,
-      "imdb_votes": 464552,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 67.33,
-      "_verdict": "cinemagoria",
-      "_reasoning": "Elevated horror, action thriller.",
+      "_reasoning": null,
       "_pinned": false,
       "_noir_match": false
     },
@@ -771,22 +277,101 @@
       "imdb_votes": 55882,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 66.69,
+      "_score": 69.69,
       "_verdict": "cinemagoria",
-      "_reasoning": "Cerebral sci-fi, crime thriller.",
+      "_reasoning": null,
       "_pinned": false,
       "_noir_match": false
     },
     {
-      "id": 541671,
+      "id": 812583,
       "media_type": "movie",
-      "title": "Ballerina",
-      "title_es": "Ballerina",
-      "overview": "Taking place during the events of John Wick: Chapter 3 – Parabellum, Eve Macarro begins her training in the assassin traditions of the Ruska Roma.",
-      "overview_es": "Eve Macarro es una asesina entrenada por la Ruska Roma desde su infancia, la misma organización criminal encargada del adiestramiento de John Wick. En esta violenta historia de venganza, Eve intentará por todos los medios averiguar quién está detrás del asesinato de su padre. En su lucha por conocer la verdad, tendrá que atenerse a las normas de la Alta Mesa y, por supuesto, a las del Hotel Continental, donde descubrirá que existen secretos ocultos sobre su pasado.",
-      "poster_path": "/2VUmvqsHb6cEtdfscEA6fqqVzLg.jpg",
-      "backdrop_path": "/1yktYsxkmUtUFTUnCAUaqG6FEiz.jpg",
+      "title": "Wake Up Dead Man: A Knives Out Mystery",
+      "title_es": "Puñales por la espalda: De entre los muertos",
+      "overview": "When young priest Jud Duplenticy is sent to assist charismatic firebrand Monsignor Jefferson Wicks, it’s clear that all is not well in the pews. After a sudden and seemingly impossible murder rocks the town, the lack of an obvious suspect prompts local police chief Geraldine Scott to join forces with renowned detective Benoit Blanc to unravel a mystery that defies all logic.",
+      "overview_es": "El detective Benoit Blanc se une a un joven y honesto sacerdote para investigar un crimen totalmente imposible en la iglesia de un pequeño pueblo con una oscura historia.",
+      "poster_path": "/qCOGGi8JBVEZMc3DVby8rUivyXz.jpg",
+      "backdrop_path": "/fiRDzpcJe7qz3yIR43hdXIE3NHv.jpg",
       "vote_average": "7.2",
+      "genre_ids": [
+        53,
+        9648,
+        35
+      ],
+      "genres": [
+        {
+          "id": 53,
+          "name": "Thriller"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        },
+        {
+          "id": 35,
+          "name": "Comedy"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt14364480",
+      "release_date": "2025-11-26",
+      "imdb_rating": 7.3,
+      "imdb_votes": 232240,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 69.53,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 1214931,
+      "media_type": "movie",
+      "title": "Nuremberg",
+      "title_es": "Núremberg",
+      "overview": "In postwar Germany, an American psychiatrist must determine whether Nazi prisoners are fit to go on trial for war crimes, and finds himself in a complex battle of intellect and ethics with Hermann Göring, Hitler's right-hand man.",
+      "overview_es": "Tras el fin de la II Guerra Mundial, con ocasión de los cruciales e inminentes juicios de Nuremberg contra el derrotado régimen Nazi, el psiquiatra estadounidense Douglas Kelley (Malek), encargado de determinar si los oficiales nazis prisioneros son aptos para ser juzgados por sus crímenes de guerra, se ve inmerso en una compleja batalla de ingenio dialéctico con Hermann Göring (Crowe), mano derecha de Hitler. Basada en el libro \"El nazi y el psiquiatra\", de Jack El-Hai.",
+      "poster_path": "/7cWTGH2svfNHWVRjsfKIBob9pDj.jpg",
+      "backdrop_path": "/bf5TG9RODkPXmtJSgf8Iymof1wl.jpg",
+      "vote_average": "7.4",
+      "genre_ids": [
+        36,
+        18
+      ],
+      "genres": [
+        {
+          "id": 36,
+          "name": "History"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt29567915",
+      "release_date": "2025-11-06",
+      "imdb_rating": 7.4,
+      "imdb_votes": 83996,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 69.25,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 1306368,
+      "media_type": "movie",
+      "title": "The Rip",
+      "title_es": "El botín",
+      "overview": "Trust frays when a team of Miami cops discovers millions in cash inside a run-down stash house, calling everyone — and everything — into question.",
+      "overview_es": "El descubrimiento de varios millones de dólares en efectivo en un zulo abandonado de Miami quiebra la confianza de un grupo de policías. Ahora, todo y todos están bajo sospecha.",
+      "poster_path": "/eZo31Dhl5BQ6GfbMNf3oU0tUvPZ.jpg",
+      "backdrop_path": "/3F2EXWF1thX0BdrVaKvnm6mAhqh.jpg",
+      "vote_average": "7.1",
       "genre_ids": [
         28,
         53,
@@ -807,32 +392,32 @@
         }
       ],
       "original_language": "en",
-      "imdb_id": "tt7181546",
-      "release_date": "2025-06-04",
+      "imdb_id": "tt32642706",
+      "release_date": "2026-01-13",
       "imdb_rating": 6.8,
-      "imdb_votes": 148341,
+      "imdb_votes": 122732,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 66.14,
+      "_score": 68.98,
       "_verdict": "cinemagoria",
-      "_reasoning": "Stylized action, crime thriller.",
+      "_reasoning": null,
       "_pinned": false,
       "_noir_match": false
     },
     {
-      "id": 1242419,
+      "id": 1220564,
       "media_type": "movie",
-      "title": "Roofman",
-      "title_es": "Roofman: Un ladrón en el tejado",
-      "overview": "A former Army Ranger and struggling father turns to robbing McDonald’s restaurants by cutting holes in their roofs, earning him the nickname \"Roofman.\" After escaping prison, he secretly lives inside a Toys “R” Us for six months, surviving undetected while planning his next move. But when he falls for a divorced mom drawn to his undeniable charm, his double life begins to unravel, setting off a compelling and suspenseful game of cat and mouse as his past closes in.",
-      "overview_es": "La historia real de Jeffrey Manchester (Tatum), un criminal que asaltó más de 60 McDonald's entrando por un agujero que hacía en el techo en medio de la noche. Tras ser arrestado, escapó de prisión y vivió escondido en una tienda de Toys R Us durante aproximadamente seis meses.",
-      "poster_path": "/wXDFtcnYtevleGzCmAD2ReQnJ4l.jpg",
-      "backdrop_path": "/2YOnE2qmoyyOUqQsFit12gDSauk.jpg",
-      "vote_average": "7.1",
+      "title": "The Secret Agent",
+      "title_es": "El agente secreto",
+      "overview": "Brazil, 1977. Marcelo, a technology expert in his early 40s, is on the run. Hoping to reunite with his son, he travels to Recife during Carnival but soon realizes that the city is not the safe haven he was expecting.",
+      "overview_es": "En Brasil, en 1977, Marcelo, un especialista en tecnología que huye de un pasado misterioso, regresa a Recife en busca de paz, pero se da cuenta de que la ciudad está lejos del refugio que busca.",
+      "poster_path": "/rZqolYhxMEe6TZZTjSmFw9crDTD.jpg",
+      "backdrop_path": "/eeGRpU64sIrRApjWXvTpK5Lep2K.jpg",
+      "vote_average": "7.3",
       "genre_ids": [
         80,
-        35,
-        18
+        18,
+        53
       ],
       "genres": [
         {
@@ -840,24 +425,229 @@
           "name": "Crime"
         },
         {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        }
+      ],
+      "original_language": "pt",
+      "imdb_id": "tt27847051",
+      "release_date": "2025-07-23",
+      "imdb_rating": 7.2,
+      "imdb_votes": 51227,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 68.62,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 1054867,
+      "media_type": "movie",
+      "title": "One Battle After Another",
+      "title_es": "Una batalla tras otra",
+      "overview": "Washed-up revolutionary Bob exists in a state of stoned paranoia, surviving off-grid with his spirited, self-reliant daughter, Willa. When his evil nemesis resurfaces after 16 years and she goes missing, the former radical scrambles to find her, father and daughter both battling the consequences of his past.",
+      "overview_es": "Un ex revolucionario, tras años apartado de la lucha, se ve obligado a volver a la acción para enfrentar a viejos enemigos en un ambiente cargado de tensión política, racismo y violencia militar... Adaptación modernizada de la novela 'Vineland', de Thomas Pynchon (1990), sobre los movimientos radicales de los años sesenta.",
+      "poster_path": "/lbBWwxBht4JFP5PsuJ5onpMqugW.jpg",
+      "backdrop_path": "/hiazLNa1UXuX35OTnMQRKOx3eTk.jpg",
+      "vote_average": "7.4",
+      "genre_ids": [
+        53,
+        80,
+        35
+      ],
+      "genres": [
+        {
+          "id": 53,
+          "name": "Thriller"
+        },
+        {
+          "id": 80,
+          "name": "Crime"
+        },
+        {
           "id": 35,
           "name": "Comedy"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt30144839",
+      "release_date": "2025-09-23",
+      "imdb_rating": 7.7,
+      "imdb_votes": 390414,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 68.38,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 1171145,
+      "media_type": "movie",
+      "title": "Crime 101",
+      "title_es": "Ruta de escape",
+      "overview": "When an elusive thief whose high-stakes heists unfold along the iconic 101 freeway in Los Angeles eyes the score of a lifetime, with hopes of this being his final job, his path collides with a disillusioned insurance broker who is facing her own crossroads. Determined to crack the case, a relentless detective closes in on the operation, raising the stakes even higher.",
+      "overview_es": "Davis es un escurridizo ladrón cuyos atracos de alto riesgo tienen desconcertada a la policía. Davis está planeando su mayor golpe, con la esperanza de que sea el último, cuando se cruza en su camino Sharon, una desilusionada ejecutiva de seguros con la que se ve obligado a trabajar, y Orman un ladrón rival, con métodos mucho más inquietantes que los de Davis. A medida que se acerca el golpe multimillonario, el implacable teniente Lubesnik, se acerca a la operación, aumentando considerablemente el riesgo de lo que está en juego y difuminando la línea entre cazador y presa. Pronto, cada uno tendrá que aceptar el coste de sus decisiones asumiendo que no hay vuelta atrás.",
+      "poster_path": "/tVvpFIoteRHNnoZMhdnwIVwJpCA.jpg",
+      "backdrop_path": "/vG42HeYtoTFflqwP42wYD7tBuNr.jpg",
+      "vote_average": "7.0",
+      "genre_ids": [
+        80,
+        53
+      ],
+      "genres": [
+        {
+          "id": 80,
+          "name": "Crime"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt32430579",
+      "release_date": "2026-02-11",
+      "imdb_rating": 6.8,
+      "imdb_votes": 55863,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 68.29,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 1419406,
+      "media_type": "movie",
+      "title": "The Shadow's Edge",
+      "title_es": "Escuadrón letal",
+      "overview": "Macau Police brings the tracking expert police officer out of retirement to help catch a dangerous group of professional thieves.",
+      "overview_es": "Unos astutos y traicioneros ladrones desafian a la Policía Judicial de Macao. La Policía, que se encontraba en una dura batalla, invita de nuevo al experto en rastreo Huang De Zhong, retirado desde hace muchos años, a unir fuerzas con la joven élite del Departamento de Investigación Criminal de la Policía Judicial. Bajo la colisión de las técnicas tradicionales de rastreo y la alta tecnología, la policía y los criminales luchan con ingenio y valentía, y se lanzan a un duelo entre el bien y el mal parecido al juego del gato y el ratón.",
+      "poster_path": "/e0RU6KpdnrqFxDKlI3NOqN8nHL6.jpg",
+      "backdrop_path": "/4BtL2vvEufDXDP4u6xQjjQ1Y2aT.jpg",
+      "vote_average": "7.2",
+      "genre_ids": [
+        28,
+        80,
+        18,
+        53
+      ],
+      "genres": [
+        {
+          "id": 28,
+          "name": "Action"
+        },
+        {
+          "id": 80,
+          "name": "Crime"
         },
         {
           "id": 18,
           "name": "Drama"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        }
+      ],
+      "original_language": "zh",
+      "imdb_id": "tt34610311",
+      "release_date": "2025-08-16",
+      "imdb_rating": 7.1,
+      "imdb_votes": 10654,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 66.66,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 1078605,
+      "media_type": "movie",
+      "title": "Weapons",
+      "title_es": "Weapons",
+      "overview": "When all but one child from the same class mysteriously vanish on the same night at exactly the same time, a community is left questioning who or what is behind their disappearance.",
+      "overview_es": "Cuando todos los alumnos de una misma clase, salvo uno, desaparecen misteriosamente la misma noche y exactamente a la misma hora, la pequeña ciudad donde viven se pregunta quién o qué está detrás de su desaparición.",
+      "poster_path": "/cpf7vsRZ0MYRQcnLWteD5jK9ymT.jpg",
+      "backdrop_path": "/8VyTWJrNEyV2MTWvniDVp0MpOAe.jpg",
+      "vote_average": "7.3",
+      "genre_ids": [
+        27,
+        9648
+      ],
+      "genres": [
+        {
+          "id": 27,
+          "name": "Horror"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
         }
       ],
       "original_language": "en",
-      "imdb_id": "tt4627382",
-      "release_date": "2025-10-08",
-      "imdb_rating": 6.9,
-      "imdb_votes": 70777,
+      "imdb_id": "tt26581740",
+      "release_date": "2025-08-04",
+      "imdb_rating": 7.4,
+      "imdb_votes": 343462,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 66.1,
+      "_score": 66.47,
       "_verdict": "cinemagoria",
-      "_reasoning": "Character-driven crime drama, dark comedy.",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 604079,
+      "media_type": "movie",
+      "title": "The Long Walk",
+      "title_es": "La larga marcha",
+      "overview": "In a dystopian 1970s America, fifty teenage boys take part in a deadly annual walking contest, forced to maintain a minimum pace or be executed, until only one survivor remains.",
+      "overview_es": "En un futuro distópico, cien adolescentes participan en una brutal competición conocida como \"La larga marcha\", donde deben caminar sin descanso: si se detienen o reducen la velocidad de la marcha, mueren. Solo uno sobrevivirá. Adaptación cinematográfica de la novela de Stephen King.",
+      "poster_path": "/wobVTa99eW0ht6c1rNNzLkazPtR.jpg",
+      "backdrop_path": "/2dlt9I2ga6hweywz9zsFUz1PVii.jpg",
+      "vote_average": "6.9",
+      "genre_ids": [
+        878,
+        53,
+        27
+      ],
+      "genres": [
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        },
+        {
+          "id": 27,
+          "name": "Horror"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt10374610",
+      "release_date": "2025-09-10",
+      "imdb_rating": 6.7,
+      "imdb_votes": 110350,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 66.29,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
       "_pinned": false,
       "_noir_match": false
     },
@@ -894,7 +684,222 @@
       "_curated": true,
       "_score": 66.05,
       "_verdict": "cinemagoria",
-      "_reasoning": "Psychological thriller, secrets, suspense.",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 701387,
+      "media_type": "movie",
+      "title": "Bugonia",
+      "title_es": "Bugonia",
+      "overview": "Two conspiracy obsessed young men kidnap the high-powered CEO of a major company, convinced that she is an alien intent on destroying planet Earth.",
+      "overview_es": "Dos jóvenes obsesionados con las conspiraciones secuestran a la directora ejecutiva de una reconocida empresa porque están convencidos de que es un alienígena decidido a destruir la Tierra. Remake del film coreano \"Save the Green Planet\".",
+      "poster_path": "/oxgsAQDAAxA92mFGYCZllgWkH9J.jpg",
+      "backdrop_path": "/tN3pTxkQoP96wtaEahYuRVdUWb2.jpg",
+      "vote_average": "7.4",
+      "genre_ids": [
+        878,
+        53,
+        35
+      ],
+      "genres": [
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        },
+        {
+          "id": 35,
+          "name": "Comedy"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt12300742",
+      "release_date": "2025-10-23",
+      "imdb_rating": 7.4,
+      "imdb_votes": 177129,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 65.9,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 1168190,
+      "media_type": "movie",
+      "title": "The Wrecking Crew",
+      "title_es": "Los hermanos demolición",
+      "overview": "Estranged half-brothers Jonny and James reunite after their father's mysterious death. As they search for the truth, buried secrets reveal a conspiracy threatening to tear their family apart.",
+      "overview_es": "Un improbable dúo de hermanastros, uno un impulsivo detective y el otro un disciplinado, se ven atraídos por el asesinato de su padre en Hawai, lo que les lleva a un peligroso viaje para desenmascarar una conspiración de largo alcance.",
+      "poster_path": "/gbVwHl4YPSq6BcC92TQpe7qUTh6.jpg",
+      "backdrop_path": "/cz4vLJrmaV1zJlRYbxqtvLzeLWB.jpg",
+      "vote_average": "6.9",
+      "genre_ids": [
+        28,
+        35,
+        80,
+        9648
+      ],
+      "genres": [
+        {
+          "id": 28,
+          "name": "Action"
+        },
+        {
+          "id": 35,
+          "name": "Comedy"
+        },
+        {
+          "id": 80,
+          "name": "Crime"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt33046197",
+      "release_date": "2026-01-28",
+      "imdb_rating": 6.4,
+      "imdb_votes": 45213,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 65.71,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 1265609,
+      "media_type": "movie",
+      "title": "War Machine",
+      "title_es": "Máquina de guerra",
+      "overview": "On one last grueling mission during Army Ranger training, a combat engineer must lead his unit in a fight against a giant otherworldly killing machine.",
+      "overview_es": "En una última misión agotadora durante el entrenamiento para ser ranger, un ingeniero de combate debe liderar a su unidad contra una gigantesca máquina asesina de otro mundo.",
+      "poster_path": "/rFhKkXhk7ClU03jQ5rHIApJDwev.jpg",
+      "backdrop_path": "/6yeVcxFR0j08vlv2OlL6zbewm4D.jpg",
+      "vote_average": "7.2",
+      "genre_ids": [
+        28,
+        878,
+        53
+      ],
+      "genres": [
+        {
+          "id": 28,
+          "name": "Action"
+        },
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt15940132",
+      "release_date": "2026-02-12",
+      "imdb_rating": 6.3,
+      "imdb_votes": 86310,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 65.67,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 639988,
+      "media_type": "movie",
+      "title": "No Other Choice",
+      "title_es": "No hay otra opción",
+      "overview": "After being laid off and humiliated by a ruthless job market, a veteran paper mill manager descends into violence in a desperate bid to reclaim his dignity.",
+      "overview_es": "La historia sigue a un hombre de mediana edad llamado Man-su que se embarca decidido en una búsqueda de trabajo tras ser despedido inesperadamente de la compañía de papel en la que trabajó durante 25 años. \"Si no hay una vacante para mí, tendré que crear una para que me contraten. No hay otra opción\". Adaptación de la novela \"The Ax\" de Donald E. Westlake, que ya fue llevada al cine en la película \"Arcadia\", dirigida por Costa-Gavras en 2005.",
+      "poster_path": "/sBpxTGLzKnvPSVtL5yQYpSxvKEb.jpg",
+      "backdrop_path": "/s6aB9kjxNg0mu2361IkCUSpyHJV.jpg",
+      "vote_average": "7.5",
+      "genre_ids": [
+        35,
+        80,
+        53
+      ],
+      "genres": [
+        {
+          "id": 35,
+          "name": "Comedy"
+        },
+        {
+          "id": 80,
+          "name": "Crime"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        }
+      ],
+      "original_language": "ko",
+      "imdb_id": "tt1527793",
+      "release_date": "2025-09-24",
+      "imdb_rating": 7.5,
+      "imdb_votes": 57219,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 65.52,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false
+    },
+    {
+      "id": 1159559,
+      "media_type": "movie",
+      "title": "Scream 7",
+      "title_es": "Scream 7",
+      "overview": "When a new Ghostface killer emerges in the quiet town where Sidney Prescott has built a new life, her darkest fears are realized as her daughter becomes the next target. Determined to protect her family, Sidney must face the horrors of her past to put an end to the bloodshed once and for all.",
+      "overview_es": "Cuando un nuevo asesino Ghostface aparece en el tranquilo pueblo donde Sidney Prescott ha construido una nueva vida, sus peores miedos se hacen realidad cuando su hija se convierte en el siguiente objetivo. Decidida a proteger a su familia, Sidney debe enfrentarse a los horrores de su pasado para poner fin a la masacre de una vez por todas.",
+      "poster_path": "/jjyuk0edLiW8vOSnlfwWCCLpbh5.jpg",
+      "backdrop_path": "/t9J2HXaDuJR7bvIG9XF7mttn4VY.jpg",
+      "vote_average": "6.1",
+      "genre_ids": [
+        27,
+        9648,
+        80
+      ],
+      "genres": [
+        {
+          "id": 27,
+          "name": "Horror"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        },
+        {
+          "id": 80,
+          "name": "Crime"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt27047903",
+      "release_date": "2026-02-25",
+      "imdb_rating": 5.5,
+      "imdb_votes": 46150,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 65.33,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
       "_pinned": false,
       "_noir_match": false
     }
