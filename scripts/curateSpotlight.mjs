@@ -1,25 +1,3 @@
-// Curates the Spotlight Movies / Spotlight TV Shows carousels for the homepage.
-//
-// Pipeline:
-//   1. Pull candidate pool from TMDB (trending + discover, both media types).
-//   2. Hard-exclude: Animation, Family, adult, and IDs in the manual excluded list
-//      (or currently sitting in Turso `hero_selections`).
-//   3. Hard-require: IMDb rating >= 5.0 with >= 1000 votes (joined from the
-//      imdb_ratings Turso DB); dropped if no IMDb id or no rating row.
-//   4. Score by genre affinity (boost horror/drama/thriller/mystery/war/history/
-//      documentary/sci-fi; light penalty action/adventure; heavy penalty comedy)
-//      plus freshness and a popularity-sanity penalty for blockbusters.
-//   5. Diversity cap: at most 2 ja/ko TV shows.
-//   6. Gemini 2.5-flash pass — ONE unified call for movies + tv together (same
-//      pattern as cinemagoria-rss-aggregator/scripts/generate-articles.ts: one
-//      prompt batches both lists, output is a single decisions array keyed by
-//      {media, idx}). Via Vertex AI + GCP service account with a fallback chain
-//      to gemini-3-flash-preview and gemini-2.5-flash-lite. Classifies each
-//      candidate as cinemagoria | neutral | pochoclero. Rejects pochocleros.
-//   7. Pin the manual-pinned IDs at the top; take the top N survivors.
-//   8. Enrich with TMDB details in both en-US and es-ES (Option A: bilingual JSON
-//      baked at curate-time so the es branch has zero runtime translation cost).
-//   9. Write public/data/spotlight-movies.json + public/data/spotlight-tv.json.
 
 import { createClient } from '@libsql/client';
 import { GoogleAuth } from 'google-auth-library';
@@ -29,8 +7,6 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
-
-// ─── Config ──────────────────────────────────────────────────────────────────
 
 const TMDB_API_KEY = (process.env.API_KEY || '').trim();
 const TMDB_BASE = 'https://api.themoviedb.org/3';
@@ -53,10 +29,6 @@ const MIN_IMDB_RATING = 5.0;
 const MIN_IMDB_VOTES = 1000;
 const MIN_TMDB_VOTES = 500;
 
-// Genre buckets — TMDB uses DIFFERENT IDs for movies vs TV.
-// Movie-only: 28=Action, 12=Adventure, 14=Fantasy, 878=Sci-Fi, 10752=War, 36=History, 10749=Romance, 10402=Music, 10770=TV Movie
-// TV-only:    10759=Action&Adventure, 10762=Kids, 10764=Reality, 10765=Sci-Fi&Fantasy, 10766=Soap, 10767=Talk, 10763=News, 10768=War&Politics
-// Shared:     16=Animation, 10751=Family, 35=Comedy, 18=Drama, 27=Horror, 53=Thriller, 9648=Mystery, 99=Documentary, 80=Crime
 const GENRE_HARD_EXCLUDE = new Set([
     16,     // Animation
     10751,  // Family
@@ -78,8 +50,6 @@ const GENRE_LIGHT_PENALTY = new Set([
     12,     // Adventure (movie)
     10759,  // Action & Adventure (TV)
 ]);
-// Note: 10765 (TV Sci-Fi & Fantasy) is intentionally NOT in any set — it mixes
-// a boosted genre (Sci-Fi) with a penalized one (Fantasy). Gemini handles that nuance.
 const GENRE_BOOST = new Set([
     27,     // Horror
     18,     // Drama
@@ -93,35 +63,25 @@ const GENRE_BOOST = new Set([
     80,     // Crime
 ]);
 
-// Freshness windows
 const NOW = new Date();
 const CURRENT_YEAR = NOW.getFullYear();
 const CURRENT_MONTH = NOW.getMonth() + 1; // 1-12
 
-// Movies: dynamic rolling window.
-// If we're before June, include from Nov 1 of (year-2) to today.
-// If we're June or later, include from Jan 1 of (year-1) to today.
-// This gives ~13-18 months of coverage, never showing 2-3 year old films.
 const MOVIE_WINDOW_START = (() => {
-    if (CURRENT_MONTH < 6) {
-        return `${CURRENT_YEAR - 2}-11-01`;
-    }
-    return `${CURRENT_YEAR - 1}-01-01`;
+    const d = new Date(NOW);
+    d.setMonth(d.getMonth() - 10);
+    return d.toISOString().slice(0, 10);
 })();
 
-// TV: shows whose last_air_date is within the last 18 months are fresh.
-// Shows that started before 2018 are fine as long as they aired recently.
-const TV_LAST_AIRED_CUTOFF_MONTHS = 18;
+const TV_LAST_AIRED_CUTOFF_MONTHS = 12;
 
 const LANG_DIVERSITY_CAP = 2; // max ja or ko TV shows in final list
 
-// Franchise / pochoclero keyword detection in titles
 const POCHOCLERO_TITLE_PATTERNS = [
     /\b(?:Part|Chapter)\s+(?:Three|Four|Five|Six|Seven|Eight|Nine|Ten|[3-9]|\d{2,})\b/i,
     /\bVol\.?\s*[3-9]\b/i,
 ];
 
-// Known pochoclero franchise keywords (lowercased substrings)
 const POCHOCLERO_FRANCHISE_KEYWORDS = [
     'marvel', 'avengers', 'spider-man', 'spider man',
     'fast & furious', 'fast and furious', 'furious',
@@ -131,8 +91,6 @@ const POCHOCLERO_FRANCHISE_KEYWORDS = [
     'mission: impossible', 'mission impossible',
     'expendables', 'xxx:',
 ];
-
-// ─── Small helpers ───────────────────────────────────────────────────────────
 
 const log = (tag, msg, ...rest) => console.log(`[${tag}] ${msg}`, ...rest);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -176,8 +134,6 @@ function readJsonSafe(filePath, fallback) {
     }
 }
 
-// ─── 1. Candidate pool ───────────────────────────────────────────────────────
-
 async function fetchCandidates(mediaType) {
     const pool = new Map();
     const putAll = (items) => {
@@ -187,7 +143,6 @@ async function fetchCandidates(mediaType) {
         }
     };
 
-    // Trending (weekly) — pages 1..5
     for (let p = 1; p <= 5; p++) {
         try {
             const d = await tmdb(`/trending/${mediaType}/week`, { page: p, language: 'en-US' });
@@ -195,14 +150,10 @@ async function fetchCandidates(mediaType) {
         } catch (e) { log('warn', `trending ${mediaType} p${p}:`, e.message); }
     }
 
-    // Discover: popularity-sorted, with a release window, min vote count.
-    // This widens the pool beyond trending (which is heavily skewed to blockbusters).
     const discoverPath = mediaType === 'movie' ? '/discover/movie' : '/discover/tv';
     const dateGteField = mediaType === 'movie' ? 'primary_release_date.gte' : 'first_air_date.gte';
     const dateLteField = mediaType === 'movie' ? 'primary_release_date.lte' : 'first_air_date.lte';
 
-    // For movies, use the dynamic rolling window; for TV, look back 4 years on first_air_date
-    // (the real freshness filter for TV is last_air_date, applied in hardFilterLocal).
     const discoverGte = mediaType === 'movie' ? MOVIE_WINDOW_START : `${CURRENT_YEAR - 4}-01-01`;
 
     const sortOptions = ['popularity.desc', 'vote_average.desc'];
@@ -227,10 +178,6 @@ async function fetchCandidates(mediaType) {
     return [...pool.values()];
 }
 
-// ─── 1b. Hydrate TV candidates with last_air_date ────────────────────────────
-// TMDB list endpoints (trending, discover) do NOT include last_air_date.
-// We need it for the TV freshness filter, so we batch-fetch the detail endpoint.
-
 async function hydrateTvLastAired(candidates) {
     const CONCURRENCY = 8;
     const queue = [...candidates];
@@ -251,8 +198,6 @@ async function hydrateTvLastAired(candidates) {
     return candidates;
 }
 
-// ─── 2. Hard filters ─────────────────────────────────────────────────────────
-
 function isFranchisePochoclero(title) {
     if (!title) return false;
     const lower = title.toLowerCase();
@@ -267,44 +212,33 @@ function hardFilterLocal(candidates, mediaType, heroBlockedIds, manuallyExcluded
         if (heroBlockedIds.has(`${c.id}-${mediaType}`)) return false;
         if (c.adult) return false;
 
-        // Genre hard exclude
         const genreIds = c.genre_ids || (c.genres || []).map((g) => g.id);
         if (genreIds.some((g) => GENRE_HARD_EXCLUDE.has(g))) return false;
 
-        // Franchise / pochoclero title detection
         const title = c.title || c.name || '';
         if (isFranchisePochoclero(title)) return false;
 
         if (mediaType === 'movie') {
-            // Movies: must be within the dynamic rolling window
             const rd = c.release_date;
             if (!rd) return false;
             if (!isReleased(rd)) return false;
             if (rd < MOVIE_WINDOW_START) return false;
         } else {
-            // TV: use last_air_date for freshness. A show that started in 2018
-            // but last aired in 2026 is fresh. A show that last aired in 2022 is not.
             const lastAired = c.last_air_date || c.first_air_date;
             if (!lastAired) return false;
             const cutoffDate = new Date(NOW);
             cutoffDate.setMonth(cutoffDate.getMonth() - TV_LAST_AIRED_CUTOFF_MONTHS);
             if (new Date(lastAired) < cutoffDate) return false;
-            // Also must have started airing (not future-only)
             if (c.first_air_date && !isReleased(c.first_air_date)) return false;
         }
 
-        // TMDB vote floor (trending sometimes returns barely-rated stuff)
         if ((c.vote_count ?? 0) < MIN_TMDB_VOTES) return false;
 
         return true;
     });
 }
 
-// ─── 3. IMDb rating gate ─────────────────────────────────────────────────────
-
 async function fetchImdbIdsBatch(ids, mediaType) {
-    // TMDB exposes external_ids on the detail endpoint. No batch endpoint, so
-    // we parallelize with a small concurrency limit.
     const CONCURRENCY = 6;
     const results = new Map();
     const queue = [...ids];
@@ -332,7 +266,6 @@ async function imdbRatingGate(candidates, mediaType, imdbDb) {
     const tconsts = [...new Set([...imdbIds.values()].filter(Boolean))];
     if (!tconsts.length) return [];
 
-    // Turso SQL — chunk into batches of 250 for safe IN() length.
     const ratingMap = new Map();
     const CHUNK = 250;
     for (let i = 0; i < tconsts.length; i += CHUNK) {
@@ -362,19 +295,13 @@ async function imdbRatingGate(candidates, mediaType, imdbDb) {
     return surviving;
 }
 
-// ─── 4. Scoring ──────────────────────────────────────────────────────────────
-
 function scoreCandidate(c, mediaType, noirIds, heroBlockedIds) {
     let score = 0;
 
-    // IMDb rating is the anchor (max contribution ~50).
     score += c.imdb_rating * 6;
 
-    // Vote-count log boost (taste-makers vs obscure).
     score += Math.log10(Math.max(c.imdb_votes, 10)) * 2;
 
-    // Genre affinity — smarter: don't penalize Action/Adventure if combined with
-    // a core genre (Horror+Action like Sinners, Thriller+Action like Colony).
     const genreIds = c.genre_ids || (c.genres || []).map((g) => g.id);
     let boostCount = 0;
     let penaltyCount = 0;
@@ -383,28 +310,24 @@ function scoreCandidate(c, mediaType, noirIds, heroBlockedIds) {
         else if (GENRE_HEAVY_PENALTY.has(g)) { score -= 10; penaltyCount++; }
         else if (GENRE_LIGHT_PENALTY.has(g)) penaltyCount++;
     }
-    // Only apply light penalties if no boost genre is present.
-    // This prevents Horror+Action from being penalized for Action.
     if (boostCount === 0) {
         score -= penaltyCount * 5;
         score -= 6; // no cinemagoria-aligned genre at all
     }
 
-    // Blockbuster penalty: extreme popularity = likely pochoclero.
     if ((c.popularity ?? 0) > 200 && c.imdb_rating < 7.0) score -= 8;
     if ((c.popularity ?? 0) > 500) score -= 6;
 
-    // Freshness: lean toward "last 12 months".
     const dateKey = mediaType === 'movie' ? 'release_date' : 'first_air_date';
     const dateStr = c[dateKey];
     if (dateStr) {
+        const yr = yearOf(dateStr);
         const ageMonths = (NOW - new Date(dateStr)) / (1000 * 60 * 60 * 24 * 30);
-        if (ageMonths >= 1 && ageMonths <= 12) score += 5;
-        else if (ageMonths < 1) score += 3;
-        else if (ageMonths > 12 && ageMonths <= 18) score += 1;
+        if (yr === CURRENT_YEAR) score += 8;          // Current year: strong boost
+        else if (ageMonths <= 6) score += 5;           // Last 6 months
+        else if (ageMonths <= 10) score += 1;          // 6-10 months ago
     }
 
-    // For TV, bonus if still airing / recently concluded.
     if (mediaType === 'tv') {
         const lastAired = c.last_air_date;
         if (lastAired) {
@@ -414,9 +337,6 @@ function scoreCandidate(c, mediaType, noirIds, heroBlockedIds) {
         }
     }
 
-    // ★ NOIR HISTORICAL BOOST — the strongest signal.
-    // If this candidate is in noir_historical but NOT in hero_selections,
-    // it's a title Cinemagoria editorially selected. Massive boost.
     const key = `${c.id}-${mediaType}`;
     if (noirIds.has(key) && !heroBlockedIds.has(key)) {
         score += 20;
@@ -441,41 +361,25 @@ function applyDiversityCap(list, mediaType) {
     return out;
 }
 
-// ─── Robust JSON parser for Gemini responses ─────────────────────────────────
-// Ported from cinemagoria-rss-aggregator/scripts/generate-articles.ts. Gemini
-// occasionally emits invalid JSON (unescaped backslashes, unescaped inner
-// double quotes inside string values, trailing commas, or truncation). The
-// sequence tries strict parse → sanitize escapes → full repair before giving
-// up. In practice this recovers ~100% of the malformed payloads we've seen.
-
 function sanitizeJSONEscapes(s) {
-    // Replace any `\X` where X is NOT one of the valid JSON escape chars with
-    // `\\X`. This fixes Gemini's habit of emitting literal backslashes inside
-    // string values (e.g. file paths, regex fragments).
     return s.replace(/\\(?!["\\\/bfnrtu])/g, '\\\\');
 }
 
 function repairJSON(raw) {
     let s = raw;
-    // Strip trailing commas before } or ]
     s = s.replace(/,\s*}/g, '}').replace(/,\s*]/g, ']');
 
-    // If the response is truncated mid-string or mid-object, try to salvage
-    // by removing the last incomplete object and closing the structures.
-    // Common pattern: truncated inside a "reason" string value.
+    s = s.replace(/\."\s*}/g, '"\n}');
+
+    s = s.replace(/\."\s*]\s*}/g, '"]\n}');
+
     const trimmed = s.trimEnd();
-    if (!trimmed.endsWith('}')) {
-        // Try to find the last complete object (ends with }) and cut there
-        const lastCompleteObj = s.lastIndexOf('}');
-        if (lastCompleteObj > 0) {
-            // Check if we're inside the decisions array
-            const afterLastObj = s.slice(lastCompleteObj + 1).trim();
-            // If after the last } there's a comma or incomplete content, cut it
-            if (afterLastObj.startsWith(',') || afterLastObj.length > 0) {
-                s = s.slice(0, lastCompleteObj + 1);
-            }
+    const endsValid = trimmed.endsWith('}') || trimmed.endsWith(']');
+    if (!endsValid) {
+        const lastGoodEnd = s.lastIndexOf('}');
+        if (lastGoodEnd > 0) {
+            s = s.slice(0, lastGoodEnd + 1);
         }
-        // Now balance braces/brackets
         const openBraces = (s.match(/{/g) || []).length;
         const closeBraces = (s.match(/}/g) || []).length;
         const openBrackets = (s.match(/\[/g) || []).length;
@@ -483,11 +387,6 @@ function repairJSON(raw) {
         s += ']'.repeat(Math.max(0, openBrackets - closeBrackets));
         s += '}'.repeat(Math.max(0, openBraces - closeBraces));
     }
-    // Escape unescaped inner double quotes inside string values
-    s = s.replace(/:\s*"([^"]*?)(?:"|$)/g, (m, content) => {
-        const escaped = content.replace(/(?<!\\)"/g, '\\"');
-        return `: "${escaped}"`;
-    });
     return s;
 }
 
@@ -504,7 +403,6 @@ function parseGeminiJSON(raw) {
             try {
                 return JSON.parse(repairJSON(sanitizeJSONEscapes(clean)));
             } catch (e3) {
-                // Show context around the reported parse position to help debug.
                 const posMatch = e3.message.match(/position (\d+)/);
                 if (posMatch) {
                     const pos = Number(posMatch[1]);
@@ -519,13 +417,6 @@ function parseGeminiJSON(raw) {
         }
     }
 }
-
-// ─── 5. Gemini curator ───────────────────────────────────────────────────────
-//
-// UNIFIED CALL. We follow cinemagoria-rss-aggregator/scripts/generate-articles.ts:
-// one Gemini request per pipeline run, batching movies + tv into the same prompt
-// with a `media` tag on every item. Cuts token cost, latency and rate-limit
-// exposure roughly in half versus doing two calls.
 
 function briefOf(it, i, media) {
     return {
@@ -545,44 +436,20 @@ function buildUnifiedGeminiPrompt(movieSlice, tvSlice, heroExamples) {
     const briefMovies = movieSlice.map((it, i) => briefOf(it, i, 'movie'));
     const briefTv = tvSlice.map((it, i) => briefOf(it, i, 'tv'));
 
-    // Build examples string from real hero_selections
     const exampleLines = (heroExamples || []).slice(0, 25).map(
         (h) => `  - ${h.title} (${h.genres}) [${h.media_type}]`
     ).join('\n');
 
-    return `You are the senior content curator for CINEMAGORIA, a cinephile-oriented site focused on elevated genre cinema. Evaluate candidates for the homepage "Spotlight" carousels.
+    return `You are the content curator for CINEMAGORIA. Classify each candidate as "cinemagoria", "neutral", or "pochoclero".
 
-Here are REAL titles currently featured on Cinemagoria's homepage (hero section). These define the editorial taste:
+Cinemagoria's editorial identity (real titles from the homepage):
 ${exampleLines}
 
-ACCEPT ("cinemagoria") — titles that match this editorial identity:
-- Elevated horror, A24-style, psychological horror, indie horror, body horror
-- Sci-fi with ideas-driven narratives, dystopian, cerebral
-- Festival-tier drama, character-driven, auteur, adult themes
-- Psychological thrillers, slow-burn, noir, neo-noir, crime drama
-- Mystery, suspense, police procedural with grit
-- Documentaries (social, political, investigative, artistic)
-- War/history with critical or artistic lens
-- Foreign arthouse / festival cinema (Cannes, Sundance, Berlinale)
-- Action is OK ONLY when combined with horror, thriller, crime, or sci-fi (e.g. Colony, Sinners)
+ACCEPT ("cinemagoria"): elevated horror, A24-style, psychological thriller, noir, crime drama, auteur drama, festival cinema, investigative docs, war/history with artistic lens, foreign arthouse. Action+Thriller or Action+Horror hybrids (Colony, Sinners) = accept.
 
-REJECT ("pochoclero"):
-- Superhero/Marvel/DC (Daredevil, Peacemaker, etc.)
-- Kids, family, YA/teen content (Heartstopper, teen dramas)
-- Fantasy epics, musical fantasy, fairy-tale (Wicked, Knight of Seven Kingdoms)
-- Generic rom-coms, Hallmark romances
-- Mainstream action-only blockbusters without genre depth
-- Reality TV, game shows, celebrity vehicles
-- Procedural network TV without edge (NCIS, FBI, etc.)
-- Pochoclero horror franchises that are mass-market (Welcome to Derry S1 = borderline OK but stale if old)
-- Shows/films that already feel "passé" or oversaturated (hype died months ago)
+REJECT ("pochoclero"): superhero (Marvel/DC/Daredevil/Peacemaker), kids/family/YA/teen, fantasy epics, rom-coms, pure action blockbusters, network procedurals (NCIS/FBI/9-1-1/The Rookie/Criminal Minds), reality TV, stale content where hype died, Tulsa King-type dad TV.
 
-BORDERLINE → "neutral"
-
-RULES:
-- Output ONLY valid JSON, no markdown.
-- Keep each "reason" to MAX 6 WORDS.
-- Identify by media + idx (0-based, independent per list).
+Output ONLY a JSON object. NO reason field. Keep output minimal.
 
 MOVIES:
 ${JSON.stringify(briefMovies)}
@@ -590,8 +457,7 @@ ${JSON.stringify(briefMovies)}
 TV:
 ${JSON.stringify(briefTv)}
 
-JSON:
-{"decisions":[{"media":"movie","idx":0,"verdict":"cinemagoria","reason":"6 words max"}]}`;
+Format: {"decisions":[{"media":"movie","idx":0,"v":"cinemagoria"},{"media":"tv","idx":0,"v":"pochoclero"}]}`;
 }
 
 async function callGemini(prompt) {
@@ -659,7 +525,6 @@ async function geminiCurateBoth(movieCandidates, tvCandidates, heroExamples) {
         return { movies: movieCandidates, tv: tvCandidates };
     }
 
-    // Split decisions by media type, key by idx.
     const movieDecisions = new Map();
     const tvDecisions = new Map();
     for (const d of parsed.decisions || []) {
@@ -671,7 +536,7 @@ async function geminiCurateBoth(movieCandidates, tvCandidates, heroExamples) {
         const kept = [];
         for (let i = 0; i < slice.length; i++) {
             const d = decisions.get(i);
-            const verdict = d?.verdict || 'neutral';
+            const verdict = d?.v || d?.verdict || 'neutral';
             if (verdict === 'pochoclero') continue;
             kept.push({
                 ...slice[i],
@@ -688,8 +553,6 @@ async function geminiCurateBoth(movieCandidates, tvCandidates, heroExamples) {
         tv: applyDecisions(tvSlice, tvDecisions, 'tv'),
     };
 }
-
-// ─── 6. Final enrichment (bilingual) ─────────────────────────────────────────
 
 async function enrichDetails(id, mediaType) {
     const [en, es] = await Promise.all([
@@ -764,8 +627,6 @@ async function enrichAll(items, mediaType) {
     return out.filter(Boolean);
 }
 
-// ─── Turso: hero_selections (dynamic dedupe) ─────────────────────────────────
-
 async function loadHeroBlockedIds(mainDb) {
     const r = await mainDb.execute(`SELECT tmdb_id, media_type FROM hero_selections WHERE tmdb_id IS NOT NULL`);
     const set = new Set();
@@ -776,11 +637,6 @@ async function loadHeroBlockedIds(mainDb) {
     log('hero', `hero_selections currently blocks ${set.size} titles`);
     return set;
 }
-
-// ─── Turso: noir_historical (editorial cross-reference) ──────────────────────
-// noir_historical contains ALL titles that Cinemagoria has editorially selected
-// (current hero + past hero). If a TMDB candidate appears in noir but NOT in
-// hero_selections, it's a strong signal it belongs in spotlight.
 
 async function loadNoirHistoricalIds(mainDb) {
     const r = await mainDb.execute(
@@ -801,7 +657,6 @@ async function loadNoirHistoricalIds(mainDb) {
     return map;
 }
 
-// Load hero_selections with title+genres for Gemini prompt examples
 async function loadHeroExamples(mainDb) {
     const r = await mainDb.execute(
         `SELECT tmdb_id, media_type, title, genres FROM hero_selections WHERE tmdb_id IS NOT NULL ORDER BY id DESC`
@@ -813,15 +668,12 @@ async function loadHeroExamples(mainDb) {
     }));
 }
 
-// ─── Manual overrides ────────────────────────────────────────────────────────
-
 async function applyManualPins(finalList, mediaType, pinnedIds, heroBlockedIds, imdbDb) {
     if (!pinnedIds.length) return finalList;
 
     const pinnedInList = new Set(finalList.filter((it) => pinnedIds.includes(it.id)).map((it) => it.id));
     const missing = pinnedIds.filter((id) => !pinnedInList.has(id));
     if (!missing.length) {
-        // Reorder: pinned first in requested order.
         const pinnedSet = new Set(pinnedIds);
         const pinned = pinnedIds
             .map((id) => finalList.find((it) => it.id === id))
@@ -831,7 +683,6 @@ async function applyManualPins(finalList, mediaType, pinnedIds, heroBlockedIds, 
         return [...pinned, ...rest];
     }
 
-    // Force-fetch missing pinned (skip IMDb/hero checks — user-forced).
     const forced = [];
     for (const id of missing) {
         if (heroBlockedIds.has(`${id}-${mediaType}`)) {
@@ -840,7 +691,6 @@ async function applyManualPins(finalList, mediaType, pinnedIds, heroBlockedIds, 
         }
         try {
             const enriched = await enrichDetails(id, mediaType);
-            // Best-effort IMDb rating attach (not required).
             let imdbRating = null, imdbVotes = null;
             if (enriched.imdb_id) {
                 try {
@@ -883,14 +733,11 @@ async function applyManualPins(finalList, mediaType, pinnedIds, heroBlockedIds, 
     return [...allPinned, ...rest];
 }
 
-// ─── Main orchestration per media type (split around the unified Gemini call) ─
-
 async function curateUpToGemini(mediaType, heroBlockedIds, manualExcluded, imdbDb, noirIds) {
     log(mediaType, '--- START ---');
 
     let pool = await fetchCandidates(mediaType);
 
-    // TV candidates need last_air_date hydrated before the hard filter can use it.
     if (mediaType === 'tv') {
         pool = await hydrateTvLastAired(pool);
     }
@@ -900,7 +747,6 @@ async function curateUpToGemini(mediaType, heroBlockedIds, manualExcluded, imdbD
 
     const afterImdb = await imdbRatingGate(afterHard, mediaType, imdbDb);
 
-    // Score with noir cross-reference
     for (const c of afterImdb) c._score = scoreCandidate(c, mediaType, noirIds, heroBlockedIds);
     afterImdb.sort((a, b) => b._score - a._score);
 
@@ -923,12 +769,6 @@ async function finishCurate(mediaType, afterGemini, manualPinned, heroBlockedIds
     return withPins.slice(0, SPOTLIGHT_TARGET + manualPinned.length);
 }
 
-// ─── Entry ───────────────────────────────────────────────────────────────────
-
-// Validate a libsql/turso URL and log only its shape (never the value). GitHub
-// masks exact secret matches, not substrings, so we deliberately print scheme
-// + length + last-4 to help diagnose paste errors (missing `libsql://` prefix,
-// stray quotes, trailing newline) without leaking the database host.
 function validateLibsqlUrl(name, value) {
     if (!value) throw new Error(`Missing ${name}`);
     const len = value.length;
@@ -953,7 +793,6 @@ async function main() {
     if (!IMDB_URL || !IMDB_TOKEN) throw new Error('Missing IMDB_DB_URL / IMDB_DB_TOKEN');
     if (!GCP_JSON) throw new Error('Missing GCP_SERVICE_ACCOUNT_JSON');
 
-    // Pre-flight validation so we fail with a clear message if a secret is malformed.
     validateLibsqlUrl('TURSO_DATABASE_URL', TURSO_URL);
     validateLibsqlUrl('IMDB_DB_URL', IMDB_URL);
     log('secret', `TURSO_AUTH_TOKEN: len=${TURSO_TOKEN.length}`);
@@ -974,20 +813,14 @@ async function main() {
     const pinnedMovies = pinnedRaw.movie || [];
     const pinnedTv = pinnedRaw.tv || [];
 
-    // Phase 1 — run the cheap, deterministic pipeline for both media types in
-    // parallel (fetch → hard filter → IMDb gate → score → diversity cap).
-    // Now includes noir_historical cross-referencing for score boosts.
     const [afterDiversityMovies, afterDiversityTv] = await Promise.all([
         curateUpToGemini('movie', heroBlockedIds, excludedMovies, imdbDb, noirIds),
         curateUpToGemini('tv', heroBlockedIds, excludedTv, imdbDb, noirIds),
     ]);
 
-    // Phase 2 — ONE Gemini call for both lists at once.
-    // Passes hero_selections examples so Gemini learns Cinemagoria's taste.
     const { movies: afterGeminiMovies, tv: afterGeminiTv } =
         await geminiCurateBoth(afterDiversityMovies, afterDiversityTv, heroExamples);
 
-    // Phase 3 — enrichment + manual pins, in parallel again.
     const [movies, tv] = await Promise.all([
         finishCurate('movie', afterGeminiMovies, pinnedMovies, heroBlockedIds, imdbDb),
         finishCurate('tv', afterGeminiTv, pinnedTv, heroBlockedIds, imdbDb),
