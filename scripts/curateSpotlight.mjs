@@ -642,7 +642,7 @@ async function loadNoirHistoricalIds(mainDb) {
     const r = await mainDb.execute(
         `SELECT tmdb_id, media_type, title, genres, release_date FROM noir_historical WHERE removed_from_noir_at IS NULL`
     );
-    const map = new Map(); // key: "tmdb_id-media_type"
+    const map = new Map();
     for (const row of r.rows) {
         const mt = row.media_type || 'movie';
         map.set(`${Number(row.tmdb_id)}-${mt}`, {
@@ -655,6 +655,65 @@ async function loadNoirHistoricalIds(mainDb) {
     }
     log('noir', `noir_historical has ${map.size} active titles`);
     return map;
+}
+
+function parseNoirReleaseDate(rd) {
+    if (!rd) return null;
+    const match = rd.match(/^(\d{4}-\d{2}-\d{2})/);
+    if (match) return match[1];
+    const yearMatch = rd.match(/^(\d{4})/);
+    if (yearMatch) return `${yearMatch[1]}-01-01`;
+    return null;
+}
+
+function isNoirReleased(rd) {
+    if (!rd) return false;
+    const dateStr = parseNoirReleaseDate(rd);
+    if (!dateStr) return false;
+    const releaseType = rd.toLowerCase();
+    if (releaseType.includes('premiere') && !releaseType.includes('s1') && !releaseType.includes('s2') && !releaseType.includes('s3')) {
+        return new Date(dateStr) <= NOW;
+    }
+    return new Date(dateStr) <= NOW;
+}
+
+async function fetchNoirCandidates(noirIds, heroBlockedIds, mediaType) {
+    const candidates = [];
+    const CONCURRENCY = 6;
+    const eligible = [];
+
+    for (const [key, noir] of noirIds) {
+        if (noir.media_type !== mediaType) continue;
+        if (heroBlockedIds.has(key)) continue;
+        const released = isNoirReleased(noir.release_date);
+        if (!released) continue;
+        eligible.push(noir);
+    }
+
+    log('noir', `${mediaType}: ${eligible.length} noir candidates (not in hero, released)`);
+
+    const queue = [...eligible];
+    async function worker() {
+        while (queue.length) {
+            const noir = queue.shift();
+            try {
+                const detail = await tmdb(`/${mediaType}/${noir.tmdb_id}`, { language: 'en-US' });
+                candidates.push({
+                    ...detail,
+                    id: noir.tmdb_id,
+                    media_type: mediaType,
+                    _noir_match: true,
+                    _score: 9000,
+                    _verdict: 'noir',
+                });
+            } catch (e) {
+                log('warn', `noir enrich ${mediaType}/${noir.tmdb_id} failed: ${e.message}`);
+            }
+        }
+    }
+    await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+    log('noir', `${mediaType}: ${candidates.length} noir candidates fetched from TMDB`);
+    return candidates;
 }
 
 async function loadHeroExamples(mainDb) {
@@ -750,21 +809,27 @@ async function curateUpToGemini(mediaType, heroBlockedIds, manualExcluded, imdbD
     for (const c of afterImdb) c._score = scoreCandidate(c, mediaType, noirIds, heroBlockedIds);
     afterImdb.sort((a, b) => b._score - a._score);
 
-    const noirMatches = afterImdb.filter((c) => c._noir_match).length;
-    log(mediaType, `noir matches in pool: ${noirMatches}`);
-
     const afterDiversity = applyDiversityCap(afterImdb, mediaType);
     log(mediaType, `after diversity cap: ${afterDiversity.length}`);
 
     return afterDiversity;
 }
 
-async function finishCurate(mediaType, afterGemini, manualPinned, heroBlockedIds, imdbDb) {
-    const topRaw = afterGemini.slice(0, SPOTLIGHT_TARGET + 4); // buffer for enrichment failures
-    const enriched = await enrichAll(topRaw, mediaType);
-    const topEnriched = enriched.slice(0, SPOTLIGHT_TARGET);
+async function finishCurate(mediaType, noirCandidates, afterGemini, manualPinned, heroBlockedIds, imdbDb) {
+    const noirIds = new Set(noirCandidates.map((c) => c.id));
+    const tmdbFiltered = afterGemini.filter((c) => !noirIds.has(c.id));
 
-    const withPins = await applyManualPins(topEnriched, mediaType, manualPinned, heroBlockedIds, imdbDb);
+    const noirSlice = noirCandidates.slice(0, SPOTLIGHT_TARGET);
+    const remainingSlots = Math.max(0, SPOTLIGHT_TARGET - noirSlice.length);
+    const tmdbSlice = tmdbFiltered.slice(0, remainingSlots + 4);
+
+    log(mediaType, `noir-first: ${noirSlice.length} noir + ${tmdbSlice.length} TMDB fill`);
+
+    const noirEnriched = await enrichAll(noirSlice, mediaType);
+    const tmdbEnriched = remainingSlots > 0 ? await enrichAll(tmdbSlice, mediaType) : [];
+
+    const combined = [...noirEnriched, ...tmdbEnriched.slice(0, remainingSlots)];
+    const withPins = await applyManualPins(combined, mediaType, manualPinned, heroBlockedIds, imdbDb);
 
     return withPins.slice(0, SPOTLIGHT_TARGET + manualPinned.length);
 }
@@ -813,6 +878,11 @@ async function main() {
     const pinnedMovies = pinnedRaw.movie || [];
     const pinnedTv = pinnedRaw.tv || [];
 
+    const [noirMovies, noirTv] = await Promise.all([
+        fetchNoirCandidates(noirIds, heroBlockedIds, 'movie'),
+        fetchNoirCandidates(noirIds, heroBlockedIds, 'tv'),
+    ]);
+
     const [afterDiversityMovies, afterDiversityTv] = await Promise.all([
         curateUpToGemini('movie', heroBlockedIds, excludedMovies, imdbDb, noirIds),
         curateUpToGemini('tv', heroBlockedIds, excludedTv, imdbDb, noirIds),
@@ -822,8 +892,8 @@ async function main() {
         await geminiCurateBoth(afterDiversityMovies, afterDiversityTv, heroExamples);
 
     const [movies, tv] = await Promise.all([
-        finishCurate('movie', afterGeminiMovies, pinnedMovies, heroBlockedIds, imdbDb),
-        finishCurate('tv', afterGeminiTv, pinnedTv, heroBlockedIds, imdbDb),
+        finishCurate('movie', noirMovies, afterGeminiMovies, pinnedMovies, heroBlockedIds, imdbDb),
+        finishCurate('tv', noirTv, afterGeminiTv, pinnedTv, heroBlockedIds, imdbDb),
     ]);
 
     const outDir = join(ROOT, 'public', 'data');
@@ -831,14 +901,14 @@ async function main() {
 
     const payloadMovie = {
         generated_at: new Date().toISOString(),
-        engine_version: '2.0.0',
+        engine_version: '3.0.0',
         media_type: 'movie',
         count: movies.length,
         results: movies,
     };
     const payloadTv = {
         generated_at: new Date().toISOString(),
-        engine_version: '2.0.0',
+        engine_version: '3.0.0',
         media_type: 'tv',
         count: tv.length,
         results: tv,
