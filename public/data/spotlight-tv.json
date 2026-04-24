@@ -1,0 +1,884 @@
+{
+  "generated_at": "2026-04-24T13:48:13.595Z",
+  "engine_version": "1.0.0",
+  "media_type": "tv",
+  "count": 22,
+  "results": [
+    {
+      "id": 95396,
+      "media_type": "tv",
+      "title": "Severance",
+      "title_es": "Separación",
+      "overview": "Mark leads a team of office workers whose memories have been surgically divided between their work and personal lives. When a mysterious colleague appears outside of work, it begins a journey to discover the truth about their jobs.",
+      "overview_es": "Mark Scout dirige un equipo en Lumon Industries cuyos empleados se han sometido a un procedimiento quirúrgico que separa sus recuerdos entre trabajo y vida personal. Este arriesgado experimento de conciliación es puesto en tela de juicio cuando Mark se encuentra envuelto en un misterio que le obligará a confrontar la verdadera naturaleza de su trabajo... y de sí mismo.",
+      "poster_path": "/pPHpeI2X1qEd1CS1SeyrdhZ4qnT.jpg",
+      "backdrop_path": "/ixgFmf1X59PUZam2qbAfskx2gQr.jpg",
+      "vote_average": "8.4",
+      "genre_ids": [
+        18,
+        9648,
+        10765
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        },
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt11280740",
+      "first_air_date": "2022-02-17",
+      "last_air_date": "2025-03-20",
+      "status": "Returning Series",
+      "imdb_rating": 8.6,
+      "imdb_votes": 385366,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 74.77,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 222766,
+      "media_type": "tv",
+      "title": "The Day of the Jackal",
+      "title_es": "Chacal",
+      "overview": "An unrivalled and highly elusive lone assassin, the Jackal, makes his living carrying out hits for the highest fee. But following his latest kill, he meets his match in a tenacious British intelligence officer who starts to track down the Jackal in a thrilling cat-and-mouse chase across Europe, leaving destruction in its wake.",
+      "overview_es": "El Chacal (Eddie Redmayne), un escurridizo y solitario asesino sin rival, se gana la vida trabajando para el mejor postor. Sin embargo, tras su último asesinato, su camino se cruza con el de una tenaz agente de inteligencia británica (Lashana Lynch), que empieza a seguirle la pista en una emocionante persecución a través de Europa, dejando un rastro de destrucción a su paso.",
+      "poster_path": "/tYLecM3WSEjlkKhkGiH5G68Dprm.jpg",
+      "backdrop_path": "/enVrO8TRkdT8dmYXTfI4sEjR5Kp.jpg",
+      "vote_average": "8.2",
+      "genre_ids": [
+        18,
+        10759,
+        9648
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 10759,
+          "name": "Action & Adventure"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt24053860",
+      "first_air_date": "2024-11-07",
+      "last_air_date": "2024-12-12",
+      "status": "Returning Series",
+      "imdb_rating": 8.1,
+      "imdb_votes": 130284,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 73.83,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 135157,
+      "media_type": "tv",
+      "title": "Alchemy of Souls",
+      "title_es": "Alquimia de almas",
+      "overview": "A powerful sorceress in a blind woman's body encounters a man from a prestigious family, who wants her help to change his destiny.",
+      "overview_es": "Una poderosa hechicera atrapada en el cuerpo de una mujer ciega se encuentra con un integrante de una prestigiosa familia, que necesita su ayuda para cambiar su destino.",
+      "poster_path": "/gvOZN1NlAoL8iz9ghpES1zWA3w3.jpg",
+      "backdrop_path": "/nBZyWSGAUEzCH7Mna0zUNTpBQlQ.jpg",
+      "vote_average": "8.6",
+      "genre_ids": [
+        18,
+        10765,
+        10759,
+        9648
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        },
+        {
+          "id": 10759,
+          "name": "Action & Adventure"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        }
+      ],
+      "original_language": "ko",
+      "imdb_id": "tt20859920",
+      "first_air_date": "2022-06-18",
+      "last_air_date": "2023-01-08",
+      "status": "Ended",
+      "imdb_rating": 8.7,
+      "imdb_votes": 28549,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 73.11,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 250307,
+      "media_type": "tv",
+      "title": "The Pitt",
+      "title_es": "The Pitt",
+      "overview": "The staff of Pittsburgh's Trauma Medical Center work around the clock to save lives in an overcrowded and underfunded emergency department.",
+      "overview_es": "The Pitt ofrece una visión realista de los retos a los que se enfrenta el personal sanitario en los Estados Unidos de hoy, visto a través de la lente de los héroes de primera línea que trabajan en un hospital de la actualidad en Pittsburgh, Pensilvania.",
+      "poster_path": "/kvFSpESyBZMjaeOJDx7RS3P1jey.jpg",
+      "backdrop_path": "/z3BkMbCy5ajZPMyKEUwsPHuz2cV.jpg",
+      "vote_average": "8.7",
+      "genre_ids": [
+        18
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt31938062",
+      "first_air_date": "2025-01-09",
+      "last_air_date": "2026-04-16",
+      "status": "Returning Series",
+      "imdb_rating": 8.9,
+      "imdb_votes": 136701,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 72.67,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 200875,
+      "media_type": "tv",
+      "title": "IT: Welcome to Derry",
+      "title_es": "It: Bienvenidos a Derry",
+      "overview": "In 1962, amid a spate of unexplained disappearances of local children, a group of misfit friends begin to suspect a long-buried ancient evil lurking. As the kids set out to determine what's really going on, a rising unease prompts several townspeople to work together to restore peace – all while a U.S. military operation seeks to exploit Derry for its own objectives.",
+      "overview_es": "Precuela de las películas de 'IT' basadas en las novelas de Stephen King. Comienza en la década de 1960, en la época previa a los acontecimientos de la película de 2017, y cuenta los orígenes del payaso Pennywise.",
+      "poster_path": "/nyy3BITeIjviv6PFIXtqvc8i6xi.jpg",
+      "backdrop_path": "/2fOKVDoc2O3eZmBZesWPuE5kgPN.jpg",
+      "vote_average": "8.2",
+      "genre_ids": [
+        18,
+        9648
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt19244304",
+      "first_air_date": "2025-10-26",
+      "last_air_date": "2025-12-14",
+      "status": "Returning Series",
+      "imdb_rating": 7.9,
+      "imdb_votes": 104273,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 72.44,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 219246,
+      "media_type": "tv",
+      "title": "When Life Gives You Tangerines",
+      "title_es": "Si la vida te da mandarinas...",
+      "overview": "In Jeju, a spirited girl and a steadfast boy's island story blossoms into a lifelong tale of setbacks and triumphs — proving love endures across time.",
+      "overview_es": "En la isla de Jeju, una chica llena de vida y un joven decidido viven una historia repleta de desafíos y triunfos que demuestra que el amor puede trascender el tiempo.",
+      "poster_path": "/1VC3sEFxYXYDqQUCAnvWfUsYg1s.jpg",
+      "backdrop_path": "/mwczMJeoQrsPERcyP1e900jo3Jv.jpg",
+      "vote_average": "8.7",
+      "genre_ids": [
+        18
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "ko",
+      "imdb_id": "tt26471411",
+      "first_air_date": "2025-03-07",
+      "last_air_date": "2025-03-28",
+      "status": "Ended",
+      "imdb_rating": 9,
+      "imdb_votes": 38128,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 72.16,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 224372,
+      "media_type": "tv",
+      "title": "A Knight of the Seven Kingdoms",
+      "title_es": "El caballero de los Siete Reinos",
+      "overview": "A century before the events of Game of Thrones, two unlikely heroes wandered Westeros: a young, naive but courageous knight, Ser Duncan the Tall, and his diminutive squire, Egg. Set in an age when the Targaryen line still holds the Iron Throne and the last dragon has not yet passed from living memory, great destinies, powerful foes, and dangerous exploits await these improbable and incomparable friends.",
+      "overview_es": "Un siglo antes de los acontecimientos de \"Juego de Tronos\", dos héroes improbables vagaban por Poniente: un joven e ingenuo, pero valiente caballero, Ser Duncan el Alto, y su pequeño escudero, Egg. Ambientada en una época en la que el linaje Targaryen aún ostenta el Trono de Hierro y el recuerdo del último dragón aún no ha desaparecido de la memoria viva, grandes destinos, poderosos enemigos y peligrosas hazañas aguardan a estos improbables e incomparables amigos.",
+      "poster_path": "/k8yARbD9iYn2nRX2HvsopfKDN2r.jpg",
+      "backdrop_path": "/7mkUu1F2hVUNgz24xO8HPx0D6mK.jpg",
+      "vote_average": "8.4",
+      "genre_ids": [
+        18,
+        10765,
+        10759
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        },
+        {
+          "id": 10759,
+          "name": "Action & Adventure"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt27497448",
+      "first_air_date": "2026-01-18",
+      "last_air_date": "2026-02-22",
+      "status": "Returning Series",
+      "imdb_rating": 8.7,
+      "imdb_votes": 230129,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 71.92,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 194764,
+      "media_type": "tv",
+      "title": "The Penguin",
+      "title_es": "El Pingüino",
+      "overview": "With the city in peril following the seawall's collapse, Oswald \"Oz\" Cobb seeks to fill the power vacuum left by the death of Carmine Falcone and finally give his mother Francis the life he's always promised. But first, Oz must confront his enemies and his own demoralizing reputation as \"the Penguin.\"",
+      "overview_es": "Sigue la lucha de Oswald “Oz” Cobb por hacerse con el control de Gotham. Con la ciudad destrozada después del colapso de los diques, Oz busca llenar el vacío de poder que dejó la muerte de Carmine Falcone y darle a su madre Francis la vida que siempre le prometió. Pero antes Oz tendrá que enfrentarse a sus enemigos, incluidos los hijos de Falcone: Sofia y Alberto; la familia Maroni, dirigida por su patriarca encarcelado, Salvatore Maroni; y la propia reputación desmoralizadora de Oz como El Pingüino.",
+      "poster_path": "/vOWcqC4oDQws1doDWLO7d3dh5qc.jpg",
+      "backdrop_path": "/4TdmuuwiIiKw3JOjIuhdgYxRXnN.jpg",
+      "vote_average": "8.4",
+      "genre_ids": [
+        18,
+        80
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 80,
+          "name": "Crime"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt15435876",
+      "first_air_date": "2024-09-19",
+      "last_air_date": "2024-11-10",
+      "status": "Ended",
+      "imdb_rating": 8.6,
+      "imdb_votes": 235547,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 71.34,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 247718,
+      "media_type": "tv",
+      "title": "MobLand",
+      "title_es": "Tierra de mafiosos",
+      "overview": "Two mob families clash in a war that threatens to topple empires and lives.",
+      "overview_es": "El poder está en juego cuando los Harrigan y los Stevenson, dos familias criminales londinenses en guerra, se enfrentan en una batalla de matar o morir que amenaza con derribar imperios y arruinar vidas. Atrapado en el fuego cruzado está Harry Da Souza, el astuto \"solucionador\" tan peligroso como atractivo, que sabe muy bien dónde están las lealtades cuando las fuerzas opuestas chocan. A medida que los reinos se enfrentan, se cruzarán las líneas, y la única gracia salvadora es una garantía de vida o muerte: la familia por encima de todo.",
+      "poster_path": "/abeH7n5pcuQcwYcTxG6DTZvXLP1.jpg",
+      "backdrop_path": "/tQqbbxBAdW2ql8vbOqMOJbtSQ7O.jpg",
+      "vote_average": "8.3",
+      "genre_ids": [
+        80,
+        18
+      ],
+      "genres": [
+        {
+          "id": 80,
+          "name": "Crime"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt31510819",
+      "first_air_date": "2025-03-30",
+      "last_air_date": "2025-06-01",
+      "status": "Returning Series",
+      "imdb_rating": 8.3,
+      "imdb_votes": 112007,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 68.9,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 100088,
+      "media_type": "tv",
+      "title": "The Last of Us",
+      "title_es": "The Last of Us",
+      "overview": "Twenty years after modern civilization has been destroyed, Joel, a hardened survivor, is hired to smuggle Ellie, a 14-year-old girl, out of an oppressive quarantine zone. What starts as a small job soon becomes a brutal, heartbreaking journey, as they both must traverse the United States and depend on each other for survival.",
+      "overview_es": "Año 2023, veinte años después del comienzo de una plaga mundial que infectó a población con un hongo mutado transformando a las personas en unas criaturas caníbales, el contrabandista Joel tiene la misión de escoltar a la adolescente Ellie por un mundo postapocalíptico en el nada va a ser fácil para los viajeros.  Joel todavía vive atormentado por el recuerdo de su única hija. Ellie es portadora de algo que podría cambiar el destino de la humanidad ¿Conseguirán sobrevivir los dos?",
+      "poster_path": "/dmo6TYuuJgaYinXBPjrgG9mB5od.jpg",
+      "backdrop_path": "/lY2DhbA7Hy44fAKddr06UrXWWaQ.jpg",
+      "vote_average": "8.4",
+      "genre_ids": [
+        18
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt3581920",
+      "first_air_date": "2023-01-15",
+      "last_air_date": "2025-05-25",
+      "status": "Returning Series",
+      "imdb_rating": 8.5,
+      "imdb_votes": 733940,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 68.73,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 83867,
+      "media_type": "tv",
+      "title": "Andor",
+      "title_es": "Andor",
+      "overview": "In an era filled with danger, deception and intrigue, Cassian Andor will discover the difference he can make in the struggle against the tyrannical Galactic Empire. He embarks on a path that is destined to turn him into a rebel hero.",
+      "overview_es": "Ambientada cinco años antes de los eventos de la película Rogue One,​ la serie sigue al espía Cassian Andor durante los años de formación de la Alianza Rebelde.​ La serie muestra la transformación de Andor, un ladrón que se convierte en revolucionario y finalmente se une a la Rebelión contra el Imperio Galáctico.",
+      "poster_path": "/khZqmwHQicTYoS7Flreb9EddFZC.jpg",
+      "backdrop_path": "/ajztm40qDPqMONaSJhQ2PaNe2Xd.jpg",
+      "vote_average": "8.3",
+      "genre_ids": [
+        10765,
+        10759,
+        18
+      ],
+      "genres": [
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        },
+        {
+          "id": 10759,
+          "name": "Action & Adventure"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt9253284",
+      "first_air_date": "2022-09-21",
+      "last_air_date": "2025-05-13",
+      "status": "Ended",
+      "imdb_rating": 8.6,
+      "imdb_votes": 273610,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 68.47,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 126308,
+      "media_type": "tv",
+      "title": "Shōgun",
+      "title_es": "Shōgun",
+      "overview": "In Japan in the year 1600, at the dawn of a century-defining civil war, Lord Yoshii Toranaga is fighting for his life as his enemies on the Council of Regents unite against him, when a mysterious European ship is found marooned in a nearby fishing village.",
+      "overview_es": "Ambientada en el Japón de 1600, lord Yoshii Toranaga lucha por su vida mientras que sus enemigos en el Consejo de regentes se alían contra él cuando un misterioso barco europeo aparece abandonado cerca de un pueblo pesquero.",
+      "poster_path": "/7O4iVfOMQmdCSxhOg1WnzG1AgYT.jpg",
+      "backdrop_path": "/bwSmgmd90hCWwqOKQYTEraeOZhJ.jpg",
+      "vote_average": "8.4",
+      "genre_ids": [
+        18,
+        10768
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 10768,
+          "name": "War & Politics"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt2788316",
+      "first_air_date": "2024-02-27",
+      "last_air_date": "2024-04-23",
+      "status": "Returning Series",
+      "imdb_rating": 8.6,
+      "imdb_votes": 243798,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 68.37,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 202555,
+      "media_type": "tv",
+      "title": "Daredevil: Born Again",
+      "title_es": "Daredevil: Born Again",
+      "overview": "Matt Murdock, a blind lawyer with heightened abilities, is fighting for justice through his bustling law firm, while former mob boss Wilson Fisk pursues his own political endeavors in New York. When their past identities begin to emerge, both men find themselves on an inevitable collision course.",
+      "overview_es": "Matt Murdock, un abogado ciego con habilidades super desarrolladas lucha por la justicia desde su ajetreado bufete mientras el antiguo jefe mafioso Wilson Fisk emprende una carrera política en Nueva York. Cuando sus identidades pasadas empiezan a salir a la luz, ambos se ven abocados a un enfrentamiento inevitable.",
+      "poster_path": "/xDUoAsU8lQHOOoRkFiBuarmACDN.jpg",
+      "backdrop_path": "/qrTAc0ZtQ859Qu5O8cixJzNJpQs.jpg",
+      "vote_average": "8.0",
+      "genre_ids": [
+        18,
+        10759,
+        80
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 10759,
+          "name": "Action & Adventure"
+        },
+        {
+          "id": 80,
+          "name": "Crime"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt18923754",
+      "first_air_date": "2025-03-04",
+      "last_air_date": "2026-04-21",
+      "status": "Returning Series",
+      "imdb_rating": 8.1,
+      "imdb_votes": 95676,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 67.56,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 108545,
+      "media_type": "tv",
+      "title": "3 Body Problem",
+      "title_es": "El problema de los 3 cuerpos",
+      "overview": "Across continents and decades, five brilliant friends make earth-shattering discoveries as the laws of science unravel and an existential threat emerges.",
+      "overview_es": "Una decisión tomada en China en los años 60 trasciende el tiempo y el espacio, obligando a unos científicos a afrontar la peor amenaza para la humanidad en el presente.",
+      "poster_path": "/ykZ7hlShkdRQaL2aiieXdEMmrLb.jpg",
+      "backdrop_path": "/ciizJ9Okzt9tBBGK7Q3T14LFT2j.jpg",
+      "vote_average": "7.5",
+      "genre_ids": [
+        10765,
+        9648,
+        18
+      ],
+      "genres": [
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt13016388",
+      "first_air_date": "2024-03-21",
+      "last_air_date": "2024-03-21",
+      "status": "Returning Series",
+      "imdb_rating": 7.5,
+      "imdb_votes": 179480,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 67.51,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 225171,
+      "media_type": "tv",
+      "title": "Pluribus",
+      "title_es": "Pluribus",
+      "overview": "The most miserable person on Earth must save the world from happiness.",
+      "overview_es": "La persona más desgraciada de la Tierra tiene que salvar al mundo de la felicidad.",
+      "poster_path": "/z7Nga7Q9IGFWs5OEduY2gGFxnX3.jpg",
+      "backdrop_path": "/vNCNUxNHHgP0WsA19hxztUsG3yG.jpg",
+      "vote_average": "7.9",
+      "genre_ids": [
+        18,
+        10765
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt22202452",
+      "first_air_date": "2025-11-06",
+      "last_air_date": "2025-12-23",
+      "status": "Returning Series",
+      "imdb_rating": 8,
+      "imdb_votes": 146447,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 67.33,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 94997,
+      "media_type": "tv",
+      "title": "House of the Dragon",
+      "title_es": "La casa del dragón",
+      "overview": "The Targaryen dynasty is at the absolute apex of its power, with more than 15 dragons under their yoke. Most empires crumble from such heights. In the case of the Targaryens, their slow fall begins when King Viserys breaks with a century of tradition by naming his daughter Rhaenyra heir to the Iron Throne. But when Viserys later fathers a son, the court is shocked when Rhaenyra retains her status as his heir, and seeds of division sow friction across the realm.",
+      "overview_es": "Basada en el libro 'Fuego y Sangre' de George R.R. Martin. La serie se centra en la casa Targaryen, trescientos años antes de los eventos vistos en 'Juego de Tronos'.",
+      "poster_path": "/7QMsOTMUswlwxJP0rTTZfmz2tX2.jpg",
+      "backdrop_path": "/2xGcSLyTAzConiHAByWqhfLiatT.jpg",
+      "vote_average": "8.3",
+      "genre_ids": [
+        10765,
+        18,
+        10759
+      ],
+      "genres": [
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 10759,
+          "name": "Action & Adventure"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt11198330",
+      "first_air_date": "2022-08-21",
+      "last_air_date": "2024-08-04",
+      "status": "Returning Series",
+      "imdb_rating": 8.3,
+      "imdb_votes": 523036,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 67.24,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 124834,
+      "media_type": "tv",
+      "title": "Heartstopper",
+      "title_es": "Heartstopper",
+      "overview": "Teens Charlie and Nick discover their unlikely friendship might be something more as they navigate school and young love in this coming-of-age series.",
+      "overview_es": "Dos adolescentes británicos, Nick Nelson y Charlie Spring, estudian en una escuela primaria exclusiva para varones. Charlie, un pensador demasiado nervioso y abiertamente gay, y Nick, un jugador de rugby alegre y de buen corazón, un día se sientan juntos en clase. La amistad florece rápidamente, pero ¿podría haber algo más...? Basada en la novela gráfica de Alice Oseman.",
+      "poster_path": "/wJJt1HG62h3WoGnLcRIbO2nNNkg.jpg",
+      "backdrop_path": "/eGYnmsEs5cutoPQKf2QUlT4RgCH.jpg",
+      "vote_average": "8.6",
+      "genre_ids": [
+        18
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt10638036",
+      "first_air_date": "2022-04-22",
+      "last_air_date": "2024-10-03",
+      "status": "Canceled",
+      "imdb_rating": 8.5,
+      "imdb_votes": 92787,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 66.93,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 129552,
+      "media_type": "tv",
+      "title": "The Night Agent",
+      "title_es": "El agente nocturno",
+      "overview": "Brought together by a midnight phone call, an FBI agent and a cybersecurity expert must unravel an ever-growing web of political conspiracies.",
+      "overview_es": "Unidos por una llamada a medianoche, un agente del FBI y una experta en ciberseguridad deben desentrañar una intrincada red de conspiraciones políticas.",
+      "poster_path": "/4c5yUNcaff4W4aPrkXE6zr7papX.jpg",
+      "backdrop_path": "/gklrevVndG98GHGDwfm8y8kxESo.jpg",
+      "vote_average": "7.7",
+      "genre_ids": [
+        10759,
+        18,
+        9648
+      ],
+      "genres": [
+        {
+          "id": 10759,
+          "name": "Action & Adventure"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt13918776",
+      "first_air_date": "2023-03-23",
+      "last_air_date": "2026-02-19",
+      "status": "Returning Series",
+      "imdb_rating": 7.4,
+      "imdb_votes": 159617,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 66.81,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 157744,
+      "media_type": "tv",
+      "title": "1923",
+      "title_es": "1923",
+      "overview": "Follow a new generation of the Dutton family during the early twentieth century when pandemics, historic drought, the end of Prohibition and the Great Depression all plague the mountain west, and the Duttons who call it home.",
+      "overview_es": "Sigue a una nueva generación de la familia Dutton a principios del siglo XX cuando las pandemias, la sequía histórica, el fin de la Prohibición y la Gran Depresión plagan el oeste montañoso y los Dutton que lo llaman hogar.",
+      "poster_path": "/zgZRJZvZn5cpsWAB0zMUdad3iZd.jpg",
+      "backdrop_path": "/vIioWssbxRtEkIzgj8r0pCWYkYM.jpg",
+      "vote_average": "8.2",
+      "genre_ids": [
+        18,
+        37
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 37,
+          "name": "Western"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt18335752",
+      "first_air_date": "2022-12-18",
+      "last_air_date": "2025-04-06",
+      "status": "Ended",
+      "imdb_rating": 8.3,
+      "imdb_votes": 101384,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 65.81,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 110492,
+      "media_type": "tv",
+      "title": "Peacemaker",
+      "title_es": "El Pacificador",
+      "overview": "The continuing story of Peacemaker, a vainglorious superhero/supervillain who believes in peace at any cost — no matter how many people he has to kill. After a miraculous recovery from his duel with Bloodsport, Peacemaker soon discovers that his freedom comes at a price.",
+      "overview_es": "La historia de origen de Peacemaker, un hombre que cree en la paz a cualquier precio, no importa cuántas personas tenga que matar para conseguirla.",
+      "poster_path": "/eYzbGcYnOUlvj2fa76pTgIXogd7.jpg",
+      "backdrop_path": "/aJcUU3LMlqMKBi8L3eaxGfAbd4G.jpg",
+      "vote_average": "8.2",
+      "genre_ids": [
+        10759,
+        10765,
+        18
+      ],
+      "genres": [
+        {
+          "id": 10759,
+          "name": "Action & Adventure"
+        },
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt13146488",
+      "first_air_date": "2022-01-13",
+      "last_air_date": "2025-10-09",
+      "status": "Ended",
+      "imdb_rating": 8.2,
+      "imdb_votes": 192152,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 65.77,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 125988,
+      "media_type": "tv",
+      "title": "Silo",
+      "title_es": "Silo",
+      "overview": "In a ruined and toxic future, thousands live in a giant silo deep underground. After its sheriff breaks a cardinal rule and residents die mysteriously, engineer Juliette starts to uncover shocking secrets and the truth about the silo.",
+      "overview_es": "En un futuro ruinoso y tóxico, existe una comunidad en un gigantesco silo subterráneo que alcanza cientos de pisos de profundidad. Allí, las personas viven en una sociedad llena de normas que creen que están destinadas a protegerlas.",
+      "poster_path": "/fDMTqUcEh6qJwWZP1SHTfoaqsCy.jpg",
+      "backdrop_path": "/4XccmjsOmQZw8S2iW1wvlvmb5v1.jpg",
+      "vote_average": "8.1",
+      "genre_ids": [
+        10765,
+        18
+      ],
+      "genres": [
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt14688458",
+      "first_air_date": "2023-05-04",
+      "last_air_date": "2025-01-16",
+      "status": "Returning Series",
+      "imdb_rating": 8.1,
+      "imdb_votes": 211965,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 65.25,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 108978,
+      "media_type": "tv",
+      "title": "Reacher",
+      "title_es": "Reacher",
+      "overview": "Jack Reacher, a veteran military police investigator, has just recently entered civilian life. Reacher is a drifter, carrying no phone and the barest of essentials as he travels the country and explores the nation he once served.",
+      "overview_es": "Cuando el exagente de la Policía Militar Jack Reacher es detenido por un asesinato que no ha cometido, se ve envuelto en una mortífera conspiración llena de policías corruptos, empresarios dudosos y políticos intrigantes. Armado solo con su ingenio, debe averiguar qué pasa en Margrave, Georgia. La primera temporada de Reacher se basa en Zona peligrosa, el superventas internacional de Lee Child.",
+      "poster_path": "/31GlRQMiDunO8cl3NxTz34U64rf.jpg",
+      "backdrop_path": "/voKEhzb4ExOmR0WSvQgLTTqRUEu.jpg",
+      "vote_average": "8.1",
+      "genre_ids": [
+        10759,
+        18,
+        80
+      ],
+      "genres": [
+        {
+          "id": 10759,
+          "name": "Action & Adventure"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 80,
+          "name": "Crime"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt9288030",
+      "first_air_date": "2022-02-03",
+      "last_air_date": "2025-03-27",
+      "status": "Returning Series",
+      "imdb_rating": 8,
+      "imdb_votes": 291713,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 64.93,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    }
+  ]
+}

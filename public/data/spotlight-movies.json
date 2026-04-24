@@ -1,0 +1,840 @@
+{
+  "generated_at": "2026-04-24T13:48:13.595Z",
+  "engine_version": "1.0.0",
+  "media_type": "movie",
+  "count": 22,
+  "results": [
+    {
+      "id": 1272837,
+      "media_type": "movie",
+      "title": "28 Years Later: The Bone Temple",
+      "title_es": "28 años después: El templo de los huesos",
+      "overview": "Dr. Kelson finds himself in a shocking new relationship - with consequences that could change the world as they know it - and Spike's encounter with Jimmy Crystal becomes a nightmare he can't escape.",
+      "overview_es": "El Dr. Kelson (Ralph Fiennes) se ve envuelto en una nueva y sorprendente relación, cuyas consecuencias podrían cambiar el mundo tal y como se conoce. Por otra parte, el encuentro de Spike (Alfie Williams) con el Gran Lord Jimmy Crystal (Jack O'Connell) se convierte en una pesadilla de la que el chico no puede escapar. En este mundo, los infectados ya no son la mayor amenaza para la supervivencia, ya que la inhumanidad de los supervivientes puede ser aún más extraña y aterradora.",
+      "poster_path": "/kK1BGkG3KAvWB0WMV1DfOx9yTMZ.jpg",
+      "backdrop_path": "/hHDNOlATHhre4eZ7aYz5cdyJLik.jpg",
+      "vote_average": "7.1",
+      "genre_ids": [
+        27,
+        53,
+        878
+      ],
+      "genres": [
+        {
+          "id": 27,
+          "name": "Horror"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        },
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt32141377",
+      "release_date": "2026-01-14",
+      "imdb_rating": 7.3,
+      "imdb_votes": 84121,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 74.65,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 1050035,
+      "media_type": "movie",
+      "title": "Monster",
+      "title_es": "Monstruo",
+      "overview": "After an outburst at school involving her son, a concerned single mother demands answers, triggering a sequence of deepening suspicion and turmoil.",
+      "overview_es": "Cuando su joven hijo Minato empieza a comportarse de forma extraña, su madre siente que algo va mal. Al descubrir que el responsable de todo ello es un profesor, irrumpe en la escuela exigiendo saber qué está pasando. Pero a medida que la historia se desarrolla a través de los ojos de la madre, el profesor y el niño, la verdad va saliendo a la luz, poco a poco...",
+      "poster_path": "/kvUJUyUGOhEoiWWNH04IXoExPE2.jpg",
+      "backdrop_path": "/dZJcOyRonN0Kb7kJR3DE3esGn16.jpg",
+      "vote_average": "7.9",
+      "genre_ids": [
+        9648,
+        53,
+        18
+      ],
+      "genres": [
+        {
+          "id": 9648,
+          "name": "Mystery"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "ja",
+      "imdb_id": "tt23736044",
+      "release_date": "2023-06-02",
+      "imdb_rating": 7.8,
+      "imdb_votes": 41116,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 74.03,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 1000837,
+      "media_type": "movie",
+      "title": "I'm Still Here",
+      "title_es": "Aún estoy aquí",
+      "overview": "A woman married to a former politician during the 1971 military dictatorship in Brazil is forced to reinvent herself and chart a new course for her family after a violent and arbitrary act.",
+      "overview_es": "Brasil, 1971. Un país en las garras de una dictadura militar. Una madre se ve obligada a reinventarse cuando la vida de su familia se ve destrozada por un acto de violencia arbitraria.",
+      "poster_path": "/gZnsMbhCvhzAQlKaVpeFRHYjGyb.jpg",
+      "backdrop_path": "/j9uruwRe9qM8RnP758dF7ISB8Bj.jpg",
+      "vote_average": "7.9",
+      "genre_ids": [
+        18,
+        36
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 36,
+          "name": "History"
+        }
+      ],
+      "original_language": "pt",
+      "imdb_id": "tt14961016",
+      "release_date": "2024-09-19",
+      "imdb_rating": 8.1,
+      "imdb_votes": 147093,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 73.94,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 872585,
+      "media_type": "movie",
+      "title": "Oppenheimer",
+      "title_es": "Oppenheimer",
+      "overview": "The story of J. Robert Oppenheimer's role in the development of the atomic bomb during World War II.",
+      "overview_es": "Película sobre el físico J. Robert Oppenheimer y su papel como desarrollador de la bomba atómica. Basada en el libro 'American Prometheus: The Triumph and Tragedy of J. Robert Oppenheimer' de Kai Bird y Martin J. Sherwin.",
+      "poster_path": "/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
+      "backdrop_path": "/neeNHeXjMF5fXoCJRsOmkNGC7q.jpg",
+      "vote_average": "8.0",
+      "genre_ids": [
+        18,
+        36
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 36,
+          "name": "History"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt15398776",
+      "release_date": "2023-07-19",
+      "imdb_rating": 8.2,
+      "imdb_votes": 1021081,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 73.22,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 726759,
+      "media_type": "movie",
+      "title": "Tetris",
+      "title_es": "Tetris",
+      "overview": "In 1988, American video game salesman Henk Rogers discovers the video game Tetris. When he sets out to bring the game to the world, he enters a dangerous web of lies and corruption behind the Iron Curtain.",
+      "overview_es": "Basada en la historia real del comercial de videojuegos estadounidense Henk Rogers y su descubrimiento del Tetris en 1988. Cuando se dispone a hacer que el juego sea disponible en el mundo, se mete en una peligrosa red de mentiras y corrupción que hay detrás de la Cortina de Hierro.",
+      "poster_path": "/4F2QwCOYHJJjecSvdOjStuVLkpu.jpg",
+      "backdrop_path": "/4avmIRBBOs9b4DKoenf8SWWJJP7.jpg",
+      "vote_average": "7.6",
+      "genre_ids": [
+        53,
+        36,
+        18
+      ],
+      "genres": [
+        {
+          "id": 53,
+          "name": "Thriller"
+        },
+        {
+          "id": 36,
+          "name": "History"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt12758060",
+      "release_date": "2023-03-15",
+      "imdb_rating": 7.4,
+      "imdb_votes": 106604,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 72.46,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 858024,
+      "media_type": "movie",
+      "title": "Hamnet",
+      "title_es": "Hamnet",
+      "overview": "The powerful story of love and loss that inspired the creation of Shakespeare's timeless masterpiece, Hamlet.",
+      "overview_es": "Descubre la poderosa historia de amor que inspiró la creación de Hamlet, la intemporal obra maestra de Shakespeare.  La historia de Agnes, la esposa de William Shakespeare, en su lucha por superar la tragedia familiar que irrumpe en su vida. Una historia con el telón de fondo de la creación de una de las más conocidas e importantes obras de Shakespeare, 'Hamlet'.",
+      "poster_path": "/vbeyOZm2bvBXcbgPD3v6o94epPX.jpg",
+      "backdrop_path": "/a9IQXoYCpsjqTOKXRTw1osLd5il.jpg",
+      "vote_average": "7.7",
+      "genre_ids": [
+        18,
+        10749,
+        36
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 10749,
+          "name": "Romance"
+        },
+        {
+          "id": 36,
+          "name": "History"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt14905854",
+      "release_date": "2025-11-26",
+      "imdb_rating": 7.8,
+      "imdb_votes": 105850,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 71.85,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 1317288,
+      "media_type": "movie",
+      "title": "Marty Supreme",
+      "title_es": "Marty Supreme",
+      "overview": "Marty Mauser, a young man with a dream no one respects, goes to hell and back in pursuit of greatness.",
+      "overview_es": "Biopic de Marty Reisman, un buscavidas convertido en campeón de ping pong, desde que empezó a jugar por apuestas en Manhattan hasta ganar 22 títulos importantes y convertirse en el más veterano en ganar una competición nacional de deportes de raqueta, con 67 años.",
+      "poster_path": "/lYWEXbQgRTR4ZQleSXAgRbxAjvq.jpg",
+      "backdrop_path": "/3iMoYSbI72Nwsvi7uSpqReLJVa6.jpg",
+      "vote_average": "7.4",
+      "genre_ids": [
+        18,
+        53
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt32916440",
+      "release_date": "2025-12-19",
+      "imdb_rating": 7.7,
+      "imdb_votes": 156128,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 71.59,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 1078605,
+      "media_type": "movie",
+      "title": "Weapons",
+      "title_es": "Weapons",
+      "overview": "When all but one child from the same class mysteriously vanish on the same night at exactly the same time, a community is left questioning who or what is behind their disappearance.",
+      "overview_es": "Cuando todos los alumnos de una misma clase, salvo uno, desaparecen misteriosamente la misma noche y exactamente a la misma hora, la pequeña ciudad donde viven se pregunta quién o qué está detrás de su desaparición.",
+      "poster_path": "/cpf7vsRZ0MYRQcnLWteD5jK9ymT.jpg",
+      "backdrop_path": "/8VyTWJrNEyV2MTWvniDVp0MpOAe.jpg",
+      "vote_average": "7.3",
+      "genre_ids": [
+        27,
+        9648
+      ],
+      "genres": [
+        {
+          "id": 27,
+          "name": "Horror"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt26581740",
+      "release_date": "2025-08-04",
+      "imdb_rating": 7.4,
+      "imdb_votes": 343462,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 70.47,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 1062722,
+      "media_type": "movie",
+      "title": "Frankenstein",
+      "title_es": "Frankenstein",
+      "overview": "Dr. Victor Frankenstein, a brilliant but egotistical scientist, brings a creature to life in a monstrous experiment that ultimately leads to the undoing of both the creator and his tragic creation.",
+      "overview_es": "Un científico brillante y obsesivo, Victor Frankenstein, en su ambición por desafiar a la muerte, da vida a una criatura ensamblada con partes de cadáveres. Pese a tratarse de una proeza científica, Frankenstein considera que la criatura carece de inteligencia y la rechaza. Dolida, esta se rebela contra su creador.",
+      "poster_path": "/g4JtvGlQO7DByTI6frUobqvSL3R.jpg",
+      "backdrop_path": "/hpXBJxLD2SEf8l2CspmSeiHrBKX.jpg",
+      "vote_average": "7.6",
+      "genre_ids": [
+        18,
+        14,
+        27
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 14,
+          "name": "Fantasy"
+        },
+        {
+          "id": 27,
+          "name": "Horror"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt1312221",
+      "release_date": "2025-10-17",
+      "imdb_rating": 7.4,
+      "imdb_votes": 304304,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 70.37,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 906126,
+      "media_type": "movie",
+      "title": "Society of the Snow",
+      "title_es": "La sociedad de la nieve",
+      "overview": "On October 13, 1972, Uruguayan Air Force Flight 571, chartered to take a rugby team to Chile, crashes into a glacier in the heart of the Andes.",
+      "overview_es": "El 13 de octubre de 1972, el vuelo 571 de la Fuerza Aérea Uruguaya, fletado para llevar a un equipo de rugby a Chile, se estrella en un glaciar en el corazón de los Andes.",
+      "poster_path": "/2e853FDVSIso600RqAMunPxiZjq.jpg",
+      "backdrop_path": "/md848EEPm3dHZOqwGxxTVwH2vu5.jpg",
+      "vote_average": "8.0",
+      "genre_ids": [
+        18,
+        36
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 36,
+          "name": "History"
+        }
+      ],
+      "original_language": "es",
+      "imdb_id": "tt16277242",
+      "release_date": "2023-12-15",
+      "imdb_rating": 7.8,
+      "imdb_votes": 173301,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 69.28,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 1233413,
+      "media_type": "movie",
+      "title": "Sinners",
+      "title_es": "Los pecadores",
+      "overview": "Trying to leave their troubled lives behind, twin brothers return to their hometown to start again, only to discover that an even greater evil is waiting to welcome them back.",
+      "overview_es": "Tratando de dejar atrás sus problemáticas vidas, dos hermanos gemelos regresan a su pueblo natal para empezar de nuevo, solo para descubrir que un mal aún mayor les espera para darles la bienvenida.",
+      "poster_path": "/705nQHqe4JGdEisrQmVYmXyjs1U.jpg",
+      "backdrop_path": "/nAxGnGHOsfzufThz20zgmRwKur3.jpg",
+      "vote_average": "7.5",
+      "genre_ids": [
+        27,
+        28,
+        53
+      ],
+      "genres": [
+        {
+          "id": 27,
+          "name": "Horror"
+        },
+        {
+          "id": 28,
+          "name": "Action"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt31193180",
+      "release_date": "2025-04-16",
+      "imdb_rating": 7.5,
+      "imdb_votes": 464552,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 67.33,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 760774,
+      "media_type": "movie",
+      "title": "One Life",
+      "title_es": "Los niños de Winton",
+      "overview": "British stockbroker Nicholas Winton visits Czechoslovakia in the 1930s and forms plans to assist in the rescue of Jewish children before the onset of World War II, in an operation that came to be known as the Kindertransport.",
+      "overview_es": "Un joven corredor de bolsa británico, Nicholas \"Nicky\" Winton (Anthony Hopkins), ayudó a rescatar a cientos de niños de los nazis en vísperas de la Segunda Guerra Mundial, con la ayuda de su madre (Helena Bonham Carter). Un acto de compasión casi olvidado durante 50 años, y del que Nicky vive atormentado por los fantasmas de los niños a los que no pudo rescatar, culpándose por no haber hecho más.",
+      "poster_path": "/yvnIWt2j8VnDgwKJE2VMiFMa2Qo.jpg",
+      "backdrop_path": "/7kgDHoXEk0EySTczcmaYpPDBFQS.jpg",
+      "vote_average": "7.8",
+      "genre_ids": [
+        36,
+        18
+      ],
+      "genres": [
+        {
+          "id": 36,
+          "name": "History"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt13097932",
+      "release_date": "2023-12-21",
+      "imdb_rating": 7.5,
+      "imdb_votes": 40019,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 66.2,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 1368166,
+      "media_type": "movie",
+      "title": "The Housemaid",
+      "title_es": "La asistenta",
+      "overview": "Trying to escape her past, Millie Calloway accepts a job as a live-in housemaid for the wealthy Nina and Andrew Winchester. But what begins as a dream job quickly unravels into something far more dangerous—a sexy, seductive game of secrets, scandal, and power.",
+      "overview_es": "Una joven (Sydney Sweeney), con un pasado complicado comienza a trabajar como asistenta en la lujosa casa de los Winchester. A medida que se adentra en la vida de la familia, descubrirá secretos oscuros que pondrán en peligro su seguridad, pero quizá ya sea demasiado tarde... Adaptación de la novela de Freida McFadden.",
+      "poster_path": "/cWsBscZzwu5brg9YjNkGewRUvJX.jpg",
+      "backdrop_path": "/zTnAnYIn0Iv3cn0ZHlzLhou3ybm.jpg",
+      "vote_average": "7.2",
+      "genre_ids": [
+        9648,
+        53
+      ],
+      "genres": [
+        {
+          "id": 9648,
+          "name": "Mystery"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt27543632",
+      "release_date": "2025-12-18",
+      "imdb_rating": 6.8,
+      "imdb_votes": 133074,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 66.05,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 950396,
+      "media_type": "movie",
+      "title": "The Gorge",
+      "title_es": "El abismo secreto",
+      "overview": "Two highly trained operatives grow close from a distance after being sent to guard opposite sides of a mysterious gorge. When an evil below emerges, they must work together to survive what lies within.",
+      "overview_es": "Mandan a dos operativos de élite a vigilar lados opuestos de un misterioso abismo y allí intiman desde la distancia, pero deberán aunar fuerzas para sobrevivir al mal que esconde el abismo.",
+      "poster_path": "/7iMBZzVZtG0oBug4TfqDb9ZxAOa.jpg",
+      "backdrop_path": "/9nhjGaFLKtddDPtPaX5EmKqsWdH.jpg",
+      "vote_average": "7.6",
+      "genre_ids": [
+        10749,
+        878,
+        53
+      ],
+      "genres": [
+        {
+          "id": 10749,
+          "name": "Romance"
+        },
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt13654226",
+      "release_date": "2025-02-13",
+      "imdb_rating": 6.7,
+      "imdb_votes": 169032,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 65.66,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 1124566,
+      "media_type": "movie",
+      "title": "Sentimental Value",
+      "title_es": "Valor sentimental",
+      "overview": "Sisters Nora and Agnes reunite with their estranged father, the charismatic Gustav, a once-renowned director who offers stage actress Nora a role in what he hopes will be his comeback film. When Nora turns it down, she soon discovers he has given her part to an eager young Hollywood star.",
+      "overview_es": "Una exploración íntima y conmovedora de la familia, los recuerdos y el poder reconciliador del arte.",
+      "poster_path": "/pz9NCWxxOk3o0W3v1Zkhawrwb4i.jpg",
+      "backdrop_path": "/oLgtpxK4aGZ7S8aiE3rDwahqkL2.jpg",
+      "vote_average": "7.5",
+      "genre_ids": [
+        18
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "no",
+      "imdb_id": "tt27714581",
+      "release_date": "2025-08-20",
+      "imdb_rating": 7.7,
+      "imdb_votes": 72823,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 64.92,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 1002185,
+      "media_type": "movie",
+      "title": "A Million Miles Away",
+      "title_es": "A millones de kilómetros",
+      "overview": "The life of engineer and former NASA astronaut José M. Hernández, the first migrant farmworker to go to space.",
+      "overview_es": "Narra la historia de José Hernández, el primer trabajador agrícola migrante en viajar al espacio. Una historia de perseverancia, comunidad y sacrificio para lograr un sueño imposible.",
+      "poster_path": "/kMI3tgxLAZbzGOVlorUBva0kriS.jpg",
+      "backdrop_path": "/23HvwdsAQeL0MxN9fm3d8m1NaPw.jpg",
+      "vote_average": "7.6",
+      "genre_ids": [
+        18,
+        36
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 36,
+          "name": "History"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt21940010",
+      "release_date": "2023-09-08",
+      "imdb_rating": 7.3,
+      "imdb_votes": 26182,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 64.64,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 940721,
+      "media_type": "movie",
+      "title": "Godzilla Minus One",
+      "title_es": "Godzilla Minus One",
+      "overview": "In postwar Japan, Godzilla brings new devastation to an already scorched landscape. With no military intervention or government help in sight, the survivors must join together in the face of despair and fight back against an unrelenting horror.",
+      "overview_es": "En el Japón de la posguerra, Godzilla trae una nueva devastación a un paisaje ya abrasado. Sin intervención militar ni ayuda gubernamental a la vista, los supervivientes deben unirse frente a la desesperación y luchar contra un horror implacable.",
+      "poster_path": "/2E2WTX0TJEflAged6kzErwqX1kt.jpg",
+      "backdrop_path": "/1FMnXfgPFJFWhPrCZBgXwHbwmye.jpg",
+      "vote_average": "7.6",
+      "genre_ids": [
+        878,
+        27,
+        28
+      ],
+      "genres": [
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        },
+        {
+          "id": 27,
+          "name": "Horror"
+        },
+        {
+          "id": 28,
+          "name": "Action"
+        }
+      ],
+      "original_language": "ja",
+      "imdb_id": "tt23289160",
+      "release_date": "2023-11-03",
+      "imdb_rating": 7.6,
+      "imdb_votes": 202741,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 64.21,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 693134,
+      "media_type": "movie",
+      "title": "Dune: Part Two",
+      "title_es": "Dune: Parte dos",
+      "overview": "Follow the mythic journey of Paul Atreides as he unites with Chani and the Fremen while on a path of revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the known universe, Paul endeavors to prevent a terrible future only he can foresee.",
+      "overview_es": "Sigue el viaje mítico de Paul Atreides mientras se une a Chani y los Fremen en una guerra de venganza contra los conspiradores que destruyeron a su familia. Al enfrentarse a una elección entre el amor de su vida y el destino del universo conocido, Paul se esfuerza por evitar un futuro terrible que solo él puede prever.",
+      "poster_path": "/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
+      "backdrop_path": "/eZ239CUp1d6OryZEBPnO2n87gMG.jpg",
+      "vote_average": "8.1",
+      "genre_ids": [
+        878,
+        12
+      ],
+      "genres": [
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        },
+        {
+          "id": 12,
+          "name": "Adventure"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt15239678",
+      "release_date": "2024-02-27",
+      "imdb_rating": 8.4,
+      "imdb_votes": 734677,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 64.13,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 687163,
+      "media_type": "movie",
+      "title": "Project Hail Mary",
+      "title_es": "Proyecto Salvación",
+      "overview": "Science teacher Ryland Grace wakes up on a spaceship light years from home with no recollection of who he is or how he got there. As his memory returns, he begins to uncover his mission: solve the riddle of the mysterious substance causing the sun to die out. He must call on his scientific knowledge and unorthodox ideas to save everything on Earth from extinction… but an unexpected friendship means he may not have to do it alone.",
+      "overview_es": "El profesor de ciencias Ryland Grace se despierta en una nave espacial a años luz de casa sin recordar quién es ni cómo ha llegado hasta allí. A medida que recupera la memoria, empieza a descubrir su misión: resolver el enigma de la misteriosa sustancia que provoca la extinción del sol. Deberá recurrir a sus conocimientos científicos y a sus ideas poco ortodoxas para salvar todo lo que hay en la Tierra de la extinción... pero una amistad inesperada significa que quizá no tenga que hacerlo solo.",
+      "poster_path": "/yihdXomYb5kTeSivtFndMy5iDmf.jpg",
+      "backdrop_path": "/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg",
+      "vote_average": "8.2",
+      "genre_ids": [
+        878,
+        12
+      ],
+      "genres": [
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        },
+        {
+          "id": 12,
+          "name": "Adventure"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt12042730",
+      "release_date": "2026-03-15",
+      "imdb_rating": 8.4,
+      "imdb_votes": 207175,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 64.03,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 882569,
+      "media_type": "movie",
+      "title": "Guy Ritchie's The Covenant",
+      "title_es": "El pacto",
+      "overview": "During the war in Afghanistan, a local interpreter risks his own life to carry an injured sergeant across miles of grueling terrain.",
+      "overview_es": "Sigue al sargento John Kinley, uno de los únicos sobrevivientes en su último periodo de servicio en Afganistán, y como decide regresar a zona de guerra para recuperar a su amigo Ahmed y su familia.",
+      "poster_path": "/kVG8zFFYrpyYLoHChuEeOGAd6Ru.jpg",
+      "backdrop_path": "/eTvN54pd83TrSEOz6wbsXEJktCV.jpg",
+      "vote_average": "7.7",
+      "genre_ids": [
+        10752,
+        28,
+        53
+      ],
+      "genres": [
+        {
+          "id": 10752,
+          "name": "War"
+        },
+        {
+          "id": 28,
+          "name": "Action"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt4873118",
+      "release_date": "2023-04-19",
+      "imdb_rating": 7.5,
+      "imdb_votes": 208831,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 63.64,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 402431,
+      "media_type": "movie",
+      "title": "Wicked",
+      "title_es": "Wicked",
+      "overview": "In the land of Oz, ostracized and misunderstood green-skinned Elphaba is forced to share a room with the popular aristocrat Glinda at Shiz University, and the two's unlikely friendship is tested as they begin to fulfill their respective destinies as Glinda the Good and the Wicked Witch of the West.",
+      "overview_es": "Ambientada en la Tierra de Oz, mucho antes de la llegada de Dorothy Gale desde Kansas. Elphaba es una joven incomprendida por su inusual color verde que aún no ha descubierto su verdadero poder. Glinda es una popular joven marcada por sus privilegios y su ambición que aún no ha descubierto su verdadera pasión. Las dos se conocen como estudiantes de la Universidad Shiz, en la fantástica Tierra de Oz, y forjan una insólita pero profunda amistad. La trama abarca los acontecimientos del primer acto del musical de Broadway.",
+      "poster_path": "/xDGbZ0JJ3mYaGKy4Nzd9Kph6M9L.jpg",
+      "backdrop_path": "/uVlUu174iiKhsUGqnOSy46eIIMU.jpg",
+      "vote_average": "6.9",
+      "genre_ids": [
+        18,
+        10749,
+        14
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 10749,
+          "name": "Romance"
+        },
+        {
+          "id": 14,
+          "name": "Fantasy"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt1262426",
+      "release_date": "2024-10-16",
+      "imdb_rating": 7.3,
+      "imdb_votes": 228128,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 63.52,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    },
+    {
+      "id": 976893,
+      "media_type": "movie",
+      "title": "Perfect Days",
+      "title_es": "Días Perfectos",
+      "overview": "Hirayama is content with his life as a toilet cleaner in Tokyo. Outside of his structured routine, he cherishes music on cassette tapes, books, and taking photos of trees. Through unexpected encounters, he reflects on finding beauty in the world.",
+      "overview_es": "Hirayama parece totalmente satisfecho con su sencilla vida de limpiador de retretes en Tokio. Fuera de su estructurada rutina diaria, disfruta de su pasión por la música y los libros. Le encantan los árboles y les hace fotos. Una serie de encuentros inesperados revelan poco a poco más de su pasado.",
+      "poster_path": "/mjEk5Wwx6TYVqw29zSaUHclMIgp.jpg",
+      "backdrop_path": "/hjWxngV6tidwDkfJDEgMjHD2KEz.jpg",
+      "vote_average": "7.8",
+      "genre_ids": [
+        18
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "ja",
+      "imdb_id": "tt27503384",
+      "release_date": "2023-11-10",
+      "imdb_rating": 7.9,
+      "imdb_votes": 103709,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 63.43,
+      "_verdict": null,
+      "_reasoning": null,
+      "_pinned": false
+    }
+  ]
+}
