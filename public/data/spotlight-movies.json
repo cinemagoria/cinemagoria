@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-24T16:19:10.597Z",
+  "generated_at": "2026-04-24T16:45:31.927Z",
   "engine_version": "3.0.0",
   "media_type": "movie",
   "count": 22,
@@ -36,6 +36,8 @@
       "original_language": "en",
       "imdb_id": "tt27200708",
       "release_date": "2026-04-16",
+      "imdb_rating": 3.5,
+      "imdb_votes": 472,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -66,71 +68,8 @@
       "original_language": "tr",
       "imdb_id": "tt32888226",
       "release_date": "2026-03-05",
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1571900,
-      "media_type": "movie",
-      "title": "Dead Eyes",
-      "title_es": "Dead Eyes",
-      "overview": "After the death of his sister, Sean and his friends venture into a remote forest to search for his missing father, only to uncover his dark secrets, where grief has become a bridge between the living and the dead.",
-      "overview_es": "After the death of his sister, Sean and his friends venture into a remote forest to search for his missing father, only to uncover his dark secrets, where grief has become a bridge between the living and the dead.",
-      "poster_path": "/o7MYJveV146pg2HQbQuv2LFK09y.jpg",
-      "backdrop_path": "/tjnEZJUVP9aiDzANC3ZTUM2jCiD.jpg",
-      "vote_average": "0.0",
-      "genre_ids": [
-        27
-      ],
-      "genres": [
-        {
-          "id": 27,
-          "name": "Horror"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt33297308",
-      "release_date": "2026-02-10",
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1168719,
-      "media_type": "movie",
-      "title": "Silent Friend",
-      "title_es": "Stiller Freund",
-      "overview": "On the grounds of a medieval German university town looms an imposing Ginkgo biloba, a tree whose longevity stands in marked contrast to three intimate, human-scaled stories. In 1908, the university’s first female student gains admission into the prestigious botany department, confronting the sexism of both professors and peers. In 1972, amidst counterculture movements, a reserved student finds his attention captured by a fellow housemate and the geranium plant she studies. In 2020, during the COVID-19 pandemic, a neuroscientist from Hong Kong secures the help of a renowned botanist for an experiment on the old ginkgo tree.",
-      "overview_es": "On the grounds of a medieval German university town looms an imposing Ginkgo biloba, a tree whose longevity stands in marked contrast to three intimate, human-scaled stories. In 1908, the university’s first female student gains admission into the prestigious botany department, confronting the sexism of both professors and peers. In 1972, amidst counterculture movements, a reserved student finds his attention captured by a fellow housemate and the geranium plant she studies. In 2020, during the COVID-19 pandemic, a neuroscientist from Hong Kong secures the help of a renowned botanist for an experiment on the old ginkgo tree.",
-      "poster_path": "/r52BdT1QKYBbJv6OJfqJCAdDqfh.jpg",
-      "backdrop_path": "/sd49Wx5Tevlp1y6Huygv99ueXDt.jpg",
-      "vote_average": "8.1",
-      "genre_ids": [
-        18,
-        36
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 36,
-          "name": "History"
-        }
-      ],
-      "original_language": "de",
-      "imdb_id": "tt27811632",
-      "release_date": "2026-01-15",
+      "imdb_rating": 7.2,
+      "imdb_votes": 1021,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -161,6 +100,8 @@
       "original_language": "en",
       "imdb_id": "tt39150120",
       "release_date": "2026-03-27",
+      "imdb_rating": 7.2,
+      "imdb_votes": 465,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -201,6 +142,8 @@
       "original_language": "en",
       "imdb_id": "tt33071426",
       "release_date": "2026-03-26",
+      "imdb_rating": 7.5,
+      "imdb_votes": 26733,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -236,6 +179,82 @@
       "original_language": "en",
       "imdb_id": "tt36482679",
       "release_date": "2026-01-27",
+      "imdb_rating": 7.4,
+      "imdb_votes": 159,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 9000,
+      "_verdict": "noir",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": true
+    },
+    {
+      "id": 1168719,
+      "media_type": "movie",
+      "title": "Silent Friend",
+      "title_es": "Stiller Freund",
+      "overview": "On the grounds of a medieval German university town looms an imposing Ginkgo biloba, a tree whose longevity stands in marked contrast to three intimate, human-scaled stories. In 1908, the university’s first female student gains admission into the prestigious botany department, confronting the sexism of both professors and peers. In 1972, amidst counterculture movements, a reserved student finds his attention captured by a fellow housemate and the geranium plant she studies. In 2020, during the COVID-19 pandemic, a neuroscientist from Hong Kong secures the help of a renowned botanist for an experiment on the old ginkgo tree.",
+      "overview_es": "On the grounds of a medieval German university town looms an imposing Ginkgo biloba, a tree whose longevity stands in marked contrast to three intimate, human-scaled stories. In 1908, the university’s first female student gains admission into the prestigious botany department, confronting the sexism of both professors and peers. In 1972, amidst counterculture movements, a reserved student finds his attention captured by a fellow housemate and the geranium plant she studies. In 2020, during the COVID-19 pandemic, a neuroscientist from Hong Kong secures the help of a renowned botanist for an experiment on the old ginkgo tree.",
+      "poster_path": "/r52BdT1QKYBbJv6OJfqJCAdDqfh.jpg",
+      "backdrop_path": "/sd49Wx5Tevlp1y6Huygv99ueXDt.jpg",
+      "vote_average": "8.1",
+      "genre_ids": [
+        18,
+        36
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 36,
+          "name": "History"
+        }
+      ],
+      "original_language": "de",
+      "imdb_id": "tt27811632",
+      "release_date": "2026-01-15",
+      "imdb_rating": 7.6,
+      "imdb_votes": 1369,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 9000,
+      "_verdict": "noir",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": true
+    },
+    {
+      "id": 1141491,
+      "media_type": "movie",
+      "title": "Redoubt",
+      "title_es": "VÄRN",
+      "overview": "Affected by the powerful images in the pamphlet Om kriget kommer (If war comes), farmhand Karl-Göran Persson begins fortifying his house. Through years of harvesting scrap-metal, he transforms the house into a fortress, meant to protect him and his neighbors when the enemy attacks. As the task progresses, reality and the threat of future destruction become intertwined, and construction becomes an obsession for the lonely Karl-Göran.",
+      "overview_es": "Affected by the powerful images in the pamphlet Om kriget kommer (If war comes), farmhand Karl-Göran Persson begins fortifying his house. Through years of harvesting scrap-metal, he transforms the house into a fortress, meant to protect him and his neighbors when the enemy attacks. As the task progresses, reality and the threat of future destruction become intertwined, and construction becomes an obsession for the lonely Karl-Göran.",
+      "poster_path": "/jSREnLzAfq51mpmxRXDbk8dJ72u.jpg",
+      "backdrop_path": "/q0ff2gr4TZrBZ9aMfpCmHSyf1iq.jpg",
+      "vote_average": "0.0",
+      "genre_ids": [
+        18,
+        36
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 36,
+          "name": "History"
+        }
+      ],
+      "original_language": "sv",
+      "imdb_id": "tt35456230",
+      "release_date": "2026-03-27",
+      "imdb_rating": 7.1,
+      "imdb_votes": 94,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -276,6 +295,8 @@
       "original_language": "en",
       "imdb_id": "tt33301434",
       "release_date": "2026-04-17",
+      "imdb_rating": 6.8,
+      "imdb_votes": 150,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -285,67 +306,29 @@
       "_noir_match": true
     },
     {
-      "id": 1141491,
+      "id": 1571900,
       "media_type": "movie",
-      "title": "Redoubt",
-      "title_es": "VÄRN",
-      "overview": "Affected by the powerful images in the pamphlet Om kriget kommer (If war comes), farmhand Karl-Göran Persson begins fortifying his house. Through years of harvesting scrap-metal, he transforms the house into a fortress, meant to protect him and his neighbors when the enemy attacks. As the task progresses, reality and the threat of future destruction become intertwined, and construction becomes an obsession for the lonely Karl-Göran.",
-      "overview_es": "Affected by the powerful images in the pamphlet Om kriget kommer (If war comes), farmhand Karl-Göran Persson begins fortifying his house. Through years of harvesting scrap-metal, he transforms the house into a fortress, meant to protect him and his neighbors when the enemy attacks. As the task progresses, reality and the threat of future destruction become intertwined, and construction becomes an obsession for the lonely Karl-Göran.",
-      "poster_path": "/jSREnLzAfq51mpmxRXDbk8dJ72u.jpg",
-      "backdrop_path": "/q0ff2gr4TZrBZ9aMfpCmHSyf1iq.jpg",
+      "title": "Dead Eyes",
+      "title_es": "Dead Eyes",
+      "overview": "After the death of his sister, Sean and his friends venture into a remote forest to search for his missing father, only to uncover his dark secrets, where grief has become a bridge between the living and the dead.",
+      "overview_es": "After the death of his sister, Sean and his friends venture into a remote forest to search for his missing father, only to uncover his dark secrets, where grief has become a bridge between the living and the dead.",
+      "poster_path": "/o7MYJveV146pg2HQbQuv2LFK09y.jpg",
+      "backdrop_path": "/tjnEZJUVP9aiDzANC3ZTUM2jCiD.jpg",
       "vote_average": "0.0",
       "genre_ids": [
-        18,
-        36
+        27
       ],
       "genres": [
         {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 36,
-          "name": "History"
+          "id": 27,
+          "name": "Horror"
         }
       ],
-      "original_language": "sv",
-      "imdb_id": "tt35456230",
-      "release_date": "2026-03-27",
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1026933,
-      "media_type": "movie",
-      "title": "Paradise",
-      "title_es": "Paradise",
-      "overview": "In the wake of his father’s disappearance at sea, Kojo, a young Ghanaian, is drawn into a world of street gangs and deception. Meanwhile, in Quebec, Tony discovers his mother’s relationship with a mysterious sailor who may hold the key to finding the father he’s never met.",
-      "overview_es": "In the wake of his father’s disappearance at sea, Kojo, a young Ghanaian, is drawn into a world of street gangs and deception. Meanwhile, in Quebec, Tony discovers his mother’s relationship with a mysterious sailor who may hold the key to finding the father he’s never met.",
-      "poster_path": "/5rJRMT3OGrMtUP38aXwp0mRXfLg.jpg",
-      "backdrop_path": "/kNQ38Ay0FO1mDKO9aSVK83o4M1H.jpg",
-      "vote_average": "0.0",
-      "genre_ids": [
-        18,
-        53
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 53,
-          "name": "Thriller"
-        }
-      ],
-      "original_language": "fr",
-      "imdb_id": "tt27027989",
-      "release_date": "2026-08-12",
+      "original_language": "en",
+      "imdb_id": "tt33297308",
+      "release_date": "2026-02-10",
+      "imdb_rating": 7,
+      "imdb_votes": 29,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -376,101 +359,8 @@
       "original_language": "en",
       "imdb_id": "tt27856004",
       "release_date": "2026-03-14",
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1300954,
-      "media_type": "movie",
-      "title": "Spoiling You",
-      "title_es": "Spoiling You",
-      "overview": "When an ASMR Cosplay artist invites her No.1 fan for a private session, she reveals a terrifying secret that can't be unheard.",
-      "overview_es": "When an ASMR Cosplay artist invites her No.1 fan for a private session, she reveals a terrifying secret that can't be unheard.",
-      "poster_path": "/u1qF8CVYyrju1eguTJnLtSJCHLX.jpg",
-      "backdrop_path": "/ycgn3nBF9rEugFJ1LTJvLidA8yg.jpg",
-      "vote_average": "0.0",
-      "genre_ids": [
-        27
-      ],
-      "genres": [
-        {
-          "id": 27,
-          "name": "Horror"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt32251094",
-      "release_date": "2026-02-21",
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 843342,
-      "media_type": "movie",
-      "title": "Hamlet",
-      "title_es": "Hamlet",
-      "overview": "Shakespeare’s most enduring tragedy is reimagined in a bold, modern adaptation set within London’s elite South Asian community. When Hamlet (Riz Ahmed) returns for his father’s funeral, he is stunned to discover his uncle Claudius is marrying his newly widowed mother. Visited by his father’s ghost, Hamlet learns his brutal murder was at the hands of Claudius - and spirals into a quest for vengeance that exposes the rot at the heart of the family’s empire and threatens his own sanity.",
-      "overview_es": "Shakespeare’s most enduring tragedy is reimagined in a bold, modern adaptation set within London’s elite South Asian community. When Hamlet (Riz Ahmed) returns for his father’s funeral, he is stunned to discover his uncle Claudius is marrying his newly widowed mother. Visited by his father’s ghost, Hamlet learns his brutal murder was at the hands of Claudius - and spirals into a quest for vengeance that exposes the rot at the heart of the family’s empire and threatens his own sanity.",
-      "poster_path": "/7azHIOSrxo0VC5wYiwtGOnVehsH.jpg",
-      "backdrop_path": "/80K8REhL8wVESLmJk16zTMIS2BJ.jpg",
-      "vote_average": "5.3",
-      "genre_ids": [
-        18
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt7798632",
-      "release_date": "2026-02-06",
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1429348,
-      "media_type": "movie",
-      "title": "The Stranger",
-      "title_es": "El extranjero",
-      "overview": "Algiers, 1938. Meursault, a quiet and unassuming employee in his early thirties, attends his mother's funeral without shedding a tear. The next day, he begins a casual affair with Marie, a work colleague. He quickly slips back into his usual routine.",
-      "overview_es": "En la Argelia de los años treinta, el apático francés Meursault muestra una total indiferencia ante la vida. Su desapego emocional lo lleva a cometer un asesinato, seguido de un juicio que examina tanto el crimen como su carácter.",
-      "poster_path": "/11lx7Isd86SIPeNuWlAPjYTfr57.jpg",
-      "backdrop_path": "/aTjFGxR7K32HPxrdvJOVeXX1UCe.jpg",
-      "vote_average": "6.8",
-      "genre_ids": [
-        18,
-        80
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 80,
-          "name": "Crime"
-        }
-      ],
-      "original_language": "fr",
-      "imdb_id": "tt36243564",
-      "release_date": "2025-10-29",
+      "imdb_rating": 8.5,
+      "imdb_votes": 19,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -506,6 +396,40 @@
       "original_language": "tr",
       "imdb_id": "tt36472181",
       "release_date": "2026-03-06",
+      "imdb_rating": 7,
+      "imdb_votes": 524,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 9000,
+      "_verdict": "noir",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": true
+    },
+    {
+      "id": 843342,
+      "media_type": "movie",
+      "title": "Hamlet",
+      "title_es": "Hamlet",
+      "overview": "Shakespeare’s most enduring tragedy is reimagined in a bold, modern adaptation set within London’s elite South Asian community. When Hamlet (Riz Ahmed) returns for his father’s funeral, he is stunned to discover his uncle Claudius is marrying his newly widowed mother. Visited by his father’s ghost, Hamlet learns his brutal murder was at the hands of Claudius - and spirals into a quest for vengeance that exposes the rot at the heart of the family’s empire and threatens his own sanity.",
+      "overview_es": "Shakespeare’s most enduring tragedy is reimagined in a bold, modern adaptation set within London’s elite South Asian community. When Hamlet (Riz Ahmed) returns for his father’s funeral, he is stunned to discover his uncle Claudius is marrying his newly widowed mother. Visited by his father’s ghost, Hamlet learns his brutal murder was at the hands of Claudius - and spirals into a quest for vengeance that exposes the rot at the heart of the family’s empire and threatens his own sanity.",
+      "poster_path": "/7azHIOSrxo0VC5wYiwtGOnVehsH.jpg",
+      "backdrop_path": "/80K8REhL8wVESLmJk16zTMIS2BJ.jpg",
+      "vote_average": "5.3",
+      "genre_ids": [
+        18
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt7798632",
+      "release_date": "2026-02-06",
+      "imdb_rating": 6.4,
+      "imdb_votes": 473,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -541,6 +465,8 @@
       "original_language": "ar",
       "imdb_id": "tt21272942",
       "release_date": "2025-12-31",
+      "imdb_rating": 8.3,
+      "imdb_votes": 12042,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -550,27 +476,34 @@
       "_noir_match": true
     },
     {
-      "id": 1120382,
+      "id": 1429348,
       "media_type": "movie",
-      "title": "The Last Resort",
-      "title_es": "Paradis",
-      "overview": "When a Danish family finds themselves on a holiday island, in the midst of the first major refugee crisis in Europe in our time, our northern European, well-intentioned, humanistic values are put to the test.",
-      "overview_es": "When a Danish family finds themselves on a holiday island, in the midst of the first major refugee crisis in Europe in our time, our northern European, well-intentioned, humanistic values are put to the test.",
-      "poster_path": "/sFCBISiMYavYtCVXfoyQq0iTGd1.jpg",
-      "backdrop_path": null,
-      "vote_average": "0.0",
+      "title": "The Stranger",
+      "title_es": "El extranjero",
+      "overview": "Algiers, 1938. Meursault, a quiet and unassuming employee in his early thirties, attends his mother's funeral without shedding a tear. The next day, he begins a casual affair with Marie, a work colleague. He quickly slips back into his usual routine.",
+      "overview_es": "En la Argelia de los años treinta, el apático francés Meursault muestra una total indiferencia ante la vida. Su desapego emocional lo lleva a cometer un asesinato, seguido de un juicio que examina tanto el crimen como su carácter.",
+      "poster_path": "/11lx7Isd86SIPeNuWlAPjYTfr57.jpg",
+      "backdrop_path": "/aTjFGxR7K32HPxrdvJOVeXX1UCe.jpg",
+      "vote_average": "6.8",
       "genre_ids": [
-        18
+        18,
+        80
       ],
       "genres": [
         {
           "id": 18,
           "name": "Drama"
+        },
+        {
+          "id": 80,
+          "name": "Crime"
         }
       ],
-      "original_language": "da",
-      "imdb_id": "tt27552049",
-      "release_date": "2026-03-05",
+      "original_language": "fr",
+      "imdb_id": "tt36243564",
+      "release_date": "2025-10-29",
+      "imdb_rating": 7.1,
+      "imdb_votes": 3388,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -601,6 +534,8 @@
       "original_language": "af",
       "imdb_id": "tt39131323",
       "release_date": "2026-05-08",
+      "imdb_rating": 7.2,
+      "imdb_votes": 9,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -610,49 +545,14 @@
       "_noir_match": true
     },
     {
-      "id": 1480387,
+      "id": 1120382,
       "media_type": "movie",
-      "title": "undertone",
-      "title_es": "undertone",
-      "overview": "The host of a popular paranormal podcast becomes haunted by terrifying recordings mysteriously sent her way.",
-      "overview_es": "Una presentadora de pódcast de terror se muda con su madre terminal. Cintas misteriosas sobre vivencias paranormales de una pareja embarazada reflejan su situación, enloqueciendo.",
-      "poster_path": "/2PFgFMnrdCPXWiZl1PUvky7Mo9D.jpg",
-      "backdrop_path": "/qXxFWyur7jFkg2aQgENcXuyYeHF.jpg",
-      "vote_average": "6.5",
-      "genre_ids": [
-        27,
-        9648
-      ],
-      "genres": [
-        {
-          "id": 27,
-          "name": "Horror"
-        },
-        {
-          "id": 9648,
-          "name": "Mystery"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt35892608",
-      "release_date": "2026-03-12",
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1376484,
-      "media_type": "movie",
-      "title": "Roid",
-      "title_es": "রইদ",
-      "overview": "A solitary middle aged man marries a madwoman and builds a house on a vacant plot of land far from the village. However, his wife’s madness becomes a calamity in his tranquil life.",
-      "overview_es": "A solitary middle aged man marries a madwoman and builds a house on a vacant plot of land far from the village. However, his wife’s madness becomes a calamity in his tranquil life.",
-      "poster_path": "/sHewWBdFBJ1IDIvzCEpLOaeqTb9.jpg",
-      "backdrop_path": "/8BHZ6wUtvYlzib44dqPheODJZ2x.jpg",
+      "title": "The Last Resort",
+      "title_es": "Paradis",
+      "overview": "When a Danish family finds themselves on a holiday island, in the midst of the first major refugee crisis in Europe in our time, our northern European, well-intentioned, humanistic values are put to the test.",
+      "overview_es": "When a Danish family finds themselves on a holiday island, in the midst of the first major refugee crisis in Europe in our time, our northern European, well-intentioned, humanistic values are put to the test.",
+      "poster_path": "/sFCBISiMYavYtCVXfoyQq0iTGd1.jpg",
+      "backdrop_path": null,
       "vote_average": "0.0",
       "genre_ids": [
         18
@@ -663,9 +563,11 @@
           "name": "Drama"
         }
       ],
-      "original_language": "bn",
-      "imdb_id": "tt39199158",
-      "release_date": "2026-05-28",
+      "original_language": "da",
+      "imdb_id": "tt27552049",
+      "release_date": "2026-03-05",
+      "imdb_rating": 6.9,
+      "imdb_votes": 103,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -711,6 +613,8 @@
       "original_language": "en",
       "imdb_id": "tt37340919",
       "release_date": "2026-03-15",
+      "imdb_rating": 7.9,
+      "imdb_votes": 53,
       "rating_source": "imdb",
       "_curated": true,
       "_score": 9000,
@@ -720,19 +624,55 @@
       "_noir_match": true
     },
     {
-      "id": 1107166,
+      "id": 1026933,
       "media_type": "movie",
-      "title": "Psycho Killer",
-      "title_es": "Psycho Killer",
-      "overview": "Following the brutal murder of her husband, a Kansas highway patrol officer sets out on a journey to track down the perpetrator. As the hunt progresses, she comes to realize the man responsible is a sadistic serial killer, and the depth of his mental depravity and his sinister agenda is more twisted than anyone could have imagined.",
-      "overview_es": "Una agente de policía sigue la pista de un asesino después de que su marido, un patrullero de carretera, se convierta en una de sus víctimas.",
-      "poster_path": "/5xgxxmLivJXL8aF0HdZfpx8aAIo.jpg",
-      "backdrop_path": "/kt9p1cS4O72aSeFRGQzlLuI1mY4.jpg",
-      "vote_average": "5.6",
+      "title": "Paradise",
+      "title_es": "Paradise",
+      "overview": "In the wake of his father’s disappearance at sea, Kojo, a young Ghanaian, is drawn into a world of street gangs and deception. Meanwhile, in Quebec, Tony discovers his mother’s relationship with a mysterious sailor who may hold the key to finding the father he’s never met.",
+      "overview_es": "In the wake of his father’s disappearance at sea, Kojo, a young Ghanaian, is drawn into a world of street gangs and deception. Meanwhile, in Quebec, Tony discovers his mother’s relationship with a mysterious sailor who may hold the key to finding the father he’s never met.",
+      "poster_path": "/5rJRMT3OGrMtUP38aXwp0mRXfLg.jpg",
+      "backdrop_path": "/kNQ38Ay0FO1mDKO9aSVK83o4M1H.jpg",
+      "vote_average": "0.0",
+      "genre_ids": [
+        18,
+        53
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        }
+      ],
+      "original_language": "fr",
+      "imdb_id": "tt27027989",
+      "release_date": "2026-08-12",
+      "imdb_rating": 7.2,
+      "imdb_votes": 37,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 9000,
+      "_verdict": "noir",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": true
+    },
+    {
+      "id": 875828,
+      "media_type": "movie",
+      "title": "Peaky Blinders: The Immortal Man",
+      "title_es": "Peaky Blinders: El hombre inmortal",
+      "overview": "After his estranged son gets embroiled in a Nazi plot, self-exiled gangster Tommy Shelby must return to Birmingham to save his family — and his nation.",
+      "overview_es": "El gánster Tommy Shelby regresa a Birmingham para salvar a su familia —y a su país— cuando su hijo, del que se ha distanciado, se ve envuelto en un complot nazi.",
+      "poster_path": "/gRMalasZEzsZi4w2VFuYusfSfqf.jpg",
+      "backdrop_path": "/aouxo2EaR7QSGBBUNTITuW0lj4z.jpg",
+      "vote_average": "7.2",
       "genre_ids": [
         80,
-        27,
-        9648
+        18
       ],
       "genres": [
         {
@@ -740,18 +680,122 @@
           "name": "Crime"
         },
         {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt15574124",
+      "release_date": "2026-03-05",
+      "imdb_rating": 6.5,
+      "imdb_votes": 67365,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 9000,
+      "_verdict": "noir",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": true
+    },
+    {
+      "id": 1376484,
+      "media_type": "movie",
+      "title": "Roid",
+      "title_es": "রইদ",
+      "overview": "A solitary middle aged man marries a madwoman and builds a house on a vacant plot of land far from the village. However, his wife’s madness becomes a calamity in his tranquil life.",
+      "overview_es": "A solitary middle aged man marries a madwoman and builds a house on a vacant plot of land far from the village. However, his wife’s madness becomes a calamity in his tranquil life.",
+      "poster_path": "/sHewWBdFBJ1IDIvzCEpLOaeqTb9.jpg",
+      "backdrop_path": "/8BHZ6wUtvYlzib44dqPheODJZ2x.jpg",
+      "vote_average": "0.0",
+      "genre_ids": [
+        18
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "bn",
+      "imdb_id": "tt39199158",
+      "release_date": "2026-05-28",
+      "imdb_rating": 8.5,
+      "imdb_votes": 50,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 9000,
+      "_verdict": "noir",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": true
+    },
+    {
+      "id": 1159831,
+      "media_type": "movie",
+      "title": "The Bride!",
+      "title_es": "¡La novia!",
+      "overview": "A lonely Frankenstein travels to 1930s Chicago to ask groundbreaking scientist Dr. Euphronious to create a companion for him. The two revive a murdered young woman and The Bride is born. But what ensues is beyond what either of them imagined.",
+      "overview_es": "En el Chicago de los años 30, Frankenstein pide ayuda al Dr. Euphronius para crear una compañera. Dan vida a una mujer asesinada como la Novia, lo que desencadena un romance, el interés de la policía y un cambio social radical.",
+      "poster_path": "/lV8YHwGkYZsm6EfIqnhaSz2avKt.jpg",
+      "backdrop_path": "/l8rKKMU2M9dDULO9CEtDNdWAEUJ.jpg",
+      "vote_average": "6.3",
+      "genre_ids": [
+        878,
+        27,
+        14
+      ],
+      "genres": [
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        },
+        {
           "id": 27,
           "name": "Horror"
         },
         {
-          "id": 9648,
-          "name": "Mystery"
+          "id": 14,
+          "name": "Fantasy"
         }
       ],
       "original_language": "en",
-      "imdb_id": "tt1764551",
-      "release_date": "2026-02-19",
+      "imdb_id": "tt30851137",
+      "release_date": "2026-03-04",
+      "imdb_rating": 5.7,
+      "imdb_votes": 19825,
       "rating_source": "imdb",
+      "_curated": true,
+      "_score": 9000,
+      "_verdict": "noir",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": true
+    },
+    {
+      "id": 1300954,
+      "media_type": "movie",
+      "title": "Spoiling You",
+      "title_es": "Spoiling You",
+      "overview": "When an ASMR Cosplay artist invites her No.1 fan for a private session, she reveals a terrifying secret that can't be unheard.",
+      "overview_es": "When an ASMR Cosplay artist invites her No.1 fan for a private session, she reveals a terrifying secret that can't be unheard.",
+      "poster_path": "/u1qF8CVYyrju1eguTJnLtSJCHLX.jpg",
+      "backdrop_path": "/ycgn3nBF9rEugFJ1LTJvLidA8yg.jpg",
+      "vote_average": "0.0",
+      "genre_ids": [
+        27
+      ],
+      "genres": [
+        {
+          "id": 27,
+          "name": "Horror"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt32251094",
+      "release_date": "2026-02-21",
+      "imdb_rating": null,
+      "imdb_votes": null,
+      "rating_source": "tmdb",
       "_curated": true,
       "_score": 9000,
       "_verdict": "noir",
