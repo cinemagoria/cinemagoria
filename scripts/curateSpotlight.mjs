@@ -607,9 +607,9 @@ async function enrichAll(items, mediaType) {
                 const enriched = await enrichDetails(src.id, mediaType);
                 out[i] = {
                     ...enriched,
-                    imdb_rating: src.imdb_rating,
-                    imdb_votes: src.imdb_votes,
-                    rating_source: 'imdb',
+                    imdb_rating: src.imdb_rating ?? null,
+                    imdb_votes: src.imdb_votes ?? null,
+                    rating_source: src.imdb_rating ? 'imdb' : 'tmdb',
                     _curated: true,
                     _score: Number(src._score?.toFixed(2) ?? 0),
                     _verdict: src._verdict || null,
@@ -677,7 +677,7 @@ function isNoirReleased(rd) {
     return new Date(dateStr) <= NOW;
 }
 
-async function fetchNoirCandidates(noirIds, heroBlockedIds, mediaType) {
+async function fetchNoirCandidates(noirIds, heroBlockedIds, mediaType, imdbDb) {
     const candidates = [];
     const CONCURRENCY = 6;
     const eligible = [];
@@ -697,11 +697,15 @@ async function fetchNoirCandidates(noirIds, heroBlockedIds, mediaType) {
         while (queue.length) {
             const noir = queue.shift();
             try {
-                const detail = await tmdb(`/${mediaType}/${noir.tmdb_id}`, { language: 'en-US' });
+                const detail = await tmdb(`/${mediaType}/${noir.tmdb_id}`, {
+                    language: 'en-US',
+                    append_to_response: 'external_ids',
+                });
                 candidates.push({
                     ...detail,
                     id: noir.tmdb_id,
                     media_type: mediaType,
+                    imdb_id: detail.external_ids?.imdb_id || detail.imdb_id || null,
                     _noir_match: true,
                     _score: 9000,
                     _verdict: 'noir',
@@ -712,7 +716,38 @@ async function fetchNoirCandidates(noirIds, heroBlockedIds, mediaType) {
         }
     }
     await Promise.all(Array.from({ length: CONCURRENCY }, worker));
-    log('noir', `${mediaType}: ${candidates.length} noir candidates fetched from TMDB`);
+
+    const tconsts = candidates.map((c) => c.imdb_id).filter(Boolean);
+    if (tconsts.length && imdbDb) {
+        const ratingMap = new Map();
+        const CHUNK = 250;
+        for (let i = 0; i < tconsts.length; i += CHUNK) {
+            const slice = tconsts.slice(i, i + CHUNK);
+            const placeholders = slice.map(() => '?').join(',');
+            try {
+                const r = await imdbDb.execute({
+                    sql: `SELECT tconst, average_rating, num_votes FROM imdb_ratings WHERE tconst IN (${placeholders})`,
+                    args: slice,
+                });
+                for (const row of r.rows) {
+                    ratingMap.set(row.tconst, {
+                        rating: Number(row.average_rating),
+                        votes: Number(row.num_votes),
+                    });
+                }
+            } catch {}
+        }
+        for (const c of candidates) {
+            const r = ratingMap.get(c.imdb_id);
+            if (r) {
+                c.imdb_rating = r.rating;
+                c.imdb_votes = r.votes;
+            }
+        }
+        log('noir', `${mediaType}: attached IMDb ratings to ${ratingMap.size}/${candidates.length} noir candidates`);
+    }
+
+    log('noir', `${mediaType}: ${candidates.length} noir candidates ready`);
     return candidates;
 }
 
@@ -879,8 +914,8 @@ async function main() {
     const pinnedTv = pinnedRaw.tv || [];
 
     const [noirMovies, noirTv] = await Promise.all([
-        fetchNoirCandidates(noirIds, heroBlockedIds, 'movie'),
-        fetchNoirCandidates(noirIds, heroBlockedIds, 'tv'),
+        fetchNoirCandidates(noirIds, heroBlockedIds, 'movie', imdbDb),
+        fetchNoirCandidates(noirIds, heroBlockedIds, 'tv', imdbDb),
     ]);
 
     const [afterDiversityMovies, afterDiversityTv] = await Promise.all([
