@@ -26,8 +26,10 @@ const SPOTLIGHT_TARGET = 22;
 const GEMINI_INPUT_LIMIT = 50;
 
 const MIN_IMDB_RATING = 5.0;
-const MIN_IMDB_VOTES = 1000;
-const MIN_TMDB_VOTES = 500;
+const MIN_IMDB_VOTES_DEFAULT = 300;
+const MIN_IMDB_VOTES_NOIR = 50;
+const MIN_TMDB_VOTES_DEFAULT = 100;
+const MIN_TMDB_VOTES_NOIR = 10;
 
 const GENRE_HARD_EXCLUDE = new Set([
     16,     // Animation
@@ -38,17 +40,6 @@ const GENRE_HARD_EXCLUDE = new Set([
     10766,  // Soap (TV)
     10767,  // Talk (TV)
     10763,  // News (TV)
-]);
-const GENRE_HEAVY_PENALTY = new Set([
-    14,     // Fantasy (movie)
-    10749,  // Romance (movie)
-    10402,  // Music (movie)
-]);
-const GENRE_LIGHT_PENALTY = new Set([
-    35,     // Comedy
-    28,     // Action (movie)
-    12,     // Adventure (movie)
-    10759,  // Action & Adventure (TV)
 ]);
 const GENRE_BOOST = new Set([
     27,     // Horror
@@ -61,6 +52,8 @@ const GENRE_BOOST = new Set([
     99,     // Documentary
     878,    // Sci-Fi (movie)
     80,     // Crime
+    37,     // Western (movie)
+    10765,  // Sci-Fi & Fantasy (TV)
 ]);
 
 const NOW = new Date();
@@ -134,7 +127,7 @@ function readJsonSafe(filePath, fallback) {
     }
 }
 
-async function fetchCandidates(mediaType) {
+async function fetchCandidates(mediaType, noirIds) {
     const pool = new Map();
     const putAll = (items) => {
         for (const it of items || []) {
@@ -166,11 +159,48 @@ async function fetchCandidates(mediaType) {
                     include_adult: false,
                     [dateGteField]: discoverGte,
                     [dateLteField]: todayISO(),
-                    'vote_count.gte': MIN_TMDB_VOTES,
+                    'vote_count.gte': MIN_TMDB_VOTES_DEFAULT,
                     page: p,
                 });
                 putAll(d.results);
             } catch (e) { log('warn', `discover ${mediaType} ${sort} p${p}:`, e.message); }
+        }
+    }
+
+    // Pull in any noir_historical IDs the trending/discover passes missed.
+    // Goal: noir_historical acts as a *guide* — its titles join the regular
+    // candidate pool and go through the same hard filters / IMDb gate, but
+    // with relaxed vote thresholds via _noir_match. They are not forced
+    // first anymore.
+    if (noirIds) {
+        const missingNoirIds = [];
+        for (const [, noir] of noirIds) {
+            if (noir.media_type !== mediaType) continue;
+            if (!pool.has(noir.tmdb_id)) missingNoirIds.push(noir.tmdb_id);
+        }
+        if (missingNoirIds.length) {
+            const CONCURRENCY = 6;
+            const queue = [...missingNoirIds];
+            async function worker() {
+                while (queue.length) {
+                    const id = queue.shift();
+                    try {
+                        const detail = await tmdb(`/${mediaType}/${id}`, { language: 'en-US' });
+                        if (!pool.has(id)) {
+                            pool.set(id, { ...detail, media_type: mediaType });
+                        }
+                    } catch (e) {
+                        log('warn', `noir hydrate ${mediaType}/${id}: ${e.message}`);
+                    }
+                }
+            }
+            await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+            log('pool', `${mediaType}: pulled ${missingNoirIds.length} noir_historical id(s) into pool`);
+        }
+
+        for (const it of pool.values()) {
+            const key = `${it.id}-${mediaType}`;
+            if (noirIds.has(key)) it._noir_match = true;
         }
     }
 
@@ -188,13 +218,57 @@ async function hydrateTvLastAired(candidates) {
                 const detail = await tmdb(`/tv/${c.id}`, { language: 'en-US' });
                 c.last_air_date = detail.last_air_date || null;
                 c.status = detail.status || null;
+                c.in_production = detail.in_production ?? null;
+                c.next_episode_to_air = detail.next_episode_to_air || null;
             } catch {
                 c.last_air_date = c.first_air_date || null;
             }
+            // "Currently airing" = mid-season or imminent next episode.
+            // Falls back to a recent last_air_date when TMDB hasn't yet
+            // populated next_episode (e.g. between mid-season breaks).
+            const status = c.status || '';
+            const next = c.next_episode_to_air;
+            const lastAiredDays = c.last_air_date
+                ? (NOW - new Date(c.last_air_date)) / (1000 * 60 * 60 * 24)
+                : Infinity;
+            c._is_currently_airing = !!(
+                (status === 'Returning Series' || status === 'In Production') &&
+                (next || lastAiredDays <= 45)
+            );
         }
     }
     await Promise.all(Array.from({ length: CONCURRENCY }, worker));
     log('hydrate', `tv: fetched last_air_date for ${candidates.length} candidates`);
+    return candidates;
+}
+
+async function hydrateMovieReleaseTypes(candidates) {
+    // TMDB release types: 1=Premiere, 2=Theatrical(limited), 3=Theatrical,
+    // 4=Digital, 5=Physical, 6=TV. A pure-festival title only has type 1
+    // entries — we want to filter those out of the spotlight carousel.
+    const CONCURRENCY = 8;
+    const queue = [...candidates];
+    async function worker() {
+        while (queue.length) {
+            const c = queue.shift();
+            try {
+                const d = await tmdb(`/movie/${c.id}/release_dates`);
+                const types = new Set();
+                for (const country of d.results || []) {
+                    for (const r of country.release_dates || []) {
+                        if (!r.release_date) continue;
+                        if (new Date(r.release_date) > NOW) continue;
+                        if (Number.isFinite(r.type)) types.add(r.type);
+                    }
+                }
+                c._release_types = types;
+            } catch {
+                c._release_types = new Set();
+            }
+        }
+    }
+    await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+    log('hydrate', `movie: fetched release_dates for ${candidates.length} candidates`);
     return candidates;
 }
 
@@ -223,6 +297,15 @@ function hardFilterLocal(candidates, mediaType, heroBlockedIds, manuallyExcluded
             if (!rd) return false;
             if (!isReleased(rd)) return false;
             if (rd < MOVIE_WINDOW_START) return false;
+
+            // Festival-only guard: require at least one non-premiere release
+            // (theatrical limited / theatrical / digital / physical) before
+            // today. Skips Sundance/Berlinale-only titles. If we never got
+            // release_dates (network hiccup), don't reject — fall through.
+            if (c._release_types && c._release_types.size > 0) {
+                const hasRealRelease = [2, 3, 4, 5].some((t) => c._release_types.has(t));
+                if (!hasRealRelease) return false;
+            }
         } else {
             const lastAired = c.last_air_date || c.first_air_date;
             if (!lastAired) return false;
@@ -232,7 +315,8 @@ function hardFilterLocal(candidates, mediaType, heroBlockedIds, manuallyExcluded
             if (c.first_air_date && !isReleased(c.first_air_date)) return false;
         }
 
-        if ((c.vote_count ?? 0) < MIN_TMDB_VOTES) return false;
+        const minTmdb = c._noir_match ? MIN_TMDB_VOTES_NOIR : MIN_TMDB_VOTES_DEFAULT;
+        if ((c.vote_count ?? 0) < minTmdb) return false;
 
         return true;
     });
@@ -288,7 +372,8 @@ async function imdbRatingGate(candidates, mediaType, imdbDb) {
         const r = ratingMap.get(tconst);
         if (!r) continue;
         if (!Number.isFinite(r.rating) || r.rating < MIN_IMDB_RATING) continue;
-        if (!Number.isFinite(r.votes) || r.votes < MIN_IMDB_VOTES) continue;
+        const minVotes = c._noir_match ? MIN_IMDB_VOTES_NOIR : MIN_IMDB_VOTES_DEFAULT;
+        if (!Number.isFinite(r.votes) || r.votes < minVotes) continue;
         surviving.push({ ...c, imdb_id: tconst, imdb_rating: r.rating, imdb_votes: r.votes });
     }
     log('imdb', `${mediaType}: ${candidates.length} → ${surviving.length} after IMDb gate`);
@@ -302,17 +387,15 @@ function scoreCandidate(c, mediaType, noirIds, heroBlockedIds) {
 
     score += Math.log10(Math.max(c.imdb_votes, 10)) * 2;
 
+    // Genre policy: hard-exclude (animation/family/etc.) is enforced upstream
+    // in hardFilterLocal. Beyond that, we only *boost* noir-aligned genres
+    // and let Gemini make the final call on borderline genres (comedy,
+    // action, romance, fantasy, music). No genre penalties here — a thriller
+    // that happens to also be tagged "Comedy" should still rank well if
+    // Gemini accepts it.
     const genreIds = c.genre_ids || (c.genres || []).map((g) => g.id);
-    let boostCount = 0;
-    let penaltyCount = 0;
     for (const g of genreIds) {
-        if (GENRE_BOOST.has(g)) { score += 5; boostCount++; }
-        else if (GENRE_HEAVY_PENALTY.has(g)) { score -= 10; penaltyCount++; }
-        else if (GENRE_LIGHT_PENALTY.has(g)) penaltyCount++;
-    }
-    if (boostCount === 0) {
-        score -= penaltyCount * 5;
-        score -= 6; // no cinemagoria-aligned genre at all
+        if (GENRE_BOOST.has(g)) score += 5;
     }
 
     if ((c.popularity ?? 0) > 200 && c.imdb_rating < 7.0) score -= 8;
@@ -335,6 +418,7 @@ function scoreCandidate(c, mediaType, noirIds, heroBlockedIds) {
             if (lastAiredAge <= 3) score += 4;
             else if (lastAiredAge <= 6) score += 2;
         }
+        if (c._is_currently_airing) score += 6;
     }
 
     const key = `${c.id}-${mediaType}`;
@@ -507,22 +591,41 @@ async function callGemini(prompt) {
 }
 
 async function geminiCurateBoth(movieCandidates, tvCandidates, heroExamples) {
-    const movieSlice = movieCandidates.slice(0, GEMINI_INPUT_LIMIT);
-    const tvSlice = tvCandidates.slice(0, GEMINI_INPUT_LIMIT);
+    // Noir matches are pre-vetted by the curator (noir_historical) and
+    // auto-pass Gemini classification. We only spend tokens classifying the
+    // non-noir slice. Auto-passed noir items get a "noir" verdict so the
+    // downstream sort can still tell them apart.
+    const splitNoir = (list) => ({
+        noir: list.filter((c) => c._noir_match).map((c) => ({
+            ...c,
+            _verdict: 'noir',
+            _reasoning: 'noir_historical guide-match (auto-included)',
+        })),
+        nonNoir: list.filter((c) => !c._noir_match),
+    });
+
+    const { noir: noirMovies, nonNoir: nonNoirMovies } = splitNoir(movieCandidates);
+    const { noir: noirTv, nonNoir: nonNoirTv } = splitNoir(tvCandidates);
+
+    const movieSlice = nonNoirMovies.slice(0, GEMINI_INPUT_LIMIT);
+    const tvSlice = nonNoirTv.slice(0, GEMINI_INPUT_LIMIT);
 
     if (!movieSlice.length && !tvSlice.length) {
-        return { movies: [], tv: [] };
+        return { movies: noirMovies, tv: noirTv };
     }
 
     const prompt = buildUnifiedGeminiPrompt(movieSlice, tvSlice, heroExamples);
-    log('gemini', `unified call: ${movieSlice.length} movies + ${tvSlice.length} tv (1 request)`);
+    log('gemini', `unified call: ${movieSlice.length} movies + ${tvSlice.length} tv (1 request, +${noirMovies.length}/${noirTv.length} noir auto-passed)`);
 
     let parsed;
     try {
         parsed = await callGemini(prompt);
     } catch (e) {
         log('gemini', `FAILED (${e.message}) — falling back to score-only ranking for both media types`);
-        return { movies: movieCandidates, tv: tvCandidates };
+        return {
+            movies: [...noirMovies, ...nonNoirMovies],
+            tv: [...noirTv, ...nonNoirTv],
+        };
     }
 
     const movieDecisions = new Map();
@@ -549,8 +652,8 @@ async function geminiCurateBoth(movieCandidates, tvCandidates, heroExamples) {
     };
 
     return {
-        movies: applyDecisions(movieSlice, movieDecisions, 'movie'),
-        tv: applyDecisions(tvSlice, tvDecisions, 'tv'),
+        movies: [...noirMovies, ...applyDecisions(movieSlice, movieDecisions, 'movie')],
+        tv: [...noirTv, ...applyDecisions(tvSlice, tvDecisions, 'tv')],
     };
 }
 
@@ -616,6 +719,7 @@ async function enrichAll(items, mediaType) {
                     _reasoning: src._reasoning || null,
                     _pinned: src._pinned || false,
                     _noir_match: src._noir_match || false,
+                    _is_currently_airing: src._is_currently_airing || false,
                 };
             } catch (e) {
                 log('warn', `enrich ${mediaType}/${src.id} failed: ${e.message}`);
@@ -655,100 +759,6 @@ async function loadNoirHistoricalIds(mainDb) {
     }
     log('noir', `noir_historical has ${map.size} active titles`);
     return map;
-}
-
-function parseNoirReleaseDate(rd) {
-    if (!rd) return null;
-    const match = rd.match(/^(\d{4}-\d{2}-\d{2})/);
-    if (match) return match[1];
-    const yearMatch = rd.match(/^(\d{4})/);
-    if (yearMatch) return `${yearMatch[1]}-01-01`;
-    return null;
-}
-
-function isNoirReleased(rd) {
-    if (!rd) return false;
-    const dateStr = parseNoirReleaseDate(rd);
-    if (!dateStr) return false;
-    const releaseType = rd.toLowerCase();
-    if (releaseType.includes('premiere') && !releaseType.includes('s1') && !releaseType.includes('s2') && !releaseType.includes('s3')) {
-        return new Date(dateStr) <= NOW;
-    }
-    return new Date(dateStr) <= NOW;
-}
-
-async function fetchNoirCandidates(noirIds, heroBlockedIds, mediaType, imdbDb) {
-    const candidates = [];
-    const CONCURRENCY = 6;
-    const eligible = [];
-
-    for (const [key, noir] of noirIds) {
-        if (noir.media_type !== mediaType) continue;
-        if (heroBlockedIds.has(key)) continue;
-        const released = isNoirReleased(noir.release_date);
-        if (!released) continue;
-        eligible.push(noir);
-    }
-
-    log('noir', `${mediaType}: ${eligible.length} noir candidates (not in hero, released)`);
-
-    const queue = [...eligible];
-    async function worker() {
-        while (queue.length) {
-            const noir = queue.shift();
-            try {
-                const detail = await tmdb(`/${mediaType}/${noir.tmdb_id}`, {
-                    language: 'en-US',
-                    append_to_response: 'external_ids',
-                });
-                candidates.push({
-                    ...detail,
-                    id: noir.tmdb_id,
-                    media_type: mediaType,
-                    imdb_id: detail.external_ids?.imdb_id || detail.imdb_id || null,
-                    _noir_match: true,
-                    _score: 9000,
-                    _verdict: 'noir',
-                });
-            } catch (e) {
-                log('warn', `noir enrich ${mediaType}/${noir.tmdb_id} failed: ${e.message}`);
-            }
-        }
-    }
-    await Promise.all(Array.from({ length: CONCURRENCY }, worker));
-
-    const tconsts = candidates.map((c) => c.imdb_id).filter(Boolean);
-    if (tconsts.length && imdbDb) {
-        const ratingMap = new Map();
-        const CHUNK = 250;
-        for (let i = 0; i < tconsts.length; i += CHUNK) {
-            const slice = tconsts.slice(i, i + CHUNK);
-            const placeholders = slice.map(() => '?').join(',');
-            try {
-                const r = await imdbDb.execute({
-                    sql: `SELECT tconst, average_rating, num_votes FROM imdb_ratings WHERE tconst IN (${placeholders})`,
-                    args: slice,
-                });
-                for (const row of r.rows) {
-                    ratingMap.set(row.tconst, {
-                        rating: Number(row.average_rating),
-                        votes: Number(row.num_votes),
-                    });
-                }
-            } catch {}
-        }
-        for (const c of candidates) {
-            const r = ratingMap.get(c.imdb_id);
-            if (r) {
-                c.imdb_rating = r.rating;
-                c.imdb_votes = r.votes;
-            }
-        }
-        log('noir', `${mediaType}: attached IMDb ratings to ${ratingMap.size}/${candidates.length} noir candidates`);
-    }
-
-    log('noir', `${mediaType}: ${candidates.length} noir candidates ready`);
-    return candidates;
 }
 
 async function loadHeroExamples(mainDb) {
@@ -830,10 +840,12 @@ async function applyManualPins(finalList, mediaType, pinnedIds, heroBlockedIds, 
 async function curateUpToGemini(mediaType, heroBlockedIds, manualExcluded, imdbDb, noirIds) {
     log(mediaType, '--- START ---');
 
-    let pool = await fetchCandidates(mediaType);
+    let pool = await fetchCandidates(mediaType, noirIds);
 
     if (mediaType === 'tv') {
         pool = await hydrateTvLastAired(pool);
+    } else {
+        pool = await hydrateMovieReleaseTypes(pool);
     }
 
     const afterHard = hardFilterLocal(pool, mediaType, heroBlockedIds, manualExcluded);
@@ -850,21 +862,34 @@ async function curateUpToGemini(mediaType, heroBlockedIds, manualExcluded, imdbD
     return afterDiversity;
 }
 
-async function finishCurate(mediaType, noirCandidates, afterGemini, manualPinned, heroBlockedIds, imdbDb) {
-    const noirIds = new Set(noirCandidates.map((c) => c.id));
-    const tmdbFiltered = afterGemini.filter((c) => !noirIds.has(c.id));
+async function finishCurate(mediaType, afterGemini, manualPinned, heroBlockedIds, imdbDb) {
+    // Final ordering:
+    //   - TV: bucket-sort — currently_airing first (by score desc), then
+    //     not-airing-but-recent (by score desc). This puts a fresh
+    //     "Returning Series" with a noir match ahead of an "Ended" noir
+    //     title, which was the regression we were fixing.
+    //   - Movie: pure score-desc. The festival-only filter already removed
+    //     the Sundance/Berlinale-only titles upstream.
+    let ordered;
+    if (mediaType === 'tv') {
+        const airing = afterGemini
+            .filter((c) => c._is_currently_airing)
+            .sort((a, b) => (b._score ?? 0) - (a._score ?? 0));
+        const rest = afterGemini
+            .filter((c) => !c._is_currently_airing)
+            .sort((a, b) => (b._score ?? 0) - (a._score ?? 0));
+        ordered = [...airing, ...rest];
+        log(mediaType, `bucket sort: ${airing.length} airing + ${rest.length} other`);
+    } else {
+        ordered = [...afterGemini].sort((a, b) => (b._score ?? 0) - (a._score ?? 0));
+    }
 
-    const noirSlice = noirCandidates.slice(0, SPOTLIGHT_TARGET);
-    const remainingSlots = Math.max(0, SPOTLIGHT_TARGET - noirSlice.length);
-    const tmdbSlice = tmdbFiltered.slice(0, remainingSlots + 4);
+    // Take a small over-fetch buffer in case some enrich calls fail.
+    const slice = ordered.slice(0, SPOTLIGHT_TARGET + 6);
+    const enriched = await enrichAll(slice, mediaType);
 
-    log(mediaType, `noir-first: ${noirSlice.length} noir + ${tmdbSlice.length} TMDB fill`);
-
-    const noirEnriched = await enrichAll(noirSlice, mediaType);
-    const tmdbEnriched = remainingSlots > 0 ? await enrichAll(tmdbSlice, mediaType) : [];
-
-    const combined = [...noirEnriched, ...tmdbEnriched.slice(0, remainingSlots)];
-    const withPins = await applyManualPins(combined, mediaType, manualPinned, heroBlockedIds, imdbDb);
+    const trimmed = enriched.slice(0, SPOTLIGHT_TARGET);
+    const withPins = await applyManualPins(trimmed, mediaType, manualPinned, heroBlockedIds, imdbDb);
 
     return withPins.slice(0, SPOTLIGHT_TARGET + manualPinned.length);
 }
@@ -913,11 +938,12 @@ async function main() {
     const pinnedMovies = pinnedRaw.movie || [];
     const pinnedTv = pinnedRaw.tv || [];
 
-    const [noirMovies, noirTv] = await Promise.all([
-        fetchNoirCandidates(noirIds, heroBlockedIds, 'movie', imdbDb),
-        fetchNoirCandidates(noirIds, heroBlockedIds, 'tv', imdbDb),
-    ]);
-
+    // noir_historical IDs are now merged into the regular candidate pool
+    // inside fetchCandidates() and routed through the same hard-filter +
+    // IMDb-gate + Gemini pipeline as everything else. They keep their
+    // priority via _noir_match (lower vote thresholds, +20 score, Gemini
+    // auto-pass) but no longer bypass quality gates or get forced into
+    // the first slots of the carousel.
     const [afterDiversityMovies, afterDiversityTv] = await Promise.all([
         curateUpToGemini('movie', heroBlockedIds, excludedMovies, imdbDb, noirIds),
         curateUpToGemini('tv', heroBlockedIds, excludedTv, imdbDb, noirIds),
@@ -927,8 +953,8 @@ async function main() {
         await geminiCurateBoth(afterDiversityMovies, afterDiversityTv, heroExamples);
 
     const [movies, tv] = await Promise.all([
-        finishCurate('movie', noirMovies, afterGeminiMovies, pinnedMovies, heroBlockedIds, imdbDb),
-        finishCurate('tv', noirTv, afterGeminiTv, pinnedTv, heroBlockedIds, imdbDb),
+        finishCurate('movie', afterGeminiMovies, pinnedMovies, heroBlockedIds, imdbDb),
+        finishCurate('tv', afterGeminiTv, pinnedTv, heroBlockedIds, imdbDb),
     ]);
 
     const outDir = join(ROOT, 'public', 'data');
