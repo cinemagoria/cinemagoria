@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-04-25T03:51:19.885Z",
+  "generated_at": "2026-04-25T04:23:16.415Z",
   "engine_version": "3.0.0",
   "media_type": "tv",
-  "count": 22,
+  "count": 13,
   "results": [
     {
       "id": 245927,
@@ -38,6 +38,46 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 97.16,
+      "_verdict": "noir",
+      "_reasoning": "noir_historical guide-match (auto-included)",
+      "_pinned": false,
+      "_noir_match": true,
+      "_is_currently_airing": true
+    },
+    {
+      "id": 245318,
+      "media_type": "tv",
+      "title": "Margo's Got Money Troubles",
+      "title_es": "Margo tiene problemas de dinero",
+      "overview": "The daughter of a former Hooter's waitress and an ex-pro wrestler, Margo is a recent college dropout and aspiring writer. Faced with a new baby, mounting pile of bills, and dwindling number of ways to pay them, Margo must find a way forward.",
+      "overview_es": "La escritora en ciernes Margo Millet se queda embarazada, lo que la obliga a dejar la universidad y la lleva a la ruina. Pero cuando aparece su padre, un ex luchador profesional con el que no tenía relación, Margo halla una forma inesperada de rentabilizar su talento para contar historias.",
+      "poster_path": "/kMb8hCou8RZf7uXE1rTE8ZDgcvg.jpg",
+      "backdrop_path": "/5O9CNnYuH1U0L3ym7q7q93eH99u.jpg",
+      "vote_average": "8.0",
+      "genre_ids": [
+        18,
+        35
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 35,
+          "name": "Comedy"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt31137273",
+      "first_air_date": "2026-04-14",
+      "last_air_date": "2026-04-21",
+      "status": "Returning Series",
+      "imdb_rating": 6.9,
+      "imdb_votes": 634,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 96,
       "_verdict": "noir",
       "_reasoning": "noir_historical guide-match (auto-included)",
       "_pinned": false,
@@ -120,46 +160,6 @@
       "_is_currently_airing": true
     },
     {
-      "id": 245318,
-      "media_type": "tv",
-      "title": "Margo's Got Money Troubles",
-      "title_es": "Margo tiene problemas de dinero",
-      "overview": "The daughter of a former Hooter's waitress and an ex-pro wrestler, Margo is a recent college dropout and aspiring writer. Faced with a new baby, mounting pile of bills, and dwindling number of ways to pay them, Margo must find a way forward.",
-      "overview_es": "La escritora en ciernes Margo Millet se queda embarazada, lo que la obliga a dejar la universidad y la lleva a la ruina. Pero cuando aparece su padre, un ex luchador profesional con el que no tenía relación, Margo halla una forma inesperada de rentabilizar su talento para contar historias.",
-      "poster_path": "/kMb8hCou8RZf7uXE1rTE8ZDgcvg.jpg",
-      "backdrop_path": "/5O9CNnYuH1U0L3ym7q7q93eH99u.jpg",
-      "vote_average": "8.0",
-      "genre_ids": [
-        18,
-        35
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 35,
-          "name": "Comedy"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt31137273",
-      "first_air_date": "2026-04-14",
-      "last_air_date": "2026-04-21",
-      "status": "Returning Series",
-      "imdb_rating": 6.9,
-      "imdb_votes": 634,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 90,
-      "_verdict": "noir",
-      "_reasoning": "noir_historical guide-match (auto-included)",
-      "_pinned": false,
-      "_noir_match": true,
-      "_is_currently_airing": true
-    },
-    {
       "id": 87917,
       "media_type": "tv",
       "title": "For All Mankind",
@@ -198,126 +198,6 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 83.48,
-      "_verdict": "cinemagoria",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": false,
-      "_is_currently_airing": true
-    },
-    {
-      "id": 56570,
-      "media_type": "tv",
-      "title": "Outlander",
-      "title_es": "Outlander",
-      "overview": "The story of Claire Randall, a married combat nurse from 1945 who is mysteriously swept back in time to 1743, where she is immediately thrown into an unknown world where her life is threatened. When she is forced to marry Jamie, a chivalrous and romantic young Scottish warrior, a passionate affair is ignited that tears Claire's heart between two vastly different men in two irreconcilable lives.",
-      "overview_es": "Sigue la historia de Claire Randall, una enfermera de combate casada en los años 40, que misteriosamente es arrastrada atrás en el tiempo hasta 1743, donde se lanza de inmediato a un mundo desconocido, viéndose amenazada su propia vida. Cuando se ve obligada a casarse con Jamie Fraser, un joven guerrero escocés caballeroso y romántico, Claire comienza un pasional triángulo entre dos hombres muy diferentes con dos vidas irreconciliables.",
-      "poster_path": "/bxBmfyzK0ARF9hqf2pbFWsddH14.jpg",
-      "backdrop_path": "/nf3Vlxm3C9U1aKUUQHmKFZmxPSc.jpg",
-      "vote_average": "8.2",
-      "genre_ids": [
-        18,
-        10765
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 10765,
-          "name": "Sci-Fi & Fantasy"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt3006802",
-      "first_air_date": "2014-08-09",
-      "last_air_date": "2026-04-17",
-      "status": "Returning Series",
-      "imdb_rating": 8.3,
-      "imdb_votes": 199564,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 80.4,
-      "_verdict": "neutral",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": false,
-      "_is_currently_airing": true
-    },
-    {
-      "id": 250307,
-      "media_type": "tv",
-      "title": "The Pitt",
-      "title_es": "The Pitt",
-      "overview": "The staff of Pittsburgh's Trauma Medical Center work around the clock to save lives in an overcrowded and underfunded emergency department.",
-      "overview_es": "The Pitt ofrece una visión realista de los retos a los que se enfrenta el personal sanitario en los Estados Unidos de hoy, visto a través de la lente de los héroes de primera línea que trabajan en un hospital de la actualidad en Pittsburgh, Pensilvania.",
-      "poster_path": "/kvFSpESyBZMjaeOJDx7RS3P1jey.jpg",
-      "backdrop_path": "/z3BkMbCy5ajZPMyKEUwsPHuz2cV.jpg",
-      "vote_average": "8.7",
-      "genre_ids": [
-        18
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt31938062",
-      "first_air_date": "2025-01-09",
-      "last_air_date": "2026-04-16",
-      "status": "Returning Series",
-      "imdb_rating": 8.9,
-      "imdb_votes": 136701,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 78.67,
-      "_verdict": "neutral",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": false,
-      "_is_currently_airing": true
-    },
-    {
-      "id": 127529,
-      "media_type": "tv",
-      "title": "Bloodhounds",
-      "title_es": "Perros de caza",
-      "overview": "Faced with ruthless foes with a violent thirst, two young boxers band together — risking life and limb to bring justice and protect their loved ones.",
-      "overview_es": "Dos jóvenes boxeadores se alían con un prestamista benévolo para acabar con un despiadado usurero que se aprovecha de los más endeudados... y desesperados.",
-      "poster_path": "/uSQzD7TXsL96J5ggDrJFdUs8uXU.jpg",
-      "backdrop_path": "/zhsEnDNCQX5dlI2wbKzV90pV0B9.jpg",
-      "vote_average": "8.4",
-      "genre_ids": [
-        18,
-        10759,
-        80
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 10759,
-          "name": "Action & Adventure"
-        },
-        {
-          "id": 80,
-          "name": "Crime"
-        }
-      ],
-      "original_language": "ko",
-      "imdb_id": "tt26315487",
-      "first_air_date": "2023-06-09",
-      "last_air_date": "2026-04-03",
-      "status": "Returning Series",
-      "imdb_rating": 8.1,
-      "imdb_votes": 26359,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 77.44,
       "_verdict": "cinemagoria",
       "_reasoning": null,
       "_pinned": false,
@@ -410,121 +290,6 @@
       "_is_currently_airing": true
     },
     {
-      "id": 124101,
-      "media_type": "tv",
-      "title": "Hacks",
-      "title_es": "Hacks",
-      "overview": "Explore a dark mentorship that forms between Deborah Vance, a legendary Las Vegas comedian, and an entitled, outcast 25-year-old.",
-      "overview_es": "Explora la oscura tutoría que se forma entre Deborah Vance, una comediante legendaria de Las Vegas, y una marginada de 25 años con privilegios.",
-      "poster_path": "/ca5XiEFgyGsI38QT3wEKa1QVGX.jpg",
-      "backdrop_path": "/bbAR4qKxjnjyKAt4YMrL725Mtfw.jpg",
-      "vote_average": "7.4",
-      "genre_ids": [
-        35,
-        18
-      ],
-      "genres": [
-        {
-          "id": 35,
-          "name": "Comedy"
-        },
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt11815682",
-      "first_air_date": "2021-05-13",
-      "last_air_date": "2026-04-16",
-      "status": "Returning Series",
-      "imdb_rating": 8.2,
-      "imdb_votes": 61741,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 73.78,
-      "_verdict": "cinemagoria",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": false,
-      "_is_currently_airing": true
-    },
-    {
-      "id": 136311,
-      "media_type": "tv",
-      "title": "Shrinking",
-      "title_es": "Terapia sin filtro",
-      "overview": "Jimmy is struggling to grieve the loss of his wife while being a dad, friend, and therapist. He decides to try a new approach with everyone in his path: unfiltered, brutal honesty. Will it make things better—or unleash uproarious chaos?",
-      "overview_es": "Jimmy trata de asimilar la muerte de su esposa mientras ejerce de padre, amigo y terapeuta. Decide cambiar su forma de ser con la gente y volverse una persona completamente honesta, sin ningún tipo de filtro. ¿Conseguirá que las cosas mejoren o desatará el caos?",
-      "poster_path": "/zEFKMNPBKq6JG7uuDkzTQ9WwErn.jpg",
-      "backdrop_path": "/hI9z1UuNhBthvkm3iJ8m3zv43Pf.jpg",
-      "vote_average": "7.8",
-      "genre_ids": [
-        18,
-        35
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 35,
-          "name": "Comedy"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt15677150",
-      "first_air_date": "2023-01-26",
-      "last_air_date": "2026-04-07",
-      "status": "Returning Series",
-      "imdb_rating": 8.1,
-      "imdb_votes": 121001,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 73.77,
-      "_verdict": "cinemagoria",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": false,
-      "_is_currently_airing": true
-    },
-    {
-      "id": 1416,
-      "media_type": "tv",
-      "title": "Grey's Anatomy",
-      "title_es": "Anatomía de Grey",
-      "overview": "Follows the personal and professional lives of a group of doctors at Seattle's Grey Sloan Memorial Hospital.",
-      "overview_es": "La vida de Meredith Grey no es nada fácil. Intenta tomar las riendas de su vida, aunque su trabajo sea de esos que te hacen la vida imposible. Meredith es una cirujana interna de primer año en el Hospital Grace de Seattle, el programa de prácticas más duro de la Facultad de Medicina de Harvard. Y ella lo va a comprobar. Pero no estará sola. Un elenco de compañeros de promoción tendrán que superar la misma prueba. Ahora están en el mundo real, son doctores del hospital. Y en un mundo donde la experiencia en el trabajo puede ser un factor de vida o muerte, todos ellos tendrán que lidiar con los altibajos de sus vidas personales.",
-      "poster_path": "/hjJkrLXhWvGHpLeLBDFznpBTY1S.jpg",
-      "backdrop_path": "/jP0Rhj9OTPDAwQlHQwOLFDdeE8t.jpg",
-      "vote_average": "8.2",
-      "genre_ids": [
-        18
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt0413573",
-      "first_air_date": "2005-03-27",
-      "last_air_date": "2026-04-02",
-      "status": "Returning Series",
-      "imdb_rating": 7.6,
-      "imdb_votes": 373237,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 71.74,
-      "_verdict": "neutral",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": false,
-      "_is_currently_airing": true
-    },
-    {
       "id": 204490,
       "media_type": "tv",
       "title": "Criminal Record",
@@ -558,111 +323,6 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 70.86,
-      "_verdict": "cinemagoria",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": false,
-      "_is_currently_airing": true
-    },
-    {
-      "id": 215092,
-      "media_type": "tv",
-      "title": "Alpha Males",
-      "title_es": "Machos alfa",
-      "overview": "Pedro, Luis, Raúl and Santi are four friends who feel a bit lost in the new world of empowered women, each trying to adjust in their own haphazard way.",
-      "overview_es": "A trancas y barrancas, los amigos Pedro, Luis, Raúl y Santi intentan adaptarse a la sociedad actual de mujeres empoderadas en la que se sienten muy perdidos.",
-      "poster_path": "/NqID21yImku6B7kq0oCQTxX2rm.jpg",
-      "backdrop_path": "/judTMRynbo4oiBCHeS7bXrsTitJ.jpg",
-      "vote_average": "7.5",
-      "genre_ids": [
-        35
-      ],
-      "genres": [
-        {
-          "id": 35,
-          "name": "Comedy"
-        }
-      ],
-      "original_language": "es",
-      "imdb_id": "tt18482892",
-      "first_air_date": "2022-12-30",
-      "last_air_date": "2026-04-17",
-      "status": "Returning Series",
-      "imdb_rating": 7.7,
-      "imdb_votes": 13002,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 64.43,
-      "_verdict": "neutral",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": false,
-      "_is_currently_airing": true
-    },
-    {
-      "id": 244623,
-      "media_type": "tv",
-      "title": "Running Point",
-      "title_es": "Una nueva jugada",
-      "overview": "A reformed party girl must prove herself as a businesswoman when she's unexpectedly put in charge of her family's pro basketball team.",
-      "overview_es": "Una fiestera reformada debe demostrar que es una buena empresaria cuando, sin esperarlo, acaba a cargo del equipo de baloncesto profesional de su familia.",
-      "poster_path": "/q8KnHFt3igvQXKYDLtfERSYAY7F.jpg",
-      "backdrop_path": "/1FmJKBjmp1o3fwhlnrrePnqdWbc.jpg",
-      "vote_average": "7.3",
-      "genre_ids": [
-        35
-      ],
-      "genres": [
-        {
-          "id": 35,
-          "name": "Comedy"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt14879018",
-      "first_air_date": "2025-02-27",
-      "last_air_date": "2026-04-23",
-      "status": "Returning Series",
-      "imdb_rating": 7.3,
-      "imdb_votes": 23435,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 62.54,
-      "_verdict": "neutral",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": false,
-      "_is_currently_airing": true
-    },
-    {
-      "id": 246246,
-      "media_type": "tv",
-      "title": "Beauty in Black",
-      "title_es": "Beauty in Black",
-      "overview": "A stripper's fate takes a turn when she crosses paths with the wealthy, dysfunctional family behind a cosmetics dynasty and a devious trafficking scheme.",
-      "overview_es": "El destino de una stripper da un vuelco cuando se cruza con una rica familia disfuncional que maneja un emporio de cosmética y un retorcido negocio de tráfico de personas.",
-      "poster_path": "/i98Jl46WBpK7ymttNOakowtNuFF.jpg",
-      "backdrop_path": "/ywJcUIMTCjstPLvvyIiPWP3G3m3.jpg",
-      "vote_average": "7.6",
-      "genre_ids": [
-        18
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt31260386",
-      "first_air_date": "2024-10-24",
-      "last_air_date": "2026-03-19",
-      "status": "Returning Series",
-      "imdb_rating": 5.9,
-      "imdb_votes": 5379,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 57.86,
       "_verdict": "cinemagoria",
       "_reasoning": null,
       "_pinned": false,
@@ -707,7 +367,7 @@
       "imdb_votes": 20786,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 96.44,
+      "_score": 102.44,
       "_verdict": "noir",
       "_reasoning": "noir_historical guide-match (auto-included)",
       "_pinned": false,
@@ -752,101 +412,11 @@
       "imdb_votes": 14663,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 91.33,
+      "_score": 97.33,
       "_verdict": "noir",
       "_reasoning": "noir_historical guide-match (auto-included)",
       "_pinned": false,
       "_noir_match": true,
-      "_is_currently_airing": false
-    },
-    {
-      "id": 259909,
-      "media_type": "tv",
-      "title": "Dexter: Resurrection",
-      "title_es": "Dexter: Resurrección",
-      "overview": "Dexter Morgan awakens from a coma to find Harrison gone without a trace. Realizing the weight of what he put his son through, Dexter sets out for New York City, determined to find him and make things right. But closure won't come easy. When Miami Metro's Angel Batista arrives with questions, Dexter realizes his past is catching up to him fast. As father and son navigate their own darkness in the city that never sleeps, they soon find themselves deeper than they ever imagined - and that the only way out is together.",
-      "overview_es": "Dexter Morgan despierta de un coma de diez semanas y, mientras comienza una dolorosa recuperación, se entera de que su hijo Harrison Morgan ha huido a Nueva York. Tanto el padre como el hijo se sienten más cerca de enfrentarse a la oscuridad de la que han intentado escapar.",
-      "poster_path": "/kEHZfSZhZKDot4wqurgIzMUNq1W.jpg",
-      "backdrop_path": "/8J0SjKToFBbg8dKpocVOCsrC77C.jpg",
-      "vote_average": "8.5",
-      "genre_ids": [
-        80,
-        18,
-        9648
-      ],
-      "genres": [
-        {
-          "id": 80,
-          "name": "Crime"
-        },
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 9648,
-          "name": "Mystery"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt33043892",
-      "first_air_date": "2025-07-13",
-      "last_air_date": "2025-09-07",
-      "status": "Returning Series",
-      "imdb_rating": 9,
-      "imdb_votes": 139579,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 80.29,
-      "_verdict": "cinemagoria",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": false,
-      "_is_currently_airing": false
-    },
-    {
-      "id": 83867,
-      "media_type": "tv",
-      "title": "Andor",
-      "title_es": "Andor",
-      "overview": "In an era filled with danger, deception and intrigue, Cassian Andor will discover the difference he can make in the struggle against the tyrannical Galactic Empire. He embarks on a path that is destined to turn him into a rebel hero.",
-      "overview_es": "Ambientada cinco años antes de los eventos de la película Rogue One,​ la serie sigue al espía Cassian Andor durante los años de formación de la Alianza Rebelde.​ La serie muestra la transformación de Andor, un ladrón que se convierte en revolucionario y finalmente se une a la Rebelión contra el Imperio Galáctico.",
-      "poster_path": "/khZqmwHQicTYoS7Flreb9EddFZC.jpg",
-      "backdrop_path": "/ajztm40qDPqMONaSJhQ2PaNe2Xd.jpg",
-      "vote_average": "8.3",
-      "genre_ids": [
-        10765,
-        10759,
-        18
-      ],
-      "genres": [
-        {
-          "id": 10765,
-          "name": "Sci-Fi & Fantasy"
-        },
-        {
-          "id": 10759,
-          "name": "Action & Adventure"
-        },
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt9253284",
-      "first_air_date": "2022-09-21",
-      "last_air_date": "2025-05-13",
-      "status": "Ended",
-      "imdb_rating": 8.6,
-      "imdb_votes": 273610,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 72.47,
-      "_verdict": "cinemagoria",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": false,
       "_is_currently_airing": false
     },
     {
@@ -888,6 +458,86 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 72.13,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 218896,
+      "media_type": "tv",
+      "title": "The Law According to Lidia Poët",
+      "title_es": "La ley de Lidia Poët",
+      "overview": "In late 19th-century Turin, the young Lidia Poët, fights against everything and everyone to get what is rightfully hers: to be enrolled in the official register of lawyers. A profession, at the time, reserved exclusively for men. Nevertheless, nothing could stop her dream of becoming the first female lawyer in Italy.",
+      "overview_es": "Una joven que aspira a ejercer la abogacía investiga, junto con su hermano letrado y su cuñado periodista, unos asesinatos en la Italia del siglo XIX.",
+      "poster_path": "/bhTLskf3XNALpk3tZGm7lG2ChAx.jpg",
+      "backdrop_path": "/pA4t1a58gQPhzdKJMUjFvUYwmWu.jpg",
+      "vote_average": "7.4",
+      "genre_ids": [
+        18,
+        80,
+        10768
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 80,
+          "name": "Crime"
+        },
+        {
+          "id": 10768,
+          "name": "War & Politics"
+        }
+      ],
+      "original_language": "it",
+      "imdb_id": "tt15441160",
+      "first_air_date": "2023-02-15",
+      "last_air_date": "2026-04-15",
+      "status": "Ended",
+      "imdb_rating": 7.5,
+      "imdb_votes": 11521,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 72.12,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 157741,
+      "media_type": "tv",
+      "title": "Landman",
+      "title_es": "Landman: Un negocio crudo",
+      "overview": "Set in the proverbial boomtowns of West-Texas and a modern-day tale of fortune-seeking in the world of oil rigs, the series is an upstairs/downstairs story of roughnecks and wildcat billionaires that are fueling a boom so big it’s reshaping our climate, our economy and our geopolitics.",
+      "overview_es": "Ambientada en las proverbiales ciudades en auge del oeste de Texas, se trata de un drama sobre la búsqueda de la fortuna en el mundo de las plataformas petrolíferas basada en el podcast 'Boomtown', una historia de clases, con matones y multimillonarios salvajes que impulsan un boom tan grande que está cambiando nuestro clima, nuestra economía y nuestra geopolítica.",
+      "poster_path": "/hYthRgS1nvQkGILn9YmqsF8kSk6.jpg",
+      "backdrop_path": "/mh2UczqEXJJVgqohbyZbHTuxwhL.jpg",
+      "vote_average": "8.0",
+      "genre_ids": [
+        18
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt14186672",
+      "first_air_date": "2024-11-17",
+      "last_air_date": "2026-01-18",
+      "status": "Returning Series",
+      "imdb_rating": 8.2,
+      "imdb_votes": 105188,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 66.24,
       "_verdict": "cinemagoria",
       "_reasoning": null,
       "_pinned": false,
