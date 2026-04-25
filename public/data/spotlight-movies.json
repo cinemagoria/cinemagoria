@@ -1,29 +1,72 @@
 {
-  "generated_at": "2026-04-24T16:45:31.927Z",
+  "generated_at": "2026-04-25T03:51:19.885Z",
   "engine_version": "3.0.0",
   "media_type": "movie",
   "count": 22,
   "results": [
     {
-      "id": 1102883,
+      "id": 1456349,
       "media_type": "movie",
-      "title": "Mother Mary",
-      "title_es": "Mother Mary",
-      "overview": "Long-buried wounds rise to the surface when iconic pop star Mother Mary reunites with her estranged best friend and former costume designer Sam Anselm on the eve of her comeback performance.",
-      "overview_es": "Long-buried wounds rise to the surface when iconic pop star Mother Mary reunites with her estranged best friend and former costume designer Sam Anselm on the eve of her comeback performance.",
-      "poster_path": "/qMgUI6pxkPtIuoXX4DcJ6X7bdt2.jpg",
-      "backdrop_path": "/isKS6cjAbvfNoCI3pzHsLn1LZmx.jpg",
-      "vote_average": "5.0",
+      "title": "It Was Just an Accident",
+      "title_es": "Un simple accidente",
+      "overview": "An unassuming mechanic is reminded of his time in an Iranian prison when he encounters a man he suspects to be his sadistic jailhouse captor.",
+      "overview_es": "Un hombre conduce de noche con su esposa embarazada cuando atropella y mata a un perro, lo que le obliga a llevar el coche a un taller dirigido por un hombre que se parece al oficial que lo torturó en prisión.",
+      "poster_path": "/eNYGj2DG3n8OrVPTfYunpPW9uas.jpg",
+      "backdrop_path": "/zhoMwQofjgVec5Sin05hWECJtVQ.jpg",
+      "vote_average": "7.1",
       "genre_ids": [
-        10402,
+        18,
+        53,
+        80,
+        9648
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        },
+        {
+          "id": 80,
+          "name": "Crime"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        }
+      ],
+      "original_language": "fr",
+      "imdb_id": "tt36491653",
+      "release_date": "2025-10-01",
+      "imdb_rating": 7.5,
+      "imdb_votes": 32835,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 95.03,
+      "_verdict": "noir",
+      "_reasoning": "noir_historical guide-match (auto-included)",
+      "_pinned": false,
+      "_noir_match": true,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 1193128,
+      "media_type": "movie",
+      "title": "I Was a Stranger",
+      "title_es": "Yo era un extraño",
+      "overview": "A Syrian doctor and her daughter flee Aleppo, setting off a chain of events that binds five strangers together. A smuggler, a soldier, a poet, and a coast guard captain collide in a crisis that tests their courage, their choices, and their humanity.",
+      "overview_es": "La tragedia golpea a una familia siria en Alepo, iniciando una reacción en cadena de eventos que involucran a cinco familias diferentes en cuatro países distintos.",
+      "poster_path": "/RBIrEveMOIy5Kxg2WzgMnCIhaN.jpg",
+      "backdrop_path": "/atvDTVtj88v2YEjwZ20Jsr0P8nk.jpg",
+      "vote_average": "6.3",
+      "genre_ids": [
         18,
         53
       ],
       "genres": [
-        {
-          "id": 10402,
-          "name": "Music"
-        },
         {
           "id": 18,
           "name": "Drama"
@@ -33,82 +76,219 @@
           "name": "Thriller"
         }
       ],
-      "original_language": "en",
-      "imdb_id": "tt27200708",
-      "release_date": "2026-04-16",
-      "imdb_rating": 3.5,
-      "imdb_votes": 472,
+      "original_language": "ar",
+      "imdb_id": "tt21272942",
+      "release_date": "2025-12-31",
+      "imdb_rating": 8.3,
+      "imdb_votes": 12042,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 9000,
+      "_score": 92.96,
       "_verdict": "noir",
-      "_reasoning": null,
+      "_reasoning": "noir_historical guide-match (auto-included)",
       "_pinned": false,
-      "_noir_match": true
+      "_noir_match": true,
+      "_is_currently_airing": false
     },
     {
-      "id": 1315657,
+      "id": 1432596,
       "media_type": "movie",
-      "title": "Yellow Letters",
-      "title_es": "Gelbe Briefe",
-      "overview": "The marriage of Derya and Aziz is under pressure after losing their jobs because of state arbitrariness and moving to Istanbul to live with Aziz's parents. They and their 13-year-old daughter Ezgi have to redefine their way of life.",
-      "overview_es": "The marriage of Derya and Aziz is under pressure after losing their jobs because of state arbitrariness and moving to Istanbul to live with Aziz's parents. They and their 13-year-old daughter Ezgi have to redefine their way of life.",
-      "poster_path": "/8Sxp3QIdamyoAfgLsUaGCQ1Z1ID.jpg",
-      "backdrop_path": "/jF0cgfoBkmJyknP2nii2NdhChWs.jpg",
-      "vote_average": "7.5",
+      "title": "Palestine 36",
+      "title_es": "Palestine 36",
+      "overview": "Year 1936. As villages across Palestine rise against British colonial rule, Yusuf drifts between his rural home and the restless energy of Jerusalem, longing for a future beyond the growing unrest. But history is relentless. With rising numbers of Jewish immigrants escaping antisemitism in Europe and some arriving with nefarious Zionist-colonial ambitions, and the Palestinian population uniting in the largest and longest uprising against Britain’s 30-year dominion, all sides spiral towards inevitable collision in a decisive moment for the British Empire and the future of the entire region.",
+      "overview_es": "En 1936, los palestinos iniciaron una revuelta liderada por agricultores contra el colonialismo británico que marcó el comienzo del mayor y más largo levantamiento contra los 30 años de dominio británico.",
+      "poster_path": "/ajeiriNRFPLESjGZ0vdp4MVardZ.jpg",
+      "backdrop_path": "/xLcPsJ7lZ4pVHJiAgMvDwmm4v0r.jpg",
+      "vote_average": "7.9",
       "genre_ids": [
-        18
+        18,
+        36,
+        10752
       ],
       "genres": [
         {
           "id": 18,
           "name": "Drama"
+        },
+        {
+          "id": 36,
+          "name": "History"
+        },
+        {
+          "id": 10752,
+          "name": "War"
         }
       ],
-      "original_language": "tr",
-      "imdb_id": "tt32888226",
-      "release_date": "2026-03-05",
-      "imdb_rating": 7.2,
-      "imdb_votes": 1021,
+      "original_language": "en",
+      "imdb_id": "tt29271622",
+      "release_date": "2025-10-31",
+      "imdb_rating": 7.5,
+      "imdb_votes": 6324,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 9000,
+      "_score": 92.6,
       "_verdict": "noir",
-      "_reasoning": null,
+      "_reasoning": "noir_historical guide-match (auto-included)",
       "_pinned": false,
-      "_noir_match": true
+      "_noir_match": true,
+      "_is_currently_airing": false
     },
     {
-      "id": 1596335,
+      "id": 1116201,
       "media_type": "movie",
-      "title": "The AI Doc: Or How I Became an Apocaloptimist",
-      "title_es": "The AI Doc: Or How I Became an Apocaloptimist",
-      "overview": "A father-to-be tries to figure out what is happening with all this AI insanity, and explores the most powerful technology humanity has ever created... and what's at stake if we get it wrong.",
-      "overview_es": "A father-to-be tries to figure out what is happening with all this AI insanity, and explores the most powerful technology humanity has ever created... and what's at stake if we get it wrong.",
-      "poster_path": "/5AuhFkIFhRciJEtGzo4B2kte3TW.jpg",
-      "backdrop_path": "/7QLGrqMDqkIpW6IPROIUdcn8e5W.jpg",
-      "vote_average": "7.1",
+      "title": "Iron Lung",
+      "title_es": "Iron Lung",
+      "overview": "The stars are gone. The planets have disappeared. Only individuals aboard space stations or starships were left to give the end a name -- The Quiet Rapture. After decades of decay and crumbling infrastructure, the Consolidation of Iron has made a discovery on a barren moon designated AT-5. An ocean of blood. Hoping to discover desperately needed resources they immediately launch an expedition. A submarine is crafted and a convict is welded inside. Due to the pressure and depth of the ocean the forward viewport has been encased in metal. If successful, they will earn their freedom. If not, another will follow. This will be the 13th expedition.",
+      "overview_es": "En un futuro devastado por \"El Rapto Silencioso\", un prisionero navega un océano de sangre en una luna desolada usando un submarino llamado \"Iron Lung\" mientras busca estrellas y planetas perdidos.",
+      "poster_path": "/sIwakdbMGS1krtgendTWpxTY9Hw.jpg",
+      "backdrop_path": "/9M2Jp8RCHptcfA64vIKVRVbPDt0.jpg",
+      "vote_average": "7.3",
       "genre_ids": [
-        99
+        27,
+        9648,
+        878
+      ],
+      "genres": [
+        {
+          "id": 27,
+          "name": "Horror"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        },
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt27564844",
+      "release_date": "2026-01-29",
+      "imdb_rating": 6.5,
+      "imdb_votes": 19576,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 90.58,
+      "_verdict": "noir",
+      "_reasoning": "noir_historical guide-match (auto-included)",
+      "_pinned": false,
+      "_noir_match": true,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 1168719,
+      "media_type": "movie",
+      "title": "Silent Friend",
+      "title_es": "El amigo silencioso",
+      "overview": "On the grounds of a medieval German university town looms an imposing Ginkgo biloba, a tree whose longevity stands in marked contrast to three intimate, human-scaled stories. In 1908, the university’s first female student gains admission into the prestigious botany department, confronting the sexism of both professors and peers. In 1972, amidst counterculture movements, a reserved student finds his attention captured by a fellow housemate and the geranium plant she studies. In 2020, during the COVID-19 pandemic, a neuroscientist from Hong Kong secures the help of a renowned botanist for an experiment on the old ginkgo tree.",
+      "overview_es": "On the grounds of a medieval German university town looms an imposing Ginkgo biloba, a tree whose longevity stands in marked contrast to three intimate, human-scaled stories. In 1908, the university’s first female student gains admission into the prestigious botany department, confronting the sexism of both professors and peers. In 1972, amidst counterculture movements, a reserved student finds his attention captured by a fellow housemate and the geranium plant she studies. In 2020, during the COVID-19 pandemic, a neuroscientist from Hong Kong secures the help of a renowned botanist for an experiment on the old ginkgo tree.",
+      "poster_path": "/r52BdT1QKYBbJv6OJfqJCAdDqfh.jpg",
+      "backdrop_path": "/sd49Wx5Tevlp1y6Huygv99ueXDt.jpg",
+      "vote_average": "8.1",
+      "genre_ids": [
+        18,
+        36
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 36,
+          "name": "History"
+        }
+      ],
+      "original_language": "de",
+      "imdb_id": "tt27811632",
+      "release_date": "2026-01-15",
+      "imdb_rating": 7.6,
+      "imdb_votes": 1369,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 89.87,
+      "_verdict": "noir",
+      "_reasoning": "noir_historical guide-match (auto-included)",
+      "_pinned": false,
+      "_noir_match": true,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 1480382,
+      "media_type": "movie",
+      "title": "The Voice of Hind Rajab",
+      "title_es": "La voz de Hind",
+      "overview": "January 29, 2024. Red Crescent volunteers receive an emergency call. A five-year old girl is trapped in a car under fire in Gaza, pleading for rescue. While trying to keep her on the line, they do everything they can to get an ambulance to her. Her name was Hind Rajab.",
+      "overview_es": "Voluntarios de la Media Luna Roja reciben una llamada urgente de una niña de 6 años atrapada en un auto bajo fuego en Gaza. Mientras intentan mantenerla en línea, luchan contra el tiempo para enviar una ambulancia a rescatarla.",
+      "poster_path": "/q7M8kQB46T11vmDMD6E239jsqTz.jpg",
+      "backdrop_path": "/rNu7OkOeZyylZcUqIA7DpclTjur.jpg",
+      "vote_average": "8.0",
+      "genre_ids": [
+        18,
+        36
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 36,
+          "name": "History"
+        }
+      ],
+      "original_language": "ar",
+      "imdb_id": "tt36943034",
+      "release_date": "2025-09-10",
+      "imdb_rating": 8.3,
+      "imdb_votes": 16724,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 89.25,
+      "_verdict": "noir",
+      "_reasoning": "noir_historical guide-match (auto-included)",
+      "_pinned": false,
+      "_noir_match": true,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 1400789,
+      "media_type": "movie",
+      "title": "2000 Meters to Andriivka",
+      "title_es": "2000 metros hasta Andriivka",
+      "overview": "Amid the failing counteroffensive, a journalist follows a Ukrainian platoon on their mission to traverse one mile of heavily fortified forest and liberate a strategic village from Russian occupation. But the farther they advance through their destroyed homeland, the more they realize that this war may never end.",
+      "overview_es": "El director ganador del Óscar por \"20 días en Mariúpol\" regresa a Ucrania para presentarnos el documental más brutal y espeluznante del año. La guerra como nunca la habías visto: desde el punto de vista de un soldado.\r La misión de un pelotón ucraniano es atravesar un kilómetro y medio de bosque fuertemente fortificado para liberar un pueblo estratégico de las fuerzas rusas. Un periodista les acompaña y es testigo de los estragos de la guerra y de la creciente incertidumbre sobre su conclusión.",
+      "poster_path": "/s1TC3QebWWWJ6CceqbBgAvJde8t.jpg",
+      "backdrop_path": "/yZKLgaHKmJCrMsg5e1naV4JqY6b.jpg",
+      "vote_average": "8.2",
+      "genre_ids": [
+        99,
+        10752
       ],
       "genres": [
         {
           "id": 99,
           "name": "Documentary"
+        },
+        {
+          "id": 10752,
+          "name": "War"
         }
       ],
       "original_language": "en",
-      "imdb_id": "tt39150120",
-      "release_date": "2026-03-27",
-      "imdb_rating": 7.2,
-      "imdb_votes": 465,
+      "imdb_id": "tt34964205",
+      "release_date": "2025-07-23",
+      "imdb_rating": 8.4,
+      "imdb_votes": 4012,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 9000,
+      "_score": 88.61,
       "_verdict": "noir",
-      "_reasoning": null,
+      "_reasoning": "noir_historical guide-match (auto-included)",
       "_pinned": false,
-      "_noir_match": true
+      "_noir_match": true,
+      "_is_currently_airing": false
     },
     {
       "id": 1325734,
@@ -146,519 +326,12 @@
       "imdb_votes": 26733,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 9000,
+      "_score": 86.85,
       "_verdict": "noir",
-      "_reasoning": null,
+      "_reasoning": "noir_historical guide-match (auto-included)",
       "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1458099,
-      "media_type": "movie",
-      "title": "The Only Living Pickpocket in New York",
-      "title_es": "The Only Living Pickpocket in New York",
-      "overview": "Harry Lehman is an aging pickpocket who plies his trade with ever-diminishing returns in a drastically changed New York. Wallets stuffed with cash have been replaced by easily cancelled credit cards, and Harry struggles to make ends meet as he cares for his disabled wife, Rosie. When he unwittingly purloins and fences a valuable USB stick, Harry finds himself in a race against time to return the loot or face the rage of a vengeful crime family.",
-      "overview_es": "Harry Lehman is an aging pickpocket who plies his trade with ever-diminishing returns in a drastically changed New York. Wallets stuffed with cash have been replaced by easily cancelled credit cards, and Harry struggles to make ends meet as he cares for his disabled wife, Rosie. When he unwittingly purloins and fences a valuable USB stick, Harry finds himself in a race against time to return the loot or face the rage of a vengeful crime family.",
-      "poster_path": "/otJsgLxFhsa43dTknU9NqxdkdP4.jpg",
-      "backdrop_path": "/oahXjJ0UxnkJthITntGMrXVXQsJ.jpg",
-      "vote_average": "0.0",
-      "genre_ids": [
-        80,
-        53
-      ],
-      "genres": [
-        {
-          "id": 80,
-          "name": "Crime"
-        },
-        {
-          "id": 53,
-          "name": "Thriller"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt36482679",
-      "release_date": "2026-01-27",
-      "imdb_rating": 7.4,
-      "imdb_votes": 159,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1168719,
-      "media_type": "movie",
-      "title": "Silent Friend",
-      "title_es": "Stiller Freund",
-      "overview": "On the grounds of a medieval German university town looms an imposing Ginkgo biloba, a tree whose longevity stands in marked contrast to three intimate, human-scaled stories. In 1908, the university’s first female student gains admission into the prestigious botany department, confronting the sexism of both professors and peers. In 1972, amidst counterculture movements, a reserved student finds his attention captured by a fellow housemate and the geranium plant she studies. In 2020, during the COVID-19 pandemic, a neuroscientist from Hong Kong secures the help of a renowned botanist for an experiment on the old ginkgo tree.",
-      "overview_es": "On the grounds of a medieval German university town looms an imposing Ginkgo biloba, a tree whose longevity stands in marked contrast to three intimate, human-scaled stories. In 1908, the university’s first female student gains admission into the prestigious botany department, confronting the sexism of both professors and peers. In 1972, amidst counterculture movements, a reserved student finds his attention captured by a fellow housemate and the geranium plant she studies. In 2020, during the COVID-19 pandemic, a neuroscientist from Hong Kong secures the help of a renowned botanist for an experiment on the old ginkgo tree.",
-      "poster_path": "/r52BdT1QKYBbJv6OJfqJCAdDqfh.jpg",
-      "backdrop_path": "/sd49Wx5Tevlp1y6Huygv99ueXDt.jpg",
-      "vote_average": "8.1",
-      "genre_ids": [
-        18,
-        36
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 36,
-          "name": "History"
-        }
-      ],
-      "original_language": "de",
-      "imdb_id": "tt27811632",
-      "release_date": "2026-01-15",
-      "imdb_rating": 7.6,
-      "imdb_votes": 1369,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1141491,
-      "media_type": "movie",
-      "title": "Redoubt",
-      "title_es": "VÄRN",
-      "overview": "Affected by the powerful images in the pamphlet Om kriget kommer (If war comes), farmhand Karl-Göran Persson begins fortifying his house. Through years of harvesting scrap-metal, he transforms the house into a fortress, meant to protect him and his neighbors when the enemy attacks. As the task progresses, reality and the threat of future destruction become intertwined, and construction becomes an obsession for the lonely Karl-Göran.",
-      "overview_es": "Affected by the powerful images in the pamphlet Om kriget kommer (If war comes), farmhand Karl-Göran Persson begins fortifying his house. Through years of harvesting scrap-metal, he transforms the house into a fortress, meant to protect him and his neighbors when the enemy attacks. As the task progresses, reality and the threat of future destruction become intertwined, and construction becomes an obsession for the lonely Karl-Göran.",
-      "poster_path": "/jSREnLzAfq51mpmxRXDbk8dJ72u.jpg",
-      "backdrop_path": "/q0ff2gr4TZrBZ9aMfpCmHSyf1iq.jpg",
-      "vote_average": "0.0",
-      "genre_ids": [
-        18,
-        36
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 36,
-          "name": "History"
-        }
-      ],
-      "original_language": "sv",
-      "imdb_id": "tt35456230",
-      "release_date": "2026-03-27",
-      "imdb_rating": 7.1,
-      "imdb_votes": 94,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1177767,
-      "media_type": "movie",
-      "title": "Mile End Kicks",
-      "title_es": "Mile End Kicks",
-      "overview": "Grace Pine, a 22-year-old music critic, moves to Montreal to write a book on Alanis Morissette's Jagged Little Pill, but her plans are complicated when she becomes romantically involved with two members of an indie band she is covering and decides to become their publicist.",
-      "overview_es": "Grace Pine, a 22-year-old music critic, moves to Montreal to write a book on Alanis Morissette's Jagged Little Pill, but her plans are complicated when she becomes romantically involved with two members of an indie band she is covering and decides to become their publicist.",
-      "poster_path": "/qq3Q1tsxAxMqP38YTZKl8m5zmA4.jpg",
-      "backdrop_path": "/1Es1fV6Wn4ArpqTRTPs8ydpEkiw.jpg",
-      "vote_average": "0.0",
-      "genre_ids": [
-        35,
-        10749,
-        10402
-      ],
-      "genres": [
-        {
-          "id": 35,
-          "name": "Comedy"
-        },
-        {
-          "id": 10749,
-          "name": "Romance"
-        },
-        {
-          "id": 10402,
-          "name": "Music"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt33301434",
-      "release_date": "2026-04-17",
-      "imdb_rating": 6.8,
-      "imdb_votes": 150,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1571900,
-      "media_type": "movie",
-      "title": "Dead Eyes",
-      "title_es": "Dead Eyes",
-      "overview": "After the death of his sister, Sean and his friends venture into a remote forest to search for his missing father, only to uncover his dark secrets, where grief has become a bridge between the living and the dead.",
-      "overview_es": "After the death of his sister, Sean and his friends venture into a remote forest to search for his missing father, only to uncover his dark secrets, where grief has become a bridge between the living and the dead.",
-      "poster_path": "/o7MYJveV146pg2HQbQuv2LFK09y.jpg",
-      "backdrop_path": "/tjnEZJUVP9aiDzANC3ZTUM2jCiD.jpg",
-      "vote_average": "0.0",
-      "genre_ids": [
-        27
-      ],
-      "genres": [
-        {
-          "id": 27,
-          "name": "Horror"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt33297308",
-      "release_date": "2026-02-10",
-      "imdb_rating": 7,
-      "imdb_votes": 29,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1229930,
-      "media_type": "movie",
-      "title": "Stormbound",
-      "title_es": "Stormbound",
-      "overview": "An intimate look at Jeff Gammons, a chronically ill man who finds peace and beauty chasing the world's largest hurricanes.",
-      "overview_es": "An intimate look at Jeff Gammons, a chronically ill man who finds peace and beauty chasing the world's largest hurricanes.",
-      "poster_path": "/aRA9ohkjmUh2ooGbj8p1WIs8vJ8.jpg",
-      "backdrop_path": null,
-      "vote_average": "0.0",
-      "genre_ids": [
-        99
-      ],
-      "genres": [
-        {
-          "id": 99,
-          "name": "Documentary"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt27856004",
-      "release_date": "2026-03-14",
-      "imdb_rating": 8.5,
-      "imdb_votes": 19,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1401106,
-      "media_type": "movie",
-      "title": "Salvation",
-      "title_es": "Kurtuluş",
-      "overview": "In a remote village, an exiled clan returns, reviving a decades-old land feud. Seized by divine visions, Mesut challenges his brother’s leadership to save his people. Will this new path bring salvation or tragedy?",
-      "overview_es": "In a remote village, an exiled clan returns, reviving a decades-old land feud. Seized by divine visions, Mesut challenges his brother’s leadership to save his people. Will this new path bring salvation or tragedy?",
-      "poster_path": "/sMaKK8HAWfyp8vOyxFWUKgSPDKg.jpg",
-      "backdrop_path": "/9LXbwBaFz4lvhLrIc1uxoSvp8n9.jpg",
-      "vote_average": "7.5",
-      "genre_ids": [
-        18,
-        9648
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 9648,
-          "name": "Mystery"
-        }
-      ],
-      "original_language": "tr",
-      "imdb_id": "tt36472181",
-      "release_date": "2026-03-06",
-      "imdb_rating": 7,
-      "imdb_votes": 524,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 843342,
-      "media_type": "movie",
-      "title": "Hamlet",
-      "title_es": "Hamlet",
-      "overview": "Shakespeare’s most enduring tragedy is reimagined in a bold, modern adaptation set within London’s elite South Asian community. When Hamlet (Riz Ahmed) returns for his father’s funeral, he is stunned to discover his uncle Claudius is marrying his newly widowed mother. Visited by his father’s ghost, Hamlet learns his brutal murder was at the hands of Claudius - and spirals into a quest for vengeance that exposes the rot at the heart of the family’s empire and threatens his own sanity.",
-      "overview_es": "Shakespeare’s most enduring tragedy is reimagined in a bold, modern adaptation set within London’s elite South Asian community. When Hamlet (Riz Ahmed) returns for his father’s funeral, he is stunned to discover his uncle Claudius is marrying his newly widowed mother. Visited by his father’s ghost, Hamlet learns his brutal murder was at the hands of Claudius - and spirals into a quest for vengeance that exposes the rot at the heart of the family’s empire and threatens his own sanity.",
-      "poster_path": "/7azHIOSrxo0VC5wYiwtGOnVehsH.jpg",
-      "backdrop_path": "/80K8REhL8wVESLmJk16zTMIS2BJ.jpg",
-      "vote_average": "5.3",
-      "genre_ids": [
-        18
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt7798632",
-      "release_date": "2026-02-06",
-      "imdb_rating": 6.4,
-      "imdb_votes": 473,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1193128,
-      "media_type": "movie",
-      "title": "I Was a Stranger",
-      "title_es": "Yo era un extraño",
-      "overview": "A Syrian doctor and her daughter flee Aleppo, setting off a chain of events that binds five strangers together. A smuggler, a soldier, a poet, and a coast guard captain collide in a crisis that tests their courage, their choices, and their humanity.",
-      "overview_es": "La tragedia golpea a una familia siria en Alepo, iniciando una reacción en cadena de eventos que involucran a cinco familias diferentes en cuatro países distintos.",
-      "poster_path": "/RBIrEveMOIy5Kxg2WzgMnCIhaN.jpg",
-      "backdrop_path": "/atvDTVtj88v2YEjwZ20Jsr0P8nk.jpg",
-      "vote_average": "6.3",
-      "genre_ids": [
-        18,
-        53
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 53,
-          "name": "Thriller"
-        }
-      ],
-      "original_language": "ar",
-      "imdb_id": "tt21272942",
-      "release_date": "2025-12-31",
-      "imdb_rating": 8.3,
-      "imdb_votes": 12042,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1429348,
-      "media_type": "movie",
-      "title": "The Stranger",
-      "title_es": "El extranjero",
-      "overview": "Algiers, 1938. Meursault, a quiet and unassuming employee in his early thirties, attends his mother's funeral without shedding a tear. The next day, he begins a casual affair with Marie, a work colleague. He quickly slips back into his usual routine.",
-      "overview_es": "En la Argelia de los años treinta, el apático francés Meursault muestra una total indiferencia ante la vida. Su desapego emocional lo lleva a cometer un asesinato, seguido de un juicio que examina tanto el crimen como su carácter.",
-      "poster_path": "/11lx7Isd86SIPeNuWlAPjYTfr57.jpg",
-      "backdrop_path": "/aTjFGxR7K32HPxrdvJOVeXX1UCe.jpg",
-      "vote_average": "6.8",
-      "genre_ids": [
-        18,
-        80
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 80,
-          "name": "Crime"
-        }
-      ],
-      "original_language": "fr",
-      "imdb_id": "tt36243564",
-      "release_date": "2025-10-29",
-      "imdb_rating": 7.1,
-      "imdb_votes": 3388,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1599249,
-      "media_type": "movie",
-      "title": "Variations on a Theme",
-      "title_es": "Variasies op 'n tema",
-      "overview": "An elderly goat herder falls victim to a scam promising long-awaited reparations for her father's WWII service. Structured as a series of recurring visual 'variations', Variations on a Theme is a portrait of endurance and loss.",
-      "overview_es": "An elderly goat herder falls victim to a scam promising long-awaited reparations for her father's WWII service. Structured as a series of recurring visual 'variations', Variations on a Theme is a portrait of endurance and loss.",
-      "poster_path": "/cNbpR6hE1rIeb13xCFmv75PVaAx.jpg",
-      "backdrop_path": "/tHB3bhKTy7JxR0BL6vuWfgB5vQV.jpg",
-      "vote_average": "0.0",
-      "genre_ids": [
-        18
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "af",
-      "imdb_id": "tt39131323",
-      "release_date": "2026-05-08",
-      "imdb_rating": 7.2,
-      "imdb_votes": 9,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1120382,
-      "media_type": "movie",
-      "title": "The Last Resort",
-      "title_es": "Paradis",
-      "overview": "When a Danish family finds themselves on a holiday island, in the midst of the first major refugee crisis in Europe in our time, our northern European, well-intentioned, humanistic values are put to the test.",
-      "overview_es": "When a Danish family finds themselves on a holiday island, in the midst of the first major refugee crisis in Europe in our time, our northern European, well-intentioned, humanistic values are put to the test.",
-      "poster_path": "/sFCBISiMYavYtCVXfoyQq0iTGd1.jpg",
-      "backdrop_path": null,
-      "vote_average": "0.0",
-      "genre_ids": [
-        18
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "da",
-      "imdb_id": "tt27552049",
-      "release_date": "2026-03-05",
-      "imdb_rating": 6.9,
-      "imdb_votes": 103,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1439881,
-      "media_type": "movie",
-      "title": "Imposters",
-      "title_es": "Imposters",
-      "overview": "After a couple's baby is taken, the desperate mother learns of a way to \"get their baby back.\" However, the husband begins to suspect that what she brought back isn't their son.",
-      "overview_es": "After a couple's baby is taken, the desperate mother learns of a way to \"get their baby back.\" However, the husband begins to suspect that what she brought back isn't their son.",
-      "poster_path": "/3ip1yQjTjkx1PHqw4p0ME0b6rQv.jpg",
-      "backdrop_path": "/90RmdU13mK8n0je1TN7VHwfhfBr.jpg",
-      "vote_average": "7.0",
-      "genre_ids": [
-        18,
-        27,
-        878,
-        53
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 27,
-          "name": "Horror"
-        },
-        {
-          "id": 878,
-          "name": "Science Fiction"
-        },
-        {
-          "id": 53,
-          "name": "Thriller"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt37340919",
-      "release_date": "2026-03-15",
-      "imdb_rating": 7.9,
-      "imdb_votes": 53,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
-    },
-    {
-      "id": 1026933,
-      "media_type": "movie",
-      "title": "Paradise",
-      "title_es": "Paradise",
-      "overview": "In the wake of his father’s disappearance at sea, Kojo, a young Ghanaian, is drawn into a world of street gangs and deception. Meanwhile, in Quebec, Tony discovers his mother’s relationship with a mysterious sailor who may hold the key to finding the father he’s never met.",
-      "overview_es": "In the wake of his father’s disappearance at sea, Kojo, a young Ghanaian, is drawn into a world of street gangs and deception. Meanwhile, in Quebec, Tony discovers his mother’s relationship with a mysterious sailor who may hold the key to finding the father he’s never met.",
-      "poster_path": "/5rJRMT3OGrMtUP38aXwp0mRXfLg.jpg",
-      "backdrop_path": "/kNQ38Ay0FO1mDKO9aSVK83o4M1H.jpg",
-      "vote_average": "0.0",
-      "genre_ids": [
-        18,
-        53
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 53,
-          "name": "Thriller"
-        }
-      ],
-      "original_language": "fr",
-      "imdb_id": "tt27027989",
-      "release_date": "2026-08-12",
-      "imdb_rating": 7.2,
-      "imdb_votes": 37,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 9000,
-      "_verdict": "noir",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": true
+      "_noir_match": true,
+      "_is_currently_airing": false
     },
     {
       "id": 875828,
@@ -691,22 +364,309 @@
       "imdb_votes": 67365,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 9000,
+      "_score": 86.66,
       "_verdict": "noir",
-      "_reasoning": null,
+      "_reasoning": "noir_historical guide-match (auto-included)",
       "_pinned": false,
-      "_noir_match": true
+      "_noir_match": true,
+      "_is_currently_airing": false
     },
     {
-      "id": 1376484,
+      "id": 878608,
       "media_type": "movie",
-      "title": "Roid",
-      "title_es": "রইদ",
-      "overview": "A solitary middle aged man marries a madwoman and builds a house on a vacant plot of land far from the village. However, his wife’s madness becomes a calamity in his tranquil life.",
-      "overview_es": "A solitary middle aged man marries a madwoman and builds a house on a vacant plot of land far from the village. However, his wife’s madness becomes a calamity in his tranquil life.",
-      "poster_path": "/sHewWBdFBJ1IDIvzCEpLOaeqTb9.jpg",
-      "backdrop_path": "/8BHZ6wUtvYlzib44dqPheODJZ2x.jpg",
-      "vote_average": "0.0",
+      "title": "Resurrection",
+      "title_es": "狂野时代",
+      "overview": "In a future where humanity has surrendered its ability to dream in exchange for immortality, an outcast finds illusion, nightmarish visions, and beauty in an intoxicating world of his own making.",
+      "overview_es": "In a future where humanity has surrendered its ability to dream in exchange for immortality, an outcast finds illusion, nightmarish visions, and beauty in an intoxicating world of his own making.",
+      "poster_path": "/n4YEPanrb976XfPKjSsHaIrlSt9.jpg",
+      "backdrop_path": "/sbmHT55N2aIwctQEY1pWOwRrxK0.jpg",
+      "vote_average": "6.8",
+      "genre_ids": [
+        878,
+        18
+      ],
+      "genres": [
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "zh",
+      "imdb_id": "tt29002950",
+      "release_date": "2025-11-22",
+      "imdb_rating": 7.3,
+      "imdb_votes": 3229,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 85.82,
+      "_verdict": "noir",
+      "_reasoning": "noir_historical guide-match (auto-included)",
+      "_pinned": false,
+      "_noir_match": true,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 1429348,
+      "media_type": "movie",
+      "title": "The Stranger",
+      "title_es": "El extranjero",
+      "overview": "Algiers, 1938. Meursault, a quiet and unassuming employee in his early thirties, attends his mother's funeral without shedding a tear. The next day, he begins a casual affair with Marie, a work colleague. He quickly slips back into his usual routine.",
+      "overview_es": "En la Argelia de los años treinta, el apático francés Meursault muestra una total indiferencia ante la vida. Su desapego emocional lo lleva a cometer un asesinato, seguido de un juicio que examina tanto el crimen como su carácter.",
+      "poster_path": "/11lx7Isd86SIPeNuWlAPjYTfr57.jpg",
+      "backdrop_path": "/aTjFGxR7K32HPxrdvJOVeXX1UCe.jpg",
+      "vote_average": "6.8",
+      "genre_ids": [
+        18,
+        80
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 80,
+          "name": "Crime"
+        }
+      ],
+      "original_language": "fr",
+      "imdb_id": "tt36243564",
+      "release_date": "2025-10-29",
+      "imdb_rating": 7.1,
+      "imdb_votes": 3388,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 84.66,
+      "_verdict": "noir",
+      "_reasoning": "noir_historical guide-match (auto-included)",
+      "_pinned": false,
+      "_noir_match": true,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 1339173,
+      "media_type": "movie",
+      "title": "Honey Bunch",
+      "title_es": "Honey Bunch",
+      "overview": "Diana's husband is taking her to an experimental trauma facility deep in the wilderness, but she can't remember why... As her memories begin to creep back in so do some unwelcome sinister truths about her marriage.",
+      "overview_es": "Diana's husband is taking her to an experimental trauma facility deep in the wilderness, but she can't remember why... As her memories begin to creep back in so do some unwelcome sinister truths about her marriage.",
+      "poster_path": "/rR6zS2sPpcjND92cCLmsuMNok7M.jpg",
+      "backdrop_path": "/9L5Ekpoy4zT6o00qKUmZTeTkaVf.jpg",
+      "vote_average": "5.9",
+      "genre_ids": [
+        14,
+        27,
+        878,
+        53
+      ],
+      "genres": [
+        {
+          "id": 14,
+          "name": "Fantasy"
+        },
+        {
+          "id": 27,
+          "name": "Horror"
+        },
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt33270103",
+      "release_date": "2026-01-23",
+      "imdb_rating": 5.8,
+      "imdb_votes": 1683,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 84.25,
+      "_verdict": "noir",
+      "_reasoning": "noir_historical guide-match (auto-included)",
+      "_pinned": false,
+      "_noir_match": true,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 1385536,
+      "media_type": "movie",
+      "title": "Sore: A Wife from the Future",
+      "title_es": "Sore: Istri Dari Masa Depan",
+      "overview": "A young man living alone in Croatia encounters a woman who claims to be his wife from the future, sent on a mission to help him correct his bad habits and improve his lifestyle.",
+      "overview_es": "A young man living alone in Croatia encounters a woman who claims to be his wife from the future, sent on a mission to help him correct his bad habits and improve his lifestyle.",
+      "poster_path": "/sDAvZaPFctekJhln1vXsy7X1BTr.jpg",
+      "backdrop_path": "/sTNzZZdIm7csFdgnvP20XmSJRTx.jpg",
+      "vote_average": "7.6",
+      "genre_ids": [
+        14,
+        10749,
+        18,
+        878
+      ],
+      "genres": [
+        {
+          "id": 14,
+          "name": "Fantasy"
+        },
+        {
+          "id": 10749,
+          "name": "Romance"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        }
+      ],
+      "original_language": "id",
+      "imdb_id": "tt34548722",
+      "release_date": "2025-07-10",
+      "imdb_rating": 7.6,
+      "imdb_votes": 5024,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 84,
+      "_verdict": "noir",
+      "_reasoning": "noir_historical guide-match (auto-included)",
+      "_pinned": false,
+      "_noir_match": true,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 1396869,
+      "media_type": "movie",
+      "title": "Diés Iraé",
+      "title_es": "ഡീയസ് ഈറെ",
+      "overview": "Rohan's affluent lifestyle spirals out of control as he becomes convinced there is a supernatural entity in his home. As he starts to uncover the mystery, he is drawn into unexpected worlds and alliances, along with the horrors that lie ahead.",
+      "overview_es": "Rohan's affluent lifestyle spirals out of control as he becomes convinced there is a supernatural entity in his home. As he starts to uncover the mystery, he is drawn into unexpected worlds and alliances, along with the horrors that lie ahead.",
+      "poster_path": "/123DlTiiezgLaJruVe7RiSi0RFf.jpg",
+      "backdrop_path": "/8Fl8B1TRkcjkU9VMp9ex9mV6949.jpg",
+      "vote_average": "6.5",
+      "genre_ids": [
+        27,
+        53
+      ],
+      "genres": [
+        {
+          "id": 27,
+          "name": "Horror"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        }
+      ],
+      "original_language": "ml",
+      "imdb_id": "tt36302733",
+      "release_date": "2025-10-30",
+      "imdb_rating": 6.9,
+      "imdb_votes": 5441,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 83.87,
+      "_verdict": "noir",
+      "_reasoning": "noir_historical guide-match (auto-included)",
+      "_pinned": false,
+      "_noir_match": true,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 1291626,
+      "media_type": "movie",
+      "title": "Dragonfly",
+      "title_es": "Dragonfly",
+      "overview": "Neglected pensioner Elsie finds an unexpected ally in her younger neighbour Colleen. Over time, a friendship grows but Elsie’s resentful, guilt-ridden son stirs up tensions that bring shocking consequences.",
+      "overview_es": "Neglected pensioner Elsie finds an unexpected ally in her younger neighbour Colleen. Over time, a friendship grows but Elsie’s resentful, guilt-ridden son stirs up tensions that bring shocking consequences.",
+      "poster_path": "/qiXUkpeCHK9mjhevYm3ftJOoVmB.jpg",
+      "backdrop_path": "/lpGLNQPsAR5anNGWWTxr3dobCXp.jpg",
+      "vote_average": "6.4",
+      "genre_ids": [
+        53,
+        18
+      ],
+      "genres": [
+        {
+          "id": 53,
+          "name": "Thriller"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt32383425",
+      "release_date": "2025-11-07",
+      "imdb_rating": 7,
+      "imdb_votes": 681,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 82.67,
+      "_verdict": "noir",
+      "_reasoning": "noir_historical guide-match (auto-included)",
+      "_pinned": false,
+      "_noir_match": true,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 1480387,
+      "media_type": "movie",
+      "title": "undertone",
+      "title_es": "undertone",
+      "overview": "The host of a popular paranormal podcast becomes haunted by terrifying recordings mysteriously sent her way.",
+      "overview_es": "Una presentadora de pódcast de terror se muda con su madre terminal. Cintas misteriosas sobre vivencias paranormales de una pareja embarazada reflejan su situación, enloqueciendo.",
+      "poster_path": "/2PFgFMnrdCPXWiZl1PUvky7Mo9D.jpg",
+      "backdrop_path": "/qXxFWyur7jFkg2aQgENcXuyYeHF.jpg",
+      "vote_average": "6.5",
+      "genre_ids": [
+        27,
+        9648
+      ],
+      "genres": [
+        {
+          "id": 27,
+          "name": "Horror"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt35892608",
+      "release_date": "2026-03-12",
+      "imdb_rating": 6.1,
+      "imdb_votes": 7218,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 82.32,
+      "_verdict": "noir",
+      "_reasoning": "noir_historical guide-match (auto-included)",
+      "_pinned": false,
+      "_noir_match": true,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 1315657,
+      "media_type": "movie",
+      "title": "Yellow Letters",
+      "title_es": "Gelbe Briefe",
+      "overview": "The marriage of Derya and Aziz is under pressure after losing their jobs because of state arbitrariness and moving to Istanbul to live with Aziz's parents. They and their 13-year-old daughter Ezgi have to redefine their way of life.",
+      "overview_es": "The marriage of Derya and Aziz is under pressure after losing their jobs because of state arbitrariness and moving to Istanbul to live with Aziz's parents. They and their 13-year-old daughter Ezgi have to redefine their way of life.",
+      "poster_path": "/8Sxp3QIdamyoAfgLsUaGCQ1Z1ID.jpg",
+      "backdrop_path": "/jF0cgfoBkmJyknP2nii2NdhChWs.jpg",
+      "vote_average": "7.5",
       "genre_ids": [
         18
       ],
@@ -716,18 +676,128 @@
           "name": "Drama"
         }
       ],
-      "original_language": "bn",
-      "imdb_id": "tt39199158",
-      "release_date": "2026-05-28",
-      "imdb_rating": 8.5,
-      "imdb_votes": 50,
+      "original_language": "tr",
+      "imdb_id": "tt32888226",
+      "release_date": "2026-03-05",
+      "imdb_rating": 7.2,
+      "imdb_votes": 1021,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 9000,
+      "_score": 82.22,
       "_verdict": "noir",
-      "_reasoning": null,
+      "_reasoning": "noir_historical guide-match (auto-included)",
       "_pinned": false,
-      "_noir_match": true
+      "_noir_match": true,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 1032892,
+      "media_type": "movie",
+      "title": "In the Blink of an Eye",
+      "title_es": "En un instante",
+      "overview": "Three storylines, spanning thousands of years, intersect and reflect on hope, connection, and the circle of life.",
+      "overview_es": "Tres historias interconectadas reflexionan sobre la esperanza, las relaciones humanas y el ciclo de la vida a lo largo de miles de años.",
+      "poster_path": "/4vWqIdoBavo1htxmxlScDniOS9C.jpg",
+      "backdrop_path": "/uM5i623wwNfoGD97iwwQWQ7GlZL.jpg",
+      "vote_average": "5.4",
+      "genre_ids": [
+        878,
+        18
+      ],
+      "genres": [
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt6341826",
+      "release_date": "2026-01-26",
+      "imdb_rating": 6.1,
+      "imdb_votes": 5393,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 82.06,
+      "_verdict": "noir",
+      "_reasoning": "noir_historical guide-match (auto-included)",
+      "_pinned": false,
+      "_noir_match": true,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 1304313,
+      "media_type": "movie",
+      "title": "Lee Cronin's The Mummy",
+      "title_es": "La momia de Lee Cronin",
+      "overview": "The young daughter of a journalist disappears into the desert without a trace—eight years later, the broken family is shocked when she is returned to them, as what should be a joyful reunion turns into a living nightmare.",
+      "overview_es": "La joven hija de un periodista desaparece en el desierto sin dejar rastro—ocho años más tarde, la familia rota se conmociona cuando ella es devuelta a ellos, y lo que debiera haber sido una reunión jubilosa se convierte en una auténtica pesadilla.",
+      "poster_path": "/8L8efNkz8rUmwR7sV0g3vnC9yjn.jpg",
+      "backdrop_path": "/zc08qkHtWfZ2cQGQBK1S5yafJmR.jpg",
+      "vote_average": "6.9",
+      "genre_ids": [
+        27,
+        9648
+      ],
+      "genres": [
+        {
+          "id": 27,
+          "name": "Horror"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt32612507",
+      "release_date": "2026-04-15",
+      "imdb_rating": 6.4,
+      "imdb_votes": 623,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 81.99,
+      "_verdict": "noir",
+      "_reasoning": "noir_historical guide-match (auto-included)",
+      "_pinned": false,
+      "_noir_match": true,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 1124566,
+      "media_type": "movie",
+      "title": "Sentimental Value",
+      "title_es": "Valor sentimental",
+      "overview": "Sisters Nora and Agnes reunite with their estranged father, the charismatic Gustav, a once-renowned director who offers stage actress Nora a role in what he hopes will be his comeback film. When Nora turns it down, she soon discovers he has given her part to an eager young Hollywood star.",
+      "overview_es": "Una exploración íntima y conmovedora de la familia, los recuerdos y el poder reconciliador del arte.",
+      "poster_path": "/pz9NCWxxOk3o0W3v1Zkhawrwb4i.jpg",
+      "backdrop_path": "/oLgtpxK4aGZ7S8aiE3rDwahqkL2.jpg",
+      "vote_average": "7.5",
+      "genre_ids": [
+        18
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "no",
+      "imdb_id": "tt27714581",
+      "release_date": "2025-08-20",
+      "imdb_rating": 7.7,
+      "imdb_votes": 72823,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 81.92,
+      "_verdict": "noir",
+      "_reasoning": "noir_historical guide-match (auto-included)",
+      "_pinned": false,
+      "_noir_match": true,
+      "_is_currently_airing": false
     },
     {
       "id": 1159831,
@@ -765,43 +835,50 @@
       "imdb_votes": 19825,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 9000,
+      "_score": 80.79,
       "_verdict": "noir",
-      "_reasoning": null,
+      "_reasoning": "noir_historical guide-match (auto-included)",
       "_pinned": false,
-      "_noir_match": true
+      "_noir_match": true,
+      "_is_currently_airing": false
     },
     {
-      "id": 1300954,
+      "id": 1088548,
       "media_type": "movie",
-      "title": "Spoiling You",
-      "title_es": "Spoiling You",
-      "overview": "When an ASMR Cosplay artist invites her No.1 fan for a private session, she reveals a terrifying secret that can't be unheard.",
-      "overview_es": "When an ASMR Cosplay artist invites her No.1 fan for a private session, she reveals a terrifying secret that can't be unheard.",
-      "poster_path": "/u1qF8CVYyrju1eguTJnLtSJCHLX.jpg",
-      "backdrop_path": "/ycgn3nBF9rEugFJ1LTJvLidA8yg.jpg",
-      "vote_average": "0.0",
+      "title": "Bitter Christmas",
+      "title_es": "Amarga Navidad",
+      "overview": "After her mother dies in December, advertising director Elsa immerses herself in work to cope. When a panic attack forces her to take a break, she decides to travel to Lanzarote with her friend Patricia. The story of these women run parallel to that of a screenwriter and film director, exploring how life and fiction are inseparably linked, sometimes painfully so.",
+      "overview_es": "Tras el fallecimiento de su madre en diciembre, Elsa, directora de publicidad, se sumerge en el trabajo para afrontar la situación. Cuando un ataque de pánico la obliga a tomarse un descanso, decide viajar a Lanzarote con su amiga Patricia mientras su pareja, Bonifacio, se queda en Madrid.",
+      "poster_path": "/kiPGcHX0YT49nrab76G0bqw3gHW.jpg",
+      "backdrop_path": "/j2VIhyN9CtmMttheNzdCt49hv32.jpg",
+      "vote_average": "7.6",
       "genre_ids": [
-        27
+        18,
+        35
       ],
       "genres": [
         {
-          "id": 27,
-          "name": "Horror"
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 35,
+          "name": "Comedy"
         }
       ],
-      "original_language": "en",
-      "imdb_id": "tt32251094",
-      "release_date": "2026-02-21",
-      "imdb_rating": null,
-      "imdb_votes": null,
-      "rating_source": "tmdb",
+      "original_language": "es",
+      "imdb_id": "tt28088049",
+      "release_date": "2026-03-20",
+      "imdb_rating": 6.6,
+      "imdb_votes": 739,
+      "rating_source": "imdb",
       "_curated": true,
-      "_score": 9000,
+      "_score": 78.34,
       "_verdict": "noir",
-      "_reasoning": null,
+      "_reasoning": "noir_historical guide-match (auto-included)",
       "_pinned": false,
-      "_noir_match": true
+      "_noir_match": true,
+      "_is_currently_airing": false
     }
   ]
 }
