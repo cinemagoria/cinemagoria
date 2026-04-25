@@ -853,23 +853,49 @@ async function loadHeroExamples(mainDb) {
     }));
 }
 
+// Pin sort anchors. Pins are display-ordered by "real" release timing, not
+// by the order they appear in spotlight-manual-pinned.json:
+//   - Movies: prefer the 2nd-country theatrical date (the moment a film became
+//     a "wide" release ≥2 countries). Falls back to single-country theatrical,
+//     then theatrical-limited, then TMDB release_date. This is what makes a
+//     Romania-only early release rank below the eventual wider opening.
+//   - TV: last_air_date of the latest aired episode (TMDB last_air_date),
+//     fallback first_air_date.
+// Direction is descending in both cases — newest at the top of the carousel.
+function pickMovieTheatricalAnchor(c) {
+    const releases = c._releases || [];
+    const theatrical = releases
+        .filter((r) => r.type === 3)
+        .map((r) => r.date)
+        .sort();
+    if (theatrical.length >= 2) return theatrical[1];
+    if (theatrical.length === 1) return theatrical[0];
+    const limited = releases
+        .filter((r) => r.type === 2)
+        .map((r) => r.date)
+        .sort();
+    if (limited.length) return limited[0];
+    return c.release_date || null;
+}
+
+function compareDateDesc(a, b) {
+    if (!a && !b) return 0;
+    if (!a) return 1;
+    if (!b) return -1;
+    return new Date(b) - new Date(a);
+}
+
 async function applyManualPins(finalList, mediaType, pinnedIds, heroBlockedIds, imdbDb) {
     if (!pinnedIds.length) return finalList;
 
-    const pinnedInList = new Set(finalList.filter((it) => pinnedIds.includes(it.id)).map((it) => it.id));
-    const missing = pinnedIds.filter((id) => !pinnedInList.has(id));
-    if (!missing.length) {
-        const pinnedSet = new Set(pinnedIds);
-        const pinned = pinnedIds
-            .map((id) => finalList.find((it) => it.id === id))
-            .filter(Boolean)
-            .map((it) => ({ ...it, _pinned: true }));
-        const rest = finalList.filter((it) => !pinnedSet.has(it.id));
-        return [...pinned, ...rest];
-    }
+    const pinnedSet = new Set(pinnedIds);
+    const inListMap = new Map(
+        finalList.filter((it) => pinnedSet.has(it.id)).map((it) => [it.id, it])
+    );
+    const missingIds = pinnedIds.filter((id) => !inListMap.has(id));
 
-    const forced = [];
-    for (const id of missing) {
+    const fetched = [];
+    for (const id of missingIds) {
         if (heroBlockedIds.has(`${id}-${mediaType}`)) {
             log('pin', `skipping pinned ${mediaType}/${id}: currently in hero_selections`);
             continue;
@@ -889,7 +915,7 @@ async function applyManualPins(finalList, mediaType, pinnedIds, heroBlockedIds, 
                     }
                 } catch {}
             }
-            forced.push({
+            fetched.push({
                 ...enriched,
                 imdb_rating: imdbRating,
                 imdb_votes: imdbVotes,
@@ -905,15 +931,32 @@ async function applyManualPins(finalList, mediaType, pinnedIds, heroBlockedIds, 
         }
     }
 
-    const pinnedSet = new Set(pinnedIds);
-    const existingPinned = pinnedIds
-        .map((id) => finalList.find((it) => it.id === id))
-        .filter(Boolean)
-        .map((it) => ({ ...it, _pinned: true }));
     const allPinned = [
-        ...forced,
-        ...existingPinned.filter((it) => !forced.some((f) => f.id === it.id)),
+        ...Array.from(inListMap.values()).map((it) => ({ ...it, _pinned: true })),
+        ...fetched,
     ];
+
+    // Forced pins skipped hydrateMovieReleaseTypes upstream — backfill _releases
+    // here so the theatrical-anchor sort has the data it needs.
+    if (mediaType === 'movie') {
+        const needsHydrate = allPinned.filter((it) => !it._releases);
+        if (needsHydrate.length) {
+            await hydrateMovieReleaseTypes(needsHydrate);
+        }
+        allPinned.sort((a, b) =>
+            compareDateDesc(pickMovieTheatricalAnchor(a), pickMovieTheatricalAnchor(b))
+        );
+    } else {
+        allPinned.sort((a, b) =>
+            compareDateDesc(
+                a.last_air_date || a.first_air_date,
+                b.last_air_date || b.first_air_date
+            )
+        );
+    }
+
+    log('pin', `${mediaType}: ${allPinned.length} pinned, sorted by ${mediaType === 'movie' ? 'theatrical anchor' : 'last_air_date'} desc`);
+
     const rest = finalList.filter((it) => !pinnedSet.has(it.id));
     return [...allPinned, ...rest];
 }

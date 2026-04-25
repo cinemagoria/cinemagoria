@@ -1,89 +1,9 @@
 {
-  "generated_at": "2026-04-25T04:23:16.415Z",
-  "engine_version": "3.0.0",
+  "generated_at": "2026-04-25T15:35:43.372Z",
+  "engine_version": "manual-1.0.0",
   "media_type": "tv",
-  "count": 13,
+  "count": 20,
   "results": [
-    {
-      "id": 245927,
-      "media_type": "tv",
-      "title": "Paradise",
-      "title_es": "Paradise",
-      "overview": "The tranquility in a serene, wealthy community inhabited by some of the world's most prominent individuals explodes when a shocking murder occurs and a high stakes investigation unfolds.",
-      "overview_es": "En una serena comunidad habitada por algunas de las personas más prominentes del mundo, la tranquilidad estalla cuando se produce un espeluznante asesinato y se desencadena una investigación de alto riesgo. Xavier Collins, jefe del Servicio Secreto de la Casa Blanca, es rápidamente investigado por la muerte del presidente, al que descubre junto a su cama.",
-      "poster_path": "/l8RqfhqEk04W5sSOjQ9zeWU1DyM.jpg",
-      "backdrop_path": "/5QsLvWh8J1mXl1W05wNJknMmhzR.jpg",
-      "vote_average": "7.5",
-      "genre_ids": [
-        80,
-        18
-      ],
-      "genres": [
-        {
-          "id": 80,
-          "name": "Crime"
-        },
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt27444205",
-      "first_air_date": "2025-01-26",
-      "last_air_date": "2026-03-30",
-      "status": "Returning Series",
-      "imdb_rating": 7.9,
-      "imdb_votes": 75673,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 97.16,
-      "_verdict": "noir",
-      "_reasoning": "noir_historical guide-match (auto-included)",
-      "_pinned": false,
-      "_noir_match": true,
-      "_is_currently_airing": true
-    },
-    {
-      "id": 245318,
-      "media_type": "tv",
-      "title": "Margo's Got Money Troubles",
-      "title_es": "Margo tiene problemas de dinero",
-      "overview": "The daughter of a former Hooter's waitress and an ex-pro wrestler, Margo is a recent college dropout and aspiring writer. Faced with a new baby, mounting pile of bills, and dwindling number of ways to pay them, Margo must find a way forward.",
-      "overview_es": "La escritora en ciernes Margo Millet se queda embarazada, lo que la obliga a dejar la universidad y la lleva a la ruina. Pero cuando aparece su padre, un ex luchador profesional con el que no tenía relación, Margo halla una forma inesperada de rentabilizar su talento para contar historias.",
-      "poster_path": "/kMb8hCou8RZf7uXE1rTE8ZDgcvg.jpg",
-      "backdrop_path": "/5O9CNnYuH1U0L3ym7q7q93eH99u.jpg",
-      "vote_average": "8.0",
-      "genre_ids": [
-        18,
-        35
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 35,
-          "name": "Comedy"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt31137273",
-      "first_air_date": "2026-04-14",
-      "last_air_date": "2026-04-21",
-      "status": "Returning Series",
-      "imdb_rating": 6.9,
-      "imdb_votes": 634,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 96,
-      "_verdict": "noir",
-      "_reasoning": "noir_historical guide-match (auto-included)",
-      "_pinned": false,
-      "_noir_match": true,
-      "_is_currently_airing": true
-    },
     {
       "id": 85552,
       "media_type": "tv",
@@ -107,100 +27,16 @@
       "imdb_id": "tt8772296",
       "first_air_date": "2019-06-16",
       "last_air_date": "2026-04-19",
+      "next_air_date": "2026-04-26",
       "status": "Returning Series",
       "imdb_rating": 8.2,
       "imdb_votes": 297860,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 95.15,
-      "_verdict": "noir",
-      "_reasoning": "noir_historical guide-match (auto-included)",
-      "_pinned": false,
-      "_noir_match": true,
-      "_is_currently_airing": true
-    },
-    {
-      "id": 154385,
-      "media_type": "tv",
-      "title": "BEEF",
-      "title_es": "Bronca",
-      "overview": "A road rage incident between two strangers — a failing contractor and an unfulfilled entrepreneur — sparks a feud that brings out their darkest impulses.",
-      "overview_es": "Un incidente de tráfico entre dos desconocidos (un contratista fracasado y una empresaria descontenta) desata un conflicto que saca a relucir su lado más oscuro.",
-      "poster_path": "/25ih0Xq2zWbxhhKxwhvswKYQyEr.jpg",
-      "backdrop_path": "/2VHbof9yaNhovEnaancBkXEULCT.jpg",
-      "vote_average": "7.8",
-      "genre_ids": [
-        35,
-        18
-      ],
-      "genres": [
-        {
-          "id": 35,
-          "name": "Comedy"
-        },
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt14403178",
-      "first_air_date": "2023-04-06",
-      "last_air_date": "2026-04-16",
-      "status": "Returning Series",
-      "imdb_rating": 8,
-      "imdb_votes": 163392,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 93.43,
-      "_verdict": "noir",
-      "_reasoning": "noir_historical guide-match (auto-included)",
-      "_pinned": false,
-      "_noir_match": true,
-      "_is_currently_airing": true
-    },
-    {
-      "id": 87917,
-      "media_type": "tv",
-      "title": "For All Mankind",
-      "title_es": "Para toda la humanidad",
-      "overview": "Explore an aspirational world where NASA and the space program remained a priority and a focal point of our hopes and dreams as told through the lives of NASA astronauts, engineers, and their families.",
-      "overview_es": "Imagina un mundo donde la carrera espacial global nunca terminó. Entra en un cautivante \"qué pasaría si\" en la historia, donde el programa espacial de la NASA sigue siendo la pieza central cultural de las esperanzas y sueños de Estados Unidos.",
-      "poster_path": "/JP3DItWMbrrLiKR5AYUfpsNf2b.jpg",
-      "backdrop_path": "/9OQ5BIITkJwRJo9JA6AlCfJIGBQ.jpg",
-      "vote_average": "7.7",
-      "genre_ids": [
-        18,
-        10765,
-        10768
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 10765,
-          "name": "Sci-Fi & Fantasy"
-        },
-        {
-          "id": 10768,
-          "name": "War & Politics"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt7772588",
-      "first_air_date": "2019-11-01",
-      "last_air_date": "2026-04-23",
-      "status": "Returning Series",
-      "imdb_rating": 8.1,
-      "imdb_votes": 86645,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 83.48,
-      "_verdict": "cinemagoria",
-      "_reasoning": null,
-      "_pinned": false,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
       "_noir_match": false,
       "_is_currently_airing": true
     },
@@ -237,28 +73,70 @@
       "imdb_id": "tt9813792",
       "first_air_date": "2022-02-20",
       "last_air_date": "2026-04-19",
+      "next_air_date": "2026-04-26",
       "status": "Returning Series",
       "imdb_rating": 7.8,
       "imdb_votes": 173335,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 76.28,
-      "_verdict": "cinemagoria",
-      "_reasoning": null,
-      "_pinned": false,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
       "_noir_match": false,
       "_is_currently_airing": true
     },
     {
-      "id": 241609,
+      "id": 258036,
       "media_type": "tv",
-      "title": "Your Friends & Neighbors",
-      "title_es": "Vicios ocultos",
-      "overview": "When a financial titan suddenly finds himself divorced and jobless, he starts robbing his wealthy neighbors to stay afloat. Stealing from his own social circle strangely exhilarates him—but he gradually gets tangled in a deadly web.",
-      "overview_es": "Cuando un titán financiero se encuentra de repente divorciado y en paro, empieza a robar a sus vecinos ricos para mantenerse a flote. Curiosamente, robar a su círculo social le entusiasma, pero poco a poco, va enredándose en una red mortal.",
-      "poster_path": "/lcp63INKEsVHUly9eayx7gEEOcG.jpg",
-      "backdrop_path": "/d8LvQj79fgowZkX4NTZaEG3NwsH.jpg",
-      "vote_average": "7.5",
+      "title": "The Audacity",
+      "title_es": "The Audacity",
+      "overview": "Inside the bubble of Silicon Valley, a data-mining CEO strives to turn insight and influence into profit and power in this darkly comedic look at the warped dreams, outsized egos, and ethical lapses of the self-styled inventors of the future.",
+      "overview_es": "Dentro de la burbuja de Silicon Valley, un director ejecutivo especializado en minería de datos se esfuerza por convertir el conocimiento y la influencia en ganancias y poder en esta mirada oscura y cómica a los sueños distorsionados, los egos desmesurados y las faltas éticas de los autoproclamados inventores del futuro.",
+      "poster_path": "/ea6hHjW8yWjROSYwynpWsYc4mYZ.jpg",
+      "backdrop_path": "/4X86dOxMsrZudL0PdsMv30NGBWZ.jpg",
+      "vote_average": "6.3",
+      "genre_ids": [
+        18,
+        35
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 35,
+          "name": "Comedy"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt30923123",
+      "first_air_date": "2026-04-05",
+      "last_air_date": "2026-04-05",
+      "next_air_date": "2026-04-26",
+      "status": "Returning Series",
+      "imdb_rating": 5.1,
+      "imdb_votes": 375,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
+      "_noir_match": false,
+      "_is_currently_airing": true
+    },
+    {
+      "id": 287230,
+      "media_type": "tv",
+      "title": "The Cage",
+      "title_es": "The Cage",
+      "overview": "When Leanne and Matty discover they are both robbing from the safe at the inner-city casino they work in, their lives are set on a collision course; with each other, the local gangster they're stealing from, and the police.",
+      "overview_es": "When Leanne and Matty discover they are both robbing from the safe at the inner-city casino they work in, their lives are set on a collision course; with each other, the local gangster they're stealing from, and the police.",
+      "poster_path": "/i3eE2qoTrk89F56WctAN1q0hMcS.jpg",
+      "backdrop_path": "/jUNc1Uf5KYT2cn0wLDDQWXE0n8y.jpg",
+      "vote_average": "0.0",
       "genre_ids": [
         18,
         80
@@ -274,31 +152,534 @@
         }
       ],
       "original_language": "en",
-      "imdb_id": "tt30459041",
-      "first_air_date": "2025-04-10",
-      "last_air_date": "2026-04-16",
+      "imdb_id": "tt33995822",
+      "first_air_date": "2026-04-26",
+      "last_air_date": null,
+      "next_air_date": "2026-04-26",
       "status": "Returning Series",
-      "imdb_rating": 7.7,
-      "imdb_votes": 51378,
-      "rating_source": "imdb",
+      "imdb_rating": null,
+      "imdb_votes": null,
+      "rating_source": "tmdb",
       "_curated": true,
-      "_score": 75.62,
-      "_verdict": "cinemagoria",
-      "_reasoning": null,
-      "_pinned": false,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
       "_noir_match": false,
       "_is_currently_airing": true
     },
     {
-      "id": 204490,
+      "id": 270476,
       "media_type": "tv",
-      "title": "Criminal Record",
-      "title_es": "Historial delictivo",
-      "overview": "In the heart of London, an anonymous phone call draws two brilliant detectives—a young woman in the early stages of her career and a well-connected man determined to protect his legacy—into a fight to correct an old miscarriage of justice.",
-      "overview_es": "En el centro de Londres, una llamada anónima arrastra a dos brillantes inspectores, una joven en los inicios de su carrera y un hombre bien relacionado y decidido a proteger su legado, a una lucha por corregir un antiguo error judicial.",
-      "poster_path": "/kpnfeVRExCutHXFVXzaSdT8tAJl.jpg",
-      "backdrop_path": "/cZO6ZHtaX7B0zxmBDhW0ID3k7V6.jpg",
-      "vote_average": "6.6",
+      "title": "Widow's Bay",
+      "title_es": "La maldición de Widow's Bay",
+      "overview": "The mayor of a New England town resolves to turn it into the next tourist hot spot, despite local warnings that it's cursed.",
+      "overview_es": "Un alcalde de Nueva Inglaterra intenta fomentar el turismo, pero se enfrenta a extraños acontecimientos que sugieren que la isla está encantada.",
+      "poster_path": "/5lcxWLVAEICkFpuAiV1aMy7ZZj3.jpg",
+      "backdrop_path": "/yx0sfeYOoXol2fjT22SXo9YyviI.jpg",
+      "vote_average": "6.5",
+      "genre_ids": [
+        35,
+        18,
+        9648
+      ],
+      "genres": [
+        {
+          "id": 35,
+          "name": "Comedy"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt33332385",
+      "first_air_date": "2026-04-28",
+      "last_air_date": null,
+      "next_air_date": "2026-04-28",
+      "status": "Returning Series",
+      "imdb_rating": null,
+      "imdb_votes": null,
+      "rating_source": "tmdb",
+      "_curated": true,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
+      "_noir_match": false,
+      "_is_currently_airing": true
+    },
+    {
+      "id": 245318,
+      "media_type": "tv",
+      "title": "Margo's Got Money Troubles",
+      "title_es": "Margo tiene problemas de dinero",
+      "overview": "The daughter of a former Hooter's waitress and an ex-pro wrestler, Margo is a recent college dropout and aspiring writer. Faced with a new baby, mounting pile of bills, and dwindling number of ways to pay them, Margo must find a way forward.",
+      "overview_es": "La escritora en ciernes Margo Millet se queda embarazada, lo que la obliga a dejar la universidad y la lleva a la ruina. Pero cuando aparece su padre, un ex luchador profesional con el que no tenía relación, Margo halla una forma inesperada de rentabilizar su talento para contar historias.",
+      "poster_path": "/kMb8hCou8RZf7uXE1rTE8ZDgcvg.jpg",
+      "backdrop_path": "/5O9CNnYuH1U0L3ym7q7q93eH99u.jpg",
+      "vote_average": "8.0",
+      "genre_ids": [
+        18,
+        35
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 35,
+          "name": "Comedy"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt31137273",
+      "first_air_date": "2026-04-14",
+      "last_air_date": "2026-04-21",
+      "next_air_date": "2026-04-28",
+      "status": "Returning Series",
+      "imdb_rating": 6.9,
+      "imdb_votes": 634,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
+      "_noir_match": false,
+      "_is_currently_airing": true
+    },
+    {
+      "id": 108181,
+      "media_type": "tv",
+      "title": "Imperfect Women",
+      "title_es": "Mujeres imperfectas",
+      "overview": "After a murder shatters the lives of three best friends, their decades-long bond is tested when an investigation reveals betrayals and shocking truths.",
+      "overview_es": "Tras un asesinato que destruye las vidas de tres amigos, su vínculo de décadas se pone a prueba cuando una investigación revela verdades impactantes.",
+      "poster_path": "/wW7rimhnokiQ8V6ha6VKIwHg8IV.jpg",
+      "backdrop_path": "/1RejXo8s6ot7ZbrgR8J16DVaaTi.jpg",
+      "vote_average": "6.0",
+      "genre_ids": [
+        18,
+        9648,
+        80
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        },
+        {
+          "id": 80,
+          "name": "Crime"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt31937954",
+      "first_air_date": "2026-03-17",
+      "last_air_date": "2026-04-21",
+      "next_air_date": "2026-04-28",
+      "status": "Returning Series",
+      "imdb_rating": 5.7,
+      "imdb_votes": 1974,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
+      "_noir_match": false,
+      "_is_currently_airing": true
+    },
+    {
+      "id": 76479,
+      "media_type": "tv",
+      "title": "The Boys",
+      "title_es": "The Boys",
+      "overview": "A group of vigilantes known informally as “The Boys” set out to take down corrupt superheroes with no more than blue-collar grit and a willingness to fight dirty.",
+      "overview_es": "La serie tiene lugar en un mundo en el que los superhéroes representan el lado oscuro de la celebridad y la fama. Un grupo de vigilantes que se hacen llamar \"The Boys\" decide hacer todo lo posible por frenar a los superhéroes que están perjudicando a la sociedad, independientemente de los riesgos que ello conlleva.",
+      "poster_path": "/in1R2dDc421JxsoRWaIIAqVI2KE.jpg",
+      "backdrop_path": "/bq28ajZaoMyzEIm6REelqyqtEDZ.jpg",
+      "vote_average": "8.4",
+      "genre_ids": [
+        10765,
+        10759
+      ],
+      "genres": [
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        },
+        {
+          "id": 10759,
+          "name": "Action & Adventure"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt1190634",
+      "first_air_date": "2019-07-25",
+      "last_air_date": "2026-04-22",
+      "next_air_date": "2026-04-29",
+      "status": "Returning Series",
+      "imdb_rating": 8.6,
+      "imdb_votes": 854192,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
+      "_noir_match": false,
+      "_is_currently_airing": true
+    },
+    {
+      "id": 287527,
+      "media_type": "tv",
+      "title": "The Testaments",
+      "title_es": "Los testamentos",
+      "overview": "Growing up in Gilead is all they have ever known. As a new generation of young women grapple with the bleak future that awaits them, they will be forced to search for allies, new and old, to help in their fight for freedom.",
+      "overview_es": "\"Los testamentos\", la continuación de \"El cuento de la criada\", es un drama sobre el paso a la adultez ambientado en Gilead. La historia sigue a dos adolescentes: la devota y obediente Agnes Mackenzie y Daisy, una conversa recién llegada de fuera de las fronteras de Gilead.",
+      "poster_path": "/xVsFopLisBoiKdXXecaNTN4pJ9A.jpg",
+      "backdrop_path": "/n8fffwUPi9DMxtwDIR6xoGx9ItP.jpg",
+      "vote_average": "6.0",
+      "genre_ids": [
+        18
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt10970762",
+      "first_air_date": "2026-04-08",
+      "last_air_date": "2026-04-22",
+      "next_air_date": "2026-04-29",
+      "status": "Returning Series",
+      "imdb_rating": 8.1,
+      "imdb_votes": 1708,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
+      "_noir_match": false,
+      "_is_currently_airing": true
+    },
+    {
+      "id": 87917,
+      "media_type": "tv",
+      "title": "For All Mankind",
+      "title_es": "Para toda la humanidad",
+      "overview": "Explore an aspirational world where NASA and the space program remained a priority and a focal point of our hopes and dreams as told through the lives of NASA astronauts, engineers, and their families.",
+      "overview_es": "Imagina un mundo donde la carrera espacial global nunca terminó. Entra en un cautivante \"qué pasaría si\" en la historia, donde el programa espacial de la NASA sigue siendo la pieza central cultural de las esperanzas y sueños de Estados Unidos.",
+      "poster_path": "/JP3DItWMbrrLiKR5AYUfpsNf2b.jpg",
+      "backdrop_path": "/9OQ5BIITkJwRJo9JA6AlCfJIGBQ.jpg",
+      "vote_average": "7.7",
+      "genre_ids": [
+        18,
+        10765,
+        10768
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        },
+        {
+          "id": 10768,
+          "name": "War & Politics"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt7772588",
+      "first_air_date": "2019-11-01",
+      "last_air_date": "2026-04-23",
+      "next_air_date": "2026-04-30",
+      "status": "Returning Series",
+      "imdb_rating": 8.1,
+      "imdb_votes": 86645,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
+      "_noir_match": false,
+      "_is_currently_airing": true
+    },
+    {
+      "id": 223386,
+      "media_type": "tv",
+      "title": "Man on Fire",
+      "title_es": "El fuego de la venganza",
+      "overview": "Haunted by his past and hunted by his enemies, a Special Forces veteran fights to keep a teenage girl alive on the deadly streets of Rio de Janeiro.",
+      "overview_es": "Atormentado por su pasado y perseguido por sus enemigos, un veterano de las Fuerzas Especiales lucha por salvar a una joven en las peligrosas calles de Río de Janeiro.",
+      "poster_path": "/9cZzmT8rhBXbZ1QFBPs3ggABYB3.jpg",
+      "backdrop_path": "/3hvsrUb4LWW03XDRMu6xomMhDIe.jpg",
+      "vote_average": "1.0",
+      "genre_ids": [
+        10759,
+        18,
+        9648
+      ],
+      "genres": [
+        {
+          "id": 10759,
+          "name": "Action & Adventure"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt27331527",
+      "first_air_date": "2026-04-30",
+      "last_air_date": null,
+      "next_air_date": "2026-04-30",
+      "status": "Returning Series",
+      "imdb_rating": null,
+      "imdb_votes": null,
+      "rating_source": "tmdb",
+      "_curated": true,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
+      "_noir_match": false,
+      "_is_currently_airing": true
+    },
+    {
+      "id": 262848,
+      "media_type": "tv",
+      "title": "Unchosen",
+      "title_es": "Los no elegidos",
+      "overview": "When a young mother from a sheltered cult crosses paths with a mysterious stranger, she embarks on a risky affair that awakens desires and dark secrets.",
+      "overview_es": "Una joven madre de una secta aislada se cruza con un misterioso desconocido e inicia una relación arriesgada que despierta deseos y desvela secretos oscuros.",
+      "poster_path": "/oVl01a7R8rfmWrolWtrlPXYQqzj.jpg",
+      "backdrop_path": "/rfUT32eWuaYcs7pFSyhT08vfCaF.jpg",
+      "vote_average": "8.4",
+      "genre_ids": [
+        18
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt31631142",
+      "first_air_date": "2026-04-21",
+      "last_air_date": "2026-04-21",
+      "next_air_date": null,
+      "status": "Returning Series",
+      "imdb_rating": null,
+      "imdb_votes": null,
+      "rating_source": "tmdb",
+      "_curated": true,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
+      "_noir_match": false,
+      "_is_currently_airing": true
+    },
+    {
+      "id": 154385,
+      "media_type": "tv",
+      "title": "BEEF",
+      "title_es": "Bronca",
+      "overview": "A road rage incident between two strangers — a failing contractor and an unfulfilled entrepreneur — sparks a feud that brings out their darkest impulses.",
+      "overview_es": "Un incidente de tráfico entre dos desconocidos (un contratista fracasado y una empresaria descontenta) desata un conflicto que saca a relucir su lado más oscuro.",
+      "poster_path": "/25ih0Xq2zWbxhhKxwhvswKYQyEr.jpg",
+      "backdrop_path": "/2VHbof9yaNhovEnaancBkXEULCT.jpg",
+      "vote_average": "7.8",
+      "genre_ids": [
+        35,
+        18
+      ],
+      "genres": [
+        {
+          "id": 35,
+          "name": "Comedy"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt14403178",
+      "first_air_date": "2023-04-06",
+      "last_air_date": "2026-04-16",
+      "next_air_date": null,
+      "status": "Returning Series",
+      "imdb_rating": 8,
+      "imdb_votes": 163392,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
+      "_noir_match": false,
+      "_is_currently_airing": true
+    },
+    {
+      "id": 75191,
+      "media_type": "tv",
+      "title": "The Terror",
+      "title_es": "The Terror",
+      "overview": "A chilling anthology series featuring stories of people in terrifying situations inspired by true historical events.",
+      "overview_es": "En el año 1847, un equipo de expedición de la Marina Real británica es enviado al Ártico, en busca del Paso del Noroeste. Pero una vez allí es atacado por un misterioso depredador que acecha a los barcos y a sus tripulaciones en un juego desesperado de incertidumbre y supervivencia.",
+      "poster_path": "/bKkOcso0YuCBK7dixkn3VSd0dUr.jpg",
+      "backdrop_path": "/ssyZgYScV9eClakZDwu4sPrgMmy.jpg",
+      "vote_average": "7.3",
+      "genre_ids": [
+        9648,
+        18,
+        10765
+      ],
+      "genres": [
+        {
+          "id": 9648,
+          "name": "Mystery"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        },
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt2708480",
+      "first_air_date": "2018-03-26",
+      "last_air_date": "2019-10-14",
+      "next_air_date": "2026-05-07",
+      "status": "Returning Series",
+      "imdb_rating": 7.8,
+      "imdb_votes": 61161,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
+      "_noir_match": false,
+      "_is_currently_airing": true
+    },
+    {
+      "id": 285404,
+      "media_type": "tv",
+      "title": "Maximum Pleasure Guaranteed",
+      "title_es": "Satisfacción garantizada",
+      "overview": "A newly divorced mom falls down a dangerous rabbit hole of blackmail, murder, and youth soccer.",
+      "overview_es": "Una madre recién divorciada cae en una peligrosa espiral de chantaje, asesinato y fútbol juvenil.",
+      "poster_path": "/f9U0oTlvLlqbww2Gm5j8Lhf1r9W.jpg",
+      "backdrop_path": "/9WVs2H3wO65jVFsscHACgQw7v6L.jpg",
+      "vote_average": "0.0",
+      "genre_ids": [
+        35
+      ],
+      "genres": [
+        {
+          "id": 35,
+          "name": "Comedy"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt35946742",
+      "first_air_date": "2026-05-19",
+      "last_air_date": null,
+      "next_air_date": "2026-05-19",
+      "status": "In Production",
+      "imdb_rating": null,
+      "imdb_votes": null,
+      "rating_source": "tmdb",
+      "_curated": true,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
+      "_noir_match": false,
+      "_is_currently_airing": true
+    },
+    {
+      "id": 224941,
+      "media_type": "tv",
+      "title": "The Boroughs",
+      "title_es": "The Boroughs",
+      "overview": "In a seemingly perfect retirement community, a grieving newcomer's monstrous encounter inspires him to join a misfit crew of unlikely heroes who uncover a dark secret that proves their \"golden years\" are more dangerous, and they are more formidable, than anyone expects.",
+      "overview_es": "In a seemingly perfect retirement community, a grieving newcomer's monstrous encounter inspires him to join a misfit crew of unlikely heroes who uncover a dark secret that proves their \"golden years\" are more dangerous, and they are more formidable, than anyone expects.",
+      "poster_path": "/1Dw3U4qGXZWLCe2u6OXvvg1u1Or.jpg",
+      "backdrop_path": "/qdOmEH1Crgf08FhTLNVfcrRGYDC.jpg",
+      "vote_average": "0.0",
+      "genre_ids": [
+        10765,
+        9648
+      ],
+      "genres": [
+        {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        },
+        {
+          "id": 9648,
+          "name": "Mystery"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt27557289",
+      "first_air_date": "2026-05-21",
+      "last_air_date": null,
+      "next_air_date": "2026-05-21",
+      "status": "Planned",
+      "imdb_rating": null,
+      "imdb_votes": null,
+      "rating_source": "tmdb",
+      "_curated": true,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
+      "_noir_match": false,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 245927,
+      "media_type": "tv",
+      "title": "Paradise",
+      "title_es": "Paradise",
+      "overview": "The tranquility in a serene, wealthy community inhabited by some of the world's most prominent individuals explodes when a shocking murder occurs and a high stakes investigation unfolds.",
+      "overview_es": "En una serena comunidad habitada por algunas de las personas más prominentes del mundo, la tranquilidad estalla cuando se produce un espeluznante asesinato y se desencadena una investigación de alto riesgo. Xavier Collins, jefe del Servicio Secreto de la Casa Blanca, es rápidamente investigado por la muerte del presidente, al que descubre junto a su cama.",
+      "poster_path": "/l8RqfhqEk04W5sSOjQ9zeWU1DyM.jpg",
+      "backdrop_path": "/5QsLvWh8J1mXl1W05wNJknMmhzR.jpg",
+      "vote_average": "7.5",
       "genre_ids": [
         80,
         18
@@ -314,65 +695,67 @@
         }
       ],
       "original_language": "en",
-      "imdb_id": "tt21088136",
-      "first_air_date": "2024-01-10",
-      "last_air_date": "2026-04-22",
+      "imdb_id": "tt27444205",
+      "first_air_date": "2025-01-26",
+      "last_air_date": "2026-03-30",
+      "next_air_date": null,
       "status": "Returning Series",
-      "imdb_rating": 7.1,
-      "imdb_votes": 13525,
+      "imdb_rating": 7.9,
+      "imdb_votes": 75673,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 70.86,
-      "_verdict": "cinemagoria",
-      "_reasoning": null,
-      "_pinned": false,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
       "_noir_match": false,
       "_is_currently_airing": true
     },
     {
-      "id": 259265,
+      "id": 220102,
       "media_type": "tv",
-      "title": "Something Very Bad Is Going to Happen",
-      "title_es": "Algo terrible está a punto de suceder",
-      "overview": "A bride has a feeling that something horrifying will happen at her wedding — and the closer to the altar she gets, the worse it becomes.",
-      "overview_es": "Una novia presiente que algo terrible ocurrirá en su boda... y cuanto más se acerca al altar, peor se vuelve todo.",
-      "poster_path": "/tuj37DlqEqib8sTO4h3nHJeTAJ2.jpg",
-      "backdrop_path": "/1bdq9FKVyBUpOM9qE09WgG9o8Ek.jpg",
-      "vote_average": "6.5",
+      "title": "Spider-Noir",
+      "title_es": "Spider-Noir",
+      "overview": "Ben Reilly, an aging and down on his luck private investigator in 1930s New York, is forced to grapple with his past life as the city's one and only superhero.",
+      "overview_es": "La historia sigue a Ben Reilly, un experimentado investigador privado en mala racha en el Nueva York de los años 30, que se ve obligado a enfrentarse a su pasado tras una tragedia profundamente personal, mientras la ciudad cuenta con un único superhéroe.",
+      "poster_path": "/cRAzL6mmdM6Q6UuQgc335UMgcfd.jpg",
+      "backdrop_path": "/27JFNRO0VeNGyx4ZnbCS8ambP3U.jpg",
+      "vote_average": "0.0",
       "genre_ids": [
-        18,
         9648,
-        10765
+        80,
+        10759
       ],
       "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
         {
           "id": 9648,
           "name": "Mystery"
         },
         {
-          "id": 10765,
-          "name": "Sci-Fi & Fantasy"
+          "id": 80,
+          "name": "Crime"
+        },
+        {
+          "id": 10759,
+          "name": "Action & Adventure"
         }
       ],
       "original_language": "en",
-      "imdb_id": "tt32937780",
-      "first_air_date": "2026-03-26",
-      "last_air_date": "2026-03-26",
-      "status": "Ended",
-      "imdb_rating": 6.8,
-      "imdb_votes": 20786,
+      "imdb_id": "tt30460310",
+      "first_air_date": "2026-05-25",
+      "last_air_date": null,
+      "next_air_date": "2026-05-25",
+      "status": "In Production",
+      "imdb_rating": 9.6,
+      "imdb_votes": 39,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 102.44,
-      "_verdict": "noir",
-      "_reasoning": "noir_historical guide-match (auto-included)",
-      "_pinned": false,
-      "_noir_match": true,
-      "_is_currently_airing": false
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
+      "_noir_match": false,
+      "_is_currently_airing": true
     },
     {
       "id": 240740,
@@ -407,142 +790,59 @@
       "imdb_id": "tt14786934",
       "first_air_date": "2026-03-11",
       "last_air_date": "2026-03-11",
+      "next_air_date": null,
       "status": "Returning Series",
       "imdb_rating": 6,
       "imdb_votes": 14663,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 97.33,
-      "_verdict": "noir",
-      "_reasoning": "noir_historical guide-match (auto-included)",
-      "_pinned": false,
-      "_noir_match": true,
-      "_is_currently_airing": false
-    },
-    {
-      "id": 95480,
-      "media_type": "tv",
-      "title": "Slow Horses",
-      "title_es": "Slow Horses",
-      "overview": "Follow a dysfunctional team of MI5 agents—and their obnoxious boss, the notorious Jackson Lamb—as they navigate the espionage world's smoke and mirrors to defend England from sinister forces.",
-      "overview_es": "Drama de espías con tintes de comedia negra centrado en las andanzas de un incompetente equipo de agentes del MI5 y en su jefe, el irreverente Jackson Lamb, a medida que desmontan los artificios del espionaje para defender Inglaterra de las fuerzas del mal.",
-      "poster_path": "/dnpatlJrEPiDSn5fzgzvxtiSnMo.jpg",
-      "backdrop_path": "/bDfboQUb45Cv9MYyVBDZw8M8xSM.jpg",
-      "vote_average": "8.0",
-      "genre_ids": [
-        80,
-        18,
-        35
-      ],
-      "genres": [
-        {
-          "id": 80,
-          "name": "Crime"
-        },
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 35,
-          "name": "Comedy"
-        }
-      ],
-      "original_language": "en",
-      "imdb_id": "tt5875444",
-      "first_air_date": "2022-04-01",
-      "last_air_date": "2025-10-29",
-      "status": "Returning Series",
-      "imdb_rating": 8.3,
-      "imdb_votes": 145909,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 72.13,
-      "_verdict": "cinemagoria",
-      "_reasoning": null,
-      "_pinned": false,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
       "_noir_match": false,
       "_is_currently_airing": false
     },
     {
-      "id": 218896,
+      "id": 125988,
       "media_type": "tv",
-      "title": "The Law According to Lidia Poët",
-      "title_es": "La ley de Lidia Poët",
-      "overview": "In late 19th-century Turin, the young Lidia Poët, fights against everything and everyone to get what is rightfully hers: to be enrolled in the official register of lawyers. A profession, at the time, reserved exclusively for men. Nevertheless, nothing could stop her dream of becoming the first female lawyer in Italy.",
-      "overview_es": "Una joven que aspira a ejercer la abogacía investiga, junto con su hermano letrado y su cuñado periodista, unos asesinatos en la Italia del siglo XIX.",
-      "poster_path": "/bhTLskf3XNALpk3tZGm7lG2ChAx.jpg",
-      "backdrop_path": "/pA4t1a58gQPhzdKJMUjFvUYwmWu.jpg",
-      "vote_average": "7.4",
+      "title": "Silo",
+      "title_es": "Silo",
+      "overview": "In a ruined and toxic future, thousands live in a giant silo deep underground. After its sheriff breaks a cardinal rule and residents die mysteriously, engineer Juliette starts to uncover shocking secrets and the truth about the silo.",
+      "overview_es": "En un futuro ruinoso y tóxico, existe una comunidad en un gigantesco silo subterráneo que alcanza cientos de pisos de profundidad. Allí, las personas viven en una sociedad llena de normas que creen que están destinadas a protegerlas.",
+      "poster_path": "/fDMTqUcEh6qJwWZP1SHTfoaqsCy.jpg",
+      "backdrop_path": "/4XccmjsOmQZw8S2iW1wvlvmb5v1.jpg",
+      "vote_average": "8.1",
       "genre_ids": [
-        18,
-        80,
-        10768
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        },
-        {
-          "id": 80,
-          "name": "Crime"
-        },
-        {
-          "id": 10768,
-          "name": "War & Politics"
-        }
-      ],
-      "original_language": "it",
-      "imdb_id": "tt15441160",
-      "first_air_date": "2023-02-15",
-      "last_air_date": "2026-04-15",
-      "status": "Ended",
-      "imdb_rating": 7.5,
-      "imdb_votes": 11521,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 72.12,
-      "_verdict": "cinemagoria",
-      "_reasoning": null,
-      "_pinned": false,
-      "_noir_match": false,
-      "_is_currently_airing": false
-    },
-    {
-      "id": 157741,
-      "media_type": "tv",
-      "title": "Landman",
-      "title_es": "Landman: Un negocio crudo",
-      "overview": "Set in the proverbial boomtowns of West-Texas and a modern-day tale of fortune-seeking in the world of oil rigs, the series is an upstairs/downstairs story of roughnecks and wildcat billionaires that are fueling a boom so big it’s reshaping our climate, our economy and our geopolitics.",
-      "overview_es": "Ambientada en las proverbiales ciudades en auge del oeste de Texas, se trata de un drama sobre la búsqueda de la fortuna en el mundo de las plataformas petrolíferas basada en el podcast 'Boomtown', una historia de clases, con matones y multimillonarios salvajes que impulsan un boom tan grande que está cambiando nuestro clima, nuestra economía y nuestra geopolítica.",
-      "poster_path": "/hYthRgS1nvQkGILn9YmqsF8kSk6.jpg",
-      "backdrop_path": "/mh2UczqEXJJVgqohbyZbHTuxwhL.jpg",
-      "vote_average": "8.0",
-      "genre_ids": [
+        10765,
         18
       ],
       "genres": [
         {
+          "id": 10765,
+          "name": "Sci-Fi & Fantasy"
+        },
+        {
           "id": 18,
           "name": "Drama"
         }
       ],
       "original_language": "en",
-      "imdb_id": "tt14186672",
-      "first_air_date": "2024-11-17",
-      "last_air_date": "2026-01-18",
+      "imdb_id": "tt14688458",
+      "first_air_date": "2023-05-04",
+      "last_air_date": "2025-01-16",
+      "next_air_date": "2026-07-02",
       "status": "Returning Series",
-      "imdb_rating": 8.2,
-      "imdb_votes": 105188,
+      "imdb_rating": 8.1,
+      "imdb_votes": 211965,
       "rating_source": "imdb",
       "_curated": true,
-      "_score": 66.24,
-      "_verdict": "cinemagoria",
-      "_reasoning": null,
-      "_pinned": false,
+      "_score": null,
+      "_verdict": "pinned",
+      "_reasoning": "Manual pin (Phase-1 curated list)",
+      "_pinned": true,
       "_noir_match": false,
-      "_is_currently_airing": false
+      "_is_currently_airing": true
     }
   ]
 }

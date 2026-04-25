@@ -37,3 +37,11 @@ sync-enrichment-data-all-repos.sh
 # Reference data files (not for deployment)
 public/data/hero_selections.json
 public/data/noir_historical.json
+QUESTIONS.md
+SPOTLIGHT.md
+data/user_follows (1).json
+.gitignore
+.gitignore
+data/user_follows.json
+data/user_follows (2).json
+data/user_company_follows.json

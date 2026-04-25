@@ -119,8 +119,8 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         fetchFestivalMovies('bafici'),
         fetchFestivalMovies('cannes'),
         fetchFestivalMovies('tribeca'),
-        fetchSpotlight('/data/spotlight-movies.json'),
-        fetchSpotlight('/data/spotlight-tv.json'),
+        fetchSpotlight('/api/spotlight/movies'),
+        fetchSpotlight('/api/spotlight/tv'),
         fetchHero()
     ]);
     
