@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-04-25T04:23:16.415Z",
+  "generated_at": "2026-04-25T10:06:30.262Z",
   "engine_version": "3.0.0",
   "media_type": "tv",
-  "count": 13,
+  "count": 14,
   "results": [
     {
       "id": 245927,
@@ -503,6 +503,41 @@
       "rating_source": "imdb",
       "_curated": true,
       "_score": 72.12,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false,
+      "_is_currently_airing": false
+    },
+    {
+      "id": 100088,
+      "media_type": "tv",
+      "title": "The Last of Us",
+      "title_es": "The Last of Us",
+      "overview": "Twenty years after modern civilization has been destroyed, Joel, a hardened survivor, is hired to smuggle Ellie, a 14-year-old girl, out of an oppressive quarantine zone. What starts as a small job soon becomes a brutal, heartbreaking journey, as they both must traverse the United States and depend on each other for survival.",
+      "overview_es": "Año 2023, veinte años después del comienzo de una plaga mundial que infectó a población con un hongo mutado transformando a las personas en unas criaturas caníbales, el contrabandista Joel tiene la misión de escoltar a la adolescente Ellie por un mundo postapocalíptico en el nada va a ser fácil para los viajeros.  Joel todavía vive atormentado por el recuerdo de su única hija. Ellie es portadora de algo que podría cambiar el destino de la humanidad ¿Conseguirán sobrevivir los dos?",
+      "poster_path": "/dmo6TYuuJgaYinXBPjrgG9mB5od.jpg",
+      "backdrop_path": "/lY2DhbA7Hy44fAKddr06UrXWWaQ.jpg",
+      "vote_average": "8.4",
+      "genre_ids": [
+        18
+      ],
+      "genres": [
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt3581920",
+      "first_air_date": "2023-01-15",
+      "last_air_date": "2025-05-25",
+      "status": "Returning Series",
+      "imdb_rating": 8.5,
+      "imdb_votes": 733940,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 67.73,
       "_verdict": "cinemagoria",
       "_reasoning": null,
       "_pinned": false,

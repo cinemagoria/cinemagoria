@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-25T04:23:16.415Z",
+  "generated_at": "2026-04-25T10:06:30.262Z",
   "engine_version": "3.0.0",
   "media_type": "movie",
   "count": 22,
@@ -790,6 +790,49 @@
       "_is_currently_airing": false
     },
     {
+      "id": 1272837,
+      "media_type": "movie",
+      "title": "28 Years Later: The Bone Temple",
+      "title_es": "28 años después: El templo de los huesos",
+      "overview": "Dr. Kelson finds himself in a shocking new relationship - with consequences that could change the world as they know it - and Spike's encounter with Jimmy Crystal becomes a nightmare he can't escape.",
+      "overview_es": "El Dr. Kelson (Ralph Fiennes) se ve envuelto en una nueva y sorprendente relación, cuyas consecuencias podrían cambiar el mundo tal y como se conoce. Por otra parte, el encuentro de Spike (Alfie Williams) con el Gran Lord Jimmy Crystal (Jack O'Connell) se convierte en una pesadilla de la que el chico no puede escapar. En este mundo, los infectados ya no son la mayor amenaza para la supervivencia, ya que la inhumanidad de los supervivientes puede ser aún más extraña y aterradora.",
+      "poster_path": "/kK1BGkG3KAvWB0WMV1DfOx9yTMZ.jpg",
+      "backdrop_path": "/hHDNOlATHhre4eZ7aYz5cdyJLik.jpg",
+      "vote_average": "7.1",
+      "genre_ids": [
+        27,
+        53,
+        878
+      ],
+      "genres": [
+        {
+          "id": 27,
+          "name": "Horror"
+        },
+        {
+          "id": 53,
+          "name": "Thriller"
+        },
+        {
+          "id": 878,
+          "name": "Science Fiction"
+        }
+      ],
+      "original_language": "en",
+      "imdb_id": "tt32141377",
+      "release_date": "2026-01-14",
+      "imdb_rating": 7.3,
+      "imdb_votes": 84121,
+      "rating_source": "imdb",
+      "_curated": true,
+      "_score": 82.65,
+      "_verdict": "cinemagoria",
+      "_reasoning": null,
+      "_pinned": false,
+      "_noir_match": false,
+      "_is_currently_airing": false
+    },
+    {
       "id": 687163,
       "media_type": "movie",
       "title": "Project Hail Mary",
@@ -825,39 +868,6 @@
       "_reasoning": null,
       "_pinned": false,
       "_noir_match": false,
-      "_is_currently_airing": false
-    },
-    {
-      "id": 1443576,
-      "media_type": "movie",
-      "title": "Sundays",
-      "title_es": "Los domingos",
-      "overview": "17-year-old Ainara is a student at a Catholic secondary school, and is about to take her final year exams and choose her future university course. To everyone’s surprise, this brilliant young girl announces to her family that she wants to take part in an induction period at a convent in order to embrace the religious life. Nobody was expecting this. While her father seems to be won over by his daughter’s aspirations, for Maite, Ainara’s aunt, this unexpected vocation is the manifestation of a deeper problem.",
-      "overview_es": "Ainara es una joven idealista y brillante de 17 años que, a priori, ha de decidir qué carrera universitaria estudiará. Sin embargo, la joven manifiesta que se siente cada vez más cerca de Dios y que está dispuesta a abrazar la vida de monja de clausura. La noticia pilla por sorpresa a toda la familia provocando un abismo y una prueba de fuego para todos.",
-      "poster_path": "/3682SbY3rsNKsQzFpPUKrWdGmmx.jpg",
-      "backdrop_path": "/jVwvhKpw6a7c7JmHhMykKAn7buQ.jpg",
-      "vote_average": "7.1",
-      "genre_ids": [
-        18
-      ],
-      "genres": [
-        {
-          "id": 18,
-          "name": "Drama"
-        }
-      ],
-      "original_language": "es",
-      "imdb_id": "tt35513027",
-      "release_date": "2025-10-17",
-      "imdb_rating": 7.4,
-      "imdb_votes": 4009,
-      "rating_source": "imdb",
-      "_curated": true,
-      "_score": 78.61,
-      "_verdict": "noir",
-      "_reasoning": "noir_historical guide-match (auto-included)",
-      "_pinned": false,
-      "_noir_match": true,
       "_is_currently_airing": false
     }
   ]
