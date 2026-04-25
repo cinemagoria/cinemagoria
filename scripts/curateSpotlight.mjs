@@ -25,7 +25,7 @@ const GEMINI_MODEL_CHAIN = ['gemini-2.5-flash', 'gemini-3-flash-preview', 'gemin
 const SPOTLIGHT_TARGET = 22;
 const GEMINI_INPUT_LIMIT = 50;
 
-const MIN_IMDB_RATING = 5.0;
+const MIN_IMDB_RATING = 6.0;
 const MIN_IMDB_VOTES_DEFAULT = 300;
 const MIN_IMDB_VOTES_NOIR = 50;
 const MIN_TMDB_VOTES_DEFAULT = 100;
@@ -66,7 +66,11 @@ const MOVIE_WINDOW_START = (() => {
     return d.toISOString().slice(0, 10);
 })();
 
-const TV_LAST_AIRED_CUTOFF_MONTHS = 12;
+// Returning/in-production shows can sit on a long mid-season break, so
+// we keep the wider window. Ended/Canceled shows hard-fade out faster:
+// Andor (ended ~11 months ago) shouldn't headline a "current spotlight".
+const TV_LAST_AIRED_CUTOFF_MONTHS_RETURNING = 12;
+const TV_LAST_AIRED_CUTOFF_MONTHS_ENDED = 6;
 
 const LANG_DIVERSITY_CAP = 2; // max ja or ko TV shows in final list
 
@@ -246,6 +250,10 @@ async function hydrateMovieReleaseTypes(candidates) {
     // TMDB release types: 1=Premiere, 2=Theatrical(limited), 3=Theatrical,
     // 4=Digital, 5=Physical, 6=TV. A pure-festival title only has type 1
     // entries — we want to filter those out of the spotlight carousel.
+    //
+    // We track per-(country, type) tuples to detect "wide vs single-country
+    // limited" later in hardFilterLocal. Bitter Christmas has only Romania
+    // theatrical → 1 country with type 3 → flagged as narrow.
     const CONCURRENCY = 8;
     const queue = [...candidates];
     async function worker() {
@@ -254,22 +262,73 @@ async function hydrateMovieReleaseTypes(candidates) {
             try {
                 const d = await tmdb(`/movie/${c.id}/release_dates`);
                 const types = new Set();
+                const releases = []; // { type, date, country }
                 for (const country of d.results || []) {
                     for (const r of country.release_dates || []) {
                         if (!r.release_date) continue;
                         if (new Date(r.release_date) > NOW) continue;
-                        if (Number.isFinite(r.type)) types.add(r.type);
+                        if (!Number.isFinite(r.type)) continue;
+                        types.add(r.type);
+                        releases.push({
+                            type: r.type,
+                            date: r.release_date.slice(0, 10),
+                            country: country.iso_3166_1,
+                        });
                     }
                 }
                 c._release_types = types;
+                c._releases = releases;
             } catch {
                 c._release_types = new Set();
+                c._releases = [];
             }
         }
     }
     await Promise.all(Array.from({ length: CONCURRENCY }, worker));
     log('hydrate', `movie: fetched release_dates for ${candidates.length} candidates`);
     return candidates;
+}
+
+// Festival filter v2 — answers "is this title actually available beyond
+// the festival circuit?" without hardcoding titles.
+//   - Digital release anywhere → wide enough (always pass)
+//   - Theatrical (type 3) in ≥2 countries → wide enough
+//   - Theatrical in only 1 country, OR theatrical-limited (type 2) → must
+//     be ≥45 days old (gives word-of-mouth time, filters one-off festival
+//     opening-night-style releases like Bitter Christmas / Romania)
+//   - Only Premiere (type 1) → reject (Sundance/Berlinale-only)
+//   - No release_dates data at all → fail-open (don't reject for network
+//     errors)
+const SINGLE_COUNTRY_MIN_AGE_DAYS = 45;
+function passesMovieReleaseFilter(c) {
+    const releases = c._releases || [];
+    const types = c._release_types || new Set();
+    if (!releases.length) return true; // fail-open
+
+    const hasDigital = releases.some((r) => r.type === 4);
+    if (hasDigital) return true;
+
+    const hasPhysical = releases.some((r) => r.type === 5);
+    if (hasPhysical) return true;
+
+    const theatricalCountries = new Set(
+        releases.filter((r) => r.type === 3).map((r) => r.country)
+    );
+    if (theatricalCountries.size >= 2) return true;
+
+    // Single-country theatrical or theatrical-limited only.
+    // Require enough time has passed since the earliest such release.
+    const limitedReleases = releases.filter((r) => r.type === 2 || r.type === 3);
+    if (limitedReleases.length) {
+        const earliest = limitedReleases
+            .map((r) => new Date(r.date))
+            .sort((a, b) => a - b)[0];
+        const ageDays = (NOW - earliest) / (1000 * 60 * 60 * 24);
+        if (ageDays >= SINGLE_COUNTRY_MIN_AGE_DAYS) return true;
+    }
+
+    // Only Premiere (type 1) or too-fresh-single-country → reject.
+    return false;
 }
 
 function isFranchisePochoclero(title) {
@@ -298,19 +357,18 @@ function hardFilterLocal(candidates, mediaType, heroBlockedIds, manuallyExcluded
             if (!isReleased(rd)) return false;
             if (rd < MOVIE_WINDOW_START) return false;
 
-            // Festival-only guard: require at least one non-premiere release
-            // (theatrical limited / theatrical / digital / physical) before
-            // today. Skips Sundance/Berlinale-only titles. If we never got
-            // release_dates (network hiccup), don't reject — fall through.
-            if (c._release_types && c._release_types.size > 0) {
-                const hasRealRelease = [2, 3, 4, 5].some((t) => c._release_types.has(t));
-                if (!hasRealRelease) return false;
-            }
+            // Festival/single-country-promo guard. See passesMovieReleaseFilter
+            // for the full rule set.
+            if (!passesMovieReleaseFilter(c)) return false;
         } else {
             const lastAired = c.last_air_date || c.first_air_date;
             if (!lastAired) return false;
+            const isEnded = c.status === 'Ended' || c.status === 'Canceled';
+            const cutoffMonths = isEnded
+                ? TV_LAST_AIRED_CUTOFF_MONTHS_ENDED
+                : TV_LAST_AIRED_CUTOFF_MONTHS_RETURNING;
             const cutoffDate = new Date(NOW);
-            cutoffDate.setMonth(cutoffDate.getMonth() - TV_LAST_AIRED_CUTOFF_MONTHS);
+            cutoffDate.setMonth(cutoffDate.getMonth() - cutoffMonths);
             if (new Date(lastAired) < cutoffDate) return false;
             if (c.first_air_date && !isReleased(c.first_air_date)) return false;
         }
@@ -406,9 +464,12 @@ function scoreCandidate(c, mediaType, noirIds, heroBlockedIds) {
     if (dateStr) {
         const yr = yearOf(dateStr);
         const ageMonths = (NOW - new Date(dateStr)) / (1000 * 60 * 60 * 24 * 30);
-        if (yr === CURRENT_YEAR) score += 8;          // Current year: strong boost
-        else if (ageMonths <= 6) score += 5;           // Last 6 months
-        else if (ageMonths <= 10) score += 1;          // 6-10 months ago
+        // Bias the carousel toward the current calendar year. A 2026 movie
+        // with a slightly lower IMDb rating should still beat a great 2025
+        // award-winner — that's what a "spotlight" is for.
+        if (yr === CURRENT_YEAR) score += 14;          // Current year: strong boost
+        else if (ageMonths <= 6) score += 6;            // Last 6 months
+        else if (ageMonths <= 10) score += 2;           // 6-10 months ago
     }
 
     if (mediaType === 'tv') {
@@ -529,9 +590,21 @@ function buildUnifiedGeminiPrompt(movieSlice, tvSlice, heroExamples) {
 Cinemagoria's editorial identity (real titles from the homepage):
 ${exampleLines}
 
-ACCEPT ("cinemagoria"): elevated horror, A24-style, psychological thriller, noir, crime drama, auteur drama, festival cinema, investigative docs, war/history with artistic lens, foreign arthouse. Action+Thriller or Action+Horror hybrids (Colony, Sinners) = accept.
+ACCEPT ("cinemagoria"): elevated/auteur drama, prestige limited series, psychological thrillers, noir, neo-noir crime, investigative or war documentaries, foreign arthouse, elevated horror (A24 / Ari Aster / Robert Eggers tier), historical/period dramas with an artistic lens, dark prestige sci-fi (Severance / Pluribus / Andor tier). Action+Thriller or Action+Horror hybrids with auteur craft (Sinners, The Colony) = accept.
 
-REJECT ("pochoclero"): superhero (Marvel/DC/Daredevil/Peacemaker), kids/family/YA/teen, fantasy epics, rom-coms, pure action blockbusters, network procedurals (NCIS/FBI/9-1-1/The Rookie/Criminal Minds), reality TV, stale content where hype died, Tulsa King-type dad TV.
+REJECT ("pochoclero"):
+  - Network/streamer procedurals — medical (Grey's Anatomy, Chicago Med), legal, police (NCIS, FBI, 9-1-1, The Rookie, Criminal Minds, Tracker)
+  - Time-travel / historical romance hybrids (Outlander, The Time Traveler's Wife)
+  - Action-revenge thrillers without prestige craft (Bloodhounds, Reacher, Jack Ryan)
+  - Broad sitcoms / workplace comedies / sports comedies (Hacks, Running Point, Alpha Males / Machos Alfa, Brooklyn 99, Ted Lasso-tier)
+  - Tyler Perry-style melodrama / soap (Beauty in Black, Sistas, The Oval)
+  - Superhero (Marvel, DC, Daredevil, Peacemaker), kids/family/YA/teen, fantasy epics
+  - Rom-coms, pure action blockbusters, reality TV
+  - Stale/franchise-fatigue content (Tulsa King-tier "dad TV"), late-season burnout
+
+When uncertain, lean "pochoclero". Cinemagoria favors slow burn over crowd-pleaser — better to reject 5 ambiguous than to include 1 wrong tonally.
+
+"neutral" is reserved only for genuinely well-crafted cinema that doesn't fit either bucket cleanly (rare). Do not use "neutral" as a "soft accept" — if it's not clearly cinemagoria-aligned, mark pochoclero.
 
 Output ONLY a JSON object. NO reason field. Keep output minimal.
 
@@ -636,18 +709,26 @@ async function geminiCurateBoth(movieCandidates, tvCandidates, heroExamples) {
     }
 
     const applyDecisions = (slice, decisions, label) => {
+        // Strict cut: only "cinemagoria" survives. "pochoclero" is rejected
+        // outright; "neutral" is also dropped — it was leaking
+        // network-procedural-tier shows (Grey's Anatomy, Outlander, Alpha
+        // Males, Running Point) into the carousel. Noir matches were
+        // already auto-passed before this step.
         const kept = [];
+        let neutralDropped = 0;
+        let pochocleroDropped = 0;
         for (let i = 0; i < slice.length; i++) {
             const d = decisions.get(i);
             const verdict = d?.v || d?.verdict || 'neutral';
-            if (verdict === 'pochoclero') continue;
+            if (verdict === 'pochoclero') { pochocleroDropped++; continue; }
+            if (verdict === 'neutral') { neutralDropped++; continue; }
             kept.push({
                 ...slice[i],
                 _verdict: verdict,
                 _reasoning: d?.reason || null,
             });
         }
-        log('gemini', `${label}: ${slice.length} → ${kept.length} after Gemini pass`);
+        log('gemini', `${label}: ${slice.length} → ${kept.length} kept (dropped ${pochocleroDropped} pochoclero, ${neutralDropped} neutral)`);
         return kept;
     };
 
