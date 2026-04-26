@@ -72,8 +72,9 @@ export const apiImgUrl = 'https://image.tmdb.org/t/p';
 // de Popular Movies / Popular TV en la homepage (y cualquier otra
 // invocación de getTrending).
 // Blacklist para getTrending / discover / listados por compañía. Los carouseles
-// Spotlight del homepage ya no usan esto — consumen el JSON precurado en
-// /public/data/spotlight-*.json (generado por scripts/curateSpotlight.mjs).
+// Spotlight del homepage NO usan esto — consumen /api/spotlight/{movies,tv}
+// que lee tablas Turso curadas por el motor Phase-2 en
+// cinemagoria-candidates-selections (ver SPOTLIGHT.md).
 export const EXCLUDED_MOVIE_IDS = [969681, 931285, 1273221, 1265609, 696393, 1523145, 1641319, 1307373, 1444249, 1416391, 840464, 936075, 1623125, 1239134, 1108427, 1446616, 980431, 1084577, 83533, 1226863, 1613798, 1049471, 1327819, 1297842, 1084242, 1236153, 1659087, 1290821, 1472951, 1234731, 1493859, 1290417, 1511057, 1383731, 1414413, 1159559, 1204680, 1084244, 1658464, 1301421, 1400336, 1674749];
 export const EXCLUDED_TV_IDS = [269161, 289219, 318880, 316973, 316544, 259819, 300131, 312474, 276880, 281010, 314784, 297557, 260463, 258865, 196950, 295357, 301507, 289424, 295778, 279471, 287011, 278573, 274671, 278275, 224263, 292121, 293697, 315595];
 

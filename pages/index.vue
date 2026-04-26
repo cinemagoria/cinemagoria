@@ -73,9 +73,9 @@ const userName = ref('');
 
 const { data: pageData, error: pageError } = await useAsyncData('homepage', async () => {
   try {
-    // Spotlight pre-curado cada 48h por scripts/curateSpotlight.mjs (en rama
-    // main). La rama es consume el JSON bilingüe y mapea title_es/overview_es
-    // al campo title/overview que el Card ya lee.
+    // Spotlight curado por el motor Phase-2 en cinemagoria-candidates-selections
+    // (cron diario, escribe a Turso). /api/spotlight/{movies,tv} lee esas tablas
+    // y devuelve title_es/overview_es para el Card. Ver SPOTLIGHT.md.
     const fetchSpotlight = async (file) => {
       try {
         const data = await $fetch(file);
