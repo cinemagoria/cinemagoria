@@ -70,7 +70,12 @@
               >
                 {{ article.title }}
               </NuxtLink>
-
+              <div v-if="article.topics?.length" class="card-tags-section">
+                <span class="card-tags-label">Topics:</span>
+                <div class="card-tags-row">
+                  <NuxtLink v-for="topic in article.topics" :key="topic" :to="{ path: '/news', query: { q: topic } }" class="card-topic-tag">{{ topic }}</NuxtLink>
+                </div>
+              </div>
               <p class="card-description">
                 {{ sanitizeDescription(article.description || article.summary) }}
               </p>
@@ -369,8 +374,12 @@ export default {
   text-decoration: none;
   line-height: 1.3;
   
-  white-space: normal;
-  overflow: visible;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
   
   transition: color 0.2s ease;
 
@@ -389,13 +398,63 @@ export default {
   line-height: 1.5;
   
   display: -webkit-box;
-  line-clamp: 4;
-  -webkit-line-clamp: 4; 
+  line-clamp: 3;
+  -webkit-line-clamp: 3; 
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
   
-  margin-bottom: auto;
+  margin-top: auto;
+}
+
+.card-tags-section {
+  padding-top: 6px;
+  margin-bottom: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.card-tags-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #80868b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.card-tags-row {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 2px;
+}
+
+.card-tags-row::-webkit-scrollbar {
+  display: none;
+}
+
+.card-topic-tag {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 600;
+  color: #80868b;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 2px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.card-topic-tag:hover {
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.1);
+  border-color: rgba(139, 233, 253, 0.3);
 }
 
 .card-footer {

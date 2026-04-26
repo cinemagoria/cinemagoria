@@ -80,7 +80,7 @@
                 <div v-if="article.topics?.length" class="sidebar-meta-item">
                   <span class="sidebar-meta-label">Topics</span>
                   <div class="sidebar-tags">
-                    <span v-for="topic in article.topics" :key="topic" class="sidebar-tag">{{ topic }}</span>
+                    <NuxtLink v-for="topic in article.topics" :key="topic" :to="{ path: '/news', query: { q: topic, from: `/news/${route.params.slug}` } }" class="sidebar-tag sidebar-tag--clickable">{{ topic }}</NuxtLink>
                   </div>
                 </div>
               </div>
@@ -154,7 +154,7 @@
                 <p class="article-lead">{{ article.description_en }}</p>
 
                 <div v-if="article.topics?.length" class="article-tags">
-                  <span v-for="topic in article.topics" :key="topic" class="tag">{{ topic }}</span>
+                  <NuxtLink v-for="topic in article.topics" :key="topic" :to="{ path: '/news', query: { q: topic, from: `/news/${route.params.slug}` } }" class="tag tag--clickable">{{ topic }}</NuxtLink>
                 </div>
 
                 <!-- Related TMDB entities -->
@@ -732,6 +732,18 @@ useHead(() => {
   border-radius: 10px;
 }
 
+.sidebar-tag--clickable {
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sidebar-tag--clickable:hover {
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.1);
+  border-color: rgba(139, 233, 253, 0.3);
+}
+
 .sidebar-sources {
   display: flex;
   flex-direction: column;
@@ -887,6 +899,19 @@ useHead(() => {
   padding: 5px 14px;
   border-radius: 20px;
   letter-spacing: 0.02em;
+}
+
+.tag--clickable {
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tag--clickable:hover {
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.1);
+  border-color: rgba(139, 233, 253, 0.3);
+  transform: translateY(-1px);
 }
 
 /* ── Related TMDB entities ──────────────────────────────────────── */
