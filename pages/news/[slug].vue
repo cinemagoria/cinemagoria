@@ -141,9 +141,44 @@
                     </button>
                   </ClientOnly>
                 </div>
-                <time :datetime="article.published_at" class="article-date">
-                  {{ formatDate(article.published_at) }}
-                </time>
+
+                <div class="article-date-row">
+                  <time :datetime="article.published_at" class="article-date">
+                    {{ formatDate(article.published_at) }}
+                  </time>
+                  <!-- Mobile-only minimalist language switcher (sidebar hidden on mobile) -->
+                  <NuxtLink
+                    :to="`https://es.cinemagoria.com/news/${article.slug}`"
+                    external
+                    class="mobile-lang-mini"
+                  >
+                    <span class="lang-mini-item lang-mini-item--active">
+                      <svg class="flag-icon" viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <clipPath id="uk-rect"><rect width="60" height="30" rx="3" ry="3"/></clipPath>
+                        <clipPath id="uk-tri"><path d="M30,15 L60,30 V30 H60 z M30,15 L60,0 V0 H60 z M30,15 L0,0 V0 H0 z M30,15 L0,30 V30 H0 z"/></clipPath>
+                        <g clip-path="url(#uk-rect)">
+                          <rect width="60" height="30" fill="#012169"/>
+                          <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
+                          <path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#uk-tri)" stroke="#C8102E" stroke-width="4"/>
+                          <path d="M30,0 V30 M0,15 H60" stroke="#fff" stroke-width="10"/>
+                          <path d="M30,0 V30 M0,15 H60" stroke="#C8102E" stroke-width="6"/>
+                        </g>
+                      </svg>
+                      EN
+                    </span>
+                    <span class="lang-mini-sep">/</span>
+                    <span class="lang-mini-item">
+                      <svg class="flag-icon" viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <clipPath id="es-rect"><rect width="60" height="40" rx="4" ry="4"/></clipPath>
+                        <g clip-path="url(#es-rect)">
+                          <rect width="60" height="40" fill="#AA151B"/>
+                          <rect y="10" width="60" height="20" fill="#F1BF00"/>
+                        </g>
+                      </svg>
+                      ES
+                    </span>
+                  </NuxtLink>
+                </div>
                 <h1 class="article-title">{{ article.title_en }}</h1>
 
                 <!-- Cover image inline for mobile -->
@@ -269,6 +304,24 @@
 
               <!-- Body (second half — only shown when body was split at an <h2>) -->
               <div v-if="bodyParts.after" class="article-body" v-html="bodyParts.after"></div>
+
+              <!-- Mobile-only sources (sidebar hidden on mobile) -->
+              <div v-if="parsedSources.length" class="mobile-sources">
+                <h3 class="mobile-sources-title">Sources</h3>
+                <div class="mobile-sources-list">
+                  <a
+                    v-for="src in parsedSources"
+                    :key="src.url"
+                    :href="src.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="source-btn active-source"
+                  >
+                    {{ src.name }}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1345,20 +1398,116 @@ useHead(() => {
   display: none;
 }
 
+.mobile-lang-mini {
+  display: none;
+}
+
+.article-date-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.article-date-row .article-date {
+  margin-bottom: 0;
+}
+
+.mobile-sources {
+  display: none;
+}
+
 /* ── Responsive ──────────────────────────────────────────────────── */
 @media (max-width: 900px) {
   .content-wrapper {
     flex-direction: column;
   }
 
-  /* Sidebar goes AFTER the article */
+  /* Hide sidebar entirely on mobile — language + sources are inlined into the article */
   .article-sidebar {
-    width: 100%;
-    order: 2;
+    display: none;
   }
 
   .article-main {
     order: 1;
+  }
+
+  /* Add breathing room so the lang switcher doesn't sit right under the save button */
+  .article-date-row {
+    margin-top: 6px;
+    margin-bottom: 20px;
+  }
+
+  /* Minimalist inline language switcher, aligned right with the date */
+  .mobile-lang-mini {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    text-decoration: none;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+    padding: 6px 4px 6px 10px;
+    margin: -6px -4px -6px 0;
+  }
+
+  .lang-mini-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #80868b;
+    font-weight: 500;
+    opacity: 0.55;
+    transition: opacity 0.2s ease, color 0.2s ease;
+  }
+
+  .lang-mini-item--active {
+    color: #8BE9FD;
+    font-weight: 700;
+    opacity: 1;
+  }
+
+  .lang-mini-sep {
+    color: #444;
+    font-weight: 400;
+  }
+
+  .flag-icon {
+    width: 22px;
+    height: 15px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.18);
+    display: block;
+  }
+
+  .mobile-lang-mini:hover .lang-mini-item:not(.lang-mini-item--active) {
+    opacity: 1;
+    color: #8BE9FD;
+  }
+
+  /* Inline sources (end of article on mobile) */
+  .mobile-sources {
+    display: block;
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(139, 233, 253, 0.2);
+  }
+
+  .mobile-sources-title {
+    color: #8BE9FD;
+    font-size: 13px;
+    font-weight: 700;
+    margin: 0 0 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .mobile-sources-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
 
   /* Hide external hero on mobile */
