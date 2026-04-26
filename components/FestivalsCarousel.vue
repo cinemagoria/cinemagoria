@@ -206,24 +206,25 @@ export default {
 
 :deep(.card) {
   flex: 0 0 auto;
-  width: 150px;
+  width: 130px;
   padding: 0 !important;
   scroll-snap-align: start;
 
   @media (min-width: $breakpoint-xsmall) {
-    width: 180px;
+    width: 160px;
   }
   @media (min-width: $breakpoint-medium) {
-    width: 210px;
+    width: 185px;
   }
   @media (min-width: $breakpoint-large) {
-    width: 230px;
+    width: 205px;
   }
   @media (min-width: 1500px) {
-    width: 250px;
+    width: 220px;
   }
   @media (min-width: 1800px) {
-    width: 270px;
+    width: 240px;
   }
 }
+
 </style>
