@@ -14,6 +14,10 @@
         <div class="news-main">
           <div class="news-toolbar" :class="{ 'search-active': isSearchActive }">
             <div class="toolbar-left">
+              <NuxtLink v-if="topicFromArticle" :to="topicFromArticle" class="back-to-article-btn" aria-label="Volver al artículo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                <span class="action-label">Volver al Artículo</span>
+              </NuxtLink>
               <button v-if="showBackButton" class="back-btn" @click="goHome" aria-label="Volver a noticias de Cinemagoria">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                 <span class="action-label">Volver</span>
@@ -222,6 +226,14 @@
                         <p class="card-desc">
                           {{ sanitizeDescription(item.description) }}
                         </p>
+
+                        <div v-if="item.topics?.length" class="card-tags-section">
+                          <span class="card-tags-label">Temas:</span>
+                          <div class="card-tags-row">
+                            <button v-for="topic in item.topics" :key="topic" class="card-topic-tag" @click.prevent="searchByTopic(topic)">{{ topic }}</button>
+                          </div>
+                        </div>
+
                         <div class="card-footer">
                           <NuxtLink v-if="item.is_internal" :to="item.href" class="read-link">
                             Leer Artículo
@@ -277,6 +289,24 @@ const selectedSource = ref(route.query.source || 'Cinemagoria');
 const searchQuery = ref('');
 const isSearchActive = ref(false);
 const debouncedSearchQuery = refDebounced(searchQuery, 500);
+const topicFromArticle = ref(null);
+
+// Handle ?q= and ?from= query params (arriving from topic click in article page)
+onMounted(() => {
+  if (route.query.q && typeof route.query.q === 'string') {
+    searchQuery.value = route.query.q;
+    isSearchActive.value = true;
+    if (route.query.from) {
+      topicFromArticle.value = route.query.from;
+    }
+    nextTick(() => {
+      const cleanQuery = { ...route.query };
+      delete cleanQuery.q;
+      delete cleanQuery.from;
+      router.replace({ query: Object.keys(cleanQuery).length ? cleanQuery : undefined });
+    });
+  }
+});
 
 const toggleSearch = () => {
   isSearchActive.value = !isSearchActive.value;
@@ -290,6 +320,7 @@ const toggleSearch = () => {
 };
 
 const showBackButton = computed(() => {
+  if (topicFromArticle.value) return false;
   return isSavedView.value
     || (isSearchActive.value && !!debouncedSearchQuery.value)
     || (selectedSource.value && selectedSource.value !== 'Cinemagoria');
@@ -312,6 +343,7 @@ function goHome() {
 
 const clearSearch = () => {
   searchQuery.value = '';
+  topicFromArticle.value = null;
 };
 
 const { data, pending, refresh, error } = await useFetch('/api/news', {
@@ -457,6 +489,16 @@ function toggleSourcesExpansion() {
 function sanitizeDescription(desc) {
   if (!desc) return '';
   return striptags(desc);
+}
+
+function searchByTopic(topic) {
+  searchQuery.value = topic;
+  isSearchActive.value = true;
+  topicFromArticle.value = null;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  nextTick(() => {
+    document.querySelector('.search-input')?.focus();
+  });
 }
 
 const savedArticles = ref(new Set());
@@ -1583,5 +1625,104 @@ watch(userEmail, (val) => {
     border-color: #8BE9FD;
     color: #000;
   }
+}
+
+/* ── Back to Article button (topic search context) ─────────────── */
+.back-to-article-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 44px;
+  padding: 0 16px;
+  background: rgba(139, 233, 253, 0.12);
+  color: #8BE9FD;
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.back-to-article-btn:hover {
+  background: rgba(139, 233, 253, 0.22);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 233, 253, 0.15);
+}
+
+@media (max-width: 600px) {
+  .back-to-article-btn {
+    width: 44px;
+    padding: 0;
+    gap: 0;
+  }
+  .back-to-article-btn .action-label {
+    display: none;
+  }
+}
+
+/* ── Card topic tags ───────────────────────────────────────────── */
+.card-tags-section {
+  margin-top: auto;
+  padding-top: 8px;
+  margin-bottom: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.card-tags-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #80868b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.card-tags-row {
+  display: flex;
+  gap: 5px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 2px;
+}
+
+.card-tags-row::-webkit-scrollbar {
+  display: none;
+}
+
+.card-topic-tag {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: #80868b;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 3px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.card-topic-tag:hover {
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.1);
+  border-color: rgba(139, 233, 253, 0.3);
+}
+
+/* Slightly reduce title/desc to fit tags */
+.card-title-link {
+  font-size: 16px;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.card-desc {
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
 }
 </style>

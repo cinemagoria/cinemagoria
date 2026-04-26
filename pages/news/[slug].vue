@@ -79,7 +79,7 @@
                 <div v-if="article.topics?.length" class="sidebar-meta-item">
                   <span class="sidebar-meta-label">Temas</span>
                   <div class="sidebar-tags">
-                    <span v-for="topic in article.topics" :key="topic" class="sidebar-tag">{{ topic }}</span>
+                    <NuxtLink v-for="topic in article.topics" :key="topic" :to="{ path: '/news', query: { q: topic, from: `/news/${route.params.slug}` } }" class="sidebar-tag sidebar-tag--clickable">{{ topic }}</NuxtLink>
                   </div>
                 </div>
               </div>
@@ -152,7 +152,7 @@
                 <p class="article-lead">{{ article.description_es }}</p>
 
                 <div v-if="article.topics?.length" class="article-tags">
-                  <span v-for="topic in article.topics" :key="topic" class="tag">{{ topic }}</span>
+                  <NuxtLink v-for="topic in article.topics" :key="topic" :to="{ path: '/news', query: { q: topic, from: `/news/${route.params.slug}` } }" class="tag tag--clickable">{{ topic }}</NuxtLink>
                 </div>
 
                 <!-- Related TMDB entities -->
@@ -678,6 +678,8 @@ useHead(() => {
 .sidebar-meta-value { font-size: 14px; color: #fff; }
 .sidebar-tags { display: flex; flex-wrap: wrap; gap: 4px; }
 .sidebar-tag { font-size: 12px; color: #80868b; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 10px; }
+.sidebar-tag--clickable { text-decoration: none; cursor: pointer; transition: all 0.2s ease; }
+.sidebar-tag--clickable:hover { color: #8BE9FD; background: rgba(139, 233, 253, 0.1); border-color: rgba(139, 233, 253, 0.3); }
 .sidebar-sources { display: flex; flex-direction: column; gap: 4px; margin-bottom: 4px; }
 
 .source-btn {
@@ -751,6 +753,8 @@ useHead(() => {
 .article-lead { font-size: 18px; line-height: 1.7; color: #ACAFB5; margin: 0 0 24px; font-weight: 400; }
 .article-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
 .tag { font-size: 13px; font-weight: 600; color: #80868b; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); padding: 5px 14px; border-radius: 20px; }
+.tag--clickable { text-decoration: none; cursor: pointer; transition: all 0.2s ease; }
+.tag--clickable:hover { color: #8BE9FD; background: rgba(139, 233, 253, 0.1); border-color: rgba(139, 233, 253, 0.3); transform: translateY(-1px); }
 .article-divider { margin: 32px 0; height: 1px; background: linear-gradient(90deg, rgba(139,233,253,0.4), transparent 80%); }
 
 .article-trailer {

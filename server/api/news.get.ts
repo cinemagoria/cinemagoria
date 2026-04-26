@@ -60,7 +60,8 @@ export default defineEventHandler(async (event) => {
                 source: { name: 'Cinemagoria' },
                 video_id: null,
                 is_internal: true,
-                slug: row.slug
+                slug: row.slug,
+                topics: row.topics_json ? JSON.parse(row.topics_json as string) : []
             }))
 
             return {
@@ -107,7 +108,7 @@ export default defineEventHandler(async (event) => {
             const descCol = lang === 'es' ? 'description_es' : 'description_en'
 
             let cineSql = `SELECT id, slug, ${titleCol} AS title, ${descCol} AS description,
-                                  image_url, published_at
+                                  image_url, published_at, topics_json
                            FROM cinemagoria_articles
                            WHERE is_visible = 1 AND is_cinemagoria = 1`
             let cineArgs: any[] = []
@@ -131,7 +132,8 @@ export default defineEventHandler(async (event) => {
                 source: { name: 'Cinemagoria' },
                 video_id: null,
                 is_internal: true,
-                slug: row.slug
+                slug: row.slug,
+                topics: row.topics_json ? JSON.parse(row.topics_json as string) : []
             }))
 
             items.push(...cineItems)
