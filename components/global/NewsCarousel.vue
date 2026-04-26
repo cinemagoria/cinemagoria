@@ -258,7 +258,7 @@ export default {
 }
 
 :deep(.card) {
-  padding-right: 24px !important;
+  padding-right: 12px !important;
   height: auto !important;
   display: block !important;
   flex-shrink: 0;
