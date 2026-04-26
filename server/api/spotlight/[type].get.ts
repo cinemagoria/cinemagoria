@@ -1,16 +1,5 @@
 import { createClient } from '@libsql/client'
 
-// Phase-1 Spotlight endpoint. Reads the curated 20-item lists straight from
-// the Turso tables `spotlight_movies` / `spotlight_tv` populated by
-// scripts/buildManualSpotlight.mjs. Tables are the source of truth — the
-// public/data/spotlight-*.json files are only kept as a static snapshot for
-// downstream tooling.
-//
-// We expose a server endpoint instead of letting pages/index.vue fetch the
-// JSON files directly because Nuxt 4's dev-mode SSR localFetch does not
-// route through Vite's static middleware, so $fetch('/data/...') 404s during
-// SSR while the same URL serves 200 over HTTP. Server endpoints avoid that
-// quirk entirely.
 
 export default defineEventHandler(async (event) => {
     const type = getRouterParam(event, 'type')

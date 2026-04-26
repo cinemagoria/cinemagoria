@@ -75,9 +75,9 @@ const userName = ref('');
 
 const { data: pageData, error: pageError } = await useAsyncData('homepage', async () => {
   try {
-    // Spotlight carousels are pre-curated by scripts/curateSpotlight.mjs every
-    // 48h and baked into public/data/*.json. Pipeline: TMDB pool → genre/date
-    // hard filter → IMDb ≥ 5.0 gate → score → Gemini 2.5-flash curation pass.
+    // Spotlight carousels are curated by the Phase-2 engine in the
+    // cinemagoria-candidates-selections repo (daily cron, writes to Turso).
+    // /api/spotlight/{movies,tv} reads those tables. See SPOTLIGHT.md.
     const fetchSpotlight = async (file) => {
       try {
         const data = await $fetch(file);
