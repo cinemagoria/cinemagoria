@@ -65,12 +65,15 @@ export default defineEventHandler(async (event) => {
             _reasoning: row.reasoning,
             _pinned: !!row.pinned,
             _noir_match: false,
+            phase: row.phase || null,
         }
         if (isMovie) {
             return {
                 ...base,
                 release_date: row.release_date,
                 theatrical_anchor: row.theatrical_anchor,
+                first_theatrical: row.first_theatrical || null,
+                last_theatrical: row.last_theatrical || null,
                 _is_currently_airing: false,
             }
         }

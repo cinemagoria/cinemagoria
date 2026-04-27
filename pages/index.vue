@@ -24,11 +24,12 @@
       view-all-link="/production-companies"
     />
 
-    <ListingCarousel
+    <SpotlightCarousel
       v-if="trendingMovies && trendingMovies.results.length"
       :title="trendingMoviesTitle"
       :view-all-url="trendingMoviesUrl"
       :items="trendingMovies"
+      media-type="movie"
       compact />
 
     <StreamingPlatformCarousel
@@ -37,11 +38,12 @@
       view-all-link="/streaming-services"
     />
 
-    <ListingCarousel
+    <SpotlightCarousel
       v-if="trendingTv && trendingTv.results.length"
       :title="trendingTvTitle"
       :view-all-url="trendingTvUrl"
       :items="trendingTv"
+      media-type="tv"
       compact />
   </main>
 </template>
@@ -51,6 +53,7 @@ import { ref, computed, onMounted } from 'vue';
 import { getMovie, getTvShow, getListItem } from '~/utils/api';
 import Hero from '~/components/Hero';
 import ListingCarousel from '~/components/ListingCarousel';
+import SpotlightCarousel from '~/components/SpotlightCarousel';
 import FestivalsCarousel from '~/components/FestivalsCarousel';
 import FeatureDescription from '~/components/FeatureDescription';
 import NewsCarousel from '~/components/global/NewsCarousel';
