@@ -224,11 +224,11 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 287620,
-    "media_type": "tv",
-    "trailer_key": null,
-    "backdrop_path": "/fFAKtvFOBcRcgD51WBjY7BBWWIz.jpg",
-    "poster_path": "/5fM1PWx8ncFSVTUMJ4WhvRPLBPp.jpg",
-    "force_enrichment": false
+    "tmdb_id": 1283515,
+    "media_type": "movie",
+    "trailer_key": "wbMNy_djxGk",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1777329539/cinemagoria/backdrops/hero_1283515.webp",
+    "poster_path": "/tHI69tGRRvtOnomig59xwMO1YQI.jpg",
+    "force_enrichment": true
   }
 ]
