@@ -222,5 +222,13 @@
     "backdrop_path": "/f0DtHFBZwcR2ag2WoAosAwz7kCz.jpg",
     "poster_path": "/5FgJEzfS9Sz2ncei1jdDmkNC9n8.jpg",
     "force_enrichment": true
+  },
+  {
+    "tmdb_id": 287620,
+    "media_type": "tv",
+    "trailer_key": null,
+    "backdrop_path": "/fFAKtvFOBcRcgD51WBjY7BBWWIz.jpg",
+    "poster_path": "/5fM1PWx8ncFSVTUMJ4WhvRPLBPp.jpg",
+    "force_enrichment": false
   }
 ]
