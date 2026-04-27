@@ -45,3 +45,4 @@ data/user_follows (1).json
 data/user_follows.json
 data/user_follows (2).json
 data/user_company_follows.json
+sync-featured.sh
