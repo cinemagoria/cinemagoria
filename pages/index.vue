@@ -23,11 +23,13 @@
       view-all-link="/production-companies"
     />
 
-    <ListingCarousel
+    <SpotlightCarousel
       v-if="trendingMovies && trendingMovies.results.length"
       :title="trendingMoviesTitle"
       :view-all-url="trendingMoviesUrl"
       :items="trendingMovies"
+      media-type="movie"
+      :phase-labels="moviePhaseLabelsEs"
       compact />
 
     <StreamingPlatformCarousel
@@ -36,11 +38,13 @@
       view-all-link="/streaming-services"
     />
 
-    <ListingCarousel
+    <SpotlightCarousel
       v-if="trendingTv && trendingTv.results.length"
       :title="trendingTvTitle"
       :view-all-url="trendingTvUrl"
       :items="trendingTv"
+      media-type="tv"
+      :phase-labels="tvPhaseLabelsEs"
       compact />
   </main>
 </template>
@@ -50,6 +54,7 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { getMovie, getTvShow, getListItem, translateText } from '~/utils/api';
 import Hero from '~/components/Hero';
 import ListingsCarousel from '~/components/ListingCarousel';
+import SpotlightCarousel from '~/components/SpotlightCarousel';
 import FestivalsCarousel from '~/components/FestivalsCarousel';
 import FeatureDescription from '~/components/FeatureDescription';
 import NewsCarousel from '~/components/global/NewsCarousel';
@@ -282,6 +287,23 @@ const trendingMoviesTitle = computed(() => 'Películas Destacadas');
 const trendingMoviesUrl = computed(() => '/movie');
 const trendingTvTitle = computed(() => 'Series Destacadas');
 const trendingTvUrl = computed(() => '/tv');
+
+// Etiquetas de la línea de tiempo del spotlight (ES). El componente trae
+// defaults en inglés; las pasamos por prop para sobrescribir.
+const moviePhaseLabelsEs = {
+  now_playing: 'En Cartelera',
+  coming_soon: 'Próximamente',
+  just_out: 'Recién Estrenadas',
+  after_run: 'Fuera de Cartelera',
+  no_date: 'Sin Fecha de Estreno',
+};
+const tvPhaseLabelsEs = {
+  airing: 'En emisión',
+  premiering: 'Próximos Estrenos',
+  latest_episodes: 'Episodios Recientes',
+  completed: 'Finalizadas',
+  no_date: 'Sin Fecha',
+};
 
 const popularProductionCompanies = computed(() => {
   return POPULAR_PRODUCTION_COMPANIES_IDS.map(id => SUPPORTED_PRODUCTION_COMPANIES[id]).filter(Boolean);
