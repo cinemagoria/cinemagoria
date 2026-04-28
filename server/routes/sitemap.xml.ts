@@ -13,6 +13,10 @@ export default defineEventHandler(async (event) => {
     <lastmod>${today}</lastmod>
   </sitemap>
   <sitemap>
+    <loc>${baseUrl}/sitemap-news.xml</loc>
+    <lastmod>${today}</lastmod>
+  </sitemap>
+  <sitemap>
     <loc>${baseUrl}/sitemap-movies-1.xml</loc>
     <lastmod>${today}</lastmod>
   </sitemap>

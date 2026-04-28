@@ -11,6 +11,7 @@ export default defineNuxtConfig({
   routeRules: {
     '/sitemap.xml': { cache: { maxAge: 3600 } },
     '/sitemap-static.xml': { cache: { maxAge: 86400 } },
+    '/sitemap-news.xml': { cache: { maxAge: 3600 } },
     '/sitemap-movies-*.xml': { cache: { maxAge: 86400 } },
     '/sitemap-tv-*.xml': { cache: { maxAge: 86400 } },
     '/sitemap-persons.xml': { cache: { maxAge: 86400 } },

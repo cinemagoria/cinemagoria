@@ -578,6 +578,28 @@ function formatDate(dateStr) {
 
 useHead(() => {
   if (!article.value) return {}
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: article.value.title_es,
+    description: article.value.description_es,
+    image: article.value.image_url ? [article.value.image_url] : ['https://es.cinemagoria.com/og-image.jpg'],
+    datePublished: article.value.published_at,
+    dateModified: article.value.published_at,
+    author: [{ '@type': 'Organization', name: 'Cinemagoria', url: 'https://es.cinemagoria.com' }],
+    publisher: {
+      '@type': 'Organization',
+      name: 'Cinemagoria',
+      url: 'https://es.cinemagoria.com',
+      logo: { '@type': 'ImageObject', url: 'https://es.cinemagoria.com/icons/favicon-192.png' }
+    },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `https://es.cinemagoria.com/news/${article.value.slug}` },
+    url: `https://es.cinemagoria.com/news/${article.value.slug}`,
+    inLanguage: 'es',
+    keywords: article.value.topics?.join(', ') || '',
+  }
+
   return {
     title: `${article.value.title_es} — Cinemagoria Noticias`,
     meta: [
@@ -587,6 +609,9 @@ useHead(() => {
       { property: 'og:image', content: article.value.image_url || 'https://es.cinemagoria.com/og-image.jpg' },
       { property: 'og:type', content: 'article' },
       { property: 'og:url', content: `https://es.cinemagoria.com/news/${article.value.slug}` },
+      { property: 'article:published_time', content: article.value.published_at },
+      { property: 'article:modified_time', content: article.value.published_at },
+      { property: 'article:author', content: 'Cinemagoria' },
       { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:title', content: article.value.title_es },
       { name: 'twitter:description', content: article.value.description_es },
@@ -594,7 +619,12 @@ useHead(() => {
     ],
     link: [
       { rel: 'canonical', href: `https://es.cinemagoria.com/news/${article.value?.slug}` },
+      { rel: 'alternate', hreflang: 'es', href: `https://es.cinemagoria.com/news/${article.value?.slug}` },
       { rel: 'alternate', hreflang: 'en', href: `https://cinemagoria.com/news/${article.value?.slug}` },
+      { rel: 'alternate', hreflang: 'x-default', href: `https://cinemagoria.com/news/${article.value?.slug}` },
+    ],
+    script: [
+      { type: 'application/ld+json', children: JSON.stringify(jsonLd) }
     ],
   }
 })
