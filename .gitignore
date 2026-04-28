@@ -46,3 +46,4 @@ data/user_follows.json
 data/user_follows (2).json
 data/user_company_follows.json
 sync-featured.sh
+news-slugs.md
