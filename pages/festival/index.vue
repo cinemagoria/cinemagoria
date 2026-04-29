@@ -329,10 +329,10 @@ const counts = computed(() => ({
 .filters {
     display: inline-flex;
     gap: 0.3rem;
-    padding: 0.35rem;
+    padding: 1.4rem 1.6rem;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 999px;
+    border-radius: 14px;
     backdrop-filter: blur(8px);
 }
 
@@ -377,8 +377,10 @@ const counts = computed(() => ({
 /* ── Pulse dot (cyan) ──────────────────────────────────────── */
 .pulse-dot {
     display: inline-block;
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    top: -0.40px;
+    height: 6px;
+    position: relative;
     border-radius: 50%;
     background: #8BE9FD;
     box-shadow: 0 0 0 0 rgba(139, 233, 253, 0.75);
@@ -623,15 +625,15 @@ const counts = computed(() => ({
 }
 
 /* ── Responsive ────────────────────────────────────────────── */
-@media (max-width: 720px) {
+@media (max-width: 775px) {
     .toolbar {
         flex-direction: column;
         align-items: stretch;
-        gap: 1rem;
+        gap: 1.25rem;
     }
 
     .stats-strip {
-        justify-content: space-between;
+        justify-content: center;
         gap: 0.75rem;
         padding: 0.85rem 1rem;
     }
@@ -640,7 +642,11 @@ const counts = computed(() => ({
     .stat__num { font-size: 1.5rem; }
     .stat__label { font-size: 0.74rem; }
 
-    .filters { align-self: center; flex-wrap: wrap; justify-content: center; }
+    .filters { 
+        justify-content: center; 
+        flex-wrap: wrap; 
+        padding: 1rem 1.6rem;
+    }
 }
 
 @media (max-width: 600px) {
