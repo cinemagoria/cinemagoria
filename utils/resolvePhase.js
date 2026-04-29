@@ -23,10 +23,9 @@ export function resolveMoviePhase(item, today = new Date()) {
   const lastT = toDay(item.last_theatrical);
 
   if (!anchor && !firstT) return 'no_date';
-  if (anchor && anchor > _today) return 'coming_soon';
+  if ((anchor && anchor > _today) || (!anchor && firstT && firstT > _today)) return 'coming_soon';
   if (anchor && daysSince(anchor, _today) <= JUST_OUT_WINDOW_DAYS) return 'just_out';
   if (lastT && lastT >= _today) return 'now_playing';
-  if (firstT && firstT <= _today) return 'after_run';
   return 'after_run';
 }
 
