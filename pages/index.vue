@@ -130,32 +130,29 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
      const FEATURED_ORDER = [
         // tribeca 2026
         'In the Hand of Dante',
+        'Only What We Carry',
         'The Last Day',  
         'Breeder',
-        'Killing Castro',
         'Recluse',
         'The Revisionist',
-        'Only What We Carry',
         // cannes 2026
+        'Victorian Psycho',
         'Hope|cannes',
         'Colony',
         'Minotaur',
         'Fatherland',
         'Fjord',
         'Parallel Tales',
-        'Visitation',
+        'Paper Tiger',
         'El Partido',
         'Bitter Christmas',
         'All of a Sudden',
-        'Full Phil',
         'The Unknown',
         'Gentle Monster',
         'Teenage Sex and Death at Camp Miasma',
         'Her Private Hell',
         // bafici 2026
         'Los caminantes de la calle',
-        'No Mercy',
-        'Sorella di clausura',
         'Nova \'78',
         'El infierno está encantador - Gulp. 1985',
         // bifff 2026
@@ -169,7 +166,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Stormbound',
         'Chili Finger',
         'Dead Eyes',
-        'Ugly Cry',
+        
         'Wishful Thinking',       
         // slamdance 2026
         'Whisperings of the Moon',
@@ -188,7 +185,6 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Paradise',
         'At the sea',
         'Salvation',
-        'Narciso',
         'Lali',
         'The Red Hangar',
         'Matapanki',
@@ -204,6 +200,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         // sundance 2026
         'To Hold a Mountain',
         'The Weight',
+        'Zi',
         'Shame and Money',
         'undertone',
         'The Undertone',
