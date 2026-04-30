@@ -63,7 +63,6 @@
 <script>
 import carousel from '~/mixins/Carousel';
 import Card from '~/components/Card';
-import { resolveMoviePhase, resolveTvPhase } from '~/utils/resolvePhase';
 
 const DEFAULT_LABELS = {
   movie: {
@@ -123,7 +122,7 @@ export default {
       let n = 0;
       let last = null;
       for (const item of r) {
-        const phase = this.resolvePhase(item);
+        const phase = item.phase || item._phase || null;
         if (!phase) continue;
         if (phase !== last) { n++; last = phase; }
       }
@@ -132,24 +131,16 @@ export default {
   },
 
   methods: {
-    // Resuelve el phase correcto de un item en runtime, ignorando el valor
-    // almacenado en DB. Actúa como safety net ante el cron de recalculación.
-    resolvePhase(item) {
-      return this.mediaType === 'movie'
-        ? resolveMoviePhase(item)
-        : resolveTvPhase(item);
-    },
-
     // Returns the label to render BEFORE this card, or '' if no divider here.
     // First card always gets its phase header so the timeline is anchored;
     // the divider's --first variant carries extra left margin to clear
     // the carousel's left navigation arrow.
     dividerLabel(item, idx) {
-      const phase = this.resolvePhase(item);
+      const phase = item.phase || item._phase || null;
       if (!phase) return '';
       if (idx === 0) return this.labels[phase] || '';
       const prev = this.items.results[idx - 1];
-      const prevPhase = this.resolvePhase(prev);
+      const prevPhase = prev?.phase || prev?._phase || null;
       if (prevPhase === phase) return '';
       return this.labels[phase] || '';
     },
