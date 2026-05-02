@@ -65,6 +65,7 @@ import SxswCard from '~/components/festival/SxswCard.vue';
 import RomfordCard from '~/components/RomfordCard.vue';
 import BifffCard from '~/components/BifffCard.vue';
 import BaficiCard from '~/components/BaficiCard.vue';
+import CuffCard from '~/components/CuffCard.vue';
 import CannesCard from '~/components/CannesCard.vue';
 
 const AUTOPLAY_INTERVAL = 5000;
@@ -84,6 +85,7 @@ export default {
     RomfordCard,
     BifffCard,
     BaficiCard,
+    CuffCard,
     CannesCard,
   },
 
@@ -136,6 +138,7 @@ export default {
         romford: 'RomfordCard',
         bifff: 'BifffCard',
         bafici: 'BaficiCard',
+        cuff: 'CuffCard',
         cannes: 'CannesCard',
       };
       return cardMap[item.festival_source] || 'SundanceCard';

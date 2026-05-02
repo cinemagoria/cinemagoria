@@ -422,6 +422,7 @@ import CannesCriticsChoiceBadge from '~/components/festival/CannesCriticsChoiceB
 import CannesQuinzaineBadge from '~/components/festival/CannesQuinzaineBadge.vue';
 import CannesAcidBadge from '~/components/festival/CannesAcidBadge.vue';
 import BaficiBadge from '~/components/festival/BaficiBadge.vue';
+import CuffBadge from '~/components/festival/CuffBadge.vue';
 import { translateText } from '~/utils/api';
 import { MANUAL_FESTIVAL_BADGES, MANUAL_OVERVIEWS } from '~/utils/constants';
 import { getHeroEnrichment, getNoirEnrichment } from '~/utils/api';
@@ -444,6 +445,7 @@ export default {
     CannesQuinzaineBadge,
     CannesAcidBadge,
     BaficiBadge,
+    CuffBadge,
     NoirModal,
   },
 
@@ -536,6 +538,7 @@ export default {
       cannesQuinzaineFilm: null,
       cannesAcidFilm: null,
       baficiFilm: null,
+      cuffFilm: null,
       isFestivalLoading: false,
       isTranslating: false,
       translatedOverview: null,
@@ -623,6 +626,7 @@ export default {
         { name: 'cannes-acid', film: this.cannesAcidFilm && !this.cannesCriticsChoiceFilm && !this.cannesQuinzaineFilm ? this.cannesAcidFilm : null, component: 'CannesAcidBadge', link: '/festival/cannes-2026', isSimple: true },
         { name: 'cannes', film: this.cannesFilm && !this.cannesCriticsChoiceFilm && !this.cannesQuinzaineFilm && !this.cannesAcidFilm ? this.cannesFilm : null, component: 'CannesBadge', link: '/festival/cannes-2026', isSimple: true },
         { name: 'bafici', film: this.baficiFilm, component: 'BaficiBadge', link: '/festival/bafici-2026', isSimple: true },
+        { name: 'cuff', film: this.cuffFilm, component: 'CuffBadge', link: '/festival/cuff-2026', isSimple: true },
       ];
       return festivalConfig.filter(f => f.film);
     },
@@ -970,6 +974,7 @@ export default {
     const wasCannesQuinzaine = !!this.cannesQuinzaineFilm;
     const wasCannesAcid = !!this.cannesAcidFilm;
     const wasBafici = !!this.baficiFilm;
+    const wasCuff = !!this.cuffFilm;
 
     this.sundanceFilm = null;
     this.slamdanceFilm = null;
@@ -984,10 +989,11 @@ export default {
     this.cannesQuinzaineFilm = null;
     this.cannesAcidFilm = null;
     this.baficiFilm = null;
+    this.cuffFilm = null;
 
     if (this.type !== 'movie' && this.type !== 'tv') return;
 
-    if (wasSundance || wasSlamdance || wasTribeca || wasBerlinale || wasRotterdam || wasSxsw || wasRomford || wasBifff || wasCannes || wasCannesCriticsChoice || wasCannesQuinzaine || wasCannesAcid || wasBafici) {
+    if (wasSundance || wasSlamdance || wasTribeca || wasBerlinale || wasRotterdam || wasSxsw || wasRomford || wasBifff || wasCannes || wasCannesCriticsChoice || wasCannesQuinzaine || wasCannesAcid || wasBafici || wasCuff) {
         this.isFestivalLoading = true;
     }
 
@@ -1100,6 +1106,18 @@ export default {
             }
         }
 
+        const cuffResponse = await fetch(`/api/festival/cuff/films?tmdb_id=${this.id}`);
+        if (cuffResponse.ok) {
+            const data = await cuffResponse.json();
+            if (data.results && data.results.length > 0) {
+                if (!wasCuff) {
+                    this.isFestivalLoading = true;
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+                this.cuffFilm = data.results[0];
+            }
+        }
+
         const cannesResponse = await fetch(`/api/festival/cannes/films?tmdb_id=${this.id}`);
         if (cannesResponse.ok) {
             const data = await cannesResponse.json();
@@ -1141,6 +1159,7 @@ export default {
             if (manualFestivals.includes('cannes-acid') && !this.cannesAcidFilm) this.cannesAcidFilm = { title: this.name };
             if (manualFestivals.includes('cannes') && !this.cannesFilm) this.cannesFilm = { title: this.name };
             if (manualFestivals.includes('bafici') && !this.baficiFilm) this.baficiFilm = { title: this.name };
+            if (manualFestivals.includes('cuff') && !this.cuffFilm) this.cuffFilm = { title: this.name };
         }
 
     } catch (e) {
