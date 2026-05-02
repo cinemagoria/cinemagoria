@@ -237,8 +237,11 @@ const shorts = computed(() => {
 });
 
 const formatDate = (dateStr) => {
+    // Parse YYYY-MM-DD as local date to avoid UTC-induced day shift in negative-UTC timezones (Americas)
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const localDate = new Date(year, month - 1, day);
     const options = { weekday: 'long', month: 'long', day: 'numeric' };
-    return new Date(dateStr).toLocaleDateString('en-US', options);
+    return localDate.toLocaleDateString('en-US', options);
 };
 
 const formatTime = (timeStr) => {
@@ -268,7 +271,7 @@ const toggleDay = (date) => {
     } else {
         openDays.value.add(date);
     }
-}
+};
 
 const isOpen = (date) => openDays.value.has(date);
 
