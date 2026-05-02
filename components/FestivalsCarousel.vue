@@ -65,6 +65,7 @@ import SxswCard from '~/components/festival/SxswCard.vue';
 import RomfordCard from '~/components/RomfordCard.vue';
 import BifffCard from '~/components/BifffCard.vue';
 import BaficiCard from '~/components/BaficiCard.vue';
+import CuffCard from '~/components/CuffCard.vue';
 import CannesCard from '~/components/CannesCard.vue';
 import CannesCriticsChoiceCard from '~/components/CannesCard.vue';
 
@@ -85,6 +86,7 @@ export default {
     RomfordCard,
     BifffCard,
     BaficiCard,
+    CuffCard,
     CannesCard,
     CannesCriticsChoiceCard,
   },
@@ -138,6 +140,7 @@ export default {
         romford: 'RomfordCard',
         bifff: 'BifffCard',
         bafici: 'BaficiCard',
+        cuff: 'CuffCard',
         cannes: 'CannesCard',
         'cannes-critics-choice': 'CannesCriticsChoiceCard',
       };
