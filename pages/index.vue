@@ -130,12 +130,12 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
     
      const FEATURED_ORDER = [
         // tribeca 2026
-        'In the Hand of Dante',
-        'Only What We Carry',
-        'The Last Day',  
-        'Breeder',
-        'Recluse',
-        'The Revisionist',
+        // 'In the Hand of Dante',
+        // 'Only What We Carry',
+        // 'The Last Day',  
+        // 'Breeder',
+        // 'Recluse',
+        // 'The Revisionist',
         // cannes 2026
         'Victorian Psycho',
         'Hope|cannes',
