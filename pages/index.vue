@@ -111,7 +111,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         }
     };
 
-    const [sundanceList, berlinaleList, rotterdamList, slamdanceList, sxswList, romfordList, bifffList, baficiList, cannesList, tribecaList, trendingMovies, trendingTv, featured] = await Promise.all([
+    const [sundanceList, berlinaleList, rotterdamList, slamdanceList, sxswList, romfordList, bifffList, baficiList, cannesList, tribecaList, cuffList, trendingMovies, trendingTv, featured] = await Promise.all([
         fetchFestivalMovies('sundance'),
         fetchFestivalMovies('berlinale'),
         fetchFestivalMovies('rotterdam'),
@@ -122,6 +122,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         fetchFestivalMovies('bafici'),
         fetchFestivalMovies('cannes'),
         fetchFestivalMovies('tribeca'),
+        fetchFestivalMovies('cuff'),
         fetchSpotlight('/api/spotlight/movies'),
         fetchSpotlight('/api/spotlight/tv'),
         fetchHero()
@@ -151,8 +152,14 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         'Gentle Monster',
         'Teenage Sex and Death at Camp Miasma',
         'Her Private Hell',
+        // cuff 2026
+        'Lucid',
+        'Thanks for Nothing',
+        'The Weed Eaters',
+        'Hangashore',
+        'Mag Mag',
+        'Affection',
         // bafici 2026
-        'Los caminantes de la calle',
         'Nova \'78',
         'El infierno está encantador - Gulp. 1985',
         // bifff 2026
@@ -217,7 +224,7 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
     
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
     
-    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList, ...romfordList, ...bifffList, ...baficiList, ...cannesList, ...tribecaList];
+    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList, ...romfordList, ...bifffList, ...baficiList, ...cannesList, ...tribecaList, ...cuffList];
     
     let mixedFestivalFilms = allFestivalFilms.filter(f => {
         const t = norm(f.title);
