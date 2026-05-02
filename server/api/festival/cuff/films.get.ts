@@ -44,22 +44,22 @@ export default defineEventHandler(async (event) => {
             }
 
             return {
+                ...tmdbData,
                 id: row.tmdb_id || row.id,
                 internal_id: row.id,
                 title: row.title,
                 overview: row.description || tmdbData.overview || '',
                 poster_path: (tmdbData.tmdb_poster ? tmdbData.tmdb_poster : (tmdbData.poster_path ? `https://image.tmdb.org/t/p/w500${tmdbData.poster_path}` : row.image_url)),
-                backdrop_path: tmdbData.backdrop_path ? `https://image.tmdb.org/t/p/w1280${tmdbData.backdrop_path}` : null,
+                backdrop_path: tmdbData.tmdb_backdrop ? tmdbData.tmdb_backdrop : (tmdbData.backdrop_path ? `https://image.tmdb.org/t/p/w1280${tmdbData.backdrop_path}` : null),
                 release_date: tmdbData.release_date || tmdbData.tmdb_release_date || '',
                 vote_average: tmdbData.vote_average || 0,
                 runtime: row.runtime_minutes || tmdbData.runtime || 0,
-                genres: tmdbData.genres || [],
+                genres: tmdbData.genres || tmdbData.tmdb_genres || [],
                 director: row.director,
                 section: row.section || row.category,
                 imdb_id: row.imdb_id,
                 tmdb_id: row.tmdb_id,
-                _debug_tmdb_data: row.tmdb_data,
-                ...tmdbData
+                _debug_tmdb_data: row.tmdb_data
             }
         }).filter((film: any) => {
             return film.title && film.title.trim() !== '';
