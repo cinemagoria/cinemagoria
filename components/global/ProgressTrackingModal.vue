@@ -35,31 +35,52 @@
           <div v-else>
             <!-- MOVIES TAB -->
             <div v-if="currentTab === 'movies'">
-              <div v-if="!groupedMovies.length" class="empty-state">
+              <div class="sub-tab-controls">
+                <button :class="['sub-tab-btn', { active: movieSubTab === 'active' }]" @click="movieSubTab = 'active'">
+                  Active <span class="sub-tab-count">{{ inProgressMovies.length }}</span>
+                </button>
+                <button :class="['sub-tab-btn', { active: movieSubTab === 'completed' }]" @click="movieSubTab = 'completed'">
+                  Completed <span class="sub-tab-count">{{ completedMovies.length }}</span>
+                </button>
+              </div>
+
+              <div v-if="!visibleMovies.length" class="empty-state">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
                 </svg>
-                <h3>No movies in progress</h3>
-                <p>Start tracking some movies to see them here.</p>
+                <h3 v-if="movieSubTab === 'completed'">No completed movies</h3>
+                <h3 v-else>No movies in progress</h3>
+                <p v-if="movieSubTab === 'completed'">Movies you finish at 100% will appear here.</p>
+                <p v-else>Start tracking some movies to see them here.</p>
               </div>
               <div v-else class="rated-items-grid">
-                <div v-for="item in groupedMovies" :key="`movie-${item.media_id}`" class="rated-item-card">
+                <div v-for="item in visibleMovies" :key="`movie-${item.media_id}`"
+                     class="rated-item-card"
+                     :class="{ 'is-completed': movieSubTab === 'completed' }"
+                     @click="openTrackingModal(item)"
+                     :title="item.details && item.details.title ? item.details.title : ''">
                   <div v-if="!imageLoadingStates[item.media_id]" class="poster-skeleton"></div>
-                  <img 
-                    :src="item.details && item.details.poster_path ? `https://image.tmdb.org/t/p/w200${item.details.poster_path}` : '/placeholders/image_not_found_yet.webp'" 
-                    :alt="item.details ? item.details.title : 'Movie'" 
+                  <img
+                    :src="item.details && item.details.poster_path ? `https://image.tmdb.org/t/p/w200${item.details.poster_path}` : '/placeholders/image_not_found_yet.webp'"
+                    :alt="item.details ? item.details.title : 'Movie'"
                     class="poster-image"
                     @load="onImageLoad(item.media_id)"
                     @error="onImageLoad(item.media_id)"
                     :class="{ 'is-loaded': imageLoadingStates[item.media_id] }"
                   />
-                  <div class="edit-overlay-btn">
-                    <button class="edit-btn-fixed" @click="openTrackingModal(item)" title="Edit Progress" aria-label="Edit Progress">
+                  <span v-if="movieSubTab === 'completed'" class="completed-badge" aria-label="Completed">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </span>
+                  <div class="overlay-actions">
+                    <button v-if="movieSubTab === 'completed'" class="edit-btn-fixed move-btn" @click.stop="setMovieActive(item, true)" title="Move to Active" aria-label="Move to Active">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9"/><polyline points="3 4 3 10 9 10"/></svg>
+                    </button>
+                    <button class="edit-btn-fixed" @click.stop="openTrackingModal(item)" title="Edit Progress" aria-label="Edit Progress">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
                     </button>
                   </div>
                   <div class="item-info">
-                    <span class="item-title item-title-link" @click="navigateToMovie(item.media_id)">{{ item.details ? item.details.title : '' }}</span>
+                    <span class="item-title item-title-link" @click.stop="navigateToMovie(item.media_id)" :title="item.details && item.details.title ? `Open ${item.details.title}` : ''">{{ item.details ? item.details.title : '' }}</span>
                     <span class="item-rating">
                       <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                       {{ item.progress_percentage }}%
@@ -71,6 +92,15 @@
 
             <!-- TV TAB -->
             <div v-if="currentTab === 'tv'">
+              <div v-if="!activeTvShow" class="sub-tab-controls">
+                <button :class="['sub-tab-btn', { active: tvSubTab === 'active' }]" @click="tvSubTab = 'active'">
+                  Active <span class="sub-tab-count">{{ inProgressTvShows.length }}</span>
+                </button>
+                <button :class="['sub-tab-btn', { active: tvSubTab === 'completed' }]" @click="tvSubTab = 'completed'">
+                  Completed <span class="sub-tab-count">{{ completedTvShows.length }}</span>
+                </button>
+              </div>
+
               <div v-if="!groupedTvShows.length" class="empty-state">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
@@ -79,28 +109,46 @@
                 <p>Track your watched episodes and seasons to see them here.</p>
               </div>
 
+              <div v-else-if="!activeTvShow && !visibleTvShows.length" class="empty-state">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+                <h3 v-if="tvSubTab === 'completed'">No completed series</h3>
+                <h3 v-else>No active series</h3>
+                <p v-if="tvSubTab === 'completed'">Series will appear here when every aired episode is marked at 100%.</p>
+                <p v-else>All your tracked series are fully complete. Nice.</p>
+              </div>
+
               <!-- LEVEL 1: TV SHOWS LIST -->
               <div v-else-if="!activeTvShow" class="rated-items-grid">
-                <div v-for="show in groupedTvShows" :key="`tv-${show.id}`" class="rated-item-card tv-card">
+                <div v-for="show in visibleTvShows" :key="`tv-${show.id}`"
+                     class="rated-item-card tv-card"
+                     :class="{ 'is-completed': tvSubTab === 'completed' }"
+                     @click="openTvShow(show)"
+                     :title="show.details && show.details.name ? show.details.name : ''">
                   <div v-if="!imageLoadingStates['tv-'+show.id]" class="poster-skeleton"></div>
-                  <img 
-                    :src="show.details && show.details.poster_path ? `https://image.tmdb.org/t/p/w200${show.details.poster_path}` : '/placeholders/image_not_found_yet.webp'" 
-                    :alt="show.details ? show.details.name : 'TV Show'" 
+                  <img
+                    :src="show.details && show.details.poster_path ? `https://image.tmdb.org/t/p/w200${show.details.poster_path}` : '/placeholders/image_not_found_yet.webp'"
+                    :alt="show.details ? show.details.name : 'TV Show'"
                     class="poster-image"
                     @load="onImageLoad('tv-'+show.id)"
                     @error="onImageLoad('tv-'+show.id)"
                     :class="{ 'is-loaded': imageLoadingStates['tv-'+show.id] }"
                   />
-                  <div class="edit-overlay-btn">
+                  <span v-if="tvSubTab === 'completed'" class="completed-badge" aria-label="Completed">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </span>
+                  <div class="overlay-actions">
                     <button class="edit-btn-fixed" @click.stop="openTvShow(show)" title="View Episodes" aria-label="View Episodes">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
                     </button>
                   </div>
                   <div class="item-info">
-                    <span class="item-title item-title-link" @click.stop="navigateToTvShow(show.id)">{{ show.details ? show.details.name : '' }}</span>
+                    <span class="item-title item-title-link" @click.stop="navigateToTvShow(show.id)" :title="show.details && show.details.name ? `Open ${show.details.name}` : ''">{{ show.details ? show.details.name : '' }}</span>
                     <span class="item-rating">
                       <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                      {{ show.trackedCount }} tracked {{ show.trackedCount === 1 ? 'episode' : 'episodes' }}
+                      <template v-if="tvSubTab === 'completed'">Completed</template>
+                      <template v-else>{{ show.trackedCount }} tracked {{ show.trackedCount === 1 ? 'episode' : 'episodes' }}</template>
                     </span>
                   </div>
                 </div>
@@ -133,23 +181,26 @@
                   </div>
 
                   <div v-show="openSeasons.includes(season.seasonNumber)" class="season-episodes-grid">
-                    <div v-for="ep in season.episodes" :key="`ep-${ep.media_id}`" class="rated-item-card episode-card">
+                    <div v-for="ep in season.episodes" :key="`ep-${ep.media_id}`"
+                         class="rated-item-card episode-card"
+                         @click="openTrackingModal(ep)"
+                         :title="ep.details && ep.details.name ? ep.details.name : ''">
                       <div v-if="!imageLoadingStates[ep.media_id]" class="poster-skeleton"></div>
-                      <img 
-                        :src="ep.details && ep.details.still_path ? `https://image.tmdb.org/t/p/w300${ep.details.still_path}` : '/placeholders/image_not_found_yet_horizontal.webp'" 
-                        :alt="ep.details ? ep.details.name : 'Episode'" 
+                      <img
+                        :src="ep.details && ep.details.still_path ? `https://image.tmdb.org/t/p/w300${ep.details.still_path}` : '/placeholders/image_not_found_yet_horizontal.webp'"
+                        :alt="ep.details ? ep.details.name : 'Episode'"
                         class="poster-image still-image"
                         @load="onImageLoad(ep.media_id)"
                         @error="onImageLoad(ep.media_id)"
                         :class="{ 'is-loaded': imageLoadingStates[ep.media_id], 'is-placeholder-img': !(ep.details && ep.details.still_path) }"
                       />
-                      <div class="edit-overlay-btn">
-                        <button class="edit-btn-fixed" @click="openTrackingModal(ep)" title="Edit Progress" aria-label="Edit Progress">
+                      <div class="overlay-actions">
+                        <button class="edit-btn-fixed" @click.stop="openTrackingModal(ep)" title="Edit Progress" aria-label="Edit Progress">
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/></svg>
                         </button>
                       </div>
                       <div class="item-info">
-                        <span class="item-title item-title-link" @click.stop="navigateToTvShow(activeTvShow.id)">{{ ep.details ? ep.details.name : '' }}</span>
+                        <span class="item-title item-title-link" @click.stop="navigateToTvShow(activeTvShow.id)" :title="activeTvShow && activeTvShow.details ? `Open ${activeTvShow.details.name}` : ''">{{ ep.details ? ep.details.name : '' }}</span>
                         <span class="item-subtitle">S{{ ep.season_number }} E{{ ep.episode_number }}</span>
                         <span class="item-rating">
                           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -226,7 +277,6 @@
 
 <script>
 import Loader from '@/components/Loader';
-import { getMovie, getEpisode, getTvShow } from '~/utils/api';
 
 export default {
   name: 'ProgressTrackingModal',
@@ -242,23 +292,47 @@ export default {
       loading: false,
       isScrolled: false,
       currentTab: 'movies',
-      
+      movieSubTab: 'active',
+      tvSubTab: 'active',
+
       groupedMovies: [],
       groupedTvShows: [],
-      
+
       activeTvShow: null,
       openSeasons: [],
-      
+
       imageLoadingStates: {},
       trackingModalVisible: false,
       currentTrackedItem: null,
       tempProgressPercentage: 0
     };
   },
-  
+
   computed: {
     runtimeHelper() {
       return this.currentTrackedItem?.total_duration_minutes || this.currentTrackedItem?.details?.runtime || 0;
+    },
+    inProgressMovies() {
+      return this.groupedMovies.filter(m =>
+        (m.progress_percentage || 0) < 100 || m.manually_active === 1
+      );
+    },
+    completedMovies() {
+      return this.groupedMovies.filter(m =>
+        (m.progress_percentage || 0) >= 100 && m.manually_active !== 1
+      );
+    },
+    visibleMovies() {
+      return this.movieSubTab === 'completed' ? this.completedMovies : this.inProgressMovies;
+    },
+    inProgressTvShows() {
+      return this.groupedTvShows.filter(s => !this.isShowFullyCompleted(s));
+    },
+    completedTvShows() {
+      return this.groupedTvShows.filter(s => this.isShowFullyCompleted(s));
+    },
+    visibleTvShows() {
+      return this.tvSubTab === 'completed' ? this.completedTvShows : this.inProgressTvShows;
     }
   },
 
@@ -296,6 +370,35 @@ export default {
     switchToTab(tab) {
       this.currentTab = tab;
       this.activeTvShow = null;
+    },
+
+    isShowFullyCompleted(show) {
+      const total = show?.details?.total_episodes;
+      if (!total || total <= 0) return false;
+      let trackedAt100 = 0;
+      let allTrackedAt100 = true;
+      for (const sea of (show.seasons || [])) {
+        for (const ep of (sea.episodes || [])) {
+          if ((ep.progress_percentage || 0) >= 100) trackedAt100++;
+          else allTrackedAt100 = false;
+        }
+      }
+      return allTrackedAt100 && trackedAt100 >= total;
+    },
+
+    async setMovieActive(item, flag) {
+      if (!this.userEmail || !item) return;
+      try {
+        await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/active/${item.media_type}/${item.media_id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ manually_active: flag ? 1 : 0 })
+        });
+        await this.fetchTrackedItems();
+        window.dispatchEvent(new CustomEvent('progress-updated'));
+      } catch (e) {
+        console.error('Error updating active flag:', e);
+      }
     },
 
     openTvShow(show) {
@@ -364,89 +467,63 @@ export default {
       if (!this.userEmail) return;
       this.loading = true;
       try {
-        const response = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}`);
-        const items = await response.json();
-        
-        // 1. Movies
-        const movieItems = items.filter(i => i.media_type === 'movie');
-        const detailedMovies = await Promise.all(
-          movieItems.map(async (item) => {
-            try {
-              const details = await getMovie(item.media_id);
-              return { ...item, details };
-            } catch (e) {
-              return null;
-            }
-          })
-        );
-        this.groupedMovies = detailedMovies.filter(Boolean);
+        const response = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/hydrated`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const payload = await response.json();
+        const items = Array.isArray(payload?.items) ? payload.items : [];
+        const shows = (payload && payload.shows) || {};
 
-        // 2. TV Shows
-        const episodeItems = items.filter(i => i.media_type === 'episode' && i.tv_id);
-        
-        const tvIds = [...new Set(episodeItems.map(i => i.tv_id))];
-        
-        let tvShowsList = [];
-        
-        await Promise.all(tvIds.map(async (tvId) => {
-            try {
-                const showDetails = await getTvShow(tvId);
-                const epsForShow = episodeItems.filter(i => i.tv_id === tvId);
-                
-                // Fetch details for all episodes in this show
-                const detailedEpsForShow = await Promise.all(epsForShow.map(async (ep) => {
-                    try {
-                        const epDetails = await getEpisode(tvId, ep.season_number, ep.episode_number);
-                        return { ...ep, details: epDetails };
-                    } catch(e) {
-                        return { ...ep, details: null };
-                    }
-                }));
+        // 1. Movies — already hydrated; drop ones missing details (TMDB unreachable)
+        this.groupedMovies = items.filter(i => i.media_type === 'movie' && i.details);
 
-                const seasonMap = {};
-                for (const ep of detailedEpsForShow) {
-                    if (!seasonMap[ep.season_number]) {
-                        seasonMap[ep.season_number] = {
-                            seasonNumber: ep.season_number,
-                            episodes: [],
-                            averageProgress: 0
-                        };
-                    }
-                    seasonMap[ep.season_number].episodes.push(ep);
-                }
-
-                const seasonsList = Object.values(seasonMap).sort((a,b) => a.seasonNumber - b.seasonNumber);
-                for (const sea of seasonsList) {
-                    sea.episodes.sort((a,b) => a.episode_number - b.episode_number);
-                    const totalPct = sea.episodes.reduce((acc, curr) => acc + curr.progress_percentage, 0);
-                    sea.averageProgress = totalPct / sea.episodes.length;
-                }
-
-                tvShowsList.push({
-                    id: tvId,
-                    details: showDetails,
-                    seasons: seasonsList,
-                    trackedCount: detailedEpsForShow.length
-                });
-
-            } catch (e) {
-                // Ignore missing show
-            }
-        }));
-
-        this.groupedTvShows = tvShowsList;
-        
-        // Re-link activeTvShow if we are currently viewing the details of a show
-        if (this.activeTvShow) {
-           const stillHasShow = this.groupedTvShows.find(s => s.id === this.activeTvShow.id);
-           if (stillHasShow) {
-               this.activeTvShow = stillHasShow;
-           } else {
-               this.activeTvShow = null;
-           }
+        // 2. TV Shows — group by tv_id, build seasons
+        const showMap = new Map();
+        for (const i of items) {
+          if (i.media_type !== 'episode' || !i.tv_id) continue;
+          if (!showMap.has(i.tv_id)) {
+            showMap.set(i.tv_id, {
+              id: i.tv_id,
+              details: shows[i.tv_id] || null,
+              seasonMap: {},
+              trackedCount: 0
+            });
+          }
+          const show = showMap.get(i.tv_id);
+          show.trackedCount += 1;
+          if (!show.seasonMap[i.season_number]) {
+            show.seasonMap[i.season_number] = {
+              seasonNumber: i.season_number,
+              episodes: [],
+              averageProgress: 0
+            };
+          }
+          show.seasonMap[i.season_number].episodes.push(i);
         }
-        
-        // Initial scroll check
+
+        const tvShowsList = [];
+        for (const show of showMap.values()) {
+          if (!show.details) continue;
+          const seasons = Object.values(show.seasonMap).sort((a, b) => a.seasonNumber - b.seasonNumber);
+          for (const sea of seasons) {
+            sea.episodes.sort((a, b) => a.episode_number - b.episode_number);
+            const totalPct = sea.episodes.reduce((acc, curr) => acc + (curr.progress_percentage || 0), 0);
+            sea.averageProgress = sea.episodes.length ? totalPct / sea.episodes.length : 0;
+          }
+          tvShowsList.push({
+            id: show.id,
+            details: show.details,
+            seasons,
+            trackedCount: show.trackedCount
+          });
+        }
+        this.groupedTvShows = tvShowsList;
+
+        // Re-link activeTvShow if we are currently viewing a show
+        if (this.activeTvShow) {
+          const stillHasShow = this.groupedTvShows.find(s => s.id === this.activeTvShow.id);
+          this.activeTvShow = stillHasShow || null;
+        }
+
         this.$nextTick(() => {
           this.handleScroll();
         });
@@ -793,12 +870,15 @@ export default {
   object-fit: contain;
 }
 
-/* ── Always-visible edit button (top-right corner) ──── */
-.edit-overlay-btn {
+/* ── Overlay action buttons (top-right corner) ──────── */
+.overlay-actions {
   position: absolute;
   top: 6px;
   right: 6px;
   z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .edit-btn-fixed {
@@ -826,6 +906,93 @@ export default {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 
+.move-btn {
+  background-color: rgba(0, 0, 0, 0.7);
+  border-color: rgba(138, 232, 252, 0.3);
+}
+.move-btn:hover {
+  background-color: rgba(13, 18, 24, 0.95);
+  border-color: #8AE8FC;
+}
+
+/* ── Sub-tabs (Active / Completed) ──────────────────── */
+.sub-tab-controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(138, 232, 252, 0.1);
+  border-radius: 10px;
+  width: fit-content;
+}
+
+.sub-tab-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.02em;
+}
+
+.sub-tab-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.sub-tab-btn.active {
+  color: #0d1218;
+  background: #8AE8FC;
+}
+
+.sub-tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 11px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.35);
+  color: #8AE8FC;
+}
+
+.sub-tab-btn.active .sub-tab-count {
+  background: rgba(13, 18, 24, 0.85);
+  color: #8AE8FC;
+}
+
+.completed-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #8AE8FC;
+  color: #0d1218;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.rated-item-card.is-completed {
+  border-color: rgba(138, 232, 252, 0.65);
+  box-shadow: inset 0 0 0 1px rgba(138, 232, 252, 0.15);
+}
+
 .item-info {
   position: absolute;
   bottom: 0;
@@ -842,20 +1009,28 @@ export default {
 .item-title-link {
   pointer-events: auto;
   cursor: pointer;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
-.item-title-link:active {
+.item-title-link:hover {
+  color: #8AE8FC;
   text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9), 0 0 12px rgba(138, 232, 252, 0.45);
 }
 
 .item-title {
   color: #fff;
-  font-size: 1.1rem;
-  font-weight: 600;
-  white-space: nowrap;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
   text-shadow: 0 1px 3px rgba(0,0,0,0.9);
 }
 
