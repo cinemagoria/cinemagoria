@@ -31,6 +31,17 @@
             <div class="glider" :class="activeTab"></div>
         </div>
       </div>
+      <div class="disclaimer-bar disclaimer-bar--top" style="max-width: 1200px; width: 100%; margin: 6px auto 0;">
+        <FestivalDataDisclaimer />
+      </div>
+
+      <!-- Winners Showcase: only renders when the festival has finished and awards exist -->
+      <WinnersCarousel
+        v-if="awards.length > 0"
+        :awards="awards"
+        :year="2026"
+      />
+
     </div>
 
     <div class="container">
@@ -40,7 +51,6 @@
 
       <div v-else>
         <div v-if="activeTab === 'films'" class="films-grid">
-            <div class="disclaimer-bar"><FestivalDataDisclaimer /></div>
             <div v-if="features.length > 0" class="film-category">
                 <div class="category-header" @click="featuresOpen = !featuresOpen">
                     <h2 class="listing__title category-title">
@@ -211,6 +221,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import Loader from '~/components/Loader.vue';
+import WinnersCarousel from '~/components/festival/WinnersCarousel.vue';
 import FestivalDataDisclaimer from '~/components/FestivalDataDisclaimer.vue';
 import CuffCard from '~/components/CuffCard.vue';
 
@@ -222,6 +233,7 @@ const nextSlide = () => { slideDirection.value = 'carousel-next'; infoSlide.valu
 const goToSlide = (i) => { slideDirection.value = i > infoSlide.value ? 'carousel-next' : 'carousel-prev'; infoSlide.value = i; };
 const loading = ref(true);
 const films = ref({ results: [] });
+const awards = ref([]);
 const schedule = ref([]);
 const openDays = ref(new Set());
 
@@ -277,12 +289,14 @@ const isOpen = (date) => openDays.value.has(date);
 
 onMounted(async () => {
     try {
-        const [filmsData, scheduleData] = await Promise.all([
+        const [filmsData, scheduleData, awardsData] = await Promise.all([
             $fetch('/api/festival/cuff/films?limit=200&sort=title'),
-            $fetch('/api/festival/cuff/schedule')
+            $fetch('/api/festival/cuff/schedule'),
+            $fetch('/api/festival/cuff/awards').catch(() => ({ results: [] })),
         ]);
 
         films.value = filmsData;
+        awards.value = awardsData.results || [];
         schedule.value = scheduleData.results || [];
 
         if (schedule.value.length > 0) {
@@ -430,7 +444,7 @@ onMounted(async () => {
 
 .festival-hero {
     width: 100%;
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
     position: relative;
     border-radius: 15px;
@@ -511,7 +525,7 @@ onMounted(async () => {
 }
 
 .container {
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 20px 20px;
 }
@@ -522,11 +536,17 @@ onMounted(async () => {
     padding: 3rem;
 }
 
-.schedule-container, .info-container {
-    max-width: 1000px;
+.films-grid, .schedule-container, .info-container {
+    max-width: 1200px;
     margin: 0 auto;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+}
+
+// Override the WinnersCarousel's default 1000px constraint for this page
+// so it matches the 1400px width of the rest of the content blocks.
+:deep(.winners-carousel) {
+    max-width: 1200px;
 }
 
 .day-header {

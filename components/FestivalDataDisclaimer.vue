@@ -218,3 +218,22 @@ const open = ref(false);
   transform: scale(0.95);
 }
 </style>
+
+<!--
+  Non-scoped layout override for the page-header position (.disclaimer-bar--top).
+  Loaded on every festival page because this component is mounted on all of them.
+
+  Why: the ancestral `.switcher-container { top: 3.5rem }` is a visual offset
+  (position:relative) that doesn't push siblings — meaning anything we add below
+  it (disclaimer + carousel) gets visually overlapped. We kill that offset and
+  replace with flow margin so the rhythm is clean and tight.
+-->
+<style>
+.switcher-container:has(~ .disclaimer-bar--top) {
+  top: 0 !important;
+  margin-top: 22px;
+}
+.disclaimer-bar--top .disclaimer-wrapper {
+  margin: 0 !important;
+}
+</style>

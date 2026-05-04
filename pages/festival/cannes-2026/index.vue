@@ -34,6 +34,10 @@
             <div class="glider" :class="activeTab"></div>
         </div>
       </div>
+      <div class="disclaimer-bar disclaimer-bar--top" style="max-width: 1200px; width: 100%; margin: 6px auto 0;">
+        <FestivalDataDisclaimer />
+      </div>
+
     </div>
 
     <div class="container">
@@ -43,7 +47,6 @@
 
       <div v-else>
         <div v-if="activeTab === 'films'" class="films-grid">
-            <div class="disclaimer-bar"><FestivalDataDisclaimer /></div>
             <div
               v-for="cat in orderedCategories"
               :key="cat"
@@ -73,7 +76,6 @@
         </div>
 
                         <div v-if="activeTab === 'critics'" class="films-grid">
-            <div class="disclaimer-bar"><FestivalDataDisclaimer /></div>
             <div
               v-for="ps in parallelSections"
               :key="ps.key"
@@ -611,7 +613,7 @@ onMounted(async () => {
 
 .festival-hero {
     width: 100%;
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
     position: relative;
     border-radius: 15px;
@@ -739,7 +741,7 @@ onMounted(async () => {
 }
 
 .container {
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 20px 20px;
 }
@@ -785,10 +787,16 @@ onMounted(async () => {
 }
 
 .schedule-container, .info-container {
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+}
+
+// Override the WinnersCarousel's default 1000px constraint for this page
+// so it matches the 1400px width of the rest of the content blocks.
+:deep(.winners-carousel) {
+    max-width: 1200px;
 }
 
 .day-header {
