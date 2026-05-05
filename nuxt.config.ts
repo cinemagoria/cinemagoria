@@ -21,6 +21,30 @@ export default defineNuxtConfig({
     '/api/article/**': { swr: 3600 },
     '/api/festival/**': { cache: { maxAge: 3600 } },
     '/api/search/**': { cache: { maxAge: 60 } },
+
+    // Public SSR pages — emit Cache-Control: public, s-maxage=X so Cloudflare caches the HTML
+    // Auth is enforced client-side only; server-rendered HTML is identical for all users.
+    '/': { cache: { maxAge: 600 } },
+    '/movie': { cache: { maxAge: 1800 } },
+    '/movie/followed': { ssr: false },
+    '/movie/**': { cache: { maxAge: 1800 } },
+    '/tv': { cache: { maxAge: 1800 } },
+    '/tv/followed': { ssr: false },
+    '/tv/**': { cache: { maxAge: 1800 } },
+    '/person/**': { cache: { maxAge: 3600 } },
+    '/news': { cache: { maxAge: 600 } },
+    '/news/**': { cache: { maxAge: 3600 } },
+    '/festival': { cache: { maxAge: 3600 } },
+    '/festival/**': { cache: { maxAge: 7200 } },
+    '/awards': { cache: { maxAge: 3600 } },
+    '/awards/**': { cache: { maxAge: 3600 } },
+    '/genre/**': { cache: { maxAge: 3600 } },
+    '/noir': { cache: { maxAge: 3600 } },
+    '/changelog': { cache: { maxAge: 86400 } },
+    '/usage-policies': { cache: { maxAge: 86400 } },
+    '/contact': { cache: { maxAge: 86400 } },
+
+    // Client-side only (user-specific or auth pages)
     '/search': { ssr: false },
     '/watchlist': { ssr: false },
     '/watchlist/**': { ssr: false },
