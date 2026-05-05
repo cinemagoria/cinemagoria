@@ -9,18 +9,44 @@ export default defineNuxtConfig({
   debug: false,
 
   routeRules: {
+    // Sitemaps
     '/sitemap.xml': { cache: { maxAge: 3600 } },
     '/sitemap-static.xml': { cache: { maxAge: 86400 } },
     '/sitemap-news.xml': { cache: { maxAge: 3600 } },
     '/sitemap-movies-*.xml': { cache: { maxAge: 86400 } },
     '/sitemap-tv-*.xml': { cache: { maxAge: 86400 } },
     '/sitemap-persons.xml': { cache: { maxAge: 86400 } },
+
+    // API routes
     '/api/hero': { cache: { maxAge: 1800 } },
     '/api/news': { cache: { maxAge: 300 } },
     '/api/imdb-rating/**': { cache: { maxAge: 86400 } },
     '/api/article/**': { swr: 3600 },
     '/api/festival/**': { cache: { maxAge: 3600 } },
     '/api/search/**': { cache: { maxAge: 60 } },
+
+    // Public SSR pages — emit Cache-Control: public, s-maxage=X so Cloudflare caches the HTML
+    '/': { cache: { maxAge: 600 } },
+    '/movie': { cache: { maxAge: 1800 } },
+    '/movie/followed': { ssr: false },
+    '/movie/**': { cache: { maxAge: 1800 } },
+    '/tv': { cache: { maxAge: 1800 } },
+    '/tv/followed': { ssr: false },
+    '/tv/**': { cache: { maxAge: 1800 } },
+    '/person/**': { cache: { maxAge: 3600 } },
+    '/news': { cache: { maxAge: 600 } },
+    '/news/**': { cache: { maxAge: 3600 } },
+    '/festival': { cache: { maxAge: 3600 } },
+    '/festival/**': { cache: { maxAge: 7200 } },
+    '/awards': { cache: { maxAge: 3600 } },
+    '/awards/**': { cache: { maxAge: 3600 } },
+    '/genre/**': { cache: { maxAge: 3600 } },
+    '/noir': { cache: { maxAge: 3600 } },
+    '/changelog': { cache: { maxAge: 86400 } },
+    '/usage-policies': { cache: { maxAge: 86400 } },
+    '/contact': { cache: { maxAge: 86400 } },
+
+    // Client-side only (user-specific or auth pages)
     '/search': { ssr: false },
     '/watchlist': { ssr: false },
     '/watchlist/**': { ssr: false },
@@ -39,6 +65,7 @@ export default defineNuxtConfig({
     '/streaming': { ssr: false },
     '/streaming-services': { ssr: false },
     '/streaming/**': { ssr: false },
+    '/streaming/followed': { ssr: false },
   },
 
   modules: [
