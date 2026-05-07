@@ -2163,7 +2163,7 @@
     "tmdb_id": 75191,
     "media_type": "tv",
     "trailer_key": "4pMW1Jw5wsY",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776391428/cinemagoria/backdrops/noir_75191.webp",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1778175352/cinemagoria/backdrops/noir_75191.webp",
     "poster_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1778174507/cinemagoria/posters/poster_75191.webp",
     "force_enrichment": true
   },
@@ -2203,9 +2203,9 @@
     "tmdb_id": 1339210,
     "media_type": "movie",
     "trailer_key": "gFGIJRGK510",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776847314/cinemagoria/backdrops/noir_1339210.webp",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1778175153/cinemagoria/backdrops/noir_1339210.webp",
     "poster_path": "/3vCdqenXoOdNFHgr16VOJwBCJwS.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1212763,
