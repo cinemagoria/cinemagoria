@@ -103,7 +103,7 @@
       <div :class="$style.external">
         <ExternalLinks
           media="person"
-          :links="person.external_ids || {}" />
+          :links="{ ...(person.external_ids || {}), ...(person.homepage ? { homepage: person.homepage } : {}) }" />
       </div>
     </div>
   </div>
@@ -188,11 +188,7 @@ export default {
       return parts.join(', ');
     },
   },
-  created() {
-    if (this.person.homepage && this.person.external_ids) {
-      this.person.external_ids.homepage = this.person.homepage;
-    }
-  },
+  // homepage merged into :links binding in template to avoid direct prop mutation
   mounted() {
     this.userEmail = localStorage.getItem('email');
     this.hasAccessToken = localStorage.getItem('access_token') !== null;
