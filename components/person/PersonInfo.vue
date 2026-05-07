@@ -103,7 +103,7 @@
       <div :class="$style.external">
         <ExternalLinks
           media="person"
-          :links="person.external_ids" />
+          :links="person.external_ids || {}" />
       </div>
     </div>
   </div>
@@ -189,7 +189,7 @@ export default {
     },
   },
   created() {
-    if (this.person.homepage) {
+    if (this.person.homepage && this.person.external_ids) {
       this.person.external_ids.homepage = this.person.homepage;
     }
   },
