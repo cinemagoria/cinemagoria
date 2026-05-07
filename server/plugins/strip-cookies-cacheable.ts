@@ -40,8 +40,8 @@ export default defineNitroPlugin((nitroApp) => {
     const method = event.node.req.method || 'GET'
     if (method !== 'GET' && method !== 'HEAD') return
 
-    const rawPath = event.path || event.node.req.url || ''
-    const path = rawPath.split('?')[0]
+    const rawPath: string = event.path ?? event.node.req.url ?? ''
+    const path: string = rawPath.split('?')[0] ?? ''
 
     if (!isCacheablePath(path)) return
 
