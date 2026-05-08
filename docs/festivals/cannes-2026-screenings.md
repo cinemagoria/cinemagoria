@@ -70,22 +70,6 @@ intentionally not ingested:
   Tilda Swinton)
 * Opening / closing ceremonies and prize-giving
 
-## Title disambiguation
-
-Several entries in the PDF do not match our catalog title verbatim. The
-non-obvious mappings, verified against `festival_films.tmdb_data`:
-
-| PDF title                              | Catalog title                          |
-| -------------------------------------- | -------------------------------------- |
-| `THE MATCH`                            | `El Partido`                           |
-| `L'AFFAIRE MARIE-CLAIRE`               | `Gisèle - Au nom de toutes`            |
-| `LE JOURNAL D'UNE FEMME DE CHAMBRE`    | `Femme De Chambre` (Radu Jude)         |
-| `MARIE MADELEINE`                      | `Maria Magdalena`                      |
-| `KOKUROJO`                             | `The Samurai and the Prisoner`         |
-| `GUN-CHE`                              | `Colony`                               |
-| `CENIZA EN LA BOCA`                    | `A Mouthful of Ash`                    |
-| `LA BATAILLE DE GAULLE`                | `De Gaulle: Tilting Iron (Film 1)`     |
-
 ## Verification queries
 
 ```sql
