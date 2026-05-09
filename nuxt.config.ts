@@ -9,42 +9,47 @@ export default defineNuxtConfig({
   debug: false,
 
   routeRules: {
+    // NOTE: never use `cache: { maxAge }` or `swr:` here. Those activate Nitro's
+    // server-side cache, whose default driver is in-memory (unbounded Map). With
+    // wildcard routes this leaks heap until OOM. Cloudflare is the cache layer —
+    // we only emit Cache-Control headers; CF stores the response, Nitro does not.
+
     // Sitemaps
-    '/sitemap.xml': { cache: { maxAge: 3600 } },
-    '/sitemap-static.xml': { cache: { maxAge: 86400 } },
-    '/sitemap-news.xml': { cache: { maxAge: 3600 } },
-    '/sitemap-movies-*.xml': { cache: { maxAge: 86400 } },
-    '/sitemap-tv-*.xml': { cache: { maxAge: 86400 } },
-    '/sitemap-persons.xml': { cache: { maxAge: 86400 } },
+    '/sitemap.xml': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600' } },
+    '/sitemap-static.xml': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
+    '/sitemap-news.xml': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600' } },
+    '/sitemap-movies-*.xml': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
+    '/sitemap-tv-*.xml': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
+    '/sitemap-persons.xml': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
 
     // API routes
-    '/api/hero': { cache: { maxAge: 1800 } },
-    '/api/news': { cache: { maxAge: 300 } },
-    '/api/imdb-rating/**': { cache: { maxAge: 86400 } },
-    '/api/article/**': { swr: 3600 },
-    '/api/festival/**': { cache: { maxAge: 3600 } },
-    '/api/search/**': { cache: { maxAge: 60 } },
+    '/api/hero': { headers: { 'cache-control': 'public, max-age=1800, s-maxage=1800' } },
+    '/api/news': { headers: { 'cache-control': 'public, max-age=300, s-maxage=300' } },
+    '/api/imdb-rating/**': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
+    '/api/article/**': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=3600' } },
+    '/api/festival/**': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600' } },
+    '/api/search/**': { headers: { 'cache-control': 'public, max-age=60, s-maxage=60' } },
 
     // Public SSR pages — emit Cache-Control: public, s-maxage=X so Cloudflare caches the HTML
-    '/': { cache: { maxAge: 600 } },
-    '/movie': { cache: { maxAge: 1800 } },
+    '/': { headers: { 'cache-control': 'public, max-age=600, s-maxage=600' } },
+    '/movie': { headers: { 'cache-control': 'public, max-age=1800, s-maxage=1800' } },
     '/movie/followed': { ssr: false },
-    '/movie/**': { cache: { maxAge: 1800 } },
-    '/tv': { cache: { maxAge: 1800 } },
+    '/movie/**': { headers: { 'cache-control': 'public, max-age=1800, s-maxage=1800' } },
+    '/tv': { headers: { 'cache-control': 'public, max-age=1800, s-maxage=1800' } },
     '/tv/followed': { ssr: false },
-    '/tv/**': { cache: { maxAge: 1800 } },
-    '/person/**': { cache: { maxAge: 3600 } },
-    '/news': { cache: { maxAge: 600 } },
-    '/news/**': { cache: { maxAge: 3600 } },
-    '/festival': { cache: { maxAge: 3600 } },
-    '/festival/**': { cache: { maxAge: 7200 } },
-    '/awards': { cache: { maxAge: 3600 } },
-    '/awards/**': { cache: { maxAge: 3600 } },
-    '/genre/**': { cache: { maxAge: 3600 } },
-    '/noir': { cache: { maxAge: 3600 } },
-    '/changelog': { cache: { maxAge: 86400 } },
-    '/usage-policies': { cache: { maxAge: 86400 } },
-    '/contact': { cache: { maxAge: 86400 } },
+    '/tv/**': { headers: { 'cache-control': 'public, max-age=1800, s-maxage=1800' } },
+    '/person/**': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600' } },
+    '/news': { headers: { 'cache-control': 'public, max-age=600, s-maxage=600' } },
+    '/news/**': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600' } },
+    '/festival': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600' } },
+    '/festival/**': { headers: { 'cache-control': 'public, max-age=7200, s-maxage=7200' } },
+    '/awards': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600' } },
+    '/awards/**': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600' } },
+    '/genre/**': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600' } },
+    '/noir': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600' } },
+    '/changelog': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
+    '/usage-policies': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
+    '/contact': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
 
     // Client-side only (user-specific or auth pages)
     '/search': { ssr: false },
