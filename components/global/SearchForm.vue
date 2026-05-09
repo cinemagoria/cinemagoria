@@ -21,7 +21,8 @@
               name="search"
               type="text"
               placeholder="Buscar.."
-              @keyup="goToRoute"
+              @keydown.enter.prevent="goToRoute"
+              @keyup="debouncedGoToRoute"
               @blur="unFocus"
             >
           </div>
@@ -128,7 +129,7 @@ export default {
   },
 
   async mounted() {
-  this.goToRoute = debounce(this.goToRoute, 1000);
+  this.debouncedGoToRoute = debounce(this.goToRoute, 350);
   this.$refs.input.focus();
   this.showLanguageMenu = false;
   const email = localStorage.getItem('email');
@@ -212,7 +213,9 @@ beforeDestroy() {
         const target = e.relatedTarget;
         const fromLink = target && target.tagName.toLowerCase() === 'a' && target.getAttribute('href') === '/search-genre';
         if (!target || (!target.classList.contains('search-toggle') && !fromLink)) {
-          this.query = '';
+          // Do NOT clear `this.query` here — if a debounced goToRoute is pending,
+          // clearing the query causes it to fire with empty input and route to
+          // fromPage instead of /search.
           this.closeSearchAction();
         }
       }
