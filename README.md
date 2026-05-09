@@ -56,7 +56,7 @@ The N.O.I.R. badge — rendered in the top-right corner of each backdrop in `Her
   <img src="https://ivanluna.dev/images/assets/cinemagoria-asset9.webp" alt="Festivals" width="70%">
 </div>
 
-Dedicated coverage for major international festivals — Sundance, Berlinale, Rotterdam, Slamdance, SXSW, Romford, BIFFF, BAFICI, Tribeca, Cannes (with Critics' Choice, Quinzaine des Cinéastes and ACID parallel sections) and more — each with its own page, API endpoints, card and badge components, and homepage carousel. The hero section supports multiple simultaneous festival premiere badges with display precedence, and Berlinale ships with an interactive timezone-aware schedule.
+Dedicated coverage for major international festivals — Sundance, Berlinale, Rotterdam, Slamdance, SXSW, Romford, BIFFF, BAFICI, Tribeca (now fully supported), Cannes (completed with official screenings and parallel sections: Critics' Choice, Quinzaine des Cinéastes, ACID), CUFF (Calgary Underground Film Festival) and more — each with its own page, API endpoints, card and badge components, and homepage carousel. The hero section supports multiple simultaneous festival premiere badges with display precedence, and Berlinale ships with an interactive timezone-aware schedule.
 
 ### Search & Discovery
 <div align="center">
