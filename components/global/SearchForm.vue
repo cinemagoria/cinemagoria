@@ -173,17 +173,34 @@ beforeDestroy() {
   this.$bus.$off('update-search-query', this.updateSearchQuery);
 },
   methods: {
-    goToRoute() {
-      if (this.query) {
-        this.logSearch(this.query);
-        this.$router.push({
-          name: 'search',
-          query: { q: this.query },
-        });
+    async goToRoute() {
+      // Read from the input ref as fallback in case v-model is stale (rare race
+      // condition observed in production). Trim whitespace either way.
+      const fromModel = (this.query || '').trim();
+      const fromInput = (this.$refs.input?.value || '').trim();
+      const q = fromModel || fromInput;
+
+      console.log('[SearchForm] goToRoute fired. query=', JSON.stringify(q),
+                  'model=', JSON.stringify(fromModel),
+                  'inputValue=', JSON.stringify(fromInput),
+                  'route=', this.$route.fullPath);
+
+      if (q) {
+        this.logSearch(q);
+        try {
+          await this.$router.push(`/search?q=${encodeURIComponent(q)}`);
+          console.log('[SearchForm] navigated to /search?q=' + q);
+        } catch (err) {
+          console.error('[SearchForm] router.push failed:', err);
+        }
       } else {
-        this.$router.push({
-          path: this.fromPage,
-        });
+        const target = this.fromPage || '/';
+        console.log('[SearchForm] empty query, going to', target);
+        try {
+          await this.$router.push(target);
+        } catch (err) {
+          console.error('[SearchForm] fallback push failed:', err);
+        }
       }
     },
 
