@@ -29,7 +29,6 @@
       :title="trendingMoviesTitle"
       :view-all-url="trendingMoviesUrl"
       :items="trendingMovies"
-      media-type="movie"
       compact />
 
     <StreamingPlatformCarousel
@@ -43,7 +42,6 @@
       :title="trendingTvTitle"
       :view-all-url="trendingTvUrl"
       :items="trendingTv"
-      media-type="tv"
       compact />
   </main>
 </template>
@@ -78,9 +76,10 @@ const userName = ref('');
 
 const { data: pageData, error: pageError } = await useAsyncData('homepage', async () => {
   try {
-    // Spotlight carousels are curated by the Phase-2 engine in the
-    // cinemagoria-candidates-selections repo (daily cron, writes to Turso).
-    // /api/spotlight/{movies,tv} reads those tables. See SPOTLIGHT.md.
+    // Spotlight carousels are curated manually via pins in
+    // cinemagoria-candidates-selections (spotlight-manual-pinned.json,
+    // spotlight-reorder.mjs). /api/spotlight/{movies,tv} reads the
+    // spotlight_movies / spotlight_tv tables ordered by sort_index.
     const fetchSpotlight = async (file) => {
       try {
         const data = await $fetch(file);
