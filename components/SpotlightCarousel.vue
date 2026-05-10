@@ -5,7 +5,7 @@
       class="listing__head">
       <h2
         v-if="title"
-        class="listing__title spotlight__title">
+        class="listing__title">
         {{ title }}
       </h2>
 
@@ -105,21 +105,6 @@ export default {
 .listing__explore:hover,
 .listing__explore:hover strong {
   color: #A2EDFD !important;
-}
-
-.spotlight__title {
-  position: relative;
-}
-
-.spotlight__title::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -6px;
-  width: 36px;
-  height: 2px;
-  background: linear-gradient(90deg, #22d3ee 0%, rgba(34, 211, 238, 0) 100%);
-  border-radius: 2px;
 }
 
 /* Compact mode — same sizing as ListingCarousel for consistency. */
