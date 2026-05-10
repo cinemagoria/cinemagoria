@@ -6,7 +6,8 @@
           <h4 :class="$style.heading">Resources</h4>
           <ul :class="$style.links">
             <li><nuxt-link to="/changelog">Latest Updates</nuxt-link></li>
-            <li><a href="#" @click.prevent="openCookiePreferences">Cookie Preferences</a></li>    
+            <li><a href="#" @click.prevent="openCookiePreferences">Cookie Preferences</a></li>
+            <li><nuxt-link to="/faq">FAQ</nuxt-link></li>
             <li><nuxt-link to="/usage-policies">Privacy & Terms</nuxt-link></li>
             <li><nuxt-link to="/contact">Contact</nuxt-link></li>
           </ul>
