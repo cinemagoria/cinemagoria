@@ -1,0 +1,785 @@
+<template>
+  <main :class="$style.page">
+    <UserNav />
+
+    <header :class="$style.hero">
+      <div :class="$style.heroInner">
+        <span :class="$style.eyebrow">Centro de informaci&oacute;n</span>
+        <h1 :class="$style.title">Preguntas Frecuentes</h1>
+        <p :class="$style.lead">
+          Marco editorial, infraestructura de descubrimiento y los engranajes que
+          mueven la plataforma &mdash; explicados en un solo lugar.
+        </p>
+      </div>
+    </header>
+
+    <div :class="$style.layout">
+      <aside :class="$style.toc" aria-label="Tabla de contenidos">
+        <span :class="$style.tocLabel">Temas</span>
+        <ul>
+          <li v-for="s in sections" :key="s.id">
+            <a :href="`#${s.id}`" @click="scrollTo($event, s.id)" :class="[$style.tocLink, activeId === s.id ? $style.tocLinkActive : '']">
+              {{ s.title }}
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <div :class="$style.content">
+        <section
+          v-for="s in sections"
+          :key="s.id"
+          :id="s.id"
+          :class="$style.section"
+        >
+          <header :class="$style.sectionHead">
+            <span :class="$style.sectionMarker"></span>
+            <h2>{{ s.title }}</h2>
+            <button
+              v-if="s.id === 'notifications'"
+              type="button"
+              :class="$style.howItWorksBtn"
+              @click="showHowItWorksModal = true"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+              <span>&iquest;C&oacute;mo funciona?</span>
+            </button>
+          </header>
+
+          <div :class="$style.items">
+            <article
+              v-for="(item, idx) in s.items"
+              :key="idx"
+              :class="[$style.item, isOpen(s.id, idx) ? $style.itemOpen : '']"
+            >
+              <button
+                type="button"
+                :class="$style.qButton"
+                :aria-expanded="isOpen(s.id, idx)"
+                @click="toggle(s.id, idx)"
+              >
+                <span :class="$style.qText">{{ item.q }}</span>
+                <svg :class="$style.chev" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div :class="$style.answerWrap">
+                <div :class="$style.answer" v-html="item.a"></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <footer :class="$style.bottom">
+          <p>&iquest;Queda alguna duda? <nuxt-link to="/contact"> Ir al formulario de contacto</nuxt-link>.</p>
+        </footer>
+      </div>
+    </div>
+
+    <HowItWorksModal v-if="showHowItWorksModal" @close="showHowItWorksModal = false" />
+  </main>
+</template>
+
+<script setup>
+import { ref, reactive, onMounted, onBeforeUnmount } from 'vue';
+import HowItWorksModal from '~/components/HowItWorksModal.vue';
+
+const showHowItWorksModal = ref(false);
+
+useHead({
+  title: 'Preguntas Frecuentes — Cinemagoria',
+  meta: [
+    { name: 'description', content: 'Marco editorial, N.O.I.R., Spotlight, descubrimiento centrado en festivales, cuentas, fuentes de metadatos y los cimientos técnicos detrás de la plataforma.' }
+  ]
+});
+
+const sections = [
+  {
+    id: 'general',
+    title: 'General',
+    items: [
+      {
+        q: '¿De qué se trata esta plataforma?',
+        a: `<p>Una plataforma de descubrimiento centrada en cine y televisión, construida sobre agregación de datos, curaduría editorial y seguimiento activo de festivales. Metadatos, calificaciones, críticas, bandas sonoras, historial de premios y disponibilidad en streaming se integran desde múltiples fuentes de la industria en una experiencia pensada para la cultura cinematográfica contemporánea.</p>`
+      },
+      {
+        q: '¿Qué la diferencia de IMDb o Letterboxd?',
+        a: `<p>Curaduría editorial, no simple catalogación. El descubrimiento se basa en cine emergente, autores internacionales, cine de género y estrenos culturalmente relevantes.</p>
+<p>El sistema combina metadatos cruzados, selección manual, noticias asistidas por IA, seguimiento de estrenos basado en suscripciones y un histórico editorial permanente (N.O.I.R.) integrado dentro de una búsqueda unificada.</p>`
+      },
+      {
+        q: '¿Se transmite o aloja contenido aquí?',
+        a: `<p>No. La disponibilidad se indexa desde proveedores externos y las opciones legales de visualización aparecen únicamente cuando están verificadas. No existe un catálogo propio de streaming: los datos estructurados provienen de <strong>IMDb</strong>, <strong>TMDB</strong>, <strong>Rotten Tomatoes</strong>, <strong>Trakt.tv</strong>, <strong>MusicBrainz</strong>, <strong>JustWatch</strong> y <strong>MDBList</strong>.</p>`
+      }
+    ]
+  },
+  {
+    id: 'noir',
+    title: 'N.O.I.R.',
+    items: [
+      {
+        q: '¿Qué es N.O.I.R.?',
+        a: `<p class="lead-line"><strong>N.O.I.R. &mdash; <em>Nothing Out Is Ready</em>.</strong></p>
+<p>La capa curatorial más importante de la plataforma y su herramienta editorial más activa. Desde premieres tempranas hasta histórico permanente, N.O.I.R. reúne títulos emergentes desde <strong>2024 en adelante</strong> considerados culturales o relevantes dentro del marco editorial.</p>
+<blockquote class="manifesto">
+  <span class="manifesto-mark">N.O.I.R.</span>
+  <p>N.O.I.R. habita en lo que no se ha definido, se sitúa antes de que ocurra.</p>
+  <p>La obra importa en su estado previo a la asimilación.</p>
+</blockquote>
+<p>La identidad se inclina hacia el horror contemporáneo, thrillers psicológicos, ciencia ficción, drama, cine de festivales y obras de autor.</p>
+<p>El acceso al histórico dedicado en <a href="/noir" class="inline-link">/noir</a> requiere una cuenta autenticada.</p>`
+      },
+      {
+        q: '¿Cómo entra un título a N.O.I.R. y cómo se mueve dentro de la plataforma?',
+        a: `<p>La mayoría de los títulos surge desde festivales, premieres, adquisiciones, seguimiento crítico y un infraestructura interna de procesos editoriales, bases de datos, automatizaciones y análisis curatorial. Los festivales funcionan como el principal sistema de detección editorial: <strong>Sundance, Berlinale, Rotterdam, BIFFF, SXSW, BAFICI, Cannes, CUFF, Tribeca, Slamdance</strong> y <strong>Romford Horror</strong> alimentan activamente el sistema de selección, con nuevos festivales incorporándose progresivamente durante 2026.</p>
+<p>Cuando un proyecto gana relevancia editorial, pasa a la rotación principal de la página principal: una selección destacada de títulos N.O.I.R. próximos a estrenarse o recientemente lanzados. El sello N.O.I.R. aparece en cada tarjeta y conecta directamente con el histórico completo.</p>
+<p>Una vez que el título se encuentra ampliamente disponible, abandona esa rotación principal. A partir de ahí ocurren dos cosas:</p>
+<ul>
+  <li>Ingresa al <strong>histórico permanente de N.O.I.R.</strong> en <a href="/noir" class="inline-link">/noir</a>, organizado por año y formato (película o serie).</li>
+  <li>Con frecuencia pasa a <strong>Spotlight</strong>, el segundo espacio editorial de la página principal. Cerca del setenta por ciento de los títulos destacados allí pasaron antes por la rotación principal.</li>
+</ul>
+<p>Salir de la rotación nunca implica desaparecer del histórico. El histórico es acumulativo.</p>
+<blockquote class="manifesto">
+  <span class="manifesto-mark">II. Criterio de Selección</span>
+  <p>No se construye un catálogo; se reconocen señales. Solo permanece lo que irrumpe y trasciende.</p>
+  <p>La selección nunca es fija, evoluciona, se desplaza. Nada desaparece, todo se transforma en histórico.</p>
+</blockquote>`
+      },
+      {
+        q: '¿Qué representa el sello N.O.I.R.?',
+        a: `<p>Una incorporación formal a la selección editorial. El sello se otorga por relevancia editorial, identidad artística, recorrido en festivales, innovación de género o potencial cultural a largo plazo &mdash; no por escala comercial. Una vez asignado, permanece asociado al título de forma permanente.</p>`
+      },
+      {
+        q: '¿Qué tipo de cine predomina en N.O.I.R.?',
+        a: `<p>El cine predominante es el de autor, el género contemporáneo, los descubrimientos de festivales internacionales, las producciones independientes y las obras con identidad cultural marcada. Las grandes producciones aparecen únicamente cuando realmente encajan dentro del criterio editorial.</p>
+<p>La rotación activa actual se inclina con claridad hacia el <strong>horror</strong>, el <strong>thriller psicológico</strong>, la <strong>ciencia ficción</strong> y el <strong>drama</strong>, con fuerte presencia de cine europeo y latinoamericano de festivales.</p>`
+      }
+    ]
+  },
+  {
+    id: 'spotlight',
+    title: 'Spotlight & Descubrimiento',
+    items: [
+      {
+        q: '¿Qué es Spotlight?',
+        a: `<p>El espacio principal de descubrimiento editorial dentro de la página principal para títulos emergentes y obras consideradas relevantes por la curaduría de la plataforma. Spotlight es curado, no algorítmico: conviven descubrimientos de festivales, proyectos de autor, horror contemporáneo, thrillers psicológicos, ciencia ficción, drama y estrenos independientes con identidad marcada.</p>
+<p>Muchos títulos llegan después de pasar por la rotación principal y continúan visibles mucho tiempo después de finalizado su período inicial de exposición, antes de asentarse de forma permanente dentro del histórico.</p>`
+      },
+      {
+        q: '¿Qué significa “descubrimiento centrado en festivales”?',
+        a: `<p>Los festivales funcionan como motores activos de descubrimiento, no como simples categorías de metadatos. Las premieres, selecciones oficiales y recorridos críticos alimentan directamente los sistemas editoriales y el seguimiento de títulos emergentes.</p>`
+      },
+      {
+        q: '¿Qué festivales se cubren actualmente?',
+        a: `<p>Cobertura activa desde <strong>2026 en adelante</strong>, incorporando cada edición año tras año:</p>
+<ul class="festival-list">
+  <li><a href="/festival/sundance-2026" class="inline-link">Sundance</a> &middot; Park City</li>
+  <li><a href="/festival/berlinale-2026" class="inline-link">Berlinale</a> &middot; Berlín</li>
+  <li><a href="/festival/rotterdam-2026" class="inline-link">Rotterdam</a> &middot; Róterdam</li>
+  <li><a href="/festival/bifff-2026" class="inline-link">BIFFF</a> &middot; Bruselas</li>
+  <li><a href="/festival/sxsw-2026" class="inline-link">SXSW</a> &middot; Austin</li>
+  <li><a href="/festival/bafici-2026" class="inline-link">BAFICI</a> &middot; Buenos Aires</li>
+  <li><a href="/festival/cannes-2026" class="inline-link">Cannes</a> &middot; Cannes</li>
+  <li><a href="/festival/cuff-2026" class="inline-link">CUFF</a> &middot; Calgary</li>
+  <li><a href="/festival/tribeca-2026" class="inline-link">Tribeca</a> &middot; Nueva York</li>
+  <li><a href="/festival/slamdance-2026" class="inline-link">Slamdance</a> &middot; Park City</li>
+  <li><a href="/festival/romford-2026" class="inline-link">Romford Horror</a> &middot; Romford</li>
+</ul>
+<p>El hub completo se encuentra en <a href="/festival" class="inline-link">/festival</a>.</p>`
+      },
+      {
+        q: '¿Qué festivales se incorporan próximamente?',
+        a: `<p>Festivales previstos para incorporarse durante 2026, con continuidad en 2027, 2028 y años posteriores:</p>
+<ul>
+  <li><strong>KVIFF</strong> &middot; Festival Internacional de Karlovy Vary</li>
+  <li><strong>Venezia</strong> &middot; La Biennale di Venezia</li>
+  <li><strong>TIFF</strong> &middot; Festival Internacional de Toronto</li>
+  <li><strong>NYFF</strong> &middot; Festival de Cine de Nueva York</li>
+  <li><strong>Sitges</strong> &middot; Festival Internacional de Cine Fantástico de Cataluña</li>
+  <li><strong>BFI London</strong> &middot; BFI London Film Festival</li>
+  <li><strong>Mar del Plata</strong> &middot; Festival Internacional de Cine</li>
+  <li><strong>BARS</strong> &middot; Buenos Aires Rojo Sangre</li>
+  <li><strong>Fantasia</strong> &middot; Montréal</li>
+</ul>
+<p>La lista es orientativa y puede ajustarse a medida que evolucionan el alcance editorial y los recursos disponibles.</p>`
+      },
+      {
+        q: '¿Por qué algunos festivales muestran menos títulos que la programación oficial?',
+        a: `<p>La cobertura de festivales depende de metadatos públicos y fuentes externas, que no siempre incluyen todos los títulos &mdash; especialmente <strong>cortometrajes, obras experimentales y producciones regionales</strong>.</p>
+<p>Se trata de una limitación técnica, no editorial. Ninguna película es omitida o censurada intencionalmente. La mayoría de los largometrajes sí está presente; las ausencias suelen concentrarse en cortos y secciones periféricas. La cobertura mejora progresivamente a medida que las fuentes se actualizan.</p>`
+      }
+    ]
+  },
+  {
+    id: 'accounts',
+    title: 'Cuentas & Perfiles',
+    items: [
+      {
+        q: '¿Hace falta una cuenta?',
+        a: `<p>La mayor parte del descubrimiento no requiere una cuenta. Sin embargo, una cuenta habilita watchlists, calificaciones, seguimiento de repartos, equipos, proyectos, notificaciones, listas personalizadas, artículos guardados, seguimiento de episodios y acceso completo al histórico de N.O.I.R.</p>`
+      },
+      {
+        q: '¿Los perfiles son públicos? ¿Las listas pueden ser privadas o clonadas?',
+        a: `<p>Los perfiles pueden mostrar actividad pública, listas curadas y conexiones sociales, con controles de privacidad configurables. Las listas personalizadas admiten ambos niveles de visibilidad; cualquier lista pública puede duplicarse dentro de una biblioteca personal y editarse de manera independiente.</p>`
+      },
+      {
+        q: '¿Se pueden eliminar las cuentas?',
+        a: `<p>Sí. La eliminación es completamente autogestionada y elimina permanentemente los datos del perfil.</p>`
+      }
+    ]
+  },
+  {
+    id: 'search',
+    title: 'Búsqueda & Metadatos',
+    items: [
+      {
+        q: '¿Se puede buscar directamente por IMDb o TMDB?',
+        a: `<p>Sí. El sistema de búsqueda resuelve ambos identificadores de forma directa.</p>`
+      },
+      {
+        q: '¿Por qué algunas calificaciones muestran fuentes distintas?',
+        a: `<p>IMDb funciona como fuente principal cuando los datos están disponibles. Cuando no lo están, TMDB ocupa su lugar, manteniendo atribución explícita para preservar transparencia sobre el origen.</p>`
+      }
+    ]
+  },
+  {
+    id: 'notifications',
+    title: 'Notificaciones y Seguimiento',
+    items: [
+      {
+        q: '¿A quién y a qué se puede seguir?',
+        a: `<ul>
+  <li>Actores</li>
+  <li>Directores</li>
+  <li>Guionistas</li>
+  <li>Series</li>
+  <li>Productoras</li>
+  <li>Plataformas de streaming</li>
+</ul>`
+      },
+      {
+        q: '¿Cómo se generan las alertas de estreno?',
+        a: `<p>Mediante procesos en segundo plano se monitorean continuamente estrenos, lanzamientos de episodios y proyectos asociados a entidades seguidas. Las alertas luego se sincronizan entre dispositivos.</p>`
+      },
+      {
+        q: '¿Se puede seguir el progreso por episodio?',
+        a: `<p>Sí &mdash; con seguimiento granular hasta nivel de episodio.</p>`
+      }
+    ]
+  },
+  {
+    id: 'editorial',
+    title: 'Noticias y Editorial',
+    items: [
+      {
+        q: '¿El sistema editorial está generado por IA?',
+        a: `<p>Asistido por IA, no autónomo. La automatización aporta enriquecimiento, ranking y clasificación; la dirección editorial y la curaduría continúan bajo control humano. Los artículos se estructuran y contextualizan internamente, no se reciclan desde feeds sin procesar.</p>`
+      }
+    ]
+  },
+  {
+    id: 'technical',
+    title: 'Técnica',
+    items: [
+      {
+        q: '¿Qué tecnologías impulsan la plataforma?',
+        a: `<ul>
+  <li>Nuxt</li>
+  <li>Vue.js</li>
+  <li>Pinia</li>
+  <li>Turso</li>
+  <li>Django REST Framework</li>
+   <li>Rust</li>
+  <li>Railway</li>
+  <li>Vercel</li>
+</ul>`
+      },
+      {
+        q: '¿Por qué el rendimiento se considera una característica del producto?',
+        a: `<p>La carga concurrente de datos, el enriquecimiento precomputado, la caché por capas, el procesamiento en segundo plano y la selección editorial del lado del servidor forman parte central de la arquitectura &mdash; minimizan latencia y mantienen el descubrimiento inmediato.</p>`
+      },
+      {
+        q: '¿Hay soporte para varios idiomas?',
+        a: `<p>Inglés y español.</p>`
+      }
+    ]
+  },
+  {
+    id: 'philosophy',
+    title: 'Filosofía',
+    items: [
+      {
+        q: '¿Por qué no apoyarse únicamente en algoritmos?',
+        a: `<p>La cultura cinematográfica se entiende como un ecosistema en evolución, no como un flujo diseñado para maximizar interacción. El modelo es híbrido: descubrimiento algorítmico combinado con perspectiva editorial y curaduría contextual.</p>`
+      },
+      {
+        q: '¿Qué significa “agregación por encima de exclusividad”?',
+        a: `<p>Un principio central del proyecto: integrar y contextualizar fuentes externas confiables en lugar de reemplazarlas con una base de datos cerrada y propietaria. La plataforma funciona como una capa de descubrimiento e inteligencia editorial para la cultura cinematográfica contemporánea.</p>`
+      }
+    ]
+  }
+];
+
+const open = reactive({});
+const activeId = ref(sections[0].id);
+
+const key = (sid, idx) => `${sid}-${idx}`;
+const isOpen = (sid, idx) => !!open[key(sid, idx)];
+const toggle = (sid, idx) => { open[key(sid, idx)] = !open[key(sid, idx)]; };
+
+const scrollTo = (e, id) => {
+  e.preventDefault();
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 80;
+  window.scrollTo({ top, behavior: 'smooth' });
+  history.replaceState(null, '', `#${id}`);
+};
+
+let observer = null;
+onMounted(() => {
+  if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
+  observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      if (visible.length) activeId.value = visible[0].target.id;
+    },
+    { rootMargin: '-30% 0px -55% 0px', threshold: 0 }
+  );
+  sections.forEach((s) => {
+    const el = document.getElementById(s.id);
+    if (el) observer.observe(el);
+  });
+});
+onBeforeUnmount(() => { observer && observer.disconnect(); });
+</script>
+
+<style lang="scss" module>
+@use '~/assets/css/utilities/variables' as *;
+
+.page {
+  position: relative;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 20% -10%, rgba(139, 233, 253, 0.08) 0%, transparent 55%),
+    radial-gradient(ellipse at 90% 0%, rgba(139, 233, 253, 0.05) 0%, transparent 50%),
+    linear-gradient(180deg, #02080d 0%, #010406 100%);
+  color: rgba(255, 255, 255, 0.86);
+  padding-bottom: 6rem;
+}
+
+.hero {
+  padding: 5rem 1.5rem 3rem;
+  text-align: center;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 60%;
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, transparent, rgba(139, 233, 253, 0.3), transparent);
+  }
+}
+
+.heroInner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 0.95rem;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: #8BE9FD;
+  font-weight: 700;
+  padding: 0.45rem 1.1rem;
+  border: 1px solid rgba(139, 233, 253, 0.35);
+  border-radius: 999px;
+  background: rgba(139, 233, 253, 0.06);
+  box-shadow: 0 0 14px rgba(139, 233, 253, 0.15);
+}
+
+.title {
+  font-size: clamp(4rem, 9vw, 6.4rem);
+  font-weight: 800;
+  margin: 1.6rem 0 1.1rem;
+  letter-spacing: -2px;
+  line-height: 1;
+  background: linear-gradient(180deg, #ffffff 0%, #8BE9FD 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 40px rgba(139, 233, 253, 0.18);
+}
+
+.lead {
+  font-size: 1.45rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.layout {
+  max-width: 1180px;
+  margin: 3rem auto 0;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 3.5rem;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.toc {
+  align-self: start;
+  position: sticky;
+  top: 100px;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  @media (max-width: 1024px) {
+    position: relative;
+    top: auto;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    margin: 0 -1.5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+
+    ul {
+      flex-direction: row;
+      gap: 0.5rem;
+      flex-wrap: nowrap;
+      min-width: max-content;
+    }
+  }
+}
+
+.tocLabel {
+  display: block;
+  font-size: 0.85rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 700;
+  margin-bottom: 0.9rem;
+  padding: 0 0.9rem;
+
+  @media (max-width: 1024px) { display: none; }
+}
+
+.tocLink {
+  display: block;
+  padding: 0.7rem 1rem;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  border-radius: 8px;
+  border-left: 2px solid transparent;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    color: #fff;
+    background: rgba(139, 233, 253, 0.05);
+  }
+
+  @media (max-width: 1024px) {
+    padding: 0.6rem 1rem;
+    border: 1px solid rgba(139, 233, 253, 0.14);
+    border-left: 1px solid rgba(139, 233, 253, 0.14);
+    font-size: 1rem;
+  }
+}
+
+.tocLinkActive {
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.08);
+  border-left-color: #8BE9FD;
+  box-shadow: inset 0 0 12px rgba(139, 233, 253, 0.06);
+
+  @media (max-width: 1024px) {
+    border-color: #8BE9FD;
+    border-left-color: #8BE9FD;
+  }
+}
+
+.content {
+  min-width: 0;
+}
+
+.section {
+  scroll-margin-top: 90px;
+  margin-bottom: 4.5rem;
+
+  &:last-of-type { margin-bottom: 2rem; }
+}
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.6rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(139, 233, 253, 0.14);
+
+  h2 {
+    font-size: clamp(1.9rem, 3.4vw, 2.4rem);
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    letter-spacing: -0.3px;
+  }
+}
+
+.howItWorksBtn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  border: 1.5px solid #8BE9FD;
+  background: rgba(139, 233, 253, 0.1);
+  color: #8BE9FD;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 14px rgba(139, 233, 253, 0.2), 0 4px 12px rgba(0, 0, 0, 0.45);
+
+  svg { flex-shrink: 0; }
+
+  &:hover {
+    background: rgba(139, 233, 253, 0.22);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 0 22px rgba(139, 233, 253, 0.5), 0 6px 16px rgba(0, 0, 0, 0.55);
+  }
+}
+
+.sectionMarker {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #8BE9FD;
+  box-shadow: 0 0 14px rgba(139, 233, 253, 0.75);
+  flex-shrink: 0;
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.item {
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(139, 233, 253, 0.12);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  box-shadow:
+    inset 0 0 24px rgba(0, 0, 0, 0.4),
+    0 6px 18px rgba(0, 0, 0, 0.45);
+
+  &:hover {
+    border-color: rgba(139, 233, 253, 0.25);
+  }
+}
+
+.itemOpen {
+  border-color: rgba(139, 233, 253, 0.4);
+  box-shadow:
+    inset 0 0 24px rgba(0, 0, 0, 0.5),
+    0 8px 26px rgba(0, 0, 0, 0.6),
+    0 0 22px rgba(139, 233, 253, 0.08);
+
+  .chev { transform: rotate(180deg); color: #8BE9FD; }
+}
+
+.qButton {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1.4rem 1.6rem;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover { background: rgba(139, 233, 253, 0.04); }
+}
+
+.qText {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.chev {
+  color: rgba(139, 233, 253, 0.55);
+  flex-shrink: 0;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.answerWrap {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.itemOpen .answerWrap {
+  max-height: 2400px;
+}
+
+.answer {
+  font-size: 1.18rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.82);
+  padding: 0.4rem 1.6rem 1.6rem;
+
+  > * { margin: 0; }
+
+  > * + * { margin-top: 1rem; }
+
+  :global(strong) { color: #fff; font-weight: 600; }
+
+  :global(.lead-line) {
+    font-size: 1.35rem;
+    color: rgba(255, 255, 255, 0.95);
+    em { color: #8BE9FD; font-style: normal; letter-spacing: 0.5px; }
+  }
+
+  :global(ul) {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.5rem 1.2rem;
+  }
+
+  :global(.festival-list) {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  :global(li) {
+    position: relative;
+    padding-left: 1.3rem;
+    color: rgba(255, 255, 255, 0.82);
+    line-height: 1.5;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.65rem;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #8BE9FD;
+      box-shadow: 0 0 6px rgba(139, 233, 253, 0.6);
+    }
+  }
+
+  :global(.inline-link) {
+    color: #8BE9FD;
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(139, 233, 253, 0.4);
+    transition: border-color 0.2s ease;
+    &:hover { border-bottom-color: #8BE9FD; }
+  }
+
+  :global(.manifesto) {
+    margin: 1.3rem 0;
+    padding: 1.2rem 1.4rem 1.2rem 1.6rem;
+    border-left: 3px solid #8BE9FD;
+    background: rgba(139, 233, 253, 0.04);
+    border-radius: 0 10px 10px 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-style: italic;
+    box-shadow: inset 0 0 28px rgba(0, 0, 0, 0.3);
+
+    p { margin: 0; line-height: 1.6; font-size: 1.12rem; }
+    p + p { margin-top: 0.5rem; }
+  }
+
+  :global(.manifesto-mark) {
+    display: block;
+    font-style: normal;
+    font-size: 0.78rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #8BE9FD;
+    font-weight: 700;
+    margin-bottom: 0.55rem;
+  }
+}
+
+.bottom {
+  margin-top: 3.5rem;
+  padding: 1.8rem;
+  text-align: center;
+  border-top: 1px solid rgba(139, 233, 253, 0.1);
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 1.1rem;
+
+  a {
+    color: #8BE9FD;
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(139, 233, 253, 0.4);
+    transition: border-color 0.2s ease;
+    &:hover { border-bottom-color: #8BE9FD; }
+  }
+}
+
+@media (max-width: 768px) {
+  .hero { padding: 3.5rem 1rem 2.4rem; }
+  .lead { font-size: 1.2rem; }
+  .layout { padding: 0 1rem; margin-top: 2rem; }
+  .qButton { padding: 1.1rem 1.2rem; font-size: 1.1rem; gap: 0.8rem; }
+  .answer { padding: 0.4rem 1.2rem 1.3rem; font-size: 1.08rem; line-height: 1.65; }
+  .answer :global(ul) { grid-template-columns: 1fr; }
+  .answer :global(.lead-line) { font-size: 1.18rem; }
+  .answer :global(.manifesto) { padding: 1rem 1.1rem 1rem 1.3rem; }
+  .answer :global(.manifesto) p { font-size: 1.02rem; }
+  .sectionHead { gap: 0.8rem; margin-bottom: 1.2rem; padding-bottom: 0.85rem; }
+  .howItWorksBtn { font-size: 0.9rem; padding: 0.45rem 0.9rem; gap: 0.4rem; }
+  .section { margin-bottom: 3rem; }
+  .items { gap: 0.7rem; }
+  .bottom { font-size: 1rem; padding: 1.4rem; }
+}
+
+@media (max-width: 480px) {
+  .qButton { padding: 1rem; font-size: 1.02rem; }
+  .answer { padding: 0.3rem 1rem 1.1rem; font-size: 1rem; }
+  .answer :global(.lead-line) { font-size: 1.1rem; }
+  .answer :global(.manifesto) { padding: 0.9rem 1rem 0.9rem 1.1rem; }
+  .answer :global(.manifesto) p { font-size: 0.96rem; }
+}
+</style>

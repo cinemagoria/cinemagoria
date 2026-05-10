@@ -5,6 +5,7 @@
         <div :class="$style.column">
           <h4 :class="$style.heading">Recursos</h4>
           <ul :class="$style.links">
+            <li><nuxt-link to="/faq">Preguntas Frecuentes</nuxt-link></li>
             <li><nuxt-link to="/changelog">Últimas Novedades</nuxt-link></li>
             <li><a href="#" @click.prevent="openCookiePreferences">Preferencias de Cookies</a></li>
             <li><nuxt-link to="/usage-policies">Privacidad y Términos</nuxt-link></li>

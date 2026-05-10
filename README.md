@@ -58,6 +58,10 @@ The N.O.I.R. badge — rendered in the top-right corner of each backdrop in `Her
 
 Dedicated coverage for major international festivals — Sundance, Berlinale, Rotterdam, Slamdance, SXSW, Romford, BIFFF, BAFICI, Tribeca (now fully supported), Cannes (completed with official screenings and parallel sections: Critics' Choice, Quinzaine des Cinéastes, ACID), CUFF (Calgary Underground Film Festival) and more — each with its own page, API endpoints, card and badge components, and homepage carousel. The hero section supports multiple simultaneous festival premiere badges with display precedence, and Berlinale ships with an interactive timezone-aware schedule.
 
+**Coverage runs from 2026 onwards** and continues across each subsequent edition (2027, 2028, …). Planned 2026 additions: **KVIFF**, **Venezia (Venice)**, **TIFF**, **NYFF**, **Sitges**, **BFI London**, **Mar del Plata**, **BARS (Buenos Aires Rojo Sangre)** and **Fantasia**. The list is indicative — additions and adjustments happen as scope and resources evolve.
+
+> **Catalog coverage caveat:** festival pages are built from public metadata and third-party sources, which don't always cover every title — particularly short films, experimental works and regional productions. This is a technical limitation, not an editorial decision. No film is intentionally omitted or censored; gaps narrow as upstream metadata catches up.
+
 ### Search & Discovery
 <div align="center">
   <img src="https://ivanluna.dev/images/assets/cinemagoria-asset10.webp" alt="Search" width="70%">
