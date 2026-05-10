@@ -76,7 +76,6 @@ export default defineEventHandler(async (event) => {
             _reasoning: row.reasoning,
             _pinned: !!row.pinned,
             _noir_match: false,
-            phase: row.phase || null,
         }
         if (isMovie) {
             return {

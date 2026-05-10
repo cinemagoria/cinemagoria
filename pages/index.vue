@@ -28,8 +28,6 @@
       :title="trendingMoviesTitle"
       :view-all-url="trendingMoviesUrl"
       :items="trendingMovies"
-      media-type="movie"
-      :phase-labels="moviePhaseLabelsEs"
       compact />
 
     <StreamingPlatformCarousel
@@ -43,8 +41,6 @@
       :title="trendingTvTitle"
       :view-all-url="trendingTvUrl"
       :items="trendingTv"
-      media-type="tv"
-      :phase-labels="tvPhaseLabelsEs"
       compact />
   </main>
 </template>
@@ -78,9 +74,10 @@ const userName = ref('');
 
 const { data: pageData, error: pageError } = await useAsyncData('homepage', async () => {
   try {
-    // Spotlight curado por el motor Phase-2 en cinemagoria-candidates-selections
-    // (cron diario, escribe a Turso). /api/spotlight/{movies,tv} lee esas tablas
-    // y devuelve title_es/overview_es para el Card. Ver SPOTLIGHT.md.
+    // Spotlight curado manualmente via pins en cinemagoria-candidates-selections
+    // (spotlight-manual-pinned.json, spotlight-reorder.mjs).
+    // /api/spotlight/{movies,tv} lee las tablas spotlight_movies / spotlight_tv
+    // ordenadas por sort_index, devolviendo title_es/overview_es para el Card.
     const fetchSpotlight = async (file) => {
       try {
         const data = await $fetch(file);
@@ -290,22 +287,6 @@ const trendingMoviesUrl = computed(() => '/movie');
 const trendingTvTitle = computed(() => 'Series Destacadas');
 const trendingTvUrl = computed(() => '/tv');
 
-// Etiquetas de la línea de tiempo del spotlight (ES). El componente trae
-// defaults en inglés; las pasamos por prop para sobrescribir.
-const moviePhaseLabelsEs = {
-  now_playing: 'En Cartelera',
-  coming_soon: 'Próximamente',
-  just_out: 'Recién Estrenadas',
-  after_run: 'Fuera de Cartelera',
-  no_date: 'Sin Fecha de Estreno',
-};
-const tvPhaseLabelsEs = {
-  airing: 'En emisión',
-  premiering: 'Próximos Estrenos',
-  latest_episodes: 'Episodios Recientes',
-  completed: 'Finalizadas',
-  no_date: 'Sin Fecha',
-};
 
 const popularProductionCompanies = computed(() => {
   return POPULAR_PRODUCTION_COMPANIES_IDS.map(id => SUPPORTED_PRODUCTION_COMPANIES[id]).filter(Boolean);
