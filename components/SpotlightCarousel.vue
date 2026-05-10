@@ -78,12 +78,16 @@ export default {
   },
 
   mounted() {
-    this.calculateState(this.items.results.length);
+    this.$nextTick(() => {
+      this.calculateState(this.items.results.length);
+    });
   },
 
   watch: {
     'items.results.length'(newVal) {
-      this.calculateState(newVal);
+      this.$nextTick(() => {
+        this.calculateState(newVal);
+      });
     },
   },
 };
