@@ -32,19 +32,10 @@
         ref="carouselElement"
         class="carousel__items"
         @scroll="scrollEvent">
-        <template
-          v-for="(item, idx) in items.results"
-          :key="`spot-${item.id}`">
-          <div
-            v-if="dividerLabel(item, idx)"
-            class="spotlight__divider"
-            :class="{ 'spotlight__divider--first': idx === 0 }"
-            :aria-label="dividerLabel(item, idx)">
-            <span class="spotlight__divider-rail"></span>
-            <span class="spotlight__divider-text">{{ dividerLabel(item, idx) }}</span>
-          </div>
-          <Card :item="item" />
-        </template>
+        <Card
+          v-for="item in items.results"
+          :key="`spot-${item.id}`"
+          :item="item" />
       </div>
 
       <button
@@ -64,23 +55,6 @@
 import carousel from '~/mixins/Carousel';
 import Card from '~/components/Card';
 
-const DEFAULT_LABELS = {
-  movie: {
-    now_playing: 'Now Playing',
-    coming_soon: 'Coming Soon',
-    just_out: 'Just Out',
-    after_run: 'After Run',
-    no_date: 'No Release Date Yet',
-  },
-  tv: {
-    airing: 'Airing',
-    premiering: 'Premiering Soon',
-    latest_episodes: 'Latest Episodes',
-    completed: 'Completed',
-    no_date: 'No Air Date Yet',
-  },
-};
-
 export default {
   components: { Card },
 
@@ -95,68 +69,25 @@ export default {
     },
     items: { type: Object, required: true },
     compact: { type: Boolean, required: false, default: false },
-    mediaType: {
-      type: String,
-      required: false,
-      default: 'movie',
-      validator: (v) => v === 'movie' || v === 'tv',
-    },
-    // Optional override of phase → label map. If absent, English defaults
-    // are used (this is the en repo). The es repo passes Spanish labels.
-    phaseLabels: {
-      type: Object,
-      required: false,
-      default: () => null,
-    },
-  },
-
-  computed: {
-    labels() {
-      const base = DEFAULT_LABELS[this.mediaType] || {};
-      return { ...base, ...(this.phaseLabels || {}) };
-    },
-    // Dividers count toward the scrollable width — the carousel mixin uses
-    // the first child's width for paging math, so we inflate the total count.
-    dividerCount() {
-      const r = this.items?.results || [];
-      let n = 0;
-      let last = null;
-      for (const item of r) {
-        const phase = item.phase || item._phase || null;
-        if (!phase) continue;
-        if (phase !== last) { n++; last = phase; }
-      }
-      return n;
-    },
   },
 
   methods: {
-    // Returns the label to render BEFORE this card, or '' if no divider here.
-    // First card always gets its phase header so the timeline is anchored;
-    // the divider's --first variant carries extra left margin to clear
-    // the carousel's left navigation arrow.
-    dividerLabel(item, idx) {
-      const phase = item.phase || item._phase || null;
-      if (!phase) return '';
-      if (idx === 0) return this.labels[phase] || '';
-      const prev = this.items.results[idx - 1];
-      const prevPhase = prev?.phase || prev?._phase || null;
-      if (prevPhase === phase) return '';
-      return this.labels[phase] || '';
-    },
-
     resizeEvent() {
-      this.calculateState(this.dividerCount + this.items.results.length);
+      this.calculateState(this.items.results.length);
     },
   },
 
   mounted() {
-    this.calculateState(this.dividerCount + this.items.results.length);
+    this.$nextTick(() => {
+      this.calculateState(this.items.results.length);
+    });
   },
 
   watch: {
     'items.results.length'(newVal) {
-      this.calculateState(this.dividerCount + newVal);
+      this.$nextTick(() => {
+        this.calculateState(newVal);
+      });
     },
   },
 };
@@ -230,84 +161,4 @@ export default {
     width: calc(.1 * (100% - 92px));
   }
 }
-
-/* Timeline divider — slim vertical bar between phase groups. The carousel
-   uses inline-block layout (not flex), so the divider must follow the same
-   pattern: inline-block, vertical-align: top, fixed width + height. */
-.spotlight__divider {
-  display: inline-block;
-  vertical-align: top;
-  position: relative;
-  width: 26px;
-  height: 220px;
-  margin: 0;
-  white-space: normal;
-  scroll-snap-align: none;
-  user-select: none;
-  pointer-events: none;
-}
-
-.spotlight__divider-rail {
-  position: absolute;
-  left: 50%;
-  top: 12px;
-  bottom: 12px;
-  width: 1px;
-  transform: translateX(-50%);
-  background: linear-gradient(180deg,
-    rgba(34, 211, 238, 0) 0%,
-    rgba(34, 211, 238, 0.55) 30%,
-    rgba(34, 211, 238, 0.55) 70%,
-    rgba(34, 211, 238, 0) 100%);
-}
-
-/* When the divider is the first item in the carousel, give it enough
-   left margin to clear the absolutely-positioned left nav arrow (30px
-   mobile / 40px small / 50px large) plus a small breathing gap so the
-   rotated label doesn't hug the arrow's edge. This intentionally pushes
-   the spotlight carousel slightly to the right vs. the other carousels —
-   the timeline is the point of this slider, so the offset earns its
-   keep. */
-/* First-child margin lives in the unscoped <style> block below — it has to
-   be global to win over the global .carousel__items .card:first-child rule. */
-
-.spotlight__divider-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-90deg);
-  transform-origin: center center;
-  white-space: nowrap;
-  color: #22d3ee;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  line-height: 1;
-  padding: 6px 10px;
-  text-shadow: 0 0 12px rgba(34, 211, 238, 0.35);
-}
-
-@media (min-width: 576px) {
-  .spotlight__divider { width: 28px; height: 260px; }
-}
-
-@media (min-width: 840px) {
-  .spotlight__divider { width: 30px; height: 300px; }
-  .spotlight__divider-text { font-size: 10.5px; }
-}
-
-@media (min-width: 1200px) {
-  .spotlight__divider { width: 32px; height: 340px; }
-  .spotlight__divider-text { font-size: 11px; letter-spacing: 0.36em; }
-}
-
-@media (min-width: 1800px) {
-  .spotlight__divider { height: 380px; }
-}
-
-.spotlight .carousel__items {
-  left: 5rem !important;
-}
 </style>
-
