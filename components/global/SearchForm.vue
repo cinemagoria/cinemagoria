@@ -161,31 +161,29 @@ beforeDestroy() {
 },
   methods: {
     async goToRoute() {
+      if (this.debouncedGoToRoute && typeof this.debouncedGoToRoute.cancel === 'function') {
+        this.debouncedGoToRoute.cancel();
+      }
+
       const fromModel = (this.query || '').trim();
       const fromInput = (this.$refs.input?.value || '').trim();
       const q = fromModel || fromInput;
+      const target = q ? `/search?q=${encodeURIComponent(q)}` : (this.fromPage || '/');
 
       console.log('[SearchForm] goToRoute fired. query=', JSON.stringify(q),
-                  'model=', JSON.stringify(fromModel),
-                  'inputValue=', JSON.stringify(fromInput),
-                  'route=', this.$route.fullPath);
+                  'route=', this.$route.fullPath, 'target=', target);
 
-      if (q) {
-        this.logSearch(q);
-        try {
-          await this.$router.push(`/search?q=${encodeURIComponent(q)}`);
-          console.log('[SearchForm] navigated to /search?q=' + q);
-        } catch (err) {
-          console.error('[SearchForm] router.push failed:', err);
-        }
-      } else {
-        const target = this.fromPage || '/';
-        console.log('[SearchForm] empty query, going to', target);
-        try {
-          await this.$router.push(target);
-        } catch (err) {
-          console.error('[SearchForm] fallback push failed:', err);
-        }
+      if (this.$route.fullPath === target) {
+        console.log('[SearchForm] already at target, skipping');
+        return;
+      }
+
+      if (q) this.logSearch(q);
+      try {
+        await this.$router.push(target);
+        console.log('[SearchForm] navigated to ' + target);
+      } catch (err) {
+        console.error('[SearchForm] router.push failed:', err);
       }
     },
 
