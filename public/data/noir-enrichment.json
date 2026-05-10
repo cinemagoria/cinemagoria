@@ -2347,9 +2347,9 @@
     "tmdb_id": 1559189,
     "media_type": "movie",
     "trailer_key": "Lm3N-pXtMSE",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1777960314/cinemagoria/backdrops/noir_1559189.webp",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1778398913/cinemagoria/backdrops/noir_1559189.webp",
     "poster_path": "/5RVYEEJX5bBLXA97Cw9Y7xDcmft.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1395661,
