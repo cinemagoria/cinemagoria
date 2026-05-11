@@ -3,6 +3,9 @@
     <!-- Oscars 2026 live coverage — visible 5 days from March 15 -->
     <OscarsLiveBanner v-if="showOscarsBanner" />
 
+    <!-- Cannes 2026 — visible hasta el 23 may 23:59 hora de Francia -->
+    <CannesLiveBanner v-if="showCannesBanner" />
+
     <Hero
       v-if="featured && featured.length"
       :items="featured"
@@ -58,6 +61,7 @@ import ProductionCompanyCarousel from '~/components/ProductionCompanyCarousel';
 import StreamingPlatformCarousel from '~/components/StreamingPlatformCarousel';
 import OscarsLiveBanner from '~/components/OscarsLiveBanner';
 import OscarsCarousel from '~/components/OscarsCarousel';
+import CannesLiveBanner from '~/components/CannesLiveBanner';
 import { SUPPORTED_PRODUCTION_COMPANIES, POPULAR_PRODUCTION_COMPANIES_IDS, STREAMING_PROVIDERS, POPULAR_STREAMING_IDS } from '~/utils/constants';
 
 // ─── Óscar 98 — ventana de visibilidad ───────────────────────────────────────
@@ -66,6 +70,11 @@ const OSCARS_START  = new Date('2026-03-16T00:00:00Z');
 const OSCARS_EXPIRY = new Date('2026-03-20T03:00:00Z');
 const _now = new Date();
 const showOscarsBanner = computed(() => _now >= OSCARS_START && _now < OSCARS_EXPIRY);
+
+// ─── Cannes 2026 — ventana de visibilidad ────────────────────────────────────
+// Visible hasta el cierre del festival — 23 may 2026 23:59 hora de Francia (CEST = UTC+2 → 21:59 UTC)
+const CANNES_EXPIRY = new Date('2026-05-23T21:59:00Z');
+const showCannesBanner = computed(() => _now < CANNES_EXPIRY);
 
 const userEmail = ref('');
 const hasAccessToken = ref(false);
