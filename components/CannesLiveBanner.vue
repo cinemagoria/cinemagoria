@@ -222,8 +222,10 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
-  border: 1px solid #8BE9FD;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#000, #000) padding-box,
+    linear-gradient(to right, #1E5164, #8AE8FC 50%, #c2185b) border-box;
   color: #8BE9FD;
   font-size: 12px;
   font-weight: 600;
@@ -235,7 +237,9 @@ export default {
 }
 
 .cannes-banner:hover .cannes-banner__cta {
-  background: rgba(139, 233, 253, 0.12);
+  background:
+    linear-gradient(rgba(20, 30, 35, 1), rgba(20, 30, 35, 1)) padding-box,
+    linear-gradient(to right, #1E5164, #8AE8FC 50%, #c2185b) border-box;
   color: #A2EDFD;
   box-shadow: 0 0 16px rgba(139, 233, 253, 0.30);
 }
