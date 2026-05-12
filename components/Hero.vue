@@ -583,7 +583,7 @@ export default {
       autoAdvanceTimer: null,
       autoAdvancePaused: false,
       autoAdvanceStartTime: null,
-      autoAdvanceRemainingTime: 15000,
+      autoAdvanceRemainingTime: 20000,
       touchStartX: 0,
       touchEndX: 0,
       lastWheelTime: 0,
@@ -825,7 +825,7 @@ export default {
       this.stopAutoAdvance();
       this.autoAdvanceStartTime = Date.now();
       this.autoAdvanceTimer = setTimeout(() => {
-        this.autoAdvanceRemainingTime = 15000;
+        this.autoAdvanceRemainingTime = 20000;
         this.nextItem();
       }, this.autoAdvanceRemainingTime);
     },
@@ -836,7 +836,7 @@ export default {
       }
     },
     resetAutoAdvance() {
-      this.autoAdvanceRemainingTime = 15000;
+      this.autoAdvanceRemainingTime = 20000;
       this.autoAdvancePaused = false;
       this.startAutoAdvance();
     },

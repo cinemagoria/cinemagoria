@@ -69,7 +69,7 @@
 import carousel from '~/mixins/Carousel';
 import { apiImgUrl } from '~/utils/api';
 
-const AUTOPLAY_INTERVAL = 5000;
+const AUTOPLAY_INTERVAL = 10000;
 
 export default {
   name: 'ProductionCompanyCarousel',
