@@ -5,11 +5,11 @@
     <header :class="$style.hero">
       <div :class="$style.heroInner">
         <span :class="$style.eyebrow">Knowledge Base</span>
-        <h1 :class="$style.title">FAQ</h1>
-        <p :class="$style.lead">
+        <h1 class="title-primary" style="color: #8BE9FD !important; margin-top: 30px; margin-bottom: 10px; display: flex; justify-content: center;">FAQ</h1>
+        <h2 class="title-secondary" style="color: rgb(172, 175, 181); font-size: 14px; max-width: 600px; margin: 20px auto 0;">
           Editorial framework, discovery infrastructure and the moving parts behind
           the platform &mdash; explained in one place.
-        </p>
+        </h2>
       </div>
     </header>
 
@@ -406,27 +406,6 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
   box-shadow: 0 0 14px rgba(139, 233, 253, 0.15);
 }
 
-.title {
-  font-size: clamp(4rem, 9vw, 6.4rem);
-  font-weight: 800;
-  margin: 1.6rem 0 1.1rem;
-  letter-spacing: -2px;
-  line-height: 1;
-  background: linear-gradient(180deg, #ffffff 0%, #8BE9FD 95%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 0 40px rgba(139, 233, 253, 0.18);
-}
-
-.lead {
-  font-size: 1.45rem;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.7);
-  max-width: 640px;
-  margin: 0 auto;
-}
-
 .layout {
   max-width: 1180px;
   margin: 3rem auto 0;
@@ -762,7 +741,6 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
 
 @media (max-width: 768px) {
   .hero { padding: 3.5rem 1rem 2.4rem; }
-  .lead { font-size: 1.2rem; }
   .layout { padding: 0 1rem; margin-top: 2rem; }
   .qButton { padding: 1.1rem 1.2rem; font-size: 1.1rem; gap: 0.8rem; }
   .answer { padding: 0.4rem 1.2rem 1.3rem; font-size: 1.08rem; line-height: 1.65; }
