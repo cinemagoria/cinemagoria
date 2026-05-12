@@ -18,20 +18,11 @@
           <stop offset="50%"  stop-color="#060c0f" />
           <stop offset="100%" stop-color="#000000" />
         </linearGradient>
-        <radialGradient id="cannes-glow-logo" cx="0.10" cy="0.5" r="0.32">
-          <stop offset="0%"   stop-color="rgba(139, 233, 253, 0.18)" />
-          <stop offset="100%" stop-color="rgba(139, 233, 253, 0)" />
-        </radialGradient>
-        <radialGradient id="cannes-glow-accent" cx="0.78" cy="0.5" r="0.35">
-          <stop offset="0%"   stop-color="rgba(168, 23, 92, 0.18)" />
-          <stop offset="100%" stop-color="rgba(168, 23, 92, 0)" />
-        </radialGradient>
       </defs>
       <rect width="1200" height="80" fill="url(#cannes-bg-grad)" />
-      <rect width="1200" height="80" fill="url(#cannes-glow-logo)" />
-      <rect width="1200" height="80" fill="url(#cannes-glow-accent)" />
     </svg>
 
+    <div class="cannes-banner__pattern" aria-hidden="true" />
     <div class="cannes-banner__shimmer" aria-hidden="true" />
 
     <div class="cannes-banner__inner">
@@ -101,6 +92,19 @@ export default {
   height: 100%;
   z-index: 0;
   display: block;
+}
+
+.cannes-banner__pattern {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: url('/festivals/cannes/cannes-pattern-bn.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.22;
+  mix-blend-mode: screen;
+  pointer-events: none;
 }
 
 .cannes-banner__shimmer {
@@ -222,10 +226,8 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid transparent;
-  background:
-    linear-gradient(#000, #000) padding-box,
-    linear-gradient(to right, #1E5164, #8AE8FC) border-box;
+  background: transparent;
+  border: 1px solid #8BE9FD;
   color: #8BE9FD;
   font-size: 12px;
   font-weight: 600;
@@ -237,9 +239,7 @@ export default {
 }
 
 .cannes-banner:hover .cannes-banner__cta {
-  background:
-    linear-gradient(rgba(20, 30, 35, 1), rgba(20, 30, 35, 1)) padding-box,
-    linear-gradient(to right, #1E5164, #8AE8FC) border-box;
+  background: rgba(139, 233, 253, 0.08);
   color: #A2EDFD;
   box-shadow: 0 0 16px rgba(139, 233, 253, 0.30);
 }
