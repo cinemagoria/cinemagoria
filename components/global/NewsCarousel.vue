@@ -103,7 +103,7 @@ import carousel from '~/mixins/Carousel';
 import striptags from 'striptags';
 import { formatDate, handleImageError } from '~/utils/helpers';
 
-const AUTOPLAY_INTERVAL = 5000;
+const AUTOPLAY_INTERVAL = 10000;
 
 export default {
   name: 'NewsCarousel',

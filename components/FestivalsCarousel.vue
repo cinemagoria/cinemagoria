@@ -68,7 +68,7 @@ import BaficiCard from '~/components/BaficiCard.vue';
 import CuffCard from '~/components/CuffCard.vue';
 import CannesCard from '~/components/CannesCard.vue';
 
-const AUTOPLAY_INTERVAL = 5000;
+const AUTOPLAY_INTERVAL = 10000;
 
 export default {
   name: 'FestivalsCarousel',

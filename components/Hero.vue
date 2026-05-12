@@ -550,7 +550,7 @@ export default {
       autoAdvanceTimer: null,
       autoAdvancePaused: false,
       autoAdvanceStartTime: null,
-      autoAdvanceRemainingTime: 15000,
+      autoAdvanceRemainingTime: 20000,
       touchStartX: 0,
       touchEndX: 0,
       lastWheelTime: 0,
