@@ -98,10 +98,10 @@
   {
     "tmdb_id": 1058424,
     "media_type": "movie",
-    "trailer_key": null,
+    "trailer_key": "WtwRz5bfJgA",
     "backdrop_path": "/qv2gffpbllYE1Pxz5nhYQmYuht5.jpg",
     "poster_path": "/1n37BJchWHLiSYQkuFxe5KjB951.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1384216,
@@ -182,14 +182,6 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1778042027/cinemagoria/backdrops/hero_1423191.webp",
     "poster_path": "/cuHJt6tijKhOK6b2KAP9z9Zf2bg.jpg",
     "force_enrichment": true
-  },
-  {
-    "tmdb_id": 1434583,
-    "media_type": "movie",
-    "trailer_key": "iTqBXD3lCgk",
-    "backdrop_path": "/A5xLGdHGt0zYdb3Afn0sdAZAGMA.jpg",
-    "poster_path": "/sr8ThgofYbG9VUVNGlcR5zg2yAT.jpg",
-    "force_enrichment": false
   },
   {
     "tmdb_id": 1360385,
