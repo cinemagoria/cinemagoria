@@ -8,7 +8,7 @@
         </nuxt-link>
         <a href="https://www.festival-cannes.com" target="_blank" rel="noopener noreferrer" class="hero-backdrop">
             <img 
-              src="/festivals/cannes/cannes_backdrop_2026_es.webp" 
+              src="/festivals/cannes/cannes_backdrop_2026_es_wide.webp" 
               alt="Festival de Cannes 2026"
             />
             <div class="hero-overlay"></div>
