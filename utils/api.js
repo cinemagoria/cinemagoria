@@ -2557,6 +2557,13 @@ export function getTvShowsByProvider(providerId, page = 1, filters = {}) {
 }
 
 export async function searchNews(query, page = 1) {
+    // News search hits Turso with `title LIKE %q% OR description LIKE %q%` which
+    // is a full table scan. Cap the wait at 5s — news is supplementary; if the
+    // DB is slow we still want movie/TV results to render. Also skip queries
+    // shorter than 3 chars to avoid scanning the whole table for nothing.
+    if (!query || query.trim().length < 3) {
+        return { results: [] };
+    }
     try {
         const response = await axios.get('/api/news', {
             params: {
@@ -2564,11 +2571,16 @@ export async function searchNews(query, page = 1) {
                 limit: 10,
                 page: page,
                 lang: getEnv('API_LANG')
-            }
+            },
+            timeout: 5000
         });
         return response.data;
     } catch (error) {
-        console.error("Error searching news:", error);
+        if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+            console.warn(`searchNews timed out for "${query}" after 5s — returning empty.`);
+        } else {
+            console.error("Error searching news:", error);
+        }
         return { results: [] };
     }
 }

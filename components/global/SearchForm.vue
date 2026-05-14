@@ -22,7 +22,7 @@
               type="text"
               placeholder="Buscar.."
               @keydown.enter.prevent="goToRoute"
-              @keyup="debouncedGoToRoute"
+              @keyup="onKeyup"
               @blur="unFocus"
             >
           </div>
@@ -38,7 +38,6 @@
 <script>
 import { mapState, mapActions } from 'pinia';
 import { useSearchStore } from '~/stores/search';
-import { useConsentStore } from '~/stores/consent';
 import lodash from 'lodash';
 const { debounce } = lodash;
 import UserNav from './UserNav.vue';
@@ -129,7 +128,7 @@ export default {
   },
 
   async mounted() {
-  this.debouncedGoToRoute = debounce(this.goToRoute, 350);
+  this.debouncedGoToRoute = debounce(this.goToRoute, 200);
   this.$refs.input.focus();
   this.showLanguageMenu = false;
   const email = localStorage.getItem('email');
@@ -160,7 +159,20 @@ beforeDestroy() {
   this.$bus.$off('update-search-query', this.updateSearchQuery);
 },
   methods: {
+    // Skip Enter on keyup — Enter is handled by @keydown.enter.prevent which
+    // calls goToRoute directly. Without this filter, the Enter keyup would
+    // re-schedule the debounced call and fire a duplicate navigation 200ms
+    // after the first one completed (root cause of the "slow/double redirect"
+    // bug observed in production).
+    onKeyup(e) {
+      if (e.key === 'Enter') return;
+      this.debouncedGoToRoute();
+    },
+
     async goToRoute() {
+      // Cancel any pending debounced call — Enter is navigating now, so the
+      // 200ms-later debounce would just fire a redundant push that Vue Router
+      // could cancel mid-flight.
       if (this.debouncedGoToRoute && typeof this.debouncedGoToRoute.cancel === 'function') {
         this.debouncedGoToRoute.cancel();
       }
@@ -170,37 +182,20 @@ beforeDestroy() {
       const q = fromModel || fromInput;
       const target = q ? `/search?q=${encodeURIComponent(q)}` : (this.fromPage || '/');
 
-      console.log('[SearchForm] goToRoute fired. query=', JSON.stringify(q),
-                  'route=', this.$route.fullPath, 'target=', target);
+      // Skip the push if we're already at the destination.
+      if (this.$route.fullPath === target) return;
 
-      if (this.$route.fullPath === target) {
-        console.log('[SearchForm] already at target, skipping');
-        return;
-      }
-
-      if (q) this.logSearch(q);
       try {
         await this.$router.push(target);
-        console.log('[SearchForm] navigated to ' + target);
       } catch (err) {
-        console.error('[SearchForm] router.push failed:', err);
+        console.error('Search navigation failed:', err);
       }
     },
 
-    logSearch(term) {
-      try {
-        const consent = useConsentStore();
-        const analytics = consent.isAllowed('analytics');
-        const payload = { query: term, analytics };
-
-        if (analytics) {
-          payload.email = localStorage.getItem('email') || '';
-        }
-
-        $fetch('/api/search-log', { method: 'POST', body: payload }).catch(() => {});
-      } catch {
-        // never block search for a log failure
-      }
+    logSearch(_term) {
+      // Disabled 2026-05-14 — no IP capture, no Turso write. Re-enable by
+      // restoring the previous body if needed for analytics later.
+      return;
     },
 
     clearSearch() {

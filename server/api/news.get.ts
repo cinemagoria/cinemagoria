@@ -1,4 +1,4 @@
-import { createClient } from '@libsql/client'
+import { useDb } from '~~/server/utils/db'
 
 export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig()
@@ -10,21 +10,7 @@ export default defineEventHandler(async (event) => {
     const source = query.source ? String(query.source) : null
     const searchQuery = query.q ? String(query.q).trim() : null
 
-    const dbUrl = config.rssDbUrl || config.imdbDbUrl
-    const dbToken = config.rssDbToken || config.imdbDbToken
-
-    if (!dbUrl || !dbToken) {
-        console.error('[API-ES] Missing DB Config. URL:', !!dbUrl, 'Token:', !!dbToken)
-        throw createError({
-            statusCode: 500,
-            statusMessage: 'Database configuration missing'
-        })
-    }
-
-    const db = createClient({
-        url: dbUrl.trim(),
-        authToken: dbToken.trim()
-    })
+    const db = useDb()
 
     try {
         const offset = (page - 1) * limit

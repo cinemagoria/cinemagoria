@@ -1,4 +1,4 @@
-import { createClient } from '@libsql/client'
+import { useDb } from '~~/server/utils/db'
 
 // Phase-1 Spotlight endpoint. Reads the curated 20-item lists straight from
 // the Turso tables `spotlight_movies` / `spotlight_tv` populated by
@@ -24,14 +24,7 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 400, statusMessage: 'type must be "movies" or "tv"' })
     }
 
-    const config = useRuntimeConfig()
-    const dbUrl = (config.rssDbUrl as string | undefined)?.trim()
-    const dbToken = (config.rssDbToken as string | undefined)?.trim()
-    if (!dbUrl || !dbToken) {
-        throw createError({ statusCode: 500, statusMessage: 'Database configuration missing' })
-    }
-
-    const db = createClient({ url: dbUrl, authToken: dbToken })
+    const db = useDb()
 
     let rows
     try {
