@@ -83,7 +83,7 @@ const hasAccessToken = ref(false);
 const isLoggedIn = ref(false);
 const userName = ref('');
 
-const { data: pageData, error: pageError } = await useAsyncData('homepage', async () => {
+const { data: pageData, error: pageError } = useAsyncData('homepage', async () => {
   try {
     // Spotlight carousels are curated manually via pins in
     // cinemagoria-candidates-selections (spotlight-manual-pinned.json,
@@ -98,43 +98,55 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
         return { results: [] };
       }
     };
-    
-    const fetchFestivalMovies = async (festivalName, limit = 1000) => {
+
+    // Batched: 1 HTTP request + 1 Turso `IN` query for all 11 festivals.
+    // Replaces the previous fan-out of 11 parallel /api/festival/{slug}/films
+    // calls that was bottlenecking the homepage at 35-38s on the slow wave.
+    const FESTIVAL_SLUGS = ['sundance','berlinale','rotterdam','slamdance','sxsw','romford','bifff','bafici','cannes','tribeca','cuff'];
+    const fetchAllFestivalsBatched = async (limit = 1000) => {
         try {
-            const data = await $fetch(`/api/festival/${festivalName}/films?limit=${limit}`);
-            return data.results.map(f => ({ ...f, festival_source: festivalName }));
+            const data = await $fetch(`/api/festival/films-batch?festivals=${FESTIVAL_SLUGS.join(',')}&limit=${limit}`);
+            const buckets = data?.results || {};
+            return Object.fromEntries(
+                Object.entries(buckets).map(([slug, films]) => [
+                    slug,
+                    films.map(f => ({ ...f, festival_source: slug }))
+                ])
+            );
         } catch (e) {
-            console.error(`${festivalName} fetch error`, e);
-            return [];
+            console.error('Festivals batch fetch error', e);
+            return {};
         }
     };
 
-    const fetchHero = async () => { 
+    const fetchHero = async () => {
         try {
              const data = await $fetch('/api/hero');
-             return data.result;
+             return data?.result ?? null;
         } catch (e) {
              console.error('Hero fetch error', e);
              return null;
         }
     };
 
-    const [sundanceList, berlinaleList, rotterdamList, slamdanceList, sxswList, romfordList, bifffList, baficiList, cannesList, tribecaList, cuffList, trendingMovies, trendingTv, featured] = await Promise.all([
-        fetchFestivalMovies('sundance'),
-        fetchFestivalMovies('berlinale'),
-        fetchFestivalMovies('rotterdam'),
-        fetchFestivalMovies('slamdance'),
-        fetchFestivalMovies('sxsw'),
-        fetchFestivalMovies('romford'),
-        fetchFestivalMovies('bifff'),
-        fetchFestivalMovies('bafici'),
-        fetchFestivalMovies('cannes'),
-        fetchFestivalMovies('tribeca'),
-        fetchFestivalMovies('cuff'),
+    const [festivalsBuckets, trendingMovies, trendingTv, featured] = await Promise.all([
+        fetchAllFestivalsBatched(),
         fetchSpotlight('/api/spotlight/movies'),
         fetchSpotlight('/api/spotlight/tv'),
         fetchHero()
     ]);
+
+    const sundanceList = festivalsBuckets.sundance || [];
+    const berlinaleList = festivalsBuckets.berlinale || [];
+    const rotterdamList = festivalsBuckets.rotterdam || [];
+    const slamdanceList = festivalsBuckets.slamdance || [];
+    const sxswList = festivalsBuckets.sxsw || [];
+    const romfordList = festivalsBuckets.romford || [];
+    const bifffList = festivalsBuckets.bifff || [];
+    const baficiList = festivalsBuckets.bafici || [];
+    const cannesList = festivalsBuckets.cannes || [];
+    const tribecaList = festivalsBuckets.tribeca || [];
+    const cuffList = festivalsBuckets.cuff || [];
     
      const FEATURED_ORDER = [
         // tribeca 2026
@@ -278,9 +290,12 @@ const { data: pageData, error: pageError } = await useAsyncData('homepage', asyn
 
     return { trendingMovies, trendingTv, featured, festivalsMovies: { results: uniqueMixed } };
   } catch (error) {
-    console.error('Data Loading Error:', error);
+    console.error('Homepage data load error:', error);
     return { trendingMovies: { results: [] }, trendingTv: { results: [] }, featured: null, festivalsMovies: { results: [] } };
   }
+}, {
+  lazy: true,
+  default: () => ({ trendingMovies: { results: [] }, trendingTv: { results: [] }, featured: null, festivalsMovies: { results: [] } })
 });
 
 const featured = computed(() => pageData.value?.featured);

@@ -1,5 +1,4 @@
-import { createClient } from '@libsql/client'
-
+import { useDb } from '~~/server/utils/db'
 
 export default defineEventHandler(async (event) => {
     const type = getRouterParam(event, 'type')
@@ -13,14 +12,7 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 400, statusMessage: 'type must be "movies" or "tv"' })
     }
 
-    const config = useRuntimeConfig()
-    const dbUrl = (config.rssDbUrl as string | undefined)?.trim()
-    const dbToken = (config.rssDbToken as string | undefined)?.trim()
-    if (!dbUrl || !dbToken) {
-        throw createError({ statusCode: 500, statusMessage: 'Database configuration missing' })
-    }
-
-    const db = createClient({ url: dbUrl, authToken: dbToken })
+    const db = useDb()
 
     let rows
     try {
