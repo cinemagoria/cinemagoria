@@ -17,6 +17,9 @@ export default defineNuxtConfig({
     '/sitemap.xml': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600' } },
     '/sitemap-static.xml': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
     '/sitemap-news.xml': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600' } },
+
+    // RSS feed (canonical at /feed; /api/article/rss 301-redirects here)
+    '/feed': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=3600' } },
     '/sitemap-movies-*.xml': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
     '/sitemap-tv-*.xml': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
     '/sitemap-persons.xml': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
