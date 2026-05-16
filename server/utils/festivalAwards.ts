@@ -99,7 +99,7 @@ export async function fetchFestivalAwards(festivalSlug: string, locale: Locale =
 
         return {
             slug: festivalSlug,
-            festival_name: results[0]?.festival_name || null,
+            festival_name: (result.rows[0] as any)?.festival_name || null,
             festival_year: 2026,
             locale,
             results,
