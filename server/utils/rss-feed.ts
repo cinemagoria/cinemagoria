@@ -30,6 +30,20 @@ const firstCarousel = (raw: unknown): string => {
     return first || ''
 }
 
+// Mirror the website body split (pages/news/[slug].vue → bodyParts): when both
+// a trailer and a carousel exist, the body is cut at its middle <h2> so the
+// carousel lands mid-article. Otherwise it stays in one piece.
+const splitAtMiddleH2 = (html: string): { before: string; after: string } => {
+    if (!html) return { before: '', after: '' }
+    const indices: number[] = []
+    const re = /<h2[\s>]/gi
+    let m: RegExpExecArray | null
+    while ((m = re.exec(html)) !== null) indices.push(m.index)
+    if (indices.length === 0) return { before: html, after: '' }
+    const mid = indices[Math.floor(indices.length / 2)]
+    return { before: html.slice(0, mid), after: html.slice(mid) }
+}
+
 export async function buildNewsFeed(lang: FeedLang): Promise<string> {
     const db = useDb()
 
@@ -71,9 +85,16 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
         let bodyHtml = ''
         try { bodyHtml = md.render(bodyMd) } catch { bodyHtml = `<p>${escapeXml(bodyMd)}</p>` }
 
-        // Full self-contained article: cover first (so readers show OUR image
-        // instead of scraping the page's og:image), then body, trailer and the
-        // first carousel still as part of the readable content.
+        // Self-contained article that mirrors the on-site layout
+        // (pages/news/[slug].vue): cover first (so readers render OUR image
+        // instead of scraping the page og:image), then description, then the
+        // trailer right after it, then the body with the first carousel image
+        // kept in its original in-article position.
+        const showCarousel = !!carousel && carousel !== cover
+        const carouselFigure = showCarousel
+            ? `<figure><img src="${escapeXml(carousel)}" alt="${escapeXml(title)}" /></figure>`
+            : ''
+
         const parts: string[] = []
         if (cover) {
             parts.push(`<figure><img src="${escapeXml(cover)}" alt="${escapeXml(title)}" /></figure>`)
@@ -81,7 +102,6 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
         if (description) {
             parts.push(`<p><em>${escapeXml(description)}</em></p>`)
         }
-        parts.push(bodyHtml)
         if (ytId) {
             const watch = `https://www.youtube.com/watch?v=${escapeXml(ytId)}`
             const thumb = `https://img.youtube.com/vi/${escapeXml(ytId)}/hqdefault.jpg`
@@ -89,10 +109,20 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
                 `<p><a href="${watch}"><img src="${thumb}" alt="${escapeXml(title)} — trailer" /></a><br/><a href="${watch}">▶ ${isEs ? 'Ver el tráiler en YouTube' : 'Watch the trailer on YouTube'}</a></p>`
             )
         }
-        if (carousel && carousel !== cover) {
-            parts.push(`<figure><img src="${escapeXml(carousel)}" alt="${escapeXml(title)}" /></figure>`)
+        if (ytId && showCarousel) {
+            // Trailer + carousel: carousel goes mid-body, like the site.
+            const { before, after } = splitAtMiddleH2(bodyHtml)
+            parts.push(before)
+            parts.push(carouselFigure)
+            if (after) parts.push(after)
+        } else if (showCarousel) {
+            // Carousel, no trailer: image sits before the body, like the site.
+            parts.push(carouselFigure)
+            parts.push(bodyHtml)
+        } else {
+            parts.push(bodyHtml)
         }
-        const contentHtml = parts.join('\n')
+        const contentHtml = parts.filter(Boolean).join('\n')
 
         let topics: string[] = []
         try {
