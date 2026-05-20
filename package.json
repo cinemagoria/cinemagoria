@@ -41,7 +41,7 @@
     "markdown-it": "^14.1.1",
     "mitt": "^3.0.1",
     "nodemailer": "^8.0.5",
-    "nuxt": "^4.4.2",
+    "nuxt": "^4.4.6",
     "pinia": "^3.0.4",
     "sass": "^1.97.3",
     "smoothscroll-polyfill": "^0.4.4",
