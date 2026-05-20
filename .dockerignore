@@ -1,0 +1,40 @@
+.git
+.github
+.claude
+.vscode
+.idea
+.fleet
+.DS_Store
+
+# Build artifacts (rebuilt inside container)
+node_modules
+.nuxt
+.output
+.cache
+.data
+.tmp
+dist
+
+# Logs
+*.log
+logs
+
+# Local secrets (passed at runtime instead)
+.env
+.env.*
+!.env.example
+
+# Docs / scripts not needed in image
+README.md
+SYNC.md
+QUESTIONS.md
+SPOTLIGHT.md
+docs
+news-slugs.md
+sync-*.sh
+sync-*.js
+scripts/translation-cache.json
+*.sql
+
+# Other lockfiles (we use yarn.lock)
+package-lock.json

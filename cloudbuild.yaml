@@ -1,0 +1,31 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--build-arg'
+      - 'SUPABASE_URL=${_SUPABASE_URL}'
+      - '--build-arg'
+      - 'SUPABASE_ANON_KEY=${_SUPABASE_ANON_KEY}'
+      - '-t'
+      - 'us-east1-docker.pkg.dev/${PROJECT_ID}/cinemagoria/cinemagoria-main:latest'
+      - '.'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-east1-docker.pkg.dev/${PROJECT_ID}/cinemagoria/cinemagoria-main:latest']
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'services'
+      - 'update'
+      - 'cinemagoria-main'
+      - '--image=us-east1-docker.pkg.dev/${PROJECT_ID}/cinemagoria/cinemagoria-main:latest'
+      - '--region=us-east1'
+      - '--platform=managed'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: E2_HIGHCPU_8
+
+timeout: 1800s
