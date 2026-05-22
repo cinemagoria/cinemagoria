@@ -101,11 +101,6 @@ const sections = [
         a: `<p>Una plataforma de descubrimiento centrada en cine y televisión, construida sobre agregación de datos, curaduría editorial y seguimiento activo de festivales. Metadatos, calificaciones, críticas, bandas sonoras, historial de premios y disponibilidad en streaming se integran desde múltiples fuentes de la industria en una experiencia pensada para la cultura cinematográfica contemporánea.</p>`
       },
       {
-        q: '¿Qué la diferencia de IMDb o Letterboxd?',
-        a: `<p>Curaduría editorial, no simple catalogación. El descubrimiento se basa en cine emergente, autores internacionales, cine de género y estrenos culturalmente relevantes.</p>
-<p>El sistema combina metadatos cruzados, selección manual, noticias asistidas por IA, seguimiento de estrenos basado en suscripciones y un histórico editorial permanente (N.O.I.R.) integrado dentro de una búsqueda unificada.</p>`
-      },
-      {
         q: '¿Se transmite o aloja contenido aquí?',
         a: `<p>No. La disponibilidad se indexa desde proveedores externos y las opciones legales de visualización aparecen únicamente cuando están verificadas. No existe un catálogo propio de streaming: los datos estructurados provienen de <strong>IMDb</strong>, <strong>TMDB</strong>, <strong>Rotten Tomatoes</strong>, <strong>Trakt.tv</strong>, <strong>MusicBrainz</strong>, <strong>JustWatch</strong> y <strong>MDBList</strong>.</p>`
       }
