@@ -152,10 +152,17 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         // tribeca 2026
         // 'In the Hand of Dante',
         // 'Only What We Carry',
-        // 'The Last Day',  
+        // 'The Last Day',
         // 'Breeder',
-        // 'Recluse',
-        // 'The Revisionist',
+        //'Recluse',
+        //'The Accompanist',
+        //'The Revisionist',
+        //'Next Life',
+        //'Iconoclast',
+        //'Act One',
+        //'Rain Reign',
+        //'Crooks',
+
         // cannes 2026
         'Victorian Psycho',
         'Hope|cannes',
@@ -170,15 +177,14 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'All of a Sudden',
         'The Unknown',
         'Gentle Monster',
-        'Teenage Sex and Death at Camp Miasma',
         'Her Private Hell',
+        'Teenage Sex and Death at Camp Miasma',
         // cuff 2026
         'Lucid',
         'Thanks for Nothing',
         'The Weed Eaters',
-        'Hangashore',
         'Mag Mag',
-        'Affection',
+        'Camp',
         // bafici 2026
         'Nova \'78',
         'El infierno está encantador - Gulp. 1985',
@@ -193,7 +199,6 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Stormbound',
         'Chili Finger',
         'Dead Eyes',
-        
         'Wishful Thinking',       
         // slamdance 2026
         'Whisperings of the Moon',
@@ -230,7 +235,6 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Zi',
         'Shame and Money',
         'undertone',
-        'The Undertone',
         'The Only Living Pickpocket in New York',
         'Leviticus',
         'The AI Doc: Or How I Became an Apocaloptimist',  

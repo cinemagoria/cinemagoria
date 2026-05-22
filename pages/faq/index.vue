@@ -102,11 +102,6 @@ const sections = [
         a: `<p>Cinemagoria is a discovery layer for film and television built on aggregation, editorial curation and festival-driven attention. Metadata, ratings, reviews, soundtrack data, awards history and streaming availability arrive from multiple industry sources, integrated into a single experience designed for contemporary film culture.</p>`
       },
       {
-        q: 'What sets it apart from IMDb or Letterboxd?',
-        a: `<p>Editorial intelligence rather than passive cataloging. Discovery is biased toward emerging cinema, international auteurs, genre filmmaking and culturally significant releases &mdash; not raw popularity.</p>
-<p>The model layers cross-provider metadata, hand-curated selections, AI-assisted news, follow-based release tracking and a permanent archival layer (N.O.I.R.) on top of a unified search.</p>`
-      },
-      {
         q: 'Is content streamed or hosted here?',
         a: `<p>No. Availability is indexed from third-party providers and legal viewing options are surfaced when verified. There is no proprietary catalog &mdash; structured data flows in from <strong>IMDb</strong>, <strong>TMDB</strong>, <strong>Rotten Tomatoes</strong>, <strong>Trakt.tv</strong>, <strong>MusicBrainz</strong>, <strong>JustWatch</strong> and <strong>MDBList</strong>.</p>`
       }
