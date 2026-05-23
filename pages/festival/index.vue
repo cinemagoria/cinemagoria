@@ -135,6 +135,8 @@ const filtered = computed(() => {
   return sortedFestivals.value.filter(f => getStatus(f) === activeFilter.value)
 })
 
+const FestivalCardLink = resolveComponent('NuxtLink')
+
 const counts = computed(() => ({
   live:     festivals.filter(f => getStatus(f) === 'live').length,
   upcoming: festivals.filter(f => getStatus(f) === 'upcoming').length,
@@ -189,7 +191,7 @@ const counts = computed(() => ({
 
       <div v-if="filtered.length" class="festivals-grid">
         <component
-          :is="f.comingSoon ? 'div' : 'nuxt-link'"
+          :is="f.comingSoon ? 'div' : FestivalCardLink"
           v-for="f in filtered"
           :key="f.slug"
           :to="f.comingSoon ? undefined : `/festival/${f.slug}`"
@@ -647,6 +649,7 @@ const counts = computed(() => ({
         border: 1px solid rgba(255, 255, 255, 0.15);
         color: rgba(255, 255, 255, 0.3);
         cursor: default;
+        pointer-events: none;
     }
 }
 
