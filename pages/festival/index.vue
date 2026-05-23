@@ -19,6 +19,12 @@ onMounted(() => {
 })
 
 const festivals = [
+  { slug: 'kviff-2026',     name: 'KVIFF',          year: 2026, city: 'Karlovy Vary', country: 'Czechia',
+    startDate: '2026-07-03', endDate: '2026-07-11', dateLabel: 'Jul 3 – 11, 2026',
+    image: '/festivals/kviff/kviff_backdrop_2026_eng.webp', comingSoon: true },
+  { slug: 'fantasia-2026',  name: 'Fantasia',       year: 2026, city: 'Montreal',   country: 'Canada',
+    startDate: '2026-07-16', endDate: '2026-08-02', dateLabel: 'Jul 16 – Aug 2, 2026',
+    image: '/festivals/fantasia/fantasia_backdrop_2026_en.webp', comingSoon: true },
   { slug: 'tribeca-2026',   name: 'Tribeca',        year: 2026, city: 'New York',   country: 'USA',
     startDate: '2026-06-03', endDate: '2026-06-14', dateLabel: 'Jun 3 – 14, 2026',
     image: '/festivals/tribeca/tribeca_backdrop_2026_eng.webp' },
@@ -182,11 +188,12 @@ const counts = computed(() => ({
       </div>
 
       <div v-if="filtered.length" class="festivals-grid">
-        <nuxt-link
+        <component
+          :is="f.comingSoon ? 'div' : 'nuxt-link'"
           v-for="f in filtered"
           :key="f.slug"
-          :to="`/festival/${f.slug}`"
-          :class="['festival-card', `festival-card--${getStatus(f)}`]"
+          :to="f.comingSoon ? undefined : `/festival/${f.slug}`"
+          :class="['festival-card', `festival-card--${getStatus(f)}`, f.comingSoon && 'festival-card--disabled']"
         >
           <div class="card-image-wrapper">
             <img :src="f.image" :alt="`${f.name} ${f.year}`" loading="lazy" />
@@ -211,10 +218,12 @@ const counts = computed(() => ({
                   <span :class="['festival-detail', `festival-detail--${getStatusMeta(f).status}`]">{{ getStatusMeta(f).detail }}</span>
                 </div>
               </div>
-              <span class="explore-btn">Explore</span>
+              <span :class="['explore-btn', f.comingSoon && 'explore-btn--disabled']">
+                {{ f.comingSoon ? 'Coming Soon' : 'Explore' }}
+              </span>
             </div>
           </div>
-        </nuxt-link>
+        </component>
       </div>
 
       <div v-else class="empty">
@@ -418,7 +427,7 @@ const counts = computed(() => ({
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(139, 233, 253, 0.25);
         border-color: rgba(139, 233, 253, 0.35);
 
-        .explore-btn {
+        .explore-btn:not(.explore-btn--disabled) {
             background: #8BE9FD;
             color: #0a0a0f;
             border-color: #8BE9FD;
@@ -431,6 +440,16 @@ const counts = computed(() => ({
     &--live {
         border-color: rgba(139, 233, 253, 0.35);
         box-shadow: 0 0 0 1px rgba(139, 233, 253, 0.15), 0 0 24px rgba(139, 233, 253, 0.08);
+    }
+
+    &--disabled {
+        cursor: default;
+        &:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: rgba(255, 255, 255, 0.08);
+            img { transform: none; opacity: 0.82; }
+        }
     }
 }
 
@@ -458,6 +477,17 @@ const counts = computed(() => ({
         linear-gradient(to top,    rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 32%, rgba(0, 0, 0, 0.15) 65%, transparent 100%),
         linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, transparent 35%);
     pointer-events: none;
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 20%;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.68) 0%, rgba(0, 0, 0, 0.42) 55%, transparent 100%);
+        pointer-events: none;
+    }
 }
 
 /* ── Card top row: location + status ────────────────────── */
@@ -525,7 +555,7 @@ const counts = computed(() => ({
 /* ── Card content ──────────────────────────────────────────── */
 .card-content {
     position: absolute;
-    bottom: 0;
+    bottom: 10px;
     left: 0;
     width: 100%;
     padding: 1.6rem 1.8rem 1.8rem;
@@ -608,6 +638,16 @@ const counts = computed(() => ({
     white-space: nowrap;
     flex-shrink: 0;
     line-height: 1;
+    position: relative;
+    left: 5px;
+    bottom: 1.5px;
+
+    &--disabled {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.3);
+        cursor: default;
+    }
 }
 
 /* ── Empty state ───────────────────────────────────────────── */
