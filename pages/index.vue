@@ -79,7 +79,7 @@ const showOscarsBanner = computed(() => _now >= OSCARS_START && _now < OSCARS_EX
 const CANNES_LIVE_EXPIRY = new Date('2026-05-23T21:59:00Z');
 // Winners: from palmarès day evening through post-festival
 const CANNES_WINNERS_START = new Date('2026-05-23T16:00:00Z');
-const CANNES_WINNERS_EXPIRY = new Date('2026-07-15T00:00:00Z');
+const CANNES_WINNERS_EXPIRY = new Date('2026-05-28T21:59:00Z');
 const showCannesLiveBanner = computed(() => _now < CANNES_LIVE_EXPIRY && _now < CANNES_WINNERS_START);
 const showCannesWinnersBanner = computed(() => _now >= CANNES_WINNERS_START && _now < CANNES_WINNERS_EXPIRY);
 
