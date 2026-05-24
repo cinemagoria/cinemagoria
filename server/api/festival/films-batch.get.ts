@@ -17,6 +17,8 @@ const FESTIVAL_NAME_BY_SLUG: Record<string, string> = {
     cannes: 'Cannes Film Festival',
     tribeca: 'Tribeca Festival',
     cuff: 'Calgary Underground Film Festival',
+    kviff: 'Karlovy Vary International Film Festival',
+    fantasia: 'Fantasia International Film Festival',
 }
 
 const NAME_TO_SLUG: Record<string, string> = Object.fromEntries(

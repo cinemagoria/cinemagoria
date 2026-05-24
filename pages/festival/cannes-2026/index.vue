@@ -38,6 +38,13 @@
         <FestivalDataDisclaimer />
       </div>
 
+      <!-- Winners Showcase: only renders when the festival has finished and awards exist -->
+      <WinnersCarousel
+        v-if="awards.length > 0"
+        :awards="awards"
+        :year="2026"
+      />
+
     </div>
 
     <div class="container">
@@ -281,6 +288,7 @@ import { ref, computed, onMounted, nextTick } from 'vue';
 import Loader from '~/components/Loader.vue';
 import FestivalDataDisclaimer from '~/components/FestivalDataDisclaimer.vue';
 import CannesCard from '~/components/CannesCard.vue';
+import WinnersCarousel from '~/components/festival/WinnersCarousel.vue';
 
 const CATEGORY_ORDER = [
     'COMPETITION',
@@ -310,6 +318,7 @@ const nextSlide = () => { slideDirection.value = 'carousel-next'; infoSlide.valu
 const goToSlide = (i) => { slideDirection.value = i > infoSlide.value ? 'carousel-next' : 'carousel-prev'; infoSlide.value = i; };
 const loading = ref(true);
 const films = ref({ results: [] });
+const awards = ref([]);
 const scheduleResponse = ref(null);
 const openDays = ref(new Set());
 const categoryOpen = ref({});
@@ -419,12 +428,14 @@ const isOpen = (date) => openDays.value.has(date);
 
 onMounted(async () => {
     try {
-        const [filmsData, sched] = await Promise.all([
+        const [filmsData, sched, awardsData] = await Promise.all([
             $fetch('/api/festival/cannes/films?limit=500'),
-            $fetch('/api/festival/cannes/schedule')
+            $fetch('/api/festival/cannes/schedule'),
+            $fetch('/api/festival/cannes/awards').catch(() => ({ results: [] }))
         ]);
 
         films.value = filmsData;
+        awards.value = awardsData.results || [];
         scheduleResponse.value = sched;
 
         if (schedule.value.length > 0) {
