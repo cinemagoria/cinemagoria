@@ -1744,6 +1744,18 @@ export const SUPPORTED_FESTIVALS = [
         name: 'Romford Film Festival 2026',
         slug: 'romford-2026',
         logo_path: '/festivals/romford/romford_film_festival_2026_logo.png'
+    },
+    {
+        id: 'tribeca',
+        name: 'Tribeca Festival 2026',
+        slug: 'tribeca-2026',
+        logo_path: '/festivals/tribeca/tribeca_film_festival_2026_logo.png'
+    },
+    {
+        id: 'cuff',
+        name: 'Calgary Underground Film Festival 2026',
+        slug: 'cuff-2026',
+        logo_path: '/festivals/cuff/cuff_film_festival_2026_logo.png'
     }
 ];
 
