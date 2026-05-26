@@ -169,7 +169,6 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         // tribeca 2026
         'In the Hand of Dante',
         'The Revisionist',
-        'Act One',
         'The Last Day',
         'Stand Up',
         'Breeder',
@@ -189,8 +188,10 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'The Unknown',
         'Everytime',
         'Gentle Monster',
-        'Her Private Hell',
+        
         'Teenage Sex and Death at Camp Miasma',
+        'Her Private Hell',
+        'Titanic Ocean',
         // cuff 2026
         'Lucid',
         'Thanks for Nothing',
