@@ -222,5 +222,21 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1779398963/cinemagoria/backdrops/hero_258165.webp",
     "poster_path": "/VMyZWR0GBHGY9WIwcaj232ALAl.jpg",
     "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1676532,
+    "media_type": "movie",
+    "trailer_key": null,
+    "backdrop_path": "/24LoJ0Dd8HfXmF10KhIAxrg7Hdk.jpg",
+    "poster_path": "/crGynSiPjF5Tn5XG8B11QrlNZ3X.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1020047,
+    "media_type": "movie",
+    "trailer_key": "g-uiaa5NvgY",
+    "backdrop_path": "/A3zk4TObTZb9x7vKDFwl2TmechG.jpg",
+    "poster_path": "/FVyNH1Y7Zro3kukCtwhyw1J0o2.jpg",
+    "force_enrichment": true
   }
 ]
