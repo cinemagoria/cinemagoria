@@ -5,7 +5,13 @@
 
     <!-- Cannes 2026 — cobertura en vivo hasta el palmarès; ganadores después de la ceremonia -->
     <CannesLiveBanner v-if="showCannesLiveBanner" />
-    <CannesWinnersBanner v-if="showCannesWinnersBanner" />
+    <!-- CannesWinnersBanner retirado de la visualización 2026-05-26 — se
+         conserva como referencia para próximas ediciones; import + computed
+         se mantienen abajo. -->
+    <!-- <CannesWinnersBanner v-if="showCannesWinnersBanner" /> -->
+
+    <!-- Tribeca 2026 — cobertura en vivo hasta el cierre del festival el 14 de junio -->
+    <TribecaLiveBanner v-if="showTribecaLiveBanner" />
 
     <Hero
       v-if="featured && featured.length"
@@ -64,6 +70,7 @@ import OscarsLiveBanner from '~/components/OscarsLiveBanner';
 import OscarsCarousel from '~/components/OscarsCarousel';
 import CannesLiveBanner from '~/components/CannesLiveBanner';
 import CannesWinnersBanner from '~/components/CannesWinnersBanner';
+import TribecaLiveBanner from '~/components/TribecaLiveBanner';
 import { SUPPORTED_PRODUCTION_COMPANIES, POPULAR_PRODUCTION_COMPANIES_IDS, STREAMING_PROVIDERS, POPULAR_STREAMING_IDS } from '~/utils/constants';
 
 // ─── Óscar 98 — ventana de visibilidad ───────────────────────────────────────
@@ -81,6 +88,11 @@ const CANNES_WINNERS_START = new Date('2026-05-23T16:00:00Z');
 const CANNES_WINNERS_EXPIRY = new Date('2026-05-28T21:59:00Z');
 const showCannesLiveBanner = computed(() => _now < CANNES_LIVE_EXPIRY && _now < CANNES_WINNERS_START);
 const showCannesWinnersBanner = computed(() => _now >= CANNES_WINNERS_START && _now < CANNES_WINNERS_EXPIRY);
+
+// ─── Tribeca 2026 — ventana de visibilidad ───────────────────────────────────
+// Cobertura en vivo hasta el cierre del festival — 14 jun 2026 23:59 NY (EDT → 03:59 UTC del 15)
+const TRIBECA_LIVE_EXPIRY = new Date('2026-06-15T03:59:00Z');
+const showTribecaLiveBanner = computed(() => _now < TRIBECA_LIVE_EXPIRY);
 
 const userEmail = ref('');
 const hasAccessToken = ref(false);
