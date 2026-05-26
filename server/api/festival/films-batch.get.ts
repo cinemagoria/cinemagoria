@@ -33,16 +33,26 @@ function mapRow(row: any) {
         tmdbData = {}
     }
 
+    // Clean TMDB poster, or null when TMDB hasn't backfilled one yet.
+    const tmdbPoster = tmdbData.tmdb_poster
+        ? tmdbData.tmdb_poster
+        : tmdbData.poster_path
+            ? `https://image.tmdb.org/t/p/w500${tmdbData.poster_path}`
+            : null
+
+    // Tribeca-only: mirror /api/festival/tribeca/films — keep poster_path a clean
+    // TMDB-or-null value and expose image_url separately so TribecaCard can show
+    // the DB cover until TMDB backfills a poster. Overrides sit after the spread
+    // so tmdbData can't clobber them; other festivals still fold image_url into
+    // poster_path.
+    const isTribeca = row.festival_name === 'Tribeca Festival'
+
     return {
         id: row.tmdb_id || row.id,
         internal_id: row.id,
         title: row.title,
         overview: row.description || tmdbData.overview || '',
-        poster_path: tmdbData.tmdb_poster
-            ? tmdbData.tmdb_poster
-            : tmdbData.poster_path
-                ? `https://image.tmdb.org/t/p/w500${tmdbData.poster_path}`
-                : row.image_url,
+        poster_path: tmdbPoster || row.image_url,
         backdrop_path: tmdbData.backdrop_path ? `https://image.tmdb.org/t/p/w1280${tmdbData.backdrop_path}` : null,
         release_date: tmdbData.release_date || tmdbData.tmdb_release_date || '',
         vote_average: tmdbData.vote_average || 0,
@@ -53,6 +63,7 @@ function mapRow(row: any) {
         imdb_id: row.imdb_id,
         tmdb_id: row.tmdb_id,
         ...tmdbData,
+        ...(isTribeca ? { poster_path: tmdbPoster, image_url: row.image_url } : {}),
     }
 }
 
@@ -100,10 +111,10 @@ export default defineEventHandler(async (event) => {
 
         // Apply per-festival limit + stable alphabetical sort, matching the
         // single-festival endpoints' default behavior.
-        for (const slug of Object.keys(buckets)) {
-            buckets[slug].sort((a, b) => String(a.title).localeCompare(String(b.title)))
-            if (buckets[slug].length > limitPerFestival) {
-                buckets[slug] = buckets[slug].slice(0, limitPerFestival)
+        for (const [slug, list] of Object.entries(buckets)) {
+            list.sort((a, b) => String(a.title).localeCompare(String(b.title)))
+            if (list.length > limitPerFestival) {
+                buckets[slug] = list.slice(0, limitPerFestival)
             }
         }
 

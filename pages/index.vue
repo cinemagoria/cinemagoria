@@ -157,21 +157,15 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     const tribecaList = festivalsBuckets.tribeca || [];
     const cuffList = festivalsBuckets.cuff || [];
     
-     const FEATURED_ORDER = [
+    const FEATURED_ORDER = [
         // tribeca 2026
-        // 'In the Hand of Dante',
-        // 'Only What We Carry',
-        // 'The Last Day',
-        // 'Breeder',
-        //'Recluse',
-        //'The Accompanist',
-        //'The Revisionist',
-        //'Next Life',
-        //'Iconoclast',
-        //'Act One',
-        //'Rain Reign',
-        //'Crooks',
-        
+        'In the Hand of Dante',
+        'The Revisionist',
+        'Act One',
+        'The Last Day',
+        'Stand Up',
+        'Breeder',
+        'Recluse',
         // cannes 2026
         'Victorian Psycho',
         'Hope|cannes',
@@ -185,6 +179,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Bitter Christmas',
         'All of a Sudden',
         'The Unknown',
+        'Everytime',
         'Gentle Monster',
         'Her Private Hell',
         'Teenage Sex and Death at Camp Miasma',
@@ -198,15 +193,12 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Nova \'78',
         'El infierno está encantador - Gulp. 1985',
         // bifff 2026
-        'Corporate Retreat',
         'Mārama',
         'Sicko',
         // sxsw 2026
         'Hokum',
         'Obsession',
         'Never After Dark',
-        'Stormbound',
-        'Chili Finger',
         'Dead Eyes',
         'Wishful Thinking',       
         // slamdance 2026
@@ -223,20 +215,15 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'In a Whisper',
         'If I Were Alive',
         'Forest High',
-        'Paradise',
         'At the sea',
         'Salvation',
-        'Lali',
         'The Red Hangar',
-        'Matapanki',
         // rotterdam 2026
         'Variations on a theme',
         'Silent Friend',
         'Tell Me What You Feel',
         'Father Mother Sister Brother',
         'Butterfly',
-        'Fuori',
-        'Sore: A Wife from the Future',
         'Late Fame',
         // sundance 2026
         'To Hold a Mountain',
@@ -246,7 +233,6 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'undertone',
         'The Only Living Pickpocket in New York',
         'Leviticus',
-        'The AI Doc: Or How I Became an Apocaloptimist',  
         'Tuner',
         'Time and Water',
         'Josephine',
