@@ -210,7 +210,7 @@
 
 <script>
 
-const FOLLOWS_API = 'https://cinemagoria-follows-rust.vercel.app';
+const FOLLOWS_API = 'https://cinemagoria-follows-746175915741.us-east1.run.app';
 const DRF_API = 'https://auth.cinemagoria.com';
 
 export default {
@@ -403,7 +403,7 @@ export default {
 
     async fetchSocialProfile() {
       if (!this.userEmail) return;
-      const FOLLOWS_API = 'https://cinemagoria-follows-rust.vercel.app';
+      const FOLLOWS_API = 'https://cinemagoria-follows-746175915741.us-east1.run.app';
       try {
         const r = await fetch(`${FOLLOWS_API}/profile-by-email?user_email=${encodeURIComponent(this.userEmail)}`);
         if (r.ok) {
@@ -426,7 +426,7 @@ export default {
         return;
       }
       this.savingProfile = true;
-      const FOLLOWS_API = 'https://cinemagoria-follows-rust.vercel.app';
+      const FOLLOWS_API = 'https://cinemagoria-follows-746175915741.us-east1.run.app';
       try {
         const resp = await fetch(`${FOLLOWS_API}/alias`, {
           method: 'POST',
@@ -451,7 +451,7 @@ export default {
     },
 
     async savePrivacy() {
-      const FOLLOWS_API = 'https://cinemagoria-follows-rust.vercel.app';
+      const FOLLOWS_API = 'https://cinemagoria-follows-746175915741.us-east1.run.app';
       this.privacySaved = false;
       try {
         const resp = await fetch(`${FOLLOWS_API}/privacy`, {

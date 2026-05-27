@@ -340,7 +340,7 @@ export default {
       loading: true,
       showUnreadOnly: true,
       filterMode: 'unread',
-      followsApiUrl: 'https://cinemagoria-follows-rust.vercel.app',
+      followsApiUrl: 'https://cinemagoria-follows-746175915741.us-east1.run.app',
       showFollowingModal: false,
       totalFollowingCount: 0,
       showHowItWorksModal: false,
@@ -655,10 +655,10 @@ export default {
 
         try {
           const [peopleResponse, tvResponse, streamingResponse, companiesResponse] = await Promise.all([
-            fetch(`https://cinemagoria-follows-rust.vercel.app/follows/list?user_email=${encodeURIComponent(this.userEmail)}`),
-            fetch(`https://cinemagoria-follows-rust.vercel.app/tv-follows/list?user_email=${encodeURIComponent(this.userEmail)}`),
-            fetch(`https://cinemagoria-follows-rust.vercel.app/streaming-follows/list?user_email=${encodeURIComponent(this.userEmail)}`),
-            fetch(`https://cinemagoria-follows-rust.vercel.app/company-follows/list?user_email=${encodeURIComponent(this.userEmail)}`)
+            fetch(`https://cinemagoria-follows-746175915741.us-east1.run.app/follows/list?user_email=${encodeURIComponent(this.userEmail)}`),
+            fetch(`https://cinemagoria-follows-746175915741.us-east1.run.app/tv-follows/list?user_email=${encodeURIComponent(this.userEmail)}`),
+            fetch(`https://cinemagoria-follows-746175915741.us-east1.run.app/streaming-follows/list?user_email=${encodeURIComponent(this.userEmail)}`),
+            fetch(`https://cinemagoria-follows-746175915741.us-east1.run.app/company-follows/list?user_email=${encodeURIComponent(this.userEmail)}`)
           ]);
 
           let total = 0;

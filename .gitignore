@@ -47,3 +47,7 @@ data/user_follows (2).json
 data/user_company_follows.json
 sync-featured.sh
 news-slugs.md
+env.yaml
+.env.production
+.env.production.vercel
+.env.production.local
