@@ -564,7 +564,7 @@ export default {
   },
   data() {
     return {
-      tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://cinemagoria-favorites.vercel.app/api',
+      tursoBackendUrl: process.env.TURSO_BACKEND_URL || 'https://cinemagoria-favorites-746175915741.us-east1.run.app/api',
       isLoadingFavorites: false, 
       orderMode: 'latest-added',
       genreDropdownOpen: false,

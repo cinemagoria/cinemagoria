@@ -129,7 +129,7 @@ export default {
       isFollowing: false,
       followLoading: false,
       userEmail: null,
-      followsApiUrl: 'https://cinemagoria-follows-rust.vercel.app',
+      followsApiUrl: 'https://cinemagoria-follows-746175915741.us-east1.run.app',
       isTranslating: false,
       translatedBiography: null
     };
@@ -288,7 +288,7 @@ export default {
           if (this.person.known_for_department === 'Directing') personType = 'director';
           else if (this.person.known_for_department === 'Writing') personType = 'writer';
           
-          const response = await fetch(`https://cinemagoria-follows-rust.vercel.app/follows/add`, {
+          const response = await fetch(`https://cinemagoria-follows-746175915741.us-east1.run.app/follows/add`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

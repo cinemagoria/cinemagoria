@@ -111,9 +111,9 @@ export default defineNuxtConfig({
       gaId: process.env.GA,
       googleClientId: process.env.GOOGLE_CLIENT_ID,
       traktClientId: process.env.TRAKT_CLIENT_ID,
-      tursoBackendUrl: process.env.TURSO_BACKEND_URL || "https://cinemagoria-favorites.vercel.app/api",
-      followsBackendUrl: process.env.FOLLOWS_BACKEND_URL || "https://cinemagoria-follows-rust.vercel.app",
-      assistantBackendUrl: process.env.ASSISTANT_BACKEND_URL || "https://cinemagoria-assistant-rust.vercel.app/api",
+      tursoBackendUrl: process.env.TURSO_BACKEND_URL || "https://cinemagoria-favorites-746175915741.us-east1.run.app/api",
+      followsBackendUrl: process.env.FOLLOWS_BACKEND_URL || "https://cinemagoria-follows-746175915741.us-east1.run.app",
+      assistantBackendUrl: process.env.ASSISTANT_BACKEND_URL || "https://cinemagoria-assistant-746175915741.us-east1.run.app/api",
       mdblistApi: process.env.MDBLIST_API,
       rapidApiKey: process.env.RAPIDAPI_KEY,
       orApiKey: process.env.OR_API_KEY,
@@ -123,7 +123,7 @@ export default defineNuxtConfig({
       geminiApiKey4: process.env.GEMINI_API_KEY4,
       geminiApiKey5: process.env.GEMINI_API_KEY5,
       geminiApiKey6: process.env.GEMINI_API_KEY6,
-      newsAggregatorUrl: process.env.NEWS_AGGREGATOR_URL || "https://cinemagoria-rss-aggregator.vercel.app/news",
+      newsAggregatorUrl: process.env.NEWS_AGGREGATOR_URL || "https://cinemagoria-rss-aggregator-746175915741.us-east1.run.app/news",
     }
   },
 

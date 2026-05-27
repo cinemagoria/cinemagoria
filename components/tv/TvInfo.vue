@@ -595,7 +595,7 @@ export default {
       const userEmail = localStorage.getItem('email');
       if (!userEmail) return;
       try {
-        const response = await fetch(`https://cinemagoria-follows-rust.vercel.app/tv-follows/list?user_email=${encodeURIComponent(userEmail)}`);
+        const response = await fetch(`https://cinemagoria-follows-746175915741.us-east1.run.app/tv-follows/list?user_email=${encodeURIComponent(userEmail)}`);
         if (!response.ok) return;
         const data = await response.json();
         if (data.success && data.tv_follows) {
@@ -609,10 +609,10 @@ export default {
       this.followTvLoading = true;
       try {
         if (this.isFollowingTv) {
-          const response = await fetch(`https://cinemagoria-follows-rust.vercel.app/tv-follows/remove?user_email=${encodeURIComponent(userEmail)}&tv_id=${this.item.id}`, { method: 'DELETE' });
+          const response = await fetch(`https://cinemagoria-follows-746175915741.us-east1.run.app/tv-follows/remove?user_email=${encodeURIComponent(userEmail)}&tv_id=${this.item.id}`, { method: 'DELETE' });
           if (response.ok) this.isFollowingTv = false;
         } else {
-          const response = await fetch(`https://cinemagoria-follows-rust.vercel.app/tv-follows/add`, {
+          const response = await fetch(`https://cinemagoria-follows-746175915741.us-east1.run.app/tv-follows/add`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -647,7 +647,7 @@ export default {
     async saveEditedReview() {
       const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
       if (!userEmail) return;
-      const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
+      const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites-746175915741.us-east1.run.app/api';
       try {
         if (this.selectedRating > 0 || this.editUserReview.trim() !== '') {
           const resp = await fetch(`${tursoUrl}/favorites/rating/${userEmail}/tv/${this.item.id}`, {
@@ -665,7 +665,7 @@ export default {
     async removeRatingAndReview() {
       const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
       if (!userEmail) return;
-      const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
+      const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites-746175915741.us-east1.run.app/api';
       try {
         const resp = await fetch(`${tursoUrl}/favorites/rating/${userEmail}/tv/${this.item.id}`, {
           method: 'PUT',
@@ -727,7 +727,7 @@ export default {
           const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
           
           if (userEmail) {
-              const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
+              const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites-746175915741.us-east1.run.app/api';
               userReviewPromise = fetch(`${tursoUrl}/membership/${userEmail}/tv/${this.item.id}`)
                 .then(res => res.json())
                 .then(data => data.userRating)

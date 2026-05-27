@@ -43,3 +43,7 @@ scripts/sync-repos.sh
 public/robots.txt
 scripts/main-snapshot.json
 SYNC.md
+env.yaml
+.env.production
+.env.production.vercel
+.env.production.local

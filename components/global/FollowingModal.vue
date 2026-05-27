@@ -379,7 +379,7 @@ export default {
         return this.userFollowers.length;
     },
     followsApiUrl() {
-        return 'https://cinemagoria-follows-rust.vercel.app';
+        return 'https://cinemagoria-follows-746175915741.us-east1.run.app';
     }
   },
 

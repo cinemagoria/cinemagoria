@@ -755,7 +755,7 @@ export default {
     async saveEditedReview() {
       const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
       if (!userEmail) return;
-      const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
+      const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites-746175915741.us-east1.run.app/api';
       try {
         if (this.selectedRating > 0 || this.editUserReview.trim() !== '') {
           this.progressPercentage = 100;
@@ -777,7 +777,7 @@ export default {
     async removeRatingAndReview() {
       const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
       if (!userEmail) return;
-      const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
+      const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites-746175915741.us-east1.run.app/api';
       try {
         const resp = await fetch(`${tursoUrl}/favorites/rating/${userEmail}/movie/${this.item.id}`, {
           method: 'PUT',
@@ -838,7 +838,7 @@ export default {
         const userEmail = import.meta.client ? localStorage.getItem('email')?.replace(/['"]+/g, '') : null;
         
         if (userEmail) {
-             const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
+             const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites-746175915741.us-east1.run.app/api';
              userReviewPromise = fetch(`${tursoUrl}/membership/${userEmail}/movie/${this.item.id}`)
                .then(res => res.json())
                .then(data => data.userRating)

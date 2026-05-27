@@ -1005,7 +1005,7 @@ export function getTraktReviews(id, type) {
 
 export async function getECReviews(itemType, itemId) {
     try {
-        const data = await $fetch(`https://cinemagoria-favorites.vercel.app/api/ec-reviews/${itemType}/${itemId}`);
+        const data = await $fetch(`https://cinemagoria-favorites-746175915741.us-east1.run.app/api/ec-reviews/${itemType}/${itemId}`);
         if (!data || !data.reviews || !data.reviews.length) return [];
         return data.reviews.map(r => ({
             authorName: r.displayName,
@@ -1812,7 +1812,7 @@ export async function enrichTVShowWithIMDbRating(item) {
 }
 
 
-const FOLLOWS_API_URL = 'https://cinemagoria-follows-rust.vercel.app';
+const FOLLOWS_API_URL = 'https://cinemagoria-follows-746175915741.us-east1.run.app';
 
 export async function followProductionCompany(userEmail, companyId, companyName, logoPath, originCountry) {
     const response = await $fetch(`${FOLLOWS_API_URL}/company-follows/add`, {

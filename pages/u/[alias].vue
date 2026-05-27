@@ -17,8 +17,8 @@ const listsPage = ref(1)
 const listsPerPage = 10
 const reviewsPerPage = 5
 
-const FOLLOWS_API = 'https://cinemagoria-follows-rust.vercel.app'
-const FAVORITES_API = 'https://cinemagoria-favorites.vercel.app/api'
+const FOLLOWS_API = 'https://cinemagoria-follows-746175915741.us-east1.run.app'
+const FAVORITES_API = 'https://cinemagoria-favorites-746175915741.us-east1.run.app/api'
 
 const { data: profile, pending, error, refresh: refreshProfile } = await useFetch(
   `${FOLLOWS_API}/profile/${alias}`,

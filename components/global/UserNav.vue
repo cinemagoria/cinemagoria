@@ -331,8 +331,8 @@ export default {
       const userEmail = localStorage.getItem('email');
       if (!userEmail) return;
       try {
-        const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites.vercel.app/api';
-        const followsUrl = this.$config.public.followsBackendUrl || 'https://cinemagoria-follows-rust.vercel.app';
+        const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites-746175915741.us-east1.run.app/api';
+        const followsUrl = this.$config.public.followsBackendUrl || 'https://cinemagoria-follows-746175915741.us-east1.run.app';
 
         const [ratingsRes, peopleRes, tvRes, streamingRes, companiesRes, usersRes, profileRes, progressRes] = await Promise.all([
           fetch(`${tursoUrl}/ratings/${encodeURIComponent(userEmail)}`),
