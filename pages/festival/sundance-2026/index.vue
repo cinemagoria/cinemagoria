@@ -96,6 +96,42 @@
         </div>
 
         <div v-if="activeTab === 'schedule'" class="schedule-container">
+          <div class="schedule-toolbar" :class="{ 'search-active': isScheduleSearchActive }">
+            <div class="schedule-toolbar-info">
+              <span class="schedule-count" v-if="!loading">
+                <template v-if="scheduleSearchActiveQuery">
+                  {{ filteredSchedule.length }} {{ filteredSchedule.length === 1 ? 'resultado' : 'resultados' }}
+                </template>
+                <template v-else>
+                  {{ schedule.length }} {{ schedule.length === 1 ? 'función' : 'funciones' }}
+                </template>
+              </span>
+            </div>
+            <div class="search-wrapper" :class="{ 'active': isScheduleSearchActive }">
+              <button class="search-toggle-btn" @click="toggleScheduleSearch" :class="{ 'active': isScheduleSearchActive }" aria-label="Buscar en horarios">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              </button>
+              <div class="search-input-container" :class="{ 'show': isScheduleSearchActive }">
+                <input
+                  ref="scheduleSearchInput"
+                  type="text"
+                  class="search-input"
+                  placeholder="Buscar films o directores…"
+                  v-model="scheduleSearch"
+                  @keydown.esc="closeScheduleSearch"
+                >
+                <button class="clear-search-btn" @click="clearScheduleSearch" v-if="scheduleSearch" aria-label="Limpiar búsqueda">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="scheduleSearchActiveQuery && filteredSchedule.length === 0" class="schedule-empty">
+            <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.6; margin-bottom: 12px;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <p>Ninguna función coincide con "<strong>{{ scheduleSearch }}</strong>"</p>
+          </div>
+
           <div v-for="(dayScreenings, date) in groupedScreenings" :key="date" class="schedule-day">
             <div class="day-header" @click="toggleDay(date)">
                 <h2>{{ formatDate(date) }}</h2>
@@ -222,13 +258,45 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, nextTick } from 'vue';
 import Loader from '~/components/Loader.vue';
 import WinnersCarousel from '~/components/festival/WinnersCarousel.vue';
 import FestivalDataDisclaimer from '~/components/FestivalDataDisclaimer.vue';
 import SundanceCard from '~/components/SundanceCard.vue';
 
 const activeTab = ref('films');
+const scheduleSearch = ref('');
+const isScheduleSearchActive = ref(false);
+const scheduleSearchInput = ref(null);
+
+const normalizeText = (str) => {
+    if (!str) return '';
+    return String(str).toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
+};
+
+const scheduleSearchActiveQuery = computed(() => {
+    if (!isScheduleSearchActive.value) return '';
+    return scheduleSearch.value.trim();
+});
+
+const toggleScheduleSearch = () => {
+    isScheduleSearchActive.value = !isScheduleSearchActive.value;
+    if (!isScheduleSearchActive.value) {
+        scheduleSearch.value = '';
+    } else {
+        nextTick(() => scheduleSearchInput.value?.focus());
+    }
+};
+
+const closeScheduleSearch = () => {
+    isScheduleSearchActive.value = false;
+    scheduleSearch.value = '';
+};
+
+const clearScheduleSearch = () => {
+    scheduleSearch.value = '';
+    nextTick(() => scheduleSearchInput.value?.focus());
+};
 const infoSlide = ref(0);
 const slideDirection = ref('carousel-next');
 const prevSlide = () => { slideDirection.value = 'carousel-prev'; infoSlide.value = (infoSlide.value - 1 + 3) % 3; };
@@ -260,10 +328,22 @@ const formatTime = (timeStr) => {
     return new Date(timeStr).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 };
 
+const filteredSchedule = computed(() => {
+    const q = scheduleSearchActiveQuery.value;
+    if (!q) return schedule.value;
+    const needle = normalizeText(q);
+    return schedule.value.filter(s => {
+        const title = normalizeText(s.film?.title);
+        const director = normalizeText(s.film?.director);
+        return title.includes(needle) || director.includes(needle);
+    });
+});
+
 const groupedScreenings = computed(() => {
-    if (!schedule.value) return {};
+    const source = filteredSchedule.value;
+    if (!source) return {};
     const groups = {};
-    schedule.value.forEach(s => {
+    source.forEach(s => {
         const dateKey = s.start_time.split('T')[0];
         if (!groups[dateKey]) groups[dateKey] = [];
         groups[dateKey].push(s);
@@ -282,7 +362,10 @@ const toggleDay = (date) => {
     }
 }
 
-const isOpen = (date) => openDays.value.has(date);
+const isOpen = (date) => {
+    if (scheduleSearchActiveQuery.value) return true;
+    return openDays.value.has(date);
+};
 
 onMounted(async () => {
     try {
@@ -861,5 +944,149 @@ onMounted(async () => {
 .accent-link {
   color: #8BE9FD; text-decoration: none; font-weight: 600; border-bottom: 1px solid transparent; transition: border-color 0.2s;
   &:hover { border-color: #8BE9FD; }
+}
+
+/* ── Schedule search toolbar ─────────────── */
+.schedule-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin: 0.5rem 0 0.25rem;
+    padding: 8px 14px;
+    background: rgba(16, 26, 35, 0.6);
+    border: 1px solid rgba(139, 233, 253, 0.12);
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.25s ease;
+    min-height: 48px;
+}
+
+.schedule-toolbar.search-active {
+    border-color: rgba(139, 233, 253, 0.28);
+}
+
+.schedule-toolbar-info {
+    display: flex;
+    align-items: center;
+}
+
+.schedule-count {
+    font-size: 12px;
+    color: #aab1b8;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+}
+
+.schedule-toolbar .search-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    transition: width 0.3s ease;
+}
+
+.schedule-toolbar .search-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(139, 233, 253, 0.08);
+    color: #8BE9FD;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid rgba(139, 233, 253, 0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.schedule-toolbar .search-toggle-btn:hover {
+    background: rgba(139, 233, 253, 0.18);
+    box-shadow: 0 4px 12px rgba(139, 233, 253, 0.1);
+}
+
+.schedule-toolbar .search-toggle-btn.active {
+    background: rgba(139, 233, 253, 0.22);
+    border-color: #8BE9FD;
+}
+
+.schedule-toolbar .search-input-container {
+    position: relative;
+    width: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin-left: 0;
+    transition: width 0.35s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease, margin-left 0.3s ease;
+}
+
+.schedule-toolbar .search-input-container.show {
+    width: 280px;
+    opacity: 1;
+    margin-left: 8px;
+}
+
+.schedule-toolbar .search-input {
+    width: 100%;
+    background: rgba(16, 26, 35, 0.7);
+    border: 1px solid rgba(139, 233, 253, 0.25);
+    color: #fff;
+    padding: 8px 32px 8px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    height: 36px;
+    transition: all 0.2s ease;
+}
+
+.schedule-toolbar .search-input:focus {
+    outline: none;
+    border-color: #8BE9FD;
+    box-shadow: 0 0 0 2px rgba(139, 233, 253, 0.2);
+    background: rgba(16, 26, 35, 0.85);
+}
+
+.schedule-toolbar .search-input::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.schedule-toolbar .clear-search-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.45);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+}
+
+.schedule-toolbar .clear-search-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.schedule-empty {
+    text-align: center;
+    padding: 3rem 1rem 1rem;
+    color: #aab1b8;
+    font-size: 0.95rem;
+
+    strong {
+        color: #8BE9FD;
+        font-weight: 600;
+    }
+}
+
+@media (max-width: 600px) {
+    .schedule-toolbar .search-input-container.show {
+        width: calc(100vw - 140px);
+        max-width: 240px;
+    }
 }
 </style>
