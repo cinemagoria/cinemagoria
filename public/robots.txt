@@ -1,4 +1,33 @@
 User-agent: *
 Allow: /
 
+# Block TMDB-derived dynamic detail pages (millions of URLs, thin content).
+# Root listing pages /movie, /tv, /person remain crawlable.
+Disallow: /movie/
+Disallow: /tv/
+Disallow: /person/
+Disallow: /genre/
+
+# Block user-specific & auth flows
+Disallow: /watchlist
+Disallow: /watchlist/
+Disallow: /notifications
+Disallow: /notifications/
+Disallow: /settings
+Disallow: /settings/
+Disallow: /lists/
+Disallow: /u/
+Disallow: /search
+Disallow: /search/
+Disallow: /login
+Disallow: /register
+Disallow: /recovery
+Disallow: /auth-success
+
+# Block API + internal
+Disallow: /api/
+Disallow: /wip
+Disallow: /production/
+Disallow: /production-companies
+
 Sitemap: https://cinemagoria.com/sitemap.xml
