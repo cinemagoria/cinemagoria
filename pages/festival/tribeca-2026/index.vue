@@ -431,6 +431,10 @@ onMounted(async () => {
 <style lang="scss" scoped>
 @use '~/assets/css/utilities/variables' as *;
 
+:deep(.card__name) {
+    font-size: 1.2rem;
+}
+
 .film-category {
     margin-bottom: 2.5rem;
 }
