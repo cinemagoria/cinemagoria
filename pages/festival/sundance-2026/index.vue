@@ -399,6 +399,31 @@ onMounted(async () => {
     margin-bottom: 2.5rem;
 }
 
+// Compact catalog cards (~25%+ smaller than global default).
+// Scoped to .films-grid so other listings (home, search, etc.) are untouched.
+// Uses :deep() because festival cards are child components (scoped CSS).
+.films-grid :deep(.listing__items > .card) {
+    width: 25%;
+
+    @media (min-width: 640px) {
+        width: 20%;
+    }
+    @media (min-width: 1024px) {
+        width: 14.2857143%;
+    }
+    @media (min-width: 1500px) {
+        width: 12.5%;
+    }
+    @media (min-width: 1800px) {
+        width: 11.1111111%;
+    }
+    @media (min-width: 2500px) {
+        width: 10%;
+    }
+}
+
+
+
 .category-header {
     display: flex;
     align-items: center;
@@ -647,8 +672,8 @@ onMounted(async () => {
     padding-right: 0.5rem;
 }
 
-// Override the WinnersCarousel's default 1000px constraint for this page
-// so it matches the 1400px width of the rest of the content blocks.
+
+
 :deep(.winners-carousel) {
     max-width: 1200px;
 }
