@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const result = await db.execute({
-      sql: `SELECT slug, published_at FROM cinemagoria_articles WHERE is_visible = 1 ORDER BY published_at DESC`,
+      sql: `SELECT slug, published_at FROM cinemagoria_articles WHERE is_visible = 1 AND (datetime(published_at) IS NULL OR datetime(published_at) <= datetime('now')) ORDER BY published_at DESC`,
       args: []
     })
 
