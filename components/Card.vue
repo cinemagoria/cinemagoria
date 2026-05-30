@@ -56,22 +56,40 @@
       <div
         v-if="hasRating"
         class="card__rating">
-        <div
-          v-if="stars"
-          class="card__stars">
-          <div :style="{ width: `${stars}%` }" />
-        </div>
+        <template v-if="hasRealRating">
+          <div
+            v-if="stars"
+            class="card__stars">
+            <div :style="{ width: `${stars}%` }" />
+          </div>
 
-        <div
-          v-if="item.rating_source === 'imdb' && item.imdb_rating"
-          class="card__vote">
-          {{ item.imdb_rating.toFixed(1) }}
-        </div>
-        <div
-          v-else-if="item.vote_average"
-          class="card__vote">
-          {{ parseFloat(item.vote_average).toFixed(1) }}
-        </div>
+          <div
+            v-if="item.rating_source === 'imdb' && item.imdb_rating"
+            class="card__vote">
+            {{ item.imdb_rating.toFixed(1) }}
+          </div>
+          <div
+            v-else-if="item.vote_average"
+            class="card__vote">
+            {{ parseFloat(item.vote_average).toFixed(1) }}
+          </div>
+        </template>
+
+        <!-- eslint-disable-next-line -->
+        <svg
+          v-else
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="#26C4D9"
+          class="card__no-rating-yet"
+          role="img"
+          aria-label="TBA"
+          tabindex="0">
+          <title>TBA</title>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 2.994v2.25m10.5-2.25v2.25m-14.252 13.5V7.491a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v11.251m-18 0a2.25 2.25 0 0 0 2.25 2.25h13.5a2.25 2.25 0 0 0 2.25-2.25m-18 0v-7.5a2.25 2.25 0 0 1 2.25-2.25h13.5a2.25 2.25 0 0 1 2.25 2.25v7.5m-6.75-6h2.25m-9 2.25h4.5m.002-2.25h.005v.006H12v-.006Zm-.001 4.5h.006v.006h-.006v-.005Zm-2.25.001h.005v.006H9.75v-.006Zm-2.25 0h.005v.005h-.006v-.005Zm6.75-2.247h.005v.005h-.005v-.005Zm0 2.247h.006v.006h-.006v-.006Zm2.25-2.248h.006V15H16.5v-.005Z" />
+        </svg>
       </div>
     </nuxt-link>
   </div>
@@ -160,6 +178,13 @@ export default {
   computed: {
     hasRating() {
       return !['person', 'streaming', 'production', 'festival'].includes(this.media) && (this.stars || this.item.vote_average || this.item.imdb_rating);
+    },
+    hasRealRating() {
+      if (this.item.rating_source === 'imdb') {
+        return typeof this.item.imdb_rating === 'number' && this.item.imdb_rating > 0;
+      }
+      const va = parseFloat(this.item.vote_average);
+      return !isNaN(va) && va > 0;
     },
     poster () {
       if (this.media === 'festival' && this.item.logo_path) {
@@ -320,5 +345,18 @@ export default {
   align-items: center;
   justify-content: center;
   margin-top: 0;
+}
+
+.card__no-rating-yet {
+  width: 1.6rem;
+  height: 1.6rem;
+  display: block;
+}
+
+@media (min-width: 1200px) {
+  .card__no-rating-yet {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
 }
 </style>
