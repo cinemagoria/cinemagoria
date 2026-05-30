@@ -3,13 +3,11 @@
     <div
       v-if="items && items.length"
       class="listing__head">
-      <h2 class="listing__title">
-        Popular Streaming Services
-        <NuxtLink
-          v-if="viewAllLink"
-          :to="viewAllLink"
-          class="explore-all">Explore All</NuxtLink>
-      </h2>
+      <h2 class="listing__title">Popular Streaming Services</h2>
+      <NuxtLink
+        v-if="viewAllLink"
+        :to="viewAllLink"
+        class="explore-all">Explore All</NuxtLink>
     </div>
 
     <div class="carousel">
@@ -163,24 +161,8 @@ export default {
   margin-bottom: 2.5rem;
 }
 
-.listing__title {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-
-.explore-all {
-  font-size: 1.1rem;
-  color: #8BE9FD;
-  text-decoration: none;
-  font-weight: 500;
-  margin-left: 1rem;
-
-  &:hover {
-    text-decoration: underline;
-    color: #A2EDFD;
-  }
-}
+/* Modern Explore All button styles are centralized in
+   assets/css/components/_listing.scss (.listing__explore, .explore-all). */
 
 /* Stretch the gradient arrow panels to cover the full carousel height. */
 .carousel {

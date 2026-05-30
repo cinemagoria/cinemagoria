@@ -235,10 +235,6 @@ export default {
   line-height: 1.1 !important;
 }
 
-.oscars-section__explore strong {
-  color: #8BE9FD !important;
-}
-
 /* ─── Carousel scroll container — flex so children stretch to equal height ── */
 .oscars-carousel {
   display: flex !important;

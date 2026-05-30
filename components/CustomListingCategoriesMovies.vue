@@ -117,19 +117,7 @@
     },
   };
 </script>
-<style scoped>  
-    .listing__explore,
-    .listing__explore strong {
-        color: #8BE9FD !important;
-        text-decoration: none;
-        transition: color 0.3s;
-    }
-
-    .listing__explore:hover,
-    .listing__explore:hover strong {
-        color: #A2EDFD !important;
-    }
-
+<style scoped>
     .listing__title {
       font-size: 1.8rem;
       letter-spacing: 0.4px;

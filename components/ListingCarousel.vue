@@ -122,18 +122,6 @@ export default {
 };
 </script>
 <style scoped>
-.listing__explore,
-.listing__explore strong {
-  color: #8BE9FD !important;
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-.listing__explore:hover,
-.listing__explore:hover strong {
-  color: #A2EDFD !important;
-}
-
 /* Compact mode — smaller cards for trending movies / tv on the homepage.
    Targets the globally-styled .carousel__items .card widths via :deep(). */
 .listing--compact :deep(.carousel__items .card) {

@@ -94,18 +94,6 @@ export default {
 </script>
 
 <style scoped>
-.listing__explore,
-.listing__explore strong {
-  color: #8BE9FD !important;
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-.listing__explore:hover,
-.listing__explore:hover strong {
-  color: #A2EDFD !important;
-}
-
 /* Compact mode — same sizing as ListingCarousel for consistency. */
 .listing--compact :deep(.carousel__items .card) {
   width: calc(.25 * (100% - 22px));

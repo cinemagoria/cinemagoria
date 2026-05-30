@@ -186,18 +186,6 @@ export default {
   margin-bottom: 2.5rem;
 }
 
-.listing__explore,
-.listing__explore strong {
-  color: #8BE9FD !important;
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-.listing__explore:hover,
-.listing__explore:hover strong {
-  color: #A2EDFD !important;
-}
-
 :deep(.carousel__items) {
   display: flex;
   align-items: stretch;
