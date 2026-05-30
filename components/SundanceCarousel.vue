@@ -13,7 +13,7 @@
         v-if="viewAllUrl"
         :to="viewAllUrl"
         class="listing__explore">
-        <strong>Explorar Más</strong>
+        <strong>Explorar Todo</strong>
       </nuxt-link>
     </div>
 
@@ -44,7 +44,7 @@
             :to="viewAllUrl"
             class="card__link">
             <div class="card__img" style="background-color: black;">
-              <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white;">Explorar Más</span>
+              <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white;">Explorar Todo</span>
             </div>
             
             <h2 class="card__name" style="color: transparent; user-select: none;">Spacer</h2>
@@ -113,18 +113,6 @@ export default {
 };
 </script>
 <style scoped>
-.listing__explore,
-.listing__explore strong {
-  color: #8BE9FD !important;
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-.listing__explore:hover,
-.listing__explore:hover strong {
-  color: #A2EDFD !important;
-}
-
 .card__logo-container {
     display: flex;
     justify-content: center;

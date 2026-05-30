@@ -228,10 +228,6 @@ export default {
   line-height: 1.1 !important;
 }
 
-.oscars-section__explore strong {
-  color: #8BE9FD !important;
-}
-
 /* ─── Carousel scroll ──────────────────────────────────────────────── */
 .oscars-carousel {
   display: flex !important;

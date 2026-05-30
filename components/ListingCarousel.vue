@@ -13,7 +13,7 @@
         v-if="viewAllUrl"
         :to="viewAllUrl"
         class="listing__explore">
-        <strong>Explorar Más</strong>
+        <strong>Explorar Todo</strong>
       </nuxt-link>
     </div>
 
@@ -44,7 +44,7 @@
             :to="viewAllUrl"
             class="card__link">
             <div class="card__img" style="position: relative; transform: scaleY(1.1); top: 20px;">
-              <span>Explorar Más</span>
+              <span>Explorar Todo</span>
             </div>
           </nuxt-link>
         </div>
@@ -122,18 +122,6 @@ export default {
 };
 </script>
 <style scoped>
-.listing__explore,
-.listing__explore strong {
-  color: #8BE9FD !important;
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-.listing__explore:hover,
-.listing__explore:hover strong {
-  color: #A2EDFD !important;
-}
-
 /* Compact mode — tarjetas más pequeñas para películas / series de tendencia
    en la homepage. Afecta al selector global .carousel__items .card vía :deep(). */
 .listing--compact :deep(.carousel__items .card) {
