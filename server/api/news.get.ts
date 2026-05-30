@@ -23,7 +23,8 @@ export default defineEventHandler(async (event) => {
             let sql = `SELECT id, slug, ${titleCol} AS title, ${descCol} AS description,
                               image_url, published_at, topics_json
                        FROM cinemagoria_articles
-                       WHERE is_visible = 1 AND is_cinemagoria = 1`
+                       WHERE is_visible = 1 AND is_cinemagoria = 1
+                         AND (datetime(published_at) IS NULL OR datetime(published_at) <= datetime('now'))`
             let args: any[] = []
 
             if (searchQuery) {
@@ -96,7 +97,8 @@ export default defineEventHandler(async (event) => {
             let cineSql = `SELECT id, slug, ${titleCol} AS title, ${descCol} AS description,
                                   image_url, published_at, topics_json
                            FROM cinemagoria_articles
-                           WHERE is_visible = 1 AND is_cinemagoria = 1`
+                           WHERE is_visible = 1 AND is_cinemagoria = 1
+                             AND (datetime(published_at) IS NULL OR datetime(published_at) <= datetime('now'))`
             let cineArgs: any[] = []
 
             if (searchQuery) {

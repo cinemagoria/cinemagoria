@@ -53,6 +53,7 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
                      trailer_youtube_id, carousel_assets, topics_json
               FROM cinemagoria_articles
               WHERE is_visible = 1 AND is_cinemagoria = 1
+                AND (datetime(published_at) IS NULL OR datetime(published_at) <= datetime('now'))
               ORDER BY published_at DESC
               LIMIT 50`,
         args: []
