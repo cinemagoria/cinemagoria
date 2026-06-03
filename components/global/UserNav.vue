@@ -8,7 +8,7 @@
       class="notifications-button">
       <div class="notification-icon-wrapper">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" class="notification-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9m-4.27 13a2 2 0 0 1-3.46 0"/></svg>
-        <span v-if="unreadCount > 0" class="notification-badge">{{ unreadCount }}</span>
+        <span v-if="unreadCount > 0" class="notification-badge">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
       </div>
     </nuxt-link>
 
@@ -146,6 +146,10 @@ export default {
     this.fetchUnreadCount();
     this.notificationInterval = setInterval(this.fetchUnreadCount, 30000);
 
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    }
+
     // Restore cached avatar immediately to avoid flash
     if (process.client) {
       const cached = localStorage.getItem('user_avatar');
@@ -169,8 +173,10 @@ export default {
 
   beforeDestroy() {
     document.removeEventListener('click', this.handleClickOutside);
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     if (this.notificationInterval) {
       clearInterval(this.notificationInterval);
+      this.notificationInterval = null;
     }
 
     if (typeof window !== 'undefined') {
@@ -184,6 +190,18 @@ export default {
   },
 
   methods: {
+    handleVisibilityChange() {
+      if (typeof document === 'undefined') return;
+      if (document.visibilityState === 'visible') {
+        this.fetchUnreadCount();
+        if (!this.notificationInterval) {
+          this.notificationInterval = setInterval(this.fetchUnreadCount, 30000);
+        }
+      } else if (this.notificationInterval) {
+        clearInterval(this.notificationInterval);
+        this.notificationInterval = null;
+      }
+    },
     checkAuthStatus() {
       const email = localStorage.getItem('email');
       const accessToken = localStorage.getItem('access_token');
