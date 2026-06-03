@@ -11,7 +11,7 @@
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
           <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
         </svg>
-        <span v-if="unreadCount > 0" class="notification-badge">{{ unreadCount }}</span>
+        <span v-if="unreadCount > 0" class="notification-badge">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
       </div>
     </nuxt-link>
 
@@ -154,6 +154,10 @@ export default {
     this.fetchUnreadCount();
     this.notificationInterval = setInterval(this.fetchUnreadCount, 30000);
 
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    }
+
     if (process.client) {
       const cached = localStorage.getItem('user_avatar');
       if (cached) this.userAvatar = cached;
@@ -176,8 +180,10 @@ export default {
 
   beforeDestroy() {
     document.removeEventListener('click', this.handleClickOutside);
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
     if (this.notificationInterval) {
       clearInterval(this.notificationInterval);
+      this.notificationInterval = null;
     }
 
     if (typeof window !== 'undefined') {
@@ -191,6 +197,18 @@ export default {
   },
 
   methods: {
+    handleVisibilityChange() {
+      if (typeof document === 'undefined') return;
+      if (document.visibilityState === 'visible') {
+        this.fetchUnreadCount();
+        if (!this.notificationInterval) {
+          this.notificationInterval = setInterval(this.fetchUnreadCount, 30000);
+        }
+      } else if (this.notificationInterval) {
+        clearInterval(this.notificationInterval);
+        this.notificationInterval = null;
+      }
+    },
     checkAuthStatus() {
       const email = localStorage.getItem('email');
       const accessToken = localStorage.getItem('access_token');

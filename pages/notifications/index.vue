@@ -616,26 +616,43 @@ export default {
     },
 
     getFallbackImageUrl(notification) {
-      if (notification.poster_path) {
-        return `https://image.tmdb.org/t/p/w185${notification.poster_path}`;
+      if (notification.media_type === 'user') {
+        const p = notification.poster_path;
+        if (p) {
+          return p.startsWith('http') || p.startsWith('/') ? p : `https://image.tmdb.org/t/p/w185${p}`;
+        }
+        return '/avatars/avatar-ss0.png';
+      }
+
+      if (notification.media_type === 'episode') {
+        if (notification.poster_path) {
+          return `https://image.tmdb.org/t/p/w185${notification.poster_path}`;
+        }
+        if (notification.series_poster_path) {
+          return `https://image.tmdb.org/t/p/w185${notification.series_poster_path}`;
+        }
+        if (notification.person_id) {
+          return this.getSeriesPosterUrl(notification.person_id);
+        }
+        return '/placeholders/image_not_found_yet.webp';
       }
 
       if (notification.media_type === 'movie' || notification.media_type === 'tv') {
-        return null;
+        if (notification.poster_path) {
+          return `https://image.tmdb.org/t/p/w185${notification.poster_path}`;
+        }
+        return '/placeholders/image_not_found_yet.webp';
       }
-      
-      if (notification.media_type === 'episode' && notification.person_id) {
-        return this.getSeriesPosterUrl(notification.person_id);
+
+      if (notification.poster_path) {
+        return `https://image.tmdb.org/t/p/w185${notification.poster_path}`;
       }
-      
       if (notification.secondary_profile_path) {
         return `https://image.tmdb.org/t/p/w185${notification.secondary_profile_path}`;
       }
-      
       if (notification.profile_path) {
         return `https://image.tmdb.org/t/p/w185${notification.profile_path}`;
       }
-      
       return null;
     },
 
