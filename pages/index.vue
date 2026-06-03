@@ -171,12 +171,16 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     
      const FEATURED_ORDER = [
         // tribeca 2026
+        'Turn It Up!',
         'In the Hand of Dante',
-        'The Revisionist',
-        'The Last Day',
         'Stand Up',
-        'Breeder',
+        'The Revisionist',
+        'Summer War',
+        'The Last Day',
+        'Dante',
         'Recluse',
+        'Breeder',
+        'Hallowarrior',
         // cannes 2026
         'Victorian Psycho',
         'Hope|cannes',
