@@ -222,14 +222,24 @@
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
                       <h3>Access &amp; Tickets</h3>
                     </div>
+                    <p class="carousel-desc"><strong>Individual ticket:</strong> 140 CZK · 120 CZK*</p>
+                    <p class="carousel-desc"><strong>Festival Passes — on-site (Karlovy Vary):</strong></p>
                     <ul class="price-list">
-                      <li><span class="price-label">Festival Pass (9 days, July 3–11)</span><span class="price-value">3 tickets / day</span></li>
-                      <li><span class="price-label">Festival Pass+ (online booking)</span><span class="price-value">Reserve from home</span></li>
-                      <li><span class="price-label">Festival Pass+ Smart (6 days, July 6–11)</span><span class="price-value">Late-arrival option</span></li>
-                      <li><span class="price-label">Individual tickets</span><span class="price-value">Box office only</span></li>
+                      <li><span class="price-label">1 day</span><span class="price-value">480 / 420 CZK*</span></li>
+                      <li><span class="price-label">3 days</span><span class="price-value">1,080 / 900 CZK*</span></li>
+                      <li><span class="price-label">5 days</span><span class="price-value">1,600 / 1,350 CZK*</span></li>
+                      <li><span class="price-label">All 9 days (Festival Pass)</span><span class="price-value">2,190 / 1,970 CZK*</span></li>
                     </ul>
-                    <p class="carousel-desc"><strong>Box Office:</strong> Vodafone Box Office &amp; festival points across Karlovy Vary.</p>
-                    <p class="carousel-desc"><strong>Opens:</strong> July 3, 2026 at 9:00 AM (Central European Time).</p>
+                    <p class="carousel-desc"><strong>Digital passes — book online before arrival:</strong></p>
+                    <ul class="price-list">
+                      <li><span class="price-label">Festival Pass+ (9 days, July 3–11)</span><span class="price-value">2,990 / 2,790 CZK*</span></li>
+                      <li><span class="price-label">Festival Pass+ Smart (6 days, July 6–11)</span><span class="price-value">1,990 / 1,790 CZK*</span></li>
+                    </ul>
+                    <p class="carousel-desc" style="font-size: 0.95rem; color: rgba(255,255,255,0.6);">* Discounted rate — students, seniors 65+ and ZTP cardholders (valid ID required).</p>
+                    <p class="carousel-desc"><strong>Box office:</strong> 25 counters across Karlovy Vary (18 inside Hotel Thermal incl. Vodafone Box Office, plus Last Minute &amp; Festival Pass+ desks, Grandhotel Pupp and the campsite).</p>
+                    <p class="carousel-desc"><strong>Opens:</strong> July 3, 2026 at 9:00 AM CET. Reservations limited to the current day and the following day; on July 2, the first two festival days open at once.</p>
+                    <p class="carousel-desc"><strong>App:</strong> <a href="https://www.kviff.com" target="_blank" rel="noopener noreferrer" class="accent-link">Vodafone KVIFF Guide</a> — reserve with any pass type, pick up the paper ticket no later than 60 minutes before the screening.</p>
+                    <p class="carousel-desc"><strong>Sold out?</strong> Last Minute box office at Hotel Thermal releases uncollected tickets 15 minutes before each screening (pass holders only). The standby queue at the cinema door fills any free seats 5 minutes before showtime.</p>
                   </template>
 
                   <!-- Slide 2: Venues -->
