@@ -125,12 +125,23 @@ export const poster = {
       if (!item?.id) return;
       this._posterItemId = item.id;
 
-      // title_overrides: per-field override, always wins if poster_path is set
+      // title_overrides: per-field override.
+      // force_enrichment=true  → always wins (promotional / hard override)
+      // force_enrichment=false → only fills in when TMDB has no poster (fallback / festival flow)
       const custom = await getCustomOverrideMatch(item);
       if (custom?.poster_path) {
-        this._enrichedPoster = custom.poster_path;
-        this._forcePoster = true;
-        return;
+        const force = custom.force_enrichment !== false;
+        if (force) {
+          this._enrichedPoster = custom.poster_path;
+          this._forcePoster = true;
+          return;
+        }
+        if (!item.poster_path) {
+          this._enrichedPoster = custom.poster_path;
+          this._forcePoster = false;
+          return;
+        }
+        // TMDB has poster + override is fallback → fall through, TMDB wins.
       }
 
       const match = await getBestEnrichmentMatch(item);
@@ -183,12 +194,20 @@ export const backdrop = {
       if (!item?.id) return;
       this._backdropItemId = item.id;
 
-      // title_overrides: per-field override, always wins if backdrop_path is set
+      // See _loadPosterEnrichment for force_enrichment semantics.
       const custom = await getCustomOverrideMatch(item);
       if (custom?.backdrop_path) {
-        this._enrichedBackdrop = custom.backdrop_path;
-        this._forceBackdrop = true;
-        return;
+        const force = custom.force_enrichment !== false;
+        if (force) {
+          this._enrichedBackdrop = custom.backdrop_path;
+          this._forceBackdrop = true;
+          return;
+        }
+        if (!item.backdrop_path) {
+          this._enrichedBackdrop = custom.backdrop_path;
+          this._forceBackdrop = false;
+          return;
+        }
       }
 
       const match = await getBestEnrichmentMatch(item);
@@ -259,16 +278,25 @@ export const trailer = {
       if (!item?.id) return;
       this._trailerItemId = item.id;
 
-      // title_overrides: per-field override, always wins if trailer_key is set
-      const custom = await getCustomOverrideMatch(item);
-      if (custom?.trailer_key) {
-        this._enrichedTrailerKey = custom.trailer_key;
-        this._forceTrailer = true;
-        return;
-      }
-
       const videos = item?.videos?.results || [];
       const hasTrailer = videos.some(v => v.type === 'Trailer' || v.type === 'Teaser' || v.type === 'CustomPriority');
+
+      // See _loadPosterEnrichment for force_enrichment semantics.
+      const custom = await getCustomOverrideMatch(item);
+      if (custom?.trailer_key) {
+        const force = custom.force_enrichment !== false;
+        if (force) {
+          this._enrichedTrailerKey = custom.trailer_key;
+          this._forceTrailer = true;
+          return;
+        }
+        if (!hasTrailer) {
+          this._enrichedTrailerKey = custom.trailer_key;
+          this._forceTrailer = false;
+          return;
+        }
+      }
+
       const match = await getBestEnrichmentMatch(item);
       if (!hasTrailer || match?.force_enrichment) {
         if (match?.trailer_key) {

@@ -14,7 +14,7 @@ const db = createClient({
 });
 
 const result = await db.execute(`
-    SELECT tmdb_id, media_type, poster_path, backdrop_path, trailer_key
+    SELECT tmdb_id, media_type, poster_path, backdrop_path, trailer_key, force_enrichment
     FROM title_overrides
     WHERE tmdb_id IS NOT NULL
 `);
@@ -25,6 +25,8 @@ const data = result.rows.map(row => ({
     poster_path: row.poster_path || null,
     backdrop_path: row.backdrop_path || null,
     trailer_key: row.trailer_key || null,
+    // Default 1 (force) for legacy rows where the column doesn't exist yet.
+    force_enrichment: row.force_enrichment === 0 ? false : true,
 }));
 
 const outPath = join(__dirname, '..', 'public', 'data', 'custom-enrichment.json');
