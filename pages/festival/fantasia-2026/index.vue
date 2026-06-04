@@ -322,6 +322,10 @@ const CATEGORY_ORDER = [
     'Cheval Noir Competition',
     'Septentrion Shadows',
     'Les Fantastiques Week-Ends du Cinéma Québécois',
+    'Documentaries from the Edge',
+    'Animation Plus',
+    'Underground',
+    'My First Fantasia',
     'TBA',
 ];
 
@@ -329,6 +333,10 @@ const CATEGORY_LABELS = {
     'Cheval Noir Competition': 'Cheval Noir Competition',
     'Septentrion Shadows': 'Septentrion Shadows',
     'Les Fantastiques Week-Ends du Cinéma Québécois': 'Les Fantastiques Week-Ends du Cinéma Québécois',
+    'Documentaries from the Edge': 'Documentaries from the Edge',
+    'Animation Plus': 'Animation Plus',
+    'Underground': 'Underground',
+    'My First Fantasia': 'My First Fantasia',
     'TBA': 'TBA (Por anunciarse)',
     OTHER: 'Other',
 };
