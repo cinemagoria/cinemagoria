@@ -223528,6 +223528,32 @@
       "tmdb_id": 1456349,
       "imdb_id": "",
       "won": 1
+    },
+    {
+      "id": 102,
+      "year": "2026",
+      "film_title": "Fjord",
+      "original_title": "Fjord",
+      "director": "Cristian Mungiu",
+      "country": "Romania, France, Norway, Finland, Denmark, Sweden",
+      "tmdb_id": 1401459,
+      "imdb_id": "tt35410859",
+      "won": 1,
+      "rank": "gold",
+      "shared": false
+    },
+    {
+      "id": 103,
+      "year": "2026",
+      "film_title": "Minotaur",
+      "original_title": "Минотавр",
+      "director": "Andrey Zvyagintsev",
+      "country": "Latvia, France, Germany",
+      "tmdb_id": 848700,
+      "imdb_id": "tt37118301",
+      "won": 1,
+      "rank": "silver",
+      "shared": false
     }
   ],
   "goldenLion": [
