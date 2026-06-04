@@ -611,7 +611,8 @@ export default {
           return `https://image.tmdb.org/t/p/w185${notification.series_poster_path}`;
         }
         if (notification.person_id) {
-          return this.getSeriesPosterUrl(notification.person_id);
+          const cached = this.getSeriesPosterUrl(notification.person_id);
+          if (cached) return cached;
         }
         return '/placeholders/image_not_found_yet_es.webp';
       }
