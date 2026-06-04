@@ -19,10 +19,10 @@ onMounted(() => {
 const festivals = [
   { slug: 'kviff-2026',     name: 'KVIFF',          year: 2026, city: 'Karlovy Vary', country: 'Chequia',
     startDate: '2026-07-03', endDate: '2026-07-11', dateLabel: '3 – 11 jul 2026',
-    image: '/festivals/kviff/kviff_backdrop_2026_es.webp', comingSoon: true },
+    image: '/festivals/kviff/kviff_backdrop_2026_es.webp' },
   { slug: 'fantasia-2026',  name: 'Fantasia',       year: 2026, city: 'Montreal',    country: 'Canadá',
     startDate: '2026-07-16', endDate: '2026-08-02', dateLabel: '16 jul – 2 ago 2026',
-    image: '/festivals/fantasia/fantasia_backdrop_2026_es.webp', comingSoon: true },
+    image: '/festivals/fantasia/fantasia_backdrop_2026_es.webp' },
   { slug: 'tribeca-2026',   name: 'Tribeca',        year: 2026, city: 'Nueva York',    country: 'EE. UU.',
     startDate: '2026-06-03', endDate: '2026-06-14', dateLabel: '3 – 14 jun 2026',
     image: '/festivals/tribeca/tribeca_backdrop_2026_es.webp' },
