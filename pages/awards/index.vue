@@ -75,6 +75,7 @@
                   <th>Película</th>
                   <th>Director</th>
                   <th :class="$style.countryTh">País</th>
+                  <th :class="$style.awardTh">Premio</th>
                   <th :class="$style.resultTh">Resultado</th>
                 </tr>
               </thead>
@@ -97,6 +98,12 @@
                     <span :class="$style.clickable" @click="searchPerson(item.director)">{{ item.director }}</span>
                   </td>
                   <td :class="$style.mutedCell">{{ item.country }}</td>
+                  <td>
+                    <span :class="[$style.awardChip, item.rank === 'silver' ? $style.awardChipSilver : $style.awardChipGold]">
+                      {{ awardRankLabel(item, currentAward) }}
+                    </span>
+                    <span v-if="item.shared" :class="$style.sharedTag">Compartido</span>
+                  </td>
                   <td><span :class="$style.winnerBadge">GANÓ</span></td>
                 </tr>
               </tbody>
@@ -272,6 +279,21 @@ async function searchPerson(name) {
     const json = await res.json();
     if (json.results?.length) router.push(`/person/${json.results[0].id}`);
   } catch (e) { console.error('person search error', e); }
+}
+
+// Etiqueta del premio por fila (festival-style). Por defecto el grand-prize
+// (p. ej. "Palma de Oro") para preservar entries históricas sin `rank`;
+// `rank === 'silver'` cambia al subcampeón por festival.
+const FESTIVAL_SILVER_LABELS = {
+  palme: 'Gran Premio',
+  goldenLion: 'Gran Premio del Jurado',
+  goldenBear: 'Oso de Plata (Gran Premio del Jurado)',
+};
+function awardRankLabel(item, award) {
+  if (item.rank === 'silver') {
+    return FESTIVAL_SILVER_LABELS[award.key] || `${award.name} (Subcampeón)`;
+  }
+  return award.name;
 }
 
 const translateCategory = (category) => {
@@ -561,6 +583,41 @@ useHead({
 
 .resultTh  { width: 80px; }
 .countryTh { width: 120px; }
+.awardTh   { width: 180px; }
+
+.awardChip {
+  display: inline-block;
+  padding: 0.18rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+.awardChipGold {
+  background: rgba(255, 215, 0, 0.14);
+  color: #FFD700;
+  border-color: rgba(255, 215, 0, 0.4);
+}
+.awardChipSilver {
+  background: rgba(192, 192, 192, 0.12);
+  color: #D7D7D7;
+  border-color: rgba(192, 192, 192, 0.38);
+}
+.sharedTag {
+  display: inline-block;
+  margin-left: 0.45rem;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: #8AE8FC;
+  border: 1px solid rgba(138, 232, 252, 0.45);
+  background: rgba(138, 232, 252, 0.08);
+}
 
 .winnerRow {
   background: linear-gradient(90deg, rgba(139, 233, 253,0.09) 0%, transparent 100%);
