@@ -52,7 +52,7 @@
       <div v-else>
         <div v-if="activeTab === 'films'" class="films-grid">
             <!-- Initial rollout banner: lineup is still being imported -->
-            <div v-if="features.length === 0 && shorts.length === 0" class="rollout-banner">
+            <div v-if="orderedCategories.length === 0" class="rollout-banner">
               <div class="rollout-banner__icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
               </div>
@@ -62,44 +62,26 @@
               </div>
             </div>
 
-            <div v-if="features.length > 0" class="film-category">
-                <div class="category-header" @click="featuresOpen = !featuresOpen">
+            <div
+              v-for="cat in orderedCategories"
+              :key="cat"
+              class="film-category"
+            >
+                <div class="category-header" @click="toggleCategoryOpen(cat)">
                     <h2 class="listing__title category-title">
-                        Largometrajes
-                        <span class="category-count">({{ features.length }})</span>
+                        {{ categoryLabel(cat) }}
+                        <span class="category-count">({{ (filmsByCategory[cat] || []).length }})</span>
                     </h2>
-                    <button class="expand-btn" :aria-label="featuresOpen ? 'Colapsar' : 'Expandir'">
-                        <svg v-if="featuresOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-chevrons-down-up-icon lucide-list-chevrons-down-up"><path d="M3 5h8"/><path d="M3 12h8"/><path d="M3 19h8"/><path d="m15 5 3 3 3-3"/><path d="m15 19 3-3 3 3"/></svg>
+                    <button class="expand-btn" :aria-label="isCategoryOpen(cat) ? 'Colapsar' : 'Expandir'">
+                        <svg v-if="isCategoryOpen(cat)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-chevrons-down-up-icon lucide-list-chevrons-down-up"><path d="M3 5h8"/><path d="M3 12h8"/><path d="M3 19h8"/><path d="m15 5 3 3 3-3"/><path d="m15 19 3-3 3 3"/></svg>
                         <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-collapse-icon lucide-list-collapse"><path d="M10 5h11"/><path d="M10 12h11"/><path d="M10 19h11"/><path d="m3 10 3-3-3-3"/><path d="m3 20 3-3-3-3"/></svg>
                     </button>
                 </div>
                 <transition name="slide">
-                    <div v-show="featuresOpen" class="listing__items">
+                    <div v-show="isCategoryOpen(cat)" class="listing__items">
                         <FantasiaCard
-                            v-for="item in features"
-                            :key="`feature-${item.id}`"
-                            :item="item"
-                        />
-                    </div>
-                </transition>
-            </div>
-
-            <div v-if="shorts.length > 0" class="film-category">
-                <div class="category-header" @click="shortsOpen = !shortsOpen">
-                    <h2 class="listing__title category-title">
-                        Cortometrajes
-                        <span class="category-count">({{ shorts.length }})</span>
-                    </h2>
-                    <button class="expand-btn" :aria-label="shortsOpen ? 'Colapsar' : 'Expandir'">
-                        <svg v-if="shortsOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-chevrons-down-up-icon lucide-list-chevrons-down-up"><path d="M3 5h8"/><path d="M3 12h8"/><path d="M3 19h8"/><path d="m15 5 3 3 3-3"/><path d="m15 19 3-3 3 3"/></svg>
-                        <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-collapse-icon lucide-list-collapse"><path d="M10 5h11"/><path d="M10 12h11"/><path d="M10 19h11"/><path d="m3 10 3-3-3-3"/><path d="m3 20 3-3-3-3"/></svg>
-                    </button>
-                </div>
-                <transition name="slide">
-                    <div v-show="shortsOpen" class="listing__items">
-                        <FantasiaCard
-                            v-for="item in shorts"
-                            :key="`short-${item.id}`"
+                            v-for="item in (filmsByCategory[cat] || [])"
+                            :key="`${cat}-${item.id}`"
                             :item="item"
                         />
                     </div>
@@ -333,17 +315,54 @@ const awards = ref([]);
 const schedule = ref([]);
 const openDays = ref(new Set());
 
-const featuresOpen = ref(true);
-const shortsOpen = ref(true);
+// Fantasia 2026 first-wave sections (#357). The OTHER bucket catches any
+// section that arrives in later waves before it gets added to CATEGORY_ORDER,
+// so newly announced films never disappear between releases.
+const CATEGORY_ORDER = [
+    'Cheval Noir Competition',
+    'Septentrion Shadows',
+    'Les Fantastiques Week-Ends du Cinéma Québécois',
+    'TBA',
+];
 
-// Features/Shorts split per Fantasia issue #336 (runtime threshold ≥ 40 min).
-const features = computed(() => {
-    return films.value?.results?.filter(f => !f.runtime || f.runtime >= 40) || [];
+const CATEGORY_LABELS = {
+    'Cheval Noir Competition': 'Cheval Noir Competition',
+    'Septentrion Shadows': 'Septentrion Shadows',
+    'Les Fantastiques Week-Ends du Cinéma Québécois': 'Les Fantastiques Week-Ends du Cinéma Québécois',
+    'TBA': 'TBA (Por anunciarse)',
+    OTHER: 'Other',
+};
+
+const categoryOpen = ref({});
+
+const filmsByCategory = computed(() => {
+    const map = Object.fromEntries(CATEGORY_ORDER.map((c) => [c, []]));
+    map.OTHER = [];
+    for (const f of films.value?.results || []) {
+        const key = String(f.category || f.section || '').trim();
+        if (key && map[key] !== undefined) map[key].push(f);
+        else map.OTHER.push(f);
+    }
+    return map;
 });
 
-const shorts = computed(() => {
-    return films.value?.results?.filter(f => f.runtime > 0 && f.runtime < 40) || [];
+const orderedCategories = computed(() => {
+    const out = CATEGORY_ORDER.filter((c) => (filmsByCategory.value[c] || []).length > 0);
+    if ((filmsByCategory.value.OTHER || []).length > 0) out.push('OTHER');
+    return out;
 });
+
+function categoryLabel (cat) {
+    return CATEGORY_LABELS[cat] || cat;
+}
+
+function isCategoryOpen (cat) {
+    return categoryOpen.value[cat] !== false;
+}
+
+function toggleCategoryOpen (cat) {
+    categoryOpen.value = { ...categoryOpen.value, [cat]: !isCategoryOpen(cat) };
+}
 
 const formatDate = (dateStr) => {
     const options = { weekday: 'long', month: 'long', day: 'numeric' };
