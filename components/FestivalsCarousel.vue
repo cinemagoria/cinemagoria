@@ -67,6 +67,7 @@ import BifffCard from '~/components/BifffCard.vue';
 import BaficiCard from '~/components/BaficiCard.vue';
 import CuffCard from '~/components/CuffCard.vue';
 import CannesCard from '~/components/CannesCard.vue';
+import KviffCard from '~/components/KviffCard.vue';
 
 const AUTOPLAY_INTERVAL = 10000;
 
@@ -87,6 +88,7 @@ export default {
     BaficiCard,
     CuffCard,
     CannesCard,
+    KviffCard,
   },
 
   props: {
@@ -140,6 +142,7 @@ export default {
         bafici: 'BaficiCard',
         cuff: 'CuffCard',
         cannes: 'CannesCard',
+        kviff: 'KviffCard',
       };
       return cardMap[item.festival_source] || 'SundanceCard';
     },

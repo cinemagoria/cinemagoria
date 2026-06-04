@@ -123,7 +123,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     // Batched: 1 HTTP request + 1 Turso `IN` query for all 11 festivals.
     // Replaces the previous fan-out of 11 parallel /api/festival/{slug}/films
     // calls that was bottlenecking the homepage at 35-38s on the slow wave.
-    const FESTIVAL_SLUGS = ['sundance','berlinale','rotterdam','slamdance','sxsw','romford','bifff','bafici','cannes','tribeca','cuff'];
+    const FESTIVAL_SLUGS = ['sundance','berlinale','rotterdam','slamdance','sxsw','romford','bifff','bafici','cannes','tribeca','cuff','kviff'];
     const fetchAllFestivalsBatched = async (limit = 1000) => {
         try {
             const data = await $fetch(`/api/festival/films-batch?festivals=${FESTIVAL_SLUGS.join(',')}&limit=${limit}`);
@@ -168,7 +168,8 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     const cannesList = festivalsBuckets.cannes || [];
     const tribecaList = festivalsBuckets.tribeca || [];
     const cuffList = festivalsBuckets.cuff || [];
-    
+    const kviffList = festivalsBuckets.kviff || [];
+
      const FEATURED_ORDER = [
         // tribeca 2026
         'Turn It Up!',
@@ -259,7 +260,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
     
-    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList, ...romfordList, ...bifffList, ...baficiList, ...cannesList, ...tribecaList, ...cuffList];
+    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList, ...romfordList, ...bifffList, ...baficiList, ...cannesList, ...tribecaList, ...cuffList, ...kviffList];
     
     let mixedFestivalFilms = allFestivalFilms.filter(f => {
         const t = norm(f.title);
