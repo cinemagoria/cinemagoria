@@ -329,7 +329,7 @@ const CATEGORY_LABELS = {
     'Cheval Noir Competition': 'Cheval Noir Competition',
     'Septentrion Shadows': 'Septentrion Shadows',
     'Les Fantastiques Week-Ends du Cinéma Québécois': 'Les Fantastiques Week-Ends du Cinéma Québécois',
-    'TBA': 'TBA',
+    'TBA': 'TBA (To be announced)',
     OTHER: 'Other',
 };
 
