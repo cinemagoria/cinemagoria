@@ -87,6 +87,43 @@ function _hasNonLatinScript(text) {
     return /[^\u0000-\u024F\u1E00-\u1EFF\u2000-\u206F\u2100-\u214F\d\s.,!?:;'"()\-–—/&@#$%+='"""''…·•½¼¾°ºª×÷]/.test(text);
 }
 
+// Check if any credit person carries a non-Latin name. Only sample the top
+// of each list — full crews can hit dozens of names and the heuristic only
+// needs to know whether to spend one extra TMDB call on the en-US fallback.
+function _hasNonLatinScriptInCredits(credits) {
+    if (!credits) return false;
+    const sample = [
+        ...((credits.cast || []).slice(0, 12)),
+        ...((credits.crew || []).slice(0, 24)),
+    ];
+    return sample.some(p => p && p.name && _hasNonLatinScript(p.name));
+}
+
+// Merge en-US person names into the es-ES credits payload by `person.id`.
+// Only replaces names that are non-Latin in `esCredits` with their Latin
+// counterpart from `enCredits`. Mutates `esCredits` in place — names that
+// already render in a Latin script stay untouched.
+function _replaceCreditsWithEnFallback(esCredits, enCredits) {
+    if (!esCredits || !enCredits) return;
+    const byId = new Map();
+    for (const list of [enCredits.cast || [], enCredits.crew || []]) {
+        for (const p of list) {
+            if (p && p.id && p.name && !_hasNonLatinScript(p.name)) {
+                byId.set(p.id, p.name);
+            }
+        }
+    }
+    if (byId.size === 0) return;
+    for (const list of [esCredits.cast || [], esCredits.crew || []]) {
+        for (const p of list) {
+            if (p && p.id && p.name && _hasNonLatinScript(p.name)) {
+                const enName = byId.get(p.id);
+                if (enName) p.name = enName;
+            }
+        }
+    }
+}
+
 // Fetch English title fallback for a movie or TV show with non-Latin title
 async function _fetchEnglishTitleFallback(id, mediaType) {
     try {
@@ -504,13 +541,15 @@ export function getMovie(id) {
             if (getEnv('API_LANG') !== 'en-US') {
                 const needsOverviewFallback = !responseData.overview;
                 const needsTitleFallback = _hasNonLatinScript(responseData.title);
+                const needsCreditsFallback = _hasNonLatinScriptInCredits(responseData.credits);
 
-                if (needsOverviewFallback || needsTitleFallback) {
+                if (needsOverviewFallback || needsTitleFallback || needsCreditsFallback) {
                     try {
                         const fallbackResponse = await axios.get(`${apiUrl}/movie/${id}`, {
                             params: {
                                 api_key: getEnv('API_KEY'),
                                 language: 'en-US',
+                                append_to_response: 'credits',
                             },
                         });
                         if (needsOverviewFallback && fallbackResponse.data.overview) {
@@ -519,6 +558,9 @@ export function getMovie(id) {
                         }
                         if (needsTitleFallback && fallbackResponse.data.title && !_hasNonLatinScript(fallbackResponse.data.title)) {
                             responseData.title = fallbackResponse.data.title;
+                        }
+                        if (needsCreditsFallback && fallbackResponse.data.credits) {
+                            _replaceCreditsWithEnFallback(responseData.credits, fallbackResponse.data.credits);
                         }
                     } catch (e) {
                         console.warn('Failed to fetch en-US fallback', e);
@@ -842,13 +884,15 @@ export function getTvShow(id) {
             if (getEnv('API_LANG') !== 'en-US') {
                 const needsOverviewFallback = !responseData.overview;
                 const needsTitleFallback = _hasNonLatinScript(responseData.name);
+                const needsCreditsFallback = _hasNonLatinScriptInCredits(responseData.credits);
 
-                if (needsOverviewFallback || needsTitleFallback) {
+                if (needsOverviewFallback || needsTitleFallback || needsCreditsFallback) {
                     try {
                         const fallbackResponse = await axios.get(`${apiUrl}/tv/${id}`, {
                             params: {
                                 api_key: getEnv('API_KEY'),
                                 language: 'en-US',
+                                append_to_response: 'credits',
                             },
                         });
                         if (needsOverviewFallback && fallbackResponse.data.overview) {
@@ -857,6 +901,9 @@ export function getTvShow(id) {
                         }
                         if (needsTitleFallback && fallbackResponse.data.name && !_hasNonLatinScript(fallbackResponse.data.name)) {
                             responseData.name = fallbackResponse.data.name;
+                        }
+                        if (needsCreditsFallback && fallbackResponse.data.credits) {
+                            _replaceCreditsWithEnFallback(responseData.credits, fallbackResponse.data.credits);
                         }
                     } catch (e) {
                         console.warn('Failed to fetch en-US fallback', e);
