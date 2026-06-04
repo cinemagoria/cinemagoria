@@ -514,10 +514,23 @@ export function getMovies(query, page = 1) {
 
 export function getMovie(id) {
     return new Promise((resolve, reject) => {
+        // Capture runtime-config values SYNC, before any await crosses the
+        // Nuxt async-context boundary. `useRuntimeConfig()` (called via
+        // `getEnv`) only resolves the public config when the request's
+        // async-local-storage context is alive — after `Promise.all` + `await`
+        // we land in a microtask that has lost that context in production
+        // builds, and a follow-up `getEnv('API_KEY')` returns `undefined`,
+        // which silently breaks the en-US fallback (TMDB returns
+        // "Invalid API key" but axios resolves with status 200, so the
+        // `catch` never fires). Capturing once keeps the same key alive for
+        // the whole promise chain.
+        const apiKey = getEnv('API_KEY');
+        const apiLang = getEnv('API_LANG');
+
         const mainRequest = axios.get(`${apiUrl}/movie/${id}`, {
             params: {
-                api_key: getEnv('API_KEY'),
-                language: getEnv('API_LANG'),
+                api_key: apiKey,
+                language: apiLang,
                 append_to_response: 'videos,credits,images,external_ids,release_dates',
                 include_image_language: 'es,en,null',
             },
@@ -525,7 +538,7 @@ export function getMovie(id) {
 
         const extraVideosRequest = axios.get(`${apiUrl}/movie/${id}/videos`, {
             params: {
-                api_key: getEnv('API_KEY'),
+                api_key: apiKey,
                 language: 'en-US'
             }
         }).catch(() => ({ data: { results: [] } }));
@@ -538,7 +551,7 @@ export function getMovie(id) {
                 return;
             }
 
-            if (getEnv('API_LANG') !== 'en-US') {
+            if (apiLang !== 'en-US') {
                 const needsOverviewFallback = !responseData.overview;
                 const needsTitleFallback = _hasNonLatinScript(responseData.title);
                 const needsCreditsFallback = _hasNonLatinScriptInCredits(responseData.credits);
@@ -547,7 +560,7 @@ export function getMovie(id) {
                     try {
                         const fallbackResponse = await axios.get(`${apiUrl}/movie/${id}`, {
                             params: {
-                                api_key: getEnv('API_KEY'),
+                                api_key: apiKey,
                                 language: 'en-US',
                                 append_to_response: 'credits',
                             },
@@ -857,10 +870,16 @@ export function getTvShows(query, page = 1) {
 
 export function getTvShow(id) {
     return new Promise((resolve, reject) => {
+        // Capture runtime-config values before any await — see getMovie() for
+        // why useRuntimeConfig() can return undefined after crossing the
+        // async-context boundary in production Nitro builds.
+        const apiKey = getEnv('API_KEY');
+        const apiLang = getEnv('API_LANG');
+
         const mainRequest = axios.get(`${apiUrl}/tv/${id}`, {
             params: {
-                api_key: getEnv('API_KEY'),
-                language: getEnv('API_LANG'),
+                api_key: apiKey,
+                language: apiLang,
                 append_to_response: 'videos,credits,images,external_ids,content_ratings',
                 include_image_language: 'es,en,null',
             },
@@ -868,7 +887,7 @@ export function getTvShow(id) {
 
         const extraVideosRequest = axios.get(`${apiUrl}/tv/${id}/videos`, {
             params: {
-                api_key: getEnv('API_KEY'),
+                api_key: apiKey,
                 language: 'en-US'
             }
         }).catch(() => ({ data: { results: [] } }));
@@ -881,7 +900,7 @@ export function getTvShow(id) {
                 return;
             }
 
-            if (getEnv('API_LANG') !== 'en-US') {
+            if (apiLang !== 'en-US') {
                 const needsOverviewFallback = !responseData.overview;
                 const needsTitleFallback = _hasNonLatinScript(responseData.name);
                 const needsCreditsFallback = _hasNonLatinScriptInCredits(responseData.credits);
@@ -890,7 +909,7 @@ export function getTvShow(id) {
                     try {
                         const fallbackResponse = await axios.get(`${apiUrl}/tv/${id}`, {
                             params: {
-                                api_key: getEnv('API_KEY'),
+                                api_key: apiKey,
                                 language: 'en-US',
                                 append_to_response: 'credits',
                             },
