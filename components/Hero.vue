@@ -2466,12 +2466,12 @@ export default {
 
 .noirBadgeGroup {
     position: absolute;
-    top: 1.2rem;
+    top: 0.2rem;
     right: 2rem;
     z-index: 20;
 
     @media (max-width: 600px) {
-        top: 1rem;
+        top: 0.15rem;
         right: 1.5rem;
     }
 }
@@ -2480,34 +2480,40 @@ export default {
     display: block;
     text-decoration: none;
     cursor: pointer;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 
     &:hover {
-        opacity: 0.85;
         transform: scale(1.05);
+
+        .noirBadgeImgEl {
+            filter: drop-shadow(0 5px 12px rgba(0, 0, 0, 0.75))
+                    drop-shadow(0 2px 6px rgba(0, 0, 0, 0.65))
+                    drop-shadow(0 0 1px rgba(0, 0, 0, 0.65));
+        }
     }
 }
 
 .noirBadgeImgEl {
-    width: 73px;
-    height: 73px;
+    width: 88px;
+    height: 88px;
     border-radius: 14px;
     object-fit: cover;
     filter: drop-shadow(0 5px 12px rgba(0, 0, 0, 0.75)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.65));
+    transition: filter 0.4s ease;
 
     @media (max-width: 768px) {
-        width: 82px;
-        height: 82px;
+        width: 96px;
+        height: 96px;
     }
 
     @media (max-width: 600px) {
-        width: 61px;
-        height: 61px;
+        width: 72px;
+        height: 72px;
     }
 
     @media (max-width: 400px) {
-        width: 53px;
-        height: 53px;
+        width: 62px;
+        height: 62px;
     }
 }
 
