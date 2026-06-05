@@ -12,10 +12,7 @@
       <div class="noir-modal-body">
         <div class="noir-modal-header">
           <img src="/ui/noir-selection-500x500.svg" alt="N.O.I.R" class="noir-modal-logo" />
-          <div>
-            <h2 class="noir-modal-title">N.O.I.R.</h2>
-            <p class="noir-modal-subtitle">Nothing Out Is Ready</p>
-          </div>
+          <p class="noir-modal-subtitle">Nothing Out Is Ready</p>
         </div>
 
         <div class="noir-modal-divider"></div>
@@ -219,39 +216,69 @@ export default {
 
 .noir-modal-header {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: 10px;
   margin-bottom: 20px;
 }
 
 .noir-modal-logo {
-  width: 82px;
-  height: 82px;
+  width: 150px;
+  height: 150px;
   flex-shrink: 0;
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
-  align-self: center;
-  margin-top: 6px;
+  animation: noirLogoIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) both,
+             noirLogoPulse 4s ease-in-out 1.4s infinite;
 }
 
-.noir-modal-title {
-  font-size: 36px;
-  font-weight: 800;
-  color: #ffffff;
-  margin: 0 0 4px 0;
-  letter-spacing: 4px;
-  text-shadow: 0 0 20px rgba(139, 233, 253, 0.3);
-  text-align: left;
+@keyframes noirLogoIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.85);
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7))
+            drop-shadow(0 0 0 rgba(139, 233, 253, 0));
+  }
+  60% {
+    opacity: 1;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7))
+            drop-shadow(0 0 22px rgba(139, 233, 253, 0.55));
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7))
+            drop-shadow(0 0 10px rgba(139, 233, 253, 0.25));
+  }
+}
+
+@keyframes noirLogoPulse {
+  0%, 100% {
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7))
+            drop-shadow(0 0 8px rgba(139, 233, 253, 0.2));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7))
+            drop-shadow(0 0 18px rgba(139, 233, 253, 0.45));
+    transform: scale(1.03);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .noir-modal-logo {
+    animation: none;
+  }
 }
 
 .noir-modal-subtitle {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 400;
   color: #8BE9FD;
-  margin: -8px 0 0 0;
+  margin: 0;
   font-style: italic;
   letter-spacing: 0.5px;
-  text-align: left;
+  text-align: center;
 }
 
 .noir-modal-divider {
@@ -313,10 +340,10 @@ export default {
 }
 
 .noir-manifesto-content {
-  min-height: 160px;
   display: flex;
   align-items: flex-start;
   justify-content: center;
+  transition: min-height 0.3s ease;
 }
 
 .noir-manifesto-step {
@@ -493,24 +520,17 @@ export default {
     padding: 35px 20px 25px;
   }
   .noir-modal-logo {
-    width: 50px;
-    height: 50px;
+    width: 110px;
+    height: 110px;
   }
   .noir-modal-header {
-    gap: 12px;
-  }
-  .noir-modal-title {
-    font-size: 28px;
-    letter-spacing: 3px;
+    gap: 8px;
   }
   .noir-modal-subtitle {
-    font-size: 14px;
+    font-size: 15px;
   }
   .noir-modal-text {
     font-size: 13px;
-  }
-  .noir-manifesto-content {
-    min-height: 200px;
   }
   .noir-manifesto-line {
     font-size: 12px;
