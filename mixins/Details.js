@@ -168,6 +168,9 @@ export const poster = {
         if (this._enrichedPoster.startsWith('http')) return this._enrichedPoster;
         return `${apiImgUrl}/w500${this._enrichedPoster}`;
       }
+      // Final fallback for festival films: festival_films.image_url
+      // Only present on items coming from festival endpoints; TMDB items don't carry this field.
+      if (item.image_url) return item.image_url;
     },
   },
 };

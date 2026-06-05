@@ -40,19 +40,15 @@ function mapRow(row: any) {
             ? `https://image.tmdb.org/t/p/w500${tmdbData.poster_path}`
             : null
 
-    // Tribeca-only: mirror /api/festival/tribeca/films — keep poster_path a clean
-    // TMDB-or-null value and expose image_url separately so TribecaCard can show
-    // the DB cover until TMDB backfills a poster. Overrides sit after the spread
-    // so tmdbData can't clobber them; other festivals still fold image_url into
-    // poster_path.
-    const isTribeca = row.festival_name === 'Tribeca Festival'
-
+    // Universal Tribeca pattern: keep poster_path as TMDB-or-null, expose image_url
+    // separately. This lets the Details `poster` mixin resolve the full chain:
+    //   title_overrides (force) → TMDB → title_overrides (fallback) → festival image_url.
+    // poster_path & image_url are set AFTER the spread so tmdbData can't clobber them.
     return {
         id: row.tmdb_id || row.id,
         internal_id: row.id,
         title: row.title,
         overview: row.description || tmdbData.overview || '',
-        poster_path: tmdbPoster || row.image_url,
         backdrop_path: tmdbData.backdrop_path ? `https://image.tmdb.org/t/p/w1280${tmdbData.backdrop_path}` : null,
         release_date: tmdbData.release_date || tmdbData.tmdb_release_date || '',
         vote_average: tmdbData.vote_average || 0,
@@ -63,7 +59,8 @@ function mapRow(row: any) {
         imdb_id: row.imdb_id,
         tmdb_id: row.tmdb_id,
         ...tmdbData,
-        ...(isTribeca ? { poster_path: tmdbPoster, image_url: row.image_url } : {}),
+        poster_path: tmdbPoster,
+        image_url: row.image_url || null,
     }
 }
 

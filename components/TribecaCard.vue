@@ -56,7 +56,7 @@
 
 <script>
 import { apiImgUrl } from '~/utils/api';
-import { name, stars } from '~/mixins/Details';
+import { name, stars, poster as posterMixin } from '~/mixins/Details';
 import QuickFav from '~/components/global/QuickFav';
 import CardActions from '~/components/global/CardActions.vue';
 import Loader from '~/components/Loader.vue';
@@ -70,6 +70,11 @@ export default {
   mixins: [
     name,
     stars,
+    // posterMixin provides `poster_path` (computed) que respeta title_overrides:
+    //   - force_enrichment=true  → override siempre gana
+    //   - force_enrichment=false → override solo gana si TMDB no tiene poster
+    // Lo consumimos en el computed `poster` debajo y le agregamos el fallback Tribeca-only.
+    posterMixin,
   ],
 
   props: {
@@ -147,20 +152,17 @@ export default {
 
   computed: {
     poster () {
-      const item = this.item;
-      // 1. TMDB poster (full URL)
-      if (item.poster_path && item.poster_path.startsWith('http')) {
-        return item.poster_path;
-      }
-      // 2. TMDB poster (relative path → build full URL)
-      if (item.poster_path && item.poster_path.startsWith('/')) {
-        return `${apiImgUrl}/w500${item.poster_path}`;
-      }
-      // 3. Tribeca DB image_url (same image used in schedule tab)
-      if (item.image_url) {
-        return item.image_url;
-      }
-      // 4. No image available
+      // posterMixin's `poster_path` resuelve la jerarquía de override:
+      //   1. title_overrides force-override (siempre gana)
+      //   2. TMDB poster_path
+      //   3. title_overrides fallback (gana si TMDB no tiene)
+      // Acá agregamos el fallback final Tribeca-only a festival_films.image_url.
+      if (this.poster_path) return this.poster_path;
+
+      // 4. Tribeca DB image_url (same image used in schedule tab)
+      if (this.item.image_url) return this.item.image_url;
+
+      // 5. No image available
       return false;
     },
 
