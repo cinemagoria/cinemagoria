@@ -332,7 +332,7 @@
 <script setup>
 import UserNav from '@/components/global/UserNav';
 import MarkdownIt from 'markdown-it'
-import { apiImgUrl } from '@/utils/api'
+import { apiImgUrl, getCustomEnrichment } from '@/utils/api'
 
 const md = new MarkdownIt({ breaks: true, html: true })
 const route = useRoute()
@@ -459,6 +459,16 @@ async function fetchRelatedEntities() {
 
   const apiKey = config.public.apiKey
 
+  // title_overrides — misma jerarquía que el resto de la app (mixin Details.js):
+  //   force_enrichment=true  → override siempre gana, incluso sobre TMDB
+  //   force_enrichment=false → override solo gana cuando TMDB no tiene poster
+  // Persons no están en title_overrides (la tabla cubre movie/tv).
+  const customEnrichment = await getCustomEnrichment()
+  const getOverride = (entity) => {
+    if (entity.type === 'person') return null
+    return customEnrichment.get(`${entity.id}-${entity.type}`) || customEnrichment.get(entity.id) || null
+  }
+
   const results = await Promise.all(
     ids.map(async (entity) => {
       try {
@@ -472,7 +482,17 @@ async function fetchRelatedEntities() {
 
         const name = res.title || res.name || 'Desconocido'
         const imagePath = entity.type === 'person' ? res.profile_path : res.poster_path
-        const image = imagePath ? `${apiImgUrl}/w185${imagePath}` : null
+        const tmdbImage = imagePath ? `${apiImgUrl}/w185${imagePath}` : null
+
+        let image = tmdbImage
+        const override = getOverride(entity)
+        if (override?.poster_path) {
+          const force = override.force_enrichment !== false
+          if (force || !tmdbImage) {
+            // Cloudinary URLs vienen completas; las pisamos sin reformatear.
+            image = override.poster_path
+          }
+        }
 
         return { type: entity.type, id: entity.id, name, image }
       } catch {
