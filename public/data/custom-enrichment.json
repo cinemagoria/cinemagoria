@@ -130,10 +130,10 @@
   {
     "tmdb_id": 983635,
     "media_type": "movie",
-    "poster_path": null,
+    "poster_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780619619/cinemagoria/posters/poster_override_983635.webp",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780614071/cinemagoria/backdrops/backdrop_override_983635.webp",
-    "trailer_key": null,
-    "force_enrichment": false
+    "trailer_key": "ILuzCR4uWMo",
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1618824,
