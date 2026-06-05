@@ -894,5 +894,13 @@
     "backdrop_path": null,
     "trailer_key": null,
     "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1708389,
+    "media_type": "movie",
+    "poster_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780680854/cinemagoria/posters/poster_override_1708389.webp",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780680895/cinemagoria/backdrops/backdrop_override_1708389.webp",
+    "trailer_key": null,
+    "force_enrichment": true
   }
 ]
