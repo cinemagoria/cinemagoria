@@ -221,6 +221,45 @@ export async function getCustomEnrichment() {
     return _customEnrichmentPromise;
 }
 
+/**
+ * Resuelve la URL del poster siguiendo la jerarquía estándar (igual que el
+ * mixin `poster` de Details.js). Ver cinemagoria-main/utils/api.js para docs completas.
+ */
+export async function resolveItemPoster({ id, media_type, posterSnapshot = null }) {
+    if (id == null) return posterSnapshot || null;
+
+    const [custom, hero, noir] = await Promise.all([
+        getCustomEnrichment(),
+        getHeroEnrichment(),
+        getNoirEnrichment(),
+    ]);
+
+    const key = media_type ? `${id}-${media_type}` : null;
+    const lookup = (map) => (key && map.get(key)) || map.get(id) || null;
+
+    const c = lookup(custom);
+    const h = lookup(hero);
+    const n = lookup(noir);
+
+    const fmt = (p) => {
+        if (!p) return null;
+        if (p.startsWith('http')) return p;
+        return `${apiImgUrl}/w500${p}`;
+    };
+
+    if (c?.poster_path && c.force_enrichment !== false) return c.poster_path;
+    if (h?.poster_path && h.force_enrichment) return fmt(h.poster_path);
+    if (n?.poster_path && n.force_enrichment) return fmt(n.poster_path);
+
+    if (posterSnapshot) return fmt(posterSnapshot);
+
+    if (c?.poster_path) return c.poster_path;
+    if (h?.poster_path) return fmt(h.poster_path);
+    if (n?.poster_path) return fmt(n.poster_path);
+
+    return null;
+}
+
 
 const traktApiUrl = 'https://api.trakt.tv';
 

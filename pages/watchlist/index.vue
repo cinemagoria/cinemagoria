@@ -189,7 +189,7 @@
                       </div>
                       <img 
                         :ref="'poster-' + item.details.idForDb"
-                        :src="item.details.posterForDb || fallbackImageUrl" 
+                        :src="resolvedPoster(item)"
                         alt="Poster" 
                         class="poster" 
                         :class="{ 'loaded': imageLoadStates[item.details.idForDb] }"
@@ -205,7 +205,7 @@
                       </div>
                       <img 
                         :ref="'poster-' + item.details.idForDb"
-                        :src="item.details.posterForDb || fallbackImageUrl" 
+                        :src="resolvedPoster(item)"
                         alt="Poster" 
                         class="poster" 
                         :class="{ 'loaded': imageLoadStates[item.details.idForDb] }"
@@ -542,6 +542,7 @@
 <script>
 
 import UserNav from '@/components/global/UserNav';
+import { resolveItemPoster } from '@/utils/api';
 
 
 export default {
@@ -633,6 +634,7 @@ export default {
       selectedItems: [],
 
       imageLoadStates: {},
+      posterOverrideMap: {},
       activeCardMenuId: null,
       undoBannerVisible: false,
       undoItem: null,
@@ -1515,11 +1517,36 @@ export default {
         this.tvGenres = Array.from(tvGenresSet);
         this.years = Array.from(years).sort();
 
+        this.loadPosterOverrides([...moviesFetched, ...tvFetched]);
+
       } catch (error) {
         console.error(error.message);
       } finally {
         this.isLoadingFavorites = false;
       }
+    },
+
+    async loadPosterOverrides(items) {
+      const newMap = {};
+      await Promise.all(items.map(async (item) => {
+        const d = item?.details;
+        if (!d?.idForDb) return;
+        try {
+          const url = await resolveItemPoster({
+            id: Number(d.idForDb),
+            media_type: d.typeForDb,
+            posterSnapshot: d.posterForDb || null,
+          });
+          if (url) newMap[d.idForDb] = url;
+        } catch {}
+      }));
+      this.posterOverrideMap = newMap;
+    },
+
+    resolvedPoster(item) {
+      return this.posterOverrideMap[item?.details?.idForDb]
+        || item?.details?.posterForDb
+        || this.fallbackImageUrl;
     },
 
     removeFavorite(item) {
