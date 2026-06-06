@@ -109,6 +109,67 @@ export async function getCustomEnrichment() {
     return _customEnrichmentPromise;
 }
 
+/**
+ * Resuelve la URL del poster para un item siguiendo la jerarquía estándar de
+ * la app — la misma que aplica el mixin `poster` de Details.js:
+ *
+ *   1. title_overrides poster_path (force=true)         → gana siempre
+ *   2. hero_selections / noir_historical (force=true)   → gana sobre TMDB
+ *   3. item.poster_path / posterSnapshot (TMDB-or-stored)
+ *   4. title_overrides poster_path (force=false)        → solo si no hay (2)/(3)
+ *   5. hero_selections / noir_historical (sin force)    → solo si no hay (2)/(3)
+ *   6. null (el caller decide placeholder)
+ *
+ * Pensado para páginas que usan <img> raw en lugar de Card.vue (watchlist, lists/[slug]).
+ *
+ * @param {Object} args
+ * @param {number|string} args.id          tmdb_id del item
+ * @param {string} args.media_type         'movie' | 'tv'
+ * @param {string|null} args.posterSnapshot  Snapshot del poster guardado en la lista del usuario
+ *                                           (item.details.posterForDb) o item.poster_path del API.
+ *                                           Puede ser URL completa, path TMDB '/abc.jpg', o null.
+ */
+export async function resolveItemPoster({ id, media_type, posterSnapshot = null }) {
+    if (id == null) return posterSnapshot || null;
+
+    const [custom, hero, noir] = await Promise.all([
+        getCustomEnrichment(),
+        getHeroEnrichment(),
+        getNoirEnrichment(),
+    ]);
+
+    const key = media_type ? `${id}-${media_type}` : null;
+    const lookup = (map) => (key && map.get(key)) || map.get(id) || null;
+
+    const c = lookup(custom);
+    const h = lookup(hero);
+    const n = lookup(noir);
+
+    const fmt = (p) => {
+        if (!p) return null;
+        if (p.startsWith('http')) return p;
+        return `${apiImgUrl}/w500${p}`;
+    };
+
+    // (1) title_overrides force=true — gana siempre.
+    if (c?.poster_path && c.force_enrichment !== false) {
+        return c.poster_path;
+    }
+    // (2) hero/noir force=true — gana sobre TMDB snapshot.
+    if (h?.poster_path && h.force_enrichment) return fmt(h.poster_path);
+    if (n?.poster_path && n.force_enrichment) return fmt(n.poster_path);
+
+    // (3) Snapshot disponible (TMDB poster cuando se guardó el item, o el item.poster_path actual).
+    if (posterSnapshot) return fmt(posterSnapshot);
+
+    // (4)(5) Sin snapshot — caen los fallbacks no-force en orden.
+    if (c?.poster_path) return c.poster_path;
+    if (h?.poster_path) return fmt(h.poster_path);
+    if (n?.poster_path) return fmt(n.poster_path);
+
+    return null;
+}
+
 const traktApiUrl = 'https://api.trakt.tv';
 
 const lists = {

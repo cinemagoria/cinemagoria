@@ -195,7 +195,7 @@
                       </div>
                       <img 
                         :ref="'poster-' + item.details.idForDb"
-                        :src="item.details.posterForDb || fallbackImageUrl" 
+                        :src="resolvedPoster(item)"
                         alt="Poster" 
                         class="poster" 
                         :class="{ 'loaded': imageLoadStates[item.details.idForDb] }"
@@ -211,7 +211,7 @@
                       </div>
                       <img 
                         :ref="'poster-' + item.details.idForDb"
-                        :src="item.details.posterForDb || fallbackImageUrl" 
+                        :src="resolvedPoster(item)"
                         alt="Poster" 
                         class="poster" 
                         :class="{ 'loaded': imageLoadStates[item.details.idForDb] }"
@@ -569,6 +569,7 @@
 <script>
 
 import UserNav from '@/components/global/UserNav';
+import { resolveItemPoster } from '@/utils/api';
 
 
 async function getUserName(userEmail) {
@@ -695,6 +696,9 @@ export default {
       selectedItems: [],
 
       imageLoadStates: {},
+      // Resolved poster per item (title_overrides force/fallback + hero/noir + snapshot).
+      // Keyed by item.details.idForDb. Populado por loadPosterOverrides() después de checkData.
+      posterOverrideMap: {},
       activeCardMenuId: null,
       undoBannerVisible: false,
       undoItem: null,
@@ -1581,11 +1585,38 @@ export default {
         this.tvGenres = Array.from(tvGenresSet);
         this.years = Array.from(years).sort();
 
+        // Resolver overrides en background — el primer render usa posterForDb
+        // (snapshot) y se actualiza reactivamente cuando este Promise termina.
+        this.loadPosterOverrides([...moviesFetched, ...tvFetched]);
+
       } catch (error) {
         console.error(error.message);
       } finally {
         this.isLoadingFavorites = false;
       }
+    },
+
+    async loadPosterOverrides(items) {
+      const newMap = {};
+      await Promise.all(items.map(async (item) => {
+        const d = item?.details;
+        if (!d?.idForDb) return;
+        try {
+          const url = await resolveItemPoster({
+            id: Number(d.idForDb),
+            media_type: d.typeForDb,
+            posterSnapshot: d.posterForDb || null,
+          });
+          if (url) newMap[d.idForDb] = url;
+        } catch {}
+      }));
+      this.posterOverrideMap = newMap;
+    },
+
+    resolvedPoster(item) {
+      return this.posterOverrideMap[item?.details?.idForDb]
+        || item?.details?.posterForDb
+        || this.fallbackImageUrl;
     },
 
     removeFavorite(item) {
