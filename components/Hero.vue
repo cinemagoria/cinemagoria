@@ -38,7 +38,7 @@
         <div>
           <div v-if="isHomepage || isNoirTitle" :class="$style.noirBadgeGroup">
             <nuxt-link to="/noir" :class="$style.noirBadgeImg" title="N.O.I.R">
-              <img src="/ui/noir-selection-500x500.webp" alt="N.O.I.R" :class="$style.noirBadgeImgEl" />
+              <img src="/ui/noir-selection-500x500-v2.webp" alt="N.O.I.R" :class="$style.noirBadgeImgEl" />
             </nuxt-link>
           </div>
           <NoirModal v-if="showNoirModal" @close="showNoirModal = false" />
