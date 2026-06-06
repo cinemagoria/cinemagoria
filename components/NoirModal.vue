@@ -11,7 +11,7 @@
 
       <div class="noir-modal-body">
         <div class="noir-modal-header">
-          <img src="/ui/noir-selection-500x500.svg" alt="N.O.I.R" class="noir-modal-logo" />
+          <img src="/ui/noir-selection-500x500-v2.svg" alt="N.O.I.R" class="noir-modal-logo" />
           <p class="noir-modal-subtitle">Nothing Out Is Ready</p>
         </div>
 
