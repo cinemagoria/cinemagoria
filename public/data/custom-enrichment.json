@@ -902,5 +902,21 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780680895/cinemagoria/backdrops/backdrop_override_1708389.webp",
     "trailer_key": null,
     "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1550555,
+    "media_type": "movie",
+    "poster_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780748477/cinemagoria/posters/poster_override_1550555.webp",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780748504/cinemagoria/backdrops/backdrop_override_1550555.webp",
+    "trailer_key": null,
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1357952,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780751356/cinemagoria/backdrops/backdrop_override_1357952.webp",
+    "trailer_key": null,
+    "force_enrichment": true
   }
 ]
