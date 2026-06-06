@@ -303,6 +303,14 @@
               <!-- Body (segunda mitad — solo cuando se pudo dividir por un <h2>) -->
               <div v-if="bodyParts.after" class="article-body" v-html="bodyParts.after"></div>
 
+              <!-- Carrusel de artículos relacionados (se arma a partir del footer markdown que el CMS inyecta en body_es) -->
+              <RelatedArticlesCarousel
+                v-if="relatedSlugs.length"
+                :slugs="relatedSlugs"
+                locale="es"
+                heading="Artículos Relacionados"
+              />
+
               <!-- Mobile-only sources (sidebar hidden on mobile) -->
               <div v-if="parsedSources.length" class="mobile-sources">
                 <h3 class="mobile-sources-title">Fuentes</h3>
@@ -331,8 +339,10 @@
 
 <script setup>
 import UserNav from '@/components/global/UserNav';
+import RelatedArticlesCarousel from '@/components/global/RelatedArticlesCarousel';
 import MarkdownIt from 'markdown-it'
 import { apiImgUrl, getCustomEnrichment } from '@/utils/api'
+import { stripRelatedFooter, extractRelatedSlugs } from '@/utils/relatedFooter'
 
 const md = new MarkdownIt({ breaks: true, html: true })
 const route = useRoute()
@@ -555,12 +565,18 @@ const parsedSources = computed(() => {
   })
 })
 
+const relatedSlugs = computed(() => {
+  return extractRelatedSlugs(article.value?.body_es || '')
+})
+
 const renderedBody = computed(() => {
-  if (!article.value?.body_es) return ''
+  const raw = article.value?.body_es || ''
+  if (!raw) return ''
+  const stripped = stripRelatedFooter(raw)
   try {
-    return md.render(article.value.body_es)
+    return md.render(stripped)
   } catch {
-    return article.value.body_es
+    return stripped
   }
 })
 

@@ -18,8 +18,8 @@
   {
     "tmdb_id": 1569780,
     "media_type": "movie",
-    "poster_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776851186/cinemagoria/posters/poster_1569780.webp",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780615418/cinemagoria/backdrops/backdrop_override_1569780.webp",
+    "poster_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780727173/cinemagoria/posters/poster_override_1569780.webp",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780727189/cinemagoria/backdrops/backdrop_override_1569780.webp",
     "trailer_key": null,
     "force_enrichment": true
   },
