@@ -38,6 +38,16 @@ export default defineEventHandler(async (event) => {
             bySlug.set(row.slug as string, row)
         }
 
+        const parseTopics = (raw: unknown): string[] => {
+            if (!raw) return []
+            try {
+                const parsed = JSON.parse(raw as string)
+                return Array.isArray(parsed) ? parsed : []
+            } catch {
+                return []
+            }
+        }
+
         const items = slugs
             .map(slug => bySlug.get(slug))
             .filter(Boolean)
@@ -50,7 +60,7 @@ export default defineEventHandler(async (event) => {
                 description_es: row.description_es,
                 image_url: row.image_url,
                 published_at: row.published_at,
-                topics: row.topics_json ? JSON.parse(row.topics_json as string) : [],
+                topics: parseTopics(row.topics_json),
             }))
 
         setResponseHeader(event, 'Cache-Control', 'public, max-age=300, s-maxage=600')
