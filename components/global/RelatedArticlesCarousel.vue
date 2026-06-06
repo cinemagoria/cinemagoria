@@ -73,29 +73,27 @@ const props = defineProps({
   heading: { type: String, default: 'Related Articles' },
 })
 
-const items = ref([])
 const trackEl = ref(null)
 const atStart = ref(true)
 const atEnd = ref(false)
 const showNav = ref(false)
+const brokenImages = ref(new Set())
 
 const slugsKey = computed(() => props.slugs.join(','))
 
-watch(slugsKey, async (key) => {
-  items.value = []
-  if (!key) return
-  try {
-    const res = await $fetch('/api/articles/by-slugs', { params: { slugs: key } })
-    items.value = res?.results || []
-  } catch (e) {
-    console.error('[RelatedArticlesCarousel] fetch failed', e)
-    items.value = []
-  }
-  await nextTick()
-  measure()
-}, { immediate: true })
+const { data: res } = await useAsyncData(
+  `related-articles-${slugsKey.value}`,
+  () => slugsKey.value
+    ? $fetch('/api/articles/by-slugs', { params: { slugs: slugsKey.value } })
+    : { results: [] },
+  { watch: [slugsKey] }
+)
 
-const visibleItems = computed(() => items.value.filter(it => !!it.image_url))
+const items = computed(() => res.value?.results || [])
+
+const visibleItems = computed(() =>
+  items.value.filter(it => !!it.image_url && !brokenImages.value.has(it.slug))
+)
 
 function cardTitle(item) {
   if (props.locale === 'es') return item.title_es || item.title_en || ''
@@ -124,6 +122,7 @@ function formatDate(dateStr) {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+      timeZone: 'UTC',
     })
   } catch {
     return ''
@@ -131,8 +130,7 @@ function formatDate(dateStr) {
 }
 
 function onImageError(ev, item) {
-  // Mirrors the NewsCarousel behavior: hide broken card by stripping image, which removes it from visibleItems on next pass.
-  item.image_url = null
+  brokenImages.value.add(item.slug)
 }
 
 function measure() {
@@ -155,6 +153,13 @@ function scrollByPage(direction) {
   const visible = Math.max(1, Math.floor(el.clientWidth / step))
   el.scrollBy({ left: direction * step * visible, behavior: 'smooth' })
 }
+
+watch(items, async () => {
+  if (process.client) {
+    await nextTick()
+    measure()
+  }
+}, { immediate: true })
 
 let resizeHandler = null
 onMounted(() => {
