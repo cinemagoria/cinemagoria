@@ -2505,12 +2505,12 @@ export default {
 
 .noirBadgeGroup {
     position: absolute;
-    top: 0.2rem;
+    top: -0.5rem;
     right: 2rem;
     z-index: 20;
 
     @media (max-width: 600px) {
-        top: 0.15rem;
+        top: -0.55rem;
         right: 1.5rem;
     }
 }
@@ -2523,12 +2523,6 @@ export default {
 
     &:hover {
         transform: scale(1.05);
-
-        .noirBadgeImgEl {
-            filter: drop-shadow(0 5px 12px rgba(0, 0, 0, 0.75))
-                    drop-shadow(0 2px 6px rgba(0, 0, 0, 0.65))
-                    drop-shadow(0 0 1px rgba(0, 0, 0, 0.65));
-        }
     }
 }
 
@@ -2537,7 +2531,6 @@ export default {
     height: 88px;
     border-radius: 14px;
     object-fit: cover;
-    filter: drop-shadow(0 5px 12px rgba(0, 0, 0, 0.75)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.65));
     transition: filter 0.4s ease;
 
     @media (max-width: 768px) {
