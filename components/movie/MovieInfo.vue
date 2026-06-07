@@ -471,14 +471,16 @@ export default {
     awardsSummary() {
       const oscarCount = this.winnerOscars.length;
       const ggCount = this.winnerGoldenGlobes.length;
-      const palmeCount = this.palme.length;
+      const palmeGold = this.palme.filter(a => a.rank !== 'silver').length;
+      const palmeSilver = this.palme.filter(a => a.rank === 'silver').length;
       const lionCount = this.goldenLion.length;
       const bearCount = this.goldenBear.length;
-      
+
       const parts = [];
       if (oscarCount > 0) parts.push(`${oscarCount} Oscar${oscarCount > 1 ? 's' : ''}`);
       if (ggCount > 0) parts.push(`${ggCount} Golden Globe${ggCount > 1 ? 's' : ''}`);
-      if (palmeCount > 0) parts.push(`${palmeCount} Palme d'Or`);
+      if (palmeGold > 0) parts.push(`${palmeGold} Palme d'Or`);
+      if (palmeSilver > 0) parts.push(`${palmeSilver} Grand Prix`);
       if (lionCount > 0) parts.push(`${lionCount} Golden Lion${lionCount > 1 ? 's' : ''}`);
       if (bearCount > 0) parts.push(`${bearCount} Golden Bear${bearCount > 1 ? 's' : ''}`);
       
