@@ -87,7 +87,7 @@
 
         <div v-if="palme.length" :class="$style.awardSection">
             <h3 :class="$style.awardLogo">
-                <span :class="$style.goldText">CANNES</span> PALME D'OR
+                <span :class="$style.goldText">CANNES</span> {{ palmeHeaderLabel }}
             </h3>
             <div :class="$style.tableWrapper">
                 <table :class="$style.awardsTable">
@@ -103,7 +103,7 @@
                 <tbody>
                     <tr v-for="award in palme" :key="award.id" :class="$style.winnerRow">
                         <td :class="$style.yearCell">{{ award.year }}</td>
-                        <td>Palme d'Or</td>
+                        <td>{{ award.rank === 'silver' ? 'Grand Prix' : "Palme d'Or" }}</td>
                         <td v-if="type !== 'person'">
                              <span 
                                 :class="$style.clickableName"
@@ -225,6 +225,14 @@ const goldenGlobes = computed(() => {
 const palme = computed(() => {
     const data = props.palme || internalPalme.value;
     return [...data].sort((a, b) => b.year - a.year);
+});
+const palmeHeaderLabel = computed(() => {
+    const items = palme.value;
+    const hasGold = items.some(a => a.rank !== 'silver');
+    const hasSilver = items.some(a => a.rank === 'silver');
+    if (hasGold && hasSilver) return "PALME D'OR / GRAND PRIX";
+    if (hasSilver) return 'GRAND PRIX';
+    return "PALME D'OR";
 });
 const goldenLion = computed(() => {
     const data = props.goldenLion || internalGoldenLion.value;
