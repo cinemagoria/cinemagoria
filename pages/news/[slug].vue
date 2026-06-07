@@ -227,14 +227,17 @@
               </div>
 
               <!-- Trailer embed (always at top when trailer exists) -->
+              <!-- Supports YouTube (default) and Vimeo via trailer_provider.
+                   Legacy rows w/ NULL provider render as YouTube — no break. -->
               <div v-if="article.trailer_youtube_id" class="article-trailer">
                 <div class="trailer-wrapper">
                   <iframe
-                    :src="`https://www.youtube.com/embed/${article.trailer_youtube_id}`"
+                    :src="trailerEmbedSrc"
                     title="Trailer"
                     frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    :allow="trailerEmbedAllow"
                     allowfullscreen
+                    referrerpolicy="strict-origin-when-cross-origin"
                   ></iframe>
                 </div>
               </div>
@@ -580,6 +583,25 @@ const renderedBody = computed(() => {
   } catch {
     return stripped
   }
+})
+
+// Trailer embed src + allow list, parameterized by trailer_provider.
+// Legacy rows without trailer_provider render as YouTube — keeps existing
+// articles working without any backfill. Vimeo uses dnt=1 (no tracking).
+const trailerEmbedSrc = computed(() => {
+  const id = article.value?.trailer_youtube_id
+  if (!id) return ''
+  const provider = article.value?.trailer_provider || 'youtube'
+  if (provider === 'vimeo') return `https://player.vimeo.com/video/${id}?dnt=1`
+  return `https://www.youtube.com/embed/${id}`
+})
+
+const trailerEmbedAllow = computed(() => {
+  const provider = article.value?.trailer_provider || 'youtube'
+  if (provider === 'vimeo') {
+    return 'autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share'
+  }
+  return 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
 })
 
 // Split the rendered body in two halves at the middle <h2> (## subtitles)
