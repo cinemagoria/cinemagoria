@@ -1,5 +1,6 @@
 import MarkdownIt from 'markdown-it'
 import { useDb } from './db'
+import { getVimeoOembed } from './vimeo-oembed'
 
 // Shared, canonical news-feed builder used by /feed (and by the legacy
 // /api/article/rss redirect target). Keep this file byte-identical between
@@ -50,7 +51,7 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
     const result = await db.execute({
         sql: `SELECT slug, title_en, title_es, description_en, description_es,
                      body_en, body_es, image_url, published_at,
-                     trailer_youtube_id, carousel_assets, topics_json
+                     trailer_youtube_id, trailer_provider, carousel_assets, topics_json
               FROM cinemagoria_articles
               WHERE is_visible = 1 AND is_cinemagoria = 1
                 AND (datetime(published_at) IS NULL OR datetime(published_at) <= datetime('now'))
@@ -65,6 +66,23 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
     const selfBase = isEs ? ES_BASE : EN_BASE
     const altBase = isEs ? EN_BASE : ES_BASE
     const altLang = isEs ? 'en' : 'es'
+
+    // Pre-fetch Vimeo oEmbeds in parallel — needed for thumbnails (Vimeo, unlike
+    // YouTube, doesn't expose a deterministic thumb URL). Failures resolve to
+    // null and downgrade to a text-only trailer block; the feed never breaks.
+    // Dedupe by ID so duplicates (rare but possible) don't trigger duplicate
+    // requests; the helper also caches in-process for 24h.
+    const vimeoIds: string[] = []
+    for (const row of rows) {
+        const id = row.trailer_youtube_id ? String(row.trailer_youtube_id).trim() : ''
+        const provider = (row.trailer_provider as string) || 'youtube'
+        if (id && provider === 'vimeo') vimeoIds.push(id)
+    }
+    const uniqueVimeoIds = Array.from(new Set(vimeoIds))
+    const vimeoEntries = await Promise.all(
+        uniqueVimeoIds.map(async id => [id, await getVimeoOembed(id)] as const)
+    )
+    const vimeoMap = new Map(vimeoEntries)
 
     const items = rows.map(row => {
         const title = (isEs ? row.title_es : row.title_en) || row.title_en || row.title_es || ''
@@ -81,6 +99,10 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
 
         const cover = row.image_url ? String(row.image_url) : ''
         const ytId = row.trailer_youtube_id ? String(row.trailer_youtube_id).trim() : ''
+        // `ytId` is a historical name — with Vimeo support it now holds the
+        // video ID for either provider. `provider` selects the URL/thumb path.
+        // Legacy rows have NULL provider → treated as 'youtube'.
+        const provider = ((row.trailer_provider as string) || 'youtube') as 'youtube' | 'vimeo'
         const carousel = firstCarousel(row.carousel_assets)
 
         let bodyHtml = ''
@@ -104,11 +126,29 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
             parts.push(`<p><em>${escapeXml(description)}</em></p>`)
         }
         if (ytId) {
-            const watch = `https://www.youtube.com/watch?v=${escapeXml(ytId)}`
-            const thumb = `https://img.youtube.com/vi/${escapeXml(ytId)}/hqdefault.jpg`
-            parts.push(
-                `<p><a href="${watch}"><img src="${thumb}" alt="${escapeXml(title)} — trailer" /></a><br/><a href="${watch}">▶ ${isEs ? 'Ver el tráiler en YouTube' : 'Watch the trailer on YouTube'}</a></p>`
-            )
+            if (provider === 'vimeo') {
+                // Vimeo path — thumb URL is per-video (hash-based), so we look
+                // it up via oEmbed (pre-fetched above into vimeoMap). If the
+                // lookup failed, fall back to a text-only link so the feed
+                // never breaks because of a single bad video.
+                const watch = `https://vimeo.com/${escapeXml(ytId)}`
+                const thumb = vimeoMap.get(ytId)?.thumbnail_url || ''
+                const label = isEs ? 'Ver el tráiler en Vimeo' : 'Watch the trailer on Vimeo'
+                if (thumb) {
+                    parts.push(
+                        `<p><a href="${watch}"><img src="${escapeXml(thumb)}" alt="${escapeXml(title)} — trailer" /></a><br/><a href="${watch}">▶ ${label}</a></p>`
+                    )
+                } else {
+                    parts.push(`<p><a href="${watch}">▶ ${label}</a></p>`)
+                }
+            } else {
+                // YouTube path — unchanged from pre-Vimeo behavior.
+                const watch = `https://www.youtube.com/watch?v=${escapeXml(ytId)}`
+                const thumb = `https://img.youtube.com/vi/${escapeXml(ytId)}/hqdefault.jpg`
+                parts.push(
+                    `<p><a href="${watch}"><img src="${thumb}" alt="${escapeXml(title)} — trailer" /></a><br/><a href="${watch}">▶ ${isEs ? 'Ver el tráiler en YouTube' : 'Watch the trailer on YouTube'}</a></p>`
+                )
+            }
         }
         if (ytId && showCarousel) {
             // Trailer + carousel: carousel goes mid-body, like the site.
@@ -146,7 +186,10 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
             media.push(`      <media:content url="${escapeXml(carousel)}" medium="image"/>`)
         }
         if (ytId) {
-            media.push(`      <media:content url="https://www.youtube.com/watch?v=${escapeXml(ytId)}" type="text/html" medium="video"/>`)
+            const videoWatchUrl = provider === 'vimeo'
+                ? `https://vimeo.com/${escapeXml(ytId)}`
+                : `https://www.youtube.com/watch?v=${escapeXml(ytId)}`
+            media.push(`      <media:content url="${videoWatchUrl}" type="text/html" medium="video"/>`)
         }
 
         return `    <item>

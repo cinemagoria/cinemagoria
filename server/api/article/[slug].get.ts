@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
         const result = await db.execute({
             sql: `SELECT id, slug, title_en, body_en, description_en, title_es, body_es, description_es,
                          image_url, sources_json, topics_json, published_at, created_at, is_visible,
-                         trailer_youtube_id, carousel_assets, related_tmdb_ids
+                         trailer_youtube_id, trailer_provider, carousel_assets, related_tmdb_ids
                   FROM cinemagoria_articles
                   WHERE slug = ? AND is_visible = 1
                   LIMIT 1`,
@@ -53,6 +53,9 @@ export default defineEventHandler(async (event) => {
                 published_at: row.published_at,
                 created_at: row.created_at,
                 trailer_youtube_id: row.trailer_youtube_id || null,
+                // trailer_provider: 'youtube' (default) or 'vimeo'. Legacy rows
+                // pre-migration have NULL → frontend treats null as 'youtube'.
+                trailer_provider: (row.trailer_provider as string) || 'youtube',
                 carousel_assets: row.carousel_assets ? (row.carousel_assets as string).split(',').map(u => u.trim()).filter(Boolean) : [],
                 related_tmdb_ids: row.related_tmdb_ids ? JSON.parse(row.related_tmdb_ids as string) : [],
             }

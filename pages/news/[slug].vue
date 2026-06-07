@@ -225,14 +225,17 @@
               </div>
 
               <!-- Trailer embed (siempre arriba cuando existe trailer) -->
+              <!-- Soporta YouTube (default) y Vimeo según trailer_provider.
+                   Filas legacy con provider NULL renderizan como YouTube. -->
               <div v-if="article.trailer_youtube_id" class="article-trailer">
                 <div class="trailer-wrapper">
                   <iframe
-                    :src="`https://www.youtube.com/embed/${article.trailer_youtube_id}`"
+                    :src="trailerEmbedSrc"
                     title="Trailer"
                     frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    :allow="trailerEmbedAllow"
                     allowfullscreen
+                    referrerpolicy="strict-origin-when-cross-origin"
                   ></iframe>
                 </div>
               </div>
@@ -578,6 +581,25 @@ const renderedBody = computed(() => {
   } catch {
     return stripped
   }
+})
+
+// Trailer embed src + allow list, parametrizados por trailer_provider.
+// Filas legacy sin trailer_provider renderizan como YouTube — los artículos
+// existentes siguen funcionando sin backfill. Vimeo usa dnt=1 (sin tracking).
+const trailerEmbedSrc = computed(() => {
+  const id = article.value?.trailer_youtube_id
+  if (!id) return ''
+  const provider = article.value?.trailer_provider || 'youtube'
+  if (provider === 'vimeo') return `https://player.vimeo.com/video/${id}?dnt=1`
+  return `https://www.youtube.com/embed/${id}`
+})
+
+const trailerEmbedAllow = computed(() => {
+  const provider = article.value?.trailer_provider || 'youtube'
+  if (provider === 'vimeo') {
+    return 'autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share'
+  }
+  return 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
 })
 
 // Divide el body renderizado en dos mitades sobre el <h2> del medio (## subtítulos)
