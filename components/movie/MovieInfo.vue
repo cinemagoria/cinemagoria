@@ -483,14 +483,16 @@ export default {
     awardsSummary() {
       const oscarCount = this.winnerOscars.length;
       const ggCount = this.winnerGoldenGlobes.length;
-      const palmeCount = this.palme.length;
+      const palmeGold = this.palme.filter(a => a.rank !== 'silver').length;
+      const palmeSilver = this.palme.filter(a => a.rank === 'silver').length;
       const lionCount = this.goldenLion.length;
       const bearCount = this.goldenBear.length;
 
       const parts = [];
       if (oscarCount > 0) parts.push(`${oscarCount} Oscar${oscarCount > 1 ? 's' : ''}`);
       if (ggCount > 0) parts.push(`${ggCount} Globo${ggCount > 1 ? 's' : ''} de Oro`);
-      if (palmeCount > 0) parts.push(`${palmeCount} Palma de Oro`);
+      if (palmeGold > 0) parts.push(`${palmeGold} Palma de Oro`);
+      if (palmeSilver > 0) parts.push(`${palmeSilver} Gran Premio`);
       if (lionCount > 0) parts.push(`${lionCount} León${lionCount > 1 ? 'es' : ''} de Oro`);
       if (bearCount > 0) parts.push(`${bearCount} Oso${bearCount > 1 ? 's' : ''} de Oro`);
       return parts.join(', ');
