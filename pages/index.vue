@@ -168,31 +168,42 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     const fantasiaList = festivalsBuckets.fantasia || [];
     
      const FEATURED_ORDER = [
+        // fantasia 2026
+        'Hot Spot',
+        'Ferine',
+        'The Eyes',
+        'God Skin',
+        // kviff 2026
+        'Truck Driver',
+        'The Spring',
+        'Hijamat',
+        'Black Money for White',
+        'Pipes',
         // tribeca 2026
+        'The Accompanist',
+        'Cotton Fever',
+        'Here I\'m Alive',
         'The Last Day',
         'The Revisionist',
         'Crooks',
         'Turn It Up!',
-        'In the Hand of Dante',
         'Stand Up',
         'Breeder',
         'Recluse',
+        'Only What We Carry',
         // cannes 2026
-        'Victorian Psycho',
         'Hope|cannes',
+        'Victorian Psycho',
         'Colony',
         'Minotaur',
         'Fatherland',
         'Fjord',
         'Parallel Tales',
         'Paper Tiger',
-        'El Partido',
-        'Bitter Christmas',
         'All of a Sudden',
         'The Unknown',
         'Everytime',
         'Gentle Monster',
-        
         'Teenage Sex and Death at Camp Miasma',
         'Her Private Hell',
         'Titanic Ocean',
@@ -230,7 +241,6 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Forest High',
         'At the sea',
         'Salvation',
-        'The Red Hangar',
         // rotterdam 2026
         'Variations on a theme',
         'Silent Friend',
@@ -239,19 +249,13 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Butterfly',
         'Late Fame',
         // sundance 2026
-        'To Hold a Mountain',
         'The Weight',
         'Zi',
         'Shame and Money',
         'undertone',
         'The Only Living Pickpocket in New York',
-        'Leviticus',
-        'Tuner',
         'Time and Water',
         'Josephine',
-        'One in a Million',
-        'The Invite',
-        'Saccharine',
     ];
     
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
