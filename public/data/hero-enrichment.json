@@ -198,5 +198,13 @@
     "backdrop_path": null,
     "poster_path": null,
     "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1281331,
+    "media_type": "movie",
+    "trailer_key": "gM4LkaXwGuY",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1781129237/cinemagoria/backdrops/hero_1281331.webp",
+    "poster_path": "/8UjHIzPvV6h7co8XbkhGVyLhzfe.jpg",
+    "force_enrichment": true
   }
 ]
