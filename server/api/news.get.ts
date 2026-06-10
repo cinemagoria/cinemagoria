@@ -32,8 +32,7 @@ export default defineEventHandler(async (event) => {
                 args.push(`%${searchQuery}%`, `%${searchQuery}%`)
             }
 
-            sql += ` ORDER BY published_at DESC LIMIT ? OFFSET ?`
-            args.push(limit, offset)
+            sql += ` ORDER BY published_at DESC`
 
             const result = await db.execute({ sql, args })
 
