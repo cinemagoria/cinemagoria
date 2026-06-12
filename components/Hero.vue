@@ -2565,11 +2565,10 @@ export default {
 <style>
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.85);
+  inset: 0;
+  background: rgba(3, 4, 6, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2578,208 +2577,306 @@ export default {
 }
 
 .share-modal-content {
-  width: 100%;
-  max-width: 480px;
-  background: linear-gradient(to bottom right, #092739, #061720);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  background: rgba(3, 4, 6, 0.85);
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(31, 84, 103, 0.18), transparent 35%),
+    radial-gradient(circle at 85% 80%, rgba(139, 233, 253, 0.08), transparent 30%);
+  border-radius: 20px;
   padding: 0;
+  width: 100%;
+  max-width: 540px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(31, 84, 103, 0.5),
+    inset 0 0 24px rgba(139, 233, 253, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  animation: shareFloatIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  display: block;
+}
+
+.share-modal-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+  opacity: 0.8;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  pointer-events: none;
 }
 
 .share-modal-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: block;
+  padding: 26px 28px 6px;
+  border-bottom: none;
 }
 
 .share-modal-header h2 {
-  margin: 0;
-  font-size: 1.6rem;
-  font-weight: 500;
+  font-size: 24px;
+  font-weight: 800;
   color: #fff;
+  margin: 0;
+  letter-spacing: -0.5px;
+  text-shadow: 0 0 20px rgba(139, 233, 253, 0.25);
 }
 
 .close-button {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #a0aab2;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
   transition: all 0.2s ease;
   padding: 0;
-  margin-top: -1px;
+  margin: 0;
+  z-index: 2;
 }
 
 .close-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background-color: rgba(255, 95, 95, 0.1);
+  border-color: rgba(255, 95, 95, 0.3);
+  color: #ff7e7e;
 }
 
 .share-url-container,
 .share-field-container,
 .share-buttons-container {
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 28px;
+  border-bottom: none;
+}
+
+.share-buttons-container {
+  padding-bottom: 24px;
 }
 
 .share-label {
   display: block;
-  color: rgba(255, 255, 255, 0.7);
+  color: #e0e6ed;
+  font-size: 13px;
+  font-weight: 600;
   margin-bottom: 8px;
-  font-size: 1.4rem;
-  font-weight: 500;
+  letter-spacing: 0.2px;
 }
 
 .share-url-field {
   display: flex;
   align-items: stretch;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  overflow: hidden;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
 }
 
 .share-url-input {
   flex: 1;
-  background: transparent;
-  border: none;
-  color: #fff;
-  padding: 10px 12px;
-  font-size: 1.4rem;
+  min-width: 0;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(139, 233, 253, 0.2);
+  border-radius: 10px;
+  color: #8BE9FD;
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  font-size: 13px;
+  padding: 11px 14px;
   outline: none;
-  height: 100%;
+  transition: all 0.2s ease;
+  height: auto;
+  box-sizing: border-box;
+}
+
+.share-url-input:focus {
+  border-color: rgba(139, 233, 253, 0.6);
+  box-shadow: 0 0 0 3px rgba(139, 233, 253, 0.12);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .copy-button-container {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: stretch;
 }
 
 .copy-button {
-  border: none;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.7);
-  padding: 0;
-  width: 40px;
-  height: 100%;
+  flex-shrink: 0;
+  background: rgba(139, 233, 253, 0.08);
+  border: 1px solid rgba(139, 233, 253, 0.35);
+  color: #8BE9FD;
+  border-radius: 10px;
+  padding: 0 14px;
+  width: auto;
+  height: auto;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  min-height: 100%;
-  background: rgba(0, 0, 0, 0.2);
-  position: relative;
+  font-family: inherit;
+}
+
+.copy-button:hover {
+  background: rgba(139, 233, 253, 0.15);
+  border-color: #8BE9FD;
+  color: #8BE9FD;
 }
 
 .copy-success {
   position: absolute;
-  right: 50px;
-  color: #8BE9FD;
-  padding: 4px 8px;
-  border-radius: 4px;
+  right: 56px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(76, 217, 100, 0.12);
+  border: 1px solid rgba(76, 217, 100, 0.55);
+  color: #6ee07d;
+  padding: 4px 10px;
+  border-radius: 8px;
   font-size: 12px;
+  font-weight: 600;
   animation: fadeInOut 2s ease;
   white-space: nowrap;
-  
 }
 
 @keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-50%) scale(0.9); }
+  15% { opacity: 1; transform: translateY(-50%) scale(1); }
+  85% { opacity: 1; transform: translateY(-50%) scale(1); }
+  100% { opacity: 0; transform: translateY(-50%) scale(0.9); }
+}
+
+@keyframes fadeInOutMobile {
   0% { opacity: 0; }
   15% { opacity: 1; }
   85% { opacity: 1; }
   100% { opacity: 0; }
 }
 
-@media screen and (max-width: 480px) {
-  .copy-success {
-    right: auto;
-    top: -30px;
-  }
-}
-
-.copy-button:hover {
-  color: #fff;
-}
-
 .share-input,
 .share-textarea {
   width: 100%;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(139, 233, 253, 0.2);
+  border-radius: 10px;
   color: #fff;
-  padding: 10px 12px;
-  font-size: 1.4rem;
+  padding: 11px 14px;
+  font-size: 14px;
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  font-family: inherit;
 }
 
 .share-input:focus,
 .share-textarea:focus {
-  border-color: rgba(139, 233, 253, 0.5);
+  border-color: rgba(139, 233, 253, 0.6);
+  box-shadow: 0 0 0 3px rgba(139, 233, 253, 0.12);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .share-textarea {
-  height: 120px;
-  resize: none;
+  min-height: 90px;
+  height: auto;
+  resize: vertical;
+  line-height: 1.5;
 }
 
 .share-buttons {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .share-icon-button {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  color: rgba(255, 255, 255, 0.8);
-  padding: 0;
-  height: 48px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(139, 233, 253, 0.18);
+  color: #e0e6ed;
+  padding: 0;
   cursor: pointer;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .share-icon-button:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.1);
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.1);
+  border-color: #8BE9FD;
   transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(139, 233, 253, 0.18);
+}
+
+@keyframes shareFloatIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @media screen and (max-width: 480px) {
   .share-modal-content {
     max-width: 100%;
+    border-radius: 16px;
   }
-  
+
+  .share-modal-header {
+    padding: 22px 20px 4px;
+  }
+
+  .share-modal-header h2 {
+    font-size: 20px;
+  }
+
+  .share-url-container,
+  .share-field-container,
+  .share-buttons-container {
+    padding: 10px 20px;
+  }
+
+  .share-buttons-container {
+    padding-bottom: 22px;
+  }
+
   .share-buttons {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap: 8px;
   }
-  
-  .share-url-input, 
-  .share-input, 
-  .share-textarea {
-    font-size: 1.3rem;
-  }
-  
+
   .share-icon-button {
-    height: 44px;
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+  }
+
+  .share-url-input,
+  .share-input,
+  .share-textarea {
+    font-size: 13px;
+  }
+
+  .copy-success {
+    right: auto;
+    top: -34px;
+    transform: none;
+    animation: fadeInOutMobile 2s ease;
   }
 }
 

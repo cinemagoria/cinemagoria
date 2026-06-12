@@ -50,18 +50,31 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
           Noticias
         </NuxtLink>
-        <ClientOnly>
+        <div class="hero-actions">
+          <ClientOnly>
+            <button
+              v-if="userEmail"
+              class="hero-save-btn"
+              :class="{ 'is-saved': isArticleSaved }"
+              @click="toggleSave"
+              :title="isArticleSaved ? 'Eliminar de guardados' : 'Guardar artículo'"
+            >
+              <svg v-if="!isArticleSaved" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><line x1="12" x2="12" y1="7" y2="13"/><line x1="15" x2="9" y1="10" y2="10"/></svg>
+              <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="is-saved-icon"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/><path d="m9 10 2 2 4-4"/></svg>
+            </button>
+          </ClientOnly>
           <button
-            v-if="userEmail"
-            class="hero-save-btn"
-            :class="{ 'is-saved': isArticleSaved }"
-            @click="toggleSave"
-            :title="isArticleSaved ? 'Eliminar de guardados' : 'Guardar artículo'"
+            class="hero-share-btn"
+            @click="openShareModal"
+            title="Compartir artículo"
+            aria-label="Compartir artículo"
           >
-            <svg v-if="!isArticleSaved" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><line x1="12" x2="12" y1="7" y2="13"/><line x1="15" x2="9" y1="10" y2="10"/></svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="is-saved-icon"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/><path d="m9 10 2 2 4-4"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
           </button>
-        </ClientOnly>
+        </div>
       </div>
 
       <div class="news-section">
@@ -126,18 +139,31 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     Noticias
                   </NuxtLink>
-                  <ClientOnly>
+                  <div class="mobile-actions">
+                    <ClientOnly>
+                      <button
+                        v-if="userEmail"
+                        class="mobile-save-btn"
+                        :class="{ 'is-saved': isArticleSaved }"
+                        @click="toggleSave"
+                        :title="isArticleSaved ? 'Eliminar de guardados' : 'Guardar artículo'"
+                      >
+                        <svg v-if="!isArticleSaved" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><line x1="12" x2="12" y1="7" y2="13"/><line x1="15" x2="9" y1="10" y2="10"/></svg>
+                        <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="is-saved-icon"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/><path d="m9 10 2 2 4-4"/></svg>
+                      </button>
+                    </ClientOnly>
                     <button
-                      v-if="userEmail"
-                      class="mobile-save-btn"
-                      :class="{ 'is-saved': isArticleSaved }"
-                      @click="toggleSave"
-                      :title="isArticleSaved ? 'Eliminar de guardados' : 'Guardar artículo'"
+                      class="mobile-share-btn"
+                      @click="openShareModal"
+                      title="Compartir artículo"
+                      aria-label="Compartir artículo"
                     >
-                      <svg v-if="!isArticleSaved" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><line x1="12" x2="12" y1="7" y2="13"/><line x1="15" x2="9" y1="10" y2="10"/></svg>
-                      <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="is-saved-icon"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/><path d="m9 10 2 2 4-4"/></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                      </svg>
                     </button>
-                  </ClientOnly>
+                  </div>
                 </div>
 
                 <div class="article-date-row">
@@ -343,6 +369,16 @@
         </div>
       </div>
     </template>
+
+    <!-- Modal de compartir (se renderiza una sola vez; teleport al body) -->
+    <ArticleShareModal
+      v-if="article"
+      :open="isShareModalOpen"
+      :article-title="article.title_es"
+      :article-description="article.description_es"
+      :article-slug="article.slug"
+      @close="closeShareModal"
+    />
   </main>
   </div>
 </template>
@@ -351,6 +387,7 @@
 import UserNav from '@/components/global/UserNav';
 import RelatedArticlesCarousel from '@/components/global/RelatedArticlesCarousel';
 import ArticleAIDisclosure from '@/components/global/ArticleAIDisclosure';
+import ArticleShareModal from '@/components/global/ArticleShareModal';
 import MarkdownIt from 'markdown-it'
 import { apiImgUrl, getCustomEnrichment } from '@/utils/api'
 import { stripRelatedFooter, extractRelatedSlugs } from '@/utils/relatedFooter'
@@ -364,6 +401,14 @@ const isArticleSaved = ref(false)
 const savedLink = ref(null)
 const userEmail = ref(null)
 const carouselIndex = ref(0)
+const isShareModalOpen = ref(false)
+
+function openShareModal() {
+  isShareModalOpen.value = true
+}
+function closeShareModal() {
+  isShareModalOpen.value = false
+}
 
 watch(() => route.params.slug, () => {
   carouselIndex.value = 0
@@ -750,17 +795,24 @@ useHead(() => {
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
-.hero-save-btn {
+.hero-actions {
   position: absolute;
   top: 16px;
   right: 16px;
   z-index: 3;
   display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.hero-save-btn,
+.hero-share-btn {
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -768,12 +820,14 @@ useHead(() => {
   color: #fff;
   cursor: pointer;
   transition: all 0.2s ease;
+  padding: 0;
 }
 
-.hero-save-btn:hover {
-  background: rgba(139, 233, 253, 0.2);
-  border-color: #8BE9FD;
-  color: #8BE9FD;
+.hero-save-btn:hover,
+.hero-share-btn:hover {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #000;
   transform: scale(1.08);
 }
 
@@ -1037,6 +1091,14 @@ useHead(() => {
   display: none;
 }
 
+.mobile-share-btn {
+  display: none;
+}
+
+.mobile-actions {
+  display: none;
+}
+
 .mobile-header-row {
   display: none;
 }
@@ -1140,7 +1202,13 @@ useHead(() => {
   }
   .mobile-back-btn { display: inline-flex; align-items: center; gap: 4px; color: #8BE9FD; font-size: 14px; font-weight: 600; text-decoration: none; margin-bottom: 0; }
   .mobile-back-btn:hover { opacity: 0.8; }
-  .mobile-save-btn {
+  .mobile-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .mobile-save-btn,
+  .mobile-share-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1155,7 +1223,8 @@ useHead(() => {
     padding: 0;
     margin-bottom: 0;
   }
-  .mobile-save-btn:hover { background: rgba(139, 233, 253, 0.2); border-color: #8BE9FD; }
+  .mobile-save-btn:hover,
+  .mobile-share-btn:hover { background: rgba(139, 233, 253, 0.2); border-color: #8BE9FD; }
   .mobile-save-btn.is-saved { background: #8BE9FD; border-color: #8BE9FD; color: #000; }
   .mobile-save-btn .is-saved-icon { stroke: #000; }
   .sidebar-card { position: static; display: flex; flex-wrap: wrap; gap: 12px; padding: 15px; }
