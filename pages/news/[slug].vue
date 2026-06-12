@@ -308,6 +308,13 @@
               <!-- Body (second half — only shown when body was split at an <h2>) -->
               <div v-if="bodyParts.after" class="article-body" v-html="bodyParts.after"></div>
 
+              <!-- AI editorial disclosure + error-report modal -->
+              <ArticleAIDisclosure
+                :article-id="article.id"
+                :article-slug="article.slug"
+                :article-title="article.title_en"
+              />
+
               <!-- Related Articles carousel (rendered from the markdown footer the CMS appends to body_en) -->
               <RelatedArticlesCarousel
                 v-if="relatedSlugs.length"
@@ -345,6 +352,7 @@
 <script setup>
 import UserNav from '@/components/global/UserNav';
 import RelatedArticlesCarousel from '@/components/global/RelatedArticlesCarousel';
+import ArticleAIDisclosure from '@/components/global/ArticleAIDisclosure';
 import MarkdownIt from 'markdown-it'
 import { apiImgUrl, getCustomEnrichment } from '@/utils/api'
 import { stripRelatedFooter, extractRelatedSlugs } from '@/utils/relatedFooter'
