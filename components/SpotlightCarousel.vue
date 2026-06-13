@@ -94,6 +94,30 @@ export default {
 </script>
 
 <style scoped>
+/* Cyan gradient accent line at the top of each card, mirroring the news carousel.
+   Scoped to compact mode so it only applies on the homepage spotlight rows. */
+.listing--compact :deep(.card__link) {
+  position: relative;
+}
+
+.listing--compact :deep(.card__link)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+  opacity: 0.85;
+  z-index: 3;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.listing--compact :deep(.card__link):hover::before {
+  opacity: 1;
+}
+
 /* Compact mode — same sizing as ListingCarousel for consistency. */
 .listing--compact :deep(.carousel__items .card) {
   width: calc(.25 * (100% - 22px));

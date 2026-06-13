@@ -188,6 +188,29 @@ export default {
 <style scoped lang="scss">
 @use '~/assets/css/utilities/variables' as *;
 
+/* Cyan gradient accent line at the top of each card, mirroring the news carousel. */
+:deep(.card__link) {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+    opacity: 0.85;
+    z-index: 3;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
 .listing {
   margin-bottom: 2.5rem;
 }
