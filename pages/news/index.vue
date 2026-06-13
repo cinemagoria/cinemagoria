@@ -656,17 +656,22 @@ watch(userEmail, (val) => {
 <style scoped>
 .page-title {
   color: #8BE9FD !important;
-  margin-top: 30px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: center;
+  margin: 32px 0 8px;
+  display: block;
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  text-shadow: 0 0 22px rgba(139, 233, 253, 0.35);
 }
 
 .page-subtitle {
-  color: rgb(172, 175, 181);
+  color: #a0aab2;
   font-size: 14px;
-  max-width: 600px;
-  margin: 20px auto 0;
+  font-weight: 300;
+  line-height: 1.55;
+  max-width: 540px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .news-section {
@@ -689,13 +694,16 @@ watch(userEmail, (val) => {
 }
 
 .sidebar-card {
-  background: rgba(16, 26, 35, 0.85);
-  border: 1px solid hsla(0, 0%, 100%, .18);
+  background: rgba(3, 4, 6, 0.7);
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(31, 84, 103, 0.2), transparent 55%);
+  border: 1px solid rgba(139, 233, 253, 0.18);
   border-radius: 15px;
   padding: 20px 15px;
   position: sticky;
   top: 100px;
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   max-height: calc(100vh - 120px);
   display: flex;
   flex-direction: column;
@@ -915,10 +923,14 @@ watch(userEmail, (val) => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
-  background: rgba(16, 26, 35, 0.85);
-  border: 1px solid hsla(0, 0%, 100%, .18);
+  background: rgba(3, 4, 6, 0.7);
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(31, 84, 103, 0.2), transparent 55%);
+  border: 1px solid rgba(139, 233, 253, 0.18);
   border-radius: 15px;
   padding: 15px 25px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .status-title {
@@ -937,11 +949,15 @@ watch(userEmail, (val) => {
 }
 
 .count-badge {
-  background: rgba(255,255,255,0.1);
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  color: #aaa;
+  background: rgba(139, 233, 253, 0.08);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #8BE9FD;
 }
 
 .news-grid {
@@ -957,10 +973,13 @@ watch(userEmail, (val) => {
   gap: 15px;
   margin-bottom: 20px;
   padding: 12px 18px;
-  background: rgba(16, 26, 35, 0.85);
-  border: 1px solid hsla(0, 0%, 100%, .18);
+  background: rgba(3, 4, 6, 0.7);
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(31, 84, 103, 0.2), transparent 55%);
+  border: 1px solid rgba(139, 233, 253, 0.18);
   border-radius: 15px;
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   position: relative;
 }
 
@@ -1058,22 +1077,27 @@ watch(userEmail, (val) => {
 }
 
 .news-card {
-  background: rgba(16, 26, 35, 0.85);
-  border: 1px solid hsla(0, 0%, 100%, .18);
+  background: rgba(3, 4, 6, 0.7);
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(31, 84, 103, 0.2), transparent 55%);
+  border: 1px solid rgba(139, 233, 253, 0.18);
   border-radius: 15px;
   overflow: hidden;
   text-decoration: none;
   color: inherit;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
   display: flex;
   flex-direction: column;
   height: 100%;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .news-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px 0 rgba(139, 233, 253, 0.15);
   border-color: rgba(139, 233, 253, 0.5);
+  background: rgba(3, 4, 6, 0.85);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5), 0 0 24px rgba(139, 233, 253, 0.15);
 }
 
 .news-card.highlight-news {
@@ -1112,15 +1136,17 @@ watch(userEmail, (val) => {
   position: absolute;
   top: 10px;
   left: 10px;
-  background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(4px);
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 11px;
+  background: rgba(3, 4, 6, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 10px;
   font-weight: 700;
   color: #8BE9FD;
-  border: 1px solid rgba(139, 233, 253, 0.3);
+  border: 1px solid rgba(139, 233, 253, 0.4);
   text-transform: uppercase;
+  letter-spacing: 1.2px;
 }
 
 .source-group {
@@ -1128,11 +1154,35 @@ watch(userEmail, (val) => {
 }
 
 .source-group-title {
+  position: relative;
   color: #fff;
   font-size: 22px;
-  margin-bottom: 20px;
-  border-left: 4px solid #8BE9FD;
-  padding-left: 15px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  margin: 0 0 20px;
+  padding: 0 0 12px 22px;
+}
+
+.source-group-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #8BE9FD;
+  box-shadow: 0 0 12px rgba(139, 233, 253, 0.7);
+}
+
+.source-group-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(139, 233, 253, 0.4) 0%, rgba(139, 233, 253, 0.1) 30%, transparent 100%);
 }
 
 .source-link-header {
@@ -1242,12 +1292,23 @@ watch(userEmail, (val) => {
 }
 
 .retry-btn {
-  background: transparent;
-  border: 1px solid #8BE9FD;
-  color: #8BE9FD;
-  padding: 8px 16px;
-  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1F5467, #8BE9FD);
+  border: 1px solid rgba(139, 233, 253, 0.5);
+  color: #03242C;
+  padding: 10px 26px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(139, 233, 253, 0.18);
+}
+.retry-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(139, 233, 253, 0.28);
 }
 
 @media (max-width: 900px) {
