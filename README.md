@@ -25,7 +25,7 @@ The platform is built around four principles:
 | Styling | SCSS (`@use`) |
 | Primary database | Turso (LibSQL) — favorites, ratings, follows, notifications, profiles, news |
 | Auth | Google OAuth + Django REST Framework (DRF) |
-| Hosting | Railway (frontend) · Vercel (backend serverless functions) |
+| Hosting | Google Cloud Platform (frontend, backend, jobs) |
 | Background jobs | TypeScript + Rust workers (news curation, release detection, typo detection) |
 
 ---
@@ -56,9 +56,9 @@ The N.O.I.R. badge — rendered in the top-right corner of each backdrop in `Her
   <img src="https://ivanluna.dev/images/assets/cinemagoria-asset9.webp" alt="Festivals" width="70%">
 </div>
 
-Dedicated coverage for major international festivals — Sundance, Berlinale, Rotterdam, Slamdance, SXSW, Romford, BIFFF, BAFICI, Tribeca (now fully supported), Cannes (completed with official screenings and parallel sections: Critics' Choice, Quinzaine des Cinéastes, ACID), CUFF (Calgary Underground Film Festival), KVIFF (Karlovy Vary Int. Film Festival) and more — each with its own page, API endpoints, card and badge components, and homepage carousel. The hero section supports multiple simultaneous festival premiere badges with display precedence, and Berlinale ships with an interactive timezone-aware schedule.
+Dedicated coverage for major international festivals — Sundance, Berlinale, Rotterdam, Slamdance, SXSW, Romford, BIFFF, BAFICI, Tribeca (now fully supported), Cannes (completed with official screenings and parallel sections: Critics' Choice, Quinzaine des Cinéastes, ACID), CUFF (Calgary Underground Film Festival), KVIFF (Karlovy Vary Int. Film Festival), Fantasia (Montréal) and more — each with its own page, API endpoints, card and badge components, and homepage carousel. The hero section supports multiple simultaneous festival premiere badges with display precedence, and Berlinale ships with an interactive timezone-aware schedule.
 
-**Coverage runs from 2026 onwards** and continues across each subsequent edition (2027, 2028, …). Planned 2026 additions: **Venezia (Venice)**, **TIFF**, **NYFF**, **Sitges**, **BFI London**, **Mar del Plata**, **BARS (Buenos Aires Rojo Sangre)** and **Fantasia**. The list is indicative — additions and adjustments happen as scope and resources evolve.
+**Coverage runs from 2026 onwards** and continues across each subsequent edition (2027, 2028, …). Planned 2026 additions: **Venezia (Venice)**, **TIFF**, **NYFF**, **Sitges**, **BFI London**, **Mar del Plata** and **BARS (Buenos Aires Rojo Sangre)**. The list is indicative — additions and adjustments happen as scope and resources evolve.
 
 > **Catalog coverage caveat:** festival pages are built from public metadata and third-party sources, which don't always cover every title — particularly short films, experimental works and regional productions. This is a technical limitation, not an editorial decision. No film is intentionally omitted or censored; gaps narrow as upstream metadata catches up.
 
