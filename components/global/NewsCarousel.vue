@@ -258,6 +258,8 @@ export default {
   align-items: stretch;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
+  padding-top: 8px;
+  padding-bottom: 4px;
 }
 
 :deep(.card) {
@@ -273,24 +275,46 @@ export default {
   }
 }
 .release-card {
-  background: rgba(16, 26, 35, 0.85);
-  border: 1px solid hsla(0, 0%, 100%, .18);
+  position: relative;
+  background: rgba(3, 4, 6, 0.7);
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(31, 84, 103, 0.2), transparent 55%);
+  border: 1px solid rgba(139, 233, 253, 0.18);
   border-radius: 12px;
-  box-shadow: 0 8px 32px 0 rgba(31, 97, 135, .1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
-  overflow: hidden; 
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  
-  display: flex !important; 
+  -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+
+  display: flex !important;
   flex-direction: column;
   width: 100%;
-  
+
   height: 100%;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+    opacity: 0.85;
+    z-index: 3;
+    pointer-events: none;
+  }
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 40px 0 rgba(139, 233, 253, 0.15);
-    border-color: rgba(139, 233, 253, 0.4);
+    border-color: rgba(139, 233, 253, 0.5);
+    background: rgba(3, 4, 6, 0.85);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5), 0 0 24px rgba(139, 233, 253, 0.15);
+
+    &::before {
+      opacity: 1;
+    }
   }
 }
 
@@ -354,15 +378,17 @@ export default {
 }
 
 .source-badge {
-  background: rgba(139, 233, 253, 0.1);
+  background: rgba(139, 233, 253, 0.08);
+  border: 1px solid rgba(139, 233, 253, 0.4);
   color: #8BE9FD;
-  padding: 3px 8px; 
-  border-radius: 4px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  line-height: 1.2; 
-  display: inline-block; 
+  letter-spacing: 1.2px;
+  line-height: 1.2;
+  display: inline-block;
 }
 
 .card-title {
