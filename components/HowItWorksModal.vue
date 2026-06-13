@@ -7,8 +7,8 @@
 
       <div :class="$style.modalBody">
         <div :class="$style.intro">
-          <h3>Follow to Get Notified</h3>
-          <p>Follow a person, show or production company &mdash; we&rsquo;ll push the release date to your feed.</p>
+          <h3>How Release Alerts Work</h3>
+          <p>Following a person, show, or production company brings their release dates directly to the feed.</p>
         </div>
 
         <div :class="$style.carouselWrapper">
@@ -27,10 +27,9 @@
               <div :class="$style.slide" :key="currentSlide">
                 <template v-if="currentSlide === 0">
                   <div :class="$style.slideHeader">
-                    <span :class="$style.stepLabel">Step 1 &middot; Follow</span>
-                    <h4>People</h4>
+                    <span :class="$style.stepLabel">Step 1 &middot; Following People</span>
                   </div>
-                  <p :class="$style.caption">Open a director or actor profile and tap <strong>Follow</strong>.</p>
+                  <p :class="$style.caption">On any director or actor profile, the <strong>Follow</strong> button subscribes the account to their upcoming releases.</p>
                   <div :class="$style.imageBox">
                     <img src="/onboarding/onboarding_follow_people.webp" width="2100" height="760" alt="Following a director" loading="lazy" decoding="async">
                   </div>
@@ -38,10 +37,9 @@
 
                 <template v-else-if="currentSlide === 1">
                   <div :class="$style.slideHeader">
-                    <span :class="$style.stepLabel">Result &middot; New Movie</span>
-                    <h4>Release Alert</h4>
+                    <span :class="$style.stepLabel">Result &middot; Movie Release Alert</span>
                   </div>
-                  <p :class="$style.caption">A new title from someone you follow lands in your feed with its release date.</p>
+                  <p :class="$style.caption">When a followed person releases a new title, it appears on the feed with its release date.</p>
                   <div :class="$style.imageBox">
                     <img src="/onboarding/onboarding_notification_release_movie.webp" width="2100" height="760" alt="Movie release notification" loading="lazy" decoding="async">
                   </div>
@@ -49,10 +47,9 @@
 
                 <template v-else-if="currentSlide === 2">
                   <div :class="$style.slideHeader">
-                    <span :class="$style.stepLabel">Step 2 &middot; Follow</span>
-                    <h4>TV Shows</h4>
+                    <span :class="$style.stepLabel">Step 2 &middot; Following TV Shows</span>
                   </div>
-                  <p :class="$style.caption">On a series page, tap <strong>Follow</strong> to subscribe to its episodes.</p>
+                  <p :class="$style.caption">On any series page, the <strong>Follow</strong> button subscribes the account to its upcoming episodes.</p>
                   <div :class="$style.imageBox">
                     <img src="/onboarding/onboarding_follow_tv_show.webp" width="2100" height="760" alt="Following a TV show" loading="lazy" decoding="async">
                   </div>
@@ -60,10 +57,9 @@
 
                 <template v-else-if="currentSlide === 3">
                   <div :class="$style.slideHeader">
-                    <span :class="$style.stepLabel">Result &middot; New Episode</span>
-                    <h4>Episode Alert</h4>
+                    <span :class="$style.stepLabel">Result &middot; Episode Alert</span>
                   </div>
-                  <p :class="$style.caption">Each new episode appears with its season, number and air date.</p>
+                  <p :class="$style.caption">Each new episode of a followed series appears with its season, number, and air date.</p>
                   <div :class="$style.imageBox">
                     <img src="/onboarding/onboarding_notification_release_tv.webp" width="2100" height="760" alt="Episode release notification" loading="lazy" decoding="async">
                   </div>
@@ -71,10 +67,9 @@
 
                 <template v-else-if="currentSlide === 4">
                   <div :class="$style.slideHeader">
-                    <span :class="$style.stepLabel">Step 3 &middot; Follow</span>
-                    <h4>Production Companies</h4>
+                    <span :class="$style.stepLabel">Step 3 &middot; Following Production Companies</span>
                   </div>
-                  <p :class="$style.caption">Subscribe to a studio (e.g. Film i V&auml;st) to track everything they put out.</p>
+                  <p :class="$style.caption">Following a studio (e.g. Film i V&auml;st) tracks every new title it releases.</p>
                   <div :class="$style.imageBox">
                     <img src="/onboarding/onboarding_follow_prod.webp" width="2100" height="760" alt="Following a production company" loading="lazy" decoding="async">
                   </div>
@@ -82,10 +77,9 @@
 
                 <template v-else-if="currentSlide === 5">
                   <div :class="$style.slideHeader">
-                    <span :class="$style.stepLabel">Result &middot; Studio Release</span>
-                    <h4>Release Alert</h4>
+                    <span :class="$style.stepLabel">Result &middot; Studio Release Alert</span>
                   </div>
-                  <p :class="$style.caption">Any new title from that studio shows up with its release date.</p>
+                  <p :class="$style.caption">Any new title from a followed studio appears on the feed with its release date.</p>
                   <div :class="$style.imageBox">
                     <img src="/onboarding/onboarding_notification_release_prod.webp" width="2100" height="760" alt="Production company release notification" loading="lazy" decoding="async">
                   </div>
@@ -110,7 +104,7 @@
         </div>
 
         <div :class="$style.footer">
-          <button :class="$style.gotItButton" @click="$emit('close')">Got It</button>
+          <button :class="$style.gotItButton" @click="$emit('close')">Close</button>
         </div>
       </div>
     </div>
@@ -158,143 +152,165 @@ export default {
 
 .modalOverlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.92);
+  inset: 0;
+  background: rgba(3, 4, 6, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 2rem;
+  padding: 20px;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 .modalContent {
   position: relative;
-  background: linear-gradient(135deg, rgba(3, 18, 26, 0.99) 0%, rgba(2, 10, 16, 0.995) 100%);
-  box-shadow:
-    0 24px 60px 0 rgba(0, 0, 0, 0.85),
-    0 8px 24px 0 rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(139, 233, 253, 0.08);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border-radius: 16px;
-  border: 1px solid rgba(127, 219, 241, 0.22);
+  background: rgba(3, 4, 6, 0.85);
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(31, 84, 103, 0.18), transparent 35%),
+    radial-gradient(circle at 85% 80%, rgba(139, 233, 253, 0.08), transparent 30%);
+  border-radius: 20px;
   width: 100%;
   max-width: 760px;
-  display: flex;
-  flex-direction: column;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(31, 84, 103, 0.5),
+    inset 0 0 24px rgba(139, 233, 253, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  animation: floatIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  display: block;
+}
+
+.modalContent::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+  opacity: 0.8;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  pointer-events: none;
 }
 
 .closeButton {
   position: absolute;
-  top: 0.6rem;
-  right: 0.7rem;
-  background: none;
-  border: none;
-  color: #fff;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #a0aab2;
   cursor: pointer;
-  padding: 0.4rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
+  z-index: 3;
+  padding: 0;
 
   &:hover {
-    color: #8BE9FD;
+    background: rgba(255, 95, 95, 0.1);
+    border-color: rgba(255, 95, 95, 0.3);
+    color: #ff7e7e;
   }
 }
 
 .modalBody {
-  padding: 1.6rem 1.6rem 1.4rem;
+  padding: 32px 28px 24px;
 }
 
 .intro {
   text-align: center;
-  margin-bottom: 1.2rem;
+  margin-bottom: 22px;
 
   h3 {
-    font-size: 1.55rem;
-    color: #8BE9FD;
-    margin: 0 0 0.4rem 0;
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 8px;
+    letter-spacing: -0.5px;
+    text-shadow: 0 0 20px rgba(139, 233, 253, 0.25);
   }
 
   p {
-    font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.7);
-    line-height: 1.45;
+    font-size: 14px;
+    color: #a0aab2;
+    line-height: 1.55;
     margin: 0 auto;
-    max-width: 480px;
+    max-width: 540px;
+    font-weight: 300;
   }
 }
 
 .carouselWrapper {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 12px;
 }
 
 .carouselTrack {
   flex: 1;
   position: relative;
   overflow: hidden;
+  min-width: 0;
 }
 
 .slide {
-  background: rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(139, 233, 253, 0.14);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(139, 233, 253, 0.2);
   border-radius: 14px;
-  padding: 1rem;
-  backdrop-filter: blur(12px);
-  box-shadow:
-    inset 0 0 24px rgba(0, 0, 0, 0.55),
-    0 8px 22px rgba(0, 0, 0, 0.55);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
 }
 
 .slideHeader {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-bottom: 0.55rem;
-
-  h4 {
-    font-size: 1.15rem;
-    color: #fff;
-    margin: 0;
-    font-weight: 600;
-  }
+  margin-bottom: 12px;
 }
 
 .stepLabel {
-  font-size: 0.7rem;
-  letter-spacing: 1.2px;
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
   color: #8BE9FD;
   font-weight: 700;
+  background: rgba(139, 233, 253, 0.08);
+  border: 1px solid rgba(139, 233, 253, 0.25);
+  border-radius: 999px;
+  padding: 5px 12px;
+  line-height: 1.4;
 }
 
 .caption {
-  font-size: 1.02rem;
-  color: rgba(255, 255, 255, 0.78);
-  margin: 0 0 0.7rem 0;
-  line-height: 1.4;
+  font-size: 14px;
+  color: #e0e6ed;
+  margin: 0 0 14px;
+  line-height: 1.55;
+  font-weight: 400;
 
   strong {
-    color: #fff;
+    color: #8BE9FD;
+    font-weight: 600;
   }
 }
 
 .imageBox {
   width: 100%;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(139, 233, 253, 0.14);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(139, 233, 253, 0.15);
 
   img {
     width: 100%;
@@ -312,21 +328,22 @@ export default {
   justify-content: center;
   width: 42px;
   height: 42px;
-  border-radius: 50%;
-  border: 1.5px solid #8BE9FD;
-  background: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  background: rgba(3, 4, 6, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(139, 233, 253, 0.4);
   color: #8BE9FD;
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
-  box-shadow: 0 0 14px rgba(139, 233, 253, 0.25), 0 4px 12px rgba(0, 0, 0, 0.55);
+  padding: 0;
 
   &:hover {
-    background: rgba(139, 233, 253, 0.18);
-    border-color: #8BE9FD;
-    color: #fff;
-    transform: scale(1.1);
-    box-shadow: 0 0 22px rgba(139, 233, 253, 0.55), 0 4px 14px rgba(0, 0, 0, 0.6);
+    background: #ffffff;
+    border-color: #ffffff;
+    color: #000;
+    transform: scale(1.05);
   }
 }
 
@@ -334,7 +351,7 @@ export default {
   display: flex;
   justify-content: center;
   gap: 8px;
-  margin-top: 0.9rem;
+  margin-top: 18px;
 }
 
 .dot {
@@ -342,7 +359,7 @@ export default {
   height: 8px;
   border-radius: 50%;
   border: none;
-  background: rgba(139, 233, 253, 0.2);
+  background: rgba(139, 233, 253, 0.22);
   cursor: pointer;
   transition: all 0.25s ease;
   padding: 0;
@@ -361,26 +378,26 @@ export default {
 .footer {
   display: flex;
   justify-content: center;
-  margin-top: 1.1rem;
+  margin-top: 20px;
 }
 
 .gotItButton {
-  padding: 0.7rem 2.4rem;
-  background: #8BE9FD;
-  border: none;
-  border-radius: 8px;
-  color: #021018;
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: 0.3px;
+  padding: 11px 36px;
+  background: linear-gradient(135deg, #1F5467, #8BE9FD);
+  border: 1px solid rgba(139, 233, 253, 0.5);
+  border-radius: 10px;
+  color: #03242C;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(139, 233, 253, 0.35);
+  font-family: inherit;
+  box-shadow: 0 4px 16px rgba(139, 233, 253, 0.18);
 
   &:hover {
-    background: #7DD4E8;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(139, 233, 253, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(139, 233, 253, 0.28);
   }
 }
 
@@ -392,50 +409,63 @@ export default {
 .enterLeft  { opacity: 0; transform: translateX(-60px); }
 .leaveRight { opacity: 0; transform: translateX(60px); }
 
+@keyframes floatIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 @media (max-width: 768px) {
   .modalOverlay {
-    padding: 0.8rem;
-    align-items: flex-start;
-    padding-top: 3rem;
+    padding: 16px;
+    align-items: center;
   }
 
   .modalContent {
-    max-width: 100%;
+    border-radius: 16px;
+    max-height: calc(100vh - 32px);
   }
 
   .modalBody {
-    padding: 1.2rem 0.9rem 1rem;
+    padding: 28px 16px 20px;
   }
 
   .intro {
-    margin-bottom: 0.9rem;
+    margin-bottom: 18px;
 
-    h3 { font-size: 1.25rem; line-height: 1.3; }
-    p { font-size: 0.98rem; }
+    h3 { font-size: 20px; line-height: 1.25; }
+    p { font-size: 13px; }
   }
 
-  .carouselWrapper { gap: 0.4rem; }
+  .carouselWrapper { gap: 6px; }
 
-  .slide { padding: 0.8rem; }
+  .slide { padding: 12px; }
 
-  .slideHeader {
-    gap: 0.45rem;
-    margin-bottom: 0.45rem;
-    h4 { font-size: 1rem; }
+  .slideHeader { margin-bottom: 10px; }
+
+  .stepLabel {
+    font-size: 10px;
+    letter-spacing: 1.2px;
+    padding: 4px 10px;
   }
 
-  .stepLabel { font-size: 0.62rem; letter-spacing: 1px; }
-  .caption { font-size: 0.92rem; margin-bottom: 0.6rem; }
+  .caption { font-size: 13px; margin-bottom: 10px; }
 
   .carouselArrow {
     width: 36px;
     height: 36px;
+    background: rgba(3, 4, 6, 0.92);
+    border-color: rgba(139, 233, 253, 0.55);
+    border-width: 1.5px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+
     svg { width: 18px; height: 18px; }
   }
 
   .gotItButton {
-    padding: 0.65rem 2rem;
-    font-size: 0.98rem;
+    padding: 11px 32px;
+    font-size: 13px;
+    width: 100%;
+    max-width: 260px;
   }
 }
 </style>
