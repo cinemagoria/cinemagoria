@@ -197,6 +197,7 @@ export default {
 }
 
 .sp-card {
+  position: relative;
   display: block;
   width: 170px;
   height: 95px;
@@ -206,8 +207,25 @@ export default {
   text-decoration: none;
   transition: transform 0.3s ease;
 
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(3, 36, 44, 0.85), rgba(31, 84, 103, 0.7), transparent);
+    opacity: 0.9;
+    z-index: 3;
+    pointer-events: none;
+  }
+
   &:hover {
     transform: scale(1.05);
+
+    &::before {
+      opacity: 1;
+    }
   }
 }
 
