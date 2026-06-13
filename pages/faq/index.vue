@@ -5,11 +5,10 @@
     <header :class="$style.hero">
       <div :class="$style.heroInner">
         <span :class="$style.eyebrow">Knowledge Base</span>
-        <h1 class="title-primary" style="color: #8BE9FD !important; margin-top: 30px; margin-bottom: 10px; display: flex; justify-content: center;">FAQ</h1>
-        <h2 class="title-secondary" style="color: rgb(172, 175, 181); font-size: 14px; max-width: 600px; margin: 20px auto 0;">
-          Editorial framework, discovery infrastructure and the moving parts behind
-          the platform &mdash; explained in one place.
-        </h2>
+        <h1 :class="$style.heroTitle">FAQ</h1>
+        <p :class="$style.heroLead">
+          Editorial framework, discovery infrastructure and the moving parts behind the platform &mdash; explained in one place.
+        </p>
       </div>
     </header>
 
@@ -42,8 +41,8 @@
               :class="$style.howItWorksBtn"
               @click="showHowItWorksModal = true"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
-              <span>How It Works?</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+              <span>How it works</span>
             </button>
           </header>
 
@@ -60,7 +59,9 @@
                 @click="toggle(s.id, idx)"
               >
                 <span :class="$style.qText">{{ item.q }}</span>
-                <svg :class="$style.chev" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                <span :class="$style.chevWrap">
+                  <svg :class="$style.chev" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </span>
               </button>
               <div :class="$style.answerWrap">
                 <div :class="$style.answer" v-html="item.a"></div>
@@ -86,7 +87,7 @@ import HowItWorksModal from '~/components/HowItWorksModal.vue';
 const showHowItWorksModal = ref(false);
 
 useHead({
-  title: 'FAQ — Cinemagoria',
+  title: 'FAQ — Knowledge Base',
   meta: [
     { name: 'description', content: 'Editorial framework, N.O.I.R., Spotlight, festival-first discovery, accounts, metadata sources and the technical foundations behind the platform.' }
   ]
@@ -99,7 +100,7 @@ const sections = [
     items: [
       {
         q: 'What is this platform about?',
-        a: `<p>Cinemagoria is a discovery layer for film and television built on aggregation, editorial curation and festival-driven attention. Metadata, ratings, reviews, soundtrack data, awards history and streaming availability arrive from multiple industry sources, integrated into a single experience designed for contemporary film culture.</p>`
+        a: `<p>A discovery layer for film and television built on aggregation, editorial curation and festival-driven attention. Metadata, ratings, reviews, soundtrack data, awards history and streaming availability arrive from multiple industry sources, integrated into a single experience designed for contemporary film culture.</p>`
       },
       {
         q: 'Is content streamed or hosted here?',
@@ -115,38 +116,19 @@ const sections = [
         q: 'What is N.O.I.R.?',
         a: `<p class="lead-line"><strong>N.O.I.R. &mdash; <em>Nothing Out Is Ready</em>.</strong></p>
 <p>The highest curatorial layer on the platform and its most actively developed feature. From early premieres to a permanent archive, N.O.I.R. catalogs emerging titles from <strong>2024 onward</strong> considered culturally, aesthetically or creatively significant within the editorial framework.</p>
-<blockquote class="manifesto">
-  <span class="manifesto-mark">N.O.I.R.</span>
-  <p>N.O.I.R. dwells in the undefined; it exists before it.</p>
-  <p>The work matters in its state prior to assimilation.</p>
-</blockquote>
-<p>Aesthetic identity leans into contemporary horror, psychological thrillers, science fiction, mature drama, festival cinema and auteur-driven filmmaking.</p>
 <p>Access to the dedicated archive at <a href="/noir" class="inline-link">/noir</a> requires an authenticated account.</p>`
       },
       {
         q: 'How does a title enter N.O.I.R., and how does it move through the platform?',
         a: `<p>Most candidates originate from festival ecosystems, premiere reactions, acquisition tracking and an internal pipeline of workflows, datasets, enrichment scripts and editorial analysis. Festivals are the upstream signal layer &mdash; <strong>Sundance, Berlinale, Rotterdam, BIFFF, SXSW, BAFICI, Cannes, CUFF, Tribeca, Slamdance</strong> and <strong>Romford Horror</strong> all feed the selection, with more festivals joining the rotation throughout 2026.</p>
-<p>Once recognized, a title is promoted to the primary editorial slot at the top of the homepage &mdash; a rotating showcase of N.O.I.R.-certified works near or just before release. The N.O.I.R. seal appears on each card and links directly to the full archive.</p>
-<p>Roughly a week after a title becomes broadly available, it leaves that primary rotation. From that moment two things happen:</p>
-<ul>
-  <li>It enters the <strong>permanent N.O.I.R. archive</strong> at <a href="/noir" class="inline-link">/noir</a>, organized by year and form (film or series).</li>
-  <li>It frequently transitions into <strong>Spotlight</strong>, the homepage&rsquo;s secondary editorial surface &mdash; roughly seventy percent of Spotlight titles passed through the primary rotation first.</li>
-</ul>
-<p>Removal from the rotation never means removal from the archive. The archive is additive.</p>
-<blockquote class="manifesto">
-  <span class="manifesto-mark">II. Selection Criteria</span>
-  <p>Not a catalog, but a recognition of signals. Only what disrupts and transcends remains.</p>
-  <p>The selection is never static; it evolves and shifts. Nothing disappears, everything becomes part of the archive.</p>
-</blockquote>`
+<p>Once recognized, a title is promoted to the primary editorial slot at the top of the homepage &mdash; a rotating showcase of N.O.I.R.-certified works near or just before release. The seal appears on each card and links directly to the full archive.</p>
+<p>Roughly a week after a title becomes broadly available, it leaves that primary rotation and enters the <strong>permanent N.O.I.R. archive</strong> at <a href="/noir" class="inline-link">/noir</a>, organized by year and form. Many titles continue inside <strong>Spotlight</strong>, the homepage&rsquo;s secondary editorial surface &mdash; roughly seventy percent of Spotlight entries passed through the primary rotation first.</p>
+<p>Removal from the rotation never means removal from the archive. The archive is additive.</p>`
       },
       {
-        q: 'What does the N.O.I.R. seal represent?',
-        a: `<p>Formal induction into the editorial selection. The seal is awarded for editorial relevance, artistic identity, festival trajectory, genre innovation or long-term cultural potential &mdash; not commercial scale. Once awarded, the seal stays with the title in perpetuity.</p>`
-      },
-      {
-        q: 'What kind of titles are included in N.O.I.R.?',
-        a: `<p>Primarily auteur cinema, elevated genre, international festival discoveries, independent productions and culturally distinctive works. Large-scale productions appear only when they align with the editorial framework.</p>
-<p>A snapshot of the active rotation skews heavily toward <strong>horror, thriller, science fiction</strong> and <strong>mature drama</strong> &mdash; with European and Latin American festival cinema occupying a meaningful share.</p>`
+        q: 'What kind of titles are included, and what does the N.O.I.R. seal represent?',
+        a: `<p>Selection skews toward auteur cinema, elevated genre, international festival discoveries, independent productions and culturally distinctive works &mdash; primarily <strong>contemporary horror, psychological thrillers, science fiction</strong> and <strong>mature drama</strong>, with European and Latin American festival cinema occupying a meaningful share. Large-scale productions appear only when they align with the editorial framework.</p>
+<p>The seal marks formal induction into that selection &mdash; awarded for editorial relevance, artistic identity, festival trajectory, genre innovation or long-term cultural potential rather than commercial scale. Once awarded, it stays with the title in perpetuity.</p>`
       }
     ]
   },
@@ -178,6 +160,8 @@ const sections = [
   <li><a href="/festival/tribeca-2026" class="inline-link">Tribeca</a> &middot; New York</li>
   <li><a href="/festival/slamdance-2026" class="inline-link">Slamdance</a> &middot; Park City</li>
   <li><a href="/festival/romford-2026" class="inline-link">Romford Horror</a> &middot; Romford</li>
+  <li><a href="/festival/kviff-2026" class="inline-link">KVIFF</a> &middot; Karlovy Vary</li>
+  <li><a href="/festival/fantasia-2026" class="inline-link">Fantasia</a> &middot; Montr&eacute;al</li>
 </ul>
 <p>The full hub lives at <a href="/festival" class="inline-link">/festival</a>.</p>`
       },
@@ -185,7 +169,6 @@ const sections = [
         q: 'Which festivals are scheduled to join the coverage?',
         a: `<p>Planned 2026 additions, with continuing coverage in 2027, 2028 and beyond:</p>
 <ul>
-  <li><strong>KVIFF</strong> &middot; Karlovy Vary International Film Festival</li>
   <li><strong>Venezia</strong> &middot; La Biennale di Venezia</li>
   <li><strong>TIFF</strong> &middot; Toronto International Film Festival</li>
   <li><strong>NYFF</strong> &middot; New York Film Festival</li>
@@ -193,7 +176,6 @@ const sections = [
   <li><strong>BFI London</strong> &middot; BFI London Film Festival</li>
   <li><strong>Mar del Plata</strong> &middot; International Film Festival</li>
   <li><strong>BARS</strong> &middot; Buenos Aires Rojo Sangre</li>
-  <li><strong>Fantasia</strong> &middot; Montr&eacute;al</li>
 </ul>
 <p>The list is indicative &mdash; additions and adjustments happen as scope and resources evolve.</p>`
       },
@@ -284,8 +266,7 @@ const sections = [
   <li>Turso</li>
   <li>Django REST Framework</li>
   <li>Rust</li>
-  <li>Railway</li>
-  <li>Vercel</li>
+  <li>GCP</li>
 </ul>`
       },
       {
@@ -308,7 +289,7 @@ const sections = [
       },
       {
         q: 'What does “aggregation over exclusivity” mean?',
-        a: `<p>A core operating principle &mdash; integrating and contextualizing trusted external sources rather than replacing them with a closed proprietary database. Cinemagoria operates as a discovery and editorial-intelligence layer for contemporary cinema culture.</p>`
+        a: `<p>A core operating principle &mdash; integrating and contextualizing trusted external sources rather than replacing them with a closed proprietary database. The platform operates as a discovery and editorial-intelligence layer for contemporary cinema culture.</p>`
       }
     ]
   }
@@ -354,19 +335,23 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
 
+/* ── Page shell ─────────────────────────────────────────────────── */
 .page {
   position: relative;
   min-height: 100vh;
   background:
-    radial-gradient(ellipse at 20% -10%, rgba(139, 233, 253, 0.08) 0%, transparent 55%),
-    radial-gradient(ellipse at 90% 0%, rgba(139, 233, 253, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 15% -10%, rgba(31, 84, 103, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 90% 5%, rgba(139, 233, 253, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 60% at 50% 95%, rgba(31, 84, 103, 0.12) 0%, transparent 60%),
     linear-gradient(180deg, #02080d 0%, #010406 100%);
   color: rgba(255, 255, 255, 0.86);
   padding-bottom: 6rem;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
+/* ── Hero ───────────────────────────────────────────────────────── */
 .hero {
-  padding: 5rem 1.5rem 3rem;
+  padding: 4.5rem 1.5rem 3rem;
   text-align: center;
   position: relative;
 
@@ -375,50 +360,84 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
     position: absolute;
     left: 50%;
     bottom: 0;
-    width: 60%;
+    width: 240px;
+    max-width: 60%;
     height: 1px;
     transform: translateX(-50%);
-    background: linear-gradient(90deg, transparent, rgba(139, 233, 253, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(139, 233, 253, 0.45), transparent);
   }
 }
 
 .heroInner {
-  max-width: 760px;
+  max-width: 720px;
   margin: 0 auto;
 }
 
 .eyebrow {
   display: inline-block;
-  font-size: 0.95rem;
-  letter-spacing: 3.5px;
+  font-size: 11px;
+  letter-spacing: 3px;
   text-transform: uppercase;
   color: #8BE9FD;
   font-weight: 700;
-  padding: 0.45rem 1.1rem;
-  border: 1px solid rgba(139, 233, 253, 0.35);
+  padding: 6px 14px;
+  border: 1px solid rgba(139, 233, 253, 0.3);
   border-radius: 999px;
-  background: rgba(139, 233, 253, 0.06);
-  box-shadow: 0 0 14px rgba(139, 233, 253, 0.15);
+  background: rgba(139, 233, 253, 0.08);
+  margin-bottom: 1.5rem;
 }
 
+.heroTitle {
+  font-size: clamp(2.6rem, 6vw, 3.6rem);
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 0.85rem;
+  letter-spacing: -1px;
+  line-height: 1;
+  text-shadow: 0 0 28px rgba(139, 233, 253, 0.22);
+}
+
+.heroLead {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #a0aab2;
+  margin: 0 auto;
+  max-width: 540px;
+  font-weight: 300;
+}
+
+/* ── Layout: TOC + Content ─────────────────────────────────────── */
 .layout {
   max-width: 1180px;
   margin: 3rem auto 0;
   padding: 0 1.5rem;
   display: grid;
   grid-template-columns: 240px 1fr;
-  gap: 3.5rem;
+  gap: 3rem;
 
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1.25rem;
+    margin-top: 2rem;
   }
 }
 
+/* ── Table of contents ─────────────────────────────────────────── */
 .toc {
   align-self: start;
   position: sticky;
   top: 100px;
+  background: rgba(3, 4, 6, 0.6);
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(31, 84, 103, 0.15), transparent 45%);
+  border: 1px solid rgba(31, 84, 103, 0.45);
+  border-radius: 16px;
+  padding: 1.1rem 0.7rem 1rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.4),
+    inset 0 0 24px rgba(139, 233, 253, 0.03);
 
   ul {
     list-style: none;
@@ -426,21 +445,30 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 2px;
   }
 
   @media (max-width: 1024px) {
     position: relative;
     top: auto;
+    padding: 0.8rem 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     overflow-x: auto;
-    padding-bottom: 0.5rem;
-    margin: 0 -1.5rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    overflow-y: hidden;
+    margin: 0 -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar { display: none; }
 
     ul {
       flex-direction: row;
-      gap: 0.5rem;
+      gap: 8px;
       flex-wrap: nowrap;
       min-width: max-content;
     }
@@ -449,60 +477,72 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
 
 .tocLabel {
   display: block;
-  font-size: 0.85rem;
+  font-size: 10px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.5);
   font-weight: 700;
-  margin-bottom: 0.9rem;
-  padding: 0 0.9rem;
+  margin: 0 0 10px;
+  padding: 0 12px;
 
   @media (max-width: 1024px) { display: none; }
 }
 
 .tocLink {
   display: block;
-  padding: 0.7rem 1rem;
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.6);
+  padding: 9px 14px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.62);
   text-decoration: none;
-  border-radius: 8px;
-  border-left: 2px solid transparent;
+  border-radius: 10px;
+  border: 1px solid transparent;
   transition: all 0.2s ease;
   white-space: nowrap;
+  letter-spacing: 0.1px;
 
   &:hover {
     color: #fff;
-    background: rgba(139, 233, 253, 0.05);
+    background: rgba(139, 233, 253, 0.06);
+    border-color: rgba(139, 233, 253, 0.15);
   }
 
   @media (max-width: 1024px) {
-    padding: 0.6rem 1rem;
-    border: 1px solid rgba(139, 233, 253, 0.14);
-    border-left: 1px solid rgba(139, 233, 253, 0.14);
-    font-size: 1rem;
+    padding: 7px 14px;
+    border: 1px solid rgba(139, 233, 253, 0.18);
+    font-size: 13px;
+    background: rgba(3, 4, 6, 0.5);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
   }
 }
 
 .tocLinkActive {
-  color: #8BE9FD;
-  background: rgba(139, 233, 253, 0.08);
-  border-left-color: #8BE9FD;
-  box-shadow: inset 0 0 12px rgba(139, 233, 253, 0.06);
+  color: #03242C;
+  background: linear-gradient(135deg, #1F5467, #8BE9FD);
+  border-color: rgba(139, 233, 253, 0.55);
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(139, 233, 253, 0.22);
+
+  &:hover {
+    color: #03242C;
+    background: linear-gradient(135deg, #1F5467, #8BE9FD);
+    border-color: rgba(139, 233, 253, 0.55);
+  }
 
   @media (max-width: 1024px) {
-    border-color: #8BE9FD;
-    border-left-color: #8BE9FD;
+    border-color: rgba(139, 233, 253, 0.6);
   }
 }
 
+/* ── Content column ────────────────────────────────────────────── */
 .content {
   min-width: 0;
 }
 
 .section {
   scroll-margin-top: 90px;
-  margin-bottom: 4.5rem;
+  margin-bottom: 4rem;
 
   &:last-of-type { margin-bottom: 2rem; }
 }
@@ -510,87 +550,108 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
 .sectionHead {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 14px;
   flex-wrap: wrap;
-  margin-bottom: 1.6rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(139, 233, 253, 0.14);
+  margin-bottom: 1.4rem;
+  padding-bottom: 0.9rem;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(139, 233, 253, 0.4) 0%, rgba(139, 233, 253, 0.1) 30%, transparent 100%);
+  }
 
   h2 {
-    font-size: clamp(1.9rem, 3.4vw, 2.4rem);
+    font-size: clamp(1.55rem, 3vw, 1.95rem);
     font-weight: 700;
     color: #fff;
     margin: 0;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.5px;
+    line-height: 1.15;
   }
+}
+
+.sectionMarker {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #8BE9FD;
+  box-shadow: 0 0 12px rgba(139, 233, 253, 0.7);
+  flex-shrink: 0;
 }
 
 .howItWorksBtn {
   margin-left: auto;
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
-  padding: 0.55rem 1.1rem;
+  gap: 7px;
+  padding: 8px 16px;
   border-radius: 999px;
-  border: 1.5px solid #8BE9FD;
-  background: rgba(139, 233, 253, 0.1);
-  color: #8BE9FD;
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
+  border: 1px solid rgba(139, 233, 253, 0.5);
+  background: linear-gradient(135deg, #1F5467, #8BE9FD);
+  color: #03242C;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 0 14px rgba(139, 233, 253, 0.2), 0 4px 12px rgba(0, 0, 0, 0.45);
+  font-family: inherit;
+  box-shadow: 0 4px 14px rgba(139, 233, 253, 0.22);
 
   svg { flex-shrink: 0; }
 
   &:hover {
-    background: rgba(139, 233, 253, 0.22);
-    color: #fff;
     transform: translateY(-1px);
-    box-shadow: 0 0 22px rgba(139, 233, 253, 0.5), 0 6px 16px rgba(0, 0, 0, 0.55);
+    box-shadow: 0 6px 20px rgba(139, 233, 253, 0.32);
   }
 }
 
-.sectionMarker {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #8BE9FD;
-  box-shadow: 0 0 14px rgba(139, 233, 253, 0.75);
-  flex-shrink: 0;
-}
-
+/* ── FAQ items ─────────────────────────────────────────────────── */
 .items {
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
+  gap: 12px;
 }
 
 .item {
-  background: rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(139, 233, 253, 0.12);
+  position: relative;
+  background: rgba(3, 4, 6, 0.55);
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(31, 84, 103, 0.1), transparent 50%);
+  border: 1px solid rgba(139, 233, 253, 0.14);
   border-radius: 14px;
   overflow: hidden;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
-  box-shadow:
-    inset 0 0 24px rgba(0, 0, 0, 0.4),
-    0 6px 18px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 
   &:hover {
-    border-color: rgba(139, 233, 253, 0.25);
+    border-color: rgba(139, 233, 253, 0.28);
+    background: rgba(3, 4, 6, 0.7);
   }
 }
 
 .itemOpen {
-  border-color: rgba(139, 233, 253, 0.4);
+  border-color: rgba(139, 233, 253, 0.45);
+  background: rgba(3, 4, 6, 0.78);
   box-shadow:
-    inset 0 0 24px rgba(0, 0, 0, 0.5),
-    0 8px 26px rgba(0, 0, 0, 0.6),
-    0 0 22px rgba(139, 233, 253, 0.08);
+    0 10px 30px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(31, 84, 103, 0.4),
+    inset 0 0 28px rgba(139, 233, 253, 0.04);
 
-  .chev { transform: rotate(180deg); color: #8BE9FD; }
+  .chevWrap {
+    background: rgba(139, 233, 253, 0.18);
+    border-color: rgba(139, 233, 253, 0.55);
+    color: #8BE9FD;
+  }
+
+  .chev { transform: rotate(180deg); }
 }
 
 .qButton {
@@ -598,18 +659,23 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1.2rem;
-  padding: 1.4rem 1.6rem;
+  gap: 1rem;
+  padding: 1.05rem 1.25rem;
   background: transparent;
   border: none;
   color: #fff;
-  font-size: 1.25rem;
+  font-size: 15.5px;
   font-weight: 600;
   text-align: left;
   cursor: pointer;
   transition: background 0.2s ease;
+  font-family: inherit;
+  letter-spacing: -0.1px;
+  line-height: 1.4;
 
-  &:hover { background: rgba(139, 233, 253, 0.04); }
+  &:hover {
+    background: rgba(139, 233, 253, 0.03);
+  }
 }
 
 .qText {
@@ -617,10 +683,22 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
   line-height: 1.4;
 }
 
-.chev {
-  color: rgba(139, 233, 253, 0.55);
+.chevWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(139, 233, 253, 0.06);
+  border: 1px solid rgba(139, 233, 253, 0.22);
+  color: rgba(139, 233, 253, 0.7);
+  transition: all 0.25s ease;
   flex-shrink: 0;
-  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.chev {
+  transition: transform 0.3s ease;
 }
 
 .answerWrap {
@@ -630,23 +708,24 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
 }
 
 .itemOpen .answerWrap {
-  max-height: 2400px;
+  max-height: 2600px;
 }
 
 .answer {
-  font-size: 1.18rem;
+  font-size: 14.5px;
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.82);
-  padding: 0.4rem 1.6rem 1.6rem;
+  color: rgba(255, 255, 255, 0.78);
+  padding: 0 1.25rem 1.25rem;
+  font-weight: 300;
 
   > * { margin: 0; }
-
-  > * + * { margin-top: 1rem; }
+  > * + * { margin-top: 0.85rem; }
 
   :global(strong) { color: #fff; font-weight: 600; }
+  :global(em) { color: #8BE9FD; font-style: normal; letter-spacing: 0.4px; }
 
   :global(.lead-line) {
-    font-size: 1.35rem;
+    font-size: 16px;
     color: rgba(255, 255, 255, 0.95);
     em { color: #8BE9FD; font-style: normal; letter-spacing: 0.5px; }
   }
@@ -656,27 +735,28 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
     padding-left: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.5rem 1.2rem;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 0.5rem 1rem;
   }
 
   :global(.festival-list) {
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   }
 
   :global(li) {
     position: relative;
-    padding-left: 1.3rem;
+    padding-left: 18px;
     color: rgba(255, 255, 255, 0.82);
     line-height: 1.5;
+    font-size: 14px;
 
     &::before {
       content: '';
       position: absolute;
       left: 0;
-      top: 0.65rem;
-      width: 7px;
-      height: 7px;
+      top: 0.6rem;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: #8BE9FD;
       box-shadow: 0 0 6px rgba(139, 233, 253, 0.6);
@@ -692,38 +772,38 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
   }
 
   :global(.manifesto) {
-    margin: 1.3rem 0;
-    padding: 1.2rem 1.4rem 1.2rem 1.6rem;
-    border-left: 3px solid #8BE9FD;
-    background: rgba(139, 233, 253, 0.04);
+    margin: 1rem 0;
+    padding: 1rem 1.2rem;
+    border-left: 2px solid #8BE9FD;
+    background: linear-gradient(90deg, rgba(139, 233, 253, 0.07), rgba(139, 233, 253, 0.02));
     border-radius: 0 10px 10px 0;
     color: rgba(255, 255, 255, 0.9);
     font-style: italic;
-    box-shadow: inset 0 0 28px rgba(0, 0, 0, 0.3);
 
-    p { margin: 0; line-height: 1.6; font-size: 1.12rem; }
-    p + p { margin-top: 0.5rem; }
+    p { margin: 0; line-height: 1.6; font-size: 14.5px; }
+    p + p { margin-top: 0.4rem; }
   }
 
   :global(.manifesto-mark) {
     display: block;
     font-style: normal;
-    font-size: 0.78rem;
+    font-size: 10px;
     letter-spacing: 2.5px;
     text-transform: uppercase;
     color: #8BE9FD;
     font-weight: 700;
-    margin-bottom: 0.55rem;
+    margin-bottom: 0.5rem;
   }
 }
 
+/* ── Footer ────────────────────────────────────────────────────── */
 .bottom {
   margin-top: 3.5rem;
-  padding: 1.8rem;
+  padding: 1.6rem 1rem;
   text-align: center;
-  border-top: 1px solid rgba(139, 233, 253, 0.1);
+  border-top: 1px solid rgba(139, 233, 253, 0.12);
   color: rgba(255, 255, 255, 0.55);
-  font-size: 1.1rem;
+  font-size: 14px;
 
   a {
     color: #8BE9FD;
@@ -734,27 +814,35 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
   }
 }
 
+/* ── Responsive: tablet + mobile ───────────────────────────────── */
 @media (max-width: 768px) {
-  .hero { padding: 3.5rem 1rem 2.4rem; }
-  .layout { padding: 0 1rem; margin-top: 2rem; }
-  .qButton { padding: 1.1rem 1.2rem; font-size: 1.1rem; gap: 0.8rem; }
-  .answer { padding: 0.4rem 1.2rem 1.3rem; font-size: 1.08rem; line-height: 1.65; }
-  .answer :global(ul) { grid-template-columns: 1fr; }
-  .answer :global(.lead-line) { font-size: 1.18rem; }
-  .answer :global(.manifesto) { padding: 1rem 1.1rem 1rem 1.3rem; }
-  .answer :global(.manifesto) p { font-size: 1.02rem; }
-  .sectionHead { gap: 0.8rem; margin-bottom: 1.2rem; padding-bottom: 0.85rem; }
-  .howItWorksBtn { font-size: 0.9rem; padding: 0.45rem 0.9rem; gap: 0.4rem; }
-  .section { margin-bottom: 3rem; }
-  .items { gap: 0.7rem; }
-  .bottom { font-size: 1rem; padding: 1.4rem; }
+  .hero { padding: 3rem 1rem 2.2rem; }
+  .heroTitle { font-size: clamp(2.2rem, 9vw, 2.8rem); }
+  .heroLead { font-size: 14px; }
+  .layout { padding: 0 1rem; }
+  .qButton { padding: 0.95rem 1rem; font-size: 14.5px; gap: 0.7rem; }
+  .answer { padding: 0 1rem 1.05rem; font-size: 14px; }
+  .answer :global(ul) { grid-template-columns: 1fr; gap: 0.4rem; }
+  .answer :global(.lead-line) { font-size: 15px; }
+  .answer :global(.manifesto) { padding: 0.85rem 1rem; }
+  .answer :global(.manifesto) p { font-size: 14px; }
+  .sectionHead { gap: 0.7rem; margin-bottom: 1.1rem; padding-bottom: 0.8rem; }
+  .howItWorksBtn { font-size: 11.5px; padding: 7px 14px; }
+  .section { margin-bottom: 2.6rem; }
+  .items { gap: 10px; }
+  .bottom { font-size: 13.5px; padding: 1.3rem 1rem; margin-top: 2.5rem; }
 }
 
 @media (max-width: 480px) {
-  .qButton { padding: 1rem; font-size: 1.02rem; }
-  .answer { padding: 0.3rem 1rem 1.1rem; font-size: 1rem; }
-  .answer :global(.lead-line) { font-size: 1.1rem; }
-  .answer :global(.manifesto) { padding: 0.9rem 1rem 0.9rem 1.1rem; }
-  .answer :global(.manifesto) p { font-size: 0.96rem; }
+  .hero { padding: 2.5rem 1rem 2rem; }
+  .eyebrow { font-size: 10px; padding: 5px 12px; margin-bottom: 1.1rem; }
+  .qButton { padding: 0.9rem; font-size: 14px; }
+  .chevWrap { width: 26px; height: 26px; }
+  .answer { padding: 0 0.95rem 1rem; font-size: 13.5px; }
+  .answer :global(.lead-line) { font-size: 14.5px; }
+  .answer :global(.manifesto) { padding: 0.8rem 0.9rem; }
+  .answer :global(.manifesto) p { font-size: 13.5px; }
+  .sectionHead h2 { font-size: 1.45rem; }
+  .howItWorksBtn { margin-left: 0; }
 }
 </style>
