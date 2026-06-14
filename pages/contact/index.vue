@@ -1,313 +1,499 @@
 <template>
-  <main class="main">
+  <main class="page">
     <UserNav />
-    <nav class="navbar navbar-welcome">
-      <h1 class="title-primary" style="color: #8BE9FD !important; margin-top:30px; margin-bottom:10px; display:flex; justify-content: center;;">Contact Support</h1>
-      <h2 class="title-secondary" style="color: rgb(172, 175, 181); font-size: 14px; max-width: 600px; margin: 20px auto 0;">
-        Please complete the form below to get in touch. A response will be provided as soon as possible.
-      </h2>
-    </nav>
 
-    <div class="contact-section">
-      <div class="contact-container">
-        <form @submit.prevent="submitForm" class="contact-form">
-          <div class="form-group">
-            <label for="name">Name</label>
-            <input 
-              type="text" 
-              id="name" 
-              v-model="form.name" 
-              required 
-              placeholder="Full Name"
-              class="form-input"
-            />
-          </div>
+    <header class="hero">
+      <div class="heroInner">
+        <span class="eyebrow">Help &amp; Inquiries</span>
+        <h1 class="heroTitle">Contact Support</h1>
+        <p class="heroLead">
+          Reach out about an account, a watchlist, a missing title, or any other inquiry related to the platform.
+        </p>
+      </div>
+    </header>
 
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input 
-              type="email" 
-              id="email" 
-              v-model="form.email" 
-              required 
-              placeholder="name@example.com"
-              class="form-input"
-            />
-          </div>
+    <div class="layout">
+      <div class="formCard">
+        <form @submit.prevent="submitForm" class="contactForm" novalidate>
+          <transition name="state-fade" mode="out-in">
+            <div v-if="state === 'success'" key="success" class="successState">
+              <div class="successIcon">
+                <svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+              </div>
+              <h2 class="successTitle">Message received</h2>
+              <p class="successText">The message has been delivered. A reply will follow soon at the email provided.</p>
+              <button type="button" class="ghostBtn" @click="resetForm">Send another</button>
+            </div>
 
-          <div class="form-group">
-            <label for="subject">Subject</label>
-            <input 
-              type="text" 
-              id="subject" 
-              v-model="form.subject" 
-              required 
-              placeholder="Inquiry Topic"
-              class="form-input"
-            />
-          </div>
+            <div v-else key="form" class="formBlock">
+              <div class="fieldRow">
+                <div class="fieldGroup">
+                  <label for="name" class="fieldLabel">Name</label>
+                  <input
+                    id="name"
+                    v-model="form.name"
+                    type="text"
+                    class="fieldInput"
+                    placeholder="Full name"
+                    maxlength="100"
+                    required
+                  />
+                </div>
 
-          <div class="form-group">
-            <label for="message">Message</label>
-            <textarea 
-              id="message" 
-              v-model="form.message" 
-              required 
-              placeholder="Please describe the inquiry..." 
-              rows="6"
-              class="form-input form-textarea"
-            ></textarea>
-          </div>
+                <div class="fieldGroup">
+                  <label for="email" class="fieldLabel">Email</label>
+                  <input
+                    id="email"
+                    v-model="form.email"
+                    type="email"
+                    class="fieldInput"
+                    placeholder="name@example.com"
+                    maxlength="254"
+                    required
+                  />
+                </div>
+              </div>
 
-          <div v-if="successMessage" class="feedback-message success">
-            {{ successMessage }}
-          </div>
-          <div v-if="errorMessage" class="feedback-message error">
-            {{ errorMessage }}
-          </div>
+              <div class="fieldGroup">
+                <label for="subject" class="fieldLabel">Subject</label>
+                <input
+                  id="subject"
+                  v-model="form.subject"
+                  type="text"
+                  class="fieldInput"
+                  placeholder="Inquiry topic"
+                  maxlength="200"
+                  required
+                />
+              </div>
 
-          <div class="button-container">
-            <button 
-              type="submit" 
-              class="button button--search" 
-              :disabled="loading"
-              :style="{ 'pointer-events': loading ? 'none' : 'auto', 'opacity': loading ? '0.5' : '1' }"
-            >
-              <div v-if="loading" class="spinner"></div>
-              <span v-else class="txt">Send Message</span>
-            </button>
-          </div>
+              <div class="fieldGroup">
+                <label for="message" class="fieldLabel">Message</label>
+                <textarea
+                  id="message"
+                  v-model="form.message"
+                  class="fieldTextarea"
+                  placeholder="Describe the inquiry &mdash; the more specific, the faster it can be addressed."
+                  rows="6"
+                  maxlength="5000"
+                  required
+                ></textarea>
+                <div class="charCount">{{ form.message.length }} / 5000</div>
+              </div>
+
+              <p v-if="errorMessage" class="errorBanner">{{ errorMessage }}</p>
+
+              <div class="actionRow">
+                <button
+                  type="submit"
+                  class="primaryBtn"
+                  :disabled="!canSubmit || loading"
+                >
+                  <span v-if="loading" class="btnSpinner"></span>
+                  <span>{{ loading ? 'Sending…' : 'Send message' }}</span>
+                </button>
+              </div>
+            </div>
+          </transition>
         </form>
       </div>
     </div>
   </main>
 </template>
 
-<script>
+<script setup>
+import { ref, reactive, computed } from 'vue';
 import UserNav from '@/components/global/UserNav';
 
-export default {
-  head() {
-    return {
-      title: 'Cinemagoria — Contact Support',
-      meta: [
-        { hid: 'description', name: 'description', content: 'Need help with Cinemagoria? Contact our support team for questions about your account, watchlists, streaming availability, or any platform issues.' },
-        { hid: 'og:title', property: 'og:title', content: 'Cinemagoria — Contact Support' },
-        { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
-      ],
-    };
-  },
-  components: {
-    UserNav
-  },
-  data() {
-    return {
-      loading: false,
-      successMessage: '',
-      errorMessage: '',
-      form: {
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-      }
-    };
-  },
-  methods: {
-    async submitForm() {
-      this.loading = true;
-      this.successMessage = '';
-      this.errorMessage = '';
+useHead({
+  title: 'Contact Support',
+  meta: [
+    { name: 'description', content: 'Reach the team behind the platform for questions about an account, watchlists, missing titles, festival data, or editorial coverage.' },
+    { property: 'og:title', content: 'Contact Support' },
+  ],
+});
 
-      try {
-        const response = await fetch('/api/contact', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(this.form)
-        });
+const state = ref('form');
+const loading = ref(false);
+const errorMessage = ref('');
 
-        const data = await response.json();
+const form = reactive({
+  name: '',
+  email: '',
+  subject: '',
+  message: '',
+});
 
-        if (response.ok && data.success) {
-          this.successMessage = 'Message sent successfully.';
-          this.form = { name: '', email: '', subject: '', message: '' };
-        } else {
-          throw new Error(data.error || 'Failed to send message');
-        }
-      } catch (error) {
-        console.error('Contact error:', error);
-        this.errorMessage = 'An error occurred. Please try again later.';
-      } finally {
-        this.loading = false;
-      }
+const canSubmit = computed(() => {
+  return form.name.trim().length >= 2
+    && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())
+    && form.subject.trim().length >= 2
+    && form.message.trim().length >= 10;
+});
+
+async function submitForm() {
+  if (!canSubmit.value || loading.value) return;
+  loading.value = true;
+  errorMessage.value = '';
+
+  try {
+    const response = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    });
+    const data = await response.json();
+    if (response.ok && data.success) {
+      state.value = 'success';
+      Object.assign(form, { name: '', email: '', subject: '', message: '' });
+    } else {
+      throw new Error(data.error || 'Failed to send message');
     }
+  } catch (err) {
+    console.error('Contact error:', err);
+    errorMessage.value = 'Could not send the message. Please try again in a moment.';
+  } finally {
+    loading.value = false;
   }
-};
+}
+
+function resetForm() {
+  state.value = 'form';
+  errorMessage.value = '';
+}
 </script>
 
-<style lang="scss" scoped>
-.contact-section {
-  display: flex;
-  justify-content: center;
-  padding: 40px 20px;
-  min-height: 60vh;
+<style scoped lang="scss">
+/* ── Page shell ─────────────────────────────────────────────────── */
+.page {
+  position: relative;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% -10%, rgba(31, 84, 103, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 90% 5%, rgba(139, 233, 253, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 60% at 50% 95%, rgba(31, 84, 103, 0.12) 0%, transparent 60%),
+    linear-gradient(180deg, #02080d 0%, #010406 100%);
+  color: rgba(255, 255, 255, 0.86);
+  padding-bottom: 6rem;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-.contact-container {
-  background: rgba(16, 26, 35, 0.85);
-  padding: 40px;
-  border-radius: 16px;
-  width: 100%;
-  max-width: 600px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(127, 219, 241, 0.1);
-  height: fit-content;
-}
+/* ── Hero ───────────────────────────────────────────────────────── */
+.hero {
+  padding: 4.5rem 1.5rem 2.5rem;
+  text-align: center;
+  position: relative;
 
-.contact-form {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-
-  label {
-    color: #e0e0e0;
-    font-size: 15px;
-    font-weight: 500;
-    margin-left: 4px;
-    letter-spacing: 0.5px;
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 240px;
+    max-width: 60%;
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, transparent, rgba(139, 233, 253, 0.45), transparent);
   }
 }
 
-.form-input {
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(127, 219, 241, 0.2);
-  border-radius: 15px;;
-  padding: 14px 18px;
-  color: #fff;
-  font-size: 16px;
-  width: 100%;
-  transition: all 0.3s ease;
-  outline: none;
-
-  &:focus {
-    border-color: #8BE9FD;
-    background: rgba(30, 41, 59, 0.9);
-    box-shadow: 0 0 15px rgba(139, 233, 253, 0.15);
-  }
-
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.3);
-  }
+.heroInner {
+  max-width: 640px;
+  margin: 0 auto;
 }
 
-.form-textarea {
-  resize: vertical;
-  min-height: 120px; 
-}
-
-.button-container {
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
-}
-
-.button--search {
-  width: 100%;
-  padding: 16px;
-  border-radius: 15px;;
+.eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #8BE9FD;
   font-weight: 700;
-  font-size: 16px;
-  letter-spacing: 1px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: transparent; 
-  border: 1px solid #8BE9FD; 
-  cursor: pointer;
-  box-shadow: 0 4px 15px rgba(139, 233, 253, 0.1);
-  transition: all 0.3s ease;
-  
-  .txt {
-    color: #8BE9FD !important; 
-    text-transform: uppercase;
-  }
+  padding: 6px 14px;
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 999px;
+  background: rgba(139, 233, 253, 0.08);
+  margin-bottom: 1.5rem;
+}
 
-  &:hover {
-    background-color: rgba(139, 233, 253, 0.1);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(139, 233, 253, 0.2);
+.heroTitle {
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 0.85rem;
+  letter-spacing: -1px;
+  line-height: 1.1;
+  text-shadow: 0 0 28px rgba(139, 233, 253, 0.22);
+}
+
+.heroLead {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #a0aab2;
+  margin: 0 auto;
+  max-width: 540px;
+  font-weight: 300;
+}
+
+/* ── Layout: centered single column ────────────────────────────── */
+.layout {
+  max-width: 720px;
+  margin: 2.5rem auto 0;
+  padding: 0 1.5rem;
+
+  @media (max-width: 920px) {
+    margin-top: 1.5rem;
+  }
+}
+
+/* ── Form card ─────────────────────────────────────────────────── */
+.formCard {
+  position: relative;
+  background: rgba(3, 4, 6, 0.7);
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(31, 84, 103, 0.18), transparent 50%),
+    radial-gradient(circle at 90% 95%, rgba(139, 233, 253, 0.06), transparent 40%);
+  border: 1px solid rgba(139, 233, 253, 0.18);
+  border-radius: 18px;
+  padding: 2.4rem 2.2rem 2rem;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+    opacity: 0.85;
+    pointer-events: none;
+  }
+}
+
+.contactForm {
+  display: block;
+}
+
+.formBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.fieldLabel {
+  display: block;
+  color: #e0e6ed;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: 0.2px;
+}
+
+.fieldInput,
+.fieldTextarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(139, 233, 253, 0.2);
+  border-radius: 10px;
+  padding: 11px 14px;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.fieldTextarea {
+  resize: vertical;
+  min-height: 130px;
+  line-height: 1.55;
+}
+
+.fieldInput:focus,
+.fieldTextarea:focus {
+  border-color: rgba(139, 233, 253, 0.6);
+  box-shadow: 0 0 0 3px rgba(139, 233, 253, 0.12);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.fieldInput::placeholder,
+.fieldTextarea::placeholder {
+  color: rgba(160, 170, 178, 0.45);
+}
+
+.charCount {
+  margin-top: 5px;
+  text-align: right;
+  font-size: 11px;
+  color: #6b7480;
+}
+
+.errorBanner {
+  background: rgba(255, 85, 85, 0.1);
+  border: 1px solid rgba(255, 85, 85, 0.25);
+  color: #ff9999;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin: 0;
+}
+
+.actionRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #1F5467, #8BE9FD);
+  border: 1px solid rgba(139, 233, 253, 0.5);
+  border-radius: 10px;
+  color: #03242C;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  box-shadow: 0 4px 16px rgba(139, 233, 253, 0.18);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(139, 233, 253, 0.28);
   }
 
   &:disabled {
-    border-color: #5a6e75;
+    opacity: 0.45;
     cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-    .txt {
-      color: #5a6e75 !important;
-    }
   }
 }
 
-.feedback-message {
-  padding: 12px;
-  border-radius: 8px;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 500;
-  margin-top: 20px;
-  margin-bottom: 10px; 
-  animation: fadeIn 0.5s ease-out;
-
-  &.success {
-    background: rgba(139, 233, 253, 0.1);
-    color: #8BE9FD;
-    border: 1px solid rgba(139, 233, 253, 0.3);
-  }
-
-  &.error {
-    background: rgba(231, 76, 60, 0.15);
-    color: #e74c3c;
-    border: 1px solid rgba(231, 76, 60, 0.3);
-  }
-}
-
-.spinner {
-  width: 24px;
-  height: 24px;
-  border: 3px solid rgba(139, 233, 253, 0.1); 
-  border-top-color: #8BE9FD; 
+.btnSpinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(3, 36, 44, 0.3);
+  border-top-color: #03242C;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ── Success state ─────────────────────────────────────────────── */
+.successState {
+  text-align: center;
+  padding: 1.5rem 0 0.5rem;
 }
 
+.successIcon {
+  width: 92px;
+  height: 92px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: rgba(139, 233, 253, 0.1);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  color: #8BE9FD;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  filter: drop-shadow(0 0 12px rgba(139, 233, 253, 0.3));
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.6); opacity: 0; }
+  80% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.successTitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 8px;
+  letter-spacing: -0.3px;
+}
+
+.successText {
+  color: #a0aab2;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 auto 22px;
+  max-width: 380px;
+  font-weight: 300;
+}
+
+.ghostBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 22px;
+  background: transparent;
+  border: 1px solid rgba(139, 233, 253, 0.35);
+  border-radius: 10px;
+  color: #8BE9FD;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+
+  &:hover {
+    background: rgba(139, 233, 253, 0.08);
+    border-color: #8BE9FD;
+  }
+}
+
+.state-fade-enter-active,
+.state-fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.state-fade-enter-from { opacity: 0; transform: translateY(10px); }
+.state-fade-leave-to { opacity: 0; transform: translateY(-10px); }
+
+/* ── Responsive ────────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .contact-section {
-    padding: 20px;
-    margin-top: 0;
-    min-height: auto;
-  }
-  
-  .contact-container {
-    padding: 24px;
-  }
+  .hero { padding: 3rem 1rem 2rem; }
+  .heroLead { font-size: 14px; }
+  .layout { padding: 0 1rem; }
+  .formCard { padding: 1.8rem 1.3rem 1.5rem; border-radius: 16px; }
+}
+
+@media (max-width: 480px) {
+  .hero { padding: 2.4rem 1rem 1.8rem; }
+  .eyebrow { font-size: 10px; padding: 5px 12px; margin-bottom: 1rem; }
+  .formCard { padding: 1.6rem 1rem 1.3rem; }
+  .primaryBtn { width: 100%; padding: 13px 24px; }
+  .actionRow { justify-content: stretch; }
 }
 </style>

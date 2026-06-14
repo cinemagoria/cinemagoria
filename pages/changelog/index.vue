@@ -1,51 +1,56 @@
 <template>
-  <main class="main">
+  <main class="page">
     <UserNav />
-    <nav class="navbar navbar-welcome">
-      <h1 class="title-primary" style="color: #8BE9FD !important; margin-top:30px; margin-bottom:10px; display:flex; justify-content: center;">Changelog</h1>
-      <h2 class="title-secondary" style="color: rgb(172, 175, 181); font-size: 14px; max-width: 600px; margin: 20px auto 0;">
-        Latest updates and improvements from Cinemagoria.
-      </h2>
-    </nav>
 
-    <div class="changelog-section">
-      <div v-if="loading" class="loading-container">
+    <header class="hero">
+      <div class="heroInner">
+        <span class="eyebrow">Release Notes</span>
+        <h1 class="heroTitle">Changelog</h1>
+        <p class="heroLead">
+          A running log of releases, new features, fixes and platform improvements &mdash; pulled directly from the source repository.
+        </p>
+      </div>
+    </header>
+
+    <div class="layout">
+      <div v-if="loading" class="loadingCard">
         <Loader />
       </div>
 
-      <div v-else-if="error" class="error-container">
+      <div v-else-if="error" class="errorCard">
         <p>{{ error }}</p>
-        <button @click="fetchReleases" class="retry-btn">Retry</button>
+        <button @click="fetchReleases" class="primaryBtn">Retry</button>
       </div>
 
-      <div v-else class="changelog-container">
-        <div v-for="release in releases" :key="release.id" class="release-card">
-          <div class="release-header">
-            <div class="header-left">
-              <a :href="release.html_url" target="_blank" class="release-title">{{ release.name || release.tag_name }}</a>
-              <span class="release-date">{{ formatDate(release.published_at) }}</span>
+      <div v-else class="releaseList">
+        <article v-for="release in releases" :key="release.id" class="releaseCard">
+          <header class="releaseHead">
+            <div class="releaseHeadLeft">
+              <a :href="release.html_url" target="_blank" class="releaseTitle">{{ release.name || release.tag_name }}</a>
+              <span class="releaseDate">{{ formatDate(release.published_at) }}</span>
             </div>
-            <a :href="release.html_url" target="_blank" class="github-btn">
+            <a :href="release.html_url" target="_blank" class="githubBtn" rel="noopener noreferrer">
               View on GitHub
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             </a>
-          </div>
-          <div class="release-meta">
-            <span class="tag-badge">{{ release.tag_name }}</span>
-          </div>
-          
-          <div class="release-content" :class="{ 'collapsed': !expanded[release.id] }">
-            <div class="release-body" v-html="release.compiledBody"></div>
-            <div v-if="!expanded[release.id]" class="fade-overlay"></div>
+          </header>
+
+          <div class="releaseMeta">
+            <span class="tagBadge">{{ release.tag_name }}</span>
           </div>
 
-          <button @click="toggleExpand(release.id)" class="expand-btn">
-            {{ expanded[release.id] ? 'Show Less' : 'Read More' }}
+          <div class="releaseContent" :class="{ 'is-collapsed': !expanded[release.id] }">
+            <div class="releaseBody" v-html="release.compiledBody"></div>
+            <div v-if="!expanded[release.id]" class="fadeOverlay"></div>
+          </div>
+
+          <button @click="toggleExpand(release.id)" class="expandBtn">
+            {{ expanded[release.id] ? 'Show less' : 'Read more' }}
           </button>
-        </div>
-        
-        <div v-if="releases.length === 0" class="no-releases">
-          No releases found.
+        </article>
+
+        <div v-if="releases.length === 0" class="emptyCard">
+          <p>No releases found.</p>
         </div>
       </div>
     </div>
@@ -59,10 +64,10 @@ import MarkdownIt from 'markdown-it';
 export default {
   head() {
     return {
-      title: 'Cinemagoria — Changelog: Release Notes & Updates',
+      title: 'Changelog — Release Notes & Updates',
       meta: [
-        { hid: 'description', name: 'description', content: 'Cinemagoria changelog — latest releases, new features, bug fixes, and platform improvements.' },
-        { hid: 'og:title', property: 'og:title', content: 'Cinemagoria — Changelog' },
+        { hid: 'description', name: 'description', content: 'Changelog — latest releases, new features, bug fixes, and platform improvements.' },
+        { hid: 'og:title', property: 'og:title', content: 'Changelog' },
         { hid: 'og:url', property: 'og:url', content: `${process.env.FRONTEND_URL}${this.$route.path}` },
       ],
     };
@@ -104,7 +109,7 @@ export default {
         }
         const data = await response.json();
         const releases = data.filter(r => !r.draft);
-        
+
         const expandedState = {};
         releases.forEach(r => {
           expandedState[r.id] = false;
@@ -116,14 +121,14 @@ export default {
 
       } catch (err) {
         console.error('Error fetching changelog:', err);
-        this.error = 'Failed to load changelog. Please try again later.';
+        this.error = 'Failed to load the changelog. Please try again in a moment.';
       } finally {
         this.loading = false;
       }
     },
     processReleasesMarkdown() {
       if (this.releases.length === 0) return;
-      
+
       this.releases = this.releases.map(release => {
         let compiledBody = release.body || '';
         if (this.md) {
@@ -151,268 +156,377 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.changelog-section {
-  display: flex;
-  justify-content: center;
-  padding: 40px 20px;
-  min-height: 80vh;
+/* ── Page shell ─────────────────────────────────────────────────── */
+.page {
+  position: relative;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% -10%, rgba(31, 84, 103, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 90% 5%, rgba(139, 233, 253, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 60% at 50% 95%, rgba(31, 84, 103, 0.12) 0%, transparent 60%),
+    linear-gradient(180deg, #02080d 0%, #010406 100%);
+  color: rgba(255, 255, 255, 0.86);
+  padding-bottom: 6rem;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-.changelog-container {
-  width: 100%;
-  max-width: 800px;
+/* ── Hero ───────────────────────────────────────────────────────── */
+.hero {
+  padding: 4.5rem 1.5rem 2.5rem;
+  text-align: center;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 240px;
+    max-width: 60%;
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, transparent, rgba(139, 233, 253, 0.45), transparent);
+  }
+}
+
+.heroInner {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #8BE9FD;
+  font-weight: 700;
+  padding: 6px 14px;
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 999px;
+  background: rgba(139, 233, 253, 0.08);
+  margin-bottom: 1.5rem;
+}
+
+.heroTitle {
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 0.85rem;
+  letter-spacing: -1px;
+  line-height: 1.1;
+  text-shadow: 0 0 28px rgba(139, 233, 253, 0.22);
+}
+
+.heroLead {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #a0aab2;
+  margin: 0 auto;
+  max-width: 540px;
+  font-weight: 300;
+}
+
+/* ── Layout ─────────────────────────────────────────────────────── */
+.layout {
+  max-width: 820px;
+  margin: 2.5rem auto 0;
+  padding: 0 1.5rem;
+}
+
+.releaseList {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 24px;
 }
 
-.release-card {
-  background: rgba(16, 26, 35, 0.85);
-  border: 1px solid hsla(0, 0%, 100%, .18);
-  border-radius: 15px;;
-  box-shadow: 0 8px 32px 0 rgba(31, 97, 135, .37);
-  backdrop-filter: blur(10px);
-  padding: 30px;
-  transition: transform 0.3s ease;
+/* ── Release card ──────────────────────────────────────────────── */
+.releaseCard {
+  position: relative;
+  background: rgba(3, 4, 6, 0.7);
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(31, 84, 103, 0.18), transparent 50%);
+  border: 1px solid rgba(139, 233, 253, 0.18);
+  border-radius: 16px;
+  padding: 1.6rem 1.8rem 1.4rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+    opacity: 0.85;
+    pointer-events: none;
+  }
 
   &:hover {
     transform: translateY(-2px);
+    border-color: rgba(139, 233, 253, 0.32);
+    background: rgba(3, 4, 6, 0.82);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.5), 0 0 22px rgba(139, 233, 253, 0.1);
   }
 }
 
-.release-header {
+.releaseHead {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  gap: 14px;
+  margin-bottom: 8px;
   flex-wrap: wrap;
-  gap: 10px;
 }
 
-.header-left {
+.releaseHeadLeft {
   display: flex;
   align-items: baseline;
-  gap: 15px;
+  gap: 14px;
   flex-wrap: wrap;
+  min-width: 0;
 }
 
-.release-title {
-  color: #8BE9FD;
-  font-size: 24px;
+.releaseTitle {
+  color: #fff;
+  font-size: 1.5rem;
   font-weight: 700;
+  letter-spacing: -0.3px;
   text-decoration: none;
-  transition: color 0.2s;
+  transition: color 0.2s ease;
 
-  &:hover {
-    color: #a4f0ff;
-  }
+  &:hover { color: #8BE9FD; }
 }
 
-.release-date {
-  color: #a0a0a0;
-  font-size: 14px;
+.releaseDate {
+  color: #a0aab2;
+  font-size: 13px;
+  font-weight: 300;
 }
 
-.github-btn {
-  display: flex;
+.githubBtn {
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(139, 233, 253, 0.1);
-  border: 1px solid rgba(139, 233, 253, 0.3);
+  background: rgba(139, 233, 253, 0.06);
+  border: 1px solid rgba(139, 233, 253, 0.28);
   color: #8BE9FD;
   padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 13px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
   text-decoration: none;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 
   &:hover {
-    background: rgba(139, 233, 253, 0.2);
+    background: rgba(139, 233, 253, 0.14);
+    border-color: #8BE9FD;
     transform: translateY(-1px);
   }
 }
 
-.release-meta {
-  margin-bottom: 20px;
+.releaseMeta {
+  margin-bottom: 14px;
 }
 
-.tag-badge {
-  background: rgba(139, 233, 253, 0.1);
+.tagBadge {
+  display: inline-block;
+  background: rgba(139, 233, 253, 0.08);
   color: #8BE9FD;
-  border: 1px solid rgba(139, 233, 253, 0.3);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-family: monospace;
+  border: 1px solid rgba(139, 233, 253, 0.32);
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  letter-spacing: 0.5px;
 }
 
-.release-content {
+/* ── Release content ───────────────────────────────────────────── */
+.releaseContent {
   position: relative;
   overflow: hidden;
   transition: max-height 0.3s ease;
-  
-  &.collapsed {
-    max-height: 300px;
-  }
+
+  &.is-collapsed { max-height: 280px; }
 }
 
-.fade-overlay {
+.fadeOverlay {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 80px;
-  background: linear-gradient(to bottom, rgba(16, 26, 35, 0), rgba(16, 26, 35, 1));
+  height: 90px;
+  background: linear-gradient(to bottom, rgba(3, 4, 6, 0), rgba(3, 4, 6, 0.95));
   pointer-events: none;
 }
 
-.expand-btn {
-  background: transparent;
-  border: none;
-  color: #8BE9FD;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 10px 0;
-  margin-top: 10px;
-  cursor: pointer;
-  width: 100%;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: color 0.2s;
-
-  &:hover {
-    color: #fff;
-    text-decoration: underline;
-  }
-}
-
-.release-body {
-  color: #e0e0e0;
-  line-height: 1.6;
-  font-size: 16px;
+.releaseBody {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 300;
 
   :deep(h1), :deep(h2), :deep(h3) {
     color: #fff;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    font-weight: 600;
+    margin: 1.2rem 0 0.5rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
   }
-  
-  :deep(h1) { font-size: 1.5em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
-  :deep(h2) { font-size: 1.3em; }
-  :deep(h3) { font-size: 1.1em; }
+
+  :deep(h1) {
+    font-size: 1.25em;
+    border-bottom: 1px solid rgba(139, 233, 253, 0.18);
+    padding-bottom: 6px;
+  }
+  :deep(h2) { font-size: 1.12em; }
+  :deep(h3) { font-size: 1.04em; color: #8BE9FD; }
+
+  :deep(p) { margin: 0.6rem 0; }
 
   :deep(ul), :deep(ol) {
-    padding-left: 20px;
-    margin-bottom: 15px;
+    padding-left: 22px;
+    margin: 0.6rem 0;
   }
 
   :deep(li) {
-    margin-bottom: 5px;
+    margin-bottom: 4px;
   }
+
+  :deep(strong) { color: #fff; font-weight: 600; }
 
   :deep(a) {
     color: #8BE9FD;
     text-decoration: none;
-    &:hover { text-decoration: underline; }
+    border-bottom: 1px dashed rgba(139, 233, 253, 0.4);
+    transition: border-color 0.2s ease;
+    &:hover { border-bottom-color: #8BE9FD; }
   }
 
   :deep(code) {
-    background: rgba(0,0,0,0.3);
-    padding: 2px 5px;
-    border-radius: 4px;
-    font-family: monospace;
-    font-size: 0.9em;
+    background: rgba(139, 233, 253, 0.08);
+    color: #8BE9FD;
+    padding: 1px 6px;
+    border-radius: 5px;
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    font-size: 0.88em;
+    border: 1px solid rgba(139, 233, 253, 0.12);
   }
 
   :deep(pre) {
-    background: rgba(0,0,0,0.3);
-    padding: 15px;
-    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(139, 233, 253, 0.14);
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
     overflow-x: auto;
-    margin-bottom: 15px;
-    
+    margin: 0.8rem 0;
+
     code {
       background: transparent;
+      border: none;
       padding: 0;
+      color: #e0e6ed;
     }
   }
-  
+
   :deep(blockquote) {
-    border-left: 4px solid #8BE9FD;
-    margin: 0 0 15px;
-    padding-left: 15px;
-    color: #a0a0a0;
+    border-left: 2px solid #8BE9FD;
+    margin: 0.6rem 0;
+    padding: 0.4rem 1rem;
+    background: linear-gradient(90deg, rgba(139, 233, 253, 0.05), transparent);
+    color: rgba(255, 255, 255, 0.72);
+    border-radius: 0 8px 8px 0;
+  }
+
+  :deep(hr) {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(139, 233, 253, 0.3), transparent);
+    margin: 1rem 0;
   }
 }
 
-.error-container, .no-releases {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
-  text-align: center;
-  color: #ccc;
-  width: 100%;
-}
-
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
-  text-align: center;
-  color: #ccc;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.307);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 15px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(139, 233, 253, 0.1);
-  border-top-color: #8BE9FD;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 15px;
-}
-
-.retry-btn {
+/* ── Expand button ─────────────────────────────────────────────── */
+.expandBtn {
+  display: block;
+  margin: 14px auto 0;
   background: transparent;
-  border: 1px solid #8BE9FD;
+  border: none;
   color: #8BE9FD;
-  padding: 8px 16px;
-  border-radius: 6px;
-  margin-top: 10px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 6px 14px;
   cursor: pointer;
-  
+  transition: color 0.2s ease;
+  font-family: inherit;
+
+  &:hover { color: #fff; }
+}
+
+/* ── Loading / error / empty ───────────────────────────────────── */
+.loadingCard,
+.errorCard,
+.emptyCard {
+  position: relative;
+  background: rgba(3, 4, 6, 0.6);
+  border: 1px solid rgba(139, 233, 253, 0.16);
+  border-radius: 16px;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  min-height: 220px;
+  color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+
+  p { margin: 0; font-size: 14px; font-weight: 300; }
+}
+
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1F5467, #8BE9FD);
+  border: 1px solid rgba(139, 233, 253, 0.5);
+  color: #03242C;
+  padding: 10px 26px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  box-shadow: 0 4px 14px rgba(139, 233, 253, 0.18);
+
   &:hover {
-    background: rgba(139, 233, 253, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(139, 233, 253, 0.28);
   }
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
+/* ── Responsive ────────────────────────────────────────────────── */
 @media (max-width: 600px) {
-  .changelog-section {
-    padding: 20px 15px;
-  }
-  
-  .release-card {
-    padding: 20px;
-  }
-  
-  .release-title {
-    font-size: 20px;
-  }
+  .hero { padding: 3rem 1rem 2rem; }
+  .heroLead { font-size: 14px; }
+  .layout { padding: 0 1rem; }
+  .releaseCard { padding: 1.3rem 1.2rem 1.1rem; border-radius: 14px; }
+  .releaseTitle { font-size: 1.25rem; }
+  .githubBtn { font-size: 11.5px; padding: 5px 10px; }
 }
 </style>

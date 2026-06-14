@@ -4,7 +4,7 @@
 
     <header :class="$style.hero">
       <div :class="$style.heroInner">
-        <span :class="$style.eyebrow">Knowledge Base</span>
+        <span :class="$style.eyebrow">Reference</span>
         <h1 :class="$style.heroTitle">FAQ</h1>
         <p :class="$style.heroLead">
           Editorial framework, discovery infrastructure and the moving parts behind the platform &mdash; explained in one place.
