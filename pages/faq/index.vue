@@ -4,8 +4,8 @@
 
     <header :class="$style.hero">
       <div :class="$style.heroInner">
-        <span :class="$style.eyebrow">Base de Conocimiento</span>
-        <h1 :class="$style.heroTitle">FAQ</h1>
+        <span :class="$style.eyebrow">Referencia</span>
+        <h1 :class="$style.heroTitle">Preguntas Frecuentes</h1>
         <p :class="$style.heroLead">
           Marco editorial, infraestructura de descubrimiento y los componentes que sostienen la plataforma &mdash; explicados en un solo lugar.
         </p>
@@ -255,7 +255,7 @@ const sections = [
   },
   {
     id: 'technical',
-    title: 'Técnica',
+    title: 'Tecnologías',
     items: [
       {
         q: '¿Qué tecnologías impulsan la plataforma?',
