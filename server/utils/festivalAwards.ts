@@ -41,7 +41,8 @@ export async function fetchFestivalAwards(festivalSlug: string, locale: Locale =
                     a.tmdb_id, a.imdb_id, a.cinemagoria_url,
                     a.recipient_name, a.recipient_role, a.recipient_role_es,
                     a.tmdb_data AS award_tmdb_data,
-                    f.tmdb_data AS film_tmdb_data
+                    f.tmdb_data AS film_tmdb_data,
+                    f.image_url AS film_image_url
                   FROM festival_awards a
                   LEFT JOIN festival_films f ON f.id = a.film_id
                   WHERE a.festival_slug = ?
@@ -88,7 +89,9 @@ export async function fetchFestivalAwards(festivalSlug: string, locale: Locale =
                 cinemagoria_url: row.cinemagoria_url,
 
                 poster: tmdb.tmdb_poster
-                    || (tmdb.poster_path ? `https://image.tmdb.org/t/p/w500${tmdb.poster_path}` : null),
+                    || (tmdb.poster_path ? `https://image.tmdb.org/t/p/w500${tmdb.poster_path}` : null)
+                    || row.film_image_url
+                    || null,
                 backdrop: tmdb.tmdb_backdrop
                     || (tmdb.backdrop_path ? `https://image.tmdb.org/t/p/w1280${tmdb.backdrop_path}` : null),
                 overview: tmdb.tmdb_overview || tmdb.overview || null,
