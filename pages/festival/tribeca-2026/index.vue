@@ -35,6 +35,16 @@
         <FestivalDataDisclaimer />
       </div>
 
+      <!-- Vitrina de Ganadores: se muestra cuando hay premios disponibles -->
+      <div v-if="awardsLoading" class="winners-loader">
+        <Loader />
+      </div>
+      <WinnersCarousel
+        v-else-if="awards.length > 0"
+        :awards="awards"
+        :year="2026"
+      />
+
     </div>
 
     <div class="container">
@@ -242,6 +252,7 @@ import { ref, computed, onMounted, nextTick } from 'vue';
 import Loader from '~/components/Loader.vue';
 import FestivalDataDisclaimer from '~/components/FestivalDataDisclaimer.vue';
 import TribecaCard from '~/components/TribecaCard.vue';
+import WinnersCarousel from '~/components/festival/WinnersCarousel.vue';
 
 const activeTab = ref('films');
 const scheduleSearch = ref('');
@@ -284,6 +295,8 @@ const goToSlide = (i) => { slideDirection.value = i > infoSlide.value ? 'carouse
 const loading = ref(true);
 const films = ref({ results: [] });
 const schedule = ref([]);
+const awards = ref([]);
+const awardsLoading = ref(true);
 const openDays = ref(new Set());
 
 const CATEGORY_ORDER = [
@@ -407,13 +420,15 @@ const isOpen = (date) => {
 
 onMounted(async () => {
     try {
-        const [filmsData, scheduleData] = await Promise.all([
+        const [filmsData, scheduleData, awardsData] = await Promise.all([
             $fetch('/api/festival/tribeca/films?limit=300&sort=title'),
-            $fetch('/api/festival/tribeca/schedule')
+            $fetch('/api/festival/tribeca/schedule'),
+            $fetch('/api/festival/tribeca/awards').catch(() => ({ results: [] }))
         ]);
 
         films.value = filmsData;
         schedule.value = scheduleData.results || [];
+        awards.value = awardsData.results || [];
 
         if (schedule.value.length > 0) {
             const dates = new Set(schedule.value.map(s => s.start_time.split('T')[0]));
@@ -424,6 +439,7 @@ onMounted(async () => {
         console.error('Error fetching festival data', e);
     } finally {
         loading.value = false;
+        awardsLoading.value = false;
     }
 });
 </script>
@@ -736,6 +752,16 @@ onMounted(async () => {
 }
 
 
+
+.winners-loader {
+    width: 100%;
+    max-width: 1200px;
+    margin: 10px auto 8px;
+    min-height: 175px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 :deep(.winners-carousel) {
     max-width: 1200px;

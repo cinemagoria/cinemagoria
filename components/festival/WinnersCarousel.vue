@@ -1,5 +1,5 @@
 <template>
-  <section v-if="awards && awards.length > 0" class="winners-carousel">
+  <section v-if="groups.length > 0" class="winners-carousel">
     <!-- Heading -->
     <div class="wc-header">
       <div class="wc-header-left">
@@ -31,67 +31,88 @@
 
       <div ref="trackEl" class="wc-track" @scroll="onScroll">
         <component
-          :is="award.cinemagoria_url ? 'a' : 'div'"
-          v-for="award in awards"
-          :key="award.id"
-          :href="award.cinemagoria_url || undefined"
-          :target="award.cinemagoria_url ? '_blank' : undefined"
-          :rel="award.cinemagoria_url ? 'noopener' : undefined"
+          :is="g.cinemagoria_url ? 'a' : 'div'"
+          v-for="g in groups"
+          :key="g.key"
+          :href="g.cinemagoria_url || undefined"
+          :target="g.cinemagoria_url ? '_blank' : undefined"
+          :rel="g.cinemagoria_url ? 'noopener' : undefined"
           class="wc-card"
-          :class="cardClasses(award)"
+          :class="cardClassesForGroup(g)"
         >
           <!-- Poster (left) -->
           <div class="wc-card-poster">
             <img
-              v-if="award.poster"
-              :src="award.poster"
-              :alt="award.title"
+              v-if="g.poster"
+              :src="g.poster"
+              :alt="g.title"
               class="wc-poster-img"
               loading="lazy"
+              @error="onPosterError"
             />
             <div v-else class="wc-poster-fallback">
-              <span>{{ award.title }}</span>
+              <span>{{ g.title }}</span>
             </div>
 
-            <!-- Top-left badge -->
-            <div v-if="award.is_grand_prize" class="wc-badge wc-badge-gold">
+            <!-- Top-left badge — driven by the highest-priority award -->
+            <div v-if="g.primary.is_grand_prize" class="wc-badge wc-badge-gold">
               <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 7.5h7.5l-6 4.5 2.5 7.5-6.5-4.8-6.5 4.8 2.5-7.5-6-4.5h7.5z"/></svg>
               Ganador
             </div>
-            <div v-else-if="award.is_honorable_mention" class="wc-badge wc-badge-mention">
+            <div v-else-if="g.primary.is_honorable_mention" class="wc-badge wc-badge-mention">
               ★ Mención
             </div>
-            <div v-else-if="award.award_type === 'audience'" class="wc-badge wc-badge-audience">
+            <div v-else-if="g.primary.award_type === 'audience'" class="wc-badge wc-badge-audience">
               ♥ Público
             </div>
-            <div v-else-if="award.award_type === 'critics'" class="wc-badge wc-badge-critics">
+            <div v-else-if="g.primary.award_type === 'critics'" class="wc-badge wc-badge-critics">
               Crítica
             </div>
-            <div v-else-if="award.award_type === 'directing' || award.award_type === 'acting'" class="wc-badge wc-badge-craft">
-              {{ award.award_type === 'directing' ? 'Dirección' : 'Actuación' }}
+            <div v-else-if="g.primary.award_type === 'directing' || g.primary.award_type === 'acting'" class="wc-badge wc-badge-craft">
+              {{ g.primary.award_type === 'directing' ? 'Dirección' : 'Actuación' }}
             </div>
 
-            <div v-if="award.is_tie" class="wc-badge wc-badge-tie">ex aequo</div>
+            <!-- Count chip (bottom-right) for multi-award films -->
+            <div v-if="g.awards.length > 1" class="wc-badge wc-badge-count">×{{ g.awards.length }}</div>
+            <div v-else-if="g.primary.is_tie" class="wc-badge wc-badge-tie">ex aequo</div>
           </div>
 
           <!-- Content (right) -->
           <div class="wc-card-body">
-            <div class="wc-award-chip" :class="awardChipClass(award)">
-              {{ shortAwardLabel(award) }}
-            </div>
+            <!-- SINGLE AWARD: original layout (chip → title → recipient/director → quote) -->
+            <template v-if="g.awards.length === 1">
+              <div class="wc-award-chip" :class="awardChipClass(g.primary)">
+                {{ shortAwardLabel(g.primary) }}
+              </div>
 
-            <h3 class="wc-card-title">{{ award.title }}</h3>
+              <h3 class="wc-card-title">{{ g.title }}</h3>
 
-            <div v-if="award.recipient_name" class="wc-card-recipient">
-              {{ award.recipient_name }}<span v-if="award.recipient_role" class="wc-card-recipient-role"> · {{ award.recipient_role }}</span>
-            </div>
-            <div v-else-if="award.director" class="wc-card-director">dir. {{ award.director }}</div>
-            <!-- "dir." es la abreviatura estándar de "director/a" en español también, no se traduce -->
+              <div v-if="g.primary.recipient_name" class="wc-card-recipient">
+                {{ g.primary.recipient_name }}<span v-if="g.primary.recipient_role" class="wc-card-recipient-role"> · {{ g.primary.recipient_role }}</span>
+              </div>
+              <!-- "dir." es la abreviatura estándar de "director/a" en español también, no se traduce -->
+              <div v-else-if="g.director" class="wc-card-director">dir. {{ g.director }}</div>
 
+              <p v-if="g.primary.description" class="wc-card-quote">
+                &ldquo;{{ g.primary.description }}&rdquo;
+              </p>
+            </template>
 
-            <p v-if="award.description" class="wc-card-quote">
-              &ldquo;{{ award.description }}&rdquo;
-            </p>
+            <!-- MULTI-AWARD: stacked award list -->
+            <template v-else>
+              <h3 class="wc-card-title wc-card-title-compact">{{ g.title }}</h3>
+              <div v-if="g.director" class="wc-card-director">dir. {{ g.director }}</div>
+
+              <ul class="wc-card-awards">
+                <li v-for="a in g.awards" :key="a.id" class="wc-award-row">
+                  <span class="wc-award-marker" :class="awardChipClass(a)" aria-hidden="true"></span>
+                  <span class="wc-award-text">
+                    <span class="wc-award-name">{{ shortAwardLabel(a) }}</span>
+                    <span v-if="a.recipient_name" class="wc-award-recipient-inline"> · {{ a.recipient_name }}</span>
+                  </span>
+                </li>
+              </ul>
+            </template>
           </div>
         </component>
       </div>
@@ -111,7 +132,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 
 const props = defineProps({
   awards: { type: Array, default: () => [] },
@@ -123,11 +144,58 @@ const trackEl = ref(null);
 const canScrollLeft = ref(false);
 const canScrollRight = ref(true);
 
-const cardClasses = (a) => ({
-  'wc-card-grand': a.is_grand_prize,
-  'wc-card-mention': a.is_honorable_mention,
-  'wc-card-audience': a.award_type === 'audience',
-  'wc-card-link': !!a.cinemagoria_url,
+// Agrupa premios por identidad de película. Prioriza tmdb_id, luego imdb_id, finalmente título+director.
+// Garantiza que películas como Labrador / Cotton Fever / Summer of Three se rendericen en una sola tarjeta.
+const groupKey = (a) => {
+  if (a.tmdb_id) return `tmdb:${a.tmdb_id}`;
+  if (a.imdb_id) return `imdb:${a.imdb_id}`;
+  const t = String(a.title || '').toLowerCase().trim();
+  const d = String(a.director || '').toLowerCase().trim();
+  return `td:${t}|${d}`;
+};
+
+// Mayor = más prestigioso. Determina el badge del póster y la cita destacada.
+const priorityOf = (a) => (a.is_grand_prize ? 3 : 0) + (!a.is_honorable_mention && !a.is_grand_prize ? 1 : 0);
+
+const groups = computed(() => {
+  const map = new Map();
+  for (const a of props.awards || []) {
+    const k = groupKey(a);
+    let g = map.get(k);
+    if (!g) {
+      g = {
+        key: k,
+        title: a.title,
+        director: a.director,
+        poster: a.poster || null,
+        cinemagoria_url: a.cinemagoria_url || null,
+        awards: [],
+        primary: a,
+      };
+      map.set(k, g);
+    }
+    g.awards.push(a);
+    if (priorityOf(a) > priorityOf(g.primary)) g.primary = a;
+    if (!g.poster && a.poster) g.poster = a.poster;
+    if (!g.cinemagoria_url && a.cinemagoria_url) g.cinemagoria_url = a.cinemagoria_url;
+  }
+  // Ordena los premios dentro de cada grupo por prioridad y display_order.
+  for (const g of map.values()) {
+    g.awards.sort((x, y) => {
+      const pd = priorityOf(y) - priorityOf(x);
+      if (pd !== 0) return pd;
+      return (x.display_order || 0) - (y.display_order || 0);
+    });
+  }
+  return Array.from(map.values());
+});
+
+const cardClassesForGroup = (g) => ({
+  'wc-card-grand': g.primary.is_grand_prize,
+  'wc-card-mention': g.primary.is_honorable_mention,
+  'wc-card-audience': g.primary.award_type === 'audience',
+  'wc-card-link': !!g.cinemagoria_url,
+  'wc-card-multi': g.awards.length > 1,
 });
 
 const awardChipClass = (a) => ({
@@ -139,11 +207,21 @@ const awardChipClass = (a) => ({
 const shortAwardLabel = (a) => {
   if (!a.award_name) return '';
   let label = a.award_name;
-  // Remove redundant prefixes when the badge already conveys the same info
-  label = label.replace(/^Mención de Honor\s*[—-]\s*/i, '');
-  label = label.replace(/^Premio del Público\s*[—-]\s*/i, '');
+  // Quita prefijos de mención — el badge/marcador ya lo comunica
+  label = label.replace(/^Mención de Honor\s*[—\-]\s*/i, '');
+  label = label.replace(/^Mención Especial del Jurado\s*[—\-]\s*/i, '');
+  label = label.replace(/^Premio del Público\s*[—\-]\s*/i, '');
+  // Suprime "(Público)" final
   label = label.replace(/\s*\(Público\)\s*$/i, '');
-  return label;
+  // Suprime el cualificador "en un(a) Largometraje/Película …" (redundante — misma sección)
+  label = label.replace(/\s+en\s+un(a)?\s+(Largometraje|Pel[ií]cula)\s+.+?$/i, '');
+  return label.trim();
+};
+
+const onPosterError = (event) => {
+  const img = event.target;
+  if (!img) return;
+  img.style.display = 'none';
 };
 
 const onScroll = () => {
@@ -435,6 +513,20 @@ $wc-bg-card: linear-gradient(180deg, #0d1418 0%, #06090b 100%);
   letter-spacing: 0.06em;
   text-transform: lowercase;
 }
+// Count chip for multi-award films (bottom-right of poster)
+.wc-badge-count {
+  top: auto;
+  left: auto;
+  bottom: 7px;
+  right: 7px;
+  background: rgba(0, 0, 0, 0.78);
+  color: $wc-cyan;
+  border: 1px solid rgba($wc-cyan, 0.35);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  font-size: 9px;
+  padding: 3px 7px;
+}
 
 // ============== CARD BODY ==============
 .wc-card-body {
@@ -512,6 +604,66 @@ $wc-bg-card: linear-gradient(180deg, #0d1418 0%, #06090b 100%);
   -webkit-box-orient: vertical;
   overflow: hidden;
   flex: 1;
+}
+
+// ============== MULTI-AWARD LAYOUT ==============
+// Título más estrecho — deja espacio para la lista de premios apilada.
+.wc-card-title-compact {
+  font-size: 13px;
+  -webkit-line-clamp: 1;
+  margin-bottom: 2px;
+}
+.wc-card-awards {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+.wc-award-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 10.5px;
+  line-height: 1.32;
+}
+.wc-award-marker {
+  flex: 0 0 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-top: 4px;
+  background: $wc-cyan;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+  &.wc-chip-gold { background: $wc-gold; box-shadow: 0 0 6px rgba($wc-gold, 0.45); }
+  &.wc-chip-mention { background: rgba(255, 255, 255, 0.45); }
+  &.wc-chip-audience { background: $wc-primary; }
+}
+.wc-award-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.wc-award-name {
+  color: #d6dade;
+  font-weight: 600;
+}
+.wc-award-recipient-inline {
+  color: #8a9aa8;
+  font-weight: 400;
+}
+
+// Permite que la tarjeta crezca cuando una película acumula varios premios.
+.wc-card-multi {
+  height: auto;
+  min-height: $wc-card-h;
+  max-height: 240px;
 }
 
 // ============== RESPONSIVE ==============
