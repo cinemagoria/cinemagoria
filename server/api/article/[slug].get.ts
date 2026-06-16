@@ -23,7 +23,8 @@ export default defineEventHandler(async (event) => {
         const result = await db.execute({
             sql: `SELECT id, slug, title_en, body_en, description_en, title_es, body_es, description_es,
                          image_url, sources_json, topics_json, published_at, created_at, is_visible,
-                         trailer_youtube_id, trailer_provider, carousel_assets, related_tmdb_ids
+                         trailer_youtube_id, trailer_provider, carousel_assets, related_tmdb_ids,
+                         requires_auth, editorial_category, secondary_categories_json
                   FROM cinemagoria_articles
                   WHERE slug = ? AND is_visible = 1
                   LIMIT 1`,
@@ -58,6 +59,20 @@ export default defineEventHandler(async (event) => {
                 trailer_provider: (row.trailer_provider as string) || 'youtube',
                 carousel_assets: row.carousel_assets ? (row.carousel_assets as string).split(',').map(u => u.trim()).filter(Boolean) : [],
                 related_tmdb_ids: row.related_tmdb_ids ? JSON.parse(row.related_tmdb_ids as string) : [],
+                // requires_auth: 0 = public (body always rendered), 1 = community-gated
+                // (anonymous reader sees teaser + AuthModal; signed-in reader sees full body).
+                requires_auth: Number(row.requires_auth ?? 0) === 1 ? 1 : 0,
+                // Editorial taxonomy. Primary is NOT NULL DEFAULT 'feature' at the DB layer.
+                // Secondaries arrive as a JSON array (≤ 2) or NULL; expose as a plain array.
+                editorial_category: (row.editorial_category as string) || 'feature',
+                secondary_categories: (() => {
+                    try {
+                        const raw = row.secondary_categories_json
+                        if (!raw) return [] as string[]
+                        const parsed = JSON.parse(raw as string)
+                        return Array.isArray(parsed) ? parsed.map((s: any) => String(s)) : []
+                    } catch { return [] as string[] }
+                })(),
             }
         }
     } catch (error: any) {

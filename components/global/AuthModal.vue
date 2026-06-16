@@ -2,19 +2,24 @@
   <div v-if="isOpen" class="auth-modal-overlay">
     <div class="auth-modal-container">
       <div class="auth-modal-header">
-        <h2>Inicia sesión para continuar</h2>
+        <h2>{{ isCommunityGate ? 'Unite a la comunidad — gratis' : 'Inicia sesión para continuar' }}</h2>
         <button @click="closeModal" class="close-button">×</button>
       </div>
-      
+
       <div class="auth-modal-content">
+        <!-- Banner de gating de comunidad: solo cuando lo dispara un artículo requires_auth -->
+        <div v-if="isCommunityGate" class="community-gate-badge">
+          Este artículo es exclusivo para miembros de la comunidad.
+        </div>
+
         <div class="tabs">
-          <span 
+          <span
             :class="['tab', { active: activeTab === 'login' }]"
             @click="activeTab = 'login'"
           >
             Iniciar Sesión
           </span>
-          <span 
+          <span
             :class="['tab', { active: activeTab === 'register' }]"
             @click="activeTab = 'register'"
           >
@@ -23,7 +28,7 @@
         </div>
 
         <div v-if="activeTab === 'login'" class="form-container">
-          <p class="modal-description">Inicia sesión para acceder a más funcionalidades</p>
+          <p class="modal-description">{{ isCommunityGate ? 'Código abierto y siempre gratis. Iniciá sesión o creá una cuenta gratuita para seguir leyendo.' : 'Inicia sesión para acceder a más funcionalidades' }}</p>
           <p class="modal-subtitle">No se requiere tarjeta de crédito ni débito.</p>
           
           <form @submit.prevent="handleLogin">
@@ -219,7 +224,13 @@ export default {
       hasSymbol: false,
       hasMinLength: false,
       showSuccessMessage: false,
-      pendingAction: null
+      pendingAction: null,
+      // Community-gate flag: set to true when the modal is opened with
+      // detail.action === 'requires_auth_article' (article page CTA or auto-open
+      // on a gated article). Drives the badge + swapped copy. Reset on close
+      // so subsequent triggers from auth.global.ts / festival / lists render
+      // the default copy.
+      isCommunityGate: false
     };
   },
   computed: {
@@ -254,19 +265,29 @@ export default {
   methods: {
     handleOpenEvent(event) {
       const action = event.detail ? event.detail.action : null;
+      const initialTab = event.detail && event.detail.initialTab;
+      if (initialTab === 'login' || initialTab === 'register') {
+        this.activeTab = initialTab;
+      }
       this.open(action);
     },
     open(action = null) {
     this.isOpen = true;
     this.pendingAction = action;
+    // The community-gate banner + swapped copy only render when this specific
+    // action triggered the modal.
+    this.isCommunityGate = action === 'requires_auth_article';
     this.resetForm();
     },
-    
+
     close() {
       this.isOpen = false;
       this.pendingAction = null;
+      // Always reset the community-gate flag so the next open from a different
+      // surface (auth.global.ts, festival, lists, etc.) renders default copy.
+      this.isCommunityGate = false;
       this.resetForm();
-      this.$emit('close'); 
+      this.$emit('close');
     },
     
     closeModal() {
@@ -461,6 +482,23 @@ export default {
 
 .auth-modal-content {
   padding: 25px;
+}
+
+/* Community-gate banner — only rendered when the modal is opened with
+   action: 'requires_auth_article' (anonymous reader on a gated article). */
+.community-gate-badge {
+  display: block;
+  margin: 0 0 18px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(139, 233, 253, 0.45);
+  background: rgba(139, 233, 253, 0.10);
+  color: #8BE9FD;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-align: center;
+  text-transform: none;
 }
 
 .modal-description {
