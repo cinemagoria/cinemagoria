@@ -331,12 +331,16 @@ const CATEGORY_ORDER = [
     'Crystal Globe Competition',
     'Proxima Competition',
     'Special Screenings',
+    'Special Screenings – Classics',
+    'Out of the Past – KVIFF 60/80',
 ];
 
 const CATEGORY_LABELS = {
     'Crystal Globe Competition': 'Crystal Globe Competition',
     'Proxima Competition': 'Proxima Competition',
     'Special Screenings': 'Special Screenings',
+    'Special Screenings – Classics': 'Special Screenings – Classics',
+    'Out of the Past – KVIFF 60/80': 'Out of the Past – KVIFF 60/80',
     OTHER: 'Other',
 };
 
