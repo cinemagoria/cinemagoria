@@ -2,16 +2,11 @@
   <div v-if="isOpen" class="auth-modal-overlay">
     <div class="auth-modal-container">
       <div class="auth-modal-header">
-        <h2>{{ isCommunityGate ? 'Unite a la comunidad — gratis' : 'Inicia sesión para continuar' }}</h2>
+        <h2>{{ isCommunityGate ? 'Unite a la comunidad.' : 'Inicia sesión para continuar' }}</h2>
         <button @click="closeModal" class="close-button">×</button>
       </div>
 
       <div class="auth-modal-content">
-        <!-- Banner de gating de comunidad: solo cuando lo dispara un artículo requires_auth -->
-        <div v-if="isCommunityGate" class="community-gate-badge">
-          Este artículo es exclusivo para miembros de la comunidad.
-        </div>
-
         <div class="tabs">
           <span
             :class="['tab', { active: activeTab === 'login' }]"
@@ -28,7 +23,9 @@
         </div>
 
         <div v-if="activeTab === 'login'" class="form-container">
-          <p class="modal-description">{{ isCommunityGate ? 'Código abierto y siempre gratis. Iniciá sesión o creá una cuenta gratuita para seguir leyendo.' : 'Inicia sesión para acceder a más funcionalidades' }}</p>
+          <!-- En modo community-gate la tarjeta inline del artículo ya
+               enmarcó el contexto — omitimos la descripción para no repetir. -->
+          <p v-if="!isCommunityGate" class="modal-description">Inicia sesión para acceder a más funcionalidades</p>
           <p class="modal-subtitle">No se requiere tarjeta de crédito ni débito.</p>
           
           <form @submit.prevent="handleLogin">
@@ -482,23 +479,6 @@ export default {
 
 .auth-modal-content {
   padding: 25px;
-}
-
-/* Community-gate banner — only rendered when the modal is opened with
-   action: 'requires_auth_article' (anonymous reader on a gated article). */
-.community-gate-badge {
-  display: block;
-  margin: 0 0 18px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(139, 233, 253, 0.45);
-  background: rgba(139, 233, 253, 0.10);
-  color: #8BE9FD;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  text-align: center;
-  text-transform: none;
 }
 
 .modal-description {

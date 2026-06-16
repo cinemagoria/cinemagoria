@@ -137,14 +137,13 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
 
         const parts: string[] = []
         if (isGated) {
-            // Gated CDATA: description + sign-in legend only. No body, no
-            // trailer block, no carousel, no inline cover figure.
-            if (description) {
-                parts.push(`<p><em>${escapeXml(description)}</em></p>`)
-            }
+            // Gated CDATA: just the sign-in legend. The <description> tag
+            // above already carries the description — repeating it inside
+            // <content:encoded> as <em> would be redundant. Body, trailer,
+            // carousel and inline cover are all dropped.
             const legend = isEs
-                ? `<p>Para leer el artículo completo, iniciá sesión o creá una cuenta <strong>gratis</strong> en <a href="${loginUrl}">${loginUrl}</a> — sin tarjeta de crédito ni débito.</p>`
-                : `<p>To read the full article, sign in or create a <strong>free</strong> account at <a href="${loginUrl}">${loginUrl}</a> — no credit or debit card required.</p>`
+                ? `<p>Para leer el artículo completo, iniciá sesión o creá una cuenta gratuita en <a href="${loginUrl}">${loginUrl}</a>.</p>`
+                : `<p>To read the full article, sign in or create a free account at <a href="${loginUrl}">${loginUrl}</a>.</p>`
             parts.push(legend)
         } else {
             if (cover) {
