@@ -2,19 +2,19 @@
   <div v-if="isOpen" class="auth-modal-overlay">
     <div class="auth-modal-container">
       <div class="auth-modal-header">
-        <h2>Sign in to continue</h2>
+        <h2>{{ isCommunityGate ? 'Join the community.' : 'Sign in to continue' }}</h2>
         <button @click="closeModal" class="close-button">×</button>
       </div>
-      
+
       <div class="auth-modal-content">
         <div class="tabs">
-          <span 
+          <span
             :class="['tab', { active: activeTab === 'login' }]"
             @click="activeTab = 'login'"
           >
             Sign In
           </span>
-          <span 
+          <span
             :class="['tab', { active: activeTab === 'register' }]"
             @click="activeTab = 'register'"
           >
@@ -23,7 +23,9 @@
         </div>
 
         <div v-if="activeTab === 'login'" class="form-container">
-          <p class="modal-description">Please sign in to access more features</p>
+          <!-- In community-gate mode the inline card on the article page already
+               framed the context — skip the description here to avoid repetition. -->
+          <p v-if="!isCommunityGate" class="modal-description">Please sign in to access more features</p>
           <p class="modal-subtitle">No credit or debit card required.</p>
           
           <form @submit.prevent="handleLogin">
@@ -219,7 +221,13 @@ export default {
       hasSymbol: false,
       hasMinLength: false,
       showSuccessMessage: false,
-      pendingAction: null
+      pendingAction: null,
+      // Community-gate flag: set to true when the modal is opened with
+      // detail.action === 'requires_auth_article' (article page CTA or auto-open
+      // on a gated article). Drives the badge + swapped copy. Reset on close
+      // so subsequent triggers from auth.global.ts / festival / lists render
+      // the default copy.
+      isCommunityGate: false
     };
   },
   computed: {
@@ -252,19 +260,43 @@ export default {
   methods: {
     handleOpenEvent(event) {
       const action = event.detail ? event.detail.action : null;
+      const initialTab = event.detail && event.detail.initialTab;
+      if (initialTab === 'login' || initialTab === 'register') {
+        this.activeTab = initialTab;
+      }
       this.open(action);
     },
     open(action = null) {
     this.isOpen = true;
     this.pendingAction = action;
+    // The community-gate banner + swapped copy only render when this specific
+    // action triggered the modal.
+    this.isCommunityGate = action === 'requires_auth_article';
+
+    // Capture the current URL so /auth-success brings the reader back where
+    // they triggered auth — instead of dumping them at the homepage.
+    // handleLogin (email/password) already sets this at submit time, but the
+    // Google OAuth path in GoogleLogin.vue does a hard redirect without going
+    // through the modal's submit, so we also capture here as the single
+    // entry-point catch-all. Auth-success.vue removes the key on consumption.
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname + window.location.search;
+      if (path && !path.startsWith('/login') && !path.startsWith('/register') && !path.startsWith('/auth-success')) {
+        localStorage.setItem('auth_return_url', path);
+      }
+    }
+
     this.resetForm();
     },
-    
+
     close() {
       this.isOpen = false;
       this.pendingAction = null;
+      // Always reset the community-gate flag so the next open from a different
+      // surface (auth.global.ts, festival, lists, etc.) renders default copy.
+      this.isCommunityGate = false;
       this.resetForm();
-      this.$emit('close'); 
+      this.$emit('close');
     },
     
     closeModal() {

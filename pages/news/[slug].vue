@@ -98,6 +98,21 @@
                 </div>
               </div>
 
+              <!-- Editorial taxonomy — primary (highlighted) + secondaries. -->
+              <h3 v-if="article.editorial_category" class="sidebar-title" style="margin-top: 20px;">Categories</h3>
+              <div v-if="article.editorial_category" class="sidebar-tags sidebar-tags--categories">
+                <NuxtLink
+                  :to="{ path: '/news', query: { category: article.editorial_category } }"
+                  class="sidebar-tag sidebar-tag--category sidebar-tag--primary"
+                >{{ article.editorial_category.toUpperCase() }}</NuxtLink>
+                <NuxtLink
+                  v-for="sec in (article.secondary_categories || [])"
+                  :key="sec"
+                  :to="{ path: '/news', query: { category: sec } }"
+                  class="sidebar-tag sidebar-tag--category"
+                >{{ sec.toUpperCase() }}</NuxtLink>
+              </div>
+
               <!-- Sources -->
               <h3 v-if="parsedSources.length" class="sidebar-title" style="margin-top: 20px;">Sources</h3>
               <div v-if="parsedSources.length" class="sidebar-sources">
@@ -254,8 +269,9 @@
 
               <!-- Trailer embed (always at top when trailer exists) -->
               <!-- Supports YouTube (default) and Vimeo via trailer_provider.
-                   Legacy rows w/ NULL provider render as YouTube — no break. -->
-              <div v-if="article.trailer_youtube_id" class="article-trailer">
+                   Legacy rows w/ NULL provider render as YouTube — no break.
+                   Hidden when gated so the embed never loads pre-auth. -->
+              <div v-if="article.trailer_youtube_id && !isGated" class="article-trailer">
                 <div class="trailer-wrapper">
                   <iframe
                     :src="trailerEmbedSrc"
@@ -268,8 +284,8 @@
                 </div>
               </div>
 
-              <!-- Carousel at top (only when there's no trailer) -->
-              <div v-if="article.carousel_assets?.length && !article.trailer_youtube_id" class="article-carousel">
+              <!-- Carousel at top (only when there's no trailer). Hidden on gated articles. -->
+              <div v-if="article.carousel_assets?.length && !article.trailer_youtube_id && !isGated" class="article-carousel">
                 <div class="carousel-viewport">
                   <div class="carousel-track" :style="{ transform: `translateX(-${carouselIndex * 100}%)` }">
                     <div v-for="(img, i) in article.carousel_assets" :key="i" class="carousel-slide">
@@ -297,13 +313,32 @@
                 </div>
               </div>
 
-              <!-- Body (first half — or full body when there's no split) -->
-              <div class="article-body" v-html="bodyParts.before"></div>
+              <!-- Body — fully rendered when public OR reader is signed in.
+                   Replaced by an inline gate card when requires_auth = 1 AND
+                   reader is anonymous. The card cuts the body entirely (no
+                   teaser, no fade) so the gate is visually instantaneous and
+                   does not depend on modal open timing. -->
+              <template v-if="!isGated">
+                <div class="article-body" v-html="bodyParts.before"></div>
+              </template>
+              <div v-else class="gate-card" role="region" aria-label="Members-only article">
+                <div class="gate-card__accent"></div>
+                <div class="gate-card__icon-wrap" aria-hidden="true">
+                  <svg class="gate-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="11" width="16" height="10" rx="2"></rect>
+                    <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+                  </svg>
+                </div>
+                <h3 class="gate-card__title">Community Exclusive</h3>
+                <p class="gate-card__sub">Create a free account or log in to read the full story.</p>
+                <button type="button" class="gate-card__cta" @click="openGateModal">Sign in or join</button>
+              </div>
 
               <!-- Carousel in the middle (when both trailer and carousel exist).
                    If no <h2> subtitles are found, bodyParts.after is empty and
-                   this block ends up effectively at the end of the body. -->
-              <div v-if="article.trailer_youtube_id && article.carousel_assets?.length" class="article-carousel">
+                   this block ends up effectively at the end of the body.
+                   Hidden when gated — the body collapsed to a teaser. -->
+              <div v-if="!isGated && article.trailer_youtube_id && article.carousel_assets?.length" class="article-carousel">
                 <div class="carousel-viewport">
                   <div class="carousel-track" :style="{ transform: `translateX(-${carouselIndex * 100}%)` }">
                     <div v-for="(img, i) in article.carousel_assets" :key="i" class="carousel-slide">
@@ -332,10 +367,14 @@
               </div>
 
               <!-- Body (second half — only shown when body was split at an <h2>) -->
-              <div v-if="bodyParts.after" class="article-body" v-html="bodyParts.after"></div>
+              <div v-if="!isGated && bodyParts.after" class="article-body" v-html="bodyParts.after"></div>
 
-              <!-- AI editorial disclosure + error-report modal -->
+              <!-- AI editorial disclosure + error-report modal.
+                   Hidden when gated: the reader is not seeing the body, so a
+                   disclosure about how the body was produced has no surface to
+                   attach to. -->
               <ArticleAIDisclosure
+                v-if="!isGated"
                 :article-id="article.id"
                 :article-slug="article.slug"
                 :article-title="article.title_en"
@@ -402,6 +441,12 @@ const isMounted = ref(false)
 const isArticleSaved = ref(false)
 const savedLink = ref(null)
 const userEmail = ref(null)
+// Logged-in derived from access_token (UX gate only — see middleware/auth.global.ts).
+// Default false so SSR renders the gate for gated articles (anonymous is the
+// common case pre-July-1). Logged-in readers get a brief gate flash before the
+// body re-renders on hydration; that's the accepted Phase 1 tradeoff in
+// exchange for an instant gate for anonymous readers.
+const isLoggedIn = ref(false)
 const carouselIndex = ref(0)
 const isShareModalOpen = ref(false)
 
@@ -419,6 +464,7 @@ watch(() => route.params.slug, () => {
 const handleAuthChange = () => {
   const email = localStorage.getItem('email')?.replace(/['"]+/g, '')
   userEmail.value = email || null
+  isLoggedIn.value = !!localStorage.getItem('access_token')
   checkSavedStatus()
 }
 
@@ -676,6 +722,26 @@ const bodyParts = computed(() => {
   const midIdx = indices[Math.floor(indices.length / 2)]
   return { before: html.slice(0, midIdx), after: html.slice(midIdx) }
 })
+
+// ── Community gate (requires_auth) ──────────────────────────────────
+// An article is "gated" when requires_auth = 1 AND the visitor is not signed in.
+// Server-rendered HTML defaults isLoggedIn = false so SSR ships the inline gate
+// card for gated articles (anonymous is the common case pre-July-1). On
+// hydration the client reads localStorage and re-renders with the full body
+// for signed-in readers.
+const isGated = computed(() => {
+  return Number(article.value?.requires_auth) === 1 && !isLoggedIn.value
+})
+
+function openGateModal() {
+  if (typeof window === 'undefined') return
+  window.dispatchEvent(new CustomEvent('open-auth-modal', {
+    detail: {
+      action: 'requires_auth_article',
+      context: { slug: article.value?.slug, title: article.value?.title_en }
+    }
+  }))
+}
 
 function formatDate(dateStr) {
   if (!dateStr) return ''
@@ -950,6 +1016,42 @@ useHead(() => {
   border-color: rgba(139, 233, 253, 0.3);
 }
 
+/* Editorial taxonomy chips: primary gets the cyan accent, secondaries match
+   the Topics neutral style so the visual hierarchy mirrors the data model
+   (one primary + up to 2 secondaries). */
+.sidebar-tags--categories {
+  align-items: center;
+}
+
+.sidebar-tag--category {
+  text-decoration: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 3px 10px;
+  transition: all 0.2s ease;
+}
+
+.sidebar-tag--category:hover {
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.1);
+  border-color: rgba(139, 233, 253, 0.3);
+}
+
+.sidebar-tag--primary {
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.12);
+  border-color: rgba(139, 233, 253, 0.5);
+}
+
+.sidebar-tag--primary:hover {
+  background: #8BE9FD;
+  color: #03242C;
+  border-color: #8BE9FD;
+}
+
 .sidebar-sources {
   display: flex;
   flex-direction: column;
@@ -1083,6 +1185,101 @@ useHead(() => {
   color: #fff;
   margin: 0 0 20px;
   letter-spacing: -0.02em;
+}
+
+/* Community gate — inline card that replaces the body entirely.
+   Borrows the auth-success.vue visual language: glassmorphism, top accent
+   gradient, floatIn entrance, minimal copy. No teaser, no fade — the gate
+   appears instantly and the body is never rendered for anonymous readers. */
+.gate-card {
+  position: relative;
+  margin: 28px 0 40px;
+  padding: 36px 28px 32px;
+  border-radius: 18px;
+  background: rgba(3, 4, 6, 0.65);
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(31, 84, 103, 0.5),
+    inset 0 0 22px rgba(139, 233, 253, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  text-align: center;
+  overflow: hidden;
+  animation: gateFloatIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gate-card__accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+  opacity: 0.85;
+}
+
+.gate-card__icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: rgba(139, 233, 253, 0.08);
+  border: 1px solid rgba(139, 233, 253, 0.25);
+}
+
+.gate-card__icon {
+  width: 24px;
+  height: 24px;
+  color: #8BE9FD;
+  filter: drop-shadow(0 0 8px rgba(139, 233, 253, 0.35));
+}
+
+.gate-card__title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+  text-shadow: 0 0 18px rgba(139, 233, 253, 0.18);
+}
+
+.gate-card__sub {
+  font-size: 14px;
+  color: #a0aab2;
+  line-height: 1.5;
+  margin: 0 0 22px;
+  font-weight: 300;
+}
+
+.gate-card__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 30px;
+  border-radius: 10px;
+  border: 1px solid rgba(139, 233, 253, 0.6);
+  background: linear-gradient(135deg, #1F5467, #8BE9FD);
+  color: #03242C;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  box-shadow: 0 4px 14px rgba(139, 233, 253, 0.25);
+}
+
+.gate-card__cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(139, 233, 253, 0.40);
+}
+
+@keyframes gateFloatIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .article-lead {

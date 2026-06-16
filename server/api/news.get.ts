@@ -21,7 +21,8 @@ export default defineEventHandler(async (event) => {
             const descCol = lang === 'es' ? 'description_es' : 'description_en'
 
             let sql = `SELECT id, slug, ${titleCol} AS title, ${descCol} AS description,
-                              image_url, published_at, topics_json
+                              image_url, published_at, topics_json,
+                              requires_auth, editorial_category, secondary_categories_json
                        FROM cinemagoria_articles
                        WHERE is_visible = 1 AND is_cinemagoria = 1
                          AND (datetime(published_at) IS NULL OR datetime(published_at) <= datetime('now'))`
@@ -43,11 +44,24 @@ export default defineEventHandler(async (event) => {
                 image: row.image_url,
                 published_at: row.published_at,
                 description: row.description,
+                // source.name stays 'Cinemagoria' — it's the identity marker the page
+                // uses for filter (selectedSource) and the mixed-source sort tiebreak.
+                // The display badge swap lives in the UI layer via editorial_category.
                 source: { name: 'Cinemagoria' },
                 video_id: null,
                 is_internal: true,
                 slug: row.slug,
-                topics: row.topics_json ? JSON.parse(row.topics_json as string) : []
+                topics: row.topics_json ? JSON.parse(row.topics_json as string) : [],
+                requires_auth: Number(row.requires_auth ?? 0) === 1 ? 1 : 0,
+                editorial_category: (row.editorial_category as string) || 'feature',
+                secondary_categories: (() => {
+                    try {
+                        const raw = row.secondary_categories_json
+                        if (!raw) return [] as string[]
+                        const parsed = JSON.parse(raw as string)
+                        return Array.isArray(parsed) ? parsed.map((s: any) => String(s)) : []
+                    } catch { return [] as string[] }
+                })(),
             }))
 
             return {
@@ -94,7 +108,8 @@ export default defineEventHandler(async (event) => {
             const descCol = lang === 'es' ? 'description_es' : 'description_en'
 
             let cineSql = `SELECT id, slug, ${titleCol} AS title, ${descCol} AS description,
-                                  image_url, published_at, topics_json
+                                  image_url, published_at, topics_json,
+                                  requires_auth, editorial_category, secondary_categories_json
                            FROM cinemagoria_articles
                            WHERE is_visible = 1 AND is_cinemagoria = 1
                              AND (datetime(published_at) IS NULL OR datetime(published_at) <= datetime('now'))`
@@ -120,7 +135,17 @@ export default defineEventHandler(async (event) => {
                 video_id: null,
                 is_internal: true,
                 slug: row.slug,
-                topics: row.topics_json ? JSON.parse(row.topics_json as string) : []
+                topics: row.topics_json ? JSON.parse(row.topics_json as string) : [],
+                requires_auth: Number(row.requires_auth ?? 0) === 1 ? 1 : 0,
+                editorial_category: (row.editorial_category as string) || 'feature',
+                secondary_categories: (() => {
+                    try {
+                        const raw = row.secondary_categories_json
+                        if (!raw) return [] as string[]
+                        const parsed = JSON.parse(raw as string)
+                        return Array.isArray(parsed) ? parsed.map((s: any) => String(s)) : []
+                    } catch { return [] as string[] }
+                })(),
             }))
 
             items.push(...cineItems)
