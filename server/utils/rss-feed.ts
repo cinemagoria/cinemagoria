@@ -243,14 +243,16 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
             media.push(`      <media:content url="${escapeXml(cover)}" medium="image"/>`)
             media.push(`      <media:thumbnail url="${escapeXml(cover)}"/>`)
         }
-        if (carousel && carousel !== cover) {
-            media.push(`      <media:content url="${escapeXml(carousel)}" medium="image"/>`)
-        }
-        if (ytId) {
-            const videoWatchUrl = provider === 'vimeo'
-                ? `https://vimeo.com/${escapeXml(ytId)}`
-                : `https://www.youtube.com/watch?v=${escapeXml(ytId)}`
-            media.push(`      <media:content url="${videoWatchUrl}" type="text/html" medium="video"/>`)
+        if (!isGated) {
+            if (carousel && carousel !== cover) {
+                media.push(`      <media:content url="${escapeXml(carousel)}" medium="image"/>`)
+            }
+            if (ytId) {
+                const videoWatchUrl = provider === 'vimeo'
+                    ? `https://vimeo.com/${escapeXml(ytId)}`
+                    : `https://www.youtube.com/watch?v=${escapeXml(ytId)}`
+                media.push(`      <media:content url="${videoWatchUrl}" type="text/html" medium="video"/>`)
+            }
         }
 
         return `    <item>

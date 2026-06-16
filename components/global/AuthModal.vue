@@ -272,6 +272,20 @@ export default {
     // The community-gate banner + swapped copy only render when this specific
     // action triggered the modal.
     this.isCommunityGate = action === 'requires_auth_article';
+
+    // Capture the current URL so /auth-success brings the reader back where
+    // they triggered auth — instead of dumping them at the homepage.
+    // handleLogin (email/password) already sets this at submit time, but the
+    // Google OAuth path in GoogleLogin.vue does a hard redirect without going
+    // through the modal's submit, so we also capture here as the single
+    // entry-point catch-all. Auth-success.vue removes the key on consumption.
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname + window.location.search;
+      if (path && !path.startsWith('/login') && !path.startsWith('/register') && !path.startsWith('/auth-success')) {
+        localStorage.setItem('auth_return_url', path);
+      }
+    }
+
     this.resetForm();
     },
 

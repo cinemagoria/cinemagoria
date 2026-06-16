@@ -98,6 +98,21 @@
                 </div>
               </div>
 
+              <!-- Editorial taxonomy — primary (highlighted) + secondaries. -->
+              <h3 v-if="article.editorial_category" class="sidebar-title" style="margin-top: 20px;">Categories</h3>
+              <div v-if="article.editorial_category" class="sidebar-tags sidebar-tags--categories">
+                <NuxtLink
+                  :to="{ path: '/news', query: { category: article.editorial_category } }"
+                  class="sidebar-tag sidebar-tag--category sidebar-tag--primary"
+                >{{ article.editorial_category.toUpperCase() }}</NuxtLink>
+                <NuxtLink
+                  v-for="sec in (article.secondary_categories || [])"
+                  :key="sec"
+                  :to="{ path: '/news', query: { category: sec } }"
+                  class="sidebar-tag sidebar-tag--category"
+                >{{ sec.toUpperCase() }}</NuxtLink>
+              </div>
+
               <!-- Sources -->
               <h3 v-if="parsedSources.length" class="sidebar-title" style="margin-top: 20px;">Sources</h3>
               <div v-if="parsedSources.length" class="sidebar-sources">
@@ -205,13 +220,6 @@
                     </span>
                   </NuxtLink>
                 </div>
-                <!-- Editorial kicker: primary category, clickable to /news?category=… -->
-                <NuxtLink
-                  v-if="kickerLabel"
-                  :to="{ path: '/news', query: { category: article.editorial_category } }"
-                  class="article-kicker"
-                >{{ kickerLabel }}</NuxtLink>
-
                 <h1 class="article-title">{{ article.title_en }}</h1>
 
                 <!-- Cover image inline for mobile -->
@@ -261,8 +269,9 @@
 
               <!-- Trailer embed (always at top when trailer exists) -->
               <!-- Supports YouTube (default) and Vimeo via trailer_provider.
-                   Legacy rows w/ NULL provider render as YouTube — no break. -->
-              <div v-if="article.trailer_youtube_id" class="article-trailer">
+                   Legacy rows w/ NULL provider render as YouTube — no break.
+                   Hidden when gated so the embed never loads pre-auth. -->
+              <div v-if="article.trailer_youtube_id && !isGated" class="article-trailer">
                 <div class="trailer-wrapper">
                   <iframe
                     :src="trailerEmbedSrc"
@@ -275,8 +284,8 @@
                 </div>
               </div>
 
-              <!-- Carousel at top (only when there's no trailer) -->
-              <div v-if="article.carousel_assets?.length && !article.trailer_youtube_id" class="article-carousel">
+              <!-- Carousel at top (only when there's no trailer). Hidden on gated articles. -->
+              <div v-if="article.carousel_assets?.length && !article.trailer_youtube_id && !isGated" class="article-carousel">
                 <div class="carousel-viewport">
                   <div class="carousel-track" :style="{ transform: `translateX(-${carouselIndex * 100}%)` }">
                     <div v-for="(img, i) in article.carousel_assets" :key="i" class="carousel-slide">
@@ -320,9 +329,9 @@
                     <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
                   </svg>
                 </div>
-                <h3 class="gate-card__title">For our community</h3>
-                <p class="gate-card__sub">Sign in or create an account to read this article.</p>
-                <button type="button" class="gate-card__cta" @click="openGateModal">Continue</button>
+                <h3 class="gate-card__title">Community Exclusive</h3>
+                <p class="gate-card__sub">Create a free account or log in to read the full story.</p>
+                <button type="button" class="gate-card__cta" @click="openGateModal">Sign in or join</button>
               </div>
 
               <!-- Carousel in the middle (when both trailer and carousel exist).
@@ -360,8 +369,12 @@
               <!-- Body (second half — only shown when body was split at an <h2>) -->
               <div v-if="!isGated && bodyParts.after" class="article-body" v-html="bodyParts.after"></div>
 
-              <!-- AI editorial disclosure + error-report modal -->
+              <!-- AI editorial disclosure + error-report modal.
+                   Hidden when gated: the reader is not seeing the body, so a
+                   disclosure about how the body was produced has no surface to
+                   attach to. -->
               <ArticleAIDisclosure
+                v-if="!isGated"
                 :article-id="article.id"
                 :article-slug="article.slug"
                 :article-title="article.title_en"
@@ -730,12 +743,6 @@ function openGateModal() {
   }))
 }
 
-// Kicker badge: primary editorial category, upper-cased for display.
-const kickerLabel = computed(() => {
-  const cat = article.value?.editorial_category
-  return cat ? String(cat).toUpperCase() : ''
-})
-
 function formatDate(dateStr) {
   if (!dateStr) return ''
   try {
@@ -1009,6 +1016,42 @@ useHead(() => {
   border-color: rgba(139, 233, 253, 0.3);
 }
 
+/* Editorial taxonomy chips: primary gets the cyan accent, secondaries match
+   the Topics neutral style so the visual hierarchy mirrors the data model
+   (one primary + up to 2 secondaries). */
+.sidebar-tags--categories {
+  align-items: center;
+}
+
+.sidebar-tag--category {
+  text-decoration: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 3px 10px;
+  transition: all 0.2s ease;
+}
+
+.sidebar-tag--category:hover {
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.1);
+  border-color: rgba(139, 233, 253, 0.3);
+}
+
+.sidebar-tag--primary {
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.12);
+  border-color: rgba(139, 233, 253, 0.5);
+}
+
+.sidebar-tag--primary:hover {
+  background: #8BE9FD;
+  color: #03242C;
+  border-color: #8BE9FD;
+}
+
 .sidebar-sources {
   display: flex;
   flex-direction: column;
@@ -1133,28 +1176,6 @@ useHead(() => {
   font-size: 14px;
   color: #80868b;
   margin-bottom: 16px;
-}
-
-/* Editorial kicker — primary category above the title */
-.article-kicker {
-  display: inline-block;
-  margin-bottom: 14px;
-  padding: 5px 13px;
-  border-radius: 999px;
-  border: 1px solid rgba(139, 233, 253, 0.5);
-  background: rgba(139, 233, 253, 0.12);
-  color: #8BE9FD;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: background 0.18s ease, color 0.18s ease;
-}
-
-.article-kicker:hover {
-  background: #8BE9FD;
-  color: #03242C;
 }
 
 .article-title {
