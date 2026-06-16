@@ -2,16 +2,11 @@
   <div v-if="isOpen" class="auth-modal-overlay">
     <div class="auth-modal-container">
       <div class="auth-modal-header">
-        <h2>{{ isCommunityGate ? 'Join the community — free' : 'Sign in to continue' }}</h2>
+        <h2>{{ isCommunityGate ? 'Join the community.' : 'Sign in to continue' }}</h2>
         <button @click="closeModal" class="close-button">×</button>
       </div>
 
       <div class="auth-modal-content">
-        <!-- Community-gate banner: only when triggered by a requires_auth article -->
-        <div v-if="isCommunityGate" class="community-gate-badge">
-          This article is only for members of the community.
-        </div>
-
         <div class="tabs">
           <span
             :class="['tab', { active: activeTab === 'login' }]"
@@ -28,7 +23,9 @@
         </div>
 
         <div v-if="activeTab === 'login'" class="form-container">
-          <p class="modal-description">{{ isCommunityGate ? 'Open source and always free. Sign in or create a free account to keep reading.' : 'Please sign in to access more features' }}</p>
+          <!-- In community-gate mode the inline card on the article page already
+               framed the context — skip the description here to avoid repetition. -->
+          <p v-if="!isCommunityGate" class="modal-description">Please sign in to access more features</p>
           <p class="modal-subtitle">No credit or debit card required.</p>
           
           <form @submit.prevent="handleLogin">
@@ -480,23 +477,6 @@ export default {
 
 .auth-modal-content {
   padding: 25px;
-}
-
-/* Community-gate banner — only rendered when the modal is opened with
-   action: 'requires_auth_article' (anonymous reader on a gated article). */
-.community-gate-badge {
-  display: block;
-  margin: 0 0 18px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(139, 233, 253, 0.45);
-  background: rgba(139, 233, 253, 0.10);
-  color: #8BE9FD;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  text-align: center;
-  text-transform: none;
 }
 
 .modal-description {

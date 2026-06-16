@@ -304,24 +304,26 @@
                 </div>
               </div>
 
-              <!-- Body — full when public OR reader is signed in.
-                   Teaser + CTA card when requires_auth = 1 AND reader anonymous. -->
+              <!-- Body — fully rendered when public OR reader is signed in.
+                   Replaced by an inline gate card when requires_auth = 1 AND
+                   reader is anonymous. The card cuts the body entirely (no
+                   teaser, no fade) so the gate is visually instantaneous and
+                   does not depend on modal open timing. -->
               <template v-if="!isGated">
                 <div class="article-body" v-html="bodyParts.before"></div>
               </template>
-              <template v-else>
-                <div class="article-body article-body--teaser">
-                  <p>{{ teaserText }}</p>
-                  <div class="article-body__fade"></div>
+              <div v-else class="gate-card" role="region" aria-label="Members-only article">
+                <div class="gate-card__accent"></div>
+                <div class="gate-card__icon-wrap" aria-hidden="true">
+                  <svg class="gate-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="11" width="16" height="10" rx="2"></rect>
+                    <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+                  </svg>
                 </div>
-                <div class="gate-card">
-                  <div class="gate-card__eyebrow">Exclusive to the community</div>
-                  <h3 class="gate-card__title">Open source and always <strong>free</strong></h3>
-                  <p class="gate-card__sub">Sign in or create a free account to keep reading. No subscription, no credit or debit card.</p>
-                  <button type="button" class="gate-card__cta" @click="openGateModal">Join Free</button>
-                  <button type="button" class="gate-card__link" @click="openGateModal">Already have an account? Sign in</button>
-                </div>
-              </template>
+                <h3 class="gate-card__title">For our community</h3>
+                <p class="gate-card__sub">Sign in or create an account to read this article.</p>
+                <button type="button" class="gate-card__cta" @click="openGateModal">Continue</button>
+              </div>
 
               <!-- Carousel in the middle (when both trailer and carousel exist).
                    If no <h2> subtitles are found, bodyParts.after is empty and
@@ -427,9 +429,11 @@ const isArticleSaved = ref(false)
 const savedLink = ref(null)
 const userEmail = ref(null)
 // Logged-in derived from access_token (UX gate only — see middleware/auth.global.ts).
-// Defaults to true on SSR so the server render does NOT show the teaser flash —
-// hydration on the client will flip to the correct value before paint.
-const isLoggedIn = ref(true)
+// Default false so SSR renders the gate for gated articles (anonymous is the
+// common case pre-July-1). Logged-in readers get a brief gate flash before the
+// body re-renders on hydration; that's the accepted Phase 1 tradeoff in
+// exchange for an instant gate for anonymous readers.
+const isLoggedIn = ref(false)
 const carouselIndex = ref(0)
 const isShareModalOpen = ref(false)
 
@@ -458,19 +462,6 @@ onMounted(async () => {
 
   if (typeof window !== 'undefined') {
     window.addEventListener('auth-changed', handleAuthChange)
-  }
-
-  // Community gate: when the article requires auth and the reader is anonymous,
-  // auto-open the AuthModal with the requires_auth_article action so the modal
-  // shows the "free / community" copy. The teaser + CTA card stay visible behind
-  // so dismissing the modal still lets the reader re-trigger it.
-  if (isGated.value && typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('open-auth-modal', {
-      detail: {
-        action: 'requires_auth_article',
-        context: { slug: article.value?.slug, title: article.value?.title_en }
-      }
-    }))
   }
 })
 
@@ -721,23 +712,12 @@ const bodyParts = computed(() => {
 
 // ── Community gate (requires_auth) ──────────────────────────────────
 // An article is "gated" when requires_auth = 1 AND the visitor is not signed in.
-// Server-rendered HTML defaults isLoggedIn = true so SSR shows the full body
-// (no flash); the client onMounted handler then reads localStorage and flips
-// the ref, causing a single re-render. Anonymous readers see: kicker + hero +
-// title + topics + trailer/carousel + ~200-char body teaser + fade + CTA card.
+// Server-rendered HTML defaults isLoggedIn = false so SSR ships the inline gate
+// card for gated articles (anonymous is the common case pre-July-1). On
+// hydration the client reads localStorage and re-renders with the full body
+// for signed-in readers.
 const isGated = computed(() => {
   return Number(article.value?.requires_auth) === 1 && !isLoggedIn.value
-})
-
-// Plain-text teaser: strip HTML tags from the rendered body, take up to ~200
-// chars cutting at the last word boundary, append an ellipsis.
-const teaserText = computed(() => {
-  const html = renderedBody.value || ''
-  const text = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
-  if (text.length <= 200) return text
-  const slice = text.slice(0, 200)
-  const lastSpace = slice.lastIndexOf(' ')
-  return (lastSpace > 100 ? slice.slice(0, lastSpace) : slice) + '…'
 })
 
 function openGateModal() {
@@ -1186,84 +1166,89 @@ useHead(() => {
   letter-spacing: -0.02em;
 }
 
-/* Community gate — teaser fade + CTA card. Visual language matches the
-   glassmorphism cyan baseline of the rest of the article surface. */
-.article-body--teaser {
+/* Community gate — inline card that replaces the body entirely.
+   Borrows the auth-success.vue visual language: glassmorphism, top accent
+   gradient, floatIn entrance, minimal copy. No teaser, no fade — the gate
+   appears instantly and the body is never rendered for anonymous readers. */
+.gate-card {
   position: relative;
-  max-height: 200px;
+  margin: 28px 0 40px;
+  padding: 36px 28px 32px;
+  border-radius: 18px;
+  background: rgba(3, 4, 6, 0.65);
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(31, 84, 103, 0.5),
+    inset 0 0 22px rgba(139, 233, 253, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  text-align: center;
   overflow: hidden;
+  animation: gateFloatIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.article-body__fade {
+.gate-card__accent {
   position: absolute;
+  top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-  height: 120px;
-  pointer-events: none;
-  background: linear-gradient(to bottom, rgba(3, 4, 6, 0) 0%, rgba(3, 4, 6, 0.95) 90%);
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+  opacity: 0.85;
 }
 
-.gate-card {
-  margin: 22px 0 40px;
-  padding: 32px 28px;
-  border-radius: 18px;
-  border: 1px solid rgba(139, 233, 253, 0.32);
-  background:
-    radial-gradient(circle at 12% 0%, rgba(31, 84, 103, 0.30), transparent 55%),
-    radial-gradient(circle at 90% 100%, rgba(139, 233, 253, 0.10), transparent 50%),
-    rgba(3, 4, 6, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  text-align: center;
-  box-shadow: 0 8px 28px rgba(139, 233, 253, 0.10);
+.gate-card__icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: rgba(139, 233, 253, 0.08);
+  border: 1px solid rgba(139, 233, 253, 0.25);
 }
 
-.gate-card__eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
+.gate-card__icon {
+  width: 24px;
+  height: 24px;
   color: #8BE9FD;
-  margin-bottom: 10px;
+  filter: drop-shadow(0 0 8px rgba(139, 233, 253, 0.35));
 }
 
 .gate-card__title {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 800;
   color: #fff;
-  margin: 0 0 10px;
+  margin: 0 0 6px;
   letter-spacing: -0.01em;
-}
-
-.gate-card__title strong {
-  color: #8BE9FD;
-  font-weight: 800;
+  text-shadow: 0 0 18px rgba(139, 233, 253, 0.18);
 }
 
 .gate-card__sub {
-  font-size: 15px;
-  color: #ACAFB5;
-  line-height: 1.6;
+  font-size: 14px;
+  color: #a0aab2;
+  line-height: 1.5;
   margin: 0 0 22px;
+  font-weight: 300;
 }
 
 .gate-card__cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 32px;
-  border-radius: 12px;
+  padding: 11px 30px;
+  border-radius: 10px;
   border: 1px solid rgba(139, 233, 253, 0.6);
   background: linear-gradient(135deg, #1F5467, #8BE9FD);
   color: #03242C;
   font-family: inherit;
   font-size: 14px;
   font-weight: 700;
+  letter-spacing: 0.2px;
   cursor: pointer;
   transition: transform 0.18s ease, box-shadow 0.18s ease;
   box-shadow: 0 4px 14px rgba(139, 233, 253, 0.25);
-  margin-bottom: 12px;
 }
 
 .gate-card__cta:hover {
@@ -1271,22 +1256,9 @@ useHead(() => {
   box-shadow: 0 6px 20px rgba(139, 233, 253, 0.40);
 }
 
-.gate-card__link {
-  display: block;
-  margin: 0 auto;
-  padding: 6px 10px;
-  background: transparent;
-  border: none;
-  color: #8BE9FD;
-  font-family: inherit;
-  font-size: 13px;
-  cursor: pointer;
-  text-decoration: underline;
-  text-decoration-color: rgba(139, 233, 253, 0.4);
-}
-
-.gate-card__link:hover {
-  color: #a5eefe;
+@keyframes gateFloatIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .article-lead {
