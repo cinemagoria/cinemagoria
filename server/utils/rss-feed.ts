@@ -45,13 +45,22 @@ const splitAtMiddleH2 = (html: string): { before: string; after: string } => {
     return { before: html.slice(0, mid), after: html.slice(mid) }
 }
 
+// Editorial taxonomy facet URI prefixes used in <category domain="…"> tags.
+// Distinguishes the primary editorial label and any secondaries from the
+// free-form topic tags, without leaking the brand into either side. Feed
+// consumers that ignore the domain attribute still see all three layers as
+// plain categories — backward-compatible.
+const CATEGORY_PRIMARY_DOMAIN = 'https://cinemagoria.com/news/category/primary'
+const CATEGORY_SECONDARY_DOMAIN = 'https://cinemagoria.com/news/category/secondary'
+
 export async function buildNewsFeed(lang: FeedLang): Promise<string> {
     const db = useDb()
 
     const result = await db.execute({
         sql: `SELECT slug, title_en, title_es, description_en, description_es,
                      body_en, body_es, image_url, published_at,
-                     trailer_youtube_id, trailer_provider, carousel_assets, topics_json
+                     trailer_youtube_id, trailer_provider, carousel_assets, topics_json,
+                     requires_auth, editorial_category, secondary_categories_json
               FROM cinemagoria_articles
               WHERE is_visible = 1 AND is_cinemagoria = 1
                 AND (datetime(published_at) IS NULL OR datetime(published_at) <= datetime('now'))
@@ -105,6 +114,14 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
         const provider = ((row.trailer_provider as string) || 'youtube') as 'youtube' | 'vimeo'
         const carousel = firstCarousel(row.carousel_assets)
 
+        // Community gate: when requires_auth = 1, the CDATA collapses to
+        // description + a sign-in legend. The body, trailer block, carousel
+        // figure, and inline cover are dropped from the CDATA. Top-level
+        // <title>, <description>, <media:*>, and <category> tags stay so the
+        // feed reader still has a recognizable card layout.
+        const isGated = Number(row.requires_auth ?? 0) === 1
+        const loginUrl = `${selfBase}/login`
+
         let bodyHtml = ''
         try { bodyHtml = md.render(bodyMd) } catch { bodyHtml = `<p>${escapeXml(bodyMd)}</p>` }
 
@@ -119,49 +136,61 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
             : ''
 
         const parts: string[] = []
-        if (cover) {
-            parts.push(`<figure><img src="${escapeXml(cover)}" alt="${escapeXml(title)}" /></figure>`)
-        }
-        if (description) {
-            parts.push(`<p><em>${escapeXml(description)}</em></p>`)
-        }
-        if (ytId) {
-            if (provider === 'vimeo') {
-                // Vimeo path — thumb URL is per-video (hash-based), so we look
-                // it up via oEmbed (pre-fetched above into vimeoMap). If the
-                // lookup failed, fall back to a text-only link so the feed
-                // never breaks because of a single bad video.
-                const watch = `https://vimeo.com/${escapeXml(ytId)}`
-                const thumb = vimeoMap.get(ytId)?.thumbnail_url || ''
-                const label = isEs ? 'Ver el tráiler en Vimeo' : 'Watch the trailer on Vimeo'
-                if (thumb) {
-                    parts.push(
-                        `<p><a href="${watch}"><img src="${escapeXml(thumb)}" alt="${escapeXml(title)} — trailer" /></a><br/><a href="${watch}">▶ ${label}</a></p>`
-                    )
-                } else {
-                    parts.push(`<p><a href="${watch}">▶ ${label}</a></p>`)
-                }
-            } else {
-                // YouTube path — unchanged from pre-Vimeo behavior.
-                const watch = `https://www.youtube.com/watch?v=${escapeXml(ytId)}`
-                const thumb = `https://img.youtube.com/vi/${escapeXml(ytId)}/hqdefault.jpg`
-                parts.push(
-                    `<p><a href="${watch}"><img src="${thumb}" alt="${escapeXml(title)} — trailer" /></a><br/><a href="${watch}">▶ ${isEs ? 'Ver el tráiler en YouTube' : 'Watch the trailer on YouTube'}</a></p>`
-                )
+        if (isGated) {
+            // Gated CDATA: description + sign-in legend only. No body, no
+            // trailer block, no carousel, no inline cover figure.
+            if (description) {
+                parts.push(`<p><em>${escapeXml(description)}</em></p>`)
             }
-        }
-        if (ytId && showCarousel) {
-            // Trailer + carousel: carousel goes mid-body, like the site.
-            const { before, after } = splitAtMiddleH2(bodyHtml)
-            parts.push(before)
-            parts.push(carouselFigure)
-            if (after) parts.push(after)
-        } else if (showCarousel) {
-            // Carousel, no trailer: image sits before the body, like the site.
-            parts.push(carouselFigure)
-            parts.push(bodyHtml)
+            const legend = isEs
+                ? `<p>Para leer el artículo completo, iniciá sesión o creá una cuenta <strong>gratis</strong> en <a href="${loginUrl}">${loginUrl}</a> — sin tarjeta de crédito ni débito.</p>`
+                : `<p>To read the full article, sign in or create a <strong>free</strong> account at <a href="${loginUrl}">${loginUrl}</a> — no credit or debit card required.</p>`
+            parts.push(legend)
         } else {
-            parts.push(bodyHtml)
+            if (cover) {
+                parts.push(`<figure><img src="${escapeXml(cover)}" alt="${escapeXml(title)}" /></figure>`)
+            }
+            if (description) {
+                parts.push(`<p><em>${escapeXml(description)}</em></p>`)
+            }
+            if (ytId) {
+                if (provider === 'vimeo') {
+                    // Vimeo path — thumb URL is per-video (hash-based), so we look
+                    // it up via oEmbed (pre-fetched above into vimeoMap). If the
+                    // lookup failed, fall back to a text-only link so the feed
+                    // never breaks because of a single bad video.
+                    const watch = `https://vimeo.com/${escapeXml(ytId)}`
+                    const thumb = vimeoMap.get(ytId)?.thumbnail_url || ''
+                    const label = isEs ? 'Ver el tráiler en Vimeo' : 'Watch the trailer on Vimeo'
+                    if (thumb) {
+                        parts.push(
+                            `<p><a href="${watch}"><img src="${escapeXml(thumb)}" alt="${escapeXml(title)} — trailer" /></a><br/><a href="${watch}">▶ ${label}</a></p>`
+                        )
+                    } else {
+                        parts.push(`<p><a href="${watch}">▶ ${label}</a></p>`)
+                    }
+                } else {
+                    // YouTube path — unchanged from pre-Vimeo behavior.
+                    const watch = `https://www.youtube.com/watch?v=${escapeXml(ytId)}`
+                    const thumb = `https://img.youtube.com/vi/${escapeXml(ytId)}/hqdefault.jpg`
+                    parts.push(
+                        `<p><a href="${watch}"><img src="${thumb}" alt="${escapeXml(title)} — trailer" /></a><br/><a href="${watch}">▶ ${isEs ? 'Ver el tráiler en YouTube' : 'Watch the trailer on YouTube'}</a></p>`
+                    )
+                }
+            }
+            if (ytId && showCarousel) {
+                // Trailer + carousel: carousel goes mid-body, like the site.
+                const { before, after } = splitAtMiddleH2(bodyHtml)
+                parts.push(before)
+                parts.push(carouselFigure)
+                if (after) parts.push(after)
+            } else if (showCarousel) {
+                // Carousel, no trailer: image sits before the body, like the site.
+                parts.push(carouselFigure)
+                parts.push(bodyHtml)
+            } else {
+                parts.push(bodyHtml)
+            }
         }
         const contentHtml = parts.filter(Boolean).join('\n')
 
@@ -171,10 +200,43 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
             if (Array.isArray(parsed)) topics = parsed.map((t: any) => String(t)).filter(Boolean)
         } catch { /* ignore malformed topics */ }
 
-        const categories = topics
-            .slice(0, 6)
-            .map(t => `      <category>${escapeXml(t)}</category>`)
-            .join('\n')
+        // Editorial taxonomy: emit primary first with its domain attribute,
+        // then any secondaries with the secondary domain, then the free-form
+        // topics as plain <category>. Taxonomy stays exposed even on gated
+        // items — it's metadata, not body, and helps Feedly filtering. Feed
+        // consumers that ignore the domain attribute treat all three layers
+        // as plain categories (backward-compatible).
+        const primaryCategory = row.editorial_category
+            ? String(row.editorial_category).trim().toLowerCase()
+            : ''
+        let secondaryCategories: string[] = []
+        try {
+            const parsedSecs = row.secondary_categories_json
+                ? JSON.parse(row.secondary_categories_json as string)
+                : []
+            if (Array.isArray(parsedSecs)) {
+                secondaryCategories = parsedSecs
+                    .map((s: any) => String(s).trim().toLowerCase())
+                    .filter(Boolean)
+                    .slice(0, 2)
+            }
+        } catch { /* ignore malformed secondaries */ }
+
+        const taxonomyLines: string[] = []
+        if (primaryCategory) {
+            taxonomyLines.push(
+                `      <category domain="${CATEGORY_PRIMARY_DOMAIN}">${escapeXml(primaryCategory)}</category>`
+            )
+        }
+        for (const sec of secondaryCategories) {
+            taxonomyLines.push(
+                `      <category domain="${CATEGORY_SECONDARY_DOMAIN}">${escapeXml(sec)}</category>`
+            )
+        }
+        for (const t of topics.slice(0, 6)) {
+            taxonomyLines.push(`      <category>${escapeXml(t)}</category>`)
+        }
+        const categories = taxonomyLines.join('\n')
 
         const media: string[] = []
         if (cover) {

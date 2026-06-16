@@ -15,7 +15,7 @@
         />
         <img v-else src="/placeholders/placeholder_news.webp" alt="Placeholder" class="news-card__img" />
         
-        <span v-if="item.source && item.source.name" class="news-card__source">{{ item.source.name }}</span>
+        <span v-if="cardBadge" class="news-card__source">{{ cardBadge }}</span>
       </div>
 
       <div class="news-card__content">
@@ -36,6 +36,17 @@ export default {
     item: {
       type: Object,
       required: true
+    }
+  },
+  computed: {
+    // Display badge: prefer the editorial category for internal articles
+    // (replaces the brand-redundant "CINEMAGORIA" label), fall back to the
+    // publisher name for external aggregated items.
+    cardBadge() {
+      if (this.item?.editorial_category) {
+        return String(this.item.editorial_category).toUpperCase();
+      }
+      return this.item?.source?.name || '';
     }
   },
   methods: {

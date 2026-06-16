@@ -51,7 +51,27 @@
             </div>
           </div>
 
-          
+          <div v-if="showCategoryChips && !isSavedView" class="category-chips" role="tablist" aria-label="Filter by editorial category">
+            <button
+              type="button"
+              class="category-chip"
+              :class="{ 'category-chip--active': !categoryFilter }"
+              role="tab"
+              :aria-selected="!categoryFilter"
+              @click="pickCategory(null)"
+            >All</button>
+            <button
+              v-for="cat in CATEGORY_OPTIONS"
+              :key="cat"
+              type="button"
+              class="category-chip"
+              :class="{ 'category-chip--active': categoryFilter === cat }"
+              role="tab"
+              :aria-selected="categoryFilter === cat"
+              @click="pickCategory(cat)"
+            >{{ cat.toUpperCase() }}</button>
+          </div>
+
           <div class="header-status">
             <h2 class="status-title" v-if="isSavedView">Saved Articles</h2>
             <h2 class="status-title" v-else-if="selectedSource">
@@ -77,7 +97,7 @@
                   {{ localSavedArticlesList.length }} {{ localSavedArticlesList.length === 1 ? 'article' : 'articles' }}
                 </template>
                 <template v-else-if="!pending">
-                  {{ newsItems.length }} {{ newsItems.length === 1 ? 'article' : 'articles' }}
+                  {{ filteredItems.length }} {{ filteredItems.length === 1 ? 'article' : 'articles' }}
                 </template>
               </span>
             </ClientOnly>
@@ -156,7 +176,7 @@
                   </div>
                </div>
 
-               <div v-else-if="newsItems.length > 0">
+               <div v-else-if="filteredItems.length > 0">
                   <div class="news-grid">
                     <div 
                       v-for="item in displayedItems" 
@@ -171,7 +191,7 @@
                               :alt="item.title"
                               loading="lazy"
                           />
-                          <div class="card-source">{{ item.source.name }}</div>
+                          <div class="card-source">{{ cardBadge(item) }}</div>
                           <button
                             v-if="userEmail"
                             class="bookmark-btn"
@@ -200,7 +220,7 @@
                               class="img-lazy"
                           />
                           
-                          <div class="card-source">{{ item.source.name }}</div>
+                          <div class="card-source">{{ cardBadge(item) }}</div>
 
                           <button 
                             v-if="userEmail"
@@ -291,6 +311,43 @@ const searchQuery = ref('');
 const isSearchActive = ref(false);
 const debouncedSearchQuery = refDebounced(searchQuery, 500);
 const topicFromArticle = ref(null);
+
+// Editorial taxonomy filter (Cinemagoria-only). Synced to ?category=<value>.
+// An item matches when its primary OR any of its secondaries equals the picked
+// value — cross-cuts the archive without polluting the primary badge.
+const CATEGORY_OPTIONS = [
+  'feature', 'industry', 'festival', 'awards',
+  'production', 'trailer', 'acquisition', 'boxoffice',
+  'streaming', 'interview', 'review', 'opinion',
+];
+const categoryFilter = ref(
+  typeof route.query.category === 'string' && CATEGORY_OPTIONS.includes(route.query.category)
+    ? route.query.category
+    : null
+);
+
+// Display badge: prefer editorial category for internal items (replaces the
+// brand-redundant "CINEMAGORIA" label), fall back to publisher name for
+// external aggregated items.
+function cardBadge(item) {
+  if (item?.editorial_category) return String(item.editorial_category).toUpperCase();
+  return item?.source?.name || '';
+}
+
+// Category chip is visible only when looking at Cinemagoria-internal articles
+// (the only ones that carry editorial_category). Hidden during external-source
+// view and during active search (mixed sources, filter would only hit internal).
+const showCategoryChips = computed(() => {
+  if (isSearchActive.value && debouncedSearchQuery.value) return false;
+  return !selectedSource.value || selectedSource.value === 'Cinemagoria';
+});
+
+function pickCategory(cat) {
+  categoryFilter.value = cat; // null = "All"
+  const query = { ...route.query };
+  if (cat) query.category = cat; else delete query.category;
+  router.replace({ query });
+}
 
 // Handle ?q= and ?from= query params (arriving from topic click in article page)
 onMounted(() => {
@@ -393,8 +450,22 @@ const visibleLimit = ref(20);
 const sentinel = ref(null);
 let observer = null;
 
+// Apply category filter client-side. Match expansion: primary OR any secondary.
+// Non-Cinemagoria items have no editorial_category and never match — fine,
+// the chip row only shows when source is Cinemagoria so external items are
+// already out of view at that point.
+const filteredItems = computed(() => {
+  const cat = categoryFilter.value;
+  if (!cat) return newsItems.value;
+  return newsItems.value.filter(item => {
+    if (item.editorial_category === cat) return true;
+    const secs = Array.isArray(item.secondary_categories) ? item.secondary_categories : [];
+    return secs.includes(cat);
+  });
+});
+
 const displayedItems = computed(() => {
-  return newsItems.value.slice(0, visibleLimit.value);
+  return filteredItems.value.slice(0, visibleLimit.value);
 });
 
 watch(selectedSource, () => {
@@ -1774,5 +1845,55 @@ watch(userEmail, (val) => {
 .card-desc {
   -webkit-line-clamp: 3;
   line-clamp: 3;
+}
+
+/* ── Editorial category chip filter (Cinemagoria-only view) ─────────── */
+.category-chips {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 6px 2px 14px;
+  margin: 6px 0 6px;
+}
+
+.category-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.category-chip {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(139, 233, 253, 0.18);
+  background: rgba(3, 4, 6, 0.55);
+  color: #cfd8df;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+  white-space: nowrap;
+}
+
+.category-chip:hover {
+  color: #8BE9FD;
+  border-color: rgba(139, 233, 253, 0.5);
+}
+
+.category-chip--active {
+  background: #8BE9FD;
+  border-color: #8BE9FD;
+  color: #03242C;
+}
+
+.category-chip--active:hover {
+  background: #a5eefe;
+  border-color: #a5eefe;
+  color: #03242C;
 }
 </style>

@@ -59,7 +59,7 @@
 
             <div class="card-content">
               <div class="card-meta">
-                <span v-if="article.source && article.source.name" class="source-badge">{{ article.source.name }}</span>
+                <span v-if="carouselBadge(article)" class="source-badge">{{ carouselBadge(article) }}</span>
                 <span class="card-date">{{ formatDate(article.published_at) }}</span>
               </div>
 
@@ -185,6 +185,15 @@ export default {
     sanitizeDescription(desc) {
       if (!desc) return '';
       return striptags(desc);
+    },
+    // Display badge: prefer the editorial category for internal articles
+    // (replaces the brand-redundant "CINEMAGORIA" label), fall back to the
+    // publisher name for external aggregated items.
+    carouselBadge(article) {
+      if (article?.editorial_category) {
+        return String(article.editorial_category).toUpperCase();
+      }
+      return article?.source?.name || '';
     },
     onImageLoad(id) {
        this.loadingMap[id] = false; 
