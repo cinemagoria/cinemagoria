@@ -97,6 +97,21 @@
                 </div>
               </div>
 
+              <!-- Editorial taxonomy — primary (highlighted) + secondaries. -->
+              <h3 v-if="article.editorial_category" class="sidebar-title" style="margin-top: 20px;">Categorías</h3>
+              <div v-if="article.editorial_category" class="sidebar-tags sidebar-tags--categories">
+                <NuxtLink
+                  :to="{ path: '/news', query: { category: article.editorial_category } }"
+                  class="sidebar-tag sidebar-tag--category sidebar-tag--primary"
+                >{{ article.editorial_category.toUpperCase() }}</NuxtLink>
+                <NuxtLink
+                  v-for="sec in (article.secondary_categories || [])"
+                  :key="sec"
+                  :to="{ path: '/news', query: { category: sec } }"
+                  class="sidebar-tag sidebar-tag--category"
+                >{{ sec.toUpperCase() }}</NuxtLink>
+              </div>
+
               <h3 v-if="parsedSources.length" class="sidebar-title" style="margin-top: 20px;">Fuentes</h3>
               <div v-if="parsedSources.length" class="sidebar-sources">
                 <a
@@ -203,16 +218,10 @@
                     </span>
                   </NuxtLink>
                 </div>
-                <!-- Editorial kicker: primary category, clickable to /news?category=… -->
-                <NuxtLink
-                  v-if="kickerLabel"
-                  :to="{ path: '/news', query: { category: article.editorial_category } }"
-                  class="article-kicker"
-                >{{ kickerLabel }}</NuxtLink>
-
                 <h1 class="article-title">{{ article.title_es }}</h1>
 
                 <!-- Cover image inline for mobile -->
+                <!-- Imagen de portada inline para mobile -->
                 <div v-if="article.image_url" class="mobile-hero">
                   <img :src="article.image_url" :alt="article.title_es" loading="eager" />
                 </div>
@@ -260,7 +269,7 @@
               <!-- Trailer embed (siempre arriba cuando existe trailer) -->
               <!-- Soporta YouTube (default) y Vimeo según trailer_provider.
                    Filas legacy con provider NULL renderizan como YouTube. -->
-              <div v-if="article.trailer_youtube_id" class="article-trailer">
+              <div v-if="article.trailer_youtube_id && !isGated" class="article-trailer">
                 <div class="trailer-wrapper">
                   <iframe
                     :src="trailerEmbedSrc"
@@ -274,7 +283,7 @@
               </div>
 
               <!-- Carousel arriba (solo cuando no hay trailer) -->
-              <div v-if="article.carousel_assets?.length && !article.trailer_youtube_id" class="article-carousel">
+              <div v-if="article.carousel_assets?.length && !article.trailer_youtube_id && !isGated" class="article-carousel">
                 <div class="carousel-viewport">
                   <div class="carousel-track" :style="{ transform: `translateX(-${carouselIndex * 100}%)` }">
                     <div v-for="(img, i) in article.carousel_assets" :key="i" class="carousel-slide">
@@ -318,9 +327,9 @@
                     <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
                   </svg>
                 </div>
-                <h3 class="gate-card__title">Para nuestra comunidad</h3>
-                <p class="gate-card__sub">Iniciá sesión o creá una cuenta para leer este artículo.</p>
-                <button type="button" class="gate-card__cta" @click="openGateModal">Continuar</button>
+                <h3 class="gate-card__title">Exclusivo de la Comunidad</h3>
+                <p class="gate-card__sub">Creá una cuenta gratis o ingresá para leer la nota completa.</p>
+                <button type="button" class="gate-card__cta" @click="openGateModal">Ingresar o unirme</button>
               </div>
 
               <!-- Carousel en el medio (cuando hay trailer y carousel).
@@ -358,8 +367,11 @@
               <!-- Body (segunda mitad — solo cuando se pudo dividir por un <h2>) -->
               <div v-if="!isGated && bodyParts.after" class="article-body" v-html="bodyParts.after"></div>
 
-              <!-- Leyenda editorial IA + modal de reporte de errores -->
+              <!-- Leyenda editorial IA + modal de reporte de errores.
+                   Oculta cuando está gated: si el lector no está viendo el body,
+                   no tiene sentido informar cómo se generó. -->
               <ArticleAIDisclosure
+                v-if="!isGated"
                 :article-id="article.id"
                 :article-slug="article.slug"
                 :article-title="article.title_es"
@@ -727,12 +739,6 @@ function openGateModal() {
   }))
 }
 
-// Kicker badge: primary editorial category, upper-cased for display.
-const kickerLabel = computed(() => {
-  const cat = article.value?.editorial_category
-  return cat ? String(cat).toUpperCase() : ''
-})
-
 function formatDate(dateStr) {
   if (!dateStr) return ''
   try {
@@ -945,6 +951,22 @@ useHead(() => {
 .sidebar-tag { font-size: 12px; color: #80868b; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 10px; }
 .sidebar-tag--clickable { text-decoration: none; cursor: pointer; transition: all 0.2s ease; }
 .sidebar-tag--clickable:hover { color: #8BE9FD; background: rgba(139, 233, 253, 0.1); border-color: rgba(139, 233, 253, 0.3); }
+
+/* Editorial taxonomy chips: primary gets the cyan accent, secondaries match
+   the Topics neutral style so the visual hierarchy mirrors the data model
+   (one primary + up to 2 secondaries). */
+.sidebar-tags--categories { align-items: center; }
+.sidebar-tag--category {
+  text-decoration: none; cursor: pointer;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  font-weight: 700; font-size: 11px;
+  padding: 3px 10px;
+  transition: all 0.2s ease;
+}
+.sidebar-tag--category:hover { color: #8BE9FD; background: rgba(139, 233, 253, 0.1); border-color: rgba(139, 233, 253, 0.3); }
+.sidebar-tag--primary { color: #8BE9FD; background: rgba(139, 233, 253, 0.12); border-color: rgba(139, 233, 253, 0.5); }
+.sidebar-tag--primary:hover { background: #8BE9FD; color: #03242C; border-color: #8BE9FD; }
+
 .sidebar-sources { display: flex; flex-direction: column; gap: 4px; margin-bottom: 4px; }
 
 .source-btn {
@@ -1009,28 +1031,6 @@ useHead(() => {
 
 .article-header { margin-bottom: 8px; }
 .article-date { display: block; font-size: 14px; color: #80868b; margin-bottom: 16px; }
-
-/* Editorial kicker — primary category above the title */
-.article-kicker {
-  display: inline-block;
-  margin-bottom: 14px;
-  padding: 5px 13px;
-  border-radius: 999px;
-  border: 1px solid rgba(139, 233, 253, 0.5);
-  background: rgba(139, 233, 253, 0.12);
-  color: #8BE9FD;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: background 0.18s ease, color 0.18s ease;
-}
-
-.article-kicker:hover {
-  background: #8BE9FD;
-  color: #03242C;
-}
 
 .article-title {
   font-size: clamp(28px, 4vw, 38px);
