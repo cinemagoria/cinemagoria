@@ -329,6 +329,14 @@ const categoryFilter = ref(
     : null
 );
 
+// Keep the ref in sync with ?category= on browser back/forward and direct URL
+// navigations. Chip clicks update the URL via pickCategory(); the watcher
+// re-applies that change idempotently. Invalid / missing values reset to null.
+watch(() => route.query.category, (next) => {
+  categoryFilter.value =
+    typeof next === 'string' && CATEGORY_OPTIONS.includes(next) ? next : null;
+});
+
 // Display badge: prefer editorial category for internal items (replaces the
 // brand-redundant "CINEMAGORIA" label), fall back to publisher name for
 // external aggregated items.
