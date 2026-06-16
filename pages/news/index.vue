@@ -101,7 +101,7 @@
               role="tab"
               :aria-selected="categoryFilter === cat"
               @click="pickCategory(cat)"
-            >{{ cat }}</button>
+            >{{ categoryLabelES(cat) }}</button>
           </div>
 
           <div v-if="pending" class="loading-grid">
@@ -300,6 +300,7 @@ useHead({
   ],
 })
 import { formatDate as formatDateHelper, handleImageError as handleImageErrorHelper } from '~/utils/helpers';
+import { categoryLabelES } from '~/utils/categoryLabels';
 
 const config = useRuntimeConfig();
 const { $store, $bus } = useNuxtApp();
@@ -339,9 +340,9 @@ watch(() => route.query.category, (next) => {
 
 // Display badge: prefer editorial category for internal items (replaces the
 // brand-redundant "CINEMAGORIA" label), fall back to publisher name for
-// external aggregated items.
+// external aggregated items. The .card-source CSS uppercases the result.
 function cardBadge(item) {
-  if (item?.editorial_category) return String(item.editorial_category).toUpperCase();
+  if (item?.editorial_category) return categoryLabelES(item.editorial_category);
   return item?.source?.name || '';
 }
 

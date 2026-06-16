@@ -15,6 +15,32 @@ const ES_BASE = 'https://es.cinemagoria.com'
 
 const md = new MarkdownIt({ breaks: true, html: true })
 
+// Spanish display labels for the editorial taxonomy. The DB value (English,
+// lowercase) is the canonical key and is what gets emitted in the EN feed;
+// the ES feed resolves it through this map for the <category> tag. Kept in
+// sync with cinemagoria-es/utils/categoryLabels.js — if the user-facing
+// translation changes there, mirror it here.
+const CATEGORY_LABELS_ES: Record<string, string> = {
+    feature:     'Editorial',
+    industry:    'Industria',
+    festival:    'Festival',
+    awards:      'Premios',
+    production:  'Producción',
+    trailer:     'Tráiler',
+    acquisition: 'Adquisición',
+    boxoffice:   'Desempeño Comercial',
+    streaming:   'Streaming',
+    interview:   'Entrevista',
+    review:      'Crítica',
+    opinion:     'Opinión',
+}
+
+const labelForFeed = (cat: string, isEs: boolean): string => {
+    if (!cat) return ''
+    if (!isEs) return cat
+    return CATEGORY_LABELS_ES[cat] || cat
+}
+
 const escapeXml = (s: string) => (s || '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -224,12 +250,12 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
         const taxonomyLines: string[] = []
         if (primaryCategory) {
             taxonomyLines.push(
-                `      <category domain="${CATEGORY_PRIMARY_DOMAIN}">${escapeXml(primaryCategory)}</category>`
+                `      <category domain="${CATEGORY_PRIMARY_DOMAIN}">${escapeXml(labelForFeed(primaryCategory, isEs))}</category>`
             )
         }
         for (const sec of secondaryCategories) {
             taxonomyLines.push(
-                `      <category domain="${CATEGORY_SECONDARY_DOMAIN}">${escapeXml(sec)}</category>`
+                `      <category domain="${CATEGORY_SECONDARY_DOMAIN}">${escapeXml(labelForFeed(sec, isEs))}</category>`
             )
         }
         for (const t of topics.slice(0, 6)) {

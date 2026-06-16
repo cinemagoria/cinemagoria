@@ -102,6 +102,7 @@ import Loader from '@/components/Loader';
 import carousel from '~/mixins/Carousel';
 import striptags from 'striptags';
 import { formatDate, handleImageError } from '~/utils/helpers';
+import { categoryLabelES } from '~/utils/categoryLabels';
 
 const AUTOPLAY_INTERVAL = 10000;
 
@@ -187,10 +188,11 @@ export default {
     },
     // Display badge: prefer the editorial category for internal articles
     // (replaces the brand-redundant "CINEMAGORIA" label), fall back to the
-    // publisher name for external aggregated items.
+    // publisher name for external aggregated items. The .source-badge CSS
+    // uppercases the result.
     carouselBadge(article) {
       if (article?.editorial_category) {
-        return String(article.editorial_category).toUpperCase();
+        return categoryLabelES(article.editorial_category);
       }
       return article?.source?.name || '';
     },

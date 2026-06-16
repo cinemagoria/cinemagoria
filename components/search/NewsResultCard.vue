@@ -30,6 +30,7 @@
 <script>
 import striptags from 'striptags';
 import { formatDate } from '~/utils/helpers';
+import { categoryLabelES } from '~/utils/categoryLabels';
 
 export default {
   props: {
@@ -41,10 +42,11 @@ export default {
   computed: {
     // Display badge: prefer the editorial category for internal articles
     // (replaces the brand-redundant "CINEMAGORIA" label), fall back to the
-    // publisher name for external aggregated items.
+    // publisher name for external aggregated items. The .news-card__source
+    // CSS uppercases the result.
     cardBadge() {
       if (this.item?.editorial_category) {
-        return String(this.item.editorial_category).toUpperCase();
+        return categoryLabelES(this.item.editorial_category);
       }
       return this.item?.source?.name || '';
     }
