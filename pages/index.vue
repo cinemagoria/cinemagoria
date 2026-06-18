@@ -192,14 +192,13 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'The Spring',
         'Hijamat',
         'Black Money for White',
-        'Pipes',
         // tribeca 2026
         'Cotton Fever',
         'The Accompanist',
         'Cotton Fever',
         'Here I\'m Alive',
+        'Crooks',
         'The Last Day',
-        'Crooks',  
         'Stand Up',
         'Breeder',
         'Recluse',    
@@ -245,7 +244,6 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         // berlinale 2026
         'Yellow Letters',
         'Rose',
-        'Nina Roza',
         'Queen at sea',
         'Heysel 85',
         'In a Whisper',
@@ -257,8 +255,6 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Variations on a theme',
         'Silent Friend',
         'Tell Me What You Feel',
-        'Father Mother Sister Brother',
-        'Butterfly',
         'Late Fame',
         // sundance 2026
         'The Weight',
@@ -266,8 +262,8 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Shame and Money',
         'undertone',
         'The Only Living Pickpocket in New York',
-        'Time and Water',
         'Josephine',
+        'Time and Water',
     ];
     
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
