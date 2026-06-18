@@ -187,7 +187,6 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Hot Spot',
         'Ferine',
         'The Eyes',
-        'God Skin',
         // kviff 2026
         'Truck Driver',
         'The Spring',
@@ -195,17 +194,15 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Black Money for White',
         'Pipes',
         // tribeca 2026
+        'Cotton Fever',
         'The Accompanist',
         'Cotton Fever',
         'Here I\'m Alive',
         'The Last Day',
-        'The Revisionist',
-        'Crooks',
-        'Turn It Up!',
+        'Crooks',  
         'Stand Up',
         'Breeder',
-        'Recluse',
-        'Only What We Carry',
+        'Recluse',    
         // cannes 2026
         'Hope|cannes',
         'Victorian Psycho',
