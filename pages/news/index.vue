@@ -103,7 +103,7 @@
               role="tab"
               :aria-selected="categoryFilter === cat"
               @click="pickCategory(cat)"
-            >{{ cat }}</button>
+            >{{ categoryLabel(cat) }}</button>
           </div>
 
           <div v-if="pending" class="loading-grid">
@@ -292,6 +292,7 @@ import UserNav from '@/components/global/UserNav';
 import Loader from '@/components/Loader';
 import striptags from 'striptags';
 import { SOURCE_URLS } from '~/utils/newsSources';
+import { categoryLabel } from '~/utils/categoryLabels';
 
 useHead({
   title: 'Cinemagoria — Latest Film & TV News',
@@ -320,9 +321,8 @@ const topicFromArticle = ref(null);
 // An item matches when its primary OR any of its secondaries equals the picked
 // value — cross-cuts the archive without polluting the primary badge.
 const CATEGORY_OPTIONS = [
-  'feature', 'industry', 'festival', 'awards',
-  'production', 'trailer', 'acquisition', 'boxoffice',
-  'streaming', 'interview', 'review', 'opinion',
+  'festival', 'industry', 'trailer', 'review',
+  'awards', 'streaming', 'interview', 'documentary',
 ];
 const categoryFilter = ref(
   typeof route.query.category === 'string' && CATEGORY_OPTIONS.includes(route.query.category)
@@ -342,7 +342,7 @@ watch(() => route.query.category, (next) => {
 // brand-redundant "CINEMAGORIA" label), fall back to publisher name for
 // external aggregated items.
 function cardBadge(item) {
-  if (item?.editorial_category) return String(item.editorial_category).toUpperCase();
+  if (item?.editorial_category) return categoryLabel(item.editorial_category);
   return item?.source?.name || '';
 }
 

@@ -30,6 +30,7 @@
 <script>
 import striptags from 'striptags';
 import { formatDate } from '~/utils/helpers';
+import { categoryLabel } from '~/utils/categoryLabels';
 
 export default {
   props: {
@@ -44,7 +45,7 @@ export default {
     // publisher name for external aggregated items.
     cardBadge() {
       if (this.item?.editorial_category) {
-        return String(this.item.editorial_category).toUpperCase();
+        return categoryLabel(this.item.editorial_category);
       }
       return this.item?.source?.name || '';
     }
