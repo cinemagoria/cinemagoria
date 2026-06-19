@@ -36,7 +36,7 @@
     "media_type": "movie",
     "trailer_key": "f_bKjZeJBBI",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1774913778/cinemagoria/backdrops/noir_1368337.webp",
-    "poster_path": "/krVa7rKCQb4OBfsr2LTJv4rTz5q.jpg",
+    "poster_path": "/pe5cCoX5iIb5IWKPsbPkCwjLFHt.jpg",
     "force_enrichment": true
   },
   {
@@ -2348,7 +2348,7 @@
     "media_type": "movie",
     "trailer_key": "x54MPGBWXA8",
     "backdrop_path": null,
-    "poster_path": null,
+    "poster_path": "/42egzT6e4CIEdrEo4Xc31DKyGjA.jpg",
     "force_enrichment": false
   },
   {
@@ -3780,7 +3780,7 @@
     "media_type": "tv",
     "trailer_key": "-0E39zVbEZc",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1781811301/cinemagoria/backdrops/hero_279323.webp",
-    "poster_path": "/jbQsa0W9JbHypYSZmgB1lKxGzL5.jpg",
+    "poster_path": "/pNr8bEPtKLBzPNtF2uBwMRnfdVH.jpg",
     "force_enrichment": true
   }
 ]
