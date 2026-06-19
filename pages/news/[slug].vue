@@ -104,13 +104,13 @@
                 <NuxtLink
                   :to="{ path: '/news', query: { category: article.editorial_category } }"
                   class="sidebar-tag sidebar-tag--category sidebar-tag--primary"
-                >{{ article.editorial_category.toUpperCase() }}</NuxtLink>
+                >{{ categoryLabel(article.editorial_category) }}</NuxtLink>
                 <NuxtLink
                   v-for="sec in (article.secondary_categories || [])"
                   :key="sec"
                   :to="{ path: '/news', query: { category: sec } }"
                   class="sidebar-tag sidebar-tag--category"
-                >{{ sec.toUpperCase() }}</NuxtLink>
+                >{{ categoryLabel(sec) }}</NuxtLink>
               </div>
 
               <!-- Sources -->
@@ -431,6 +431,7 @@ import ArticleAIDisclosure from '@/components/global/ArticleAIDisclosure';
 import ArticleShareModal from '@/components/global/ArticleShareModal';
 import MarkdownIt from 'markdown-it'
 import { apiImgUrl, getCustomEnrichment } from '@/utils/api'
+import { categoryLabel } from '@/utils/categoryLabels'
 import { stripRelatedFooter, extractRelatedSlugs } from '@/utils/relatedFooter'
 
 const md = new MarkdownIt({ breaks: true, html: true })

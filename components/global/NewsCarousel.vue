@@ -103,6 +103,7 @@ import Loader from '@/components/Loader';
 import carousel from '~/mixins/Carousel';
 import striptags from 'striptags';
 import { formatDate, handleImageError } from '~/utils/helpers';
+import { categoryLabel } from '~/utils/categoryLabels';
 
 const AUTOPLAY_INTERVAL = 10000;
 
@@ -191,7 +192,7 @@ export default {
     // publisher name for external aggregated items.
     carouselBadge(article) {
       if (article?.editorial_category) {
-        return String(article.editorial_category).toUpperCase();
+        return categoryLabel(article.editorial_category);
       }
       return article?.source?.name || '';
     },
