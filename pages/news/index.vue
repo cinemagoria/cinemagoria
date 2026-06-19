@@ -320,9 +320,8 @@ const topicFromArticle = ref(null);
 // An item matches when its primary OR any of its secondaries equals the picked
 // value — cross-cuts the archive without polluting the primary badge.
 const CATEGORY_OPTIONS = [
-  'feature', 'industry', 'festival', 'awards',
-  'production', 'trailer', 'acquisition', 'boxoffice',
-  'streaming', 'interview', 'review', 'opinion',
+  'festival', 'industry', 'trailer', 'review',
+  'awards', 'streaming', 'interview', 'documentary',
 ];
 const categoryFilter = ref(
   typeof route.query.category === 'string' && CATEGORY_OPTIONS.includes(route.query.category)

@@ -21,18 +21,14 @@ const md = new MarkdownIt({ breaks: true, html: true })
 // sync with cinemagoria-es/utils/categoryLabels.js — if the user-facing
 // translation changes there, mirror it here.
 const CATEGORY_LABELS_ES: Record<string, string> = {
-    feature:     'Editorial',
-    industry:    'Industria',
     festival:    'Festival',
+    industry:    'Industria / Adquisiciones / Taquilla',
+    trailer:     'Tráiler / Teaser / Primeras Imágenes',
+    review:      'Crítica / Opinión',
     awards:      'Premios',
-    production:  'Producción',
-    trailer:     'Tráiler',
-    acquisition: 'Adquisición',
-    boxoffice:   'Desempeño Comercial',
     streaming:   'Streaming',
     interview:   'Entrevista',
-    review:      'Crítica',
-    opinion:     'Opinión',
+    documentary: 'Documentales',
 }
 
 const labelForFeed = (cat: string, isEs: boolean): string => {
