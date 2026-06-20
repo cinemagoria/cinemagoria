@@ -6,7 +6,7 @@
 export const CATEGORY_LABELS = {
     festival:    'Festival',
     industry:    'Industry / Acquisition / Box Office',
-    trailer:     'Trailer / Teaser / First Looks',
+    trailer:     'Trailer / First Looks',
     review:      'Review / Opinion',
     awards:      'Awards',
     streaming:   'Streaming',
