@@ -149,7 +149,7 @@
                 <div v-show="isOpen(date)" class="screenings-list">
                   <div v-for="screening in dayScreenings" :key="screening.id" class="screening-card">
                      <div class="time-block">
-                        <span class="time">{{ formatTime(screening.start_time) }}</span>
+                        <span class="time">{{ formatTime(screening.start_time, screening.timezone) }}</span>
                         <span class="timezone">{{ screening.timezone }}</span>
                      </div>
 
@@ -386,15 +386,20 @@ function toggleCategoryOpen (cat) {
     categoryOpen.value = { ...categoryOpen.value, [cat]: !isCategoryOpen(cat) };
 }
 
+const FESTIVAL_TZ = 'Europe/Prague';
+
 const formatDate = (dateStr) => {
-    const options = { weekday: 'long', month: 'long', day: 'numeric' };
-    return new Date(dateStr).toLocaleDateString('en-US', options);
+    // dateStr is the festival-local day key (YYYY-MM-DD). Anchor to UTC so it
+    // renders the same calendar day regardless of the viewer's timezone.
+    const options = { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' };
+    return new Date(`${dateStr}T00:00:00Z`).toLocaleDateString('en-US', options);
 };
 
-const formatTime = (timeStr) => {
+const formatTime = (timeStr, tz) => {
     return new Date(timeStr).toLocaleTimeString('en-US', {
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
+        timeZone: tz || FESTIVAL_TZ
     });
 };
 
