@@ -330,17 +330,27 @@ const openDays = ref(new Set());
 const CATEGORY_ORDER = [
     'Crystal Globe Competition',
     'Proxima Competition',
+    'Horizons',
+    'Imagina',
     'Special Screenings',
     'Special Screenings – Classics',
     'Out of the Past – KVIFF 60/80',
+    'Future Frames: Generation NEXT of European Cinema',
+    'Afterhours',
+    'Tribute',
 ];
 
 const CATEGORY_LABELS = {
     'Crystal Globe Competition': 'Crystal Globe Competition',
     'Proxima Competition': 'Proxima Competition',
+    'Horizons': 'Horizons',
+    'Imagina': 'Imagina',
     'Special Screenings': 'Special Screenings',
     'Special Screenings – Classics': 'Special Screenings – Classics',
     'Out of the Past – KVIFF 60/80': 'Out of the Past – KVIFF 60/80',
+    'Future Frames: Generation NEXT of European Cinema': 'Future Frames: Generation NEXT of European Cinema',
+    'Afterhours': 'Afterhours',
+    'Tribute': 'Tribute',
     OTHER: 'Other',
 };
 
