@@ -337,7 +337,7 @@ const CATEGORY_ORDER = [
     'Out of the Past – KVIFF 60/80',
     'Future Frames: Generation NEXT of European Cinema',
     'Afterhours',
-    'Tribute',
+    'Tributes',
 ];
 
 const CATEGORY_LABELS = {
@@ -350,7 +350,7 @@ const CATEGORY_LABELS = {
     'Out of the Past – KVIFF 60/80': 'Out of the Past – KVIFF 60/80',
     'Future Frames: Generation NEXT of European Cinema': 'Future Frames: Generation NEXT of European Cinema',
     'Afterhours': 'Afterhours',
-    'Tribute': 'Tribute',
+    'Tributes': 'Tributes',
     OTHER: 'Other',
 };
 
