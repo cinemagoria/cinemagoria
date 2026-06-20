@@ -22,8 +22,8 @@ const md = new MarkdownIt({ breaks: true, html: true })
 // translation changes there, mirror it here.
 const CATEGORY_LABELS_ES: Record<string, string> = {
     festival:    'Festival',
-    industry:    'Industria / Adquisiciones / Taquilla',
-    trailer:     'Tráiler / Teaser / Primeras Imágenes',
+    industry:    'Industria / Adquisiciones / Desempeño Comercial',
+    trailer:     'Avance / Primer Vistazo',
     review:      'Crítica / Opinión',
     awards:      'Premios',
     streaming:   'Streaming',

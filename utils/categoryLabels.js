@@ -10,8 +10,8 @@
 
 export const CATEGORY_LABELS_ES = {
     festival:    'Festival',
-    industry:    'Industria / Adquisiciones / Taquilla',
-    trailer:     'Tráiler / Teaser / Primeras Imágenes',
+    industry:    'Industria / Adquisiciones / Desempeño Comercial',
+    trailer:     'Avance / Primer Vistazo',
     review:      'Crítica / Opinión',
     awards:      'Premios',
     streaming:   'Streaming',
