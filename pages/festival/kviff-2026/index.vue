@@ -154,13 +154,15 @@
                      </div>
 
                       <div class="film-info">
-                         <a
-                            href="https://www.kviff.com/en/programme"
-                            target="_blank"
+                         <component
+                            :is="screening.film.source_url ? 'a' : 'span'"
+                            :href="screening.film.source_url || ''"
+                            :target="screening.film.source_url ? '_blank' : ''"
                             class="film-title"
+                            :class="{'no-link': !screening.film.source_url}"
                          >
                             {{ screening.film.title }}
-                         </a>
+                         </component>
                          <div class="film-meta">
                              <span v-if="screening.film.director">Directed by {{ screening.film.director }}</span>
                              <span v-if="screening.film.director && screening.film.runtime"> • </span>
