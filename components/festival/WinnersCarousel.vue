@@ -391,8 +391,11 @@ $wc-bg-card: linear-gradient(180deg, #0d1418 0%, #06090b 100%);
   flex: 0 0 $wc-card-w;
   width: $wc-card-w;
   height: $wc-card-h;
-  background: $wc-bg-card;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  // Luminous gradient border (cyan→teal) over the dark card interior.
+  border: 1px solid transparent;
+  background:
+    $wc-bg-card padding-box,
+    linear-gradient(140deg, rgba(138, 232, 252, 0.5), rgba(24, 114, 159, 0.4) 55%, rgba(138, 232, 252, 0.12)) border-box;
   border-radius: $wc-radius;
   overflow: hidden;
   scroll-snap-align: start;
@@ -407,24 +410,23 @@ $wc-bg-card: linear-gradient(180deg, #0d1418 0%, #06090b 100%);
   cursor: pointer;
   &:hover {
     transform: translateY(-2px);
-    border-color: rgba($wc-cyan, 0.32);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), 0 0 22px rgba($wc-cyan, 0.12);
   }
   &:active { transform: translateY(0); }
 }
 
 .wc-card-grand {
-  border-color: rgba($wc-gold, 0.22);
+  // Gold gradient border + gold glow for grand-prize winners (keep gold golden).
+  background:
+    $wc-bg-card padding-box,
+    linear-gradient(140deg, rgba($wc-gold, 0.7), rgba(184, 134, 11, 0.5) 55%, rgba($wc-gold, 0.18)) border-box;
   box-shadow:
-    0 0 0 1px rgba($wc-gold, 0.10),
     0 8px 28px rgba(0, 0, 0, 0.5),
-    0 0 36px -18px rgba($wc-gold, 0.25);
+    0 0 40px -16px rgba($wc-gold, 0.3);
   &.wc-card-link:hover {
-    border-color: rgba($wc-gold, 0.4);
     box-shadow:
-      0 0 0 1px rgba($wc-gold, 0.25),
       0 12px 36px rgba(0, 0, 0, 0.6),
-      0 0 60px -20px rgba($wc-gold, 0.4);
+      0 0 64px -18px rgba($wc-gold, 0.45);
   }
 }
 
