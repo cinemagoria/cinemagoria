@@ -35,12 +35,12 @@
         <FestivalDataDisclaimer />
       </div>
 
-      <!-- Vitrina de Ganadores: se muestra cuando hay premios disponibles -->
+      <!-- Winners Showcase: only renders when awards exist -->
       <div v-if="awardsLoading" class="winners-loader">
         <Loader />
       </div>
       <WinnersCarousel
-        v-else-if="awards.length > 0"
+        v-else-if="awards.length > 0 && activeTab !== 'info'"
         :awards="awards"
         :year="2026"
       />
@@ -53,32 +53,55 @@
       </div>
 
       <div v-else>
-        <div v-if="activeTab === 'films'" class="films-grid">
-            <div
-              v-for="cat in orderedCategories"
-              :key="cat"
-              class="film-category"
-            >
-                <div class="category-header" @click="toggleCategoryOpen(cat)">
-                    <h2 class="listing__title category-title">
-                        {{ categoryLabel(cat) }}
-                        <span class="category-count">({{ (filmsByCategory[cat] || []).length }})</span>
-                    </h2>
-                    <button class="expand-btn" :aria-label="isCategoryOpen(cat) ? 'Ocultar' : 'Expandir'">
-                        <svg v-if="isCategoryOpen(cat)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-chevrons-down-up-icon lucide-list-chevrons-down-up"><path d="M3 5h8"/><path d="M3 12h8"/><path d="M3 19h8"/><path d="m15 5 3 3 3-3"/><path d="m15 19 3-3 3 3"/></svg>
-                        <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-collapse-icon lucide-list-collapse"><path d="M10 5h11"/><path d="M10 12h11"/><path d="M10 19h11"/><path d="m3 10 3-3-3-3"/><path d="m3 20 3-3-3-3"/></svg>
+        <div v-if="activeTab === 'films'" class="selection">
+          <div class="selection-layout">
+            <aside class="selection-nav" aria-label="Saltar a sección">
+              <template v-if="officialNav.length">
+                <div class="nav-group-label">Catálogo</div>
+                <button
+                  v-for="sec in officialNav"
+                  :key="sec.key"
+                  class="nav-item"
+                  :class="{ active: activeSection === sec.key }"
+                  @click="scrollToSection(sec.key)"
+                >
+                  <span class="nav-item-label">{{ sec.label }}</span>
+                  <span class="nav-item-count">{{ sec.count }}</span>
+                </button>
+              </template>
+            </aside>
+
+            <div ref="selectionContentRef" class="selection-content">
+              <section
+                v-for="sec in selectionSections"
+                :key="sec.key"
+                :data-key="sec.key"
+                class="sel-section"
+              >
+                <div class="sel-section-header" @click="onSectionHeaderClick(sec.key)">
+                  <h2 class="sel-section-title">{{ sec.label }}</h2>
+                  <div class="sel-section-meta">
+                    <span class="sel-section-count">{{ sec.count }} {{ sec.count === 1 ? 'película' : 'películas' }}</span>
+                    <button v-if="isMobile" class="expand-btn" :aria-label="isSectionOpen(sec.key) ? 'Ocultar' : 'Expandir'">
+                      <svg v-if="isSectionOpen(sec.key)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-chevrons-down-up-icon lucide-list-chevrons-down-up"><path d="M3 5h8"/><path d="M3 12h8"/><path d="M3 19h8"/><path d="m15 5 3 3 3-3"/><path d="m15 19 3-3 3 3"/></svg>
+                      <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-collapse-icon lucide-list-collapse"><path d="M10 5h11"/><path d="M10 12h11"/><path d="M10 19h11"/><path d="m3 10 3-3-3-3"/><path d="m3 20 3-3-3-3"/></svg>
                     </button>
+                  </div>
                 </div>
                 <transition name="slide">
-                    <div v-show="isCategoryOpen(cat)" class="listing__items">
-                        <TribecaCard
-                            v-for="item in (filmsByCategory[cat] || [])"
-                            :key="`${cat}-${item.id}`"
-                            :item="item"
-                        />
+                  <div v-show="!isMobile || isSectionOpen(sec.key)" class="sel-section-body">
+                    <div class="listing__items">
+                      <TribecaCard
+                        v-for="item in sec.films"
+                        :key="`${sec.key}-${item.id}`"
+                        :item="item"
+                      />
                     </div>
+                  </div>
                 </transition>
+              </section>
             </div>
+          </div>
         </div>
 
         <div v-if="activeTab === 'schedule'" class="schedule-container">
@@ -118,16 +141,32 @@
             <p>Ninguna función coincide con "<strong>{{ scheduleSearch }}</strong>"</p>
           </div>
 
-          <div v-for="(dayScreenings, date) in groupedScreenings" :key="date" class="schedule-day">
-            <div class="day-header" @click="toggleDay(date)">
+          <div class="schedule-layout">
+            <aside class="schedule-nav" aria-label="Saltar a día">
+              <div class="nav-group-label">Días</div>
+              <button
+                v-for="day in scheduleDays"
+                :key="day.date"
+                class="nav-item"
+                :class="{ active: activeDay === day.date }"
+                @click="scrollToDay(day.date)"
+              >
+                <span class="nav-item-label">{{ day.label }}</span>
+                <span class="nav-item-count">{{ day.count }}</span>
+              </button>
+            </aside>
+
+            <div ref="scheduleContentRef" class="schedule-content">
+              <div v-for="(dayScreenings, date) in groupedScreenings" :key="date" :data-day="date" class="schedule-day">
+            <div class="day-header" @click="onDayHeaderClick(date)">
                 <h2>{{ formatDate(date) }}</h2>
-                <div class="chevron" :class="{ 'closed': !isOpen(date) }">
+                <div v-if="isMobile" class="chevron" :class="{ 'closed': !isOpen(date) }">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
                 </div>
             </div>
 
             <transition name="slide">
-                <div v-show="isOpen(date)" class="screenings-list">
+                <div v-show="!isMobile || isOpen(date)" class="screenings-list">
                   <div v-for="screening in dayScreenings" :key="screening.id" class="screening-card">
                      <div class="time-block">
                         <span class="time">{{ formatTime(screening.start_time) }}</span>
@@ -154,7 +193,7 @@
                             {{ screening.venue }}
                          </div>
                          <div class="tags">
-                             <span v-if="screening.is_in_person" class="tag in-person">En persona</span>
+                             <span v-if="screening.is_in_person" class="tag in-person">Presencial</span>
                              <span v-if="screening.is_online" class="tag online">Online</span>
                              <span v-if="screening.is_sold_out" class="tag sold-out">Agotado</span>
                          </div>
@@ -166,13 +205,15 @@
                             :src="screening.film.poster_path"
                             alt="Poster"
                             loading="lazy"
-                            @error="$event.target.src = '/placeholders/image_not_found_yet_es.webp'"
+                            @error="$event.target.src = '/placeholders/image_not_found_yet.webp'"
                           />
-                          <img v-else src="/placeholders/image_not_found_yet_es.webp" alt="No Poster" />
+                          <img v-else src="/placeholders/image_not_found_yet.webp" alt="No Poster" />
                       </div>
                   </div>
                 </div>
             </transition>
+          </div>
+            </div>
           </div>
         </div>
 
@@ -239,7 +280,7 @@
           </div>
 
           <div class="carousel-dots">
-            <button v-for="i in 3" :key="i" class="dot" :class="{ active: infoSlide === i - 1 }" @click="goToSlide(i - 1)" :aria-label="`Diapositiva ${i}`"></button>
+            <button v-for="i in 3" :key="i" class="dot" :class="{ active: infoSlide === i - 1 }" @click="goToSlide(i - 1)" :aria-label="`Slide ${i}`"></button>
           </div>
         </div>
       </div>
@@ -248,7 +289,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import Loader from '~/components/Loader.vue';
 import FestivalDataDisclaimer from '~/components/FestivalDataDisclaimer.vue';
 import TribecaCard from '~/components/TribecaCard.vue';
@@ -332,7 +373,18 @@ const CATEGORY_LABELS = {
     OTHER: 'Otros',
 };
 
-const categoryOpen = ref({});
+const activeSection = ref('');
+const selectionContentRef = ref(null);
+let sectionObserver = null;
+const isMobile = ref(false);
+let mobileMql = null;
+const sectionOpen = ref({});
+const isSectionOpen = (key) => sectionOpen.value[key] !== false;
+const toggleSection = (key) => { sectionOpen.value = { ...sectionOpen.value, [key]: !isSectionOpen(key) }; };
+const onSectionHeaderClick = (key) => { if (!isMobile.value) return; toggleSection(key); };
+const activeDay = ref('');
+const scheduleContentRef = ref(null);
+let dayObserver = null;
 
 const filmsByCategory = computed(() => {
     const map = Object.fromEntries(CATEGORY_ORDER.map((c) => [c, []]));
@@ -357,13 +409,42 @@ function categoryLabel (cat) {
     return CATEGORY_LABELS[cat] || cat;
 }
 
-function isCategoryOpen (cat) {
-    return categoryOpen.value[cat] !== false;
-}
+const selectionSections = computed(() => orderedCategories.value.map((cat) => {
+    const items = filmsByCategory.value[cat] || [];
+    return { key: cat, label: categoryLabel(cat), films: items, count: items.length };
+}));
+const officialNav = computed(() => selectionSections.value);
 
-function toggleCategoryOpen (cat) {
-    categoryOpen.value = { ...categoryOpen.value, [cat]: !isCategoryOpen(cat) };
-}
+const scrollToSection = (key) => {
+    activeSection.value = key;
+    const root = selectionContentRef.value;
+    if (!root) return;
+    const els = root.querySelectorAll('[data-key]');
+    for (const el of els) { if (el.getAttribute('data-key') === key) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); break; } }
+};
+
+const setupSectionObserver = () => {
+    if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') return;
+    if (sectionObserver) sectionObserver.disconnect();
+    const root = selectionContentRef.value;
+    if (!root) return;
+    const els = root.querySelectorAll('[data-key]');
+    if (!els.length) return;
+    sectionObserver = new IntersectionObserver((entries) => {
+        for (const entry of entries) { if (entry.isIntersecting) activeSection.value = entry.target.getAttribute('data-key'); }
+    }, { rootMargin: '-110px 0px -70% 0px', threshold: 0 });
+    els.forEach((el) => sectionObserver.observe(el));
+};
+
+watch(selectionSections, (sections) => {
+    if (!sections.length) return;
+    if (!sections.some((sec) => sec.key === activeSection.value)) activeSection.value = sections[0].key;
+}, { immediate: true });
+
+watch([loading, activeTab, selectionSections], () => {
+    if (!loading.value && activeTab.value === 'films') nextTick(() => setupSectionObserver());
+    else if (sectionObserver) sectionObserver.disconnect();
+}, { flush: 'post' });
 
 const formatDate = (dateStr) => {
     const [year, month, day] = dateStr.split('-').map(Number);
@@ -418,6 +499,49 @@ const isOpen = (date) => {
     return openDays.value.has(date);
 };
 
+const scheduleDays = computed(() => Object.entries(groupedScreenings.value).map(([date, arr]) => ({ date, label: formatDate(date), count: arr.length })));
+const onDayHeaderClick = (date) => { if (!isMobile.value) return; toggleDay(date); };
+const scrollToDay = (date) => {
+    activeDay.value = date;
+    const root = scheduleContentRef.value;
+    if (!root) return;
+    const els = root.querySelectorAll('[data-day]');
+    for (const el of els) { if (el.getAttribute('data-day') === date) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); break; } }
+};
+const setupDayObserver = () => {
+    if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') return;
+    if (dayObserver) dayObserver.disconnect();
+    const root = scheduleContentRef.value;
+    if (!root) return;
+    const els = root.querySelectorAll('[data-day]');
+    if (!els.length) return;
+    dayObserver = new IntersectionObserver((entries) => {
+        for (const entry of entries) { if (entry.isIntersecting) activeDay.value = entry.target.getAttribute('data-day'); }
+    }, { rootMargin: '-110px 0px -70% 0px', threshold: 0 });
+    els.forEach((el) => dayObserver.observe(el));
+};
+watch(scheduleDays, (days) => {
+    if (!days.length) return;
+    if (!days.some((d) => d.date === activeDay.value)) activeDay.value = days[0]?.date || '';
+}, { immediate: true });
+watch([loading, activeTab, scheduleDays], () => {
+    if (!loading.value && activeTab.value === 'schedule') nextTick(() => setupDayObserver());
+    else if (dayObserver) dayObserver.disconnect();
+}, { flush: 'post' });
+const updateIsMobile = (e) => { isMobile.value = e.matches; };
+onMounted(() => {
+    if (typeof window !== 'undefined' && window.matchMedia) {
+        mobileMql = window.matchMedia('(max-width: 900px)');
+        isMobile.value = mobileMql.matches;
+        mobileMql.addEventListener('change', updateIsMobile);
+    }
+});
+onBeforeUnmount(() => {
+    if (sectionObserver) sectionObserver.disconnect();
+    if (dayObserver) dayObserver.disconnect();
+    if (mobileMql) mobileMql.removeEventListener('change', updateIsMobile);
+});
+
 onMounted(async () => {
     try {
         const [filmsData, scheduleData, awardsData] = await Promise.all([
@@ -451,60 +575,155 @@ onMounted(async () => {
     font-size: 1.2rem;
 }
 
-.film-category {
-    margin-bottom: 2.5rem;
-}
-
-// Compact catalog cards (~25%+ smaller than global default).
-// Scoped to .films-grid so other listings (home, search, etc.) are untouched.
-// Uses :deep() because festival cards are child components (scoped CSS).
-.films-grid :deep(.listing__items > .card) {
-    width: 25%;
+// Poster sizing inside the Selection content column. The column is narrower than
+// the old full-bleed grid, so we use fewer columns / slightly larger posters.
+.selection :deep(.listing__items > .card) {
+    width: 33.3333%;
 
     @media (min-width: 640px) {
-        width: 20%;
+        width: 25%;
     }
     @media (min-width: 1024px) {
-        width: 14.2857143%;
+        width: 20%;
     }
     @media (min-width: 1500px) {
-        width: 12.5%;
+        width: 16.6666%;
     }
     @media (min-width: 1800px) {
-        width: 11.1111111%;
-    }
-    @media (min-width: 2500px) {
-        width: 10%;
+        width: 14.2857%;
     }
 }
 
 
+/* ── Selection: sidebar scroll-spy + sections ───────────── */
+.selection-layout,
+.schedule-layout {
+    display: grid;
+    grid-template-columns: 330px minmax(0, 1fr);
+    gap: 2.5rem;
+    align-items: start;
+}
 
-.category-header {
+/* Breathing room between the screenings search bar and the day list below it. */
+.schedule-layout {
+    margin-top: 1.75rem;
+}
+
+.selection-nav,
+.schedule-nav {
+    position: sticky;
+    top: 5.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: calc(100vh - 7rem);
+    overflow-y: auto;
+    padding: 1rem;
+    border: 1px solid transparent;
+    background:
+        linear-gradient(rgba(3, 6, 10, 0.85), rgba(3, 6, 10, 0.85)) padding-box,
+        linear-gradient(160deg, rgba(139, 233, 253, 0.55), rgba(31, 84, 103, 0.45) 60%, rgba(139, 233, 253, 0.16)) border-box;
+    border-radius: 14px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+}
+
+.nav-group-label {
+    font-size: 1rem;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: rgba(139, 233, 253, 0.9);
+    font-weight: 700;
+    margin: 1.2rem 0.4rem 0.55rem;
+
+    &:first-child {
+        margin-top: 0.2rem;
+    }
+}
+
+.nav-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    background: none;
+    border: none;
+    border-left: 3px solid transparent;
+    border-radius: 0 8px 8px 0;
+    color: rgba(255, 255, 255, 0.88);
+    padding: 0.82rem 1rem;
+    font-size: 1.32rem;
+    font-family: inherit;
+    text-align: left;
     cursor: pointer;
-    border-bottom: 1px solid rgba(139, 233, 253, 0.3);
-    padding-bottom: 5px;
-    margin-bottom: 15px;
-    transition: border-color 0.2s;
-    user-select: none;
+    transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
 
     &:hover {
-        border-color: rgba(139, 233, 253, 0.6);
+        background: rgba(139, 233, 253, 0.08);
+        color: #eafbff;
+    }
+
+    &.active {
+        background: rgba(139, 233, 253, 0.12);
+        color: #8BE9FD;
+        border-left-color: #8BE9FD;
+        font-weight: 600;
     }
 }
 
-.category-title {
-    margin: 0 !important;
+.nav-item-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.category-count {
-    font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.6);
-    margin-left: 10px;
-    font-weight: normal;
+.nav-item-count {
+    font-size: 1.12rem;
+    color: rgba(255, 255, 255, 0.62);
+    flex-shrink: 0;
+}
+
+.nav-item.active .nav-item-count {
+    color: rgba(139, 233, 253, 0.85);
+}
+
+.sel-section {
+    scroll-margin-top: 6.5rem;
+    margin-bottom: 3rem;
+}
+
+.sel-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid rgba(139, 233, 253, 0.3);
+    padding-bottom: 6px;
+    margin-bottom: 1.25rem;
+}
+
+.sel-section-title {
+    margin: 0;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.sel-section-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.sel-section-count {
+    font-size: 1.05rem;
+    color: rgba(255, 255, 255, 0.5);
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .expand-btn {
@@ -536,6 +755,42 @@ onMounted(async () => {
     }
 }
 
+.parallel-band {
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #8BE9FD;
+    border-top: 1px solid rgba(139, 233, 253, 0.25);
+    padding-top: 1.4rem;
+    margin: 0.5rem 0 1.5rem;
+}
+
+@media (max-width: 900px) {
+    .selection-layout,
+    .schedule-layout {
+        display: block;
+    }
+
+    .selection-nav,
+    .schedule-nav {
+        display: none;
+    }
+
+    .sel-section-header {
+        cursor: pointer;
+        user-select: none;
+        transition: border-color 0.2s;
+    }
+
+    .sel-section-header:hover {
+        border-color: rgba(139, 233, 253, 0.6);
+    }
+
+    .day-header {
+        cursor: pointer;
+    }
+}
+
 .header-container {
     display: flex;
     flex-direction: column;
@@ -555,12 +810,16 @@ onMounted(async () => {
 .segmented-control {
     position: relative;
     display: flex;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
+    background: rgba(3, 4, 6, 0.6);
+    border: 1px solid rgba(139, 233, 253, 0.18);
+    border-radius: 16px;
     padding: 4px;
     height: 48px;
     align-items: center;
     min-width: 420px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
 .segmented-control input[type="radio"] {
@@ -583,7 +842,7 @@ onMounted(async () => {
 }
 
 .segmented-control input:checked + label {
-    color: #000;
+    color: #02080d;
 }
 
 .segmented-control .glider {
@@ -592,9 +851,10 @@ onMounted(async () => {
     left: 4px;
     height: calc(100% - 8px);
     width: calc((100% - 8px) / 3);
-    background: #8BE9FD;
-    border-radius: 16px;
+    background: linear-gradient(135deg, #8BE9FD, #5cc4d8);
+    border-radius: 12px;
     z-index: 1;
+    box-shadow: 0 4px 14px rgba(139, 233, 253, 0.3);
     transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
@@ -608,12 +868,15 @@ onMounted(async () => {
     max-width: 1200px;
     margin: 0 auto;
     position: relative;
-    border-radius: 15px;
+    border-radius: 16px;
     overflow: hidden;
-    background-color: transparent;
     display: flex;
     justify-content: center;
-    border: 1px solid #8BE9FD;
+    border: 2px solid transparent;
+    background:
+        linear-gradient(#02080d, #02080d) padding-box,
+        linear-gradient(140deg, #8BE9FD 0%, #1F5467 45%, rgba(31, 84, 103, 0.35) 100%) border-box;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5), 0 0 30px rgba(139, 233, 253, 0.12);
 }
 
 .back-link {
@@ -749,325 +1012,6 @@ onMounted(async () => {
     margin: 0 auto;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
-}
-
-
-
-.winners-loader {
-    width: 100%;
-    max-width: 1200px;
-    margin: 10px auto 8px;
-    min-height: 175px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-:deep(.winners-carousel) {
-    max-width: 1200px;
-}
-
-.day-header {
-    font-size: 1.8rem;
-    color: #fff;
-    border-bottom: 1px solid #333;
-    padding-bottom: 0.5rem;
-    margin-top: 3rem;
-    margin-bottom: 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
-
-    h2 {
-        font-size: 1.8rem;
-        margin: 0;
-    }
-
-    .chevron {
-        transition: transform 0.3s ease;
-
-        &.closed {
-            transform: rotate(-90deg);
-        }
-    }
-}
-
-.slide-enter-active,
-.slide-leave-active {
-  transition: all 0.3s ease-out;
-  max-height: 2000px;
-  opacity: 1;
-  overflow: hidden;
-}
-
-.slide-enter-from,
-.slide-leave-to {
-  max-height: 0;
-  opacity: 0;
-  margin-bottom: 0;
-}
-
-.screening-card {
-    display: flex;
-    background: #0a161b;
-    border: 1px solid #8BE9FD;
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    gap: 1.5rem;
-    transition: transform 0.2s;
-}
-
-.time-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-width: 80px;
-    border-right: 1px solid #333;
-    padding-right: 1.5rem;
-
-    .time {
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: #fff;
-    }
-    .timezone {
-        font-size: 0.92rem;
-        color: #888;
-    }
-}
-
-.film-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    .film-title {
-        font-size: 1.6rem;
-        font-weight: 700;
-        color: #fff;
-        text-decoration: none;
-        margin-bottom: 0.5rem;
-
-        &:hover {
-            color: #8BE9FD;
-        }
-    }
-
-    .film-meta {
-        font-size: 1.05rem;
-        color: #aaa;
-        margin-bottom: 0.8rem;
-    }
-
-    .venue-info {
-        font-size: 1.25rem;
-        color: #ccc;
-        margin-bottom: 0.8rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-
-        svg {
-            min-width: 18px;
-        }
-    }
-}
-
-.tags {
-    display: flex;
-    gap: 0.5rem;
-
-    .tag {
-        font-size: 0.75rem;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-weight: 600;
-        text-transform: uppercase;
-
-        &.in-person { background: rgba(52, 152, 219, 0.2); }
-        &.online { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
-        &.sold-out { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
-    }
-}
-
-.poster-mini {
-    width: 60px;
-    height: 90px;
-
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 4px;
-    }
-}
-
-@media (max-width: 600px) {
-    .screening-card {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    .time-block {
-        border-right: none;
-        border-bottom: 1px solid #333;
-        padding-right: 0;
-        padding-bottom: 1rem;
-        flex-direction: row;
-        gap: 1rem;
-        width: 100%;
-    }
-    .poster-mini {
-        display: none;
-    }
-}
-
-/* ── Carousel ─────────────────────────────── */
-.carousel-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.carousel-track {
-  flex: 1;
-  min-height: 340px;
-  overflow: hidden;
-  position: relative;
-}
-
-.carousel-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(139, 233, 253, 0.18);
-  border-radius: 20px;
-  padding: 2.2rem 2.5rem;
-  backdrop-filter: blur(12px);
-  color: rgba(255, 255, 255, 0.88);
-  line-height: 1.8;
-  min-height: 300px;
-
-  strong { color: #fff; }
-}
-
-.carousel-card-header {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  margin-bottom: 1.4rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(139, 233, 253, 0.14);
-
-  h3 {
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: #8BE9FD;
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-}
-
-.carousel-desc {
-  font-size: 1.08rem;
-  margin-bottom: 1rem;
-}
-
-.carousel-arrow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid rgba(139, 233, 253, 0.25);
-  background: rgba(0, 0, 0, 0.4);
-  color: #8BE9FD;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  flex-shrink: 0;
-  backdrop-filter: blur(6px);
-
-  &:hover {
-    background: rgba(139, 233, 253, 0.15);
-    border-color: #8BE9FD;
-    transform: scale(1.1);
-  }
-}
-
-.carousel-dots {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 1.4rem;
-}
-
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(139, 233, 253, 0.2);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 0;
-
-  &.active {
-    background: #8BE9FD;
-    box-shadow: 0 0 10px rgba(139, 233, 253, 0.5);
-    transform: scale(1.25);
-  }
-
-  &:hover:not(.active) {
-    background: rgba(139, 233, 253, 0.45);
-  }
-}
-
-.carousel-next-enter-active,
-.carousel-next-leave-active,
-.carousel-prev-enter-active,
-.carousel-prev-leave-active {
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.carousel-next-enter-from { opacity: 0; transform: translateX(60px); }
-.carousel-next-leave-to   { opacity: 0; transform: translateX(-60px); }
-.carousel-prev-enter-from { opacity: 0; transform: translateX(-60px); }
-.carousel-prev-leave-to   { opacity: 0; transform: translateX(60px); }
-
-@media (max-width: 600px) {
-  .carousel-wrapper { gap: 0.5rem; }
-  .carousel-card { padding: 1.5rem 1.2rem; min-height: 280px; }
-  .carousel-card-header h3 { font-size: 1.15rem; }
-  .carousel-arrow { width: 36px; height: 36px; }
-  .carousel-arrow svg { width: 18px; height: 18px; }
-}
-
-/* ── Shared card content styles ───────────── */
-.price-list {
-  list-style: none; padding: 0; margin: 1rem 0;
-  li { display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0; border-bottom: 1px dashed rgba(255,255,255,0.08); &:last-child { border: none; } }
-  .price-label { color: rgba(255,255,255,0.7); font-size: 1.05rem; }
-  .price-value { color: #8BE9FD; font-weight: 700; font-size: 1.1rem; }
-}
-
-.venue-list {
-  display: flex; flex-direction: column; gap: 0.5rem; margin: 0.5rem 0;
-  .venue-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); span { color: rgba(255,255,255,0.5); font-size: 0.95rem; } strong { color: #fff; } }
-}
-
-.bullet-list {
-  padding-left: 1.4rem; font-size: 1.02rem;
-  li { margin-bottom: 1rem; line-height: 1.7; &::marker { color: #8BE9FD; } }
-}
-
-.accent-link {
-  color: #8BE9FD; text-decoration: none; font-weight: 600; border-bottom: 1px solid transparent; transition: border-color 0.2s;
-  &:hover { border-color: #8BE9FD; }
 }
 
 /* ── Schedule search toolbar ─────────────── */
@@ -1212,5 +1156,361 @@ onMounted(async () => {
         width: calc(100vw - 140px);
         max-width: 240px;
     }
+}
+
+
+
+:deep(.winners-carousel) {
+    max-width: 1200px;
+}
+
+.winners-loader {
+    width: 100%;
+    max-width: 1200px;
+    margin: 10px auto 8px;
+    min-height: 175px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.day-header {
+    font-size: 1.8rem;
+    color: #fff;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.5rem;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: default;
+    user-select: none;
+
+    h2 {
+        font-size: 1.8rem;
+        margin: 0;
+    }
+
+    .chevron {
+        transition: transform 0.3s ease;
+
+        &.closed {
+            transform: rotate(-90deg);
+        }
+    }
+}
+
+.schedule-day {
+    scroll-margin-top: 6.5rem;
+}
+
+.schedule-content > .schedule-day:first-child .day-header {
+    margin-top: 0;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.3s ease-out;
+  max-height: 2000px;
+  opacity: 1;
+  overflow: hidden;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  max-height: 0;
+  opacity: 0;
+  margin-bottom: 0;
+}
+
+.screening-card {
+    display: flex;
+    border: 1px solid transparent;
+    background:
+        linear-gradient(#0a161b, #0a161b) padding-box,
+        linear-gradient(140deg, #8BE9FD, #1F5467 60%, rgba(31, 84, 103, 0.3)) border-box;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    gap: 1.5rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.screening-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 233, 253, 0.1);
+}
+
+.time-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    border-right: 1px solid #333;
+    padding-right: 1.5rem;
+
+    .time {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #fff;
+    }
+    .timezone {
+        font-size: 0.92rem;
+        color: #888;
+    }
+}
+
+.film-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .film-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #fff;
+        text-decoration: none;
+        margin-bottom: 0.5rem;
+
+        &:hover {
+            color: #8BE9FD;
+        }
+    }
+
+    .film-meta {
+        font-size: 1.05rem;
+        color: #aaa;
+        margin-bottom: 0.8rem;
+    }
+
+    .venue-info {
+        font-size: 1.25rem;
+        color: #ccc;
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        svg {
+            min-width: 18px;
+        }
+    }
+}
+
+.tags {
+    display: flex;
+    gap: 0.5rem;
+
+    .tag {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+        text-transform: uppercase;
+
+        &.in-person { background: rgba(52, 152, 219, 0.2); }
+        &.online { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+        &.sold-out { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+    }
+}
+
+.poster-mini {
+    width: 60px;
+    height: 90px;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+}
+
+@media (max-width: 600px) {
+    .screening-card {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .time-block {
+        border-right: none;
+        border-bottom: 1px solid #333;
+        padding-right: 0;
+        padding-bottom: 1rem;
+        flex-direction: row;
+        gap: 1rem;
+        width: 100%;
+    }
+    .poster-mini {
+        display: none;
+    }
+}
+
+/* ── Carousel ─────────────────────────────── */
+.carousel-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.carousel-track {
+  flex: 1;
+  min-height: 340px;
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel-card {
+  position: relative;
+  background: rgba(3, 4, 6, 0.85);
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(31, 84, 103, 0.18), transparent 35%),
+    radial-gradient(circle at 85% 80%, rgba(139, 233, 253, 0.08), transparent 30%);
+  border: 1px solid rgba(31, 84, 103, 0.5);
+  border-radius: 20px;
+  padding: 2.2rem 2.5rem;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.8;
+  min-height: 300px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 0 24px rgba(139, 233, 253, 0.04);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+    opacity: 0.85;
+    pointer-events: none;
+  }
+
+  strong { color: #fff; }
+}
+
+.carousel-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1.4rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(139, 233, 253, 0.14);
+
+  h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #8BE9FD;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+}
+
+.carousel-desc {
+  font-size: 1.08rem;
+  margin-bottom: 1rem;
+}
+
+.carousel-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(139, 233, 253, 0.4);
+  background: rgba(3, 4, 6, 0.75);
+  color: #8BE9FD;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  &:hover {
+    background: #ffffff;
+    border-color: #ffffff;
+    color: #000;
+    transform: scale(1.05);
+  }
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 1.4rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(139, 233, 253, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+
+  &.active {
+    background: #8BE9FD;
+    box-shadow: 0 0 10px rgba(139, 233, 253, 0.5);
+    transform: scale(1.25);
+  }
+
+  &:hover:not(.active) {
+    background: rgba(139, 233, 253, 0.45);
+  }
+}
+
+.carousel-next-enter-active,
+.carousel-next-leave-active,
+.carousel-prev-enter-active,
+.carousel-prev-leave-active {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carousel-next-enter-from { opacity: 0; transform: translateX(60px); }
+.carousel-next-leave-to   { opacity: 0; transform: translateX(-60px); }
+.carousel-prev-enter-from { opacity: 0; transform: translateX(-60px); }
+.carousel-prev-leave-to   { opacity: 0; transform: translateX(60px); }
+
+@media (max-width: 600px) {
+  .carousel-wrapper { gap: 0.5rem; }
+  .carousel-card { padding: 1.5rem 1.2rem; min-height: 280px; }
+  .carousel-card-header h3 { font-size: 1.15rem; }
+  .carousel-arrow { width: 36px; height: 36px; }
+  .carousel-arrow svg { width: 18px; height: 18px; }
+}
+
+/* ── Shared card content styles ───────────── */
+.price-list {
+  list-style: none; padding: 0; margin: 1rem 0;
+  li { display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0; border-bottom: 1px dashed rgba(255,255,255,0.08); &:last-child { border: none; } }
+  .price-label { color: rgba(255,255,255,0.7); font-size: 1.05rem; }
+  .price-value { color: #8BE9FD; font-weight: 700; font-size: 1.1rem; }
+}
+
+.venue-list {
+  display: flex; flex-direction: column; gap: 0.5rem; margin: 0.5rem 0;
+  .venue-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); span { color: rgba(255,255,255,0.5); font-size: 0.95rem; } strong { color: #fff; } }
+}
+
+.bullet-list {
+  padding-left: 1.4rem; font-size: 1.02rem;
+  li { margin-bottom: 1rem; line-height: 1.7; &::marker { color: #8BE9FD; } }
+}
+
+.accent-link {
+  color: #8BE9FD; text-decoration: none; font-weight: 600; border-bottom: 1px solid transparent; transition: border-color 0.2s;
+  &:hover { border-color: #8BE9FD; }
 }
 </style>
