@@ -516,7 +516,11 @@ export default {
     },
     fullDate(date) {
       if (!date) return 'N/A';
-      return new Date(date).toLocaleDateString(process.env.API_COUNTRY === 'BR' ? 'pt-BR' : 'en-US', {
+      const parts = String(date).slice(0, 10).split('-');
+      if (parts.length !== 3) return date;
+      const [y, m, d] = parts.map(Number);
+      if (!y || !m || !d) return date;
+      return new Date(y, m - 1, d).toLocaleDateString(process.env.API_COUNTRY === 'BR' ? 'pt-BR' : 'en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
