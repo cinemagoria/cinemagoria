@@ -520,7 +520,7 @@ export default {
         
         const data = await response.json();
         if (data.success) {
-          this.notifications = data.notifications;
+          this.notifications = (data.notifications || []).filter(n => this.isPlausibleNotification(n));
           if (data.pagination) {
             this.currentPage = data.pagination.current_page;
             this.perPage = data.pagination.per_page;
@@ -534,6 +534,20 @@ export default {
         this.loading = false;
         this.isLoadingPage = false;
       }
+    },
+
+    // Defense-in-depth backstop for the server-side trust gate
+    // (see docs/notifications/tmdb-trust-model.md): hide any notification whose
+    // release date is implausibly far in the future. New notifications are already
+    // trust-scored upstream; this also cleans up legacy rows dispatched before that
+    // gate existed. 
+    isPlausibleNotification(n) {
+      if (!n || !n.release_date) return true;        // no date → keep
+      const released = new Date(n.release_date);
+      if (isNaN(released.getTime())) return true;    // unparseable → keep
+      const maxFuture = new Date();
+      maxFuture.setFullYear(maxFuture.getFullYear() + 3);
+      return released <= maxFuture;
     },
 
     toggleFilter() {
