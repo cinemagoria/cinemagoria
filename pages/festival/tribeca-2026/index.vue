@@ -141,7 +141,7 @@
             <p>No screenings match "<strong>{{ scheduleSearch }}</strong>"</p>
           </div>
 
-          <div class="schedule-layout">
+          <div v-if="scheduleDays.length" class="schedule-layout">
             <aside class="schedule-nav" aria-label="Jump to day">
               <div class="nav-group-label">Days</div>
               <button
