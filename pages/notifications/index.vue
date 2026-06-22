@@ -536,15 +536,13 @@ export default {
       }
     },
 
-    // Defense-in-depth backstop for the server-side trust gate
-    // (see docs/notifications/tmdb-trust-model.md): hide any notification whose
-    // release date is implausibly far in the future. New notifications are already
-    // trust-scored upstream; this also cleans up legacy rows dispatched before that
-    // gate existed. 
+    // Backstop for the server-side trust gate: drop implausibly far-future rows
+    // and clean up legacy notifications dispatched before that gate existed.
     isPlausibleNotification(n) {
-      if (!n || !n.release_date) return true;        // no date → keep
+      if (!n) return false;
+      if (!n.release_date) return true;
       const released = new Date(n.release_date);
-      if (isNaN(released.getTime())) return true;    // unparseable → keep
+      if (isNaN(released.getTime())) return true;
       const maxFuture = new Date();
       maxFuture.setFullYear(maxFuture.getFullYear() + 3);
       return released <= maxFuture;
