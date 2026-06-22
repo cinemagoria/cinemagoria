@@ -520,7 +520,7 @@ export default {
         
         const data = await response.json();
         if (data.success) {
-          this.notifications = data.notifications;
+          this.notifications = (data.notifications || []).filter(n => this.isPlausibleNotification(n));
           if (data.pagination) {
             this.currentPage = data.pagination.current_page;
             this.perPage = data.pagination.per_page;
@@ -534,6 +534,18 @@ export default {
         this.loading = false;
         this.isLoadingPage = false;
       }
+    },
+
+    // Backstop for the server-side trust gate: drop implausibly far-future rows
+    // and clean up legacy notifications dispatched before that gate existed.
+    isPlausibleNotification(n) {
+      if (!n) return false;
+      if (!n.release_date) return true;
+      const released = new Date(n.release_date);
+      if (isNaN(released.getTime())) return true;
+      const maxFuture = new Date();
+      maxFuture.setFullYear(maxFuture.getFullYear() + 3);
+      return released <= maxFuture;
     },
 
     toggleFilter() {
