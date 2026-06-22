@@ -141,7 +141,7 @@
             <p>Ninguna función coincide con "<strong>{{ scheduleSearch }}</strong>"</p>
           </div>
 
-          <div class="schedule-layout">
+          <div v-if="scheduleDays.length" class="schedule-layout">
             <aside class="schedule-nav" aria-label="Saltar a día">
               <div class="nav-group-label">Días</div>
               <button
