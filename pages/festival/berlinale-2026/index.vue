@@ -51,7 +51,16 @@
 
       <div v-else>
         <div v-if="activeTab === 'films'" class="selection">
-          <div class="selection-layout">
+          <div v-if="selectionSections.length === 0" class="rollout-banner">
+            <div class="rollout-banner__icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="rollout-banner__copy">
+              <h3>Actualizaciones del catálogo en curso</h3>
+              <p>El catálogo de películas de este festival se está actualizando actualmente. Nuevas películas, secciones y selecciones oficiales se agregarán progresivamente a medida que se anuncien y verifiquen.</p>
+            </div>
+          </div>
+          <div v-else class="selection-layout">
             <aside class="selection-nav" aria-label="Saltar a sección">
               <template v-if="officialNav.length">
                 <div class="nav-group-label">Catálogo</div>
@@ -102,7 +111,18 @@
         </div>
 
         <div v-if="activeTab === 'schedule'" class="schedule-container">
-          <div class="schedule-toolbar" :class="{ 'search-active': isScheduleSearchActive }">
+          <!-- Baner inicial: programación pendiente de publicación oficial -->
+          <div v-if="schedule.length === 0" class="rollout-banner">
+            <div class="rollout-banner__icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div class="rollout-banner__copy">
+              <h3>Programación pendiente</h3>
+              <p>Los horarios oficiales de las proyecciones aún no han sido publicados por el festival. La información de las funciones aparecerá aquí tan pronto como esté disponible.</p>
+            </div>
+          </div>
+
+          <div v-if="schedule.length > 0" class="schedule-toolbar" :class="{ 'search-active': isScheduleSearchActive }">
             <div class="schedule-toolbar-info">
               <span class="schedule-count" v-if="!loading">
                 <template v-if="scheduleSearchActiveQuery">
@@ -503,7 +523,14 @@ onMounted(async () => {
         
         films.value = filmsData;
         awards.value = awardsData.results || [];
-        schedule.value = scheduleData.results || [];
+        
+        const toIsoString = (t) => (typeof t === 'number')
+            ? new Date(t * 1000).toISOString()
+            : String(t || '');
+        schedule.value = (scheduleData.results || []).map(s => ({
+            ...s,
+            start_time: toIsoString(s.start_time),
+        }));
         
         if (schedule.value.length > 0) {
             const dates = new Set(schedule.value.map(s => s.start_time.split('T')[0]));
@@ -846,12 +873,16 @@ onMounted(async () => {
 .segmented-control {
     position: relative;
     display: flex;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px; 
+    background: rgba(3, 4, 6, 0.6);
+    border: 1px solid rgba(139, 233, 253, 0.18);
+    border-radius: 16px;
     padding: 4px;
     height: 48px;
     align-items: center;
     min-width: 420px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
 .segmented-control input[type="radio"] {
@@ -874,7 +905,7 @@ onMounted(async () => {
 }
 
 .segmented-control input:checked + label {
-    color: #000;
+    color: #02080d;
 }
 
 .segmented-control .glider {
@@ -883,9 +914,10 @@ onMounted(async () => {
     left: 4px;
     height: calc(100% - 8px);
     width: calc((100% - 8px) / 3);
-    background: #8BE9FD;
-    border-radius: 16px;
+    background: linear-gradient(135deg, #8BE9FD, #5cc4d8);
+    border-radius: 12px;
     z-index: 1;
+    box-shadow: 0 4px 14px rgba(139, 233, 253, 0.3);
     transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
@@ -899,12 +931,15 @@ onMounted(async () => {
     max-width: 1200px;
     margin: 0 auto;
     position: relative;
-    border-radius: 15px;
+    border-radius: 16px;
     overflow: hidden;
-    background-color: transparent;
     display: flex;
     justify-content: center;
-    border: 1px solid #8BE9FD;
+    border: 2px solid transparent;
+    background:
+        linear-gradient(#02080d, #02080d) padding-box,
+        linear-gradient(140deg, #8BE9FD 0%, #1F5467 45%, rgba(31, 84, 103, 0.35) 100%) border-box;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5), 0 0 30px rgba(139, 233, 253, 0.12);
 }
 
 .back-link {
@@ -1011,7 +1046,7 @@ onMounted(async () => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    cursor: pointer;
+    cursor: default;
     user-select: none;
     
     h2 {
@@ -1026,6 +1061,14 @@ onMounted(async () => {
             transform: rotate(-90deg);
         }
     }
+}
+
+.schedule-day {
+    scroll-margin-top: 6.5rem;
+}
+
+.schedule-content > .schedule-day:first-child .day-header {
+    margin-top: 0;
 }
 
 .slide-enter-active,
@@ -1045,13 +1088,21 @@ onMounted(async () => {
 
 .screening-card {
     display: flex;
-    background: #0a161b;
-    border: 1px solid #8BE9FD;
-    border-radius: 8px;
+    border: 1px solid transparent;
+    background:
+        linear-gradient(#0a161b, #0a161b) padding-box,
+        linear-gradient(140deg, #8BE9FD, #1F5467 60%, rgba(31, 84, 103, 0.3)) border-box;
+    border-radius: 10px;
     padding: 1.5rem;
     margin-bottom: 1rem;
     gap: 1.5rem;
-    transition: transform 0.2s;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.screening-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 233, 253, 0.1);
 }
 
 .time-block {
@@ -1176,14 +1227,33 @@ onMounted(async () => {
 }
 
 .carousel-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(139, 233, 253, 0.18);
+  position: relative;
+  background: rgba(3, 4, 6, 0.85);
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(31, 84, 103, 0.18), transparent 35%),
+    radial-gradient(circle at 85% 80%, rgba(139, 233, 253, 0.08), transparent 30%);
+  border: 1px solid rgba(31, 84, 103, 0.5);
   border-radius: 20px;
   padding: 2.2rem 2.5rem;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   color: rgba(255, 255, 255, 0.88);
   line-height: 1.8;
   min-height: 300px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 0 24px rgba(139, 233, 253, 0.04);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+    opacity: 0.85;
+    pointer-events: none;
+  }
 
   strong { color: #fff; }
 }
@@ -1217,19 +1287,21 @@ onMounted(async () => {
   justify-content: center;
   width: 44px;
   height: 44px;
-  border-radius: 50%;
-  border: 1px solid rgba(139, 233, 253, 0.25);
-  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  border: 1px solid rgba(139, 233, 253, 0.4);
+  background: rgba(3, 4, 6, 0.75);
   color: #8BE9FD;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
   flex-shrink: 0;
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 
   &:hover {
-    background: rgba(139, 233, 253, 0.15);
-    border-color: #8BE9FD;
-    transform: scale(1.1);
+    background: #ffffff;
+    border-color: #ffffff;
+    color: #000;
+    transform: scale(1.05);
   }
 }
 
@@ -1307,6 +1379,58 @@ onMounted(async () => {
 .accent-link {
   color: #8BE9FD; text-decoration: none; font-weight: 600; border-bottom: 1px solid transparent; transition: border-color 0.2s;
   &:hover { border-color: #8BE9FD; }
+}
+
+/* ── Initial-rollout banner (catalog/schedule placeholders) ─ */
+.rollout-banner {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+    max-width: 720px;
+    margin: 2rem auto;
+    padding: 1.5rem 1.75rem;
+    background: rgba(16, 26, 35, 0.7);
+    border: 1px solid rgba(139, 233, 253, 0.22);
+    border-radius: 14px;
+    backdrop-filter: blur(8px);
+}
+
+.rollout-banner__icon {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(139, 233, 253, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rollout-banner__copy {
+    flex: 1;
+    color: rgba(255, 255, 255, 0.85);
+
+    h3 {
+        margin: 0 0 0.4rem;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #8BE9FD;
+        letter-spacing: 0.3px;
+    }
+    p {
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.7);
+    }
+}
+
+@media (max-width: 600px) {
+    .rollout-banner {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1.25rem;
+    }
 }
 
 /* ── Schedule search toolbar ─────────────── */
