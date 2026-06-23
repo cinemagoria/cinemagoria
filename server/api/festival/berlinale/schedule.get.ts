@@ -52,9 +52,16 @@ export default defineEventHandler(async (event) => {
                 tmdbData = {}
             }
 
+            const toIsoString = (t: any) => {
+                if (typeof t === 'number') {
+                    return new Date(t * 1000).toISOString()
+                }
+                return String(t || '')
+            }
+
             return {
                 id: row.screening_id,
-                start_time: row.start_time,
+                start_time: toIsoString(row.start_time),
                 timezone: row.timezone,
                 is_in_person: Boolean(row.is_in_person),
                 is_online: Boolean(row.is_online),

@@ -551,7 +551,14 @@ onMounted(async () => {
         
         films.value = filmsData;
         awards.value = awardsData.results || [];
-        schedule.value = scheduleData.results || [];
+        
+        const toIsoString = (t) => (typeof t === 'number')
+            ? new Date(t * 1000).toISOString()
+            : String(t || '');
+        schedule.value = (scheduleData.results || []).map(s => ({
+            ...s,
+            start_time: toIsoString(s.start_time),
+        }));
         
         if (schedule.value.length > 0) {
             const dates = new Set(schedule.value.map(s => s.start_time.split('T')[0]));
