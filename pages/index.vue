@@ -252,6 +252,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'At the sea',
         'Salvation',
         // rotterdam 2026
+        'Krakatoa',
         'Variations on a theme',
         'Silent Friend',
         'Tell Me What You Feel',
