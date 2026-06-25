@@ -353,22 +353,23 @@ const schedule = ref([]);
 const openDays = ref(new Set());
 
 const CATEGORY_ORDER = [
-    'Features',
-    'Shorts',
+    'Narrative Features',
+    'Documentary Features',
+    'Breakout Features',
+    'Unstoppable Features',
+    'Spotlight Features',
 ];
 
 const CATEGORY_LABELS = {
-    Features: 'Features',
-    Shorts: 'Shorts',
+    'Narrative Features': 'Narrative Features',
+    'Documentary Features': 'Documentary Features',
+    'Breakout Features': 'Breakout Features',
+    'Unstoppable Features': 'Unstoppable Features',
+    'Spotlight Features': 'Spotlight Features',
     OTHER: 'Other',
 };
 
-const categoryKeyForFilm = (film) => {
-    const explicit = String(film.category || film.section || '').trim();
-    if (CATEGORY_ORDER.includes(explicit)) return explicit;
-    if (film.runtime > 0 && film.runtime < 40) return 'Shorts';
-    return 'Features';
-};
+const categoryKeyForFilm = (film) => String(film.category || film.section || '').trim();
 
 const activeSection = ref('');
 const selectionContentRef = ref(null);

@@ -374,22 +374,35 @@ const schedule = ref([]);
 const openDays = ref(new Set());
 
 const CATEGORY_ORDER = [
-    'Features',
-    'Shorts',
+    'Tiger Competition',
+    'Big Screen Competition',
+    'Bright Future',
+    'Harbour',
+    'Limelight',
+    'Cinema Regained',
+    'Focus: the Future Is NOW',
+    'Focus: Marwan Hamed',
+    'RTM',
+    'Short & Mid-length',
+    'Specials',
 ];
 
 const CATEGORY_LABELS = {
-    Features: 'Features',
-    Shorts: 'Shorts',
+    'Tiger Competition': 'Tiger Competition',
+    'Big Screen Competition': 'Big Screen Competition',
+    'Bright Future': 'Bright Future',
+    'Harbour': 'Harbour',
+    'Limelight': 'Limelight',
+    'Cinema Regained': 'Cinema Regained',
+    'Focus: the Future Is NOW': 'Focus: the Future Is NOW',
+    'Focus: Marwan Hamed': 'Focus: Marwan Hamed',
+    'RTM': 'RTM',
+    'Short & Mid-length': 'Short & Mid-length',
+    'Specials': 'Specials',
     OTHER: 'Other',
 };
 
-const categoryKeyForFilm = (film) => {
-    const explicit = String(film.category || film.section || '').trim();
-    if (CATEGORY_ORDER.includes(explicit)) return explicit;
-    if (film.runtime > 0 && film.runtime < 40) return 'Shorts';
-    return 'Features';
-};
+const categoryKeyForFilm = (film) => String(film.category || film.section || '').trim();
 
 const activeSection = ref('');
 const selectionContentRef = ref(null);

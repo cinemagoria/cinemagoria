@@ -355,22 +355,49 @@ const schedule = ref([]);
 const openDays = ref(new Set());
 
 const CATEGORY_ORDER = [
-    'Features',
-    'Shorts',
+    'Headliner',
+    'Narrative Feature Competition',
+    'Documentary Feature Competition',
+    'Narrative Spotlight',
+    'Documentary Spotlight',
+    'Festival Favorite',
+    'Visions',
+    'Midnighter',
+    '24 Beats Per Second',
+    'Global',
+    'TV Premiere',
+    'Independent TV Pilot Competition',
+    'XR Experience Spotlight',
+    'Narrative Short Competition',
+    'Documentary Short Competition',
+    'Animated Short Competition',
+    'Midnight Short Competition',
+    'Texas Short Competition',
 ];
 
 const CATEGORY_LABELS = {
-    Features: 'Features',
-    Shorts: 'Shorts',
+    'Headliner': 'Headliners',
+    'Narrative Feature Competition': 'Narrative Feature Competition',
+    'Documentary Feature Competition': 'Documentary Feature Competition',
+    'Narrative Spotlight': 'Narrative Spotlight',
+    'Documentary Spotlight': 'Documentary Spotlight',
+    'Festival Favorite': 'Festival Favorites',
+    'Visions': 'Visions',
+    'Midnighter': 'Midnighters',
+    '24 Beats Per Second': '24 Beats Per Second',
+    'Global': 'Global',
+    'TV Premiere': 'TV Premieres',
+    'Independent TV Pilot Competition': 'Independent TV Pilot Competition',
+    'XR Experience Spotlight': 'XR Experience Spotlight',
+    'Narrative Short Competition': 'Narrative Short Competition',
+    'Documentary Short Competition': 'Documentary Short Competition',
+    'Animated Short Competition': 'Animated Short Competition',
+    'Midnight Short Competition': 'Midnight Short Competition',
+    'Texas Short Competition': 'Texas Short Competition',
     OTHER: 'Other',
 };
 
-const categoryKeyForFilm = (film) => {
-    const explicit = String(film.category || film.section || '').trim();
-    if (CATEGORY_ORDER.includes(explicit)) return explicit;
-    if (film.runtime > 0 && film.runtime < 40) return 'Shorts';
-    return 'Features';
-};
+const categoryKeyForFilm = (film) => String(film.category || film.section || '').trim();
 
 const activeSection = ref('');
 const selectionContentRef = ref(null);

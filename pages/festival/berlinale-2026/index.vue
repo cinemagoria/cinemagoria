@@ -359,22 +359,27 @@ const schedule = ref([]);
 const openDays = ref(new Set());
 
 const CATEGORY_ORDER = [
-    'Features',
-    'Shorts',
+    'Competition',
+    'Perspectives',
+    'Panorama',
+    'Panorama/Forum/Special',
+    'Generation 14plus',
+    'Berlinale Special Gala',
+    'Berlinale Special Midnight',
 ];
 
 const CATEGORY_LABELS = {
-    Features: 'Features',
-    Shorts: 'Shorts',
+    'Competition': 'Competition',
+    'Perspectives': 'Perspectives',
+    'Panorama': 'Panorama',
+    'Panorama/Forum/Special': 'Panorama / Forum / Special',
+    'Generation 14plus': 'Generation 14plus',
+    'Berlinale Special Gala': 'Berlinale Special Gala',
+    'Berlinale Special Midnight': 'Berlinale Special Midnight',
     OTHER: 'Other',
 };
 
-const categoryKeyForFilm = (film) => {
-    const explicit = String(film.category || film.section || '').trim();
-    if (CATEGORY_ORDER.includes(explicit)) return explicit;
-    if (film.runtime > 0 && film.runtime < 40) return 'Shorts';
-    return 'Features';
-};
+const categoryKeyForFilm = (film) => String(film.category || film.section || '').trim();
 
 const activeSection = ref('');
 const selectionContentRef = ref(null);
