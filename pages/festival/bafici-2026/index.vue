@@ -330,9 +330,79 @@ const goToSlide = (i) => { slideDirection.value = i > infoSlide.value ? 'carouse
 const activeSection = ref(''); const selectionContentRef = ref(null); let sectionObserver = null; const isMobile = ref(false); let mobileMql = null; const sectionOpen = ref({});
 const isSectionOpen = (key) => sectionOpen.value[key] !== false; const toggleSection = (key) => { sectionOpen.value = { ...sectionOpen.value, [key]: !isSectionOpen(key) }; }; const onSectionHeaderClick = (key) => { if (!isMobile.value) return; toggleSection(key); };
 const activeDay = ref(''); const scheduleContentRef = ref(null); let dayObserver = null;
-const features = computed(() => films.value?.results?.filter(f => !f.runtime || f.runtime >= 40) || []);
-const shorts = computed(() => films.value?.results?.filter(f => f.runtime > 0 && f.runtime < 40) || []);
-const selectionSections = computed(() => [{ key: 'features', label: 'Largometrajes', films: features.value, count: features.value.length }, { key: 'shorts', label: 'Cortometrajes', films: shorts.value, count: shorts.value.length }].filter(sec => sec.count > 0));
+const CATEGORY_ORDER = [
+    'INTERNATIONAL OFFICIAL COMPETITION',
+    'VANGUARD & GENRE OFFICIAL COMPETITION',
+    'FIRST FILMS',
+    'CAREERS',
+    'CINEMA ON CINEMA',
+    'MUSIC',
+    'ARTS & CRAFTS',
+    'LATE NIGHT',
+    'RESCUES',
+    'PERE PORTABELLA',
+    'ÁNGEL SANTOS',
+    'GYÖRGY PÁLFI',
+    'YUGO SAKAMOTO',
+    'LILIANA PAOLINELLI',
+    'PLACES',
+    'PASSIONS',
+    'ROMANCES',
+    'COMEDIES',
+    'COMING OF AGE',
+    'POLITICS',
+    'FAMILIES',
+    'LITTLE BAFICI',
+    'NATIONAL FILM BOARD OF CANADA',
+    'SPECIAL NIGHTS',
+    'OPENING & CLOSING NIGHTS',
+];
+
+const CATEGORY_LABELS = {
+    'INTERNATIONAL OFFICIAL COMPETITION': 'International Official Competition',
+    'VANGUARD & GENRE OFFICIAL COMPETITION': 'Vanguard & Genre Official Competition',
+    'FIRST FILMS': 'First Films',
+    'CAREERS': 'Careers',
+    'CINEMA ON CINEMA': 'Cinema on Cinema',
+    'MUSIC': 'Music',
+    'ARTS & CRAFTS': 'Arts & Crafts',
+    'LATE NIGHT': 'Late Night',
+    'RESCUES': 'Rescues',
+    'PERE PORTABELLA': 'Pere Portabella',
+    'ÁNGEL SANTOS': 'Ángel Santos',
+    'GYÖRGY PÁLFI': 'György Pálfi',
+    'YUGO SAKAMOTO': 'Yugo Sakamoto',
+    'LILIANA PAOLINELLI': 'Liliana Paolinelli',
+    'PLACES': 'Places',
+    'PASSIONS': 'Passions',
+    'ROMANCES': 'Romances',
+    'COMEDIES': 'Comedies',
+    'COMING OF AGE': 'Coming of Age',
+    'POLITICS': 'Politics',
+    'FAMILIES': 'Families',
+    'LITTLE BAFICI': 'Little BAFICI',
+    'NATIONAL FILM BOARD OF CANADA': 'National Film Board of Canada',
+    'SPECIAL NIGHTS': 'Special Nights',
+    'OPENING & CLOSING NIGHTS': 'Opening & Closing Nights',
+    OTHER: 'Otros',
+};
+
+const filmsByCategory = computed(() => {
+    const map = Object.fromEntries(CATEGORY_ORDER.map((c) => [c, []]));
+    map.OTHER = [];
+    for (const f of films.value?.results || []) {
+        const key = String(f.category || f.section || '').trim();
+        if (key && map[key] !== undefined) map[key].push(f);
+        else map.OTHER.push(f);
+    }
+    return map;
+});
+
+const selectionSections = computed(() => {
+    const order = CATEGORY_ORDER.filter((c) => (filmsByCategory.value[c] || []).length > 0);
+    if ((filmsByCategory.value.OTHER || []).length > 0) order.push('OTHER');
+    return order.map((cat) => ({ key: cat, label: CATEGORY_LABELS[cat] || cat, films: filmsByCategory.value[cat], count: filmsByCategory.value[cat].length }));
+});
 const officialNav = computed(() => selectionSections.value);
 const scrollToSection = (key) => { activeSection.value = key; const root = selectionContentRef.value; if (!root) return; for (const el of root.querySelectorAll('[data-key]')) if (el.getAttribute('data-key') === key) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); break; } };
 const setupSectionObserver = () => { if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') return; if (sectionObserver) sectionObserver.disconnect(); const root = selectionContentRef.value; if (!root) return; const els = root.querySelectorAll('[data-key]'); if (!els.length) return; sectionObserver = new IntersectionObserver((entries) => { for (const entry of entries) if (entry.isIntersecting) activeSection.value = entry.target.getAttribute('data-key'); }, { rootMargin: '-110px 0px -70% 0px', threshold: 0 }); els.forEach((el) => sectionObserver.observe(el)); };

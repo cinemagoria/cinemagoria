@@ -357,18 +357,53 @@ const awards = ref([]);
 const schedule = ref([]);
 const openDays = ref(new Set());
 
-const features = computed(() => {
-    return films.value?.results?.filter(f => !f.runtime || f.runtime >= 40) || [];
+const CATEGORY_ORDER = [
+    'U.S. Dramatic Competition',
+    'U.S. Documentary Competition',
+    'World Cinema Dramatic Competition',
+    'World Cinema Documentary Competition',
+    'NEXT',
+    'Premieres',
+    'Spotlight',
+    'Midnight',
+    'Episodic',
+    'Park City Legacy',
+    'Special Screenings',
+    'Family Matinee',
+];
+
+const CATEGORY_LABELS = {
+    'U.S. Dramatic Competition': 'U.S. Dramatic Competition',
+    'U.S. Documentary Competition': 'U.S. Documentary Competition',
+    'World Cinema Dramatic Competition': 'World Cinema Dramatic Competition',
+    'World Cinema Documentary Competition': 'World Cinema Documentary Competition',
+    'NEXT': 'NEXT',
+    'Premieres': 'Premieres',
+    'Spotlight': 'Spotlight',
+    'Midnight': 'Midnight',
+    'Episodic': 'Episodic',
+    'Park City Legacy': 'Park City Legacy',
+    'Special Screenings': 'Special Screenings',
+    'Family Matinee': 'Family Matinee',
+    OTHER: 'Otros',
+};
+
+const filmsByCategory = computed(() => {
+    const map = Object.fromEntries(CATEGORY_ORDER.map((c) => [c, []]));
+    map.OTHER = [];
+    for (const f of films.value?.results || []) {
+        const key = String(f.category || f.section || '').trim();
+        if (key && map[key] !== undefined) map[key].push(f);
+        else map.OTHER.push(f);
+    }
+    return map;
 });
 
-const shorts = computed(() => {
-    return films.value?.results?.filter(f => f.runtime > 0 && f.runtime < 40) || [];
+const selectionSections = computed(() => {
+    const order = CATEGORY_ORDER.filter((c) => (filmsByCategory.value[c] || []).length > 0);
+    if ((filmsByCategory.value.OTHER || []).length > 0) order.push('OTHER');
+    return order.map((cat) => ({ key: cat, label: CATEGORY_LABELS[cat] || cat, films: filmsByCategory.value[cat], count: filmsByCategory.value[cat].length }));
 });
-
-const selectionSections = computed(() => [
-    { key: 'features', label: 'Largometrajes', films: features.value, count: features.value.length },
-    { key: 'shorts', label: 'Cortometrajes', films: shorts.value, count: shorts.value.length },
-].filter(sec => sec.count > 0));
 const officialNav = computed(() => selectionSections.value);
 const scrollToSection = (key) => {
     activeSection.value = key;

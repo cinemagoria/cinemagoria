@@ -358,18 +358,43 @@ const awards = ref([]);
 const schedule = ref([]);
 const openDays = ref(new Set());
 
-const features = computed(() => {
-    return films.value?.results?.filter(f => !f.runtime || f.runtime >= 40) || [];
+const CATEGORY_ORDER = [
+    'Competition',
+    'Perspectives',
+    'Panorama',
+    'Panorama/Forum/Special',
+    'Generation 14plus',
+    'Berlinale Special Gala',
+    'Berlinale Special Midnight',
+];
+
+const CATEGORY_LABELS = {
+    'Competition': 'Competition',
+    'Perspectives': 'Perspectives',
+    'Panorama': 'Panorama',
+    'Panorama/Forum/Special': 'Panorama / Forum / Special',
+    'Generation 14plus': 'Generation 14plus',
+    'Berlinale Special Gala': 'Berlinale Special Gala',
+    'Berlinale Special Midnight': 'Berlinale Special Midnight',
+    OTHER: 'Otros',
+};
+
+const filmsByCategory = computed(() => {
+    const map = Object.fromEntries(CATEGORY_ORDER.map((c) => [c, []]));
+    map.OTHER = [];
+    for (const f of films.value?.results || []) {
+        const key = String(f.category || f.section || '').trim();
+        if (key && map[key] !== undefined) map[key].push(f);
+        else map.OTHER.push(f);
+    }
+    return map;
 });
 
-const shorts = computed(() => {
-    return films.value?.results?.filter(f => f.runtime > 0 && f.runtime < 40) || [];
+const selectionSections = computed(() => {
+    const order = CATEGORY_ORDER.filter((c) => (filmsByCategory.value[c] || []).length > 0);
+    if ((filmsByCategory.value.OTHER || []).length > 0) order.push('OTHER');
+    return order.map((cat) => ({ key: cat, label: CATEGORY_LABELS[cat] || cat, films: filmsByCategory.value[cat], count: filmsByCategory.value[cat].length }));
 });
-
-const selectionSections = computed(() => [
-    { key: 'features', label: 'Largometrajes', films: features.value, count: features.value.length },
-    { key: 'shorts', label: 'Cortometrajes', films: shorts.value, count: shorts.value.length },
-].filter(sec => sec.count > 0));
 const officialNav = computed(() => selectionSections.value);
 const scrollToSection = (key) => {
     activeSection.value = key;

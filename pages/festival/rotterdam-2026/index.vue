@@ -371,18 +371,51 @@ const awards = ref([]);
 const schedule = ref([]);
 const openDays = ref(new Set());
 
-const features = computed(() => {
-    return films.value?.results?.filter(f => !f.runtime || f.runtime >= 40) || [];
+const CATEGORY_ORDER = [
+    'Tiger Competition',
+    'Big Screen Competition',
+    'Bright Future',
+    'Harbour',
+    'Limelight',
+    'Cinema Regained',
+    'Focus: the Future Is NOW',
+    'Focus: Marwan Hamed',
+    'RTM',
+    'Short & Mid-length',
+    'Specials',
+];
+
+const CATEGORY_LABELS = {
+    'Tiger Competition': 'Tiger Competition',
+    'Big Screen Competition': 'Big Screen Competition',
+    'Bright Future': 'Bright Future',
+    'Harbour': 'Harbour',
+    'Limelight': 'Limelight',
+    'Cinema Regained': 'Cinema Regained',
+    'Focus: the Future Is NOW': 'Focus: the Future Is NOW',
+    'Focus: Marwan Hamed': 'Focus: Marwan Hamed',
+    'RTM': 'RTM',
+    'Short & Mid-length': 'Short & Mid-length',
+    'Specials': 'Specials',
+    OTHER: 'Otros',
+};
+
+const filmsByCategory = computed(() => {
+    const map = Object.fromEntries(CATEGORY_ORDER.map((c) => [c, []]));
+    map.OTHER = [];
+    for (const f of films.value?.results || []) {
+        const key = String(f.category || f.section || '').trim();
+        if (key && map[key] !== undefined) map[key].push(f);
+        else map.OTHER.push(f);
+    }
+    return map;
 });
 
-const shorts = computed(() => {
-    return films.value?.results?.filter(f => f.runtime > 0 && f.runtime < 40) || [];
+const selectionSections = computed(() => {
+    const order = CATEGORY_ORDER.filter((c) => (filmsByCategory.value[c] || []).length > 0);
+    if ((filmsByCategory.value.OTHER || []).length > 0) order.push('OTHER');
+    return order.map((cat) => ({ key: cat, label: CATEGORY_LABELS[cat] || cat, films: filmsByCategory.value[cat], count: filmsByCategory.value[cat].length }));
 });
-
-const selectionSections = computed(() => [
-    { key: 'features', label: 'Largometrajes', films: features.value, count: features.value.length },
-    { key: 'shorts', label: 'Cortometrajes', films: shorts.value, count: shorts.value.length },
-].filter(sec => sec.count > 0));
 const officialNav = computed(() => selectionSections.value);
 const scrollToSection = (key) => {
     activeSection.value = key;
