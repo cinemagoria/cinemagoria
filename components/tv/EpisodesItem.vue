@@ -260,6 +260,17 @@ export default {
   width: 100%;
   padding: 0.4rem;
   margin-bottom: 2rem;
+  transition: transform 0.25s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+
+    .image {
+      border-color: rgba(139, 233, 253, 0.5);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 233, 253, 0.25);
+    }
+    .name { color: #8BE9FD; }
+  }
 
   @media (min-width: $breakpoint-xsmall) {
     width: 50%;
@@ -289,6 +300,8 @@ export default {
   margin-bottom: 1.5rem;
   overflow: hidden;
   background-color: $secondary-color;
+  border: 1px solid rgba(139, 233, 253, 0.14);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 
   img,
   span {
@@ -380,6 +393,7 @@ export default {
   margin-bottom: 1rem;
   font-size: 1.6rem;
   letter-spacing: $letter-spacing;
+  transition: color 0.2s ease;
 
   strong {
     color: $cyan-color;

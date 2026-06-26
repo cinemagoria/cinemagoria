@@ -139,6 +139,18 @@ export default {
   display: flex;
   flex-direction: column;
   width: 100%;
+  transition: transform 0.25s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+
+    .image {
+      border-color: rgba(139, 233, 253, 0.5);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 233, 253, 0.25);
+    }
+    .name { color: #8BE9FD; }
+    .play svg circle, .play svg path { stroke: #8BE9FD; }
+  }
 }
 
 .image {
@@ -146,7 +158,10 @@ export default {
   height: 0;
   padding-bottom: 56.25%;
   overflow: hidden;
+  border-radius: 12px;
   background-color: $secondary-color;
+  border: 1px solid rgba(139, 233, 253, 0.14);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 
   img,
   span {
@@ -177,11 +192,15 @@ export default {
 
 .duration {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  padding: 0.4rem 1.2rem 0.2rem;
-  font-size: 1.3rem;
-  background-color: rgba(0, 0, 0, 0.7);
+  right: 0.6rem;
+  bottom: 0.6rem;
+  padding: 0.3rem 0.9rem;
+  font-size: 1.2rem;
+  color: #8BE9FD;
+  background-color: rgba(3, 4, 6, 0.8);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
 }
 
 .name {
@@ -189,6 +208,7 @@ export default {
   margin-top: 1rem;
   font-size: 1.3rem;
   letter-spacing: $letter-spacing;
+  transition: color 0.2s ease;
 
   @media (min-width: $breakpoint-large) {
     margin-bottom: 0.5rem;

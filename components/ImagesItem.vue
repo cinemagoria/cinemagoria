@@ -65,6 +65,17 @@ export default {
 
 .item {
   padding: 0.4rem;
+
+  a { display: block; transition: transform 0.25s ease; }
+
+  a:hover {
+    transform: translateY(-4px);
+
+    .image {
+      border-color: rgba(139, 233, 253, 0.5);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 233, 253, 0.25);
+    }
+  }
 }
 
 .image {
@@ -72,7 +83,9 @@ export default {
   height: 0;
   overflow: hidden;
   background-color: $secondary-color;
-  border-radius: 15px;
+  border-radius: 14px;
+  border: 1px solid rgba(139, 233, 253, 0.14);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 
   img {
     position: absolute;
