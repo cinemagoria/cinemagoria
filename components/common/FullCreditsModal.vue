@@ -99,8 +99,15 @@ export default {
     };
   },
 
-  created() {
-    this.openKeys = this.groups.slice(0, 3).map((g) => g.key);
+  watch: {
+    // Re-evaluate the default-open departments whenever the crew changes,
+    // e.g. same-route navigation between titles while the modal stays mounted.
+    crew: {
+      immediate: true,
+      handler() {
+        this.openKeys = this.groups.slice(0, 3).map((g) => g.key);
+      },
+    },
   },
 
   computed: {
@@ -191,7 +198,7 @@ export default {
   border-radius: 20px;
   width: 100%;
   max-width: 880px;
-  max-height: calc(100vh - 40px);
+  max-height: calc(100vh - 56px);
   overflow-y: auto;
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.6),
@@ -240,10 +247,6 @@ export default {
     border-color: rgba(255, 95, 95, 0.3);
     color: #ff7e7e;
   }
-}
-
-.modalContent {
-  max-height: calc(100vh - 56px);
 }
 
 .modalBody {
