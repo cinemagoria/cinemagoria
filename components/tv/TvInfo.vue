@@ -49,9 +49,19 @@
               <div :class="$style.label">Runtime</div>
               <div :class="$style.value">{{ formatRunTime(item.episode_run_time) }}</div>
             </li>
-            <li v-if="creators">
+            <li v-if="creators" :class="$style.directorRow">
               <div :class="$style.label">Creator</div>
-              <div :class="$style.value" v-html="creators" />
+              <div :class="$style.value">
+                <span v-html="creators" />
+                <button
+                  v-if="hasCrew"
+                  type="button"
+                  :class="$style.crewBtn"
+                  @click="showCrewModal = true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  Full Crew
+                </button>
+              </div>
             </li>
             <li v-if="item.genres && item.genres.length">
               <div :class="$style.label">Genre</div>
@@ -236,8 +246,15 @@
       </div>
     </div>
     
+    <!-- Full cast & crew modal (lazy-mounted; reads already-loaded item.credits.crew) -->
+    <FullCreditsModal
+      v-if="showCrewModal"
+      :crew="crewList"
+      :title="item.name || item.title"
+      @close="showCrewModal = false" />
+
     <slot name="before-recommendations"></slot>
-    
+
     <div v-if="hasAnyRecommendations" class="recommendations-wrapper">
       <h2 :class="$style.title" style="padding-left: 0; margin-bottom: 1rem;">Recommendations</h2>
 
@@ -293,12 +310,14 @@ import { name, creators, poster as posterMixin } from '~/mixins/Details';
 import ExternalLinks from '~/components/ExternalLinks';
 import WatchOn from '~/components/WatchOn';
 import ListingCarousel from '~/components/ListingCarousel';
+import FullCreditsModal from '~/components/common/FullCreditsModal';
 
 export default {
   components: {
     ExternalLinks,
     WatchOn,
     ListingCarousel,
+    FullCreditsModal,
     AwardsTab: () => import('~/components/common/AwardsTab'),
 
     Loader: () => import('~/components/Loader'),
@@ -347,6 +366,9 @@ export default {
       hoverRating: 0,
       editUserReview: '',
 
+      // Full cast & crew modal
+      showCrewModal: false,
+
       // Progress tracking
       progressPercentage: 0,
     };
@@ -354,6 +376,12 @@ export default {
 
   computed: {
     reviewCount() { return this.reviews.length; },
+    crewList() {
+      return this.item.credits?.crew || [];
+    },
+    hasCrew() {
+      return this.crewList.length > 0;
+    },
     isLoggedIn() {
       if (import.meta.client) {
          return localStorage.getItem('access_token') !== null;
@@ -832,11 +860,32 @@ export default {
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
 
-.info { 
-  background-color: rgba(0, 0, 0, 0.307);
-  border-radius: 15px;;
+.info {
+  position: relative;
+  background: rgba(3, 4, 6, 0.6);
+  background-image:
+    radial-gradient(circle at 12% 15%, rgba(31, 84, 103, 0.16), transparent 32%),
+    radial-gradient(circle at 88% 85%, rgba(139, 233, 253, 0.07), transparent 30%);
+  border-radius: 20px;
+  padding: 1.5rem;
   padding-bottom: 4rem;
-  @media (min-width: $breakpoint-medium) { display: flex; }
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(31, 84, 103, 0.5),
+    inset 0 0 20px rgba(139, 233, 253, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  overflow: hidden;
+  @media (min-width: $breakpoint-medium) { display: flex; padding: 2.5rem 2.5rem 4rem; }
+}
+.info::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+  opacity: 0.8;
+  pointer-events: none;
 }
 
 .left {
@@ -852,8 +901,8 @@ export default {
 
 .right {
   padding-top: 1rem;
-  @media (min-width: $breakpoint-medium) { 
-    flex: 1; 
+  @media (min-width: $breakpoint-medium) {
+    flex: 1;
     padding-right: 2rem;
   }
 }
@@ -863,8 +912,11 @@ export default {
   height: 0;
   padding-top: 150.27%;
   overflow: hidden;
-  border-radius: 15px;;
+  border-radius: 16px;
   background-color: $secondary-color;
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(139, 233, 253, 0.12);
   img, span { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
   span { display: flex; align-items: center; justify-content: center; }
 }
@@ -878,10 +930,13 @@ export default {
 }
 
 .title {
-  margin-bottom: 1rem;
+  position: relative;
+  margin-bottom: 1.2rem;
   font-size: 1.8rem;
+  font-weight: 700;
   color: #fff;
   letter-spacing: $letter-spacing;
+  text-shadow: 0 0 18px rgba(139, 233, 253, 0.18);
   @media (min-width: $breakpoint-large) { font-size: 2.4rem; }
 }
 
@@ -892,19 +947,63 @@ export default {
   @media (min-width: $breakpoint-large) { font-size: 1.6rem; }
   ul { @media (min-width: $breakpoint-medium) { display: flex; flex-wrap: wrap; } }
   li {
-    display: flex; padding: 0.2rem 0;
+    display: flex; padding: 0.85rem 0;
+    border-bottom: 1px solid rgba(139, 233, 252, 0.08);
     @media (min-width: $breakpoint-medium) { width: 50%; }
     @media (min-width: $breakpoint-xlarge) { width: 100%; }
   }
-  a { color: #8AE8FC; text-decoration: none; }
+  a { color: #8AE8FC; text-decoration: none; transition: color 0.2s ease; }
+  a:hover { color: #b8f3ff; }
 }
 
 .label {
-  flex: 1; max-width: 90px; margin-right: 1.5rem; color: #fff;
-  @media (min-width: $breakpoint-xsmall) { max-width: 110px; }
+  flex: 1; max-width: 90px; margin-right: 1.5rem;
+  color: #8BE9FD;
+  font-size: 0.82em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.85;
+  @media (min-width: $breakpoint-xsmall) { max-width: 120px; }
 }
 
-.value { flex: 2; }
+.value { flex: 2; color: $text-color; }
+
+.directorRow {
+  .value {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+}
+
+.crewBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.07);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
+
+  svg { flex-shrink: 0; }
+
+  &:hover {
+    background: rgba(139, 233, 253, 0.14);
+    border-color: rgba(139, 233, 253, 0.55);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(139, 233, 253, 0.15);
+  }
+  &:active { transform: translateY(0); }
+}
 
 .watchSection { margin-bottom: 2rem; }
 
