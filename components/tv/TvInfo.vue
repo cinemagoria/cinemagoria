@@ -947,7 +947,7 @@ export default {
   @media (min-width: $breakpoint-large) { font-size: 1.6rem; }
   ul { @media (min-width: $breakpoint-medium) { display: flex; flex-wrap: wrap; } }
   li {
-    display: flex; padding: 0.85rem 0;
+    display: flex; align-items: baseline; padding: 0.85rem 0;
     border-bottom: 1px solid rgba(139, 233, 252, 0.08);
     @media (min-width: $breakpoint-medium) { width: 50%; }
     @media (min-width: $breakpoint-xlarge) { width: 100%; }
