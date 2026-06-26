@@ -1070,6 +1070,7 @@ export default {
   text-shadow: 0 0 18px rgba(139, 233, 253, 0.18);
 }
 .stats li {
+  align-items: baseline;
   padding: 0.85rem 0;
   border-bottom: 1px solid rgba(139, 233, 252, 0.08);
 }

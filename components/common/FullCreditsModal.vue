@@ -7,7 +7,7 @@
 
       <div :class="$style.modalBody">
         <div :class="$style.intro">
-          <span :class="$style.eyebrow">Equipo</span>
+          <span :class="$style.eyebrow">Equipo técnico</span>
           <h3>Las personas detr&aacute;s de &lsquo;{{ title }}&rsquo;</h3>
         </div>
 
