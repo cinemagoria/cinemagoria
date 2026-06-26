@@ -48,8 +48,8 @@
           60<sup class="kviff-banner__pill-sup">TH</sup> EDITION · JULY 3–11 · 2026
         </div>
         <div class="kviff-banner__tagline" aria-hidden="true">
-          Coverage expands as KVIFF progressively confirms its lineup —
-          <span class="kviff-banner__tagline-accent">explore the announced titles</span>
+          Official selection, parallel sections &amp; daily schedule —
+          <span class="kviff-banner__tagline-accent">explore the full coverage</span>
         </div>
       </div>
 
@@ -106,7 +106,7 @@ export default {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.22;
+  opacity: 0.1;
   mix-blend-mode: screen;
   pointer-events: none;
 }
