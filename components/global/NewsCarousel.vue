@@ -38,7 +38,7 @@
             <div class="release-card">
             
             <NuxtLink 
-              :to="{ path: '/news', query: { source: article.source?.name, highlight: article.id } }" 
+              :to="article.href || { path: '/news', query: { source: article.source?.name, highlight: article.id } }"
               class="card-image-link" 
               :class="{ 'has-video': article.video_id }"
             >
@@ -71,7 +71,7 @@
                 <span class="card-date">{{ formatDate(article.published_at) }}</span>
               </div>
               <NuxtLink 
-                :to="{ path: '/news', query: { source: article.source?.name, highlight: article.id } }" 
+                :to="article.href || { path: '/news', query: { source: article.source?.name, highlight: article.id } }"
                 class="card-title" 
                 :title="article.title"
               >

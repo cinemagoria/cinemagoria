@@ -48,8 +48,8 @@
           60<sup class="kviff-banner__pill-sup">ª</sup> EDICIÓN · 3–11 JULIO · 2026
         </div>
         <div class="kviff-banner__tagline" aria-hidden="true">
-          Cobertura parcial: la selección crece a medida que KVIFF confirma su programación —
-          <span class="kviff-banner__tagline-accent">explorá los títulos anunciados</span>
+          Selección oficial, secciones paralelas y programación diaria —
+          <span class="kviff-banner__tagline-accent">descubrí la cobertura completa</span>
         </div>
       </div>
 
@@ -106,7 +106,7 @@ export default {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.22;
+  opacity: 0.1;
   mix-blend-mode: screen;
   pointer-events: none;
 }

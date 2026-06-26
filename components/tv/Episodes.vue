@@ -51,7 +51,7 @@
     </div>
 
     <div
-      v-if="activeEpisodes"
+      v-if="activeEpisodes && activeEpisodes.length"
       :class="$style.items">
       <EpisodesItem
         v-for="episode in activeEpisodes"
@@ -60,6 +60,14 @@
         :user-email="userEmail"
         :initial-progress="episodeProgressMap[episode.id] ?? -1"
         @progress-saved="onEpisodeProgressSaved" />
+    </div>
+
+    <div v-else-if="activeEpisodes" :class="$style.emptyState">
+      <div :class="$style.emptyIcon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/><path d="M12 14v3l2 1"/></svg>
+      </div>
+      <h3 :class="$style.emptyTitle">No hay episodios todavía</h3>
+      <p :class="$style.emptyText">La temporada {{ activeSeason }} está confirmada, pero todavía no se han publicado los detalles de sus episodios. Aparecerán aquí en cuanto se anuncie el calendario oficial.</p>
     </div>
     </div>
   </div>
@@ -109,7 +117,9 @@ export default {
     },
 
     episodeCount () {
-      return `${this.activeEpisodes.length} ${this.activeEpisodes.length > 1 ? 'Episodios' : 'Episodio'}`;
+      const n = this.activeEpisodes?.length || 0;
+      if (n === 0) return 'No hay episodios todavía';
+      return `${n} ${n > 1 ? 'Episodios' : 'Episodio'}`;
     },
 
     seasons () {
@@ -340,6 +350,47 @@ export default {
   flex-wrap: wrap;
   margin-right: -0.4rem;
   margin-left: -0.4rem;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  margin: 0.4rem;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(139, 233, 253, 0.12);
+  border-radius: 14px;
+}
+
+.emptyIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.08);
+  border: 1px solid rgba(139, 233, 253, 0.25);
+  margin-bottom: 1.6rem;
+}
+
+.emptyTitle {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.8rem;
+  letter-spacing: $letter-spacing;
+  text-shadow: 0 0 18px rgba(139, 233, 253, 0.18);
+}
+
+.emptyText {
+  max-width: 520px;
+  font-size: 1.4rem;
+  line-height: 1.6;
+  color: $text-color;
 }
 
 .markSeasonBtn,
