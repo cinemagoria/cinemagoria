@@ -208,7 +208,7 @@
                               :alt="item.title"
                               loading="lazy"
                           />
-                          <div v-if="!item.editorial_category" class="card-source">{{ cardBadge(item) }}</div>
+                          <div v-if="!categoryChips(item).length" class="card-source">{{ cardBadge(item) }}</div>
                           <button
                             v-if="userEmail"
                             class="bookmark-btn"
@@ -237,7 +237,7 @@
                               class="img-lazy"
                           />
                           
-                          <div v-if="!item.editorial_category" class="card-source">{{ cardBadge(item) }}</div>
+                          <div v-if="!categoryChips(item).length" class="card-source">{{ cardBadge(item) }}</div>
 
                           <button 
                             v-if="userEmail"
@@ -253,7 +253,7 @@
 
                       <div class="card-content">
                         <div class="meta-row">
-                          <div v-if="item.editorial_category" class="card-cats-row">
+                          <div v-if="categoryChips(item).length" class="card-cats-row">
                             <button v-for="chip in categoryChips(item)" :key="chip.label" type="button" class="card-cat-tag" @click="filterByCategory(chip.token)">{{ chip.label }}</button>
                           </div>
                           <span class="card-date">{{ formatDate(item.published_at) }}</span>
@@ -370,7 +370,7 @@ function categoryChips(item) {
   const seen = new Set();
   const add = (raw) => {
     const token = String(raw || '').trim().toLowerCase();
-    if (!token) return;
+    if (!token || !CATEGORY_OPTIONS.includes(token)) return; // canonical, filterable buckets only
     categoryLabelES(token)
       .split('/')
       .map((seg) => seg.trim())

@@ -59,7 +59,7 @@
 
             <div class="card-content">
               <div class="card-meta">
-                <div v-if="article.editorial_category" class="card-cats-row">
+                <div v-if="categoryChips(article).length" class="card-cats-row">
                   <NuxtLink
                     v-for="chip in categoryChips(article)"
                     :key="chip.label"
@@ -110,7 +110,7 @@ import Loader from '@/components/Loader';
 import carousel from '~/mixins/Carousel';
 import striptags from 'striptags';
 import { formatDate, handleImageError } from '~/utils/helpers';
-import { categoryLabelES } from '~/utils/categoryLabels';
+import { categoryLabelES, CATEGORY_LABELS_ES } from '~/utils/categoryLabels';
 
 const AUTOPLAY_INTERVAL = 10000;
 
@@ -212,7 +212,7 @@ export default {
       const seen = new Set();
       const add = (raw) => {
         const token = String(raw || '').trim().toLowerCase();
-        if (!token) return;
+        if (!token || !CATEGORY_LABELS_ES[token]) return; // canonical, filterable buckets only
         categoryLabelES(token)
           .split('/')
           .map((seg) => seg.trim())
