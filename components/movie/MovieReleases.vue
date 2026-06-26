@@ -167,9 +167,28 @@ export default {
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
 .releases {
-  background-color: rgba(0, 0, 0, 0.307);
-  border-radius: 15px;;
-  padding-bottom: 4rem;
+  position: relative;
+  background: rgba(3, 4, 6, 0.55);
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(31, 84, 103, 0.16), transparent 32%),
+    radial-gradient(circle at 88% 92%, rgba(139, 233, 253, 0.06), transparent 30%);
+  border-radius: 20px;
+  padding: 1.5rem 1.5rem 4rem;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(31, 84, 103, 0.5),
+    inset 0 0 20px rgba(139, 233, 253, 0.04);
+  overflow: hidden;
+  @media (min-width: $breakpoint-large) { padding: 2.5rem 2.5rem 4rem; }
+}
+.releases::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+  opacity: 0.8;
+  pointer-events: none;
 }
 .container {
   padding-top: 1rem;
@@ -177,8 +196,10 @@ export default {
 .title {
   margin-bottom: 2rem;
   font-size: 1.8rem;
+  font-weight: 700;
   color: #fff;
   letter-spacing: $letter-spacing;
+  text-shadow: 0 0 18px rgba(139, 233, 253, 0.18);
   @media (min-width: $breakpoint-large) {
     font-size: 2.4rem;
   }
@@ -213,14 +234,15 @@ export default {
   }
 }
 .releaseCard {
-  background: rgba(0, 0, 0, 0.307);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(139, 233, 253, 0.12);
+  border-radius: 12px;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   &:hover {
-    border-color: rgba(138, 232, 252, 0.3);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+    border-color: rgba(138, 232, 252, 0.4);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(139, 233, 253, 0.2);
   }
 }
 .countryHeader {
@@ -228,8 +250,8 @@ export default {
   align-items: center;
   gap: 1rem;
   padding: 1.5rem;
-  background: rgba(0, 0, 0, 0.307);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(139, 233, 253, 0.05);
+  border-bottom: 1px solid rgba(139, 233, 253, 0.12);
 }
 .flagIcon {
   width: 24px;
@@ -251,7 +273,7 @@ export default {
 .releaseItem {
   padding: 1rem 0;
   &:not(:last-child) {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.307);
+    border-bottom: 1px solid rgba(139, 233, 253, 0.08);
   }
 }
 .releaseType {

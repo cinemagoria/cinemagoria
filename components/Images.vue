@@ -1,23 +1,25 @@
 <template>
   <div class="spacing">
-    <div :class="$style.head">
-      <h2 :class="$style.title">
-        {{ title }}
-      </h2>
+    <div :class="$style.panel">
+      <div :class="$style.head">
+        <h2 :class="$style.title">
+          {{ title }}
+        </h2>
 
-      <strong :class="$style.count">
-        {{ imagesCount }}
-      </strong>
-    </div>
+        <strong :class="$style.count">
+          {{ imagesCount }}
+        </strong>
+      </div>
 
-    <div :class="$style.items">
-      <ImagesItem
-        v-for="(image, index) in images"
-        :key="`image-${index}`"
-        :image="image"
-        :index="index"
-        :type="type"
-        @openModal="openModal" />
+      <div :class="$style.items">
+        <ImagesItem
+          v-for="(image, index) in images"
+          :key="`image-${index}`"
+          :image="image"
+          :index="index"
+          :type="type"
+          @openModal="openModal" />
+      </div>
     </div>
 
     <Modal
@@ -108,33 +110,61 @@ export default {
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
 
+.panel {
+  position: relative;
+  background: rgba(3, 4, 6, 0.55);
+  background-image:
+    radial-gradient(circle at 12% 12%, rgba(31, 84, 103, 0.16), transparent 34%),
+    radial-gradient(circle at 88% 88%, rgba(139, 233, 253, 0.06), transparent 32%);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(31, 84, 103, 0.5),
+    inset 0 0 20px rgba(139, 233, 253, 0.04);
+  overflow: hidden;
+
+  @media (min-width: $breakpoint-large) { padding: 2.5rem; }
+}
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
 .head {
   display: flex;
   align-items: baseline;
-  margin-bottom: 1.5rem;
-
-  @media (min-width: $breakpoint-large) {
-    margin-bottom: 2rem;
-  }
+  margin-bottom: 2rem;
 }
 
 .title {
   font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
   letter-spacing: $letter-spacing;
+  text-shadow: 0 0 18px rgba(139, 233, 253, 0.18);
 
   @media (min-width: $breakpoint-large) {
-    font-size: 2.4rem;
+    font-size: 2.2rem;
   }
 }
 
 .count {
   margin-left: 1rem;
   font-size: 1.2rem;
-  color: $text-color-grey;
-  letter-spacing: $letter-spacing;
+  font-weight: 600;
+  color: #8BE9FD;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  opacity: 0.85;
 
   @media (min-width: $breakpoint-large) {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
 }
 

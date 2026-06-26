@@ -1,8 +1,10 @@
 <template>
   <div class="spacing">
+    <div :class="$style.panel">
     <div :class="$style.head">
       <select
         v-if="seasons.length > 1"
+        :class="$style.select"
         v-model="activeSeason"
         @change="getEpisodes">
         <option
@@ -58,6 +60,7 @@
         :user-email="userEmail"
         :initial-progress="episodeProgressMap[episode.id] ?? -1"
         @progress-saved="onEpisodeProgressSaved" />
+    </div>
     </div>
   </div>
 </template>
@@ -263,29 +266,72 @@ export default {
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
 
+.panel {
+  position: relative;
+  background: rgba(3, 4, 6, 0.55);
+  background-image:
+    radial-gradient(circle at 12% 10%, rgba(31, 84, 103, 0.16), transparent 32%),
+    radial-gradient(circle at 88% 90%, rgba(139, 233, 253, 0.06), transparent 30%);
+  border-radius: 20px;
+  padding: 2rem 1.5rem;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(31, 84, 103, 0.5),
+    inset 0 0 20px rgba(139, 233, 253, 0.04);
+  overflow: hidden;
+
+  @media (min-width: $breakpoint-large) { padding: 2.5rem; }
+}
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
 .head {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 0.8rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
 
-  @media (min-width: $breakpoint-large) {
-    margin-bottom: 2rem;
+.select {
+  font-family: inherit;
+  font-size: 1.3rem;
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.07);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  margin-right: 0.4rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover, &:focus {
+    border-color: rgba(139, 233, 253, 0.55);
+    background: rgba(139, 233, 253, 0.12);
+    outline: none;
   }
 
-  select {
-    margin-right: 0.2rem;
-  }
+  option { background: #03242C; color: #fff; }
 }
 
 .count {
   font-size: 1.2rem;
-  color: $text-color-grey;
-  letter-spacing: $letter-spacing;
+  font-weight: 600;
+  color: #8BE9FD;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  opacity: 0.85;
+  margin-right: auto;
 
   @media (min-width: $breakpoint-large) {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
 }
 
