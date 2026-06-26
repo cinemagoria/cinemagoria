@@ -59,7 +59,15 @@
 
             <div class="card-content">
               <div class="card-meta">
-                <span v-if="carouselBadge(article)" class="source-badge">{{ carouselBadge(article) }}</span>
+                <div v-if="article.editorial_category" class="card-cats-row">
+                  <NuxtLink
+                    v-for="chip in categoryChips(article)"
+                    :key="chip.label"
+                    :to="{ path: '/news', query: { category: chip.token } }"
+                    class="card-cat-tag"
+                  >{{ chip.label }}</NuxtLink>
+                </div>
+                <span v-else-if="carouselBadge(article)" class="source-badge">{{ carouselBadge(article) }}</span>
                 <span class="card-date">{{ formatDate(article.published_at) }}</span>
               </div>
               <NuxtLink 
@@ -195,6 +203,30 @@ export default {
         return categoryLabelES(article.editorial_category);
       }
       return article?.source?.name || '';
+    },
+    // Primary editorial category (compound label split per segment) followed by
+    // any secondary categories, as { label, token } chips. Each links to /news
+    // filtered by its token.
+    categoryChips(article) {
+      const out = [];
+      const seen = new Set();
+      const add = (raw) => {
+        const token = String(raw || '').trim().toLowerCase();
+        if (!token) return;
+        categoryLabelES(token)
+          .split('/')
+          .map((seg) => seg.trim())
+          .filter(Boolean)
+          .forEach((label) => {
+            const key = label.toLowerCase();
+            if (seen.has(key)) return;
+            seen.add(key);
+            out.push({ label, token });
+          });
+      };
+      add(article?.editorial_category);
+      (Array.isArray(article?.secondary_categories) ? article.secondary_categories : []).forEach(add);
+      return out;
     },
     onImageLoad(id) {
        this.loadingMap[id] = false; 
@@ -400,6 +432,39 @@ export default {
   letter-spacing: 1.2px;
   line-height: 1.2;
   display: inline-block;
+}
+
+.card-cats-row {
+  display: flex;
+  gap: 5px;
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.card-cats-row::-webkit-scrollbar { display: none; }
+
+.card-cat-tag {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 700;
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.08);
+  border: 1px solid rgba(139, 233, 253, 0.35);
+  padding: 3px 9px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.card-cat-tag:hover {
+  color: #aef2ff;
+  background: rgba(139, 233, 253, 0.16);
+  border-color: rgba(139, 233, 253, 0.55);
 }
 
 .card-title {

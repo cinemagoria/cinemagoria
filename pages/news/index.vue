@@ -52,6 +52,7 @@
           </div>
 
           <div class="header-status">
+            <div class="header-status__left">
             <h2 class="status-title" v-if="isSavedView">Artículos Guardados</h2>
             <h2 class="status-title" v-else-if="selectedSource">
               Último de
@@ -69,6 +70,19 @@
               </a>
             </h2>
             <h2 class="status-title" v-else>Todas las Novedades</h2>
+
+              <button
+                v-if="categoryFilter && !isSavedView"
+                type="button"
+                class="active-category"
+                @click="pickCategory(null)"
+                title="Quitar filtro de categoría"
+              >
+                <span class="active-category__dot"></span>
+                {{ categoryLabelES(categoryFilter) }}
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
             
             <ClientOnly>
               <span class="count-badge" v-if="isSavedView">
@@ -194,7 +208,7 @@
                               :alt="item.title"
                               loading="lazy"
                           />
-                          <div class="card-source">{{ cardBadge(item) }}</div>
+                          <div v-if="!item.editorial_category" class="card-source">{{ cardBadge(item) }}</div>
                           <button
                             v-if="userEmail"
                             class="bookmark-btn"
@@ -223,7 +237,7 @@
                               class="img-lazy"
                           />
                           
-                          <div class="card-source">{{ cardBadge(item) }}</div>
+                          <div v-if="!item.editorial_category" class="card-source">{{ cardBadge(item) }}</div>
 
                           <button 
                             v-if="userEmail"
@@ -239,6 +253,9 @@
 
                       <div class="card-content">
                         <div class="meta-row">
+                          <div v-if="item.editorial_category" class="card-cats-row">
+                            <button v-for="chip in categoryChips(item)" :key="chip.label" type="button" class="card-cat-tag" @click="filterByCategory(chip.token)">{{ chip.label }}</button>
+                          </div>
                           <span class="card-date">{{ formatDate(item.published_at) }}</span>
                         </div>
                         
@@ -345,6 +362,31 @@ function cardBadge(item) {
   return item?.source?.name || '';
 }
 
+// Build the card's category chips: primary editorial category first (compound
+// label split per segment), then any secondary categories. Each chip carries
+// the canonical token it filters by; duplicate labels are dropped.
+function categoryChips(item) {
+  const out = [];
+  const seen = new Set();
+  const add = (raw) => {
+    const token = String(raw || '').trim().toLowerCase();
+    if (!token) return;
+    categoryLabelES(token)
+      .split('/')
+      .map((seg) => seg.trim())
+      .filter(Boolean)
+      .forEach((label) => {
+        const key = label.toLowerCase();
+        if (seen.has(key)) return;
+        seen.add(key);
+        out.push({ label, token });
+      });
+  };
+  add(item?.editorial_category);
+  (Array.isArray(item?.secondary_categories) ? item.secondary_categories : []).forEach(add);
+  return out;
+}
+
 // Category chip is visible only when looking at Cinemagoria-internal articles
 // (the only ones that carry editorial_category). Hidden during external-source
 // view and during active search (mixed sources, filter would only hit internal).
@@ -358,6 +400,17 @@ function pickCategory(cat) {
   const query = { ...route.query };
   if (cat) query.category = cat; else delete query.category;
   router.replace({ query });
+}
+
+// Filter the feed from a card's category chip, mirroring the top filter panel.
+// The /api/news payload is not lowercased, so normalize the token before it
+// reaches the case-sensitive CATEGORY_OPTIONS guard; only the canonical buckets
+// are filterable. Surface the result from the top like the panel does.
+function filterByCategory(token) {
+  const t = String(token || '').trim().toLowerCase();
+  if (!CATEGORY_OPTIONS.includes(t)) return;
+  pickCategory(t);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // Handle ?q= and ?from= query params (arriving from topic click in article page)
@@ -1013,6 +1066,48 @@ watch(userEmail, (val) => {
   -webkit-backdrop-filter: blur(10px);
 }
 
+.header-status__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.active-category {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px 4px 11px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.08);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 999px;
+  cursor: pointer;
+  letter-spacing: 0.2px;
+  transition: all 0.2s ease;
+}
+
+.active-category__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8BE9FD;
+  box-shadow: 0 0 8px rgba(139, 233, 253, 0.7);
+  flex-shrink: 0;
+}
+
+.active-category svg { opacity: 0.7; transition: opacity 0.2s ease; }
+
+.active-category:hover {
+  background: rgba(139, 233, 253, 0.16);
+  border-color: rgba(139, 233, 253, 0.55);
+}
+.active-category:hover svg { opacity: 1; }
+
 .status-title {
   font-size: 18px;
   font-weight: 600;
@@ -1305,10 +1400,25 @@ watch(userEmail, (val) => {
 }
 
 .meta-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
   margin-bottom: 10px;
   font-size: 12px;
   color: #888;
 }
+
+.card-cats-row {
+  display: flex;
+  gap: 5px;
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.card-cats-row::-webkit-scrollbar { display: none; }
 
 .card-title {
   font-size: 18px;
@@ -1814,6 +1924,28 @@ watch(userEmail, (val) => {
   padding-top: 8px;
   margin-bottom: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.card-cat-tag {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.08);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  padding: 3px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+}
+
+.card-cat-tag:hover {
+  color: #aef2ff;
+  background: rgba(139, 233, 253, 0.16);
+  border-color: rgba(139, 233, 253, 0.5);
 }
 
 .card-tags-label {
