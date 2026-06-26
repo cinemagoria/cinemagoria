@@ -6,10 +6,14 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             All Festivals
         </nuxt-link>
+        <div v-if="!backdropLoaded" class="backdrop-loader"><Loader :size="50" /></div>
         <a href="https://fantasiafestival.com" target="_blank" rel="noopener noreferrer" class="hero-backdrop">
             <img
               src="/festivals/fantasia/fantasia_backdrop_2026_en.webp"
               alt="Fantasia International Film Festival 2026 Backdrop"
+              :style="{ opacity: backdropLoaded ? 1 : 0, transition: 'opacity 0.4s ease' }"
+              @load="backdropLoaded = true"
+              @error="backdropLoaded = true"
             />
             <div class="hero-overlay"></div>
         </a>
@@ -349,6 +353,7 @@ const prevSlide = () => { slideDirection.value = 'carousel-prev'; infoSlide.valu
 const nextSlide = () => { slideDirection.value = 'carousel-next'; infoSlide.value = (infoSlide.value + 1) % 3; };
 const goToSlide = (i) => { slideDirection.value = i > infoSlide.value ? 'carousel-next' : 'carousel-prev'; infoSlide.value = i; };
 const loading = ref(true);
+const backdropLoaded = ref(false);
 const films = ref({ results: [] });
 const awards = ref([]);
 const schedule = ref([]);
@@ -955,6 +960,15 @@ onMounted(async () => {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px 20px;
+}
+
+.backdrop-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
 }
 
 .loader-container {
