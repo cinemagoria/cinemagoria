@@ -50,9 +50,19 @@
               <div :class="$style.label">Duración</div>
               <div :class="$style.value">{{ formatRuntime(item.runtime) }}</div>
             </li>
-            <li v-if="directors">
+            <li v-if="directors" :class="$style.directorRow">
               <div :class="$style.label">Director</div>
-              <div :class="$style.value" v-html="directors" />
+              <div :class="$style.value">
+                <span v-html="directors" />
+                <button
+                  v-if="hasCrew"
+                  type="button"
+                  :class="$style.crewBtn"
+                  @click="showCrewModal = true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  Equipo técnico
+                </button>
+              </div>
             </li>
             <li v-if="item.budget">
               <div :class="$style.label">Presupuesto</div>
@@ -253,6 +263,13 @@
       </div>
     </div>
 
+    <!-- Full crew modal (lazy-mounted; reads already-loaded item.credits.crew) -->
+    <FullCreditsModal
+      v-if="showCrewModal"
+      :crew="crewList"
+      :title="item.title || item.name"
+      @close="showCrewModal = false" />
+
     <slot name="before-recommendations"></slot>
     
     <div v-if="hasAnyRecommendations" class="recommendations-wrapper">
@@ -313,6 +330,7 @@ import Filters from '~/mixins/Filters';
 import ExternalLinks from '~/components/ExternalLinks';
 import WatchOn from '~/components/WatchOn';
 import ListingCarousel from '~/components/ListingCarousel';
+import FullCreditsModal from '~/components/common/FullCreditsModal';
 
 import { getProductionCompanySlug } from '~/utils/constants';
 
@@ -321,6 +339,7 @@ export default {
     ExternalLinks,
     WatchOn,
     ListingCarousel,
+    FullCreditsModal,
     AwardsTab: () => import('~/components/common/AwardsTab'),
     Loader: () => import('~/components/Loader'),
   },
@@ -375,12 +394,21 @@ export default {
       hoverRating: 0,
       editUserReview: '',
 
+      // Full crew modal
+      showCrewModal: false,
+
       progressPercentage: 0,
     };
   },
 
   computed: {
     MANUAL_OVERVIEWS() { return MANUAL_OVERVIEWS; },
+    crewList() {
+      return this.item.credits?.crew || [];
+    },
+    hasCrew() {
+      return this.crewList.length > 0;
+    },
     progressElapsed() {
       if (!this.item.runtime) return '0m';
       return this.fmtMin(this.item.runtime * this.progressPercentage / 100);
@@ -1002,6 +1030,93 @@ export default {
   @media (min-width: $breakpoint-xsmall) { max-width: 110px; }
 }
 .value { flex: 2; }
+
+/* ── Modernized detail panel (glassmorphism) ────────── */
+.info {
+  position: relative;
+  background: rgba(3, 4, 6, 0.6);
+  background-image:
+    radial-gradient(circle at 12% 15%, rgba(31, 84, 103, 0.16), transparent 32%),
+    radial-gradient(circle at 88% 85%, rgba(139, 233, 253, 0.07), transparent 30%);
+  border-radius: 20px;
+  padding: 1.5rem;
+  padding-bottom: 4rem;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(31, 84, 103, 0.5),
+    inset 0 0 20px rgba(139, 233, 253, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  overflow: hidden;
+  @media (min-width: $breakpoint-medium) { padding: 2.5rem 2.5rem 4rem; }
+}
+.info::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+  opacity: 0.8;
+  pointer-events: none;
+}
+.poster {
+  border-radius: 16px;
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(139, 233, 253, 0.12);
+}
+.title {
+  font-weight: 700;
+  text-shadow: 0 0 18px rgba(139, 233, 253, 0.18);
+}
+.stats li {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid rgba(139, 233, 252, 0.08);
+}
+.stats a { transition: color 0.2s ease; }
+.stats a:hover { color: #b8f3ff; }
+.label {
+  color: #8BE9FD;
+  font-size: 0.82em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.85;
+  @media (min-width: $breakpoint-xsmall) { max-width: 120px; }
+}
+.value { color: $text-color; }
+.directorRow .value {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+.crewBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.07);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
+
+  svg { flex-shrink: 0; }
+
+  &:hover {
+    background: rgba(139, 233, 253, 0.14);
+    border-color: rgba(139, 233, 253, 0.55);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(139, 233, 253, 0.15);
+  }
+  &:active { transform: translateY(0); }
+}
 .watchSection { margin-bottom: 2rem; }
 .external {
   ul { display: flex; margin-left: -0.5rem; }
