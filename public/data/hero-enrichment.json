@@ -2,10 +2,10 @@
   {
     "tmdb_id": 1433583,
     "media_type": "movie",
-    "trailer_key": "b0669fsQbAc",
+    "trailer_key": "7YpuMymmiJ8",
     "backdrop_path": "/tD4qifPSyyhPCgZ0W4fNTcVDD2r.jpg",
     "poster_path": "/fnXA9C0wgeogytADJXiQeMWyZS3.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1248832,
