@@ -95,6 +95,25 @@ export default {
   position: relative;
 }
 
+.credits-item__link {
+  display: block;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(139, 233, 253, 0.14);
+  text-decoration: none;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.credits-item__link:hover {
+  transform: translateY(-4px);
+  border-color: rgba(139, 233, 253, 0.5);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 233, 253, 0.22);
+}
+
+.credits-item__link:hover .credits-item__name {
+  color: #8BE9FD;
+}
+
 .credits-item__img {
   position: relative;
   height: 0;
@@ -149,11 +168,13 @@ export default {
 }
 
 .credits-item__name {
-    background: black;
+    background: rgba(3, 4, 6, 0.92);
+    color: #fff;
     font-size: 1.3rem;
     letter-spacing: 0.4px;
     text-align: center;
-  
+    padding: 0.7rem 0.5rem 0.2rem;
+    transition: color 0.2s ease;
 
   @media (min-width: $breakpoint-large) {
     font-size: 1.5rem;
@@ -165,10 +186,11 @@ export default {
     position: relative;
     color: #80868b;
     letter-spacing: 0.4px;
-    background: black;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
+    background: rgba(3, 4, 6, 0.92);
+    border-bottom-left-radius: 14px;
+    border-bottom-right-radius: 14px;
     text-align: center;
+    padding: 0 0.5rem 0.8rem;
 
   @media (min-width: $breakpoint-large) {
     font-size: 1.4rem;
