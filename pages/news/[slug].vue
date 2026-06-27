@@ -86,6 +86,10 @@
               <!-- Article info -->
               <h3 class="sidebar-title">Article</h3>
               <div class="sidebar-meta-list">
+                <div v-if="article.id" class="sidebar-meta-item">
+                  <span class="sidebar-meta-label">ID</span>
+                  <span class="sidebar-meta-value sidebar-meta-id">#{{ article.id }}</span>
+                </div>
                 <div class="sidebar-meta-item">
                   <span class="sidebar-meta-label">Published</span>
                   <span class="sidebar-meta-value">{{ formatDate(article.published_at) }}</span>
@@ -988,6 +992,13 @@ useHead(() => {
 .sidebar-meta-value {
   font-size: 14px;
   color: #fff;
+}
+
+.sidebar-meta-id {
+  font-size: 12px;
+  color: #5c6770;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.3px;
 }
 
 .sidebar-tags {
