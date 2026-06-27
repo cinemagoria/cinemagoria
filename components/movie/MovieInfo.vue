@@ -1157,17 +1157,43 @@ export default {
 
 
 .reviewCard {
-  background-color: rgba(9, 25, 31, 0.6);
-  border-radius: 8px;
+  position: relative;
+  background: rgba(3, 4, 6, 0.5);
+  background-image:
+    radial-gradient(circle at 0% 0%, rgba(31, 84, 103, 0.18), transparent 45%),
+    radial-gradient(circle at 100% 100%, rgba(139, 233, 253, 0.06), transparent 42%);
+  border-radius: 14px;
   padding: 2rem;
   margin-bottom: 2rem;
-  transition: transform 0.2s ease, background-color 0.2s;
-  border: 1px solid rgba(138, 232, 252, 0.1); 
+  border: 1px solid rgba(139, 233, 253, 0.2);
+  box-shadow:
+    0 0 0 1px rgba(31, 84, 103, 0.45),
+    inset 0 0 22px rgba(139, 233, 253, 0.05);
+  transition: transform 0.2s ease, border-color 0.2s, box-shadow 0.2s;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+    opacity: 0.85;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    pointer-events: none;
+  }
 
   &:hover {
-    background-color: rgba(12, 33, 42, 0.8);
     transform: translateY(-2px);
-    border-color: rgba(138, 232, 252, 0.3);
+    border-color: rgba(139, 233, 253, 0.45);
+    box-shadow:
+      0 10px 26px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(139, 233, 253, 0.3),
+      inset 0 0 22px rgba(139, 233, 253, 0.08);
+
+    &::before { opacity: 1; }
   }
 }
 
@@ -1203,12 +1229,14 @@ export default {
   background-repeat: no-repeat;
   background-size: auto 100%;
   margin-bottom: 0.2rem;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
 
   > div {
     height: 100%;
     background-image: url('@/assets/images/stars-filled.png');
     background-repeat: no-repeat;
     background-size: auto 100%;
+    filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 4px rgba(255, 205, 70, 0.45));
   }
 }
 
@@ -1310,14 +1338,14 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   border: 1px solid transparent;
   cursor: pointer;
   transition: all 0.2s ease;
   background: transparent;
-  
+
   svg {
     stroke-width: 2px;
     width: 20px;
@@ -1328,33 +1356,37 @@ export default {
 }
 
 .editReviewBtn {
-  color: rgba(139, 233, 253, 0.7);
-  border-color: rgba(139, 233, 253, 0.25);
-  
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.08);
+  border-color: rgba(139, 233, 253, 0.3);
+
   svg { stroke: rgba(139, 233, 253, 0.8); }
 
   &:hover {
-    background: rgba(139, 233, 253, 0.12);
-    color: #8BE9FD;
-    border-color: rgba(139, 233, 253, 0.5);
-    transform: translateY(-1px);
+    background: rgba(139, 233, 253, 0.18);
+    border-color: rgba(139, 233, 253, 0.55);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(139, 233, 253, 0.22);
     svg { stroke: #8BE9FD; }
   }
+  &:active { transform: translateY(0); }
 }
 
 .deleteReviewBtn {
-  color: rgba(255, 107, 107, 0.7);
-  border-color: rgba(255, 107, 107, 0.25);
+  color: #FF6B6B;
+  background: rgba(255, 107, 107, 0.08);
+  border-color: rgba(255, 107, 107, 0.3);
 
   svg { stroke: rgba(255, 107, 107, 0.8); }
 
   &:hover {
-    background: rgba(255, 107, 107, 0.12);
-    color: #FF6B6B;
-    border-color: rgba(255, 107, 107, 0.5);
-    transform: translateY(-1px);
+    background: rgba(255, 107, 107, 0.18);
+    border-color: rgba(255, 107, 107, 0.55);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 107, 107, 0.22);
     svg { stroke: #FF6B6B; }
   }
+  &:active { transform: translateY(0); }
 }
 
 .noReviews {
@@ -1376,11 +1408,12 @@ export default {
 
 .sectionTitle {
   font-size: 1.6rem;
-  font-weight: 600;
+  font-weight: 700;
   color: #fff;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 0;
+  text-shadow: 0 0 16px rgba(139, 233, 253, 0.18);
 }
 
 .spoilerBanner {
@@ -1418,17 +1451,43 @@ export default {
 
 
 .reviewCard {
-  background-color: rgba(9, 25, 31, 0.6);
-  border-radius: 8px;
+  position: relative;
+  background: rgba(3, 4, 6, 0.5);
+  background-image:
+    radial-gradient(circle at 0% 0%, rgba(31, 84, 103, 0.18), transparent 45%),
+    radial-gradient(circle at 100% 100%, rgba(139, 233, 253, 0.06), transparent 42%);
+  border-radius: 14px;
   padding: 2rem;
   margin-bottom: 2rem;
-  transition: transform 0.2s ease, background-color 0.2s;
-  border: 1px solid rgba(138, 232, 252, 0.1); 
+  border: 1px solid rgba(139, 233, 253, 0.2);
+  box-shadow:
+    0 0 0 1px rgba(31, 84, 103, 0.45),
+    inset 0 0 22px rgba(139, 233, 253, 0.05);
+  transition: transform 0.2s ease, border-color 0.2s, box-shadow 0.2s;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+    opacity: 0.85;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    pointer-events: none;
+  }
 
   &:hover {
-    background-color: rgba(12, 33, 42, 0.8);
     transform: translateY(-2px);
-    border-color: rgba(138, 232, 252, 0.3);
+    border-color: rgba(139, 233, 253, 0.45);
+    box-shadow:
+      0 10px 26px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(139, 233, 253, 0.3),
+      inset 0 0 22px rgba(139, 233, 253, 0.08);
+
+    &::before { opacity: 1; }
   }
 }
 
@@ -1543,9 +1602,17 @@ export default {
 
 <style lang="scss" scoped>
 .recommendations-wrapper {
-  background-color: rgba(0, 0, 0, 0.307);
+  position: relative;
+  background: rgba(3, 4, 6, 0.55);
+  background-image:
+    radial-gradient(circle at 10% 0%, rgba(31, 84, 103, 0.16), transparent 30%),
+    radial-gradient(circle at 90% 100%, rgba(139, 233, 253, 0.06), transparent 30%);
+  border-radius: 20px;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(31, 84, 103, 0.5),
+    inset 0 0 20px rgba(139, 233, 253, 0.04);
   margin: 2.5rem 1.5rem;
-  border-radius: 15px;;
 
   @media (min-width: 768px) {
     margin: 2.5rem 4rem;
@@ -1554,6 +1621,20 @@ export default {
   @media (min-width: 1200px) {
     margin: 2rem;
   }
+}
+
+.recommendations-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+  opacity: 0.8;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  pointer-events: none;
 }
 
 .recommendations-loader {
@@ -1667,7 +1748,9 @@ export default {
 .movie-info-modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.82);
+  background: rgba(3, 4, 6, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1677,15 +1760,40 @@ export default {
 
 .movie-info-delete-modal,
 .movie-info-rating-modal {
+  position: relative;
   width: 100%;
   max-width: 400px;
-  background: linear-gradient(135deg, rgba(6, 47, 64, 0.98) 0%, rgba(10, 30, 40, 0.99) 100%);
-  border: 1px solid rgba(127, 219, 241, 0.3);
-  border-radius: 16px;
-  box-shadow: 0 12px 40px 0 rgba(31, 104, 135, 0.6);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  background: rgba(3, 4, 6, 0.85);
+  background-image:
+    radial-gradient(circle at 15% 12%, rgba(31, 84, 103, 0.20), transparent 38%),
+    radial-gradient(circle at 85% 88%, rgba(139, 233, 253, 0.09), transparent 32%);
+  border-radius: 20px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(31, 84, 103, 0.5),
+    inset 0 0 24px rgba(139, 233, 253, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   overflow: hidden;
+  animation: movieInfoModalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.movie-info-delete-modal::before,
+.movie-info-rating-modal::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+  opacity: 0.8;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  pointer-events: none;
+}
+
+@keyframes movieInfoModalIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .movie-info-modal-header {
@@ -1693,13 +1801,14 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(139, 233, 253, 0.12);
 }
 
 .movie-info-modal-header h3 {
   color: #8BE9FD;
   font-size: 1.6rem;
-  font-weight: 600;
+  font-weight: 700;
+  text-shadow: 0 0 16px rgba(139, 233, 253, 0.22);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
