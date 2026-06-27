@@ -85,6 +85,10 @@
 
               <h3 class="sidebar-title">Art&iacute;culo</h3>
               <div class="sidebar-meta-list">
+                <div v-if="article.id" class="sidebar-meta-item">
+                  <span class="sidebar-meta-label">ID</span>
+                  <span class="sidebar-meta-value sidebar-meta-id">#{{ article.id }}</span>
+                </div>
                 <div class="sidebar-meta-item">
                   <span class="sidebar-meta-label">Publicado</span>
                   <span class="sidebar-meta-value">{{ formatDate(article.published_at) }}</span>
@@ -948,6 +952,7 @@ useHead(() => {
 .sidebar-meta-item { display: flex; flex-direction: column; gap: 4px; }
 .sidebar-meta-label { font-size: 12px; color: #80868b; text-transform: uppercase; letter-spacing: 0.5px; }
 .sidebar-meta-value { font-size: 14px; color: #fff; }
+.sidebar-meta-id { font-size: 12px; color: #5c6770; font-variant-numeric: tabular-nums; letter-spacing: 0.3px; }
 .sidebar-tags { display: flex; flex-wrap: wrap; gap: 4px; }
 .sidebar-tag { font-size: 12px; color: #80868b; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 2px 8px; border-radius: 10px; }
 .sidebar-tag--clickable { text-decoration: none; cursor: pointer; transition: all 0.2s ease; }
