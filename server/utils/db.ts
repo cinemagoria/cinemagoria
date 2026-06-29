@@ -18,12 +18,13 @@ export function useDb(): Client {
     return _client
 }
 
-// Default hard ceiling for a single query. Turso is remote, and a slow scan
-// (e.g. an unindexed `LIKE '%...%'` news search) used to hang until Cloud Run's
-// 60s platform timeout, holding the instance open and surfacing as intermittent
-// 504s on the homepage and /api/news. Failing fast frees the instance and the
-// Turso connection so one slow query can't cascade into a dead page.
-const DEFAULT_QUERY_TIMEOUT_MS = 8000
+// Safety ceiling for a single query, set just under Cloud Run's 60s platform
+// timeout. Turso is remote and occasionally has slow spells (cold connection /
+// rate limiting) where even tiny queries take several seconds; the ceiling only
+// exists to free the instance before the platform kills it at 60s, NOT to fail
+// fast on normal slowness. Keep it generous so a transient Turso lag can't turn
+// a working-but-slow page into a hard 500.
+const DEFAULT_QUERY_TIMEOUT_MS = 45000
 
 export async function dbExecute(
     stmt: Parameters<Client['execute']>[0],
