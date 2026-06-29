@@ -1,5 +1,5 @@
 import { createError, defineEventHandler, getQuery } from 'h3'
-import { useDb } from '~~/server/utils/db'
+import { dbExecute } from '~~/server/utils/db'
 
 // slug → festival_name as stored in Turso. Keep in sync with the per-festival
 // endpoints — those still exist for direct callers (festival landing pages,
@@ -83,8 +83,6 @@ export default defineEventHandler(async (event) => {
         return { results: {} }
     }
 
-    const db = useDb()
-
     try {
         const placeholders = festivalNames.map(() => '?').join(', ')
         const sql = `SELECT * FROM festival_films
@@ -92,7 +90,7 @@ export default defineEventHandler(async (event) => {
                        AND festival_year = ?`
         const args = [...festivalNames, year]
 
-        const result = await db.execute({ sql, args })
+        const result = await dbExecute({ sql, args })
 
         // Bucket by slug for easy client consumption.
         const buckets: Record<string, any[]> = {}

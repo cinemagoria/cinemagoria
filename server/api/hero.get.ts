@@ -1,10 +1,8 @@
-import { useDb } from '~~/server/utils/db'
+import { dbExecute } from '~~/server/utils/db'
 
 export default defineEventHandler(async (event) => {
-    const db = useDb()
-
     try {
-        const result = await db.execute(`
+        const result = await dbExecute(`
             SELECT * FROM hero_selections 
             WHERE title IS NOT NULL 
             AND backdrop_path IS NOT NULL

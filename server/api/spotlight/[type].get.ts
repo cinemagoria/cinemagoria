@@ -1,4 +1,4 @@
-import { useDb } from '~~/server/utils/db'
+import { dbExecute } from '~~/server/utils/db'
 
 // Phase-1 Spotlight endpoint. Reads the curated 20-item lists straight from
 // the Turso tables `spotlight_movies` / `spotlight_tv` populated by
@@ -23,12 +23,9 @@ export default defineEventHandler(async (event) => {
     if (!table) {
         throw createError({ statusCode: 400, statusMessage: 'type must be "movies" or "tv"' })
     }
-
-    const db = useDb()
-
     let rows
     try {
-        const r = await db.execute(`SELECT * FROM ${table} ORDER BY sort_index ASC`)
+        const r = await dbExecute(`SELECT * FROM ${table} ORDER BY sort_index ASC`)
         rows = r.rows
     } catch (e: any) {
         console.error(`[spotlight] ${table} query failed:`, e?.message || e)
