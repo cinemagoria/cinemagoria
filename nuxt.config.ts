@@ -54,6 +54,19 @@ export default defineNuxtConfig({
     '/usage-policies': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
     '/contact': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
 
+    // Static image assets in /public — versioned-by-content, effectively immutable.
+    // Festival badges (public/festivals/**) and UI/placeholder art were re-downloaded
+    // every navigation because they shipped without a Cache-Control header; pin them
+    // for a year so the browser reuses them across pages.
+    '/festivals/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+    '/ui/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+    '/placeholders/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+    '/logos/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+    '/icons/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+    '/thumbnails/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+    '/onboarding/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+    '/avatars/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+
     // Client-side only (user-specific or auth pages)
     '/search': { ssr: false },
     '/watchlist': { ssr: false },

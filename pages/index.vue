@@ -123,7 +123,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     // spotlight_movies / spotlight_tv tables ordered by sort_index.
     const fetchSpotlight = async (file) => {
       try {
-        const data = await $fetch(file);
+        const data = await $fetch(file, { timeout: 9000 });
         return { results: data?.results ?? [] };
       } catch (e) {
         console.error(`Spotlight fetch error (${file}):`, e);
@@ -137,7 +137,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     const FESTIVAL_SLUGS = ['sundance','berlinale','rotterdam','slamdance','sxsw','romford','bifff','bafici','cannes','tribeca','cuff','kviff','fantasia'];
     const fetchAllFestivalsBatched = async (limit = 1000) => {
         try {
-            const data = await $fetch(`/api/festival/films-batch?festivals=${FESTIVAL_SLUGS.join(',')}&limit=${limit}`);
+            const data = await $fetch(`/api/festival/films-batch?festivals=${FESTIVAL_SLUGS.join(',')}&limit=${limit}`, { timeout: 9000 });
             const buckets = data?.results || {};
             return Object.fromEntries(
                 Object.entries(buckets).map(([slug, films]) => [
@@ -153,7 +153,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
 
     const fetchHero = async () => {
         try {
-             const data = await $fetch('/api/hero');
+             const data = await $fetch('/api/hero', { timeout: 9000 });
              return data?.result ?? null;
         } catch (e) {
              console.error('Hero fetch error', e);

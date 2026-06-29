@@ -1,4 +1,4 @@
-import { useDb } from '~~/server/utils/db'
+import { dbExecute } from '~~/server/utils/db'
 
 export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig()
@@ -8,9 +8,12 @@ export default defineEventHandler(async (event) => {
     const rawLang = String(query.lang || config.public.apiLang || 'en')
     const lang = rawLang.substring(0, 2).toLowerCase()
     const source = query.source ? String(query.source) : null
-    const searchQuery = query.q ? String(query.q).trim() : null
-
-    const db = useDb()
+    // Require >=2 chars: a single-char `LIKE '%a%'` matches almost everything and
+    // forces a full-table scan on curated_news with no usable index — the exact
+    // shape that hung for 60s and 504'd. Short/empty terms fall back to the
+    // normal indexed recent-news listing.
+    const rawSearch = query.q ? String(query.q).trim() : null
+    const searchQuery = rawSearch && rawSearch.length >= 2 ? rawSearch : null
 
     try {
         const offset = (page - 1) * limit
@@ -35,7 +38,7 @@ export default defineEventHandler(async (event) => {
 
             sql += ` ORDER BY published_at DESC`
 
-            const result = await db.execute({ sql, args })
+            const result = await dbExecute({ sql, args })
 
             const items = result.rows.map(row => ({
                 id: row.id,
@@ -89,7 +92,7 @@ export default defineEventHandler(async (event) => {
 
         args.push(limit, offset)
 
-        const result = await db.execute({ sql, args })
+        const result = await dbExecute({ sql, args })
 
         const items = result.rows.map(row => ({
             id: row.id,
@@ -122,7 +125,7 @@ export default defineEventHandler(async (event) => {
 
             cineSql += ` ORDER BY published_at DESC LIMIT 20`
 
-            const cineResult = await db.execute({ sql: cineSql, args: cineArgs })
+            const cineResult = await dbExecute({ sql: cineSql, args: cineArgs })
 
             const cineItems = cineResult.rows.map(row => ({
                 id: `cine-${row.id}`,
