@@ -186,9 +186,9 @@
   {
     "tmdb_id": 1421903,
     "media_type": "movie",
-    "trailer_key": null,
+    "trailer_key": "cmjpadVj-Vk",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1782568368/cinemagoria/backdrops/hero_1421903.webp",
     "poster_path": "/80dcSFTyC97dkgvskEb4fJvlfrl.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   }
 ]
