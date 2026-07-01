@@ -5032,6 +5032,9 @@ svg.rating-logo.imdb {
 
 
 
+
+
+
 /* ==== WL-GLASS-BEGIN — lists-faithful restyle (mirrors pages/lists/[slug].vue) ==== */
 
 /* ── Page shell (mirror .list-page) ─────────────────────────────── */
@@ -5095,13 +5098,14 @@ svg.rating-logo.imdb {
 /* ── Toolbar (mirror .panel-toolbar) ────────────────────────────── */
 .new-controls-container {
   display: flex !important;
+  flex-direction: row !important;
   align-items: center;
   justify-content: space-between;
-  gap: 10px 14px;
-  flex-wrap: wrap;
+  gap: 12px;
+  flex-wrap: nowrap !important;
   width: auto !important;
   max-width: none !important;
-  padding: 2px 4px 10px !important;
+  padding: 2px 0 10px !important;
   margin: 0 0 14px !important;
   background: none !important;
   border: none !important;
@@ -5110,7 +5114,22 @@ svg.rating-logo.imdb {
   backdrop-filter: none !important;
   box-shadow: none !important;
 }
-.action-buttons { display: flex; align-items: center; gap: 8px; }
+/* One row on desktop: switch hard-left, pager elastic middle, buttons right */
+.new-controls-container > .switch { flex: 0 0 auto; }
+.new-controls-container > .pagination { flex: 1 1 auto; min-width: 0; }
+.new-controls-container > .action-buttons { flex: 0 0 auto; }
+.action-buttons { display: flex; flex-direction: row !important; align-items: center; gap: 8px; flex-wrap: nowrap; flex-shrink: 0; }
+
+/* Mobile: switch + buttons on row 1, pager drops to a centered row 2 (max 2 rows) */
+@media (max-width: 767px) {
+  .new-controls-container { flex-wrap: wrap !important; row-gap: 10px; }
+  .new-controls-container > .switch { order: 1; }
+  .new-controls-container > .action-buttons { order: 2; }
+  .new-controls-container > .pagination { order: 3; flex: 1 0 100%; }
+  .switch > span { padding: 6px 14px !important; font-size: 13px !important; }
+  .control-btn { padding: 8px 12px !important; }
+  .btn-label { display: none; }
+}
 
 /* Segmented switch (reskin .switch to look like .seg-switch) */
 .switch {
@@ -5229,8 +5248,8 @@ svg.rating-logo.imdb {
   backdrop-filter: none !important;
   top: 0 !important;
 }
-/* Top pager now lives inside the toolbar row: fills the middle, compact */
-.pagination { margin: 0 !important; flex: 1 1 auto; }
+/* Top pager now lives inside the toolbar row (flex handled by the scoped rules above) */
+.pagination { margin: 0 !important; }
 .pagination-footer { margin: 18px 0 4px !important; }
 .pagination button,
 .pagination-footer button {
