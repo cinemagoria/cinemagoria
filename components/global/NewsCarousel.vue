@@ -129,7 +129,10 @@ export default {
       loadingMap: {},
     }
   },
-  async created() {
+  // mounted (client-only), not created: in created() the fetch also ran during
+  // every homepage SSR, issuing a Turso query whose result was thrown away —
+  // the render never awaited it and the client refetched anyway.
+  async mounted() {
     await this.fetchNews();
   },
   computed: {

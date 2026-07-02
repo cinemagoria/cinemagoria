@@ -1,5 +1,5 @@
 import { createError, defineEventHandler, getQuery } from 'h3'
-import { createClient } from '@libsql/client'
+import { dbExecute } from '~~/server/utils/db'
 
 interface DatabaseRow {
     id: number;
@@ -16,23 +16,8 @@ interface DatabaseRow {
 }
 
 export default defineEventHandler(async (event) => {
-    const config = useRuntimeConfig()
     const query = getQuery(event)
 
-    const dbUrl = config.rssDbUrl || config.imdbDbUrl
-    const dbToken = config.rssDbToken || config.imdbDbToken
-
-    if (!dbUrl || !dbToken) {
-        throw createError({
-            statusCode: 500,
-            statusMessage: 'Database configuration missing'
-        })
-    }
-
-    const db = createClient({
-        url: dbUrl,
-        authToken: dbToken
-    })
 
     try {
         let sql = `SELECT * FROM festival_films WHERE festival_name = 'Rotterdam Film Festival' AND festival_year = 2026`
@@ -47,7 +32,7 @@ export default defineEventHandler(async (event) => {
             args.push(query.imdb_id)
         }
 
-        const result = await db.execute({ sql, args })
+        const result = await dbExecute({ sql, args })
 
         let films = result.rows.map((row) => {
             const typedRow = row as unknown as DatabaseRow;

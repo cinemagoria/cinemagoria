@@ -85,8 +85,6 @@ import Credits from '~/components/Credits.vue';
 import SoundtrackList from '~/components/music/SoundtrackList.vue';
 import AwardsTab from '~/components/common/AwardsTab.vue';
 import { searchSoundtracks } from '~/utils/musicbrainz';
-import lodash from 'lodash';
-const { truncate } = lodash;
 
 const route = useRoute();
 const router = useRouter();

@@ -10,15 +10,21 @@
       <Footer />
     </div>
 
-    <AuthModal ref="authModal" />
+    <!--
+      These modals render nothing until opened (v-if-gated) and only need
+      their bus listeners registered shortly after load. Lazy + idle
+      hydration keeps their ~6k lines of component code out of the entry
+      chunk and off the critical hydration path on every page.
+    -->
+    <LazyAuthModal hydrate-on-idle />
     <CookieConsent />
     <InstallPrompt />
-    <ProgressTrackingModal />
-    <RatedModal />
-    <FollowingModal />
-    <QuickFavModal />
-    <MyListsModal />
-    <CreateListModal />
+    <LazyProgressTrackingModal hydrate-on-idle />
+    <LazyRatedModal hydrate-on-idle />
+    <LazyFollowingModal hydrate-on-idle />
+    <LazyQuickFavModal hydrate-on-idle />
+    <LazyMyListsModal hydrate-on-idle />
+    <LazyCreateListModal hydrate-on-idle />
   </div>
 </template>
 
@@ -26,15 +32,8 @@
 import Nav from '~/components/global/Nav.vue'
 import SearchForm from '~/components/global/SearchForm.vue'
 import Footer from '~/components/global/Footer.vue'
-import AuthModal from '~/components/global/AuthModal.vue'
 import CookieConsent from '~/components/global/CookieConsent.vue'
 import InstallPrompt from '~/components/global/InstallPrompt.vue'
-import RatedModal from '~/components/global/RatedModal.vue'
-import ProgressTrackingModal from '~/components/global/ProgressTrackingModal.vue'
-import FollowingModal from '~/components/global/FollowingModal.vue'
-import QuickFavModal from '~/components/global/QuickFavModal.vue'
-import MyListsModal from '~/components/global/MyListsModal.vue'
-import CreateListModal from '~/components/global/CreateListModal.vue'
 </script>
 
 <style lang="scss" scoped>
