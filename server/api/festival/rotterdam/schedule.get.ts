@@ -1,4 +1,4 @@
-import { createClient } from '@libsql/client'
+import { dbExecute } from '~~/server/utils/db'
 import { createError, defineEventHandler } from 'h3'
 
 interface ScheduleRow {
@@ -23,22 +23,7 @@ interface ScheduleRow {
 }
 
 export default defineEventHandler(async (event) => {
-    const config = useRuntimeConfig()
 
-    const dbUrl = config.rssDbUrl || config.imdbDbUrl
-    const dbToken = config.rssDbToken || config.imdbDbToken
-
-    if (!dbUrl || !dbToken) {
-        throw createError({
-            statusCode: 500,
-            statusMessage: 'Database configuration missing'
-        })
-    }
-
-    const db = createClient({
-        url: dbUrl.trim(),
-        authToken: dbToken.trim()
-    })
 
     try {
         const sql = `
@@ -63,7 +48,7 @@ export default defineEventHandler(async (event) => {
             ORDER BY s.start_time ASC
         `
 
-        const result = await db.execute(sql)
+        const result = await dbExecute(sql)
 
         const screenings = result.rows.map((row) => {
             const typedRow = row as unknown as ScheduleRow;

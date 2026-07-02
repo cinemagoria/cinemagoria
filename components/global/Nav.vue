@@ -196,7 +196,10 @@ export default {
   mounted() {
     this.checkAuthStatus();
 
-    this.authInterval = setInterval(this.checkAuthStatus, 500);
+    // Fallback poll for same-tab token changes that don't dispatch
+    // 'auth-changed'. 2s is plenty — the event listeners below catch the
+    // normal paths instantly, and 500ms was just burning timer wake-ups.
+    this.authInterval = setInterval(this.checkAuthStatus, 2000);
     
     if (typeof window !== 'undefined') {
       this.checkScreenSize();

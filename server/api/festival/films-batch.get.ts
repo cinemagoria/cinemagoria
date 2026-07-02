@@ -25,6 +25,39 @@ const NAME_TO_SLUG: Record<string, string> = Object.fromEntries(
     Object.entries(FESTIVAL_NAME_BY_SLUG).map(([slug, name]) => [name, slug])
 )
 
+// Slim projection for carousel/card consumers (homepage). Keeps every field
+// the festival cards, QuickFav and mapItemToDbPayload read, but drops the
+// full tmdb_data spread (cast, crew, videos, production_companies, …) that
+// only the festival detail pages need. Cuts the homepage's serialized Nuxt
+// payload and the Turso→origin transfer dramatically.
+function slimFilm(film: any) {
+    return {
+        id: film.id,
+        internal_id: film.internal_id,
+        tmdb_id: film.tmdb_id,
+        imdb_id: film.imdb_id,
+        title: film.title,
+        name: film.name,
+        overview: film.overview,
+        poster_path: film.poster_path,
+        image_url: film.image_url,
+        backdrop_path: film.backdrop_path,
+        release_date: film.release_date,
+        first_air_date: film.first_air_date,
+        vote_average: film.vote_average,
+        vote_count: film.vote_count,
+        runtime: film.runtime,
+        genres: film.genres,
+        director: film.director,
+        section: film.section,
+        media_type: film.media_type,
+        external_ids: film.external_ids,
+        imdb_rating: film.imdb_rating,
+        imdb_votes: film.imdb_votes,
+        rating_source: film.rating_source,
+    }
+}
+
 function mapRow(row: any) {
     let tmdbData: any = {}
     try {
@@ -69,6 +102,7 @@ export default defineEventHandler(async (event) => {
     const slugsParam = String(query.festivals || '').trim()
     const limitPerFestival = query.limit ? parseInt(String(query.limit), 10) : 1000
     const year = query.year ? parseInt(String(query.year), 10) : 2026
+    const slimFields = query.fields === 'card'
 
     if (!slugsParam) {
         throw createError({ statusCode: 400, statusMessage: 'festivals query param required (comma-separated slugs)' })
@@ -101,7 +135,7 @@ export default defineEventHandler(async (event) => {
             if (!slug || !buckets[slug]) continue
             const film = mapRow(row)
             if (!film.title || !String(film.title).trim()) continue
-            buckets[slug].push(film)
+            buckets[slug].push(slimFields ? slimFilm(film) : film)
         }
 
         // Apply per-festival limit + stable alphabetical sort, matching the

@@ -51,9 +51,25 @@
 <script>
 import { mapState, mapActions } from 'pinia';
 import { useSearchStore } from '~/stores/search';
-import lodash from 'lodash';
-const { debounce } = lodash;
 import UserNav from './UserNav.vue';
+
+// Minimal debounce with .cancel() — replaces the full lodash import, which
+// was the only thing pulling ~70KB of lodash into the entry bundle.
+function debounce(fn, wait) {
+  let timer = null;
+  const debounced = function (...args) {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      timer = null;
+      fn.apply(this, args);
+    }, wait);
+  };
+  debounced.cancel = () => {
+    if (timer) clearTimeout(timer);
+    timer = null;
+  };
+  return debounced;
+}
 
 
 async function getUserAvatar(userEmail) {

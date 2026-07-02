@@ -2,7 +2,7 @@
   <div
     @touchstart="handleTouchStart"
     @touchend="handleTouchEnd"
-    @wheel.prevent="handleWheel">
+    @wheel="handleWheel">
     <div
       v-if="isHomepage && autoAdvanceEnabled && items && items.length > 1"
       :class="$style.autoAdvanceBar">
@@ -57,6 +57,8 @@
             ref="backdropRef"
             :src="backdrop"
             loading="eager"
+            fetchpriority="high"
+            decoding="async"
             :class="$style.image"
             :alt="name"
             :style="{ 
@@ -466,6 +468,11 @@ import { MANUAL_FESTIVAL_BADGES, MANUAL_OVERVIEWS } from '~/utils/constants';
 import { getHeroEnrichment, getNoirEnrichment } from '~/utils/api';
 import NoirModal from '~/components/NoirModal.vue';
 
+// Festival membership per tmdb_id, shared across every Hero instance for the
+// session. Badges don't change mid-visit, so cycling the homepage carousel
+// (or revisiting a title) never refetches.
+const FESTIVAL_STATUS_CACHE = new Map();
+
 export default {
   components: {
     Modal,
@@ -713,9 +720,14 @@ export default {
     },
   },
 
+  created() {
+    // Non-reactive: session cache of per-item user state (see loadUserItemState).
+    this._userStateCache = new Map();
+  },
+
   async mounted() {
     this.$bus.$on('new-list-created', this.handleNewList);
-    
+
     const email = localStorage.getItem('email');
     const accessToken = localStorage.getItem('access_token');
     this.userEmail = email ? email.replace(/['"]+/g, '') : '';
@@ -724,8 +736,8 @@ export default {
     this.updateHeroState();
     this.checkNoirStatus();
 
-    this.$bus.$on('favorites-updated', this.checkMembership);
-    this.$bus.$on('lists-updated', this.checkMembership);
+    this.$bus.$on('favorites-updated', this.handleExternalUserStateChange);
+    this.$bus.$on('lists-updated', this.handleExternalUserStateChange);
   },
 
   watch: {
@@ -744,8 +756,8 @@ export default {
   },
 
   beforeDestroy() {
-    this.$bus.$off('favorites-updated', this.checkMembership);
-    this.$bus.$off('lists-updated', this.checkMembership);
+    this.$bus.$off('favorites-updated', this.handleExternalUserStateChange);
+    this.$bus.$off('lists-updated', this.handleExternalUserStateChange);
     this.$bus.$off('new-list-created', this.handleNewList);
     this.stopAutoAdvance();
   },
@@ -785,6 +797,9 @@ export default {
       if (!this.isHomepage || this.items.length <= 1) return;
 
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        // Only hijack horizontal wheel gestures (carousel navigation).
+        // Vertical scrolling over the hero must keep scrolling the page.
+        e.preventDefault();
         const now = Date.now();
         if (now - this.lastWheelTime < 600) return;
         
@@ -867,19 +882,23 @@ export default {
       if (!this.isHomepage || !this.autoAdvanceEnabled || !this.items || this.items.length <= 1) return;
       this.toggleAutoAdvance();
     },
-    async updateHeroState() { 
-        if (this.isHomepage) {
-          this.isHomepageContentReady = false;
+    async updateHeroState() {
+        // Only the very first homepage paint hides the hero behind the
+        // unified loader — and only until the backdrop is decoded. Badges,
+        // membership and ratings load in the background and pop in when
+        // ready (same behavior as the movie/tv info pages, which is why
+        // those always felt faster). Once revealed, carousel advances keep
+        // the pane visible and just crossfade the backdrop.
+        if (this.isHomepage && !this.isHomepageContentReady) {
           this.loadingStates = {
             backdrop: true,
             festivalBadge: false,
-            
-            metadata: true
+            metadata: false
           };
         }
-        
+
         this.isLoading = true;
- 
+
         this.posterForDb = this.poster_path;
         this.nameForDb = this.name;
         this.idForDb = this.id;
@@ -887,32 +906,29 @@ export default {
         this.starsForDb = this.stars;
         this.yearStartForDb = this.yearStart;
         this.yearEndForDb = this.yearEnd;
-        
+
         const currentItem = this.heroItem || this.item;
         this.genresForDb = currentItem.genres ? currentItem.genres.map(genre => genre.name).join(', ') : '';
         this.addedAt = new Date();
-        
+
         this.shareTitle = "I'd like to share '" + this.nameForDb + "' from Cinemagoria!";
         this.customTitle = "I'd like to share '" + this.nameForDb + "' from Cinemagoria!";
         this.customMessage = 'Synopsis: ' + currentItem.overview + '\n\nExplore streaming options...';
-        
+
         if (this.hasAccessToken) {
-            await this.checkMembership();
-            this.checkUserRating();
-            await this.loadRatingFromRatingsEndpoint();
-            this.loadProgress();
+            this.loadUserItemState();
         }
-        
+
         this.checkFestivalStatus();
 
         if (!this.backdrop) {
           this.isLoading = false;
         } else {
            this.$nextTick(() => {
-            if (this.$refs.backdropRef && this.$refs.backdropRef.complete) this.isLoading = false;
+            if (this.$refs.backdropRef && this.$refs.backdropRef.complete) this.onBackdropLoaded();
            });
         }
-        
+
         if (typeof window !== 'undefined') {
             const prevent = localStorage.getItem('prevent_optimization_modal');
             if (prevent === 'true') {
@@ -923,23 +939,12 @@ export default {
         setTimeout(() => this.isLoading = false, 2000);
 
         this.preloadAdjacentBackdrops();
-        
-        await Promise.all([
-          this.checkFestivalStatus()
-        ]);
-        
-        if (this.isHomepage) {
-          this.loadingStates.metadata = false;
 
-          setTimeout(() => {
-            if (this.loadingStates.backdrop) {
-              this.loadingStates.backdrop = false;
-              this.checkHomepageContentReady();
-            }
-          }, 100);
-
+        if (this.isHomepage && !this.isHomepageContentReady) {
           this.checkHomepageContentReady();
 
+          // Failsafe: never hold the loader longer than 2.5s even if the
+          // backdrop request stalls.
           setTimeout(() => {
             if (!this.isHomepageContentReady) {
               this.loadingStates.backdrop = false;
@@ -947,8 +952,56 @@ export default {
               this.loadingStates.metadata = false;
               this.isHomepageContentReady = true;
             }
-          }, 5000);
+          }, 2500);
         }
+    },
+
+    // ── Per-item user state (membership / rating / progress) ─────────
+    // Fetched in parallel and snapshotted per favId so cycling the hero
+    // carousel restores state instantly instead of re-issuing 4+ backend
+    // requests every 20 seconds. Any mutation invalidates the cache.
+    loadUserItemState() {
+        const favId = this.favId;
+        const cached = this._userStateCache && this._userStateCache.get(favId);
+        if (cached) {
+            Object.assign(this, cached);
+            return;
+        }
+
+        // Reset so the previous item's state never bleeds into this one
+        // while the fetches are in flight.
+        this.membership = { inWatchlist: false, lists: [] };
+        this.isFavorite = false;
+        this.userRatingForDb = '-';
+        this.hasUserRating = false;
+        this.selectedRating = 0;
+        this.userReview = '';
+        this.progressPercentage = 0;
+        this.trackedEpisodesCount = 0;
+        this.trackedSeasonData = [];
+
+        Promise.all([
+            this.checkMembership(),
+            this.loadRatingFromRatingsEndpoint(),
+            this.loadProgress()
+        ]).then(() => {
+            if (this.favId !== favId || !this._userStateCache) return;
+            this._userStateCache.set(favId, {
+                membership: this.membership,
+                isFavorite: this.isFavorite,
+                userRatingForDb: this.userRatingForDb,
+                hasUserRating: this.hasUserRating,
+                selectedRating: this.selectedRating,
+                userReview: this.userReview,
+                progressPercentage: this.progressPercentage,
+                trackedEpisodesCount: this.trackedEpisodesCount,
+                trackedSeasonData: this.trackedSeasonData,
+            });
+        }).catch(() => {});
+    },
+
+    invalidateUserState() {
+        if (this._userStateCache) this._userStateCache.clear();
     },
     
 
@@ -992,23 +1045,6 @@ export default {
     },
 
     async checkFestivalStatus() {
-    const wasSundance = !!this.sundanceFilm;
-    const wasSlamdance = !!this.slamdanceFilm;
-    const wasTribeca = !!this.tribecaFilm;
-    const wasBerlinale = !!this.berlinaleFilm;
-    const wasRotterdam = !!this.rotterdamFilm;
-    const wasSxsw = !!this.sxswFilm;
-    const wasRomford = !!this.romfordFilm;
-    const wasBifff = !!this.bifffFilm;
-    const wasCannes = !!this.cannesFilm;
-    const wasCannesCriticsChoice = !!this.cannesCriticsChoiceFilm;
-    const wasCannesQuinzaine = !!this.cannesQuinzaineFilm;
-    const wasCannesAcid = !!this.cannesAcidFilm;
-    const wasBafici = !!this.baficiFilm;
-    const wasCuff = !!this.cuffFilm;
-    const wasKviff = !!this.kviffFilm;
-    const wasFantasia = !!this.fantasiaFilm;
-
     this.sundanceFilm = null;
     this.slamdanceFilm = null;
     this.tribecaFilm = null;
@@ -1028,178 +1064,49 @@ export default {
 
     if (this.type !== 'movie' && this.type !== 'tv') return;
 
-    if (wasSundance || wasSlamdance || wasTribeca || wasBerlinale || wasRotterdam || wasSxsw || wasRomford || wasBifff || wasCannes || wasCannesCriticsChoice || wasCannesQuinzaine || wasCannesAcid || wasBafici || wasCuff || wasKviff || wasFantasia) {
-        this.isFestivalLoading = true;
-    }
+    const requestedId = this.id;
 
     try {
-        const sundanceResponse = await fetch(`/api/festival/sundance/films?tmdb_id=${this.id}`);
-        if (sundanceResponse.ok) {
-            const data = await sundanceResponse.json();
-            if (data.results && data.results.length > 0) {
-                if (!wasSundance) {
-                    this.isFestivalLoading = true;
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                }
-                this.sundanceFilm = data.results[0];
-            }
+        // One request + one indexed Turso query resolves every festival at
+        // once (was: 13 sequential /api/festival/{slug}/films round trips
+        // with artificial 500ms delays, which kept the homepage hero behind
+        // its loader for ~5s on every load and every carousel advance).
+        let festivals = FESTIVAL_STATUS_CACHE.get(requestedId);
+        if (!festivals) {
+            this.isFestivalLoading = true;
+            const data = await $fetch(`/api/festival/status?tmdb_id=${requestedId}`, { timeout: 9000 });
+            festivals = data?.festivals || {};
+            FESTIVAL_STATUS_CACHE.set(requestedId, festivals);
         }
 
-        const slamdanceResponse = await fetch(`/api/festival/slamdance/films?tmdb_id=${this.id}`);
-        if (slamdanceResponse.ok) {
-            const data = await slamdanceResponse.json();
-            if (data.results && data.results.length > 0) {
-                if (!wasSlamdance) {
-                    this.isFestivalLoading = true;
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                }
-                this.slamdanceFilm = data.results[0];
-            }
-        }
+        // The hero may have advanced while the request was in flight —
+        // don't paint another item's badges onto the current one.
+        if (this.id !== requestedId) return;
 
-        const tribecaResponse = await fetch(`/api/festival/tribeca/films?tmdb_id=${this.id}`);
-        if (tribecaResponse.ok) {
-            const data = await tribecaResponse.json();
-            if (data.results && data.results.length > 0) {
-                if (!wasTribeca) {
-                    this.isFestivalLoading = true;
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                }
-                this.tribecaFilm = data.results[0];
-            }
-        }
+        this.sundanceFilm = festivals.sundance || null;
+        this.slamdanceFilm = festivals.slamdance || null;
+        this.tribecaFilm = festivals.tribeca || null;
+        this.berlinaleFilm = festivals.berlinale || null;
+        this.rotterdamFilm = festivals.rotterdam || null;
+        this.sxswFilm = festivals.sxsw || null;
+        this.romfordFilm = festivals.romford || null;
+        this.bifffFilm = festivals.bifff || null;
+        this.baficiFilm = festivals.bafici || null;
+        this.cuffFilm = festivals.cuff || null;
+        this.kviffFilm = festivals.kviff || null;
+        this.fantasiaFilm = festivals.fantasia || null;
 
-        const berlinaleResponse = await fetch(`/api/festival/berlinale/films?tmdb_id=${this.id}`);
-        if (berlinaleResponse.ok) {
-            const data = await berlinaleResponse.json();
-            if (data.results && data.results.length > 0) {
-                if (!wasBerlinale) {
-                    this.isFestivalLoading = true;
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                }
-                this.berlinaleFilm = data.results[0];
-            }
-        }
-
-        const rotterdamResponse = await fetch(`/api/festival/rotterdam/films?tmdb_id=${this.id}`);
-        if (rotterdamResponse.ok) {
-            const data = await rotterdamResponse.json();
-            if (data.results && data.results.length > 0) {
-                if (!wasRotterdam) {
-                    this.isFestivalLoading = true;
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                }
-                this.rotterdamFilm = data.results[0];
-            }
-        }
-
-        const sxswResponse = await fetch(`/api/festival/sxsw/films?tmdb_id=${this.id}`);
-        if (sxswResponse.ok) {
-            const data = await sxswResponse.json();
-            if (data.results && data.results.length > 0) {
-                if (!wasSxsw) {
-                    this.isFestivalLoading = true;
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                }
-                this.sxswFilm = data.results[0];
-            }
-        }
-
-        const romfordResponse = await fetch(`/api/festival/romford/films?tmdb_id=${this.id}`);
-        if (romfordResponse.ok) {
-            const data = await romfordResponse.json();
-            if (data.results && data.results.length > 0) {
-                if (!wasRomford) {
-                    this.isFestivalLoading = true;
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                }
-                this.romfordFilm = data.results[0];
-            }
-        }
-
-        const bifffResponse = await fetch(`/api/festival/bifff/films?tmdb_id=${this.id}`);
-        if (bifffResponse.ok) {
-            const data = await bifffResponse.json();
-            if (data.results && data.results.length > 0) {
-                if (!wasBifff) {
-                    this.isFestivalLoading = true;
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                }
-                this.bifffFilm = data.results[0];
-            }
-        }
-
-        const baficiResponse = await fetch(`/api/festival/bafici/films?tmdb_id=${this.id}`);
-        if (baficiResponse.ok) {
-            const data = await baficiResponse.json();
-            if (data.results && data.results.length > 0) {
-                if (!wasBafici) {
-                    this.isFestivalLoading = true;
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                }
-                this.baficiFilm = data.results[0];
-            }
-        }
-
-        const cuffResponse = await fetch(`/api/festival/cuff/films?tmdb_id=${this.id}`);
-        if (cuffResponse.ok) {
-            const data = await cuffResponse.json();
-            if (data.results && data.results.length > 0) {
-                if (!wasCuff) {
-                    this.isFestivalLoading = true;
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                }
-                this.cuffFilm = data.results[0];
-            }
-        }
-
-        const kviffResponse = await fetch(`/api/festival/kviff/films?tmdb_id=${this.id}`);
-        if (kviffResponse.ok) {
-            const data = await kviffResponse.json();
-            if (data.results && data.results.length > 0) {
-                if (!wasKviff) {
-                    this.isFestivalLoading = true;
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                }
-                this.kviffFilm = data.results[0];
-            }
-        }
-
-        const fantasiaResponse = await fetch(`/api/festival/fantasia/films?tmdb_id=${this.id}`);
-        if (fantasiaResponse.ok) {
-            const data = await fantasiaResponse.json();
-            if (data.results && data.results.length > 0) {
-                if (!wasFantasia) {
-                    this.isFestivalLoading = true;
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                }
-                this.fantasiaFilm = data.results[0];
-            }
-        }
-
-        const cannesResponse = await fetch(`/api/festival/cannes/films?tmdb_id=${this.id}`);
-        if (cannesResponse.ok) {
-            const data = await cannesResponse.json();
-            if (data.results && data.results.length > 0) {
-                const film = data.results[0];
-                const sectionUp = String(film.section || film.category || '').toUpperCase();
-                const isCriticsChoice = sectionUp.includes("CRITICS");
-                const isQuinzaine = sectionUp.includes("QUINZAINE") || sectionUp.includes("DIRECTORS") || sectionUp.includes("FORTNIGHT");
-                const isAcid = sectionUp.includes("ACID");
-                const wasMatching = isCriticsChoice ? wasCannesCriticsChoice : isQuinzaine ? wasCannesQuinzaine : isAcid ? wasCannesAcid : wasCannes;
-                if (!wasMatching) {
-                    this.isFestivalLoading = true;
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                }
-                if (isCriticsChoice) {
-                    this.cannesCriticsChoiceFilm = film;
-                } else if (isQuinzaine) {
-                    this.cannesQuinzaineFilm = film;
-                } else if (isAcid) {
-                    this.cannesAcidFilm = film;
-                } else {
-                    this.cannesFilm = film;
-                }
+        if (festivals.cannes) {
+            const film = festivals.cannes;
+            const sectionUp = String(film.section || '').toUpperCase();
+            if (sectionUp.includes('CRITICS')) {
+                this.cannesCriticsChoiceFilm = film;
+            } else if (sectionUp.includes('QUINZAINE') || sectionUp.includes('DIRECTORS') || sectionUp.includes('FORTNIGHT')) {
+                this.cannesQuinzaineFilm = film;
+            } else if (sectionUp.includes('ACID')) {
+                this.cannesAcidFilm = film;
+            } else {
+                this.cannesFilm = film;
             }
         }
 
@@ -1259,6 +1166,7 @@ export default {
     },
 
     async toggleListMembership(list) {
+        this.invalidateUserState();
         const isInList = this.membership.lists.some(l => l.id === list.id);
         const { typeForDb, idForDb, nameForDb, posterForDb, yearStartForDb, yearEndForDb, genresForDb, starsForDb } = this;
         
@@ -1281,8 +1189,14 @@ export default {
     },
 
     async handleNewList() {
+        this.invalidateUserState();
         await this.checkMembership();
         await this.fetchUserLists();
+    },
+
+    handleExternalUserStateChange() {
+        this.invalidateUserState();
+        this.checkMembership();
     },
 
     async toggleAddListMenu() {
@@ -1364,6 +1278,7 @@ export default {
     
     async saveRatingAndReview() {
       try {
+        this.invalidateUserState();
         if (this.type === 'movie' && this.selectedRating > 0) {
           if (this.progressPercentage === 0 || this.progressPercentage >= 80) {
             this.progressPercentage = 100;
@@ -1383,6 +1298,7 @@ export default {
     
     async removeRating() {
       try {
+        this.invalidateUserState();
         const response = await fetch(
           `${this.tursoBackendUrl}/favorites/rating/${this.userEmail}/${this.typeForDb}/${this.id}`,
           {
@@ -1688,6 +1604,7 @@ export default {
     },
 
     async handleToggleFavorite() {
+        this.invalidateUserState();
         await this.toggleFavorite();
         await this.checkMembership();
     },

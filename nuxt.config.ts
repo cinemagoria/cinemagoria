@@ -27,6 +27,7 @@ export default defineNuxtConfig({
 
     // API routes
     '/api/hero': { headers: { 'cache-control': 'public, max-age=1800, s-maxage=1800' } },
+    '/api/spotlight/**': { headers: { 'cache-control': 'public, max-age=1800, s-maxage=1800' } },
     '/api/news': { headers: { 'cache-control': 'public, max-age=300, s-maxage=300' } },
     '/api/imdb-rating/**': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
     '/api/article/**': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=3600' } },
@@ -157,7 +158,11 @@ export default defineNuxtConfig({
         { rel: 'alternate', hreflang: 'es', href: 'https://es.cinemagoria.com' },
         { rel: 'alternate', hreflang: 'x-default', href: 'https://cinemagoria.com' },
         { rel: 'icon', type: 'image/x-icon', href: '/icons/favicon.ico' },
-        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500' },
+        // Preconnect so the render-blocking font CSS + woff2 handshakes start
+        // immediately instead of after HTML parse reaches the stylesheet links.
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap' }
       ],
     }

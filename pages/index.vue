@@ -61,18 +61,14 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { getMovie, getTvShow, getListItem } from '~/utils/api';
+import { computed } from 'vue';
 import Hero from '~/components/Hero';
-import ListingCarousel from '~/components/ListingCarousel';
 import SpotlightCarousel from '~/components/SpotlightCarousel';
 import FestivalsCarousel from '~/components/FestivalsCarousel';
-import FeatureDescription from '~/components/FeatureDescription';
 import NewsCarousel from '~/components/global/NewsCarousel';
 import ProductionCompanyCarousel from '~/components/ProductionCompanyCarousel';
 import StreamingPlatformCarousel from '~/components/StreamingPlatformCarousel';
 import OscarsLiveBanner from '~/components/OscarsLiveBanner';
-import OscarsCarousel from '~/components/OscarsCarousel';
 import CannesLiveBanner from '~/components/CannesLiveBanner';
 import CannesWinnersBanner from '~/components/CannesWinnersBanner';
 import TribecaLiveBanner from '~/components/TribecaLiveBanner';
@@ -110,11 +106,6 @@ const KVIFF_LIVE_EXPIRY = new Date('2026-07-11T21:59:00Z');
 const showKviffLiveBanner = computed(() => _now >= KVIFF_LIVE_START && _now < KVIFF_LIVE_EXPIRY);
 
 
-const userEmail = ref('');
-const hasAccessToken = ref(false);
-const isLoggedIn = ref(false);
-const userName = ref('');
-
 const { data: pageData, error: pageError } = useAsyncData('homepage', async () => {
   try {
     // Spotlight carousels are curated manually via pins in
@@ -137,7 +128,10 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     const FESTIVAL_SLUGS = ['sundance','berlinale','rotterdam','slamdance','sxsw','romford','bifff','bafici','cannes','tribeca','cuff','kviff','fantasia'];
     const fetchAllFestivalsBatched = async (limit = 1000) => {
         try {
-            const data = await $fetch(`/api/festival/films-batch?festivals=${FESTIVAL_SLUGS.join(',')}&limit=${limit}`, { timeout: 9000 });
+            // fields=card keeps only what the carousel cards consume — the
+            // full tmdb_data spread (cast/crew/videos/companies) was inflating
+            // the serialized Nuxt payload by hundreds of KB per page view.
+            const data = await $fetch(`/api/festival/films-batch?festivals=${FESTIVAL_SLUGS.join(',')}&limit=${limit}&fields=card`, { timeout: 9000 });
             const buckets = data?.results || {};
             return Object.fromEntries(
                 Object.entries(buckets).map(([slug, films]) => [
@@ -325,6 +319,19 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
 
 const featured = computed(() => pageData.value?.featured);
 const festivalsMovies = computed(() => pageData.value?.festivalsMovies);
+
+// Preload the first hero backdrop so the browser fetches the LCP image at
+// highest priority, before hydration reveals it.
+const firstBackdropUrl = computed(() => {
+  const bp = featured.value?.[0]?.backdrop_path;
+  if (!bp) return null;
+  return bp.startsWith('http') ? bp : `https://image.tmdb.org/t/p/original${bp}`;
+});
+useHead(() => ({
+  link: firstBackdropUrl.value
+    ? [{ rel: 'preload', as: 'image', href: firstBackdropUrl.value, fetchpriority: 'high' }]
+    : [],
+}));
 const trendingMovies = computed(() => pageData.value?.trendingMovies);
 const trendingTv = computed(() => pageData.value?.trendingTv);
 
@@ -341,47 +348,6 @@ const popularStreamingProviders = computed(() => {
   return POPULAR_STREAMING_IDS.map(id => STREAMING_PROVIDERS.find(p => p.id === id)).filter(Boolean);
 });
 
-async function getUserAvatar(userEmail) {
-  try {
-    const supabase = useSupabaseClient();
-    const { data, error } = await supabase
-      .from('user_data')
-      .select('avatar')
-      .eq('email', userEmail);
-    if (error) throw new Error(error.message);
-    return data[0]?.avatar || '/avatars/avatar-ss0.png';
-  } catch (error) {
-    return '/avatars/avatar-ss0.png';
-  }
-}
-
-async function getUserName(email) {
-  try {
-    const supabase = useSupabaseClient();
-    const { data, error } = await supabase
-      .from('user_data')
-      .select('first_name')
-      .eq('email', email);
-    if (error) throw new Error(error.message);
-    return data[0]?.first_name || 'undefined';
-  } catch (error) {
-    console.error('Error fetching user first_name:', error);
-  }
-}
-
-onMounted(async () => {
-  if (process.client) {
-    const email = localStorage.getItem('email');
-    const accessToken = localStorage.getItem('access_token');
-    userEmail.value = email || '';
-    hasAccessToken.value = accessToken !== null;
-    isLoggedIn.value = accessToken !== null;
-    
-    if (isLoggedIn.value) {
-      userName.value = await getUserName(userEmail.value);
-    }
-  }
-});
 </script>
 <style scoped>
   @media screen and (max-width: 600px) {
