@@ -1,7 +1,9 @@
 <template>
   <div :class="$style.badge">
     <img 
-      src="/festivals/romford/romford_film_festival_2026_logo.png" 
+      src="/festivals/romford/romford_film_festival_2026_logo.png"
+      width="250"
+      height="150" 
       alt="Romford Horror Film Festival 2026" 
       :class="$style.logo"
     />

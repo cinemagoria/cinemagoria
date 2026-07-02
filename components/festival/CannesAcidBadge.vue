@@ -2,6 +2,8 @@
   <div :class="$style.badge">
     <img
       src="/festivals/cannes/acid_cannes_film_festival_2026_logo.png"
+      width="250"
+      height="150"
       alt="Cannes Film Festival 2026 – ACID"
       :class="$style.logo"
     >

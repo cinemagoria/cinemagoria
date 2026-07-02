@@ -1,10 +1,11 @@
 import { dbExecute } from '~~/server/utils/db'
+import { getFestivalStatusByTmdbId } from '~~/server/utils/festivals'
 
 export default defineEventHandler(async (event) => {
     try {
         const result = await dbExecute(`
-            SELECT * FROM hero_selections 
-            WHERE title IS NOT NULL 
+            SELECT * FROM hero_selections
+            WHERE title IS NOT NULL
             AND backdrop_path IS NOT NULL
         `)
 
@@ -12,6 +13,19 @@ export default defineEventHandler(async (event) => {
             return { result: [] }
         }
         const selectedRows = result.rows.sort(() => 0.5 - Math.random());
+
+        // Embed festival membership per item (one indexed IN query for the
+        // whole carousel). The Hero renders badges straight from this during
+        // SSR — zero client-side festival requests and no badge pop-in.
+        // Non-fatal: the hero must never fail because of badges.
+        let festivalsByTmdbId: Record<string, any> = {};
+        try {
+            festivalsByTmdbId = await getFestivalStatusByTmdbId(
+                selectedRows.map((row: any) => row.tmdb_id)
+            );
+        } catch (e) {
+            console.error('Hero festival-status enrichment failed:', e);
+        }
 
         const items = await Promise.all(selectedRows.map(async (row) => {
             const cert = row.certification;
@@ -22,6 +36,8 @@ export default defineEventHandler(async (event) => {
                 title: row.title,
                 name: row.title,
                 original_title: row.title,
+
+                festivals: festivalsByTmdbId[String(row.tmdb_id)] || {},
 
                 poster_path: row.poster_path,
                 backdrop_path: row.backdrop_path,

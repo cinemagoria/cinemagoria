@@ -2,6 +2,8 @@
   <div :class="$style.badge">
     <img
       src="/festivals/cuff/cuff_film_festival_2026_logo.png"
+      width="250"
+      height="150"
       alt="Calgary Underground Film Festival 2026"
       :class="$style.logo"
     />

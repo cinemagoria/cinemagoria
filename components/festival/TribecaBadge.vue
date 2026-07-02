@@ -2,6 +2,8 @@
   <div :class="$style.badge">
     <img
       src="/festivals/tribeca/tribeca_film_festival_2026_logo.png"
+      width="250"
+      height="150"
       alt="Tribeca Festival 2026"
       :class="$style.logo"
     />

@@ -13,7 +13,7 @@
     </div>
 
     <template v-else>
-      <Hero v-if="item && item.id" :initial-item="item" />
+      <Hero v-if="item && item.id" :initial-item="item" :festival-status="festivalStatus" />
       
       <MediaNav :menu="menu" :active-label="activeMenu" @clicked="navClicked" />
 
@@ -105,18 +105,27 @@ const soundtrackItems = ref([]);
 const awardsData = ref({ oscars: [], goldenGlobes: [], palme: [], goldenLion: [], goldenBear: [] });
 const { data: movieData, error } = await useAsyncData(`movie-${route.params.id}`, async () => {
   try {
-    const item = await getMovie(route.params.id);
+    // Festival badges resolve in parallel with the TMDB fetch (which
+    // dominates the wall time) so they SSR with the hero at ~zero added
+    // latency. Non-fatal: null lets the Hero fall back to its cached fetch.
+    const [item, festivalStatus] = await Promise.all([
+      getMovie(route.params.id),
+      $fetch(`/api/festival/status?tmdb_id=${route.params.id}`, { timeout: 5000 })
+        .then((d) => d?.festivals || {})
+        .catch(() => null),
+    ]);
     const ADULT_EXCEPTIONS = [1401106];
     if (item.adult && !ADULT_EXCEPTIONS.includes(item.id)) {
       throw new Error('This movie is not available');
     }
-    return { item };
+    return { item, festivalStatus };
   } catch (e) {
     throw e;
   }
 });
 
 const item = computed(() => movieData.value?.item || {});
+const festivalStatus = computed(() => movieData.value?.festivalStatus ?? null);
 
 const name = computed(() => item.value.title ? item.value.title : item.value.name);
 const yearStart = computed(() => {

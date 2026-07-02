@@ -1,26 +1,9 @@
 import { createError, defineEventHandler, getQuery } from 'h3'
-import { dbExecute } from '~~/server/utils/db'
+import { getFestivalStatusByTmdbId } from '~~/server/utils/festivals'
 
-// Reverse of FESTIVAL_NAME_BY_SLUG in films-batch.get.ts — one row per festival
-// a title belongs to. This endpoint exists so Hero.vue can resolve every
-// festival badge for a title with ONE request + ONE indexed query instead of
-// the previous 13 sequential /api/festival/{slug}/films?tmdb_id=X calls.
-const NAME_TO_SLUG: Record<string, string> = {
-    'Sundance Film Festival': 'sundance',
-    'Berlinale Film Festival': 'berlinale',
-    'Rotterdam Film Festival': 'rotterdam',
-    'Slamdance Film Festival': 'slamdance',
-    'SXSW Film & TV Festival': 'sxsw',
-    'Romford Horror Festival': 'romford',
-    'BIFFF': 'bifff',
-    'BAFICI': 'bafici',
-    'Cannes Film Festival': 'cannes',
-    'Tribeca Festival': 'tribeca',
-    'Calgary Underground Film Festival': 'cuff',
-    'Karlovy Vary International Film Festival': 'kviff',
-    'Fantasia International Film Festival': 'fantasia',
-}
-
+// Resolves every festival badge for one title with a single indexed query —
+// used as the client-side fallback when the Hero doesn't already have the
+// membership embedded in its item (/api/hero) or passed down by the page.
 export default defineEventHandler(async (event) => {
     const query = getQuery(event)
     const tmdbId = query.tmdb_id ? parseInt(String(query.tmdb_id), 10) : null
@@ -31,24 +14,8 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
-        const result = await dbExecute({
-            sql: `SELECT festival_name, section, category, title, tmdb_id
-                  FROM festival_films
-                  WHERE tmdb_id = ? AND festival_year = ?`,
-            args: [tmdbId, year],
-        })
-
-        const festivals: Record<string, { title: string; section: string | null }> = {}
-        for (const row of result.rows as any[]) {
-            const slug = NAME_TO_SLUG[row.festival_name as string]
-            if (!slug) continue
-            festivals[slug] = {
-                title: row.title,
-                section: (row.section || row.category || null) as string | null,
-            }
-        }
-
-        return { festivals }
+        const byId = await getFestivalStatusByTmdbId([tmdbId], year)
+        return { festivals: byId[String(tmdbId)] || {} }
     } catch (error: any) {
         console.error('Festival status Fetch Error:', error)
         throw createError({
