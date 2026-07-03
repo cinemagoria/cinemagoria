@@ -178,22 +178,23 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     
      const FEATURED_ORDER = [
         // fantasia 2026
+        'The Village of Eight Gravestones',
         'Hot Spot',
         'Ferine',
         'The Eyes',
+        'The Mouths',
+        'We\'re Nothing At All',
+        'Junction Row',
+        'Ancestral Beasts',
         // kviff 2026
         'Truck Driver',
-        'The Spring',
         'Hijamat',
         'Black Money for White',
         // tribeca 2026
         'Cotton Fever',
-        'The Accompanist',
-        'Cotton Fever',
         'Here I\'m Alive',
         'Crooks',
         'The Last Day',
-        'Stand Up',
         'Breeder',
         'Recluse',    
         // cannes 2026
@@ -227,11 +228,11 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         // sxsw 2026
         'Hokum',
         'Obsession',
+        'Drag',
         'Never After Dark',
         'Dead Eyes',
         'Wishful Thinking',       
         // slamdance 2026
-        'Whisperings of the Moon',
         'Zumeca',
         // romford 2026
         'Spoiling You',
@@ -240,6 +241,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Rose',
         'Queen at sea',
         'Heysel 85',
+        'Nightborn',
         'In a Whisper',
         'If I Were Alive',
         'Forest High',
@@ -248,6 +250,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         // rotterdam 2026
         'Krakatoa',
         'Variations on a theme',
+        'Motherwitch',
         'Silent Friend',
         'Tell Me What You Feel',
         'Late Fame',
