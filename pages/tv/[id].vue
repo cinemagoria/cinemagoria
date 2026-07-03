@@ -13,7 +13,7 @@
     </div>
 
     <template v-else>
-      <Hero v-if="item && item.id" :initial-item="item" />
+      <Hero v-if="item && item.id" :initial-item="item" :festival-status="festivalStatus" />
 
       <MediaNav :menu="menu" @clicked="navClicked" />
 
@@ -126,17 +126,26 @@ const awardsData = ref({ oscars: [], goldenGlobes: [], palme: [], goldenLion: []
 
 const { data: tvData, error } = await useAsyncData(`tv-${route.params.id}`, async () => {
   try {
-    const item = await getTvShow(route.params.id);
+    // Festival badges resolve in parallel with the TMDB fetch (which
+    // dominates the wall time) so they SSR with the hero at ~zero added
+    // latency. Non-fatal: null lets the Hero fall back to its cached fetch.
+    const [item, festivalStatus] = await Promise.all([
+      getTvShow(route.params.id),
+      $fetch(`/api/festival/status?tmdb_id=${route.params.id}`, { timeout: 5000 })
+        .then((d) => d?.festivals || {})
+        .catch(() => null),
+    ]);
     if (item.adult) {
       throw new Error('Esta serie no está disponible');
     }
-    return { item };
+    return { item, festivalStatus };
   } catch (e) {
     throw e;
   }
 });
 
 const item = computed(() => tvData.value?.item || {});
+const festivalStatus = computed(() => tvData.value?.festivalStatus ?? null);
 
 const name = computed(() => item.value.title ? item.value.title : item.value.name);
 const yearStart = computed(() => {

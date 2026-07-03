@@ -1,29 +1,8 @@
 import { createError, defineEventHandler, getQuery } from 'h3'
 import { dbExecute } from '~~/server/utils/db'
-
-// slug → festival_name as stored in Turso. Keep in sync with the per-festival
-// endpoints — those still exist for direct callers (festival landing pages,
-// schedule pages, etc.). This batch endpoint exists so the homepage can fetch
-// all 11 in one round trip instead of 11 parallel HTTP/2 streams.
-const FESTIVAL_NAME_BY_SLUG: Record<string, string> = {
-    sundance: 'Sundance Film Festival',
-    berlinale: 'Berlinale Film Festival',
-    rotterdam: 'Rotterdam Film Festival',
-    slamdance: 'Slamdance Film Festival',
-    sxsw: 'SXSW Film & TV Festival',
-    romford: 'Romford Horror Festival',
-    bifff: 'BIFFF',
-    bafici: 'BAFICI',
-    cannes: 'Cannes Film Festival',
-    tribeca: 'Tribeca Festival',
-    cuff: 'Calgary Underground Film Festival',
-    kviff: 'Karlovy Vary International Film Festival',
-    fantasia: 'Fantasia International Film Festival',
-}
-
-const NAME_TO_SLUG: Record<string, string> = Object.fromEntries(
-    Object.entries(FESTIVAL_NAME_BY_SLUG).map(([slug, name]) => [name, slug])
-)
+// Shared slug ↔ festival_name mapping (also used by /api/hero badge
+// embedding and /api/festival/status) so the endpoints can't drift apart.
+import { FESTIVAL_NAME_BY_SLUG, NAME_TO_SLUG } from '~~/server/utils/festivals'
 
 // Slim projection for carousel/card consumers (homepage). Keeps every field
 // the festival cards, QuickFav and mapItemToDbPayload read, but drops the

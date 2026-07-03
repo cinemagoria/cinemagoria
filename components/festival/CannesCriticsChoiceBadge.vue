@@ -2,6 +2,8 @@
   <div :class="$style.badge">
     <img
       src="/festivals/cannes/sc_cannes_film_festival_2026_logo.png"
+      width="250"
+      height="150"
       alt="Festival de Cannes 2026 – Selección de la Crítica"
       :class="$style.logo"
     >

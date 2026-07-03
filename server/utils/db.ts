@@ -1,4 +1,4 @@
-import { createClient, type Client } from '@libsql/client'
+import { createClient, type Client, type InStatement, type ResultSet } from '@libsql/client'
 
 let _client: Client | null = null
 
@@ -26,10 +26,14 @@ export function useDb(): Client {
 // a working-but-slow page into a hard 500.
 const DEFAULT_QUERY_TIMEOUT_MS = 45000
 
+// `stmt` is typed as InStatement (`{ sql, args } | string`) explicitly:
+// Client['execute'] is overloaded, so Parameters<Client['execute']>[0]
+// resolves to only the LAST overload (`sql: string`) and rejects the
+// object form at the type level even though it's valid at runtime.
 export async function dbExecute(
-    stmt: Parameters<Client['execute']>[0],
+    stmt: InStatement,
     timeoutMs: number = DEFAULT_QUERY_TIMEOUT_MS,
-): Promise<Awaited<ReturnType<Client['execute']>>> {
+): Promise<ResultSet> {
     const db = useDb()
     let timer: ReturnType<typeof setTimeout> | undefined
     const timeout = new Promise<never>((_, reject) => {
@@ -39,7 +43,7 @@ export async function dbExecute(
         )
     })
     try {
-        return await Promise.race([db.execute(stmt as any), timeout]) as Awaited<ReturnType<Client['execute']>>
+        return await Promise.race([db.execute(stmt), timeout])
     } finally {
         if (timer) clearTimeout(timer)
     }

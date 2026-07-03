@@ -437,6 +437,69 @@ import NoirModal from '~/components/NoirModal.vue';
 // (or revisiting a title) never refetches.
 const FESTIVAL_STATUS_CACHE = new Map();
 
+// Maps a `{ slug: { title, section } }` membership object — embedded in hero
+// items by /api/hero, prefetched by the page (festival-status prop), or
+// fetched from /api/festival/status — onto the per-festival fields that
+// activeFestivals reads. Pure so data() can call it: badges render during
+// SSR alongside the rest of the hero, with no pop-in and no client request.
+function mapFestivalsToFields(festivals, itemId, itemName) {
+  const f = festivals || {};
+  const fields = {
+    sundanceFilm: f.sundance || null,
+    slamdanceFilm: f.slamdance || null,
+    tribecaFilm: f.tribeca || null,
+    berlinaleFilm: f.berlinale || null,
+    rotterdamFilm: f.rotterdam || null,
+    sxswFilm: f.sxsw || null,
+    romfordFilm: f.romford || null,
+    bifffFilm: f.bifff || null,
+    baficiFilm: f.bafici || null,
+    cuffFilm: f.cuff || null,
+    kviffFilm: f.kviff || null,
+    fantasiaFilm: f.fantasia || null,
+    cannesFilm: null,
+    cannesCriticsChoiceFilm: null,
+    cannesQuinzaineFilm: null,
+    cannesAcidFilm: null,
+  };
+
+  if (f.cannes) {
+    const sectionUp = String(f.cannes.section || '').toUpperCase();
+    if (sectionUp.includes('CRITICS')) {
+      fields.cannesCriticsChoiceFilm = f.cannes;
+    } else if (sectionUp.includes('QUINZAINE') || sectionUp.includes('DIRECTORS') || sectionUp.includes('FORTNIGHT')) {
+      fields.cannesQuinzaineFilm = f.cannes;
+    } else if (sectionUp.includes('ACID')) {
+      fields.cannesAcidFilm = f.cannes;
+    } else {
+      fields.cannesFilm = f.cannes;
+    }
+  }
+
+  const manual = itemId != null ? MANUAL_FESTIVAL_BADGES[itemId] : null;
+  if (manual) {
+    const stub = { title: itemName };
+    if (manual.includes('sundance') && !fields.sundanceFilm) fields.sundanceFilm = stub;
+    if (manual.includes('slamdance') && !fields.slamdanceFilm) fields.slamdanceFilm = stub;
+    if (manual.includes('tribeca') && !fields.tribecaFilm) fields.tribecaFilm = stub;
+    if (manual.includes('berlinale') && !fields.berlinaleFilm) fields.berlinaleFilm = stub;
+    if (manual.includes('rotterdam') && !fields.rotterdamFilm) fields.rotterdamFilm = stub;
+    if (manual.includes('sxsw') && !fields.sxswFilm) fields.sxswFilm = stub;
+    if (manual.includes('romford') && !fields.romfordFilm) fields.romfordFilm = stub;
+    if (manual.includes('bifff') && !fields.bifffFilm) fields.bifffFilm = stub;
+    if (manual.includes('cannes-critics-choice') && !fields.cannesCriticsChoiceFilm) fields.cannesCriticsChoiceFilm = stub;
+    if (manual.includes('cannes-quinzaine') && !fields.cannesQuinzaineFilm) fields.cannesQuinzaineFilm = stub;
+    if (manual.includes('cannes-acid') && !fields.cannesAcidFilm) fields.cannesAcidFilm = stub;
+    if (manual.includes('cannes') && !fields.cannesFilm) fields.cannesFilm = stub;
+    if (manual.includes('bafici') && !fields.baficiFilm) fields.baficiFilm = stub;
+    if (manual.includes('cuff') && !fields.cuffFilm) fields.cuffFilm = stub;
+    if (manual.includes('kviff') && !fields.kviffFilm) fields.kviffFilm = stub;
+    if (manual.includes('fantasia') && !fields.fantasiaFilm) fields.fantasiaFilm = stub;
+  }
+
+  return fields;
+}
+
 export default {
   components: {
     Modal,
@@ -489,9 +552,27 @@ export default {
       type: Array,
       default: () => [],
     },
+    // Festival membership prefetched by the page (same `{ slug: { title,
+    // section } }` shape as /api/festival/status). When provided (or when the
+    // item itself embeds `festivals`), the Hero renders badges during SSR and
+    // never asks the API. null = unknown → fall back to the cached fetch.
+    festivalStatus: {
+      type: Object,
+      default: null,
+    },
   },
 
   data() {
+    // Badges known at render time are mapped here so they SSR with the rest
+    // of the hero — no post-hydration pop-in, no layout shift.
+    const initialFestivalFields = mapFestivalsToFields(
+      (this.initialItem && this.initialItem.festivals) != null
+        ? this.initialItem.festivals
+        : this.festivalStatus,
+      this.initialItem && this.initialItem.id,
+      this.initialItem && (this.initialItem.title || this.initialItem.name)
+    );
+
     return {
       isLoading: true,
       isSingle: this.initialItem.id === this.$route.params.id,
@@ -536,22 +617,7 @@ export default {
       showAddListMenu: false,
       userLists: [],
       membership: { inWatchlist: false, lists: [] },
-      sundanceFilm: null,
-      slamdanceFilm: null,
-      tribecaFilm: null,
-      berlinaleFilm: null,
-      rotterdamFilm: null,
-      sxswFilm: null,
-      romfordFilm: null,
-      bifffFilm: null,
-      cannesFilm: null,
-      cannesCriticsChoiceFilm: null,
-      cannesQuinzaineFilm: null,
-      cannesAcidFilm: null,
-      baficiFilm: null,
-      cuffFilm: null,
-      kviffFilm: null,
-      fantasiaFilm: null,
+      ...initialFestivalFields,
       isFestivalLoading: false,
       isTranslating: false,
       translatedOverview: null,
@@ -1022,91 +1088,43 @@ export default {
     },
 
     async checkFestivalStatus() {
-    this.sundanceFilm = null;
-    this.slamdanceFilm = null;
-    this.tribecaFilm = null;
-    this.berlinaleFilm = null;
-    this.rotterdamFilm = null;
-    this.sxswFilm = null;
-    this.romfordFilm = null;
-    this.bifffFilm = null;
-    this.cannesFilm = null;
-    this.cannesCriticsChoiceFilm = null;
-    this.cannesQuinzaineFilm = null;
-    this.cannesAcidFilm = null;
-    this.baficiFilm = null;
-    this.cuffFilm = null;
-    this.kviffFilm = null;
-    this.fantasiaFilm = null;
-
-    if (this.type !== 'movie' && this.type !== 'tv') return;
+    if (this.type !== 'movie' && this.type !== 'tv') {
+        Object.assign(this, mapFestivalsToFields(null, null, null));
+        return;
+    }
 
     const requestedId = this.id;
 
     try {
-        // One request + one indexed Turso query resolves every festival at
-        // once (was: 13 sequential /api/festival/{slug}/films round trips
-        // with artificial 500ms delays, which kept the homepage hero behind
-        // its loader for ~5s on every load and every carousel advance).
-        let festivals = FESTIVAL_STATUS_CACHE.get(requestedId);
-        if (!festivals) {
-            this.isFestivalLoading = true;
-            const data = await $fetch(`/api/festival/status?tmdb_id=${requestedId}`, { timeout: 9000 });
-            festivals = data?.festivals || {};
-            FESTIVAL_STATUS_CACHE.set(requestedId, festivals);
+        // Zero-request paths first: membership embedded in the hero item by
+        // /api/hero, or prefetched by the page (festival-status prop). `{}`
+        // is valid data (title in no festivals) — only null/undefined means
+        // "unknown, ask the API". The fetch fallback is one request + one
+        // indexed Turso query (was: 13 sequential per-festival round trips
+        // with artificial 500ms delays).
+        let festivals = null;
+        const item = this.heroItem;
+        if (item && item.festivals != null) {
+            festivals = item.festivals;
+        } else if (this.festivalStatus != null && item === this.initialItem) {
+            festivals = this.festivalStatus;
+        } else {
+            festivals = FESTIVAL_STATUS_CACHE.get(requestedId);
+            if (!festivals) {
+                // Clear stale badges from the previous item while we ask.
+                Object.assign(this, mapFestivalsToFields(null, null, null));
+                this.isFestivalLoading = true;
+                const data = await $fetch(`/api/festival/status?tmdb_id=${requestedId}`, { timeout: 9000 });
+                festivals = data?.festivals || {};
+            }
         }
+        FESTIVAL_STATUS_CACHE.set(requestedId, festivals);
 
         // The hero may have advanced while the request was in flight —
         // don't paint another item's badges onto the current one.
         if (this.id !== requestedId) return;
 
-        this.sundanceFilm = festivals.sundance || null;
-        this.slamdanceFilm = festivals.slamdance || null;
-        this.tribecaFilm = festivals.tribeca || null;
-        this.berlinaleFilm = festivals.berlinale || null;
-        this.rotterdamFilm = festivals.rotterdam || null;
-        this.sxswFilm = festivals.sxsw || null;
-        this.romfordFilm = festivals.romford || null;
-        this.bifffFilm = festivals.bifff || null;
-        this.baficiFilm = festivals.bafici || null;
-        this.cuffFilm = festivals.cuff || null;
-        this.kviffFilm = festivals.kviff || null;
-        this.fantasiaFilm = festivals.fantasia || null;
-
-        if (festivals.cannes) {
-            const film = festivals.cannes;
-            const sectionUp = String(film.section || '').toUpperCase();
-            if (sectionUp.includes('CRITICS')) {
-                this.cannesCriticsChoiceFilm = film;
-            } else if (sectionUp.includes('QUINZAINE') || sectionUp.includes('DIRECTORS') || sectionUp.includes('FORTNIGHT')) {
-                this.cannesQuinzaineFilm = film;
-            } else if (sectionUp.includes('ACID')) {
-                this.cannesAcidFilm = film;
-            } else {
-                this.cannesFilm = film;
-            }
-        }
-
-        if (MANUAL_FESTIVAL_BADGES[this.id]) {
-            const manualFestivals = MANUAL_FESTIVAL_BADGES[this.id];
-            if (manualFestivals.includes('sundance') && !this.sundanceFilm) this.sundanceFilm = { title: this.name };
-            if (manualFestivals.includes('slamdance') && !this.slamdanceFilm) this.slamdanceFilm = { title: this.name };
-            if (manualFestivals.includes('tribeca') && !this.tribecaFilm) this.tribecaFilm = { title: this.name };
-            if (manualFestivals.includes('berlinale') && !this.berlinaleFilm) this.berlinaleFilm = { title: this.name };
-            if (manualFestivals.includes('rotterdam') && !this.rotterdamFilm) this.rotterdamFilm = { title: this.name };
-            if (manualFestivals.includes('sxsw') && !this.sxswFilm) this.sxswFilm = { title: this.name };
-            if (manualFestivals.includes('romford') && !this.romfordFilm) this.romfordFilm = { title: this.name };
-            if (manualFestivals.includes('bifff') && !this.bifffFilm) this.bifffFilm = { title: this.name };
-            if (manualFestivals.includes('cannes-critics-choice') && !this.cannesCriticsChoiceFilm) this.cannesCriticsChoiceFilm = { title: this.name };
-            if (manualFestivals.includes('cannes-quinzaine') && !this.cannesQuinzaineFilm) this.cannesQuinzaineFilm = { title: this.name };
-            if (manualFestivals.includes('cannes-acid') && !this.cannesAcidFilm) this.cannesAcidFilm = { title: this.name };
-            if (manualFestivals.includes('cannes') && !this.cannesFilm) this.cannesFilm = { title: this.name };
-            if (manualFestivals.includes('bafici') && !this.baficiFilm) this.baficiFilm = { title: this.name };
-            if (manualFestivals.includes('cuff') && !this.cuffFilm) this.cuffFilm = { title: this.name };
-            if (manualFestivals.includes('kviff') && !this.kviffFilm) this.kviffFilm = { title: this.name };
-            if (manualFestivals.includes('fantasia') && !this.fantasiaFilm) this.fantasiaFilm = { title: this.name };
-        }
-
+        Object.assign(this, mapFestivalsToFields(festivals, this.id, this.name));
     } catch (e) {
         console.error('Error checking festival status:', e);
     } finally {
