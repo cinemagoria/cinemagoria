@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
             }
 
             return {
-                id: typedRow.tmdb_id || typedRow.id,
+                id: typedRow.tmdb_id,
                 internal_id: typedRow.id,
                 title: typedRow.title,
                 overview: typedRow.description || tmdbData.overview || '',
@@ -61,7 +61,7 @@ export default defineEventHandler(async (event) => {
             }
         });
 
-        films = films.filter((f: any) => f.title)
+        films = films.filter((f: any) => f.tmdb_id && f.title)
 
         if (query.sort === 'rating') {
             films.sort((a: any, b: any) => b.vote_average - a.vote_average);

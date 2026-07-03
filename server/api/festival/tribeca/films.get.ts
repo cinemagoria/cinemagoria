@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
 
             return {
                 ...tmdbData,
-                id: row.tmdb_id || row.id,
+                id: row.tmdb_id,
                 internal_id: row.id,
                 title: row.title,
                 overview: row.description || tmdbData.overview || '',
@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
             return year >= 2025;
         });
 
-        films = films.filter((f: any) => f.title)
+        films = films.filter((f: any) => f.tmdb_id && f.title)
 
         films.sort((a: any, b: any) => a.title.localeCompare(b.title))
 
