@@ -196,7 +196,7 @@
 
                       <div class="film-info">
                          <a
-                            href="https://fantasiafestival.com/en/films"
+                            :href="screening.film.source_url || 'https://fantasiafestival.com'"
                             target="_blank"
                             rel="noopener noreferrer"
                             class="film-title"
