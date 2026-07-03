@@ -359,29 +359,37 @@ const awards = ref([]);
 const schedule = ref([]);
 const openDays = ref(new Set());
 
-// Fantasia 2026 first-wave sections (#357). The OTHER bucket catches any
-// section that arrives in later waves before it gets added to CATEGORY_ORDER,
-// so newly announced films never disappear between releases.
+// Fantasia 2026 definitive sections (#389) — the festival published its
+// complete program, so these mirror festival_films.category exactly. The
+// OTHER bucket stays as a safety net for any late addition.
 const CATEGORY_ORDER = [
+    'Opening Film',
     'Cheval Noir Competition',
+    'Horizon 2026',
     'Septentrion Shadows',
     'Les Fantastiques Week-Ends du Cinéma Québécois',
     'Documentaries from the Edge',
     'Animation Plus',
     'Underground',
     'My First Fantasia',
-    'TBA',
+    'Fantasia Retro',
+    'Genre du pays',
+    'Before features',
 ];
 
 const CATEGORY_LABELS = {
+    'Opening Film': 'Opening Film',
     'Cheval Noir Competition': 'Cheval Noir Competition',
+    'Horizon 2026': 'Horizon 2026',
     'Septentrion Shadows': 'Septentrion Shadows',
     'Les Fantastiques Week-Ends du Cinéma Québécois': 'Les Fantastiques Week-Ends du Cinéma Québécois',
     'Documentaries from the Edge': 'Documentaries from the Edge',
     'Animation Plus': 'Animation Plus',
     'Underground': 'Underground',
     'My First Fantasia': 'My First Fantasia',
-    'TBA': 'TBA (To be announced)',
+    'Fantasia Retro': 'Fantasia Retro',
+    'Genre du pays': 'Genre du pays',
+    'Before features': 'Before features',
     OTHER: 'Other',
 };
 
