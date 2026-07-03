@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
             }
 
             return {
-                id: row.tmdb_id || row.id,
+                id: row.tmdb_id,
                 internal_id: row.id,
                 title: row.title,
                 overview: row.description || tmdbData.overview || '',
@@ -46,7 +46,7 @@ export default defineEventHandler(async (event) => {
                 ...tmdbData
             }
         }).filter((film: any) => {
-            return film.title && film.title.trim() !== '';
+            return film.tmdb_id && film.title && film.title.trim() !== '';
         });
 
         if (query.limit) {

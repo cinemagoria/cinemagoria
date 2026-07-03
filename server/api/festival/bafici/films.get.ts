@@ -74,7 +74,7 @@ export default defineEventHandler(async (event) => {
             return {
                 ...(shouldUseTmdb ? tmdbData : {}),
 
-                id: row.tmdb_id || row.id,
+                id: row.tmdb_id,
                 internal_id: row.id,
                 has_valid_tmdb_id: shouldUseTmdb,
 
@@ -103,7 +103,7 @@ export default defineEventHandler(async (event) => {
             return isNaN(year) || year >= 2025;
         });
 
-        films = films.filter((f: any) => f.title)
+        films = films.filter((f: any) => f.tmdb_id && f.title)
 
         films.sort((a: any, b: any) => a.title.localeCompare(b.title))
 
