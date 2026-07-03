@@ -84,7 +84,7 @@
     "media_type": "movie",
     "trailer_key": "tlSDDuWxO_0",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1774466146/cinemagoria/backdrops/noir_1284465_v2.webp",
-    "poster_path": "/4cD7KeABHyzeJmzdA6QKe36fp2d.jpg",
+    "poster_path": "/13MmRwmG5NmaMfU8qNrtgGXisiD.jpg",
     "force_enrichment": false
   },
   {
@@ -1844,7 +1844,7 @@
     "media_type": "tv",
     "trailer_key": "HJBnlZKgeUg",
     "backdrop_path": "/uXPKVzvC068ibOZ8i2mHZRz9xRI.jpg",
-    "poster_path": "/clOV8yZ0lNvEBCT65tcBSi05jgM.jpg",
+    "poster_path": "/rLuRg2j9RNsPM8T4QWlzt8tNiCf.jpg",
     "force_enrichment": false
   },
   {
@@ -1858,7 +1858,7 @@
   {
     "tmdb_id": 964849,
     "media_type": "movie",
-    "trailer_key": "gb-yRmH7v_c",
+    "trailer_key": "lBvgrGPnf2w",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780958106/cinemagoria/backdrops/noir_964849.webp",
     "poster_path": "/xzBmIu0wHXbCkBgONBUgqqqvloI.jpg",
     "force_enrichment": true
@@ -2356,7 +2356,7 @@
     "media_type": "movie",
     "trailer_key": "gM4LkaXwGuY",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1781129239/cinemagoria/backdrops/noir_1281331.webp",
-    "poster_path": "/kHXzAm0ERUX8yZxe5xFSMsJsf3t.jpg",
+    "poster_path": "/blm3cRs7avmaHWtPqk6fzj3VIKF.jpg",
     "force_enrichment": true
   },
   {
@@ -2563,7 +2563,7 @@
     "tmdb_id": 1357952,
     "media_type": "movie",
     "trailer_key": null,
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780751253/cinemagoria/backdrops/noir_1357952.webp",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1783064407/cinemagoria/backdrops/noir_1357952.webp",
     "poster_path": "/7KnkmoV5bKSI0Cnx34iFrEt4ree.jpg",
     "force_enrichment": true
   },
@@ -2692,7 +2692,7 @@
     "media_type": "movie",
     "trailer_key": null,
     "backdrop_path": "/opubkXrPWbXKXIv8hBsiamTmKoM.jpg",
-    "poster_path": "/rwLgmo32j1O91D2xPXOrGUcyzn5.jpg",
+    "poster_path": "/lDYmh3IzTmSkoFD1wdOtMtTFeZG.jpg",
     "force_enrichment": false
   },
   {
@@ -3514,7 +3514,7 @@
   {
     "tmdb_id": 1685725,
     "media_type": "movie",
-    "trailer_key": null,
+    "trailer_key": "Pb_T8FzSoWU",
     "backdrop_path": null,
     "poster_path": "/2Vhea9b6W9CznpM5J1FgPzWWNaD.jpg",
     "force_enrichment": false
@@ -3772,7 +3772,7 @@
     "media_type": "movie",
     "trailer_key": "3tS3ed9lr5M",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1781807302/cinemagoria/backdrops/noir_1716622.webp",
-    "poster_path": "/3xLSVAQZAs1DEUNm1TKYzx0kiLT.jpg",
+    "poster_path": "/llfPc2aDY8hvTaqlB7R7iZNdN6t.jpg",
     "force_enrichment": true
   },
   {
@@ -4094,5 +4094,61 @@
     "backdrop_path": null,
     "poster_path": null,
     "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1507372,
+    "media_type": "movie",
+    "trailer_key": null,
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1783083370/cinemagoria/backdrops/noir_1507372.webp",
+    "poster_path": "/h1d3zEECvSGctzuz4LVvqLzXVF0.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 997660,
+    "media_type": "movie",
+    "trailer_key": "NQlwGhR2G98",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1783083381/cinemagoria/backdrops/noir_997660.webp",
+    "poster_path": "/pu632OPOiSAbMrBhAXh2gXuYcFF.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1619857,
+    "media_type": "movie",
+    "trailer_key": null,
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1783083418/cinemagoria/backdrops/noir_1619857.webp",
+    "poster_path": "/4qi0MdR4YjmAQPAgp8t2IYdQm1U.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1388756,
+    "media_type": "movie",
+    "trailer_key": null,
+    "backdrop_path": null,
+    "poster_path": null,
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1725065,
+    "media_type": "movie",
+    "trailer_key": null,
+    "backdrop_path": null,
+    "poster_path": "/pIVjPlxgNt0s0awiBc0tW6mqI7y.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1509632,
+    "media_type": "movie",
+    "trailer_key": "JGCEQd0DcE4",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1783083487/cinemagoria/backdrops/noir_1509632.webp",
+    "poster_path": "/nxriH6UzCvM0yGQCUezHWhkzzR2.jpg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1461823,
+    "media_type": "movie",
+    "trailer_key": null,
+    "backdrop_path": null,
+    "poster_path": "/pzW9GUCynvZhfz47jw2lYtUrKMY.jpg",
+    "force_enrichment": false
   }
 ]

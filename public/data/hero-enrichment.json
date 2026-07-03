@@ -123,9 +123,9 @@
     "tmdb_id": 1357952,
     "media_type": "movie",
     "trailer_key": null,
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780957936/cinemagoria/backdrops/hero_1357952.webp",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1783064395/cinemagoria/backdrops/hero_1357952.webp",
     "poster_path": "/7KnkmoV5bKSI0Cnx34iFrEt4ree.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 813418,
