@@ -178,12 +178,11 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     
      const FEATURED_ORDER = [
         // fantasia 2026
-        'The Village of Eight Gravestones',
         'Hot Spot',
         'Ferine',
         'The Eyes',
+        'The Village of Eight Gravestones',
         'The Mouths',
-        'We\'re Nothing At All',
         'Junction Row',
         'Ancestral Beasts',
         // kviff 2026
@@ -191,12 +190,10 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Hijamat',
         'Black Money for White',
         // tribeca 2026
-        'Cotton Fever',
-        'Here I\'m Alive',
-        'Crooks',
         'The Last Day',
         'Breeder',
-        'Recluse',    
+        'Recluse',
+        'Crooks',    
         // cannes 2026
         'Hope|cannes',
         'Victorian Psycho',
@@ -204,11 +201,9 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Minotaur',
         'Fatherland',
         'Fjord',
-        'Parallel Tales',
         'Paper Tiger',
         'All of a Sudden',
         'The Unknown',
-        'Everytime',
         'Gentle Monster',
         'Teenage Sex and Death at Camp Miasma',
         'Her Private Hell',
@@ -228,7 +223,6 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         // sxsw 2026
         'Hokum',
         'Obsession',
-        'Drag',
         'Never After Dark',
         'Dead Eyes',
         'Wishful Thinking',       
@@ -256,6 +250,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Late Fame',
         // sundance 2026
         'The Weight',
+        'Night Nurse',
         'Zi',
         'Shame and Money',
         'undertone',
