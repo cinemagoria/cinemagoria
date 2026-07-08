@@ -16,14 +16,6 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 1170608,
-    "media_type": "movie",
-    "trailer_key": "3_9vCamtuPY",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780029572/cinemagoria/backdrops/hero_1170608.webp",
-    "poster_path": "/fsttvmDGV5Z7iBvA7E3p5CoP8MW.jpg",
-    "force_enrichment": true
-  },
-  {
     "tmdb_id": 1058424,
     "media_type": "movie",
     "trailer_key": "Vt7860xZFXk",
@@ -173,6 +165,14 @@
     "trailer_key": "fEZ3HjBzpgw",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1783547661/cinemagoria/backdrops/hero_themountain.webp",
     "poster_path": "/mV0Phnxv4V8QdYM2PVd2QI4Ylvs.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1170608,
+    "media_type": "movie",
+    "trailer_key": "NdvqHc56lE0",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1783554718/cinemagoria/backdrops/hero_1170608.webp",
+    "poster_path": "/b4wekkUaxExzOeGe7hKXzhnyXHt.jpg",
     "force_enrichment": true
   }
 ]
