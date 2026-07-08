@@ -562,7 +562,7 @@
   {
     "tmdb_id": 1632613,
     "media_type": "movie",
-    "poster_path": "/3UMKpiS7dJK8maDy0BYEWTJtib4.jpg",
+    "poster_path": "/mjOcer8iypJxEyLwPCY6KMBDkml.jpg",
     "backdrop_path": "/7tkwCLJ9lCjQDWel2Sq9Ak0aeub.jpg",
     "trailer_key": "o2qSdqESHSU",
     "force_enrichment": true
@@ -948,7 +948,7 @@
     "media_type": "movie",
     "poster_path": "/7cTXVYKTcQllZ4uBd8NMCTGpLQ3.jpg",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780752178/cinemagoria/backdrops/backdrop_override_1486475.webp",
-    "trailer_key": null,
+    "trailer_key": "FWHydpn9xIM",
     "force_enrichment": false
   },
   {
