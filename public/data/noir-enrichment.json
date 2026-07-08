@@ -1930,10 +1930,10 @@
   {
     "tmdb_id": 1651162,
     "media_type": "movie",
-    "trailer_key": null,
+    "trailer_key": "fEZ3HjBzpgw",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1776047472/cinemagoria/backdrops/noir_1651162.webp",
     "poster_path": "/mV0Phnxv4V8QdYM2PVd2QI4Ylvs.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1664760,
@@ -2744,14 +2744,6 @@
     "force_enrichment": false
   },
   {
-    "tmdb_id": 1437511,
-    "media_type": "movie",
-    "trailer_key": "hoXld2b0TCs",
-    "backdrop_path": "/xghtLO90cQPybH85aw1C3bZ2P3.jpg",
-    "poster_path": "/oUt2f6qHRZDnprG16ELimRhDGDV.jpg",
-    "force_enrichment": false
-  },
-  {
     "tmdb_id": 1477203,
     "media_type": "movie",
     "trailer_key": null,
@@ -3152,14 +3144,6 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 1101412,
-    "media_type": "movie",
-    "trailer_key": "Rsztt5qDj_A",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780666971/cinemagoria/backdrops/noir_1101412.webp",
-    "poster_path": "/ckKAdEz49bJ10jCLbCYIzVHJGEu.jpg",
-    "force_enrichment": false
-  },
-  {
     "tmdb_id": 1658268,
     "media_type": "movie",
     "trailer_key": "y-JbqxYYoYs",
@@ -3237,14 +3221,6 @@
     "trailer_key": null,
     "backdrop_path": null,
     "poster_path": "/sao264XXHRni4pmYnCTPirD67Qc.jpg",
-    "force_enrichment": false
-  },
-  {
-    "tmdb_id": 1213243,
-    "media_type": "movie",
-    "trailer_key": "aF08WVSvCok",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1781040428/cinemagoria/backdrops/noir_1213243.webp",
-    "poster_path": "/fJBAfLiNfovSAb6KjkIndpF3Sm7.jpg",
     "force_enrichment": false
   },
   {
@@ -4234,7 +4210,7 @@
   {
     "tmdb_id": 1721663,
     "media_type": "movie",
-    "trailer_key": null,
+    "trailer_key": "l-2tx2z0Yi8",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1783539536/cinemagoria/backdrops/noir_1721663.webp",
     "poster_path": "/6DDV2w9PeqrcHuekySrN8MkszCL.jpg",
     "force_enrichment": true
