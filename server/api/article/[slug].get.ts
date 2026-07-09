@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
         const result = await db.execute({
             sql: `SELECT id, slug, title_en, body_en, description_en, title_es, body_es, description_es,
                          image_url, sources_json, topics_json, published_at, created_at, is_visible,
-                         trailer_youtube_id, trailer_provider, carousel_assets, related_tmdb_ids,
+                         trailer_youtube_id, trailer_provider, trailer_vimeo_hash, carousel_assets, related_tmdb_ids,
                          requires_auth, editorial_category, secondary_categories_json
                   FROM cinemagoria_articles
                   WHERE slug = ? AND is_visible = 1
@@ -57,6 +57,9 @@ export default defineEventHandler(async (event) => {
                 // trailer_provider: 'youtube' (default) or 'vimeo'. Legacy rows
                 // pre-migration have NULL → frontend treats null as 'youtube'.
                 trailer_provider: (row.trailer_provider as string) || 'youtube',
+                // Vimeo-only: privacy hash required to embed unlisted/private
+                // videos. NULL for YouTube and for public Vimeo videos.
+                trailer_vimeo_hash: row.trailer_vimeo_hash || null,
                 carousel_assets: row.carousel_assets ? (row.carousel_assets as string).split(',').map(u => u.trim()).filter(Boolean) : [],
                 related_tmdb_ids: row.related_tmdb_ids ? JSON.parse(row.related_tmdb_ids as string) : [],
                 // requires_auth: 0 = public (body always rendered), 1 = community-gated
