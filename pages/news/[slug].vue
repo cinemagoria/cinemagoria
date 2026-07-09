@@ -692,11 +692,16 @@ const renderedBody = computed(() => {
 // Trailer embed src + allow list, parameterized by trailer_provider.
 // Legacy rows without trailer_provider render as YouTube — keeps existing
 // articles working without any backfill. Vimeo uses dnt=1 (no tracking).
+// Unlisted/private Vimeo videos additionally require the privacy hash
+// (trailer_vimeo_hash) as an `h` param — without it the player refuses to load.
 const trailerEmbedSrc = computed(() => {
   const id = article.value?.trailer_youtube_id
   if (!id) return ''
   const provider = article.value?.trailer_provider || 'youtube'
-  if (provider === 'vimeo') return `https://player.vimeo.com/video/${id}?dnt=1`
+  if (provider === 'vimeo') {
+    const hash = article.value?.trailer_vimeo_hash
+    return `https://player.vimeo.com/video/${id}?dnt=1${hash ? `&h=${hash}` : ''}`
+  }
   return `https://www.youtube.com/embed/${id}`
 })
 
