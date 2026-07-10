@@ -189,11 +189,12 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Truck Driver',
         'Hijamat',
         'Black Money for White',
+        'Fruit Gathering',
         // tribeca 2026
         'The Last Day',
         'Breeder',
         'Recluse',
-        'Crooks',    
+        'Crooks',
         // cannes 2026
         'Hope|cannes',
         'Victorian Psycho',
@@ -225,7 +226,8 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Obsession',
         'Never After Dark',
         'Dead Eyes',
-        'Wishful Thinking',       
+        'The Sun Never Sets',
+        'Wishful Thinking',
         // slamdance 2026
         'Zumeca',
         // romford 2026
@@ -243,6 +245,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Salvation',
         // rotterdam 2026
         'Krakatoa',
+        'Butterfly',
         'Variations on a theme',
         'Motherwitch',
         'Silent Friend',
