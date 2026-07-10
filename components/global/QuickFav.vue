@@ -49,6 +49,7 @@
 <script>
 import { name, stars, yearStart, yearEnd, poster, id, type, runtime } from '~/mixins/Details';
 import { mapItemToDbPayload } from '~/utils/itemMapper';
+import { getMembership, invalidateMembershipCache } from '~/utils/membershipStore';
 
 export default {
   name: 'QuickFav',
@@ -127,26 +128,40 @@ export default {
     if (this.hasAccessToken) {
       this.checkMembership();
     }
-    
-    this.$bus.$on('favorites-updated', this.checkMembership);
-    this.$bus.$on('lists-updated', this.checkMembership);
-    this.$bus.$on('new-list-created', this.checkMembership);
+
+    this.$bus.$on('favorites-updated', this.handleMembershipRefresh);
+    this.$bus.$on('lists-updated', this.handleMembershipRefresh);
+    this.$bus.$on('new-list-created', this.handleMembershipRefresh);
   },
   beforeUnmount() {
-    this.$bus.$off('favorites-updated', this.checkMembership);
-    this.$bus.$off('lists-updated', this.checkMembership);
-    this.$bus.$off('new-list-created', this.checkMembership);
+    this.$bus.$off('favorites-updated', this.handleMembershipRefresh);
+    this.$bus.$off('lists-updated', this.handleMembershipRefresh);
+    this.$bus.$off('new-list-created', this.handleMembershipRefresh);
   },
   methods: {
+    // All QuickFavs share ONE /membership-bulk request per session (see
+    // utils/membershipStore.js) — the previous per-card /membership fetch
+    // burst hundreds of requests on card-heavy pages.
     async checkMembership() {
       if (!this.userEmail || !this.id) return;
       try {
-         const response = await fetch(`${this.tursoBackendUrl}/membership/${encodeURIComponent(this.userEmail)}/${this.typeForDb}/${this.id}`);
-         if (response.ok) {
-             const data = await response.json();
-             this.membership = data;
-         }
-      } catch(e) { console.error(e); }
+         this.membership = await getMembership(this.tursoBackendUrl, this.userEmail, this.favId);
+      } catch(e) {
+         // Fallback: per-item endpoint, in case the bulk route is unavailable.
+         try {
+            const response = await fetch(`${this.tursoBackendUrl}/membership/${encodeURIComponent(this.userEmail)}/${this.typeForDb}/${this.id}`);
+            if (response.ok) {
+                this.membership = await response.json();
+            }
+         } catch(e2) { console.error(e2); }
+      }
+    },
+
+    handleMembershipRefresh() {
+      // Same-tick invalidations from sibling cards coalesce into one clear;
+      // the refetches below all share a single fresh bulk request.
+      invalidateMembershipCache();
+      this.checkMembership();
     },
 
     async prepareDbPayload() {
