@@ -965,11 +965,33 @@ export default {
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
 
-.info { 
-  background-color: rgba(0, 0, 0, 0.307);
-  border-radius: 15px;
+.info {
+  position: relative;
+  background: rgba(3, 4, 6, 0.6);
+  background-image:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.6), transparent 30%),
+    radial-gradient(circle at 12% 15%, rgba(31, 84, 103, 0.16), transparent 32%),
+    radial-gradient(circle at 88% 85%, rgba(139, 233, 253, 0.07), transparent 30%);
+  border-radius: 20px;
+  padding: 1.5rem;
   padding-bottom: 4rem;
-  @media (min-width: $breakpoint-medium) { display: flex; }
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(31, 84, 103, 0.5),
+    inset 0 0 20px rgba(139, 233, 253, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  overflow: hidden;
+  @media (min-width: $breakpoint-medium) { display: flex; padding: 2.5rem 2.5rem 4rem; }
+}
+.info::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+  opacity: 0.8;
+  pointer-events: none;
 }
 .left {
   display: none;

@@ -67,31 +67,56 @@ export default {
   }
 }
 
-.button {
-  display: block;
-  width: 100%;
-  padding: 0;
-  margin: 0 0 -0.2rem;
-  font-size: 1.4rem;
-  font-weight: 500;
-  color: #737373;
-  text-transform: uppercase;
-  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  letter-spacing: $letter-spacing;
-  background: none;
-  border-right: 1px solid $base-bg;
-  outline: 0;
-  transition: color 0.2s ease;
+.nav:global(.hero-attached) {
+  border: 1px solid transparent;
+  border-top: 0;
+  border-radius: 0 0 15px 15px;
+  background: linear-gradient(#000, #000) padding-box,
+              linear-gradient(to right, #1E5164, #8AE8FC) border-box;
+}
 
-  @media (min-width: $breakpoint-large) {
-    width: auto;
-    margin: 0 3rem;
-    font-size: 1.5rem;
-    border-bottom: 2px solid transparent;
+.button {
+  position: relative;
+  display: block;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0 0.3rem;
+  margin: 0;
+  font-size: clamp(0.85rem, 2.4vw, 1.3rem);
+  font-weight: 600;
+  color: #6b7a83;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  background: none;
+  border: 0;
+  outline: 0;
+  transition: color 0.25s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0.5rem;
+    width: 60%;
+    max-width: 9rem;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent, #8BE9FD, transparent);
+    transform: translateX(-50%) scaleX(0);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    pointer-events: none;
   }
 
-  &:last-child {
-    border-right: 0;
+  @media (min-width: $breakpoint-large) {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 9rem;
+    padding: 0;
+    margin: 0 2.4rem;
+    font-size: 1.4rem;
+    letter-spacing: 0.14em;
   }
 
   &:hover,
@@ -102,11 +127,11 @@ export default {
 
 .buttonActive {
   color: #fff;
-  background-color: $base-bg;
+  text-shadow: 0 0 18px rgba(139, 233, 253, 0.35);
 
-  @media (min-width: $breakpoint-large) {
-    background: none;
-    border-bottom-color: #fff;
+  &::after {
+    transform: translateX(-50%) scaleX(1);
+    opacity: 1;
   }
 }
 </style>
