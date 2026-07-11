@@ -8,7 +8,7 @@
         <p>No awards found.</p>
     </div>
 
-    <div v-else>
+    <div v-else :class="$style.awardsPanel">
         <div v-if="oscars.length" :class="$style.awardSection">
             <h3 :class="$style.awardLogo">
                 <span :class="$style.goldText">OSCARS</span> ACADEMY AWARDS
@@ -321,6 +321,37 @@ const searchAndNavigateToPerson = async (personName) => {
 .awardsContainer {
     padding: 2rem 4rem;
     min-height: 200px;
+}
+
+.awardsPanel {
+    position: relative;
+    background: rgba(3, 4, 6, 0.55);
+    background-image:
+        radial-gradient(circle at 12% 12%, rgba(31, 84, 103, 0.16), transparent 34%),
+        radial-gradient(circle at 88% 88%, rgba(139, 233, 253, 0.06), transparent 32%);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.45),
+        0 0 0 1px rgba(31, 84, 103, 0.5),
+        inset 0 0 20px rgba(139, 233, 253, 0.04);
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+        opacity: 0.8;
+        pointer-events: none;
+    }
+
+    @media (min-width: $breakpoint-large) {
+        padding: 2.5rem;
+    }
 }
 
 .loaderContainer {

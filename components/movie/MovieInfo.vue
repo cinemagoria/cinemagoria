@@ -929,6 +929,7 @@ export default {
   position: relative;
   background: rgba(3, 4, 6, 0.6);
   background-image:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.6), transparent 30%),
     radial-gradient(circle at 12% 15%, rgba(31, 84, 103, 0.16), transparent 32%),
     radial-gradient(circle at 88% 85%, rgba(139, 233, 253, 0.07), transparent 30%);
   border-radius: 20px;

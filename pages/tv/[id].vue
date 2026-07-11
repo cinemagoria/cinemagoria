@@ -15,7 +15,7 @@
     <template v-else>
       <Hero v-if="item && item.id" :initial-item="item" :festival-status="festivalStatus" />
 
-      <MediaNav :menu="menu" :active-label="activeMenu" @clicked="navClicked" />
+      <MediaNav class="hero-attached" :menu="menu" :active-label="activeMenu" @clicked="navClicked" />
 
       <template v-if="activeMenu === 'overview'">
         <TvInfo 
@@ -48,13 +48,14 @@
       </template>
 
       <template v-if="activeMenu === 'ost' && showSoundtracks">
-        <SoundtrackList :items="soundtrackItems" />
+        <SoundtrackList class="tab-full" :items="soundtrackItems" />
       </template>
 
       <template v-if="activeMenu === 'awards' && showAwards">
-        <AwardsTab 
-          :tmdb-id="item.id" 
-          :title="item.name" 
+        <AwardsTab
+          class="tab-full"
+          :tmdb-id="item.id"
+          :title="item.name"
           type="tv"
           :oscars-prop="awardsData.oscars"
           :golden-globes-prop="awardsData.goldenGlobes"
@@ -338,5 +339,19 @@ useHead({
   background: rgba(139, 233, 253, 0.2);
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(139, 233, 253, 0.3);
+}
+</style>
+<style scoped>
+:deep(.spacing) {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+:deep(.tab-full) {
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
 }
 </style>

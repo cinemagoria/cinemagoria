@@ -38,7 +38,7 @@
         <div>
           <div v-if="isHomepage || isNoirTitle" :class="$style.noirBadgeGroup">
             <nuxt-link to="/noir" :class="$style.noirBadgeImg" title="N.O.I.R">
-              <img src="/ui/noir-selection-500x500-v2.webp" alt="N.O.I.R" :class="$style.noirBadgeImgEl" />
+              <img src="/ui/noir-selection-500x500-v3.webp" alt="N.O.I.R" :class="$style.noirBadgeImgEl" />
             </nuxt-link>
           </div>
           <NoirModal v-if="showNoirModal" @close="showNoirModal = false" />
@@ -130,11 +130,15 @@
                   <div :style="{ width: `${stars}%` }" />
                 </div>
 
-                <div v-if="heroItem.rating_source === 'imdb' && heroItem.imdb_rating">
-                  {{ heroItem.imdb_rating.toFixed(1) }}/10 · {{ (heroItem.imdb_votes || 0).toLocaleString('en-US') }} votes (source: IMDb)
+                <div v-if="heroItem.rating_source === 'imdb' && heroItem.imdb_rating" :class="$style.ratingText">
+                  <span :class="$style.ratingScore">{{ heroItem.imdb_rating.toFixed(1) }}<span :class="$style.ratingOutOf">/10</span></span>
+                  <span :class="$style.ratingVotes">{{ (heroItem.imdb_votes || 0).toLocaleString('en-US') }} votes</span>
+                  <span :class="$style.ratingSource">IMDb</span>
                 </div>
-                <div v-else-if="heroItem.vote_average">
-                  {{ heroItem.vote_average.toFixed(1) }}/10 · {{ (heroItem.vote_count || 0).toLocaleString('en-US') }} reviews (source: TMDB)
+                <div v-else-if="heroItem.vote_average" :class="$style.ratingText">
+                  <span :class="$style.ratingScore">{{ heroItem.vote_average.toFixed(1) }}<span :class="$style.ratingOutOf">/10</span></span>
+                  <span :class="$style.ratingVotes">{{ (heroItem.vote_count || 0).toLocaleString('en-US') }} reviews</span>
+                  <span :class="$style.ratingSource">TMDB</span>
                 </div>
               </div>
 
@@ -148,7 +152,7 @@
             </div>
 
             <button v-if="hasTrackedProgress" :class="$style.trackInfoPill" @click="handleTrackingPillClick">
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-circle" style="margin-right: 6px;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-circle"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
                <span>{{ trackingInfoText }}</span>
             </button>
 
@@ -158,12 +162,12 @@
 
             <div v-if="activeFestivals.length > 0" :class="$style.festivalBadgeContainer">
                 <template v-for="festival in activeFestivals" :key="festival.name">
-                    <nuxt-link v-if="festival.isSimple" :to="festival.link" style="text-decoration: none; display: inline-block;">
+                    <nuxt-link v-if="festival.isSimple" :to="festival.link" :class="$style.festivalBadgeLink">
                         <component :is="festival.component" />
                     </nuxt-link>
                 </template>
             </div>
-            
+
             <div :class="[$style.buttonContainer, { 'no-transition': isHomepage && !isHomepageContentReady }]">
               <transition-group name="fade">
 
@@ -248,8 +252,7 @@
                     />
                   </svg>
                 </span>
-                <span class="txt" style="position:relative; top:1.3px;">{{ hasUserRating ? userRatingForDb : 'Rate' }}</span>
-                <span v-if="hasUserRating" style="position: absolute; bottom: -5px; left: 0; width: 100%; height: 3px; background-color: #8BE9FD;"></span>
+                <span class="txt">{{ hasUserRating ? userRatingForDb : 'Rate' }}</span>
               </button>
 
 
@@ -263,7 +266,6 @@
                     xmlns="http://www.w3.org/2000/svg"
                     width="15"
                     height="15"
-                    style="position:relative;"
                     viewBox="0 0 24 24"
                     fill="none">
                     <path
@@ -1847,68 +1849,6 @@ export default {
     height: auto;
   }
 
-
-.festivalBadgeContainer {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 1.5rem;
-    margin-bottom: 15px;
-
-    @media (max-width: 1023px) {
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-}
-
-.festivalLink {
-  color: #fff;
-  text-decoration: none;
-  font-size: 1.1rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  border: 1px solid #FBD378;
-  padding: 0 24px;
-  height: 78px;
-  border-radius: 8px;
-  background: rgba(0,0,0,0.3);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-sizing: border-box;
-
-  &:hover {
-    background: rgba(251, 211, 120, 0.15);
-    transform: translateY(-2px);
-    text-decoration: none;
-  }
-
-  @media (max-width: 1023px) {
-    height: 45px;
-    padding: 0 10px;
-    font-size: 0.75rem;
-    gap: 6px;
-
-    svg {
-      width: 16px;
-      height: 16px;
-    }
-  }
-}
-
-.buttonText {
-    text-align: left;
-    line-height: 1.2;
-    font-size: 0.9rem;
-
-    @media (max-width: 1023px) {
-      font-size: 0.75rem;
-    }
-}
-
   @media (min-width: $breakpoint-xsmall) and (max-width: 767px) {
     min-height: 64rem;
     height: auto;
@@ -1941,6 +1881,69 @@ export default {
               linear-gradient(to right, #1E5164, #8AE8FC) border-box;
   margin-top: 10px;
   touch-action: pan-y;
+}
+
+.hero:not(.heroHomepage) {
+  margin-top: 10px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 15px 15px 0 0;
+  background: linear-gradient(#000, #000) padding-box,
+              linear-gradient(to right, #1E5164, #8AE8FC) border-box;
+}
+
+.festivalBadgeContainer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem 1.8rem;
+  max-width: 100%;
+  margin: 1.8rem 0 0.4rem;
+
+  @media (max-width: #{$breakpoint-medium - 1px}) {
+    gap: 0.8rem 1.4rem;
+    margin: 1.8rem 0 0.8rem;
+  }
+
+  @media (max-width: #{$breakpoint-xsmall - 1px}) {
+    margin: 1.8rem 0 0.8rem;
+  }
+}
+
+.festivalBadgeLink {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+
+  img {
+    height: 6rem;
+    width: auto;
+    display: block;
+    filter: brightness(0) saturate(100%) invert(84%) sepia(21%) saturate(1211%) hue-rotate(179deg) brightness(101%) contrast(104%) drop-shadow(0 0 8px rgba(139, 233, 253, 0.16));
+    transition: filter 0.25s ease;
+  }
+
+  &:hover img {
+    filter: invert(1) drop-shadow(0 0 10px rgba(139, 233, 253, 0.5));
+  }
+
+  @media (min-width: $breakpoint-xlarge) {
+    img {
+      height: 6.6rem;
+    }
+  }
+
+  @media (min-width: 1650px) {
+    img {
+      height: 7.2rem;
+    }
+  }
+
+  @media (max-width: #{$breakpoint-xsmall - 1px}) {
+    img {
+      height: 4.4rem;
+    }
+  }
 }
 
 .backdrop {
@@ -2023,7 +2026,7 @@ export default {
   
   @media (max-width: #{$breakpoint-small - 1px}) {
     justify-content: flex-start;
-    margin-top: 1rem;
+    margin-top: 1.8rem;
     gap: 0.8rem 0.6rem;
     flex-wrap: wrap;
   }
@@ -2040,37 +2043,60 @@ export default {
 }
 
 .actionButton {
-  border-radius: 1.0rem;
+  border-radius: 999px;
   margin-top: 0;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 1.2rem;
-  line-height: 40px;
+  gap: 0.8rem;
+  padding: 0 1.6rem;
+  line-height: 1;
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  background: #000;
-  border: 1px solid #8BE9FD;
+  background: rgba(3, 4, 6, 0.55);
+  border: 1px solid rgba(139, 233, 253, 0.28);
   color: #8BE9FD;
-  
-  :global(.icon) svg {
-    display: block; 
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0 0 12px rgba(139, 233, 253, 0.05);
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+
+  :global(span.icon) {
+    margin: 0;
+    flex: 0 0 auto;
+    width: 15px;
+    height: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  :global(.icon) svg path {
-    stroke: currentColor; 
+  :global(span.icon) svg {
+    display: block;
+    width: 15px;
+    height: 15px;
+  }
+
+  :global(span.icon) svg path {
+    stroke: currentColor;
     transition: stroke 0.3s ease, fill 0.3s ease;
   }
-  
-  :global(.txt) {
+
+  :global(span.txt) {
     color: currentColor;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
   }
-  
+
   &:hover {
-      background: radial-gradient(circle at center, rgba(139, 233, 253, 0.3) 0%, #000 100%);
+      background: rgba(139, 233, 253, 0.12);
+      border-color: rgba(139, 233, 253, 0.6);
+      box-shadow: 0 4px 14px rgba(139, 233, 253, 0.15),
+                  inset 0 0 12px rgba(139, 233, 253, 0.08);
   }
 
   &.favoritesFilled {
@@ -2104,38 +2130,33 @@ export default {
     }
 
     @media (max-width: 390px) {
-       :global(.txt) {
+       :global(span.txt) {
          display: none;
        }
-       :global(.icon) {
-         margin: 0 0 0 3px;
-       }
        padding: 0;
-       width: 36px;
-       flex: 0 0 36px;
+       width: 50px;
+       flex: 0 0 50px;
     }
   }
-  
+
   @media (max-width: #{$breakpoint-small - 1px}) {
     flex: 0 0 auto;
     width: auto;
     max-width: 250px;
     height: 36px;
-    line-height: 36px;
     font-size: 1.3rem;
-    padding: 0 0.8rem;
+    gap: 0.6rem;
+    padding: 0 1.2rem;
   }
-  
+
   @media (min-width: $breakpoint-small) and (max-width: #{$breakpoint-medium - 1px}) {
     height: 38px;
-    line-height: 38px;
     font-size: 1.4rem;
   }
 
   @media (min-width: 1650px) {
     font-size: 0.9vw;
     height: 50px;
-    line-height: 50px;
   }
 }
 
@@ -2165,45 +2186,64 @@ export default {
 
 
 .shareButton {
-  border-radius: 1.0rem;
+  border-radius: 999px;
   margin-top: 0;
-  width: 40px;
+  width: 56px;
   height: 40px;
-  min-width: 40px;
+  min-width: 56px;
   flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  background: #000;
-  border: 1px solid #8BE9FD;
+  background: rgba(3, 4, 6, 0.55);
+  border: 1px solid rgba(139, 233, 253, 0.28);
   color: #8BE9FD;
-  
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0 0 12px rgba(139, 233, 253, 0.05);
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+
   &:hover {
-      background: radial-gradient(circle at center, rgba(139, 233, 253, 0.3) 0%, #000 100%);
+      background: rgba(139, 233, 253, 0.12);
+      border-color: rgba(139, 233, 253, 0.6);
+      box-shadow: 0 4px 14px rgba(139, 233, 253, 0.15),
+                  inset 0 0 12px rgba(139, 233, 253, 0.08);
   }
-  
-  :global(.icon) {
-    margin-left: 6px;
+
+  :global(span.icon) {
+    margin: 0;
+    flex: 0 0 auto;
+    width: 15px;
+    height: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
-  
+
+  :global(span.icon) svg {
+    display: block;
+    width: 15px;
+    height: 15px;
+  }
+
   @media (max-width: #{$breakpoint-small - 1px}) {
-    width: 36px;
+    width: 50px;
     height: 36px;
-    min-width: 36px;
+    min-width: 50px;
   }
-  
+
   @media (min-width: $breakpoint-small) and (max-width: #{$breakpoint-medium - 1px}) {
-    width: 38px;
+    width: 53px;
     height: 38px;
-    min-width: 38px;
+    min-width: 53px;
   }
-  
+
   @media (min-width: 1650px) {
     font-size: 0.9vw;
-    width: 50px;
+    width: 70px;
     height: 50px;
-    min-width: 50px;
+    min-width: 70px;
   }
 }
 
@@ -2301,24 +2341,71 @@ export default {
   }
 }
 
+.ratingText {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.9rem;
+}
+
+.ratingScore {
+  color: #fff;
+  font-weight: 600;
+}
+
+.ratingOutOf {
+  margin-left: 0.1rem;
+  font-size: 0.82em;
+  font-weight: 500;
+  color: #7f8b93;
+}
+
+.ratingVotes {
+  color: #7f8b93;
+
+  &::before {
+    content: '·';
+    margin-right: 0.9rem;
+    color: #4a555c;
+  }
+}
+
+.ratingSource {
+  padding: 0.3rem 0.9rem;
+  font-size: 0.72em;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #8BE9FD;
+  border: 1px solid rgba(139, 233, 253, 0.25);
+  border-radius: 999px;
+  background: rgba(3, 4, 6, 0.55);
+}
+
 .stars {
+  flex: 0 0 auto;
   width: 8.5rem;
-  height: 1.4rem;
+  height: 1.7rem;
   margin-right: 1rem;
-  background-image: url('@/assets/images/stars.png');
-  background-repeat: no-repeat;
-  background-size: auto 100%;
+  background: rgba(139, 233, 253, 0.18);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E");
+  -webkit-mask-size: 20% 100%;
+  -webkit-mask-repeat: repeat-x;
+  -webkit-mask-position: 0 0;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E");
+  mask-size: 20% 100%;
+  mask-repeat: repeat-x;
+  mask-position: 0 0;
 
   @media (min-width: $breakpoint-small) {
     width: 10.3rem;
-    height: 1.7rem;
+    height: 2rem;
   }
 
   > div {
     height: 100%;
-    background-image: url('@/assets/images/stars-filled.png');
-    background-repeat: no-repeat;
-    background-size: auto 100%;
+    background: #8BE9FD;
   }
 }
 
@@ -2427,14 +2514,14 @@ export default {
   }
 
   .shareButton {
-    width: 45px;
+    width: 63px;
     height: 45px;
-    min-width: 45px;
+    min-width: 63px;
   }
 
   .stars {
     width: 9rem;
-    height: 1.5rem;
+    height: 1.8rem;
   }
 }
 
@@ -2457,31 +2544,36 @@ export default {
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 
     &:hover {
-        transform: scale(1.05);
+        transform: translateY(-2px);
     }
 }
 
 .noirBadgeImgEl {
-    width: 88px;
-    height: 88px;
+    width: 76px;
+    height: 76px;
     border-radius: 14px;
     object-fit: cover;
-    transition: filter 0.4s ease;
+    filter: brightness(0) saturate(100%) invert(84%) sepia(21%) saturate(1211%) hue-rotate(179deg) brightness(101%) contrast(104%) drop-shadow(0 0 8px rgba(139, 233, 253, 0.16));
+    transition: filter 0.25s ease;
 
     @media (max-width: 768px) {
-        width: 96px;
-        height: 96px;
+        width: 84px;
+        height: 84px;
     }
 
     @media (max-width: 600px) {
-        width: 72px;
-        height: 72px;
+        width: 63px;
+        height: 63px;
     }
 
     @media (max-width: 400px) {
-        width: 62px;
-        height: 62px;
+        width: 54px;
+        height: 54px;
     }
+}
+
+.noirBadgeImg:hover .noirBadgeImgEl {
+    filter: brightness(0) saturate(100%) invert(1) drop-shadow(0 0 10px rgba(139, 233, 253, 0.5));
 }
 
 .hoverableName {
@@ -2501,23 +2593,29 @@ export default {
 .trackInfoPill {
   display: inline-flex;
   align-items: center;
+  gap: 0.8rem;
   margin-top: 1.8rem;
   padding: 8px 16px;
-  background: rgba(138, 232, 252, 0.08);
-  border: 1px solid rgba(138, 232, 252, 0.25);
-  border-radius: 20px;
-  color: #8AE8FC;
+  line-height: 1;
+  background: rgba(3, 4, 6, 0.55);
+  border: 1px solid rgba(139, 233, 253, 0.28);
+  border-radius: 999px;
+  color: #8BE9FD;
   font-size: 1.25rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.25s ease;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0 0 12px rgba(139, 233, 253, 0.05);
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
   letter-spacing: 0.02em;
 
   &:hover {
-    background: rgba(138, 232, 252, 0.18);
-    border-color: rgba(138, 232, 252, 0.5);
+    background: rgba(139, 233, 253, 0.12);
+    border-color: rgba(139, 233, 253, 0.6);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(138, 232, 252, 0.15);
+    box-shadow: 0 4px 14px rgba(139, 233, 253, 0.15),
+                inset 0 0 12px rgba(139, 233, 253, 0.08);
   }
 
   svg {
@@ -2527,7 +2625,7 @@ export default {
   @media (max-width: #{$breakpoint-small - 1px}) {
     font-size: 1.15rem;
     padding: 6px 12px;
-    margin-top: 1.2rem;
+    margin-top: 1.6rem;
   }
 
   @media (min-width: 1650px) {
@@ -3176,14 +3274,17 @@ export default {
   top: 100%;
   left: 0;
   margin-top: 10px;
-  border: 1px solid #8AE8FC;
-  background: #000000;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  border-radius: 8px;
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  background: rgba(3, 4, 6, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5),
+              inset 0 0 18px rgba(139, 233, 253, 0.05);
+  border-radius: 14px;
   width: 220px;
   z-index: 100;
   overflow: hidden;
-  text-align: left; 
+  text-align: left;
 }
 
 .menu-header {
