@@ -38,9 +38,11 @@
       </div>
 
 
-      <!-- Winners Showcase: only renders when the festival has finished and awards exist -->
+      <div v-if="awardsLoading" class="winners-loader">
+        <Loader />
+      </div>
       <WinnersCarousel
-        v-if="awards.length > 0 && activeTab !== 'info'"
+        v-else-if="awards.length > 0 && activeTab !== 'info'"
         :awards="awards"
         :year="2026"
       />
@@ -368,6 +370,7 @@ const loading = ref(true);
 const backdropLoaded = ref(false);
 const films = ref({ results: [] });
 const awards = ref([]);
+const awardsLoading = ref(true);
 const schedule = ref([]);
 const openDays = ref(new Set());
 
@@ -590,6 +593,7 @@ onMounted(async () => {
         console.error('Error fetching festival data', e);
     } finally {
         loading.value = false;
+        awardsLoading.value = false;
     }
 });
 </script>
@@ -1007,6 +1011,16 @@ onMounted(async () => {
 
 :deep(.winners-carousel) {
     max-width: 1200px;
+}
+
+.winners-loader {
+    width: 100%;
+    max-width: 1200px;
+    margin: 10px auto 8px;
+    min-height: 175px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .day-header {
