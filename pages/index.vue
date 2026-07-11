@@ -14,10 +14,6 @@
          kept as reference for future editions; import + computed preserved below. -->
     <!-- <TribecaLiveBanner v-if="showTribecaLiveBanner" /> -->
 
-    <!-- KVIFF 2026 coverage — visible from 7 days before opening through
-         closing night (June 26 → July 11, Czechia time). -->
-    <KviffLiveBanner v-if="showKviffLiveBanner" />
-
     <Hero
       v-if="featured && featured.length"
       :items="featured"
@@ -72,7 +68,6 @@ import OscarsLiveBanner from '~/components/OscarsLiveBanner';
 import CannesLiveBanner from '~/components/CannesLiveBanner';
 import CannesWinnersBanner from '~/components/CannesWinnersBanner';
 import TribecaLiveBanner from '~/components/TribecaLiveBanner';
-import KviffLiveBanner from '~/components/KviffLiveBanner';
 import { SUPPORTED_PRODUCTION_COMPANIES, POPULAR_PRODUCTION_COMPANIES_IDS, STREAMING_PROVIDERS, POPULAR_STREAMING_IDS } from '~/utils/constants';
 
 // ─── Oscars 2026 visibility window ───────────────────────────────────────────
@@ -96,14 +91,6 @@ const showCannesWinnersBanner = computed(() => _now >= CANNES_WINNERS_START && _
 // kept as a reference template for future editions.
 const TRIBECA_LIVE_EXPIRY = new Date('2026-06-15T03:59:00Z');
 const showTribecaLiveBanner = computed(() => _now < TRIBECA_LIVE_EXPIRY);
-
-// ─── KVIFF 2026 visibility window ────────────────────────────────────────────
-// Live 7 days before opening through closing night, Czechia time:
-//   June 26 2026 00:00 CEST  →  22:00 UTC June 25
-//   July 11 2026 23:59 CEST  →  21:59 UTC July 11
-const KVIFF_LIVE_START  = new Date('2026-06-25T22:00:00Z');
-const KVIFF_LIVE_EXPIRY = new Date('2026-07-11T21:59:00Z');
-const showKviffLiveBanner = computed(() => _now >= KVIFF_LIVE_START && _now < KVIFF_LIVE_EXPIRY);
 
 
 const { data: pageData, error: pageError } = useAsyncData('homepage', async () => {
