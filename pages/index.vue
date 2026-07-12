@@ -14,6 +14,8 @@
          kept as reference for future editions; import + computed preserved below. -->
     <!-- <TribecaLiveBanner v-if="showTribecaLiveBanner" /> -->
 
+    <FantasiaLiveBanner v-if="showFantasiaLiveBanner" />
+
     <Hero
       v-if="featured && featured.length"
       :items="featured"
@@ -68,6 +70,7 @@ import OscarsLiveBanner from '~/components/OscarsLiveBanner';
 import CannesLiveBanner from '~/components/CannesLiveBanner';
 import CannesWinnersBanner from '~/components/CannesWinnersBanner';
 import TribecaLiveBanner from '~/components/TribecaLiveBanner';
+import FantasiaLiveBanner from '~/components/FantasiaLiveBanner';
 import { SUPPORTED_PRODUCTION_COMPANIES, POPULAR_PRODUCTION_COMPANIES_IDS, STREAMING_PROVIDERS, POPULAR_STREAMING_IDS } from '~/utils/constants';
 
 // ─── Oscars 2026 visibility window ───────────────────────────────────────────
@@ -91,6 +94,10 @@ const showCannesWinnersBanner = computed(() => _now >= CANNES_WINNERS_START && _
 // kept as a reference template for future editions.
 const TRIBECA_LIVE_EXPIRY = new Date('2026-06-15T03:59:00Z');
 const showTribecaLiveBanner = computed(() => _now < TRIBECA_LIVE_EXPIRY);
+
+const FANTASIA_LIVE_START  = new Date('2026-07-09T04:00:00Z');
+const FANTASIA_LIVE_EXPIRY = new Date('2026-08-03T03:59:00Z');
+const showFantasiaLiveBanner = computed(() => _now >= FANTASIA_LIVE_START && _now < FANTASIA_LIVE_EXPIRY);
 
 
 const { data: pageData, error: pageError } = useAsyncData('homepage', async () => {
