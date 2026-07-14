@@ -27,7 +27,7 @@
     <div class="fantasia-banner__inner">
       <img
         class="fantasia-banner__logo"
-        src="/festivals/fantasia/fantasia_film_festival_2026_logo.png"
+        src="/festivals/fantasia/fantasia_logo_for_banner_2026.png"
         alt=""
         aria-hidden="true"
       />
