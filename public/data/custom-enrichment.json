@@ -990,5 +990,13 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1783057827/cinemagoria/backdrops/backdrop_override_1629109.webp",
     "trailer_key": "NK6jh04qNyY",
     "force_enrichment": true
+  },
+  {
+    "tmdb_id": 213562,
+    "media_type": "tv",
+    "poster_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1784036090/cinemagoria/posters/poster_override_213562.webp",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1784036095/cinemagoria/backdrops/backdrop_override_213562.webp",
+    "trailer_key": "3lZ2ZenuCGc",
+    "force_enrichment": true
   }
 ]
