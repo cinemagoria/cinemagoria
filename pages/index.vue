@@ -175,6 +175,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Hot Spot',
         'Ferine',
         'The Eyes',
+        'Our Effed Up World',
         'The Village of Eight Gravestones',
         'The Mouths',
         'Junction Row',
