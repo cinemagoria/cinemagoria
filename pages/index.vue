@@ -203,12 +203,12 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Teenage Sex and Death at Camp Miasma',
         'Her Private Hell',
         'Titanic Ocean',
+        'The Match',
         // cuff 2026
         'Lucid',
         'Thanks for Nothing',
         'The Weed Eaters',
         'Mag Mag',
-        'Camp',
         // bafici 2026
         'Nova \'78',
         'El infierno está encantador - Gulp. 1985',
@@ -241,7 +241,6 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Krakatoa',
         'Butterfly',
         'Variations on a theme',
-        'Motherwitch',
         'Silent Friend',
         'Tell Me What You Feel',
         'Late Fame',
