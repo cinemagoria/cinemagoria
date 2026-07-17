@@ -1756,6 +1756,24 @@ export const SUPPORTED_FESTIVALS = [
         name: 'Calgary Underground Film Festival 2026',
         slug: 'cuff-2026',
         logo_path: '/festivals/cuff/cuff_film_festival_2026_logo.png'
+    },
+    {
+        id: 'kviff',
+        name: 'Karlovy Vary International Film Festival 2026',
+        slug: 'kviff-2026',
+        logo_path: '/festivals/kviff/kviff_film_festival_2026_logo.png'
+    },
+    {
+        id: 'fantasia',
+        name: 'Fantasia International Film Festival 2026',
+        slug: 'fantasia-2026',
+        logo_path: '/festivals/fantasia/fantasia_film_festival_2026_logo.png'
+    },
+    {
+        id: 'frightfest',
+        name: 'FrightFest 2026',
+        slug: 'frightfest-2026',
+        logo_path: '/festivals/frightfest/frightfest_film_festival_2026_logo.png'
     }
 ];
 
