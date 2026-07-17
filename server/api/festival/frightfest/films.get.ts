@@ -51,8 +51,10 @@ export default defineEventHandler(async (event) => {
         });
 
         if (query.limit) {
-            const limit = parseInt(query.limit as string)
-            films = films.slice(0, limit)
+            const limit = parseInt(query.limit as string, 10)
+            if (!isNaN(limit)) {
+                films = films.slice(0, limit)
+            }
         }
 
         films.sort((a: any, b: any) => a.title.localeCompare(b.title))

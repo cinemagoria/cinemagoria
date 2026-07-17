@@ -449,14 +449,22 @@ watch([loading, activeTab, selectionSections], () => {
 }, { flush: 'post' });
 
 const formatDate = (dateStr) => {
+    // Parse the Y/M/D parts manually — new Date('2026-08-27') parses as UTC
+    // midnight, which shifts to the previous day once rendered in any
+    // timezone behind UTC (e.g. the Americas), mislabeling the day header.
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
     const options = { weekday: 'long', month: 'long', day: 'numeric' };
-    return new Date(dateStr).toLocaleDateString('en-US', options);
+    return date.toLocaleDateString('en-US', options);
 };
 
 const formatTime = (timeStr) => {
+    // These are in-person London screenings — always show the venue-local
+    // time, not the viewer's browser timezone.
     return new Date(timeStr).toLocaleTimeString('en-US', {
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
+        timeZone: 'Europe/London'
     });
 };
 
