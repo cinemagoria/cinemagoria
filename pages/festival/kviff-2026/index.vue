@@ -9,6 +9,7 @@
         <div v-if="!backdropLoaded" class="backdrop-loader"><Loader :size="50" /></div>
         <a href="https://www.kviff.com" target="_blank" class="hero-backdrop">
             <img
+              ref="backdropImgRef"
               src="/festivals/kviff/kviff_backdrop_2026_eng.webp"
               alt="Karlovy Vary International Film Festival 2026 Backdrop"
               :style="{ opacity: backdropLoaded ? 1 : 0, transition: 'opacity 0.4s ease' }"
@@ -368,6 +369,13 @@ const nextSlide = () => { slideDirection.value = 'carousel-next'; infoSlide.valu
 const goToSlide = (i) => { slideDirection.value = i > infoSlide.value ? 'carousel-next' : 'carousel-prev'; infoSlide.value = i; };
 const loading = ref(true);
 const backdropLoaded = ref(false);
+const backdropImgRef = ref(null);
+// Hydration race: if the backdrop <img> already finished loading (or
+// failed) before Vue attached the listeners below, its 'load'/'error'
+// event already fired and never will again — check .complete on mount.
+onMounted(() => {
+    if (backdropImgRef.value?.complete) backdropLoaded.value = true;
+});
 const films = ref({ results: [] });
 const awards = ref([]);
 const awardsLoading = ref(true);

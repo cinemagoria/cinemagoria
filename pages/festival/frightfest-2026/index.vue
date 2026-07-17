@@ -7,11 +7,11 @@
             All Festivals
         </nuxt-link>
         <div v-if="!backdropLoaded" class="backdrop-loader"><Loader :size="50" /></div>
-        <a href="https://iffr.com/en/programme/2026" target="_blank" class="hero-backdrop">
-            <img 
+        <a href="https://frightfest.co.uk/tickets/" target="_blank" rel="noopener noreferrer" class="hero-backdrop">
+            <img
               ref="backdropImgRef"
-              src="/festivals/rotterdam/rotterdam_backdrop_2026_eng.webp" 
-              alt="Rotterdam Backdrop"
+              src="/festivals/frightfest/frightfest_backdrop_2026_en.png"
+              alt="FrightFest 2026 Backdrop"
               :style="{ opacity: backdropLoaded ? 1 : 0, transition: 'opacity 0.4s ease' }"
               @load="backdropLoaded = true"
               @error="backdropLoaded = true"
@@ -27,26 +27,16 @@
 
             <input type="radio" id="tab-films" value="films" v-model="activeTab">
             <label for="tab-films" @click="activeTab = 'films'">Catalog</label>
-            
+
             <input type="radio" id="tab-schedule" value="schedule" v-model="activeTab">
             <label for="tab-schedule" @click="activeTab = 'schedule'">Schedule</label>
-            
+
             <div class="glider" :class="activeTab"></div>
         </div>
       </div>
       <div class="disclaimer-bar disclaimer-bar--top" style="max-width: 1200px; width: 100%; margin: 6px auto 0;">
         <FestivalDataDisclaimer />
       </div>
-
-
-      <!-- Winners Showcase: only renders when the festival has finished and awards exist -->
-      <WinnersCarousel
-        v-if="awards.length > 0"
-        :awards="awards"
-        :year="2026"
-      />
-
-      
     </div>
 
     <div class="container">
@@ -62,7 +52,7 @@
             </div>
             <div class="rollout-banner__copy">
               <h3>Lineup updates in progress</h3>
-              <p>This festival lineup is currently being updated. New films, sections, and official selections will be added progressively as they are announced and verified.</p>
+              <p>This festival lineup is currently being updated. New films and screens will be added progressively as they are announced and verified.</p>
             </div>
           </div>
           <div v-else class="selection-layout">
@@ -102,7 +92,7 @@
                 <transition name="slide">
                   <div v-show="!isMobile || isSectionOpen(sec.key)" class="sel-section-body">
                     <div class="listing__items">
-                      <RotterdamCard
+                      <FrightfestCard
                         v-for="item in sec.films"
                         :key="`${sec.key}-${item.id}`"
                         :item="item"
@@ -116,14 +106,14 @@
         </div>
 
         <div v-if="activeTab === 'schedule'" class="schedule-container">
-          <!-- Initial rollout banner: schedule pending official publication -->
+          <!-- Rollout banner: screenings not ingested yet -->
           <div v-if="schedule.length === 0" class="rollout-banner">
             <div class="rollout-banner__icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             </div>
             <div class="rollout-banner__copy">
-              <h3>Schedule pending</h3>
-              <p>Official screening schedules have not yet been published by the festival. Screening information will appear here as soon as it becomes available.</p>
+              <h3>Schedule coming soon</h3>
+              <p>The official screening schedule has not yet been published by the festival. Screening times and venues will appear here as soon as they become available.</p>
             </div>
           </div>
 
@@ -191,20 +181,19 @@
                 <div v-show="!isMobile || isOpen(date)" class="screenings-list">
                   <div v-for="screening in dayScreenings" :key="screening.id" class="screening-card">
                      <div class="time-block">
-                        <span class="time">{{ formatTime(screening.start_time, screening.timezone) }}</span>
+                        <span class="time">{{ formatTime(screening.start_time) }}</span>
                         <span class="timezone">{{ screening.timezone }}</span>
                      </div>
 
                       <div class="film-info">
-                         <component
-                            :is="screening.film.source_url ? 'a' : 'span'"
-                            :href="screening.film.source_url || ''"
-                            :target="screening.film.source_url ? '_blank' : ''"
+                         <a
+                            :href="screening.film.source_url || 'https://frightfest.co.uk'"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             class="film-title"
-                            :class="{'no-link': !screening.film.source_url}"
                          >
                             {{ screening.film.title }}
-                         </component>
+                         </a>
                          <div class="film-meta">
                              <span v-if="screening.film.director">Directed by {{ screening.film.director }}</span>
                              <span v-if="screening.film.director && screening.film.runtime"> • </span>
@@ -248,53 +237,50 @@
             <div class="carousel-track">
               <transition :name="slideDirection" mode="out-in">
                 <div class="carousel-card" :key="infoSlide">
-                  <!-- Slide 0: Ticket Sales -->
+                  <!-- Slide 0: General Information -->
                   <template v-if="infoSlide === 0">
                     <div class="carousel-card-header">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-                      <h3>Ticket Sales</h3>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                      <h3>General Information</h3>
                     </div>
-                    <p class="carousel-desc"><strong>General Public:</strong> January 21, 2026 at 12:00 CET.</p>
-                    <p class="carousel-desc"><strong>IFFR Members / Newsletter:</strong> Early access from January 20, 2026 at 12:00 CET.</p>
-                    <ul class="price-list">
-                      <li><span class="price-label">Standard Tickets (CineMart/de Doelen/Pathé)</span><span class="price-value">€12.50</span></li>
-                      <li><span class="price-label">LantarenVenster / KINO / Cinerama</span><span class="price-value">€11.50</span></li>
-                      <li><span class="price-label">Short Film Programme</span><span class="price-value">€9.00</span></li>
-                      <li><span class="price-label">Big Talks / Masterclasses</span><span class="price-value">Free (with reservation)</span></li>
-                    </ul>
+                    <p class="carousel-desc"><strong>Dates:</strong> August 27 – 31, 2026</p>
+                    <p class="carousel-desc"><strong>Location:</strong> London, United Kingdom</p>
+                    <p class="carousel-desc"><strong>Website:</strong> <a href="https://frightfest.co.uk" target="_blank" rel="noopener noreferrer" class="accent-link">frightfest.co.uk</a></p>
+                    <p class="carousel-desc"><strong>FrightFest</strong> is the UK's leading horror and fantasy film festival, conceived in 1999 by Paul McEvoy, Ian Rattray and Alan Jones to give Britain an event on par with genre stalwarts like Sitges and BIFFF. It staged its first edition in 2000 at London's Prince Charles Cinema and has run every August Bank Holiday weekend since — through sponsors including Film4, the Horror Channel and Arrow Video (2016–2022), now presented by Tubi.</p>
+                    <p class="carousel-desc">The <strong>2026 edition (27th)</strong> is the festival's biggest ever programme: 82 features across five screens — Main Screen Films and Discovery Screens 1–4 — including 24 world premieres from 16 countries. The festival opens with the world premiere of Abner Pastoll's <em>Nervous</em> and closes with Marion Le Corroller's <em>Species</em>.</p>
+                    <p class="carousel-desc">A smaller satellite edition, <strong>FrightFest Halloween</strong>, follows on October 30–31 at ODEON Luxe West End.</p>
                   </template>
 
-                  <!-- Slide 1: Account & Access -->
+                  <!-- Slide 1: Access & Tickets -->
                   <template v-if="infoSlide === 1">
                     <div class="carousel-card-header">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                      <h3>Account &amp; Access</h3>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                      <h3>Access &amp; Tickets</h3>
                     </div>
-                    <ul class="bullet-list">
-                      <li>Create or log in to your IFFR account before purchasing.</li>
-                      <li>Tickets are linked to your personal account and can be shared.</li>
-                      <li>Check the programme in advance and create a favourites list.</li>
-                      <li>Ticket desk available on-site in the <strong>de Doelen foyer</strong> (10:00 – 21:30).</li>
-                      <li>Virtual queuing system replaces physical lines at venues.</li>
-                      <li>On-site support: Information desks at all festival venues.</li>
+                    <ul class="price-list">
+                      <li><span class="price-label">Festival Pass — Stalls &amp; Royal Circle</span><span class="price-value">£265</span></li>
+                      <li><span class="price-label">Festival Pass — Balcony</span><span class="price-value">£225</span></li>
+                      <li><span class="price-label">Thursday Day Pass</span><span class="price-value">£36</span></li>
+                      <li><span class="price-label">Friday &amp; Saturday Day Pass</span><span class="price-value">£72</span></li>
+                      <li><span class="price-label">Sunday &amp; Monday Day Pass</span><span class="price-value">£60</span></li>
+                      <li><span class="price-label">Single Tickets</span><span class="price-value">£14.99</span></li>
                     </ul>
+                    <p class="carousel-desc">A booking fee applies: 4% on passes, a flat £1.29 on single tickets. Full festival passes go on sale July 18, 2026; day passes and single tickets follow on July 25.</p>
+                    <p class="carousel-desc">Pass-holders can also join the traditional film quiz night on Wednesday, August 26 (venue to be confirmed). The <a href="https://subscribe.emailblaster.cloud/MjM2NTY/791.html" target="_blank" rel="noopener noreferrer" class="accent-link">FrightFest mailing list</a> carries all ticketing and lineup updates.</p>
+                    <p class="carousel-desc"><strong>18+ event:</strong> the programme leans into hard-edged genre material — expect graphic violence, gore and other mature themes throughout.</p>
                   </template>
 
-                  <!-- Slide 2: Important Notice -->
+                  <!-- Slide 2: Venues -->
                   <template v-if="infoSlide === 2">
                     <div class="carousel-card-header">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                      <h3>Important Notice</h3>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                      <h3>Venues</h3>
                     </div>
-                    <ul class="bullet-list">
-                      <li>Seats cannot be reserved — all screenings are first come, first served.</li>
-                      <li>Press &amp; Industry: register via <strong>iffr.com</strong> for accreditation, accredited access to screenings, and industry events.</li>
-                      <li>Ticket sales close when capacity is reached or the screening starts.</li>
-                    </ul>
-                    <div class="promo-box">
-                      <span class="promo-tag">DATES</span>
-                      <p><strong>January 29 – February 8, 2026</strong><br/>Rotterdam, Netherlands</p>
+                    <div class="venue-list">
+                      <div class="venue-item"><strong>ODEON Luxe Leicester Square</strong><span>Leicester Square, London</span></div>
+                      <div class="venue-item"><strong>ODEON Luxe West End</strong><span>Leicester Square, London</span></div>
                     </div>
+                    <p class="carousel-desc">Both venues sit steps apart in central London and jointly host the festival's five screens. FrightFest hasn't published which screens run in which building, so pass-holders should check on-site signage on arrival.</p>
                   </template>
                 </div>
               </transition>
@@ -317,22 +303,8 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import Loader from '~/components/Loader.vue';
-import WinnersCarousel from '~/components/festival/WinnersCarousel.vue';
 import FestivalDataDisclaimer from '~/components/FestivalDataDisclaimer.vue';
-import Listing from '~/components/Listing.vue';
-import RotterdamCard from '~/components/RotterdamCard.vue';
-
-const API_FILM_LIMIT = 1000;
-
-const isSafeUrl = (url) => {
-    if (!url) return false;
-    try {
-        const parsed = new URL(url, window.location.origin);
-        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
-    } catch {
-        return false;
-    }
-};
+import FrightfestCard from '~/components/FrightfestCard.vue';
 
 const activeTab = ref('films');
 const scheduleSearch = ref('');
@@ -382,40 +354,28 @@ onMounted(() => {
     if (backdropImgRef.value?.complete) backdropLoaded.value = true;
 });
 const films = ref({ results: [] });
-const awards = ref([]);
 const schedule = ref([]);
 const openDays = ref(new Set());
 
+// FrightFest 2026 screens (Batch 1, #395) — the lineup is organized by
+// physical screen rather than thematic strand, so these mirror
+// festival_films.category exactly. OTHER stays as a safety net.
 const CATEGORY_ORDER = [
-    'Tiger Competition',
-    'Big Screen Competition',
-    'Bright Future',
-    'Harbour',
-    'Limelight',
-    'Cinema Regained',
-    'Focus: the Future Is NOW',
-    'Focus: Marwan Hamed',
-    'RTM',
-    'Short & Mid-length',
-    'Specials',
+    'Main Screen Films',
+    'Discovery Screen 1',
+    'Discovery Screen 2',
+    'Discovery Screen 3',
+    'Discovery Screen 4',
 ];
 
 const CATEGORY_LABELS = {
-    'Tiger Competition': 'Tiger Competition',
-    'Big Screen Competition': 'Big Screen Competition',
-    'Bright Future': 'Bright Future',
-    'Harbour': 'Harbour',
-    'Limelight': 'Limelight',
-    'Cinema Regained': 'Cinema Regained',
-    'Focus: the Future Is NOW': 'Focus: the Future Is NOW',
-    'Focus: Marwan Hamed': 'Focus: Marwan Hamed',
-    'RTM': 'RTM',
-    'Short & Mid-length': 'Short & Mid-length',
-    'Specials': 'Specials',
+    'Main Screen Films': 'Main Screen Films',
+    'Discovery Screen 1': 'Discovery Screen 1',
+    'Discovery Screen 2': 'Discovery Screen 2',
+    'Discovery Screen 3': 'Discovery Screen 3',
+    'Discovery Screen 4': 'Discovery Screen 4',
     OTHER: 'Other',
 };
-
-const categoryKeyForFilm = (film) => String(film.category || film.section || '').trim();
 
 const activeSection = ref('');
 const selectionContentRef = ref(null);
@@ -434,7 +394,7 @@ const filmsByCategory = computed(() => {
     const map = Object.fromEntries(CATEGORY_ORDER.map((c) => [c, []]));
     map.OTHER = [];
     for (const f of films.value?.results || []) {
-        const key = categoryKeyForFilm(f);
+        const key = String(f.category || f.section || '').trim();
         if (key && map[key] !== undefined) map[key].push(f);
         else map.OTHER.push(f);
     }
@@ -488,18 +448,15 @@ watch([loading, activeTab, selectionSections], () => {
     else if (sectionObserver) sectionObserver.disconnect();
 }, { flush: 'post' });
 
-const FESTIVAL_TZ = 'Europe/Amsterdam';
-
 const formatDate = (dateStr) => {
-    const options = { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' };
-    return new Date(`${dateStr}T00:00:00Z`).toLocaleDateString('en-US', options);
+    const options = { weekday: 'long', month: 'long', day: 'numeric' };
+    return new Date(dateStr).toLocaleDateString('en-US', options);
 };
 
-const formatTime = (timeStr, tz) => {
+const formatTime = (timeStr) => {
     return new Date(timeStr).toLocaleTimeString('en-US', {
         hour: '2-digit',
-        minute: '2-digit',
-        timeZone: tz || FESTIVAL_TZ
+        minute: '2-digit'
     });
 };
 
@@ -530,8 +487,11 @@ const groupedScreenings = computed(() => {
 });
 
 const toggleDay = (date) => {
-    if (openDays.value.has(date)) openDays.value.delete(date);
-    else openDays.value.add(date);
+    if (openDays.value.has(date)) {
+        openDays.value.delete(date);
+    } else {
+        openDays.value.add(date);
+    }
 };
 
 const isOpen = (date) => {
@@ -584,32 +544,19 @@ onBeforeUnmount(() => {
 
 onMounted(async () => {
     try {
-        const [filmsData, scheduleData, awardsData] = await Promise.all([
-            $fetch(`/api/festival/rotterdam/films?limit=${API_FILM_LIMIT}&sort=title`),
-            $fetch('/api/festival/rotterdam/schedule'),
-            $fetch('/api/festival/rotterdam/awards').catch(() => ({ results: [] })),
+        const [filmsData, scheduleData] = await Promise.all([
+            $fetch('/api/festival/frightfest/films?limit=400&sort=title'),
+            $fetch('/api/festival/frightfest/schedule'),
         ]);
-        
-        films.value = filmsData;
-        awards.value = awardsData.results || [];
 
-        // Rotterdam's schedule API returns start_time as a Unix timestamp (number),
-        // unlike other festivals which return ISO strings. Normalize on receipt so
-        // the rest of the code (groupedScreenings, formatTime, etc.) can rely on a
-        // consistent ISO-string shape.
-        const toIsoString = (t) => (typeof t === 'number')
-            ? new Date(t * 1000).toISOString()
-            : t;
-        schedule.value = (scheduleData.results || []).map(s => ({
-            ...s,
-            start_time: toIsoString(s.start_time),
-        }));
+        films.value = filmsData;
+        schedule.value = scheduleData.results || [];
 
         if (schedule.value.length > 0) {
             const dates = new Set(schedule.value.map(s => s.start_time.split('T')[0]));
             dates.forEach(d => openDays.value.add(d));
         }
-        
+
     } catch (e) {
         console.error('Error fetching festival data', e);
     } finally {
@@ -804,16 +751,6 @@ onMounted(async () => {
         min-height: 20px;
         display: block;
     }
-}
-
-.parallel-band {
-    font-size: 0.85rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: #8BE9FD;
-    border-top: 1px solid rgba(139, 233, 253, 0.25);
-    padding-top: 1.4rem;
-    margin: 0.5rem 0 1.5rem;
 }
 
 @media (max-width: 900px) {
@@ -1025,12 +962,6 @@ onMounted(async () => {
     margin: 0 auto;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
-}
-
-
-
-:deep(.winners-carousel) {
-    max-width: 1200px;
 }
 
 .day-header {
@@ -1361,11 +1292,6 @@ onMounted(async () => {
 .venue-list {
   display: flex; flex-direction: column; gap: 0.5rem; margin: 0.5rem 0;
   .venue-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); span { color: rgba(255,255,255,0.5); font-size: 0.95rem; } strong { color: #fff; } }
-}
-
-.bullet-list {
-  padding-left: 1.4rem; font-size: 1.02rem;
-  li { margin-bottom: 1rem; line-height: 1.7; &::marker { color: #8BE9FD; } }
 }
 
 .accent-link {
