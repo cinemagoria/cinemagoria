@@ -119,7 +119,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     // Batched: 1 HTTP request + 1 Turso `IN` query for all 11 festivals.
     // Replaces the previous fan-out of 11 parallel /api/festival/{slug}/films
     // calls that was bottlenecking the homepage at 35-38s on the slow wave.
-    const FESTIVAL_SLUGS = ['sundance','berlinale','rotterdam','slamdance','sxsw','romford','bifff','bafici','cannes','tribeca','cuff','kviff','fantasia'];
+    const FESTIVAL_SLUGS = ['sundance','berlinale','rotterdam','slamdance','sxsw','romford','bifff','bafici','cannes','tribeca','cuff','kviff','fantasia','frightfest'];
     const fetchAllFestivalsBatched = async (limit = 1000) => {
         try {
             // fields=card keeps only what the carousel cards consume — the
@@ -169,8 +169,10 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     const cuffList = festivalsBuckets.cuff || [];
     const kviffList = festivalsBuckets.kviff || [];
     const fantasiaList = festivalsBuckets.fantasia || [];
-    
+    const frightfestList = festivalsBuckets.frightfest || [];
+
      const FEATURED_ORDER = [
+        // frightfest 2026
         // fantasia 2026
         'Hot Spot',
         'Ferine',
@@ -258,7 +260,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
     
-    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList, ...romfordList, ...bifffList, ...baficiList, ...cannesList, ...tribecaList, ...cuffList, ...kviffList, ...fantasiaList];
+    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList, ...romfordList, ...bifffList, ...baficiList, ...cannesList, ...tribecaList, ...cuffList, ...kviffList, ...fantasiaList, ...frightfestList];
     
     let mixedFestivalFilms = allFestivalFilms.filter(f => {
         const t = norm(f.title);

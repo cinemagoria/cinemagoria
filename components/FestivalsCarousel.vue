@@ -70,6 +70,7 @@ import CannesCard from '~/components/CannesCard.vue';
 import CannesCriticsChoiceCard from '~/components/CannesCard.vue';
 import KviffCard from '~/components/KviffCard.vue';
 import FantasiaCard from '~/components/FantasiaCard.vue';
+import FrightfestCard from '~/components/FrightfestCard.vue';
 
 const AUTOPLAY_INTERVAL = 10000;
 
@@ -93,6 +94,7 @@ export default {
     CannesCriticsChoiceCard,
     KviffCard,
     FantasiaCard,
+    FrightfestCard,
   },
 
   props: {
@@ -149,6 +151,7 @@ export default {
         'cannes-critics-choice': 'CannesCriticsChoiceCard',
         kviff: 'KviffCard',
         fantasia: 'FantasiaCard',
+        frightfest: 'FrightfestCard',
       };
       return cardMap[item.festival_source] || 'SundanceCard';
     },
