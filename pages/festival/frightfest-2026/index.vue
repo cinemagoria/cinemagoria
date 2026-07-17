@@ -7,8 +7,9 @@
             All Festivals
         </nuxt-link>
         <div v-if="!backdropLoaded" class="backdrop-loader"><Loader :size="50" /></div>
-        <a href="https://frightfest.co.uk" target="_blank" rel="noopener noreferrer" class="hero-backdrop">
+        <a href="https://frightfest.co.uk/tickets/" target="_blank" rel="noopener noreferrer" class="hero-backdrop">
             <img
+              ref="backdropImgRef"
               src="/festivals/frightfest/frightfest_backdrop_2026_en.png"
               alt="FrightFest 2026 Backdrop"
               :style="{ opacity: backdropLoaded ? 1 : 0, transition: 'opacity 0.4s ease' }"
@@ -247,6 +248,7 @@
                     <p class="carousel-desc"><strong>Website:</strong> <a href="https://frightfest.co.uk" target="_blank" rel="noopener noreferrer" class="accent-link">frightfest.co.uk</a></p>
                     <p class="carousel-desc"><strong>FrightFest</strong> is the UK's leading horror and fantasy film festival, conceived in 1999 by Paul McEvoy, Ian Rattray and Alan Jones to give Britain an event on par with genre stalwarts like Sitges and BIFFF. It staged its first edition in 2000 at London's Prince Charles Cinema and has run every August Bank Holiday weekend since — through sponsors including Film4, the Horror Channel and Arrow Video (2016–2022), now presented by Tubi.</p>
                     <p class="carousel-desc">The <strong>2026 edition (27th)</strong> is the festival's biggest ever programme: 82 features across five screens — Main Screen Films and Discovery Screens 1–4 — including 24 world premieres from 16 countries. The festival opens with the world premiere of Abner Pastoll's <em>Nervous</em> and closes with Marion Le Corroller's <em>Species</em>.</p>
+                    <p class="carousel-desc">A smaller satellite edition, <strong>FrightFest Halloween</strong>, follows on October 30–31 at ODEON Luxe West End.</p>
                   </template>
 
                   <!-- Slide 1: Access & Tickets -->
@@ -256,12 +258,16 @@
                       <h3>Access &amp; Tickets</h3>
                     </div>
                     <ul class="price-list">
-                      <li><span class="price-label">Full festival &amp; day passes</span><span class="price-value">On sale from Jul 18, 2026</span></li>
-                      <li><span class="price-label">Individual film tickets</span><span class="price-value">On sale from Jul 25, 2026</span></li>
-                      <li><span class="price-label">Industry &amp; press accreditation</span><span class="price-value">Application-based</span></li>
+                      <li><span class="price-label">Festival Pass — Stalls &amp; Royal Circle</span><span class="price-value">£265</span></li>
+                      <li><span class="price-label">Festival Pass — Balcony</span><span class="price-value">£225</span></li>
+                      <li><span class="price-label">Thursday Day Pass</span><span class="price-value">£36</span></li>
+                      <li><span class="price-label">Friday &amp; Saturday Day Pass</span><span class="price-value">£72</span></li>
+                      <li><span class="price-label">Sunday &amp; Monday Day Pass</span><span class="price-value">£60</span></li>
+                      <li><span class="price-label">Single Tickets</span><span class="price-value">£14.99</span></li>
                     </ul>
-                    <p class="carousel-desc">Tickets are sold through the official FrightFest box office. Passes and single tickets grant access to both venues across the five days.</p>
-                    <p class="carousel-desc"><strong>Audience-driven atmosphere:</strong> FrightFest is famous for its packed, vocal crowds, director Q&amp;As and a genuine community feel among genre fans.</p>
+                    <p class="carousel-desc">A booking fee applies: 4% on passes, a flat £1.29 on single tickets. Full festival passes go on sale July 18, 2026; day passes and single tickets follow on July 25.</p>
+                    <p class="carousel-desc">Pass-holders can also join the traditional film quiz night on Wednesday, August 26 (venue to be confirmed). The <a href="https://subscribe.emailblaster.cloud/MjM2NTY/791.html" target="_blank" rel="noopener noreferrer" class="accent-link">FrightFest mailing list</a> carries all ticketing and lineup updates.</p>
+                    <p class="carousel-desc"><strong>18+ event:</strong> the programme leans into hard-edged genre material — expect graphic violence, gore and other mature themes throughout.</p>
                   </template>
 
                   <!-- Slide 2: Venues -->
@@ -271,10 +277,10 @@
                       <h3>Venues</h3>
                     </div>
                     <div class="venue-list">
-                      <div class="venue-item"><strong>ODEON Luxe Leicester Square</strong><span>Leicester Square, London — Main Screen Films</span></div>
-                      <div class="venue-item"><strong>ODEON Luxe West End</strong><span>Leicester Square, London — Discovery Screens 1–4</span></div>
+                      <div class="venue-item"><strong>ODEON Luxe Leicester Square</strong><span>Leicester Square, London</span></div>
+                      <div class="venue-item"><strong>ODEON Luxe West End</strong><span>Leicester Square, London</span></div>
                     </div>
-                    <p class="carousel-desc">Both venues sit steps apart in central London, letting pass-holders move freely between the Main Screen and the four Discovery Screens across the five-day run.</p>
+                    <p class="carousel-desc">Both venues sit steps apart in central London and jointly host the festival's five screens. FrightFest hasn't published which screens run in which building, so pass-holders should check on-site signage on arrival.</p>
                   </template>
                 </div>
               </transition>
@@ -340,6 +346,13 @@ const nextSlide = () => { slideDirection.value = 'carousel-next'; infoSlide.valu
 const goToSlide = (i) => { slideDirection.value = i > infoSlide.value ? 'carousel-next' : 'carousel-prev'; infoSlide.value = i; };
 const loading = ref(true);
 const backdropLoaded = ref(false);
+const backdropImgRef = ref(null);
+// Hydration race: if the backdrop <img> already finished loading (or
+// failed) before Vue attached the listeners below, its 'load'/'error'
+// event already fired and never will again — check .complete on mount.
+onMounted(() => {
+    if (backdropImgRef.value?.complete) backdropLoaded.value = true;
+});
 const films = ref({ results: [] });
 const schedule = ref([]);
 const openDays = ref(new Set());

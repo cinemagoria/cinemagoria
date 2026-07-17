@@ -9,6 +9,7 @@
         <div v-if="!backdropLoaded" class="backdrop-loader"><Loader :size="50" /></div>
         <a href="https://bafici.org/" target="_blank" class="hero-backdrop">
             <img 
+              ref="backdropImgRef"
               src="/festivals/bafici/bafici_backdrop_2026_eng.webp" 
               alt="BAFICI 2026 Backdrop"
               :style="{ opacity: backdropLoaded ? 1 : 0, transition: 'opacity 0.4s ease' }"
@@ -374,6 +375,13 @@ const clearScheduleSearch = () => {
 };
 const loading = ref(true);
 const backdropLoaded = ref(false);
+const backdropImgRef = ref(null);
+// Hydration race: if the backdrop <img> already finished loading (or
+// failed) before Vue attached the listeners below, its 'load'/'error'
+// event already fired and never will again — check .complete on mount.
+onMounted(() => {
+    if (backdropImgRef.value?.complete) backdropLoaded.value = true;
+});
 const films = ref({ results: [] });
 const awards = ref([]);
 const schedule = ref([]);
