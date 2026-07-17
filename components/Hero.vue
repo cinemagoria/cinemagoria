@@ -431,6 +431,7 @@ import BaficiBadge from '~/components/festival/BaficiBadge.vue';
 import CuffBadge from '~/components/festival/CuffBadge.vue';
 import KviffBadge from '~/components/festival/KviffBadge.vue';
 import FantasiaBadge from '~/components/festival/FantasiaBadge.vue';
+import FrightfestBadge from '~/components/festival/FrightfestBadge.vue';
 import { translateText } from '~/utils/api';
 import { MANUAL_FESTIVAL_BADGES, MANUAL_OVERVIEWS } from '~/utils/constants';
 import { getHeroEnrichment, getNoirEnrichment } from '~/utils/api';
@@ -461,6 +462,7 @@ function mapFestivalsToFields(festivals, itemId, itemName) {
     cuffFilm: f.cuff || null,
     kviffFilm: f.kviff || null,
     fantasiaFilm: f.fantasia || null,
+    frightfestFilm: f.frightfest || null,
     cannesFilm: null,
     cannesCriticsChoiceFilm: null,
     cannesQuinzaineFilm: null,
@@ -499,6 +501,7 @@ function mapFestivalsToFields(festivals, itemId, itemName) {
     if (manual.includes('cuff') && !fields.cuffFilm) fields.cuffFilm = stub;
     if (manual.includes('kviff') && !fields.kviffFilm) fields.kviffFilm = stub;
     if (manual.includes('fantasia') && !fields.fantasiaFilm) fields.fantasiaFilm = stub;
+    if (manual.includes('frightfest') && !fields.frightfestFilm) fields.frightfestFilm = stub;
   }
 
   return fields;
@@ -524,6 +527,7 @@ export default {
     CuffBadge,
     KviffBadge,
     FantasiaBadge,
+    FrightfestBadge,
     NoirModal,
   },
 
@@ -712,6 +716,7 @@ export default {
         { name: 'cuff', film: this.cuffFilm, component: 'CuffBadge', link: '/festival/cuff-2026', isSimple: true },
         { name: 'kviff', film: this.kviffFilm, component: 'KviffBadge', link: '/festival/kviff-2026', isSimple: true },
         { name: 'fantasia', film: this.fantasiaFilm, component: 'FantasiaBadge', link: '/festival/fantasia-2026', isSimple: true },
+        { name: 'frightfest', film: this.frightfestFilm, component: 'FrightfestBadge', link: '/festival/frightfest-2026', isSimple: true },
       ];
       return festivalConfig.filter(f => f.film);
     },
