@@ -7,8 +7,9 @@
             Volver a Festivales
         </nuxt-link>
         <div v-if="!backdropLoaded" class="backdrop-loader"><Loader :size="50" /></div>
-        <a href="https://frightfest.co.uk" target="_blank" rel="noopener noreferrer" class="hero-backdrop">
+        <a href="https://frightfest.co.uk/tickets/" target="_blank" rel="noopener noreferrer" class="hero-backdrop">
             <img
+              ref="backdropImgRef"
               src="/festivals/frightfest/frightfest_backdrop_2026_es.png"
               alt="Backdrop de FrightFest 2026"
               :style="{ opacity: backdropLoaded ? 1 : 0, transition: 'opacity 0.4s ease' }"
@@ -247,6 +248,7 @@
                     <p class="carousel-desc"><strong>Sitio web:</strong> <a href="https://frightfest.co.uk" target="_blank" rel="noopener noreferrer" class="accent-link">frightfest.co.uk</a></p>
                     <p class="carousel-desc"><strong>FrightFest</strong> es el festival de terror y fantástico más importante del Reino Unido, concebido en 1999 por Paul McEvoy, Ian Rattray y Alan Jones para darle a Gran Bretaña un evento a la altura de referentes del género como Sitges y BIFFF. Realizó su primera edición en el año 2000 en el Prince Charles Cinema de Londres y se celebra cada fin de semana largo de agosto desde entonces, con sponsors que incluyeron Film4, Horror Channel y Arrow Video (2016–2022), y que hoy presenta Tubi.</p>
                     <p class="carousel-desc">La <strong>edición 2026 (27ª)</strong> es la programación más grande en la historia del festival: 82 largometrajes en cinco pantallas — Main Screen Films y Discovery Screens 1 a 4 — con 24 estrenos mundiales de 16 países. El festival abre con el estreno mundial de <em>Nervous</em>, de Abner Pastoll, y cierra con <em>Species</em>, de Marion Le Corroller.</p>
+                    <p class="carousel-desc">Una edición satélite más chica, <strong>FrightFest Halloween</strong>, se realiza el 30 y 31 de octubre en el ODEON Luxe West End.</p>
                   </template>
 
                   <!-- Slide 1: Access & Tickets -->
@@ -256,12 +258,16 @@
                       <h3>Acceso y Entradas</h3>
                     </div>
                     <ul class="price-list">
-                      <li><span class="price-label">Pases de festival y de día</span><span class="price-value">A la venta desde el 18 jul 2026</span></li>
-                      <li><span class="price-label">Entradas individuales</span><span class="price-value">A la venta desde el 25 jul 2026</span></li>
-                      <li><span class="price-label">Acreditación industria y prensa</span><span class="price-value">Mediante solicitud</span></li>
+                      <li><span class="price-label">Pase de Festival — Platea y Palco</span><span class="price-value">£265</span></li>
+                      <li><span class="price-label">Pase de Festival — Balcón</span><span class="price-value">£225</span></li>
+                      <li><span class="price-label">Pase de Día — Jueves</span><span class="price-value">£36</span></li>
+                      <li><span class="price-label">Pase de Día — Viernes y Sábado</span><span class="price-value">£72</span></li>
+                      <li><span class="price-label">Pase de Día — Domingo y Lunes</span><span class="price-value">£60</span></li>
+                      <li><span class="price-label">Entradas individuales</span><span class="price-value">£14.99</span></li>
                     </ul>
-                    <p class="carousel-desc">Las entradas se venden a través de la boletería oficial de FrightFest. Los pases y entradas individuales dan acceso a ambas sedes durante los cinco días.</p>
-                    <p class="carousel-desc"><strong>Atmósfera marcada por el público:</strong> FrightFest es famoso por sus salas llenas y ruidosas, los Q&amp;As con directores y un genuino sentido de comunidad entre los fans del género.</p>
+                    <p class="carousel-desc">Se aplica un cargo de servicio: 4% sobre los pases, un fijo de £1.29 en entradas individuales. Los pases de festival completos salen a la venta el 18 de julio de 2026; los pases de día y las entradas individuales, el 25 de julio.</p>
+                    <p class="carousel-desc">Quienes tengan pase también pueden sumarse a la tradicional noche de quiz de cine el miércoles 26 de agosto (sede a confirmar). La <a href="https://subscribe.emailblaster.cloud/MjM2NTY/791.html" target="_blank" rel="noopener noreferrer" class="accent-link">mailing list de FrightFest</a> concentra todas las novedades de entradas y programación.</p>
+                    <p class="carousel-desc"><strong>Evento +18:</strong> la programación se inclina hacia contenido de género intenso — violencia gráfica, gore y otras temáticas fuertes a lo largo de todo el festival.</p>
                   </template>
 
                   <!-- Slide 2: Venues -->
@@ -271,10 +277,10 @@
                       <h3>Sedes</h3>
                     </div>
                     <div class="venue-list">
-                      <div class="venue-item"><strong>ODEON Luxe Leicester Square</strong><span>Leicester Square, Londres — Main Screen Films</span></div>
-                      <div class="venue-item"><strong>ODEON Luxe West End</strong><span>Leicester Square, Londres — Discovery Screens 1–4</span></div>
+                      <div class="venue-item"><strong>ODEON Luxe Leicester Square</strong><span>Leicester Square, Londres</span></div>
+                      <div class="venue-item"><strong>ODEON Luxe West End</strong><span>Leicester Square, Londres</span></div>
                     </div>
-                    <p class="carousel-desc">Ambas sedes están a pocos pasos una de la otra en el centro de Londres, lo que permite a los asistentes con pase moverse libremente entre la Main Screen y las cuatro Discovery Screens durante los cinco días.</p>
+                    <p class="carousel-desc">Ambas sedes están a pocos pasos en el centro de Londres y albergan juntas las cinco pantallas del festival. FrightFest no publicó qué pantalla funciona en qué sede, así que conviene revisar la señalización al llegar.</p>
                   </template>
                 </div>
               </transition>
@@ -340,6 +346,13 @@ const nextSlide = () => { slideDirection.value = 'carousel-next'; infoSlide.valu
 const goToSlide = (i) => { slideDirection.value = i > infoSlide.value ? 'carousel-next' : 'carousel-prev'; infoSlide.value = i; };
 const loading = ref(true);
 const backdropLoaded = ref(false);
+const backdropImgRef = ref(null);
+// Hydration race: if the backdrop <img> already finished loading (or
+// failed) before Vue attached the listeners below, its 'load'/'error'
+// event already fired and never will again — check .complete on mount.
+onMounted(() => {
+    if (backdropImgRef.value?.complete) backdropLoaded.value = true;
+});
 const films = ref({ results: [] });
 const schedule = ref([]);
 const openDays = ref(new Set());

@@ -9,6 +9,7 @@
         <div v-if="!backdropLoaded" class="backdrop-loader"><Loader :size="50" /></div>
         <a href="https://www.calgaryundergroundfilm.org" target="_blank" class="hero-backdrop">
             <img
+              ref="backdropImgRef"
               src="/festivals/cuff/cuff_backdrop_2026_es.webp"
               alt="CUFF Backdrop"
               :style="{ opacity: backdropLoaded ? 1 : 0, transition: 'opacity 0.4s ease' }"
@@ -297,7 +298,8 @@ const toggleScheduleSearch = () => { isScheduleSearchActive.value = !isScheduleS
 const closeScheduleSearch = () => { isScheduleSearchActive.value = false; scheduleSearch.value = ''; };
 const clearScheduleSearch = () => { scheduleSearch.value = ''; nextTick(() => scheduleSearchInput.value?.focus()); };
 const loading = ref(true);
-const backdropLoaded = ref(false); const films = ref({ results: [] }); const awards = ref([]); const schedule = ref([]); const openDays = ref(new Set());
+const backdropLoaded = ref(false);
+const backdropImgRef = ref(null); const films = ref({ results: [] }); const awards = ref([]); const schedule = ref([]); const openDays = ref(new Set());
 const infoSlide = ref(0); const slideDirection = ref('carousel-next');
 const prevSlide = () => { slideDirection.value = 'carousel-prev'; infoSlide.value = (infoSlide.value - 1 + 4) % 4; };
 const nextSlide = () => { slideDirection.value = 'carousel-next'; infoSlide.value = (infoSlide.value + 1) % 4; };
