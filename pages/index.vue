@@ -174,8 +174,8 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
      const FEATURED_ORDER = [
         // frightfest 2026
         'Salmokji: Whispering Water',
-        'Oddities',
         'Ithaqua',
+        'Oddities|frightfest',
         // fantasia 2026
         'Hot Spot',
         'Ferine',
