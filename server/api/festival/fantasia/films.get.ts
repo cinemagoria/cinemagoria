@@ -44,6 +44,7 @@ export default defineEventHandler(async (event) => {
                 section: row.section || row.category,
                 imdb_id: row.imdb_id,
                 tmdb_id: row.tmdb_id,
+                source_url: row.source_url || null,
                 _debug_tmdb_data: row.tmdb_data
             }
         }).filter((film: any) => {

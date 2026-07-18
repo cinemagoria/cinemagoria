@@ -1,5 +1,5 @@
 <template>
-  <div class="quick-fav-container" @click.prevent.stop>
+  <div class="quick-fav-container" :class="{ 'quick-fav--grouped': grouped }" @click.prevent.stop>
     <div class="quick-fav-wrapper">
       <button
         v-if="hasAccessToken"
@@ -67,6 +67,13 @@ export default {
     item: {
       type: Object,
       required: true,
+    },
+    // Grouped mode: the parent supplies an absolutely-positioned action row
+    // (festival catalog cards); QuickFav drops its full-bleed overlay and
+    // renders as a plain, slightly smaller flex-row button.
+    grouped: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -296,6 +303,24 @@ export default {
   &.is-favorite {
     background: #8BE9FD;
     border-color: #000000;
+  }
+}
+
+// Grouped mode: container and wrapper stop generating boxes so the button
+// participates directly in the parent's flex row (and leaves no phantom gap
+// when the button itself isn't rendered for logged-out users).
+.quick-fav--grouped {
+  display: contents;
+  pointer-events: auto;
+
+  .quick-fav-wrapper {
+    display: contents;
+  }
+
+  .quick-fav-btn {
+    position: static;
+    width: 30px;
+    height: 30px;
   }
 }
 
