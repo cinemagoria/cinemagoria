@@ -91,6 +91,7 @@ export default defineEventHandler(async (event) => {
 
                 imdb_id: row.imdb_id,
                 tmdb_id: row.tmdb_id,
+                source_url: row.source_url || null,
 
                 _debug_match: shouldUseTmdb,
                 _debug_tmdb_title: tmdbData.title || tmdbData.original_title

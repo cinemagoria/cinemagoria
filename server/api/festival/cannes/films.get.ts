@@ -43,7 +43,8 @@ export default defineEventHandler(async (event) => {
                 section: row.section || row.category,
                 imdb_id: row.imdb_id,
                 tmdb_id: row.tmdb_id,
-                ...tmdbData
+                ...tmdbData,
+                source_url: row.source_url || null
             }
         }).filter((film: any) => {
             return film.tmdb_id && film.title && film.title.trim() !== '';

@@ -11,7 +11,22 @@
           <Loader :size="40" />
         </div>
 
-        <QuickFav v-if="media !== 'production' && media !== 'person' && media !== 'streaming'" :item="item" />
+        <div class="card__quick-actions">
+          <button
+            v-if="sourceUrl"
+            type="button"
+            class="card__ext-link"
+            :aria-label="`Ver ${name} en la página oficial del festival`"
+            @click.prevent.stop="openSourceUrl"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+              <path d="M15 3h6v6" />
+              <path d="M10 14 21 3" />
+            </svg>
+          </button>
+          <QuickFav v-if="media !== 'production' && media !== 'person' && media !== 'streaming'" :item="item" grouped />
+        </div>
 
         <img
           v-if="poster"
@@ -119,6 +134,9 @@ export default {
     onImageLoaded() {
       this.isLoading = false;
     },
+    openSourceUrl() {
+      window.open(this.sourceUrl, '_blank', 'noopener,noreferrer');
+    },
     getRouteLink() {
         if (this.item.media_type === 'production') {
             return { name: 'production-slug', params: { slug: this.item.slug } };
@@ -131,6 +149,11 @@ export default {
   },
 
   computed: {
+    // Official festival page for this film; empty unless it's a real http(s) URL.
+    sourceUrl () {
+      const url = typeof this.item?.source_url === 'string' ? this.item.source_url.trim() : '';
+      return /^https?:\/\//i.test(url) ? url : '';
+    },
     hasLink() {
         return this.item.has_valid_tmdb_id;
     },
@@ -259,5 +282,37 @@ export default {
     width: auto;
     filter: invert(1);
     object-fit: contain;
+}
+
+.card__quick-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 20;
+}
+
+.card__ext-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 50%;
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  pointer-events: auto;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: #8BE9FD;
+    transform: scale(1.1);
+  }
 }
 </style>

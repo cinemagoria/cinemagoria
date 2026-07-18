@@ -46,6 +46,7 @@ export default defineEventHandler(async (event) => {
                 category: row.category || row.section,
                 imdb_id: row.imdb_id,
                 tmdb_id: row.tmdb_id,
+                source_url: row.source_url || null,
             }
         }).filter((film: any) => {
             if (!film.release_date) return true;

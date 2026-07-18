@@ -13,6 +13,7 @@ interface DatabaseRow {
     section: string | null;
     category: string | null;
     tmdb_data: string | null;
+    source_url: string | null;
 }
 
 export default defineEventHandler(async (event) => {
@@ -57,7 +58,8 @@ export default defineEventHandler(async (event) => {
                 director: typedRow.director,
                 section: typedRow.section || typedRow.category,
                 imdb_id: typedRow.imdb_id,
-                tmdb_id: typedRow.tmdb_id
+                tmdb_id: typedRow.tmdb_id,
+                source_url: typedRow.source_url || null
             }
         });
 
