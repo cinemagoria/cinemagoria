@@ -173,13 +173,14 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
 
      const FEATURED_ORDER = [
         // frightfest 2026
+        'Salmokji: Whispering Water',
         // fantasia 2026
         'Hot Spot',
         'Ferine',
-        'The Eyes',
         'Our Effed Up World',
         'The Village of Eight Gravestones',
         'The Mouths',
+        'The Eyes',
         'Junction Row',
         'Ancestral Beasts',
         // kviff 2026
@@ -206,7 +207,6 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Teenage Sex and Death at Camp Miasma',
         'Her Private Hell',
         'Titanic Ocean',
-        'The Match',
         // cuff 2026
         'Lucid',
         'Thanks for Nothing',
@@ -222,6 +222,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Hokum',
         'Obsession',
         'Never After Dark',
+        'The Peril at Pincer Point',
         'Dead Eyes',
         'The Sun Never Sets',
         'Wishful Thinking',
@@ -238,7 +239,6 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'In a Whisper',
         'If I Were Alive',
         'Forest High',
-        'At the sea',
         'Salvation',
         // rotterdam 2026
         'Krakatoa',
