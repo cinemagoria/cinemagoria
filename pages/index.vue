@@ -174,6 +174,8 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
      const FEATURED_ORDER = [
         // frightfest 2026
         'Salmokji: Whispering Water',
+        'Oddities',
+        'Ithaqua',
         // fantasia 2026
         'Hot Spot',
         'Ferine',
@@ -184,15 +186,14 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Junction Row',
         'Ancestral Beasts',
         // kviff 2026
+        'Fruit Gathering',
         'Truck Driver',
         'Hijamat',
         'Black Money for White',
-        'Fruit Gathering',
         // tribeca 2026
         'The Last Day',
         'Breeder',
         'Recluse',
-        'Crooks',
         // cannes 2026
         'Hope|cannes',
         'Victorian Psycho',
