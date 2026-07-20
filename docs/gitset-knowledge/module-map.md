@@ -4,11 +4,13 @@
 
 ### `.github`
 
-- `.github/FUNDING.yml` — Configures various platforms for project funding, including GitHub Sponsors, Patreon, Open Collective, Ko-fi, and Buy Me a Coffee, specifying usernames or placeholders.
-- `.github/workflows/sync-hero-data.yml` — Defines a GitHub Actions workflow to periodically sync and update hero and noir enrichment data, committing the changes to the repository.
-  - Registers a scheduled job (daily at 6 AM UTC) and a manual workflow dispatch trigger.
-- `.github/workflows/sync-noir-historical.yml` — Defines a GitHub Actions workflow to manually sync historical N.O.I.R. data and regenerate the noir-enrichment.json file, then commit the update.
-  - Registers a manual workflow dispatch trigger.
+- `.github/FUNDING.yml` — Configures various platforms for project funding, specifying usernames for GitHub and Buy Me a Coffee, and placeholders for others.
+- `.github/workflows/gitset-knowledge.yml` — Defines a GitHub Actions workflow to incrementally refresh the project's AI knowledge base using Gitset, creating a pull request for changes.
+  - Registers 'workflow_dispatch' and 'push' on 'main' branch (excluding docs, markdown, gitignore, LICENSE) as triggers.
+- `.github/workflows/sync-hero-data.yml` — Automates the synchronization of hero enrichment data from a Turso database into JSON files, committing and pushing updates.
+  - Registers 'schedule' (cron: '0 6 * * *') and 'workflow_dispatch' as triggers.
+- `.github/workflows/sync-noir-historical.yml` — Automates the synchronization of N.O.I.R historical data and regenerates noir enrichment data, committing the updated JSON file.
+  - Registers 'workflow_dispatch' as a trigger.
 
 ### `(root)`
 
