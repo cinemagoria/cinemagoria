@@ -1,0 +1,3157 @@
+{
+  "version": 1,
+  "generatedAt": "2026-07-20T08:41:49.794Z",
+  "provider": "gemini",
+  "model": "gemini-2.5-flash",
+  "tag": "v4.14.0-19-gfd4c56ba",
+  "commit": "fd4c56ba72406cad9cabeb42ad89a8e906cd924f",
+  "fileHashes": {
+    ".github/FUNDING.yml": "8deffbd8ec503761",
+    ".github/workflows/sync-hero-data.yml": "82a7e7d80f07f5f9",
+    ".github/workflows/sync-noir-historical.yml": "d11e97310d12c89e",
+    "app.vue": "5c6b817b1fbc0660",
+    "cloudbuild.yaml": "ff569f3a5bda6f15",
+    "components/BaficiCard.vue": "50d999c9249998f8",
+    "components/BerlinaleCard.vue": "5a8ae33d9f47dd43",
+    "components/BifffCard.vue": "c458f3675268fd52",
+    "components/CannesCard.vue": "5f6b8058958c58ae",
+    "components/CannesLiveBanner.vue": "c3d0b2f78f852cae",
+    "components/CannesWinnersBanner.vue": "fdb1351659e4f98c",
+    "components/Card.vue": "6eb5139d8e6b9224",
+    "components/common/AwardsTab.vue": "77f437067f06ec8f",
+    "components/common/FullCreditsModal.vue": "2d3c8192cd2ff4d8",
+    "components/common/MediaProgressBar.vue": "0984c6d0e41ac132",
+    "components/Credits.vue": "bcbf5c6a356e6881",
+    "components/CreditsItem.vue": "d487bdac1a008fad",
+    "components/CuffCard.vue": "06d2d7df12cb98c7",
+    "components/CustomListingCategoriesMovies.vue": "abeeeef0ff4f69b3",
+    "components/CustomListingCategoriesSeries.vue": "9f56975289342e62",
+    "components/Discover.vue": "0e9b8df80691f68e",
+    "components/DynamicSearchCarousel.vue": "04b96c41e73ae318",
+    "components/ExternalLinks.vue": "3f7937bd9fca1a9e",
+    "components/FantasiaCard.vue": "08d2c859d342cac4",
+    "components/FantasiaLiveBanner.vue": "85f61c415542e09c",
+    "components/FeatureDescription.vue": "f0af28a8a307f513",
+    "components/festival/BaficiBadge.vue": "0a590722f14230a1",
+    "components/festival/BerlinaleBadge.vue": "ea4dbd8c3196ab45",
+    "components/festival/BifffBadge.vue": "ab7a79c01b07d5b3",
+    "components/festival/CannesAcidBadge.vue": "f10df6ef0f9dee93",
+    "components/festival/CannesBadge.vue": "dc14c7dd23d3d351",
+    "components/festival/CannesCriticsChoiceBadge.vue": "f5d56a3de7ddf29d",
+    "components/festival/CannesQuinzaineBadge.vue": "ed051f0147d50687",
+    "components/festival/CuffBadge.vue": "d639240a4d2ad166",
+    "components/festival/FantasiaBadge.vue": "aecb9e3099256c55",
+    "components/festival/FrightfestBadge.vue": "c323596e0f485f2c",
+    "components/festival/KviffBadge.vue": "7e825bc16ef0ee52",
+    "components/festival/RomfordBadge.vue": "bd8148f0087e48a8",
+    "components/festival/RotterdamBadge.vue": "12cf7e86f6ad57f9",
+    "components/festival/SlamdanceBadge.vue": "54ea3aa48efb5bc3",
+    "components/festival/SundanceBadge.vue": "c0c950e7c0edfcf5",
+    "components/festival/SxswBadge.vue": "af6bad5369bb6b69",
+    "components/festival/SxswCard.vue": "0d2fff4ec8e81699",
+    "components/festival/TribecaBadge.vue": "0f68914309d8ffdd",
+    "components/festival/WinnersCarousel.vue": "bcce2993bd6fdf24",
+    "components/FestivalDataDisclaimer.vue": "3d0785b540357a62",
+    "components/FestivalsCarousel.vue": "cb06f3989501046a",
+    "components/FollowedContent.vue": "73aa284bf224fc39",
+    "components/FrightfestCard.vue": "a800b47b76b70681",
+    "components/global/ArticleAIDisclosure.vue": "8f6517fb396a04d4",
+    "components/global/ArticleShareModal.vue": "416ec19a42fc889e",
+    "components/global/AuthModal.vue": "70582be967401af4",
+    "components/global/CardActions.vue": "60eae6feccca3939",
+    "components/global/CookieConsent.vue": "553d2c4c0c5fd574",
+    "components/global/CreateListModal.vue": "18f56663271757db",
+    "components/global/FollowingModal.vue": "9b959d1230440bd8",
+    "components/global/Footer.vue": "716d0b3c02e3264e",
+    "components/global/GoogleLogin.vue": "6ef382ed51971857",
+    "components/global/InstallPrompt.vue": "d1c035c0fdf6f6b0",
+    "components/global/MyListsModal.vue": "4e672040eef7c2f6",
+    "components/global/Nav.vue": "3c9f9f149373f192",
+    "components/global/NewsCarousel.vue": "6b75038f44545d26",
+    "components/global/ProgressTrackingModal.vue": "cdd646476e760a2a",
+    "components/global/QuickFav.vue": "ad77788c8cd9d762",
+    "components/global/QuickFavModal.vue": "4ba67f80adf911c0",
+    "components/global/RatedModal.vue": "94c04829b5abd643",
+    "components/global/RelatedArticlesCarousel.vue": "19670ddcf3d119d1",
+    "components/global/SearchForm.vue": "108ff1c2a461e14e",
+    "components/global/TopNav.vue": "d94e87f569fffc68",
+    "components/global/UserNav.vue": "4122fb4bf7d6a73b",
+    "components/Hero.vue": "6cce038ea4a08c3f",
+    "components/HowItWorksModal.vue": "69cd0c9c904cdfff",
+    "components/Images.vue": "ba2a0449e7e613e4",
+    "components/ImagesItem.vue": "775b2e75ec8ac863",
+    "components/KviffCard.vue": "02fb1a42093f7ee1",
+    "components/KviffLiveBanner.vue": "3f38a7aa5f5bb126",
+    "components/Listing.vue": "5c6e78fbd7466d4e",
+    "components/ListingCarousel.vue": "338cd0ef51d5eea5",
+    "components/Loader.vue": "e44f83159d60a8c7",
+    "components/MediaNav.vue": "4d59952946ad6f4c",
+    "components/Modal.vue": "7f0421f3d127d1bd",
+    "components/movie/MovieInfo.vue": "8543e0c21663e03f",
+    "components/movie/MovieReleases.vue": "88a2b0f6aebb6eb2",
+    "components/music/SoundtrackGroup.vue": "43961af1f54401c2",
+    "components/music/SoundtrackItem.vue": "3f3bcc63a890ad33",
+    "components/music/SoundtrackList.vue": "6e46367bed02098d",
+    "components/NoirModal.vue": "599fdde36acf187c",
+    "components/OscarsCarousel.vue": "f53398dbc8b0ba4c",
+    "components/OscarsLiveBanner.vue": "86044220d9371cbc",
+    "components/person/CreditsHistory.vue": "ca0324e449c09386",
+    "components/person/CreditsHistoryGroup.vue": "c2a95c08db45d61e",
+    "components/person/CreditsHistoryItem.vue": "dd6d21a93bcc59fd",
+    "components/person/PersonAwardsTab.vue": "78d6a963906903e6",
+    "components/person/PersonInfo.vue": "f5e0f218db601f8f",
+    "components/ProductionCompanyCarousel.vue": "1a6b35713e9ac387",
+    "components/ProductionHero.vue": "7e25c82696361ebb",
+    "components/RomfordCard.vue": "a1a9f36994a1f2a6",
+    "components/RotterdamCard.vue": "00b9082311ea42be",
+    "components/search/CategoryCarousel.vue": "aead8fd06f0f80bc",
+    "components/search/CategorySection.vue": "a1617e4d1b5141cf",
+    "components/search/DiscoverSearch.vue": "45c33f275f030b81",
+    "components/search/NewsResultCard.vue": "a80ec4f6555648cf",
+    "components/search/SearchGuideModal.vue": "eac8fa1500affc32",
+    "components/search/SearchResults.vue": "52a3414627d800fa",
+    "components/SlamdanceCard.vue": "ef829cf99ba7955b",
+    "components/SpotlightCarousel.vue": "269a0b6b282b9cb3",
+    "components/StreamingPlatformCarousel.vue": "48d8b00ce57de20b",
+    "components/StreamingPlatformHero.vue": "40c1bb9575caeaa6",
+    "components/SundanceCard.vue": "b6b8573e9c40b431",
+    "components/TribecaCard.vue": "d1dfb5e9b73bcf68",
+    "components/TribecaLiveBanner.vue": "4e627b7115bb049e",
+    "components/tv/Episodes.vue": "83d2fdb7f90905ee",
+    "components/tv/EpisodesItem.vue": "2f89501b6a7c154c",
+    "components/tv/TvInfo.vue": "7fa9bfdc098efa04",
+    "components/Videos.vue": "838e050a96a21653",
+    "components/VideosItem.vue": "50734df1b0a4d5c5",
+    "components/WatchOn.vue": "ebe30c79671fdaeb",
+    "components/YearPicker.vue": "db4ba322b463cf33",
+    "composables/useConsentGuard.js": "d2de869e3f5fce42",
+    "Dockerfile": "0a3ff36f97d88841",
+    "layouts/default.vue": "3f45d0fd594cf661",
+    "middleware/auth.global.ts": "8c2596182b18142c",
+    "mixins/Carousel.js": "920d5f6d86aeaa38",
+    "mixins/Details.js": "21a162585b043216",
+    "mixins/Filters.js": "05faa809c6982ecc",
+    "mixins/Functions.js": "1a715df20bf5afb3",
+    "mixins/InfiniteScroll.js": "2fec53ab4008d2f8",
+    "nuxt.config.ts": "bcd32cd07dcf574d",
+    "package.json": "26dd31cf38224262",
+    "pages/auth-success.vue": "13d9e4518e015506",
+    "pages/awards/index.vue": "13cd183490a09813",
+    "pages/changelog/index.vue": "75dfbe18cabefdd0",
+    "pages/contact/index.vue": "c5479add819a6f3f",
+    "pages/faq/index.vue": "9971018505511e42",
+    "pages/festival/bafici-2026/index.vue": "d573b2bd119f446e",
+    "pages/festival/berlinale-2026/index.vue": "d1a24e9b7fc09853",
+    "pages/festival/bifff-2026/index.vue": "fd684d59d35c8383",
+    "pages/festival/cannes-2026/index.vue": "f55bcd91624de884",
+    "pages/festival/cuff-2026/index.vue": "73dea9b3a1c11e49",
+    "pages/festival/fantasia-2026/index.vue": "1cdc3f0b9c330b9a",
+    "pages/festival/frightfest-2026/index.vue": "950465ddcf72ad97",
+    "pages/festival/index.vue": "83fb1c764efeb4a8",
+    "pages/festival/kviff-2026/index.vue": "caa51feb91286603",
+    "pages/festival/romford-2026/index.vue": "e4867a6643fe8e06",
+    "pages/festival/rotterdam-2026/index.vue": "27c5972c9e3307a3",
+    "pages/festival/slamdance-2026/index.vue": "44c4179cdf8d5545",
+    "pages/festival/sundance-2026/index.vue": "bb26873632856069",
+    "pages/festival/sxsw-2026/index.vue": "314846d3da4f19c1",
+    "pages/festival/tribeca-2026/index.vue": "0d30c0bafb4ae0b1",
+    "pages/genre/[id]/movie.vue": "8f2842c6db485706",
+    "pages/genre/[id]/tv.vue": "1a3677aba40014ec",
+    "pages/index.vue": "4552069bf385c301",
+    "pages/lists/[slug].vue": "8f812f01c0310966",
+    "pages/lists/index.vue": "c824f2696319f663",
+    "pages/login/index.vue": "c4f2e2dfc821acd3",
+    "pages/movie/[id].vue": "b1ad134c11576fe0",
+    "pages/movie/category/[name].vue": "e3764ef273e308e8",
+    "pages/movie/followed.vue": "5c4a18de23b69a32",
+    "pages/movie/index.vue": "3d67e0ecfd6778de",
+    "pages/news/[slug].vue": "eaf575de0c7542e4",
+    "pages/news/index.vue": "01377f96faac242a",
+    "pages/noir/index.vue": "af82058337984acf",
+    "pages/notifications/index.vue": "61c797c289a1cdef",
+    "pages/person/[id].vue": "d475aacf3dbe58b9",
+    "pages/production-companies/index.vue": "d21a4bf30d7becc3",
+    "pages/production/[slug].vue": "682745f599bdd83a",
+    "pages/recovery/index.vue": "804c82f75ad7019b",
+    "pages/register/index.vue": "eff5a36d6b7cfcca",
+    "pages/search/index.vue": "9c422e28d635f365",
+    "pages/settings/index.vue": "68fa55e49625bbe1",
+    "pages/streaming-services/index.vue": "95aad94f6803b243",
+    "pages/streaming/[slug].vue": "4275fdfd5f09c121",
+    "pages/streaming/followed.vue": "48d88960addf3f10",
+    "pages/tv/[id].vue": "b9c7dccccf9ac74e",
+    "pages/tv/category/[name].vue": "6b85dd511969c3ad",
+    "pages/tv/followed.vue": "1b0e8cb1a435599b",
+    "pages/tv/index.vue": "9b9db44a89db605c",
+    "pages/u/[alias].vue": "cc7d83a888b9790c",
+    "pages/usage-policies/index.vue": "19ac2007f9b68b08",
+    "pages/watchlist/index.vue": "597bd348bc75e157",
+    "pages/wip/index.vue": "22706748e09218d8",
+    "plugins/bus.js": "ec273ecb2c462d95",
+    "plugins/lazyload.js": "ff64ba308c95a547",
+    "public/data/custom-enrichment.json": "f8f271facc6e1cf9",
+    "public/data/hero-enrichment.json": "bb72831fdaefb3c4",
+    "public/data/noir-enrichment.json": "ba79b56652d76f42",
+    "public/manifest.json": "40163b318a79c243",
+    "public/sw.js": "95ecfe0429ae43c6",
+    "scripts/seed_tribeca_2026_awards.cjs": "69ae975a93802a21",
+    "scripts/syncCustomOverrides.js": "be80e0e6fad1037b",
+    "scripts/syncHeroData.js": "99dcdc265d2c2d23",
+    "scripts/syncNoirEnrichmentData.js": "58f3f8eb208bbbf1",
+    "scripts/syncNoirHistorical.js": "f56e90fb56b88f56",
+    "server/api/article-report.post.ts": "042b928e4a067ca9",
+    "server/api/article/[slug].get.ts": "f74c4a20a3ac20d4",
+    "server/api/article/rss.get.ts": "123d65d08c7e5a07",
+    "server/api/articles/by-slugs.get.ts": "e3f00129e5da161e",
+    "server/api/awards/index-page.get.ts": "88900153d193e6ab",
+    "server/api/awards/index.get.ts": "13236bb84da51494",
+    "server/api/contact.post.ts": "e7c5dba2c285f86f",
+    "server/api/festival-report.post.ts": "dcaa314bfb920456",
+    "server/api/festival/bafici/awards.get.ts": "509fef7f550c7921",
+    "server/api/festival/bafici/films.get.ts": "6a1efa2e007c65cf",
+    "server/api/festival/bafici/schedule.get.ts": "ba8a2833247521e6",
+    "server/api/festival/berlinale/awards.get.ts": "9a2db559e43e5157",
+    "server/api/festival/berlinale/films.get.ts": "20cde6010ef8f795",
+    "server/api/festival/berlinale/schedule.get.ts": "a330f76c57ad5a13",
+    "server/api/festival/bifff/awards.get.ts": "decc3d2df6937f0f",
+    "server/api/festival/bifff/films.get.ts": "1f6bb1a587a8b1e7",
+    "server/api/festival/bifff/schedule.get.ts": "29c3e77434bc36c6",
+    "server/api/festival/cannes/awards.get.ts": "415a8faaa3eedc16",
+    "server/api/festival/cannes/films.get.ts": "daad88cd39188d5c",
+    "server/api/festival/cannes/schedule.get.ts": "f32a3d41c0944127",
+    "server/api/festival/cuff/awards.get.ts": "22f31472743423e9",
+    "server/api/festival/cuff/films.get.ts": "4e8b39f586776ed5",
+    "server/api/festival/cuff/schedule.get.ts": "755219ab6d67daf2",
+    "server/api/festival/fantasia/awards.get.ts": "63e1ecd7978723a3",
+    "server/api/festival/fantasia/films.get.ts": "a9a4f4c5a8a33b7d",
+    "server/api/festival/fantasia/schedule.get.ts": "7a29eaaa14d78364",
+    "server/api/festival/films-batch.get.ts": "02ea7ff2b1be9dce",
+    "server/api/festival/frightfest/films.get.ts": "f6af3ea9c6ba2818",
+    "server/api/festival/frightfest/schedule.get.ts": "6cc0a8eb9095a280",
+    "server/api/festival/kviff/awards.get.ts": "f350f83106847b01",
+    "server/api/festival/kviff/films.get.ts": "005943b04a933116",
+    "server/api/festival/kviff/schedule.get.ts": "af531b4bda25cd0f",
+    "server/api/festival/romford/awards.get.ts": "2d731c2c821fb10f",
+    "server/api/festival/romford/films.get.ts": "ec84a65ea7443665",
+    "server/api/festival/romford/schedule.get.ts": "35af05421b5fff1c",
+    "server/api/festival/rotterdam/awards.get.ts": "08bb881c9164558d",
+    "server/api/festival/rotterdam/films.get.ts": "604c51c91b820746",
+    "server/api/festival/rotterdam/schedule.get.ts": "25df69e94ec4eadb",
+    "server/api/festival/slamdance/awards.get.ts": "b0fca5e1809232fb",
+    "server/api/festival/slamdance/films.get.ts": "ce09ad879fb0baba",
+    "server/api/festival/slamdance/schedule.get.ts": "05a9c1f18a7af4e3",
+    "server/api/festival/status.get.ts": "9318c199e9cdc26e",
+    "server/api/festival/sundance/awards.get.ts": "0ce577f339d83123",
+    "server/api/festival/sundance/films.get.ts": "a2f0d9eda87318be",
+    "server/api/festival/sundance/schedule.get.ts": "5afdf48ce1adb97f",
+    "server/api/festival/sxsw/awards.get.ts": "aee0e6755aea37b6",
+    "server/api/festival/sxsw/films.get.ts": "f42be89f66cf88f1",
+    "server/api/festival/sxsw/schedule.get.ts": "1737eceb5429513c",
+    "server/api/festival/tribeca/awards.get.ts": "543b99d3c22e393a",
+    "server/api/festival/tribeca/films.get.ts": "03425649f9b1d6da",
+    "server/api/festival/tribeca/schedule.get.ts": "02924484c825c4b5",
+    "server/api/hero.get.ts": "bd777faeec57e459",
+    "server/api/imdb-rating/[id].get.ts": "d52f0e77450669e7",
+    "server/api/news.get.ts": "0691c61b7ee20d96",
+    "server/api/noir-archive.get.ts": "8e710a2b6d1a01ed",
+    "server/api/progress/[userId]/[mediaType]/[mediaId].delete.ts": "9beb076a29ced3ee",
+    "server/api/progress/[userId]/[mediaType]/[mediaId].get.ts": "ec53c66cf2b00e70",
+    "server/api/progress/[userId]/[mediaType]/[mediaId].put.ts": "80a8c84a568d093a",
+    "server/api/progress/[userId]/active/[mediaType]/[mediaId].put.ts": "389e2b66cfb89ed5",
+    "server/api/progress/[userId]/batch.put.ts": "a18369eba63227cf",
+    "server/api/progress/[userId]/hydrated.get.ts": "4f1e546c5d91bb29",
+    "server/api/progress/[userId]/index.get.ts": "99990dda931051b0",
+    "server/api/search-log.post.ts": "078e36bf21f00848",
+    "server/api/search/person.get.ts": "6fa649dbb789e21f",
+    "server/api/spotlight/[type].get.ts": "d6e60bc100043475",
+    "server/middleware/logger.ts": "bebdded3560e26a7",
+    "server/middleware/redirect-at.ts": "b2e4ba49359ee733",
+    "server/plugins/strip-cookies-cacheable.ts": "a79ecd86e45a244a",
+    "server/routes/feed.get.ts": "f7e38dfd48eb1118",
+    "server/routes/sitemap-news.xml.ts": "ff050add91b699ca",
+    "server/routes/sitemap-static.xml.ts": "ffc99ea01469fa5e",
+    "server/routes/sitemap.xml.ts": "fbc62fcdafb412f9",
+    "server/types/markdown-it.d.ts": "891ff7ef3997a2e3",
+    "server/utils/db.ts": "50dde19153d23ac2",
+    "server/utils/festivalAwards.ts": "d82f2f25813fb51a",
+    "server/utils/festivals.ts": "4ac7c0d76c4db9c1",
+    "server/utils/rss-feed.ts": "2efcdb76b05dd954",
+    "server/utils/sitemap-helpers.ts": "1e3101d1a8a12733",
+    "server/utils/vimeo-oembed.ts": "46076db82ac136cd",
+    "services/turso.js": "cc0b919f02e03699",
+    "services/userSync.js": "2f1f7554c4098f40",
+    "stores/consent.js": "2dc9b60407a171ab",
+    "stores/search.js": "d6d1673bda5f7b7b",
+    "tsconfig.json": "5dcf8b6d48da0438",
+    "types/database.types.ts": "5a826ba4dd9c7299",
+    "utils/api.js": "aedb02b0be983b98",
+    "utils/categoryLabels.js": "83ef70f36db4e451",
+    "utils/constants.js": "8bcc32c399501679",
+    "utils/countries.js": "13c3bdd236bea57c",
+    "utils/helpers.js": "1e954f14c1c40fb5",
+    "utils/itemMapper.js": "0af504da800cee00",
+    "utils/membershipStore.js": "d1cfb797b1a1023a",
+    "utils/musicbrainz.js": "a1ede84413af11b5",
+    "utils/newsSources.js": "68c1e6c1f9fb1b34",
+    "utils/relatedFooter.js": "421839a43055235d",
+    "utils/resolvePhase.js": "c2a81719659fb07f"
+  },
+  "moduleSummaries": {
+    "(root)": [
+      {
+        "path": "app.vue",
+        "purpose": "Root Vue component for the Cinemagoria application, defining the main layout and injecting structured data (Schema.org JSON-LD) for SEO.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "cloudbuild.yaml",
+        "purpose": "Google Cloud Build configuration for building a Docker image, pushing it to Artifact Registry, and deploying it to Google Cloud Run.",
+        "exports": [],
+        "dependencies": [],
+        "notes": "Registers build and deploy steps for the `cinemagoria-main` service."
+      },
+      {
+        "path": "Dockerfile",
+        "purpose": "Defines a multi-stage Docker build for the Cinemagoria Nuxt application, including dependencies, build process, and production runtime environment.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "nuxt.config.ts",
+        "purpose": "Nuxt.js configuration file, setting up aliases, compatibility date, devtools, debug mode, and defining route-specific caching headers for sitemaps and RSS feeds.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "url"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "package.json",
+        "purpose": "Defines project metadata, scripts for development and build processes, dependency resolutions, and lists all production and development dependencies for the Cinemagoria application.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "tsconfig.json",
+        "purpose": "TypeScript configuration file for the Nuxt.js project, referencing generated TypeScript configurations from the .nuxt directory.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      }
+    ],
+    ".github": [
+      {
+        "path": ".github/FUNDING.yml",
+        "purpose": "Configures various platforms for project funding, including GitHub Sponsors, Patreon, Open Collective, Ko-fi, and Buy Me a Coffee, specifying usernames or placeholders.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": ".github/workflows/sync-hero-data.yml",
+        "purpose": "Defines a GitHub Actions workflow to periodically sync and update hero and noir enrichment data, committing the changes to the repository.",
+        "exports": [],
+        "dependencies": [],
+        "notes": "Registers a scheduled job (daily at 6 AM UTC) and a manual workflow dispatch trigger."
+      },
+      {
+        "path": ".github/workflows/sync-noir-historical.yml",
+        "purpose": "Defines a GitHub Actions workflow to manually sync historical N.O.I.R. data and regenerate the noir-enrichment.json file, then commit the update.",
+        "exports": [],
+        "dependencies": [],
+        "notes": "Registers a manual workflow dispatch trigger."
+      }
+    ],
+    "components": [
+      {
+        "path": "components/global/GoogleLogin.vue",
+        "purpose": "Provides a reusable Google login button component that handles authentication flow, displays loading states, and emits events for login start and error.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/global/UserNav.vue",
+        "purpose": "Displays user navigation elements including notifications, avatar, and a dropdown menu with profile links, language options, and logout functionality.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link",
+          "NuxtLink"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/BaficiCard.vue",
+        "purpose": "A card component specifically for BAFICI festival entries, displaying an image, title, and quick actions like favoriting and opening an external source URL.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link",
+          "CardActions",
+          "Loader",
+          "QuickFav"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/BerlinaleCard.vue",
+        "purpose": "A card component specifically for Berlinale festival entries, displaying an image, title, and quick actions like favoriting and opening an external source URL.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link",
+          "CardActions",
+          "Loader",
+          "QuickFav"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/BifffCard.vue",
+        "purpose": "A card component specifically for BIFFF festival entries, displaying an image, title, and quick actions like favoriting and opening an external source URL.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link",
+          "CardActions",
+          "Loader",
+          "QuickFav"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/CannesCard.vue",
+        "purpose": "A card component specifically for Cannes festival entries, displaying an image, title, and quick actions like favoriting and opening an external source URL.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link",
+          "CardActions",
+          "Loader",
+          "QuickFav"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/CannesLiveBanner.vue",
+        "purpose": "A banner component promoting live coverage of the Cannes 2026 festival, featuring a dynamic background and festival branding.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/CannesWinnersBanner.vue",
+        "purpose": "A banner component promoting the winners of the Cannes 2026 festival, featuring a dynamic background and festival branding with a marquee of awards.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/Card.vue",
+        "purpose": "A generic card component for displaying various media types (movies, TV, people, streaming, festivals) with images, titles, ratings, and quick actions.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link",
+          "CardActions",
+          "Loader",
+          "QuickFav"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/common/AwardsTab.vue",
+        "purpose": "Displays a tabbed view of awards for a given entity (movie, person, etc.), including Oscars, Golden Globes, Palme d'Or, Golden Lion, and Golden Bear.",
+        "exports": [],
+        "dependencies": [
+          "useRouter",
+          "useRuntimeConfig",
+          "useFetch"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/common/FullCreditsModal.vue",
+        "purpose": "A modal component that displays the full crew credits for a given title, grouped by department with collapsible sections.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/common/MediaProgressBar.vue",
+        "purpose": "A component displaying a circular progress bar and slider for media viewing progress, showing watched time and total duration.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/Credits.vue",
+        "purpose": "Displays a horizontal, scrollable carousel of cast members, fetching data based on the provided 'people' prop and managing carousel navigation and state.",
+        "exports": [],
+        "dependencies": [
+          "~/mixins/Carousel",
+          "~/mixins/Functions",
+          "~/components/CreditsItem"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/CreditsItem.vue",
+        "purpose": "Renders an individual cast member's card within a carousel, displaying their image, name, and character, with a loading state and a link to their person page.",
+        "exports": [],
+        "dependencies": [
+          "~/utils/api",
+          "~/components/Loader.vue"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/CuffCard.vue",
+        "purpose": "Displays a card for a movie or TV show, including an image, title, and actions like adding to a list or opening an external link, with loading states and routing.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/CustomListingCategoriesMovies.vue",
+        "purpose": "Presents a horizontal, scrollable carousel of movie categories, with navigation buttons and an optional 'Explore All' link.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/CustomListingCategoriesSeries.vue",
+        "purpose": "Presents a horizontal, scrollable carousel of TV series categories, with navigation buttons and an optional 'Explore All' link.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/Discover.vue",
+        "purpose": "Provides a comprehensive discovery interface for movies and TV shows, allowing users to filter by genre, sort order, country, network, language, streaming provider, vote count, format, year, and rating.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/DynamicSearchCarousel.vue",
+        "purpose": "Displays a dynamic, scrollable carousel of search results (movies or TV shows), including navigation buttons and a title.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/ExternalLinks.vue",
+        "purpose": "Displays a grid of external links related to a movie or TV show, including IMDb, Letterboxd, Rotten Tomatoes, Trakt, and TMDb, with dynamic rating fetching.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/FantasiaCard.vue",
+        "purpose": "Displays a card for a movie or TV show, including an image, title, and actions like adding to a list or opening an external link, with loading states and routing.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/FantasiaLiveBanner.vue",
+        "purpose": "Displays a promotional banner for the Fantasia 2026 festival, linking to its dedicated coverage page.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/FeatureDescription.vue",
+        "purpose": "Displays a prominent feature description with a title, subtitle, and cinematic light effects, designed to attract user attention on a landing page.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/BaficiBadge.vue",
+        "purpose": "Displays an interactive badge for the BAFICI Film Festival 2026, featuring its logo with hover effects and responsive styling.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/BerlinaleBadge.vue",
+        "purpose": "Displays an interactive badge for the Berlinale Film Festival 2026, featuring its logo with hover effects and responsive styling.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/BifffBadge.vue",
+        "purpose": "Displays an interactive badge for the BIFFF Film Festival 2026, featuring its logo with hover effects and responsive styling.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/CannesAcidBadge.vue",
+        "purpose": "Displays an interactive badge for the ACID section of the Cannes Film Festival 2026, featuring its logo with hover effects and responsive styling.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/CannesBadge.vue",
+        "purpose": "Displays an interactive badge for the Cannes Film Festival 2026, featuring its logo with hover effects and responsive styling.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/CannesCriticsChoiceBadge.vue",
+        "purpose": "Displays an interactive badge for the Critics' Choice section of the Cannes Film Festival 2026, featuring its logo with hover effects and responsive styling.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/CannesQuinzaineBadge.vue",
+        "purpose": "Displays an interactive badge for the Quinzaine des Cinéastes section of the Cannes Film Festival 2026, featuring its logo with hover effects and responsive styling.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/CuffBadge.vue",
+        "purpose": "Displays an interactive badge for the Calgary Underground Film Festival 2026, featuring its logo with hover effects and responsive styling.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/FantasiaBadge.vue",
+        "purpose": "Displays an interactive badge for the Fantasia International Film Festival 2026, featuring its logo with hover effects and responsive styling.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/FrightfestBadge.vue",
+        "purpose": "Displays an interactive badge for the FrightFest 2026, featuring its logo with hover effects and responsive styling.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/KviffBadge.vue",
+        "purpose": "Displays an interactive badge for the Karlovy Vary International Film Festival 2026, featuring its logo with hover effects and responsive styling.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/RomfordBadge.vue",
+        "purpose": "Displays an interactive badge for the Romford Horror Film Festival 2026, featuring its logo with hover effects and responsive styling.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/RotterdamBadge.vue",
+        "purpose": "Displays an interactive badge for the Rotterdam Film Festival 2026, featuring its logo with hover effects and responsive styling.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/SlamdanceBadge.vue",
+        "purpose": "Displays an interactive badge for the Slamdance Film Festival 2026, featuring its logo with hover effects and responsive styling.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/SundanceBadge.vue",
+        "purpose": "Displays an interactive badge for the Sundance Film Festival 2026, featuring its logo with hover effects and responsive styling.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/SxswBadge.vue",
+        "purpose": "Displays an interactive badge for the SXSW Film & TV Festival 2026, featuring its logo with hover effects and responsive styling.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/SxswCard.vue",
+        "purpose": "Renders a card component for an SXSW festival entry, including a link, image, loading state, quick actions, and an external link button.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link",
+          "CardActions",
+          "Loader",
+          "QuickFav"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/TribecaBadge.vue",
+        "purpose": "Displays an interactive badge for the Tribeca Festival 2026, featuring its logo with hover effects and responsive styling.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/festival/WinnersCarousel.vue",
+        "purpose": "Displays a horizontal carousel of film festival winners for a given year, grouped by title/director, with navigation controls and award details.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/FestivalDataDisclaimer.vue",
+        "purpose": "Provides a disclaimer and reporting mechanism for missing festival film data, displayed as a button in the festival hero and a modal for detailed interaction.",
+        "exports": [],
+        "dependencies": [
+          "vue-router"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/FestivalsCarousel.vue",
+        "purpose": "Displays a horizontal carousel of festival cards, with navigation buttons and an optional 'Explore All' link.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/FollowedContent.vue",
+        "purpose": "Displays content (movies/TV shows) from followed production companies or streaming platforms, including filtering and sorting options.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/FrightfestCard.vue",
+        "purpose": "Renders a card for a Frightfest film, including a poster, quick actions like favoriting, and a link to the official festival page.",
+        "exports": [],
+        "dependencies": [
+          "~/components/global/CardActions.vue",
+          "~/components/global/Loader.vue",
+          "~/components/global/QuickFav.vue"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/global/ArticleAIDisclosure.vue",
+        "purpose": "Displays a disclosure that an article was AI-generated and provides a modal form for users to report errors or inaccuracies.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/global/ArticleShareModal.vue",
+        "purpose": "Provides a modal for sharing articles via link copy, native share, or various social media platforms (WhatsApp, Telegram, X, Facebook, Email).",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/global/AuthModal.vue",
+        "purpose": "A modal component for user authentication, supporting both sign-in and registration tabs, with options for native and social logins.",
+        "exports": [],
+        "dependencies": [
+          "vue-router",
+          "vue",
+          "~/components/global/SocialAuth.vue"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/global/CardActions.vue",
+        "purpose": "Provides a dropdown menu of actions for a content card, including rating, adding to a watchlist, or adding to a custom list.",
+        "exports": [],
+        "dependencies": [
+          "~/mixins/Functions",
+          "~/mixins/Turso"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/global/CookieConsent.vue",
+        "purpose": "Manages and displays a cookie consent banner and a preferences panel, allowing users to accept, decline, or customize cookie settings.",
+        "exports": [],
+        "dependencies": [
+          "~/stores/consent"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/global/CreateListModal.vue",
+        "purpose": "Provides a modal interface for users to create new custom lists, including specifying a name, description, and privacy settings.",
+        "exports": [],
+        "dependencies": [
+          "@supabase/supabase-js"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/global/FollowingModal.vue",
+        "purpose": "Manages and displays content followed by the user, categorized into people, TV shows, and streaming platforms, with options to unfollow.",
+        "exports": [],
+        "dependencies": [
+          "~/mixins/Functions",
+          "~/mixins/Turso",
+          "~/utils/constants"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/global/Footer.vue",
+        "purpose": "Provides a global footer with links to resources (changelog, FAQ, policies), social media, and a language switcher.",
+        "exports": [],
+        "dependencies": [
+          "~/stores/consent"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/global/InstallPrompt.vue",
+        "purpose": "Displays a prompt to the user to install the web application to their home screen, leveraging the 'beforeinstallprompt' event.",
+        "exports": [],
+        "dependencies": [
+          "tiny-cookie",
+          "~/mixins/Functions"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/global/MyListsModal.vue",
+        "purpose": "Provides a modal component for managing user lists, allowing items to be added, moved, or removed from various lists, and handles API interactions for list management.",
+        "exports": [],
+        "dependencies": [
+          "Loader"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/global/Nav.vue",
+        "purpose": "Implements the main navigation bar for the application, including links to home, discover, and user-specific lists, with dynamic list fetching.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/global/NewsCarousel.vue",
+        "purpose": "Displays a carousel of the latest news articles, with navigation controls and a link to explore all news.",
+        "exports": [],
+        "dependencies": [
+          "Loader",
+          "NuxtLink"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/global/ProgressTrackingModal.vue",
+        "purpose": "Manages and displays user watch progress for movies and TV shows within a modal, allowing users to track and update their viewing status.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/global/QuickFav.vue",
+        "purpose": "A component for quickly adding an item to a user's lists or managing its presence in lists, displaying a 'plus' or 'check' icon accordingly.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/global/QuickFavModal.vue",
+        "purpose": "A modal component that prompts the user to confirm removal of an item from their watchlist, handling the deletion via an API call.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/global/RatedModal.vue",
+        "purpose": "Provides a modal for users to view and manage their rated movies and TV shows, allowing them to edit or remove ratings and reviews.",
+        "exports": [],
+        "dependencies": [
+          "Loader"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/global/RelatedArticlesCarousel.vue",
+        "purpose": "Displays a carousel of related news articles based on provided slugs, with navigation and image error handling.",
+        "exports": [],
+        "dependencies": [
+          "NuxtLink",
+          "useAsyncData",
+          "striptags"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/global/SearchForm.vue",
+        "purpose": "Provides a global search input form with autocomplete functionality, trending media suggestions, and user avatar/name display.",
+        "exports": [],
+        "dependencies": [
+          "useSupabaseClient",
+          "getTrending"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/global/TopNav.vue",
+        "purpose": "Provides a fixed top navigation bar component for mobile viewports, displaying a title and adapting its layout based on screen size.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/Hero.vue",
+        "purpose": "Manages and displays a hero section, potentially with an auto-advancing carousel of items, touch/wheel navigation, and various media details.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/HowItWorksModal.vue",
+        "purpose": "Displays a modal explaining how release alerts work, featuring an introductory text and a carousel for visual guidance.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/Images.vue",
+        "purpose": "Displays a panel of images (posters or backdrops) with a title and count, allowing users to open a modal to view them in a gallery.",
+        "exports": [],
+        "dependencies": [
+          "~/utils/api",
+          "~/components/ImagesItem",
+          "~/components/Modal"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/ImagesItem.vue",
+        "purpose": "Renders an individual image item within a gallery, displaying a thumbnail with a loading indicator and emitting an event to open a modal on click.",
+        "exports": [],
+        "dependencies": [
+          "~/components/Loader.vue"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/KviffCard.vue",
+        "purpose": "Displays a card component for KVIFF festival items, including a link, optional actions, an image with a loader, and a quick favorite button.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/KviffLiveBanner.vue",
+        "purpose": "Provides a banner component for the KVIFF 2026 festival, linking to its coverage page and featuring a specific background and logo.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/Listing.vue",
+        "purpose": "Displays a list of items with an optional title and 'Explore All' link, supporting infinite scrolling to load more items.",
+        "exports": [],
+        "dependencies": [
+          "~/mixins/Functions",
+          "~/components/Card"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/ListingCarousel.vue",
+        "purpose": "Displays a horizontal carousel listing of items with navigation buttons, an optional title, and an 'Explore All' link.",
+        "exports": [],
+        "dependencies": [
+          "~/mixins/Carousel",
+          "~/components/Card"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/Loader.vue",
+        "purpose": "Provides a reusable SVG-based loading spinner component with customizable size and color properties.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/MediaNav.vue",
+        "purpose": "Provides a navigation component with a customizable menu, allowing users to select items and emitting an event with the normalized label of the clicked item.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/Modal.vue",
+        "purpose": "Implements a reusable modal component that can display various content types like images or iframes, with navigation controls for galleries and keyboard accessibility.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/movie/MovieInfo.vue",
+        "purpose": "Displays detailed information about a movie, including its poster, overview, release status, awards, and related content like recommendations and director's filmography.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/movie/MovieReleases.vue",
+        "purpose": "Displays grouped release information for a movie, showing release dates and types per country with flag icons, and handles loading and no-data states.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/music/SoundtrackGroup.vue",
+        "purpose": "Organizes and displays a group of soundtrack items, typically by year, using the SoundtrackItem component for individual entries.",
+        "exports": [],
+        "dependencies": [
+          "~/components/music/SoundtrackItem"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/music/SoundtrackItem.vue",
+        "purpose": "Displays a single soundtrack item, including its title, disambiguation, and artist, with a link to its MusicBrainz page.",
+        "exports": [],
+        "dependencies": [
+          "~/utils/musicbrainz"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/music/SoundtrackList.vue",
+        "purpose": "Displays a list of soundtrack albums and their tracks, allowing users to play tracks on YouTube and showing album metadata.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/NoirModal.vue",
+        "purpose": "Presents a stylized modal dialog with 'N.O.I.R' branding, a manifesto, and options to view a selection of films or close the modal.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/OscarsCarousel.vue",
+        "purpose": "Displays a horizontal carousel of nominees for the 98th Academy Awards, allowing users to scroll through entries and navigate to full awards coverage.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/OscarsLiveBanner.vue",
+        "purpose": "Displays a banner for the 98th Academy Awards, indicating live coverage or results, with a countdown to the ceremony.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/person/CreditsHistory.vue",
+        "purpose": "Displays a person's filmography and TV credits, allowing filtering by department and media type, and grouping credits by year.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/person/CreditsHistoryGroup.vue",
+        "purpose": "Organizes and displays a group of a person's credits, typically by year, using the CreditsHistoryItem component for individual entries.",
+        "exports": [],
+        "dependencies": [
+          "~/components/person/CreditsHistoryItem"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/person/CreditsHistoryItem.vue",
+        "purpose": "Displays a single credit item for a person, including the title, media type, number of episodes (if applicable), and their role, with a link to the media page.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/person/PersonAwardsTab.vue",
+        "purpose": "Displays a person's awards, including Oscars, Golden Globes, Palme d'Or, Golden Lion, and Golden Bear, with sorting and navigation to associated films.",
+        "exports": [],
+        "dependencies": [
+          "vue-router",
+          "nuxt"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/person/PersonInfo.vue",
+        "purpose": "Displays detailed information about a person, including their biography, known for department, birth/death dates, age, and award counts.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/ProductionCompanyCarousel.vue",
+        "purpose": "A carousel component for displaying a list of production companies, allowing users to navigate through them and view details.",
+        "exports": [],
+        "dependencies": [
+          "~/mixins/Carousel",
+          "~/utils/api"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/ProductionHero.vue",
+        "purpose": "Displays a hero section for a production company, including its name, logo, country, headquarters, description, and a follow button.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/RomfordCard.vue",
+        "purpose": "A card component specifically for displaying Romford Film Festival entries, including quick actions like external links and favoriting.",
+        "exports": [],
+        "dependencies": [
+          "~/components/CardActions",
+          "~/components/Loader",
+          "~/components/QuickFav"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/RotterdamCard.vue",
+        "purpose": "A card component specifically for displaying International Film Festival Rotterdam entries, including quick actions like external links and favoriting.",
+        "exports": [],
+        "dependencies": [
+          "~/components/CardActions",
+          "~/components/Loader",
+          "~/components/QuickFav"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/search/CategoryCarousel.vue",
+        "purpose": "A collapsible carousel component for displaying items within a specific category, with navigation and a 'load more' button.",
+        "exports": [],
+        "dependencies": [
+          "~/components/Card"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/search/CategorySection.vue",
+        "purpose": "A collapsible section component for displaying a list of items within a specific category, using Card components.",
+        "exports": [],
+        "dependencies": [
+          "~/components/Card"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/search/DiscoverSearch.vue",
+        "purpose": "Provides a comprehensive search interface for discovering movies and TV shows based on type, genre, sort order, country, network, language, provider, votes, format, year, and rating.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "nuxt"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/search/NewsResultCard.vue",
+        "purpose": "Displays a single news article as a card, including its image, title, description, publication date, and source, with a link to the full article.",
+        "exports": [],
+        "dependencies": [
+          "striptags",
+          "~/utils/helpers",
+          "~/utils/categoryLabels"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/search/SearchGuideModal.vue",
+        "purpose": "Provides a modal dialog explaining the various search functionalities available within Cinemagoria.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/search/SearchResults.vue",
+        "purpose": "Displays search results for various content types (movies, series, people, news, users) with filtering, pagination, and a typo-checking mechanism.",
+        "exports": [],
+        "dependencies": [
+          "axios",
+          "~/utils/api"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/SlamdanceCard.vue",
+        "purpose": "Displays a card for a Slamdance festival item, including an image, title, and quick actions like favoriting and opening an external source URL.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/SpotlightCarousel.vue",
+        "purpose": "Renders a horizontal carousel for spotlighted items, featuring navigation buttons and a customizable title and 'Explore All' link.",
+        "exports": [],
+        "dependencies": [
+          "~/mixins/Carousel",
+          "~/components/Card"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/StreamingPlatformCarousel.vue",
+        "purpose": "Displays a horizontal carousel of popular streaming services, allowing users to browse and potentially navigate to a full list.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/StreamingPlatformHero.vue",
+        "purpose": "Displays a hero section for a streaming platform, showing its logo and name, and allowing users to follow/unfollow the platform.",
+        "exports": [],
+        "dependencies": [
+          "~/utils/api"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/SundanceCard.vue",
+        "purpose": "Displays a card for a Sundance festival item, including an image, title, and quick actions like favoriting and opening an external source URL.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/TribecaCard.vue",
+        "purpose": "Displays a card for a Tribeca festival item, including an image, title, and quick actions like favoriting and opening an external source URL.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/TribecaLiveBanner.vue",
+        "purpose": "Displays a promotional banner for the Tribeca 2026 festival, linking to its dedicated coverage page.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/tv/Episodes.vue",
+        "purpose": "Vue component for displaying and managing TV show episodes, allowing users to select seasons, view episode counts, and mark seasons as watched/unwatched.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/tv/EpisodesItem.vue",
+        "purpose": "Vue component for displaying a single TV show episode, including its poster, name, and a progress tracking overlay for users.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/tv/TvInfo.vue",
+        "purpose": "Vue component displaying detailed information about a TV show, including its storyline, poster, and various external links and awards.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/Videos.vue",
+        "purpose": "Vue component for displaying a collection of videos, allowing users to filter by type and open videos in a modal viewer.",
+        "exports": [],
+        "dependencies": [
+          "~/utils/api",
+          "~/components/VideosItem",
+          "~/components/Modal"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "components/VideosItem.vue",
+        "purpose": "Vue component for displaying a single video item with its thumbnail, duration, name, and type, and emitting an event to open a modal.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/WatchOn.vue",
+        "purpose": "Vue component that displays a grid of streaming providers where a movie or TV show can be watched, with links to each service.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "components/YearPicker.vue",
+        "purpose": "Vue component providing a dropdown for selecting a release year, with options ranging from a minimum year to the current year.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      }
+    ],
+    "composables": [
+      {
+        "path": "composables/useConsentGuard.js",
+        "purpose": "Provides a Vue composable to execute a callback function only when a specific consent category is granted, re-evaluating on consent preference changes.",
+        "exports": [
+          "useConsentGuard"
+        ],
+        "dependencies": [
+          "vue",
+          "~/stores/consent"
+        ],
+        "notes": ""
+      }
+    ],
+    "layouts": [
+      {
+        "path": "layouts/default.vue",
+        "purpose": "Defines the default layout for the application, including navigation, search, footer, and various lazy-loaded modals for authentication, ratings, tracking, and list management.",
+        "exports": [],
+        "dependencies": [
+          "~/components/global/Nav.vue",
+          "~/components/global/SearchForm.vue",
+          "~/components/global/Footer.vue",
+          "~/components/global/CookieConsent.vue",
+          "~/components/global/InstallPrompt.vue",
+          "~/assets/css/utilities/variables"
+        ],
+        "notes": ""
+      }
+    ],
+    "middleware": [
+      {
+        "path": "middleware/auth.global.ts",
+        "purpose": "Implements a global Nuxt route middleware for client-side authentication, synchronously checking for an access token in localStorage to protect specific routes and redirecting to the homepage with an auth modal if unauthenticated.",
+        "exports": [],
+        "dependencies": [
+          "defineNuxtRouteMiddleware",
+          "navigateTo",
+          "abortNavigation"
+        ],
+        "notes": "This middleware is a UX guard only; actual data protection is handled by the backend. It dispatches a 'open-auth-modal' event and sets 'open_auth_modal' in sessionStorage."
+      }
+    ],
+    "mixins": [
+      {
+        "path": "mixins/Carousel.js",
+        "purpose": "Provides a Vue mixin for managing a horizontal carousel, including calculating item positions, handling scroll events, and enabling navigation with buttons.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "smoothscroll-polyfill"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "mixins/Details.js",
+        "purpose": "Provides a Vue mixin with computed properties for displaying detailed information about a media item, including ID, type, name, genres, cast, release years, and media assets.",
+        "exports": [
+          "id",
+          "type",
+          "name",
+          "genres",
+          "stars",
+          "yearStart",
+          "yearEnd",
+          "poster",
+          "backdrop",
+          "cert",
+          "trailer"
+        ],
+        "dependencies": [
+          "~/utils/api"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "mixins/Filters.js",
+        "purpose": "Provides a Vue mixin with common utility methods for formatting data such as ratings, numbers with commas, runtimes, truncated text, array to list conversions, and full dates.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "mixins/Functions.js",
+        "purpose": "Provides utility functions for common tasks like debouncing and checking for local storage support.",
+        "exports": [
+          "debounce",
+          "supportsLocalStorage"
+        ],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "mixins/InfiniteScroll.js",
+        "purpose": "Provides a Vue mixin for creating CSS-animated infinite horizontal carousels with features like hover/focus pause, manual drag/wheel interaction, and arrow-button seeking.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [],
+        "notes": "Requires consumer components to define `infiniteDuration` and render specific refs (`viewport`, `track`) with corresponding CSS."
+      }
+    ],
+    "pages": [
+      {
+        "path": "pages/auth-success.vue",
+        "purpose": "Handles post-authentication redirects and displays success or error states, managing local storage for return URLs and cleaning up navigation elements.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "pages/awards/index.vue",
+        "purpose": "Displays a browsable list of major film awards, allowing users to select an award and year to view winners and nominees, with navigation to related movies or media.",
+        "exports": [],
+        "dependencies": [
+          "useRoute",
+          "useRouter",
+          "useAsyncData"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/changelog/index.vue",
+        "purpose": "Displays a changelog of releases for the Cinemagoria platform, fetching data directly from the GitHub repository's releases API.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "pages/contact/index.vue",
+        "purpose": "Provides a contact form for users to submit inquiries, handling form submission, loading states, and displaying success or error messages.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "pages/faq/index.vue",
+        "purpose": "Presents a Frequently Asked Questions page with a table of contents for navigation and expandable sections for detailed answers.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "pages/festival/bafici-2026/index.vue",
+        "purpose": "Displays detailed information for the BAFICI 2026 film festival, including films, awards, and schedule, with search and navigation features.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/festival/berlinale-2026/index.vue",
+        "purpose": "Displays detailed information for the Berlinale 2026 film festival, including films, awards, and schedule, with search and navigation features.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/festival/bifff-2026/index.vue",
+        "purpose": "Displays detailed information for the BIFFF 2026 film festival, including films, awards, and schedule, with search and navigation features.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/festival/cannes-2026/index.vue",
+        "purpose": "Displays detailed information for the Cannes Film Festival 2026, including films, awards, and schedule, with search and navigation features.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/festival/cuff-2026/index.vue",
+        "purpose": "Vue page component for displaying details of the Calgary Underground Film Festival (CUFF) 2026, including films, schedule, and awards, with interactive search and navigation.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link",
+          "Loader"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/festival/fantasia-2026/index.vue",
+        "purpose": "Vue page component for displaying details of the Fantasia International Film Festival 2026, including films, schedule, and awards, with interactive search and navigation.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link",
+          "Loader"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/festival/frightfest-2026/index.vue",
+        "purpose": "Vue page component for displaying details of the FrightFest 2026, including films and schedule, with interactive search and navigation.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link",
+          "Loader"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/festival/kviff-2026/index.vue",
+        "purpose": "Vue page component for displaying details of the Karlovy Vary International Film Festival (KVIFF) 2026, including films, schedule, and awards, with interactive search and navigation.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link",
+          "Loader"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/festival/romford-2026/index.vue",
+        "purpose": "Vue page component for displaying details of the Romford Horror Film Festival 2026, including films, schedule, and awards, with interactive search and navigation.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link",
+          "Loader"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/festival/rotterdam-2026/index.vue",
+        "purpose": "Vue page component for displaying details of the International Film Festival Rotterdam (IFFR) 2026, including films, schedule, and awards, with interactive search and navigation.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link",
+          "Loader"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/festival/slamdance-2026/index.vue",
+        "purpose": "Vue page component for displaying details of the Slamdance Film Festival 2026, including films, schedule, and awards, with interactive search and navigation.",
+        "exports": [],
+        "dependencies": [
+          "nuxt-link",
+          "Loader"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/festival/sundance-2026/index.vue",
+        "purpose": "Displays the Sundance 2026 film festival page, including film listings, schedule, awards, and a hero section with a backdrop image and navigation.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "nuxt-link",
+          "Loader"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/festival/sxsw-2026/index.vue",
+        "purpose": "Displays the SXSW 2026 film festival page, including film listings, schedule, awards, and a hero section with a backdrop image and navigation.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "nuxt-link",
+          "Loader"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/festival/tribeca-2026/index.vue",
+        "purpose": "Displays the Tribeca 2026 film festival page, including film listings, schedule, awards, and a hero section with a backdrop image and navigation.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "nuxt-link",
+          "Loader"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/genre/[id]/movie.vue",
+        "purpose": "Displays a paginated list of movies belonging to a specific genre, fetching data from an API and providing a 'load more' functionality.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "vue-router",
+          "~/utils/api",
+          "~/components/global/TopNav",
+          "~/components/Listing"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/genre/[id]/tv.vue",
+        "purpose": "Displays a paginated list of TV shows belonging to a specific genre, fetching data from an API and providing a 'load more' functionality.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "vue-router",
+          "~/utils/api",
+          "~/components/global/TopNav",
+          "~/components/Listing"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/index.vue",
+        "purpose": "Serves as the homepage, displaying various carousels for featured content, news, and festivals, along with conditional banners for live events like Oscars, Cannes, and Fantasia.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "OscarsLiveBanner",
+          "CannesLiveBanner",
+          "FantasiaLiveBanner",
+          "Hero",
+          "NewsCarousel",
+          "FestivalsCarousel"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/lists/[slug].vue",
+        "purpose": "Displays a specific user-created list of movies and TV shows, allowing the owner to edit list details and items, and providing filtering and sorting options.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "vue-router",
+          "Loader",
+          "MediaCard",
+          "RatingModal",
+          "RenameListModal",
+          "DeleteListModal",
+          "AddMediaModal",
+          "EditMediaModal",
+          "ShareListModal"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/lists/index.vue",
+        "purpose": "Displays a user's custom lists of movies and TV shows, providing functionality to create, edit, and delete lists, and filter between public and private lists.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "UserNav",
+          "Loader",
+          "ListCard",
+          "CreateListModal",
+          "EditListModal",
+          "DeleteListModal"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/login/index.vue",
+        "purpose": "Serves as the login page, displaying an authentication modal for users to log in or register.",
+        "exports": [],
+        "dependencies": [
+          "@/components/global/AuthModal.vue"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/movie/[id].vue",
+        "purpose": "Displays detailed information for a specific movie, including an overview, media, credits, reviews, and awards, handling data fetching and UI state.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "useRoute",
+          "useRouter",
+          "useAsyncData",
+          "computed",
+          "ref",
+          "UserNav",
+          "TopNav",
+          "Hero",
+          "MediaNav",
+          "MovieInfo",
+          "MovieCredits",
+          "MovieMedia",
+          "MovieReviews",
+          "MovieSoundtracks",
+          "MovieAwards",
+          "RatedItemsModal",
+          "searchSoundtracks"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/movie/category/[name].vue",
+        "purpose": "Displays a paginated list of movies belonging to a specific category (e.g., trending, popular), with dynamic title and meta information.",
+        "exports": [],
+        "dependencies": [
+          "~/utils/api",
+          "~/components/global/TopNav",
+          "~/components/Listing"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/movie/followed.vue",
+        "purpose": "Renders a page displaying content from followed movie-related entities, leveraging a shared component for display logic.",
+        "exports": [],
+        "dependencies": [
+          "~/components/FollowedContent"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/movie/index.vue",
+        "purpose": "Serves as the main discovery page for movies, featuring popular, top-rated, upcoming, and now playing lists, along with filters and followed content.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "useRouter",
+          "useRoute",
+          "ref",
+          "useAsyncData",
+          "computed",
+          "refDebounced",
+          "getListItem",
+          "getFollowedProductionCompanies",
+          "getFollowedStreamingPlatforms",
+          "UserNav",
+          "TopNav",
+          "Filters",
+          "Listing",
+          "Loader"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/news/[slug].vue",
+        "purpose": "Displays a single news article based on its slug, including content, related entities, and user interaction features like saving and sharing.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "MarkdownIt",
+          "useRoute",
+          "useRuntimeConfig",
+          "useNuxtApp",
+          "ref",
+          "computed",
+          "useAsyncData",
+          "getCustomEnrichment",
+          "UserNav",
+          "ShareModal",
+          "RelatedEntitiesCarousel",
+          "Loader"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/news/index.vue",
+        "purpose": "Displays a feed of the latest news articles, with filtering by source and category, search functionality, and user-specific saved article indicators.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "useRuntimeConfig",
+          "useNuxtApp",
+          "ref",
+          "useRoute",
+          "useRouter",
+          "refDebounced",
+          "computed",
+          "useFetch",
+          "UserNav",
+          "NewsCard",
+          "Loader"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/noir/index.vue",
+        "purpose": "Displays the N.O.I.R Archive, a curated list of historical titles, with sorting options and functionality to clone the archive to a user's personal list.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "UserNav",
+          "TopNav",
+          "Listing",
+          "Loader",
+          "NoirModal",
+          "useRuntimeConfig",
+          "useNuxtApp",
+          "ref",
+          "computed",
+          "useAsyncData"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/notifications/index.vue",
+        "purpose": "Displays user notifications about new content from followed people, companies, streaming services, and shows, with filtering and marking as read/unread.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "useNuxtApp",
+          "useRuntimeConfig",
+          "ref",
+          "computed",
+          "useAsyncData",
+          "useRouter",
+          "useRoute",
+          "UserNav",
+          "HowItWorksModal",
+          "NotificationCard",
+          "Loader"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/person/[id].vue",
+        "purpose": "Displays detailed information for a specific person, including their biography, known for credits, filmography, images, and awards.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "useRoute",
+          "useRouter",
+          "useAsyncData",
+          "computed",
+          "ref",
+          "useRuntimeConfig",
+          "UserNav",
+          "TopNav",
+          "PersonInfo",
+          "MediaNav",
+          "Listing",
+          "PersonCredits",
+          "PersonMedia",
+          "PersonAwards",
+          "RatedItemsModal",
+          "getPerson"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/production-companies/index.vue",
+        "purpose": "Displays a grid of production companies, allowing users to browse and navigate to individual company pages, with sorting by name and dynamic image loading.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "~/utils/constants",
+          "~/utils/api",
+          "~/assets/css/utilities/variables"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/production/[slug].vue",
+        "purpose": "Displays a detailed page for a specific production company, including a hero section, and allows users to filter and sort associated movies and TV shows.",
+        "exports": [],
+        "dependencies": [
+          "vue-router",
+          "UserNav",
+          "TopNav",
+          "ProductionHero"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/recovery/index.vue",
+        "purpose": "Provides a user interface for password recovery, allowing users to submit their email to receive a reset link and displaying a confirmation message.",
+        "exports": [],
+        "dependencies": [],
+        "notes": "Handles password recovery requests and redirects to the home page or login page."
+      },
+      {
+        "path": "pages/register/index.vue",
+        "purpose": "Serves as the registration page, displaying an authentication modal pre-configured for user registration upon mounting.",
+        "exports": [],
+        "dependencies": [
+          "@/components/global/AuthModal.vue"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/search/index.vue",
+        "purpose": "Implements a dynamic search results page that displays movies, TV shows, and news based on a user's query, with loading states and infinite scrolling.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "vue-router",
+          "~/stores/search",
+          "~/utils/api",
+          "~/components/search/SearchResults.vue",
+          "~/assets/css/utilities/variables"
+        ],
+        "notes": "Registers a route for search queries and manages search state via a Pinia store."
+      },
+      {
+        "path": "pages/settings/index.vue",
+        "purpose": "Provides a user interface for managing account settings, including avatar, email, alias, and privacy preferences, with options to delete the account.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "pages/streaming-services/index.vue",
+        "purpose": "Displays a grid of streaming services, allowing users to browse and navigate to individual service pages, with sorting by name and dynamic image loading.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "~/utils/constants",
+          "~/utils/api",
+          "~/assets/css/utilities/variables"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/streaming/[slug].vue",
+        "purpose": "Displays details for a specific streaming platform, including its movies and TV shows, with filtering and sorting options.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "#imports",
+          "~/components/global/UserNav",
+          "~/components/global/TopNav",
+          "~/components/StreamingPlatformHero"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/streaming/followed.vue",
+        "purpose": "Displays a user's followed streaming content, distinguishing between movies and TV shows based on the URL query parameter.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "#imports",
+          "~/components/global/UserNav",
+          "~/components/global/TopNav",
+          "~/components/FollowedContent"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/tv/[id].vue",
+        "purpose": "Displays detailed information for a specific TV show, including an overview, credits, episodes, videos, images, soundtracks, and awards.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "#imports",
+          "~/components/global/UserNav",
+          "~/components/global/TopNav",
+          "~/components/Hero",
+          "~/components/MediaNav",
+          "~/components/TvInfo"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/tv/category/[name].vue",
+        "purpose": "Displays a list of TV shows belonging to a specific category (e.g., trending, popular), with pagination for loading more items.",
+        "exports": [],
+        "dependencies": [
+          "~/utils/api",
+          "~/components/global/TopNav",
+          "~/components/Listing"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/tv/followed.vue",
+        "purpose": "Displays TV shows that a user has followed, leveraging the `FollowedContent` component.",
+        "exports": [],
+        "dependencies": [
+          "~/components/FollowedContent"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/tv/index.vue",
+        "purpose": "Serves as the main discovery page for TV shows, featuring popular, top-rated, on-air, and airing today categories, along with filters.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "#imports",
+          "~/components/global/UserNav",
+          "~/components/global/TopNav",
+          "~/components/Carousel",
+          "~/components/Filters",
+          "~/utils/api"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/u/[alias].vue",
+        "purpose": "Displays a user's public profile, including their reviews and lists, with functionality to follow/unfollow the user.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "#app",
+          "~/utils/api"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/usage-policies/index.vue",
+        "purpose": "Presents the platform's usage policies and privacy agreement, organized into scrollable sections with a table of contents.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "~/components/global/UserNav"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/watchlist/index.vue",
+        "purpose": "Displays a user's watchlist of movies and TV shows, allowing filtering, sorting, and management of watched items.",
+        "exports": [],
+        "dependencies": [
+          "vue",
+          "#imports",
+          "~/components/global/UserNav",
+          "~/components/global/TopNav",
+          "~/components/Loader",
+          "~/components/ItemCard",
+          "~/components/Filters",
+          "~/components/global/RatedItemsModal"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "pages/wip/index.vue",
+        "purpose": "Displays a 'Work in Progress' or 'Under Maintenance' page, providing options to return home or view more information.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      }
+    ],
+    "plugins": [
+      {
+        "path": "plugins/bus.js",
+        "purpose": "Nuxt plugin that provides a global event bus using the mitt library for inter-component communication.",
+        "exports": [],
+        "dependencies": [
+          "mitt"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "plugins/lazyload.js",
+        "purpose": "Nuxt plugin that registers a 'lazyload' Vue directive to dynamically set the 'src' attribute of an image element.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      }
+    ],
+    "public": [
+      {
+        "path": "public/manifest.json",
+        "purpose": "Defines the web application manifest for Cinemagoria, providing metadata like name, description, start URL, display mode, theme colors, and various icon sizes for PWA installation.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "public/sw.js",
+        "purpose": "A self-destroying service worker script designed to unregister itself and reload all client pages upon activation, ensuring no caching or offline functionality is provided.",
+        "exports": [],
+        "dependencies": [],
+        "notes": "This file is explicitly marked as not to be version controlled."
+      }
+    ],
+    "scripts": [
+      {
+        "path": "scripts/seed_tribeca_2026_awards.cjs",
+        "purpose": "One-shot script to seed the `festival_awards` table with 2026 Tribeca Festival feature film award winners, including bilingual fields (EN/ES).",
+        "exports": [],
+        "dependencies": [
+          "dotenv",
+          "@libsql/client"
+        ],
+        "notes": "Run with `node scripts/seed_tribeca_2026_awards.cjs`."
+      },
+      {
+        "path": "scripts/syncCustomOverrides.js",
+        "purpose": "Fetches custom title override data from the `title_overrides` Turso database table and writes it to a JSON file for public consumption.",
+        "exports": [],
+        "dependencies": [
+          "dotenv/config",
+          "@libsql/client",
+          "fs",
+          "path",
+          "url"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "scripts/syncHeroData.js",
+        "purpose": "Retrieves hero selection data from the `hero_selections` Turso database table and saves it as a JSON file for public use.",
+        "exports": [],
+        "dependencies": [
+          "@libsql/client",
+          "fs",
+          "path",
+          "url"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "scripts/syncNoirEnrichmentData.js",
+        "purpose": "Fetches enrichment data for 'noir historical' titles from the `noir_historical` Turso database table and writes it to a JSON file.",
+        "exports": [],
+        "dependencies": [
+          "dotenv/config",
+          "@libsql/client",
+          "fs",
+          "path",
+          "url"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "scripts/syncNoirHistorical.js",
+        "purpose": "Synchronizes new hero selections into the `noir_historical` Turso database table, optionally fetching Spanish titles from TMDB.",
+        "exports": [],
+        "dependencies": [
+          "@libsql/client",
+          "fs",
+          "path",
+          "url"
+        ],
+        "notes": ""
+      }
+    ],
+    "server/api": [
+      {
+        "path": "server/api/article-report.post.ts",
+        "purpose": "Handles POST requests to report issues with articles, sanitizing input, validating data, and storing the report in the database.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "@libsql/client"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/article/[slug].get.ts",
+        "purpose": "Handles GET requests for a specific article by slug, fetching its details from the database and returning structured data.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "@libsql/client"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/article/rss.get.ts",
+        "purpose": "Provides a permanent redirect for the legacy RSS feed endpoint to the canonical /feed URL.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [],
+        "notes": "Registers a permanent redirect from /api/article/rss to https://cinemagoria.com/feed."
+      },
+      {
+        "path": "server/api/articles/by-slugs.get.ts",
+        "purpose": "Handles GET requests to retrieve multiple articles based on a comma-separated list of slugs, returning a filtered and structured list.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "~~/server/utils/db"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/awards/index-page.get.ts",
+        "purpose": "Handles GET requests to retrieve awards data for a specific award type and year, providing a structured list of awards, years, and categories.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "../../data/awards.json"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/awards/index.get.ts",
+        "purpose": "Handles GET requests to retrieve awards data (Oscars, Golden Globes, Festival Awards) filtered by TMDb ID, nominee name, film title, or type.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "../../data/awards.json"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/contact.post.ts",
+        "purpose": "Handles POST requests for the contact form, sanitizing input, validating email, and storing the message in the database.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "@libsql/client"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival-report.post.ts",
+        "purpose": "Handles POST requests to report issues with festival data, sanitizing input, validating data, and storing the report in the database.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "@libsql/client"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/bafici/awards.get.ts",
+        "purpose": "Handles GET requests to retrieve awards data specifically for the BAFICI 2026 festival.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/festivalAwards"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/bafici/films.get.ts",
+        "purpose": "API endpoint to retrieve a list of films for the BAFICI 2026 festival, supporting filtering by TMDB or IMDb ID and integrating TMDB data for enriched film details.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/bafici/schedule.get.ts",
+        "purpose": "API endpoint to retrieve the screening schedule for the BAFICI 2026 festival, joining screening and film data from the database.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "~~/server/utils/db",
+          "h3"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/berlinale/awards.get.ts",
+        "purpose": "API endpoint to fetch award information for the Berlinale 2026 festival using a utility function.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/festivalAwards"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/berlinale/films.get.ts",
+        "purpose": "API endpoint to retrieve a list of films for the Berlinale 2026 festival, supporting filtering by TMDB or IMDb ID and integrating TMDB data for enriched film details.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/berlinale/schedule.get.ts",
+        "purpose": "API endpoint to retrieve the screening schedule for the Berlinale 2026 festival, joining screening and film data from the database.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "~~/server/utils/db",
+          "h3"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/bifff/awards.get.ts",
+        "purpose": "API endpoint to fetch award information for the BIFFF 2026 festival using a utility function.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/festivalAwards"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/bifff/films.get.ts",
+        "purpose": "API endpoint to retrieve a list of films for the BIFFF 2026 festival, supporting filtering by TMDB or IMDb ID and integrating TMDB data for enriched film details.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/bifff/schedule.get.ts",
+        "purpose": "API endpoint to retrieve the screening schedule for the BIFFF 2026 festival, joining screening and film data from the database.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "~~/server/utils/db",
+          "h3"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/cannes/awards.get.ts",
+        "purpose": "API endpoint to fetch award information for the Cannes 2026 festival using a utility function.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/festivalAwards"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/cannes/films.get.ts",
+        "purpose": "API endpoint to retrieve a list of films for the Cannes 2026 festival, supporting filtering by TMDB or IMDb ID and integrating TMDB data for enriched film details.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/cannes/schedule.get.ts",
+        "purpose": "API endpoint to retrieve the 2026 Cannes Film Festival screening schedule, including film details and screening times, formatted for client consumption.",
+        "exports": [],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db"
+        ],
+        "notes": "Registers a GET route for /api/festival/cannes/schedule."
+      },
+      {
+        "path": "server/api/festival/cuff/awards.get.ts",
+        "purpose": "API endpoint to fetch the awards for the 2026 Calgary Underground Film Festival.",
+        "exports": [],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/festivalAwards"
+        ],
+        "notes": "Registers a GET route for /api/festival/cuff/awards."
+      },
+      {
+        "path": "server/api/festival/cuff/films.get.ts",
+        "purpose": "API endpoint to retrieve films for the 2026 Calgary Underground Film Festival, with optional filtering by TMDB or IMDb ID and limiting results.",
+        "exports": [],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db"
+        ],
+        "notes": "Registers a GET route for /api/festival/cuff/films."
+      },
+      {
+        "path": "server/api/festival/cuff/schedule.get.ts",
+        "purpose": "API endpoint to retrieve the 2026 Calgary Underground Film Festival screening schedule, including film details and screening times.",
+        "exports": [],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db"
+        ],
+        "notes": "Registers a GET route for /api/festival/cuff/schedule."
+      },
+      {
+        "path": "server/api/festival/fantasia/awards.get.ts",
+        "purpose": "API endpoint to fetch the awards for the 2026 Fantasia International Film Festival.",
+        "exports": [],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/festivalAwards"
+        ],
+        "notes": "Registers a GET route for /api/festival/fantasia/awards."
+      },
+      {
+        "path": "server/api/festival/fantasia/films.get.ts",
+        "purpose": "API endpoint to retrieve films for the 2026 Fantasia International Film Festival, with optional filtering by TMDB or IMDb ID and limiting results.",
+        "exports": [],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db"
+        ],
+        "notes": "Registers a GET route for /api/festival/fantasia/films."
+      },
+      {
+        "path": "server/api/festival/fantasia/schedule.get.ts",
+        "purpose": "API endpoint to retrieve the 2026 Fantasia International Film Festival screening schedule, including film details and screening times.",
+        "exports": [],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db"
+        ],
+        "notes": "Registers a GET route for /api/festival/fantasia/schedule."
+      },
+      {
+        "path": "server/api/festival/films-batch.get.ts",
+        "purpose": "API endpoint to fetch films for multiple festivals in a single request, supporting filtering by year, limiting results per festival, and a slim projection for carousel/card consumers.",
+        "exports": [],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db",
+          "~~/server/utils/festivals"
+        ],
+        "notes": "Registers a GET route for /api/festival/films-batch. Requires 'festivals' query param (comma-separated slugs)."
+      },
+      {
+        "path": "server/api/festival/frightfest/films.get.ts",
+        "purpose": "API endpoint to retrieve films for the 2026 FrightFest, with optional filtering by TMDB or IMDb ID and limiting results.",
+        "exports": [],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db"
+        ],
+        "notes": "Registers a GET route for /api/festival/frightfest/films."
+      },
+      {
+        "path": "server/api/festival/frightfest/schedule.get.ts",
+        "purpose": "API endpoint to retrieve the FrightFest 2026 film screening schedule, including film details and screening information, from the database.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "~~/server/utils/db",
+          "h3"
+        ],
+        "notes": "Registers a GET route for /api/festival/frightfest/schedule."
+      },
+      {
+        "path": "server/api/festival/kviff/awards.get.ts",
+        "purpose": "API endpoint to fetch the awards for the Karlovy Vary International Film Festival (KVIFF) 2026 using a utility function.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/festivalAwards"
+        ],
+        "notes": "Registers a GET route for /api/festival/kviff/awards."
+      },
+      {
+        "path": "server/api/festival/kviff/films.get.ts",
+        "purpose": "API endpoint to retrieve a list of films for the Karlovy Vary International Film Festival (KVIFF) 2026, with optional filtering by TMDB or IMDb ID.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db"
+        ],
+        "notes": "Registers a GET route for /api/festival/kviff/films."
+      },
+      {
+        "path": "server/api/festival/kviff/schedule.get.ts",
+        "purpose": "API endpoint to retrieve the Karlovy Vary International Film Festival (KVIFF) 2026 film screening schedule, including film details and screening information.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "~~/server/utils/db",
+          "h3"
+        ],
+        "notes": "Registers a GET route for /api/festival/kviff/schedule."
+      },
+      {
+        "path": "server/api/festival/romford/awards.get.ts",
+        "purpose": "API endpoint to fetch the awards for the Romford Horror Festival 2026 using a utility function.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/festivalAwards"
+        ],
+        "notes": "Registers a GET route for /api/festival/romford/awards."
+      },
+      {
+        "path": "server/api/festival/romford/films.get.ts",
+        "purpose": "API endpoint to retrieve a list of films for the Romford Horror Festival 2026, with optional filtering by TMDB or IMDb ID.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db"
+        ],
+        "notes": "Registers a GET route for /api/festival/romford/films."
+      },
+      {
+        "path": "server/api/festival/romford/schedule.get.ts",
+        "purpose": "API endpoint to retrieve the Romford Horror Festival 2026 film screening schedule, including film details and screening information, from the database.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "~~/server/utils/db",
+          "h3"
+        ],
+        "notes": "Registers a GET route for /api/festival/romford/schedule."
+      },
+      {
+        "path": "server/api/festival/rotterdam/awards.get.ts",
+        "purpose": "API endpoint to fetch the awards for the Rotterdam Film Festival 2026 using a utility function.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/festivalAwards"
+        ],
+        "notes": "Registers a GET route for /api/festival/rotterdam/awards."
+      },
+      {
+        "path": "server/api/festival/rotterdam/films.get.ts",
+        "purpose": "API endpoint to retrieve a list of films for the Rotterdam Film Festival 2026, with optional filtering by TMDB/IMDb ID and sorting by rating.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db"
+        ],
+        "notes": "Registers a GET route for /api/festival/rotterdam/films."
+      },
+      {
+        "path": "server/api/festival/rotterdam/schedule.get.ts",
+        "purpose": "API endpoint to retrieve the Rotterdam Film Festival 2026 film screening schedule, including film details and screening information, from the database.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "~~/server/utils/db",
+          "h3"
+        ],
+        "notes": "Registers a GET route for /api/festival/rotterdam/schedule."
+      },
+      {
+        "path": "server/api/festival/slamdance/awards.get.ts",
+        "purpose": "API endpoint to fetch the awards for the Slamdance Film Festival 2026 using a utility function.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/festivalAwards"
+        ],
+        "notes": "Registers a GET route for /api/festival/slamdance/awards."
+      },
+      {
+        "path": "server/api/festival/slamdance/films.get.ts",
+        "purpose": "API endpoint to retrieve a list of films for the Slamdance Film Festival 2026, with optional filtering by TMDB or IMDb ID.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db"
+        ],
+        "notes": "Registers a GET route for /api/festival/slamdance/films."
+      },
+      {
+        "path": "server/api/festival/slamdance/schedule.get.ts",
+        "purpose": "API endpoint to retrieve the screening schedule for the 2026 Slamdance Film Festival, including film details and screening information from the database.",
+        "exports": [],
+        "dependencies": [
+          "~~/server/utils/db",
+          "h3"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/status.get.ts",
+        "purpose": "API endpoint to fetch festival status badges for a given TMDb ID and year, used as a client-side fallback when festival membership data is not already present.",
+        "exports": [],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/festivals"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/sundance/awards.get.ts",
+        "purpose": "API endpoint to fetch award information for the 2026 Sundance Film Festival.",
+        "exports": [],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/festivalAwards"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/sundance/films.get.ts",
+        "purpose": "API endpoint to retrieve a list of films for the 2026 Sundance Film Festival, supporting filtering by TMDb/IMDb ID and sorting by rating or title.",
+        "exports": [],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/sundance/schedule.get.ts",
+        "purpose": "API endpoint to retrieve the screening schedule for the 2026 Sundance Film Festival, including film details and screening information from the database.",
+        "exports": [],
+        "dependencies": [
+          "~~/server/utils/db",
+          "h3"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/sxsw/awards.get.ts",
+        "purpose": "API endpoint to fetch award information for the 2026 SXSW Film & TV Festival.",
+        "exports": [],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/festivalAwards"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/sxsw/films.get.ts",
+        "purpose": "API endpoint to retrieve a list of films for the 2026 SXSW Film & TV Festival, supporting filtering by TMDb/IMDb ID and sorting by rating or title.",
+        "exports": [],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/sxsw/schedule.get.ts",
+        "purpose": "API endpoint to retrieve the screening schedule for the 2026 SXSW Film & TV Festival, including film details and screening information from the database.",
+        "exports": [],
+        "dependencies": [
+          "~~/server/utils/db",
+          "h3"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/tribeca/awards.get.ts",
+        "purpose": "API endpoint to fetch award information for the 2026 Tribeca Festival.",
+        "exports": [],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/festivalAwards"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/tribeca/films.get.ts",
+        "purpose": "API endpoint to retrieve a list of films for the 2026 Tribeca Festival, supporting filtering by TMDb/IMDb ID and sorting by title.",
+        "exports": [],
+        "dependencies": [
+          "h3",
+          "~~/server/utils/db"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/festival/tribeca/schedule.get.ts",
+        "purpose": "API endpoint to retrieve the screening schedule for the 2026 Tribeca Festival, including film details and screening information from the database.",
+        "exports": [],
+        "dependencies": [
+          "~~/server/utils/db",
+          "h3"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/api/hero.get.ts",
+        "purpose": "API endpoint to fetch a randomized selection of hero items (movies/TV shows) with embedded festival status and trailer information from the database.",
+        "exports": [],
+        "dependencies": [
+          "~~/server/utils/db",
+          "~~/server/utils/festivals"
+        ],
+        "notes": "Registers a GET route for /api/hero."
+      },
+      {
+        "path": "server/api/imdb-rating/[id].get.ts",
+        "purpose": "API endpoint to retrieve IMDb rating and vote count for a given media ID from a Turso database, handling CORS and caching.",
+        "exports": [],
+        "dependencies": [
+          "@libsql/client"
+        ],
+        "notes": "Registers a GET route for /api/imdb-rating/:id. Also handles OPTIONS requests."
+      },
+      {
+        "path": "server/api/news.get.ts",
+        "purpose": "API endpoint to fetch curated news articles, supporting pagination, language filtering, source filtering, and search queries.",
+        "exports": [],
+        "dependencies": [
+          "~~/server/utils/db"
+        ],
+        "notes": "Registers a GET route for /api/news."
+      },
+      {
+        "path": "server/api/noir-archive.get.ts",
+        "purpose": "API endpoint to retrieve a list of historical noir films and TV shows from a Turso database, ordered by release date.",
+        "exports": [],
+        "dependencies": [
+          "@libsql/client"
+        ],
+        "notes": "Registers a GET route for /api/noir-archive."
+      },
+      {
+        "path": "server/api/progress/[userId]/[mediaType]/[mediaId].delete.ts",
+        "purpose": "API endpoint to delete a user's progress tracking entry for a specific media item (movie or episode).",
+        "exports": [],
+        "dependencies": [
+          "~/server/utils/db"
+        ],
+        "notes": "Registers a DELETE route for /api/progress/:userId/:mediaType/:mediaId."
+      },
+      {
+        "path": "server/api/progress/[userId]/[mediaType]/[mediaId].get.ts",
+        "purpose": "API endpoint to retrieve a user's progress tracking details for a specific media item (movie or episode).",
+        "exports": [],
+        "dependencies": [
+          "~/server/utils/db"
+        ],
+        "notes": "Registers a GET route for /api/progress/:userId/:mediaType/:mediaId."
+      },
+      {
+        "path": "server/api/progress/[userId]/[mediaType]/[mediaId].put.ts",
+        "purpose": "API endpoint to create or update a user's progress tracking for a specific media item (movie or episode).",
+        "exports": [],
+        "dependencies": [
+          "~/server/utils/db"
+        ],
+        "notes": "Registers a PUT route for /api/progress/:userId/:mediaType/:mediaId."
+      },
+      {
+        "path": "server/api/progress/[userId]/active/[mediaType]/[mediaId].put.ts",
+        "purpose": "API endpoint to update the 'manually_active' flag for a user's progress tracking entry for a specific media item.",
+        "exports": [],
+        "dependencies": [
+          "~/server/utils/db"
+        ],
+        "notes": "Registers a PUT route for /api/progress/:userId/active/:mediaType/:mediaId."
+      },
+      {
+        "path": "server/api/progress/[userId]/batch.put.ts",
+        "purpose": "API endpoint to batch update a user's progress for multiple episodes, setting a specified completion percentage.",
+        "exports": [],
+        "dependencies": [
+          "~/server/utils/db"
+        ],
+        "notes": "Registers a PUT route for /api/progress/:userId/batch."
+      },
+      {
+        "path": "server/api/progress/[userId]/hydrated.get.ts",
+        "purpose": "API endpoint to fetch a user's progress tracking list, enriched with hydrated media details from TMDB, utilizing caching.",
+        "exports": [],
+        "dependencies": [
+          "~/server/utils/db"
+        ],
+        "notes": "Registers a GET route for /api/progress/:userId/hydrated."
+      },
+      {
+        "path": "server/api/progress/[userId]/index.get.ts",
+        "purpose": "API endpoint to retrieve a list of all progress tracking entries for a given user, ordered by last update.",
+        "exports": [],
+        "dependencies": [
+          "~/server/utils/db"
+        ],
+        "notes": "Registers a GET route for /api/progress/:userId."
+      },
+      {
+        "path": "server/api/search-log.post.ts",
+        "purpose": "Handles POST requests to log search queries, storing the query, origin IP, and optionally user email in a Turso database for analytics.",
+        "exports": [],
+        "dependencies": [
+          "@libsql/client"
+        ],
+        "notes": "Registers a POST route at `/api/search-log`."
+      },
+      {
+        "path": "server/api/search/person.get.ts",
+        "purpose": "Handles GET requests to search for people using the TMDB API, returning a list of matching person IDs.",
+        "exports": [],
+        "dependencies": [],
+        "notes": "Registers a GET route at `/api/search/person`."
+      },
+      {
+        "path": "server/api/spotlight/[type].get.ts",
+        "purpose": "Handles GET requests to retrieve curated spotlight movies or TV shows from a database, formatting the results for display.",
+        "exports": [],
+        "dependencies": [
+          "~~/server/utils/db"
+        ],
+        "notes": "Registers a GET route at `/api/spotlight/[type]` where `[type]` can be 'movies' or 'tv'."
+      }
+    ],
+    "server/middleware": [
+      {
+        "path": "server/middleware/logger.ts",
+        "purpose": "Defines a Nuxt event handler for logging, currently disabled but safely implemented as a no-op.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "server/middleware/redirect-at.ts",
+        "purpose": "Nuxt event handler that redirects URLs starting with '/@username' to '/u/username' using a 301 permanent redirect.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      }
+    ],
+    "server/plugins": [
+      {
+        "path": "server/plugins/strip-cookies-cacheable.ts",
+        "purpose": "Nitro plugin to strip Set-Cookie headers and clean the Vary header from responses on public cacheable routes, enabling Cloudflare caching for SSR HTML.",
+        "exports": [],
+        "dependencies": [],
+        "notes": ""
+      }
+    ],
+    "server/routes": [
+      {
+        "path": "server/routes/feed.get.ts",
+        "purpose": "Handles the GET request for the public RSS news feed, generating XML content using the buildNewsFeed utility and setting appropriate headers for caching and content type.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "../utils/rss-feed"
+        ],
+        "notes": "Registers the route /feed for the English news feed."
+      },
+      {
+        "path": "server/routes/sitemap-news.xml.ts",
+        "purpose": "Generates an XML sitemap for news articles by querying a Turso database for visible articles and formatting their slugs and publication dates into sitemap entries.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "@libsql/client"
+        ],
+        "notes": "Registers the route /sitemap-news.xml. Sets content-type to application/xml and cache-control headers."
+      },
+      {
+        "path": "server/routes/sitemap-static.xml.ts",
+        "purpose": "Generates an XML sitemap containing static pages, genre pages, streaming provider pages, production company pages, and festival pages for the Cinemagoria website.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "~/utils/constants"
+        ],
+        "notes": "Registers the route /sitemap-static.xml. Sets content-type to application/xml and cache-control headers."
+      },
+      {
+        "path": "server/routes/sitemap.xml.ts",
+        "purpose": "Generates the main sitemap index XML file, referencing the static and news sitemaps, while explicitly excluding dynamic sitemaps for movies, TV, and persons.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [],
+        "notes": "Registers the route /sitemap.xml. Excludes dynamic sitemaps to optimize Google's crawl budget for unique content."
+      }
+    ],
+    "server/types": [
+      {
+        "path": "server/types/markdown-it.d.ts",
+        "purpose": "Provides minimal ambient type declarations for the 'markdown-it' library, specifically for the MarkdownIt class and its options, to support server-side feed building.",
+        "exports": [
+          "MarkdownIt"
+        ],
+        "dependencies": [],
+        "notes": ""
+      }
+    ],
+    "server/utils": [
+      {
+        "path": "server/utils/db.ts",
+        "purpose": "Provides utility functions for connecting to and executing queries against a Turso/libSQL database, including connection management and query timeout handling.",
+        "exports": [
+          "useDb",
+          "dbExecute"
+        ],
+        "dependencies": [
+          "@libsql/client"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/utils/rss-feed.ts",
+        "purpose": "Constructs an RSS feed for news articles, supporting both English and Spanish languages and integrating database queries for article content and Vimeo oEmbed data.",
+        "exports": [
+          "buildNewsFeed"
+        ],
+        "dependencies": [
+          "markdown-it",
+          "./db",
+          "./vimeo-oembed"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/utils/vimeo-oembed.ts",
+        "purpose": "Fetches and caches oEmbed metadata for Vimeo videos, providing thumbnail URLs and other details, used by news articles and RSS feeds.",
+        "exports": [
+          "getVimeoOembed",
+          "getVimeoThumb"
+        ],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "server/utils/festivalAwards.ts",
+        "purpose": "Fetches and processes festival award data from the database for a given festival slug, supporting English and Spanish locales with fallback logic.",
+        "exports": [
+          "fetchFestivalAwards"
+        ],
+        "dependencies": [
+          "h3",
+          "@libsql/client"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/utils/festivals.ts",
+        "purpose": "Manages canonical festival name-to-slug mappings and retrieves festival participation status for a batch of TMDB IDs from the database.",
+        "exports": [
+          "FESTIVAL_NAME_BY_SLUG",
+          "NAME_TO_SLUG",
+          "getFestivalStatusByTmdbId"
+        ],
+        "dependencies": [
+          "./db"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "server/utils/sitemap-helpers.ts",
+        "purpose": "Provides utilities for fetching movie/TV show IDs from TMDB across multiple pages and generating an XML sitemap from these IDs.",
+        "exports": [
+          "fetchTmdbPages",
+          "buildSitemapXml"
+        ],
+        "dependencies": [],
+        "notes": ""
+      }
+    ],
+    "services": [
+      {
+        "path": "services/turso.js",
+        "purpose": "Initializes and exports a Turso database client using environment variables, logging an error if required variables are missing.",
+        "exports": [
+          "default"
+        ],
+        "dependencies": [
+          "@libsql/client"
+        ],
+        "notes": "Exports null if IMDB_DB_URL or IMDB_DB_TOKEN environment variables are not set."
+      },
+      {
+        "path": "services/userSync.js",
+        "purpose": "Provides a function to synchronize user data to a Turso backend API endpoint, handling network requests and error logging.",
+        "exports": [
+          "syncUserToTurso"
+        ],
+        "dependencies": [],
+        "notes": ""
+      }
+    ],
+    "stores": [
+      {
+        "path": "stores/consent.js",
+        "purpose": "Manages user cookie consent preferences, including loading from/saving to local storage, handling legacy consent, and providing methods to accept/decline all or customize preferences.",
+        "exports": [
+          "useConsentStore"
+        ],
+        "dependencies": [
+          "pinia",
+          "vue"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "stores/search.js",
+        "purpose": "Manages the state of the search overlay, including its visibility and the page from which it was opened, providing actions to control these states.",
+        "exports": [
+          "useSearchStore"
+        ],
+        "dependencies": [
+          "pinia"
+        ],
+        "notes": ""
+      }
+    ],
+    "types": [
+      {
+        "path": "types/database.types.ts",
+        "purpose": "Defines core database types, including a recursive `Json` type for flexible data structures and an empty `Database` interface for public schema tables, views, functions, and enums.",
+        "exports": [
+          "Json",
+          "Database"
+        ],
+        "dependencies": [],
+        "notes": ""
+      }
+    ],
+    "utils": [
+      {
+        "path": "utils/api.js",
+        "purpose": "Provides utility functions for interacting with various APIs (TMDB, Trakt, IMDb) and managing movie/TV show data, including enrichment and filtering.",
+        "exports": [
+          "apiImgUrl",
+          "EXCLUDED_MOVIE_IDS",
+          "EXCLUDED_TV_IDS",
+          "getHeroEnrichment",
+          "getNoirEnrichment",
+          "getCustomEnrichment",
+          "resolveItemPoster",
+          "languages",
+          "getListItem",
+          "getIMDbRatingFromDB",
+          "getMovies"
+        ],
+        "dependencies": [
+          "~/utils/constants",
+          "useRuntimeConfig"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "utils/categoryLabels.js",
+        "purpose": "Defines English display labels for editorial taxonomy categories and provides a function to retrieve the label for a given category token.",
+        "exports": [
+          "CATEGORY_LABELS",
+          "categoryLabel"
+        ],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "utils/countries.js",
+        "purpose": "Exports a comprehensive list of countries with their respective ISO 3166-1 alpha-2 codes and names.",
+        "exports": [
+          "countries"
+        ],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "utils/helpers.js",
+        "purpose": "Provides utility functions for formatting dates, handling image loading errors, and determining the release status context of a media item.",
+        "exports": [
+          "formatDate",
+          "handleImageError",
+          "getReleaseStatusContext"
+        ],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "utils/itemMapper.js",
+        "purpose": "Maps a raw item object to a standardized payload format suitable for database storage, inferring missing fields where possible.",
+        "exports": [
+          "mapItemToDbPayload"
+        ],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "utils/membershipStore.js",
+        "purpose": "Manages a session-wide cache for user membership data (watchlist and custom lists) to reduce API requests and improve performance.",
+        "exports": [
+          "invalidateMembershipCache",
+          "getMembership"
+        ],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "utils/musicbrainz.js",
+        "purpose": "Provides functions to search for soundtracks and retrieve album tracks using the MusicBrainz API.",
+        "exports": [
+          "searchSoundtracks",
+          "getAlbumTracks",
+          "getMusicBrainzUrl"
+        ],
+        "dependencies": [
+          "axios"
+        ],
+        "notes": ""
+      },
+      {
+        "path": "utils/newsSources.js",
+        "purpose": "Defines lists of supported news sources for different languages and their corresponding URLs.",
+        "exports": [
+          "SOURCES",
+          "SOURCE_URLS"
+        ],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "utils/relatedFooter.js",
+        "purpose": "Provides utilities to strip 'Related Articles' footers from article bodies and extract related article slugs from those sections.",
+        "exports": [
+          "stripRelatedFooter",
+          "extractRelatedSlugs"
+        ],
+        "dependencies": [],
+        "notes": ""
+      },
+      {
+        "path": "utils/resolvePhase.js",
+        "purpose": "An intentionally empty file marked as deprecated, previously used for calculating content phases.",
+        "exports": [],
+        "dependencies": [],
+        "notes": "This file is deprecated and should not be used; it will be removed in a future cleanup."
+      }
+    ]
+  }
+}
