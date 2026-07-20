@@ -4,60 +4,66 @@
 
 To develop with Cinemagoria, you need:
 
-*   Node.js (for `npm` package management and script execution)
-*   A Turso database (for `scripts/syncCustomOverrides.js`, `scripts/syncHeroData.js`, `scripts/syncNoirEnrichmentData.js`, `scripts/syncNoirHistorical.js`)
+*   Node.js (version specified in [package.json](../../package.json))
+*   npm (version specified in [package.json](../../package.json))
 
 ## Setup
 
-1.  **Install Dependencies**:
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/cinemagoria/cinemagoria.git
+    cd cinemagoria
+    ```
+2.  **Install dependencies:**
     ```bash
     npm install
     ```
-2.  **Prepare Nuxt**:
+3.  **Prepare Nuxt:**
     ```bash
     npm run postinstall
     ```
-3.  **Run in Development Mode**:
+4.  **Start the development server:**
     ```bash
     npm run dev
     ```
-    This starts the Nuxt development server.
-4.  **Build for Production**:
-    ```bash
-    npm run build
-    ```
-5.  **Generate Static Site**:
-    ```bash
-    npm run generate
-    ```
-6.  **Preview Production Build**:
-    ```bash
-    npm run preview
-    ```
+    The application will be accessible at `http://localhost:3000`.
 
 ## Project Layout
 
-*   [`assets/`](../../assets/) : Static assets like images, fonts, or stylesheets.
-*   [`components/`](../../components/) : Reusable Vue components (e.g., `components/Card.vue`, `components/global/Nav.vue`).
-*   [`composables/`](../../composables/) : Vue composables for reusable stateful logic (e.g., `composables/useConsentGuard.js`).
-*   [`layouts/`](../../layouts/) : Application layouts (e.g., `layouts/default.vue`).
-*   [`middleware/`](../../middleware/) : Nuxt middleware functions (e.g., `middleware/auth.global.ts`).
-*   [`pages/`](../../pages/) : Vue components for application routes (e.g., `pages/index.vue`, `pages/movie/[id].vue`).
-*   [`plugins/`](../../plugins/) : Nuxt plugins for global functionality (e.g., `plugins/bus.js`, `plugins/lazyload.js`).
-*   [`public/`](../../public/) : Statically served files (e.g., `public/manifest.json`).
-*   [`scripts/`](../../scripts/) : Utility scripts for data synchronization and seeding (e.g., `scripts/syncHeroData.js`).
-*   [`server/api/`](../../server/api/) : API endpoints (e.g., `server/api/movie/[id].get.ts`).
-*   [`stores/`](../../stores/) : Pinia stores for state management.
+*   `.github`: GitHub Actions workflows and funding configuration.
+*   `assets`: Static assets like images and fonts.
+*   `components`: Reusable Vue components, including global, common, and festival-specific UI elements.
+*   `composables`: Vue composables for reusable logic.
+*   `layouts`: Vue layouts defining the overall structure of pages.
+*   `middleware`: Nuxt middleware for route protection and other global logic.
+*   `pages`: Vue components representing application routes.
+*   `plugins`: Nuxt plugins for extending Vue or Nuxt functionality.
+*   `public`: Static files served directly, like `manifest.json` and `sw.js`.
+*   `scripts`: One-shot Node.js scripts for data synchronization and seeding.
+*   `server`: Backend API routes, middleware, and utilities.
+*   `stores`: Pinia stores for state management.
+*   `types`: TypeScript type definitions.
+*   `utils`: General utility functions.
 
 ## Testing
 
-No dedicated test files were found in the repository.
+The provided structural digest and file summaries do not contain information about testing frameworks, scripts, or conventions.
 
 ## Release & Deployment
 
-Cinemagoria uses Google Cloud Build and Google Cloud Run for deployment, configured via [`cloudbuild.yaml`](../../cloudbuild.yaml) and [`Dockerfile`](../../Dockerfile).
+Cinemagoria uses Google Cloud Build for building and deploying Docker images to Google Cloud Run. The deployment process is configured in [cloudbuild.yaml](../../cloudbuild.yaml) and involves:
 
-GitHub Actions workflows are used for data synchronization:
+1.  Building a Docker image based on the [Dockerfile](../../Dockerfile).
+2.  Pushing the image to Google Artifact Registry.
+3.  Deploying the image to the `cinemagoria-main` service on Google Cloud Run.
 
-*   **Sync Hero Data**: [`sync-hero-data.yml`](../../.github/workflows/sync-hero-data.yml) runs daily at 6 AM UTC and can be triggered manually.
-*   **Sync Noir Historical Data**: [`sync-noir-historical.yml`](../../.github/workflows/sync-noir-historical.yml) is triggered manually.
+To generate a static site for deployment:
+
+```bash
+npm run generate
+```
+
+To preview a production build locally:
+
+```bash
+npm run preview
