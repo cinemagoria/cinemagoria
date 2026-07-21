@@ -14,14 +14,14 @@
 
 ### `(root)`
 
-- `app.vue` — Root Vue component for the Cinemagoria application, defining the main layout and injecting structured data (Schema.org JSON-LD) for SEO.
-- `cloudbuild.yaml` — Google Cloud Build configuration for building a Docker image, pushing it to Artifact Registry, and deploying it to Google Cloud Run.
-  - Registers build and deploy steps for the `cinemagoria-main` service.
-- `Dockerfile` — Defines a multi-stage Docker build for the Cinemagoria Nuxt application, including dependencies, build process, and production runtime environment.
-- `nuxt.config.ts` — Nuxt.js configuration file, setting up aliases, compatibility date, devtools, debug mode, and defining route-specific caching headers for sitemaps and RSS feeds.
+- `app.vue` — Root Vue component for the Cinemagoria application, defining the main layout and injecting structured data (Schema.org) for SEO.
+- `cloudbuild.yaml` — Google Cloud Build configuration for building, pushing, and deploying the Cinemagoria Docker image to Google Cloud Run.
+- `Dockerfile` — Defines the Docker image for the Cinemagoria application, including build arguments for Supabase and a multi-stage build process.
+- `nuxt.config.ts` — Nuxt.js configuration file, setting up aliases, compatibility, devtools, and defining route rules with cache-control headers for various paths.
   - exports: `default`
-- `package.json` — Defines project metadata, scripts for development and build processes, dependency resolutions, and lists all production and development dependencies for the Cinemagoria application.
-- `tsconfig.json` — TypeScript configuration file for the Nuxt.js project, referencing generated TypeScript configurations from the .nuxt directory.
+- `package.json` — Defines the Cinemagoria project's metadata, scripts for development and build, dependency resolutions, and lists all required packages.
+  - Contains scripts: build, dev, generate, preview, postinstall.
+- `tsconfig.json` — TypeScript configuration file for the Nuxt.js project, referencing generated tsconfig files from the .nuxt directory.
 
 ### `assets`
 

@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-20T23:49:25.264Z",
+  "generatedAt": "2026-07-21T05:02:16.481Z",
   "provider": "gemini",
   "model": "gemini-2.5-flash",
-  "tag": "67ce138",
-  "commit": "67ce1385181f8b4316c182db6701e39f24df969f",
+  "tag": "1ec6821",
+  "commit": "1ec68218882ce60defd342da50a53a72e33577d7",
   "fileHashes": {
     ".github/FUNDING.yml": "8deffbd8ec503761",
     ".github/workflows/gitset-knowledge.yml": "f7162607dd746462",
@@ -135,7 +135,7 @@
     "mixins/Functions.js": "1a715df20bf5afb3",
     "mixins/InfiniteScroll.js": "2fec53ab4008d2f8",
     "nuxt.config.ts": "bcd32cd07dcf574d",
-    "package.json": "26dd31cf38224262",
+    "package.json": "b5875ade3654972b",
     "pages/auth-success.vue": "13d9e4518e015506",
     "pages/awards/index.vue": "13cd183490a09813",
     "pages/changelog/index.vue": "75dfbe18cabefdd0",
@@ -301,28 +301,28 @@
     "(root)": [
       {
         "path": "app.vue",
-        "purpose": "Root Vue component for the Cinemagoria application, defining the main layout and injecting structured data (Schema.org JSON-LD) for SEO.",
+        "purpose": "Root Vue component for the Cinemagoria application, defining the main layout and injecting structured data (Schema.org) for SEO.",
         "exports": [],
         "dependencies": [],
         "notes": ""
       },
       {
         "path": "cloudbuild.yaml",
-        "purpose": "Google Cloud Build configuration for building a Docker image, pushing it to Artifact Registry, and deploying it to Google Cloud Run.",
+        "purpose": "Google Cloud Build configuration for building, pushing, and deploying the Cinemagoria Docker image to Google Cloud Run.",
         "exports": [],
         "dependencies": [],
-        "notes": "Registers build and deploy steps for the `cinemagoria-main` service."
+        "notes": ""
       },
       {
         "path": "Dockerfile",
-        "purpose": "Defines a multi-stage Docker build for the Cinemagoria Nuxt application, including dependencies, build process, and production runtime environment.",
+        "purpose": "Defines the Docker image for the Cinemagoria application, including build arguments for Supabase and a multi-stage build process.",
         "exports": [],
         "dependencies": [],
         "notes": ""
       },
       {
         "path": "nuxt.config.ts",
-        "purpose": "Nuxt.js configuration file, setting up aliases, compatibility date, devtools, debug mode, and defining route-specific caching headers for sitemaps and RSS feeds.",
+        "purpose": "Nuxt.js configuration file, setting up aliases, compatibility, devtools, and defining route rules with cache-control headers for various paths.",
         "exports": [
           "default"
         ],
@@ -333,14 +333,14 @@
       },
       {
         "path": "package.json",
-        "purpose": "Defines project metadata, scripts for development and build processes, dependency resolutions, and lists all production and development dependencies for the Cinemagoria application.",
+        "purpose": "Defines the Cinemagoria project's metadata, scripts for development and build, dependency resolutions, and lists all required packages.",
         "exports": [],
         "dependencies": [],
-        "notes": ""
+        "notes": "Contains scripts: build, dev, generate, preview, postinstall."
       },
       {
         "path": "tsconfig.json",
-        "purpose": "TypeScript configuration file for the Nuxt.js project, referencing generated TypeScript configurations from the .nuxt directory.",
+        "purpose": "TypeScript configuration file for the Nuxt.js project, referencing generated tsconfig files from the .nuxt directory.",
         "exports": [],
         "dependencies": [],
         "notes": ""
