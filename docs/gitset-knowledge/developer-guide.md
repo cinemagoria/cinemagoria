@@ -4,66 +4,57 @@
 
 To develop with Cinemagoria, you need:
 
-*   Node.js (version specified in [package.json](../../package.json))
-*   npm (version specified in [package.json](../../package.json))
+*   Node.js (for `npm` and `npx`)
+*   Familiarity with Vue.js and Nuxt.js
 
 ## Setup
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/cinemagoria/cinemagoria.git
-    cd cinemagoria
-    ```
-2.  **Install dependencies:**
+1.  **Install dependencies**:
     ```bash
     npm install
     ```
-3.  **Prepare Nuxt:**
+2.  **Prepare Nuxt.js**:
     ```bash
     npm run postinstall
     ```
-4.  **Start the development server:**
+3.  **Start development server**:
     ```bash
     npm run dev
     ```
-    The application will be accessible at `http://localhost:3000`.
+    This will launch the application in development mode, typically accessible at `http://localhost:3000`.
 
 ## Project Layout
 
-*   `.github`: GitHub Actions workflows and funding configuration.
-*   `assets`: Static assets like images and fonts.
-*   `components`: Reusable Vue components, including global, common, and festival-specific UI elements.
-*   `composables`: Vue composables for reusable logic.
-*   `layouts`: Vue layouts defining the overall structure of pages.
-*   `middleware`: Nuxt middleware for route protection and other global logic.
-*   `pages`: Vue components representing application routes.
-*   `plugins`: Nuxt plugins for extending Vue or Nuxt functionality.
-*   `public`: Static files served directly, like `manifest.json` and `sw.js`.
-*   `scripts`: One-shot Node.js scripts for data synchronization and seeding.
-*   `server`: Backend API routes, middleware, and utilities.
-*   `stores`: Pinia stores for state management.
-*   `types`: TypeScript type definitions.
-*   `utils`: General utility functions.
+*   [.github/](../../.github/) - GitHub Actions workflows for CI/CD and automation.
+*   [assets/](../../assets/) - Static assets like images, fonts, or stylesheets.
+*   [components/](../../components/) - Reusable Vue components, categorized by global, common, festival, etc.
+*   [composables/](../../composables/) - Vue composables for reusable stateful logic.
+*   [docs/](../../docs/) - Project documentation.
+*   [layouts/](../../layouts/) - Nuxt.js layouts for consistent page structures.
+*   [middleware/](../../middleware/) - Nuxt.js middleware for route-level logic.
+*   [mixins/](../../mixins/) - Vue mixins for shared component options.
+*   [pages/](../../pages/) - Vue components that define application routes.
+*   [plugins/](../../plugins/) - Nuxt.js plugins for extending Vue or Nuxt.
+*   [public/](../../public/) - Static files served directly, like `manifest.json`.
+*   [scripts/](../../scripts/) - One-shot or utility scripts for data synchronization and seeding.
+*   [server/](../../server/) - Backend API routes, middleware, and utilities.
+*   [services/](../../services/) - Client-side services for API interaction.
+*   [stores/](../../stores/) - Pinia stores for global state management.
+*   [types/](../../types/) - TypeScript type definitions.
+*   [utils/](../../utils/) - General utility functions.
 
 ## Testing
 
-The provided structural digest and file summaries do not contain information about testing frameworks, scripts, or conventions.
+The provided structural digest and file summaries do not contain information about testing frameworks, test files, or testing scripts.
 
 ## Release & Deployment
 
-Cinemagoria uses Google Cloud Build for building and deploying Docker images to Google Cloud Run. The deployment process is configured in [cloudbuild.yaml](../../cloudbuild.yaml) and involves:
+Cinemagoria uses Google Cloud Build and Google Cloud Run for deployment.
 
-1.  Building a Docker image based on the [Dockerfile](../../Dockerfile).
-2.  Pushing the image to Google Artifact Registry.
-3.  Deploying the image to the `cinemagoria-main` service on Google Cloud Run.
+*   The [Dockerfile](../../Dockerfile) defines the Docker image.
+*   [cloudbuild.yaml](../../cloudbuild.yaml) configures the build, push, and deployment process to Google Cloud Run.
 
-To generate a static site for deployment:
+CI workflows automate data synchronization:
 
-```bash
-npm run generate
-```
-
-To preview a production build locally:
-
-```bash
-npm run preview
+*   [.github/workflows/sync-hero-data.yml](../../.github/workflows/sync-hero-data.yml): Synchronizes hero enrichment data from Turso to JSON files daily at 06:00 UTC.
+*   [.github/workflows/sync-noir-historical.yml](../../.github/workflows/sync-noir-historical.yml): Synchronizes N.O.I.R historical data and regenerates enrichment data.
