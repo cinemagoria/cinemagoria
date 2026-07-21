@@ -136,14 +136,6 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 964849,
-    "media_type": "movie",
-    "trailer_key": "QCYdpK5b5-4",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1784357704/cinemagoria/backdrops/hero_964849.webp",
-    "poster_path": "/ddMt3IAgEHE0SWBjm97jR8gKx9B.jpg",
-    "force_enrichment": true
-  },
-  {
     "tmdb_id": 1579168,
     "media_type": "movie",
     "trailer_key": "nZbTh_RXLw4",
