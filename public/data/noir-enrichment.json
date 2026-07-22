@@ -4675,8 +4675,8 @@
     "tmdb_id": 1495638,
     "media_type": "movie",
     "trailer_key": "bGrJHWdrFyY",
-    "backdrop_path": null,
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1784703854/cinemagoria/backdrops/noir_1495638.webp",
     "poster_path": "/9JWtu9Rk3szuJ33tAAWmxC2cN07.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   }
 ]
