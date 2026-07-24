@@ -19,6 +19,9 @@ onMounted(() => {
 })
 
 const festivals = [
+  { slug: 'venice-2026',    name: 'Venice',         year: 2026, city: 'Venice',     country: 'Italy',
+    startDate: '2026-09-02', endDate: '2026-09-12', dateLabel: 'Sep 2 – 12, 2026',
+    image: '/festivals/venice/venice_backdrop_2026_eng.webp' },
   { slug: 'kviff-2026',     name: 'KVIFF',          year: 2026, city: 'Karlovy Vary', country: 'Czechia',
     startDate: '2026-07-03', endDate: '2026-07-11', dateLabel: 'Jul 3 – 11, 2026',
     image: '/festivals/kviff/kviff_backdrop_2026_eng.webp' },
