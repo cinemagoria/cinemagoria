@@ -18,6 +18,7 @@ export const FESTIVAL_NAME_BY_SLUG: Record<string, string> = {
     kviff: 'Karlovy Vary International Film Festival',
     fantasia: 'Fantasia International Film Festival',
     frightfest: 'FrightFest',
+    venice: 'Venice Film Festival',
 }
 
 export const NAME_TO_SLUG: Record<string, string> = Object.fromEntries(
