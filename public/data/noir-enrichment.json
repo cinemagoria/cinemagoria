@@ -3610,10 +3610,10 @@
   {
     "tmdb_id": 1576934,
     "media_type": "movie",
-    "trailer_key": null,
+    "trailer_key": "2P8Cto9CFDU",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1781042551/cinemagoria/backdrops/noir_1576934.webp",
     "poster_path": "/sY8OENcGshVtHDcV5JUQsPgxbsO.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1520592,
