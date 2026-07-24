@@ -755,7 +755,7 @@
     "tmdb_id": 1707365,
     "media_type": "movie",
     "poster_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780665446/cinemagoria/posters/poster_override_1707365.webp",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780664329/cinemagoria/backdrops/backdrop_override_1707365.webp",
+    "backdrop_path": "/6h6cu68VFeT8VRB40eyD4O4CcHL.jpg",
     "trailer_key": null,
     "force_enrichment": false
   },
