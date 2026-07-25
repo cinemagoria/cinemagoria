@@ -338,6 +338,7 @@ const CATEGORY_ORDER = [
     'VENEZIA SPOTLIGHT',
     'FILM ON FILMS',
     'SHORT FILMS',
+    'VENICE CLASSICS',
 ];
 
 const CATEGORY_LABELS_ES = {
@@ -350,6 +351,7 @@ const CATEGORY_LABELS_ES = {
     'VENEZIA SPOTLIGHT': 'Venezia Spotlight',
     'FILM ON FILMS': 'Film on Films',
     'SHORT FILMS': 'Cortometrajes',
+    'VENICE CLASSICS': 'Venice Classics',
     OTHER: 'Otros'
 };
 
