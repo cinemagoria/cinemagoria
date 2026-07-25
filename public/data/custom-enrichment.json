@@ -978,15 +978,15 @@
   {
     "tmdb_id": 1629109,
     "media_type": "movie",
-    "poster_path": null,
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1783057827/cinemagoria/backdrops/backdrop_override_1629109.webp",
+    "poster_path": "/bCverW9NJcllLFchWCErTUPqEQU.jpg",
+    "backdrop_path": "/n32q6TVuhIBacyCOGwfGULOKG95.jpg",
     "trailer_key": "NK6jh04qNyY",
     "force_enrichment": true
   },
   {
     "tmdb_id": 213562,
     "media_type": "tv",
-    "poster_path": "/krkjHs39ovcOgF2rhNUh9vRaceI.jpg",
+    "poster_path": "/2BIABI5bvKu1IEEQiKw8POQUnlZ.jpg",
     "backdrop_path": "/w7yAQtTiIcGy4gcbCDtfXo9fcQZ.jpg",
     "trailer_key": "3lZ2ZenuCGc",
     "force_enrichment": true
