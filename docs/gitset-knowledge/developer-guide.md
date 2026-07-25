@@ -4,39 +4,49 @@
 
 To develop with Cinemagoria, you need:
 
-*   Node.js (for `npm` and `npx`)
+*   Node.js (version 18 or later recommended)
+*   npm or Yarn
+*   A Turso database for local development (optional, but recommended for full functionality)
 
 ## Setup
 
-1.  **Clone the repository**:
+1.  **Clone the repository:**
     ```bash
     git clone https://github.com/cinemagoria/cinemagoria.git
     cd cinemagoria
     ```
-2.  **Install dependencies**:
+2.  **Install dependencies:**
     ```bash
     npm install
     ```
-3.  **Prepare Nuxt**:
-    This step is automatically run after `npm install`.
-    ```bash
-    npm run postinstall
-    ```
-4.  **Start the development server**:
+    The `postinstall` script will automatically run `nuxt prepare`.
+3.  **Environment Variables:** Create a `.env` file in the root directory and configure necessary environment variables (e.g., database connection strings, API keys).
+4.  **Run the development server:**
     ```bash
     npm run dev
     ```
-    The application will be available at `http://localhost:3000`.
+    This will start the Nuxt.js development server, typically accessible at `http://localhost:3000`.
 
 ## Project Layout
 
-*   `assets/`: Static assets like images, fonts, and stylesheets.
-*   `components/`: Reusable Vue components.
-*   `docs/`: Project documentation, including this guide.
-*   `pages/`: Vue components that define the application's routes.
-*   `public/`: Static files served directly by the web server.
-*   `server/`: Backend API routes, middleware, and utilities.
-*   `scripts/`: One-off or utility scripts for data synchronization and seeding.
+*   [.github/](../../.github/) — GitHub Actions workflows and funding configuration.
+*   [assets/](../../assets/) — Static assets like images, fonts, or stylesheets.
+*   [components/](../../components/) — Reusable Vue components, including global and festival-specific UI elements.
+*   [composables/](../../composables/) — Vue composables for reusable logic.
+*   [layouts/](../../layouts/) — Application layouts, such as the default layout.
+*   [middleware/](../../middleware/) — Nuxt.js middleware for route protection and global logic.
+*   [mixins/](../../mixins/) — Vue mixins for shared component logic.
+*   [pages/](../../pages/) — Vue pages that define the application's routes.
+*   [plugins/](../../plugins/) — Nuxt.js plugins for extending Vue or Nuxt functionality.
+*   [public/](../../public/) — Static files served directly, like `manifest.json` and `sw.js`.
+*   [scripts/](../../scripts/) — Utility scripts for data synchronization and seeding.
+*   [server/api/](../../server/api/) — API endpoints for handling data requests.
+*   [server/middleware/](../../server/middleware/) — Server-side middleware.
+*   [server/routes/](../../server/routes/) — Server-side routes.
+*   [server/utils/](../../server/utils/) — Server-side utility functions.
+*   [stores/](../../stores/) — Pinia stores for state management.
+*   [types/](../../types/) — TypeScript type definitions.
+*   [utils/](../../utils/) — Client-side utility functions.
 
 ## Testing
 
@@ -44,16 +54,10 @@ The provided structural digest and file summaries do not contain information abo
 
 ## Release & Deployment
 
-Cinemagoria uses Google Cloud Build and Docker for deployment.
+Cinemagoria uses Google Cloud Build and Google Cloud Run for deployment.
 
-*   **Docker Image**: The [Dockerfile](../../Dockerfile) defines the Docker image, including build arguments for Supabase and a multi-stage build process.
-*   **Google Cloud Build**: The [cloudbuild.yaml](../../cloudbuild.yaml) configuration handles building, pushing, and deploying the Docker image to Google Cloud Run.
-*   **Nuxt Build**: The `build` script (`nuxt build`) compiles the Nuxt.js application for production.
-*   **Nuxt Generate**: The `generate` script (`nuxt generate`) pre-renders the application into static HTML files.
-*   **Nuxt Preview**: The `preview` script (`nuxt preview`) locally serves the production build.
-
-CI workflows automate data synchronization:
-
-*   **AI Knowledge Base**: The [.github/workflows/gitset-knowledge.yml](../../.github/workflows/gitset-knowledge.yml) workflow incrementally refreshes the project's AI knowledge base.
-*   **Hero Data Sync**: The [.github/workflows/sync-hero-data.yml](../../.github/workflows/sync-hero-data.yml) workflow synchronizes hero enrichment data from a Turso database into JSON files.
-*   **N.O.I.R. Historical Data Sync**: The [.github/workflows/sync-noir-historical.yml](../../.github/workflows/sync-noir-historical.yml) workflow synchronizes N.O.I.R historical data and regenerates enrichment data.
+*   The [Dockerfile](../../Dockerfile) defines the Docker image.
+*   [cloudbuild.yaml](../../cloudbuild.yaml) configures the build, push, and deployment process to Google Cloud Run.
+*   The `build` script (`nuxt build`) is used to compile the application for production.
+*   The `generate` script (`nuxt generate`) is used to pre-render all routes to static HTML files.
+*   The `preview` script (`nuxt preview`) is used to locally preview your production build.
