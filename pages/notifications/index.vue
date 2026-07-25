@@ -88,7 +88,7 @@
                 <div class="notification-text">
                   <div class="notification-title">
                     <strong>
-                      <NuxtLink v-if="item.alias" :to="`/u/${item.alias}`">@{{ item.alias }}</NuxtLink>
+                      <NuxtLink v-if="item.alias" :to="`/u/${item.alias}`" target="_blank" rel="noopener noreferrer">@{{ item.alias }}</NuxtLink>
                       <span v-else>{{ item.first_name || item.user_email }}</span>
                     </strong>
                     <span class="has-release">
@@ -100,7 +100,7 @@
                     <span v-if="item.rating" style="color:#8BE9FD;font-weight:600;"> &middot; {{ item.rating }}/10</span>
                   </div>
                   <div v-else-if="item.list_name" class="notification-media">
-                    <NuxtLink :to="item.list_slug ? `/list/${item.list_slug}` : '#'">{{ item.list_name }}</NuxtLink>
+                    <NuxtLink :to="item.list_slug ? `/list/${item.list_slug}` : '#'" target="_blank" rel="noopener noreferrer">{{ item.list_name }}</NuxtLink>
                   </div>
                   <div v-if="item.review" class="notification-overview" style="margin-top:4px;">
                     {{ item.review }}
@@ -399,13 +399,13 @@ export default {
 
       navigateToItem(item) {
         if (item.item_type && item.item_id) {
-          this.$router.push(`/${item.item_type}/${item.item_id}`);
+          window.open(`/${item.item_type}/${item.item_id}`, '_blank', 'noopener,noreferrer');
         }
       },
 
     handlePersonClick(notification) {
       if (this.isTvFollow(notification.person_id)) {
-        this.$router.push(`/tv/${notification.person_id}`);
+        window.open(`/tv/${notification.person_id}`, '_blank', 'noopener,noreferrer');
         return;
       }
 
@@ -413,21 +413,21 @@ export default {
         if (this.getStreamingProvider(notification.person_id)) {
              const provider = STREAMING_PROVIDERS.find(p => p.id === notification.person_id);
              if (provider) {
-                 this.$router.push(`/streaming/${provider.slug}`);
+                 window.open(`/streaming/${provider.slug}`, '_blank', 'noopener,noreferrer');
                  return;
              }
         }
         if (this.isCompany(notification.person_id)) {
-          this.$router.push(`/production/${notification.person_id}`);
+          window.open(`/production/${notification.person_id}`, '_blank', 'noopener,noreferrer');
         } else {
-          this.$router.push(`/person/${notification.person_id}`);
+          window.open(`/person/${notification.person_id}`, '_blank', 'noopener,noreferrer');
         }
       }
     },
 
     handleContentClick(notification) {
       if (this.isTvFollow(notification.person_id)) {
-        this.$router.push(`/tv/${notification.person_id}`);
+        window.open(`/tv/${notification.person_id}`, '_blank', 'noopener,noreferrer');
         return;
       }
 
@@ -437,7 +437,7 @@ export default {
       } else {
         url = `/${notification.media_type}/${notification.media_id}`;
       }
-      this.$router.push(url);
+      window.open(url, '_blank', 'noopener,noreferrer');
     },
 
     handleNotificationClick(notification) {
