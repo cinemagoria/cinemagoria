@@ -468,6 +468,7 @@ import KviffBadge from '~/components/festival/KviffBadge.vue';
 import FantasiaBadge from '~/components/festival/FantasiaBadge.vue';
 import FrightfestBadge from '~/components/festival/FrightfestBadge.vue';
 import VeniceBadge from '~/components/festival/VeniceBadge.vue';
+import TiffBadge from '~/components/festival/TiffBadge.vue';
 import { MANUAL_FESTIVAL_BADGES, MANUAL_OVERVIEWS } from '~/utils/constants';
 import { getHeroEnrichment, getNoirEnrichment } from '~/utils/api';
 import NoirModal from '~/components/NoirModal.vue';
@@ -499,6 +500,7 @@ function mapFestivalsToFields(festivals, itemId, itemName) {
     fantasiaFilm: f.fantasia || null,
     frightfestFilm: f.frightfest || null,
     veniceFilm: f.venice || null,
+    tiffFilm: f.tiff || null,
     cannesFilm: null,
     cannesCriticsChoiceFilm: null,
     cannesQuinzaineFilm: null,
@@ -539,6 +541,7 @@ function mapFestivalsToFields(festivals, itemId, itemName) {
     if (manual.includes('fantasia') && !fields.fantasiaFilm) fields.fantasiaFilm = stub;
     if (manual.includes('frightfest') && !fields.frightfestFilm) fields.frightfestFilm = stub;
     if (manual.includes('venice') && !fields.veniceFilm) fields.veniceFilm = stub;
+    if (manual.includes('tiff') && !fields.tiffFilm) fields.tiffFilm = stub;
   }
 
   return fields;
@@ -566,6 +569,7 @@ export default {
     FantasiaBadge,
     FrightfestBadge,
     VeniceBadge,
+    TiffBadge,
     NoirModal,
   },
 
@@ -755,6 +759,7 @@ export default {
         { name: 'fantasia', film: this.fantasiaFilm, component: 'FantasiaBadge', link: '/festival/fantasia-2026', isSimple: true },
         { name: 'frightfest', film: this.frightfestFilm, component: 'FrightfestBadge', link: '/festival/frightfest-2026', isSimple: true },
         { name: 'venice', film: this.veniceFilm, component: 'VeniceBadge', link: '/festival/venice-2026', isSimple: true },
+        { name: 'tiff', film: this.tiffFilm, component: 'TiffBadge', link: '/festival/tiff-2026', isSimple: true },
       ];
       return festivalConfig.filter(f => f.film);
     },
