@@ -113,19 +113,18 @@
           </div>
         </div>
 
-        <div v-if="activeTab === 'schedule'" class="schedule-container">
-          <!-- Rollout banner: screenings not ingested yet -->
-          <div v-if="schedule.length === 0" class="rollout-banner">
-            <div class="rollout-banner__icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            </div>
-            <div class="rollout-banner__copy">
-              <h3>Horarios próximamente</h3>
-              <p>El festival todavía no ha publicado el horario oficial de funciones. Los horarios y sedes aparecerán aquí en cuanto estén disponibles.</p>
-            </div>
+        <div v-if="activeTab === 'schedule' && showSchedulePending" class="schedule-pending">
+          <div class="schedule-pending-inner">
+            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="schedule-pending-icon" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
+            <h2 class="schedule-pending-title">Horarios oficiales pendientes</h2>
+            <p class="schedule-pending-text">
+              El festival aún no ha publicado los horarios y sedes completos. Cuando el programa oficial esté disponible, las proyecciones aparecerán aquí automáticamente.
+            </p>
           </div>
+        </div>
 
-          <div v-if="schedule.length > 0" class="schedule-toolbar" :class="{ 'search-active': isScheduleSearchActive }">
+        <div v-else-if="activeTab === 'schedule'" class="schedule-container">
+          <div class="schedule-toolbar" :class="{ 'search-active': isScheduleSearchActive }">
             <div class="schedule-toolbar-info">
               <span class="schedule-count" v-if="!loading">
                 <template v-if="scheduleSearchActiveQuery">
@@ -245,14 +244,11 @@
             <div class="carousel-track">
               <transition :name="slideDirection" mode="out-in">
                 <div class="carousel-card" :key="infoSlide">
-                  <!-- Slide 0: General Information + YouTube -->
+                  <!-- Slide 0: General Information -->
                   <template v-if="infoSlide === 0">
                     <div class="carousel-card-header">
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                       <h3>Información General</h3>
-                    </div>
-                    <div class="youtube-embed">
-                      <iframe src="https://www.youtube.com/embed/WKGwTsiRqTU" title="TIFF 2026 - Festival Highlights" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <p class="carousel-desc"><strong>Sitio web:</strong> <a href="https://tiff.net" target="_blank" rel="noopener noreferrer" class="accent-link">tiff.net</a></p>
                     <p class="carousel-desc"><strong>Fechas:</strong> 10 – 20 de septiembre de 2026, en Toronto, Ontario, Canadá.</p>
@@ -363,6 +359,7 @@ onMounted(() => {
 const films = ref({ results: [] });
 const awards = ref([]);
 const schedule = ref([]);
+const showSchedulePending = computed(() => schedule.value.length === 0);
 const openDays = ref(new Set());
 
 // TIFF's five strands (Batch 1, #415) are all run by TIFF itself — no
@@ -990,6 +987,40 @@ onMounted(async () => {
     padding: 3rem;
 }
 
+.schedule-pending {
+    max-width: 640px;
+    margin: 2rem auto 3rem;
+    padding: 0 1rem;
+}
+
+.schedule-pending-inner {
+    text-align: center;
+    padding: 2.5rem 2rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(139, 233, 253, 0.25);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+}
+
+.schedule-pending-icon {
+    display: block;
+    margin: 0 auto 1.25rem;
+}
+
+.schedule-pending-title {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #8BE9FD;
+    margin: 0 0 1rem;
+}
+
+.schedule-pending-text {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.78);
+    margin: 0;
+}
+
 .schedule-container, .info-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -1312,25 +1343,6 @@ onMounted(async () => {
   .carousel-card-header h3 { font-size: 1.15rem; }
   .carousel-arrow { width: 36px; height: 36px; }
   .carousel-arrow svg { width: 18px; height: 18px; }
-}
-
-.youtube-embed {
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%;
-  margin-bottom: 1.2rem;
-  border-radius: 12px;
-  overflow: hidden;
-
-  iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 12px;
-  }
 }
 
 /* ── Shared card content styles ───────────── */
