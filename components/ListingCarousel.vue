@@ -178,6 +178,7 @@ export default {
   .card__name {
     margin-bottom: 1rem;
     overflow: hidden;
+    font-family: var(--font-display);
     font-size: 1.3rem;
     background: black;
     text-align: center;

@@ -3,8 +3,8 @@
     <section class="settings-section">
       <div class="settings-container">
         <div class="settings-header">
-          <h1 class="title-primary">Account Settings</h1>
-          <p class="title-secondary">Manage your profile and account preferences</p>
+          <h1 class="page-title">Account Settings</h1>
+          <p class="page-subtitle">Manage your profile and account preferences</p>
         </div>
 
         <div class="settings-content">
@@ -477,7 +477,7 @@ export default {
 <style scoped>
 .main {
   min-height: 100vh;
-  padding: 2rem;
+  padding: 0 2rem 2rem;
 }
 
 .settings-section {
@@ -496,21 +496,12 @@ export default {
 
 .settings-header {
   text-align: center;
-  padding: 3rem 2rem 2rem;
+  padding: var(--page-header-space-top) 2rem var(--page-header-space-bottom);
   border-bottom: 1px solid rgba(139, 233, 253, 0.2);
 }
 
-.title-primary {
-  font-size: 2.8rem;
-  color: #8BE9FD;
-  margin: 0 0 1rem 0;
-  font-weight: 600;
-}
-
-.title-secondary {
-  font-size: 1.6rem;
-  color: rgba(255, 255, 255, 0.7);
-  margin: 0;
+.settings-header .page-subtitle {
+  margin-bottom: 0;
 }
 
 .settings-content {
@@ -916,14 +907,6 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .title-primary {
-    font-size: 2.2rem;
-  }
-
-  .title-secondary {
-    font-size: 1.4rem;
-  }
-
   .settings-content {
     padding: 2rem 1.5rem;
   }
@@ -970,19 +953,11 @@ export default {
 
 @media (max-width: 576px) {
   .main {
-    padding: 1rem;
+    padding: 0 1rem 1rem;
   }
 
   .settings-header {
-    padding: 2rem 1.5rem 1.5rem;
-  }
-
-  .title-primary {
-    font-size: 2rem;
-  }
-
-  .title-secondary {
-    font-size: 1.3rem;
+    padding: var(--page-header-space-top) 1.5rem var(--page-header-space-bottom);
   }
 
   .user-details-card {

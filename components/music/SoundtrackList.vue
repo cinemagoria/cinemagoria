@@ -177,6 +177,7 @@ export default {
 
 .albumTitle {
     margin-bottom: 1rem;
+    font-family: var(--font-display);
     font-size: 1.8rem;
     color: #fff;
     letter-spacing: $letter-spacing;
@@ -188,11 +189,13 @@ export default {
 .year {
     font-weight: 400;
     color: var(--text-color-light);
+    font-family: var(--font-display);
     font-size: 0.6em;
     vertical-align: middle;
 }
 
 .meta {
+    font-family: var(--font-display);
     font-size: 1.5rem;
     color: var(--text-color);
 }
@@ -260,12 +263,14 @@ export default {
 .trackTitle {
     font-weight: 600;
     color: $cyan-color;
+    font-family: var(--font-display);
     font-size: 1.5rem;
     margin-bottom: 0.25rem;
     transition: color 0.2s ease;
 }
 
 .trackArtist {
+    font-family: var(--font-display);
     font-size: 1.2rem;
     color: var(--text-color-light);
 }

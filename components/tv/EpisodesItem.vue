@@ -391,6 +391,7 @@ export default {
 
 .name {
   margin-bottom: 1rem;
+  font-family: var(--font-display);
   font-size: 1.6rem;
   letter-spacing: $letter-spacing;
   transition: color 0.2s ease;
@@ -403,6 +404,7 @@ export default {
 .overview {
   flex: 1 0 auto;
   margin-bottom: 1rem;
+  font-family: var(--font-display);
   font-size: 1.3rem;
   color: $text-color;
 }

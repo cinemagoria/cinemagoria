@@ -336,12 +336,14 @@ export default {
 
 .title {
   margin-bottom: 1.5rem;
-  font-size: 1.8rem;
-  letter-spacing: $letter-spacing;
+  font-family: var(--font-display);
+  font-size: var(--section-title-size);
+  font-weight: var(--section-title-weight);
+  letter-spacing: var(--section-title-tracking);
+  line-height: var(--section-title-leading);
 
   @media (min-width: $breakpoint-large) {
     margin-bottom: 2rem;
-    font-size: 2.4rem;
   }
 }
 </style>

@@ -2305,10 +2305,12 @@ export default {
 
 .name {
   margin: 0 0 1.4rem;
+  font-family: var(--font-display);
   font-size: 2.8rem;
+  font-weight: var(--page-title-weight);
   line-height: 1.1;
   color: #fff;
-  letter-spacing: $letter-spacing;
+  letter-spacing: var(--page-title-tracking);
 
   @media (max-width: 397px) {
     font-size: 2.4rem;
@@ -2321,7 +2323,7 @@ export default {
   }
 
   @media (min-width: $breakpoint-large) {
-    font-size: 2.4vw;
+    font-size: min(2.4vw, 4.8rem);
   }
 }
 
@@ -2333,7 +2335,7 @@ export default {
   }
 
   @media (min-width: $breakpoint-large) {
-    font-size: 2.16vw;
+    font-size: min(2.16vw, 4.32rem);
   }
 }
 
@@ -2427,6 +2429,7 @@ export default {
 .info {
   display: flex;
   align-items: center;
+  font-family: var(--font-display);
 
   span {
     margin-right: 0.9rem;
@@ -2495,6 +2498,7 @@ export default {
 .desc {
   display: block;
   margin-top: 2.5rem;
+  font-family: var(--font-display);
   font-size: 1.5rem;
   color: #fff;
 

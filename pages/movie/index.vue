@@ -2,8 +2,8 @@
   <main class="main">
     
     <div class="header-container">
-      <h1 class="title-primary" style="text-align: center; margin-bottom: 0.5rem;">Discover</h1>
-      <p class="title-secondary" style="text-align: center; margin-bottom: 2rem;">
+      <h1 class="page-title">Discover</h1>
+      <p class="page-subtitle">
         Find your next favorite movie with precision filters.
       </p>
 
@@ -159,19 +159,11 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .header-container {
-  padding: 2rem 1rem;
+  padding: var(--page-header-space-top) 1.5rem 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.title-secondary {
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-top: 5px;
-  line-height: 1.5;
-  max-width: 600px;
 }
 
 .filters-toggle-btn {

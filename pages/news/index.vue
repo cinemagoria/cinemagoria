@@ -2,9 +2,9 @@
   <div>
   <main class="main">
     <UserNav v-if="isMounted" />
-    <nav class="navbar navbar-welcome">
-      <h1 class="title-primary page-title">Latest News</h1>
-      <h2 class="title-secondary page-subtitle">
+    <nav class="page-header">
+      <h1 class="page-title">Latest News</h1>
+      <h2 class="page-subtitle">
         Your daily briefing on film, television, and the entertainment industry.
       </h2>
     </nav>
@@ -791,30 +791,10 @@ watch(userEmail, (val) => {
 </script>
 
 <style scoped>
-.page-title {
-  color: #8BE9FD !important;
-  margin: 32px 0 8px;
-  display: block;
-  text-align: center;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  text-shadow: 0 0 22px rgba(139, 233, 253, 0.35);
-}
-
-.page-subtitle {
-  color: #a0aab2;
-  font-size: 14px;
-  font-weight: 300;
-  line-height: 1.55;
-  max-width: 540px;
-  margin: 0 auto;
-  text-align: center;
-}
-
 .news-section {
   display: flex;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 0 20px 40px;
   min-height: 80vh;
 }
 
@@ -1114,6 +1094,7 @@ watch(userEmail, (val) => {
 .active-category:hover svg { opacity: 1; }
 
 .status-title {
+  font-family: var(--font-display);
   font-size: 18px;
   font-weight: 600;
   color: #fff;
@@ -1439,6 +1420,7 @@ watch(userEmail, (val) => {
 }
 
 .card-desc {
+  font-family: var(--font-display);
   font-size: 14px;
   color: #b0b0b0;
   line-height: 1.6;
@@ -1802,7 +1784,8 @@ watch(userEmail, (val) => {
 }
 
 .card-title-link {
-  font-size: 18px; 
+  font-family: var(--font-display);
+  font-size: 16px;
   font-weight: 700;
   margin-bottom: 10px;
   line-height: 1.4;
@@ -1826,6 +1809,7 @@ watch(userEmail, (val) => {
   align-items: center;
   gap: 8px;
   color: #8BE9FD;
+  font-family: var(--font-display);
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
@@ -1918,6 +1902,7 @@ watch(userEmail, (val) => {
 
 .card-cat-tag {
   flex-shrink: 0;
+  font-family: var(--font-display);
   font-size: 11px;
   font-weight: 700;
   color: #8BE9FD;
@@ -1983,7 +1968,7 @@ watch(userEmail, (val) => {
 
 /* Slightly reduce title/desc to fit tags */
 .card-title-link {
-  font-size: 16px;
+  font-size: 15px;
   -webkit-line-clamp: 2;
   line-clamp: 2;
 }
@@ -2027,7 +2012,7 @@ watch(userEmail, (val) => {
   border: none;
   background: transparent;
   color: rgba(207, 216, 223, 0.55);
-  font-family: inherit;
+  font-family: var(--font-display);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.8px;

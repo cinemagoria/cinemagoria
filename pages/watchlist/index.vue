@@ -3,10 +3,10 @@
     <main class="main">
       <section class="watchlist-section">
         <UserNav @show-rated-modal="showRatedItems" />
-        <br>
         <nav class="navbar">
-          <div class="header-title-container" style="display: flex; justify-content: center; margin-bottom: 20px;">
-             <h1 class="title-primary">Watchlist</h1>
+          <div class="header-title-container">
+            <h1 class="page-title">Watchlist</h1>
+            <p class="page-subtitle">Movies and shows saved to watch later.</p>
           </div>
         </nav>
         
@@ -2286,7 +2286,7 @@ export default {
   color: transparent;
   margin-top: 20px;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--font-display);
 }
 
 .text-center {
@@ -2295,7 +2295,7 @@ export default {
   background-clip: text;
   color: transparent;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 0.5);
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--font-display);
 }
 
 .welcome-text {
@@ -2582,7 +2582,7 @@ export default {
 .pagination-input {
   background-color: #0C181F;
   color: #8BE9FD;
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--font-display);
   border: 1px solid rgba(139, 233, 253, 0.3);
   border-radius: 7px;
   text-align: center;
@@ -2608,7 +2608,7 @@ export default {
 }
 
 .pagination-number {
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--font-display);
 }
 
 
@@ -2927,7 +2927,7 @@ export default {
     justify-content: center;
     z-index: 1001;
     padding: 20px;
-    font-family: 'Roboto', 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
+    font-family: var(--font-display);
   }
   
   .modal-header {
@@ -5126,17 +5126,17 @@ svg.rating-logo.imdb {
   position: relative;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 8px 32px 80px;
+  padding: 0 32px 80px;
 }
 @media (max-width: 600px) {
-  .watchlist-section { padding: 8px 12px 64px; }
+  .watchlist-section { padding: 0 12px 64px; }
 }
 
 /* ── Hero header (centered, cyan title like .list-title) ────────── */
 .navbar {
   width: 100% !important;
   max-width: none !important;
-  margin: 10px 0 0 !important;
+  margin: var(--page-header-space-top) 0 0 !important;
   padding: 0 !important;
   background: none !important;
   border: none !important;
@@ -5144,18 +5144,9 @@ svg.rating-logo.imdb {
 }
 .header-title-container {
   display: flex !important;
+  flex-direction: column;
   width: 100%;
   justify-content: center !important;
-  margin: 0 0 32px !important;
-}
-.title-primary {
-  font-size: clamp(30px, 4.5vw, 45px) !important;
-  font-weight: 800 !important;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
-  color: #8BE9FD !important;
-  text-align: center;
-  text-shadow: 0 0 28px rgba(139, 233, 253, 0.25);
   margin: 0 !important;
 }
 /* The "Favorite Movies/TV" caption is redundant with the switch — hide it */

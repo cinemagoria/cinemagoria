@@ -308,6 +308,7 @@ $wc-bg-card: linear-gradient(180deg, #0d1418 0%, #06090b 100%);
   font-weight: 700;
 }
 .wc-title {
+  font-family: var(--font-display);
   font-size: 22px;
   font-weight: 900;
   letter-spacing: -0.02em;
@@ -318,6 +319,7 @@ $wc-bg-card: linear-gradient(180deg, #0d1418 0%, #06090b 100%);
 .wc-title-year {
   color: #6b7785;
   font-weight: 300;
+  font-family: var(--font-display);
   font-size: 18px;
 }
 .wc-stat {
@@ -555,6 +557,7 @@ $wc-bg-card: linear-gradient(180deg, #0d1418 0%, #06090b 100%);
 .wc-chip-audience { color: $wc-cyan; }
 
 .wc-card-title {
+  font-family: var(--font-display);
   font-size: 14px;
   font-weight: 700;
   line-height: 1.2;
@@ -579,6 +582,7 @@ $wc-bg-card: linear-gradient(180deg, #0d1418 0%, #06090b 100%);
   color: #6b7785;
   font-weight: 400;
   text-transform: capitalize;
+  font-family: var(--font-display);
   font-size: 10px;
 }
 .wc-card-director {
@@ -610,6 +614,7 @@ $wc-bg-card: linear-gradient(180deg, #0d1418 0%, #06090b 100%);
 // ============== MULTI-AWARD LAYOUT ==============
 // Tighter title — leaves room for the stacked award list below.
 .wc-card-title-compact {
+  font-family: var(--font-display);
   font-size: 13px;
   -webkit-line-clamp: 1;
   margin-bottom: 2px;

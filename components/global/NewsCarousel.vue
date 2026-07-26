@@ -472,7 +472,8 @@ export default {
 }
 
 .card-title {
-  font-size: 15px;
+  font-family: var(--font-display);
+  font-size: 14px;
   font-weight: 700;
   color: #fff;
   text-decoration: none;
@@ -497,6 +498,7 @@ export default {
 }
 
 .card-description {
+  font-family: var(--font-display);
   font-size: 14px;
   color: #b0b0b0;
   line-height: 1.5;
@@ -595,7 +597,7 @@ export default {
   }
   
   .card-title {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .card-description {

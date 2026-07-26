@@ -2,11 +2,11 @@
   <div>
     <main class="main">
       <div class="header-container">
-        <h1 class="title-primary" style="text-align: center; margin-bottom: 0.5rem; color: #8BE9FD; font-family: 'Ortica', sans-serif;">
+        <h1 class="page-title">
           {{ titleText }}
         </h1>
         
-        <p v-if="companyNames" class="title-secondary" style="text-align: center; margin-bottom: 2rem;">
+        <p v-if="companyNames" class="page-subtitle">
           Showing titles of: {{ companyNames }}
         </p>
 
@@ -388,17 +388,11 @@ export default {
 
 <style scoped lang="scss">
 .header-container {
-  padding: 2rem 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 6rem;
-}
-
-.title-secondary {
-  font-size: 1.6rem;
-  color: rgba(255, 255, 255, 0.7);
+  padding: 6rem 1.5rem 0;
 }
 
 .filter-actions-container {

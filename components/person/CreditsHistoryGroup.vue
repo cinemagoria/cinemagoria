@@ -45,6 +45,7 @@ export default {
 .year {
   width: 6rem;
   min-width: 6rem;
+  font-family: var(--font-display);
   font-size: 1.6rem;
   font-weight: 500;
   color: #999;

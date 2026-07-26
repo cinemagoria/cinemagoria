@@ -168,6 +168,7 @@ export default {
 }
 
 .title {
+  font-family: var(--font-display);
   font-size: 1.4rem;
   color: rgba(255, 255, 255, 0.7);
   text-transform: uppercase;
@@ -178,6 +179,7 @@ export default {
 
 .name {
   margin-bottom: 2.5rem;
+  font-family: var(--font-display);
   font-size: 2.5rem;
   line-height: 1.1;
   letter-spacing: $letter-spacing;

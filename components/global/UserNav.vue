@@ -780,7 +780,7 @@ export default {
 .user-email {
   font-size: 11px;
   color: rgba(255, 255, 255, 0.5);
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--font-display);
   font-weight: 500;
   text-align: center;
   word-break: break-all;

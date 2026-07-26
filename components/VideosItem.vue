@@ -206,6 +206,7 @@ export default {
 .name {
   flex: 1 0 auto;
   margin-top: 1rem;
+  font-family: var(--font-display);
   font-size: 1.3rem;
   letter-spacing: $letter-spacing;
   transition: color 0.2s ease;

@@ -256,6 +256,7 @@ export default {
 .sp-name {
   color: #fff;
   font-weight: 700;
+  font-family: var(--font-display);
   font-size: 1rem;
   text-align: center;
 }

@@ -264,7 +264,7 @@ beforeDestroy() {
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--font-display);
 }
 
 .container {

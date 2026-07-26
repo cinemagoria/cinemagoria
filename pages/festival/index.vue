@@ -156,8 +156,10 @@ const counts = computed(() => ({
 <template>
   <main v-if="showContent" class="main">
     <div class="container">
-      <h1 class="title-primary">Film Festivals</h1>
-      <p class="title-secondary">Explore our curated selections from the world's leading film festivals.</p>
+      <div class="page-header">
+        <h1 class="page-title">Film Festivals</h1>
+        <p class="page-subtitle">Explore our curated selections from the world's leading film festivals.</p>
+      </div>
 
       <div class="toolbar">
         <div class="stats-strip">
@@ -247,7 +249,7 @@ const counts = computed(() => ({
 
 <style lang="scss" scoped>
 .main {
-    padding-top: 2.5rem;
+    padding-top: 0;
     padding-bottom: 4rem;
     min-height: 80vh;
 }
@@ -256,36 +258,6 @@ const counts = computed(() => ({
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
-}
-
-.title-primary {
-    font-family: 'Ortica', 'Roboto', sans-serif;
-    font-weight: 300;
-    font-size: clamp(2.4rem, 3.5vw, 3.6rem);
-    letter-spacing: 0.05em;
-    line-height: 1.2;
-    color: #8BE9FD;
-    text-shadow:
-        0 1px 2px rgba(255, 255, 255, 0.3),
-        0 2px 8px rgba(255, 255, 255, 0.2),
-        0 4px 16px rgba(139, 233, 253, 0.15);
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 1rem;
-}
-
-.title-secondary {
-    font-family: 'Ortica', 'Roboto', sans-serif;
-    font-weight: 300;
-    font-size: 16px;
-    letter-spacing: 0.08em;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.7);
-    text-align: center;
-    margin-bottom: 3rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 /* ── Toolbar: stats + filters ──────────────────────────────── */

@@ -323,6 +323,7 @@ export default {
 }
 
 .card__release-year {
+  font-family: var(--font-display);
   font-size: 1.3rem;
   color: #fff !important;
   text-align: center;

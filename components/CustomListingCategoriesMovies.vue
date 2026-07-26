@@ -173,6 +173,7 @@
     }
 
     .card__label {
+        font-family: var(--font-display);
         font-size: 1.5rem;
         margin-bottom: 0;
         text-align: center;

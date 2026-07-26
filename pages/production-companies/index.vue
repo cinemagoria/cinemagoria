@@ -1,9 +1,9 @@
 <template>
   <div class="page-container">
     <div class="listing">
-      <nav class="navbar navbar-welcome">
-        <h1 class="title-primary page-title">Production Companies</h1>
-        <h2 class="title-secondary page-subtitle">
+      <nav class="page-header">
+        <h1 class="page-title">Production Companies</h1>
+        <h2 class="page-subtitle">
           Explore our complete collection of production companies
         </h2>
       </nav>
@@ -57,7 +57,6 @@ useHead({
 @use '~/assets/css/utilities/variables' as *;
 
 .page-container {
-  padding-top: 3rem;
   padding-bottom: 4rem;
   min-height: 100vh;
 }
@@ -68,26 +67,6 @@ useHead({
   @media (min-width: $breakpoint-large) {
     margin: 0 5rem;
   }
-}
-
-.page-title {
-  color: #8BE9FD;
-  margin-top: 10px;
-  margin-bottom: 5px;
-  display: flex;
-  justify-content: center;
-  font-size: 2.5rem; 
-  font-weight: 700;
-  text-align: center;
-}
-
-.page-subtitle {
-  color: $color-text-subtle;
-  font-size: 14px;
-  max-width: 600px;
-  margin: 0 auto 2rem; 
-  text-align: center;
-  font-weight: 400;
 }
 
 .production-grid {

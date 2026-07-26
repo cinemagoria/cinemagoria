@@ -170,6 +170,7 @@ export default {
 .credits-item__name {
     background: rgba(3, 4, 6, 0.92);
     color: #fff;
+    font-family: var(--font-display);
     font-size: 1.3rem;
     letter-spacing: 0.4px;
     text-align: center;
@@ -182,6 +183,7 @@ export default {
 }
 
 .credits-item__character {
+    font-family: var(--font-display);
     font-size: 1.2rem;
     position: relative;
     color: #80868b;

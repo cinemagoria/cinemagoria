@@ -1196,12 +1196,14 @@ useHead(() => {
 }
 
 .article-title {
-  font-size: clamp(28px, 4vw, 38px);
-  font-weight: 800;
-  line-height: 1.2;
+  font-family: var(--font-display);
+  font-size: var(--page-title-size);
+  font-weight: var(--page-title-weight);
+  line-height: var(--page-title-leading);
+  letter-spacing: var(--page-title-tracking);
   color: #fff;
-  margin: 0 0 20px;
-  letter-spacing: -0.02em;
+  margin: 0 0 var(--page-header-space-title);
+  text-wrap: balance;
 }
 
 /* Community gate — inline card that replaces the body entirely.
@@ -1303,7 +1305,7 @@ useHead(() => {
   font-size: 18px;
   line-height: 1.7;
   color: #ACAFB5;
-  margin: 0 0 24px;
+  margin: 0 0 var(--page-header-space-bottom);
   font-weight: 400;
 }
 
@@ -1495,6 +1497,7 @@ useHead(() => {
 }
 
 .article-body :deep(h2) {
+  font-family: var(--font-display);
   font-size: 24px;
   font-weight: 700;
   color: #fff;
@@ -1502,6 +1505,7 @@ useHead(() => {
 }
 
 .article-body :deep(h3) {
+  font-family: var(--font-display);
   font-size: 20px;
   font-weight: 600;
   color: #fafafa;
@@ -1996,10 +2000,6 @@ useHead(() => {
 
   .article-card {
     padding: 24px;
-  }
-
-  .article-title {
-    font-size: 24px;
   }
 
   .article-lead {
