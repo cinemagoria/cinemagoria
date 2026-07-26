@@ -1705,7 +1705,7 @@ export const SUPPORTED_FESTIVALS = [
     },
     {
         id: 'rotterdam',
-        name: 'Rotterdam Film Festival 2026',
+        name: 'International Film Festival Rotterdam (IFFR) 2026',
         slug: 'rotterdam-2026',
         logo_path: '/festivals/rotterdam/rotterdam_film_festival_2026_logo.png'
     },
@@ -1717,19 +1717,19 @@ export const SUPPORTED_FESTIVALS = [
     },
     {
         id: 'sxsw',
-        name: 'SXSW Film & TV Festival 2026',
+        name: 'South by Southwest (SXSW) Film & TV Festival 2026',
         slug: 'sxsw-2026',
         logo_path: '/festivals/sxsw/sxsw_film_festival_2026_logo.png'
     },
     {
         id: 'bafici',
-        name: 'BAFICI Film Festival 2026',
+        name: 'BAFICI (Buenos Aires Festival Internacional de Cine Independiente) 2026',
         slug: 'bafici-2026',
         logo_path: '/festivals/bafici/bafici_film_festival_2026_logo.png'
     },
     {
         id: 'bifff',
-        name: 'BIFFF Film Festival 2026',
+        name: 'Brussels International Fantastic Film Festival (BIFFF) 2026',
         slug: 'bifff-2026',
         logo_path: '/festivals/bifff/bifff_film_festival_2026_logo.png'
     },
@@ -1741,7 +1741,7 @@ export const SUPPORTED_FESTIVALS = [
     },
     {
         id: 'romford',
-        name: 'Romford Film Festival 2026',
+        name: 'Romford Horror Festival 2026',
         slug: 'romford-2026',
         logo_path: '/festivals/romford/romford_film_festival_2026_logo.png'
     },
@@ -1777,7 +1777,7 @@ export const SUPPORTED_FESTIVALS = [
     },
     {
         id: 'venice',
-        name: 'Venice Film Festival 2026',
+        name: 'Venice Film Festival (La Biennale di Venezia) 2026',
         slug: 'venice-2026',
         logo_path: '/festivals/venice/venice_film_festival_2026_logo.png'
     },
