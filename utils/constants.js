@@ -1780,6 +1780,12 @@ export const SUPPORTED_FESTIVALS = [
         name: 'Venice Film Festival 2026',
         slug: 'venice-2026',
         logo_path: '/festivals/venice/venice_film_festival_2026_logo.png'
+    },
+    {
+        id: 'tiff',
+        name: 'Toronto International Film Festival 2026',
+        slug: 'tiff-2026',
+        logo_path: '/festivals/tiff/tiff_film_festival_2026_logo.png'
     }
 ];
 
