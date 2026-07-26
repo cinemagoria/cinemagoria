@@ -1,11 +1,9 @@
 <template>
   <main class="main">
-    <div class="auth-container" style="padding-top:20px;">
+    <div class="auth-container">
       <div class="container-section">
-        <br>
-        <h1 class="text-white text-center"><b>Reestablezca su contraseña</b></h1>
-        <h3 class="text-white text-center" v-if="!confirmationMessage"><b>Escriba su correo electrónico y le enviaremos un enlace para restablecer su contraseña:</b></h3>
-        <h3 class="text-white text-center" v-else><b> </b></h3>
+        <h1 class="page-title" :class="{ 'page-title--solo': confirmationMessage }">Reestablezca su contraseña</h1>
+        <p v-if="!confirmationMessage" class="page-subtitle">Escriba su correo electrónico y le enviaremos un enlace para restablecer su contraseña:</p>
         <br>
         <div class="form">
           <div v-if="confirmationMessage" class="confirmation-message">
@@ -81,7 +79,7 @@ export default {
   -webkit-backdrop-filter: blur(13.5px);
   border-radius: 15px;;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  padding: 20px;
+  padding: var(--page-header-space-top) 20px 20px;
   margin-left: 20px;
   margin-right: 20px;
   margin-bottom: 20px;
@@ -95,13 +93,6 @@ a {
 
 a:hover {
   color: #ffffff;
-}
-
-h1,
-h3 {
-  text-align: center;
-  margin-bottom: 20px;
-  letter-spacing: 2px;
 }
 
 .form {
@@ -130,8 +121,8 @@ h3 {
 
 h2 {
   text-align: justify;
-  letter-spacing: 2px;
-  font-size: 11px;
+  letter-spacing: 0.12em;
+  font-size: 1.2rem;
   text-transform: uppercase;
   margin: 0 auto;
   max-width: 800px;

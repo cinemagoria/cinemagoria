@@ -104,7 +104,7 @@
         </div>
 
         <div v-if="isLoggedIn" :class="$style.followSection">
-            <h4 style="font-size: 16px; font-weight:800; text-transform: uppercase;" class="section-title">Notificaciones</h4>
+            <h4 class="minor-title" style="text-transform: uppercase;">Notificaciones</h4>
             <button 
               @click="toggleFollowTv" 
               :class="[$style.followButton, { [$style.following]: isFollowingTv }]"
@@ -249,7 +249,7 @@
     <slot name="before-recommendations"></slot>
     
     <div v-if="hasAnyRecommendations" class="recommendations-wrapper">
-      <h2 :class="$style.title" style="padding-left: 0; margin-bottom: 1rem;">Recomendaciones</h2>
+      <h2 :class="$style.title">Recomendaciones</h2>
 
       <div v-if="isLoadingRecommendations" class="recommendations-loader">
         <Loader :size="44" />
@@ -925,6 +925,7 @@ export default {
 .overview {
   max-width: 1000px;
   margin-bottom: 3rem;
+  font-family: var(--font-display);
   font-size: 1.5rem;
   color: $text-color;
   @media (min-width: $breakpoint-large) { font-size: 1.6rem; }
@@ -932,10 +933,12 @@ export default {
 
 .title {
   margin-bottom: 1rem;
-  font-size: 1.8rem;
+  font-family: var(--font-display);
+  font-size: var(--section-title-size);
+  font-weight: var(--section-title-weight);
+  letter-spacing: var(--section-title-tracking);
+  line-height: var(--section-title-leading);
   color: #fff;
-  letter-spacing: $letter-spacing;
-  @media (min-width: $breakpoint-large) { font-size: 2.4rem; }
 }
 
 .stats {
@@ -1112,11 +1115,12 @@ export default {
 }
 
 .sectionTitle {
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: var(--minor-title-size);
+  font-weight: var(--minor-title-weight);
+  letter-spacing: 0.05em;
   color: #fff;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
   margin: 0;
   text-shadow: 0 0 16px rgba(139, 233, 253, 0.18);
 }
@@ -1509,9 +1513,37 @@ export default {
   background-image:
     radial-gradient(circle at 10% 0%, rgba(31, 84, 103, 0.16), transparent 30%),
     radial-gradient(circle at 90% 100%, rgba(139, 233, 253, 0.06), transparent 30%);
-  width: 100%;
-  padding: 3rem;
-  margin-top: 2rem;
+  padding: 2rem 0;
+  margin: 2.5rem 0;
+
+  @media (min-width: 640px) {
+    margin: 3rem 0;
+  }
+
+  @media (min-width: 1200px) {
+    margin: 5rem 0;
+  }
+
+  > h2 {
+    margin: 0 1.5rem 1.5rem;
+    padding: 0;
+
+    @media (min-width: 768px) {
+      margin: 0 4rem 2rem;
+    }
+
+    @media (min-width: 1200px) {
+      margin: 0 5rem 2rem;
+    }
+  }
+
+  :deep(.listing) {
+    margin: 0;
+  }
+
+  :deep(.carousel) {
+    padding: 0 1rem;
+  }
   border-radius: 20px;
   box-shadow:
     0 20px 50px rgba(0, 0, 0, 0.45),
@@ -1543,11 +1575,10 @@ export default {
 
 .tabs-container {
   width: 100%;
-  top: 1.5rem;
-  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 1.5rem;
 }
 
 .tabs-desktop {

@@ -208,11 +208,13 @@ export default {
 }
 
 .glow-text {
-  font-size: 28px;
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: var(--page-title-size);
+  font-weight: var(--page-title-weight);
   color: #ffffff;
-  margin: 0 0 8px 0;
-  letter-spacing: -0.5px;
+  margin: 0 0 var(--page-header-space-title) 0;
+  letter-spacing: var(--page-title-tracking);
+  line-height: var(--page-title-leading);
   text-shadow: 0 0 20px rgba(139, 233, 253, 0.3);
 }
 
@@ -221,11 +223,13 @@ export default {
 }
 
 .subtitle {
-  color: #a0aab2;
-  font-size: 15px;
-  font-weight: 300;
-  margin: 0 0 24px 0;
-  line-height: 1.5;
+  font-family: var(--font-display);
+  color: var(--page-subtitle-color);
+  font-size: var(--page-subtitle-size);
+  font-weight: var(--page-subtitle-weight);
+  letter-spacing: var(--page-subtitle-tracking);
+  margin: 0 0 var(--page-header-space-bottom) 0;
+  line-height: var(--page-subtitle-leading);
 }
 
 .spinner-wrapper {
@@ -380,10 +384,6 @@ export default {
   }
   .glow-text {
     font-size: 22px;
-  }
-  .subtitle {
-    font-size: 14px;
-    margin-bottom: 16px;
   }
   .redirect-container {
     margin-top: 20px;

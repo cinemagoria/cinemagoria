@@ -57,6 +57,7 @@
 .card__name {
   margin-top: 1rem;
   overflow: hidden;
+  font-family: var(--font-display);
   font-size: 1.3rem;
   text-overflow: ellipsis;
   letter-spacing: $letter-spacing;
@@ -71,6 +72,7 @@
 .card__label {
   margin-top: 1rem;
   overflow: hidden;
+  font-family: var(--font-display);
   font-size: 1.3rem;
   text-overflow: ellipsis;
   letter-spacing: $letter-spacing;

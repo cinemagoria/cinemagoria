@@ -5,8 +5,8 @@
 
     <section class="noir-archive">
       <div class="header-container">
-        <h1 class="title-primary" style="text-align: center; margin-bottom: 0.5rem;">Histórico de N.O.I.R</h1>
-        <p class="title-secondary" style="text-align: center; margin-bottom: 2rem;">
+        <h1 class="page-title">Histórico de N.O.I.R</h1>
+        <p class="page-subtitle">
           T&iacute;tulos Hist&oacute;ricos Seleccionados Para N.O.I.R
           <button @click="showNoirModal = true" class="help-icon-button">
             <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -379,7 +379,7 @@ export default {
 .noir-archive {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem 2rem 4rem;
+  padding: var(--page-header-space-top) 2rem 4rem;
 }
 
 .help-icon-button {
@@ -669,12 +669,14 @@ export default {
 
 .section-title {
   color: #8BE9FD;
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: var(--section-title-size);
+  font-weight: var(--section-title-weight);
+  letter-spacing: var(--section-title-tracking);
+  line-height: var(--section-title-leading);
   margin-bottom: 0;
-  padding-left: 5px;
+  padding-left: 8px;
   border-left: 3px solid #8BE9FD;
-  line-height: 1.2;
 }
 
 .section-count {
@@ -724,7 +726,7 @@ export default {
 
 @media (max-width: 768px) {
   .noir-archive {
-    padding: 1.5rem 1rem 3rem;
+    padding: var(--page-header-space-top) 1rem 3rem;
   }
 }
 </style>

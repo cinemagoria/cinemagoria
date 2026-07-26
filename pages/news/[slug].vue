@@ -1045,12 +1045,14 @@ useHead(() => {
 .article-date { display: block; font-size: 14px; color: #80868b; margin-bottom: 16px; }
 
 .article-title {
-  font-size: clamp(28px, 4vw, 38px);
-  font-weight: 800;
-  line-height: 1.2;
+  font-family: var(--font-display);
+  font-size: var(--page-title-size);
+  font-weight: var(--page-title-weight);
+  line-height: var(--page-title-leading);
+  letter-spacing: var(--page-title-tracking);
   color: #fff;
-  margin: 0 0 20px;
-  letter-spacing: -0.02em;
+  margin: 0 0 var(--page-header-space-title);
+  text-wrap: balance;
 }
 
 /* Community gate — inline card that replaces the body entirely.
@@ -1148,7 +1150,7 @@ useHead(() => {
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.article-lead { font-size: 18px; line-height: 1.7; color: #ACAFB5; margin: 0 0 24px; font-weight: 400; }
+.article-lead { font-size: 18px; line-height: 1.7; color: #ACAFB5; margin: 0 0 var(--page-header-space-bottom); font-weight: 400; }
 .article-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
 .tag { font-size: 13px; font-weight: 600; color: #80868b; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); padding: 5px 14px; border-radius: 20px; }
 .tag--clickable { text-decoration: none; cursor: pointer; transition: all 0.2s ease; }
@@ -1181,8 +1183,8 @@ useHead(() => {
 .byline-logo { width: 18px; height: 18px; border-radius: 3px; }
 
 .article-body { font-size: 17px; line-height: 1.9; color: #e0e0e0; }
-.article-body :deep(h2) { font-size: 24px; font-weight: 700; color: #fff; margin: 40px 0 16px; }
-.article-body :deep(h3) { font-size: 20px; font-weight: 600; color: #fafafa; margin: 32px 0 12px; }
+.article-body :deep(h2) { font-family: var(--font-display); font-size: 24px; font-weight: 700; color: #fff; margin: 40px 0 16px; }
+.article-body :deep(h3) { font-family: var(--font-display); font-size: 20px; font-weight: 600; color: #fafafa; margin: 32px 0 12px; }
 .article-body :deep(p) { margin: 0 0 22px; }
 .article-body :deep(strong) { color: #fff; font-weight: 600; }
 .article-body :deep(em) { color: #ACAFB5; }
@@ -1427,7 +1429,6 @@ useHead(() => {
   .sidebar-title { width: 100%; margin-top: 8px !important; }
   .sidebar-meta-list { flex-direction: row; flex-wrap: wrap; gap: 16px; }
   .article-card { padding: 24px; }
-  .article-title { font-size: 24px; }
   .article-lead { font-size: 16px; }
   .article-body { font-size: 16px; }
 }

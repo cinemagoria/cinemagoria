@@ -3,8 +3,8 @@
     <UserNav />
     
     <main class="main-content">
-      <h1 class="title-primary">Colecciones</h1>
-      <h2 class="title-secondary page-subtitle">
+      <h1 class="page-title">Colecciones</h1>
+      <h2 class="page-subtitle">
         Organiza tus películas y series favoritas en colecciones personalizadas.
       </h2>
       
@@ -394,27 +394,11 @@ export default {
 .main-content {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem 4rem;
+  padding: var(--page-header-space-top) 4rem 2rem;
   
   @media (max-width: 768px) {
-    padding: 1rem 2rem;
+    padding: var(--page-header-space-top) 2rem 1rem;
   }
-}
-
-.title-primary {
-  font-size: 3.2rem;
-  color: #8BE9FD;
-  font-weight: 700;
-  margin: 2rem 0 1rem;
-  text-align: center;
-}
-
-.page-subtitle {
-  color: rgb(172, 175, 181);
-  font-size: 14px;
-  max-width: 600px;
-  margin: 0 auto 3rem;
-  text-align: center;
 }
 
 .toolbar-section {

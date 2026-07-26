@@ -195,14 +195,13 @@ export default {
 }
 .title {
   margin-bottom: 2rem;
-  font-size: 1.8rem;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: var(--section-title-size);
+  font-weight: var(--section-title-weight);
+  letter-spacing: var(--section-title-tracking);
+  line-height: var(--section-title-leading);
   color: #fff;
-  letter-spacing: $letter-spacing;
   text-shadow: 0 0 18px rgba(139, 233, 253, 0.18);
-  @media (min-width: $breakpoint-large) {
-    font-size: 2.4rem;
-  }
 }
 .noData {
   padding: 3rem 0;
@@ -262,6 +261,7 @@ export default {
   box-shadow: 0 0 1px rgba(0,0,0,0.5);
 }
 .countryName {
+  font-family: var(--font-display);
   font-size: 1.6rem;
   font-weight: 600;
   color: #fff;

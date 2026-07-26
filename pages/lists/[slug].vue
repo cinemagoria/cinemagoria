@@ -1464,12 +1464,12 @@ export default {
   min-height: 100vh;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 48px 32px 80px;
+  padding: var(--page-header-space-top) 32px 80px;
   font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   color: rgba(255, 255, 255, 0.86);
 
   @media (max-width: 600px) {
-    padding: 32px 12px 64px;
+    padding: var(--page-header-space-top) 12px 64px;
   }
 }
 
@@ -1483,7 +1483,7 @@ export default {
 /* ── Hero header ────────────────────────────────────────────────── */
 .list-hero {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: var(--page-header-space-bottom);
 }
 
 .title-row {
@@ -1495,16 +1495,17 @@ export default {
 }
 
 .list-title {
-  font-size: clamp(30px, 4.5vw, 45px);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
-  color: #8BE9FD;
+  font-family: var(--font-display);
+  font-size: var(--page-title-size);
+  font-weight: var(--page-title-weight);
+  letter-spacing: var(--page-title-tracking);
+  line-height: var(--page-title-leading);
+  color: var(--page-title-color);
   margin: 0;
   max-width: 100%;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  text-shadow: 0 0 28px rgba(139, 233, 253, 0.25);
+  text-shadow: var(--page-title-glow);
 }
 
 /* Tiny inline pencil — reveals on title hover (desktop), always visible on touch */

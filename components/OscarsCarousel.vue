@@ -279,6 +279,7 @@ export default {
 
 .oscars-card__category-label {
   display: block;
+  font-family: var(--font-display);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1px;
@@ -335,6 +336,7 @@ export default {
 }
 
 .oscars-card__nominee-name {
+  font-family: var(--font-display);
   font-size: 12px;
   font-weight: 500;
   color: #e0e0e0;
@@ -395,6 +397,7 @@ export default {
 }
 
 .oscars-card--explore__label {
+  font-family: var(--font-display);
   font-size: 12px;
   font-weight: 700;
   color: #8BE9FD;

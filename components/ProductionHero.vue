@@ -197,6 +197,7 @@ export default {
 }
 
 .title {
+  font-family: var(--font-display);
   font-size: 1.4rem;
   color: rgba(255, 255, 255, 0.7);
   text-transform: uppercase;
@@ -207,6 +208,7 @@ export default {
 
 .name {
   margin-bottom: 1rem;
+  font-family: var(--font-display);
   font-size: 2.5rem;
   line-height: 1.1;
   letter-spacing: $letter-spacing;
@@ -218,6 +220,7 @@ export default {
   align-items: center;
   justify-content: center;
   margin-bottom: 2rem;
+  font-family: var(--font-display);
   font-size: 1.4rem;
   color: rgba(#fff, 0.8);
 }
@@ -236,6 +239,7 @@ export default {
 .desc {
   max-width: 60rem;
   margin: 0 auto 2.5rem;
+  font-family: var(--font-display);
   font-size: 1.4rem;
   line-height: 1.6;
   color: rgba(#fff, 0.9);

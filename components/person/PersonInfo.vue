@@ -83,7 +83,7 @@
           </li>
         </ul>
         <div v-if="hasAccessToken" :class="$style.followSection">
-                <h4 style="margin-top:2rem; font-size: 16px; font-weight:800; text-transform: uppercase;" class="section-title">Notificaciones</h4>
+                <h4 class="minor-title" style="margin-top: 2rem; text-transform: uppercase;">Notificaciones</h4>
             <button 
                 v-if="hasAccessToken && isActorOrDirector"
                 @click="toggleFollow" 
@@ -426,13 +426,13 @@ export default {
 }
 
 .title {
-  font-size: 1.8rem;
+  font-family: var(--font-display);
+  font-size: var(--section-title-size);
+  font-weight: var(--section-title-weight);
+  letter-spacing: var(--section-title-tracking);
+  line-height: var(--section-title-leading);
   margin-top: 10px;
   color: #fff;
-  letter-spacing: $letter-spacing;
-  @media (min-width: $breakpoint-large) {
-    font-size: 2.4rem;
-  }
 }
 
 .stats {

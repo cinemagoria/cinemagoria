@@ -378,11 +378,13 @@ export default {
 }
 
 .emptyTitle {
-  font-size: 1.9rem;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: var(--section-title-size);
+  font-weight: var(--section-title-weight);
+  letter-spacing: var(--section-title-tracking);
+  line-height: var(--section-title-leading);
   color: #fff;
   margin: 0 0 0.8rem;
-  letter-spacing: $letter-spacing;
   text-shadow: 0 0 18px rgba(139, 233, 253, 0.18);
 }
 

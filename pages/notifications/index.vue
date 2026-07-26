@@ -3,13 +3,13 @@
     <section class="notifications-section">
       <div v-if="isLoggedIn" class="notifications-container">
         <div class="notifications-header">
-          <div class="header-top" style="display: flex; align-items: center;">
-            <h1 class="title-primary" style="margin: 0;">Notificaciones</h1>
-          </div>
+          <div class="header-top">
+            <h1 class="page-title">Notificaciones</h1>
 
-          <p class="title-secondary">
-            Mantente al día sobre el nuevo contenido de las personas, productoras, servicios de streaming y series que sigues.<button @click="openHowItWorksModal" class="help-icon-button"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg></button>
-          </p>
+            <p class="page-subtitle">
+              Mantente al día sobre el nuevo contenido de las personas, productoras, servicios de streaming y series que sigues.<button @click="openHowItWorksModal" class="help-icon-button"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg></button>
+            </p>
+          </div>
 
           <div class="header-actions">
             <div class="header-actions-left">
@@ -967,7 +967,7 @@ button {
 
 .notifications-section {
   min-height: 100vh;
-  padding: 2rem;
+  padding: var(--page-header-space-top) 2rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -976,8 +976,8 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 4rem;
-  gap: 2rem;
+  margin-bottom: var(--page-header-space-bottom);
+  gap: var(--page-header-space-bottom);
 }
 
 .loader-container {
@@ -1001,11 +1001,8 @@ button {
   max-width: 700px;
 }
 
-.title-secondary {
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-top: 15px;
-  line-height: 1.5;
+.header-top .page-subtitle {
+  margin-bottom: 0;
 }
 
 .header-actions {

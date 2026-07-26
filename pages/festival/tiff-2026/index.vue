@@ -735,8 +735,11 @@ onMounted(async () => {
 
 .sel-section-title {
     margin: 0;
-    font-size: 1.7rem;
-    font-weight: 700;
+    font-family: var(--font-display);
+    font-size: var(--section-title-size);
+    font-weight: var(--section-title-weight);
+    letter-spacing: var(--section-title-tracking);
+    line-height: var(--section-title-leading);
     color: #fff;
 }
 
@@ -1042,7 +1045,11 @@ onMounted(async () => {
     user-select: none;
 
     h2 {
-        font-size: 1.8rem;
+        font-family: var(--font-display);
+        font-size: var(--section-title-size);
+        font-weight: var(--section-title-weight);
+        letter-spacing: var(--section-title-tracking);
+        line-height: var(--section-title-leading);
         margin: 0;
     }
 

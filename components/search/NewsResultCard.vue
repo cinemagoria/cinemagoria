@@ -138,6 +138,7 @@ export default {
 }
 
 .news-card__title {
+  font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 700;
   color: #fff;
@@ -151,6 +152,7 @@ export default {
 }
 
 .news-card__description {
+  font-family: var(--font-display);
   font-size: 0.9rem;
   color: #b0b0b0;
   line-height: 1.5;

@@ -295,6 +295,7 @@
   }
   
   .search-card__title {
+    font-family: var(--font-display);
     font-size: 1.4rem;
     margin: 0 0 8px 0;
     color: #8BE9FD;
@@ -308,6 +309,7 @@
   }
   
   .search-card__year {
+    font-family: var(--font-display);
     font-size: 1.2rem;
     color: #acafb5;
     margin: 8px 0;

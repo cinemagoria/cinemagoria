@@ -473,7 +473,7 @@ export default {
   justify-content: center;
   z-index: 1001;
   padding: 20px;
-  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
+  font-family: var(--font-display);
 }
 
 .rated-items-modal {

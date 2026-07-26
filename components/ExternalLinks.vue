@@ -258,12 +258,13 @@ export default {
 }
 
 .section-title {
-  font-size: 16px;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: var(--minor-title-size);
+  font-weight: var(--minor-title-weight);
+  letter-spacing: 0.05em;
   margin-bottom: 12px;
   color: #ffffff;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .links-grid {

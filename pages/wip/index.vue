@@ -4,9 +4,7 @@
         <div class="image-container">
           <img src="/ui/wip.png" alt="Maintenance Image" class="maintenance-image">
         </div>
-        <br>
-        <br>
-        <h1 class="text-white text-center"><b>This Section is Under Maintenance</b>.</h1>
+        <h1 class="page-title page-title--solo">This Section is Under Maintenance.</h1>
         <div class="button-container">
           <button class="button button--icon" @click="redirectToHome">
             <span class="txt">Back</span>
@@ -58,15 +56,8 @@
       max-width: 50%;
       height: auto;
       display: block;
-      margin: 0 auto;
+      margin: 0 auto var(--page-header-space-bottom);
     }
   
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      font-size: 14px;
-    }
   </style>
   

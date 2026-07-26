@@ -375,7 +375,7 @@ useSeoMeta({
 <style scoped>
 .profile-main {
   min-height: 80vh;
-  padding: 2rem 1rem;
+  padding: 0 1rem 2rem;
   max-width: 860px;
   margin: 0 auto;
 }
@@ -397,7 +397,7 @@ useSeoMeta({
   display: flex;
   gap: 1.5rem;
   align-items: flex-start;
-  padding: 1.5rem 0 2rem;
+  padding: var(--page-header-space-top) 0 var(--page-header-space-bottom);
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
@@ -412,22 +412,29 @@ useSeoMeta({
 .profile-identity {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.6rem;
 }
 
 .profile-name {
-  font-size: 1.4rem;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: var(--page-title-size);
+  font-weight: var(--page-title-weight);
+  letter-spacing: var(--page-title-tracking);
+  line-height: var(--page-title-leading);
+  color: #fff;
   margin: 0;
+  text-wrap: balance;
 }
 
 .profile-alias {
-  color: var(--color-text-muted, #aaa);
-  font-size: 0.95rem;
+  color: var(--page-subtitle-color);
+  font-family: var(--font-display);
+  font-size: var(--page-subtitle-size);
+  letter-spacing: var(--page-subtitle-tracking);
 }
 
 .profile-bio {
-  font-size: 0.9rem;
+  font-size: var(--page-subtitle-size);
   color: var(--color-text-secondary, #ccc);
   max-width: 500px;
   margin: 0.25rem 0;
@@ -551,12 +558,14 @@ useSeoMeta({
 
 .section-title {
   color: #8BE9FD;
-  font-size: 1.3rem;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: var(--section-title-size);
+  font-weight: var(--section-title-weight);
+  letter-spacing: var(--section-title-tracking);
+  line-height: var(--section-title-leading);
   margin: 0;
   padding-left: 10px;
   border-left: 3px solid #8BE9FD;
-  line-height: 1.2;
 }
 
 .expand-btn {

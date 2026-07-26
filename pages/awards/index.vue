@@ -1,8 +1,8 @@
 <template>
   <main :class="$style.page">
-    <nav :class="$style.header">
-      <h1 class="title-primary page-title">Premios</h1>
-      <h2 class="title-secondary page-subtitle">
+    <nav class="page-header">
+      <h1 class="page-title">Premios</h1>
+      <h2 class="page-subtitle">
         Explora los grandes premios del cine — ganadores y nominados
       </h2>
     </nav>
@@ -419,19 +419,6 @@ useHead({
   padding: 0 3rem 6rem;
   max-width: 1200px;
   margin: 0 auto;
-}
-
-.header {
-  text-align: center;
-  padding-top: 30px;
-  margin-bottom: 3rem;
-
-  :global(.page-subtitle) {
-    color: rgb(172, 175, 181);
-    font-size: 14px;
-    max-width: 600px;
-    margin: 10px auto 0;
-  }
 }
 
 .awardSelector {
