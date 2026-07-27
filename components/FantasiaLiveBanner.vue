@@ -35,7 +35,11 @@
       <div class="fantasia-banner__info">
         <div class="fantasia-banner__pill">
           <span class="fantasia-banner__pill-dot" aria-hidden="true" />
-          30<sup class="fantasia-banner__pill-sup">TH</sup> EDITION · JULY 16 – AUG 2 · 2026
+          <span class="fantasia-banner__pill-text">
+            <span class="fantasia-banner__pill-edition">30<sup class="fantasia-banner__pill-sup">TH</sup> EDITION</span>
+            <span class="fantasia-banner__pill-sep" aria-hidden="true"> · </span>
+            <span class="fantasia-banner__pill-dates">JULY 16 – AUG 2 · 2026</span>
+          </span>
         </div>
         <div class="fantasia-banner__tagline" aria-hidden="true">
           Genre cinema, world premieres &amp; daily schedule —
@@ -178,11 +182,22 @@ export default {
   text-transform: uppercase;
 }
 
+.fantasia-banner__pill-text {
+  min-width: 0;
+}
+
+.fantasia-banner__pill-edition {
+  white-space: nowrap;
+}
+
 .fantasia-banner__pill-sup {
-  font-size: 7px;
+  font-size: 0.62em;
   font-weight: 700;
-  margin: 0 1px 0 0;
-  vertical-align: super;
+  letter-spacing: 0;
+  margin: 0;
+  vertical-align: baseline;
+  position: relative;
+  top: -0.45em;
 }
 
 .fantasia-banner__pill-dot {
@@ -279,6 +294,48 @@ export default {
 
   .fantasia-banner__logo {
     height: 56px;
+  }
+
+  .fantasia-banner__inner {
+    padding: 10px 12px;
+    gap: 8px 10px;
+  }
+
+  .fantasia-banner__pill {
+    align-items: flex-start;
+    gap: 7px;
+    padding: 4px 10px 4px 8px;
+    font-size: 10px;
+    letter-spacing: 0.3px;
+    line-height: 1.45;
+  }
+
+  .fantasia-banner__pill-dot {
+    margin-top: 4px;
+  }
+
+  .fantasia-banner__pill-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .fantasia-banner__pill-sep {
+    display: none;
+  }
+
+  .fantasia-banner__cta {
+    padding: 6px 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .fantasia-banner__logo {
+    height: 48px;
+  }
+
+  .fantasia-banner__pill {
+    font-size: 9.5px;
+    letter-spacing: 0.2px;
   }
 }
 </style>
