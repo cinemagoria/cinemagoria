@@ -19,7 +19,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install @libsql/client
+        run: yarn install --frozen-lockfile --ignore-scripts
 
       - name: Sync hero enrichment
         run: node scripts/syncHeroData.js
