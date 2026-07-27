@@ -1,15 +1,15 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-26T15:09:36.126Z",
+  "generatedAt": "2026-07-27T07:07:18.085Z",
   "provider": "gemini",
   "model": "gemini-2.5-flash",
-  "tag": "10231e7",
-  "commit": "10231e7b9d5f2bd456c68b85dfc13ff4a42b9815",
+  "tag": "f54d692",
+  "commit": "f54d6921d60e34b92f2d7c6770e0fb1d21b2e3f9",
   "fileHashes": {
     ".github/FUNDING.yml": "8deffbd8ec503761",
     ".github/workflows/gitset-knowledge.yml": "f7162607dd746462",
-    ".github/workflows/sync-hero-data.yml": "82a7e7d80f07f5f9",
-    ".github/workflows/sync-noir-historical.yml": "d11e97310d12c89e",
+    ".github/workflows/sync-hero-data.yml": "3fea3c576236fa0c",
+    ".github/workflows/sync-noir-historical.yml": "8d5a3c7d568893cd",
     "app.vue": "5c6b817b1fbc0660",
     "cloudbuild.yaml": "ff569f3a5bda6f15",
     "components/BaficiCard.vue": "50d999c9249998f8",
@@ -197,8 +197,8 @@
     "plugins/bus.js": "ec273ecb2c462d95",
     "plugins/lazyload.js": "ff64ba308c95a547",
     "public/data/custom-enrichment.json": "89650b247db66109",
-    "public/data/hero-enrichment.json": "c370ad1cf3ac56cc",
-    "public/data/noir-enrichment.json": "e198d4f0c8349524",
+    "public/data/hero-enrichment.json": "e74ca1812abfec8e",
+    "public/data/noir-enrichment.json": "a2fd1c4e4ea15ded",
     "public/manifest.json": "40163b318a79c243",
     "public/sw.js": "95ecfe0429ae43c6",
     "scripts/seed_tribeca_2026_awards.cjs": "69ae975a93802a21",
@@ -382,7 +382,7 @@
     ".github": [
       {
         "path": ".github/FUNDING.yml",
-        "purpose": "Configures various platforms for project funding, specifying usernames for GitHub and Buy Me a Coffee, and placeholders for others.",
+        "purpose": "Configures various platforms for project funding, specifying usernames or project names for GitHub, Buy Me a Coffee, and placeholders for others.",
         "exports": [],
         "dependencies": [],
         "notes": ""
@@ -400,14 +400,15 @@
       },
       {
         "path": ".github/workflows/sync-hero-data.yml",
-        "purpose": "Automates the synchronization of hero enrichment data from a Turso database into JSON files, committing and pushing updates.",
+        "purpose": "Automates the synchronization of hero and noir enrichment data, committing and pushing updated JSON files to the repository.",
         "exports": [],
         "dependencies": [
           "actions/checkout@v4",
           "actions/setup-node@v4",
-          "@libsql/client"
+          "scripts/syncHeroData.js",
+          "scripts/syncNoirEnrichmentData.js"
         ],
-        "notes": "Registers 'schedule' (cron: '0 6 * * *') and 'workflow_dispatch' as triggers."
+        "notes": "Registers 'cron: 0 6 * * *' and 'workflow_dispatch' as triggers."
       },
       {
         "path": ".github/workflows/sync-noir-historical.yml",
@@ -416,7 +417,8 @@
         "dependencies": [
           "actions/checkout@v4",
           "actions/setup-node@v4",
-          "@libsql/client"
+          "scripts/syncNoirHistorical.js",
+          "scripts/syncNoirEnrichmentData.js"
         ],
         "notes": "Registers 'workflow_dispatch' as a trigger."
       }
@@ -2122,14 +2124,14 @@
     "public": [
       {
         "path": "public/manifest.json",
-        "purpose": "Defines the web application manifest for Cinemagoria, including its name, description, display properties, theme colors, and a list of icons for various purposes and sizes.",
+        "purpose": "Defines the web app manifest for Cinemagoria, specifying its name, description, display properties, theme colors, and a set of icons for various purposes and sizes.",
         "exports": [],
         "dependencies": [],
         "notes": ""
       },
       {
         "path": "public/sw.js",
-        "purpose": "A self-destroying service worker script that unregisters itself immediately upon activation and reloads all active client pages, ensuring no caching or offline functionality.",
+        "purpose": "A self-destroying service worker script that unregisters itself immediately upon activation and reloads all clients, ensuring no caching or offline behavior.",
         "exports": [],
         "dependencies": [],
         "notes": "This file is explicitly marked as not to be version controlled."
