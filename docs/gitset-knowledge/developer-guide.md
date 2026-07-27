@@ -4,10 +4,9 @@
 
 To develop with Cinemagoria, you need:
 
-*   Node.js (for `npm` and `npx`)
-*   A Turso database (for `LIBSQL_CLIENT_URL` and `LIBSQL_CLIENT_TOKEN` environment variables)
-*   Supabase credentials (for `SUPABASE_URL` and `SUPABASE_KEY` environment variables)
-*   TMDB API key (for `TMDB_API_KEY` environment variable)
+*   Node.js (version 18 or later recommended)
+*   npm or yarn
+*   A Turso database for local development (optional, but recommended for full functionality)
 
 ## Setup
 
@@ -20,42 +19,44 @@ To develop with Cinemagoria, you need:
     ```bash
     npm install
     ```
-3.  **Prepare Nuxt.js**:
+    or
     ```bash
-    npm run postinstall
+    yarn install
     ```
-4.  **Environment Variables**: Create a `.env` file in the root directory and populate it with your Turso, Supabase, and TMDB credentials.
-5.  **Run in development mode**:
+    The `postinstall` script will automatically run `nuxt prepare`.
+3.  **Run the development server**:
     ```bash
     npm run dev
+    ```
+    or
+    ```bash
+    yarn dev
     ```
     This starts the Nuxt.js development server.
 
 ## Project Layout
 
-*   **[.github/](../../.github/)**: Contains GitHub Actions workflows for CI/CD and funding configuration.
-*   **[assets/](../../assets/)**: Stores static assets like images, fonts, or stylesheets.
-*   **[components/](../../components/)**: Reusable Vue components used throughout the application.
-*   **[pages/](../../pages/)**: Defines the application's routes and views.
-*   **[public/](../../public/)**: Static files served directly by the web server.
-*   **[server/](../../server/)**: Contains server-side API routes, middleware, and utilities.
+*   [components/](../../components/) - Reusable Vue components for UI elements.
+*   [pages/](../../pages/) - Defines the application's routes and views.
+*   [server/api/](../../server/api/) - Backend API routes.
+*   [server/middleware/](../../server/middleware/) - Server-side middleware.
+*   [scripts/](../../scripts/) - Utility scripts for data synchronization and seeding.
+*   [public/](../../public/) - Static assets and web app manifest.
 
 ## Testing
 
-The provided structural digest and file summaries do not contain information about testing frameworks, test files, or testing scripts.
+The provided structural digest does not contain information about testing frameworks or test files.
 
 ## Release & Deployment
 
-The Cinemagoria application uses Google Cloud Build and Docker for deployment.
+Cinemagoria uses Google Cloud Build for deployment, configured via [cloudbuild.yaml](../../cloudbuild.yaml). This process involves:
 
-*   **[Dockerfile](../../Dockerfile)**: Defines the Docker image for the application.
-*   **[cloudbuild.yaml](../../cloudbuild.yaml)**: Configures Google Cloud Build to build the Docker image, push it to Google Artifact Registry, and update a Cloud Run service.
-*   **Build script**: `npm run build`
-*   **Generate static site**: `npm run generate`
-*   **Preview build**: `npm run preview`
+1.  Building a Docker image based on the [Dockerfile](../../Dockerfile).
+2.  Pushing the Docker image to Google Artifact Registry.
+3.  Updating a Cloud Run service with the new image.
 
-The repository also includes GitHub Actions workflows for automated data synchronization:
+GitHub Actions workflows automate various tasks:
 
-*   [.github/workflows/sync-hero-data.yml](../../.github/workflows/sync-hero-data.yml): Synchronizes hero and noir enrichment data.
-*   [.github/workflows/sync-noir-historical.yml](../../.github/workflows/sync-noir-historical.yml): Synchronizes N.O.I.R historical data.
 *   [.github/workflows/gitset-knowledge.yml](../../.github/workflows/gitset-knowledge.yml): Refreshes the AI knowledge base.
+*   [.github/workflows/sync-hero-data.yml](../../.github/workflows/sync-hero-data.yml): Synchronizes hero data.
+*   [.github/workflows/sync-noir-historical.yml](../../.github/workflows/sync-noir-historical.yml): Synchronizes N.O.I.R historical data.
