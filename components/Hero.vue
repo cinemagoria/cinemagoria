@@ -48,7 +48,7 @@
             type="button"
             aria-label="Play Trailer"
             @click="openModal">
-            <svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" viewBox="0 0 55 55"><circle cx="27.5" cy="27.5" r="26.75" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.97 40.81 40.64 27.5 20.97 14.19z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18" aria-hidden="true"><path fill="#8BE9FD" stroke="#8BE9FD" stroke-width="2" stroke-linejoin="round" d="M2 2.5 14 9 2 15.5Z"/></svg>
           </button>
 
           <img
@@ -86,14 +86,14 @@
                 aria-label="Previous"
                 type="button"
                 @click.stop="prevItem">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><path fill="none" stroke="#8BE9FD" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"/></svg>
                 </button>
                 <button
                 class="arrow-nav right"
                 aria-label="Next"
                 type="button"
                 @click.stop="nextItem">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"><path fill="none" stroke="#8BE9FD" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M6.1 23.2L17.9 12 6.1.8"/></svg>
                 </button>
             </div>
         </div>
@@ -1982,10 +1982,44 @@ export default {
   top: 50%;
   left: 50%;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.4rem;
+  height: 4.4rem;
   padding: 0;
   margin: 0;
-  background: none;
+  border: 1px solid rgba(139, 233, 253, 0.28);
+  border-radius: 999px;
+  background: rgba(3, 4, 6, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0 0 12px rgba(139, 233, 253, 0.05), 0 0.4rem 1.6rem rgba(0, 0, 0, 0.35);
   transform: translate(-50%, -50%);
+  transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+
+  svg {
+    display: block;
+    width: 1.5rem;
+    height: 1.7rem;
+    margin-left: 0.2rem;
+  }
+
+  &:active {
+    background: rgba(3, 4, 6, 0.72);
+    border-color: rgba(139, 233, 253, 0.5);
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+
+  @media (min-width: $breakpoint-small) {
+    width: 5.6rem;
+    height: 5.6rem;
+
+    svg {
+      width: 2rem;
+      height: 2.2rem;
+    }
+  }
 
   @media (min-width: $breakpoint-medium) {
     display: none;
@@ -3390,6 +3424,10 @@ export default {
     padding: 0 20px;
     display: flex;
     justify-content: space-between;
+
+    @media (max-width: 767px) {
+        padding: 0 12px;
+    }
     
     @media (min-width: 1025px) {
         justify-content: flex-end;
@@ -3397,48 +3435,64 @@ export default {
 }
 
 .arrow-nav {
-    background: rgba(0,0,0,0.3);
-    border: none;
+    background: rgba(3, 4, 6, 0.35);
+    border: 1px solid rgba(139, 233, 253, 0.55);
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 42px;
+    height: 42px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background 0.3s, opacity 0.3s, transform 0.2s;
+    box-shadow: inset 0 0 12px rgba(139, 233, 253, 0.08), 0 2px 12px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background 0.3s, border-color 0.3s, opacity 0.3s, transform 0.2s;
     pointer-events: auto;
-    
+
     @media (min-width: 768px) {
-        width: 60px;
-        height: 60px;
+        width: 52px;
+        height: 52px;
     }
 
     @media (min-width: 1200px) {
-        width: 80px;
-        height: 80px;
-        background: rgba(0,0,0,0.2); 
+        width: 60px;
+        height: 60px;
     }
 }
 
 .arrow-nav svg {
-    width: 24px;
-    height: 24px;
-    
+    width: 22px;
+    height: 22px;
+
     @media (min-width: 768px) {
-        width: 32px;
-        height: 32px;
+        width: 27px;
+        height: 27px;
     }
-    
+
     @media (min-width: 1200px) {
-        width: 40px;
-        height: 40px;
+        width: 31px;
+        height: 31px;
     }
 }
 
-.arrow-nav:hover {
-    background: rgba(0,0,0,0.6);
-    transform: scale(1.05);
+@media (hover: hover) and (pointer: fine) {
+    .arrow-nav:hover {
+        background: rgba(3, 4, 6, 0.55);
+        border-color: rgba(139, 233, 253, 0.85);
+        transform: scale(1.05);
+    }
+}
+
+.arrow-nav:focus-visible {
+    outline: 2px solid rgba(139, 233, 253, 0.75);
+    outline-offset: 2px;
+}
+
+.arrow-nav:active {
+    background: rgba(3, 4, 6, 0.55);
+    border-color: rgba(139, 233, 253, 0.7);
+    transform: scale(0.94);
 }
 
 .arrow-nav.left {
