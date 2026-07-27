@@ -189,12 +189,12 @@ onBeforeRouteLeave((to, from, next) => {
 
 .search-loading-card .glow-text {
   font-family: var(--font-display);
-  font-size: var(--page-title-size);
-  font-weight: var(--page-title-weight);
+  font-size: var(--section-title-size);
+  font-weight: var(--section-title-weight);
   color: #ffffff;
   margin: 0 0 var(--page-header-space-title) 0;
-  letter-spacing: var(--page-title-tracking);
-  line-height: var(--page-title-leading);
+  letter-spacing: var(--section-title-tracking);
+  line-height: var(--section-title-leading);
   text-shadow: 0 0 20px rgba(139, 233, 253, 0.3);
 }
 
