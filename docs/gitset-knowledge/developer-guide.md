@@ -2,11 +2,12 @@
 
 ## Prerequisites
 
-To develop on Cinemagoria, you need:
+To develop with Cinemagoria, you need:
 
-*   Node.js (v18 or later recommended)
-*   npm or Yarn
-*   A modern web browser
+*   Node.js (for `npm` and `npx`)
+*   A Turso database (for `LIBSQL_CLIENT_URL` and `LIBSQL_CLIENT_TOKEN` environment variables)
+*   Supabase credentials (for `SUPABASE_URL` and `SUPABASE_KEY` environment variables)
+*   TMDB API key (for `TMDB_API_KEY` environment variable)
 
 ## Setup
 
@@ -23,20 +24,21 @@ To develop on Cinemagoria, you need:
     ```bash
     npm run postinstall
     ```
-4.  **Start the development server**:
+4.  **Environment Variables**: Create a `.env` file in the root directory and populate it with your Turso, Supabase, and TMDB credentials.
+5.  **Run in development mode**:
     ```bash
     npm run dev
     ```
-    The application will be available at `http://localhost:3000`.
+    This starts the Nuxt.js development server.
 
 ## Project Layout
 
-*   [.github/](../../.github/) - GitHub Actions workflows for CI/CD and automation.
-*   [assets/](../../assets/) - Static assets like images, fonts, and stylesheets.
-*   [components/](../../components/) - Reusable Vue components.
-*   [pages/](../../pages/) - Vue components defining the application's routes and views.
-*   [public/](../../public/) - Static files served directly, such as `manifest.json`.
-*   [server/](../../server/) - Backend API routes, middleware, and utilities.
+*   **[.github/](../../.github/)**: Contains GitHub Actions workflows for CI/CD and funding configuration.
+*   **[assets/](../../assets/)**: Stores static assets like images, fonts, or stylesheets.
+*   **[components/](../../components/)**: Reusable Vue components used throughout the application.
+*   **[pages/](../../pages/)**: Defines the application's routes and views.
+*   **[public/](../../public/)**: Static files served directly by the web server.
+*   **[server/](../../server/)**: Contains server-side API routes, middleware, and utilities.
 
 ## Testing
 
@@ -44,21 +46,16 @@ The provided structural digest and file summaries do not contain information abo
 
 ## Release & Deployment
 
-Cinemagoria uses Google Cloud Build for deployment. The [cloudbuild.yaml](../../cloudbuild.yaml) configuration builds a Docker image, pushes it to Google Artifact Registry, and updates a Cloud Run service.
+The Cinemagoria application uses Google Cloud Build and Docker for deployment.
 
-To build the application for production:
+*   **[Dockerfile](../../Dockerfile)**: Defines the Docker image for the application.
+*   **[cloudbuild.yaml](../../cloudbuild.yaml)**: Configures Google Cloud Build to build the Docker image, push it to Google Artifact Registry, and update a Cloud Run service.
+*   **Build script**: `npm run build`
+*   **Generate static site**: `npm run generate`
+*   **Preview build**: `npm run preview`
 
-```bash
-npm run build
-```
+The repository also includes GitHub Actions workflows for automated data synchronization:
 
-To generate static files:
-
-```bash
-npm run generate
-```
-
-To preview the production build locally:
-
-```bash
-npm run preview
+*   [.github/workflows/sync-hero-data.yml](../../.github/workflows/sync-hero-data.yml): Synchronizes hero and noir enrichment data.
+*   [.github/workflows/sync-noir-historical.yml](../../.github/workflows/sync-noir-historical.yml): Synchronizes N.O.I.R historical data.
+*   [.github/workflows/gitset-knowledge.yml](../../.github/workflows/gitset-knowledge.yml): Refreshes the AI knowledge base.

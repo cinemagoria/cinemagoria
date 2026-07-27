@@ -4,11 +4,11 @@
 
 ### `.github`
 
-- `.github/FUNDING.yml` — Configures various platforms for project funding, specifying usernames for GitHub and Buy Me a Coffee, and placeholders for others.
+- `.github/FUNDING.yml` — Configures various platforms for project funding, specifying usernames or project names for GitHub, Buy Me a Coffee, and placeholders for others.
 - `.github/workflows/gitset-knowledge.yml` — Defines a GitHub Actions workflow to incrementally refresh the project's AI knowledge base using Gitset, creating a pull request for changes.
   - Registers 'workflow_dispatch' and 'push' on 'main' branch (excluding docs, markdown, gitignore, LICENSE) as triggers.
-- `.github/workflows/sync-hero-data.yml` — Automates the synchronization of hero enrichment data from a Turso database into JSON files, committing and pushing updates.
-  - Registers 'schedule' (cron: '0 6 * * *') and 'workflow_dispatch' as triggers.
+- `.github/workflows/sync-hero-data.yml` — Automates the synchronization of hero and noir enrichment data, committing and pushing updated JSON files to the repository.
+  - Registers 'cron: 0 6 * * *' and 'workflow_dispatch' as triggers.
 - `.github/workflows/sync-noir-historical.yml` — Automates the synchronization of N.O.I.R historical data and regenerates noir enrichment data, committing the updated JSON file.
   - Registers 'workflow_dispatch' as a trigger.
 
@@ -254,8 +254,8 @@
 
 ### `public`
 
-- `public/manifest.json` — Defines the web application manifest for Cinemagoria, including its name, description, display properties, theme colors, and a list of icons for various purposes and sizes.
-- `public/sw.js` — A self-destroying service worker script that unregisters itself immediately upon activation and reloads all active client pages, ensuring no caching or offline functionality.
+- `public/manifest.json` — Defines the web app manifest for Cinemagoria, specifying its name, description, display properties, theme colors, and a set of icons for various purposes and sizes.
+- `public/sw.js` — A self-destroying service worker script that unregisters itself immediately upon activation and reloads all clients, ensuring no caching or offline behavior.
   - This file is explicitly marked as not to be version controlled.
 
 ### `scripts`
