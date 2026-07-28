@@ -1,7 +1,10 @@
 <template>
   <div class="news-card">
-    <NuxtLink 
-      :to="{ path: '/news', query: { source: item.source?.name, highlight: item.id } }" 
+    <NuxtLink
+      :to="linkTarget"
+      :external="isExternal || undefined"
+      :target="isExternal ? '_blank' : undefined"
+      :rel="isExternal ? 'noopener noreferrer' : undefined"
       class="news-card__link">
       
       <div class="news-card__img-container">
@@ -40,6 +43,26 @@ export default {
     }
   },
   computed: {
+    // These cards used to point at /news?source=…&highlight=<id>, which only
+    // resolves while the item is still inside the news index's first fetch
+    // window. Anything older dropped the reader on an unfiltered list with no
+    // sign of what they clicked — and paid for a 200-row query to get there.
+    // Link straight to the destination instead.
+    isExternal() {
+      const href = String(this.item?.href || '');
+      if (!href) return false;
+      return !href.startsWith('/') || href.startsWith('//');
+    },
+    linkTarget() {
+      // Internal articles arrive as `/news/<slug>`, aggregated items as the
+      // publisher's own URL — both live on `href`.
+      const href = this.item?.href;
+      if (href) return href;
+      if (this.item?.slug) return `/news/${this.item.slug}`;
+      // No direct destination on the row: fall back to the old highlight link
+      // so the card is never a dead click.
+      return { path: '/news', query: { source: this.item?.source?.name, highlight: this.item?.id } };
+    },
     // Display badge: prefer the editorial category for internal articles
     // (replaces the brand-redundant "CINEMAGORIA" label), fall back to the
     // publisher name for external aggregated items. The .news-card__source
