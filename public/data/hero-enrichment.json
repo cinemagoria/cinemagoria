@@ -174,5 +174,13 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1785218332/cinemagoria/backdrops/hero_1576934.webp",
     "poster_path": "/sY8OENcGshVtHDcV5JUQsPgxbsO.jpg",
     "force_enrichment": true
+  },
+  {
+    "tmdb_id": 285322,
+    "media_type": "tv",
+    "trailer_key": "gH3fL9cMvuM",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1785281696/cinemagoria/backdrops/hero_285322.webp",
+    "poster_path": null,
+    "force_enrichment": false
   }
 ]
