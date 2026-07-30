@@ -5,7 +5,8 @@
     @wheel="handleWheel">
     <div
       v-if="isHomepage && autoAdvanceEnabled && items && items.length > 1"
-      :class="$style.autoAdvanceBar">
+      :class="$style.autoAdvanceBar"
+      :style="{ '--auto-advance-duration': `${autoAdvanceDurationMs}ms` }">
       <div :class="$style.autoAdvanceBarTrack">
         <div
           v-if="isHomepageContentReady"
@@ -473,6 +474,8 @@ import { MANUAL_FESTIVAL_BADGES, MANUAL_OVERVIEWS } from '~/utils/constants';
 import { getHeroEnrichment, getNoirEnrichment } from '~/utils/api';
 import NoirModal from '~/components/NoirModal.vue';
 
+const AUTO_ADVANCE_DURATION_MS = 15000;
+
 // Festival membership per tmdb_id, shared across every Hero instance for the
 // session. Badges don't change mid-visit, so cycling the homepage carousel
 // (or revisiting a title) never refetches.
@@ -676,7 +679,8 @@ export default {
       autoAdvanceTimer: null,
       autoAdvancePaused: false,
       autoAdvanceStartTime: null,
-      autoAdvanceRemainingTime: 20000,
+      autoAdvanceRemainingTime: AUTO_ADVANCE_DURATION_MS,
+      autoAdvanceDurationMs: AUTO_ADVANCE_DURATION_MS,
       touchStartX: 0,
       touchEndX: 0,
       lastWheelTime: 0,
@@ -829,6 +833,7 @@ export default {
         this.updateHeroState();
         this.checkNoirStatus();
         this.resetAutoAdvance();
+        if (this.isHomepage) this.$bus.$emit('hero-advance');
       }
     },
     isHomepageContentReady(val) {
@@ -931,7 +936,7 @@ export default {
       this.stopAutoAdvance();
       this.autoAdvanceStartTime = Date.now();
       this.autoAdvanceTimer = setTimeout(() => {
-        this.autoAdvanceRemainingTime = 20000;
+        this.autoAdvanceRemainingTime = AUTO_ADVANCE_DURATION_MS;
         this.nextItem();
       }, this.autoAdvanceRemainingTime);
     },
@@ -942,9 +947,14 @@ export default {
       }
     },
     resetAutoAdvance() {
-      this.autoAdvanceRemainingTime = 20000;
+      this.autoAdvanceRemainingTime = AUTO_ADVANCE_DURATION_MS;
       this.autoAdvancePaused = false;
       this.startAutoAdvance();
+      this.emitAutoAdvanceState();
+    },
+    emitAutoAdvanceState() {
+      if (!this.isHomepage) return;
+      this.$bus.$emit('hero-autoadvance-paused', this.autoAdvancePaused);
     },
     toggleAutoAdvance() {
       if (this.autoAdvancePaused) {
@@ -960,6 +970,7 @@ export default {
         this.autoAdvancePaused = true;
         this.stopAutoAdvance();
       }
+      this.emitAutoAdvanceState();
     },
     handleBackdropClick() {
       if (!this.isHomepage || !this.autoAdvanceEnabled || !this.items || this.items.length <= 1) return;
@@ -2492,7 +2503,7 @@ export default {
   height: 100%;
   width: 0;
   background: linear-gradient(to right, #1E5164, #8AE8FC);
-  animation: hero-auto-advance 15s linear forwards;
+  animation: hero-auto-advance var(--auto-advance-duration, 15000ms) linear forwards;
   transform-origin: left center;
 }
 
