@@ -14,14 +14,16 @@
 
 ### `(root)`
 
-- `app.vue` — Main application entry point for the Cinemagoria Nuxt.js application, setting up global SEO metadata (Schema.org Organization and WebSite) and rendering the primary layout and pages.
-- `cloudbuild.yaml` — Google Cloud Build configuration for building and deploying the Cinemagoria application. It builds a Docker image, pushes it to Google Artifact Registry, and updates a Cloud Run service.
-- `Dockerfile` — Defines the Docker image build process for the Cinemagoria application, including dependencies installation, build arguments for Supabase, and setting up the production environment for execution.
-- `nuxt.config.ts` — Nuxt.js configuration file for the Cinemagoria project, defining aliases, compatibility date, devtools settings, and route-specific headers for caching sitemaps and RSS feeds.
+- `app.vue` — Defines the root Vue application component, including Nuxt layout and page rendering, and injects structured data (Schema.org Organization and WebSite) into the document head for SEO.
+- `cloudbuild.yaml` — Configures Google Cloud Build to automate the Docker image build, push to Artifact Registry, and deployment to Google Cloud Run for the Cinemagoria application.
+  - Deploys to Cloud Run service 'cinemagoria-main' in 'us-east1'.
+- `Dockerfile` — Defines a multi-stage Docker build process for the Cinemagoria Nuxt application, including dependency installation, build, and a production-ready runtime environment.
+  - Uses a pinned Node.js 22-slim image to avoid a specific `node-fetch` gzip issue.
+- `nuxt.config.ts` — Configures the Nuxt.js framework for the Cinemagoria application, including path aliases, devtools settings, and route-specific caching headers for sitemaps and RSS feeds.
   - exports: `default`
-- `package.json` — Defines project metadata, scripts for development and build processes, and manages all production and development dependencies and their resolutions for the Cinemagoria application.
-  - Includes scripts: build, dev, generate, preview, postinstall.
-- `tsconfig.json` — TypeScript configuration file for the Nuxt.js project, referencing generated TypeScript configurations for application, server, shared, and node environments.
+- `package.json` — Manages project metadata, scripts for development and build, and defines all production and development dependencies and dependency resolutions for the Cinemagoria application.
+  - Defines `build`, `dev`, `generate`, `preview`, and `postinstall` scripts.
+- `tsconfig.json` — Configures TypeScript for the Nuxt.js project by referencing generated TypeScript configuration files for different environments (app, server, shared, node).
 
 ### `assets`
 
@@ -43,124 +45,124 @@
 
 ### `components`
 
-- `components/global/GoogleLogin.vue` — Provides a reusable Google login button component that handles authentication flow, displays loading states, and emits events for login start and errors.
-- `components/global/UserNav.vue` — Displays user navigation elements including notifications, avatar, and a dropdown menu with profile links, language options, and a logout button.
-- `components/BaficiCard.vue` — Displays a card component for BAFICI festival items, including an image, quick actions, and a link to the official festival page.
-- `components/BerlinaleCard.vue` — Displays a card component for Berlinale festival items, including an image, quick actions, and a link to the official festival page.
-- `components/BifffCard.vue` — Displays a card component for BIFFF festival items, including an image, quick actions, and a link to the official festival page.
-- `components/CannesCard.vue` — Displays a card component for Cannes festival items, including an image, quick actions, and a link to the official festival page.
-- `components/CannesLiveBanner.vue` — Provides a banner component for the Cannes 2026 festival, featuring a logo, live indicator, and a call to action to explore coverage.
-- `components/CannesWinnersBanner.vue` — Provides a banner component for Cannes 2026 winners, featuring a logo, 'Winners' badge, and a marquee of award recipients.
-- `components/Card.vue` — A generic card component for displaying various media types (movies, TV shows, people, productions, streaming, festivals) with an image, title, and optional rating/release year.
-- `components/common/AwardsTab.vue` — Displays a tabbed view of awards received by a movie, TV show, or person, categorized by major festivals like Oscars, Golden Globes, Palme d'Or, Golden Lion, and Golden Bear.
-- `components/common/FullCreditsModal.vue` — Displays a modal with full crew credits for a given title, organized by department with collapsible sections.
-- `components/common/MediaProgressBar.vue` — Displays a circular progress bar and slider for media viewing progress, showing watched duration and total duration.
-- `components/Credits.vue` — Displays a horizontal carousel of cast members for a movie or TV show, allowing users to navigate through the list and view individual credit items.
-- `components/CreditsItem.vue` — Displays an individual cast member's image, name, and character, linking to their dedicated person page.
-- `components/CuffCard.vue` — Displays a card for a movie or TV show, including an image, title, and quick actions like favoriting or opening an external link, specifically for the 'Cuff' festival context.
-- `components/CustomListingCategoriesMovies.vue` — Displays a horizontal carousel of movie categories, allowing users to navigate through different genres or collections.
-- `components/CustomListingCategoriesSeries.vue` — Displays a horizontal carousel of TV series categories, allowing users to navigate through different genres or collections.
-- `components/Discover.vue` — Provides a comprehensive discovery interface for movies and TV shows, allowing users to filter by genre, sort options, country, network, language, streaming provider, vote count, format, year, and rating.
-- `components/DynamicSearchCarousel.vue` — Displays a dynamic horizontal carousel of search results for movies or TV shows, allowing users to browse through items with navigation controls.
-- `components/ExternalLinks.vue` — Displays a grid of external links for a movie or TV show, including IMDb, Rotten Tomatoes, Letterboxd, Trakt, and TMDb.
-- `components/FantasiaCard.vue` — Displays a card for a movie or TV show, including an image, title, and quick actions like favoriting or opening an external link, specifically for the 'Fantasia' festival context.
-- `components/FantasiaLiveBanner.vue` — Displays a promotional banner for the Fantasia 2026 festival, linking to its dedicated coverage page.
+- `components/global/GoogleLogin.vue` — Provides a reusable Google login button component that handles authentication flow, displays loading states, and emits events for login start and error.
+- `components/global/UserNav.vue` — Displays user navigation elements including notifications, avatar, and a dropdown menu with profile links, settings, and logout functionality.
+- `components/BaficiCard.vue` — A card component specifically for BAFICI festival items, displaying an image, quick actions, and a link to the item's detail page.
+- `components/BerlinaleCard.vue` — A card component specifically for Berlinale festival items, displaying an image, quick actions, and a link to the item's detail page.
+- `components/BifffCard.vue` — A card component specifically for BIFFF festival items, displaying an image, quick actions, and a link to the item's detail page.
+- `components/CannesCard.vue` — A card component specifically for Cannes festival items, displaying an image, quick actions, and a link to the item's detail page.
+- `components/CannesLiveBanner.vue` — A banner component for the Cannes 2026 festival, featuring the festival logo, a 'LIVE' badge, and a call to action to explore coverage.
+- `components/CannesWinnersBanner.vue` — A banner component for the Cannes 2026 festival winners, featuring the festival logo, a 'WINNERS' badge, and a call to action to explore the palmarès.
+- `components/Card.vue` — A generic card component for displaying various media types (movies, TV shows, people, productions, streaming, festivals) with an image, title, and optional rating/year.
+- `components/common/AwardsTab.vue` — Displays a tabbed interface for various film awards (Oscars, Golden Globes, Palme d'Or, Golden Lion, Golden Bear) for a given media item or person.
+- `components/common/FullCreditsModal.vue` — A modal component that displays the full crew credits for a given title, grouped by department with collapsible sections.
+- `components/common/MediaProgressBar.vue` — A component displaying a circular progress bar for media viewing progress, allowing users to adjust their progress via a slider.
+- `components/Credits.vue` — Displays a horizontal, scrollable carousel of cast members for a movie or TV show, including navigation buttons and dynamically calculated state for button disabling.
+- `components/CreditsItem.vue` — Renders an individual cast member's card within a credits list, displaying their image, name, and character, with a loading state and a link to their person page.
+- `components/CuffCard.vue` — Displays a card for a movie or TV show item, including an image, title, and quick actions like favoriting and opening external links, with conditional rendering based on context.
+- `components/CustomListingCategoriesMovies.vue` — Provides a customizable carousel for movie categories, featuring navigation buttons, a title, and an optional 'Explore All' link.
+- `components/CustomListingCategoriesSeries.vue` — Provides a customizable carousel for TV series categories, featuring navigation buttons, a title, and an optional 'Explore All' link.
+- `components/Discover.vue` — Implements a discovery page with filters for genres, sort options, countries, networks, languages, providers, minimum votes, format type, and release year/rating ranges.
+- `components/DynamicSearchCarousel.vue` — Displays a dynamic, scrollable carousel of search results for movies or TV shows, including navigation buttons and a title.
+- `components/ExternalLinks.vue` — Displays a grid of external links for a movie or TV show, including IMDb, Letterboxd, Rotten Tomatoes, Trakt, and TMDb, with associated icons.
+- `components/FantasiaCard.vue` — Displays a card for a movie or TV show item, including an image, title, and quick actions like favoriting and opening external links, with conditional rendering based on context.
+- `components/FantasiaLiveBanner.vue` — Displays a promotional banner for the Fantasia 2026 festival, featuring a background, shimmer effect, logo, and text, linking to the festival's coverage page.
 - `components/FeatureDescription.vue` — Vue component displaying a prominent feature description with cinematic light effects and gradient text, designed to be responsive across different screen sizes.
-- `components/festival/BaficiBadge.vue` — Vue component for displaying the BAFICI 2026 film festival logo badge, with hover effects and responsive styling.
-- `components/festival/BerlinaleBadge.vue` — Vue component for displaying the Berlinale Film Festival 2026 logo badge, with hover effects and responsive styling.
-- `components/festival/BifffBadge.vue` — Vue component for displaying the BIFFF 2026 film festival logo badge, with hover effects and responsive styling.
-- `components/festival/CannesAcidBadge.vue` — Vue component for displaying the Cannes Film Festival 2026 – ACID logo badge, with hover effects and responsive styling.
-- `components/festival/CannesBadge.vue` — Vue component for displaying the main Cannes Film Festival 2026 logo badge, with hover effects and responsive styling.
-- `components/festival/CannesCriticsChoiceBadge.vue` — Vue component for displaying the Cannes Film Festival 2026 – Critics' Choice logo badge, with hover effects and responsive styling.
-- `components/festival/CannesQuinzaineBadge.vue` — Vue component for displaying the Cannes Film Festival 2026 – Quinzaine des Cinéastes logo badge, with hover effects and responsive styling.
-- `components/festival/CuffBadge.vue` — Vue component for displaying the Calgary Underground Film Festival 2026 logo badge, with hover effects and responsive styling.
-- `components/festival/FantasiaBadge.vue` — Vue component for displaying the Fantasia International Film Festival 2026 logo badge, with hover effects and responsive styling.
-- `components/festival/FrightfestBadge.vue` — Vue component for displaying the FrightFest 2026 film festival logo badge, with hover effects and responsive styling.
-- `components/festival/KviffBadge.vue` — Vue component for displaying the Karlovy Vary International Film Festival 2026 logo badge, with hover effects and responsive styling.
-- `components/festival/RomfordBadge.vue` — Vue component for displaying the Romford Horror Film Festival 2026 logo badge, with hover effects and responsive styling.
-- `components/festival/RotterdamBadge.vue` — Vue component for displaying the Rotterdam Film Festival 2026 logo badge, with hover effects and responsive styling.
-- `components/festival/SlamdanceBadge.vue` — Vue component for displaying the Slamdance Film Festival 2026 logo badge, with hover effects and responsive styling.
-- `components/festival/SundanceBadge.vue` — Vue component for displaying the Sundance Film Festival 2026 logo badge, with hover effects and responsive styling.
-- `components/festival/SxswBadge.vue` — Vue component for displaying the SXSW Film & TV Festival 2026 logo badge, with hover effects and responsive styling.
-- `components/festival/SxswCard.vue` — Vue component representing a card for an SXSW festival item, including a link, image, loading state, and quick actions like opening an external source URL.
-- `components/festival/TiffBadge.vue` — Vue component for displaying the TIFF 2026 film festival logo badge, with hover effects and responsive styling.
-- `components/festival/TribecaBadge.vue` — Vue component for displaying the Tribeca Festival 2026 logo badge, with hover effects and responsive styling.
-- `components/festival/VeniceBadge.vue` — Vue component for displaying the Venice Film Festival 2026 logo badge, with hover effects and responsive styling.
-- `components/festival/WinnersCarousel.vue` — Displays a scrollable carousel of festival winners, grouped by film, with details like awards, directors, and poster images.
-- `components/FestivalDataDisclaimer.vue` — Provides a disclaimer about missing festival data and allows users to report issues via a modal form, teleported into the festival hero section.
-- `components/FestivalsCarousel.vue` — Renders a horizontal carousel for displaying a list of festivals, with navigation buttons and an optional 'Explore All' link.
+- `components/festival/BaficiBadge.vue` — Vue component displaying the BAFICI 2026 film festival logo badge, with hover effects and responsive styling.
+- `components/festival/BerlinaleBadge.vue` — Vue component displaying the Berlinale Film Festival 2026 logo badge, with hover effects and responsive styling.
+- `components/festival/BifffBadge.vue` — Vue component displaying the BIFFF 2026 film festival logo badge, with hover effects and responsive styling.
+- `components/festival/CannesAcidBadge.vue` — Vue component displaying the Cannes Film Festival 2026 – ACID logo badge, with hover effects and responsive styling.
+- `components/festival/CannesBadge.vue` — Vue component displaying the main Cannes Film Festival 2026 logo badge, with hover effects and responsive styling.
+- `components/festival/CannesCriticsChoiceBadge.vue` — Vue component displaying the Cannes Film Festival 2026 – Critics' Choice logo badge, with hover effects and responsive styling.
+- `components/festival/CannesQuinzaineBadge.vue` — Vue component displaying the Cannes Film Festival 2026 – Quinzaine des Cinéastes logo badge, with hover effects and responsive styling.
+- `components/festival/CuffBadge.vue` — Vue component displaying the Calgary Underground Film Festival 2026 logo badge, with hover effects and responsive styling.
+- `components/festival/FantasiaBadge.vue` — Vue component displaying the Fantasia International Film Festival 2026 logo badge, with hover effects and responsive styling.
+- `components/festival/FrightfestBadge.vue` — Vue component displaying the FrightFest 2026 logo badge, with hover effects and responsive styling.
+- `components/festival/KviffBadge.vue` — Vue component displaying the Karlovy Vary International Film Festival 2026 logo badge, with hover effects and responsive styling.
+- `components/festival/RomfordBadge.vue` — Vue component displaying the Romford Horror Film Festival 2026 logo badge, with hover effects and responsive styling.
+- `components/festival/RotterdamBadge.vue` — Vue component displaying the Rotterdam Film Festival 2026 logo badge, with hover effects and responsive styling.
+- `components/festival/SlamdanceBadge.vue` — Vue component displaying the Slamdance Film Festival 2026 logo badge, with hover effects and responsive styling.
+- `components/festival/SundanceBadge.vue` — Vue component displaying the Sundance Film Festival 2026 logo badge, with hover effects and responsive styling.
+- `components/festival/SxswBadge.vue` — Vue component displaying the SXSW Film & TV Festival 2026 logo badge, with hover effects and responsive styling.
+- `components/festival/SxswCard.vue` — Vue component for displaying a festival item card, including an image, quick actions like favoriting and opening external links, and a loader.
+- `components/festival/TiffBadge.vue` — Vue component displaying the TIFF 2026 film festival logo badge, with hover effects and responsive styling.
+- `components/festival/TribecaBadge.vue` — Vue component displaying the Tribeca Festival 2026 logo badge, with hover effects and responsive styling.
+- `components/festival/VeniceBadge.vue` — Vue component displaying the Venice Film Festival 2026 logo badge, with hover effects and responsive styling.
+- `components/festival/WinnersCarousel.vue` — Displays a horizontal carousel of festival winners, grouped by title/director, with navigation controls and a stat display.
+- `components/FestivalDataDisclaimer.vue` — Provides a disclaimer about missing festival data and allows users to report issues via a modal form, teleported to the festival hero section.
+- `components/FestivalsCarousel.vue` — Renders a carousel of festivals with navigation, an optional title, and a 'View All' link.
+- `components/FestivalsRotatingBanner.vue` — Displays a rotating banner of active festivals, linking to their respective pages, with a subtle background animation.
 - `components/FollowedContent.vue` — Displays a paginated list of movies or TV shows from followed production companies or streaming platforms, with filtering and sorting options.
-- `components/FrightfestCard.vue` — Displays a card for a Frightfest film, including its poster, title, and actions like opening the official festival page or quick-favoriting.
-- `components/global/ArticleAIDisclosure.vue` — Informs users that an article was AI-generated and provides a mechanism to report errors or inaccuracies through a modal form.
-- `components/global/ArticleShareModal.vue` — Provides a modal interface for sharing articles via link copy, email, or various social media platforms, including native sharing.
-- `components/global/AuthModal.vue` — Presents a modal for user authentication, allowing users to sign in or register with email and password, supporting a 'community gate' context.
-- `components/global/CardActions.vue` — Provides a dropdown menu of actions for a content card, including rating, adding to a watchlist, or adding to custom lists.
+- `components/FrightfestCard.vue` — Renders a card for a Frightfest item, including an image, quick actions like external links and favoriting, and a route link.
+- `components/global/ArticleAIDisclosure.vue` — Displays a disclosure that an article was AI-generated and provides a button to report errors via a modal form.
+- `components/global/ArticleShareModal.vue` — Provides a modal for sharing an article via a direct link, copying the link, or sharing to various social media platforms.
+- `components/global/AuthModal.vue` — Presents a modal for user authentication, allowing users to sign in or register, with tabs for each action.
+- `components/global/CardActions.vue` — Provides a dropdown menu of actions for a content card, such as rating, adding to a watchlist, or adding to a custom list.
 - `components/global/CookieConsent.vue` — Manages and displays a cookie consent banner and a preferences panel, allowing users to accept, decline, or customize cookie settings.
-- `components/global/CreateListModal.vue` — Provides a modal interface for users to create new custom lists, including specifying a name, description, and privacy settings.
-- `components/global/FollowingModal.vue` — Manages and displays a modal for users to view and manage the people, TV shows, production companies, and streaming services they follow.
-- `components/global/Footer.vue` — Provides a global footer component for the Cinemagoria website, including navigation links to resources, cookie preferences, FAQ, usage policies, contact, and social media links.
-- `components/global/InstallPrompt.vue` — Displays a prompt to the user to add 'Cinemagoria' to their home screen, handling the 'beforeinstallprompt' event and managing user preferences via local storage or cookies.
-- `components/global/MyListsModal.vue` — Manages a modal for users to organize items into custom lists, supporting adding, removing, and moving items between lists, and displaying user-created lists.
-- `components/global/Nav.vue` — Implements the main navigation bar for the application, featuring links to home, movie discovery, and user-specific lists, with functionality to clear search before navigation.
-- `components/global/NewsCarousel.vue` — Displays a carousel of the latest news articles, allowing users to browse recent updates and navigate to an 'Explore All' news page.
-- `components/global/ProgressTrackingModal.vue` — Provides a modal for users to track and manage their watch progress for movies and TV shows, including marking items as watched and updating episode progress.
-- `components/global/QuickFav.vue` — Offers a quick favorite button component that allows authenticated users to add or manage an item in their lists, opening a modal for list management.
-- `components/global/QuickFavModal.vue` — Displays a confirmation modal for removing an item from a user's watchlist, handling the removal action and emitting an update event upon success.
-  - Registers 'open-quickfav-modal' and emits 'favorites-updated' events.
-- `components/global/RatedModal.vue` — Manages a modal for users to view and manage their rated movies and TV shows, allowing them to edit or remove existing ratings and reviews.
-- `components/global/RelatedArticlesCarousel.vue` — Vue component for displaying a carousel of related articles, fetching data asynchronously and handling image loading and carousel navigation.
-- `components/global/SearchForm.vue` — Vue component providing a search form with debounced input, navigation, and user avatar/name fetching capabilities.
-- `components/global/TopNav.vue` — Global navigation bar Vue component that displays a title and is fixed at the top of the viewport, with responsive styling.
-- `components/Hero.vue` — Vue component for displaying a hero section, potentially with auto-advancing content, navigation, and user interaction features like rating and tracking.
-- `components/HowItWorksModal.vue` — Vue component for a modal explaining how release alerts work, featuring an introductory text and a carousel for visual explanation.
-- `components/Images.vue` — Vue component for displaying a collection of images (posters or backdrops) with a title, count, and a modal for full-screen viewing.
-- `components/ImagesItem.vue` — Vue component representing a single image item within a gallery, displaying a thumbnail with a loading indicator and handling modal opening.
-- `components/KviffCard.vue` — Vue component for displaying a KVIFF-themed card, including an image, title, quick actions, and a link to its detail page or external source.
-- `components/KviffLiveBanner.vue` — Vue component for a promotional banner for KVIFF 2026, providing a link to festival coverage with a distinct visual style.
-- `components/Listing.vue` — Vue component for displaying a list of items, optionally with a title, 'Explore All' link, and infinite scrolling functionality to load more items.
-- `components/ListingCarousel.vue` — Displays a horizontal carousel of movie/TV show cards with a title and an optional 'Explore All' link, supporting a compact mode for smaller cards.
-- `components/Loader.vue` — Provides a simple, animated SVG loading spinner component with customizable size and color.
-- `components/MediaNav.vue` — Renders a navigation bar with clickable buttons, typically used for media categories, emitting an event on click.
-- `components/Modal.vue` — Implements a reusable modal component with transition effects, supporting different content types like iframes and images, and keyboard navigation.
-- `components/movie/MovieInfo.vue` — Displays detailed information about a movie, including poster, overview, cast, crew, external links, and awards, with dynamic tabbed content.
+- `components/global/CreateListModal.vue` — Provides a modal interface for users to create a new custom list, including name, description, and privacy settings.
+- `components/global/FollowingModal.vue` — Vue component for a modal that allows users to manage the people, TV shows, production companies, and streaming services they follow.
+- `components/global/Footer.vue` — Vue component for the global footer, displaying navigation links to resources, social media, and copyright information.
+- `components/global/InstallPrompt.vue` — Vue component that displays a prompt to the user to install the Cinemagoria web application to their home screen.
+- `components/global/MyListsModal.vue` — Vue component for a modal that allows users to manage their custom lists, including adding or removing items and creating new lists.
+- `components/global/Nav.vue` — Vue component for the main navigation bar, providing links to home, discover, news, and user-specific sections like lists and profile.
+- `components/global/NewsCarousel.vue` — Vue component displaying a carousel of the latest news articles, with navigation controls and a link to explore all news.
+- `components/global/ProgressTrackingModal.vue` — Vue component for a modal that enables users to track their watch progress for movies and TV shows, including individual episodes.
+- `components/global/QuickFav.vue` — Vue component for a quick favorite button that allows users to add or manage an item in their lists, displaying a plus or check icon.
+- `components/global/QuickFavModal.vue` — Vue component for a confirmation modal that prompts the user to confirm removal of an item from their watchlist.
+- `components/global/RatedModal.vue` — Provides a modal interface for users to view and manage their rated movies and TV shows, including options to edit reviews and remove ratings.
+- `components/global/RelatedArticlesCarousel.vue` — Displays a horizontal carousel of related articles, fetching data asynchronously and providing navigation controls for scrolling.
+- `components/global/SearchForm.vue` — Implements a global search form with debouncing, dynamic placeholder text, and navigation logic based on search queries or specific routes.
+- `components/global/TopNav.vue` — Renders a fixed top navigation bar that displays a title, primarily for smaller screens, and hides on larger viewports.
+- `components/Hero.vue` — Displays a hero section with a main item (movie/TV show), auto-advancing carousel functionality, and interactive elements for user engagement like rating and tracking.
+- `components/HowItWorksModal.vue` — Presents a modal explaining how release alerts work, featuring an introductory text and a carousel to illustrate the process.
+- `components/Images.vue` — Displays a panel of images (posters or backdrops) for a given media type, with a count and a modal for full-screen viewing.
+- `components/ImagesItem.vue` — Renders an individual image item within a gallery, displaying a loading spinner and handling image loading states and modal interactions.
+- `components/KviffCard.vue` — Displays a card for a KVIFF (Karlovy Vary International Film Festival) item, including an image, quick actions, and a link to its details page.
+- `components/KviffLiveBanner.vue` — Displays a promotional banner for the KVIFF 2026 festival, providing a link to its coverage page with a distinct visual style.
+- `components/Listing.vue` — Displays a list of items, typically movies or TV shows, with an optional title, a link to view all items, and a loading indicator for infinite scrolling.
+- `components/ListingCarousel.vue` — Renders a horizontal carousel of items, such as movie or TV show cards, with navigation buttons and an optional 'Explore All' link.
+- `components/Loader.vue` — Provides a reusable SVG-based loading spinner component with customizable size and color.
+- `components/MediaNav.vue` — Presents a navigation bar with clickable buttons, typically used for filtering media content, and emits an event when a button is clicked.
+- `components/Modal.vue` — Implements a generic modal component that can display various content types like iframes or images, with navigation and accessibility features.
+- `components/movie/MovieInfo.vue` — Displays detailed information about a movie, including its poster, overview, cast, crew, awards, and external links, with dynamic tab navigation.
 - `components/movie/MovieReleases.vue` — Displays a list of movie release dates grouped by country, showing release details and country flags.
-- `components/music/SoundtrackGroup.vue` — Groups and displays a list of soundtrack items, typically by year, within a larger soundtrack listing.
-- `components/music/SoundtrackItem.vue` — Displays a single soundtrack item with its title, disambiguation, and artist, linking to MusicBrainz.
-- `components/music/SoundtrackList.vue` — Displays a list of soundtrack albums and their tracks, allowing users to play tracks on YouTube.
-- `components/NoirModal.vue` — Presents a stylized modal dialog with a 'N.O.I.R' brand, a manifesto, and a button to explore a curated selection of titles.
-- `components/OscarsCarousel.vue` — Displays a horizontal carousel for the 98th Academy Awards, showcasing nominees and providing a link to full awards coverage.
-- `components/OscarsLiveBanner.vue` — Displays a banner for the 98th Academy Awards, indicating live coverage or results, with a countdown timer.
-- `components/person/CreditsHistory.vue` — Vue component displaying a person's credit history, allowing filtering by department and media type (combined, movie, TV).
-- `components/person/CreditsHistoryGroup.vue` — Vue component that displays a group of credits for a person, typically organized by year, and renders individual credit items.
-- `components/person/CreditsHistoryItem.vue` — Vue component for displaying a single credit item in a person's history, linking to the associated media page.
-- `components/person/PersonAwardsTab.vue` — Vue component displaying a person's awards (Oscars, Golden Globes, Palme d'Or, Golden Lion, Golden Bear) in a tabular format.
-- `components/person/PersonInfo.vue` — Vue component displaying a person's biographical information, including avatar, name, biography, and key statistics like birth/death dates and awards.
-- `components/ProductionCompanyCarousel.vue` — Vue component displaying a horizontal carousel of popular production companies, with autoplay and navigation controls.
-- `components/ProductionHero.vue` — Vue component displaying a hero section for a production company, including its logo, name, country, headquarters, description, and a follow button.
-- `components/RomfordCard.vue` — Vue component representing a card for a Romford film festival entry, including an image, quick actions, and a link to its detail page.
-- `components/RotterdamCard.vue` — Vue component representing a card for a Rotterdam film festival entry, including an image, quick actions, and a link to its detail page.
-- `components/search/CategoryCarousel.vue` — Vue component displaying a collapsible carousel of search results within a specific category, with navigation and a 'load more' option.
-- `components/search/CategorySection.vue` — Vue component displaying a collapsible section of search results for a specific category, rendering each item as a Card component.
-- `components/search/DiscoverSearch.vue` — Vue component for discovering movies and TV shows with extensive filtering and sorting options, fetching data from TMDb.
-- `components/search/NewsResultCard.vue` — Vue component displaying a single news article with an image, source badge, date, title, and description, linking to the full article.
-- `components/search/SearchGuideModal.vue` — Vue component for a modal displaying a guide to the various search functionalities available in Cinemagoria.
-- `components/search/SearchResults.vue` — Vue component for displaying search results across various content types including movies, TV, people, and news, with pagination and typo checking.
-- `components/SlamdanceCard.vue` — Vue component for displaying a Slamdance film entry, including an image, quick actions, and a link to its detail page or external source.
-- `components/SpotlightCarousel.vue` — Vue component for a horizontal carousel displaying a collection of items, typically cards, with navigation controls and an optional 'Explore All' link.
-- `components/StreamingPlatformCarousel.vue` — Vue component for a horizontal carousel displaying popular streaming services, with navigation controls and optional autoplay.
-- `components/StreamingPlatformHero.vue` — Vue component displaying a hero section for a streaming platform, including its logo, name, and a follow/unfollow button.
-- `components/SundanceCard.vue` — Vue component for displaying a Sundance film entry, including an image, quick actions, and a link to its detail page or external source.
-- `components/TiffCard.vue` — Displays a card for a TIFF festival item, including an image, title, and quick actions like favoriting and opening external links.
-- `components/TribecaCard.vue` — Displays a card for a Tribeca festival item, including an image, title, and quick actions like favoriting and opening external links.
-- `components/TribecaLiveBanner.vue` — Provides a promotional banner for the Tribeca 2026 festival, linking to its coverage page and featuring a custom background and logo.
-- `components/tv/Episodes.vue` — Manages and displays a list of TV show episodes, allowing users to select seasons, view episode counts, and mark seasons as watched/unwatched.
-- `components/tv/EpisodesItem.vue` — Displays a single TV show episode with its poster, name, and a progress tracking overlay for users to mark watch progress.
-- `components/tv/TvInfo.vue` — Displays detailed information for a TV show, including poster, overview, external links, awards, and related content like recommendations and creator's other works.
-- `components/VeniceCard.vue` — Displays a card for a Venice festival item, including an image, title, and quick actions like favoriting and opening external links.
-- `components/Videos.vue` — Displays a collection of videos, allowing users to filter by type and open videos in a modal viewer.
-- `components/VideosItem.vue` — Displays a single video item with its thumbnail, duration, title, and type, and emits an event to open a modal viewer.
-- `components/WatchOn.vue` — Displays a list of streaming providers for a given movie or TV show, allowing users to click through to watch content.
-- `components/YearPicker.vue` — Provides a dropdown selector for users to choose a release year, emitting the selected year or an empty string.
+- `components/music/SoundtrackGroup.vue` — Organizes and displays a group of soundtrack items, typically by year, within a list.
+- `components/music/SoundtrackItem.vue` — Displays a single soundtrack item, including its title, disambiguation, and artist, with a link to MusicBrainz.
+- `components/music/SoundtrackList.vue` — Displays a list of soundtrack albums and their tracks, allowing users to play tracks via YouTube.
+- `components/NoirModal.vue` — Presents a stylized modal dialog featuring the 'N.O.I.R' brand, a manifesto, and options to show or hide the manifesto content.
+- `components/OscarsCarousel.vue` — Displays a scrollable carousel of nominees for the 98th Academy Awards, allowing users to navigate through different award categories and view associated films/people.
+- `components/OscarsLiveBanner.vue` — Displays a banner for the 98th Academy Awards, showing live status or results with a ticker of winning categories and films.
+- `components/person/CreditsHistory.vue` — Displays a person's filmography, allowing filtering by department and media type (movies/TV) and grouping credits by year.
+- `components/person/CreditsHistoryGroup.vue` — Renders a group of credits for a person, typically organized by year, displaying each credit using the CreditsHistoryItem component.
+- `components/person/CreditsHistoryItem.vue` — Displays a single credit item for a person, linking to the associated movie or TV series and showing their role and episode count if applicable.
+- `components/person/PersonAwardsTab.vue` — Displays a person's awards history, including Oscars, Golden Globes, Palme d'Or, Golden Lion, and Golden Bear, with links to associated films.
+- `components/person/PersonInfo.vue` — Displays detailed information about a person, including their biography, birth/death dates, known for department, and awards won.
+- `components/ProductionCompanyCarousel.vue` — Displays a scrollable carousel of popular production companies, with autoplay functionality and links to individual company pages.
+- `components/ProductionHero.vue` — Displays a hero section for a production company, showing its name, logo, country, headquarters, description, and a follow button.
+- `components/RomfordCard.vue` — Displays a card for a film from the Romford Film Festival, including its poster, title, and quick actions like favoriting or opening the official festival page.
+- `components/RotterdamCard.vue` — Displays a card for a film from the Rotterdam Film Festival, including its poster, title, and quick actions like favoriting or opening the official festival page.
+- `components/search/CategoryCarousel.vue` — Displays a collapsible carousel of search results within a specific category, allowing users to scroll through items and load more.
+- `components/search/CategorySection.vue` — Displays a collapsible section of items under a given title, typically used for organizing search results by category, with each item rendered using a Card component.
+- `components/search/DiscoverSearch.vue` — Provides a comprehensive search interface for discovering movies and TV shows, allowing users to filter by type, genre, sort options, country, network, language, streaming provider, and other criteria.
+- `components/search/NewsResultCard.vue` — Renders a single news article as a card, displaying its image, source, publication date, title, and a sanitized description, with dynamic linking to internal or external sources.
+- `components/search/SearchGuideModal.vue` — Presents a modal dialog that serves as a guide for using the search functionality, explaining different search methods and features available within Cinemagoria.
+- `components/search/SearchResults.vue` — Displays a dynamic list of search results, including movies, TV shows, people, news articles, and users, with support for pagination, loading states, and typo checking.
+- `components/SlamdanceCard.vue` — Renders a card for a Slamdance item, displaying its image, title, and providing actions like adding to a list or opening an external source URL.
+- `components/SpotlightCarousel.vue` — Displays a horizontal carousel of `Card` components, typically used for spotlighted content, with navigation buttons and an optional 'Explore All' link.
+- `components/StreamingPlatformCarousel.vue` — Displays a horizontal carousel of streaming platform cards, featuring popular services with navigation controls and an optional 'Explore All' link.
+- `components/StreamingPlatformHero.vue` — Displays a hero section for a streaming platform, allowing users to follow/unfollow it and showing its name and logo.
+- `components/SundanceCard.vue` — Displays a card component for Sundance Film Festival items, including an image, title, and quick actions like opening an external link.
+- `components/TiffCard.vue` — Displays a card component for TIFF (Toronto International Film Festival) items, including an image, title, and quick actions like opening an external link.
+- `components/TribecaCard.vue` — Displays a card component for Tribeca Film Festival items, including an image, title, and quick actions like opening an external link.
+- `components/TribecaLiveBanner.vue` — Provides a banner component for the Tribeca 2026 festival, linking to its coverage page with a distinct background and logo.
+- `components/tv/Episodes.vue` — Manages and displays a list of TV show episodes, allowing users to select seasons and mark episodes/seasons as watched.
+- `components/tv/EpisodesItem.vue` — Displays an individual TV episode item, including its poster, name, and a progress tracking overlay for users.
+- `components/tv/TvInfo.vue` — Displays detailed information about a TV show, including its poster, overview, external links, and related content.
+- `components/VeniceCard.vue` — Displays a card component for Venice Film Festival items, including an image, title, and quick actions like opening an external link.
+- `components/Videos.vue` — Vue component that displays a list of videos, allows filtering by type, and opens a modal to play selected videos, fetching YouTube video details.
+- `components/VideosItem.vue` — Vue component for displaying an individual video item with its thumbnail, name, type, and duration, emitting an event when clicked to open a modal.
+- `components/WatchOn.vue` — Vue component to display a list of streaming providers where a movie or TV show can be watched, including their logos and links.
+- `components/YearPicker.vue` — Vue component providing a dropdown for selecting a release year, ranging from a minimum year to the current year, and emitting the selected value.
 
 ### `composables`
 
@@ -194,59 +196,59 @@
 
 ### `pages`
 
-- `pages/auth-success.vue` — Handles post-authentication redirects and displays success or error states, cleaning up local storage and updating navigation links.
+- `pages/auth-success.vue` — Handles post-authentication redirects, displaying loading, success, or error states, and managing the return URL and UI updates.
 - `pages/awards/index.vue` — Displays a page for browsing major film awards, allowing users to select an award and year to view winners and nominees.
-- `pages/changelog/index.vue` — Renders a changelog page by fetching and displaying release notes directly from the cinemagoria GitHub repository.
-- `pages/contact/index.vue` — Provides a contact form for users to submit inquiries, handling form submission, loading states, and displaying success or error messages.
-- `pages/faq/index.vue` — Displays a Frequently Asked Questions page with a table of contents for navigation and expandable sections for each question.
-- `pages/festival/bafici-2026/index.vue` — Displays detailed information for the BAFICI 2026 film festival, including films, awards, and a schedule, with navigation and search features.
-- `pages/festival/berlinale-2026/index.vue` — Displays detailed information for the Berlinale 2026 film festival, including films, awards, and a schedule, with navigation and search features.
-- `pages/festival/bifff-2026/index.vue` — Displays detailed information for the BIFFF 2026 film festival, including films, awards, and a schedule, with navigation and search features.
-- `pages/festival/cannes-2026/index.vue` — Displays detailed information for the Cannes Film Festival 2026, including films, awards, and a schedule, with navigation and search features.
-- `pages/festival/cuff-2026/index.vue` — Vue page component for displaying details, films, schedule, and awards for the Calgary Underground Film Festival (CUFF) 2026, including search and navigation features.
-- `pages/festival/fantasia-2026/index.vue` — Vue page component for displaying details, films, schedule, and awards for the Fantasia International Film Festival 2026, including search and navigation features.
-- `pages/festival/frightfest-2026/index.vue` — Vue page component for displaying details, films, and schedule for the FrightFest 2026 festival, including search and navigation features.
-- `pages/festival/kviff-2026/index.vue` — Vue page component for displaying details, films, schedule, and awards for the Karlovy Vary International Film Festival (KVIFF) 2026, including search and navigation features.
-- `pages/festival/romford-2026/index.vue` — Vue page component for displaying details, films, schedule, and awards for the Romford Horror Film Festival 2026, including search and navigation features.
-- `pages/festival/rotterdam-2026/index.vue` — Vue page component for displaying details, films, schedule, and awards for the International Film Festival Rotterdam (IFFR) 2026, including search and navigation features.
-- `pages/festival/slamdance-2026/index.vue` — Vue page component for displaying details, films, schedule, and awards for the Slamdance Film Festival 2026, including search and navigation features.
-- `pages/festival/sundance-2026/index.vue` — Vue page component for displaying information about the Sundance Film Festival 2026, including films, awards, and schedule, with dynamic content loading and search functionality.
-- `pages/festival/sxsw-2026/index.vue` — Vue page component for displaying information about the SXSW Film Festival 2026, including films, awards, and schedule, with dynamic content loading and search functionality.
-- `pages/festival/tiff-2026/index.vue` — Vue page component for displaying information about the TIFF 2026 festival, including films, awards, and schedule, with dynamic content loading and search functionality.
-- `pages/festival/tribeca-2026/index.vue` — Vue page component for displaying information about the Tribeca Film Festival 2026, including films, awards, and schedule, with dynamic content loading and search functionality.
-- `pages/festival/venice-2026/index.vue` — Vue page component for displaying information about the Venice Film Festival 2026, including films, awards, and schedule, with dynamic content loading and search functionality.
-- `pages/genre/[id]/movie.vue` — Vue page component that displays a paginated list of movies belonging to a specific genre, fetching data from an API and handling 'load more' functionality.
-- `pages/genre/[id]/tv.vue` — Vue page component that displays a paginated list of TV shows belonging to a specific genre, fetching data from an API and handling 'load more' functionality.
-- `pages/index.vue` — Vue page component for the homepage, displaying various carousels for featured content, news, and festivals, along with conditional banners for ongoing events like Oscars, Cannes, and Fantasia.
-- `pages/lists/[slug].vue` — Displays a single user-created list of movies and TV shows, allowing the owner to edit its details and manage items.
-- `pages/lists/index.vue` — Displays a user's custom lists of movies and TV shows, providing functionality to create, edit, and delete lists.
-- `pages/login/index.vue` — Serves as the login page, displaying an authentication modal for user login and registration.
-- `pages/movie/[id].vue` — Displays detailed information for a specific movie, including overview, credits, videos, images, soundtracks, and awards.
-- `pages/movie/category/[name].vue` — Displays a list of movies belonging to a specific category (e.g., trending, popular), with infinite scrolling.
-- `pages/movie/followed.vue` — Displays movies from followed production companies and streaming platforms.
-- `pages/movie/index.vue` — Serves as the main movie discovery page, featuring popular, top-rated, upcoming, and now playing movie categories, along with filters.
-- `pages/news/[slug].vue` — Displays a single news article with its content, related entities, and options to save or share.
-- `pages/news/index.vue` — Displays a feed of the latest news articles, with filtering options by source and category, and search functionality.
-- `pages/noir/index.vue` — Displays the N.O.I.R Archive, a curated collection of historical film noir titles, with sorting and list creation features.
-- `pages/notifications/index.vue` — Vue page component for displaying user notifications, allowing filtering by unread status, marking notifications as read/unread, and managing follows.
-- `pages/person/[id].vue` — Vue page component for displaying detailed information about a person, including their known for credits, filmography, photos, and awards.
+- `pages/changelog/index.vue` — Displays a changelog page, fetching and rendering release notes directly from the GitHub repository's releases.
+- `pages/contact/index.vue` — Provides a contact support form for users to submit inquiries, handling form submission, loading states, and success/error messages.
+- `pages/faq/index.vue` — Presents a Frequently Asked Questions page with a table of contents, allowing users to navigate and expand sections for detailed information.
+- `pages/festival/bafici-2026/index.vue` — Displays detailed information for the BAFICI 2026 film festival, including films, awards, and schedule, with search and navigation features.
+- `pages/festival/berlinale-2026/index.vue` — Displays detailed information for the Berlinale 2026 film festival, including films, awards, and schedule, with search and navigation features.
+- `pages/festival/bifff-2026/index.vue` — Displays detailed information for the BIFFF 2026 film festival, including films, awards, and schedule, with search and navigation features.
+- `pages/festival/cannes-2026/index.vue` — Displays detailed information for the Cannes Film Festival 2026, including films, awards, and schedule, with search and navigation features.
+- `pages/festival/cuff-2026/index.vue` — Vue page component for displaying details of the CUFF 2026 film festival, including films, schedule, and awards, with interactive search and navigation.
+- `pages/festival/fantasia-2026/index.vue` — Vue page component for displaying details of the Fantasia International Film Festival 2026, including films, schedule, and awards, with interactive search and navigation.
+- `pages/festival/frightfest-2026/index.vue` — Vue page component for displaying details of the FrightFest 2026 film festival, including films and schedule, with interactive search and navigation.
+- `pages/festival/kviff-2026/index.vue` — Vue page component for displaying details of the Karlovy Vary International Film Festival 2026, including films, schedule, and awards, with interactive search and navigation.
+- `pages/festival/romford-2026/index.vue` — Vue page component for displaying details of the Romford Horror Film Festival 2026, including films, schedule, and awards, with interactive search and navigation.
+- `pages/festival/rotterdam-2026/index.vue` — Vue page component for displaying details of the International Film Festival Rotterdam 2026, including films, schedule, and awards, with interactive search and navigation.
+- `pages/festival/slamdance-2026/index.vue` — Vue page component for displaying details of the Slamdance Film Festival 2026, including films, schedule, and awards, with interactive search and navigation.
+- `pages/festival/sundance-2026/index.vue` — Vue component for displaying details of the Sundance Film Festival 2026, including films, awards, and schedule, with dynamic content loading and mobile responsiveness.
+- `pages/festival/sxsw-2026/index.vue` — Vue component for displaying details of the SXSW Film Festival 2026, including films, awards, and schedule, with dynamic content loading and mobile responsiveness.
+- `pages/festival/tiff-2026/index.vue` — Vue component for displaying details of the TIFF 2026 festival, including films, awards, and schedule, with dynamic content loading and mobile responsiveness.
+- `pages/festival/tribeca-2026/index.vue` — Vue component for displaying details of the Tribeca Film Festival 2026, including films, awards, and schedule, with dynamic content loading and mobile responsiveness.
+- `pages/festival/venice-2026/index.vue` — Vue component for displaying details of the Venice Film Festival 2026, including films, awards, and schedule, with dynamic content loading and mobile responsiveness.
+- `pages/genre/[id]/movie.vue` — Vue page component that displays a list of movies filtered by a specific genre ID, providing infinite scrolling and dynamic meta-information.
+- `pages/genre/[id]/tv.vue` — Vue page component that displays a list of TV shows filtered by a specific genre ID, providing infinite scrolling and dynamic meta-information.
+- `pages/index.vue` — Homepage Vue component displaying various carousels for featured content, news, and festival films, along with conditional banners for ongoing events like Oscars and Cannes.
+- `pages/lists/[slug].vue` — Displays a single user-created list of movies and TV shows, allowing the owner to manage its details and items, including filtering, sorting, and rating.
+- `pages/lists/index.vue` — Displays a user's collection of custom lists, allowing them to create new lists, view existing ones, and manage their privacy settings.
+- `pages/login/index.vue` — Serves as the entry point for user authentication, displaying an authentication modal with login and registration options upon mounting.
+- `pages/movie/[id].vue` — Displays detailed information for a specific movie, including an overview, credits, videos, images, soundtracks, and awards, with navigation between sections.
+- `pages/movie/category/[name].vue` — Displays a paginated list of movies belonging to a specific category (e.g., trending, popular), allowing users to load more items.
+- `pages/movie/followed.vue` — Displays movies from production companies and streaming platforms that the user has chosen to follow.
+- `pages/movie/index.vue` — Serves as the main discovery page for movies, featuring various categories like popular, top-rated, upcoming, and now playing, along with filters and followed content.
+- `pages/news/[slug].vue` — Displays a single news article, including its content, related entities, and options for saving and sharing, with loading and error states.
+- `pages/news/index.vue` — Displays a feed of the latest news articles, allowing users to filter by source and category, search, and manage saved articles.
+- `pages/noir/index.vue` — Displays the N.O.I.R Archive, a curated collection of historical titles, allowing users to sort them and clone the entire archive into a personal list.
+- `pages/notifications/index.vue` — Vue page component for displaying user notifications, allowing filtering by unread status, marking notifications as read/unread, and managing follows for various content types.
+- `pages/person/[id].vue` — Vue page component for displaying detailed information about a person, including their known for credits, full filmography, photos, and awards.
 - `pages/production-companies/index.vue` — Vue page component that displays a grid of all supported production companies, allowing users to browse and navigate to individual company pages.
 - `pages/production/[slug].vue` — Vue page component for displaying details of a specific production company, including its movies and TV shows, with filtering and sorting options.
-- `pages/recovery/index.vue` — Vue page component for the password recovery process, allowing users to request a password reset link via email.
-- `pages/register/index.vue` — Vue page component that serves as an entry point for user registration by displaying an authentication modal pre-set to the register tab.
-- `pages/search/index.vue` — Vue page component for displaying search results across movies, TV shows, people, and news, with loading indicators and pagination.
-- `pages/settings/index.vue` — Vue page component for managing user account settings, including profile information, avatar, email, alias, and privacy preferences.
-- `pages/streaming-services/index.vue` — Vue page component that displays a grid of all supported streaming services, allowing users to browse and navigate to individual service pages.
-- `pages/streaming/[slug].vue` — Displays details for a specific streaming platform, including its movies and TV shows, with filtering and sorting options.
+- `pages/recovery/index.vue` — Vue page component for password recovery, allowing users to enter their email to receive a reset link and providing navigation back to the login page.
+- `pages/register/index.vue` — Vue page component that displays an authentication modal pre-set to the registration tab upon being mounted.
+- `pages/search/index.vue` — Vue page component for displaying search results based on a query, showing movies, TV shows, people, and news, with loading indicators and pagination.
+- `pages/settings/index.vue` — Vue page component for managing user account settings, including avatar, profile information, privacy settings, and account deletion.
+- `pages/streaming-services/index.vue` — Vue page component that displays a grid of all supported streaming providers, allowing users to browse and navigate to individual service pages.
+- `pages/streaming/[slug].vue` — Displays a streaming platform's details, including its movies and TV shows, with filtering and sorting options.
 - `pages/streaming/followed.vue` — Displays a user's followed streaming content, distinguishing between movies and TV shows based on the URL query parameter.
-- `pages/tv/[id].vue` — Displays detailed information for a specific TV show, including an overview, cast, crew, episodes, videos, images, soundtracks, and awards.
-- `pages/tv/category/[name].vue` — Displays a paginated list of TV shows belonging to a specific category (e.g., trending, popular), with options to load more items.
+- `pages/tv/[id].vue` — Displays detailed information for a specific TV show, including an overview, cast/crew, episodes, videos, images, soundtracks, and awards.
+- `pages/tv/category/[name].vue` — Displays a list of TV shows belonging to a specific category (e.g., trending, popular), with pagination to load more items.
 - `pages/tv/followed.vue` — Displays a user's followed TV show content.
-- `pages/tv/index.vue` — Serves as the main discovery page for TV shows, featuring popular, top-rated, on-air, and airing today series, along with filters.
-- `pages/u/[alias].vue` — Displays a user's public profile, including their reviews and lists, with functionality to follow/unfollow the user.
+- `pages/tv/index.vue` — Serves as the main discovery page for TV shows, featuring popular, top-rated, on-air, and airing today series, along with followed content.
+- `pages/u/[alias].vue` — Displays a user's public profile, including their reviews and lists, with options to follow/unfollow the user.
 - `pages/usage-policies/index.vue` — Displays the platform's usage policies and privacy agreement, organized into scrollable sections with a table of contents.
-- `pages/watchlist/index.vue` — Manages and displays a user's watchlist of movies and TV shows, including filtering, sorting, and rating functionalities.
-- `pages/wip/index.vue` — Informs users that a section of the website is currently under maintenance and provides options to return home or get more information.
+- `pages/watchlist/index.vue` — Manages and displays a user's watchlist of movies and TV shows, allowing filtering, sorting, and interaction with saved items.
+- `pages/wip/index.vue` — Displays a 'Work in Progress' page, informing users that a section is under maintenance and providing options to return home or get more information.
 
 ### `plugins`
 
@@ -255,8 +257,8 @@
 
 ### `public`
 
-- `public/manifest.json` — Defines the web app manifest for Cinemagoria, specifying its name, description, display properties, theme colors, and a set of icons for various purposes and sizes.
-- `public/sw.js` — A self-destroying service worker script that unregisters itself immediately upon activation and reloads all clients, ensuring no caching or offline behavior.
+- `public/manifest.json` — Defines the web application manifest for Cinemagoria, providing metadata like name, description, start URL, display mode, theme colors, and icons for PWA installation.
+- `public/sw.js` — A self-destroying service worker script designed to unregister itself and refresh all client pages upon activation, ensuring no service worker remains active.
   - This file is explicitly marked as not to be version controlled.
 
 ### `scripts`
@@ -487,7 +489,7 @@
 
 ## External Packages (imported in code)
 
-- `~` (414 imports)
+- `~` (415 imports)
 - `~~` (55 imports)
 - `h3` (50 imports)
 - `vue` (44 imports)

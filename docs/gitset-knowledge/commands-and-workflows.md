@@ -2,4 +2,4 @@
 
 ## Package Scripts
 
-| Script      | Command           | Description
+| Script      | Command         | Description
