@@ -14,7 +14,7 @@
          kept as reference for future editions; import + computed preserved below. -->
     <!-- <TribecaLiveBanner v-if="showTribecaLiveBanner" /> -->
 
-    <FantasiaLiveBanner v-if="showFantasiaLiveBanner" />
+    <FestivalsRotatingBanner />
 
     <Hero
       v-if="featured && featured.length"
@@ -71,6 +71,7 @@ import CannesLiveBanner from '~/components/CannesLiveBanner';
 import CannesWinnersBanner from '~/components/CannesWinnersBanner';
 import TribecaLiveBanner from '~/components/TribecaLiveBanner';
 import FantasiaLiveBanner from '~/components/FantasiaLiveBanner';
+import FestivalsRotatingBanner from '~/components/FestivalsRotatingBanner';
 import { SUPPORTED_PRODUCTION_COMPANIES, POPULAR_PRODUCTION_COMPANIES_IDS, STREAMING_PROVIDERS, POPULAR_STREAMING_IDS } from '~/utils/constants';
 
 // ─── Oscars 2026 visibility window ───────────────────────────────────────────
