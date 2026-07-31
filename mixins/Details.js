@@ -321,6 +321,18 @@ export const trailer = {
         }];
       }
 
+      // TV only: the latest season's trailer, resolved in getTvShow() (see
+      // utils/tvTrailer.js). It has to beat the raw TMDB order below, which is
+      // what pinned every series to its season-1 trailer, but it still loses to
+      // a forced override above so manual picks stay manual. Movies and the
+      // homepage hero never carry this field.
+      if (item.best_trailer?.key) {
+        return [{
+          name: item.best_trailer.name || 'Trailer',
+          src: `https://www.youtube.com/embed/${item.best_trailer.key}?rel=0&showinfo=0&autoplay=1`,
+        }];
+      }
+
       if (!videos.length && this._enrichedTrailerKey) {
         return [{
           name: 'Trailer',
