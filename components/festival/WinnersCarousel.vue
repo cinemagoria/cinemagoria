@@ -548,7 +548,9 @@ $wc-bg-card: linear-gradient(180deg, #0d1418 0%, #06090b 100%);
   color: $wc-cyan;
   margin-bottom: 5px;
   display: -webkit-box;
-  -webkit-line-clamp: 1;
+  // 2 lines: festivals with parallel competitions carry the competition in the
+  // label, and a 1-line clamp cut exactly the part that disambiguates them.
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   line-height: 1.3;
@@ -689,6 +691,9 @@ $wc-bg-card: linear-gradient(180deg, #0d1418 0%, #06090b 100%);
   .wc-card-poster { width: 100px; }
   .wc-card-body { padding: 9px 11px; }
   .wc-card-quote { -webkit-line-clamp: 2; font-size: 10px; }
+  // Chip box is only ~158px here — tighter tracking + a 3rd line keeps long
+  // competition-qualified labels whole at the narrowest card.
+  .wc-award-chip { letter-spacing: 0.08em; -webkit-line-clamp: 3; }
 }
 </style>
 

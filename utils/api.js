@@ -908,6 +908,22 @@ export function getTvShows(query, page = 1) {
     });
 };
 
+// A TMDB video row can point at a YouTube video that has since been pulled —
+// every Euphoria season-3 trailer but one is a dead embed. oEmbed answers 200
+// for something that will actually play in an iframe and 403 for anything
+// removed, private or embedding-disabled.
+//
+// Fails open by construction: resolveTvTrailer treats a throw as "playable", so
+// a timeout or a rate-limited YouTube can only cost us the check, never a
+// working trailer.
+async function _isYouTubePlayable(key) {
+    const response = await $fetch.raw(
+        `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${key}&format=json`,
+        { method: 'GET', timeout: 1500, ignoreResponseError: true, responseType: 'text' },
+    );
+    return response.status === 200;
+}
+
 // TMDB's series-level video list is frozen at the show's launch, so a TV page
 // left to itself plays a season-1 trailer forever (see utils/tvTrailer.js).
 // This pulls the latest season's videos in, sets `best_trailer` for the play
@@ -930,6 +946,7 @@ async function _attachLatestSeasonTrailer(responseData, id, apiKey) {
                 });
                 return response.data?.results || [];
             },
+            isPlayable: _isYouTubePlayable,
         });
 
         responseData.best_trailer = best || null;
