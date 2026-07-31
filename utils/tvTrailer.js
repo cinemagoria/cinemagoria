@@ -12,14 +12,25 @@
  * entry there is usually a blooper reel, an opening-credits clip or a
  * featurette. The only reliable source is the season endpoint, so we probe
  * seasons from the highest number down and rank every candidate — series-level
- * included — through one shared tier function.
+ * included — through one shared function.
  *
- * Ranking has to be name-aware, not just date-aware, because studios publish
- * non-trailer content under `type: "Trailer"`:
- *   - Silo S4 only has "Season 4 Announcement"      -> must fall back to S3.
- *   - Widow's Bay S2 only has "Season 2 Renewal"    -> must keep the series trailer.
- *   - HBO ships a "Weeks Ahead Trailer" mid-run     -> must lose to the real season trailer.
- * Demotion is soft: a demoted video still wins when nothing better exists.
+ * Ranking happens in two steps, and the order matters:
+ *
+ *   1. CLASS — what kind of video is this? A real trailer beats a promotional
+ *      teaser, which beats a character spot, which beats things that are not
+ *      trailers at all despite TMDB's `type`. Class is compared first because
+ *      Spider-Noir's S1 holds only cast teasers ("Karen Rodriguez Is Janet
+ *      Ruiz") while the series-level list has the actual Final Trailer.
+ *
+ *   2. SEASON — newest first, but only among videos of the same class. This is
+ *      what pushes Stranger Things to S5 and The Boys to S5. It sits above the
+ *      name heuristic on purpose: when Euphoria's polished "Season 3 Trailer 2"
+ *      turned out to be a dead YouTube embed, the fallback had to be S3's
+ *      "Weeks Ahead Trailer", not the season-1 trailer from 2019.
+ *
+ * Videos that are not trailers at all get demoted hard, which is what keeps
+ * Silo off "Season 4 Announcement" (falling back to S3's real trailer) and
+ * Widow's Bay off "Season 2 Renewal".
  *
  * This file is byte-identical across cinemagoria-main / -es / -stream / -estream
  * and mirrored by cinemagoria-candidates-selections/lib/tv-trailer.mjs. Keep
@@ -27,54 +38,79 @@
  * trailer is.
  */
 
-// Published under `type: "Trailer"`/`"Teaser"` but not actually a trailer.
-const DEMOTE_RE = /\b(announce|announcement|renewal|renewed|weeks ahead|next week|inside the episode|recap|sneak peek|first look|title tease|coming soon|now streaming|all episodes|behind the scenes|blooper)\b/i;
+// Filed under `type: "Trailer"`/`"Teaser"` but not a trailer in any sense.
+// These lose to everything, including an older season's real trailer.
+const HARD_DEMOTE_RE = /\b(announce|announcement|renewal|renewed|recap|sneak peek|first look|title tease|behind the scenes|blooper|opening credits|coming soon|now streaming|all episodes)\b/i;
 
-// A name that actually says "trailer" beats one that doesn't, within the same type.
-const LOOKS_LIKE_TRAILER_RE = /tr[aá]iler/i;
+// Real promotional cuts that are still worse than the season's main trailer —
+// HBO's mid-run "Weeks Ahead" montages and the like. Demoted within their
+// season, never below a different season.
+const SOFT_DEMOTE_RE = /\b(weeks ahead|next week|inside the episode)\b/i;
 
-// Tier <= this counts as "a real trailer for this season", which stops the
-// season walk early instead of probing every season down to 1.
-export const TV_TRAILER_GOOD_TIER = 3;
+// A teaser that names itself is a marketing beat; one that doesn't is usually a
+// character spot or a stunt clip.
+const PROMO_NAME_RE = /tr[aá]iler|teaser|official/i;
+const TRAILER_NAME_RE = /tr[aá]iler/i;
 
 // Ceiling on season probes. The Simpsons has 38 seasons; without this we would
 // fire 38 requests to discover that its newest trailer is from S35.
 export const TV_TRAILER_MAX_SEASON_PROBES = 4;
 
+// How many dead YouTube keys we're willing to skip past before giving up and
+// playing whatever ranks best. TMDB keeps rows for videos YouTube has since
+// pulled — every Euphoria S3 trailer but one is a dead embed — so the
+// highest-ranked candidate is not always the one that actually plays.
+export const TV_TRAILER_MAX_PLAYABILITY_CHECKS = 3;
+
 /**
- * Lower is better. 99 means "not a trailer at all" and never gets picked.
+ * Coarse bucket, compared before season. Lower is better; 9 means "never pick".
+ */
+export function tvVideoClass(video) {
+  if (!video || video.site !== 'YouTube') return 9;
+  const name = video.name || '';
+  const hardDemoted = HARD_DEMOTE_RE.test(name);
+
+  if (video.type === 'Trailer') return hardDemoted ? 4 : 1;
+  if (video.type === 'Teaser') {
+    if (hardDemoted) return 4;
+    return PROMO_NAME_RE.test(name) ? 2 : 3;
+  }
+  return 9;
+}
+
+/**
+ * Fine-grained quality inside a class. Lower is better; 99 means "never pick".
  */
 export function rankTvVideo(video) {
-  if (!video || video.site !== 'YouTube') return 99;
+  if (tvVideoClass(video) === 9) return 99;
+  const name = video.name || '';
+  const softDemoted = SOFT_DEMOTE_RE.test(name);
+  const named = TRAILER_NAME_RE.test(name);
 
-  const type = video.type;
-  const demoted = DEMOTE_RE.test(video.name || '');
-  const named = LOOKS_LIKE_TRAILER_RE.test(video.name || '');
-
-  if (type === 'Trailer' && !demoted && named && video.official) return 1;
-  if (type === 'Trailer' && !demoted && named) return 2;
-  if (type === 'Trailer' && !demoted) return 3;
-  if (type === 'Teaser' && !demoted && named) return 4;
-  if (type === 'Teaser' && !demoted) return 5;
-  if (type === 'Trailer') return 6;
-  if (type === 'Teaser') return 7;
-  return 99;
+  if (!softDemoted && named && video.official) return 1;
+  if (!softDemoted && named) return 2;
+  if (!softDemoted) return 3;
+  return 4;
 }
+
+/** A trailer good enough to stop the season walk on. */
+export const isUsableSeasonTrailer = (video) => tvVideoClass(video) <= 2;
 
 const publishedAtMs = (video) => Date.parse(video?.published_at || 0) || 0;
 
 /**
  * Best trailer out of a mixed pool. Candidates carry a `season` number, with 0
  * standing for the series-level list, so a genuine season trailer outranks an
- * equally-tiered series-level one.
+ * equally-classed series-level one.
  */
 export function pickBestTvVideo(candidates) {
-  const usable = (candidates || []).filter(v => rankTvVideo(v) < 99);
+  const usable = (candidates || []).filter(v => tvVideoClass(v) < 9);
   if (!usable.length) return null;
 
   return usable.slice().sort((a, b) =>
-    rankTvVideo(a) - rankTvVideo(b)
+    tvVideoClass(a) - tvVideoClass(b)
     || (b.season || 0) - (a.season || 0)
+    || rankTvVideo(a) - rankTvVideo(b)
     || publishedAtMs(b) - publishedAtMs(a)
   )[0];
 }
@@ -88,24 +124,50 @@ const tagSeason = (videos, season) =>
  * `fetchSeasonVideos(seasonNumber)` must resolve to a TMDB videos array. It is
  * called at most TV_TRAILER_MAX_SEASON_PROBES times and every failure is
  * swallowed — a dead season request degrades to the series-level list, which is
- * exactly today's behaviour, so a TMDB hiccup can never blank out a TV page.
+ * exactly the old behaviour, so a TMDB hiccup can never blank out a TV page.
+ *
+ * `isPlayable(key)` is optional. When supplied it should resolve to false for
+ * YouTube keys that will not embed, and the walk skips past them. It is
+ * fail-open: anything that throws counts as playable, so a rate-limited or
+ * unreachable checker degrades to ranking alone rather than dropping trailers.
  *
  * Returns { best, videos, seasonProbes }, where `videos` is the deduped merge of
  * everything fetched (for the Videos tab) and `best` is the trailer to play.
  */
-export async function resolveTvTrailer({ seriesVideos, seasons, fetchSeasonVideos }) {
+export async function resolveTvTrailer({ seriesVideos, seasons, fetchSeasonVideos, isPlayable }) {
   const seen = new Set();
   const merged = [];
   const add = (videos) => {
     for (const video of videos) {
-      const key = video.id || `${video.key}-${video.type}`;
-      if (seen.has(key)) continue;
-      seen.add(key);
+      const dedupeKey = video.id || `${video.key}-${video.type}`;
+      if (seen.has(dedupeKey)) continue;
+      seen.add(dedupeKey);
       merged.push(video);
     }
   };
 
   add(tagSeason(seriesVideos, 0));
+
+  // Keys already found unplayable, so the season walk never re-checks one.
+  const unplayable = new Set();
+
+  const bestPlayable = async () => {
+    for (let attempt = 0; attempt <= TV_TRAILER_MAX_PLAYABILITY_CHECKS; attempt++) {
+      const candidate = pickBestTvVideo(merged.filter(v => !unplayable.has(v.key)));
+      if (!candidate || !isPlayable) return candidate;
+      if (attempt === TV_TRAILER_MAX_PLAYABILITY_CHECKS) return candidate;
+
+      let playable = true;
+      try {
+        playable = await isPlayable(candidate.key);
+      } catch (error) {
+        playable = true;
+      }
+      if (playable) return candidate;
+      unplayable.add(candidate.key);
+    }
+    return null;
+  };
 
   const ordered = (seasons || [])
     .filter(s => Number(s.season_number) > 0)
@@ -114,12 +176,15 @@ export async function resolveTvTrailer({ seriesVideos, seasons, fetchSeasonVideo
   // Single-season show whose series-level list already has a real trailer: the
   // season endpoint has nothing better to offer (Spider-Noir's S1 holds only
   // casting teasers), so skip the request entirely.
-  const seriesBest = pickBestTvVideo(merged);
-  if (ordered.length <= 1 && seriesBest && rankTvVideo(seriesBest) <= TV_TRAILER_GOOD_TIER) {
-    return { best: seriesBest, videos: merged, seasonProbes: 0 };
+  if (ordered.length <= 1) {
+    const seriesBest = await bestPlayable();
+    if (isUsableSeasonTrailer(seriesBest)) {
+      return { best: seriesBest, videos: merged, seasonProbes: 0 };
+    }
   }
 
   let seasonProbes = 0;
+  let best = null;
   for (const season of ordered) {
     if (seasonProbes >= TV_TRAILER_MAX_SEASON_PROBES) break;
     seasonProbes++;
@@ -133,9 +198,9 @@ export async function resolveTvTrailer({ seriesVideos, seasons, fetchSeasonVideo
     }
     add(tagSeason(seasonVideos, seasonNumber));
 
-    const best = pickBestTvVideo(merged);
-    if (best && best.season === seasonNumber && rankTvVideo(best) <= TV_TRAILER_GOOD_TIER) break;
+    best = await bestPlayable();
+    if (best && best.season === seasonNumber && isUsableSeasonTrailer(best)) break;
   }
 
-  return { best: pickBestTvVideo(merged), videos: merged, seasonProbes };
+  return { best: best || await bestPlayable(), videos: merged, seasonProbes };
 }
