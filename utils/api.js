@@ -1,4 +1,5 @@
 import { SUPPORTED_PRODUCTION_COMPANIES, STREAMING_PROVIDERS, SUPPORTED_FESTIVALS } from '~/utils/constants';
+import { resolveTvTrailer } from '~/utils/tvTrailer';
 
 const axios = {
     get: async (url, config = {}) => {
@@ -907,6 +908,40 @@ export function getTvShows(query, page = 1) {
     });
 };
 
+// TMDB's series-level video list is frozen at the show's launch, so a TV page
+// left to itself plays a season-1 trailer forever (see utils/tvTrailer.js).
+// This pulls the latest season's videos in, sets `best_trailer` for the play
+// button and merges everything into `videos.results` for the Videos tab.
+//
+// Every failure here is swallowed: a dead season request leaves `responseData`
+// exactly as TMDB returned it, which is the old behaviour, so no TV page can
+// break because of this.
+async function _attachLatestSeasonTrailer(responseData, id, apiKey) {
+    try {
+        const { best, videos } = await resolveTvTrailer({
+            seriesVideos: responseData.videos?.results || [],
+            seasons: responseData.seasons || [],
+            // Season videos are requested in en-US: TMDB returns almost nothing
+            // for localized languages, and the YouTube key is the same anyway.
+            fetchSeasonVideos: async (seasonNumber) => {
+                const response = await axios.get(`${apiUrl}/tv/${id}/season/${seasonNumber}/videos`, {
+                    params: { api_key: apiKey, language: 'en-US' },
+                    timeout: 4000,
+                });
+                return response.data?.results || [];
+            },
+        });
+
+        responseData.best_trailer = best || null;
+        responseData.videos = {
+            ...responseData.videos,
+            results: videos.sort((a, b) => Date.parse(b.published_at || 0) - Date.parse(a.published_at || 0)),
+        };
+    } catch (error) {
+        console.error('Error resolving latest-season TV trailer:', error);
+    }
+}
+
 export function getTvShow(id) {
     return new Promise((resolve, reject) => {
         // Capture runtime-config values before any await — see getMovie() for
@@ -977,6 +1012,10 @@ export function getTvShow(id) {
                     results: [...(responseData.videos.results || []), ...newVideos]
                 };
             }
+
+            // Runs after the en-US merge above so the series-level pool is
+            // already complete before the season walk starts.
+            await _attachLatestSeasonTrailer(responseData, id, apiKey);
 
             const sortImages = (imgs) => {
                 if (!imgs) return [];
