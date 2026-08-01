@@ -93,8 +93,25 @@ export function rankTvVideo(video) {
   return 4;
 }
 
-/** A trailer good enough to stop the season walk on. */
-export const isUsableSeasonTrailer = (video) => tvVideoClass(video) <= 2;
+/**
+ * Coarser bucket still, compared before season.
+ *
+ * A real trailer and a season's *official* teaser sit together at the top, so
+ * an upcoming season's official teaser outranks the last aired season's full
+ * trailer — that is the newest thing the studio has actually put out. An
+ * unofficial teaser does not get that promotion: TMDB's only entry for Slow
+ * Horses S6 is a Rotten Tomatoes re-upload, and a third-party rip should never
+ * displace Apple's own S5 trailer.
+ */
+export function tvVideoGroup(video) {
+  const cls = tvVideoClass(video);
+  if (cls === 1) return 0;
+  if (cls === 2 && video?.official) return 0;
+  return cls;
+}
+
+/** Good enough to stop the season walk on. */
+export const isUsableSeasonTrailer = (video) => tvVideoGroup(video) === 0;
 
 const publishedAtMs = (video) => Date.parse(video?.published_at || 0) || 0;
 
@@ -108,8 +125,9 @@ export function pickBestTvVideo(candidates) {
   if (!usable.length) return null;
 
   return usable.slice().sort((a, b) =>
-    tvVideoClass(a) - tvVideoClass(b)
+    tvVideoGroup(a) - tvVideoGroup(b)
     || (b.season || 0) - (a.season || 0)
+    || tvVideoClass(a) - tvVideoClass(b)
     || rankTvVideo(a) - rankTvVideo(b)
     || publishedAtMs(b) - publishedAtMs(a)
   )[0];

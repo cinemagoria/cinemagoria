@@ -789,9 +789,17 @@ async function _attachLatestSeasonTrailer(responseData, id, apiKey) {
 
 export function getTvShow(id) {
     return new Promise((resolve, reject) => {
+        // Captured before the request: `getEnv` reads useRuntimeConfig(), which
+        // resolves to undefined once the promise chain crosses Nuxt's
+        // async-context boundary in production Nitro builds. Reading it inside
+        // .then() would hand _attachLatestSeasonTrailer an undefined key, and
+        // TMDB answers "Invalid API key" with a 200 so nothing would throw —
+        // the season walk would just silently go back to season-1 trailers.
+        const apiKey = getEnv('API_KEY');
+
         axios.get(`${apiUrl}/tv/${id}`, {
             params: {
-                api_key: getEnv('API_KEY'),
+                api_key: apiKey,
                 language: getEnv('API_LANG'),
                 append_to_response: 'videos,credits,images,external_ids,content_ratings',
                 include_image_language: 'en',
@@ -803,7 +811,7 @@ export function getTvShow(id) {
                 return;
             }
 
-            await _attachLatestSeasonTrailer(responseData, id, getEnv('API_KEY'));
+            await _attachLatestSeasonTrailer(responseData, id, apiKey);
 
             try {
                 const providers = await getTVShowProviders(id);
