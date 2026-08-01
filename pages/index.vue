@@ -176,21 +176,16 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
 
      const FEATURED_ORDER = [
         // frightfest 2026
-        'Salmokji: Whispering Water',
-        'Ithaqua',
-        'Oddities|frightfest',
         // fantasia 2026
         'Hot Spot',
         'Ferine',
         'Our Effed Up World',
         'The Village of Eight Gravestones',
-        'The Mouths',
         'The Eyes',
-        'Junction Row',
         'Ancestral Beasts',
         // kviff 2026
+        'Rose of Nevada',
         'Fruit Gathering',
-        'Truck Driver',
         'Hijamat',
         'Black Money for White',
         // tribeca 2026
@@ -230,14 +225,11 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Dead Eyes',
         'The Sun Never Sets',
         'Wishful Thinking',
-        // slamdance 2026
-        'Zumeca',
         // romford 2026
         'Spoiling You',
         // berlinale 2026
         'Yellow Letters',
         'Rose',
-        'Queen at sea',
         'Heysel 85',
         'Nightborn',
         'In a Whisper',
@@ -259,7 +251,6 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'undertone',
         'The Only Living Pickpocket in New York',
         'Josephine',
-        'Time and Water',
     ];
     
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
