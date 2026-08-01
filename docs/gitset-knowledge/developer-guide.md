@@ -2,59 +2,55 @@
 
 ## Prerequisites
 
-Cinemagoria is a Nuxt.js application. The following are required:
+To develop with Cinemagoria, you need:
 
-*   Node.js (v22-slim is used in the Dockerfile)
-*   npm (or yarn/pnpm)
+*   **Node.js**: Version 22-slim (pinned in [Dockerfile](../../Dockerfile)).
+*   **pnpm**: For package management.
 
 ## Setup
 
-1.  **Install Dependencies**:
+1.  **Clone the repository**:
     ```bash
-    npm install
+    git clone https://github.com/cinemagoria/cinemagoria.git
+    cd cinemagoria
     ```
-2.  **Prepare Nuxt**:
+2.  **Install dependencies**:
     ```bash
-    npm run postinstall
+    pnpm install
     ```
-3.  **Run in Development Mode**:
+3.  **Run in development mode**:
     ```bash
-    npm run dev
+    pnpm dev
     ```
     This starts the Nuxt development server.
 
 ## Project Layout
 
-*   [.github/](../../.github/): Contains GitHub Actions workflows for CI/CD.
-*   [components/](../../components/): Vue components, including global, festival-specific, and media-related components.
-*   [pages/](../../pages/): Vue components defining the application's routes and views.
-*   [public/](../../public/): Static assets and the web application manifest.
-*   [scripts/](../../scripts/): Node.js scripts for data synchronization and seeding.
-*   [server/api/](../../server/api/): Nuxt server routes for API endpoints.
+*   **components**: Reusable Vue components.
+*   **layouts**: Application layout components.
+*   **pages**: Vue components defining application routes.
+*   **public**: Static assets served directly.
+*   **scripts**: One-shot or utility scripts.
+*   **server**: Backend API routes, middleware, and utilities.
 
 ## Testing
 
-The provided structural digest and file summaries do not contain information about testing frameworks, test scripts, or test files.
+The project does not contain any dedicated test files.
 
 ## Release & Deployment
 
-Cinemagoria v4.15.0 is deployed to Google Cloud Run.
+Cinemagoria uses Google Cloud Build and Cloud Run for deployment.
 
-*   **Build**:
-    ```bash
-    npm run build
-    ```
-*   **Generate Static Site**:
-    ```bash
-    npm run generate
-    ```
-*   **Preview Production Build**:
-    ```bash
-    npm run preview
-    ```
-*   **Docker**: The [Dockerfile](../../Dockerfile) defines a multi-stage build process.
-*   **Google Cloud Build**: The [cloudbuild.yaml](../../cloudbuild.yaml) configures automated Docker image builds, pushes to Artifact Registry, and deployments to the `cinemagoria-main` service in `us-east1` on Google Cloud Run.
-*   **GitHub Actions**:
-    *   [.github/workflows/gitset-knowledge.yml](../../.github/workflows/gitset-knowledge.yml): Refreshes the AI knowledge base.
-    *   [.github/workflows/sync-hero-data.yml](../../.github/workflows/sync-hero-data.yml): Synchronizes hero data daily.
-    *   [.github/workflows/sync-noir-historical.yml](../../.github/workflows/sync-noir-historical.yml): Synchronizes N.O.I.R historical data.
+*   **Build**: `pnpm build`
+*   **Generate static site**: `pnpm generate`
+*   **Preview**: `pnpm preview`
+
+The [cloudbuild.yaml](../../cloudbuild.yaml) file configures Google Cloud Build to:
+1.  Build a Docker image using the [Dockerfile](../../Dockerfile).
+2.  Push the image to Google Artifact Registry.
+3.  Deploy the image to the `cinemagoria-main` service in Google Cloud Run (region `us-east1`).
+
+GitHub Actions workflows automate data synchronization and knowledge base updates:
+*   [.github/workflows/gitset-knowledge.yml](../../.github/workflows/gitset-knowledge.yml): Refreshes the AI knowledge base.
+*   [.github/workflows/sync-hero-data.yml](../../.github/workflows/sync-hero-data.yml): Synchronizes hero enrichment data.
+*   [.github/workflows/sync-noir-historical.yml](../../.github/workflows/sync-noir-historical.yml): Synchronizes N.O.I.R historical data.
