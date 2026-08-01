@@ -193,59 +193,59 @@
 
 ### `pages`
 
-- `pages/auth-success.vue` — Provides a user-facing page to display the status of an authentication attempt, showing loading, success, or error states and handling redirection.
-- `pages/awards/index.vue` — Displays a comprehensive list of major film awards, allowing users to browse winners and nominees by award type and year.
-- `pages/changelog/index.vue` — Presents a changelog of the platform's releases, features, and fixes, fetching data directly from the GitHub repository's releases API.
-- `pages/contact/index.vue` — Provides a contact form for users to reach support regarding account issues, watchlists, missing titles, or other platform-related inquiries.
-- `pages/faq/index.vue` — Offers a Frequently Asked Questions page explaining the platform's editorial framework, discovery infrastructure, and other operational details.
-- `pages/festival/bafici-2026/index.vue` — Displays information for the BAFICI 2026 film festival, including films, awards, and schedule, with search and navigation features.
-- `pages/festival/berlinale-2026/index.vue` — Displays information for the Berlinale 2026 film festival, including films, awards, and schedule, with search and navigation features.
-- `pages/festival/bifff-2026/index.vue` — Displays information for the BIFFF 2026 film festival, including films, awards, and schedule, with search and navigation features.
-- `pages/festival/cannes-2026/index.vue` — Displays information for the Cannes Film Festival 2026, including films, awards, and schedule, with search and navigation features.
-- `pages/festival/cuff-2026/index.vue` — Vue page component for displaying details of the Calgary Underground Film Festival (CUFF) 2026, including films, schedule, and awards, with interactive navigation and search.
-- `pages/festival/fantasia-2026/index.vue` — Vue page component for displaying details of the Fantasia International Film Festival 2026, including films, schedule, and awards, with interactive navigation and search.
-- `pages/festival/frightfest-2026/index.vue` — Vue page component for displaying details of the FrightFest 2026, including films and schedule, with interactive navigation and search.
-- `pages/festival/kviff-2026/index.vue` — Vue page component for displaying details of the Karlovy Vary International Film Festival (KVIFF) 2026, including films, schedule, and awards, with interactive navigation and search.
-- `pages/festival/romford-2026/index.vue` — Vue page component for displaying details of the Romford Horror Film Festival 2026, including films, schedule, and awards, with interactive navigation and search.
-- `pages/festival/rotterdam-2026/index.vue` — Vue page component for displaying details of the International Film Festival Rotterdam (IFFR) 2026, including films, schedule, and awards, with interactive navigation and search.
-- `pages/festival/slamdance-2026/index.vue` — Vue page component for displaying details of the Slamdance Film Festival 2026, including films, schedule, and awards, with interactive navigation and search.
-- `pages/festival/sundance-2026/index.vue` — Vue page component displaying details for the Sundance Film Festival 2026, including films, awards, and schedule, with dynamic content loading and search functionality.
-- `pages/festival/sxsw-2026/index.vue` — Vue page component displaying details for the SXSW Film Festival 2026, including films, awards, and schedule, with dynamic content loading and search functionality.
-- `pages/festival/tiff-2026/index.vue` — Vue page component displaying details for the TIFF Film Festival 2026, including films, awards, and schedule, with dynamic content loading and search functionality.
-- `pages/festival/tribeca-2026/index.vue` — Vue page component displaying details for the Tribeca Film Festival 2026, including films, awards, and schedule, with dynamic content loading and search functionality.
-- `pages/festival/venice-2026/index.vue` — Vue page component displaying details for the Venice Film Festival 2026, including films, awards, and schedule, with dynamic content loading and search functionality.
-- `pages/genre/[id]/movie.vue` — Vue page component that displays a paginated list of movies belonging to a specific genre, fetching data from an API and handling 'load more' functionality.
-- `pages/genre/[id]/tv.vue` — Vue page component that displays a paginated list of TV shows belonging to a specific genre, fetching data from an API and handling 'load more' functionality.
-- `pages/index.vue` — Vue page component for the homepage, featuring various carousels, banners for ongoing festivals (Oscars, Cannes, Fantasia), and trending media content.
-- `pages/lists/[slug].vue` — Displays a single user-created list of movies and TV shows, allowing the owner to rename, edit, filter, sort, and manage its items.
-- `pages/lists/index.vue` — Displays a user's custom lists, providing functionality to create new lists, edit existing ones, and filter between public and private lists.
-- `pages/login/index.vue` — Serves as the entry point for user authentication, immediately opening the AuthModal component upon being mounted.
+- `pages/auth-success.vue` — Handles the post-authentication success flow, displaying loading, success, or error states and redirecting the user after a countdown.
+- `pages/awards/index.vue` — Displays a page for browsing major film awards, allowing users to select an award and year to view winners and nominees.
+- `pages/changelog/index.vue` — Renders a changelog page by fetching and displaying release notes directly from the GitHub repository's releases.
+- `pages/contact/index.vue` — Provides a contact form for users to submit inquiries, displaying success, error, or loading states based on form submission.
+- `pages/faq/index.vue` — Presents a Frequently Asked Questions page with a table of contents, allowing users to navigate and expand sections for detailed explanations.
+- `pages/festival/bafici-2026/index.vue` — Displays the BAFICI 2026 film festival page, featuring films, awards, and a schedule with search and navigation capabilities.
+- `pages/festival/berlinale-2026/index.vue` — Displays the Berlinale 2026 film festival page, featuring films, awards, and a schedule with search and navigation capabilities.
+- `pages/festival/bifff-2026/index.vue` — Displays the BIFFF 2026 film festival page, featuring films, awards, and a schedule with search and navigation capabilities.
+- `pages/festival/cannes-2026/index.vue` — Displays the Cannes Film Festival 2026 page, featuring films, awards, and a schedule with search and navigation capabilities.
+- `pages/festival/cuff-2026/index.vue` — Vue component for displaying details of the CUFF 2026 film festival, including films, schedule, and awards, with interactive navigation and search features.
+- `pages/festival/fantasia-2026/index.vue` — Vue component for displaying details of the Fantasia International Film Festival 2026, including films, schedule, and awards, with interactive navigation and search.
+- `pages/festival/frightfest-2026/index.vue` — Vue component for displaying details of the FrightFest 2026 film festival, including films and schedule, with interactive navigation and search features.
+- `pages/festival/kviff-2026/index.vue` — Vue component for displaying details of the Karlovy Vary International Film Festival 2026, including films, schedule, and awards, with interactive navigation and search.
+- `pages/festival/romford-2026/index.vue` — Vue component for displaying details of the Romford Horror Film Festival 2026, including films, schedule, and awards, with interactive navigation and search features.
+- `pages/festival/rotterdam-2026/index.vue` — Vue component for displaying details of the International Film Festival Rotterdam 2026, including films, schedule, and awards, with interactive navigation and search.
+- `pages/festival/slamdance-2026/index.vue` — Vue component for displaying details of the Slamdance Film Festival 2026, including films, schedule, and awards, with interactive navigation and search features.
+- `pages/festival/sundance-2026/index.vue` — Vue page component for displaying information about the Sundance Film Festival 2026, including films, awards, and schedule, with dynamic content loading and search functionality.
+- `pages/festival/sxsw-2026/index.vue` — Vue page component for displaying information about the SXSW Film Festival 2026, including films, awards, and schedule, with dynamic content loading and search functionality.
+- `pages/festival/tiff-2026/index.vue` — Vue page component for displaying information about the TIFF 2026 festival, including films, awards, and schedule, with dynamic content loading and search functionality.
+- `pages/festival/tribeca-2026/index.vue` — Vue page component for displaying information about the Tribeca Film Festival 2026, including films, awards, and schedule, with dynamic content loading and search functionality.
+- `pages/festival/venice-2026/index.vue` — Vue page component for displaying information about the Venice Film Festival 2026, including films, awards, and schedule, with dynamic content loading and search functionality.
+- `pages/genre/[id]/movie.vue` — Vue page component that displays a paginated list of movies belonging to a specific genre, fetching data from an API and handling infinite scrolling.
+- `pages/genre/[id]/tv.vue` — Vue page component that displays a paginated list of TV shows belonging to a specific genre, fetching data from an API and handling infinite scrolling.
+- `pages/index.vue` — Vue page component for the homepage, featuring various carousels for trending movies, TV shows, news, and festivals, along with conditional banners for live events.
+- `pages/lists/[slug].vue` — Displays a specific user-created list of movies and TV shows, allowing the owner to rename, edit, and manage its content.
+- `pages/lists/index.vue` — Displays a user's custom lists of movies and TV shows, providing functionality to create, edit, and manage these lists.
+- `pages/login/index.vue` — Serves as the entry point for the login page, immediately opening the authentication modal for user login or registration.
 - `pages/movie/[id].vue` — Displays detailed information for a specific movie, including an overview, credits, videos, images, soundtracks, and awards.
-- `pages/movie/category/[name].vue` — Displays a categorized list of movies (e.g., trending, popular, top-rated), with infinite scrolling to load more items.
-- `pages/movie/followed.vue` — Displays movies from followed production companies and streaming platforms by rendering the `FollowedContent` component.
-- `pages/movie/index.vue` — Serves as the main discovery page for movies, featuring various categories like popular, top-rated, upcoming, and now playing, along with filters.
-- `pages/news/[slug].vue` — Displays a single news article, including its content, related entities, and options to save or share the article.
+- `pages/movie/category/[name].vue` — Displays a categorized list of movies (e.g., trending, popular, top-rated) and supports loading more items.
+- `pages/movie/followed.vue` — Displays movies from production companies or streaming platforms that the user has chosen to follow.
+- `pages/movie/index.vue` — Provides a discovery page for movies, featuring various categories like popular, top-rated, upcoming, and now playing, along with filters.
+- `pages/news/[slug].vue` — Displays a single news article with its content, related entities, and options to save or share the article.
 - `pages/news/index.vue` — Displays a feed of the latest news articles, allowing users to filter by source, category, and search for specific topics.
-- `pages/noir/index.vue` — Displays the N.O.I.R Archive, a curated list of historical titles, with options to sort and clone the archive into a user's personal list.
+- `pages/noir/index.vue` — Displays the N.O.I.R Archive, a curated list of historical titles, with sorting options and the ability to clone the archive to a user's lists.
 - `pages/notifications/index.vue` — Displays a user's notifications, allowing them to filter by unread status, mark notifications as read/unread, and manage follows for people, TV shows, streaming services, and production companies.
-- `pages/person/[id].vue` — Displays detailed information about a person, including their known-for credits, full filmography, photos, and awards, with navigation for different content sections.
-- `pages/production-companies/index.vue` — Lists all supported production companies, allowing users to browse and navigate to individual company detail pages.
+- `pages/person/[id].vue` — Displays detailed information about a person, including their known for credits, full filmography, photos, and awards, with navigation to switch between these sections.
+- `pages/production-companies/index.vue` — Lists all supported production companies, sorted alphabetically, with links to their individual detail pages.
 - `pages/production/[slug].vue` — Displays details for a specific production company, including its movies and TV shows, with filtering and sorting options.
-- `pages/recovery/index.vue` — Provides a password recovery interface where users can submit their email to receive a password reset link.
-- `pages/register/index.vue` — Serves as an entry point for user registration by displaying the authentication modal with the register tab active upon mounting.
-- `pages/search/index.vue` — Displays search results for movies, TV shows, people, and news based on a user's query, with a loading state and pagination.
-- `pages/settings/index.vue` — Manages user account settings, including avatar, email, alias, privacy preferences, and account deletion.
-- `pages/streaming-services/index.vue` — Lists all supported streaming services, allowing users to browse and navigate to individual service detail pages.
+- `pages/recovery/index.vue` — Provides a password recovery interface where users can enter their email to receive a reset link, displaying a confirmation message upon submission.
+- `pages/register/index.vue` — Serves as an entry point for user registration by displaying the AuthModal component with the 'register' tab pre-selected upon mounting.
+- `pages/search/index.vue` — Displays search results for movies, TV shows, people, and news based on a user's query, with a loading state and a 'load more' functionality.
+- `pages/settings/index.vue` — Manages user account settings, including profile information, avatar, email, alias, privacy settings, and account deletion.
+- `pages/streaming-services/index.vue` — Lists all supported streaming providers, sorted alphabetically, with links to their individual detail pages.
 - `pages/streaming/[slug].vue` — Displays a dynamic streaming platform page, allowing users to browse movies and TV shows available on a specific service with filtering and sorting options.
-- `pages/streaming/followed.vue` — Renders a page displaying followed streaming content, distinguishing between movies and TV shows based on the URL query parameter.
-- `pages/tv/[id].vue` — Displays a dynamic TV show details page, including an overview, credits, episodes, videos, images, soundtracks, and awards, with navigation between sections.
+- `pages/streaming/followed.vue` — Displays a user's followed streaming content, distinguishing between movies and TV shows based on the URL query parameter.
+- `pages/tv/[id].vue` — Displays a detailed page for a specific TV show, including overview, credits, episodes, videos, images, soundtracks, and awards.
 - `pages/tv/category/[name].vue` — Displays a list of TV shows belonging to a specific category (e.g., trending, popular), with pagination to load more items.
-- `pages/tv/followed.vue` — Displays a page dedicated to TV shows followed by the user, utilizing the FollowedContent component.
+- `pages/tv/followed.vue` — Displays TV shows that the user has followed, leveraging the `FollowedContent` component.
 - `pages/tv/index.vue` — Serves as the main discovery page for TV shows, featuring popular, top-rated, on-air, and airing today series, with a toggle to navigate to movies.
 - `pages/u/[alias].vue` — Displays a public user profile page, showing their reviews and lists, with functionality to follow/unfollow the user.
-- `pages/usage-policies/index.vue` — Presents the platform's usage policies and privacy agreement, organized into scrollable sections with a table of contents.
-- `pages/watchlist/index.vue` — Displays a user's watchlist of movies and TV shows, allowing filtering, sorting, and management of watched items and ratings.
-- `pages/wip/index.vue` — Displays a 'Work in Progress' or 'Under Maintenance' page, informing users that the section is temporarily unavailable and providing options to return home or get more information.
+- `pages/usage-policies/index.vue` — Displays the usage policies and privacy agreement for the platform, organized into scrollable sections with a table of contents.
+- `pages/watchlist/index.vue` — Manages and displays a user's watchlist of movies and TV shows, including filtering, sorting, and rating functionalities.
+- `pages/wip/index.vue` — Displays a 'Work in Progress' page, informing users that the section is under maintenance and providing options to go home or get more information.
 
 ### `plugins`
 
