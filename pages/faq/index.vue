@@ -171,7 +171,6 @@ const sections = [
 <ul>
   <li><strong>Venezia</strong> &middot; La Biennale di Venezia</li>
   <li><strong>TIFF</strong> &middot; Toronto International Film Festival</li>
-  <li><strong>NYFF</strong> &middot; New York Film Festival</li>
   <li><strong>Sitges</strong> &middot; International Fantastic Film Festival of Catalonia</li>
   <li><strong>BFI London</strong> &middot; BFI London Film Festival</li>
   <li><strong>Mar del Plata</strong> &middot; International Film Festival</li>
