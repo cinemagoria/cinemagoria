@@ -368,16 +368,24 @@ const openDays = ref(new Set());
 const CATEGORY_ORDER = [
     'GALA PRESENTATIONS',
     'SPECIAL PRESENTATIONS',
+    'CENTREPIECE',
     'PLATFORM',
     'DISCOVERY',
+    'WAVELENGTHS',
+    'TIFF DOCS',
+    'TIFF CLASSICS',
     'PRIMETIME',
 ];
 
 const CATEGORY_LABELS = {
     'GALA PRESENTATIONS': 'Gala Presentations',
     'SPECIAL PRESENTATIONS': 'Special Presentations',
+    CENTREPIECE: 'Centrepiece',
     PLATFORM: 'Platform',
     DISCOVERY: 'Discovery',
+    WAVELENGTHS: 'Wavelengths',
+    'TIFF DOCS': 'TIFF Docs',
+    'TIFF CLASSICS': 'TIFF Classics',
     PRIMETIME: 'Primetime',
     OTHER: 'Otros',
 };
