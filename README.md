@@ -56,11 +56,21 @@ The N.O.I.R. badge — rendered in the top-right corner of each backdrop in `Her
   <img src="https://ivanluna.dev/images/assets/cinemagoria-asset9.webp" alt="Festivals" width="70%">
 </div>
 
-Dedicated coverage for major international festivals — Sundance, Berlinale, Rotterdam, Slamdance, SXSW, Romford, BIFFF, BAFICI, Tribeca, Cannes (with official screenings and parallel sections: Critics' Week, Quinzaine des Cinéastes, ACID), CUFF (Calgary Underground Film Festival), KVIFF (Karlovy Vary Int. Film Festival), Fantasia (Montréal), FrightFest (London, with the full official screening schedule), Venice (La Biennale, with its parallel sections) and TIFF (Toronto) — each with its own page, API endpoints, card and badge components, and homepage carousel. The hero section supports multiple simultaneous festival premiere badges with display precedence, and Berlinale ships with an interactive timezone-aware schedule.
+Every covered festival gets its own page, API endpoints, card and badge components, and a slot in the homepage carousel. Selections are grouped by the festival's real sections, screening schedules are timezone-aware, and award winners are seeded once the ceremonies close.
 
-**Coverage runs from 2026 onwards** and continues across each subsequent edition (2027, 2028, …). Still to land in the 2026 cycle: **San Sebastián**, **BFI London**, **Sitges**, **BARS (Buenos Aires Rojo Sangre)**, **Cairo**, **Marrakech**, **Mar del Plata** and **Red Sea** — the last four extending coverage beyond the European and American circuits for the first time. The 2027 cycle adds **Göteborg** and **Locarno**.
+**Live now**
 
-Each integration is planned against the festival's lineup announcement rather than a fixed countdown to opening night, since nothing can be ingested before the programme is public. The list is indicative — a festival is dropped when its selection largely duplicates coverage the platform already ships.
+**Sundance** · **Rotterdam** · **Berlinale** · **Romford Horror** · **Slamdance** · **SXSW** · **BIFFF** · **BAFICI** · **CUFF** *(Calgary Underground)* · **Cannes** · **Tribeca** · **KVIFF** *(Karlovy Vary)* · **Fantasia** *(Montréal)* · **FrightFest** *(London)* · **Venice** *(La Biennale)* · **TIFF** *(Toronto)*
+
+**Still to land in the 2026 cycle**
+
+**San Sebastián** · **BFI London** · **Sitges** · **Cairo** · **Mar del Plata** · **BARS** *(Buenos Aires Rojo Sangre)* · **Marrakech** · **Red Sea**
+
+The last four extend coverage beyond the European and American circuits for the first time. The 2027 cycle adds **Göteborg** and **Locarno**.
+
+Cannes ships the official screenings plus the parallel sections — Critics' Week, Quinzaine des Cinéastes and ACID — and Venice carries its own parallel sections. FrightFest ships the full official screening schedule, and Berlinale adds an interactive timezone-aware view of it. The hero section supports multiple simultaneous festival premiere badges with display precedence.
+
+**Coverage runs from 2026 onwards** and continues across each subsequent edition. Each integration is planned against the festival's lineup announcement rather than a fixed countdown to opening night, since nothing can be ingested before the programme is public — the delivery plan is tracked on the [Festivals Coverage Roadmap](https://github.com/orgs/cinemagoria/projects/1). A festival is dropped when its selection largely duplicates coverage already shipped.
 
 > **Catalog coverage caveat:** festival pages are built from public metadata and third-party sources, which don't always cover every title — particularly short films, experimental works and regional productions. This is a technical limitation, not an editorial decision. No film is intentionally omitted or censored; gaps narrow as upstream metadata catches up.
 
