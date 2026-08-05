@@ -135,7 +135,7 @@ Modal-based auth (no `/login` or `/register` pages) with Google OAuth backed by 
 ## Architecture Highlights
 
 - **Concurrent fetching everywhere** — `Promise.all` for homepage data, awards and hero APIs; `Promise.allSettled` for provider and review fetching.
-- **ISR + route caching** on Movie, TV and root routes; CSR preserved for interactive routes like `/search`.
+- **Edge caching on Movie, TV and root routes** — route rules emit `Cache-Control` only and the CDN stores the response; Nitro's server-side cache is deliberately never enabled, since its default in-memory driver leaks heap on wildcard routes. CSR is preserved for interactive routes like `/search`.
 - **News and awards decoupled from request time** — pre-curated by background workers, read instantly at request time.
 - **Dynamic, split sitemap generation** via server routes for SEO.
 - **`fetchWithRefill` carousel batching** with seen-ID deduplication and diversity capping.
