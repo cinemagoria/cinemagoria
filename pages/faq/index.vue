@@ -120,7 +120,7 @@ const sections = [
       },
       {
         q: 'How does a title enter N.O.I.R., and how does it move through the platform?',
-        a: `<p>Most candidates originate from festival ecosystems, premiere reactions, acquisition tracking and an internal pipeline of workflows, datasets, enrichment scripts and editorial analysis. Festivals are the upstream signal layer &mdash; <strong>Sundance, Berlinale, Rotterdam, BIFFF, SXSW, BAFICI, Cannes, CUFF, Tribeca, Slamdance</strong> and <strong>Romford Horror</strong> all feed the selection, with more festivals joining the rotation throughout 2026.</p>
+        a: `<p>Most candidates originate from festival ecosystems, premiere reactions, acquisition tracking and an internal pipeline of workflows, datasets, enrichment scripts and editorial analysis. Festivals are the upstream signal layer &mdash; <strong>Sundance, Rotterdam, Berlinale, Romford Horror, Slamdance, SXSW, BIFFF, BAFICI, CUFF, Cannes, Tribeca, KVIFF, Fantasia, FrightFest, Venice</strong> and <strong>TIFF</strong> all feed the selection, with more festivals joining the rotation throughout 2026.</p>
 <p>Once recognized, a title is promoted to the primary editorial slot at the top of the homepage &mdash; a rotating showcase of N.O.I.R.-certified works near or just before release. The seal appears on each card and links directly to the full archive.</p>
 <p>Roughly a week after a title becomes broadly available, it leaves that primary rotation and enters the <strong>permanent N.O.I.R. archive</strong> at <a href="/noir" class="inline-link">/noir</a>, organized by year and form. Many titles continue inside <strong>Spotlight</strong>, the homepage&rsquo;s secondary editorial surface &mdash; roughly seventy percent of Spotlight entries passed through the primary rotation first.</p>
 <p>Removal from the rotation never means removal from the archive. The archive is additive.</p>`
@@ -150,33 +150,38 @@ const sections = [
         a: `<p>Active coverage from <strong>2026 onwards</strong>, with each edition picked up year over year:</p>
 <ul class="festival-list">
   <li><a href="/festival/sundance-2026" class="inline-link">Sundance</a> &middot; Park City</li>
-  <li><a href="/festival/berlinale-2026" class="inline-link">Berlinale</a> &middot; Berlin</li>
   <li><a href="/festival/rotterdam-2026" class="inline-link">Rotterdam</a> &middot; Rotterdam</li>
-  <li><a href="/festival/bifff-2026" class="inline-link">BIFFF</a> &middot; Brussels</li>
-  <li><a href="/festival/sxsw-2026" class="inline-link">SXSW</a> &middot; Austin</li>
-  <li><a href="/festival/bafici-2026" class="inline-link">BAFICI</a> &middot; Buenos Aires</li>
-  <li><a href="/festival/cannes-2026" class="inline-link">Cannes</a> &middot; Cannes</li>
-  <li><a href="/festival/cuff-2026" class="inline-link">CUFF</a> &middot; Calgary</li>
-  <li><a href="/festival/tribeca-2026" class="inline-link">Tribeca</a> &middot; New York</li>
-  <li><a href="/festival/slamdance-2026" class="inline-link">Slamdance</a> &middot; Park City</li>
+  <li><a href="/festival/berlinale-2026" class="inline-link">Berlinale</a> &middot; Berlin</li>
   <li><a href="/festival/romford-2026" class="inline-link">Romford Horror</a> &middot; Romford</li>
+  <li><a href="/festival/slamdance-2026" class="inline-link">Slamdance</a> &middot; Park City</li>
+  <li><a href="/festival/sxsw-2026" class="inline-link">SXSW</a> &middot; Austin</li>
+  <li><a href="/festival/bifff-2026" class="inline-link">BIFFF</a> &middot; Brussels</li>
+  <li><a href="/festival/bafici-2026" class="inline-link">BAFICI</a> &middot; Buenos Aires</li>
+  <li><a href="/festival/cuff-2026" class="inline-link">CUFF</a> &middot; Calgary</li>
+  <li><a href="/festival/cannes-2026" class="inline-link">Cannes</a> &middot; Cannes</li>
+  <li><a href="/festival/tribeca-2026" class="inline-link">Tribeca</a> &middot; New York</li>
   <li><a href="/festival/kviff-2026" class="inline-link">KVIFF</a> &middot; Karlovy Vary</li>
   <li><a href="/festival/fantasia-2026" class="inline-link">Fantasia</a> &middot; Montr&eacute;al</li>
+  <li><a href="/festival/frightfest-2026" class="inline-link">FrightFest</a> &middot; London</li>
+  <li><a href="/festival/venice-2026" class="inline-link">Venice</a> &middot; Venice</li>
+  <li><a href="/festival/tiff-2026" class="inline-link">TIFF</a> &middot; Toronto</li>
 </ul>
 <p>The full hub lives at <a href="/festival" class="inline-link">/festival</a>.</p>`
       },
       {
         q: 'Which festivals are scheduled to join the coverage?',
-        a: `<p>Planned 2026 additions, with continuing coverage in 2027, 2028 and beyond:</p>
+        a: `<p>Still to join during 2026, in calendar order:</p>
 <ul>
-  <li><strong>Venezia</strong> &middot; La Biennale di Venezia</li>
-  <li><strong>TIFF</strong> &middot; Toronto International Film Festival</li>
-  <li><strong>Sitges</strong> &middot; International Fantastic Film Festival of Catalonia</li>
+  <li><strong>San Sebasti&aacute;n</strong> &middot; San Sebasti&aacute;n International Film Festival</li>
   <li><strong>BFI London</strong> &middot; BFI London Film Festival</li>
+  <li><strong>Sitges</strong> &middot; International Fantastic Film Festival of Catalonia</li>
+  <li><strong>Cairo</strong> &middot; Cairo International Film Festival</li>
   <li><strong>Mar del Plata</strong> &middot; International Film Festival</li>
   <li><strong>BARS</strong> &middot; Buenos Aires Rojo Sangre</li>
+  <li><strong>Marrakech</strong> &middot; Marrakech International Film Festival</li>
+  <li><strong>Red Sea</strong> &middot; Red Sea International Film Festival</li>
 </ul>
-<p>The list is indicative &mdash; additions and adjustments happen as scope and resources evolve.</p>`
+<p>Each edition is picked up again the following year. The list is indicative &mdash; additions and adjustments happen as scope and resources evolve.</p>`
       },
       {
         q: 'Why do some festivals show fewer titles than the official lineup?',
