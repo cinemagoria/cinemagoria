@@ -1,90 +1,69 @@
 # Architecture
 
 ## System Overview
-
-Cinemagoria is a Nuxt.js application designed to help users discover movies and TV shows. It provides detailed information on media, people, production companies, and streaming platforms, alongside curated festival coverage and news. The system leverages a multi-stage Docker build for deployment to Google Cloud Run and uses a Turso database for data storage. Client-side authentication is handled via global middleware, while backend APIs provide data and handle user interactions.
+Cinemagoria is a Nuxt.js application designed for discovering movies and TV shows. It provides features such as personalized watchlists, progress tracking, user authentication, and detailed information on films, TV series, people, and festivals. The system leverages a serverless backend for API endpoints and data synchronization, with a focus on delivering a rich, interactive user experience.
 
 ## Entry Points
+The application provides several entry points for users and automated processes:
 
-| Type | Name | Description |
-| :-- | :--- | :---------- |
-| Web | `/` | The main entry point for the Nuxt.js application, rendering the homepage. |
-| API | `POST /api/article-report` | Submits a report about an article. |
-| API | `GET /api/article/[slug]` | Retrieves details for a specific article. |
-| API | `GET /api/article/rss` | Redirects to the canonical RSS feed. |
-| API | `GET /api/articles/by-slugs` | Retrieves multiple articles by a list of slugs. |
-| API | `GET /api/awards/index-page` | Retrieves awards data for the awards index page. |
-| API | `GET /api/awards/index` | Retrieves award information for a film or person. |
-| API | `POST /api/contact` | Submits a contact form message. |
-| API | `POST /api/festival-report` | Submits a report about festival data. |
-| API | `GET /api/festival/bafici/awards` | Fetches BAFICI 2026 awards data. |
-| API | `GET /api/festival/bafici/films` | Fetches BAFICI 2026 film data. |
-| API | `GET /api/festival/bafici/schedule` | Retrieves BAFICI 2026 screening schedule. |
-| API | `GET /api/festival/berlinale/awards` | Fetches Berlinale 2026 awards data. |
-| API | `GET /api/festival/berlinale/films` | Fetches Berlinale 2026 film data. |
-| API | `GET /api/festival/berlinale/schedule` | Retrieves Berlinale 2026 screening schedule. |
-| API | `GET /api/festival/bifff/awards` | Fetches BIFFF 2026 awards data. |
-| API | `GET /api/festival/bifff/films` | Fetches BIFFF 2026 film data. |
-| API | `GET /api/festival/bifff/schedule` | Retrieves BIFFF 2026 screening schedule. |
-| API | `GET /api/festival/cannes/awards` | Fetches Cannes 2026 awards data. |
-| API | `GET /api/festival/cannes/films` | Fetches Cannes 2026 film data. |
-| API | `GET /api/festival/cannes/schedule` | Retrieves Cannes 2026 screening schedule. |
-| Script | `build` | Builds the Nuxt application for production. |
-| Script | `dev` | Starts the Nuxt development server. |
-| Script | `generate` | Generates static Nuxt application files. |
-| Script | `preview` | Previews the Nuxt production build locally. |
-| Script | `postinstall` | Prepares the Nuxt project after installation. |
+| Entry Point | Type | Description |
+| :---------- | :--- | :---------- |
+| `nuxt dev` | CLI command | Starts the development server. |
+| `nuxt build` | CLI command | Builds the application for production. |
+| `nuxt generate` | CLI command | Generates a static version of the application. |
+| `nuxt preview` | CLI command | Locally previews the production build. |
+| `nuxt prepare` | CLI command | Prepares the Nuxt project for development/build. |
+| `/` | Route | The main homepage of the application. |
+| `/api/*` | Route | Server-side API endpoints for data retrieval and submission. |
+| `.github/workflows/gitset-knowledge.yml` | CI workflow | Triggered on `workflow_dispatch` and `push` to `main` (excluding docs, markdown, gitignore, LICENSE) to refresh the AI knowledge base. |
+| `.github/workflows/sync-hero-data.yml` | CI workflow | Triggered by `cron: 0 6 * * *` and `workflow_dispatch` to synchronize hero and noir enrichment data. |
+| `.github/workflows/sync-noir-historical.yml` | CI workflow | Triggered by `workflow_dispatch` to synchronize N.O.I.R historical data and regenerate noir enrichment data. |
 
 ## Core Components
-
-*   `(root)`: Defines the core Nuxt application, Docker build, and project configuration.
-*   `assets`: Manages static assets like images, fonts, and stylesheets.
-*   `components`: Houses reusable Vue components for UI elements, cards, carousels, modals, and festival badges.
-*   `composables`: Provides reusable Vue composition functions, such as `useConsentGuard`.
-*   `layouts`: Defines the structural layouts for different pages, including the default layout.
-*   `middleware`: Contains Nuxt middleware functions, like `auth.global.ts` for client-side authentication.
-*   `mixins`: Offers reusable Vue mixins for carousel functionality, detail enrichment, data filtering, and utility functions.
-*   `pages`: Contains Vue components that define the application's routes and views.
-*   `plugins`: Provides Nuxt plugins for global functionality, such as an event bus and lazy loading.
-*   `public`: Stores publicly accessible static files, including the PWA manifest and service worker.
-*   `scripts`: Contains one-shot and synchronization scripts for data management.
-*   `server/api`: Implements backend API endpoints for data retrieval and submission.
-*   `server/data`: Stores static data files, such as `awards.json`.
-*   `server/middleware`: Contains server-side middleware for API routes.
-*   `server/plugins`: Provides server-side Nuxt plugins.
-*   `server/routes`: Defines server-side routes.
-*   `server/types`: Defines TypeScript types for server-side components.
-*   `server/utils`: Provides server-side utility functions, including database interaction.
-*   `services`: Contains service-layer logic for interacting with external APIs or data sources.
-*   `stores`: Implements Pinia stores for state management.
-*   `types`: Defines global TypeScript types.
-*   `utils`: Provides client-side utility functions.
+*   **app.vue**: The root Vue component for the application, handling global SEO and layout.
+*   **components**: A collection of reusable Vue components for UI elements like cards, carousels, modals, and navigation.
+*   **composables**: Provides `useConsentGuard` for managing consent-gated functionality.
+*   **layouts**: Defines the `default.vue` layout, including navigation, footer, and modals.
+*   **middleware**: Contains `auth.global.ts` for client-side authentication checks.
+*   **mixins**: Offers reusable logic for carousel management, detail enrichment, data filtering, and utility functions.
+*   **pages**: Vue components defining the various routes and views of the application, such as home, movie/TV details, festival pages, and user profiles.
+*   **plugins**: Includes `bus.js` for a global event bus and `lazyload.js` for image lazy loading.
+*   **public**: Stores static assets and the PWA manifest (`public/manifest.json`) and a self-destroying service worker (`public/sw.js`).
+*   **scripts**: Contains utility scripts for database seeding and data synchronization (e.g., `scripts/seed_tribeca_2026_awards.cjs`, `scripts/syncHeroData.js`).
+*   **server/api**: Defines server-side API routes for data fetching and submission (e.g., `/api/article-report`, `/api/festival/cannes/films`).
+*   **server/middleware**: Server-side middleware for request processing.
+*   **server/plugins**: Server-side plugins.
+*   **server/routes**: Defines server-side routes (e.g., `/feed.xml`, `/sitemap.xml`).
+*   **server/utils**: Provides server-side utility functions, including database interactions (`server/utils/db.ts`).
+*   **services**: Contains service-layer logic.
+*   **stores**: Manages application state using Pinia.
+*   **utils**: Client-side utility functions.
 
 ## Data Flow
-
-1.  User navigates to a page (e.g., `/movie/[id]`).
-2.  Nuxt.js application loads, and `middleware/auth.global.ts` checks for an access token.
-3.  Vue components in `pages` (e.g., [pages/movie/[id].vue](../../pages/movie/[id].vue)) initiate data fetching.
-4.  Client-side components make requests to `server/api` endpoints (e.g., `/api/movie/[id]`).
-5.  `server/api` endpoints (e.g., [server/api/movie/[id].get.ts](../../server/api/imdb-rating/[id].get.ts)) query the Turso database via `server/utils/db.ts`.
-6.  Data is retrieved from the database and potentially enriched with external API calls.
-7.  The `server/api` endpoint returns the processed data to the client.
-8.  Vue components render the data, utilizing `components` for UI, `mixins` for data enrichment, and `stores` for state management.
+1.  User interacts with the client-side application (e.g., navigates to a page, performs a search).
+2.  Vue components in [components/](../../components/) and [pages/](../../pages/) dispatch actions or make API calls.
+3.  Client-side middleware ([middleware/auth.global.ts](../../middleware/auth.global.ts)) may intercept requests for authentication checks.
+4.  API calls are routed to server-side endpoints defined in [server/api/](../../server/api/) or [server/routes/](../../server/routes/).
+5.  Server-side endpoints process requests, often interacting with a database (e.g., Turso via `server/utils/db.ts`) or external APIs.
+6.  Data is retrieved, processed, and potentially enriched (e.g., with TMDB details).
+7.  The server responds with structured data (e.g., JSON).
+8.  Client-side components receive the data and update the UI.
+9.  State management (via [stores/](../../stores/)) updates the application state.
+10. UI re-renders to reflect the new data.
 
 ## External Dependencies
-
-*   `~`: General purpose utilities and components.
-*   `~~`: General purpose utilities and components.
-*   `h3`: HTTP framework for Nuxt server routes.
-*   `vue`: Core JavaScript framework for building user interfaces.
-*   `@/components`: Internal components.
-*   `@libsql/client`: Client for interacting with the Turso database.
-*   `vue-router`: Routing library for Vue.js.
-*   `@/utils`: Internal utilities.
-*   `fs`: Node.js file system module.
-*   `path`: Node.js path module.
-*   `pinia`: State management library for Vue.js.
-*   `striptags`: Library for stripping HTML tags from strings.
-*   `url`: Node.js URL module.
-*   `#imports`: Nuxt auto-imports.
-*   `dotenv`: Module to load environment variables from a `.env` file.
+*   **~**: General alias for project root imports.
+*   **~~**: General alias for project root imports.
+*   **h3**: HTTP framework used by Nuxt for server routes.
+*   **vue**: Core JavaScript framework for building user interfaces.
+*   **@/components**: Alias for importing components from the [components/](../../components/) directory.
+*   **@libsql/client**: Client for interacting with LibSQL databases (e.g., Turso).
+*   **vue-router**: Official router for Vue.js.
+*   **@/utils**: Alias for importing utilities from the [utils/](../../utils/) directory.
+*   **fs**: Node.js file system module (server-side).
+*   **path**: Node.js path module (server-side).
+*   **pinia**: The official state management library for Vue.js.
+*   **striptags**: Library for stripping HTML tags from strings.
+*   **url**: Node.js URL module (server-side).
+*   **#imports**: Nuxt auto-imports.
+*   **dotenv**: Module for loading environment variables from a `.env` file.
