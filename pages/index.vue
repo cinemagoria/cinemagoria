@@ -175,6 +175,17 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     const tiffList = festivalsBuckets.tiff || [];
 
      const FEATURED_ORDER = [
+        // tiff 2026
+        // 'Bad Lieutenant: Tokyo',
+        // 'Inherit',
+        // 'Misty Green',
+        // 'We Are Born Good',
+        // 'The Devils',
+        // venice 2026
+        // 'The Echo Chamber',
+        // 'Wild Horse Nine',
+        // 'Agatha the Writer',
+        // 'Bunker',
         // frightfest 2026
         // 'Salmokji: Whispering Water',
         // 'The Latcher',
@@ -198,17 +209,14 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Recluse',
         // cannes 2026
         'Hope|cannes',
+        'Atonement',
         'Victorian Psycho',
-        'Colony',
         'Minotaur',
         'Fatherland',
         'Fjord',
         'Paper Tiger',
-        'All of a Sudden',
         'The Unknown',
-        'Gentle Monster',
         'Teenage Sex and Death at Camp Miasma',
-        'Her Private Hell',
         'Titanic Ocean',
         // cuff 2026
         'Lucid',
@@ -238,7 +246,6 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Nightborn',
         'In a Whisper',
         'If I Were Alive',
-        'Forest High',
         'Salvation',
         // rotterdam 2026
         'Krakatoa',
@@ -254,7 +261,6 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'Shame and Money',
         'undertone',
         'The Only Living Pickpocket in New York',
-        'Josephine',
     ];
     
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
