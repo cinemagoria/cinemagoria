@@ -120,7 +120,7 @@ const sections = [
       },
       {
         q: '¿Cómo entra un título a N.O.I.R. y cómo se mueve dentro de la plataforma?',
-        a: `<p>La mayoría de los títulos surge desde festivales, premieres, adquisiciones, seguimiento crítico y una infraestructura interna de procesos editoriales, bases de datos, automatizaciones y análisis curatorial. Los festivales funcionan como el principal sistema de detección editorial: <strong>Sundance, Berlinale, Rotterdam, BIFFF, SXSW, BAFICI, Cannes, CUFF, Tribeca, Slamdance</strong> y <strong>Romford Horror</strong> alimentan activamente el sistema de selección, con nuevos festivales incorporándose progresivamente durante 2026.</p>
+        a: `<p>La mayoría de los títulos surge desde festivales, premieres, adquisiciones, seguimiento crítico y una infraestructura interna de procesos editoriales, bases de datos, automatizaciones y análisis curatorial. Los festivales funcionan como el principal sistema de detección editorial: <strong>Sundance, Róterdam, Berlinale, Romford Horror, Slamdance, SXSW, BIFFF, BAFICI, CUFF, Cannes, Tribeca, KVIFF, Fantasia, FrightFest, Venecia</strong> y <strong>TIFF</strong> alimentan activamente el sistema de selección, con nuevos festivales incorporándose progresivamente durante 2026.</p>
 <p>Cuando un proyecto gana relevancia editorial, pasa a la rotación principal de la página principal: una selección destacada de títulos N.O.I.R. próximos a estrenarse o recientemente lanzados. El sello aparece en cada tarjeta y conecta directamente con el histórico completo.</p>
 <p>Una vez que el título se encuentra ampliamente disponible, abandona esa rotación principal e ingresa al <strong>histórico permanente de N.O.I.R.</strong> en <a href="/noir" class="inline-link">/noir</a>, organizado por año y formato. Con frecuencia continúa también en <strong>Spotlight</strong>, el segundo espacio editorial de la página principal &mdash; cerca del setenta por ciento de los títulos destacados allí pasaron antes por la rotación principal.</p>
 <p>Salir de la rotación nunca implica desaparecer del histórico. El histórico es acumulativo.</p>`
@@ -150,33 +150,38 @@ const sections = [
         a: `<p>Cobertura activa desde <strong>2026 en adelante</strong>, incorporando cada edición año tras año:</p>
 <ul class="festival-list">
   <li><a href="/festival/sundance-2026" class="inline-link">Sundance</a> &middot; Park City</li>
-  <li><a href="/festival/berlinale-2026" class="inline-link">Berlinale</a> &middot; Berlín</li>
   <li><a href="/festival/rotterdam-2026" class="inline-link">Rotterdam</a> &middot; Róterdam</li>
-  <li><a href="/festival/bifff-2026" class="inline-link">BIFFF</a> &middot; Bruselas</li>
-  <li><a href="/festival/sxsw-2026" class="inline-link">SXSW</a> &middot; Austin</li>
-  <li><a href="/festival/bafici-2026" class="inline-link">BAFICI</a> &middot; Buenos Aires</li>
-  <li><a href="/festival/cannes-2026" class="inline-link">Cannes</a> &middot; Cannes</li>
-  <li><a href="/festival/cuff-2026" class="inline-link">CUFF</a> &middot; Calgary</li>
-  <li><a href="/festival/tribeca-2026" class="inline-link">Tribeca</a> &middot; Nueva York</li>
-  <li><a href="/festival/slamdance-2026" class="inline-link">Slamdance</a> &middot; Park City</li>
+  <li><a href="/festival/berlinale-2026" class="inline-link">Berlinale</a> &middot; Berlín</li>
   <li><a href="/festival/romford-2026" class="inline-link">Romford Horror</a> &middot; Romford</li>
+  <li><a href="/festival/slamdance-2026" class="inline-link">Slamdance</a> &middot; Park City</li>
+  <li><a href="/festival/sxsw-2026" class="inline-link">SXSW</a> &middot; Austin</li>
+  <li><a href="/festival/bifff-2026" class="inline-link">BIFFF</a> &middot; Bruselas</li>
+  <li><a href="/festival/bafici-2026" class="inline-link">BAFICI</a> &middot; Buenos Aires</li>
+  <li><a href="/festival/cuff-2026" class="inline-link">CUFF</a> &middot; Calgary</li>
+  <li><a href="/festival/cannes-2026" class="inline-link">Cannes</a> &middot; Cannes</li>
+  <li><a href="/festival/tribeca-2026" class="inline-link">Tribeca</a> &middot; Nueva York</li>
   <li><a href="/festival/kviff-2026" class="inline-link">KVIFF</a> &middot; Karlovy Vary</li>
   <li><a href="/festival/fantasia-2026" class="inline-link">Fantasia</a> &middot; Montréal</li>
+  <li><a href="/festival/frightfest-2026" class="inline-link">FrightFest</a> &middot; Londres</li>
+  <li><a href="/festival/venice-2026" class="inline-link">Venecia</a> &middot; Venecia</li>
+  <li><a href="/festival/tiff-2026" class="inline-link">TIFF</a> &middot; Toronto</li>
 </ul>
 <p>El hub completo se encuentra en <a href="/festival" class="inline-link">/festival</a>.</p>`
       },
       {
         q: '¿Qué festivales se incorporan próximamente?',
-        a: `<p>Festivales previstos para incorporarse durante 2026, con continuidad en 2027, 2028 y años posteriores:</p>
+        a: `<p>Pendientes de incorporarse durante 2026, en orden de calendario:</p>
 <ul>
-  <li><strong>Venezia</strong> &middot; La Biennale di Venezia</li>
-  <li><strong>TIFF</strong> &middot; Festival Internacional de Toronto</li>
-  <li><strong>Sitges</strong> &middot; Festival Internacional de Cine Fantástico de Cataluña</li>
+  <li><strong>San Sebastián</strong> &middot; Festival Internacional de Cine de San Sebastián</li>
   <li><strong>BFI London</strong> &middot; BFI London Film Festival</li>
+  <li><strong>Sitges</strong> &middot; Festival Internacional de Cine Fantástico de Cataluña</li>
+  <li><strong>El Cairo</strong> &middot; Festival Internacional de Cine de El Cairo</li>
   <li><strong>Mar del Plata</strong> &middot; Festival Internacional de Cine</li>
   <li><strong>BARS</strong> &middot; Buenos Aires Rojo Sangre</li>
+  <li><strong>Marrakech</strong> &middot; Festival Internacional de Cine de Marrakech</li>
+  <li><strong>Mar Rojo</strong> &middot; Festival Internacional de Cine del Mar Rojo</li>
 </ul>
-<p>La lista es orientativa y puede ajustarse a medida que evolucionan el alcance editorial y los recursos disponibles.</p>`
+<p>Cada edición se retoma al año siguiente. La lista es orientativa y puede ajustarse a medida que evolucionan el alcance editorial y los recursos disponibles.</p>`
       },
       {
         q: '¿Por qué algunos festivales muestran menos títulos que la programación oficial?',
