@@ -14,16 +14,14 @@
 
 ### `(root)`
 
-- `app.vue` — Defines the root Vue application component, including Nuxt layout and page rendering, and injects structured data (Schema.org Organization and WebSite) into the document head for SEO.
-- `cloudbuild.yaml` — Configures Google Cloud Build to automate the Docker image build, push to Artifact Registry, and deployment to Google Cloud Run for the Cinemagoria application.
-  - Deploys to Cloud Run service 'cinemagoria-main' in 'us-east1'.
-- `Dockerfile` — Defines a multi-stage Docker build process for the Cinemagoria Nuxt application, including dependency installation, build, and a production-ready runtime environment.
-  - Uses a pinned Node.js 22-slim image to avoid a specific `node-fetch` gzip issue.
-- `nuxt.config.ts` — Configures the Nuxt.js framework for the Cinemagoria application, including path aliases, devtools settings, and route-specific caching headers for sitemaps and RSS feeds.
+- `app.vue` — Root Vue component for the Cinemagoria application, setting up global SEO metadata (Schema.org Organization and WebSite) and rendering the main Nuxt layout and page.
+- `cloudbuild.yaml` — Google Cloud Build configuration for building a Docker image of the Cinemagoria application, pushing it to Artifact Registry, and deploying it to Cloud Run.
+- `Dockerfile` — Defines the Docker image build process for the Cinemagoria Nuxt application, including dependencies, build arguments for Supabase, and a production-ready runtime environment.
+- `nuxt.config.ts` — Nuxt.js configuration file, defining aliases, compatibility date, devtools settings, and route-specific headers for caching and sitemaps.
   - exports: `default`
-- `package.json` — Manages project metadata, scripts for development and build, and defines all production and development dependencies and dependency resolutions for the Cinemagoria application.
-  - Defines `build`, `dev`, `generate`, `preview`, and `postinstall` scripts.
-- `tsconfig.json` — Configures TypeScript for the Nuxt.js project by referencing generated TypeScript configuration files for different environments (app, server, shared, node).
+- `package.json` — Defines project metadata, scripts for development and build, dependency resolutions, and lists all production and development dependencies for the Cinemagoria application.
+  - Includes scripts: build, dev, generate, preview, postinstall.
+- `tsconfig.json` — TypeScript configuration file for the Nuxt.js project, referencing generated TypeScript configurations for different parts of the application.
 
 ### `assets`
 
