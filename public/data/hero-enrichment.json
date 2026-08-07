@@ -174,5 +174,21 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1785794923/cinemagoria/backdrops/hero_1473439.webp",
     "poster_path": "/aJM3gIdOkF5fOFscn3GBm0r0T9P.jpg",
     "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1480276,
+    "media_type": "movie",
+    "trailer_key": "PUIt5ZJuL9k",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1785945551/cinemagoria/backdrops/hero_1480276.webp",
+    "poster_path": "/te4owOtZM9sPPDVXErNQ5pPSgr0.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1458099,
+    "media_type": "movie",
+    "trailer_key": "iXA7BmrBBxs",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1786109376/cinemagoria/backdrops/hero_1458099.webp",
+    "poster_path": "/otJsgLxFhsa43dTknU9NqxdkdP4.jpg",
+    "force_enrichment": true
   }
 ]
