@@ -27,7 +27,7 @@ const festivals = [
     image: '/festivals/tiff/tiff_backdrop_2026_en.webp' },
   { slug: 'locarno-2026',   name: 'Locarno',        year: 2026, city: 'Locarno',    country: 'Switzerland',
     startDate: '2026-08-05', endDate: '2026-08-15', dateLabel: 'Aug 5 – 15, 2026',
-    image: '/festivals/locarno/locarno_backdrop_2026_en.png' },
+    image: '/festivals/locarno/locarno_backdrop_2026_en.webp' },
   { slug: 'bifan-2026',     name: 'BIFAN',          year: 2026, city: 'Bucheon',    country: 'South Korea',
     startDate: '2026-07-02', endDate: '2026-07-12', dateLabel: 'Jul 2 – 12, 2026',
     image: '/festivals/bifan/bifan_backdrop_2026_en.webp' },

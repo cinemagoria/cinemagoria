@@ -10,7 +10,7 @@
         <a href="https://www.locarnofestival.ch" target="_blank" class="hero-backdrop">
             <img
               ref="backdropImgRef"
-              src="/festivals/locarno/locarno_backdrop_2026_en.png"
+              src="/festivals/locarno/locarno_backdrop_2026_en.webp"
               alt="Locarno Film Festival 2026 Backdrop"
               :style="{ opacity: backdropLoaded ? 1 : 0, transition: 'opacity 0.4s ease' }"
               @load="backdropLoaded = true"
