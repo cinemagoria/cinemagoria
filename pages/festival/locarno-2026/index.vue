@@ -503,7 +503,7 @@ watch([loading, activeTab, selectionSections], () => {
     else if (sectionObserver) sectionObserver.disconnect();
 }, { flush: 'post' });
 
-const FESTIVAL_TZ = 'Europe/Prague';
+const FESTIVAL_TZ = 'Europe/Zurich';
 
 const formatDate = (dateStr) => {
     // dateStr is the festival-local day key (YYYY-MM-DD). Anchor to UTC so it
@@ -516,7 +516,7 @@ const formatTime = (timeStr, tz) => {
     return new Date(timeStr).toLocaleTimeString('es-ES', {
         hour: '2-digit',
         minute: '2-digit',
-        timeZone: tz || FESTIVAL_TZ
+        timeZone: FESTIVAL_TZ
     });
 };
 
