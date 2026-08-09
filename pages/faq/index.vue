@@ -120,7 +120,7 @@ const sections = [
       },
       {
         q: '¿Cómo entra un título a N.O.I.R. y cómo se mueve dentro de la plataforma?',
-        a: `<p>La mayoría de los títulos surge desde festivales, premieres, adquisiciones, seguimiento crítico y una infraestructura interna de procesos editoriales, bases de datos, automatizaciones y análisis curatorial. Los festivales funcionan como el principal sistema de detección editorial: <strong>Sundance, Róterdam, Berlinale, Romford Horror, Slamdance, SXSW, BIFFF, BAFICI, CUFF, Cannes, Tribeca, KVIFF, Fantasia, FrightFest, Venecia</strong> y <strong>TIFF</strong> alimentan activamente el sistema de selección, con nuevos festivales incorporándose progresivamente durante 2026.</p>
+        a: `<p>La mayoría de los títulos surge desde festivales, premieres, adquisiciones, seguimiento crítico y una infraestructura interna de procesos editoriales, bases de datos, automatizaciones y análisis curatorial. Los festivales funcionan como el principal sistema de detección editorial: <strong>Sundance, Róterdam, Berlinale, Romford Horror, Slamdance, SXSW, BIFFF, BAFICI, CUFF, Cannes, Tribeca, BIFAN, KVIFF, Fantasia, Locarno, FrightFest, Venecia</strong> y <strong>TIFF</strong> alimentan activamente el sistema de selección, con nuevos festivales incorporándose progresivamente durante 2026.</p>
 <p>Cuando un proyecto gana relevancia editorial, pasa a la rotación principal de la página principal: una selección destacada de títulos N.O.I.R. próximos a estrenarse o recientemente lanzados. El sello aparece en cada tarjeta y conecta directamente con el histórico completo.</p>
 <p>Una vez que el título se encuentra ampliamente disponible, abandona esa rotación principal e ingresa al <strong>histórico permanente de N.O.I.R.</strong> en <a href="/noir" class="inline-link">/noir</a>, organizado por año y formato. Con frecuencia continúa también en <strong>Spotlight</strong>, el segundo espacio editorial de la página principal &mdash; cerca del setenta por ciento de los títulos destacados allí pasaron antes por la rotación principal.</p>
 <p>Salir de la rotación nunca implica desaparecer del histórico. El histórico es acumulativo.</p>`
@@ -160,8 +160,10 @@ const sections = [
   <li><a href="/festival/cuff-2026" class="inline-link">CUFF</a> &middot; Calgary</li>
   <li><a href="/festival/cannes-2026" class="inline-link">Cannes</a> &middot; Cannes</li>
   <li><a href="/festival/tribeca-2026" class="inline-link">Tribeca</a> &middot; Nueva York</li>
+  <li><a href="/festival/bifan-2026" class="inline-link">BIFAN</a> &middot; Bucheon</li>
   <li><a href="/festival/kviff-2026" class="inline-link">KVIFF</a> &middot; Karlovy Vary</li>
   <li><a href="/festival/fantasia-2026" class="inline-link">Fantasia</a> &middot; Montréal</li>
+  <li><a href="/festival/locarno-2026" class="inline-link">Locarno</a> &middot; Locarno</li>
   <li><a href="/festival/frightfest-2026" class="inline-link">FrightFest</a> &middot; Londres</li>
   <li><a href="/festival/venice-2026" class="inline-link">Venecia</a> &middot; Venecia</li>
   <li><a href="/festival/tiff-2026" class="inline-link">TIFF</a> &middot; Toronto</li>
@@ -172,7 +174,7 @@ const sections = [
         q: '¿Qué festivales se incorporan próximamente?',
         a: `<p>Pendientes de incorporarse durante 2026, en orden de calendario:</p>
 <ul>
-  <li><strong>San Sebastián</strong> &middot; Festival Internacional de Cine de San Sebastián</li>
+  <li><strong>BIFF</strong> &middot; Festival Internacional de Cine de Busan</li>
   <li><strong>BFI London</strong> &middot; BFI London Film Festival</li>
   <li><strong>Sitges</strong> &middot; Festival Internacional de Cine Fantástico de Cataluña</li>
   <li><strong>El Cairo</strong> &middot; Festival Internacional de Cine de El Cairo</li>

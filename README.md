@@ -60,13 +60,13 @@ Every covered festival gets its own page, API endpoints, card and badge componen
 
 **Live now**
 
-**Sundance** · **Rotterdam** · **Berlinale** · **Romford Horror** · **Slamdance** · **SXSW** · **BIFFF** · **BAFICI** · **CUFF** *(Calgary Underground)* · **Cannes** · **Tribeca** · **KVIFF** *(Karlovy Vary)* · **Fantasia** *(Montréal)* · **FrightFest** *(London)* · **Venice** *(La Biennale)* · **TIFF** *(Toronto)*
+**Sundance** · **Rotterdam** · **Berlinale** · **Romford Horror** · **Slamdance** · **SXSW** · **BIFFF** · **BAFICI** · **CUFF** *(Calgary Underground)* · **Cannes** · **Tribeca** · **BIFAN** *(Bucheon)* · **KVIFF** *(Karlovy Vary)* · **Fantasia** *(Montréal)* · **Locarno** · **FrightFest** *(London)* · **Venice** *(La Biennale)* · **TIFF** *(Toronto)*
 
 **Still to land in the 2026 cycle**
 
-**San Sebastián** · **BFI London** · **Sitges** · **Cairo** · **Mar del Plata** · **BARS** *(Buenos Aires Rojo Sangre)* · **Marrakech** · **Red Sea**
+**BIFF** *(Busan)* · **BFI London** · **Sitges** · **Cairo** · **Mar del Plata** · **BARS** *(Buenos Aires Rojo Sangre)* · **Marrakech** · **Red Sea**
 
-The last four extend coverage beyond the European and American circuits for the first time. The 2027 cycle adds **Göteborg** and **Locarno**.
+Cairo, Marrakech and Red Sea take coverage into Africa and the Middle East, and BIFF follows BIFAN into South Korea. The 2027 cycle adds **Göteborg**.
 
 Cannes ships the official screenings plus the parallel sections — Critics' Week, Quinzaine des Cinéastes and ACID — and Venice carries its own parallel sections. FrightFest ships the full official screening schedule, and Berlinale adds an interactive timezone-aware view of it. The hero section supports multiple simultaneous festival premiere badges with display precedence.
 
