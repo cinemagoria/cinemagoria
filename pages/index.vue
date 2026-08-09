@@ -176,98 +176,90 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     const locarnoList = festivalsBuckets.locarno || [];
     const bifanList = festivalsBuckets.bifan || [];
 
-     const FEATURED_ORDER = [
-        // tiff 2026
-        // 'Bad Lieutenant: Tokyo',
-        // 'Inherit',
-        // 'Misty Green',
-        // 'We Are Born Good',
-        // 'The Devils',
-        // venice 2026
-        // 'The Echo Chamber',
-        // 'Wild Horse Nine',
-        // 'Agatha the Writer',
-        // 'Bunker',
-        // frightfest 2026
-        // 'Salmokji: Whispering Water',
-        // 'The Latcher',
-        // 'Ithaqua',
-        // 'Infirmary',
-        // fantasia 2026
-        'Hot Spot',
-        'Ferine',
-        'Our Effed Up World',
-        'The Village of Eight Gravestones',
-        'The Eyes',
-        'Ancestral Beasts',
-        // bifan 2026
-        // 'Korean Haunted Hospital',
-        // 'The Fertilizer Home',
-        // 'The Mage',
-        // kviff 2026
-        'Rose of Nevada',
-        'Fruit Gathering',
-        'Hijamat',
-        'Black Money for White',
-        // tribeca 2026
-        'The Last Day',
-        'Breeder',
-        'Recluse',
-        // cannes 2026
-        'Hope|cannes',
-        'Atonement',
-        'Victorian Psycho',
-        'Minotaur',
-        'Fatherland',
-        'Fjord',
-        'Paper Tiger',
-        'The Unknown',
-        'Teenage Sex and Death at Camp Miasma',
-        'Titanic Ocean',
-        // cuff 2026
-        'Lucid',
-        'Thanks for Nothing',
-        'The Weed Eaters',
-        'Mag Mag',
-        // bafici 2026
-        'Nova \'78',
-        'El infierno está encantador - Gulp. 1985',
-        // bifff 2026
-        'Mārama',
-        'Sicko',
-        // sxsw 2026
-        'Hokum',
-        'Obsession',
-        'Never After Dark',
-        'The Peril at Pincer Point',
-        'Dead Eyes',
-        'The Sun Never Sets',
-        'Wishful Thinking',
-        // romford 2026
-        'Spoiling You',
-        // berlinale 2026
-        'Yellow Letters',
-        'Rose',
-        'Heysel 85',
-        'Nightborn',
-        'In a Whisper',
-        'If I Were Alive',
-        'Salvation',
-        // rotterdam 2026
-        'Krakatoa',
-        'Butterfly',
-        'Variations on a theme',
-        'Silent Friend',
-        'Tell Me What You Feel',
-        'Late Fame',
-        // sundance 2026
-        'The Weight',
-        'Night Nurse',
-        'Zi',
-        'Shame and Money',
-        'undertone',
-        'The Only Living Pickpocket in New York',
-    ];
+ const FEATURED_ORDER = [
+    // tiff 2026
+    // 'Bad Lieutenant: Tokyo',
+    // 'Inherit',
+    // 'Misty Green',
+    // 'We Are Born Good',
+    // venice 2026
+    // 'Wild Horse Nine',
+    // 'The Echo Chamber',
+    // 'Bunker',
+    // frightfest 2026
+    // 'Salmokji: Whispering Water',
+    // 'The Latcher',
+    // 'Ithaqua',
+    // 'Infirmary',
+    // fantasia 2026
+    'Hot Spot',
+    'Ferine',
+    'Our Effed Up World',
+    'The Village of Eight Gravestones',
+    'The Eyes',
+    'Ancestral Beasts',
+    // bifan 2026
+    'Korean Haunted Hospital',
+    'The Fertilizer Home',
+    'The Mage',
+    // kviff 2026
+    'Rose of Nevada',
+    'Fruit Gathering',
+    'Hijamat',
+    'Black Money for White',
+    // tribeca 2026
+    'The Last Day',
+    'Breeder',
+    'Recluse',
+    // cannes 2026
+    'Hope|cannes',
+    'Atonement',
+    'Victorian Psycho',
+    'Minotaur',
+    'Fatherland',
+    'Fjord',
+    'Paper Tiger',
+    'The Unknown',
+    'Teenage Sex and Death at Camp Miasma',
+    'Titanic Ocean',
+    // cuff 2026
+    'Lucid',
+    'The Weed Eaters',
+    'Mag Mag',
+    // bafici 2026
+    'Nova \'78',
+    'El infierno está encantador - Gulp. 1985',
+    // bifff 2026
+    'Mārama',
+    'Sicko',
+    // sxsw 2026
+    'Hokum',
+    'Obsession',
+    'Never After Dark',
+    'The Peril at Pincer Point',
+    'Dead Eyes',
+    // romford 2026
+    'Spoiling You',
+    // berlinale 2026
+    'Yellow Letters',
+    'Rose',
+    'Heysel 85',
+    'Nightborn',
+    'If I Were Alive',
+    'Salvation',
+    // rotterdam 2026
+    'Krakatoa',
+    'Butterfly',
+    'Silent Friend',
+    'Tell Me What You Feel',
+    // sundance 2026
+    'The Weight',
+    'Night Nurse',
+    'Zi',
+    'Shame and Money',
+    'undertone',
+    'The Only Living Pickpocket in New York',
+];  
     
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
     
