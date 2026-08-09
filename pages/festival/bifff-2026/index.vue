@@ -881,6 +881,25 @@ onMounted(async () => {
 .segmented-control .glider.films { transform: translateX(100%); }
 .segmented-control .glider.schedule { transform: translateX(200%); }
 
+@media (max-width: 600px) {
+    .switcher-container {
+        width: 100%;
+    }
+
+    .segmented-control {
+        min-width: 0;
+        width: 100%;
+        height: 36px;
+    }
+
+    .segmented-control label {
+        font-size: clamp(1.1rem, 3.2vw, 1.3rem);
+        line-height: 28px;
+        padding: 0 0.4rem;
+        min-width: 0;
+    }
+}
+
 
 .festival-hero {
     width: 100%;
