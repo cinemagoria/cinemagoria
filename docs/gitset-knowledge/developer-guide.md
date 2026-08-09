@@ -2,10 +2,10 @@
 
 ## Prerequisites
 
-To develop with Cinemagoria, you need:
+To develop on Cinemagoria, you need:
 
 *   Node.js (version 18 or later)
-*   npm (version 8 or later)
+*   npm (Node Package Manager)
 
 ## Setup
 
@@ -22,7 +22,7 @@ To develop with Cinemagoria, you need:
     ```bash
     npm run postinstall
     ```
-4.  **Start the development server**:
+4.  **Run the development server**:
     ```bash
     npm run dev
     ```
@@ -30,34 +30,38 @@ To develop with Cinemagoria, you need:
 
 ## Project Layout
 
-*   [components/](../../components/): Vue components, including global, common, festival-specific, and media-specific components.
-*   [layouts/](../../layouts/): Defines the default application layout.
-*   [middleware/](../../middleware/): Nuxt route middleware, such as global authentication.
-*   [pages/](../../pages/): Vue pages that define the application's routes and views.
-*   [plugins/](../../plugins/): Nuxt plugins for global functionalities like an event bus or lazy loading.
-*   [server/api/](../../server/api/): API endpoints for data fetching and submission.
-*   [scripts/](../../scripts/): One-shot and synchronization scripts for data management.
+*   [.github/](../../.github/) - GitHub Actions workflows and funding configuration.
+*   [assets/](../../assets/) - Static assets like images, fonts, or stylesheets.
+*   [components/](../../components/) - Reusable Vue components.
+*   [composables/](../../composables/) - Vue composable functions for shared logic.
+*   [layouts/](../../layouts/) - Application layouts.
+*   [middleware/](../../middleware/) - Nuxt middleware for route handling.
+*   [pages/](../../pages/) - Vue components for application routes.
+*   [plugins/](../../plugins/) - Nuxt plugins for extending functionality.
+*   [public/](../../public/) - Static files served directly.
+*   [scripts/](../../scripts/) - Utility scripts for data synchronization and seeding.
+*   [server/api/](../../server/api/) - API routes handled by the Nuxt server.
+*   [server/middleware/](../../server/middleware/) - Server-side middleware.
+*   [server/plugins/](../../server/plugins/) - Server-side Nuxt plugins.
+*   [server/routes/](../../server/routes/) - Server-side routes.
+*   [server/utils/](../../server/utils/) - Server-side utility functions.
+*   [stores/](../../stores/) - Pinia stores for state management.
+*   [types/](../../types/) - TypeScript type definitions.
+*   [utils/](../../utils/) - Client-side utility functions.
 
 ## Testing
 
-This repository does not contain dedicated test files.
+The provided structural digest and file summaries do not contain information about testing frameworks, test scripts, or test files. Therefore, no information can be provided for this section.
 
 ## Release & Deployment
 
-Cinemagoria uses GitHub Actions for continuous integration and deployment.
+The application uses Google Cloud Build and Docker for deployment.
 
-**CI Workflows:**
-
-| Workflow                                                              | Trigger(s)                                                              | Description                                                                                             |
-| :-------------------------------------------------------------------- | :---------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------ |
-| [.github/workflows/gitset-knowledge.yml](../../.github/workflows/gitset-knowledge.yml) | `workflow_dispatch`, `push` on `main` (excluding docs, markdown, gitignore, LICENSE) | Incrementally refreshes the project's AI knowledge base using Gitset and creates a pull request.        |
-| [.github/workflows/sync-hero-data.yml](../../.github/workflows/sync-hero-data.yml)     | `cron: 0 6 * * *`, `workflow_dispatch`                                  | Automates synchronization of hero and noir enrichment data, committing updated JSON files.              |
-| [.github/workflows/sync-noir-historical.yml](../../.github/workflows/sync-noir-historical.yml) | `workflow_dispatch`                                                     | Automates synchronization of N.O.I.R historical data and regenerates noir enrichment data.              |
-
-**Deployment:**
-
-The [cloudbuild.yaml](../../cloudbuild.yaml) file configures Google Cloud Build to:
-
-*   Build a Docker image of the application.
-*   Push the image to Artifact Registry.
-*   Deploy the image to Cloud Run.
+*   **Docker Image Build**: The [Dockerfile](../../Dockerfile) defines the build process, including dependencies and environment setup for production.
+*   **Cloud Build Configuration**: The [cloudbuild.yaml](../../cloudbuild.yaml) file configures Google Cloud Build to:
+    *   Build a Docker image.
+    *   Push the image to Artifact Registry.
+    *   Deploy the image to Cloud Run.
+*   **Nuxt Build**: The `npm run build` script executes `nuxt build` to compile the application for production.
+*   **Nuxt Generate**: The `npm run generate` script executes `nuxt generate` to pre-render every route to HTML files.
+*   **Nuxt Preview**: The `npm run preview` script executes `nuxt preview` to locally preview your production build.
