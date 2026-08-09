@@ -73,6 +73,8 @@ import FantasiaCard from '~/components/FantasiaCard.vue';
 import FrightfestCard from '~/components/FrightfestCard.vue';
 import VeniceCard from '~/components/VeniceCard.vue';
 import TiffCard from '~/components/TiffCard.vue';
+import LocarnoCard from '~/components/LocarnoCard.vue';
+import BifanCard from '~/components/BifanCard.vue';
 
 const AUTOPLAY_INTERVAL = 10000;
 
@@ -99,6 +101,8 @@ export default {
     FrightfestCard,
     VeniceCard,
     TiffCard,
+    LocarnoCard,
+    BifanCard,
   },
 
   props: {
@@ -158,6 +162,8 @@ export default {
         frightfest: 'FrightfestCard',
         venice: 'VeniceCard',
         tiff: 'TiffCard',
+        locarno: 'LocarnoCard',
+        bifan: 'BifanCard',
       };
       return cardMap[item.festival_source] || 'SundanceCard';
     },
