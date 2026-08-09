@@ -120,7 +120,7 @@ const sections = [
       },
       {
         q: 'How does a title enter N.O.I.R., and how does it move through the platform?',
-        a: `<p>Most candidates originate from festival ecosystems, premiere reactions, acquisition tracking and an internal pipeline of workflows, datasets, enrichment scripts and editorial analysis. Festivals are the upstream signal layer &mdash; <strong>Sundance, Rotterdam, Berlinale, Romford Horror, Slamdance, SXSW, BIFFF, BAFICI, CUFF, Cannes, Tribeca, KVIFF, Fantasia, FrightFest, Venice</strong> and <strong>TIFF</strong> all feed the selection, with more festivals joining the rotation throughout 2026.</p>
+        a: `<p>Most candidates originate from festival ecosystems, premiere reactions, acquisition tracking and an internal pipeline of workflows, datasets, enrichment scripts and editorial analysis. Festivals are the upstream signal layer &mdash; <strong>Sundance, Rotterdam, Berlinale, Romford Horror, Slamdance, SXSW, BIFFF, BAFICI, CUFF, Cannes, Tribeca, BIFAN, KVIFF, Fantasia, Locarno, FrightFest, Venice</strong> and <strong>TIFF</strong> all feed the selection, with more festivals joining the rotation throughout 2026.</p>
 <p>Once recognized, a title is promoted to the primary editorial slot at the top of the homepage &mdash; a rotating showcase of N.O.I.R.-certified works near or just before release. The seal appears on each card and links directly to the full archive.</p>
 <p>Roughly a week after a title becomes broadly available, it leaves that primary rotation and enters the <strong>permanent N.O.I.R. archive</strong> at <a href="/noir" class="inline-link">/noir</a>, organized by year and form. Many titles continue inside <strong>Spotlight</strong>, the homepage&rsquo;s secondary editorial surface &mdash; roughly seventy percent of Spotlight entries passed through the primary rotation first.</p>
 <p>Removal from the rotation never means removal from the archive. The archive is additive.</p>`
@@ -160,8 +160,10 @@ const sections = [
   <li><a href="/festival/cuff-2026" class="inline-link">CUFF</a> &middot; Calgary</li>
   <li><a href="/festival/cannes-2026" class="inline-link">Cannes</a> &middot; Cannes</li>
   <li><a href="/festival/tribeca-2026" class="inline-link">Tribeca</a> &middot; New York</li>
+  <li><a href="/festival/bifan-2026" class="inline-link">BIFAN</a> &middot; Bucheon</li>
   <li><a href="/festival/kviff-2026" class="inline-link">KVIFF</a> &middot; Karlovy Vary</li>
   <li><a href="/festival/fantasia-2026" class="inline-link">Fantasia</a> &middot; Montr&eacute;al</li>
+  <li><a href="/festival/locarno-2026" class="inline-link">Locarno</a> &middot; Locarno</li>
   <li><a href="/festival/frightfest-2026" class="inline-link">FrightFest</a> &middot; London</li>
   <li><a href="/festival/venice-2026" class="inline-link">Venice</a> &middot; Venice</li>
   <li><a href="/festival/tiff-2026" class="inline-link">TIFF</a> &middot; Toronto</li>
@@ -172,7 +174,7 @@ const sections = [
         q: 'Which festivals are scheduled to join the coverage?',
         a: `<p>Still to join during 2026, in calendar order:</p>
 <ul>
-  <li><strong>San Sebasti&aacute;n</strong> &middot; San Sebasti&aacute;n International Film Festival</li>
+  <li><strong>BIFF</strong> &middot; Busan International Film Festival</li>
   <li><strong>BFI London</strong> &middot; BFI London Film Festival</li>
   <li><strong>Sitges</strong> &middot; International Fantastic Film Festival of Catalonia</li>
   <li><strong>Cairo</strong> &middot; Cairo International Film Festival</li>
