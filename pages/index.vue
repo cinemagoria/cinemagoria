@@ -200,6 +200,10 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         'The Village of Eight Gravestones',
         'The Eyes',
         'Ancestral Beasts',
+        // bifan 2026
+        // 'Korean Haunted Hospital',
+        // 'The Fertilizer Home',
+        // 'The Mage',
         // kviff 2026
         'Rose of Nevada',
         'Fruit Gathering',
