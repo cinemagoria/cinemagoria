@@ -470,6 +470,8 @@ import FantasiaBadge from '~/components/festival/FantasiaBadge.vue';
 import FrightfestBadge from '~/components/festival/FrightfestBadge.vue';
 import VeniceBadge from '~/components/festival/VeniceBadge.vue';
 import TiffBadge from '~/components/festival/TiffBadge.vue';
+import LocarnoBadge from '~/components/festival/LocarnoBadge.vue';
+import BifanBadge from '~/components/festival/BifanBadge.vue';
 import { MANUAL_FESTIVAL_BADGES, MANUAL_OVERVIEWS } from '~/utils/constants';
 import { getHeroEnrichment, getNoirEnrichment } from '~/utils/api';
 import NoirModal from '~/components/NoirModal.vue';
@@ -504,6 +506,8 @@ function mapFestivalsToFields(festivals, itemId, itemName) {
     frightfestFilm: f.frightfest || null,
     veniceFilm: f.venice || null,
     tiffFilm: f.tiff || null,
+    locarnoFilm: f.locarno || null,
+    bifanFilm: f.bifan || null,
     cannesFilm: null,
     cannesCriticsChoiceFilm: null,
     cannesQuinzaineFilm: null,
@@ -545,6 +549,8 @@ function mapFestivalsToFields(festivals, itemId, itemName) {
     if (manual.includes('frightfest') && !fields.frightfestFilm) fields.frightfestFilm = stub;
     if (manual.includes('venice') && !fields.veniceFilm) fields.veniceFilm = stub;
     if (manual.includes('tiff') && !fields.tiffFilm) fields.tiffFilm = stub;
+    if (manual.includes('locarno') && !fields.locarnoFilm) fields.locarnoFilm = stub;
+    if (manual.includes('bifan') && !fields.bifanFilm) fields.bifanFilm = stub;
   }
 
   return fields;
@@ -573,6 +579,8 @@ export default {
     FrightfestBadge,
     VeniceBadge,
     TiffBadge,
+    LocarnoBadge,
+    BifanBadge,
     NoirModal,
   },
 
@@ -764,6 +772,8 @@ export default {
         { name: 'frightfest', film: this.frightfestFilm, component: 'FrightfestBadge', link: '/festival/frightfest-2026', isSimple: true },
         { name: 'venice', film: this.veniceFilm, component: 'VeniceBadge', link: '/festival/venice-2026', isSimple: true },
         { name: 'tiff', film: this.tiffFilm, component: 'TiffBadge', link: '/festival/tiff-2026', isSimple: true },
+        { name: 'locarno', film: this.locarnoFilm, component: 'LocarnoBadge', link: '/festival/locarno-2026', isSimple: true },
+        { name: 'bifan', film: this.bifanFilm, component: 'BifanBadge', link: '/festival/bifan-2026', isSimple: true },
       ];
       return festivalConfig.filter(f => f.film);
     },

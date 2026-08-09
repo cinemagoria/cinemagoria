@@ -1786,6 +1786,18 @@ export const SUPPORTED_FESTIVALS = [
         name: 'Toronto International Film Festival 2026',
         slug: 'tiff-2026',
         logo_path: '/festivals/tiff/tiff_film_festival_2026_logo.png'
+    },
+    {
+        id: 'locarno',
+        name: 'Locarno Film Festival 2026 Festival del film Locarno Pardo',
+        slug: 'locarno-2026',
+        logo_path: '/festivals/locarno/locarno_film_festival_2026_logo.png'
+    },
+    {
+        id: 'bifan',
+        name: 'BIFAN 2026 Bucheon International Fantastic Film Festival',
+        slug: 'bifan-2026',
+        logo_path: '/festivals/bifan/bifan_film_festival_2026_logo.png'
     }
 ];
 
