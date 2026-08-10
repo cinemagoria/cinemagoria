@@ -27,6 +27,9 @@ export default defineNuxtConfig({
     '/api/spotlight/**': { headers: { 'cache-control': 'public, max-age=1800, s-maxage=1800' } },
     '/api/news': { headers: { 'cache-control': 'public, max-age=300, s-maxage=300' } },
     '/api/imdb-rating/**': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
+    // Award archives move a couple of times a year — cache them as long as ratings.
+    '/api/awards': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
+    '/api/awards/**': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
     '/api/article/**': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=3600' } },
     '/api/festival/**': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600' } },
     '/api/search/**': { headers: { 'cache-control': 'public, max-age=60, s-maxage=60' } },
