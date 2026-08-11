@@ -59,6 +59,13 @@
 
       <div v-else>
         <div v-if="activeTab === 'films'" class="selection">
+          <div v-if="catalogTotal" class="catalog-total">
+            <span class="catalog-total__chip">
+              <strong>{{ catalogTotal }}</strong> {{ catalogTotal === 1 ? 'title' : 'titles' }}
+              <span class="catalog-total__sep" aria-hidden="true">·</span>
+              {{ catalogSectionCount }} {{ catalogSectionCount === 1 ? 'section' : 'sections' }}
+            </span>
+          </div>
           <div class="selection-layout">
             <aside class="selection-nav" aria-label="Jump to section">
               <template v-if="officialNav.length">
@@ -428,6 +435,11 @@ const selectionSections = computed(() => orderedCategories.value.map((cat) => {
 }));
 const officialNav = computed(() => selectionSections.value);
 
+// Festival-wide catalog size. Every other count on the page is per-section,
+// so without this the reader can only add the sidebar numbers up by hand.
+const catalogTotal = computed(() => selectionSections.value.reduce((n, s) => n + (s.count || 0), 0));
+const catalogSectionCount = computed(() => selectionSections.value.filter((s) => (s.count || 0) > 0).length);
+
 const scrollToSection = (key) => {
     activeSection.value = key;
     const root = selectionContentRef.value;
@@ -740,6 +752,33 @@ onMounted(async () => {
     color: rgba(255, 255, 255, 0.5);
     white-space: nowrap;
     flex-shrink: 0;
+}
+
+/* Catalog total — the sidebar and the section headers only ever state
+   per-section counts, so this chip is the one place the whole lineup is sized. */
+.catalog-total {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.6rem;
+}
+
+.catalog-total__chip {
+    font-size: 12px;
+    color: #aab1b8;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+}
+
+.catalog-total__chip strong {
+    color: #8BE9FD;
+    font-weight: 700;
+}
+
+.catalog-total__sep {
+    color: rgba(139, 233, 253, 0.4);
+    margin: 0 3px;
 }
 
 .expand-btn {
