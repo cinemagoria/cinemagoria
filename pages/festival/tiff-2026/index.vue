@@ -285,11 +285,13 @@
                       <h3>Venues</h3>
                     </div>
                     <div class="venue-list">
-                      <div class="venue-item"><strong>TIFF Bell Lightbox</strong><span>Main festival hub — King Street West, Toronto</span></div>
+                      <div class="venue-item"><strong>TIFF Lightbox</strong><span>Main festival hub — 4 screens, King Street West</span></div>
+                      <div class="venue-item"><strong>Scotiabank Theatre Toronto</strong><span>Largest venue — 14 screens</span></div>
                       <div class="venue-item"><strong>Roy Thomson Hall</strong><span>Galas &amp; the Opening Night premiere</span></div>
-                      <div class="venue-item"><strong>Metro Toronto Convention Centre — John Bassett Theatre</strong><span>New for 2026: home of TIFF: The Market</span></div>
+                      <div class="venue-item"><strong>Royal Alexandra Theatre</strong><span>Gala &amp; Special Presentations premieres</span></div>
+                      <div class="venue-item"><strong>VISA Screening Room at the Princess of Wales Theatre</strong><span>Premiere screenings, King Street West</span></div>
                     </div>
-                    <p class="carousel-desc">Screenings run across several downtown Toronto venues; check each film's listing for its specific theatre.</p>
+                    <p class="carousel-desc">All five venues sit within walking distance in downtown Toronto. Each screening's exact room is listed in the Schedule tab.</p>
                   </template>
                 </div>
               </transition>
