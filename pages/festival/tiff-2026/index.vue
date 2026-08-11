@@ -285,11 +285,13 @@
                       <h3>Sedes</h3>
                     </div>
                     <div class="venue-list">
-                      <div class="venue-item"><strong>TIFF Bell Lightbox</strong><span>Sede principal — King Street West, Toronto</span></div>
-                      <div class="venue-item"><strong>Roy Thomson Hall</strong><span>Galas y el estreno de Noche de Apertura</span></div>
-                      <div class="venue-item"><strong>Metro Toronto Convention Centre — John Bassett Theatre</strong><span>Nuevo en 2026: sede de TIFF: The Market</span></div>
+                      <div class="venue-item"><strong>TIFF Lightbox</strong><span>Sede principal — 4 salas, King Street West</span></div>
+                      <div class="venue-item"><strong>Scotiabank Theatre Toronto</strong><span>La sede más grande — 14 salas</span></div>
+                      <div class="venue-item"><strong>Roy Thomson Hall</strong><span>Galas y la première de apertura</span></div>
+                      <div class="venue-item"><strong>Royal Alexandra Theatre</strong><span>Premières de Gala y Special Presentations</span></div>
+                      <div class="venue-item"><strong>VISA Screening Room at the Princess of Wales Theatre</strong><span>Premières, King Street West</span></div>
                     </div>
-                    <p class="carousel-desc">Las funciones se distribuyen en varias sedes del centro de Toronto; revisá la ficha de cada película para conocer su sala específica.</p>
+                    <p class="carousel-desc">Las cinco sedes están a poca distancia a pie en el centro de Toronto. La sala exacta de cada función figura en la pestaña Horarios.</p>
                   </template>
                 </div>
               </transition>
