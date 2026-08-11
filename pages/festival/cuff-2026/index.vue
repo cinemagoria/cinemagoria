@@ -56,6 +56,13 @@
 
       <div v-else>
         <div v-if="activeTab === 'films'" class="selection">
+          <div v-if="catalogTotal" class="catalog-total">
+            <span class="catalog-total__chip">
+              <strong>{{ catalogTotal }}</strong> {{ catalogTotal === 1 ? 'título' : 'títulos' }}
+              <span class="catalog-total__sep" aria-hidden="true">·</span>
+              {{ catalogSectionCount }} {{ catalogSectionCount === 1 ? 'sección' : 'secciones' }}
+            </span>
+          </div>
           <div class="selection-layout">
             <aside class="selection-nav" aria-label="Saltar a sección">
               <template v-if="officialNav.length">
@@ -311,6 +318,11 @@ const features = computed(() => films.value?.results?.filter(f => !f.runtime || 
 const shorts = computed(() => films.value?.results?.filter(f => f.runtime > 0 && f.runtime < 40) || []);
 const selectionSections = computed(() => [{ key: 'features', label: 'Largometrajes', films: features.value, count: features.value.length }, { key: 'shorts', label: 'Cortometrajes', films: shorts.value, count: shorts.value.length }].filter(sec => sec.count > 0));
 const officialNav = computed(() => selectionSections.value);
+
+// Festival-wide catalog size. Every other count on the page is per-section,
+// so without this the reader can only add the sidebar numbers up by hand.
+const catalogTotal = computed(() => selectionSections.value.reduce((n, s) => n + (s.count || 0), 0));
+const catalogSectionCount = computed(() => selectionSections.value.filter((s) => (s.count || 0) > 0).length);
 const scrollToSection = (key) => { activeSection.value = key; const root = selectionContentRef.value; if (!root) return; for (const el of root.querySelectorAll('[data-key]')) if (el.getAttribute('data-key') === key) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); break; } };
 const setupSectionObserver = () => { if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') return; if (sectionObserver) sectionObserver.disconnect(); const root = selectionContentRef.value; if (!root) return; const els = root.querySelectorAll('[data-key]'); if (!els.length) return; sectionObserver = new IntersectionObserver((entries) => { for (const entry of entries) if (entry.isIntersecting) activeSection.value = entry.target.getAttribute('data-key'); }, { rootMargin: '-110px 0px -70% 0px', threshold: 0 }); els.forEach((el) => sectionObserver.observe(el)); };
 watch(selectionSections, (sections) => { if (sections.length && !sections.some((sec) => sec.key === activeSection.value)) activeSection.value = sections[0].key; }, { immediate: true });
@@ -492,6 +504,33 @@ onMounted(async () => { try { const [filmsData, scheduleData, awardsData] = awai
     color: rgba(255, 255, 255, 0.5);
     white-space: nowrap;
     flex-shrink: 0;
+}
+
+/* Catalog total — the sidebar and the section headers only ever state
+   per-section counts, so this chip is the one place the whole lineup is sized. */
+.catalog-total {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.6rem;
+}
+
+.catalog-total__chip {
+    font-size: 12px;
+    color: #aab1b8;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+}
+
+.catalog-total__chip strong {
+    color: #8BE9FD;
+    font-weight: 700;
+}
+
+.catalog-total__sep {
+    color: rgba(139, 233, 253, 0.4);
+    margin: 0 3px;
 }
 
 .expand-btn {
