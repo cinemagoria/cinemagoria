@@ -148,6 +148,55 @@
                 <span v-if="yearStart">{{ yearStart }}</span>
                 <span v-if="heroItem.runtime">{{ formatRuntime(heroItem.runtime) }}</span>
                 <span v-if="cert">Cert. {{ cert }}</span>
+                <div v-if="relatedArticles.length > 0" :class="$style.newsCapsule" v-click-outside="closeArticlesPanel">
+                  <button
+                    type="button"
+                    :class="[$style.newsCapsuleTrigger, { [$style.newsCapsuleTriggerOpen]: showArticlesPanel }]"
+                    :aria-expanded="showArticlesPanel ? 'true' : 'false'"
+                    :aria-label="articlesCapsuleLabel"
+                    @click.stop="toggleArticlesPanel">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8Z"/></svg>
+                    <span>{{ articlesCapsuleLabel }}</span>
+                    <svg :class="[$style.newsCapsuleChevron, { [$style.newsCapsuleChevronOpen]: showArticlesPanel }]" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                  </button>
+
+                  <transition name="hero-news-panel">
+                    <div v-if="showArticlesPanel" :class="$style.newsPanel" @wheel.stop>
+                      <a
+                        v-for="article in relatedArticles"
+                        :key="article.slug"
+                        :href="`/news/${article.slug}`"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        :class="$style.newsPanelItem">
+                        <span :class="$style.newsPanelAside">
+                          <span :class="$style.newsPanelThumb">
+                            <img
+                              v-if="article.image_url"
+                              :src="article.image_url"
+                              :alt="articleTitle(article)"
+                              loading="lazy"
+                              decoding="async">
+                          </span>
+                          <span v-if="article.published_at" :class="$style.newsPanelDate">{{ formatArticleDate(article.published_at) }}</span>
+                        </span>
+                        <span :class="$style.newsPanelBody">
+                          <span :class="$style.newsPanelTitle">{{ articleTitle(article) }}</span>
+                          <span v-if="articleHook(article)" :class="$style.newsPanelHook">{{ articleHook(article) }}</span>
+                          <span :class="$style.newsPanelFoot">
+                            <span v-if="article.requires_auth" :class="$style.newsPanelLock">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1Z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                              Solo miembros
+                            </span>
+                            <span :class="$style.newsPanelRead">
+                              Leer
+                            </span>
+                          </span>
+                        </span>
+                      </a>
+                    </div>
+                  </transition>
+                </div>
               </div>
             </div>
 
@@ -651,6 +700,8 @@ export default {
 
       showNoirModal: false,
       isNoirTitle: false,
+      relatedArticles: [],
+      showArticlesPanel: false,
       currentIndex: 0,
       autoAdvanceEnabled: true,
       autoAdvanceTimer: null,
@@ -765,6 +816,10 @@ export default {
       const seasonLabels = seasons.map(s => `T${s.season_number}: ${s.tracked}`).join(', ');
       return `${this.trackedEpisodesCount} episodios registrados (${seasonLabels})`;
     },
+    articlesCapsuleLabel() {
+      const count = this.relatedArticles.length;
+      return count === 1 ? '1 Artículo relacionado' : `${count} Artículos relacionados`;
+    },
     progressElapsed() {
       const rt = this.heroItem.runtime;
       if (!rt) return '0m';
@@ -780,6 +835,7 @@ export default {
   created() {
     // Non-reactive: session cache of per-item user state (see loadUserItemState).
     this._userStateCache = new Map();
+    this._relatedArticlesCache = new Map();
   },
 
   async mounted() {
@@ -835,6 +891,95 @@ export default {
       const key = `${tmdbId}-${mediaType}`;
       const [heroMap, noirMap] = await Promise.all([getHeroEnrichment(), getNoirEnrichment()]);
       this.isNoirTitle = heroMap.has(key) || heroMap.has(tmdbId) || noirMap.has(key) || noirMap.has(tmdbId);
+    },
+    entityKeyFor(item) {
+      if (!item || !item.id) return '';
+      const rawType = item.type || (item.title ? 'movie' : 'tv');
+      return `${rawType === 'movie' ? 'movie' : 'tv'}:${item.id}`;
+    },
+    async loadRelatedArticles() {
+      this.closeArticlesPanel();
+
+      const key = this.entityKeyFor(this.heroItem);
+      if (!key) {
+        this.relatedArticles = [];
+        return;
+      }
+
+      if (this._relatedArticlesCache.has(key)) {
+        this.relatedArticles = this._relatedArticlesCache.get(key);
+        return;
+      }
+
+      this.relatedArticles = [];
+
+      const pool = (this.isHomepage && this.items && this.items.length > 0)
+        ? this.items
+        : [this.heroItem];
+
+      const pending = Array.from(new Set(
+        pool.map(item => this.entityKeyFor(item)).filter(Boolean)
+      )).filter(entityKey => !this._relatedArticlesCache.has(entityKey));
+
+      if (pending.length === 0) return;
+
+      try {
+        const response = await $fetch('/api/articles/by-entity', {
+          params: { entities: pending.join(',') },
+        });
+        const results = (response && response.results) || {};
+        for (const entityKey of pending) {
+          this._relatedArticlesCache.set(entityKey, results[entityKey] || []);
+        }
+      } catch (e) {
+        for (const entityKey of pending) {
+          this._relatedArticlesCache.set(entityKey, []);
+        }
+      }
+
+      if (this.entityKeyFor(this.heroItem) === key) {
+        this.relatedArticles = this._relatedArticlesCache.get(key) || [];
+      }
+    },
+    toggleArticlesPanel() {
+      if (this.showArticlesPanel) {
+        this.closeArticlesPanel();
+        return;
+      }
+      this.showArticlesPanel = true;
+      if (this.isHomepage && !this.autoAdvancePaused) {
+        this._articlesPanelPausedAutoAdvance = true;
+        this.toggleAutoAdvance();
+      }
+    },
+    closeArticlesPanel() {
+      if (!this.showArticlesPanel) return;
+      this.showArticlesPanel = false;
+      if (this._articlesPanelPausedAutoAdvance) {
+        this._articlesPanelPausedAutoAdvance = false;
+        if (this.autoAdvancePaused) this.toggleAutoAdvance();
+      }
+    },
+    articleTitle(article) {
+      return article.title_es || article.title_en || '';
+    },
+    articleHook(article) {
+      const raw = article.description_es || article.description_en || '';
+      const clean = String(raw).replace(/\s+/g, ' ').trim();
+      if (clean.length <= 110) return clean;
+      return `${clean.slice(0, 107).trimEnd()}…`;
+    },
+    formatArticleDate(dateStr) {
+      try {
+        return new Date(dateStr).toLocaleDateString('es-ES', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          timeZone: 'UTC',
+        });
+      } catch {
+        return '';
+      }
     },
     handleTouchStart(e) {
       if (!this.isHomepage || this.items.length <= 1) return;
@@ -979,6 +1124,7 @@ export default {
         this.translatedOverview = null;
 
         this.checkFestivalStatus();
+        this.loadRelatedArticles();
         this.handleTranslation();
 
         if (!this.backdrop) {
@@ -2372,7 +2518,7 @@ export default {
   margin-bottom: 1.3rem;
 
   @media (min-width: $breakpoint-small) {
-    margin: 0 1.2rem 0 0;
+    margin: 0 1.2rem 0.9rem 0;
   }
 }
 
@@ -2447,10 +2593,15 @@ export default {
 .info {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   font-family: var(--font-display);
 
   span {
     margin-right: 0.9rem;
+  }
+
+  @media (max-width: #{$breakpoint-small - 1px}) {
+    position: relative;
   }
 }
 
@@ -2667,6 +2818,239 @@ export default {
 
   @media (min-width: 1650px) {
     font-size: 0.85vw;
+  }
+}
+
+.newsCapsule {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  z-index: 30;
+
+  @media (max-width: #{$breakpoint-small - 1px}) {
+    position: static;
+  }
+}
+
+.newsCapsuleTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 7px 14px;
+  line-height: 1;
+  background: rgba(3, 4, 6, 0.55);
+  border: 1px solid rgba(139, 233, 253, 0.28);
+  border-radius: 999px;
+  color: #8BE9FD;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0 0 12px rgba(139, 233, 253, 0.05);
+  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: rgba(139, 233, 253, 0.12);
+    border-color: rgba(139, 233, 253, 0.6);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(139, 233, 253, 0.15),
+                inset 0 0 12px rgba(139, 233, 253, 0.08);
+  }
+
+  @media (max-width: #{$breakpoint-small - 1px}) {
+    font-size: 1.05rem;
+    padding: 5px 11px;
+  }
+
+  @media (min-width: 1650px) {
+    font-size: 0.72vw;
+  }
+}
+
+.newsCapsuleTriggerOpen {
+  background: rgba(139, 233, 253, 0.14);
+  border-color: rgba(139, 233, 253, 0.65);
+  box-shadow: 0 4px 16px rgba(139, 233, 253, 0.18),
+              inset 0 0 12px rgba(139, 233, 253, 0.1);
+}
+
+.newsCapsuleChevron {
+  opacity: 0.75;
+  transition: transform 0.25s ease;
+}
+
+.newsCapsuleChevronOpen {
+  transform: rotate(180deg);
+}
+
+.newsPanel {
+  position: absolute;
+  top: calc(100% + 1rem);
+  left: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  width: 38rem;
+  max-width: calc(100vw - 3rem);
+  max-height: 36rem;
+  overflow-y: auto;
+  padding: 0.6rem;
+  transform-origin: top left;
+  background: rgba(4, 6, 10, 0.86);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 1.4rem;
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55),
+              inset 0 0 20px rgba(139, 233, 253, 0.05);
+
+  @media (max-width: #{$breakpoint-small - 1px}) {
+    right: 0;
+    width: auto;
+    max-width: none;
+    transform-origin: top center;
+  }
+
+  @media (min-width: 1650px) {
+    width: 26vw;
+  }
+}
+
+.newsPanelItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.1rem;
+  padding: 0.8rem;
+  border-radius: 1rem;
+  text-decoration: none;
+  color: #fff;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(139, 233, 253, 0.1);
+  }
+
+}
+
+.newsPanelAside {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 7.2rem;
+}
+
+.newsPanelDate {
+  font-size: 0.95rem;
+  line-height: 1.25;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+
+  @media (min-width: 1650px) {
+    font-size: 0.62vw;
+  }
+}
+
+.newsPanelThumb {
+  width: 100%;
+  height: 4.8rem;
+  overflow: hidden;
+  border-radius: 0.7rem;
+  background: rgba(255, 255, 255, 0.05);
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.newsPanelBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.newsPanelTitle {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #fff;
+
+  @media (min-width: 1650px) {
+    font-size: 0.82vw;
+  }
+}
+
+.newsPanelHook {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  font-size: 1.1rem;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.6);
+
+  @media (min-width: 1650px) {
+    font-size: 0.74vw;
+  }
+}
+
+.newsPanelFoot {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.1rem;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+
+  @media (min-width: 1650px) {
+    font-size: 0.66vw;
+  }
+}
+
+.newsPanelRead {
+  flex-shrink: 0;
+  margin-left: auto;
+  white-space: nowrap;
+  color: #8BE9FD;
+  font-weight: 700;
+}
+
+.newsPanelLock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+  color: rgba(139, 233, 253, 0.72);
+  font-weight: 700;
+
+  svg {
+    flex-shrink: 0;
   }
 }
 </style>
@@ -3429,6 +3813,20 @@ export default {
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
 }
+
+.hero-news-panel-enter-active {
+  transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-news-panel-leave-active {
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.hero-news-panel-enter-from, .hero-news-panel-leave-to {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.97);
+}
+
 
 .no-transition * {
   transition: none !important;
