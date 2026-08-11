@@ -178,19 +178,17 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
 
  const FEATURED_ORDER = [
     // tiff 2026
-    // 'Bad Lieutenant: Tokyo',
-    // 'Inherit',
-    // 'Misty Green',
-    // 'We Are Born Good',
+    'Bad Lieutenant: Tokyo',
+    'Inherit',
     // venice 2026
-    // 'Wild Horse Nine',
-    // 'The Echo Chamber',
-    // 'Bunker',
+    'Wild Horse Nine',
+    'The Echo Chamber',
     // frightfest 2026
-    // 'Salmokji: Whispering Water',
-    // 'The Latcher',
-    // 'Ithaqua',
-    // 'Infirmary',
+    'Salmokji: Whispering Water',
+    'Ithaqua',
+    // locarno 2026
+    'Hearing',
+    'Fire Flower',
     // fantasia 2026
     'Hot Spot',
     'Ferine',
