@@ -263,6 +263,9 @@
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                       <h3>General Information</h3>
                     </div>
+                    <div class="youtube-embed">
+                      <iframe src="https://www.youtube.com/embed/iUnLYrOeYhg" title="Official Trailer of the 79th Locarno Film Festival" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
                     <p class="carousel-desc"><strong>Edition:</strong> 79th Locarno Film Festival</p>
                     <p class="carousel-desc"><strong>Dates:</strong> August 5 – 15, 2026</p>
                     <p class="carousel-desc"><strong>Location:</strong> Locarno, Switzerland</p>
@@ -1456,6 +1459,26 @@ onMounted(async () => {
 .accent-link {
   color: #8BE9FD; text-decoration: none; font-weight: 600; border-bottom: 1px solid transparent; transition: border-color 0.2s;
   &:hover { border-color: #8BE9FD; }
+}
+
+/* ── Featured YouTube embed ──────────────── */
+.youtube-embed {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  margin-bottom: 1.2rem;
+  border-radius: 12px;
+  overflow: hidden;
+
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 12px;
+  }
 }
 
 /* ── Initial-rollout banner (catalog/schedule placeholders) ─ */
