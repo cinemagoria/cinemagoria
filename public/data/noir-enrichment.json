@@ -1900,7 +1900,7 @@
     "media_type": "movie",
     "trailer_key": null,
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1779979086/cinemagoria/backdrops/noir_1381273.webp",
-    "poster_path": "/7XhTjNP3BL8pTtCLcsvIssR9hSf.jpg",
+    "poster_path": "/v023L1AFtd3rpy61B5JiEOR1sMF.jpg",
     "force_enrichment": false
   },
   {
@@ -2163,7 +2163,7 @@
     "tmdb_id": 1633500,
     "media_type": "movie",
     "trailer_key": "YiLlyNEES78",
-    "backdrop_path": null,
+    "backdrop_path": "/xXfATh5TVgm6iRmY2HXAn2QNJIx.jpg",
     "poster_path": "/l1zAGxfZRnhaBd9KwgAclgTrmpu.jpg",
     "force_enrichment": false
   },
