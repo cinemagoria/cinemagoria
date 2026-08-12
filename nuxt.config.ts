@@ -160,7 +160,8 @@ export default defineNuxtConfig({
         { rel: 'alternate', hreflang: 'en', href: 'https://cinemagoria.com' },
         { rel: 'alternate', hreflang: 'es', href: 'https://es.cinemagoria.com' },
         { rel: 'alternate', hreflang: 'x-default', href: 'https://cinemagoria.com' },
-        { rel: 'icon', type: 'image/x-icon', href: '/icons/favicon.ico' },
+        { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/icons/favicon-192.png' },
+        { rel: 'shortcut icon', href: '/icons/favicon.ico' },
         // Preconnect so the render-blocking font CSS + woff2 handshakes start
         // immediately instead of after HTML parse reaches the stylesheet links.
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
