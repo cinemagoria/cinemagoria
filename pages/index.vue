@@ -237,6 +237,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     'The Peril at Pincer Point',
     'Dead Eyes',
     // romford 2026
+    'Adorable Humans',
     'Spoiling You',
     // berlinale 2026
     'Yellow Letters',
