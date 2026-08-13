@@ -1924,7 +1924,7 @@
     "media_type": "movie",
     "trailer_key": "mNd1gb19A-c",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1784845088/cinemagoria/backdrops/noir_1423191.webp",
-    "poster_path": "/qku2uWSoJ9amQV5MWo1Eek29iji.jpg",
+    "poster_path": "/zP83bIkBViw5b1s9bDemYJ3AAgX.jpg",
     "force_enrichment": true
   },
   {
@@ -2132,7 +2132,7 @@
     "media_type": "movie",
     "trailer_key": null,
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1778533039/cinemagoria/backdrops/noir_1480574.webp",
-    "poster_path": null,
+    "poster_path": "/wG0KDlzuUWE1KHaeJZcGdrJdZea.jpg",
     "force_enrichment": false
   },
   {
@@ -2572,7 +2572,7 @@
     "media_type": "movie",
     "trailer_key": "T8OpDWG9rUs",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1779784250/cinemagoria/backdrops/noir_1552493.webp",
-    "poster_path": "/17P1ZVQv6an1YIzYBVL7snJZAi9.jpg",
+    "poster_path": "/qYgUZPSOjlytVpf6q5tZVZFBop1.jpg",
     "force_enrichment": false
   },
   {
@@ -3068,7 +3068,7 @@
     "media_type": "movie",
     "trailer_key": "VhCR5WgsVbA",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1786173981/cinemagoria/backdrops/noir_1472813.webp",
-    "poster_path": "/7Q9PLVXTDA1yKLs43OfeukY6W2f.jpg",
+    "poster_path": "/u5CJJsHXokZN1ycSf6ClTIOe9mv.jpg",
     "force_enrichment": true
   },
   {
@@ -3908,7 +3908,7 @@
     "media_type": "movie",
     "trailer_key": "6WASYdUf6yQ",
     "backdrop_path": "/jHCdARirUrfEhZBDrZXmFFJbhyu.jpg",
-    "poster_path": "/ylUvi5SeLXWQIGfOTJEWiHZNIFa.jpg",
+    "poster_path": "/3B8ZyWa2j7aLgmt0Q3dmtDMEVJE.jpg",
     "force_enrichment": false
   },
   {
@@ -4236,7 +4236,7 @@
     "media_type": "tv",
     "trailer_key": "y7EwrVHsCnA",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1785281697/cinemagoria/backdrops/noir_285322.webp",
-    "poster_path": null,
+    "poster_path": "/czk1laNqtM8A4wqYJYNogB2iD6Y.jpg",
     "force_enrichment": false
   },
   {
