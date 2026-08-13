@@ -522,8 +522,8 @@
   {
     "tmdb_id": 1454004,
     "media_type": "movie",
-    "poster_path": "/x1MUhDE9JDaffF1fx1FNUm5WZeW.jpg",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780615601/cinemagoria/backdrops/backdrop_override_1454004.webp",
+    "poster_path": "/xD7aJZYHKkkjsrif3GKz0aymbiv.jpg",
+    "backdrop_path": "/4yM55hoKP2rncLR7oD1OIfDBdY2.jpg",
     "trailer_key": "OWw2TH_nt7o",
     "force_enrichment": false
   },
@@ -674,7 +674,7 @@
   {
     "tmdb_id": 1289485,
     "media_type": "movie",
-    "poster_path": "/203s85Wlw0WloJJ1Pc6pWSGsRkB.jpg",
+    "poster_path": "/k3K1hdXZtYqe2korcnI72dRzefA.jpg",
     "backdrop_path": "/hN9o91nyz3mYjyaz5YTWxLa1UJA.jpg",
     "trailer_key": "2WdhVzZY0AE",
     "force_enrichment": true
