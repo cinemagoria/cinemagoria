@@ -430,55 +430,36 @@ const onSectionHeaderClick = (key) => {
     toggleSection(key);
 };
 
+const PARALLEL_SECTIONS = [
+    { key: 'giornate', label: 'Giornate degli Autori – Concorso', categoryProp: 'GIORNATE DEGLI AUTORI - CONCORSO', emptyText: 'Aún no hay selecciones de Giornate degli Autori.' },
+    { key: 'eventi-speciali', label: 'Eventi Speciali', categoryProp: 'EVENTI SPECIALI', emptyText: 'Aún no hay selecciones de Eventi Speciali.' },
+    { key: 'notti-veneziane', label: 'Notti Veneziane', categoryProp: 'NOTTI VENEZIANE', emptyText: 'Aún no hay selecciones de Notti Veneziane.' },
+    { key: 'miu-miu-womens-tales', label: "Miu Miu Women's Tales", categoryProp: 'MIU MIU WOMENS TALES', emptyText: "Aún no hay selecciones de Miu Miu Women's Tales." },
+    { key: 'critics-week', label: "Semana de la Crítica", categoryProp: 'CRITICS WEEK', emptyText: "Aún no hay selecciones de la Semana de la Crítica." },
+    { key: 'critics-week-eventi-speciali', label: "Semana de la Crítica – Eventi Speciali", categoryProp: 'CRITICS WEEK - EVENTI SPECIALI', emptyText: "Aún no hay Eventi Speciali de la Semana de la Crítica." },
+    { key: 'sic-at-sic', label: 'SIC@SIC', categoryProp: 'SIC@SIC', emptyText: 'Aún no hay selecciones de SIC@SIC.' },
+];
+
+const PARALLEL_CATEGORIES = new Set(PARALLEL_SECTIONS.map((s) => s.categoryProp));
+
+const categoryKeyOf = (f) => String(f.section || f.category || '').toUpperCase().trim();
+
 const filmsByCategory = computed(() => {
     const map = Object.fromEntries(CATEGORY_ORDER.map((c) => [c, []]));
     map.OTHER = [];
     for (const f of films.value?.results || []) {
-        const key = String(f.section || f.category || '').toUpperCase().trim();
-        if (key === 'GIORNATE DEGLI AUTORI - CONCORSO') continue;
-        if (key === 'EVENTI SPECIALI') continue;
-        if (key === 'NOTTI VENEZIANE') continue;
-        if (key === 'CRITICS WEEK') continue;
+        const key = categoryKeyOf(f);
+        if (PARALLEL_CATEGORIES.has(key)) continue;
         if (key && map[key]) map[key].push(f);
         else map.OTHER.push(f);
     }
     return map;
 });
 
-const giornateFilms = computed(() => {
-    return (films.value?.results || []).filter((f) => {
-        const key = String(f.section || f.category || '').toUpperCase().trim();
-        return key === 'GIORNATE DEGLI AUTORI - CONCORSO';
-    });
-});
-
-const eventiSpecialiFilms = computed(() => {
-    return (films.value?.results || []).filter((f) => {
-        const key = String(f.section || f.category || '').toUpperCase().trim();
-        return key === 'EVENTI SPECIALI';
-    });
-});
-
-const nottiVenezianeFilms = computed(() => {
-    return (films.value?.results || []).filter((f) => {
-        const key = String(f.section || f.category || '').toUpperCase().trim();
-        return key === 'NOTTI VENEZIANE';
-    });
-});
-
-const criticsWeekFilms = computed(() => {
-    return (films.value?.results || []).filter((f) => {
-        const key = String(f.section || f.category || '').toUpperCase().trim();
-        return key === 'CRITICS WEEK';
-    });
-});
-
-const parallelSections = computed(() => [
-    { key: 'giornate', label: 'Giornate degli Autori – Concorso', films: giornateFilms.value, categoryProp: 'GIORNATE DEGLI AUTORI - CONCORSO', emptyText: 'Aún no hay selecciones de Giornate degli Autori.' },
-    { key: 'eventi-speciali', label: 'Eventi Speciali', films: eventiSpecialiFilms.value, categoryProp: 'EVENTI SPECIALI', emptyText: 'Aún no hay selecciones de Eventi Speciali.' },
-    { key: 'notti-veneziane', label: 'Notti Veneziane', films: nottiVenezianeFilms.value, categoryProp: 'NOTTI VENEZIANE', emptyText: 'Aún no hay selecciones de Notti Veneziane.' },
-    { key: 'critics-week', label: "Semana de la Crítica", films: criticsWeekFilms.value, categoryProp: 'CRITICS WEEK', emptyText: "Aún no hay selecciones de la Semana de la Crítica." },
-]);
+const parallelSections = computed(() => PARALLEL_SECTIONS.map((section) => ({
+    ...section,
+    films: (films.value?.results || []).filter((f) => categoryKeyOf(f) === section.categoryProp),
+})));
 
 const orderedCategories = computed(() => {
     const out = CATEGORY_ORDER.filter((c) => (filmsByCategory.value[c] || []).length > 0);
