@@ -3,6 +3,7 @@ import { createClient } from '@libsql/client'
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   const baseUrl = 'https://cinemagoria.com'
+  const altBaseUrl = 'https://es.cinemagoria.com'
 
   setResponseHeader(event, 'content-type', 'application/xml')
   setResponseHeader(event, 'cache-control', 'public, max-age=3600, s-maxage=3600')
@@ -19,7 +20,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const result = await db.execute({
-      sql: `SELECT slug, published_at FROM cinemagoria_articles WHERE is_visible = 1 AND (datetime(published_at) IS NULL OR datetime(published_at) <= datetime('now')) ORDER BY published_at DESC`,
+      sql: `SELECT slug, published_at FROM cinemagoria_articles WHERE is_visible = 1 AND is_cinemagoria = 1 AND (datetime(published_at) IS NULL OR datetime(published_at) <= datetime('now')) ORDER BY published_at DESC`,
       args: []
     })
 
@@ -29,6 +30,9 @@ export default defineEventHandler(async (event) => {
         : new Date().toISOString().split('T')[0]
       return `  <url>
     <loc>${baseUrl}/news/${row.slug}</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="${baseUrl}/news/${row.slug}"/>
+    <xhtml:link rel="alternate" hreflang="es" href="${altBaseUrl}/news/${row.slug}"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}/news/${row.slug}"/>
     <lastmod>${lastmod}</lastmod>
     <changefreq>never</changefreq>
     <priority>0.8</priority>
@@ -36,7 +40,7 @@ export default defineEventHandler(async (event) => {
     }).join('\n')
 
     return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${urls}
 </urlset>`
   } catch (error) {

@@ -317,15 +317,12 @@
                 </div>
               </div>
 
-              <!-- Body — fully rendered when public OR reader is signed in.
-                   Replaced by an inline gate card when requires_auth = 1 AND
-                   reader is anonymous. The card cuts the body entirely (no
-                   teaser, no fade) so the gate is visually instantaneous and
-                   does not depend on modal open timing. -->
-              <template v-if="!isGated">
-                <div class="article-body" v-html="bodyParts.before"></div>
-              </template>
-              <div v-else class="gate-card" role="region" aria-label="Members-only article">
+              <div
+                class="article-body"
+                :class="{ 'article-body--gated': isGated }"
+                v-html="isGated ? renderedBody : bodyParts.before"
+              ></div>
+              <div v-if="isGated" class="gate-card" role="region" aria-label="Members-only article">
                 <div class="gate-card__accent"></div>
                 <div class="gate-card__icon-wrap" aria-hidden="true">
                   <svg class="gate-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -733,15 +730,9 @@ const bodyParts = computed(() => {
   return { before: html.slice(0, midIdx), after: html.slice(midIdx) }
 })
 
-// ── Community gate (requires_auth) ──────────────────────────────────
-// An article is "gated" when requires_auth = 1 AND the visitor is not signed in.
-// Server-rendered HTML defaults isLoggedIn = false so SSR ships the inline gate
-// card for gated articles (anonymous is the common case pre-July-1). On
-// hydration the client reads localStorage and re-renders with the full body
-// for signed-in readers.
-const isGated = computed(() => {
-  return Number(article.value?.requires_auth) === 1 && !isLoggedIn.value
-})
+const requiresAuth = computed(() => Number(article.value?.requires_auth) === 1)
+
+const isGated = computed(() => requiresAuth.value && !isLoggedIn.value)
 
 function openGateModal() {
   if (typeof window === 'undefined') return
@@ -788,6 +779,14 @@ useHead(() => {
     url: `https://cinemagoria.com/news/${article.value.slug}`,
     inLanguage: 'en',
     keywords: article.value.topics?.join(', ') || '',
+    isAccessibleForFree: !requiresAuth.value,
+    ...(requiresAuth.value && {
+      hasPart: {
+        '@type': 'WebPageElement',
+        isAccessibleForFree: false,
+        cssSelector: '.article-body--gated',
+      },
+    }),
   }
 
   return {
@@ -805,7 +804,7 @@ useHead(() => {
       { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:title', content: article.value.title_en },
       { name: 'twitter:description', content: article.value.description_en },
-      { name: 'robots', content: 'index, follow' },
+      { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' },
     ],
     link: [
       { rel: 'canonical', href: `https://cinemagoria.com/news/${article.value?.slug}` },
@@ -1206,10 +1205,18 @@ useHead(() => {
   text-wrap: balance;
 }
 
-/* Community gate — inline card that replaces the body entirely.
-   Borrows the auth-success.vue visual language: glassmorphism, top accent
-   gradient, floatIn entrance, minimal copy. No teaser, no fade — the gate
-   appears instantly and the body is never rendered for anonymous readers. */
+.article-body--gated {
+  position: relative;
+  max-height: 260px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 40%, transparent 100%);
+}
+
+.article-body--gated > * {
+  user-select: none;
+}
+
 .gate-card {
   position: relative;
   margin: 28px 0 40px;
