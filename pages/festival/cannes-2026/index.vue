@@ -66,7 +66,14 @@
           <div class="selection-layout">
             <aside class="selection-nav" aria-label="Saltar a sección">
               <template v-if="officialNav.length">
-                <div class="nav-group-label">Selección Oficial</div>
+                <div class="nav-group-header">
+                  <div class="nav-group-label">Selección Oficial</div>
+                  <span v-if="catalogTotal" class="catalog-total__chip catalog-total__chip--nav">
+                    <strong>{{ catalogTotal }}</strong> {{ catalogTotal === 1 ? 'título' : 'títulos' }}
+                    <span class="catalog-total__sep" aria-hidden="true">·</span>
+                    {{ catalogSectionCount }} {{ catalogSectionCount === 1 ? 'sección' : 'secciones' }}
+                  </span>
+                </div>
                 <button
                   v-for="sec in officialNav"
                   :key="sec.key"
@@ -941,6 +948,25 @@ onMounted(async () => {
 .catalog-total__sep {
     color: rgba(139, 233, 253, 0.4);
     margin: 0 3px;
+}
+
+.nav-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.catalog-total__chip--nav {
+    font-size: 10px;
+    padding: 3px 8px;
+    white-space: nowrap;
+}
+
+@media (min-width: 901px) {
+    .catalog-total {
+        display: none;
+    }
 }
 
 .expand-btn {
