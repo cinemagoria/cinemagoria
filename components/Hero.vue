@@ -756,6 +756,7 @@ export default {
       progressPercentage: 0,
       trackedEpisodesCount: 0,
       trackedSeasonData: [],  // [{season_number, tracked, total}]
+      lastTrackedSeason: null,
     };
   },
 
@@ -1239,6 +1240,7 @@ export default {
         this.progressPercentage = 0;
         this.trackedEpisodesCount = 0;
         this.trackedSeasonData = [];
+        this.lastTrackedSeason = null;
 
         Promise.all([
             this.checkMembership(),
@@ -1256,6 +1258,7 @@ export default {
                 progressPercentage: this.progressPercentage,
                 trackedEpisodesCount: this.trackedEpisodesCount,
                 trackedSeasonData: this.trackedSeasonData,
+                lastTrackedSeason: this.lastTrackedSeason,
             });
         }).catch(() => {});
     },
@@ -1460,11 +1463,13 @@ export default {
         return;
       }
       if (this.isHomepage) {
-        this.$router.push({ path: `/tv/${this.id}`, query: { tab: 'episodes' } });
+        const query = { tab: 'episodes' };
+        if (this.lastTrackedSeason) query.season = String(this.lastTrackedSeason);
+        this.$router.push({ path: `/tv/${this.id}`, query });
         return;
       }
       // TV shows: navigate to the Episodes tab
-      this.$bus.$emit('navigate-to-episodes');
+      this.$bus.$emit('navigate-to-episodes', this.lastTrackedSeason);
     },
 
     openModal() {
@@ -1740,6 +1745,7 @@ export default {
             const arr = Array.isArray(rows) ? rows : (rows.items || []);
             const eps = arr.filter(i => i.media_type === 'episode' && Number(i.season_number) > 0);
             this.trackedEpisodesCount = eps.length;
+            this.lastTrackedSeason = eps.length ? Number(eps[0].season_number) : null;
 
             // Build per-season breakdown
             const seasonMap = {};

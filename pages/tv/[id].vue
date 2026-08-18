@@ -35,7 +35,7 @@
       </template>
 
       <template v-if="activeMenu === 'episodes' && showEpisodes">
-        <Episodes :number-of-seasons="item.number_of_seasons" :total-episodes="item.number_of_episodes" />
+        <Episodes :number-of-seasons="item.number_of_seasons" :total-episodes="item.number_of_episodes" :initial-season="episodesInitialSeason" />
       </template>
 
       <template v-if="activeMenu === 'videos' && showVideos">
@@ -93,7 +93,11 @@ const showRatedItems = () => {
   ratedItemsModalVisible.value = true;
 };
 
-const navigateToEpisodes = () => {
+const navigateToEpisodes = (season) => {
+  const requested = Number(season);
+  if (Number.isFinite(requested) && requested > 0) {
+    episodesInitialSeason.value = requested;
+  }
   activeMenu.value = 'episodes';
   nextTick(() => {
     // Scroll to the episodes section (the .spacing div that wraps Episodes component)
@@ -112,6 +116,7 @@ const navClicked = (label) => {
 
 const ratedItemsModalVisible = ref(false);
 const activeMenu = ref('overview');
+const episodesInitialSeason = ref(null);
 const menu = ref([]);
 const reviews = ref(null);
 const soundtrackItems = ref([]);
@@ -253,7 +258,7 @@ watch(item, async () => {
 onMounted(() => {
   $bus.$on('navigate-to-episodes', navigateToEpisodes);
   if (route.query.tab === 'episodes' && showEpisodes.value) {
-    navigateToEpisodes();
+    navigateToEpisodes(route.query.season);
     router.replace({ path: route.path });
   }
 });

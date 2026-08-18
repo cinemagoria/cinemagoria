@@ -92,11 +92,18 @@ export default {
       type: Number,
       default: 0,
     },
+    initialSeason: {
+      type: Number,
+      default: null,
+    },
   },
 
   data () {
+    const requested = Number(this.initialSeason);
+    const isSelectable = Number.isFinite(requested) && requested >= 1 && requested <= this.numberOfSeasons;
+
     return {
-      activeSeason: this.numberOfSeasons,
+      activeSeason: isSelectable ? requested : this.numberOfSeasons,
       activeEpisodes: null,
       userEmail: '',
       episodeProgressMap: {},
@@ -136,6 +143,16 @@ export default {
       seasons.sort((a, b) => a.season > b.season ? -1 : 1);
 
       return seasons;
+    },
+  },
+
+  watch: {
+    initialSeason (value) {
+      const requested = Number(value);
+      if (!Number.isFinite(requested) || requested < 1 || requested > this.numberOfSeasons) return;
+      if (requested === this.activeSeason) return;
+      this.activeSeason = requested;
+      this.getEpisodes();
     },
   },
 
