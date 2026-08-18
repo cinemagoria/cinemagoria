@@ -1,5 +1,6 @@
-import { dbExecute } from '~~/server/utils/db'
+import { dbExecute, useDb } from '~~/server/utils/db'
 import { getFestivalStatusByTmdbId } from '~~/server/utils/festivals'
+import { loadTvDetailsCached, type MinimalTv } from '~~/server/utils/tvDetails'
 
 export default defineEventHandler(async (event) => {
     try {
@@ -18,17 +19,42 @@ export default defineEventHandler(async (event) => {
         // whole carousel). The Hero renders badges straight from this during
         // SSR — zero client-side festival requests and no badge pop-in.
         // Non-fatal: the hero must never fail because of badges.
+        const config = useRuntimeConfig();
+        const apiKey = (config.public as any)?.apiKey || '';
+        const apiLang = (config.public as any)?.apiLang || 'en-US';
+
         let festivalsByTmdbId: Record<string, any> = {};
-        try {
-            festivalsByTmdbId = await getFestivalStatusByTmdbId(
-                selectedRows.map((row: any) => row.tmdb_id)
-            );
-        } catch (e) {
-            console.error('Hero festival-status enrichment failed:', e);
+        let tvDetailsByTmdbId = new Map<number, MinimalTv>();
+
+        const [festivalsResult, tvDetailsResult] = await Promise.allSettled([
+            getFestivalStatusByTmdbId(selectedRows.map((row: any) => row.tmdb_id)),
+            loadTvDetailsCached(
+                useDb(),
+                selectedRows
+                    .filter((row: any) => row.media_type === 'tv')
+                    .map((row: any) => row.tmdb_id),
+                apiKey,
+                apiLang
+            ),
+        ]);
+
+        if (festivalsResult.status === 'fulfilled') {
+            festivalsByTmdbId = festivalsResult.value;
+        } else {
+            console.error('Hero festival-status enrichment failed:', festivalsResult.reason);
+        }
+
+        if (tvDetailsResult.status === 'fulfilled') {
+            tvDetailsByTmdbId = tvDetailsResult.value;
+        } else {
+            console.error('Hero TV episode-context enrichment failed:', tvDetailsResult.reason);
         }
 
         const items = await Promise.all(selectedRows.map(async (row) => {
             const cert = row.certification;
+            const tvDetails = row.media_type === 'tv'
+                ? tvDetailsByTmdbId.get(Number(row.tmdb_id))
+                : undefined;
 
             return {
                 id: row.tmdb_id,
@@ -39,6 +65,11 @@ export default defineEventHandler(async (event) => {
                 original_title: row.title,
 
                 festivals: festivalsByTmdbId[String(row.tmdb_id)] || {},
+
+                seasons: tvDetails ? tvDetails.seasons : undefined,
+                number_of_seasons: tvDetails ? tvDetails.number_of_seasons : undefined,
+                number_of_episodes: tvDetails ? tvDetails.total_episodes : undefined,
+                last_episode_to_air: tvDetails ? tvDetails.last_episode_to_air : undefined,
 
                 poster_path: row.poster_path,
                 backdrop_path: row.backdrop_path,

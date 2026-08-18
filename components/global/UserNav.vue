@@ -360,7 +360,7 @@ export default {
           fetch(`${followsUrl}/company-follows/list?user_email=${encodeURIComponent(userEmail)}`),
           fetch(`${followsUrl}/user-follows/list?user_email=${encodeURIComponent(userEmail)}`),
           fetch(`${followsUrl}/profile-by-email?user_email=${encodeURIComponent(userEmail)}`),
-          fetch(`/api/progress/${encodeURIComponent(userEmail)}?_t=${Date.now()}`).catch(() => null)
+          fetch(`/api/progress/${encodeURIComponent(userEmail)}?count=1&_t=${Date.now()}`).catch(() => null)
         ]);
 
         if (ratingsRes.ok) {
@@ -412,16 +412,8 @@ export default {
 
         if (progressRes && progressRes.ok) {
           const progData = await progressRes.json();
-          if (Array.isArray(progData)) {
-            const uniqueMedia = new Set();
-            for (const item of progData) {
-              if (item.media_type === 'episode') {
-                uniqueMedia.add(`tv_${item.tv_id}`);
-              } else {
-                uniqueMedia.add(`movie_${item.media_id}`);
-              }
-            }
-            this.progressCount = uniqueMedia.size;
+          if (progData && typeof progData.count === 'number') {
+            this.progressCount = progData.count;
           }
         }
       } catch (e) {
@@ -433,19 +425,11 @@ export default {
       const userEmail = localStorage.getItem('email');
       if (!userEmail) return;
       try {
-        const resp = await fetch(`/api/progress/${encodeURIComponent(userEmail)}?_t=${Date.now()}`);
+        const resp = await fetch(`/api/progress/${encodeURIComponent(userEmail)}?count=1&_t=${Date.now()}`);
         if (resp && resp.ok) {
           const progData = await resp.json();
-          if (Array.isArray(progData)) {
-            const uniqueMedia = new Set();
-            for (const item of progData) {
-              if (item.media_type === 'episode') {
-                uniqueMedia.add(`tv_${item.tv_id}`);
-              } else {
-                uniqueMedia.add(`movie_${item.media_id}`);
-              }
-            }
-            this.progressCount = uniqueMedia.size;
+          if (progData && typeof progData.count === 'number') {
+            this.progressCount = progData.count;
           }
         }
       } catch (e) {

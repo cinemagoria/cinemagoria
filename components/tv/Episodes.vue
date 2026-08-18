@@ -91,11 +91,18 @@ export default {
       type: Number,
       default: 0,
     },
+    initialSeason: {
+      type: Number,
+      default: null,
+    },
   },
 
   data () {
+    const requested = Number(this.initialSeason);
+    const isSelectable = Number.isFinite(requested) && requested >= 1 && requested <= this.numberOfSeasons;
+
     return {
-      activeSeason: this.numberOfSeasons,
+      activeSeason: isSelectable ? requested : this.numberOfSeasons,
       activeEpisodes: null,
       userEmail: '',
       episodeProgressMap: {},
@@ -138,6 +145,16 @@ export default {
     },
   },
 
+  watch: {
+    initialSeason (value) {
+      const requested = Number(value);
+      if (!Number.isFinite(requested) || requested < 1 || requested > this.numberOfSeasons) return;
+      if (requested === this.activeSeason) return;
+      this.activeSeason = requested;
+      this.getEpisodes();
+    },
+  },
+
   mounted () {
     if (import.meta.client) {
       this.userEmail = localStorage.getItem('email')?.replace(/['\"]+/g, '') || '';
@@ -163,15 +180,13 @@ export default {
     async loadAllProgress() {
       if (!this.userEmail) return;
       try {
-        const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}`);
+        const tvId = this.$route.params.id;
+        const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}?tv_id=${encodeURIComponent(tvId)}`);
         if (resp.ok) {
           const rows = await resp.json();
-          const tvId = String(this.$route.params.id);
           const map = {};
           for (const row of rows) {
-            if (row.media_type === 'episode' && String(row.tv_id) === tvId) {
-              map[row.media_id] = row.progress_percentage || 0;
-            }
+            map[row.media_id] = row.progress_percentage || 0;
           }
           this.episodeProgressMap = map;
         }

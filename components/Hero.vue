@@ -495,6 +495,7 @@ import NoirModal from '~/components/NoirModal.vue';
 // session. Badges don't change mid-visit, so cycling the homepage carousel
 // (or revisiting a title) never refetches.
 const AUTO_ADVANCE_DURATION_MS = 15000;
+const SEASON_LABEL_LIMIT = 3;
 
 const FESTIVAL_STATUS_CACHE = new Map();
 
@@ -721,7 +722,8 @@ export default {
 
       progressPercentage: 0,
       trackedEpisodesCount: 0,
-      trackedSeasonData: []
+      trackedSeasonData: [],
+      lastTrackedSeason: null,
     };
   },
 
@@ -809,12 +811,17 @@ export default {
       if (seasons.length === 1) {
         const s = seasons[0];
         if (s.allComplete) return `Temporada ${s.season_number} completada`;
-        return `${s.tracked} de ${s.total || '?'} episodios registrados (T${s.season_number})`;
+        if (s.caughtUp) return `Al día con la T${s.season_number}`;
+        if (!s.total) return `${s.tracked} ${s.tracked !== 1 ? 'episodios registrados' : 'episodio registrado'} (T${s.season_number})`;
+        return `${s.tracked} de ${s.total} episodios registrados (T${s.season_number})`;
       }
       const completedSeasons = seasons.filter(s => s.allComplete);
       if (completedSeasons.length === seasons.length) return `${completedSeasons.length} temporadas completadas`;
-      const seasonLabels = seasons.map(s => `T${s.season_number}: ${s.tracked}`).join(', ');
-      return `${this.trackedEpisodesCount} episodios registrados (${seasonLabels})`;
+      const shown = seasons.slice(0, SEASON_LABEL_LIMIT);
+      const remaining = seasons.length - shown.length;
+      const seasonLabels = shown.map(s => `T${s.season_number}: ${s.tracked}`).join(', ');
+      const suffix = remaining > 0 ? `${seasonLabels} +${remaining} más` : seasonLabels;
+      return `${this.trackedEpisodesCount} episodios registrados (${suffix})`;
     },
     articlesCapsuleLabel() {
       const count = this.relatedArticles.length;
@@ -1178,6 +1185,7 @@ export default {
         this.progressPercentage = 0;
         this.trackedEpisodesCount = 0;
         this.trackedSeasonData = [];
+        this.lastTrackedSeason = null;
 
         Promise.all([
             this.checkMembership(),
@@ -1195,6 +1203,7 @@ export default {
                 progressPercentage: this.progressPercentage,
                 trackedEpisodesCount: this.trackedEpisodesCount,
                 trackedSeasonData: this.trackedSeasonData,
+                lastTrackedSeason: this.lastTrackedSeason,
             });
         }).catch(() => {});
     },
@@ -1453,12 +1462,43 @@ export default {
       const rm = r % 60;
       return rm > 0 ? `${h}h ${rm}m` : `${h}h`;
     },
+    seasonEpisodeCounts(seasonNumber, trackedCount) {
+      const empty = { aired: null, declared: null };
+      const seasons = this.heroItem && this.heroItem.seasons;
+      if (!Array.isArray(seasons)) return empty;
+
+      const season = seasons.find(x => Number(x.season_number) === seasonNumber);
+      const declared = season ? Number(season.episode_count) : NaN;
+      if (!Number.isFinite(declared) || declared <= 0) return empty;
+
+      const last = this.heroItem && this.heroItem.last_episode_to_air;
+      const lastSeason = last ? Number(last.season_number) : NaN;
+
+      let aired = declared;
+      if (Number.isFinite(lastSeason)) {
+        if (seasonNumber > lastSeason) {
+          aired = 0;
+        } else if (seasonNumber === lastSeason) {
+          const lastEpisode = Number(last.episode_number);
+          aired = Number.isFinite(lastEpisode) ? Math.min(declared, lastEpisode) : declared;
+        }
+      }
+
+      return { aired: Math.max(aired, trackedCount), declared };
+    },
+
     handleTrackingPillClick() {
       if (this.type === 'movie') {
         this.hasUserRating ? this.showRatingDetails() : this.openRatingModal();
-      } else {
-        this.$bus.$emit('navigate-to-episodes');
+        return;
       }
+      if (this.isHomepage) {
+        const query = { tab: 'episodes' };
+        if (this.lastTrackedSeason) query.season = String(this.lastTrackedSeason);
+        this.$router.push({ path: `/tv/${this.id}`, query });
+        return;
+      }
+      this.$bus.$emit('navigate-to-episodes', this.lastTrackedSeason);
     },
     async loadProgress() {
       if (!this.userEmail) return;
@@ -1470,24 +1510,26 @@ export default {
             this.progressPercentage = data.found ? (data.progress_percentage || 0) : 0;
           }
         } else {
-          const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}?_t=${Date.now()}`);
+          const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}?tv_id=${this.id}&_t=${Date.now()}`);
           if (resp.ok) {
             const rows = await resp.json();
             const arr = Array.isArray(rows) ? rows : (rows.items || []);
-            const eps = arr.filter(i => i.media_type === 'episode' && String(i.tv_id) === String(this.id));
+            const eps = arr.filter(i => i.media_type === 'episode' && Number(i.season_number) > 0);
             this.trackedEpisodesCount = eps.length;
+            this.lastTrackedSeason = eps.length ? Number(eps[0].season_number) : null;
             const seasonMap = {};
             for (const ep of eps) {
-              const sn = ep.season_number || 0;
+              const sn = Number(ep.season_number);
               if (!seasonMap[sn]) seasonMap[sn] = { season_number: sn, tracked: 0, complete: 0 };
               seasonMap[sn].tracked++;
               if (Number(ep.progress_percentage) >= 100) seasonMap[sn].complete++;
             }
             const seasonDetails = Object.values(seasonMap).sort((a, b) => a.season_number - b.season_number);
             for (const s of seasonDetails) {
-               const seasonObj = (this.heroItem?.seasons || []).find(x => x.season_number === s.season_number);
-               s.total = seasonObj ? seasonObj.episode_count : null;
-               s.allComplete = s.complete === s.total && s.total > 0;
+               const counts = this.seasonEpisodeCounts(s.season_number, s.tracked);
+               s.total = counts.aired;
+               s.allComplete = counts.declared > 0 && s.complete >= counts.declared;
+               s.caughtUp = !s.allComplete && counts.aired > 0 && s.complete >= counts.aired;
             }
             this.trackedSeasonData = seasonDetails;
           }
