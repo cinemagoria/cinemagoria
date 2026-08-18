@@ -1,4 +1,5 @@
 import { useDb } from '~/server/utils/db'
+import { pickTvDetails, hasTvSeasonBreakdown, type MinimalTv } from '~/server/utils/tvDetails'
 
 const TMDB_BASE = 'https://api.themoviedb.org/3'
 const CACHE_TTL_SECONDS = 7 * 24 * 60 * 60
@@ -6,10 +7,7 @@ const CACHE_TTL_SECONDS = 7 * 24 * 60 * 60
 type DetailKey = `${'movie' | 'tv'}:${number}`
 
 type MinimalMovie = { id: number; title: string; poster_path: string | null; runtime: number | null }
-type MinimalTv = { id: number; name: string; poster_path: string | null; total_episodes: number | null }
 type MinimalEpisode = { name: string; still_path: string | null; episode_number: number; season_number: number; runtime: number | null }
-
-const TV_CACHE_VERSION = 2
 
 function pickMovie(raw: any): MinimalMovie {
     return {
@@ -18,33 +16,6 @@ function pickMovie(raw: any): MinimalMovie {
         poster_path: raw?.poster_path || null,
         runtime: typeof raw?.runtime === 'number' ? raw.runtime : null,
     }
-}
-
-function pickTv(raw: any): MinimalTv {
-    // Sum episode counts for non-special seasons (season 0 = specials).
-    // Falls back to number_of_episodes if seasons[] is unavailable.
-    let total: number | null = null
-    if (Array.isArray(raw?.seasons)) {
-        let sum = 0
-        for (const s of raw.seasons) {
-            if (typeof s?.season_number === 'number' && s.season_number > 0 && typeof s?.episode_count === 'number') {
-                sum += s.episode_count
-            }
-        }
-        total = sum > 0 ? sum : (typeof raw?.number_of_episodes === 'number' ? raw.number_of_episodes : null)
-    } else if (typeof raw?.number_of_episodes === 'number') {
-        total = raw.number_of_episodes
-    }
-    return {
-        id: raw?.id,
-        name: raw?.name || '',
-        poster_path: raw?.poster_path || null,
-        total_episodes: total,
-    }
-}
-
-function isFreshTvCache(parsed: any): parsed is MinimalTv {
-    return parsed && typeof parsed === 'object' && 'total_episodes' in parsed
 }
 
 function pickEpisode(raw: any): MinimalEpisode {
@@ -154,7 +125,7 @@ export default defineEventHandler(async (event) => {
                 for (const row of res.rows as any[]) {
                     try {
                         const data = JSON.parse(row.data as string)
-                        if (!isFreshTvCache(data)) continue // older cache entries lack total_episodes; refetch
+                        if (!hasTvSeasonBreakdown(data)) continue
                         detailsMap.set(`tv:${Number(row.item_id)}` as DetailKey, data)
                     } catch { /* ignore corrupt cache row */ }
                 }
@@ -180,7 +151,7 @@ export default defineEventHandler(async (event) => {
             try {
                 const url = `${TMDB_BASE}/${type}/${id}?api_key=${apiKey}&language=${encodeURIComponent(apiLang)}`
                 const data: any = await $fetch(url, { timeout: 8000 })
-                const minimal = type === 'movie' ? pickMovie(data) : pickTv(data)
+                const minimal = type === 'movie' ? pickMovie(data) : pickTvDetails(data)
                 return { id, type, minimal }
             } catch (e: any) {
                 console.error(`[Progress Hydrated GET] TMDB fetch failed for ${type}/${id}:`, e?.message || e)

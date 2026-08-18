@@ -526,6 +526,7 @@ import { getHeroEnrichment, getNoirEnrichment } from '~/utils/api';
 import NoirModal from '~/components/NoirModal.vue';
 
 const AUTO_ADVANCE_DURATION_MS = 15000;
+const SEASON_LABEL_LIMIT = 3;
 
 // Festival membership per tmdb_id, shared across every Hero instance for the
 // session. Badges don't change mid-visit, so cycling the homepage carousel
@@ -755,6 +756,7 @@ export default {
       progressPercentage: 0,
       trackedEpisodesCount: 0,
       trackedSeasonData: [],  // [{season_number, tracked, total}]
+      lastTrackedSeason: null,
     };
   },
 
@@ -846,15 +848,24 @@ export default {
           if (s.allComplete) {
              return `Season ${s.season_number} completed`;
           }
-          return `${s.tracked} of ${s.total || '?'} episodes tracked (S${s.season_number})`;
+          if (s.caughtUp) {
+             return `Caught up on Season ${s.season_number}`;
+          }
+          if (!s.total) {
+             return `${s.tracked} episode${s.tracked !== 1 ? 's' : ''} tracked (S${s.season_number})`;
+          }
+          return `${s.tracked} of ${s.total} episodes tracked (S${s.season_number})`;
        }
        // Multiple seasons
        const completedSeasons = seasons.filter(s => s.allComplete);
        if (completedSeasons.length === seasons.length) {
           return `${completedSeasons.length} seasons completed`;
        }
-       const seasonLabels = seasons.map(s => `S${s.season_number}: ${s.tracked}`).join(', ');
-       return `${this.trackedEpisodesCount} episodes tracked (${seasonLabels})`;
+       const shown = seasons.slice(0, SEASON_LABEL_LIMIT);
+       const remaining = seasons.length - shown.length;
+       const seasonLabels = shown.map(s => `S${s.season_number}: ${s.tracked}`).join(', ');
+       const suffix = remaining > 0 ? `${seasonLabels} +${remaining} more` : seasonLabels;
+       return `${this.trackedEpisodesCount} episodes tracked (${suffix})`;
     },
     articlesCapsuleLabel() {
       const count = this.relatedArticles.length;
@@ -1229,6 +1240,7 @@ export default {
         this.progressPercentage = 0;
         this.trackedEpisodesCount = 0;
         this.trackedSeasonData = [];
+        this.lastTrackedSeason = null;
 
         Promise.all([
             this.checkMembership(),
@@ -1246,6 +1258,7 @@ export default {
                 progressPercentage: this.progressPercentage,
                 trackedEpisodesCount: this.trackedEpisodesCount,
                 trackedSeasonData: this.trackedSeasonData,
+                lastTrackedSeason: this.lastTrackedSeason,
             });
         }).catch(() => {});
     },
@@ -1418,14 +1431,45 @@ export default {
         this.$bus.$emit('show-create-list-modal', this.heroItem);
     },
 
+    seasonEpisodeCounts(seasonNumber, trackedCount) {
+      const empty = { aired: null, declared: null };
+      const seasons = this.heroItem && this.heroItem.seasons;
+      if (!Array.isArray(seasons)) return empty;
+
+      const season = seasons.find(x => Number(x.season_number) === seasonNumber);
+      const declared = season ? Number(season.episode_count) : NaN;
+      if (!Number.isFinite(declared) || declared <= 0) return empty;
+
+      const last = this.heroItem && this.heroItem.last_episode_to_air;
+      const lastSeason = last ? Number(last.season_number) : NaN;
+
+      let aired = declared;
+      if (Number.isFinite(lastSeason)) {
+        if (seasonNumber > lastSeason) {
+          aired = 0;
+        } else if (seasonNumber === lastSeason) {
+          const lastEpisode = Number(last.episode_number);
+          aired = Number.isFinite(lastEpisode) ? Math.min(declared, lastEpisode) : declared;
+        }
+      }
+
+      return { aired: Math.max(aired, trackedCount), declared };
+    },
+
     handleTrackingPillClick() {
       if (this.type === 'movie') {
         // Movies: open the rate modal (which includes progress tracking)
         this.hasUserRating ? this.showRatingDetails() : this.openRatingModal();
-      } else {
-        // TV shows: navigate to the Episodes tab
-        this.$bus.$emit('navigate-to-episodes');
+        return;
       }
+      if (this.isHomepage) {
+        const query = { tab: 'episodes' };
+        if (this.lastTrackedSeason) query.season = String(this.lastTrackedSeason);
+        this.$router.push({ path: `/tv/${this.id}`, query });
+        return;
+      }
+      // TV shows: navigate to the Episodes tab
+      this.$bus.$emit('navigate-to-episodes', this.lastTrackedSeason);
     },
 
     openModal() {
@@ -1694,29 +1738,29 @@ export default {
           }
         } else {
           // For TV show, get total tracked episodes for this show
-          const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}?_t=${Date.now()}`);
+          const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}?tv_id=${this.id}&_t=${Date.now()}`);
           if (resp.ok) {
             const rows = await resp.json();
             // The API returns rows[] directly (array)
             const arr = Array.isArray(rows) ? rows : (rows.items || []);
-            const eps = arr.filter(i => i.media_type === 'episode' && String(i.tv_id) === String(this.id));
+            const eps = arr.filter(i => i.media_type === 'episode' && Number(i.season_number) > 0);
             this.trackedEpisodesCount = eps.length;
+            this.lastTrackedSeason = eps.length ? Number(eps[0].season_number) : null;
 
             // Build per-season breakdown
             const seasonMap = {};
             for (const ep of eps) {
-              const sn = ep.season_number || 0;
+              const sn = Number(ep.season_number);
               if (!seasonMap[sn]) seasonMap[sn] = { season_number: sn, tracked: 0, complete: 0 };
               seasonMap[sn].tracked++;
               if (Number(ep.progress_percentage) >= 100) seasonMap[sn].complete++;
             }
-            // Try to get total episodes per season from the heroItem
-            const totalSeasons = this.heroItem?.number_of_seasons || 0;
             const seasonDetails = Object.values(seasonMap).sort((a, b) => a.season_number - b.season_number);
             for (const s of seasonDetails) {
-               const seasonObj = (this.heroItem?.seasons || []).find(x => x.season_number === s.season_number);
-               s.total = seasonObj ? seasonObj.episode_count : null;
-               s.allComplete = s.complete === s.total && s.total > 0;
+               const counts = this.seasonEpisodeCounts(s.season_number, s.tracked);
+               s.total = counts.aired;
+               s.allComplete = counts.declared > 0 && s.complete >= counts.declared;
+               s.caughtUp = !s.allComplete && counts.aired > 0 && s.complete >= counts.aired;
             }
             this.trackedSeasonData = seasonDetails;
           }

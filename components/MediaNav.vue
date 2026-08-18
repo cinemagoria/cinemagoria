@@ -35,18 +35,27 @@ export default {
       this.active = index;
       this.$emit('clicked', item.replace(/\s+/g, '-').toLowerCase());
     },
+
+    syncActiveFromLabel () {
+      if (!this.activeLabel) return;
+      const index = this.menu.findIndex(item => item.replace(/\s+/g, '-').toLowerCase() === this.activeLabel);
+      if (index !== -1) {
+        this.active = index;
+      }
+    },
   },
 
   watch: {
     activeLabel: {
-      handler(newVal) {
-        if (!newVal) return;
-        const index = this.menu.findIndex(item => item.replace(/\s+/g, '-').toLowerCase() === newVal);
-        if (index !== -1) {
-          this.active = index;
-        }
+      handler() {
+        this.syncActiveFromLabel();
       },
       immediate: true,
+    },
+    menu: {
+      handler() {
+        this.syncActiveFromLabel();
+      },
     },
   },
 };
