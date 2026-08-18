@@ -252,6 +252,10 @@ watch(item, async () => {
 
 onMounted(() => {
   $bus.$on('navigate-to-episodes', navigateToEpisodes);
+  if (route.query.tab === 'episodes' && showEpisodes.value) {
+    navigateToEpisodes();
+    router.replace({ path: route.path });
+  }
 });
 
 onUnmounted(() => {

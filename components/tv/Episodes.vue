@@ -162,15 +162,13 @@ export default {
     async loadAllProgress() {
       if (!this.userEmail) return;
       try {
-        const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}`);
+        const tvId = this.$route.params.id;
+        const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}?tv_id=${encodeURIComponent(tvId)}`);
         if (resp.ok) {
           const rows = await resp.json();
-          const tvId = String(this.$route.params.id);
           const map = {};
           for (const row of rows) {
-            if (row.media_type === 'episode' && String(row.tv_id) === tvId) {
-              map[row.media_id] = row.progress_percentage || 0;
-            }
+            map[row.media_id] = row.progress_percentage || 0;
           }
           this.episodeProgressMap = map;
         }
