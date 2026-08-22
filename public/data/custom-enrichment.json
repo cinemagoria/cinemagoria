@@ -508,7 +508,7 @@
     "media_type": "movie",
     "poster_path": null,
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780615565/cinemagoria/backdrops/backdrop_override_1675218.webp",
-    "trailer_key": null,
+    "trailer_key": "6zqjPcbvlgM",
     "force_enrichment": false
   },
   {
@@ -980,7 +980,7 @@
     "media_type": "tv",
     "poster_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1786652700/cinemagoria/posters/poster_override_1413.webp",
     "backdrop_path": "/3LsElr1pupqww7zBERD85SgJY8c.jpg",
-    "trailer_key": "b9uMWKPdnPA",
+    "trailer_key": "_DGQ0EpPdds",
     "force_enrichment": true
   }
 ]
