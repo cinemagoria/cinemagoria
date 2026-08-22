@@ -7,7 +7,8 @@
           :to="{ name: 'index' }"
           aria-label="Inicio"
           @click.native="clearSearchBeforeNavigate">
-          <img src="/icons/icon-medium.png" alt="Inicio" style="width: 32px; height: 32px;" class="home-icon" />
+          <img src="/icons/icon-medium.png" alt="Inicio" class="home-icon" :class="$style.navIcon" />
+        <span :class="$style.navLabel">Inicio</span>
         </nuxt-link>
       </li>
        <li>
@@ -15,7 +16,8 @@
           :to="{ name: 'movie' }"
           aria-label="Descubre"
           @click.native="clearSearchBeforeNavigate">
-          <svg xmlns="http://www.w3.org/2000/svg" :class="$style.navIcon" style="width: 28px; height: 28px;" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.364 19.364a9 9 0 1 0 -12.728 0" /><path d="M15.536 16.536a5 5 0 1 0 -7.072 0" /><path d="M11 13a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" :class="[$style.navIcon, $style.navIconOptical]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18.364 19.364a9 9 0 1 0 -12.728 0" /><path d="M15.536 16.536a5 5 0 1 0 -7.072 0" /><path d="M11 13a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
+        <span :class="$style.navLabel">Descubre</span>
         </nuxt-link>
       </li>
       <li>
@@ -24,12 +26,23 @@
           aria-label="Noticias"
           @click.native="clearSearchBeforeNavigate">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" :class="$style.navIcon" viewBox="0 0 24 24"><path d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z" /></svg>
+        <span :class="$style.navLabel">Noticias</span>
+        </nuxt-link>
+      </li>
+      <li>
+        <nuxt-link
+          to="/calendar"
+          aria-label="Calendario de estrenos"
+          @click.native="clearSearchBeforeNavigate">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" :class="$style.navIcon"><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 10h16" /><text x="12" y="18.4" text-anchor="middle" font-size="8" font-weight="700" letter-spacing="-0.4" font-family="Anek Bangla, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif" fill="currentColor" stroke="none">{{ todayDay }}</text></svg>
+        <span :class="$style.navLabel">Calendario</span>
         </nuxt-link>
       </li>
 
       <li v-if="!isLoggedIn">
         <nuxt-link exact to="/login" aria-label="Iniciar Sesión" @click.native="clearSearchBeforeNavigate">
           <img src="/icons/icon-login.png" alt="Iniciar Sesión" :class="$style.navIcon" />
+        <span :class="$style.navLabel">Ingresar</span>
         </nuxt-link>
       </li>
       <li v-else>
@@ -37,9 +50,10 @@
           href="/watchlist" 
           @click.prevent.stop="handleWatchlistClick"
           aria-label="Mi Lista"
-          :class="{ 'nuxt-link-active': isWatchlistActive }"
+          :class="{ 'nuxt-link-active': isWatchlistActive || showListsMenu }"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" :class="$style.navIcon" viewBox="0 0 24 24"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4" /><path d="M14 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4" /><path d="M4 15a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4" /><path d="M14 17h6m-3 -3v6" /></svg>
+        <span :class="$style.navLabel">Listas</span>
         </a>
       </li>
     </ul>
@@ -141,6 +155,7 @@ export default {
   },
   data() {
     return {
+      todayDay: new Date().getDate(),
       authToken: null,
       authInterval: null,
       userLists: [],
@@ -194,6 +209,7 @@ export default {
   },
 
   mounted() {
+    this.todayDay = new Date().getDate();
     this.checkAuthStatus();
 
     // Fallback poll for same-tab token changes that don't dispatch
@@ -373,7 +389,7 @@ export default {
   bottom: 0;
   left: 0;
   z-index: 999;
-  height: 4.5rem;
+  height: 5.6rem;
   background-color: #000;
   border: 1.5px solid rgba(34, 98, 121, 0.782);
   border-radius:9px;
@@ -438,6 +454,64 @@ export default {
       width: 28px;
       height: 28px;
       margin: 0 auto;
+    }
+  }
+
+  ul li a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    height: 100%;
+    line-height: 1;
+  }
+
+  .navIconOptical {
+    transform: scale(1.12);
+  }
+
+  .navLabel {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: #fff;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(-3px);
+    transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+    pointer-events: none;
+
+    @media (min-width: $breakpoint-large) {
+      font-size: 1.1rem;
+    }
+  }
+
+  :global(a.nuxt-link-active) .navLabel,
+  :global(a.router-link-active) .navLabel {
+    color: #8BE9FD;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    ul li:hover .navLabel,
+    ul li a:focus-visible .navLabel {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (hover: none) {
+    .navLabel {
+      opacity: 0.65;
+      transform: translateY(0);
+    }
+
+    :global(a.nuxt-link-active) .navLabel,
+    :global(a.router-link-active) .navLabel {
+      opacity: 1;
     }
   }
   
@@ -518,7 +592,7 @@ export default {
     box-shadow: 0 10px 30px rgba(0,0,0,0.8);
     overflow: hidden;
 
-    bottom: 5rem;
+    bottom: 6.4rem;
     left: 10px;
     right: 10px;
     border-radius: 15px;
@@ -827,7 +901,8 @@ export default {
 <style lang="scss" scoped>
 @use '~/assets/css/utilities/variables' as *;
 
-a.nuxt-link-active {
+a.nuxt-link-active,
+a.router-link-active {
   &:hover,
   &:focus {
     opacity: 1;
@@ -865,7 +940,8 @@ a.nuxt-link-active {
 <style lang="scss" scoped>
 @use '~/assets/css/utilities/variables' as *;
 
-a.nuxt-link-active {
+a.nuxt-link-active,
+a.router-link-active {
   &:hover,
   &:focus {
     opacity: 1;
