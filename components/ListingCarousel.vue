@@ -38,7 +38,7 @@
           :item="item" />
 
         <div
-          v-if="viewAllUrl"
+          v-if="viewAllUrl && showExploreCard"
           class="card">
           <nuxt-link
             :to="viewAllUrl"
@@ -99,23 +99,35 @@ export default {
       required: false,
       default: false,
     },
+
+    showExploreCard: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+
+  computed: {
+    hasExploreCard () {
+      return Boolean(this.viewAllUrl) && this.showExploreCard;
+    },
   },
 
   mounted () {
-    const count = this.viewAllUrl ? this.items.results.length + 1 : this.items.results.length;
+    const count = this.hasExploreCard ? this.items.results.length + 1 : this.items.results.length;
     this.calculateState(count);
   },
 
   watch: {
     'items.results.length'(newVal) {
-      const count = this.viewAllUrl ? newVal + 1 : newVal;
+      const count = this.hasExploreCard ? newVal + 1 : newVal;
       this.calculateState(count);
     }
   },
 
   methods: {
     resizeEvent () {
-      const count = this.viewAllUrl ? this.items.results.length + 1 : this.items.results.length;
+      const count = this.hasExploreCard ? this.items.results.length + 1 : this.items.results.length;
       this.calculateState(count);
     },
   },
