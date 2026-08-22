@@ -186,9 +186,11 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     // frightfest 2026
     'Salmokji: Whispering Water',
     'Ithaqua',
+    'Nervous',
     // locarno 2026
     'Hearing',
     'Fire Flower',
+    'Demons',
     // fantasia 2026
     'Hot Spot',
     'Ferine',
@@ -204,7 +206,6 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     'Rose of Nevada',
     'Fruit Gathering',
     'Hijamat',
-    'Black Money for White',
     // tribeca 2026
     'The Last Day',
     'Breeder',
@@ -250,13 +251,10 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     'Krakatoa',
     'Butterfly',
     'Silent Friend',
-    'Tell Me What You Feel',
     // sundance 2026
     'The Weight',
     'Night Nurse',
-    'Zi',
     'Shame and Money',
-    'undertone',
     'The Only Living Pickpocket in New York',
 ];  
     
