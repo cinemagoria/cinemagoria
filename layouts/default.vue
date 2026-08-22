@@ -50,7 +50,7 @@ import InstallPrompt from '~/components/global/InstallPrompt.vue'
   display: flex;
   flex-direction: column;
   
-  padding-bottom: 4.5rem;
+  padding-bottom: 5.6rem;
 
   @media (min-width: $breakpoint-large) {
     padding-bottom: 0;
