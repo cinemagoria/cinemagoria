@@ -707,31 +707,38 @@ export default {
 /* ── Tabs ───────────────────────────────────────────── */
 .tab-controls {
   display: flex;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.307);
+  gap: 0.4rem;
+  padding: 0 1.6rem;
+  border-bottom: 1px solid rgba(139, 233, 253, 0.12);
   text-align: center;
   position: relative;
-  padding-left: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
 }
 
+.tab-controls::-webkit-scrollbar { display: none; }
+
 .tab-btn {
-  flex: 1;
+  position: relative;
+  flex: 1 0 auto;
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 1.4rem;
-  padding: 12px 0;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
-  text-align: center;
-  font-family: 'Ortica', 'Roboto', sans-serif;
-  font-weight: 300;
-  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   line-height: 1.2;
-  text-shadow:
-      0 1px 2px rgba(255, 255, 255, 0.3),
-      0 2px 8px rgba(255, 255, 255, 0.2),
-      0 4px 16px rgba(139, 233, 253, 0.15);
+  padding: 1.5rem 1.2rem;
+  white-space: nowrap;
+  text-align: center;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tab-btn:not(.active):hover { color: #fff; }
 }
 
 .tab-btn.active {
@@ -741,11 +748,13 @@ export default {
 .tab-btn.active::after {
   content: '';
   position: absolute;
+  left: 1.2rem;
+  right: 1.2rem;
   bottom: -1px;
-  left: 0;
-  right: 0;
   height: 2px;
-  background: #8BE9FD;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #1F5467, #8BE9FD);
+  box-shadow: 0 0 12px rgba(139, 233, 253, 0.5);
 }
 
 /* ── Body ───────────────────────────────────────────── */
@@ -940,9 +949,12 @@ export default {
 .sub-tab-btn {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
   font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
@@ -950,7 +962,6 @@ export default {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  letter-spacing: 0.02em;
 }
 
 .sub-tab-btn:hover {
@@ -1558,7 +1569,6 @@ export default {
   text-transform: uppercase;
   margin: 0 auto;
   position: relative;
-  font-size: 1.6rem;
 }
 
 
