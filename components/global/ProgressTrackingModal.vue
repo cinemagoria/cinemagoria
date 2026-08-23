@@ -8,7 +8,7 @@
             Manage your watch progress for movies and series.
           </p>
         </div>
-        <button class="close-btn" @click="closeModal" aria-label="Close modal">×</button>
+        <button class="close-btn" @click="closeModal" aria-label="Close modal"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       </div>
 
       <div class="tab-controls">
@@ -236,7 +236,7 @@
           <h3 v-else>
              Progress: <span class="highlight highlight-link" @click="navigateToMovie(currentTrackedItem?.media_id)">{{ currentTrackedItem?.details?.title || currentTrackedItem?.details?.name }}</span>
           </h3>
-          <button class="close-btn" style="font-size: 2.5rem; width: 30px; height: 30px; display:flex; align-items:flex-start; margin-top:-5px;" @click="closeTrackingModal">×</button>
+          <button class="close-btn" @click="closeTrackingModal" aria-label="Close"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>
         
         <div class="rating-content">
@@ -684,25 +684,27 @@ export default {
 }
 
 .close-btn {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 4rem;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(139, 233, 253, 0.08);
+  border: 1px solid rgba(139, 233, 253, 0.22);
+  color: #8BE9FD;
   cursor: pointer;
-  line-height: 1;
-  transition: all 0.2s ease;
-  padding: 0;
-  margin: 0;
-  width: 24px;
-  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s ease;
+  padding: 0;
+
+  &:hover {
+  background: rgba(139, 233, 253, 0.18);
+    border-color: rgba(139, 233, 253, 0.5);
+    color: #fff;
+  }
 }
 
-.close-btn:hover {
-  color: #fff;
-}
 
 /* ── Tabs ───────────────────────────────────────────── */
 .tab-controls {
