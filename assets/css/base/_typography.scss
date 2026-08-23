@@ -98,6 +98,10 @@ a {
   --page-header-space-top: clamp(2rem, 1.3rem + 1.9vw, 3.6rem);
   --page-header-space-title: 1rem;
   --page-header-space-bottom: clamp(2rem, 1.6rem + 1vw, 3.2rem);
+
+  --logo-surface:
+    radial-gradient(120% 140% at 12% 0%, rgba(255, 255, 255, 0.5), transparent 58%),
+    linear-gradient(145deg, #B7F3FF 0%, #8BE9FD 34%, #5CCBE6 68%, #35A7C4 100%);
 }
 
 @media (min-width: 2200px) {
