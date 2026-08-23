@@ -4,44 +4,52 @@
 
 To develop with Cinemagoria, you need:
 
-*   Node.js (a pinned version is used in the [Dockerfile](../../Dockerfile) to avoid `node-fetch` v2 and `@libsql/client` issues)
-*   pnpm (specified in [package.json](../../package.json))
+*   Node.js 22-slim (pinned to avoid a `node-fetch` v2 gzip issue with `@libsql/client`).
 
 ## Setup
 
-1.  **Install Dependencies**:
+1.  **Clone the repository**:
     ```bash
-    pnpm install
+    git clone https://github.com/cinemagoria/cinemagoria.git
+    cd cinemagoria
     ```
-2.  **Prepare Nuxt**:
+2.  **Install dependencies**:
     ```bash
-    pnpm run postinstall
+    npm install
     ```
-3.  **Run in Development Mode**:
+    This will also run `nuxt prepare`.
+3.  **Start the development server**:
     ```bash
-    pnpm run dev
+    npm run dev
     ```
+    The application will be available at `http://localhost:3000`.
 
 ## Project Layout
 
-*   `assets`: Contains static assets like images, fonts, or stylesheets.
-*   `components`: Reusable Vue components used throughout the application.
-*   `composables`: Vue composables for reusable stateful logic.
-*   `layouts`: Defines the application's main layouts, such as [default.vue](../../layouts/default.vue).
-*   `pages`: Vue components that define the application's routes and views.
-*   `server`: Contains server-side API routes, middleware, and utilities.
-*   `scripts`: One-shot scripts for data seeding or synchronization.
+*   [.github/](../../.github/): GitHub Actions workflows and funding configuration.
+*   [assets/](../../assets/): Static assets like images, fonts, or stylesheets.
+*   [components/](../../components/): Reusable Vue components.
+*   [composables/](../../composables/): Vue composables for reusable logic.
+*   [layouts/](../../layouts/): Application layouts.
+*   [pages/](../../pages/): Vue pages that define application routes.
+*   [public/](../../public/): Static files served directly, like `manifest.json`.
+*   [server/](../../server/): Server-side API routes, middleware, and utilities.
+*   [scripts/](../../scripts/): One-off utility scripts for data seeding or synchronization.
 
 ## Testing
 
-No dedicated test files are present in the repository.
+No dedicated test files were found in the repository structure.
 
 ## Release & Deployment
 
-Cinemagoria uses Google Cloud Build for deployment, configured via [cloudbuild.yaml](../../cloudbuild.yaml). This process builds a Docker image (defined in [Dockerfile](../../Dockerfile)) and deploys it to Google Cloud Run, registering the `cinemagoria-main` service.
+Cinemagoria uses Google Cloud Build to automate its deployment process. The [cloudbuild.yaml](../../cloudbuild.yaml) file configures Cloud Build to:
 
-CI workflows manage data synchronization and knowledge base updates:
+1.  Build a Docker image from the [Dockerfile](../../Dockerfile).
+2.  Push the image to Google Artifact Registry.
+3.  Deploy the image to the `cinemagoria-main` Cloud Run service in `us-east1`.
 
-*   [.github/workflows/gitset-knowledge.yml](../../.github/workflows/gitset-knowledge.yml): Refreshes the AI knowledge base.
-*   [.github/workflows/sync-hero-data.yml](../../.github/workflows/sync-hero-data.yml): Synchronizes hero and noir enrichment data.
-*   [.github/workflows/sync-noir-historical.yml](../../.github/workflows/sync-noir-historical.yml): Synchronizes N.O.I.R historical data.
+The `package.json` includes scripts for building and generating the Nuxt application:
+
+*   `npm run build`: Builds the Nuxt application for production.
+*   `npm run generate`: Generates a static Nuxt application.
+*   `npm run preview`: Locally previews a production build.
