@@ -14,16 +14,17 @@
 
 ### `(root)`
 
-- `app.vue` — Root Vue component for the Cinemagoria application, defining the main layout, Nuxt page rendering, and injecting structured data (Schema.org) for SEO.
-- `cloudbuild.yaml` — Google Cloud Build configuration for building and deploying the Cinemagoria application's Docker image to Google Cloud Run, handling image creation, pushing, and service updates.
-  - Registers the 'cinemagoria-main' service on Cloud Run.
-- `Dockerfile` — Defines the Docker image build process for the Cinemagoria application, including dependencies, build arguments for Supabase, and the production runtime environment.
-  - Uses a pinned Node.js version to avoid issues with `node-fetch` v2 and `@libsql/client`.
-- `nuxt.config.ts` — Nuxt.js configuration file, setting up aliases, compatibility date, devtools, debug mode, and defining route-specific caching headers for sitemaps and RSS feeds.
+- `app.vue` — Defines the main Vue application layout and injects structured data (Schema.org JSON-LD) for the Cinemagoria organization and website into the document head.
+- `cloudbuild.yaml` — Configures Google Cloud Build to automate the Docker image build, push to Artifact Registry, and deployment to Cloud Run for the Cinemagoria application.
+  - Deploys to Cloud Run service 'cinemagoria-main' in 'us-east1'.
+- `Dockerfile` — Defines the multi-stage Docker build process for the Cinemagoria Nuxt application, including dependency installation, build, and a lean production runtime.
+  - Uses a pinned Node.js 22-slim image to avoid a specific `node-fetch` v2 gzip issue with `@libsql/client`.
+- `nuxt.config.ts` — Configures the Nuxt.js application, including path aliases, devtools settings, debug mode, and route-specific caching headers for sitemaps and RSS feeds.
   - exports: `default`
-- `package.json` — Defines the Cinemagoria project's metadata, scripts for development and build, and manages its extensive list of dependencies and devDependencies, including resolutions and overrides.
-  - Includes scripts for `build`, `dev`, `generate`, `preview`, and `postinstall`.
-- `tsconfig.json` — TypeScript configuration file for the Nuxt.js project, referencing generated TypeScript configurations for different parts of the application.
+  - Configures cache-control headers for '/sitemap.xml', '/sitemap-static.xml', '/sitemap-news.xml', and '/feed'.
+- `package.json` — Manages project metadata, scripts for development and build, and defines all direct and transitive dependencies and their resolutions for the Cinemagoria application.
+  - Includes scripts: `build`, `dev`, `generate`, `preview`, `postinstall`.
+- `tsconfig.json` — Configures TypeScript for the Nuxt.js project by referencing auto-generated tsconfig files for app, server, shared, and node environments.
 
 ### `assets`
 
@@ -45,144 +46,152 @@
 
 ### `components`
 
-- `components/global/GoogleLogin.vue` — Provides a reusable Google login button component that handles authentication flow, displays loading states, and emits events for login start and error.
-- `components/global/UserNav.vue` — Displays user navigation, including notifications, avatar, and a dropdown menu with profile links, language options, and logout functionality.
-- `components/BaficiCard.vue` — Displays a card component for BAFICI festival items, including an image, quick actions like external links, and a link to the item's detail page.
-- `components/BerlinaleCard.vue` — Displays a card component for Berlinale festival items, including an image, quick actions like external links, and a link to the item's detail page.
-- `components/BifanCard.vue` — Displays a card component for BiFan festival items, including an image, quick actions like external links, and a link to the item's detail page.
-- `components/BifffCard.vue` — Displays a card component for BIFFF festival items, including an image, quick actions like external links, and a link to the item's detail page.
-- `components/CannesCard.vue` — Displays a card component for Cannes festival items, including an image, quick actions like external links, and a link to the item's detail page.
-- `components/CannesLiveBanner.vue` — Provides a banner component for the Cannes 2026 festival, featuring a logo, live status, and a call to action to explore coverage.
-- `components/CannesWinnersBanner.vue` — Provides a banner component for Cannes 2026 winners, featuring a logo, a 'Winners' badge, and a scrolling marquee of award recipients.
-- `components/Card.vue` — A generic card component for displaying various media types (movies, TV, people, etc.) with an image, title, rating, and quick favorite action.
-- `components/common/AwardsTab.vue` — Displays a tabbed view of awards for a given media item or person, categorizing them by major festivals like Oscars, Golden Globes, and Palme d'Or.
-- `components/common/FullCreditsModal.vue` — Displays a modal with the full crew credits for a given title, organized by department with collapsible sections.
-- `components/common/MediaProgressBar.vue` — Displays a circular progress bar and slider for tracking media viewing progress, showing watched time and total duration.
-- `components/Credits.vue` — Displays a carousel of cast members for a movie or TV show, allowing users to navigate through the list and view individual credit items.
-- `components/CreditsItem.vue` — Displays an individual cast or crew member's credit, including their image, name, and character, with a link to their dedicated person page.
-- `components/CuffCard.vue` — Displays a card for a movie or TV show, typically used within a list context, featuring an image, title, and quick actions like favoriting or opening an external link.
-- `components/CustomListingCategoriesMovies.vue` — Renders a horizontal carousel of movie categories, allowing users to browse different genres or curated lists with navigation controls.
-- `components/CustomListingCategoriesSeries.vue` — Renders a horizontal carousel of TV series categories, allowing users to browse different genres or curated lists with navigation controls.
-- `components/Discover.vue` — Provides a comprehensive discovery interface for movies and TV shows, allowing users to filter by genre, sort options, country, network, language, and other criteria.
-- `components/DynamicSearchCarousel.vue` — Displays a dynamic carousel of search results for movies or TV shows, featuring navigation controls and individual search cards.
-- `components/ExternalLinks.vue` — Displays a grid of external links related to a movie or TV show, including IMDb, Rotten Tomatoes, Letterboxd, Trakt, and TMDb.
-- `components/FantasiaCard.vue` — Displays a card for a movie or TV show, specifically themed for the Fantasia festival, featuring an image, title, and quick actions.
-- `components/FantasiaLiveBanner.vue` — Displays a promotional banner for the Fantasia 2026 festival, linking to its dedicated coverage page.
-- `components/FeatureDescription.vue` — Vue component displaying a prominent feature description with cinematic light effects and gradient text, designed to be responsive across different screen sizes.
-- `components/festival/BaficiBadge.vue` — Vue component displaying a clickable badge for the BAFICI 2026 film festival, featuring its logo with hover effects.
-- `components/festival/BerlinaleBadge.vue` — Vue component displaying a clickable badge for the Berlinale Film Festival 2026, featuring its logo with hover effects.
-- `components/festival/BifanBadge.vue` — Vue component displaying a clickable badge for the BIFAN 2026 film festival, featuring its logo with hover effects.
-- `components/festival/BifffBadge.vue` — Vue component displaying a clickable badge for the BIFFF 2026 film festival, featuring its logo with hover effects.
-- `components/festival/CannesAcidBadge.vue` — Vue component displaying a clickable badge for the ACID section of the Cannes Film Festival 2026, featuring its logo with hover effects.
-- `components/festival/CannesBadge.vue` — Vue component displaying a clickable badge for the Cannes Film Festival 2026, featuring its logo with hover effects.
-- `components/festival/CannesCriticsChoiceBadge.vue` — Vue component displaying a clickable badge for the Critics' Choice section of the Cannes Film Festival 2026, featuring its logo with hover effects.
-- `components/festival/CannesQuinzaineBadge.vue` — Vue component displaying a clickable badge for the Quinzaine des Cinéastes section of the Cannes Film Festival 2026, featuring its logo with hover effects.
-- `components/festival/CuffBadge.vue` — Vue component displaying a clickable badge for the Calgary Underground Film Festival 2026, featuring its logo with hover effects.
-- `components/festival/FantasiaBadge.vue` — Vue component displaying a clickable badge for the Fantasia International Film Festival 2026, featuring its logo with hover effects.
-- `components/festival/FrightfestBadge.vue` — Vue component displaying a clickable badge for the FrightFest 2026 film festival, featuring its logo with hover effects.
-- `components/festival/KviffBadge.vue` — Vue component displaying a clickable badge for the Karlovy Vary International Film Festival 2026, featuring its logo with hover effects.
-- `components/festival/LocarnoBadge.vue` — Vue component displaying a clickable badge for the Locarno Film Festival 2026, featuring its logo with hover effects.
-- `components/festival/RomfordBadge.vue` — Vue component displaying a clickable badge for the Romford Horror Film Festival 2026, featuring its logo with hover effects.
-- `components/festival/RotterdamBadge.vue` — Vue component displaying a clickable badge for the Rotterdam Film Festival 2026, featuring its logo with hover effects.
-- `components/festival/SlamdanceBadge.vue` — Vue component displaying a clickable badge for the Slamdance Film Festival 2026, featuring its logo with hover effects.
-- `components/festival/SundanceBadge.vue` — Vue component displaying a clickable badge for the Sundance Film Festival 2026, featuring its logo with hover effects.
-- `components/festival/SxswBadge.vue` — Vue component displaying a clickable badge for the SXSW Film & TV Festival 2026, featuring its logo with hover effects.
-- `components/festival/SxswCard.vue` — Vue component representing a card for an SXSW film festival item, including a link, quick actions, and a loading state.
-- `components/festival/TiffBadge.vue` — Vue component displaying a clickable badge for the TIFF 2026 film festival, featuring its logo with hover effects.
-- `components/festival/TribecaBadge.vue` — Vue component displaying a clickable badge for the Tribeca Festival 2026, featuring its logo with hover effects.
-- `components/festival/VeniceBadge.vue` — Vue component displaying a clickable badge for the Venice Film Festival 2026, featuring its logo with hover effects.
-- `components/festival/WinnersCarousel.vue` — Displays a carousel of festival winners, grouped by film, with navigation controls and a statistical overview.
-- `components/FestivalDataDisclaimer.vue` — Provides a disclaimer about missing festival data and allows users to report issues via a modal form.
-- `components/FestivalsCarousel.vue` — Renders a horizontal carousel for displaying a list of festivals, with navigation buttons and an optional 'Explore All' link.
-- `components/FestivalsRotatingBanner.vue` — Displays a rotating banner featuring different festivals, with a shimmer effect and links to their respective pages.
-- `components/FollowedContent.vue` — Displays content followed by the user, categorized by production company or streaming platform, with filtering and sorting options.
-- `components/FrightfestCard.vue` — Displays a card for a Frightfest film, including a poster, quick actions like external links and favoriting, and a rating.
-- `components/global/ArticleAIDisclosure.vue` — Displays a disclosure for AI-generated articles, including an icon and a button to report issues via a modal form.
-- `components/global/ArticleShareModal.vue` — Provides a modal for sharing articles via link copy, native share, or various social media platforms.
-- `components/global/AuthModal.vue` — Manages user authentication through a modal, offering sign-in and registration tabs with email/password fields.
-- `components/global/CardActions.vue` — Provides a dropdown menu of actions for a content card, including rating, adding to watchlist, and managing lists.
-- `components/global/CookieConsent.vue` — Manages user cookie consent with a banner and a preferences panel, allowing users to accept, decline, or customize settings.
-- `components/global/CreateListModal.vue` — Provides a modal interface for users to create new content lists, specifying a name and description.
-- `components/global/FollowingModal.vue` — Provides a modal interface for users to manage the people, TV shows, production companies, and streaming services they follow, with tabbed navigation for different categories.
-- `components/global/Footer.vue` — Renders the global footer component, including navigation links to resources, social media links, and copyright information.
-- `components/global/InstallPrompt.vue` — Displays a prompt to the user to add the Cinemagoria application to their home screen, handling the 'beforeinstallprompt' event and user choices.
-- `components/global/MyListsModal.vue` — Manages a modal for users to add items to their custom lists, create new lists, and view/edit existing lists, including undo functionality for recent actions.
-- `components/global/Nav.vue` — Implements the main navigation bar for the application, providing links to home, discover movies, TV shows, news, and user-specific content like lists and profile.
-- `components/global/NewsCarousel.vue` — Displays a carousel of the latest news articles, allowing users to browse recent updates and navigate to a dedicated news page.
-- `components/global/ProgressTrackingModal.vue` — Provides a modal for users to track their watch progress for movies and TV shows, allowing them to mark items as watched and manage episode progress.
-- `components/global/QuickFav.vue` — Offers a quick favorite button component that allows authenticated users to add or manage an item in their lists, displaying a checkmark if already in a list.
-- `components/global/QuickFavModal.vue` — Displays a confirmation modal for users to remove an item from their watchlist, interacting with a backend API to perform the deletion.
-- `components/global/RatedModal.vue` — Provides a modal interface for users to view and manage their rated movies and TV shows, including options to edit reviews and remove ratings.
-- `components/global/RelatedArticlesCarousel.vue` — Displays a horizontal carousel of related articles, allowing users to navigate through them with scroll controls.
-- `components/global/SearchForm.vue` — Implements a search form component with a search input, back button, and displays trending movies/TV shows as featured content.
-- `components/global/TopNav.vue` — Renders a fixed top navigation bar that displays a title, primarily for smaller screens, and hides on larger viewports.
-- `components/Hero.vue` — Displays a hero section with a main item (movie/TV show) and related content, including an auto-advancing carousel, festival badges, and user rating features.
-- `components/HowItWorksModal.vue` — Presents a modal explaining how release alerts work, featuring an introductory text and a carousel to illustrate the process.
-- `components/Images.vue` — Displays a gallery of images (posters or backdrops) for a given item, with a title and count, and allows opening them in a modal viewer.
-- `components/ImagesItem.vue` — Renders an individual image item within a gallery, displaying a thumbnail and a loading spinner, and emits an event when clicked to open a modal.
-- `components/KviffCard.vue` — Displays a card for a KVIFF (Karlovy Vary International Film Festival) item, including an image, quick actions like favoriting, and a link to its official festival page.
-- `components/KviffLiveBanner.vue` — Provides a promotional banner for the KVIFF 2026 festival, linking to its coverage page and featuring a distinct background and logo.
-- `components/Listing.vue` — Displays a list of media items (movies, TV shows) with an optional title, 'Explore All' link, and infinite scrolling for loading more items.
-- `components/ListingCarousel.vue` — Renders a horizontal carousel of media items, including navigation buttons and an optional 'Explore All' card, with responsive styling.
-- `components/Loader.vue` — Provides a reusable SVG-based loading spinner component with customizable size and color properties.
-- `components/LocarnoCard.vue` — Displays a card for a Locarno Film Festival item, including a poster, quick actions, and a link to its detail page or external source.
-- `components/MediaNav.vue` — Provides a navigation component with a list of buttons, allowing users to select an active item and emitting an event on click.
-- `components/Modal.vue` — Implements a generic modal component that can display images, iframes, or custom content, with navigation for multiple items and accessibility features.
-- `components/movie/MovieInfo.vue` — Displays detailed information about a movie, including its poster, overview, cast, crew, awards, and various external links.
+- `components/global/GoogleLogin.vue` — Provides a 'Sign in with Google' button component that handles the Google OAuth login flow, including UI states for loading and error handling.
+- `components/global/UserNav.vue` — Displays user navigation elements, including a notifications button with an unread count, user avatar, and a dropdown menu with profile links and logout functionality.
+- `components/BaficiCard.vue` — Displays a card component for BAFICI festival entries, including an image, title, and quick actions like opening the official festival page and favoriting.
+- `components/BerlinaleCard.vue` — Displays a card component for Berlinale festival entries, including an image, title, and quick actions like opening the official festival page and favoriting.
+- `components/BifanCard.vue` — Displays a card component for Bifan festival entries, including an image, title, and quick actions like opening the official festival page and favoriting.
+- `components/BifffCard.vue` — Displays a card component for BIFFF festival entries, including an image, title, and quick actions like opening the official festival page and favoriting.
+- `components/calendar/CalendarEntry.vue` — Renders a single entry in the calendar, displaying its poster, title, type, year, and any associated notes or country flags.
+- `components/calendar/CalendarScopeModal.vue` — Provides a modal dialog explaining the scope and curated nature of the calendar feature, including an early access notice.
+- `components/CannesCard.vue` — Displays a card component for Cannes festival entries, including an image, title, and quick actions like opening the official festival page and favoriting.
+- `components/CannesLiveBanner.vue` — Displays a promotional banner for the Cannes 2026 festival, encouraging users to explore its coverage.
+- `components/CannesWinnersBanner.vue` — Displays a promotional banner for the Cannes 2026 winners, encouraging users to explore the palmarès.
+- `components/Card.vue` — A generic card component for displaying various media types (movies, TV, people, productions, festivals, streaming), including an image, title, and quick actions.
+- `components/common/AwardsTab.vue` — Displays a tabbed view of awards for a given entity (movie, TV show, or person), including Oscars, Golden Globes, Palme d'Or, Golden Lion, and Golden Bear.
+- `components/common/FullCreditsModal.vue` — Provides a modal dialog to display the full cast and crew credits for a movie or TV show, organized by department, with collapsible sections.
+- `components/common/MediaProgressBar.vue` — Displays a circular progress bar and a slider to indicate viewing progress for media, showing elapsed time and total duration.
+- `components/Credits.vue` — Renders a horizontal carousel of cast members, allowing users to scroll through and view individual credit items.
+- `components/CreditsItem.vue` — Displays an individual cast or crew member's item within a carousel, including their image, name, and character/role, with a loading state.
+- `components/CuffCard.vue` — Renders a card component for media items, displaying an image, title, and quick actions like adding to a list or opening an external link.
+- `components/discover/DiscoverHub.vue` — Serves as the main hub for content discovery, allowing users to switch between movie and TV show catalogues and view curated content rows.
+- `components/discover/DiscoverPanel.vue` — Provides a filtering and sorting panel for the discover catalogue, allowing users to refine search results by genre, sort order, and other criteria.
+- `components/discover/DiscoverResults.vue` — Displays search results from the discover catalogue in a grid format, including loading skeletons, error states, and a 'load more' functionality.
+- `components/discover/FilterSelect.vue` — A reusable select component for filtering options, supporting search, keyboard navigation, and dynamic positioning within the viewport.
+- `components/discover/GenreGrid.vue` — Displays a grid of genre tiles, each linking to a specific genre's catalogue page for either movies or TV shows.
+- `components/DynamicSearchCarousel.vue` — Vue component for a dynamic, scrollable carousel displaying search results or items, with navigation buttons and a customizable title.
+- `components/ExternalLinks.vue` — Vue component that displays a grid of external links for a movie or TV show, including IMDb, Rotten Tomatoes, Letterboxd, Trakt, and TMDb.
+- `components/FantasiaCard.vue` — Vue component representing a card for a Fantasia festival item, displaying an image, quick actions like favoriting, and a link to its details or external source.
+- `components/FantasiaLiveBanner.vue` — Vue component for a promotional banner for the Fantasia 2026 festival, featuring a logo, background effects, and a link to the festival coverage page.
+- `components/FeatureDescription.vue` — Vue component displaying a prominent, stylized feature description with a main title and a subtitle, using custom fonts and cinematic light effects.
+- `components/festival/BaficiBadge.vue` — Vue component displaying the BAFICI 2026 film festival logo as a badge, with hover effects and responsive styling.
+- `components/festival/BerlinaleBadge.vue` — Vue component displaying the Berlinale Film Festival 2026 logo as a badge, with hover effects and responsive styling.
+- `components/festival/BifanBadge.vue` — Vue component displaying the BIFAN 2026 film festival logo as a badge, with hover effects and responsive styling.
+- `components/festival/BifffBadge.vue` — Vue component displaying the BIFFF 2026 film festival logo as a badge, with hover effects and responsive styling.
+- `components/festival/CannesAcidBadge.vue` — Vue component displaying the Cannes Film Festival 2026 – ACID section logo as a badge, with hover effects and responsive styling.
+- `components/festival/CannesBadge.vue` — Vue component displaying the Cannes Film Festival 2026 logo as a badge, with hover effects and responsive styling.
+- `components/festival/CannesCriticsChoiceBadge.vue` — Vue component displaying the Cannes Film Festival 2026 – Critics' Choice section logo as a badge, with hover effects and responsive styling.
+- `components/festival/CannesQuinzaineBadge.vue` — Vue component displaying the Cannes Film Festival 2026 – Quinzaine des Cinéastes section logo as a badge, with hover effects and responsive styling.
+- `components/festival/CuffBadge.vue` — Vue component displaying the Calgary Underground Film Festival 2026 logo as a badge, with hover effects and responsive styling.
+- `components/festival/FantasiaBadge.vue` — Vue component displaying the Fantasia International Film Festival 2026 logo as a badge, with hover effects and responsive styling.
+- `components/festival/FrightfestBadge.vue` — Vue component displaying the FrightFest 2026 film festival logo as a badge, with hover effects and responsive styling.
+- `components/festival/KviffBadge.vue` — Vue component displaying the Karlovy Vary International Film Festival 2026 logo as a badge, with hover effects and responsive styling.
+- `components/festival/LocarnoBadge.vue` — Vue component displaying the Locarno Film Festival 2026 logo as a badge, with hover effects and responsive styling.
+- `components/festival/RomfordBadge.vue` — Vue component displaying the Romford Horror Film Festival 2026 logo as a badge, with hover effects and responsive styling.
+- `components/festival/RotterdamBadge.vue` — Vue component displaying the Rotterdam Film Festival 2026 logo as a badge, with hover effects and responsive styling.
+- `components/festival/SlamdanceBadge.vue` — Vue component displaying the Slamdance Film Festival 2026 logo as a badge, with hover effects and responsive styling.
+- `components/festival/SundanceBadge.vue` — Displays a stylized Sundance Film Festival 2026 logo badge with hover effects, intended for use as a clickable link or informational graphic.
+- `components/festival/SxswBadge.vue` — Displays a stylized SXSW Film & TV Festival 2026 logo badge with hover effects, intended for use as a clickable link or informational graphic.
+- `components/festival/SxswCard.vue` — A Vue component representing a card for an SXSW festival item, including a link, actions, an image, and an external link button.
+- `components/festival/TiffBadge.vue` — Displays a stylized TIFF 2026 logo badge with hover effects, intended for use as a clickable link or informational graphic.
+- `components/festival/TribecaBadge.vue` — Displays a stylized Tribeca Festival 2026 logo badge with hover effects, intended for use as a clickable link or informational graphic.
+- `components/festival/VeniceBadge.vue` — Displays a stylized Venice Film Festival 2026 logo badge with hover effects, intended for use as a clickable link or informational graphic.
+- `components/festival/WinnersCarousel.vue` — A Vue component that displays a carousel of festival winners, grouped by category, with navigation controls and poster images.
+- `components/FestivalDataDisclaimer.vue` — A Vue component that provides a disclaimer about festival data coverage and allows users to report missing films via a modal form.
+- `components/FestivalsCarousel.vue` — A Vue component that displays a horizontal carousel of festival cards, with optional title, 'explore all' link, and navigation buttons.
+- `components/FestivalsRotatingBanner.vue` — A Vue component that displays a rotating banner for active festivals, linking to their respective coverage pages.
+- `components/FollowedContent.vue` — A Vue component that displays followed content (movies/TV shows) from streaming platforms or production companies, with filtering and sorting options.
+- `components/FrightfestCard.vue` — A Vue component representing a card for a Frightfest festival item, including a link, actions, an image, and an external link button.
+- `components/global/ArticleAIDisclosure.vue` — A Vue component that displays a disclosure indicating an article was AI-generated and provides a button to report errors via a modal form.
+- `components/global/ArticleShareModal.vue` — A Vue component for sharing articles, providing options to copy the link, share via native OS share, or share to various social media platforms.
+- `components/global/AuthModal.vue` — A Vue component for user authentication, providing tabs for signing in and registering, with options for email/password and social logins.
+- `components/global/CardActions.vue` — A Vue component that provides a dropdown menu of actions for a content card, such as rating, adding to lists, or marking as watched.
+- `components/global/CookieConsent.vue` — Provides a global cookie consent banner and preferences panel, allowing users to manage their cookie settings.
+- `components/global/CreateListModal.vue` — Displays a modal for users to create new movie/TV show lists, handling form submission and API interaction with Supabase and a Turso backend.
+- `components/global/FollowingModal.vue` — Manages and displays a modal for users to view and manage the people, TV shows, production companies, and streaming services they follow.
+- `components/global/Footer.vue` — Renders the global footer component, including navigation links, social media icons, and a copyright notice.
+- `components/global/InstallPrompt.vue` — Displays a prompt to the user to install the web application to their home screen, managing the installation event and user choice.
+- `components/global/MyListsModal.vue` — Provides a modal for users to manage their custom lists, including adding or moving items between lists, and handling list creation/deletion.
+- `components/global/Nav.vue` — Implements the main navigation bar for the application, providing links to different sections and displaying user-specific lists.
+- `components/global/NewsCarousel.vue` — Displays a carousel of the latest news articles, fetching data from an API and providing navigation controls.
+- `components/global/ProgressTrackingModal.vue` — Manages and displays a modal for users to track their watch progress for movies and TV shows, including episode-level tracking.
+- `components/global/QuickFav.vue` — Provides a quick favorite button component that allows users to add or manage an item in their lists, opening a modal for list selection.
+- `components/global/QuickFavModal.vue` — Provides a modal dialog for confirming the removal of an item from a user's watchlist, interacting with a Turso backend API.
+- `components/global/RatedModal.vue` — Displays a modal for users to view and manage their rated movies and TV shows, including editing ratings and reviews.
+- `components/global/RelatedArticlesCarousel.vue` — Renders a horizontal carousel of related articles, fetching data asynchronously and providing navigation controls.
+- `components/global/SearchForm.vue` — Implements a search input form with debouncing, displaying search results and trending items, and handling user authentication.
+- `components/global/TopNav.vue` — Renders a fixed top navigation bar component that displays a title, primarily for smaller screen sizes.
+- `components/Hero.vue` — Displays a dynamic hero section with a carousel of items, including details, ratings, and related articles, with auto-advance functionality.
+- `components/HowItWorksModal.vue` — Presents a modal explaining how release alerts work, featuring an introductory text and a carousel for visual explanation.
+- `components/Images.vue` — Displays a gallery of images (posters or backdrops) with a title and count, allowing users to open a full-screen modal view.
+- `components/ImagesItem.vue` — Renders an individual image item within a gallery, displaying a thumbnail and handling loading states and modal interactions.
+- `components/KviffCard.vue` — Displays a card for a KVIFF festival item, including an image, quick actions like favoriting and external links, and a loader for image loading states.
+- `components/KviffLiveBanner.vue` — Provides a promotional banner for the KVIFF 2026 festival, featuring a background gradient, a festival logo, and a call to action.
+- `components/Listing.vue` — Renders a list of items, typically cards, with an optional title and a 'View All' link, supporting infinite scrolling to load more items.
+- `components/ListingCarousel.vue` — Displays a horizontal carousel of items, typically cards, with navigation buttons, an optional title, and a 'View All' link, supporting compact mode.
+- `components/Loader.vue` — A reusable SVG-based loading spinner component with customizable size and color.
+- `components/LocarnoCard.vue` — Displays a card for a Locarno festival item, including an image, quick actions like favoriting and external links, and a loader for image loading states.
+- `components/MediaNav.vue` — Provides a navigation component with a list of buttons, allowing users to switch between different media categories or tabs.
+- `components/Modal.vue` — A generic modal component that can display images, iframes, or custom content, with navigation for multiple items and accessibility features.
+- `components/movie/MovieInfo.vue` — Displays detailed information about a movie, including its poster, overview, cast, crew, awards, and external links.
 - `components/movie/MovieReleases.vue` — Displays a list of movie release dates grouped by country, including country flags and release details.
-- `components/music/SoundtrackGroup.vue` — Organizes and displays a group of soundtrack items, typically by year, within a larger soundtrack list.
-- `components/music/SoundtrackItem.vue` — Displays a single soundtrack item, including its title, disambiguation, artist, and a link to its MusicBrainz page.
-- `components/music/SoundtrackList.vue` — Displays a list of soundtracks for a movie, allowing selection of an album and showing its tracklist with YouTube links.
-- `components/NoirModal.vue` — Displays a modal window with information about the "Nothing Out Is Ready" (N.O.I.R) curated selection, including a logo, subtitle, descriptive text, and a close button.
-- `components/OscarsCarousel.vue` — Renders a horizontal carousel displaying information about the 98th Academy Awards, including a section header with a link to full coverage and navigation buttons.
-- `components/OscarsLiveBanner.vue` — Displays a banner for the 98th Academy Awards, showing live coverage status or results, a countdown/count-up timer, and a ticker for notable winners.
-- `components/person/CreditsHistory.vue` — Displays a person's filmography and crew credits, allowing filtering by department and media type (combined, movie, or TV).
-- `components/person/CreditsHistoryGroup.vue` — Renders a group of credits for a person, typically organized by year, displaying each credit using the CreditsHistoryItem component.
-- `components/person/CreditsHistoryItem.vue` — Displays a single credit item for a person, showing the film/series title, number of episodes (if applicable), and their role/character, with a link to the media.
-- `components/person/PersonAwardsTab.vue` — Displays a person's awards history, categorized by major awards like Oscars, Golden Globes, Palme d'Or, Golden Lion, and Golden Bear, in a tabular format.
-- `components/person/PersonInfo.vue` — Displays detailed information about a person, including their avatar, name, biography, birth/death dates, age, birthplace, known for department, and awards won.
-- `components/ProductionCompanyCarousel.vue` — Renders a horizontal carousel displaying popular production companies, with navigation buttons and autoplay functionality.
+- `components/music/SoundtrackGroup.vue` — Organizes and displays a group of soundtrack items, typically by year, within a larger list.
+- `components/music/SoundtrackItem.vue` — Displays a single soundtrack item, including its title, disambiguation, and artist, with a link to its MusicBrainz page.
+- `components/music/SoundtrackList.vue` — Displays a list of soundtrack tracks for a selected album, including album details and a play icon to open YouTube for each track.
+- `components/NoirModal.vue` — Presents a modal dialog for the 'Nothing Out Is Ready' (N.O.I.R) initiative, featuring a logo, subtitle, descriptive text, and a button to show a manifesto.
+- `components/OscarsCarousel.vue` — Displays a horizontal carousel for the 98th Academy Awards, featuring a section header, navigation buttons, and individual award nominee cards.
+- `components/OscarsLiveBanner.vue` — Provides a banner for the 98th Academy Awards, indicating live coverage or results, with a statuette image, title, and a scrolling ticker for updates.
+- `components/person/CreditsHistory.vue` — Displays a person's credit history, allowing filtering by department and media type (combined, movie, or TV) and grouping credits by year.
+- `components/person/CreditsHistoryGroup.vue` — Renders a group of credits for a person, typically organized by year, displaying the year and a list of individual credit items.
+- `components/person/CreditsHistoryItem.vue` — Displays a single credit item for a person, including the title of the work, episode count (if applicable), and the person's role, with a link to the media.
+- `components/person/PersonAwardsTab.vue` — Displays a person's awards history, categorized by award type (Oscars, Golden Globes, Palme d'Or, Golden Lion, Golden Bear) in sortable tables.
+- `components/person/PersonInfo.vue` — Displays detailed information about a person, including their avatar, name, biography, known for department, birthplace, and awards summary.
+- `components/ProductionCompanyCarousel.vue` — Displays a horizontal carousel of popular production companies, allowing users to scroll through them and navigate to individual company pages.
 - `components/ProductionHero.vue` — Displays a hero section for a production company, featuring its logo, name, country, headquarters, description, and a follow/unfollow button.
-- `components/RomfordCard.vue` — Displays a card for a Romford Film Festival entry, including a poster image, quick actions like favoriting and external links, and basic film details.
-- `components/RotterdamCard.vue` — Displays a card for a Rotterdam Film Festival entry, including a poster image, quick actions like favoriting and external links, and basic film details.
-- `components/search/CategoryCarousel.vue` — Displays a collapsible carousel of items within a category, allowing users to browse and load more items.
-- `components/search/CategorySection.vue` — Renders a collapsible section for a category, displaying a list of items using `Card` components.
-- `components/search/DiscoverSearch.vue` — Provides an interface for discovering movies and TV shows based on various filters like type, genre, sort options, country, network, language, and release year.
-- `components/search/NewsResultCard.vue` — Displays a single news article or aggregated item with an image, title, description, date, and source badge, linking to the full content.
-- `components/search/SearchGuideModal.vue` — Presents a modal dialog explaining the various search functionalities and options available within Cinemagoria.
-- `components/search/SearchResults.vue` — Displays search results across different categories like movies, TV shows, people, news, and users, with filtering and pagination capabilities.
-- `components/SlamdanceCard.vue` — Renders a card component specifically for Slamdance festival items, including actions like adding to lists and opening external source URLs.
-- `components/SpotlightCarousel.vue` — Displays a horizontal carousel of spotlight items, typically used for featured content, with navigation controls and an optional 'Explore All' link.
-- `components/StreamingPlatformCarousel.vue` — Presents a horizontal carousel of popular streaming platforms, with navigation controls and an optional 'Explore All' link.
-- `components/StreamingPlatformHero.vue` — Vue component displaying a hero section for a streaming platform, allowing users to follow/unfollow it and showing its logo and name.
-- `components/SundanceCard.vue` — Vue component for displaying a Sundance Film Festival item card, including a link to its detail page, quick actions, and an external link to its official festival page.
-- `components/TiffCard.vue` — Vue component for displaying a TIFF (Toronto International Film Festival) item card, including a link to its detail page, quick actions, and an external link to its official festival page.
-- `components/TribecaCard.vue` — Vue component for displaying a Tribeca Film Festival item card, including a link to its detail page, quick actions, and an external link to its official festival page.
-- `components/TribecaLiveBanner.vue` — Vue component displaying a banner for the Tribeca 2026 festival, providing a link to its coverage page with a distinct background and logo.
-- `components/tv/Episodes.vue` — Vue component for displaying and managing TV show episodes, allowing users to select seasons, view episode counts, and mark entire seasons as watched/unwatched.
-- `components/tv/EpisodesItem.vue` — Vue component for displaying an individual TV show episode, including its poster, name, and a progress tracking feature for authenticated users.
-- `components/tv/TvInfo.vue` — Vue component displaying detailed information about a TV show, including its poster, storyline, external links, and various awards.
-- `components/VeniceCard.vue` — Vue component for displaying a Venice Film Festival item card, including a link to its detail page, quick actions, and an external link to its official festival page.
-- `components/Videos.vue` — Displays a list of videos, allowing filtering by type and opening a modal to play them. It fetches YouTube video details and formats them for display.
-- `components/VideosItem.vue` — Renders an individual video item with its thumbnail, name, type, and duration, emitting an event to open a modal when clicked.
-- `components/WatchOn.vue` — Displays a list of streaming providers where a movie or TV show can be watched, including their logos and links.
-- `components/YearPicker.vue` — Provides a dropdown for selecting a release year, ranging from a minimum year up to the current year, and emits the selected value.
+- `components/RomfordCard.vue` — Vue component displaying a film or festival item card with Romford Film Festival branding, including an image, quick actions like favoriting, and a link to its detail page or external source.
+- `components/RotterdamCard.vue` — Vue component displaying a film or festival item card with Rotterdam Film Festival branding, including an image, quick actions like favoriting, and a link to its detail page or external source.
+- `components/search/CategoryCarousel.vue` — Vue component for a horizontal carousel displaying items within a search category, with navigation buttons and a collapsible header.
+- `components/search/CategorySection.vue` — Vue component that displays a collapsible section of search results for a specific category, rendering each item using a `Card` component.
+- `components/search/DiscoverSearch.vue` — Vue component providing a comprehensive discovery interface for movies and TV shows, allowing users to filter by genre, sort options, country, network, language, streaming provider, and vote count.
+- `components/search/NewsResultCard.vue` — Vue component displaying a single news article card with an image, title, description, publication date, and a badge indicating its source or editorial category, linking to the full article.
+- `components/search/SearchGuideModal.vue` — Vue component for a modal dialog that provides a guide on how to use the search functionalities within Cinemagoria, detailing different search types and features.
+- `components/search/SearchResults.vue` — Vue component that displays various types of search results, including movies, TV shows, people, festivals, productions, streaming services, and news articles, with loading indicators and typo checking.
+- `components/SlamdanceCard.vue` — Vue component displaying a film or festival item card with Slamdance Film Festival branding, including an image, quick actions like favoriting, and a link to its detail page or external source.
+- `components/SpotlightCarousel.vue` — Vue component for a horizontal carousel displaying spotlight items, typically used for featured content, with navigation buttons and an optional 'Explore All' link.
+- `components/StreamingPlatformCarousel.vue` — Displays a carousel of popular streaming services, allowing users to navigate through them and explore all available platforms.
+- `components/StreamingPlatformHero.vue` — Renders a hero section for a streaming platform, displaying its name, logo, and a follow/unfollow button with authentication handling.
+- `components/SundanceCard.vue` — Displays a card for a Sundance Film Festival entry, including an image, actions, and a link to its official page.
+- `components/TiffCard.vue` — Displays a card for a TIFF (Toronto International Film Festival) entry, including an image, actions, and a link to its official page.
+- `components/TribecaCard.vue` — Displays a card for a Tribeca Film Festival entry, including an image, actions, and a link to its official page.
+- `components/TribecaLiveBanner.vue` — Provides a banner component for the Tribeca 2026 festival, linking to its coverage page and featuring a distinct visual style.
+- `components/tv/Episodes.vue` — Manages and displays a list of TV show episodes, allowing users to select seasons and mark episodes/seasons as watched.
+- `components/tv/EpisodesItem.vue` — Renders an individual TV episode item, showing its poster, name, and providing a progress tracking feature with a modal.
+- `components/tv/TvInfo.vue` — Displays detailed information about a TV show, including its poster, overview, cast, crew, and related content.
+- `components/VeniceCard.vue` — Displays a card for a Venice Film Festival entry, including an image, actions, and a link to its official page.
+- `components/Videos.vue` — Vue component that displays a list of videos, allows filtering by type, and opens a modal to play selected videos, fetching YouTube video details on creation.
+- `components/VideosItem.vue` — Vue component for displaying a single video item with its thumbnail, name, type, and duration, emitting an event to open a modal when clicked.
+- `components/WatchOn.vue` — Vue component that displays a list of streaming providers for a given media item, allowing users to click through to watch content.
+- `components/YearPicker.vue` — Vue component providing a dropdown for selecting a release year, ranging from a minimum year up to the current year, and emits the selected value.
 
 ### `composables`
 
-- `composables/useConsentGuard.js` — Provides a Vue composable to execute a callback function only when a specific consent category is granted, re-evaluating on consent preference changes.
+- `composables/useConsentGuard.js` — Provides a Vue composable to conditionally execute a callback based on user consent for a specific category, re-evaluating on consent changes.
   - exports: `useConsentGuard`
+- `composables/useCuratedRows.js` — A Vue composable that fetches and organizes curated movie or TV show rows based on predefined queries, handling potential API errors.
+  - exports: `useCuratedRows`
+- `composables/useDiscoverQuery.js` — A Vue composable for managing and executing discovery queries for movies or TV shows, including filtering, sorting, and pagination logic.
+  - exports: `useDiscoverQuery`
 
 ### `docs`
 
 ### `layouts`
 
-- `layouts/default.vue` — Defines the default layout for the application, including navigation, search, footer, and various lazy-loaded modals for authentication, ratings, tracking, and list management.
+- `layouts/default.vue` — Defines the default layout for the application, including global navigation, search, footer, and various lazy-loaded modals, structuring the main content area.
 
 ### `middleware`
 
-- `middleware/auth.global.ts` — Implements a global Nuxt route middleware for client-side authentication, synchronously checking for an access token in localStorage to protect specific routes and redirecting to the homepage with an auth modal if unauthenticated.
-  - This middleware is a UX guard only; actual data protection is handled by the backend. It dispatches a 'open-auth-modal' event and sets 'open_auth_modal' in sessionStorage.
+- `middleware/auth.global.ts` — Implements a global Nuxt route middleware for client-side authentication, blocking navigation to protected paths if no access token is found and prompting the user to log in via a modal.
+  - Registers a global Nuxt route middleware that checks for an 'access_token' in localStorage and dispatches an 'open-auth-modal' event if authentication is required.
 
 ### `mixins`
 
@@ -196,61 +205,62 @@
 
 ### `pages`
 
-- `pages/auth-success.vue` — Handles post-authentication redirects and displays success or error states, cleaning up local storage and updating UI elements based on authentication outcome.
-- `pages/awards/index.vue` — Displays a browsable list of major film awards, allowing users to select an award and year to view winners and nominees, with navigation to movie and media details.
-- `pages/changelog/index.vue` — Displays a changelog of releases, new features, and fixes, fetching data directly from the GitHub repository's releases API.
-- `pages/contact/index.vue` — Provides a contact form for users to submit inquiries, handling form submission, loading states, and displaying success or error messages.
-- `pages/faq/index.vue` — Presents a Frequently Asked Questions page with a table of contents for navigation and collapsible sections for detailed explanations.
-- `pages/festival/bafici-2026/index.vue` — Displays information for the BAFICI 2026 film festival, including films, awards, and a schedule, with search and navigation features.
-- `pages/festival/berlinale-2026/index.vue` — Displays information for the Berlinale 2026 film festival, including films, awards, and a schedule, with search and navigation features.
-- `pages/festival/bifan-2026/index.vue` — Displays information for the BIFAN 2026 film festival, including films, awards, and a schedule, with search and navigation features.
-- `pages/festival/bifff-2026/index.vue` — Displays information for the BIFFF 2026 film festival, including films, awards, and a schedule, with search and navigation features.
-- `pages/festival/cannes-2026/index.vue` — Vue page component for displaying details of the Cannes Film Festival 2026, including films, awards, and schedule, with search and navigation features.
-- `pages/festival/cuff-2026/index.vue` — Vue page component for displaying details of the Calgary Underground Film Festival (CUFF) 2026, including films, awards, and schedule, with search and navigation features.
-- `pages/festival/fantasia-2026/index.vue` — Vue page component for displaying details of the Fantasia International Film Festival 2026, including films, awards, and schedule, with search and navigation features.
-- `pages/festival/frightfest-2026/index.vue` — Vue page component for displaying details of the FrightFest 2026, including films and schedule, with search and navigation features.
-- `pages/festival/kviff-2026/index.vue` — Vue page component for displaying details of the Karlovy Vary International Film Festival (KVIFF) 2026, including films, awards, and schedule, with search and navigation features.
-- `pages/festival/locarno-2026/index.vue` — Vue page component for displaying details of the Locarno Film Festival 2026, including films, awards, and schedule, with search and navigation features.
-- `pages/festival/romford-2026/index.vue` — Vue page component for displaying details of the Romford Horror Film Festival 2026, including films, awards, and schedule, with search and navigation features.
-- `pages/festival/rotterdam-2026/index.vue` — Vue page component displaying details for the Rotterdam Film Festival 2026, including films, awards, and schedule, with search and category filtering.
-- `pages/festival/slamdance-2026/index.vue` — Vue page component displaying details for the Slamdance Film Festival 2026, including films, awards, and schedule, with search and category filtering.
-- `pages/festival/sundance-2026/index.vue` — Vue page component displaying details for the Sundance Film Festival 2026, including films, awards, and schedule, with search and category filtering.
-- `pages/festival/sxsw-2026/index.vue` — Vue page component displaying details for the SXSW Film Festival 2026, including films, awards, and schedule, with search and category filtering.
-- `pages/festival/tiff-2026/index.vue` — Vue page component displaying details for the TIFF 2026 festival, including films, awards, and schedule, with search and category filtering.
-- `pages/festival/tribeca-2026/index.vue` — Vue page component displaying details for the Tribeca Film Festival 2026, including films, awards, and schedule, with search and category filtering.
-- `pages/festival/venice-2026/index.vue` — Vue page component displaying details for the Venice Film Festival 2026, including films, awards, and schedule, with search and category filtering.
-- `pages/genre/[id]/movie.vue` — Vue page component that displays a list of movies filtered by a specific genre ID, with infinite scrolling and dynamic meta titles.
-- `pages/genre/[id]/tv.vue` — Displays a listing of TV shows filtered by a specific genre, allowing users to load more results and providing SEO metadata.
-- `pages/index.vue` — Homepage component displaying various carousels, banners for live events (Oscars, Cannes, Fantasia), and featured content.
-- `pages/lists/[slug].vue` — Displays a specific user-created list of movies and TV shows, allowing the owner to rename it and users to filter and sort items.
-- `pages/lists/index.vue` — Displays a user's custom lists of movies and TV shows, providing options to create, edit, delete, and filter lists.
-- `pages/login/index.vue` — Serves as an entry point for user authentication, immediately opening the AuthModal component upon mounting.
-- `pages/movie/[id].vue` — Displays detailed information for a specific movie, including an overview, credits, videos, images, soundtracks, and awards.
-- `pages/movie/category/[name].vue` — Displays a listing of movies based on a specific category (e.g., trending, popular), with infinite scrolling functionality.
-- `pages/movie/followed.vue` — Displays a list of movies from production companies followed by the user.
-- `pages/movie/index.vue` — Provides a discovery page for movies, featuring popular, top-rated, upcoming, and now playing categories, along with filters.
-- `pages/news/[slug].vue` — Displays a single news article, including its content, related entities, and options for saving and sharing.
-- `pages/news/index.vue` — Displays the latest news, allowing users to filter by category, search for articles, and manage bookmarks. It integrates with a news API and user preferences.
-- `pages/noir/index.vue` — Presents the N.O.I.R Archive, a collection of historical film titles, allowing users to browse, sort, and create a personal list from the archive.
-- `pages/notifications/index.vue` — Manages and displays user notifications related to followed people, TV shows, streaming services, and production companies, with filtering and marking as read/unread functionality.
-- `pages/person/[id].vue` — Displays detailed information about a specific person, including their known-for credits, full filmography, photos, and awards, with navigation between sections.
-- `pages/production-companies/index.vue` — Lists all supported production companies, sorted alphabetically, allowing users to browse and navigate to individual company pages.
-- `pages/production/[slug].vue` — Displays detailed information for a specific production company, including its movies and TV shows, with filtering and sorting options.
-- `pages/recovery/index.vue` — Provides a password recovery interface where users can enter their email to receive a reset link, with confirmation messages and navigation options.
-- `pages/register/index.vue` — Serves as an entry point for user registration, immediately opening the authentication modal with the register tab active upon mounting.
-- `pages/search/index.vue` — Vue page component for displaying search results, handling loading states, and allowing users to load more results.
-- `pages/settings/index.vue` — Vue page component for managing user account settings, including profile information, avatar, and account deletion.
-- `pages/streaming-services/index.vue` — Vue page component that displays a list of all available streaming services, sorted alphabetically, with links to their individual pages.
-- `pages/streaming/[slug].vue` — Vue page component that displays details for a specific streaming platform, including movies and TV shows, with filtering and sorting options.
-- `pages/streaming/followed.vue` — Vue page component that displays followed streaming content (movies or TV shows) for the current user.
-- `pages/tv/[id].vue` — Vue page component that displays detailed information for a specific TV show, including overview, cast, episodes, videos, images, and awards.
-- `pages/tv/category/[name].vue` — Vue page component that displays a list of TV shows based on a specific category (e.g., trending, popular), with infinite scrolling.
-- `pages/tv/followed.vue` — Vue page component that displays TV shows followed by the user.
-- `pages/tv/index.vue` — Vue page component for discovering TV shows, featuring popular, top-rated, on-air, and airing today categories, with a filter toggle.
-- `pages/u/[alias].vue` — Vue page component displaying a user's public profile, including their reviews and lists, with follow/unfollow functionality.
-- `pages/usage-policies/index.vue` — Displays the usage policies and privacy agreement for the Cinemagoria platform, including an interactive table of contents for navigation.
-- `pages/watchlist/index.vue` — Manages and displays a user's watchlist of movies and TV shows, allowing them to add, view, filter, and remove items, and rate watched content.
-- `pages/wip/index.vue` — Displays a 'Work in Progress' page indicating that a section of the application is under maintenance, with options to return home or view more information.
+- `pages/auth-success.vue` — Handles post-authentication redirects and displays success or error messages, managing UI state and local storage for return URLs.
+- `pages/awards/index.vue` — Displays a browsable list of major film awards, allowing users to select an award and year to view winners and nominees, with search functionality for people.
+- `pages/calendar/index.vue` — Provides a release calendar for films, showing theatrical, streaming, and festival dates, with options to filter by view (month/week), lens, media type, and territory.
+- `pages/changelog/index.vue` — Displays a changelog of releases, new features, and platform improvements by fetching and rendering data from the GitHub API.
+- `pages/contact/index.vue` — Provides a contact form for users to submit inquiries, handling form state, validation, and submission to an API endpoint.
+- `pages/faq/index.vue` — Presents a frequently asked questions page with an interactive table of contents and collapsible sections for detailed explanations.
+- `pages/festival/bafici-2026/index.vue` — Displays information for the BAFICI 2026 film festival, including films, awards, and schedule, with navigation, search, and responsive layout features.
+- `pages/festival/berlinale-2026/index.vue` — Displays information for the Berlinale 2026 film festival, including films, awards, and schedule, with navigation, search, and responsive layout features.
+- `pages/festival/bifan-2026/index.vue` — Displays information for the BIFAN 2026 film festival, including films, awards, and schedule, with navigation, search, and responsive layout features.
+- `pages/festival/bifff-2026/index.vue` — Vue page component for displaying details of the BIFFF 2026 film festival, including films, schedule, and awards, with interactive navigation and search features.
+- `pages/festival/cannes-2026/index.vue` — Vue page component for displaying details of the Cannes Film Festival 2026, including films, schedule, and awards, with interactive navigation and search features.
+- `pages/festival/cuff-2026/index.vue` — Vue page component for displaying details of the CUFF 2026 film festival, including films, schedule, and awards, with interactive navigation and search features.
+- `pages/festival/fantasia-2026/index.vue` — Vue page component for displaying details of the Fantasia International Film Festival 2026, including films, schedule, and awards, with interactive navigation and search features.
+- `pages/festival/frightfest-2026/index.vue` — Vue page component for displaying details of the FrightFest 2026 film festival, including films, schedule, and awards, with interactive navigation and search features.
+- `pages/festival/kviff-2026/index.vue` — Vue page component for displaying details of the Karlovy Vary International Film Festival 2026, including films, schedule, and awards, with interactive navigation and search features.
+- `pages/festival/locarno-2026/index.vue` — Vue page component for displaying details of the Locarno Film Festival 2026, including films, schedule, and awards, with interactive navigation and search features.
+- `pages/festival/romford-2026/index.vue` — Vue component for displaying the Romford Horror Film Festival 2026 details, including films, awards, and schedule, with interactive search and navigation.
+- `pages/festival/rotterdam-2026/index.vue` — Vue component for displaying the International Film Festival Rotterdam (IFFR) 2026 details, including films, awards, and schedule, with interactive search and navigation.
+- `pages/festival/slamdance-2026/index.vue` — Vue component for displaying the Slamdance Film Festival 2026 details, including films, awards, and schedule, with interactive search and navigation.
+- `pages/festival/sundance-2026/index.vue` — Vue component for displaying the Sundance Film Festival 2026 details, including films, awards, and schedule, with interactive search and navigation.
+- `pages/festival/sxsw-2026/index.vue` — Vue component for displaying the SXSW Film Festival 2026 details, including films, awards, and schedule, with interactive search and navigation.
+- `pages/festival/tiff-2026/index.vue` — Vue component for displaying the Toronto International Film Festival (TIFF) 2026 details, including films, awards, and schedule, with interactive search and navigation.
+- `pages/festival/tribeca-2026/index.vue` — Vue component for displaying the Tribeca Film Festival 2026 details, including films, awards, and schedule, with interactive search and navigation.
+- `pages/festival/venice-2026/index.vue` — Vue page component for displaying details of the Venice Film Festival 2026, including films, schedule, awards, and general information.
+- `pages/genre/[id]/movie.vue` — Vue page component that displays a list of movies belonging to a specific genre, allowing users to load more items.
+- `pages/genre/[id]/tv.vue` — Vue page component that displays a list of TV shows belonging to a specific genre, allowing users to load more items.
+- `pages/index.vue` — Vue page component for the homepage, featuring various carousels, banners for ongoing festivals (Oscars, Cannes, Fantasia), and trending content.
+- `pages/lists/[slug].vue` — Vue page component for displaying a specific user-created list of movies and TV shows, with filtering, sorting, and editing capabilities for the owner.
+- `pages/lists/index.vue` — Vue page component for displaying a user's custom lists of movies and TV shows, with options to create, edit, and manage them.
+- `pages/login/index.vue` — Vue page component that serves as an entry point for user authentication, immediately opening the AuthModal to either log in or register.
+- `pages/movie/[id].vue` — Vue page component for displaying detailed information about a specific movie, including overview, cast, crew, videos, images, soundtracks, and awards.
+- `pages/movie/category/[name].vue` — Vue page component that displays a list of movies based on a specific category (e.g., trending, now playing), with pagination.
+- `pages/movie/followed.vue` — Vue page component that displays movies from followed companies or entities, leveraging a generic FollowedContent component.
+- `pages/movie/index.vue` — Vue page component for the main movie discovery hub, showcasing curated rows of movies based on various criteria.
+- `pages/news/[slug].vue` — Displays a single news article, handling loading states, errors, user authentication for saving/sharing, and fetching related entities.
+- `pages/news/index.vue` — Displays a list of news articles with filtering by category and source, search functionality, and a 'back to article' option.
+- `pages/noir/index.vue` — Presents the N.O.I.R Archive of historical titles, allowing users to sort items and create a personal list from the archive.
+- `pages/notifications/index.vue` — Manages and displays user notifications, allowing filtering by read/unread status, marking notifications, and managing follows.
+- `pages/person/[id].vue` — Displays detailed information about a person, including their known-for credits, filmography, photos, and awards.
+- `pages/production-companies/index.vue` — Lists production companies, allowing users to search by name or filter by initial letter, and highlights popular companies.
+- `pages/production/[slug].vue` — Displays movies and TV shows associated with a specific production company, offering filtering and sorting options.
+- `pages/recovery/index.vue` — Provides a password recovery interface where users can request a password reset link via email.
+- `pages/register/index.vue` — Provides a registration page that automatically opens an authentication modal for user registration upon being mounted.
+- `pages/search/index.vue` — Displays search results for movies, TV shows, and people, handling loading states, no results, and pagination for search queries.
+- `pages/settings/index.vue` — Manages user account settings, including profile information, avatar changes, alias updates, privacy settings, and account deletion.
+- `pages/streaming-services/index.vue` — Displays a list of all available streaming services, sorted alphabetically, allowing users to browse and navigate to individual service pages.
+- `pages/streaming/[slug].vue` — Displays detailed information for a specific streaming platform, including movies and TV shows available, with filtering and sorting options.
+- `pages/streaming/followed.vue` — Displays followed movies or TV shows from streaming platforms, based on the 'type' query parameter in the route.
+- `pages/tv/[id].vue` — Displays detailed information for a specific TV show, including an overview, credits, episodes, videos, images, soundtracks, and awards.
+- `pages/tv/category/[name].vue` — Displays a paginated list of TV shows based on a specified category (e.g., trending, popular), fetching data from the API.
+- `pages/tv/followed.vue` — Displays a list of TV shows that the user has followed.
+- `pages/tv/index.vue` — Serves as the main discovery page for TV shows, displaying curated rows of content like airing today, on the air, and top-rated series.
+- `pages/u/[alias].vue` — Displays a public user profile page, including their avatar, reviews, and public lists, with functionality to follow/unfollow the user.
+- `pages/usage-policies/index.vue` — Displays the Cinemagoria platform's usage policies and privacy agreement, with a table of contents for navigation.
+- `pages/watchlist/index.vue` — Vue page displaying a user's watchlist of movies and TV shows, with loading, empty, and rated items states, and filtering options.
+- `pages/wip/index.vue` — Vue page indicating that a section of the application is under maintenance, providing options to return home or view more information.
 
 ### `plugins`
 
@@ -259,8 +269,8 @@
 
 ### `public`
 
-- `public/manifest.json` — Defines the web application manifest for Cinemagoria, specifying its name, description, display properties, theme colors, and icons for progressive web app (PWA) functionality.
-- `public/sw.js` — A self-destroying service worker script designed to unregister itself and reload all open client pages upon activation, ensuring no service worker remains active.
+- `public/manifest.json` — Defines the web application manifest for Cinemagoria, including its name, description, start URL, display properties, theme colors, and various icon configurations for different purposes and sizes.
+- `public/sw.js` — A self-destroying service worker script that unregisters itself upon activation and reloads all open client pages, ensuring no caching or offline functionality is provided.
   - This file is explicitly marked as not to be version controlled.
 
 ### `scripts`
@@ -274,153 +284,128 @@
 
 ### `server/api`
 
-- `server/api/article-report.post.ts` — Handles POST requests to report issues with articles, sanitizing input and storing the report in a database.
-- `server/api/article/[slug].get.ts` — Handles GET requests for a single article by its slug, fetching its content from the database and returning it with parsed metadata.
+- `server/api/article-report.post.ts` — Handles POST requests to report issues with articles, sanitizing input and storing reports in a Turso database.
+  - Registers a POST route for /api/article-report.
+- `server/api/article/[slug].get.ts` — Handles GET requests for a specific article by slug, fetching its details from the database and returning structured data.
+  - Registers a GET route for /api/article/:slug.
 - `server/api/article/rss.get.ts` — Provides a permanent redirect for the legacy RSS feed endpoint to the canonical /feed URL.
-- `server/api/articles/by-entity.get.ts` — Handles GET requests to retrieve a limited number of articles related to specific TMDB entities (movies/TV shows).
-- `server/api/articles/by-slugs.get.ts` — Handles GET requests to retrieve articles based on a list of provided slugs, returning their core details.
-- `server/api/awards/index-page.get.ts` — Provides data for the awards archive page, fetching years and award items for a selected award body and year.
-- `server/api/awards/index.get.ts` — Provides award lookup functionality by TMDB ID, person name, or title, returning results categorized by award body.
-- `server/api/contact.post.ts` — Handles POST requests for the contact form, sanitizing input and storing the message in a database.
-- `server/api/festival-report.post.ts` — Handles POST requests to submit festival reports, sanitizing input, validating data, and storing the report in the database.
-  - exports: `default`
-  - Registers a POST route at `/api/festival-report`.
-- `server/api/festival/bafici/awards.get.ts` — Handles GET requests to retrieve awards data for the BAFICI 2026 festival by calling a utility function.
-  - exports: `default`
-  - Registers a GET route at `/api/festival/bafici/awards`.
-- `server/api/festival/bafici/films.get.ts` — Handles GET requests to retrieve a list of films for the BAFICI 2026 festival, supporting filtering by TMDB/IMDB ID and merging with TMDB data.
-  - exports: `default`
-  - Registers a GET route at `/api/festival/bafici/films`.
-- `server/api/festival/bafici/schedule.get.ts` — Handles GET requests to retrieve the screening schedule for the BAFICI 2026 festival, joining film and screening data.
-  - exports: `default`
-  - Registers a GET route at `/api/festival/bafici/schedule`.
-- `server/api/festival/berlinale/awards.get.ts` — Handles GET requests to retrieve awards data for the Berlinale 2026 festival by calling a utility function.
-  - exports: `default`
-  - Registers a GET route at `/api/festival/berlinale/awards`.
-- `server/api/festival/berlinale/films.get.ts` — Handles GET requests to retrieve a list of films for the Berlinale 2026 festival, supporting filtering by TMDB/IMDB ID and merging with TMDB data.
-  - exports: `default`
-  - Registers a GET route at `/api/festival/berlinale/films`.
-- `server/api/festival/berlinale/schedule.get.ts` — Handles GET requests to retrieve the screening schedule for the Berlinale 2026 festival, joining film and screening data.
-  - exports: `default`
-  - Registers a GET route at `/api/festival/berlinale/schedule`.
-- `server/api/festival/bifan/awards.get.ts` — Handles GET requests to retrieve awards data for the BIFAN 2026 festival by calling a utility function.
-  - exports: `default`
-  - Registers a GET route at `/api/festival/bifan/awards`.
-- `server/api/festival/bifan/films.get.ts` — Handles GET requests to retrieve a list of films for the BIFAN 2026 festival, supporting filtering by TMDB/IMDB ID and merging with TMDB data.
-  - exports: `default`
-  - Registers a GET route at `/api/festival/bifan/films`.
-- `server/api/festival/bifan/schedule.get.ts` — API endpoint to retrieve the 2026 BIFAN festival screening schedule, including film details, from the database.
-  - Registers a GET route for /api/festival/bifan/schedule.
+  - Registers a GET route for /api/article/rss.
+- `server/api/articles/by-entity.get.ts` — Fetches a limited number of articles related to specific TMDB entities (movies or TV shows) from the database.
+  - Registers a GET route for /api/articles/by-entity.
+- `server/api/articles/by-slugs.get.ts` — Retrieves a list of articles based on provided slugs, returning their details from the database.
+  - Registers a GET route for /api/articles/by-slugs.
+- `server/api/awards/index-page.get.ts` — Fetches award data for the main awards page, including a list of years for a selected award body and the awards for a specific year.
+  - Registers a GET route for /api/awards/index-page.
+- `server/api/awards/index.get.ts` — Provides an API for looking up awards by TMDB ID, person name, or title, returning results categorized by award body.
+  - Registers a GET route for /api/awards/index.
+- `server/api/calendar/[month].get.ts` — API endpoint to retrieve a calendar of release events for a specific month, fetching data from the database and applying caching headers based on the month's recency.
+  - Registers a GET route for /api/calendar/[month].
+- `server/api/contact.post.ts` — API endpoint to handle contact form submissions, sanitizing input, validating email, and storing the message in a database.
+  - Registers a POST route for /api/contact.
+- `server/api/festival-report.post.ts` — API endpoint to receive and store festival-related reports, including input sanitization and validation, into a database.
+  - Registers a POST route for /api/festival-report.
+- `server/api/festival/bafici/awards.get.ts` — API endpoint to fetch the awards for the BAFICI 2026 festival.
+  - Registers a GET route for /api/festival/bafici/awards.
+- `server/api/festival/bafici/films.get.ts` — API endpoint to retrieve a list of films for the BAFICI 2026 festival, with optional filtering by TMDB or IMDb ID, and data normalization/enrichment.
+  - Registers a GET route for /api/festival/bafici/films.
+- `server/api/festival/bafici/schedule.get.ts` — API endpoint to fetch the screening schedule for the BAFICI 2026 festival, including film details and screening information.
+  - Registers a GET route for /api/festival/bafici/schedule.
+- `server/api/festival/berlinale/awards.get.ts` — API endpoint to fetch the awards for the Berlinale 2026 festival.
+  - Registers a GET route for /api/festival/berlinale/awards.
+- `server/api/festival/berlinale/films.get.ts` — API endpoint to retrieve a list of films for the Berlinale Film Festival 2026, with optional filtering by TMDB or IMDb ID, and data normalization/enrichment.
+  - Registers a GET route for /api/festival/berlinale/films.
+- `server/api/festival/berlinale/schedule.get.ts` — API endpoint to retrieve the 2026 Berlinale Film Festival screening schedule, including film details and screening information, from the database.
+- `server/api/festival/bifan/awards.get.ts` — API endpoint to fetch the 2026 BIFAN festival awards by delegating to a utility function.
+- `server/api/festival/bifan/films.get.ts` — API endpoint to retrieve a list of 2026 BIFAN festival films, with optional filtering by TMDB or IMDb ID, from the database.
+- `server/api/festival/bifan/schedule.get.ts` — API endpoint to retrieve the 2026 BIFAN festival screening schedule, including film details and screening information, from the database.
 - `server/api/festival/bifff/awards.get.ts` — API endpoint to fetch the 2026 BIFFF festival awards by delegating to a utility function.
-  - Registers a GET route for /api/festival/bifff/awards.
-- `server/api/festival/bifff/films.get.ts` — API endpoint to retrieve 2026 BIFFF festival films, supporting filtering by TMDB or IMDb ID and limiting results.
-  - Registers a GET route for /api/festival/bifff/films.
-- `server/api/festival/bifff/schedule.get.ts` — API endpoint to retrieve the 2026 BIFFF festival screening schedule, including film details, from the database.
-  - Registers a GET route for /api/festival/bifff/schedule.
+- `server/api/festival/bifff/films.get.ts` — API endpoint to retrieve a list of 2026 BIFFF festival films, with optional filtering by TMDB or IMDb ID, from the database.
+- `server/api/festival/bifff/schedule.get.ts` — API endpoint to retrieve the 2026 BIFFF festival screening schedule, including film details and screening information, from the database.
 - `server/api/festival/cannes/awards.get.ts` — API endpoint to fetch the 2026 Cannes Film Festival awards by delegating to a utility function.
-  - Registers a GET route for /api/festival/cannes/awards.
-- `server/api/festival/cannes/films.get.ts` — API endpoint to retrieve 2026 Cannes Film Festival films, supporting filtering by TMDB or IMDb ID and limiting results.
-  - Registers a GET route for /api/festival/cannes/films.
-- `server/api/festival/cannes/schedule.get.ts` — API endpoint to retrieve the 2026 Cannes Film Festival screening schedule, including film details, from the database.
-  - Registers a GET route for /api/festival/cannes/schedule.
+- `server/api/festival/cannes/films.get.ts` — API endpoint to retrieve a list of 2026 Cannes Film Festival films, with optional filtering by TMDB or IMDb ID, from the database.
+- `server/api/festival/cannes/schedule.get.ts` — API endpoint to retrieve the 2026 Cannes Film Festival screening schedule, including film details and screening information, from the database.
 - `server/api/festival/cuff/awards.get.ts` — API endpoint to fetch the 2026 CUFF festival awards by delegating to a utility function.
-  - Registers a GET route for /api/festival/cuff/awards.
-- `server/api/festival/cuff/films.get.ts` — API endpoint to retrieve 2026 Calgary Underground Film Festival films, supporting filtering by TMDB or IMDb ID and limiting results.
-  - Registers a GET route for /api/festival/cuff/films.
-- `server/api/festival/cuff/schedule.get.ts` — API endpoint to retrieve the 2026 Calgary Underground Film Festival screening schedule, including film details, from the database.
-  - Registers a GET route for /api/festival/cuff/schedule.
-- `server/api/festival/fantasia/awards.get.ts` — API endpoint to fetch the 2026 Fantasia International Film Festival awards by delegating to a utility function.
+- `server/api/festival/cuff/films.get.ts` — API endpoint to retrieve a list of 2026 CUFF festival films, with optional filtering by TMDB or IMDb ID, from the database.
+- `server/api/festival/cuff/schedule.get.ts` — API endpoint to retrieve the 2026 CUFF festival screening schedule, including film details and screening information, from the database.
+- `server/api/festival/fantasia/awards.get.ts` — API endpoint to fetch awards for the Fantasia International Film Festival 2026.
   - Registers a GET route for /api/festival/fantasia/awards.
-- `server/api/festival/fantasia/films.get.ts` — API endpoint to retrieve 2026 Fantasia International Film Festival films, supporting filtering by TMDB or IMDb ID and limiting results.
-  - Registers a GET route for /api/festival/fantasia/films.
-- `server/api/festival/fantasia/schedule.get.ts` — API endpoint to retrieve the 2026 Fantasia International Film Festival screening schedule, including film details, from the database.
+- `server/api/festival/fantasia/films.get.ts` — API endpoint to retrieve films for the Fantasia International Film Festival 2026, with optional filtering by TMDB or IMDb ID and result limiting.
+  - Registers a GET route for /api/festival/fantasia/films. Supports `tmdb_id`, `imdb_id`, and `limit` query parameters.
+- `server/api/festival/fantasia/schedule.get.ts` — API endpoint to fetch the screening schedule for the Fantasia International Film Festival 2026, including film details.
   - Registers a GET route for /api/festival/fantasia/schedule.
-- `server/api/festival/films-batch.get.ts` — API endpoint to fetch a batch of films for multiple festivals, supporting filtering by year and returning slimmed-down data for carousel/card display.
-- `server/api/festival/frightfest/films.get.ts` — API endpoint to fetch films specifically for the FrightFest 2026 festival, with optional filtering by TMDB or IMDb ID and result limiting.
-- `server/api/festival/frightfest/schedule.get.ts` — API endpoint to retrieve the screening schedule for FrightFest 2026, including film details and screening information.
-- `server/api/festival/kviff/awards.get.ts` — API endpoint to fetch awards data for the Karlovy Vary International Film Festival (KVIFF) 2026.
-- `server/api/festival/kviff/films.get.ts` — API endpoint to fetch films specifically for the Karlovy Vary International Film Festival (KVIFF) 2026, with optional filtering by TMDB or IMDb ID and result limiting.
-- `server/api/festival/kviff/schedule.get.ts` — API endpoint to retrieve the screening schedule for the Karlovy Vary International Film Festival (KVIFF) 2026, including film details and screening information.
-- `server/api/festival/locarno/awards.get.ts` — API endpoint to fetch awards data for the Locarno Film Festival 2026.
-- `server/api/festival/locarno/films.get.ts` — API endpoint to fetch films specifically for the Locarno Film Festival 2026, with optional filtering by TMDB or IMDb ID and result limiting.
-- `server/api/festival/locarno/schedule.get.ts` — API endpoint to retrieve the screening schedule for the Locarno Film Festival 2026, including film details and screening information.
-- `server/api/festival/romford/awards.get.ts` — API endpoint to fetch awards data for the Romford Film Festival 2026.
-- `server/api/festival/romford/films.get.ts` — API endpoint to fetch a list of films for the Romford Horror Festival 2026, with optional filtering by TMDB or IMDb ID and limiting the number of results.
-  - exports: `default`
-- `server/api/festival/romford/schedule.get.ts` — API endpoint to retrieve the screening schedule for the Romford Horror Festival 2026, including film details and screening information.
-  - exports: `default`
-- `server/api/festival/rotterdam/awards.get.ts` — API endpoint to fetch the awards for the Rotterdam Film Festival 2026.
-  - exports: `default`
-- `server/api/festival/rotterdam/films.get.ts` — API endpoint to fetch a list of films for the Rotterdam Film Festival 2026, with optional filtering by TMDB or IMDb ID, sorting, and limiting results.
-  - exports: `default`
-- `server/api/festival/rotterdam/schedule.get.ts` — API endpoint to retrieve the screening schedule for the Rotterdam Film Festival 2026, including film details and screening information.
-  - exports: `default`
-- `server/api/festival/slamdance/awards.get.ts` — API endpoint to fetch the awards for the Slamdance Film Festival 2026.
-  - exports: `default`
-- `server/api/festival/slamdance/films.get.ts` — API endpoint to fetch a list of films for the Slamdance Film Festival 2026, with optional filtering by TMDB or IMDb ID and limiting the number of results.
-  - exports: `default`
-- `server/api/festival/slamdance/schedule.get.ts` — API endpoint to retrieve the screening schedule for the Slamdance Film Festival 2026, including film details and screening information.
-  - exports: `default`
-- `server/api/festival/status.get.ts` — API endpoint to resolve festival badges for a given TMDB ID and year, used as a client-side fallback.
-  - exports: `default`
-  - Registers a GET route that requires a `tmdb_id` query parameter and optionally accepts a `year`.
-- `server/api/festival/sundance/awards.get.ts` — API endpoint to fetch the awards for the Sundance Film Festival 2026.
-  - exports: `default`
-- `server/api/festival/sundance/films.get.ts` — API endpoint to fetch a list of films for the Sundance Film Festival 2026, with optional filtering by TMDB or IMDb ID, sorting, and limiting results.
-  - exports: `default`
-- `server/api/festival/sundance/schedule.get.ts` — API endpoint to retrieve the 2026 Sundance Film Festival screening schedule, including film details, screening times, and availability.
+- `server/api/festival/films-batch.get.ts` — API endpoint to fetch films for multiple festivals in a single batch, with options for limiting results per festival and slimming fields for carousel/card consumers.
+  - Registers a GET route for /api/festival/films-batch. Requires `festivals` query param (comma-separated slugs). Supports `limit`, `year`, and `fields=card`.
+- `server/api/festival/frightfest/films.get.ts` — API endpoint to retrieve films for the FrightFest 2026, with optional filtering by TMDB or IMDb ID and result limiting.
+  - Registers a GET route for /api/festival/frightfest/films. Supports `tmdb_id`, `imdb_id`, and `limit` query parameters.
+- `server/api/festival/frightfest/schedule.get.ts` — API endpoint to fetch the screening schedule for FrightFest 2026, including film details.
+  - Registers a GET route for /api/festival/frightfest/schedule.
+- `server/api/festival/kviff/awards.get.ts` — API endpoint to fetch awards for the Karlovy Vary International Film Festival 2026.
+  - Registers a GET route for /api/festival/kviff/awards.
+- `server/api/festival/kviff/films.get.ts` — API endpoint to retrieve films for the Karlovy Vary International Film Festival 2026, with optional filtering by TMDB or IMDb ID and result limiting.
+  - Registers a GET route for /api/festival/kviff/films. Supports `tmdb_id`, `imdb_id`, and `limit` query parameters.
+- `server/api/festival/kviff/schedule.get.ts` — API endpoint to fetch the screening schedule for the Karlovy Vary International Film Festival 2026, including film details.
+  - Registers a GET route for /api/festival/kviff/schedule.
+- `server/api/festival/locarno/awards.get.ts` — API endpoint to fetch awards for the Locarno Film Festival 2026.
+  - Registers a GET route for /api/festival/locarno/awards.
+- `server/api/festival/locarno/films.get.ts` — API endpoint to retrieve a list of films for the Locarno Film Festival 2026, with optional filtering by TMDB or IMDb ID and limit.
+- `server/api/festival/locarno/schedule.get.ts` — API endpoint to fetch the screening schedule for the Locarno Film Festival 2026, including film details.
+- `server/api/festival/romford/awards.get.ts` — API endpoint to retrieve the awards for the Romford Horror Festival 2026.
+- `server/api/festival/romford/films.get.ts` — API endpoint to retrieve a list of films for the Romford Horror Festival 2026, with optional filtering by TMDB or IMDb ID and limit.
+- `server/api/festival/romford/schedule.get.ts` — API endpoint to fetch the screening schedule for the Romford Horror Festival 2026, including film details.
+- `server/api/festival/rotterdam/awards.get.ts` — API endpoint to retrieve the awards for the Rotterdam Film Festival 2026.
+- `server/api/festival/rotterdam/films.get.ts` — API endpoint to retrieve a list of films for the Rotterdam Film Festival 2026, with optional filtering by TMDB/IMDb ID, sorting, and limiting.
+- `server/api/festival/rotterdam/schedule.get.ts` — API endpoint to fetch the screening schedule for the Rotterdam Film Festival 2026, including film details.
+- `server/api/festival/slamdance/awards.get.ts` — API endpoint to retrieve the awards for the Slamdance Film Festival 2026.
+- `server/api/festival/slamdance/films.get.ts` — API endpoint to retrieve a list of films for the Slamdance Film Festival 2026, with optional filtering by TMDB or IMDb ID and limit.
+- `server/api/festival/slamdance/schedule.get.ts` — API endpoint to fetch the screening schedule for the Slamdance Film Festival 2026, including film details.
+- `server/api/festival/status.get.ts` — API endpoint to resolve festival badges for a given film by its TMDB ID and year, serving as a client-side fallback.
+- `server/api/festival/sundance/awards.get.ts` — API endpoint to retrieve the awards for the Sundance Film Festival 2026.
+- `server/api/festival/sundance/films.get.ts` — API endpoint to fetch a list of films for the 2026 Sundance Film Festival, supporting filtering by TMDB/IMDB ID, sorting by rating or title, and limiting results.
+  - Registers a GET route for /api/festival/sundance/films.
+- `server/api/festival/sundance/schedule.get.ts` — API endpoint to retrieve the screening schedule for the 2026 Sundance Film Festival, including film details and screening information.
   - Registers a GET route for /api/festival/sundance/schedule.
-- `server/api/festival/sxsw/awards.get.ts` — API endpoint to fetch award information for the 2026 SXSW Film & TV Festival.
+- `server/api/festival/sxsw/awards.get.ts` — API endpoint to fetch awards data for the 2026 SXSW Film & TV Festival.
   - Registers a GET route for /api/festival/sxsw/awards.
-- `server/api/festival/sxsw/films.get.ts` — API endpoint to retrieve a list of films for the 2026 SXSW Film & TV Festival, with optional filtering by TMDB/IMDB ID and sorting.
+- `server/api/festival/sxsw/films.get.ts` — API endpoint to fetch a list of films for the 2026 SXSW Film & TV Festival, supporting filtering by TMDB/IMDB ID, sorting by rating or title, and limiting results.
   - Registers a GET route for /api/festival/sxsw/films.
-- `server/api/festival/sxsw/schedule.get.ts` — API endpoint to retrieve the 2026 SXSW Film & TV Festival screening schedule, including film details, screening times, and venue information.
+- `server/api/festival/sxsw/schedule.get.ts` — API endpoint to retrieve the screening schedule for the 2026 SXSW Film & TV Festival, including film details and screening information.
   - Registers a GET route for /api/festival/sxsw/schedule.
-- `server/api/festival/tiff/awards.get.ts` — API endpoint to fetch award information for the 2026 Toronto International Film Festival (TIFF).
+- `server/api/festival/tiff/awards.get.ts` — API endpoint to fetch awards data for the 2026 Toronto International Film Festival (TIFF).
   - Registers a GET route for /api/festival/tiff/awards.
-- `server/api/festival/tiff/films.get.ts` — API endpoint to retrieve a list of films for the 2026 Toronto International Film Festival (TIFF), with optional filtering by TMDB/IMDB ID.
+- `server/api/festival/tiff/films.get.ts` — API endpoint to fetch a list of films for the 2026 Toronto International Film Festival (TIFF), supporting filtering by TMDB/IMDB ID and limiting results.
   - Registers a GET route for /api/festival/tiff/films.
-- `server/api/festival/tiff/schedule.get.ts` — API endpoint to retrieve the 2026 Toronto International Film Festival (TIFF) screening schedule, including film details, screening times, and venue information.
+- `server/api/festival/tiff/schedule.get.ts` — API endpoint to retrieve the screening schedule for the 2026 Toronto International Film Festival (TIFF), including film details and screening information.
   - Registers a GET route for /api/festival/tiff/schedule.
-- `server/api/festival/tribeca/awards.get.ts` — API endpoint to fetch award information for the 2026 Tribeca Festival.
+- `server/api/festival/tribeca/awards.get.ts` — API endpoint to fetch awards data for the 2026 Tribeca Festival.
   - Registers a GET route for /api/festival/tribeca/awards.
-- `server/api/festival/tribeca/films.get.ts` — API endpoint to retrieve a list of films for the 2026 Tribeca Festival, with optional filtering by TMDB/IMDB ID.
+- `server/api/festival/tribeca/films.get.ts` — API endpoint to fetch a list of films for the 2026 Tribeca Festival, supporting filtering by TMDB/IMDB ID and limiting results.
   - Registers a GET route for /api/festival/tribeca/films.
-- `server/api/festival/tribeca/schedule.get.ts` — API endpoint to retrieve the 2026 Tribeca Festival screening schedule, including film details, screening times, and venue information.
+- `server/api/festival/tribeca/schedule.get.ts` — API endpoint to retrieve the screening schedule for the 2026 Tribeca Festival, including film details and screening information.
   - Registers a GET route for /api/festival/tribeca/schedule.
-- `server/api/festival/venice/awards.get.ts` — API endpoint to fetch award information for the 2026 Venice Film Festival.
+- `server/api/festival/venice/awards.get.ts` — API endpoint to fetch awards data for the 2026 Venice Film Festival.
   - Registers a GET route for /api/festival/venice/awards.
-- `server/api/festival/venice/films.get.ts` — API endpoint to retrieve a list of films for the 2026 Venice Film Festival, with optional filtering by TMDB/IMDB ID.
-  - Registers a GET route for /api/festival/venice/films.
-- `server/api/festival/venice/schedule.get.ts` — Fetches the Venice Film Festival schedule for the current year (2026), including screening details and associated film information from the database.
-  - Registers GET /api/festival/venice/schedule
-- `server/api/hero.get.ts` — Retrieves a randomized selection of hero items (movies/TV shows) with rich metadata and festival status for display on the homepage carousel.
-  - Registers GET /api/hero
-- `server/api/imdb-rating/[id].get.ts` — Fetches the IMDb rating and vote count for a given media ID from a Turso database, returning 'found: false' if not present.
-  - Registers GET /api/imdb-rating/:id
-- `server/api/news.get.ts` — Retrieves a paginated list of news articles, supporting filtering by language, source, and a minimum 2-character search query.
-  - Registers GET /api/news
-- `server/api/noir-archive.get.ts` — Fetches a list of historical noir films and TV shows from a Turso database, ordered by release date.
-  - Registers GET /api/noir-archive
-- `server/api/progress/[userId]/[mediaType]/[mediaId].delete.ts` — Deletes a user's progress tracking entry for a specific media item (movie or episode).
-  - Registers DELETE /api/progress/:userId/:mediaType/:mediaId
-- `server/api/progress/[userId]/[mediaType]/[mediaId].get.ts` — Retrieves a user's progress tracking details (percentage, elapsed, total duration) for a specific media item (movie or episode).
-  - Registers GET /api/progress/:userId/:mediaType/:mediaId
-- `server/api/progress/[userId]/[mediaType]/[mediaId].put.ts` — Updates or inserts a user's progress tracking for a specific media item (movie or episode), including TV series specific fields.
-  - Registers PUT /api/progress/:userId/:mediaType/:mediaId
-- `server/api/progress/[userId]/active/[mediaType]/[mediaId].put.ts` — Updates the 'manually_active' flag for a user's progress tracking entry for a specific media item.
-  - Registers PUT /api/progress/:userId/active/:mediaType/:mediaId
-- `server/api/progress/[userId]/batch.put.ts` — Performs a batch update of progress tracking for multiple episodes for a given user, setting a specified percentage.
-  - Registers PUT /api/progress/:userId/batch
-- `server/api/progress/[userId]/hydrated.get.ts` — Fetches a user's progress on movies and TV shows, hydrating the data with details from TMDB, and caches TMDB details to reduce API calls.
-- `server/api/progress/[userId]/index.get.ts` — Retrieves a user's progress tracking data, including media ID, type, percentages, and timestamps, ordered by the last update.
-  - Registers a GET route for '/api/progress/[userId]'.
-- `server/api/search-log.post.ts` — Logs user search queries to a database, optionally including origin IP and email for analytics, after sanitizing the query.
-  - Registers a POST route for '/api/search-log'.
-- `server/api/search/person.get.ts` — Searches for people on TMDB based on a provided query string and returns the results.
-  - Registers a GET route for '/api/search/person'.
-- `server/api/spotlight/[type].get.ts` — Retrieves curated spotlight content (movies or TV shows) from the database, enriching the data with parsed JSON fields.
-  - Registers a GET route for '/api/spotlight/[type]' where type is 'movies' or 'tv'.
+- `server/api/festival/venice/films.get.ts` — API endpoint to retrieve a list of films from the Venice Film Festival 2026, with optional filtering by TMDB or IMDb ID and limiting the number of results.
+- `server/api/festival/venice/schedule.get.ts` — API endpoint to retrieve the screening schedule for the Venice Film Festival 2026, joining film details with screening information.
+- `server/api/hero.get.ts` — API endpoint to fetch a randomized selection of hero items, enriching them with festival membership status and TV series details for display.
+- `server/api/imdb-rating/[id].get.ts` — API endpoint to fetch IMDb ratings and vote counts for a given media ID from a Turso database, with caching headers.
+- `server/api/news.get.ts` — API endpoint to retrieve curated news articles, supporting pagination, language filtering, source filtering, and search queries.
+- `server/api/noir-archive.get.ts` — API endpoint to fetch a list of noir archive items from a Turso database, ordered by release date.
+- `server/api/progress/[userId]/[mediaType]/[mediaId].delete.ts` — API endpoint to delete a user's progress tracking entry for a specific media item (movie or episode).
+- `server/api/progress/[userId]/[mediaType]/[mediaId].get.ts` — API endpoint to retrieve a user's progress tracking details for a specific media item (movie or episode).
+- `server/api/progress/[userId]/[mediaType]/[mediaId].put.ts` — API endpoint to create or update a user's progress tracking for a specific media item (movie or episode), including TV series details.
+- `server/api/progress/[userId]/active/[mediaType]/[mediaId].put.ts` — API endpoint to update the `manually_active` flag for a user's progress tracking entry for a specific media item.
+- `server/api/progress/[userId]/batch.put.ts` — Handles batch updates for user progress tracking, inserting or updating episode progress for a given user.
+  - Registers a PUT route at /api/progress/[userId]/batch
+- `server/api/progress/[userId]/hydrated.get.ts` — Fetches and hydrates user progress data with detailed movie and TV show information from TMDB, including caching mechanisms.
+  - Registers a GET route at /api/progress/[userId]/hydrated
+- `server/api/progress/[userId]/index.get.ts` — Retrieves a user's progress tracking data, either a count of tracked titles or a detailed list of progress entries, optionally filtered by TV show ID.
+  - Registers a GET route at /api/progress/[userId]
+- `server/api/search-log.post.ts` — Logs user search queries to a Turso database, optionally including analytics data like origin IP and user email.
+  - Registers a POST route at /api/search-log
+- `server/api/search/person.get.ts` — Searches for people on TMDB based on a provided query string.
+  - Registers a GET route at /api/search/person
+- `server/api/spotlight/[type].get.ts` — Retrieves curated spotlight content (movies or TV shows) from the database, transforming raw data into a structured format.
+  - Registers a GET route at /api/spotlight/[type]
 
 ### `server/middleware`
 
@@ -433,18 +418,18 @@
 
 ### `server/routes`
 
-- `server/routes/feed.get.ts` — Handles the GET request for the public RSS news feed, generating XML content using the buildNewsFeed utility and setting appropriate headers for caching and content type.
+- `server/routes/feed.get.ts` — Generates the canonical public RSS news feed for Cinemagoria in English, serving it at `/feed` with appropriate XML content type and caching headers.
   - exports: `default`
-  - Registers the route /feed for the English news feed.
-- `server/routes/sitemap-news.xml.ts` — Generates an XML sitemap for news articles by querying a Turso database for visible articles and formatting their slugs and publication dates into sitemap entries.
+  - Registers a GET route for `/feed`.
+- `server/routes/sitemap-news.xml.ts` — Generates an XML sitemap for news articles by querying a database, including alternate language links for English and Spanish versions.
   - exports: `default`
-  - Registers the route /sitemap-news.xml. Sets content-type to application/xml and cache-control headers.
-- `server/routes/sitemap-static.xml.ts` — Generates an XML sitemap containing static pages, genre pages, streaming provider pages, production company pages, and festival pages for the Cinemagoria website.
+  - Registers a GET route for `/sitemap-news.xml`.
+- `server/routes/sitemap-static.xml.ts` — Generates an XML sitemap for static pages, genre pages, streaming provider pages, production company pages, and festival pages.
   - exports: `default`
-  - Registers the route /sitemap-static.xml. Sets content-type to application/xml and cache-control headers.
-- `server/routes/sitemap.xml.ts` — Generates the main sitemap index XML file, referencing the static and news sitemaps, while explicitly excluding dynamic sitemaps for movies, TV, and persons.
+  - Registers a GET route for `/sitemap-static.xml`.
+- `server/routes/sitemap.xml.ts` — Generates the main sitemap index XML file, referencing the static and news sitemaps, while explicitly excluding dynamic TMDB-derived content.
   - exports: `default`
-  - Registers the route /sitemap.xml. Excludes dynamic sitemaps to optimize Google's crawl budget for unique content.
+  - Registers a GET route for `/sitemap.xml`.
 
 ### `server/types`
 
@@ -453,18 +438,22 @@
 
 ### `server/utils`
 
-- `server/utils/db.ts` — Provides utility functions for connecting to a Turso database and executing queries with a timeout, ensuring database configuration is present.
+- `server/utils/db.ts` — Provides utility functions for connecting to a Turso database and executing queries with built-in timeout handling.
   - exports: `useDb`, `dbExecute`
-- `server/utils/rss-feed.ts` — Constructs an RSS news feed, supporting both English and Spanish languages, by querying a database and formatting the results with Markdown and oEmbed data.
+- `server/utils/rss-feed.ts` — Constructs an RSS news feed from database content, handling localization, Markdown rendering, and embedding Vimeo trailers.
   - exports: `buildNewsFeed`
-- `server/utils/vimeo-oembed.ts` — Fetches and caches oEmbed metadata for Vimeo videos, including thumbnail URLs, to avoid repeated API requests and provide a deterministic thumbnail path.
+  - This file is designed to be byte-identical across deployments for repo-sync tooling.
+- `server/utils/vimeo-oembed.ts` — Provides functions to fetch and cache oEmbed metadata for Vimeo videos, including thumbnail URLs, used by RSS feeds and news pages.
   - exports: `getVimeoOembed`, `getVimeoThumb`
-- `server/utils/festivalAwards.ts` — Fetches festival award data from the database for a given festival slug, supporting English and Spanish locales with fallback text.
+  - This file is designed to be byte-identical across deployments for repo-sync tooling.
+- `server/utils/festivalAwards.ts` — Fetches festival award data from the database for a given festival slug, supporting English and Spanish locales with fallback logic.
   - exports: `fetchFestivalAwards`
-- `server/utils/festivals.ts` — Provides mappings between festival slugs and names, and a function to retrieve festival participation status for a batch of TMDb IDs.
+- `server/utils/festivals.ts` — Manages canonical festival name-to-slug mappings and retrieves festival participation status for a batch of TMDb IDs from the database.
   - exports: `FESTIVAL_NAME_BY_SLUG`, `NAME_TO_SLUG`, `getFestivalStatusByTmdbId`
-- `server/utils/sitemap-helpers.ts` — Provides utilities for fetching movie/TV show IDs from TMDb across multiple pages and generating an XML sitemap from a list of IDs.
+- `server/utils/sitemap-helpers.ts` — Provides utilities for fetching TMDb item IDs across multiple pages and generating an XML sitemap string.
   - exports: `fetchTmdbPages`, `buildSitemapXml`
+- `server/utils/tvDetails.ts` — Fetches and caches TV show details from TMDb, providing a minimal, structured representation of TV series data including seasons and episodes.
+  - exports: `pickTvDetails`, `hasTvSeasonBreakdown`, `loadTvDetailsCached`
 
 ### `services`
 
@@ -488,28 +477,33 @@
 
 ### `utils`
 
-- `utils/api.js` — Provides an Axios-like API client for interacting with TMDB and internal APIs, including methods for data fetching, enrichment, and managing excluded movie/TV IDs.
+- `utils/api.js` — Provides utility functions for interacting with external APIs like TMDb and Trakt, handling API requests, image URLs, and data enrichment.
   - exports: `apiImgUrl`, `EXCLUDED_MOVIE_IDS`, `EXCLUDED_TV_IDS`, `getHeroEnrichment`, `getNoirEnrichment`, `getCustomEnrichment`, `resolveItemPoster`, `languages`, `getListItem`, `getIMDbRatingFromDB`, `getMovies`
-- `utils/categoryLabels.js` — Defines and provides utility functions for retrieving human-readable display labels for editorial content categories based on their canonical database tokens.
+- `utils/categoryLabels.js` — Defines English display labels for editorial taxonomy categories and provides a function to retrieve a label given a category token.
   - exports: `CATEGORY_LABELS`, `categoryLabel`
-- `utils/countries.js` — Exports a comprehensive list of countries, each with a two-letter ISO 3166-1 alpha-2 code and its full name.
+- `utils/countries.js` — Provides a list of countries with their ISO 3166-1 alpha-2 codes and names.
   - exports: `countries`
-- `utils/helpers.js` — Provides utility functions for formatting dates, handling image loading errors by falling back to alternative sources or placeholders, and determining a movie's release status context.
+- `utils/discover.js` — Defines various constants and lists used for content discovery, including movie and TV genres, networks, sorting options, and curated rows.
+  - exports: `MOVIE_GENRES`, `TV_GENRES`, `DISCOVER_NETWORKS`, `DISCOVER_SORTS`, `DEFAULT_SORT`, `DEFAULT_MIN_VOTES`, `DISCOVER_LANGUAGES`, `MIN_VOTE_OPTIONS`, `FORMAT_OPTIONS`, `GENRE_TILES`, `CURATED_ROWS`, `DISCOVER_TYPES`
+- `utils/helpers.js` — Provides general utility functions for formatting dates, handling image loading errors, and determining movie release status context.
   - exports: `formatDate`, `handleImageError`, `getReleaseStatusContext`
-- `utils/itemMapper.js` — Maps a raw item object (e.g., from an external API) to a standardized payload format suitable for database storage, inferring missing fields where possible.
+- `utils/itemMapper.js` — Maps an item object to a database-friendly payload, extracting and transforming relevant properties like ID, type, name, poster, and genre.
   - exports: `mapItemToDbPayload`
-- `utils/membershipStore.js` — Manages a session-wide cache for user membership data (watchlist and custom lists) to reduce API requests, with mechanisms for invalidation and coalescing.
+- `utils/membershipStore.js` — Manages a session-wide cache for user membership data (watchlist and custom lists) to reduce API requests and improve performance.
   - exports: `invalidateMembershipCache`, `getMembership`
-- `utils/musicbrainz.js` — Provides functions to interact with the MusicBrainz API for searching soundtracks by query and year, retrieving album tracks for a given release group, and generating MusicBrainz URLs.
+  - Coalesces multiple invalidation requests into a single cache clear and refetch.
+- `utils/musicbrainz.js` — Provides functions to search for soundtracks and retrieve album tracks using the MusicBrainz API.
   - exports: `searchSoundtracks`, `getAlbumTracks`, `getMusicBrainzUrl`
-- `utils/newsSources.js` — Defines lists of supported English news sources and their corresponding URLs for articles.
+- `utils/newsSources.js` — Defines lists of English news sources and their corresponding URLs.
   - exports: `SOURCES`, `SOURCE_URLS`
-- `utils/relatedFooter.js` — Provides utilities to strip 'Related Articles' footers from article body content, supporting both Markdown and legacy HTML formats, and to extract related article slugs.
+- `utils/relatedFooter.js` — Provides utilities to strip 'Related Articles' footers from article bodies and extract slugs from related article links.
   - exports: `stripRelatedFooter`, `extractRelatedSlugs`
-- `utils/resolvePhase.js` — A deprecated, intentionally empty file that previously contained logic for resolving content phases, now handled by a backend cron job.
-  - DEPRECATED: Do not use. This file is intentionally left empty and will be removed.
-- `utils/tvTrailer.js` — Provides functions for resolving the best and most relevant trailer for a TV series, prioritizing the latest season's trailers over series-level videos.
+  - Handles both Markdown and legacy HTML formats for related article footers.
+- `utils/resolvePhase.js` — An intentionally empty file, marked as deprecated, that was previously used for phase resolution logic.
+  - This file is deprecated and will be removed; it should not be used.
+- `utils/tvTrailer.js` — Provides functions to resolve the best and most recent playable trailer for a TV series, prioritizing season-specific trailers.
   - exports: `TV_TRAILER_MAX_SEASON_PROBES`, `TV_TRAILER_MAX_PLAYABILITY_CHECKS`, `tvVideoClass`, `rankTvVideo`, `tvVideoGroup`, `isUsableSeasonTrailer`, `pickBestTvVideo`, `resolveTvTrailer`
+  - Prioritizes trailers from the latest seasons over series-level videos, which are often outdated.
 
 ## Dependency Edges
 
@@ -519,12 +513,12 @@
 
 ## External Packages (imported in code)
 
-- `~` (438 imports)
-- `~~` (64 imports)
+- `~` (449 imports)
+- `~~` (65 imports)
 - `h3` (58 imports)
-- `vue` (46 imports)
+- `vue` (51 imports)
 - `@/components` (27 imports)
-- `@libsql/client` (16 imports)
+- `@libsql/client` (17 imports)
 - `vue-router` (9 imports)
 - `@/utils` (4 imports)
 - `fs` (4 imports)
