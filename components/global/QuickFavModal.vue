@@ -4,7 +4,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h3>¿Eliminar de Mi Lista?</h3>
-          <button class="close-btn" @click="close">×</button>
+          <button class="close-btn" @click="close" aria-label="Close"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>
         <div class="modal-body">
           <p>¿Estás seguro de que deseas eliminar <strong>{{ itemName }}</strong> de tu lista?</p>
@@ -140,17 +140,25 @@ export default {
   }
 
   .close-btn {
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 1.5rem;
+  flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(139, 233, 253, 0.08);
+    border: 1px solid rgba(139, 233, 253, 0.22);
+    color: #8BE9FD;
     cursor: pointer;
-    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
     padding: 0;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-    
-    &:hover { opacity: 1; color: #8BE9FD; }
+
+    &:hover {
+  background: rgba(139, 233, 253, 0.18);
+      border-color: rgba(139, 233, 253, 0.5);
+      color: #fff;
+    }
   }
 }
 

@@ -7,9 +7,7 @@
              <h2 class="title-primary">{{ modalTitle }}</h2>
              <p v-if="modalSubtitle" :class="$style.subtitle">{{ modalSubtitle }}</p>
           </div>
-          <button @click="close" :class="$style.closeButton">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
-          </button>
+          <button @click="close" :class="$style.closeButton" aria-label="Close"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>
 
         <div v-if="loading" :class="$style.loader">
@@ -685,18 +683,24 @@ export default {
   }
 
 .closeButton {
-  background: none;
-  border: none;
-  color: #fff;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(139, 233, 253, 0.08);
+  border: 1px solid rgba(139, 233, 253, 0.22);
+  color: #8BE9FD;
   cursor: pointer;
-  padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.3s ease;
+  transition: all 0.2s ease;
+  padding: 0;
 
   &:hover {
-    color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.18);
+    border-color: rgba(139, 233, 253, 0.5);
+    color: #fff;
   }
 }
 
