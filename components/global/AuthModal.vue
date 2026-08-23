@@ -1,9 +1,12 @@
 <template>
   <div v-if="isOpen" class="auth-modal-overlay">
     <div class="auth-modal-container">
+      <button @click="closeModal" class="close-button" aria-label="Close">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
       <div class="auth-modal-header">
         <h2>{{ isCommunityGate ? 'Join the community.' : 'Sign in to continue' }}</h2>
-        <button @click="closeModal" class="close-button">×</button>
       </div>
 
       <div class="auth-modal-content">
@@ -423,14 +426,14 @@ export default {
 <style scoped>
 .auth-modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.85);
+  inset: 0;
+  background: rgba(3, 4, 6, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px;
   z-index: 999999999999;
   animation: fadeIn 0.12s ease;
 }
@@ -441,17 +444,39 @@ export default {
 }
 
 .auth-modal-container {
-  width: 90%;
+  position: relative;
+  width: 100%;
   max-width: 500px;
-  max-height: 90vh;
+  max-height: calc(100vh - 40px);
   overflow-y: auto;
-  background: linear-gradient(135deg, rgba(6, 47, 64, 0.98) 0%, rgba(10, 30, 40, 0.99) 50%);
-  box-shadow: 0 12px 40px 0 rgba(31, 104, 135, 0.6);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border-radius: 16px;
-  border: 1px solid rgba(127, 219, 241, 0.3);
-  animation: slideUp 0.12s ease;
+  background: rgba(3, 4, 6, 0.85);
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(31, 84, 103, 0.18), transparent 35%),
+    radial-gradient(circle at 85% 80%, rgba(139, 233, 253, 0.08), transparent 30%);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(31, 84, 103, 0.5),
+    inset 0 0 24px rgba(139, 233, 253, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+.auth-modal-container::before {
+  content: '';
+  position: sticky;
+  top: 0;
+  display: block;
+  height: 3px;
+  margin-bottom: -3px;
+  background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+  opacity: 0.8;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  pointer-events: none;
+  z-index: 3;
 }
 
 @keyframes slideUp {
@@ -460,42 +485,43 @@ export default {
 }
 
 .auth-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 25px;
-  border-bottom: 1px solid rgba(127, 219, 241, 0.2);
-  background: rgba(0, 0, 0, 0.2);
+  padding: 30px 60px 18px 28px;
 }
 
 .auth-modal-header h2 {
-  color: #7FDBF1;
+  font-family: var(--font-display);
+  color: #8BE9FD;
   margin: 0;
-  font-size: 20px;
+  font-size: 2.2rem;
   font-weight: 600;
-  letter-spacing: 0.5px;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  text-shadow: 0 0 24px rgba(139, 233, 253, 0.18);
 }
 
 .close-button {
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 32px;
-  cursor: pointer;
-  padding: 0;
-  line-height: 1;
-  transition: all 0.2s ease;
+  position: absolute;
+  top: 14px;
+  right: 14px;
   width: 32px;
   height: 32px;
+  border-radius: 8px;
+  background: rgba(139, 233, 253, 0.08);
+  border: 1px solid rgba(139, 233, 253, 0.22);
+  color: #8BE9FD;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  transition: all 0.2s ease;
+  z-index: 4;
+  padding: 0;
 }
 
 .close-button:hover {
+  background: rgba(139, 233, 253, 0.18);
+  border-color: rgba(139, 233, 253, 0.5);
   color: #fff;
-  background: rgba(255, 255, 255, 0.1);
 }
 
 .auth-modal-content {
