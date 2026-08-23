@@ -2155,20 +2155,24 @@ export default {
 }
 
 .card__stars {
-  width: 7.3rem;
+  width: 6.4rem;
   height: 1.2rem;
-  background-image: url('@/assets/images/stars.png');
-  background-repeat: no-repeat;
-  background-size: auto 100%;
+  background-color: rgba(139, 233, 253, 0.18);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E");
+  -webkit-mask-size: 20% 100%;
+  -webkit-mask-repeat: repeat-x;
+  -webkit-mask-position: 0 0;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/%3E%3C/svg%3E");
+  mask-size: 20% 100%;
+  mask-repeat: repeat-x;
+  mask-position: 0 0;
   position: relative;
-  margin-right: 0.5rem; 
+  margin-right: 0.5rem;
 }
 
 .card__stars > div {
   height: 100%;
-  background-image: url('@/assets/images/stars-filled.png');
-  background-repeat: no-repeat;
-  background-size: auto 100%;
+  background-color: #8BE9FD;
   position: absolute;
   top: 0;
   left: 0;
