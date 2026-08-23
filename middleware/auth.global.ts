@@ -21,6 +21,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
         '/lists',
         '/watchlist',
         '/awards',
+        '/calendar',
         '/settings',
         '/notifications',
         '/production-companies',

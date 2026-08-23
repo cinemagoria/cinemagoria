@@ -6,6 +6,11 @@
       </button>
 
       <div :class="$style.body">
+        <p :class="$style.notice">
+          <span>Acceso anticipado</span>
+          Este calendario se encuentra en fase de pruebas. El catálogo del que parte es todavía reducido, y tanto su cobertura como su funcionamiento irán cambiando conforme avance su desarrollo.
+        </p>
+
         <header :class="$style.intro">
           <h3 id="cal-scope-title">Qué títulos incluye este calendario</h3>
           <p>Este calendario no reúne todos los estrenos del mundo. Incluye únicamente las películas y series que forman parte de la cobertura del sitio.</p>
@@ -150,6 +155,29 @@ defineEmits(['close'])
   }
 
   p { margin: 0; color: #cfd6dc; font-size: 1.45rem; line-height: 1.6; }
+}
+
+.notice {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin: 0 0 2.2rem;
+  padding: 1.4rem 1.6rem;
+  border-radius: 14px;
+  border: 1px solid rgba(251, 191, 119, 0.28);
+  background: linear-gradient(90deg, rgba(251, 191, 119, 0.12), rgba(251, 191, 119, 0.03));
+  color: #e4d5c2;
+  font-size: 1.3rem;
+  line-height: 1.55;
+
+  span {
+    align-self: flex-start;
+    color: #FBBF77;
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
 }
 
 .block {
