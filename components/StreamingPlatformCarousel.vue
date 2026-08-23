@@ -63,6 +63,7 @@
 <script>
 import carousel from '~/mixins/Carousel';
 import { apiImgUrl } from '~/utils/api';
+import { STREAMING_CUSTOM_LOGOS } from '~/utils/constants';
 
 const AUTOPLAY_INTERVAL = 10000;
 
@@ -86,17 +87,7 @@ export default {
     return {
       apiImgUrl,
       autoplayInterval: null,
-      customLogos: {
-        11: '/logos/streaming/mubi-logo.svg',
-        15: '/logos/streaming/hulu-logo.svg',
-        350: '/logos/streaming/apple-tv-logo.svg',
-        8: '/logos/streaming/netflix-logo.png',
-        9: '/logos/streaming/amazon-prime-video-logo.png',
-        1899: '/logos/streaming/hbo-max-logo.svg',
-        337: '/logos/streaming/disney-logo.png',
-        386: '/logos/streaming/peacock-logo.png',
-        99: '/logos/streaming/shudder-logo.svg',
-      },
+      customLogos: STREAMING_CUSTOM_LOGOS,
     };
   },
 
@@ -205,7 +196,9 @@ export default {
   overflow: hidden;
   background: #333;
   text-decoration: none;
-  transition: transform 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.3s ease;
 
   &::before {
     content: '';
@@ -218,14 +211,7 @@ export default {
     opacity: 0.9;
     z-index: 3;
     pointer-events: none;
-  }
-
-  &:hover {
-    transform: scale(1.05);
-
-    &::before {
-      opacity: 1;
-    }
+    transition: opacity 0.3s ease;
   }
 }
 
@@ -236,7 +222,7 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 1rem;
-  background: #8BE9FD;
+  background: var(--logo-surface);
 }
 
 .sp-logo__img {
@@ -246,6 +232,7 @@ export default {
   height: auto;
   object-fit: contain;
   filter: brightness(0);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
   &--large {
     max-width: 220px;
@@ -254,10 +241,22 @@ export default {
 }
 
 .sp-name {
-  color: #fff;
+  color: #03242C;
   font-weight: 700;
   font-family: var(--font-display);
   font-size: 1rem;
   text-align: center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sp-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 34px -14px rgba(139, 233, 253, 0.6);
+    filter: brightness(1.06) saturate(1.08);
+  }
+
+  .sp-card:hover::before { opacity: 1; }
+
+  .sp-card:hover .sp-logo__img { transform: scale(1.06); }
 }
 </style>

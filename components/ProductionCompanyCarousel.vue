@@ -193,9 +193,11 @@ export default {
   height: 130px;
   border-radius: 12px;
   overflow: hidden;
-  background: #8BE9FD;
+  background: var(--logo-surface);
   text-decoration: none;
-  transition: transform 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.3s ease;
 
   &::before {
     content: '';
@@ -208,14 +210,7 @@ export default {
     opacity: 0.9;
     z-index: 3;
     pointer-events: none;
-  }
-
-  &:hover {
-    transform: scale(1.03);
-
-    &::before {
-      opacity: 1;
-    }
+    transition: opacity 0.3s ease;
   }
 }
 
@@ -233,6 +228,7 @@ export default {
   max-height: 80%;
   object-fit: contain;
   filter: brightness(0);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .pc-name {
@@ -241,5 +237,17 @@ export default {
   font-family: var(--font-display);
   font-size: 1.1rem;
   text-align: center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pc-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 34px -14px rgba(139, 233, 253, 0.6);
+    filter: brightness(1.06) saturate(1.08);
+  }
+
+  .pc-card:hover::before { opacity: 1; }
+
+  .pc-card:hover .pc-logo__img { transform: scale(1.06); }
 }
 </style>

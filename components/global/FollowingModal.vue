@@ -10,7 +10,10 @@
             </p>
           </div>
           <button @click="close" :class="$style.closeButton">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
           </button>
         </div>
 
@@ -42,10 +45,10 @@
           </button>
         </div>
 
-        <div class="undo-bar-container">
-          <div v-if="undoItem" :class="$style.undoBar" style="padding: 10px;">
+        <div v-if="undoItem" :class="$style.undoBarContainer">
+          <div :class="$style.undoBar">
             <span>{{ getUndoText() }}</span>
-            <button @click="handleUndo" :class="$style.undoButton">DESHACER</button>
+            <button @click="handleUndo" :class="$style.undoButton">Deshacer</button>
           </div>
         </div>
 
@@ -103,7 +106,9 @@
                       @error="onImageError($event, `person-${person.person_id}`)"
                     >
                     <div v-else :class="$style.noImage">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#000" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4m0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4"/></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="black">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                      </svg>
                     </div>
                   </div>
                   <div :class="$style.cardContent">
@@ -155,7 +160,9 @@
                     @error="onImageError($event, `tv-${show.tv_id}`)"
                   >
                   <div v-else :class="$style.noImage">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#000" viewBox="0 0 24 24"><path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8a2 2 0 0 0-2-2m0 14H3V8h18zM9 10v8l7-4z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="black">
+                      <path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3c-1.1 0-2 .89-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.11-.9-2-2-2zm0 14H3V8h18v12zM9 10v8l7-4z"/>
+                    </svg>
                   </div>
                 </div>
                 <div :class="$style.cardContent">
@@ -244,16 +251,19 @@
                       <path d="M14 3h7v7"/><path d="M10 14L21 3"/><path d="M21 14v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h6"/>
                     </svg>
                   </button>
-                  <div v-show="service.logo_path && !imageLoadStates[`streaming-${service.provider_id}`]" :class="$style.posterLoader">
+                  <div v-show="streamingLogo(service) && !imageLoadStates[`streaming-${service.provider_id}`]" :class="$style.posterLoader">
                     <Loader :size="44" color="#000" />
                   </div>
                   <img
-                    v-if="service.logo_path"
-                    :src="`https://image.tmdb.org/t/p/w300${service.logo_path}`"
+                    v-if="streamingLogo(service)"
+                    :src="streamingLogo(service)"
                     :alt="service.provider_name"
                     loading="lazy"
                     decoding="async"
-                    :class="[$style.companyLogo, { [$style.loaded]: imageLoadStates[`streaming-${service.provider_id}`] }]"
+                    :class="[
+                      isWordmarkLogo(service) ? $style.companyLogo : $style.providerIcon,
+                      { [$style.loaded]: imageLoadStates[`streaming-${service.provider_id}`] }
+                    ]"
                     @load="handleImageLoad(`streaming-${service.provider_id}`)"
                     @error="onImageError($event, `streaming-${service.provider_id}`)"
                   >
@@ -359,7 +369,7 @@ import {
   unfollowProductionCompany, 
   followProductionCompany 
 } from '~/utils/api';
-import { STREAMING_PROVIDERS } from '~/utils/constants';
+import { STREAMING_PROVIDERS, STREAMING_CUSTOM_LOGOS } from '~/utils/constants';
 import Loader from '@/components/Loader';
 
 export default {
@@ -459,6 +469,7 @@ export default {
       if (this.undoItem.type === 'tv') return `${this.undoItem.tv_name} dejado de seguir`;
       return `${this.undoItem.name} dejado de seguir`;
     },
+
     show() {
       this.isVisible = true;
       this.userSubTab = 'following';
@@ -476,6 +487,7 @@ export default {
       if (!userEmail) return;
 
       this.loading = true;
+      this.followersLoaded = false;
       try {
         const [peopleResponse, tvResponse, streamingResponse] = await Promise.all([
           fetch(`${this.followsApiUrl}/follows/list?user_email=${encodeURIComponent(userEmail)}`),
@@ -498,10 +510,12 @@ export default {
           const data = await tvResponse.json();
           this.tvShows = data.tv_follows || [];
         }
+
         if (streamingResponse.ok) {
-          const data = await streamingResponse.json();
-          this.streamingServices = data.streaming_follows || [];
+           const data = await streamingResponse.json();
+           this.streamingServices = data.streaming_follows || [];
         }
+
         this.companies = await getFollowedProductionCompanies(userEmail);
 
         try {
@@ -576,46 +590,6 @@ export default {
       }
     },
 
-    async unfollowStreaming(service) {
-      const userEmail = localStorage.getItem('email');
-      if (!userEmail) return;
-
-      this.streamingServices = this.streamingServices.filter(s => s.provider_id !== service.provider_id);
-
-      this.undoItem = { ...service, type: 'streaming' };
-      this.startUndoTimer();
-
-      try {
-        await fetch(`${this.followsApiUrl}/streaming-follows/remove?user_email=${encodeURIComponent(userEmail)}&provider_id=${service.provider_id}`, {
-          method: 'DELETE'
-        });
-        this.$emit('unfollow-updated');
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new Event('following-updated'));
-        }
-      } catch (error) {
-        console.error('Error unfollowing streaming service:', error);
-        this.streamingServices.push(service);
-      }
-    },
-
-    async unfollowUser(user) {
-      const userEmail = localStorage.getItem('email');
-      if (!userEmail) return;
-      this.userFollows = this.userFollows.filter(u => u.email !== user.email);
-      try {
-        await fetch(
-          `${this.followsApiUrl}/user-follows/remove?follower_email=${encodeURIComponent(userEmail)}&followed_email=${encodeURIComponent(user.email)}`,
-          { method: 'DELETE' }
-        );
-        this.$emit('unfollow-updated');
-        if (typeof window !== 'undefined') window.dispatchEvent(new Event('following-updated'));
-      } catch (error) {
-        console.error('Error dejando de seguir usuario:', error);
-        this.userFollows.push(user);
-      }
-    },
-
     async unfollowTv(show) {
       const userEmail = localStorage.getItem('email');
       if (!userEmail) return;
@@ -657,6 +631,46 @@ export default {
       } catch (error) {
         console.error('Error unfollowing company:', error);
         this.companies.push(company);
+      }
+    },
+
+    async unfollowStreaming(service) {
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail) return;
+
+      this.streamingServices = this.streamingServices.filter(s => s.provider_id !== service.provider_id);
+
+      this.undoItem = { ...service, type: 'streaming' };
+      this.startUndoTimer();
+
+      try {
+        await fetch(`${this.followsApiUrl}/streaming-follows/remove?user_email=${encodeURIComponent(userEmail)}&provider_id=${service.provider_id}`, {
+          method: 'DELETE'
+        });
+        this.$emit('unfollow-updated');
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('following-updated'));
+        }
+      } catch (error) {
+        console.error('Error unfollowing streaming service:', error);
+        this.streamingServices.push(service);
+      }
+    },
+
+    async unfollowUser(user) {
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail) return;
+      this.userFollows = this.userFollows.filter(u => u.email !== user.email);
+      try {
+        await fetch(
+          `${this.followsApiUrl}/user-follows/remove?follower_email=${encodeURIComponent(userEmail)}&followed_email=${encodeURIComponent(user.email)}`,
+          { method: 'DELETE' }
+        );
+        this.$emit('unfollow-updated');
+        if (typeof window !== 'undefined') window.dispatchEvent(new Event('following-updated'));
+      } catch (error) {
+        console.error('Error dejando de seguir usuario:', error);
+        this.userFollows.push(user);
       }
     },
 
@@ -717,7 +731,7 @@ export default {
             this.undoItem.origin_country || null
           );
           this.companies.push(this.undoItem);
-          } else if (this.undoItem.type === 'streaming') {
+        } else if (this.undoItem.type === 'streaming') {
           const response = await fetch(`${this.followsApiUrl}/streaming-follows/add`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -774,6 +788,16 @@ export default {
       this.$router.push(`/tv/${tvId}`);
     },
 
+    streamingLogo(service) {
+      const custom = STREAMING_CUSTOM_LOGOS[service.provider_id];
+      if (custom) return custom;
+      return service.logo_path ? `https://image.tmdb.org/t/p/w300${service.logo_path}` : null;
+    },
+
+    isWordmarkLogo(service) {
+      return Boolean(STREAMING_CUSTOM_LOGOS[service.provider_id]);
+    },
+
     streamingPath(providerId) {
       const providerConst = STREAMING_PROVIDERS.find(p => p.id === providerId);
       const slug = (providerConst && providerConst.slug) ? providerConst.slug : providerId;
@@ -808,7 +832,9 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(1, 4, 6, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -817,14 +843,19 @@ export default {
 }
 
 .modalContent {
-  background: linear-gradient(135deg, rgba(6, 47, 64, 0.98) 0%, rgba(10, 30, 40, 0.99) 100%);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 28' width='56' height='28'%3E%3Cpath fill='%237ed2e3' fill-opacity='0.1' d='M56 26v2h-7.75c2.3-1.27 4.94-2 7.75-2zm-26 2a2 2 0 1 0-4 0h-4.09A25.98 25.98 0 0 0 0 16v-2c.67 0 1.34.02 2 .07V14a2 2 0 0 0-2-2v-2a4 4 0 0 1 3.98 3.6 28.09 28.09 0 0 1 2.8-3.86A8 8 0 0 0 0 6V4a9.99 9.99 0 0 1 8.17 4.23c.94-.95 1.96-1.83 3.03-2.63A13.98 13.98 0 0 0 0 0h7.75c2 1.1 3.73 2.63 5.1 4.45 1.12-.72 2.3-1.37 3.53-1.93A20.1 20.1 0 0 0 14.28 0h2.7c.45.56.88 1.14 1.29 1.74 1.3-.48 2.63-.87 4-1.15-.11-.2-.23-.4-.36-.59H26v.07a28.4 28.4 0 0 1 4 0V0h4.09l-.37.59c1.38.28 2.72.67 4.01 1.15.4-.6.84-1.18 1.3-1.74h2.69a20.1 20.1 0 0 0-2.1 2.52c1.23.56 2.41 1.2 3.54 1.93A16.08 16.08 0 0 1 48.25 0H56c-4.58 0-8.65 2.2-11.2 5.6 1.07.8 2.09 1.68 3.03 2.63A9.99 9.99 0 0 1 56 4v2a8 8 0 0 0-6.77 3.74c1.03 1.2 1.97 2.5 2.79 3.86A4 4 0 0 1 56 10v2a2 2 0 0 0-2 2.07 28.4 28.4 0 0 1 2-.07v2c-9.2 0-17.3 4.78-21.91 12H30zM7.75 28H0v-2c2.81 0 5.46.73 7.75 2zM56 20v2c-5.6 0-10.65 2.3-14.28 6h-2.7c4.04-4.89 10.15-8 16.98-8zm-39.03 8h-2.69C10.65 24.3 5.6 22 0 22v-2c6.83 0 12.94 3.11 16.97 8zm15.01-.4a28.09 28.09 0 0 1 2.8-3.86 8 8 0 0 0-13.55 0c1.03 1.2 1.97 2.5 2.79 3.86a4 4 0 0 1 7.96 0zm14.29-11.86c1.3-.48 2.63-.87 4-1.15a25.99 25.99 0 0 0-44.55 0c1.38.28 2.72.67 4.01 1.15a21.98 21.98 0 0 1 36.54 0zm-5.43 2.71c1.13-.72 2.3-1.37 3.54-1.93a19.98 19.98 0 0 0-32.76 0c1.23.56 2.41 1.2 3.54 1.93a15.98 15.98 0 0 1 25.68 0zm-4.67 3.78c.94-.95 1.96-1.83 3.03-2.63a13.98 13.98 0 0 0-22.4 0c1.07.8 2.09 1.68 3.03 2.63a9.99 9.99 0 0 1 16.34 0z'%3E%3C/path%3E%3C/svg%3E");
-  box-shadow: 0 12px 40px 0 rgba(31, 104, 135, 0.6);
-  border-radius: 16px;
-  border: 1px solid rgba(127, 219, 241, 0.3);
+  background-color: #040E13;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 28' width='56' height='28'%3E%3Cpath fill='%237ed2e3' fill-opacity='0.1' d='M56 26v2h-7.75c2.3-1.27 4.94-2 7.75-2zm-26 2a2 2 0 1 0-4 0h-4.09A25.98 25.98 0 0 0 0 16v-2c.67 0 1.34.02 2 .07V14a2 2 0 0 0-2-2v-2a4 4 0 0 1 3.98 3.6 28.09 28.09 0 0 1 2.8-3.86A8 8 0 0 0 0 6V4a9.99 9.99 0 0 1 8.17 4.23c.94-.95 1.96-1.83 3.03-2.63A13.98 13.98 0 0 0 0 0h7.75c2 1.1 3.73 2.63 5.1 4.45 1.12-.72 2.3-1.37 3.53-1.93A20.1 20.1 0 0 0 14.28 0h2.7c.45.56.88 1.14 1.29 1.74 1.3-.48 2.63-.87 4-1.15-.11-.2-.23-.4-.36-.59H26v.07a28.4 28.4 0 0 1 4 0V0h4.09l-.37.59c1.38.28 2.72.67 4.01 1.15.4-.6.84-1.18 1.3-1.74h2.69a20.1 20.1 0 0 0-2.1 2.52c1.23.56 2.41 1.2 3.54 1.93A16.08 16.08 0 0 1 48.25 0H56c-4.58 0-8.65 2.2-11.2 5.6 1.07.8 2.09 1.68 3.03 2.63A9.99 9.99 0 0 1 56 4v2a8 8 0 0 0-6.77 3.74c1.03 1.2 1.97 2.5 2.79 3.86A4 4 0 0 1 56 10v2a2 2 0 0 0-2 2.07 28.4 28.4 0 0 1 2-.07v2c-9.2 0-17.3 4.78-21.91 12H30zM7.75 28H0v-2c2.81 0 5.46.73 7.75 2zM56 20v2c-5.6 0-10.65 2.3-14.28 6h-2.7c4.04-4.89 10.15-8 16.98-8zm-39.03 8h-2.69C10.65 24.3 5.6 22 0 22v-2c6.83 0 12.94 3.11 16.97 8zm15.01-.4a28.09 28.09 0 0 1 2.8-3.86 8 8 0 0 0-13.55 0c1.03 1.2 1.97 2.5 2.79 3.86a4 4 0 0 1 7.96 0zm14.29-11.86c1.3-.48 2.63-.87 4-1.15a25.99 25.99 0 0 0-44.55 0c1.38.28 2.72.67 4.01 1.15a21.98 21.98 0 0 1 36.54 0zm-5.43 2.71c1.13-.72 2.3-1.37 3.54-1.93a19.98 19.98 0 0 0-32.76 0c1.23.56 2.41 1.2 3.54 1.93a15.98 15.98 0 0 1 25.68 0zm-4.67 3.78c.94-.95 1.96-1.83 3.03-2.63a13.98 13.98 0 0 0-22.4 0c1.07.8 2.09 1.68 3.03 2.63a9.99 9.99 0 0 1 16.34 0z'%3E%3C/path%3E%3C/svg%3E"),
+    radial-gradient(110% 80% at 8% 0%, rgba(31, 84, 103, 0.26), transparent 52%),
+    linear-gradient(150deg, #071820 0%, #040D12 58%, #02080B 100%);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(139, 233, 253, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  border: 1px solid rgba(139, 233, 253, 0.18);
   width: 100%;
   max-width: 1200px;
   max-height: 90vh;
+  min-height: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -833,8 +864,9 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  flex: 0 0 auto;
   padding: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(139, 233, 253, 0.12);
 
   h2 {
     font-size: 2.4rem;
@@ -875,92 +907,98 @@ export default {
 
 .tabs {
   display: flex;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.307);
-  text-align: center;
-  position: relative;
-  padding-left: 10px;
-  background: transparent;
-  padding: 0;
-  gap: 0;
+  flex: 0 0 auto;
+  gap: 0.4rem;
+  padding: 0 1.6rem;
+  border-bottom: 1px solid rgba(139, 233, 253, 0.12);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { display: none; }
 
   button {
-    flex: 1;
+    position: relative;
+    flex: 1 0 auto;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 1.4rem;
-    padding: 12px 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    position: relative;
-    text-align: center;
-    font-family: 'Ortica', 'Roboto', sans-serif;
-    font-weight: 300;
-
-    @media (max-width: 768px) {
-        font-size: 0.9rem;
-        font-weight: 200;
-        padding: 12px 4px;
-    }
-    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
     line-height: 1.2;
-    text-shadow: 
-        0 1px 2px rgba(255, 255, 255, 0.3),
-        0 2px 8px rgba(255, 255, 255, 0.2),
-        0 4px 16px rgba(139, 233, 253, 0.15);
+    padding: 1.5rem 1.2rem;
+    white-space: nowrap;
+    text-align: center;
+    cursor: pointer;
+    transition: color 0.2s ease;
 
-    &.active {
-      color: #8BE9FD;
-      background: transparent;
-      border-radius: 0;
-      border-bottom: none;
-    }
+    &.active { color: #8BE9FD; }
 
     &.active::after {
       content: '';
       position: absolute;
+      left: 1.2rem;
+      right: 1.2rem;
       bottom: -1px;
-      left: 0;
-      right: 0;
       height: 2px;
-      background: #8BE9FD;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #1F5467, #8BE9FD);
+      box-shadow: 0 0 12px rgba(139, 233, 253, 0.5);
     }
   }
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .tabs button:not(.active):hover { color: #fff; }
+}
+
+.undoBarContainer {
+  flex: 0 0 auto;
+  padding: 1.4rem 2rem 0;
+}
+
 .undoBar {
-  background: linear-gradient(90deg, rgba(139, 233, 253, 0.2) 0%, rgba(0, 136, 204, 0.2) 100%);
-  border-bottom: 2px solid #8BE9FD;
-  color: white;
-  padding: 1.2rem 3rem;
   display: flex;
-  position: relative;
-  top: 5px;
-  border-radius: 15px;;
   justify-content: space-between;
   align-items: center;
-  font-size: 1.4rem;
+  gap: 1.2rem;
+  padding: 1rem 1.2rem 1rem 1.8rem;
+  border-radius: 14px;
+  border: 1px solid rgba(139, 233, 253, 0.22);
+  background: linear-gradient(90deg, rgba(31, 84, 103, 0.55), rgba(139, 233, 253, 0.08));
+  color: #E8F6FA;
+  font-size: 1.35rem;
 }
 
 .undoButton {
-  background: #8BE9FD;
+  flex: 0 0 auto;
+  height: 3.2rem;
+  padding: 0 1.8rem;
   border: none;
-  color: #000;
-  padding: 0.6rem 1.6rem;
-  border-radius: 6px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #1F5467, #8BE9FD);
+  color: #03242C;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
 
-  &:hover {
-    background: #7DD4E8;
+@media (hover: hover) and (pointer: fine) {
+  .undoButton:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(139, 233, 253, 0.3);
+    box-shadow: 0 8px 20px -8px rgba(139, 233, 253, 0.8);
   }
 }
 
 .modalBody {
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
   padding: 2rem;
 }
@@ -999,24 +1037,44 @@ export default {
 }
 
 .companyLogo {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 8px;
-  background-color: #8BE9FD !important;
-  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
-  transform: translateY(-4px);
   opacity: 0;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.45s ease;
 }
 
 .companyLogo.loaded {
   opacity: 1;
 }
 
+.cardImage img.companyLogo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 14px;
+  background: transparent;
+  filter: brightness(0);
+}
+
+.providerIcon {
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.providerIcon.loaded {
+  opacity: 1;
+}
+
+.cardImage img.providerIcon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 16px;
+  background: transparent;
+  filter: none;
+}
+
 .cardImage {
   position: relative;
-  background: #8be8fd;
+  background: var(--logo-surface);
   border-radius: 10px;
   padding-top: 140%;
   cursor: pointer;
@@ -1068,13 +1126,6 @@ export default {
   }
 }
 
-.companyLogo {
-  object-fit: contain !important;
-  padding: 8px;
-  background-color: #8BE9FD !important;
-  opacity: 1 !important;
-}
-
 .noImage {
   position: absolute;
   top: 0;
@@ -1084,25 +1135,32 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #000;
+  color: #03242C;
   padding: 1rem;
   text-align: center;
 }
 
 .fallbackText {
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-weight: 800;
   font-size: 1.2rem;
-  line-height: 1.3;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-wrap: balance;
   word-break: break-word;
+  color: #03242C;
 }
 
 .cardContent {
-  padding: 0.4rem 0.5rem;
+  padding: 0.8rem 0.2rem 0;
 
   h4 {
-    font-size: 0.95rem;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
     color: #fff;
-    margin: 0 0 0.35rem 0;
+    margin: 0 0 0.7rem 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1111,40 +1169,81 @@ export default {
 }
 
 .status {
-  font-size: 0.85rem;
-  color: #8F989E;
-  margin: 0 0 0.35rem 0;
+  font-size: 1rem;
+  color: #80868b;
+  margin: -0.4rem 0 0.7rem;
   text-align: center;
+  letter-spacing: 0.03em;
 }
 
 .unfollowButton {
-  background: rgba(255, 0, 0, 0.2);
-  color: #fff;
-  border: 1px solid rgba(255, 0, 0, 0.4);
-  font-size: 10px;
-  font-weight: 600;
-  padding: 5px 0;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-radius: 24px;
-  width: 100%;
-  text-align: center;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  height: 2.8rem;
+  padding: 0 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  color: #ACAFB5;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 
-  &:hover {
-    background: rgba(255, 0, 0, 0.4);
-    border-color: rgba(255, 0, 0, 0.6);
-    transform: translateY(-1px);
-    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+  &::before {
+    content: '';
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 auto;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(255, 122, 122, 0.7);
+    outline-offset: 2px;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .unfollowButton:hover {
+    color: #FF8A8A;
+    background: rgba(255, 76, 76, 0.12);
+    border-color: rgba(255, 76, 76, 0.45);
+    box-shadow: 0 6px 18px -8px rgba(255, 76, 76, 0.6);
   }
 }
 .emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+  padding: 6rem 2rem;
   text-align: center;
-  padding: 4rem 2rem;
-  color: #d0d0d0;
-  font-size: 1.6rem;
+  color: #80868b;
+  font-size: 1.45rem;
+
+  p { margin: 0; }
+
+  &::before {
+    content: '';
+    width: 4.8rem;
+    height: 4.8rem;
+    border-radius: 50%;
+    border: 1px solid rgba(139, 233, 253, 0.24);
+    background:
+      rgba(139, 233, 253, 0.06)
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center / 2rem 2rem no-repeat;
+    box-shadow: 0 0 24px -8px rgba(139, 233, 253, 0.5);
+  }
 }
 
 .loader {
@@ -1167,10 +1266,6 @@ export default {
   justify-content: center;
   align-items: center;
   z-index: 10;
-}
-
-.undo-bar-container {
-padding: 1rem 2rem;
 }
 
 .modalWrapper {
@@ -1202,19 +1297,19 @@ padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex: 0 0 auto;
   padding: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(139, 233, 253, 0.12);
 
   h2 {
     font-size: 2.4rem;
-    color: #8BE9FD;
     margin: 0;
     flex: 1;
     text-align: center;
   }
 }
 
-.following-.title-primary {
+.title-primary {
   font-size: 2.4rem;
   color: #8BE9FD;
 }
@@ -1225,9 +1320,10 @@ padding: 1rem 2rem;
   position: relative;
 }
 
-
-
-.usersTab { padding: 0.5rem 0; }
+/* ── Users tab ──────────────────────────────────────────────────────────── */
+.usersTab {
+  padding: 0.5rem 0;
+}
 
 .subTabs {
   display: flex;
@@ -1259,13 +1355,25 @@ padding: 1rem 2rem;
   color: #8BE9FD;
 }
 
-.userList { display: flex; flex-direction: column; gap: 0; }
+
+.userList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
 .userRow {
-  display: flex; align-items: center; gap: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
   padding: 1rem 0;
   border-bottom: 1px solid rgba(255,255,255,0.06);
-  &:last-child { border-bottom: none; }
 
+  &:last-child {
+    border-bottom: none;
+  }
+
+  /* Fix for the unfollow button in this specific context */
   .unfollowButton {
     width: auto;
     min-width: 100px;
@@ -1273,16 +1381,39 @@ padding: 1rem 2rem;
     margin-left: auto;
   }
 }
+
 .userAvatar {
-  width: 44px; height: 44px; border-radius: 50%;
-  object-fit: cover; flex-shrink: 0;
-  border: 2px solid rgba(139,233,253,0.3);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid rgba(139, 233, 253, 0.3);
 }
-.userInfo { flex: 1; display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+
+.userInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
 .userAlias {
-  font-size: 1.35rem; font-weight: 600; color: #8BE9FD;
-  text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #8BE9FD;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   &:hover { text-decoration: underline; }
 }
-.userName { font-size: 1.15rem; color: rgba(255,255,255,0.55); }
+
+.userName {
+  font-size: 1.15rem;
+  color: rgba(255,255,255,0.55);
+}
+/* ──────────────────────────────────────────────────────────────────────── */
 </style>

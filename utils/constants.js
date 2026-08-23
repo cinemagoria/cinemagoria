@@ -355,6 +355,18 @@ export const STREAMING_PROVIDERS = [
     }
 ];
 
+export const STREAMING_CUSTOM_LOGOS = {
+    8: '/logos/streaming/netflix-logo.png',
+    9: '/logos/streaming/amazon-prime-video-logo.png',
+    11: '/logos/streaming/mubi-logo.svg',
+    15: '/logos/streaming/hulu-logo.svg',
+    99: '/logos/streaming/shudder-logo.svg',
+    337: '/logos/streaming/disney-logo.png',
+    350: '/logos/streaming/apple-tv-logo.svg',
+    386: '/logos/streaming/peacock-logo.png',
+    1899: '/logos/streaming/hbo-max-logo.svg',
+};
+
 export const POPULAR_STREAMING_IDS = [
     11,
     15,
