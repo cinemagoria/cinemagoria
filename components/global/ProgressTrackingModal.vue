@@ -707,6 +707,7 @@ export default {
 /* ── Tabs ───────────────────────────────────────────── */
 .tab-controls {
   display: flex;
+  flex: 0 0 auto;
   gap: 0.4rem;
   padding: 0 1.6rem;
   border-bottom: 1px solid rgba(139, 233, 253, 0.12);
