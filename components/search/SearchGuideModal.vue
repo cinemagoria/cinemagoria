@@ -95,7 +95,9 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(3, 4, 6, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -104,17 +106,38 @@ export default {
 }
 
 .modalContent {
-  background: linear-gradient(135deg, rgba(6, 47, 64, 0.98) 0%, rgba(10, 30, 40, 0.99) 100%);
-  box-shadow: 0 12px 40px 0 rgba(31, 104, 135, 0.6);
+  position: relative;
+  background: rgba(3, 4, 6, 0.85);
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(31, 84, 103, 0.18), transparent 35%),
+    radial-gradient(circle at 85% 80%, rgba(139, 233, 253, 0.08), transparent 30%);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(31, 84, 103, 0.5),
+    inset 0 0 24px rgba(139, 233, 253, 0.04);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border-radius: 16px;
-  border: 1px solid rgba(127, 219, 241, 0.3);
+  border-radius: 20px;
   width: 100%;
   max-width: 680px;
   max-height: 85vh;
   display: flex;
   flex-direction: column;
+}
+
+.modalContent::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+  opacity: 0.8;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .modalHeader {

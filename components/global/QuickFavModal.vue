@@ -93,7 +93,9 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(3, 4, 6, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -102,6 +104,7 @@ export default {
 }
 
 .modal-content {
+  position: relative;
   background: linear-gradient(to bottom right,#092739,#061720);;
   border: 1px solid #8BE9FD;
   border-radius: 12px;
@@ -110,6 +113,21 @@ export default {
   overflow: hidden;
   box-shadow: 0 20px 50px rgba(0,0,0,0.7);
   animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+  opacity: 0.8;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  pointer-events: none;
+  z-index: 2;
 }
 
 @keyframes modalPop {
