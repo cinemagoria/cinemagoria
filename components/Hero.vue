@@ -414,10 +414,31 @@
                 <div class="mpb-pct"><span class="mpb-pct-num">{{ progressPercentage }}</span><span class="mpb-pct-sign">%</span></div>
               </div>
               <div class="mpb-controls">
-                <input type="range" class="mpb-slider" min="0" max="100" step="1" v-model.number="progressPercentage" />
+                <input
+                  v-if="heroItem.runtime"
+                  type="range"
+                  class="mpb-slider"
+                  min="0"
+                  :max="heroItem.runtime"
+                  step="1"
+                  v-model.number="watchedMinutes"
+                  aria-label="Minutos vistos" />
+                <input v-else type="range" class="mpb-slider" min="0" max="100" step="1" v-model.number="progressPercentage" />
+
                 <div v-if="heroItem.runtime" class="mpb-times">
-                  <div class="mpb-time"><span class="mpb-time-label">Visto</span><span class="mpb-time-val">{{ progressElapsed }}</span></div>
-                  <div class="mpb-time"><span class="mpb-time-label">Restante</span><span class="mpb-time-val">{{ progressRemaining }}</span></div>
+                  <div class="mpb-time">
+                    <span class="mpb-time-label">Visto</span>
+                    <span class="mpb-time-entry">
+                      <input type="number" min="0" :max="Math.floor(heroItem.runtime / 60)" v-model.number="watchedHours" aria-label="Horas vistas" />
+                      <em>h</em>
+                      <input type="number" min="0" max="59" v-model.number="watchedMins" aria-label="Minutos vistos" />
+                      <em>m</em>
+                    </span>
+                  </div>
+                  <div class="mpb-time mpb-time--right">
+                    <span class="mpb-time-label">Restante</span>
+                    <span class="mpb-time-val">{{ progressRemaining }}</span>
+                  </div>
                 </div>
                 <div v-else class="mpb-times"><span class="mpb-no-dur">Duración no disponible</span></div>
               </div>
@@ -720,7 +741,8 @@ export default {
         metadata: true
       },
 
-      progressPercentage: 0,
+      watchedMinutes: 0,
+      progressPercentageRaw: 0,
       trackedEpisodesCount: 0,
       trackedSeasonData: [],
       lastTrackedSeason: null,
@@ -827,15 +849,36 @@ export default {
       const count = this.relatedArticles.length;
       return count === 1 ? '1 Artículo relacionado' : `${count} Artículos relacionados`;
     },
+    progressPercentage: {
+      get() {
+        const rt = this.heroItem.runtime;
+        if (!rt) return this.progressPercentageRaw;
+        return Math.min(100, Math.max(0, Math.round(this.watchedMinutes / rt * 100)));
+      },
+      set(value) {
+        const pct = Math.min(100, Math.max(0, Number(value) || 0));
+        this.progressPercentageRaw = pct;
+        const rt = this.heroItem.runtime;
+        if (rt) this.watchedMinutes = Math.round(rt * pct / 100);
+      },
+    },
+    watchedHours: {
+      get() { return Math.floor(this.watchedMinutes / 60); },
+      set(value) { this.setWatched((Number(value) || 0) * 60 + this.watchedMinutes % 60); },
+    },
+    watchedMins: {
+      get() { return this.watchedMinutes % 60; },
+      set(value) { this.setWatched(Math.floor(this.watchedMinutes / 60) * 60 + (Number(value) || 0)); },
+    },
     progressElapsed() {
       const rt = this.heroItem.runtime;
       if (!rt) return '0m';
-      return this.fmtMin(rt * this.progressPercentage / 100);
+      return this.fmtMin(this.watchedMinutes);
     },
     progressRemaining() {
       const rt = this.heroItem.runtime;
       if (!rt) return '0m';
-      return this.fmtMin(rt - (rt * this.progressPercentage / 100));
+      return this.fmtMin(Math.max(0, rt - this.watchedMinutes));
     }
   },
 
@@ -1507,7 +1550,7 @@ export default {
           const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/movie/${this.id}?_t=${Date.now()}`);
           if (resp.ok) {
             const data = await resp.json();
-            this.progressPercentage = data.found ? (data.progress_percentage || 0) : 0;
+            this.applyStoredProgress(data);
           }
         } else {
           const resp = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}?tv_id=${this.id}&_t=${Date.now()}`);
@@ -1536,10 +1579,32 @@ export default {
         }
       } catch (e) { }
     },
+    setWatched(value) {
+      const rt = this.heroItem.runtime || 0;
+      const next = Math.max(0, Math.round(Number(value) || 0));
+      this.watchedMinutes = rt ? Math.min(rt, next) : next;
+    },
+
+    applyStoredProgress(data) {
+      if (!data || !data.found) {
+        this.watchedMinutes = 0;
+        this.progressPercentageRaw = 0;
+        return;
+      }
+      const rt = this.heroItem.runtime || 0;
+      const stored = Number(data.elapsed_minutes) || 0;
+      if (rt && stored > 0) {
+        this.setWatched(stored);
+        this.progressPercentageRaw = Math.round(this.watchedMinutes / rt * 100);
+      } else {
+        this.progressPercentage = Number(data.progress_percentage) || 0;
+      }
+    },
+
     async saveProgress() {
       if (!this.userEmail) return;
       const rt = this.heroItem.runtime || 0;
-      const elapsed = rt ? Math.round(rt * this.progressPercentage / 100) : 0;
+      const elapsed = rt ? this.watchedMinutes : 0;
       try {
         await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/movie/${this.id}`, {
           method: 'PUT',
@@ -3982,5 +4047,54 @@ export default {
 .mpb-time { display:flex; flex-direction:column; gap:1px; }
 .mpb-time-label { font-size:1rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.05em; font-weight:600; }
 .mpb-time-val { font-size:1.3rem; color:#fff; font-weight:600; }
+
+.mpb-time--right {
+  text-align: right;
+}
+
+.mpb-time-entry {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(139, 233, 253, 0.18);
+  background: rgba(0, 0, 0, 0.3);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.mpb-time-entry:focus-within {
+  border-color: rgba(139, 233, 253, 0.55);
+  background: rgba(139, 233, 253, 0.06);
+}
+
+.mpb-time-entry input {
+  width: 2.4ch;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-align: center;
+  outline: none;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.mpb-time-entry input::-webkit-outer-spin-button,
+.mpb-time-entry input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.mpb-time-entry em {
+  color: #8BE9FD;
+  font-style: normal;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-right: 3px;
+}
 .mpb-no-dur { font-size:1.1rem; color:rgba(255,255,255,0.3); font-style:italic; }
 </style>
