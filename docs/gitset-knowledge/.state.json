@@ -3244,7 +3244,7 @@
           "./db",
           "./vimeo-oembed"
         ],
-        "notes": "This file is designed to be byte-identical between cinemagoria-main and cinemagoria-es for repo-sync tooling."
+        "notes": "This file is designed to be byte-identical across deployments for repo-sync tooling."
       },
       {
         "path": "server/utils/vimeo-oembed.ts",
@@ -3254,7 +3254,7 @@
           "getVimeoThumb"
         ],
         "dependencies": [],
-        "notes": "This file is designed to be byte-identical between cinemagoria-main and cinemagoria-es for repo-sync tooling."
+        "notes": "This file is designed to be byte-identical across deployments for repo-sync tooling."
       },
       {
         "path": "server/utils/festivalAwards.ts",

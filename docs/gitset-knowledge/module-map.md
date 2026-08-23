@@ -442,10 +442,10 @@
   - exports: `useDb`, `dbExecute`
 - `server/utils/rss-feed.ts` — Constructs an RSS news feed from database content, handling localization, Markdown rendering, and embedding Vimeo trailers.
   - exports: `buildNewsFeed`
-  - This file is designed to be byte-identical between cinemagoria-main and cinemagoria-es for repo-sync tooling.
+  - This file is designed to be byte-identical across deployments for repo-sync tooling.
 - `server/utils/vimeo-oembed.ts` — Provides functions to fetch and cache oEmbed metadata for Vimeo videos, including thumbnail URLs, used by RSS feeds and news pages.
   - exports: `getVimeoOembed`, `getVimeoThumb`
-  - This file is designed to be byte-identical between cinemagoria-main and cinemagoria-es for repo-sync tooling.
+  - This file is designed to be byte-identical across deployments for repo-sync tooling.
 - `server/utils/festivalAwards.ts` — Fetches festival award data from the database for a given festival slug, supporting English and Spanish locales with fallback logic.
   - exports: `fetchFestivalAwards`
 - `server/utils/festivals.ts` — Manages canonical festival name-to-slug mappings and retrieves festival participation status for a batch of TMDb IDs from the database.
