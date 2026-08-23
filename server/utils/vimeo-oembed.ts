@@ -8,8 +8,8 @@
 // Used by /news/[slug].vue (only when the trailer is Vimeo) and by
 // server/utils/rss-feed.ts (RSS items with Vimeo trailers).
 //
-// Keep this file byte-identical between cinemagoria-main and cinemagoria-es
-// (same as rss-feed.ts) so the repo-sync tooling can mirror it.
+// Keep this file byte-identical across deployments (same as rss-feed.ts) so
+// the repo-sync tooling can mirror it.
 
 export interface VimeoOembed {
     thumbnail_url: string

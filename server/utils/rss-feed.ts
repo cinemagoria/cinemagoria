@@ -3,10 +3,10 @@ import { useDb } from './db'
 import { getVimeoOembed } from './vimeo-oembed'
 
 // Shared, canonical news-feed builder used by /feed (and by the legacy
-// /api/article/rss redirect target). Keep this file byte-identical between
-// cinemagoria-main and cinemagoria-es so it can be synced with the rest of
-// the repo-sync tooling — the ONLY per-repo difference is the `lang` passed
-// in by server/routes/feed.get.ts.
+// /api/article/rss redirect target). Keep this file byte-identical across
+// deployments so it can be synced with the rest of the repo-sync tooling —
+// the ONLY per-repo difference is the `lang` passed in by
+// server/routes/feed.get.ts.
 
 type FeedLang = 'en' | 'es'
 
@@ -18,7 +18,7 @@ const md = new MarkdownIt({ breaks: true, html: true })
 // Spanish display labels for the editorial taxonomy. The DB value (English,
 // lowercase) is the canonical key and is what gets emitted in the EN feed;
 // the ES feed resolves it through this map for the <category> tag. Kept in
-// sync with cinemagoria-es/utils/categoryLabels.js — if the user-facing
+// sync with the Spanish utils/categoryLabels.js — if the user-facing
 // translation changes there, mirror it here.
 const CATEGORY_LABELS_ES: Record<string, string> = {
     festival:    'Festival',
