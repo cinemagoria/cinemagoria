@@ -6,6 +6,11 @@
       </button>
 
       <div :class="$style.body">
+        <p :class="$style.notice">
+          <span>Early access</span>
+          This calendar is still in testing. The catalogue it draws on is deliberately narrow for now, and both its coverage and its behaviour will change as the feature develops.
+        </p>
+
         <header :class="$style.intro">
           <h3 id="cal-scope-title">Which titles appear here</h3>
           <p>This calendar is curated, not exhaustive. It follows the films and series the site actually covers, so every entry is one worth knowing about.</p>
@@ -150,6 +155,29 @@ defineEmits(['close'])
   }
 
   p { margin: 0; color: #cfd6dc; font-size: 1.45rem; line-height: 1.6; }
+}
+
+.notice {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin: 0 0 2.2rem;
+  padding: 1.4rem 1.6rem;
+  border-radius: 14px;
+  border: 1px solid rgba(251, 191, 119, 0.28);
+  background: linear-gradient(90deg, rgba(251, 191, 119, 0.12), rgba(251, 191, 119, 0.03));
+  color: #e4d5c2;
+  font-size: 1.3rem;
+  line-height: 1.55;
+
+  span {
+    align-self: flex-start;
+    color: #FBBF77;
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
 }
 
 .block {
