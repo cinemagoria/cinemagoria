@@ -37,6 +37,10 @@ export default defineNuxtRouteMiddleware((to, from) => {
     // ── Not authenticated: block + show modal ────────────────────────────────
     sessionStorage.setItem('open_auth_modal', 'true')
 
+    // Remember where the reader was heading. The redirect below lands them on '/',
+    // so the modal can no longer read the intent off the URL by the time it opens.
+    localStorage.setItem('auth_return_url', to.fullPath)
+
     // Always dispatch the event so the already-mounted AuthModal opens instantly.
     // dispatchEvent is synchronous — the modal opens before we return.
     if (import.meta.client) {
