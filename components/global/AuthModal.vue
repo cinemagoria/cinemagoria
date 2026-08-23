@@ -282,9 +282,18 @@ export default {
     // through the modal's submit, so we also capture here as the single
     // entry-point catch-all. Auth-success.vue removes the key on consumption.
     if (typeof window !== 'undefined') {
-      const path = window.location.pathname + window.location.search;
-      if (path && !path.startsWith('/login') && !path.startsWith('/register') && !path.startsWith('/auth-success')) {
-        localStorage.setItem('auth_return_url', path);
+      // Consume the flag here as well as on mount: when the modal is already
+      // mounted the route guard opens it by event, mounted() never runs again,
+      // and a leftover flag reopens the modal after the OAuth round trip.
+      sessionStorage.removeItem('open_auth_modal');
+
+      // The route guard records the blocked destination before redirecting, and
+      // that intent outranks the current URL — by now it is only ever '/'.
+      if (!localStorage.getItem('auth_return_url')) {
+        const path = window.location.pathname + window.location.search;
+        if (path && !path.startsWith('/login') && !path.startsWith('/register') && !path.startsWith('/auth-success')) {
+          localStorage.setItem('auth_return_url', path);
+        }
       }
     }
 
