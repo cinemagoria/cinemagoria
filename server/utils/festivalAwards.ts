@@ -9,8 +9,8 @@ import { createClient } from '@libsql/client'
  * is requested we serve the *_es value with EN as fallback so the UI never
  * blanks out if a translation is missing.
  *
- * cinemagoria-main calls this with no locale → English.
- * cinemagoria-es calls this with 'es' → Spanish.
+ * The English deployment calls this with no locale → English.
+ * The Spanish deployment calls this with 'es' → Spanish.
  */
 export type Locale = 'en' | 'es'
 
