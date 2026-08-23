@@ -2367,7 +2367,7 @@ export default {
   }
 }
 
-.actionButton {
+.actionButton.actionButton {
   border-radius: 999px;
   margin-top: 0;
   height: 40px;
