@@ -180,7 +180,7 @@ export default {
   padding: 8px 0 18px;
 }
 
-:deep(.card) {
+:deep(.carousel__items .card) {
   flex: 0 0 auto;
   width: 170px;
   padding: 0 !important;
