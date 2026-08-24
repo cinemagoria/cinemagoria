@@ -2471,7 +2471,7 @@ export default {
 
 
 
-.shareButton {
+.shareButton.shareButton {
   border-radius: 999px;
   margin-top: 0;
   width: 56px;
