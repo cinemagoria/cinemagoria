@@ -248,6 +248,10 @@ const countryName = (code) => {
 const capitalize = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s)
 const iso = (d) => d.toISOString().slice(0, 10)
 const parse = (s) => new Date(`${s}T00:00:00Z`)
+const localToday = () => {
+  const d = new Date()
+  return iso(new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())))
+}
 const todayIso = ref(iso(new Date()))
 
 const view = ref('month')
@@ -519,6 +523,12 @@ watch(territory, (value) => {
 })
 
 onMounted(() => {
+  const local = localToday()
+  if (local !== todayIso.value) {
+    const anchoredToToday = anchor.value === todayIso.value
+    todayIso.value = local
+    if (anchoredToToday) anchor.value = local
+  }
   const params = new URLSearchParams(window.location.search)
   const onParam = params.get('on')
   const viewParam = params.get('view')
