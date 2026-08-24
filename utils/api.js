@@ -479,14 +479,50 @@ export function getListItem(type, query) {
     }
 };
 
+const IMDB_BATCH_SIZE = 60;
+const IMDB_BATCH_WINDOW_MS = 24;
+const IMDB_BATCH_TIMEOUT_MS = 8000;
+
+const imdbPending = new Map();
+let imdbFlushTimer = null;
+
+const settleImdbSlice = (slice, ratings) => {
+    slice.forEach(([id, resolvers]) => {
+        const hit = ratings && ratings[id];
+        resolvers.forEach((resolve) => resolve(hit || { found: false, source: 'tmdb' }));
+    });
+};
+
+const flushImdbPending = () => {
+    imdbFlushTimer = null;
+    const queued = [...imdbPending.entries()];
+    imdbPending.clear();
+    if (!queued.length) return;
+
+    for (let i = 0; i < queued.length; i += IMDB_BATCH_SIZE) {
+        const slice = queued.slice(i, i + IMDB_BATCH_SIZE);
+        axios
+            .get('/api/imdb-ratings', {
+                params: { ids: slice.map(([id]) => id).join(',') },
+                timeout: IMDB_BATCH_TIMEOUT_MS,
+            })
+            .then((response) => settleImdbSlice(slice, (response.data && response.data.ratings) || {}))
+            .catch(() => settleImdbSlice(slice, {}));
+    }
+};
+
 export function getIMDbRatingFromDB(imdbId) {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const response = await axios.get(`/api/imdb-rating/${imdbId}`, { timeout: 1500 });
-            resolve(response.data);
-        } catch (error) {
-            resolve({ found: false });
+    if (!imdbId) return Promise.resolve({ found: false, source: 'tmdb' });
+
+    return new Promise((resolve) => {
+        const waiting = imdbPending.get(imdbId);
+        if (waiting) {
+            waiting.push(resolve);
+        } else {
+            imdbPending.set(imdbId, [resolve]);
         }
+
+        if (!imdbFlushTimer) imdbFlushTimer = setTimeout(flushImdbPending, IMDB_BATCH_WINDOW_MS);
     });
 }
 
@@ -531,13 +567,12 @@ export function getMovies(query, page = 1) {
 
             const enrichedResults = await Promise.all(
                 response.data.results.map(async (item) => {
-                    const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}`, {
+                    const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}/external_ids`, {
                         params: {
-                            api_key: getEnv('API_KEY'),
-                            append_to_response: 'external_ids'
+                            api_key: getEnv('API_KEY')
                         }
                     });
-                    item.external_ids = detailsResponse.data.external_ids;
+                    item.external_ids = detailsResponse.data;
                     return enrichWithIMDbRating(item);
                 })
             );
@@ -848,13 +883,12 @@ export function getMovieRecommended(id, page = 1) {
 
             const enrichedResults = await Promise.all(
                 response.data.results.map(async (item) => {
-                    const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}`, {
+                    const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}/external_ids`, {
                         params: {
-                            api_key: getEnv('API_KEY'),
-                            append_to_response: 'external_ids'
+                            api_key: getEnv('API_KEY')
                         }
                     });
-                    item.external_ids = detailsResponse.data.external_ids;
+                    item.external_ids = detailsResponse.data;
                     return enrichWithIMDbRating(item);
                 })
             );
@@ -887,13 +921,12 @@ export function getTvShows(query, page = 1) {
 
             const enrichedResults = await Promise.all(
                 response.data.results.map(async (item) => {
-                    const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}`, {
+                    const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}/external_ids`, {
                         params: {
-                            api_key: getEnv('API_KEY'),
-                            append_to_response: 'external_ids'
+                            api_key: getEnv('API_KEY')
                         }
                     });
-                    item.external_ids = detailsResponse.data.external_ids;
+                    item.external_ids = detailsResponse.data;
                     return enrichWithIMDbRating(item);
                 })
             );
@@ -1199,13 +1232,12 @@ export function getTvShowRecommended(id, page = 1) {
 
             const enrichedResults = await Promise.all(
                 response.data.results.map(async (item) => {
-                    const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}`, {
+                    const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}/external_ids`, {
                         params: {
-                            api_key: getEnv('API_KEY'),
-                            append_to_response: 'external_ids'
+                            api_key: getEnv('API_KEY')
                         }
                     });
-                    item.external_ids = detailsResponse.data.external_ids;
+                    item.external_ids = detailsResponse.data;
                     return enrichWithIMDbRating(item);
                 })
             );
@@ -1289,13 +1321,12 @@ export function getTrending(media, page = 1, options = {}) {
             const enrichedResults = await Promise.all(
                 response.data.results.map(async (item) => {
                     const endpoint = media === 'movie' ? 'movie' : 'tv';
-                    const detailsResponse = await axios.get(`${apiUrl}/${endpoint}/${item.id}`, {
+                    const detailsResponse = await axios.get(`${apiUrl}/${endpoint}/${item.id}/external_ids`, {
                         params: {
-                            api_key: getEnv('API_KEY'),
-                            append_to_response: 'external_ids'
+                            api_key: getEnv('API_KEY')
                         }
                     });
-                    item.external_ids = detailsResponse.data.external_ids;
+                    item.external_ids = detailsResponse.data;
                     return enrichWithIMDbRating(item);
                 })
             );
@@ -1327,13 +1358,12 @@ export function getMediaByGenre(media, genre, page = 1) {
 
             const enrichedResults = await Promise.all(
                 response.data.results.map(async (item) => {
-                    const detailsResponse = await axios.get(`${apiUrl}/${media}/${item.id}`, {
+                    const detailsResponse = await axios.get(`${apiUrl}/${media}/${item.id}/external_ids`, {
                         params: {
-                            api_key: getEnv('API_KEY'),
-                            append_to_response: 'external_ids'
+                            api_key: getEnv('API_KEY')
                         }
                     });
-                    item.external_ids = detailsResponse.data.external_ids;
+                    item.external_ids = detailsResponse.data;
                     return enrichWithIMDbRating(item);
                 })
             );
@@ -1570,13 +1600,12 @@ export async function search(query, page = 1) {
                 try {
                     if (matchedById === 'IMDB') {
                         const endpoint = item.media_type === 'movie' ? 'movie' : 'tv';
-                        const detailsResponse = await axios.get(`${apiUrl}/${endpoint}/${item.id}`, {
+                        const detailsResponse = await axios.get(`${apiUrl}/${endpoint}/${item.id}/external_ids`, {
                             params: {
-                                api_key: getEnv('API_KEY'),
-                                append_to_response: 'external_ids'
+                                api_key: getEnv('API_KEY')
                             }
                         });
-                        item.external_ids = detailsResponse.data.external_ids;
+                        item.external_ids = detailsResponse.data;
                         return enrichWithIMDbRating(item);
                     }
                     return item;
@@ -1666,13 +1695,12 @@ export async function search(query, page = 1) {
                 if (item.media_type === 'movie' || item.media_type === 'tv') {
                     const endpoint = item.media_type === 'movie' ? 'movie' : 'tv';
                     try {
-                        const detailsResponse = await axios.get(`${apiUrl}/${endpoint}/${item.id}`, {
+                        const detailsResponse = await axios.get(`${apiUrl}/${endpoint}/${item.id}/external_ids`, {
                             params: {
-                                api_key: getEnv('API_KEY'),
-                                append_to_response: 'external_ids'
+                                api_key: getEnv('API_KEY')
                             }
                         });
-                        item.external_ids = detailsResponse.data.external_ids;
+                        item.external_ids = detailsResponse.data;
                         return enrichWithIMDbRating(item);
                     } catch (e) {
                         console.error(`Error enriching item ${item.id}:`, e);
@@ -1786,13 +1814,12 @@ export function getMoviesByProductionCompany(companyId, page = 1, filters = {}) 
 
             const enrichedResults = await Promise.all(
                 response.data.results.map(async (item) => {
-                    const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}`, {
+                    const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}/external_ids`, {
                         params: {
-                            api_key: getEnv('API_KEY'),
-                            append_to_response: 'external_ids'
+                            api_key: getEnv('API_KEY')
                         }
                     });
-                    item.external_ids = detailsResponse.data.external_ids;
+                    item.external_ids = detailsResponse.data;
                     return enrichWithIMDbRating(item);
                 })
             );
@@ -1834,13 +1861,12 @@ export function getTVShowsByProductionCompany(companyId, page = 1, filters = {})
 
             const enrichedResults = await Promise.all(
                 response.data.results.map(async (item) => {
-                    const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}`, {
+                    const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}/external_ids`, {
                         params: {
-                            api_key: getEnv('API_KEY'),
-                            append_to_response: 'external_ids'
+                            api_key: getEnv('API_KEY')
                         }
                     });
-                    item.external_ids = detailsResponse.data.external_ids;
+                    item.external_ids = detailsResponse.data;
                     return enrichWithIMDbRating(item);
                 })
             );
@@ -1873,13 +1899,12 @@ export function getMoviesByCompanies(companyIds, page = 1) {
 
             const enrichedResults = await Promise.all(
                 response.data.results.map(async (item) => {
-                    const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}`, {
+                    const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}/external_ids`, {
                         params: {
-                            api_key: getEnv('API_KEY'),
-                            append_to_response: 'external_ids'
+                            api_key: getEnv('API_KEY')
                         }
                     });
-                    item.external_ids = detailsResponse.data.external_ids;
+                    item.external_ids = detailsResponse.data;
                     return enrichWithIMDbRating(item);
                 })
             );
@@ -1913,13 +1938,12 @@ export function getTvShowsByCompanies(companyIds, page = 1) {
 
             const enrichedResults = await Promise.all(
                 response.data.results.map(async (item) => {
-                    const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}`, {
+                    const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}/external_ids`, {
                         params: {
-                            api_key: getEnv('API_KEY'),
-                            append_to_response: 'external_ids'
+                            api_key: getEnv('API_KEY')
                         }
                     });
-                    item.external_ids = detailsResponse.data.external_ids;
+                    item.external_ids = detailsResponse.data;
                     return enrichWithIMDbRating(item);
                 })
             );
@@ -2648,13 +2672,12 @@ export function getMoviesByProvider(providerId, page = 1, filters = {}) {
 
             const enrichedResults = await Promise.all(
                 response.data.results.map(async (item) => {
-                    const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}`, {
+                    const detailsResponse = await axios.get(`${apiUrl}/movie/${item.id}/external_ids`, {
                         params: {
-                            api_key: getEnv('API_KEY'),
-                            append_to_response: 'external_ids'
+                            api_key: getEnv('API_KEY')
                         }
                     });
-                    item.external_ids = detailsResponse.data.external_ids;
+                    item.external_ids = detailsResponse.data;
                     return enrichWithIMDbRating(item);
                 })
             );
@@ -2697,13 +2720,12 @@ export function getTvShowsByProvider(providerId, page = 1, filters = {}) {
 
             const enrichedResults = await Promise.all(
                 response.data.results.map(async (item) => {
-                    const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}`, {
+                    const detailsResponse = await axios.get(`${apiUrl}/tv/${item.id}/external_ids`, {
                         params: {
-                            api_key: getEnv('API_KEY'),
-                            append_to_response: 'external_ids'
+                            api_key: getEnv('API_KEY')
                         }
                     });
-                    item.external_ids = detailsResponse.data.external_ids;
+                    item.external_ids = detailsResponse.data;
                     return enrichWithIMDbRating(item);
                 })
             );
