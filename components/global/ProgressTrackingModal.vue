@@ -87,6 +87,9 @@
                       <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                       {{ item.progress_percentage }}%
                     </span>
+                    <span class="item-progress" aria-hidden="true">
+                      <span class="item-progress__fill" :style="{ width: `${Math.min(100, Math.max(0, item.progress_percentage || 0))}%` }"></span>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -251,10 +254,28 @@
                 <div class="mpb-pct"><span class="mpb-pct-num">{{ tempProgressPercentage }}</span><span class="mpb-pct-sign">%</span></div>
               </div>
               <div class="mpb-controls">
-                <input type="range" class="mpb-slider custom-slider" min="0" max="100" step="1" v-model.number="tempProgressPercentage" />
+                <input
+                    v-if="runtimeHelper"
+                    type="range"
+                    class="mpb-slider custom-slider"
+                    min="0"
+                    :max="runtimeHelper"
+                    step="1"
+                    :value="tempWatchedMinutes"
+                    aria-label="Minutes watched"
+                    @input="setWatchedMinutes($event.target.value)" />
+                  <input v-else type="range" class="mpb-slider custom-slider" min="0" max="100" step="1" v-model.number="tempProgressPercentage" />
                 <div v-if="currentTrackedItem?.total_duration_minutes || currentTrackedItem?.details?.runtime" class="mpb-times">
-                  <div class="mpb-time"><span class="mpb-time-label">Watched</span><span class="mpb-time-val">{{ Math.round((runtimeHelper * tempProgressPercentage) / 100) }}m</span></div>
-                  <div class="mpb-time"><span class="mpb-time-label">Total</span><span class="mpb-time-val">{{ runtimeHelper }}m</span></div>
+                  <div class="mpb-time">
+                    <span class="mpb-time-label">Watched</span>
+                    <span class="mpb-time-entry">
+                      <input type="number" min="0" :max="Math.floor(runtimeHelper / 60)" v-model.number="watchedHours" aria-label="Hours watched">
+                      <em>h</em>
+                      <input type="number" min="0" max="59" v-model.number="watchedMins" aria-label="Minutes watched">
+                      <em>m</em>
+                    </span>
+                  </div>
+                  <div class="mpb-time"><span class="mpb-time-label">Remaining</span><span class="mpb-time-val">{{ remainingMinutes }}m</span></div>
                 </div>
               </div>
             </div>
@@ -310,13 +331,25 @@ export default {
       imageLoadingStates: {},
       trackingModalVisible: false,
       currentTrackedItem: null,
-      tempProgressPercentage: 0
+      tempProgressPercentage: 0,
+      tempWatchedMinutes: 0
     };
   },
 
   computed: {
     runtimeHelper() {
       return this.currentTrackedItem?.total_duration_minutes || this.currentTrackedItem?.details?.runtime || 0;
+    },
+    watchedHours: {
+      get() { return Math.floor(this.tempWatchedMinutes / 60); },
+      set(value) { this.setWatchedMinutes((Number(value) || 0) * 60 + (this.tempWatchedMinutes % 60)); },
+    },
+    watchedMins: {
+      get() { return this.tempWatchedMinutes % 60; },
+      set(value) { this.setWatchedMinutes(Math.floor(this.tempWatchedMinutes / 60) * 60 + (Number(value) || 0)); },
+    },
+    remainingMinutes() {
+      return Math.max(0, this.runtimeHelper - this.tempWatchedMinutes);
     },
     inProgressMovies() {
       return this.groupedMovies.filter(m =>
@@ -540,9 +573,26 @@ export default {
       }
     },
     
+    setWatchedMinutes(value) {
+      const runtime = this.runtimeHelper;
+      const next = Math.max(0, Math.round(Number(value) || 0));
+      this.tempWatchedMinutes = runtime ? Math.min(runtime, next) : next;
+      this.tempProgressPercentage = runtime
+        ? Math.min(100, Math.max(0, Math.round((this.tempWatchedMinutes / runtime) * 100)))
+        : this.tempProgressPercentage;
+    },
+
     openTrackingModal(item) {
       this.currentTrackedItem = item;
-      this.tempProgressPercentage = item.progress_percentage || 0;
+      const runtime = item.total_duration_minutes || item.details?.runtime || 0;
+      const stored = Number(item.elapsed_minutes) || 0;
+      if (runtime && stored > 0) {
+        this.tempWatchedMinutes = Math.min(runtime, stored);
+        this.tempProgressPercentage = Math.round((this.tempWatchedMinutes / runtime) * 100);
+      } else {
+        this.tempProgressPercentage = item.progress_percentage || 0;
+        this.tempWatchedMinutes = runtime ? Math.round((runtime * this.tempProgressPercentage) / 100) : 0;
+      }
       this.trackingModalVisible = true;
     },
 
@@ -550,6 +600,7 @@ export default {
       this.trackingModalVisible = false;
       this.currentTrackedItem = null;
       this.tempProgressPercentage = 0;
+      this.tempWatchedMinutes = 0;
     },
     
     async saveTracking() {
@@ -561,7 +612,7 @@ export default {
         
         const payload = { 
           progress_percentage: this.tempProgressPercentage, 
-          elapsed_minutes: durHelper ? Math.round(durHelper * this.tempProgressPercentage / 100) : 0,
+          elapsed_minutes: durHelper ? this.tempWatchedMinutes : 0,
           total_duration_minutes: durHelper
         };
         
@@ -1575,4 +1626,72 @@ export default {
 }
 
 
+
+.mpb-time-entry {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: rgba(139, 233, 253, 0.06);
+  border: 1px solid rgba(139, 233, 253, 0.18);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.mpb-time-entry:focus-within {
+  border-color: rgba(139, 233, 253, 0.55);
+  background: rgba(139, 233, 253, 0.12);
+}
+
+.mpb-time-entry input {
+  width: 2.4em;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-align: right;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.mpb-time-entry input::-webkit-outer-spin-button,
+.mpb-time-entry input::-webkit-inner-spin-button {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.mpb-time-entry input:focus {
+  outline: none;
+}
+
+.mpb-time-entry em {
+  font-style: normal;
+  font-size: 1.1rem;
+  color: #8BE9FD;
+}
+
+.item-progress {
+  display: block;
+  width: 100%;
+  height: 3px;
+  margin-top: 5px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(139, 233, 253, 0.16);
+}
+
+.item-progress__fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #8BE9FD;
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.is-completed .item-progress__fill {
+  background: #4ade80;
+}
 </style>
