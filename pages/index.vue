@@ -190,6 +190,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     // locarno 2026
     'Hearing',
     'Fire Flower',
+    'Bloody Tennis',
     'Demons',
     // fantasia 2026
     'Hot Spot',
