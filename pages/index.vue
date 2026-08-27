@@ -181,17 +181,17 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     'Bad Lieutenant: Tokyo',
     'Inherit',
     // venice 2026
-    'Wild Horse Nine',
     'The Echo Chamber',
+    'Wild Horse Nine',
     // frightfest 2026
-    'Salmokji: Whispering Water',
     'Ithaqua',
+    'Salmokji: Whispering Water',
     'Nervous',
     // locarno 2026
     'Hearing',
-    'Fire Flower',
-    'Bloody Tennis',
     'Demons',
+    'Bloody Tennis',
+    'Fire Flower',
     // fantasia 2026
     'Hot Spot',
     'Ferine',
