@@ -1882,10 +1882,10 @@
   {
     "tmdb_id": 1380163,
     "media_type": "movie",
-    "trailer_key": null,
-    "backdrop_path": null,
+    "trailer_key": "y0DMifPj7e4",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1787924183/cinemagoria/backdrops/noir_1380163.webp",
     "poster_path": "/oAjHDlaGHHWVZ0OcnadHPm8YIE.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1507877,
