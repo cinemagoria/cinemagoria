@@ -2215,7 +2215,7 @@ export default {
   }
 
   &:hover img {
-    filter: invert(1) drop-shadow(0 0 10px rgba(139, 233, 253, 0.5));
+    filter: brightness(0) saturate(100%) invert(1) drop-shadow(0 0 10px rgba(139, 233, 253, 0.5));
   }
 
   @media (min-width: $breakpoint-xlarge) {
