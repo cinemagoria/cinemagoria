@@ -120,7 +120,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     // Batched: 1 HTTP request + 1 Turso `IN` query for all 11 festivals.
     // Replaces the previous fan-out of 11 parallel /api/festival/{slug}/films
     // calls that was bottlenecking the homepage at 35-38s on the slow wave.
-    const FESTIVAL_SLUGS = ['sundance','berlinale','rotterdam','slamdance','sxsw','romford','bifff','bafici','cannes','tribeca','cuff','kviff','fantasia','frightfest','venice','tiff','locarno','bifan'];
+    const FESTIVAL_SLUGS = ['sundance','berlinale','rotterdam','slamdance','sxsw','romford','bifff','bafici','cannes','tribeca','cuff','kviff','fantasia','frightfest','venice','tiff','locarno','bifan','biff'];
     const fetchAllFestivalsBatched = async (limit = 1000) => {
         try {
             // fields=card keeps only what the carousel cards consume — the
@@ -175,6 +175,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     const tiffList = festivalsBuckets.tiff || [];
     const locarnoList = festivalsBuckets.locarno || [];
     const bifanList = festivalsBuckets.bifan || [];
+    const biffList = festivalsBuckets.biff || [];
 
  const FEATURED_ORDER = [
     // tiff 2026
@@ -261,7 +262,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     
     const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
     
-    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList, ...romfordList, ...bifffList, ...baficiList, ...cannesList, ...tribecaList, ...cuffList, ...kviffList, ...fantasiaList, ...frightfestList, ...veniceList, ...tiffList, ...locarnoList, ...bifanList];
+    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList, ...romfordList, ...bifffList, ...baficiList, ...cannesList, ...tribecaList, ...cuffList, ...kviffList, ...fantasiaList, ...frightfestList, ...veniceList, ...tiffList, ...locarnoList, ...bifanList, ...biffList];
     
     let mixedFestivalFilms = allFestivalFilms.filter(f => {
         const t = norm(f.title);

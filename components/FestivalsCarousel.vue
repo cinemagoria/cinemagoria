@@ -75,6 +75,7 @@ import VeniceCard from '~/components/VeniceCard.vue';
 import TiffCard from '~/components/TiffCard.vue';
 import LocarnoCard from '~/components/LocarnoCard.vue';
 import BifanCard from '~/components/BifanCard.vue';
+import BiffCard from '~/components/BiffCard.vue';
 
 const AUTOPLAY_INTERVAL = 10000;
 
@@ -103,6 +104,7 @@ export default {
     TiffCard,
     LocarnoCard,
     BifanCard,
+    BiffCard,
   },
 
   props: {
@@ -164,6 +166,7 @@ export default {
         tiff: 'TiffCard',
         locarno: 'LocarnoCard',
         bifan: 'BifanCard',
+        biff: 'BiffCard',
       };
       return cardMap[item.festival_source] || 'SundanceCard';
     },

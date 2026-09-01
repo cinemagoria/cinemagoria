@@ -1704,6 +1704,12 @@ export function getStreamingProviderBySlug(slug) {
 
 export const SUPPORTED_FESTIVALS = [
     {
+        id: 'biff',
+        name: 'Busan International Film Festival (BIFF) 2026',
+        slug: 'biff-2026',
+        logo_path: '/festivals/biff/biff_film_festival_2026_logo.png'
+    },
+    {
         id: 'sundance',
         name: 'Sundance Film Festival 2026',
         slug: 'sundance-2026',
