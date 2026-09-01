@@ -17,6 +17,9 @@ onMounted(() => {
 })
 
 const festivals = [
+  { slug: 'biff-2026',      name: 'BIFF',           year: 2026, city: 'Busan',      country: 'Corea del Sur',
+    startDate: '2026-10-06', endDate: '2026-10-15', dateLabel: '6 – 15 oct 2026',
+    image: '/festivals/biff/biff_backdrop_2026_es.webp' },
   { slug: 'venice-2026',    name: 'Venice',         year: 2026, city: 'Venecia',    country: 'Italia',
     startDate: '2026-09-02', endDate: '2026-09-12', dateLabel: '2 – 12 sep 2026',
     image: '/festivals/venice/venice_backdrop_2026_es.webp' },
