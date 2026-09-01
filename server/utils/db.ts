@@ -1,4 +1,5 @@
 import { createClient, type Client, type InStatement, type ResultSet } from '@libsql/client'
+import { profileClient } from './dbProfile'
 
 let _client: Client | null = null
 
@@ -12,7 +13,7 @@ export function useDb(): Client {
     }
 
     if (!_client) {
-        _client = createClient({ url: dbUrl.trim(), authToken: dbToken.trim() })
+        _client = profileClient(createClient({ url: dbUrl.trim(), authToken: dbToken.trim() }))
     }
 
     return _client
