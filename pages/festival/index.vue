@@ -39,7 +39,7 @@ const festivals = [
     image: '/festivals/fantasia/fantasia_backdrop_2026_en.webp' },
   { slug: 'frightfest-2026', name: 'FrightFest',    year: 2026, city: 'London',     country: 'UK',
     startDate: '2026-08-27', endDate: '2026-08-31', dateLabel: 'Aug 27 – 31, 2026',
-    image: '/festivals/frightfest/frightfest_backdrop_2026_en.png' },
+    image: '/festivals/frightfest/frightfest_backdrop_2026_en.webp' },
   { slug: 'tribeca-2026',   name: 'Tribeca',        year: 2026, city: 'New York',   country: 'USA',
     startDate: '2026-06-03', endDate: '2026-06-14', dateLabel: 'Jun 3 – 14, 2026',
     image: '/festivals/tribeca/tribeca_backdrop_2026_eng.webp' },

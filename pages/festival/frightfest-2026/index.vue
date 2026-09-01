@@ -10,7 +10,7 @@
         <a href="https://frightfest.co.uk/tickets/" target="_blank" rel="noopener noreferrer" class="hero-backdrop">
             <img
               ref="backdropImgRef"
-              src="/festivals/frightfest/frightfest_backdrop_2026_en.png"
+              src="/festivals/frightfest/frightfest_backdrop_2026_en.webp"
               alt="FrightFest 2026 Backdrop"
               :style="{ opacity: backdropLoaded ? 1 : 0, transition: 'opacity 0.4s ease' }"
               @load="backdropLoaded = true"
