@@ -226,9 +226,9 @@
   {
     "tmdb_id": 1480856,
     "media_type": "movie",
-    "poster_path": "/xQJsujphh0k9fJKFVcolow5OrjQ.jpg",
+    "poster_path": "/mVcZJ6CordDswW3212WhENewvuB.jpg",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780614441/cinemagoria/backdrops/backdrop_override_1480856.webp",
-    "trailer_key": null,
+    "trailer_key": "XOiBpu4oWxo",
     "force_enrichment": false
   },
   {
@@ -546,7 +546,7 @@
   {
     "tmdb_id": 1087393,
     "media_type": "movie",
-    "poster_path": "/jt8eCvxEGgFxtrdyIZzlefNmv5Y.jpg",
+    "poster_path": "/dXkIrZi03D6JagR32YgvEyBFMIB.jpg",
     "backdrop_path": "/8MYAZV8yTUjNmioc5zUY0zQjDk1.jpg",
     "trailer_key": null,
     "force_enrichment": false
@@ -962,7 +962,7 @@
   {
     "tmdb_id": 1704483,
     "media_type": "movie",
-    "poster_path": "/7OV1Xb6NjUgjtv46cs5livuR1oc.jpg",
+    "poster_path": "/aPGreexdDCeraBrk1Y4OG7UndZw.jpg",
     "backdrop_path": "/dkSXpwrIVo9v7WEhcJUeHZHBAzp.jpg",
     "trailer_key": "iwF5DWe2Dqc",
     "force_enrichment": true
@@ -982,5 +982,477 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1787864645/cinemagoria/backdrops/backdrop_override_1413.webp",
     "trailer_key": "_DGQ0EpPdds",
     "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1658666,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "a_QAWHrrIgg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1410955,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "icnIui5eA2o",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1395663,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "fZSgEmXQWR8",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1646584,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "SBCJQw1J5_o",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1733425,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "0AMESYGT510",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1701819,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "4pD0XLgbMYU",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1576462,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "Mw2Fiz24XPo",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1578820,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "X6F9_i3iiFE",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1159810,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "gpfz1B-YxFw",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1652642,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "Y98Kv_bSQsE",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1083624,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "BlQ2XH-ei58",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1540060,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "-KXll-jT0eU",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1617774,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "PxcgNJDG8bE",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1537190,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "3KI9L-iUnaw",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1652639,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "oJdLaMJrVDs",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1738680,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "233V2qYUpZQ",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1647236,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "ducgrPVmq58",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1652644,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "__kN_dJGmaQ",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1754755,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "c41Y4ZQ1u14",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1738684,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "XkHqiymCHpY",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1625465,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "yOgLY2W_9Hc",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1640158,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "5IKu4rrLA-8",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1455389,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "m_RNP3f8gzo",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1754749,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "tzfj21fHkvQ",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1498001,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "WBv50qmq1uo",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1624457,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "La8MYkijaQw",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1379928,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "nK-VvFEAOfc",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1723008,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "MyVh0iiCvbk",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1754868,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "vbA5soWLxeI",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1754883,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "PPyEm6dh26w",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1754880,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "phcdx5_n3Fg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1205857,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "aalX-1lIWlU",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1754757,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "4F57QKE8QSA",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1470395,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "_tH2g1W1vqs",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1754760,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "OOwqyVxwtzY",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1754879,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "bmtrndhtMSk",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1549684,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "q2aqYflU5VQ",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1257942,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "9SylFwCagTA",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1514891,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "LVbZstxbOvU",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1429592,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "j-FTg6rNWgk",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1506653,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "XrG8dd9B_u8",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1690296,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "fQrMFITlKcQ",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1590909,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "ItgV0HrDh9Q",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1759179,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "fA1pI3lZeX0",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1759177,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "e-G8ul2Bqzg",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1383091,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "W6zIQjHx-1c",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1620963,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "HDJlaVnjQH0",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1746633,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "aUnE1K3ra-I",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1619996,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "bEmqwoRzNVY",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1759196,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "h1caDZucGl0",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1759175,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "kWYwv1_bVZQ",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1738677,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "tsXx47s7rLM",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1660754,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "42lZvGip5HM",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1337732,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "-25ROn1XPQQ",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1480276,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "TJPdRnB7z8M",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1404684,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "WgkUS8yVGCY",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1058424,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "4Tn3DfUEgmo",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1591675,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "FO746E8U99E",
+    "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1590723,
+    "media_type": "movie",
+    "poster_path": null,
+    "backdrop_path": null,
+    "trailer_key": "jn_GrB_bVuQ",
+    "force_enrichment": false
   }
 ]
