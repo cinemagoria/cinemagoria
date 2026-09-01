@@ -1,7 +1,8 @@
 import type { Client, InStatement } from '@libsql/client'
 
 const MAX_SHAPES = 200
-const DEFAULT_FLUSH_INTERVAL_MS = 300000
+const DEFAULT_FLUSH_INTERVAL_MS = 60000
+const FLUSH_EVERY_CALLS = 300
 const TOP_N = 15
 const FINGERPRINT_MAX_CHARS = 140
 
@@ -10,6 +11,7 @@ type ShapeStats = { calls: number; rows: number; ms: number; maxMs: number }
 const shapes = new Map<string, ShapeStats>()
 let windowStartedAt = Date.now()
 let droppedShapes = 0
+let callsSinceFlush = 0
 
 const enabled = () => process.env.DB_PROFILE !== 'off'
 
@@ -31,7 +33,8 @@ function fingerprint(stmt: InStatement | string): string {
 function flushIfDue(): void {
     const now = Date.now()
     const elapsed = now - windowStartedAt
-    if (elapsed < flushIntervalMs() || shapes.size === 0) return
+    if (shapes.size === 0) return
+    if (elapsed < flushIntervalMs() && callsSinceFlush < FLUSH_EVERY_CALLS) return
 
     let calls = 0
     let rows = 0
@@ -66,6 +69,7 @@ function flushIfDue(): void {
 
     shapes.clear()
     droppedShapes = 0
+    callsSinceFlush = 0
     windowStartedAt = now
 }
 
@@ -74,6 +78,7 @@ function record(key: string, rows: number, ms: number): void {
     if (!stat) {
         if (shapes.size >= MAX_SHAPES) {
             droppedShapes++
+            callsSinceFlush++
             flushIfDue()
             return
         }
@@ -84,6 +89,7 @@ function record(key: string, rows: number, ms: number): void {
     stat.rows += rows
     stat.ms += ms
     if (ms > stat.maxMs) stat.maxMs = ms
+    callsSinceFlush++
     flushIfDue()
 }
 
