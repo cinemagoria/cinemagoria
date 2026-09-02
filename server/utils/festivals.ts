@@ -23,6 +23,7 @@ export const FESTIVAL_NAME_BY_SLUG: Record<string, string> = {
     locarno: 'Locarno Film Festival',
     bifan: 'BIFAN',
     biff: 'Busan International Film Festival',
+    bfi: 'BFI London Film Festival',
 }
 
 export const NAME_TO_SLUG: Record<string, string> = Object.fromEntries(
