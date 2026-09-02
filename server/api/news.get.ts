@@ -1,5 +1,11 @@
 import { dbExecute } from '~~/server/utils/db'
 
+// Third-party RSS items (curated_news, ~28k rows) are off on the public sites:
+// browsing already defaults to source=Cinemagoria, and only search reached them,
+// walking the whole language partition because LIKE cannot use an index. Flip to
+// true to bring the aggregated sources back — the code paths below are intact.
+const CURATED_NEWS_ENABLED = false
+
 export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig()
     const query = getQuery(event)
@@ -7,7 +13,8 @@ export default defineEventHandler(async (event) => {
     const limit = parseInt(String(query.limit)) || 100
     const rawLang = String(query.lang || config.public.apiLang || 'en')
     const lang = rawLang.substring(0, 2).toLowerCase()
-    const source = query.source ? String(query.source) : null
+    const requestedSource = query.source ? String(query.source) : null
+    const source = CURATED_NEWS_ENABLED ? requestedSource : 'Cinemagoria'
     // Require >=2 chars: a single-char `LIKE '%a%'` matches almost everything and
     // forces a full-table scan on curated_news with no usable index — the exact
     // shape that hung for 60s and 504'd. Short/empty terms fall back to the

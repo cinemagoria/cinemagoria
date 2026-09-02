@@ -475,13 +475,13 @@ const { data, pending, refresh, error } = await useFetch('/api/news', {
   query: computed(() => {
     // Gate on isSearchActive so closing the search bar reverts the fetch
     // immediately instead of waiting for the 500ms debounce to flush.
-    // While searching, drop the source filter so historical third-party
-    // articles are also returned. Cinemagoria items are still surfaced
-    // first via the sort below.
+    // Search stays inside Cinemagoria articles. Dropping the source filter here
+    // used to widen the search to the third-party RSS archive, which cost a full
+    // walk of ~28k rows per query for results nobody was looking for.
     const isSearching = isSearchActive.value && !!debouncedSearchQuery.value;
     return {
       limit: isSearching ? 200 : (selectedSource.value ? 100 : 200),
-      source: isSearching ? undefined : selectedSource.value,
+      source: isSearching ? 'Cinemagoria' : selectedSource.value,
       lang: currentLang.value,
       q: isSearching ? debouncedSearchQuery.value : undefined
     };
