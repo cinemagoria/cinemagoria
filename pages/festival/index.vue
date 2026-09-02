@@ -17,6 +17,9 @@ onMounted(() => {
 })
 
 const festivals = [
+  { slug: 'bfi-2026',       name: 'BFI London',     year: 2026, city: 'Londres',    country: 'Reino Unido',
+    startDate: '2026-10-07', endDate: '2026-10-18', dateLabel: '7 – 18 oct 2026',
+    image: '/festivals/bfi/bfi_backdrop_2026_es.webp' },
   { slug: 'biff-2026',      name: 'BIFF',           year: 2026, city: 'Busan',      country: 'Corea del Sur',
     startDate: '2026-10-06', endDate: '2026-10-15', dateLabel: '6 – 15 oct 2026',
     image: '/festivals/biff/biff_backdrop_2026_es.webp' },
