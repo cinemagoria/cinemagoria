@@ -472,13 +472,13 @@ const { data, pending, refresh, error } = await useFetch('/api/news', {
   query: computed(() => {
     // Gateamos en isSearchActive para que al cerrar la barra de búsqueda el
     // fetch vuelva al feed normal de inmediato en vez de esperar el debounce
-    // de 500ms. Durante búsqueda, quitamos el filtro de source para que
-    // aparezcan también artículos históricos de third parties. Cinemagoria
-    // se prioriza vía el sort de abajo.
+    // de 500ms. La búsqueda se queda dentro de los artículos propios: quitar el
+    // filtro de source la abría al archivo RSS de terceros, y eso costaba
+    // recorrer ~28k filas por consulta para resultados que nadie buscaba.
     const isSearching = isSearchActive.value && !!debouncedSearchQuery.value;
     return {
       limit: isSearching ? 200 : (selectedSource.value ? 100 : 200),
-      source: isSearching ? undefined : selectedSource.value,
+      source: isSearching ? 'Cinemagoria' : selectedSource.value,
       lang: currentLang.value,
       q: isSearching ? debouncedSearchQuery.value : undefined
     };
