@@ -1704,6 +1704,12 @@ export function getStreamingProviderBySlug(slug) {
 
 export const SUPPORTED_FESTIVALS = [
     {
+        id: 'bfi',
+        name: 'BFI London Film Festival (LFF) 2026',
+        slug: 'bfi-2026',
+        logo_path: '/festivals/bfi/bfi_film_festival_2026_logo.png'
+    },
+    {
         id: 'biff',
         name: 'Busan International Film Festival (BIFF) 2026',
         slug: 'biff-2026',
