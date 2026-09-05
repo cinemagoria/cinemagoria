@@ -544,6 +544,7 @@ import LocarnoBadge from '~/components/festival/LocarnoBadge.vue';
 import BifanBadge from '~/components/festival/BifanBadge.vue';
 import BiffBadge from '~/components/festival/BiffBadge.vue';
 import BfiBadge from '~/components/festival/BfiBadge.vue';
+import SitgesBadge from '~/components/festival/SitgesBadge.vue';
 import { MANUAL_FESTIVAL_BADGES, MANUAL_OVERVIEWS } from '~/utils/constants';
 import { getHeroEnrichment, getNoirEnrichment } from '~/utils/api';
 import NoirModal from '~/components/NoirModal.vue';
@@ -583,6 +584,7 @@ function mapFestivalsToFields(festivals, itemId, itemName) {
     bifanFilm: f.bifan || null,
     biffFilm: f.biff || null,
     bfiFilm: f.bfi || null,
+    sitgesFilm: f.sitges || null,
     cannesFilm: null,
     cannesCriticsChoiceFilm: null,
     cannesQuinzaineFilm: null,
@@ -628,6 +630,7 @@ function mapFestivalsToFields(festivals, itemId, itemName) {
     if (manual.includes('bifan') && !fields.bifanFilm) fields.bifanFilm = stub;
     if (manual.includes('biff') && !fields.biffFilm) fields.biffFilm = stub;
     if (manual.includes('bfi') && !fields.bfiFilm) fields.bfiFilm = stub;
+    if (manual.includes('sitges') && !fields.sitgesFilm) fields.sitgesFilm = stub;
   }
 
   return fields;
@@ -660,6 +663,7 @@ export default {
     BifanBadge,
     BiffBadge,
     BfiBadge,
+    SitgesBadge,
     NoirModal,
   },
 
@@ -859,6 +863,7 @@ export default {
         { name: 'bifan', film: this.bifanFilm, component: 'BifanBadge', link: '/festival/bifan-2026', isSimple: true },
         { name: 'biff', film: this.biffFilm, component: 'BiffBadge', link: '/festival/biff-2026', isSimple: true },
         { name: 'bfi', film: this.bfiFilm, component: 'BfiBadge', link: '/festival/bfi-2026', isSimple: true },
+        { name: 'sitges', film: this.sitgesFilm, component: 'SitgesBadge', link: '/festival/sitges-2026', isSimple: true },
       ];
       return festivalConfig.filter(f => f.film);
     },

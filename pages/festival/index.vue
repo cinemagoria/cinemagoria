@@ -19,6 +19,9 @@ onMounted(() => {
 })
 
 const festivals = [
+  { slug: 'sitges-2026',    name: 'Sitges',         year: 2026, city: 'Sitges',     country: 'Spain',
+    startDate: '2026-10-08', endDate: '2026-10-18', dateLabel: 'Oct 8 – 18, 2026',
+    image: '/festivals/sitges/sitges_backdrop_2026_en.webp' },
   { slug: 'bfi-2026',       name: 'BFI London',     year: 2026, city: 'London',     country: 'UK',
     startDate: '2026-10-07', endDate: '2026-10-18', dateLabel: 'Oct 7 – 18, 2026',
     image: '/festivals/bfi/bfi_backdrop_2026_en.webp' },
