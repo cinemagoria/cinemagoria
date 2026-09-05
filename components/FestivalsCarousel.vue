@@ -77,6 +77,7 @@ import LocarnoCard from '~/components/LocarnoCard.vue';
 import BifanCard from '~/components/BifanCard.vue';
 import BiffCard from '~/components/BiffCard.vue';
 import BfiCard from '~/components/BfiCard.vue';
+import SitgesCard from '~/components/SitgesCard.vue';
 
 const AUTOPLAY_INTERVAL = 10000;
 
@@ -107,6 +108,7 @@ export default {
     BifanCard,
     BiffCard,
     BfiCard,
+    SitgesCard,
   },
 
   props: {
@@ -170,6 +172,7 @@ export default {
         bifan: 'BifanCard',
         biff: 'BiffCard',
         bfi: 'BfiCard',
+        sitges: 'SitgesCard',
       };
       return cardMap[item.festival_source] || 'SundanceCard';
     },
