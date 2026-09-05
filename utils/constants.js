@@ -1704,6 +1704,12 @@ export function getStreamingProviderBySlug(slug) {
 
 export const SUPPORTED_FESTIVALS = [
     {
+        id: 'sitges',
+        name: 'Sitges Film Festival (Festival Internacional de Cinema Fantàstic de Catalunya) 2026',
+        slug: 'sitges-2026',
+        logo_path: '/festivals/sitges/sitges_film_festival_2026_logo.png'
+    },
+    {
         id: 'bfi',
         name: 'BFI London Film Festival (LFF) 2026',
         slug: 'bfi-2026',
