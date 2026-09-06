@@ -1,0 +1,35 @@
+name: Backfill Spanish descriptions
+
+# The curated tables are what the homepage and the noir archive read directly,
+# with no translation at request time. Filling them is a one-way ratchet: every
+# row done is a synopsis that never costs a model call again.
+#
+# It runs in bounded batches because the free tier has a daily ceiling — past
+# it every request fails, so a run that stops short finishes the remainder the
+# next day instead of wasting the attempts.
+on:
+  schedule:
+    - cron: '47 6 * * *' # after the model refresh, so it uses a fresh snapshot
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'Translations to perform in this run'
+        default: '80'
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: yarn install --frozen-lockfile --ignore-scripts
+      - name: Fill the empty descriptions
+        env:
+          OR_API_KEY: ${{ secrets.OR_API_KEY }}
+          RSS_DB_URL: ${{ secrets.RSS_DB_URL || secrets.TURSO_DATABASE_URL }}
+          RSS_DB_TOKEN: ${{ secrets.RSS_DB_TOKEN || secrets.TURSO_AUTH_TOKEN }}
+          BACKFILL_LIMIT: ${{ inputs.limit || '80' }}
+        run: node scripts/backfillSpanishDesc.mjs
