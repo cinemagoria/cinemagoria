@@ -27,15 +27,20 @@ const CREW_DEPARTMENTS = [
 const CAST_LIMIT = 15;
 const CREW_LIMIT = 8;
 
+const HTML_ENTITIES = {
+  '&nbsp;': ' ',
+  '&lt;': '<',
+  '&gt;': '>',
+  '&#39;': "'",
+  '&apos;': "'",
+  '&quot;': '"',
+  '&amp;': '&',
+};
+
 function plainText(value) {
   return String(value == null ? '' : value)
     .replace(/<[^>]*>/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&#39;|&apos;/g, "'")
-    .replace(/&quot;/g, '"')
+    .replace(/&nbsp;|&lt;|&gt;|&#39;|&apos;|&quot;|&amp;/g, entity => HTML_ENTITIES[entity])
     .replace(/\s+/g, ' ')
     .trim();
 }
