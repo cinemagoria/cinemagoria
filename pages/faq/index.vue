@@ -116,7 +116,7 @@ const sections = [
         q: '¿Qué es N.O.I.R.?',
         a: `<p class="lead-line"><strong>N.O.I.R. &mdash; <em>Nothing Out Is Ready</em>.</strong></p>
 <p>La capa curatorial más importante de la plataforma y su herramienta editorial más activa. Desde premieres tempranas hasta histórico permanente, N.O.I.R. reúne títulos emergentes desde <strong>2024 en adelante</strong> considerados culturales o relevantes dentro del marco editorial.</p>
-<p>El acceso al histórico dedicado en <a href="/noir" class="inline-link">/noir</a> requiere una cuenta autenticada.</p>`
+<p>El histórico dedicado en <a href="/noir" class="inline-link">/noir</a> se puede consultar sin cuenta. Solo hace falta una para clonarlo a una colección propia.</p>`
       },
       {
         q: '¿Cómo entra un título a N.O.I.R. y cómo se mueve dentro de la plataforma?',
@@ -198,7 +198,7 @@ const sections = [
     items: [
       {
         q: '¿Hace falta una cuenta?',
-        a: `<p>La mayor parte del descubrimiento no requiere una cuenta. Sin embargo, una cuenta habilita watchlists, calificaciones, seguimiento de repartos, equipos, proyectos, notificaciones, listas personalizadas, artículos guardados, seguimiento de episodios y acceso completo al histórico de N.O.I.R.</p>`
+        a: `<p>La mayor parte del descubrimiento no requiere una cuenta. Sin embargo, una cuenta habilita watchlists, calificaciones, seguimiento de repartos, equipos, proyectos, notificaciones, listas personalizadas, artículos guardados, seguimiento de episodios y participación plena en N.O.I.R.</p>`
       },
       {
         q: '¿Los perfiles son públicos? ¿Las listas pueden ser privadas o clonadas?',
