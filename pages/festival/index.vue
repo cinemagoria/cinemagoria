@@ -8,16 +8,6 @@ useHead({
   ],
 })
 
-const showContent = ref(false)
-
-onMounted(() => {
-    if (typeof window !== 'undefined' && localStorage.getItem('access_token')) {
-        showContent.value = true
-    }
-    // If no token, the middleware already dispatched open-auth-modal;
-    // content stays hidden so the user never sees festival content without auth.
-})
-
 const festivals = [
   { slug: 'sitges-2026',    name: 'Sitges',         year: 2026, city: 'Sitges',     country: 'Spain',
     startDate: '2026-10-08', endDate: '2026-10-18', dateLabel: 'Oct 8 – 18, 2026',
@@ -169,7 +159,7 @@ const counts = computed(() => ({
 </script>
 
 <template>
-  <main v-if="showContent" class="main">
+  <main class="main">
     <div class="container">
       <div class="page-header">
         <h1 class="page-title">Film Festivals</h1>

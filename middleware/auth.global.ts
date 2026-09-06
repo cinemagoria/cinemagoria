@@ -17,11 +17,9 @@ export default defineNuxtRouteMiddleware((to, from) => {
     if (import.meta.server) return
 
     const protectedPaths = [
-        '/festival',
         '/lists',
         '/watchlist',
         '/awards',
-        '/calendar',
         '/settings',
         '/notifications',
         '/production-companies',
