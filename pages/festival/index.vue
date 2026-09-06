@@ -8,14 +8,6 @@ useHead({
   ],
 })
 
-const showContent = ref(false)
-
-onMounted(() => {
-    if (typeof window !== 'undefined' && localStorage.getItem('access_token')) {
-        showContent.value = true
-    }
-})
-
 const festivals = [
   { slug: 'sitges-2026',    name: 'Sitges',         year: 2026, city: 'Sitges',     country: 'España',
     startDate: '2026-10-08', endDate: '2026-10-18', dateLabel: '8 – 18 oct 2026',
@@ -173,7 +165,7 @@ const counts = computed(() => ({
 </script>
 
 <template>
-  <main v-if="showContent" class="main">
+  <main class="main">
     <div class="container">
       <div class="page-header">
         <h1 class="page-title">Festivales de Cine</h1>
