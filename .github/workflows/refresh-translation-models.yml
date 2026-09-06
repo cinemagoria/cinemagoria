@@ -1,0 +1,27 @@
+name: Refresh translation models
+
+# The free catalogue rotates, and a model list written into the source expires
+# without anyone noticing until translation has already been broken for a
+# while. This rediscovers it daily.
+on:
+  schedule:
+    - cron: '23 5 * * *' # off-the-hour, to miss the top-of-hour scheduling crush
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: yarn install --frozen-lockfile --ignore-scripts
+      - name: Probe the catalogue and store the snapshot
+        env:
+          OR_API_KEY: ${{ secrets.OR_API_KEY }}
+          # Same fallback the app itself uses in nuxt.config.ts.
+          RSS_DB_URL: ${{ secrets.RSS_DB_URL || secrets.TURSO_DATABASE_URL }}
+          RSS_DB_TOKEN: ${{ secrets.RSS_DB_TOKEN || secrets.TURSO_AUTH_TOKEN }}
+        run: node scripts/refreshTranslationModels.mjs

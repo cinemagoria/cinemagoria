@@ -2154,64 +2154,6 @@ async function _callGemini(userPrompt) {
     return null;
 }
 
-// --- OpenRouter fallback ---
-const OR_TRANSLATE_MODELS = [
-    'arcee-ai/trinity-large-preview:free',
-    'google/gemini-2.0-flash-exp:free',
-    'meta-llama/llama-3.3-70b-instruct:free',
-];
-
-async function _translateWithOpenRouter(text) {
-    if (!text || !text.trim()) return null;
-    if (!import.meta.client) return null;
-    const apiKey = getEnv('orApiKey');
-    if (!apiKey) return null;
-
-    for (const model of OR_TRANSLATE_MODELS) {
-        try {
-            const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model,
-                    messages: [
-                        { role: 'system', content: TRANSLATE_SYSTEM_PROMPT },
-                        { role: 'user', content: TRANSLATE_REVIEW_PROMPT + text }
-                    ]
-                })
-            });
-
-            if (res.status === 429) {
-                console.warn(`OpenRouter model ${model} rate limited, trying next...`);
-                continue;
-            }
-
-            if (!res.ok) {
-                const errBody = await res.text().catch(() => '');
-                console.warn(`OpenRouter model ${model} error ${res.status}: ${errBody}, trying next...`);
-                continue;
-            }
-
-            const data = await res.json();
-            if (data?.error) {
-                console.warn(`OpenRouter model ${model} returned error:`, data.error, '- trying next...');
-                continue;
-            }
-
-            const content = data?.choices?.[0]?.message?.content?.trim();
-            if (content) return content;
-        } catch (e) {
-            console.error(`OpenRouter model ${model} exception:`, e);
-        }
-    }
-
-    console.error('All OpenRouter models exhausted');
-    return null;
-}
-
 // Overviews cache helpers
 async function _fetchCachedOverview(tmdbId, mediaType) {
     try {
@@ -2276,26 +2218,30 @@ async function _translateTextInner(text, tmdbId, mediaType) {
         return cached;
     }
 
-    // 3. Translate: Gemini (6 keys) → OpenRouter
+    // 3. Server side translation.
+    //
+    // The model is picked from a snapshot the daily probe refreshes, so a model
+    // retired from the free catalogue stops being offered without a deploy —
+    // which is what silently broke this path before. The endpoint also owns the
+    // shared cache, so the first reader to open a title pays for the call and
+    // everyone after them reads the row.
     let translation = null;
     try {
-        translation = await _callGemini(TRANSLATE_OVERVIEW_PROMPT + text);
-        if (!translation) {
-            translation = await _translateWithOpenRouter(text);
-        }
+        const res = await $fetch('/api/translate', {
+            method: 'POST',
+            body: { text, tmdbId, mediaType },
+        });
+        translation = res?.translated || null;
     } catch (error) {
         console.error('Translation Error', error);
     }
 
     if (translation) {
         _setCache(text, translation);
-        // Save to DB in background (if tmdbId provided)
-        if (tmdbId && mediaType) {
-            _saveCachedOverview(tmdbId, mediaType, text, translation);
-        }
         return translation;
     }
 
+    // Nothing was available. The English text renders; the reader sees no error.
     return text;
 }
 
@@ -2421,44 +2367,17 @@ ${JSON.stringify(numbered, null, 2)}`;
 async function _translateBatchWithOpenRouter(texts) {
     if (!texts || texts.length === 0) return null;
     if (!import.meta.client) return null;
-    const apiKey = getEnv('orApiKey');
-    if (!apiKey) return null;
-
-    const numbered = {};
-    texts.forEach((t, i) => { numbered[i] = t; });
-
-    const batchPrompt = `Traduce TODAS las siguientes reseñas cinematográficas al español latinoamericano. Preserva la voz de cada crítico.
-
-IMPORTANTE: Responde EXCLUSIVAMENTE con un JSON válido, con las mismas claves numéricas y los valores traducidos. Sin explicaciones, sin markdown, sin backticks.
-
-${JSON.stringify(numbered, null, 2)}`;
-
+    // Routed through the server: the model comes from the daily snapshot rather
+    // than a literal, and the provider key stays out of the browser bundle.
     try {
-        const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        const res = await $fetch('/api/translate', {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: 'arcee-ai/trinity-large-preview:free',
-                messages: [
-                    { role: 'system', content: TRANSLATE_SYSTEM_PROMPT },
-                    { role: 'user', content: batchPrompt }
-                ]
-            })
+            body: { texts },
         });
-        if (!res.ok) return null;
-        const data = await res.json();
-        const raw = data?.choices?.[0]?.message?.content?.trim();
-        if (!raw) return null;
-
-        const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
-        const parsed = JSON.parse(cleaned);
-
-        return texts.map((_, i) => parsed[i] || parsed[String(i)] || null);
+        const out = res?.translations;
+        return Array.isArray(out) && out.some(Boolean) ? out : null;
     } catch (e) {
-        console.error('OpenRouter batch parse error:', e);
+        console.error('Batch translation error:', e);
         return null;
     }
 }

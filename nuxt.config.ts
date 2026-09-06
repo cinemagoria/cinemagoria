@@ -115,6 +115,9 @@ export default defineNuxtConfig({
     rssDbUrl: process.env.RSS_DB_URL || process.env.TURSO_DATABASE_URL,
     rssDbToken: process.env.RSS_DB_TOKEN || process.env.TURSO_AUTH_TOKEN,
     traktClientSecret: process.env.TRAKT_CLIENT_SECRET,
+    // Server-only: the translation endpoint calls OpenRouter from Nitro, so
+    // the key never reaches the browser bundle.
+    orApiKey: process.env.OR_API_KEY,
 
     public: {
       frontendUrl: process.env.FRONTEND_URL || "https://es.cinemagoria.com",
