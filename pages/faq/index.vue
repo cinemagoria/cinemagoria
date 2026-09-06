@@ -116,7 +116,7 @@ const sections = [
         q: 'What is N.O.I.R.?',
         a: `<p class="lead-line"><strong>N.O.I.R. &mdash; <em>Nothing Out Is Ready</em>.</strong></p>
 <p>The highest curatorial layer on the platform and its most actively developed feature. From early premieres to a permanent archive, N.O.I.R. catalogs emerging titles from <strong>2024 onward</strong> considered culturally, aesthetically or creatively significant within the editorial framework.</p>
-<p>Access to the dedicated archive at <a href="/noir" class="inline-link">/noir</a> requires an authenticated account.</p>`
+<p>The dedicated archive at <a href="/noir" class="inline-link">/noir</a> is open to read. An account is only needed to clone it into a personal list.</p>`
       },
       {
         q: 'How does a title enter N.O.I.R., and how does it move through the platform?',
