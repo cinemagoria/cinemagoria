@@ -1,6 +1,15 @@
 <template>
   <div>
     <div class="spacing" :class="$style.info">
+      <button
+        type="button"
+        :class="[$style.copyBtn, copiedSummary ? $style.copied : '']"
+        :aria-label="copiedSummary ? 'Datos copiados' : 'Copiar datos'"
+        :title="copiedSummary ? 'Copiado' : 'Copiar datos'"
+        @click="copySummary">
+        <svg v-if="copiedSummary" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <svg v-else xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      </button>
       <div :class="$style.left">
         <div :class="$style.poster">
           <div v-if="isPosterLoading" class="poster-loader">
@@ -333,6 +342,7 @@ import ListingCarousel from '~/components/ListingCarousel';
 import FullCreditsModal from '~/components/common/FullCreditsModal';
 
 import { getProductionCompanySlug } from '~/utils/constants';
+import { buildCopySummary } from '~/utils/copySummary';
 
 export default {
   components: {
@@ -396,6 +406,8 @@ export default {
 
       // Full crew modal
       showCrewModal: false,
+
+      copiedSummary: false,
 
       progressPercentage: 0,
     };
@@ -594,6 +606,32 @@ export default {
     },
     onPosterLoaded() {
       this.isPosterLoading = false;
+    },
+    async copySummary() {
+      const status = [this.displayStatus.text, this.displayStatus.detail].filter(Boolean).join(' ');
+      const summary = buildCopySummary({
+        title: this.item.title || this.item.name,
+        year: (this.item.release_date || '').slice(0, 4),
+        releaseDate: this.item.release_date ? this.fullDate(this.item.release_date) : '',
+        director: this.directors,
+        genres: this.item.genres,
+        status,
+        imdbRating: this.item.imdb_rating,
+        imdbVotes: this.item.imdb_votes,
+        tmdbRating: this.item.vote_average,
+        tmdbVotes: this.item.vote_count,
+        productionCompanies: this.item.production_companies,
+        plot: MANUAL_OVERVIEWS[this.item.id] || this.translatedOverview || this.item.overview,
+        credits: this.item.credits,
+      });
+
+      try {
+        await navigator.clipboard.writeText(summary);
+        this.copiedSummary = true;
+        setTimeout(() => { this.copiedSummary = false; }, 2000);
+      } catch (err) {
+        console.error('Error copying to clipboard:', err);
+      }
     },
     releaseDateLabel(date) {
       if (!date) return 'Lanzamiento';
@@ -1036,6 +1074,51 @@ export default {
   letter-spacing: var(--section-title-tracking);
   line-height: var(--section-title-leading);
   color: #fff;
+}
+.copyBtn {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2.6rem;
+  height: 2.6rem;
+  padding: 0;
+  color: #8BE9FD;
+  background: rgba(139, 233, 253, 0.06);
+  border: 1px solid rgba(139, 233, 253, 0.26);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  svg { display: block; }
+
+  &:hover {
+    background: rgba(139, 233, 253, 0.14);
+    border-color: rgba(139, 233, 253, 0.55);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 233, 253, 0.16);
+  }
+  &:active { transform: translateY(0); }
+
+  @media (min-width: $breakpoint-medium) {
+    top: 1.8rem;
+    right: 1.8rem;
+  }
+}
+.copied {
+  color: #6BE8A3;
+  background: rgba(107, 232, 163, 0.12);
+  border-color: rgba(107, 232, 163, 0.5);
+
+  &:hover {
+    background: rgba(107, 232, 163, 0.18);
+    border-color: rgba(107, 232, 163, 0.6);
+    box-shadow: 0 4px 12px rgba(107, 232, 163, 0.18);
+  }
 }
 .stats {
   margin-bottom: 3rem;
