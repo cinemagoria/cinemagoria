@@ -2,6 +2,7 @@ import {
     TRANSLATE_SYSTEM_PROMPT,
     ensureModelTable,
     getDb,
+    fetchFreeCatalogue,
     getUsableModels,
     hashText,
     looksLikeSpanish,
@@ -16,7 +17,24 @@ import {
  * the row. It also keeps the provider key out of the browser bundle.
  */
 
-const SEED_MODELS = ['cohere/north-mini-code:free', 'minimax/minimax-m3:free']
+/**
+ * Snapshot first, then anything else the catalogue is offering right now.
+ * No model name is ever written into this file: the snapshot is what the daily
+ * probe confirmed, and the catalogue is the live list. A retired model simply
+ * stops appearing in both.
+ */
+async function candidateModels(db: any): Promise<string[]> {
+    let ranked: string[] = []
+    try {
+        await ensureModelTable(db)
+        ranked = await getUsableModels(db)
+    } catch (e: any) {
+        console.error('translate: could not read the model snapshot:', e?.message)
+    }
+    const live = await fetchFreeCatalogue()
+    for (const id of live) if (!ranked.includes(id)) ranked.push(id)
+    return ranked
+}
 
 export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig()
@@ -56,15 +74,7 @@ export default defineEventHandler(async (event) => {
     const apiKey = config.orApiKey
     if (!apiKey) return { translated: null, source: 'unconfigured' }
 
-    let models: string[] = []
-    try {
-        await ensureModelTable(db)
-        models = await getUsableModels(db)
-    } catch (e: any) {
-        console.error('translate: could not read the model snapshot:', e?.message)
-    }
-    // The seeds only matter before the first refresh has ever run.
-    for (const seed of SEED_MODELS) if (!models.includes(seed)) models.push(seed)
+    const models = await candidateModels(db)
 
     // --- translate -----------------------------------------------------------
     for (const model of models) {
@@ -138,12 +148,7 @@ async function translateBatch(config: any, texts: string[]) {
     if (!apiKey || !pending.length) return { translations: texts.map(() => null), source: 'skipped' }
 
     const db = getDb(config)
-    let models: string[] = []
-    try {
-        await ensureModelTable(db)
-        models = await getUsableModels(db)
-    } catch { /* fall through to the seeds */ }
-    for (const seed of SEED_MODELS) if (!models.includes(seed)) models.push(seed)
+    const models = await candidateModels(db)
 
     const numbered: Record<number, string> = {}
     for (const { i, t } of pending) numbered[i] = t

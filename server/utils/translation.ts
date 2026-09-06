@@ -85,3 +85,32 @@ export function hashText(text: string): string {
     for (let i = 0; i < text.length; i += 1) h = ((h << 5) + h + text.charCodeAt(i)) >>> 0
     return h.toString(16)
 }
+
+/**
+ * The live free catalogue, used when the stored snapshot cannot carry the
+ * request on its own.
+ *
+ * This is what keeps the pool from ever depending on a name written into the
+ * source: with no snapshot yet, or with every model in it failing between two
+ * scheduled refreshes, the catalogue is asked again rather than falling back to
+ * a constant that expires like the last one did.
+ */
+let catalogueCache: { ids: string[]; at: number } = { ids: [], at: 0 }
+const CATALOGUE_TTL_MS = 30 * 60 * 1000
+
+export async function fetchFreeCatalogue(): Promise<string[]> {
+    if (catalogueCache.ids.length && Date.now() - catalogueCache.at < CATALOGUE_TTL_MS) {
+        return catalogueCache.ids
+    }
+    try {
+        const res: any = await $fetch('https://openrouter.ai/api/v1/models', { timeout: 10000 })
+        const ids = (res?.data ?? [])
+            .map((m: any) => String(m?.id ?? ''))
+            .filter((id: string) => id.endsWith(':free'))
+        if (ids.length) catalogueCache = { ids, at: Date.now() }
+        return ids
+    } catch (e: any) {
+        console.error('translation: could not read the free catalogue:', e?.message)
+        return catalogueCache.ids
+    }
+}
