@@ -190,5 +190,13 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1788568108/cinemagoria/backdrops/hero_1182935.webp",
     "poster_path": "/888ksoUkfKSBJHxKp6M9sYpJhv2.jpg",
     "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1765072,
+    "media_type": "movie",
+    "trailer_key": "GGJSRFWALTI",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1788758031/cinemagoria/backdrops/hero_youcanseeeverything-backdrop.webp",
+    "poster_path": null,
+    "force_enrichment": true
   }
 ]
