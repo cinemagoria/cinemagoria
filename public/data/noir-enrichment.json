@@ -5182,5 +5182,13 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1788637702/cinemagoria/backdrops/noir_1445148.webp",
     "poster_path": "/12BH9wSreJwl7h7VRHo84V0iydR.jpg",
     "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1765072,
+    "media_type": "movie",
+    "trailer_key": "GGJSRFWALTI",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1788760100/cinemagoria/backdrops/noir_1765072.webp",
+    "poster_path": null,
+    "force_enrichment": true
   }
 ]
