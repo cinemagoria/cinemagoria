@@ -60,11 +60,18 @@ export default defineEventHandler(async (event) => {
     if (cacheable) {
         try {
             const hit = await db.execute({
-                sql: `SELECT content_es FROM overviews_cache WHERE tmdb_id = ? AND media_type = ?`,
+                sql: `SELECT content_en, content_es FROM overviews_cache WHERE tmdb_id = ? AND media_type = ?`,
                 args: [tmdbId, mediaType],
             })
-            const cached = hit.rows[0]?.content_es
-            if (cached) return { translated: String(cached), source: 'cache' }
+            const row = hit.rows[0]
+            // The row is keyed by title, but what it holds is a translation of
+            // one particular text. TMDB rewrites overviews, so a row whose
+            // source no longer matches is a miss: serving it would hand the
+            // reader fluent Spanish for a synopsis that is no longer there.
+            const sameSource = String(row?.content_en ?? '').trim() === text
+            if (row?.content_es && sameSource) {
+                return { translated: String(row.content_es), source: 'cache' }
+            }
         } catch (e: any) {
             console.error('translate: cache read failed:', e?.message)
         }

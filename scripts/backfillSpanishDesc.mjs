@@ -91,8 +91,15 @@ async function main() {
             const title = String(row.title ?? row.tmdb_id).slice(0, 42)
             const english = String(row.overview ?? '').trim()
 
-            // Free: someone already had this translated at request time.
-            if (row.content_es && String(row.content_es).trim()) {
+            // Free: someone already had this translated at request time — but
+            // only if it is a translation of the synopsis that is there now.
+            // TMDB rewrites overviews, and a cache row keyed only by id would
+            // otherwise hand over faithful Spanish for a text that no longer
+            // exists.
+            const cacheMatchesSource =
+                row.content_es &&
+                String(row.cached_en ?? '').trim() === english
+            if (cacheMatchesSource) {
                 await db.execute({
                     sql: `UPDATE ${table} SET spanish_desc = ?, desc_audited_at = ? WHERE tmdb_id = ? AND media_type = ?`,
                     args: [String(row.content_es), new Date().toISOString(), row.tmdb_id, row.media_type],
@@ -125,7 +132,10 @@ async function main() {
                     sql: `INSERT INTO overviews_cache (tmdb_id, media_type, content_en, content_es, content_hash)
                           VALUES (?, ?, ?, ?, 'backfill')
                           ON CONFLICT(tmdb_id, media_type) DO UPDATE SET
-                            content_es = excluded.content_es, updated_at = unixepoch()`,
+                            content_en = excluded.content_en,
+                            content_es = excluded.content_es,
+                            content_hash = excluded.content_hash,
+                            updated_at = unixepoch()`,
                     args: [row.tmdb_id, row.media_type, english, result.out],
                 },
             ], 'write')
