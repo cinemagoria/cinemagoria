@@ -32,11 +32,11 @@
 
       <li>
         <nuxt-link
-          to="/calendar"
-          aria-label="Release calendar"
+          to="/festival"
+          aria-label="Film festivals"
           @click.native="clearSearchBeforeNavigate">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" :class="$style.navIcon"><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 10h16" /><text x="12" y="18.4" text-anchor="middle" font-size="8" font-weight="700" letter-spacing="-0.4" font-family="Anek Bangla, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif" fill="currentColor" stroke="none">{{ todayDay }}</text></svg>
-        <span :class="$style.navLabel">Calendar</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" :class="$style.navIcon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 5l0 2" /><path d="M15 11l0 2" /><path d="M15 17l0 2" /><path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2" /></svg>
+        <span :class="$style.navLabel">Festivals</span>
         </nuxt-link>
       </li>
 
@@ -156,7 +156,6 @@ export default {
   },
   data() {
     return {
-      todayDay: new Date().getDate(),
       authToken: null,
       authInterval: null,
       userLists: [],
@@ -210,7 +209,6 @@ export default {
   },
 
   mounted() {
-    this.todayDay = new Date().getDate();
     this.checkAuthStatus();
 
     // Fallback poll for same-tab token changes that don't dispatch
