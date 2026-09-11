@@ -2139,6 +2139,11 @@ export default {
     height: 0;
     padding-bottom: 40%;
   }
+
+  @media (orientation: landscape) and (max-width: #{$breakpoint-medium - 1px}) and (max-height: 500px) {
+    min-height: 0;
+    height: auto;
+  }
 }
 
 .heroHomepage {
@@ -2240,6 +2245,14 @@ export default {
     width: 71.1%;
     height: 100%;
     border-radius: 0 15px 15px 0;
+  }
+
+  @media (orientation: landscape) and (max-width: #{$breakpoint-medium - 1px}) and (max-height: 500px) {
+    min-height: 0;
+    height: 55vh;
+    max-width: 100%;
+    border-radius: 15px 15px 0 0;
+    overflow: hidden;
   }
 
   &::after {
@@ -2555,6 +2568,13 @@ export default {
 
   @media (max-width: #{$breakpoint-medium - 1px}) {
     width: 100%;
+    object-fit: cover;
+  }
+
+  @media (orientation: landscape) and (max-width: #{$breakpoint-medium - 1px}) and (max-height: 500px) {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
     object-fit: cover;
   }
 }
