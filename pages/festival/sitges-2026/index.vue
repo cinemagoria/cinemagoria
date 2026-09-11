@@ -526,7 +526,7 @@ watch([loading, activeTab, selectionSections], () => {
     else if (sectionObserver) sectionObserver.disconnect();
 }, { flush: 'post' });
 
-const FESTIVAL_TZ = 'Europe/Zurich';
+const FESTIVAL_TZ = 'Europe/Madrid';
 
 const formatDate = (dateStr) => {
     // dateStr is the festival-local day key (YYYY-MM-DD). Anchor to UTC so it

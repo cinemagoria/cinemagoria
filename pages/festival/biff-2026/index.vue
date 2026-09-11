@@ -299,12 +299,14 @@
                       <h3>Sedes</h3>
                     </div>
                     <div class="venue-list">
-                      <div class="venue-item"><strong>Busan Cinema Center</strong><span>Sede central del festival, en Centum City</span></div>
-                      <div class="venue-item"><strong>Roof Theater</strong><span>Pantalla al aire libre del Cinema Center, sede de Open Cinema</span></div>
-                      <div class="venue-item"><strong>Cines de Centum City</strong><span>El polo de multisalas lindero al Cinema Center</span></div>
-                      <div class="venue-item"><strong>Haeundae</strong><span>Salas y sedes del festival frente a la playa</span></div>
+                      <div class="venue-item"><strong>Busan Cinema Center</strong><span>Sede central: Cinema 1, Cinema 2, Cinematheque, Haneulyeon Theatre y el Roof Theater al aire libre</span></div>
+                      <div class="venue-item"><strong>LOTTE CINEMA Centum City</strong><span>Nueve salas, el bloque más grande de la grilla</span></div>
+                      <div class="venue-item"><strong>CGV Centum City</strong><span>Siete salas, incluida la pantalla IMAX</span></div>
+                      <div class="venue-item"><strong>Sohyang Theatre Woori Bank Hall</strong><span>Auditorio que el festival usa para las funciones más grandes</span></div>
+                      <div class="venue-item"><strong>Busan Community Media Center</strong><span>Open Hall</span></div>
+                      <div class="venue-item"><strong>KOFIC Theater</strong><span>Sala del Consejo de Cine de Corea</span></div>
                     </div>
-                    <p class="carousel-desc">El detalle sala por sala se publica junto con el programa oficial y aparecerá en la pestaña de horarios en cuanto se difunda.</p>
+                    <p class="carousel-desc">Veinticuatro salas en seis sedes, todas dentro o alrededor de Centum City. La pestaña de horarios indica la sala de cada función.</p>
                   </template>
 
                   <!-- Slide 3: Sections -->
@@ -331,6 +333,24 @@
                       <div class="section-glossary-item"><strong>Special Screenings &amp; Carte Blanche</strong><span>Películas elegidas por figuras invitadas del cine y la cultura, seguidas de una charla con el público.</span></div>
                     </div>
                   </template>
+                  <!-- Slide 4: Schedule guide -->
+                  <template v-if="infoSlide === 4">
+                    <div class="carousel-card-header">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                      <h3>Cómo leer la grilla</h3>
+                    </div>
+                    <div class="section-glossary">
+                      <div class="section-glossary-item"><strong>ALL · 12 · 15 · 19</strong><span>Calificación coreana: apta para todo público, o prohibida para menores de 12, de 15 y de 19.</span></div>
+                      <div class="section-glossary-item"><strong>KE</strong><span>Subtítulos en coreano e inglés, o diálogo en inglés.</span></div>
+                      <div class="section-glossary-item"><strong>KN</strong><span>Subtítulos en coreano sobre diálogo que no está en inglés, y sin subtítulos en inglés.</span></div>
+                      <div class="section-glossary-item"><strong>KK</strong><span>Subtítulos en coreano sobre diálogo en coreano.</span></div>
+                      <div class="section-glossary-item"><strong>NO</strong><span>Sin diálogo.</span></div>
+                      <div class="section-glossary-item"><strong>Sin marca</strong><span>Subtítulos en inglés sobre diálogo en coreano.</span></div>
+                      <div class="section-glossary-item"><strong>GV</strong><span>Guest Visit: la función cuenta con un invitado. Puede cambiar sin aviso y no siempre hay interpretación al inglés.</span></div>
+                      <div class="section-glossary-item"><strong>Función en tanda</strong><span>Varios cortos programados en un mismo pase. Cada uno figura acá con ese mismo horario.</span></div>
+                    </div>
+                    <p class="carousel-desc">No se permite entrar pasados los quince minutos de comenzada la función, y los menores de cuatro años no entran ni acompañados. Está prohibido fotografiar y grabar de principio a fin, avances y títulos finales incluidos.</p>
+                  </template>
                 </div>
               </transition>
             </div>
@@ -341,7 +361,7 @@
           </div>
 
           <div class="carousel-dots">
-            <button v-for="i in 4" :key="i" class="dot" :class="{ active: infoSlide === i - 1 }" @click="goToSlide(i - 1)" :aria-label="`Slide ${i}`"></button>
+            <button v-for="i in 5" :key="i" class="dot" :class="{ active: infoSlide === i - 1 }" @click="goToSlide(i - 1)" :aria-label="`Slide ${i}`"></button>
           </div>
         </div>
       </div>
@@ -391,8 +411,8 @@ const clearScheduleSearch = () => {
 };
 const infoSlide = ref(0);
 const slideDirection = ref('carousel-next');
-const prevSlide = () => { slideDirection.value = 'carousel-prev'; infoSlide.value = (infoSlide.value - 1 + 4) % 4; };
-const nextSlide = () => { slideDirection.value = 'carousel-next'; infoSlide.value = (infoSlide.value + 1) % 4; };
+const prevSlide = () => { slideDirection.value = 'carousel-prev'; infoSlide.value = (infoSlide.value - 1 + 5) % 5; };
+const nextSlide = () => { slideDirection.value = 'carousel-next'; infoSlide.value = (infoSlide.value + 1) % 5; };
 const goToSlide = (i) => { slideDirection.value = i > infoSlide.value ? 'carousel-next' : 'carousel-prev'; infoSlide.value = i; };
 const loading = ref(true);
 const backdropLoaded = ref(false);
@@ -537,7 +557,7 @@ watch([loading, activeTab, selectionSections], () => {
     else if (sectionObserver) sectionObserver.disconnect();
 }, { flush: 'post' });
 
-const FESTIVAL_TZ = 'Europe/Zurich';
+const FESTIVAL_TZ = 'Asia/Seoul';
 
 const formatDate = (dateStr) => {
     // dateStr is the festival-local day key (YYYY-MM-DD). Anchor to UTC so it
