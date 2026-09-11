@@ -2140,7 +2140,7 @@ export default {
     padding-bottom: 40%;
   }
 
-  @media (orientation: landscape) and (max-width: #{$breakpoint-medium - 1px}) and (max-height: 500px) {
+  @media (orientation: landscape) and (max-width: #{$breakpoint-medium - 1px}) and (max-height: 600px) {
     min-height: 0;
     height: auto;
   }
@@ -2247,7 +2247,7 @@ export default {
     border-radius: 0 15px 15px 0;
   }
 
-  @media (orientation: landscape) and (max-width: #{$breakpoint-medium - 1px}) and (max-height: 500px) {
+  @media (orientation: landscape) and (max-width: #{$breakpoint-medium - 1px}) and (max-height: 600px) {
     flex: 0 0 auto;
     min-height: 0;
     height: 70vh;
@@ -2564,20 +2564,10 @@ export default {
 
 .image {
   display: inline-block;
-  max-width: none;
+  width: 100%;
+  max-width: 100%;
   height: 100%;
-
-  @media (max-width: #{$breakpoint-medium - 1px}) {
-    width: 100%;
-    object-fit: cover;
-  }
-
-  @media (orientation: landscape) and (max-width: #{$breakpoint-medium - 1px}) and (max-height: 500px) {
-    width: 100%;
-    max-width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+  object-fit: cover;
 }
 
 .pane {
