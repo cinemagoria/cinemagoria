@@ -2250,8 +2250,7 @@ export default {
   @media (orientation: landscape) and (max-width: #{$breakpoint-medium - 1px}) and (max-height: 500px) {
     flex: 0 0 auto;
     min-height: 0;
-    height: auto;
-    aspect-ratio: 16 / 9;
+    height: 70vh;
     max-width: 100%;
     border-radius: 15px 15px 0 0;
     overflow: hidden;
