@@ -67,7 +67,11 @@ async function probe(model, key) {
             }),
         })
         const ms = Date.now() - started
-        if (!res.ok) return { usable: false, ms, reason: `HTTP ${res.status}` }
+        if (!res.ok) {
+            // The free-tier ceiling is reported as a 429 on every model, so it
+            // says nothing about this one.
+            return { usable: false, ms, reason: `HTTP ${res.status}`, quota: res.status === 429 }
+        }
         const body = await res.json()
         const out = String(body?.choices?.[0]?.message?.content ?? '').trim()
         if (!out) return { usable: false, ms, reason: 'empty response' }
@@ -94,16 +98,35 @@ async function main() {
 
     console.log(`→ probing ${models.length} free models`)
     const rows = []
+    let quotaStrike = 0
     for (const model of models) {
         const r = await probe(model, key)
         rows.push({ model, ...r })
         console.log(`  ${r.usable ? '✓' : '✗'} ${model.padEnd(50)} ${String(r.ms).padStart(5)}ms  ${r.reason ?? ''}`)
+
+        // The allowance is shared across every free model, so once a few in a
+        // row refuse there is nothing left to learn — and each further probe
+        // spends a request from an allowance that is already empty.
+        quotaStrike = r.quota ? quotaStrike + 1 : 0
+        if (quotaStrike >= 3) {
+            console.log('\n  the free allowance is spent; stopping rather than probing the rest')
+            break
+        }
         await new Promise((r) => setTimeout(r, 900))
+    }
+
+    // Nothing answered at all: this is a day without allowance, not a broken
+    // catalogue. The snapshot stays as it was and the run is not a failure —
+    // a red mark every such morning would only teach us to ignore it.
+    if (rows.every((r) => r.quota)) {
+        console.log('✓ No allowance today. The previous snapshot is untouched.')
+        return
     }
 
     const usable = rows.filter((r) => r.usable)
     if (!usable.length) {
-        console.error('✗ No model translated correctly. Leaving the previous snapshot in place.')
+        // Models answered and none of them translated: that is worth a failure.
+        console.error('✗ Models answered but none translated. Leaving the previous snapshot in place.')
         process.exit(1)
     }
 

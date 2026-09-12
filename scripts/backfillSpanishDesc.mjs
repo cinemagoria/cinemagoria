@@ -57,6 +57,10 @@ async function translate(text, models, key) {
                     messages: [{ role: 'system', content: SYSTEM }, { role: 'user', content: text }],
                 }),
             })
+            // A 429 is the account's shared allowance, not this model's limit:
+            // every other one will refuse identically, so trying them spends
+            // requests to learn nothing.
+            if (res.status === 429) return { quota: true }
             if (!res.ok) continue
             const out = String((await res.json())?.choices?.[0]?.message?.content ?? '').trim()
             if (looksLikeSpanish(out, text)) return { out, model }
@@ -74,10 +78,15 @@ async function main() {
     if (!models.length) { console.error('✗ The snapshot has no usable model. Run the refresh first.'); process.exit(1) }
     console.log(`→ ${models.length} models available\n`)
 
-    const limit = Number(process.env.BACKFILL_LIMIT || 0) || Infinity
-    let copied = 0, translated = 0, failed = 0, skipped = 0
+    // Deliberately well under the free tier's daily request ceiling. The probe
+    // spends some of it, and what is left has to serve actual readers — a
+    // backfill that empties the allowance before anyone visits has made the
+    // site worse, not better. The remainder is picked up tomorrow.
+    const limit = Number(process.env.BACKFILL_LIMIT || 0) || 15
+    let copied = 0, translated = 0, failed = 0, skipped = 0, quotaSpent = false
 
     for (const table of TABLES) {
+        if (quotaSpent) break
         const rows = (await db.execute(
             `SELECT t.tmdb_id, t.media_type, t.title, t.overview, c.content_es
              FROM ${table} t
@@ -114,12 +123,14 @@ async function main() {
             if (translated >= limit) { console.log(`\n  reached BACKFILL_LIMIT (${limit}); the rest waits for the next run`); break }
 
             const result = await translate(english, models, key)
+            if (result?.quota) {
+                console.log(`\n  the free allowance is spent; the rest waits for the next run`)
+                quotaSpent = true
+                break
+            }
             if (!result) {
                 failed += 1
                 console.log(`  ✗ ${title.padEnd(44)} every model declined`)
-                // Once the daily ceiling is hit every remaining row fails the
-                // same way; stopping keeps the log readable and the run short.
-                if (failed >= 12 && translated === 0) { console.log('\n  giving up: the tier looks exhausted'); break }
                 continue
             }
 
