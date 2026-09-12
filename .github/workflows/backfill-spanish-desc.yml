@@ -1,0 +1,37 @@
+name: Backfill Spanish descriptions
+
+# Lives on the default branch because GitHub Actions only fires `schedule:`
+# from there; the scripts are on `es`, which is what it checks out.
+#
+# The curated tables are read directly by the homepage and the noir archive
+# with no translation at request time, so every row filled here is a synopsis
+# that never costs a model call again. Runs are bounded because the free tier
+# has a daily ceiling, past which every attempt fails the same way.
+on:
+  schedule:
+    - cron: '47 6 * * *' # after the model refresh, so it uses a fresh snapshot
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'Translations to perform in this run'
+        default: '80'
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: es
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: yarn install --frozen-lockfile --ignore-scripts
+      - name: Fill the empty descriptions
+        env:
+          OR_API_KEY: ${{ secrets.OR_API_KEY }}
+          RSS_DB_URL: ${{ secrets.RSS_DB_URL || secrets.TURSO_DATABASE_URL }}
+          RSS_DB_TOKEN: ${{ secrets.RSS_DB_TOKEN || secrets.TURSO_AUTH_TOKEN }}
+          BACKFILL_LIMIT: ${{ inputs.limit || '80' }}
+        run: node scripts/backfillSpanishDesc.mjs
