@@ -25,7 +25,18 @@ import {
 
 // A model that has not answered by now is not going to rescue the request; the
 // next one in the list is a better bet than waiting.
-const MODEL_TIMEOUT_MS = 12000
+const MODEL_TIMEOUT_MS = 8000
+
+// How long to wait on one model before also asking the next.
+//
+// Free-tier latency is not slow so much as unpredictable: the same model
+// answers this synopsis in 423 ms on one draw and takes six seconds on the
+// next, because the request queues behind someone else's. Trying models one at
+// a time makes the reader pay for every bad draw in sequence. Asking a second
+// one only once the first has already taken longer than usual turns the tail
+// into a race, and on the common path — a median well under a second — the
+// second call is never made at all.
+const HEDGE_AFTER_MS = 1200
 
 type Source = { content_en: unknown; content_es: unknown }
 
@@ -88,7 +99,13 @@ function persist(db: any, tmdbId: number, mediaType: string, en: string, es: str
     )
 }
 
-async function callModel(apiKey: string, model: string, messages: any[], maxTokens?: number) {
+async function callModel(
+    apiKey: string,
+    model: string,
+    messages: any[],
+    maxTokens?: number,
+    signal?: AbortSignal,
+) {
     const res = await $fetch<any>('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -99,8 +116,78 @@ async function callModel(apiKey: string, model: string, messages: any[], maxToke
         },
         body: { model, temperature: 0.3, ...(maxTokens ? { max_tokens: maxTokens } : {}), messages },
         timeout: MODEL_TIMEOUT_MS,
+        signal,
     })
     return String(res?.choices?.[0]?.message?.content ?? '').trim()
+}
+
+/**
+ * Asks models in order, but overlapping: each gets `HEDGE_AFTER_MS` of
+ * exclusivity before the next is also asked, and the first answer that passes
+ * `accept` wins. Losers are aborted, so a slow draw costs a cancelled request
+ * rather than the reader's time.
+ */
+async function race<T>(
+    models: string[],
+    start: (model: string, signal: AbortSignal) => Promise<string>,
+    accept: (raw: string) => T | null,
+): Promise<{ model: string; value: T } | null> {
+    type Entry = { id: number; model: string; controller: AbortController; promise: Promise<any> }
+
+    const started: Entry[] = []
+    const pending = new Map<number, Entry>()
+    let next = 0
+
+    const launch = () => {
+        const id = next
+        const model = models[next++]
+        const controller = new AbortController()
+        const promise = start(model, controller.signal)
+            .then((raw: string) => ({ id, model, raw, error: null as any }))
+            .catch((error: any) => ({ id, model, raw: '', error }))
+        const entry: Entry = { id, model, controller, promise }
+        started.push(entry)
+        pending.set(id, entry)
+    }
+
+    const abortAll = () => { for (const e of started) e.controller.abort() }
+
+    if (!models.length) return null
+    launch()
+
+    while (pending.size) {
+        const canHedge = next < models.length
+        const timer = canHedge
+            ? new Promise<any>((resolve) => setTimeout(() => resolve({ tick: true }), HEDGE_AFTER_MS))
+            : null
+        const racers = [...pending.values()].map((e) => e.promise)
+
+        const settled: any = await Promise.race(timer ? [...racers, timer] : racers)
+
+        if (settled?.tick) {
+            launch()
+            continue
+        }
+
+        pending.delete(settled.id)
+
+        if (settled.error) {
+            console.warn(`translate: ${settled.model} failed — ${settled.error?.message}`)
+        } else {
+            const value = accept(settled.raw)
+            if (value !== null) {
+                abortAll()
+                return { model: settled.model, value }
+            }
+            console.warn(`translate: ${settled.model} did not return a translation`)
+        }
+
+        // Keep the race alive rather than giving up while models remain.
+        if (!pending.size && next < models.length) launch()
+    }
+
+    abortAll()
+    return null
 }
 
 /** Snapshot first; the live catalogue only when the snapshot cannot carry it. */
@@ -143,31 +230,26 @@ export default defineEventHandler(async (event) => {
     if (!apiKey) return { translated: null, source: 'unconfigured' }
 
     const maxTokens = Math.min(2048, Math.ceil(text.length / 2) + 400)
-    for (const model of await models(db)) {
-        try {
-            const out = await callModel(apiKey, model, [
-                { role: 'system', content: TRANSLATE_SYSTEM_PROMPT },
-                { role: 'user', content: text },
-            ], maxTokens)
+    const winner = await race(
+        await models(db),
+        (model, signal) => callModel(apiKey, model, [
+            { role: 'system', content: TRANSLATE_SYSTEM_PROMPT },
+            { role: 'user', content: text },
+        ], maxTokens, signal),
+        // Answering is not the same as translating: some models reply with a
+        // safety verdict or with their own reasoning.
+        (raw) => (looksLikeSpanish(raw, text) ? raw : null),
+    )
 
-            // Answering is not the same as translating: some models reply with
-            // a safety verdict or with their own reasoning.
-            if (!looksLikeSpanish(out, text)) {
-                console.warn(`translate: ${model} did not return a translation`)
-                continue
+    if (winner) {
+        if (cacheable) {
+            try {
+                await persist(db, tmdbId as number, mediaType as string, text, winner.value)
+            } catch (e: any) {
+                console.error('translate: write failed:', e?.message)
             }
-
-            if (cacheable) {
-                try {
-                    await persist(db, tmdbId as number, mediaType as string, text, out)
-                } catch (e: any) {
-                    console.error('translate: write failed:', e?.message)
-                }
-            }
-            return { translated: out, source: model }
-        } catch (e: any) {
-            console.warn(`translate: ${model} failed — ${e?.message}`)
         }
+        return { translated: winner.value, source: winner.model }
     }
 
     // The caller renders the English text. This is not an error the reader sees.
@@ -202,29 +284,32 @@ Responde EXCLUSIVAMENTE con un JSON válido, con las mismas claves numéricas y 
 
 ${JSON.stringify(numbered, null, 2)}`
 
-    for (const model of await models(db)) {
-        try {
-            const raw = await callModel(apiKey, model, [
-                { role: 'system', content: TRANSLATE_SYSTEM_PROMPT },
-                { role: 'user', content: prompt },
-            ])
-            if (!raw) continue
-            const parsed = JSON.parse(
-                raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim(),
-            )
-
-            let filled = false
+    const winner = await race(
+        await models(db),
+        (model, signal) => callModel(apiKey, model, [
+            { role: 'system', content: TRANSLATE_SYSTEM_PROMPT },
+            { role: 'user', content: prompt },
+        ], undefined, signal),
+        (raw) => {
+            if (!raw) return null
+            let parsed: any
+            try {
+                parsed = JSON.parse(raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim())
+            } catch {
+                return null
+            }
+            const filled: Record<number, string> = {}
             for (const { i, t } of pending) {
                 const value = parsed[i] ?? parsed[String(i)]
-                if (typeof value === 'string' && looksLikeSpanish(value, t)) {
-                    result[i] = value
-                    filled = true
-                }
+                if (typeof value === 'string' && looksLikeSpanish(value, t)) filled[i] = value
             }
-            if (filled) return { translations: result, source: model }
-        } catch (e: any) {
-            console.warn(`translate batch: ${model} failed — ${e?.message}`)
-        }
+            return Object.keys(filled).length ? filled : null
+        },
+    )
+
+    if (winner) {
+        for (const [i, value] of Object.entries(winner.value)) result[Number(i)] = value as string
+        return { translations: result, source: winner.model }
     }
 
     return { translations: result, source: 'exhausted' }
