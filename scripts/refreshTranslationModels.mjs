@@ -3,11 +3,16 @@
  * Probes OpenRouter's free catalogue and records which models can actually
  * translate into Spanish.
  *
- * WHY A PROBE AND NOT A LIST
- * The three models this project used to name were all retired from the
- * catalogue at the same time, and nothing noticed until translation had been
- * silently broken for a while. A list written by hand expires on its own; a
- * list discovered every day does not.
+ * WHAT IT DOES *NOT* DO ANY MORE
+ * It used to probe every free model on every run — nineteen requests, better
+ * than a third of the free tier's daily allowance, spent translating a sample
+ * sentence nobody reads in order to learn what live traffic already teaches.
+ * The endpoint now records the outcome of every real translation, so a model
+ * that readers are exercising needs no probing at all.
+ *
+ * What is left for this job is the gap that traffic cannot cover: models that
+ * have just appeared in the catalogue and have never been tried, and models
+ * nobody has exercised in days. Both are rare, so most runs send nothing.
  *
  * WHY IT CHECKS THE OUTPUT AND NOT JUST THE STATUS
  * Two models in the current catalogue answer without translating: one replies
@@ -89,14 +94,36 @@ async function main() {
     const db = createClient({ url: required('RSS_DB_URL'), authToken: required('RSS_DB_TOKEN') })
 
     const catalogue = await (await fetch('https://openrouter.ai/api/v1/models')).json()
-    const models = catalogue.data.filter((m) => m.id.endsWith(':free')).map((m) => m.id).sort()
+    const all = catalogue.data.filter((m) => m.id.endsWith(':free')).map((m) => m.id).sort()
+
+    // Only what traffic cannot have told us. A cap on top of that, so this job
+    // can never be the reason a reader finds the allowance gone.
+    const STALE_AFTER_DAYS = 4
+    const MAX_PROBES = 5
+    const known = new Map(
+        (await db.execute('SELECT id, checked_at FROM translation_models')).rows
+            .map((r) => [String(r.id), String(r.checked_at ?? '')]),
+    )
+    const cutoff = Date.now() - STALE_AFTER_DAYS * 24 * 60 * 60 * 1000
+    const models = all
+        .filter((id) => {
+            const seen = known.get(id)
+            if (!seen) return true // never tried
+            return new Date(seen).getTime() < cutoff // nobody has exercised it in days
+        })
+        .slice(0, MAX_PROBES)
+
+    console.log(`→ ${all.length} free models listed · ${known.size} already known · probing ${models.length}`)
     if (!models.length) {
+        console.log('✓ Nothing to probe: live traffic is keeping the snapshot current.')
+        return
+    }
+    if (!all.length) {
         // A bad day at OpenRouter must not wipe a good snapshot.
         console.error('✗ The catalogue returned no free models. Leaving the snapshot untouched.')
         process.exit(1)
     }
 
-    console.log(`→ probing ${models.length} free models`)
     const rows = []
     let quotaStrike = 0
     for (const model of models) {
@@ -124,30 +151,29 @@ async function main() {
     }
 
     const usable = rows.filter((r) => r.usable)
-    if (!usable.length) {
-        // Models answered and none of them translated: that is worth a failure.
-        console.error('✗ Models answered but none translated. Leaving the previous snapshot in place.')
-        process.exit(1)
-    }
 
     await db.execute(`CREATE TABLE IF NOT EXISTS translation_models (
         id TEXT PRIMARY KEY, label TEXT, usable INTEGER NOT NULL DEFAULT 0,
         latency_ms INTEGER, reason TEXT, checked_at TEXT NOT NULL)`)
 
     const checkedAt = new Date().toISOString()
+    // Upsert rather than replace: live traffic writes to this table too, and a
+    // wholesale delete would throw away everything readers have proven since.
     await db.batch(
         [
-            { sql: 'DELETE FROM translation_models', args: [] },
             ...rows.map((r) => ({
                 sql: `INSERT INTO translation_models (id, label, usable, latency_ms, reason, checked_at)
-                      VALUES (?, ?, ?, ?, ?, ?)`,
+                      VALUES (?, ?, ?, ?, ?, ?)
+                ON CONFLICT(id) DO UPDATE SET
+                  usable = excluded.usable, latency_ms = excluded.latency_ms,
+                  reason = excluded.reason, checked_at = excluded.checked_at`,
                 args: [r.model, r.model.split('/').pop(), r.usable ? 1 : 0, r.ms, r.reason, checkedAt],
             })),
         ],
         'write',
     )
 
-    console.log(`\n✓ ${usable.length}/${models.length} usable. Fastest: ${usable.sort((a, b) => a.ms - b.ms)[0].model}`)
+    console.log(`\n✓ probed ${rows.length}, ${usable.length} usable`)
 }
 
 main().catch((e) => {

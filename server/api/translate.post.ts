@@ -4,6 +4,7 @@ import {
     getDb,
     hashText,
     isSpanish,
+    recordOutcome,
     looksLikeSpanish,
     rankedModels,
 } from '../utils/translation'
@@ -105,8 +106,17 @@ async function callModel(
     messages: any[],
     maxTokens?: number,
     signal?: AbortSignal,
+    db?: any,
 ) {
-    const res = await $fetch<any>('https://openrouter.ai/api/v1/chat/completions', {
+    const started = Date.now()
+    const note = (usable: boolean, reason: string | null) => {
+        // A cancelled loser of the race proves nothing about the model.
+        if (db && !signal?.aborted) recordOutcome(db, model, usable, Date.now() - started, reason)
+    }
+
+    let res: any
+    try {
+        res = await $fetch<any>('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${apiKey}`,
@@ -114,11 +124,20 @@ async function callModel(
             'HTTP-Referer': 'https://es.cinemagoria.com',
             'X-Title': 'Cinemagoria ES',
         },
-        body: { model, temperature: 0.3, ...(maxTokens ? { max_tokens: maxTokens } : {}), messages },
-        timeout: MODEL_TIMEOUT_MS,
-        signal,
-    })
-    return String(res?.choices?.[0]?.message?.content ?? '').trim()
+            body: { model, temperature: 0.3, ...(maxTokens ? { max_tokens: maxTokens } : {}), messages },
+            timeout: MODEL_TIMEOUT_MS,
+            signal,
+        })
+    } catch (error: any) {
+        // A refusal for lack of allowance says nothing about the model itself,
+        // so it must not be written down as one.
+        if (!isQuotaError(error)) note(false, String(error?.message ?? 'request failed').slice(0, 200))
+        throw error
+    }
+
+    const out = String(res?.choices?.[0]?.message?.content ?? '').trim()
+    note(Boolean(out), out ? null : 'empty response')
+    return out
 }
 
 /** OpenRouter reports the shared free-tier ceiling as a 429 on every model. */
@@ -251,7 +270,7 @@ export default defineEventHandler(async (event) => {
         (model, signal) => callModel(apiKey, model, [
             { role: 'system', content: TRANSLATE_SYSTEM_PROMPT },
             { role: 'user', content: text },
-        ], maxTokens, signal),
+        ], maxTokens, signal, db),
         // Answering is not the same as translating: some models reply with a
         // safety verdict or with their own reasoning.
         (raw) => (looksLikeSpanish(raw, text) ? raw : null),
@@ -305,7 +324,7 @@ ${JSON.stringify(numbered, null, 2)}`
         (model, signal) => callModel(apiKey, model, [
             { role: 'system', content: TRANSLATE_SYSTEM_PROMPT },
             { role: 'user', content: prompt },
-        ], undefined, signal),
+        ], undefined, signal, db),
         (raw) => {
             if (!raw) return null
             let parsed: any

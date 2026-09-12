@@ -182,3 +182,36 @@ export async function rankedModels(db: Client): Promise<string[]> {
 export function forgetModels() {
     modelCache = { ids: [], at: 0 }
 }
+
+
+/**
+ * Records what a real request just learned about a model.
+ *
+ * The scheduled probe used to be the only source of this, at the cost of one
+ * request per model per day — a third of the free tier's daily allowance spent
+ * translating a sample sentence nobody reads, to discover what live traffic
+ * discovers anyway. Every translation a reader triggers already proves whether
+ * a model answers, how fast, and whether what came back was a translation.
+ *
+ * Never awaited: this is bookkeeping, and the reader is not waiting for it.
+ */
+export function recordOutcome(
+    db: Client,
+    model: string,
+    usable: boolean,
+    latencyMs: number,
+    reason: string | null,
+) {
+    db.execute({
+        sql: `INSERT INTO translation_models (id, label, usable, latency_ms, reason, checked_at)
+              VALUES (?, ?, ?, ?, ?, ?)
+              ON CONFLICT(id) DO UPDATE SET
+                usable = excluded.usable,
+                latency_ms = excluded.latency_ms,
+                reason = excluded.reason,
+                checked_at = excluded.checked_at`,
+        args: [model, model.split('/').pop() ?? model, usable ? 1 : 0, latencyMs, reason, new Date().toISOString()],
+    })
+        .then(() => forgetModels())
+        .catch((e: any) => console.error('translation: could not record an outcome:', e?.message))
+}
