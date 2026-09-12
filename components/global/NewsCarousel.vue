@@ -37,9 +37,10 @@
           <div v-for="article in articles" :key="article.id" class="card">
             <div class="release-card">
             
-            <NuxtLink 
-              :to="article.href || { path: '/news', query: { source: article.source?.name, highlight: article.id } }"
-              class="card-image-link" 
+            <component
+              :is="article.is_internal === false ? 'a' : 'NuxtLink'"
+              v-bind="linkAttrs(article)"
+              class="card-image-link"
               :class="{ 'has-video': article.video_id }"
             >
               <div v-if="loadingMap[article.id]" class="card-loader">
@@ -55,7 +56,7 @@
                   @error="onImageError(article)"
                   :style="{ opacity: loadingMap[article.id] ? 0 : 1 }"
               />
-            </NuxtLink>
+            </component>
 
             <div class="card-content">
               <div class="card-meta">
@@ -67,17 +68,29 @@
                     class="card-cat-tag"
                   >{{ chip.label }}</NuxtLink>
                 </div>
-                <span v-else-if="carouselBadge(article)" class="source-badge">{{ carouselBadge(article) }}</span>
+                <span
+                  v-if="article.source?.name"
+                  class="publisher-badge"
+                  :class="{ 'publisher-badge--external': article.is_internal === false }"
+                >
+                  {{ article.source.name }}
+                  <svg v-if="article.is_internal === false" class="publisher-badge__out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M14 4h6v6" />
+                    <path d="M20 4 10 14" />
+                    <path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+                  </svg>
+                </span>
                 <span class="card-date">{{ formatDate(article.published_at) }}</span>
               </div>
 
-              <NuxtLink 
-                :to="article.href || { path: '/news', query: { source: article.source?.name, highlight: article.id } }"
-                class="card-title" 
+              <component
+                :is="article.is_internal === false ? 'a' : 'NuxtLink'"
+                v-bind="linkAttrs(article)"
+                class="card-title"
                 :title="article.title"
               >
                 {{ article.title }}
-              </NuxtLink>
+              </component>
               <div v-if="article.topics?.length" class="card-tags-section">
                 <span class="card-tags-label">Topics:</span>
                 <div class="card-tags-row">
@@ -165,7 +178,7 @@ export default {
       try {
         this.pending = true;
         this.error = null;
-        const data = await $fetch('/api/news', { params: { source: 'Cinemagoria' } });
+        const data = await $fetch('/api/news');
         this.data = data;
         if (data && data.results) {
           data.results.forEach(a => {
@@ -198,14 +211,11 @@ export default {
       if (!desc) return '';
       return striptags(desc);
     },
-    // Display badge: prefer the editorial category for internal articles
-    // (replaces the brand-redundant "CINEMAGORIA" label), fall back to the
-    // publisher name for external aggregated items.
-    carouselBadge(article) {
-      if (article?.editorial_category) {
-        return categoryLabel(article.editorial_category);
+    linkAttrs(article) {
+      if (article?.is_internal === false) {
+        return { href: article.href, target: '_blank', rel: 'noopener noreferrer' };
       }
-      return article?.source?.name || '';
+      return { to: article?.href || { path: '/news', query: { source: article?.source?.name, highlight: article?.id } } };
     },
     // Primary editorial category (compound label split per segment) followed by
     // any secondary categories, as { label, token } chips. Mirrors the news
@@ -422,6 +432,37 @@ export default {
   font-size: 12px;
   color: #888;
   margin-bottom: 8px;
+}
+
+.publisher-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(139, 233, 253, 0.16);
+  border: 1px solid rgba(139, 233, 253, 0.55);
+  color: #B8F4FF;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.publisher-badge--external {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.34);
+  color: #E6E8EC;
+}
+.publisher-badge__out {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  opacity: 0.85;
 }
 
 .source-badge {

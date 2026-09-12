@@ -209,7 +209,6 @@
                               :alt="item.title"
                               loading="lazy"
                           />
-                          <div v-if="!categoryChips(item).length" class="card-source">{{ cardBadge(item) }}</div>
                           <button
                             v-if="userEmail"
                             class="bookmark-btn"
@@ -238,7 +237,6 @@
                               class="img-lazy"
                           />
                           
-                          <div v-if="!categoryChips(item).length" class="card-source">{{ cardBadge(item) }}</div>
 
                           <button 
                             v-if="userEmail"
@@ -254,6 +252,18 @@
 
                       <div class="card-content">
                         <div class="meta-row">
+                          <span
+                            v-if="item.source?.name"
+                            class="publisher-badge"
+                            :class="{ 'publisher-badge--external': item.is_internal === false }"
+                          >
+                            {{ item.source.name }}
+                            <svg v-if="item.is_internal === false" class="publisher-badge__out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                              <path d="M14 4h6v6" />
+                              <path d="M20 4 10 14" />
+                              <path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+                            </svg>
+                          </span>
                           <div v-if="categoryChips(item).length" class="card-cats-row">
                             <button v-for="chip in categoryChips(item)" :key="chip.label" type="button" class="card-cat-tag" @click="filterByCategory(chip.token)">{{ chip.label }}</button>
                           </div>
@@ -328,7 +338,7 @@ const currentLang = ref(config.public.apiLang || 'en');
 
 const route = useRoute();
 const router = useRouter();
-const selectedSource = ref(route.query.source || 'Cinemagoria');
+const selectedSource = ref(route.query.source || null);
 const searchQuery = ref('');
 const isSearchActive = ref(false);
 const debouncedSearchQuery = refDebounced(searchQuery, 500);
@@ -355,13 +365,6 @@ watch(() => route.query.category, (next) => {
     typeof next === 'string' && CATEGORY_OPTIONS.includes(next) ? next : null;
 });
 
-// Display badge: prefer editorial category for internal items (replaces the
-// brand-redundant "CINEMAGORIA" label), fall back to publisher name for
-// external aggregated items.
-function cardBadge(item) {
-  if (item?.editorial_category) return categoryLabel(item.editorial_category);
-  return item?.source?.name || '';
-}
 
 // Build the card's category chips: the primary editorial category first (its
 // compound label split into one chip per segment), then any secondary
@@ -617,7 +620,8 @@ function scrollSources(direction) {
 }
 
 function getSourceUrl(source) {
-  return SOURCE_URLS[source] || '#';
+  const fromFeed = newsItems.value.find((item) => item?.source?.name === source && item?.source?.url);
+  return fromFeed?.source?.url || SOURCE_URLS[source] || '#';
 }
 
 const isSourcesExpanded = ref(false);
@@ -1292,6 +1296,37 @@ watch(userEmail, (val) => {
   transform: scale(1.05);
 }
 
+
+.publisher-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(139, 233, 253, 0.16);
+  border: 1px solid rgba(139, 233, 253, 0.55);
+  color: #B8F4FF;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.publisher-badge--external {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.34);
+  color: #E6E8EC;
+}
+.publisher-badge__out {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
 
 .card-source {
   position: absolute;
