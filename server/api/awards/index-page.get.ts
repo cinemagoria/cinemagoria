@@ -6,7 +6,7 @@ import { dbExecute } from '~~/server/utils/db'
  *
  * Two indexed queries replace a full pass over the archive: one for the year
  * list of the selected body, one for that year's rows (idx_aa_body_year covers
- * both). The response shape is unchanged.
+ * both).
  */
 
 const BODY_SLUG_BY_AWARD: Record<string, string> = {
@@ -25,6 +25,8 @@ function toLegacyShape(row: any, award: string) {
         year,
         category: row.category,
         won: Boolean(row.won),
+        shared: Boolean(row.is_tie),
+        media_type: row.media_type === 'tv' ? 'tv' : 'movie',
         tmdb_id: row.tmdb_id ?? undefined,
         imdb_id: row.imdb_id ?? '',
     }
@@ -37,6 +39,7 @@ function toLegacyShape(row: any, award: string) {
     }
     return {
         ...base,
+        rank: row.rank ?? undefined,
         film_title: row.title ?? '',
         original_title: row.original_title ?? '',
         director: row.director ?? '',
@@ -75,9 +78,9 @@ export default defineEventHandler(async (event) => {
         const ceremonyYear = match?.ceremony_year
 
         const itemRows = await dbExecute({
-            sql: `SELECT id, ceremony_year, year_label, category, won,
+            sql: `SELECT id, ceremony_year, year_label, category, won, is_tie, rank,
                          title, original_title, director, country,
-                         recipient_name, tmdb_id, imdb_id
+                         recipient_name, tmdb_id, imdb_id, media_type
                   FROM awards_archive
                   WHERE body_slug = ? AND ceremony_year = ?
                   ORDER BY won DESC, category ASC, id ASC`,
