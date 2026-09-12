@@ -51,13 +51,6 @@ const getEnv = (key) => {
             'API_YOUTUBE_KEY': config.apiYoutubeKey,
             'MDBLIST_API': useRuntimeConfig().public.mdblistApi || process.env.MDBLIST_API,
             'rapidApiKey': config.rapidApiKey,
-            'orApiKey': config.orApiKey,
-            'geminiApiKey': config.geminiApiKey,
-            'geminiApiKey2': config.geminiApiKey2,
-            'geminiApiKey3': config.geminiApiKey3,
-            'geminiApiKey4': config.geminiApiKey4,
-            'geminiApiKey5': config.geminiApiKey5,
-            'geminiApiKey6': config.geminiApiKey6,
         };
         return mapping[key] || process.env[key];
     } catch (e) {
@@ -2034,7 +2027,6 @@ export async function getFollowedProductionCompanies(userEmail) {
 }
 
 const CACHE_PREFIX = 'trans_cache_v3_';
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 const TRANSLATE_SYSTEM_PROMPT = `Eres un traductor experto de contenido audiovisual (cine y televisión) con más de 20 años de experiencia. Traduces del inglés al español latinoamericano neutro con la misma fluidez y precisión que los subtítulos profesionales de Netflix o HBO.
 
@@ -2089,71 +2081,6 @@ function _setCache(text, translation) {
     }
 }
 
-// --- Gemini multi-key rotation ---
-let _geminiKeyIndex = 0;
-
-function _getGeminiKeys() {
-    const keys = [
-        getEnv('geminiApiKey'),
-        getEnv('geminiApiKey2'),
-        getEnv('geminiApiKey3'),
-        getEnv('geminiApiKey4'),
-        getEnv('geminiApiKey5'),
-        getEnv('geminiApiKey6'),
-    ].filter(Boolean);
-    return keys;
-}
-
-async function _callGemini(userPrompt) {
-    if (!import.meta.client) return null;
-    const keys = _getGeminiKeys();
-    if (keys.length === 0) {
-        console.error('No GEMINI_API_KEY configured');
-        return null;
-    }
-
-    for (let attempt = 0; attempt < keys.length; attempt++) {
-        const keyIdx = (_geminiKeyIndex + attempt) % keys.length;
-        const apiKey = keys[keyIdx];
-
-        try {
-            const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    system_instruction: { parts: [{ text: TRANSLATE_SYSTEM_PROMPT }] },
-                    contents: [{ parts: [{ text: userPrompt }] }],
-                    generationConfig: { temperature: 0.1, maxOutputTokens: 4096 },
-                }),
-            });
-
-            if (response.status === 429 || response.status === 503 || response.status === 500) {
-                console.warn(`Gemini key ${keyIdx + 1} returned ${response.status}, rotating...`);
-                _geminiKeyIndex = (keyIdx + 1) % keys.length;
-                continue;
-            }
-
-            if (!response.ok) {
-                const errBody = await response.text().catch(() => '');
-                console.error(`Gemini API error: ${response.status}`, errBody);
-                _geminiKeyIndex = (keyIdx + 1) % keys.length;
-                continue;
-            }
-
-            _geminiKeyIndex = keyIdx; // stick with working key
-            const result = await response.json();
-            const content = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-            return content ? content.trim() : null;
-        } catch (error) {
-            console.error(`Gemini key ${keyIdx + 1} error:`, error);
-            _geminiKeyIndex = (keyIdx + 1) % keys.length;
-            continue;
-        }
-    }
-    console.error('All Gemini keys exhausted');
-    return null;
-}
-
 // Overviews cache helpers
 async function _fetchCachedOverview(tmdbId, mediaType) {
     try {
@@ -2200,23 +2127,13 @@ export async function translateText(text, tmdbId = null, mediaType = null) {
 }
 
 async function _translateTextInner(text, tmdbId, mediaType) {
-    // 1. DB cache (if tmdbId provided)
-    if (tmdbId && mediaType) {
-        const dbCached = await _fetchCachedOverview(tmdbId, mediaType);
-        if (dbCached) {
-            _setCache(text, dbCached); // also save to localStorage
-            return dbCached;
-        }
-    }
-
-    // 2. localStorage cache — if found, also persist to DB for other users
+    // 1. localStorage, which answers without leaving the browser.
+    //
+    // The shared cache is deliberately not consulted here. The endpoint checks
+    // it anyway — along with the curated `spanish_desc` columns — so asking
+    // first only added a full round-trip in front of every miss.
     const cached = _getCached(text);
-    if (cached) {
-        if (tmdbId && mediaType) {
-            _saveCachedOverview(tmdbId, mediaType, text, cached);
-        }
-        return cached;
-    }
+    if (cached) return cached;
 
     // 3. Server side translation.
     //
@@ -2243,51 +2160,6 @@ async function _translateTextInner(text, tmdbId, mediaType) {
 
     // Nothing was available. The English text renders; the reader sees no error.
     return text;
-}
-
-export async function translateReviewsBatch(reviews) {
-    if (!reviews || reviews.length === 0) return [];
-
-    const contents = reviews.map(r => r.content || '');
-    const translations = new Array(contents.length).fill(null);
-    const indicesToTranslate = [];
-
-    contents.forEach((text, index) => {
-        if (!text.trim()) {
-            translations[index] = '';
-            return;
-        }
-        const cached = _getCached(text);
-        if (cached) {
-            translations[index] = cached;
-        } else {
-            indicesToTranslate.push(index);
-        }
-    });
-
-    if (indicesToTranslate.length === 0) return translations;
-
-    for (const originalIndex of indicesToTranslate) {
-        const text = contents[originalIndex];
-        try {
-            const translation = await _callGemini(TRANSLATE_REVIEW_PROMPT + text);
-            if (translation) {
-                _setCache(text, translation);
-                translations[originalIndex] = translation;
-            } else {
-                translations[originalIndex] = text;
-            }
-        } catch (error) {
-            console.error('Review translation error', error);
-            translations[originalIndex] = text;
-        }
-    }
-
-    return translations;
-}
-
-export function translateReview(reviewContent) {
-    return Promise.resolve(reviewContent);
 }
 
 // --- Reviews Cache System ---
@@ -2334,35 +2206,6 @@ async function saveCachedReview(tmdbId, mediaType, review, contentEs) {
 }
 
 // --- Gemini batch translation (1 call for N reviews via structured JSON prompt) ---
-async function _translateBatchWithGemini(texts) {
-    if (!texts || texts.length === 0) return null;
-    if (!import.meta.client) return null;
-
-    // Build a numbered JSON for the prompt
-    const numbered = {};
-    texts.forEach((t, i) => { numbered[i] = t; });
-
-    const batchPrompt = `Traduce TODAS las siguientes reseñas cinematográficas al español latinoamericano. Preserva la voz de cada crítico.
-
-IMPORTANTE: Responde EXCLUSIVAMENTE con un JSON válido, con las mismas claves numéricas y los valores traducidos. Sin explicaciones, sin markdown, sin backticks.
-
-${JSON.stringify(numbered, null, 2)}`;
-
-    try {
-        const raw = await _callGemini(batchPrompt);
-        if (!raw) return null;
-
-        // Clean possible markdown wrappers
-        const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
-        const parsed = JSON.parse(cleaned);
-
-        return texts.map((_, i) => parsed[i] || parsed[String(i)] || null);
-    } catch (e) {
-        console.error('Gemini batch parse error:', e);
-        return null;
-    }
-}
-
 // --- OpenRouter batch translation (1 call for N reviews) ---
 async function _translateBatchWithOpenRouter(texts) {
     if (!texts || texts.length === 0) return null;
@@ -2486,30 +2329,15 @@ export async function translateReviewsBatchWithCache(reviews, tmdbId, mediaType)
 
     if (stillNeedTranslation.length === 0) return translations;
 
-    // 3. Fallback: Gemini batch (multi-key rotation) → OpenRouter batch
-    const remainingTexts = stillNeedTranslation.map(idx => reviews[idx].content);
-    let batchTranslations = await _translateBatchWithGemini(remainingTexts);
+    // 3. OpenRouter, through the server.
+    //
+    // Gemini used to sit here with six keys rotated in the browser. With the
+    // credit expired every one of them was a guaranteed timeout, so a page of
+    // uncached reviews paid six waits before reaching a provider that could
+    // answer. Removing it also takes those keys out of the bundle.
+    const afterGemini = stillNeedTranslation;
 
-    const afterGemini = []; // indices still unresolved
-
-    if (batchTranslations) {
-        batchTranslations.forEach((translated, batchIdx) => {
-            const reviewIdx = stillNeedTranslation[batchIdx];
-            if (translated) {
-                translations[reviewIdx] = translated;
-                _setCache(reviews[reviewIdx].content, translated);
-                saveCachedReview(tmdbId, mediaType, reviews[reviewIdx], translated);
-            } else {
-                afterGemini.push(reviewIdx);
-            }
-        });
-    } else {
-        afterGemini.push(...stillNeedTranslation);
-    }
-
-    if (afterGemini.length === 0) return translations;
-
-    // 4. Last resort: OpenRouter batch
+    // Anything RapidAPI could not take.
     const orTexts = afterGemini.map(idx => reviews[idx].content);
     const orResults = await _translateBatchWithOpenRouter(orTexts);
 

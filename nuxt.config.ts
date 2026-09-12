@@ -115,9 +115,11 @@ export default defineNuxtConfig({
     rssDbUrl: process.env.RSS_DB_URL || process.env.TURSO_DATABASE_URL,
     rssDbToken: process.env.RSS_DB_TOKEN || process.env.TURSO_AUTH_TOKEN,
     traktClientSecret: process.env.TRAKT_CLIENT_SECRET,
+    // Server-only: the translation endpoint calls OpenRouter from Nitro, so the
+    // key never reaches the browser bundle.
+    orApiKey: process.env.OR_API_KEY,
     // Server-only: the translation endpoint calls OpenRouter from Nitro, so
     // the key never reaches the browser bundle.
-    orApiKey: process.env.OR_API_KEY,
 
     public: {
       frontendUrl: process.env.FRONTEND_URL || "https://es.cinemagoria.com",
@@ -136,13 +138,6 @@ export default defineNuxtConfig({
       assistantBackendUrl: process.env.ASSISTANT_BACKEND_URL || "https://cinemagoria-assistant-746175915741.us-east1.run.app/api",
       mdblistApi: process.env.MDBLIST_API,
       rapidApiKey: process.env.RAPIDAPI_KEY,
-      orApiKey: process.env.OR_API_KEY,
-      geminiApiKey: process.env.GEMINI_API_KEY,
-      geminiApiKey2: process.env.GEMINI_API_KEY2,
-      geminiApiKey3: process.env.GEMINI_API_KEY3,
-      geminiApiKey4: process.env.GEMINI_API_KEY4,
-      geminiApiKey5: process.env.GEMINI_API_KEY5,
-      geminiApiKey6: process.env.GEMINI_API_KEY6,
       newsAggregatorUrl: process.env.NEWS_AGGREGATOR_URL || "https://cinemagoria-rss-aggregator-746175915741.us-east1.run.app/news",
     }
   },

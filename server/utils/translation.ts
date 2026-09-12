@@ -18,11 +18,18 @@ export const TRANSLATE_SYSTEM_PROMPT = `Eres un traductor experto de contenido a
 - Mantén los saltos de línea del original.
 - Responde EXCLUSIVAMENTE con el texto traducido. Sin encabezados, sin notas, sin explicar tu razonamiento.`
 
+// One client for the lifetime of the instance. Rebuilding it per request adds
+// a connection setup to a path the reader is waiting on.
+let client: Client | null = null
+
 export function getDb(config: any): Client {
-    return createClient({
-        url: String(config.rssDbUrl).trim(),
-        authToken: String(config.rssDbToken).trim(),
-    })
+    if (!client) {
+        client = createClient({
+            url: String(config.rssDbUrl).trim(),
+            authToken: String(config.rssDbToken).trim(),
+        })
+    }
+    return client
 }
 
 export async function ensureModelTable(db: Client) {
@@ -113,4 +120,65 @@ export async function fetchFreeCatalogue(): Promise<string[]> {
         console.error('translation: could not read the free catalogue:', e?.message)
         return catalogueCache.ids
     }
+}
+
+
+/**
+ * Is this text already Spanish?
+ *
+ * TMDB serves some reviews already translated. Sending those to a model spends
+ * a call to produce what was already on the page, so the same check that
+ * guards the output is applied to the input first — but conservatively: a
+ * false positive would leave English text on a Spanish page, which is worse
+ * than a wasted call.
+ */
+export function isSpanish(text: string): boolean {
+    const t = String(text ?? '').trim()
+    if (t.length < 24) return false
+
+    const padded = ` ${t.toLowerCase()} `
+    const spanish = [' el ', ' la ', ' los ', ' las ', ' un ', ' una ', ' de ', ' del ', ' que ', ' se ', ' con ', ' por ', ' para ', ' su ', ' sus ', ' en ', ' pero ', ' como ', ' más ', ' está ', ' son ']
+        .filter((m) => padded.includes(m)).length
+    const english = [' the ', ' and ', ' with ', ' that ', ' his ', ' her ', ' from ', ' after ', ' when ', ' this ', ' but ', ' for ', ' are ', ' is ', ' of ', ' to ']
+        .filter((m) => padded.includes(m)).length
+
+    // Spanish-only orthography is strong evidence on its own.
+    const orthography = /[ñáéíóúü¿¡]/i.test(t)
+
+    if (english >= 2) return false
+    return spanish >= 4 || (orthography && spanish >= 2)
+}
+
+/**
+ * The usable models, held in memory between requests.
+ *
+ * Reading the snapshot from the database on every request puts a round-trip in
+ * front of every translation. The list changes once a day, so a short memory
+ * window costs nothing and removes that hop.
+ */
+let modelCache: { ids: string[]; at: number } = { ids: [], at: 0 }
+const MODEL_TTL_MS = 10 * 60 * 1000
+
+export async function rankedModels(db: Client): Promise<string[]> {
+    if (modelCache.ids.length && Date.now() - modelCache.at < MODEL_TTL_MS) {
+        return modelCache.ids
+    }
+    try {
+        const res = await db.execute(
+            `SELECT id FROM translation_models WHERE usable = 1 ORDER BY latency_ms ASC`,
+        )
+        const ids = res.rows.map((r) => String(r.id))
+        if (ids.length) {
+            modelCache = { ids, at: Date.now() }
+            return ids
+        }
+    } catch (e: any) {
+        console.error('translation: could not read the model snapshot:', e?.message)
+    }
+    return []
+}
+
+/** Drops the memoised list, so the next request re-reads the snapshot. */
+export function forgetModels() {
+    modelCache = { ids: [], at: 0 }
 }
