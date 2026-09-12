@@ -14,7 +14,7 @@ on:
     inputs:
       limit:
         description: 'Translations to perform in this run'
-        default: '80'
+        default: '15'
 
 jobs:
   backfill:
@@ -33,5 +33,5 @@ jobs:
           OR_API_KEY: ${{ secrets.OR_API_KEY }}
           RSS_DB_URL: ${{ secrets.RSS_DB_URL || secrets.TURSO_DATABASE_URL }}
           RSS_DB_TOKEN: ${{ secrets.RSS_DB_TOKEN || secrets.TURSO_AUTH_TOKEN }}
-          BACKFILL_LIMIT: ${{ inputs.limit || '80' }}
+          BACKFILL_LIMIT: ${{ inputs.limit || '15' }}
         run: node scripts/backfillSpanishDesc.mjs
