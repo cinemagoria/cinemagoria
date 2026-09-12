@@ -1,3 +1,5 @@
+export const FIRST_PARTY_SOURCE = 'Cinemagoria';
+
 export const SOURCES = {
     es: [
         'Abandomoviez',
