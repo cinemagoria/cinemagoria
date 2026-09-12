@@ -205,14 +205,17 @@
                <span>{{ trackingInfoText }}</span>
             </button>
 
-            <div :class="$style.desc" style="position: relative; min-height: 25px;">
-              <div v-if="isTranslating" style="position: absolute; top:0; left:0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 2;">
-                  <Loader :size="30" />
+              <!--
+                The English text stays readable while the translation is on its
+                way. Blurring it behind a spinner made a wait of a few seconds
+                look like a page that had failed to load, and hid text the
+                reader could have been reading in the meantime.
+              -->
+              <div :class="$style.desc" style="position: relative; min-height: 25px;">
+                <div :class="{ [$style.awaitingTranslation]: isTranslating }">
+                  {{ truncate(MANUAL_OVERVIEWS[heroItem.id] || translatedOverview || heroItem.spanish_desc || heroItem.overview, 200) }}
+                </div>
               </div>
-              <div :style="isTranslating ? { opacity: 0.5, filter: 'blur(2px)' } : {}">
-                {{ truncate(MANUAL_OVERVIEWS[heroItem.id] || translatedOverview || heroItem.spanish_desc || heroItem.overview, 200) }}
-              </div>
-            </div>
 
             <div v-if="activeFestivals.length > 0" :class="$style.festivalBadgeContainer">
                 <template v-for="festival in activeFestivals" :key="festival.name">
@@ -4123,4 +4126,11 @@ export default {
   margin-right: 3px;
 }
 .mpb-no-dur { font-size:1.1rem; color:rgba(255,255,255,0.3); font-style:italic; }
+
+.awaitingTranslation {
+    /* A hint that a better version is on the way, without making the text that
+       is already on screen harder to read than it needs to be. */
+    opacity: 0.75;
+    transition: opacity 0.35s ease;
+}
 </style>

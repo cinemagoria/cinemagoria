@@ -38,10 +38,8 @@
         <div v-if="item.overview" :class="$style.overview">
           <h2 :class="$style.title">Sinopsis</h2>
           <div style="position: relative; min-height: 50px;">
-             <div v-if="isTranslatingSynopsis" style="position: absolute; top:0; left:0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 2;">
-                <Loader :size="30" />
-            </div>
-            <div :style="isTranslatingSynopsis ? { opacity: 0.5, filter: 'blur(2px)' } : {}" v-html="translatedOverview || item.overview" />
+            <!-- Readable while the translation arrives; see Hero.vue. -->
+            <div :class="{ [$style.awaitingTranslation]: isTranslatingSynopsis }" v-html="translatedOverview || item.overview" />
           </div>
         </div>
 
@@ -135,11 +133,8 @@
            />
         </div>
 
-        <div v-if="isTranslating" :class="$style.translationLoader">
-            <Loader :size="44" />
-        </div>
-
-        <div class="reviews-section" v-else-if="reviews && reviews.length">
+        <!-- Rendered straight away; see MovieInfo.vue. -->
+        <div class="reviews-section" v-if="reviews && reviews.length" :class="{ [$style.awaitingTranslation]: isTranslating }">
           <br>
           <div :class="$style.reviewsHeader">
              <h4 :class="$style.sectionTitle">RESEÑAS ({{ reviewCount }})</h4>
@@ -2021,5 +2016,12 @@ export default {
   background: rgba(255, 107, 107, 0.22);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(255,107,107,0.2);
+}
+
+.awaitingTranslation {
+    /* A hint that a better version is on the way, without making the text that
+       is already on screen harder to read than it needs to be. */
+    opacity: 0.75;
+    transition: opacity 0.35s ease;
 }
 </style>

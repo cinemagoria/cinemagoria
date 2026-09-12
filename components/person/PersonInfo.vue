@@ -25,11 +25,9 @@
         </div>
 
         <div v-if="person.biography" :class="$style.biographyContainer">
-          <div v-if="isTranslating" :class="$style.translationLoader" style="z-index: 10;">
-             <Loader :size="44" />
-          </div>
           <img v-if="avatar" :src="avatar" :alt="person.name">
-          <div :class="{ [$style.blurContent]: isTranslating }" v-html="formatContent(translatedBiography || person.biography)" />
+          <!-- Readable while the translation arrives; see Hero.vue. -->
+          <div :class="{ [$style.awaitingTranslation]: isTranslating }" v-html="formatContent(translatedBiography || person.biography)" />
         </div>
       </div>
 
@@ -369,11 +367,11 @@ export default {
     min-height: 100px; 
 }
 
-.blurContent {
-    filter: blur(4px);
-    opacity: 0.6;
-    pointer-events: none;
-    transition: filter 0.3s ease, opacity 0.3s ease;
+.awaitingTranslation {
+    /* A hint that a better version is on the way, without making the text that
+       is already on screen harder to read than it needs to be. */
+    opacity: 0.75;
+    transition: opacity 0.35s ease;
 }
 
 .translationLoader {
