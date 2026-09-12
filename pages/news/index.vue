@@ -617,7 +617,8 @@ function scrollSources(direction) {
 }
 
 function getSourceUrl(source) {
-  return SOURCE_URLS[source] || '#';
+  const fromFeed = newsItems.value.find((item) => item?.source?.name === source && item?.source?.url);
+  return fromFeed?.source?.url || SOURCE_URLS[source] || '#';
 }
 
 const isSourcesExpanded = ref(false);

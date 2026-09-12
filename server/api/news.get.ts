@@ -4,6 +4,14 @@ import { FIRST_PARTY_SOURCE } from '~/utils/newsSources'
 const FIRST_PARTY_DATE_GUARD =
     `(datetime(published_at) IS NULL OR datetime(published_at) <= datetime('now'))`
 
+const publisherOrigin = (link: string): string | null => {
+    try {
+        return new URL(link).origin
+    } catch {
+        return null
+    }
+}
+
 const parseJsonArray = (raw: unknown): string[] => {
     try {
         if (!raw) return []
@@ -101,7 +109,7 @@ export default defineEventHandler(async (event) => {
                 image: row.image,
                 published_at: row.published_at,
                 description: row.description,
-                source: { name: row.publisher },
+                source: { name: row.publisher, url: publisherOrigin(String(row.link)) },
                 video_id: null,
                 is_internal: false,
             })))
