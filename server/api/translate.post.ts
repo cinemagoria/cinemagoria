@@ -121,6 +121,13 @@ async function callModel(
     return String(res?.choices?.[0]?.message?.content ?? '').trim()
 }
 
+/** OpenRouter reports the shared free-tier ceiling as a 429 on every model. */
+function isQuotaError(error: any): boolean {
+    const status = error?.status ?? error?.statusCode ?? error?.response?.status
+    if (status === 429) return true
+    return /\b429\b|too many requests/i.test(String(error?.message ?? ''))
+}
+
 /**
  * Asks models in order, but overlapping: each gets `HEDGE_AFTER_MS` of
  * exclusivity before the next is also asked, and the first answer that passes
@@ -172,6 +179,15 @@ async function race<T>(
         pending.delete(settled.id)
 
         if (settled.error) {
+            // A 429 here is the account's daily allowance for free models, not
+            // this model's own limit: every other one will answer the same way.
+            // Asking them anyway spends what little allowance is left and
+            // delays the English fallback the reader is about to get.
+            if (isQuotaError(settled.error)) {
+                console.warn('translate: the free allowance is exhausted; not trying further models')
+                abortAll()
+                return null
+            }
             console.warn(`translate: ${settled.model} failed — ${settled.error?.message}`)
         } else {
             const value = accept(settled.raw)
