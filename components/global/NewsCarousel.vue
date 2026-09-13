@@ -35,7 +35,7 @@
           @mouseleave="resumeAutoplay">
           
           <div v-for="article in articles" :key="article.id" class="card">
-            <div class="release-card">
+            <div class="release-card" :class="{ 'release-card--external': article.is_internal === false }">
             
             <component
               :is="article.is_internal === false ? 'a' : 'NuxtLink'"
@@ -534,6 +534,12 @@ export default {
 
 .strong {
   color: #8BE9FD
+}
+
+.release-card--external .card-description {
+  margin-top: 0;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
 }
 
 .card-description {
