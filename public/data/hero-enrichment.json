@@ -190,5 +190,13 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1789291761/cinemagoria/backdrops/hero_themisadventuresofcliffboth-backdrop.webp",
     "poster_path": "/skSMOTFYcWyHZqFNPfz0f3Jsyc5.jpg",
     "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1473784,
+    "media_type": "movie",
+    "trailer_key": "Rq-vbHoU4iw",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1789513874/cinemagoria/backdrops/hero_1473784.webp",
+    "poster_path": "/rGuzyTaghYm6Uo3dbNufsUInUOX.jpg",
+    "force_enrichment": true
   }
 ]
