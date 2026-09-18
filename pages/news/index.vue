@@ -1163,12 +1163,19 @@ watch(userEmail, (val) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
   border: none;
   border-radius: 7px;
   background: transparent;
   color: rgba(207, 216, 223, 0.55);
   cursor: pointer;
   transition: color 0.15s ease, background 0.15s ease;
+}
+
+.view-switch__btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .view-switch__btn:hover {
@@ -1591,6 +1598,11 @@ watch(userEmail, (val) => {
   background: #8BE9FD;
   border-color: #8BE9FD;
   color: #000;
+}
+
+.bookmark-btn svg,
+.news-row__save svg {
+  flex-shrink: 0;
 }
 
 .news-list {
