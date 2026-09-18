@@ -164,8 +164,8 @@
                     <div v-if="showArticlesPanel" :class="$style.newsPanel" @wheel.stop>
                       <a
                         v-for="article in relatedArticles"
-                        :key="article.slug"
-                        :href="`/news/${article.slug}`"
+                        :key="articleHref(article)"
+                        :href="articleHref(article)"
                         target="_blank"
                         rel="noopener noreferrer"
                         :class="$style.newsPanelItem">
@@ -184,6 +184,10 @@
                           <span :class="$style.newsPanelTitle">{{ articleTitle(article) }}</span>
                           <span v-if="articleHook(article)" :class="$style.newsPanelHook">{{ articleHook(article) }}</span>
                           <span :class="$style.newsPanelFoot">
+                            <span v-if="article.is_internal === false" :class="$style.newsPanelSource">
+                              <span :class="$style.newsPanelSourceName">{{ article.source.name }}</span>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+                            </span>
                             <span v-if="article.requires_auth" :class="$style.newsPanelLock">
                               <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1Z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
                               Solo miembros
@@ -1028,11 +1032,14 @@ export default {
         if (this.autoAdvancePaused) this.toggleAutoAdvance();
       }
     },
+    articleHref(article) {
+      return article.href || `/news/${article.slug}`;
+    },
     articleTitle(article) {
-      return article.title_es || article.title_en || '';
+      return article.title || article.title_es || article.title_en || '';
     },
     articleHook(article) {
-      const raw = article.description_es || article.description_en || '';
+      const raw = article.description || article.description_es || article.description_en || '';
       const clean = String(raw).replace(/\s+/g, ' ').trim();
       if (clean.length <= 110) return clean;
       return `${clean.slice(0, 107).trimEnd()}…`;
@@ -3188,6 +3195,33 @@ export default {
   svg {
     flex-shrink: 0;
   }
+}
+
+.newsPanelSource {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+  max-width: 60%;
+  padding: 0.15rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #E6E8EC;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+
+  svg {
+    flex-shrink: 0;
+    opacity: 0.85;
+  }
+}
+
+.newsPanelSourceName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
 
