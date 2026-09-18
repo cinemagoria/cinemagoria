@@ -1,4 +1,5 @@
 export const FIRST_PARTY_SOURCE = 'Cinemagoria';
+export const THIRD_PARTY_SOURCE = 'third-party';
 
 export const SOURCES = {
     en: [
