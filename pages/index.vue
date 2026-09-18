@@ -219,7 +219,6 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     // cannes 2026
     'Hope|cannes',
     'Atonement',
-    'Victorian Psycho',
     'Minotaur',
     'Fatherland',
     'Fjord',
