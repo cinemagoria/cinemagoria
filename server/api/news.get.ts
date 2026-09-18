@@ -1,5 +1,5 @@
 import { dbExecute } from '~~/server/utils/db'
-import { FIRST_PARTY_SOURCE } from '~/utils/newsSources'
+import { FIRST_PARTY_SOURCE, THIRD_PARTY_SOURCE } from '~/utils/newsSources'
 
 const FIRST_PARTY_DATE_GUARD =
     `(datetime(published_at) IS NULL OR datetime(published_at) <= datetime('now'))`
@@ -38,6 +38,7 @@ export default defineEventHandler(async (event) => {
 
     const wantsFirstParty = !source || source === FIRST_PARTY_SOURCE
     const wantsThirdParty = !source || source !== FIRST_PARTY_SOURCE
+    const publisher = source && source !== THIRD_PARTY_SOURCE ? source : null
 
     try {
         const items: any[] = []
@@ -87,9 +88,9 @@ export default defineEventHandler(async (event) => {
                        WHERE language = ? AND is_visible = 1`
             const args: any[] = [lang]
 
-            if (source) {
+            if (publisher) {
                 sql += ` AND publisher = ?`
-                args.push(source)
+                args.push(publisher)
             }
 
             if (searchQuery) {
