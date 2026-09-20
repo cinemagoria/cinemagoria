@@ -8,6 +8,9 @@ on:
     - cron: '23 5 * * *' # off-the-hour, to miss the top-of-hour scheduling crush
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   refresh:
     runs-on: ubuntu-latest

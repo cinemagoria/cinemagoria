@@ -16,6 +16,9 @@ on:
         description: 'Translations to perform in this run'
         default: '15'
 
+permissions:
+  contents: read
+
 jobs:
   backfill:
     runs-on: ubuntu-latest
