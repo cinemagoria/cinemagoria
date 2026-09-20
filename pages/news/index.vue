@@ -166,7 +166,7 @@
                   @click="pickCategory(null)"
                 >Todas</button>
                 <button
-                  v-for="cat in CATEGORY_OPTIONS"
+                  v-for="cat in visibleCategories"
                   :key="cat"
                   type="button"
                   class="facet-chip"
@@ -374,10 +374,15 @@ const VIEW_STORAGE_KEY = 'news-view-mode';
 const PAGE_SIZE = 20;
 const DATE_LOCALE = 'es-ES';
 
-const CATEGORY_OPTIONS = [
-  'festival', 'industry', 'trailer', 'review',
-  'awards', 'streaming', 'interview', 'documentary',
+const CATEGORY_PRIMARIES = [
+  'review', 'interview', 'opinion',
+  'production', 'cast', 'trailer', 'premiere', 'release', 'streaming', 'awards', 'classic',
+  'acquisition', 'boxoffice', 'lineup', 'industry',
 ];
+
+const CATEGORY_TAGS = ['festival', 'market', 'documentary', 'series', 'animation', 'short'];
+
+const CATEGORY_OPTIONS = [...CATEGORY_PRIMARIES, ...CATEGORY_TAGS];
 
 const SCOPE_OPTIONS = [
   { value: 'all', label: 'Todas' },
@@ -429,7 +434,6 @@ const isSearching = computed(() => isSearchActive.value && !!debouncedSearchQuer
 
 const showSourceFacet = computed(() => !isSavedView.value && !isSearching.value);
 const showPublisherFacet = computed(() => showSourceFacet.value && scope.value === 'third-party' && knownPublishers.value.length > 0);
-const showCategoryFacet = computed(() => !isSavedView.value && !isSearching.value && scope.value !== 'third-party');
 
 function updateQuery(patch, { replace = false } = {}) {
   const query = { ...route.query };
@@ -617,6 +621,18 @@ const savedItems = computed(() => localSavedArticlesList.value.map((article) => 
 }));
 
 const sourceItems = computed(() => (isSavedView.value ? savedItems.value : newsItems.value));
+
+const visibleCategories = computed(() => {
+  const present = new Set();
+  for (const item of sourceItems.value) {
+    if (item?.editorial_category) present.add(item.editorial_category);
+    const secondaries = Array.isArray(item?.secondary_categories) ? item.secondary_categories : [];
+    for (const token of secondaries) if (token) present.add(token);
+  }
+  return CATEGORY_OPTIONS.filter((cat) => present.has(cat));
+});
+
+const showCategoryFacet = computed(() => !isSavedView.value && !isSearching.value && visibleCategories.value.length > 0);
 
 const filteredItems = computed(() => {
   const cat = categoryFilter.value;

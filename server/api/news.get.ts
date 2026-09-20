@@ -77,13 +77,14 @@ export default defineEventHandler(async (event) => {
                 slug: row.slug,
                 topics: parseJsonArray(row.topics_json),
                 requires_auth: Number(row.requires_auth ?? 0) === 1 ? 1 : 0,
-                editorial_category: (row.editorial_category as string) || 'feature',
+                editorial_category: (row.editorial_category as string) || null,
                 secondary_categories: parseJsonArray(row.secondary_categories_json),
             })))
         }
 
         if (wantsThirdParty) {
-            let sql = `SELECT id, publisher, title, description, link, image, published_at
+            let sql = `SELECT id, publisher, title, description, link, image, published_at,
+                              editorial_category, secondary_categories_json
                        FROM approved_news
                        WHERE language = ? AND is_visible = 1`
             const args: any[] = [lang]
@@ -113,6 +114,8 @@ export default defineEventHandler(async (event) => {
                 source: { name: row.publisher, url: publisherOrigin(String(row.link)) },
                 video_id: null,
                 is_internal: false,
+                editorial_category: (row.editorial_category as string) || null,
+                secondary_categories: parseJsonArray(row.secondary_categories_json),
             })))
         }
 
