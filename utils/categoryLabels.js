@@ -1,17 +1,29 @@
 // English display labels for the editorial taxonomy. The DB value (lowercase
 // token) is the canonical key used by URLs (?category=), the chip filter, the
-// article sidebar, and card badges. Some buckets are compound (one token,
-// several editorial angles). The ES channel resolves its own map in
-// server/utils/rss-feed.ts; the EN feed emits the raw token.
+// article sidebar and card badges. Fifteen primaries answer what a piece is;
+// six tags describe its context or the work, and are never a primary.
 export const CATEGORY_LABELS = {
-    festival:    'Festival',
-    industry:    'Industry / Acquisition / Box Office',
-    trailer:     'Trailer / First Looks',
-    review:      'Review / Opinion',
+    review:      'Reviews',
+    interview:   'Interviews',
+    opinion:     'Analysis & Essays',
+    production:  'Development & Production',
+    cast:        'Cast & Crew',
+    trailer:     'Trailers & First Looks',
+    premiere:    'Premieres & Selections',
+    release:     'Theatrical Releases',
+    streaming:   'Streaming & Home',
     awards:      'Awards',
-    streaming:   'Streaming',
-    interview:   'Interview',
-    documentary: 'Documentaries',
+    classic:     'Classics & Restorations',
+    acquisition: 'Acquisitions & Distribution',
+    boxoffice:   'Box Office',
+    lineup:      'Programmes & Line-ups',
+    industry:    'Industry',
+    festival:    'Festival',
+    market:      'Market',
+    documentary: 'Documentary',
+    series:      'Series',
+    animation:   'Animation',
+    short:       'Short',
 };
 
 export function categoryLabel(cat) {
