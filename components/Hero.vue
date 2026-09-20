@@ -184,9 +184,9 @@
                           <span :class="$style.newsPanelTitle">{{ articleTitle(article) }}</span>
                           <span v-if="articleHook(article)" :class="$style.newsPanelHook">{{ articleHook(article) }}</span>
                           <span :class="$style.newsPanelFoot">
-                            <span v-if="article.is_internal === false" :class="$style.newsPanelSource">
-                              <span :class="$style.newsPanelSourceName">{{ article.source.name }}</span>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+                            <span v-if="articleSource(article)" :class="[$style.newsPanelSource, { [$style.newsPanelSourceExternal]: article.is_internal === false }]">
+                              <span :class="$style.newsPanelSourceName">{{ articleSource(article) }}</span>
+                              <svg v-if="article.is_internal === false" xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
                             </span>
                             <span v-if="article.requires_auth" :class="$style.newsPanelLock">
                               <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1Z"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
@@ -490,6 +490,7 @@
 <script>
 import { name, stars, yearStart, yearEnd, cert, backdrop, poster, trailer, id, genres, type, runtime } from '~/mixins/Details';
 import { mapItemToDbPayload } from '~/utils/itemMapper';
+import { FIRST_PARTY_SOURCE } from '~/utils/newsSources';
 import Filters from '~/mixins/Filters';
 import Modal from '~/components/Modal';
 import Loader from '~/components/Loader.vue';
@@ -1031,6 +1032,10 @@ export default {
         this._articlesPanelPausedAutoAdvance = false;
         if (this.autoAdvancePaused) this.toggleAutoAdvance();
       }
+    },
+    articleSource(article) {
+      if (article.source && article.source.name) return article.source.name;
+      return article.is_internal === false ? '' : FIRST_PARTY_SOURCE;
     },
     articleHref(article) {
       return article.href || `/news/${article.slug}`;
@@ -3204,10 +3209,10 @@ export default {
   min-width: 0;
   max-width: 60%;
   padding: 0.15rem 0.7rem;
-  border: 1px solid rgba(255, 255, 255, 0.34);
+  border: 1px solid rgba(139, 233, 253, 0.55);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
-  color: #E6E8EC;
+  background: rgba(139, 233, 253, 0.16);
+  color: #B8F4FF;
   font-weight: 800;
   letter-spacing: 0.1em;
   white-space: nowrap;
@@ -3216,6 +3221,12 @@ export default {
     flex-shrink: 0;
     opacity: 0.85;
   }
+}
+
+.newsPanelSourceExternal {
+  border-color: rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.07);
+  color: #E6E8EC;
 }
 
 .newsPanelSourceName {
