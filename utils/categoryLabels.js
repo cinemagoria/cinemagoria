@@ -11,7 +11,7 @@ export const CATEGORY_LABELS = {
     trailer:     'Trailers & First Looks',
     premiere:    'Premieres & Selections',
     release:     'Theatrical Releases',
-    streaming:   'Streaming & Home',
+    streaming:   'Streaming',
     awards:      'Awards',
     classic:     'Classics & Restorations',
     acquisition: 'Acquisitions & Distribution',
