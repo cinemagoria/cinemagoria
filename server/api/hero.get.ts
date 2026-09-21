@@ -1,54 +1,85 @@
 import { dbExecute, useDb } from '~~/server/utils/db'
 import { getFestivalStatusByTmdbId } from '~~/server/utils/festivals'
 import { loadTvDetailsCached, type MinimalTv } from '~~/server/utils/tvDetails'
+import { cachedWithRefresh } from '~~/server/utils/staleCache'
+
+const HERO_SOURCES_FRESH_MS = 5 * 60 * 1000
+
+type HeroSources = {
+    rows: any[]
+    festivalsByTmdbId: Record<string, any>
+    tvDetailsByTmdbId: Map<number, MinimalTv>
+    complete: boolean
+}
+
+async function loadHeroSources(apiKey: string, apiLang: string): Promise<HeroSources> {
+    const result = await dbExecute(`
+        SELECT * FROM hero_selections
+        WHERE title IS NOT NULL
+        AND backdrop_path IS NOT NULL
+    `)
+    const rows = result.rows as any[]
+
+    if (rows.length === 0) {
+        return { rows, festivalsByTmdbId: {}, tvDetailsByTmdbId: new Map(), complete: true }
+    }
+
+    // Embed festival membership per item (one indexed IN query for the
+    // whole carousel). The Hero renders badges straight from this during
+    // SSR — zero client-side festival requests and no badge pop-in.
+    // Non-fatal: the hero must never fail because of badges.
+    let festivalsByTmdbId: Record<string, any> = {};
+    let tvDetailsByTmdbId = new Map<number, MinimalTv>();
+
+    const [festivalsResult, tvDetailsResult] = await Promise.allSettled([
+        getFestivalStatusByTmdbId(rows.map((row: any) => row.tmdb_id)),
+        loadTvDetailsCached(
+            useDb(),
+            rows
+                .filter((row: any) => row.media_type === 'tv')
+                .map((row: any) => row.tmdb_id),
+            apiKey,
+            apiLang
+        ),
+    ]);
+
+    if (festivalsResult.status === 'fulfilled') {
+        festivalsByTmdbId = festivalsResult.value;
+    } else {
+        console.error('Hero festival-status enrichment failed:', festivalsResult.reason);
+    }
+
+    if (tvDetailsResult.status === 'fulfilled') {
+        tvDetailsByTmdbId = tvDetailsResult.value;
+    } else {
+        console.error('Hero TV episode-context enrichment failed:', tvDetailsResult.reason);
+    }
+
+    return {
+        rows,
+        festivalsByTmdbId,
+        tvDetailsByTmdbId,
+        complete: festivalsResult.status === 'fulfilled' && tvDetailsResult.status === 'fulfilled',
+    }
+}
 
 export default defineEventHandler(async (event) => {
     try {
-        const result = await dbExecute(`
-            SELECT * FROM hero_selections
-            WHERE title IS NOT NULL
-            AND backdrop_path IS NOT NULL
-        `)
-
-        if (result.rows.length === 0) {
-            return { result: [] }
-        }
-        const selectedRows = result.rows.sort(() => 0.5 - Math.random());
-
-        // Embed festival membership per item (one indexed IN query for the
-        // whole carousel). The Hero renders badges straight from this during
-        // SSR — zero client-side festival requests and no badge pop-in.
-        // Non-fatal: the hero must never fail because of badges.
         const config = useRuntimeConfig();
         const apiKey = (config.public as any)?.apiKey || '';
         const apiLang = (config.public as any)?.apiLang || 'en-US';
 
-        let festivalsByTmdbId: Record<string, any> = {};
-        let tvDetailsByTmdbId = new Map<number, MinimalTv>();
+        const { rows, festivalsByTmdbId, tvDetailsByTmdbId } = await cachedWithRefresh(
+            'hero-sources',
+            HERO_SOURCES_FRESH_MS,
+            () => loadHeroSources(apiKey, apiLang),
+            (sources) => sources.complete,
+        );
 
-        const [festivalsResult, tvDetailsResult] = await Promise.allSettled([
-            getFestivalStatusByTmdbId(selectedRows.map((row: any) => row.tmdb_id)),
-            loadTvDetailsCached(
-                useDb(),
-                selectedRows
-                    .filter((row: any) => row.media_type === 'tv')
-                    .map((row: any) => row.tmdb_id),
-                apiKey,
-                apiLang
-            ),
-        ]);
-
-        if (festivalsResult.status === 'fulfilled') {
-            festivalsByTmdbId = festivalsResult.value;
-        } else {
-            console.error('Hero festival-status enrichment failed:', festivalsResult.reason);
+        if (rows.length === 0) {
+            return { result: [] }
         }
-
-        if (tvDetailsResult.status === 'fulfilled') {
-            tvDetailsByTmdbId = tvDetailsResult.value;
-        } else {
-            console.error('Hero TV episode-context enrichment failed:', tvDetailsResult.reason);
-        }
+        const selectedRows = [...rows].sort(() => 0.5 - Math.random());
 
         const items = await Promise.all(selectedRows.map(async (row) => {
             const cert = row.certification;
