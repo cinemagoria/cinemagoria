@@ -639,7 +639,7 @@ onMounted(async () => {
     try {
         const [filmsData, scheduleData, awardsData] = await Promise.all([
             $fetch('/api/festival/bafici/films?limit=500&sort=title'),
-            $fetch('/api/festival/bafici/schedule'),
+            $fetch('/api/festival/bafici/schedule').catch(() => ({ results: [] })),
             $fetch('/api/festival/bafici/awards').catch(() => ({ results: [] })),
         ]);
         

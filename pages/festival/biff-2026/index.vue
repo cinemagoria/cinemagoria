@@ -671,7 +671,7 @@ onMounted(async () => {
     try {
         const [filmsData, scheduleData, awardsData] = await Promise.all([
             $fetch('/api/festival/biff/films?limit=400&sort=title'),
-            $fetch('/api/festival/biff/schedule'),
+            $fetch('/api/festival/biff/schedule').catch(() => ({ results: [] })),
             $fetch('/api/festival/biff/awards').catch(() => ({ results: [] })),
         ]);
 

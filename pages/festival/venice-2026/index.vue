@@ -710,7 +710,7 @@ onMounted(async () => {
     try {
         const [filmsData, sched, awardsData] = await Promise.all([
             $fetch('/api/festival/venice/films?limit=500'),
-            $fetch('/api/festival/venice/schedule'),
+            $fetch('/api/festival/venice/schedule').catch(() => ({ results: [] })),
             $fetch('/api/festival/venice/awards').catch(() => ({ results: [] }))
         ]);
 

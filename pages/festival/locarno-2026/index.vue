@@ -628,7 +628,7 @@ onMounted(async () => {
     try {
         const [filmsData, scheduleData, awardsData] = await Promise.all([
             $fetch('/api/festival/locarno/films?limit=400&sort=title'),
-            $fetch('/api/festival/locarno/schedule'),
+            $fetch('/api/festival/locarno/schedule').catch(() => ({ results: [] })),
             $fetch('/api/festival/locarno/awards').catch(() => ({ results: [] })),
         ]);
 

@@ -603,7 +603,7 @@ onMounted(async () => {
     try {
         const [filmsData, scheduleData, awardsData] = await Promise.all([
             $fetch('/api/festival/kviff/films?limit=400&sort=title'),
-            $fetch('/api/festival/kviff/schedule'),
+            $fetch('/api/festival/kviff/schedule').catch(() => ({ results: [] })),
             $fetch('/api/festival/kviff/awards').catch(() => ({ results: [] })),
         ]);
 

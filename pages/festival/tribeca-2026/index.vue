@@ -578,7 +578,7 @@ onMounted(async () => {
     try {
         const [filmsData, scheduleData, awardsData] = await Promise.all([
             $fetch('/api/festival/tribeca/films?limit=300&sort=title'),
-            $fetch('/api/festival/tribeca/schedule'),
+            $fetch('/api/festival/tribeca/schedule').catch(() => ({ results: [] })),
             $fetch('/api/festival/tribeca/awards').catch(() => ({ results: [] }))
         ]);
 
