@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
                 f.director,
                 f.runtime_minutes,
                 f.tmdb_id as film_tmdb_id,
-                f.tmdb_data
+                CASE WHEN json_valid(f.tmdb_data) THEN json_object('tmdb_poster', json_extract(f.tmdb_data, '$.tmdb_poster'), 'poster_path', json_extract(f.tmdb_data, '$.poster_path')) END AS tmdb_data
             FROM festival_screenings s
             JOIN festival_films f ON s.film_id = f.id
             WHERE f.festival_name = 'Busan International Film Festival' AND f.festival_year = 2026
