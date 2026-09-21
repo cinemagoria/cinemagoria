@@ -29,7 +29,7 @@ const CATEGORY_LABELS_ES: Record<string, string> = {
     trailer:     'Tráilers y adelantos',
     premiere:    'Estrenos en festivales',
     release:     'Estrenos en cines',
-    streaming:   'Streaming y hogar',
+    streaming:   'Streaming',
     awards:      'Premios',
     classic:     'Clásicos y restauraciones',
     acquisition: 'Adquisiciones y distribución',
