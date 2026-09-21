@@ -574,7 +574,7 @@ onMounted(async () => {
     try {
         const [filmsData, scheduleData, awardsData] = await Promise.all([
             $fetch('/api/festival/berlinale/films?limit=200&sort=title'),
-            $fetch('/api/festival/berlinale/schedule'),
+            $fetch('/api/festival/berlinale/schedule').catch(() => ({ results: [] })),
             $fetch('/api/festival/berlinale/awards').catch(() => ({ results: [] })),
         ]);
         

@@ -573,7 +573,7 @@ onMounted(async () => {
     try {
         const [filmsData, scheduleData] = await Promise.all([
             $fetch('/api/festival/frightfest/films?limit=400&sort=title'),
-            $fetch('/api/festival/frightfest/schedule'),
+            $fetch('/api/festival/frightfest/schedule').catch(() => ({ results: [] })),
         ]);
 
         films.value = filmsData;

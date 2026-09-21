@@ -593,7 +593,7 @@ onMounted(async () => {
     try {
         const [filmsData, scheduleData, awardsData] = await Promise.all([
             $fetch('/api/festival/fantasia/films?limit=400&sort=title'),
-            $fetch('/api/festival/fantasia/schedule'),
+            $fetch('/api/festival/fantasia/schedule').catch(() => ({ results: [] })),
             $fetch('/api/festival/fantasia/awards').catch(() => ({ results: [] })),
         ]);
 
