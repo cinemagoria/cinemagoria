@@ -101,7 +101,25 @@ const FANTASIA_LIVE_EXPIRY = new Date('2026-08-03T03:59:00Z');
 const showFantasiaLiveBanner = computed(() => _now >= FANTASIA_LIVE_START && _now < FANTASIA_LIVE_EXPIRY);
 
 
-const { data: pageData, error: pageError } = useAsyncData('homepage', async () => {
+const HOMEPAGE_SSR_DEADLINE_MS = 8000;
+const HOMEPAGE_FETCH_TIMEOUT_MS = import.meta.server ? 9000 : 30000;
+const PARTIAL_HOMEPAGE_CACHE_CONTROL = 'public, max-age=0, s-maxage=30';
+const homepageCacheControl = useResponseHeader('Cache-Control');
+
+const { data: pageData, error: pageError, refresh: refreshHomepage } = useAsyncData('homepage', async () => {
+  let partial = false;
+  const withinDeadline = (promise, fallback) => {
+    if (!import.meta.server) return promise;
+    let timer;
+    const deadline = new Promise((resolve) => {
+      timer = setTimeout(() => {
+        partial = true;
+        resolve(fallback);
+      }, HOMEPAGE_SSR_DEADLINE_MS);
+    });
+    return Promise.race([promise, deadline]).finally(() => clearTimeout(timer));
+  };
+
   try {
     // Spotlight carousels are curated manually via pins in
     // cinemagoria-candidates-selections (spotlight-manual-pinned.json,
@@ -109,7 +127,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     // spotlight_movies / spotlight_tv tables ordered by sort_index.
     const fetchSpotlight = async (file) => {
       try {
-        const data = await $fetch(file, { timeout: 9000 });
+        const data = await $fetch(file, { timeout: HOMEPAGE_FETCH_TIMEOUT_MS });
         return { results: data?.results ?? [] };
       } catch (e) {
         console.error(`Spotlight fetch error (${file}):`, e);
@@ -126,7 +144,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
             // fields=card keeps only what the carousel cards consume — the
             // full tmdb_data spread (cast/crew/videos/companies) was inflating
             // the serialized Nuxt payload by hundreds of KB per page view.
-            const data = await $fetch(`/api/festival/films-batch?festivals=${FESTIVAL_SLUGS.join(',')}&limit=${limit}&fields=card`, { timeout: 9000 });
+            const data = await $fetch(`/api/festival/films-batch?festivals=${FESTIVAL_SLUGS.join(',')}&limit=${limit}&fields=card`, { timeout: HOMEPAGE_FETCH_TIMEOUT_MS });
             const buckets = data?.results || {};
             return Object.fromEntries(
                 Object.entries(buckets).map(([slug, films]) => [
@@ -142,7 +160,7 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
 
     const fetchHero = async () => {
         try {
-             const data = await $fetch('/api/hero', { timeout: 9000 });
+             const data = await $fetch('/api/hero', { timeout: HOMEPAGE_FETCH_TIMEOUT_MS });
              return data?.result ?? null;
         } catch (e) {
              console.error('Hero fetch error', e);
@@ -151,10 +169,10 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
     };
 
     const [festivalsBuckets, trendingMovies, trendingTv, featured] = await Promise.all([
-        fetchAllFestivalsBatched(),
-        fetchSpotlight('/api/spotlight/movies'),
-        fetchSpotlight('/api/spotlight/tv'),
-        fetchHero()
+        withinDeadline(fetchAllFestivalsBatched(), {}),
+        withinDeadline(fetchSpotlight('/api/spotlight/movies'), { results: [] }),
+        withinDeadline(fetchSpotlight('/api/spotlight/tv'), { results: [] }),
+        withinDeadline(fetchHero(), null)
     ]);
 
     const sundanceList = festivalsBuckets.sundance || [];
@@ -305,10 +323,12 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
         }
     }
 
-    return { trendingMovies, trendingTv, featured, festivalsMovies: { results: uniqueMixed } };
+    if (import.meta.server && partial) homepageCacheControl.value = PARTIAL_HOMEPAGE_CACHE_CONTROL;
+    return { trendingMovies, trendingTv, featured, festivalsMovies: { results: uniqueMixed }, partial };
   } catch (error) {
     console.error('Homepage data load error:', error);
-    return { trendingMovies: { results: [] }, trendingTv: { results: [] }, featured: null, festivalsMovies: { results: [] } };
+    if (import.meta.server) homepageCacheControl.value = PARTIAL_HOMEPAGE_CACHE_CONTROL;
+    return { trendingMovies: { results: [] }, trendingTv: { results: [] }, featured: null, festivalsMovies: { results: [] }, partial: true };
   }
 }, {
   lazy: true,
@@ -317,6 +337,10 @@ const { data: pageData, error: pageError } = useAsyncData('homepage', async () =
 
 const featured = computed(() => pageData.value?.featured);
 const festivalsMovies = computed(() => pageData.value?.festivalsMovies);
+
+onMounted(() => {
+  if (pageData.value?.partial) refreshHomepage();
+});
 
 // Preload the first hero backdrop so the browser fetches the LCP image at
 // highest priority, before hydration reveals it.
