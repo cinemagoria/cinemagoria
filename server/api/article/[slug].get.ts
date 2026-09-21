@@ -65,9 +65,9 @@ export default defineEventHandler(async (event) => {
                 // requires_auth: 0 = public (body always rendered), 1 = community-gated
                 // (anonymous reader sees teaser + AuthModal; signed-in reader sees full body).
                 requires_auth: Number(row.requires_auth ?? 0) === 1 ? 1 : 0,
-                // Editorial taxonomy. Primary is NOT NULL DEFAULT 'feature' at the DB layer.
+                // Editorial taxonomy: fifteen primaries, six tag-only tokens.
                 // Secondaries arrive as a JSON array (≤ 2) or NULL; expose as a plain array.
-                editorial_category: (row.editorial_category as string) || 'feature',
+                editorial_category: (row.editorial_category as string) || null,
                 secondary_categories: (() => {
                     try {
                         const raw = row.secondary_categories_json

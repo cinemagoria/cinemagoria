@@ -21,14 +21,27 @@ const md = new MarkdownIt({ breaks: true, html: true })
 // sync with the Spanish utils/categoryLabels.js — if the user-facing
 // translation changes there, mirror it here.
 const CATEGORY_LABELS_ES: Record<string, string> = {
-    festival:    'Festival',
-    industry:    'Industria / Adquisiciones / Taquilla',
-    trailer:     'Tráiler / Teaser / Primeras Imágenes',
-    review:      'Crítica / Opinión',
+    review:      'Críticas',
+    interview:   'Entrevistas',
+    opinion:     'Análisis y opinión',
+    production:  'Desarrollo y rodaje',
+    cast:        'Reparto y equipo',
+    trailer:     'Tráilers y adelantos',
+    premiere:    'Estrenos en festivales',
+    release:     'Estrenos en cines',
+    streaming:   'Streaming y hogar',
     awards:      'Premios',
-    streaming:   'Streaming',
-    interview:   'Entrevista',
-    documentary: 'Documentales',
+    classic:     'Clásicos y restauraciones',
+    acquisition: 'Adquisiciones y distribución',
+    boxoffice:   'Taquilla',
+    lineup:      'Programaciones y selecciones',
+    industry:    'Industria',
+    festival:    'Festival',
+    market:      'Mercado',
+    documentary: 'Documental',
+    series:      'Serie',
+    animation:   'Animación',
+    short:       'Cortometraje',
 }
 
 const labelForFeed = (cat: string, isEs: boolean): string => {
