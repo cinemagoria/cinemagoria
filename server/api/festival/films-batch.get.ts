@@ -1,5 +1,6 @@
 import { createError, defineEventHandler, getQuery } from 'h3'
 import { dbExecute } from '~~/server/utils/db'
+import { cachedWithRefresh } from '~~/server/utils/staleCache'
 // Shared slug ↔ festival_name mapping (also used by /api/hero badge
 // embedding and /api/festival/status) so the endpoints can't drift apart.
 import { FESTIVAL_NAME_BY_SLUG, NAME_TO_SLUG } from '~~/server/utils/festivals'
@@ -76,6 +77,47 @@ function mapRow(row: any) {
     }
 }
 
+const CARD_BATCH_FRESH_MS = 10 * 60 * 1000
+
+async function loadBuckets(
+    requestedSlugs: string[],
+    festivalNames: string[],
+    year: number,
+    limitPerFestival: number,
+    slimFields: boolean,
+) {
+    const placeholders = festivalNames.map(() => '?').join(', ')
+    const sql = `SELECT * FROM festival_films
+                 WHERE festival_name IN (${placeholders})
+                   AND festival_year = ?`
+    const args = [...festivalNames, year]
+
+    const result = await dbExecute({ sql, args })
+
+    // Bucket by slug for easy client consumption.
+    const buckets: Record<string, any[]> = {}
+    for (const slug of requestedSlugs) buckets[slug] = []
+
+    for (const row of result.rows as any[]) {
+        const slug = NAME_TO_SLUG[row.festival_name as string]
+        if (!slug || !buckets[slug]) continue
+        const film = mapRow(row)
+        if (!film.title || !String(film.title).trim()) continue
+        buckets[slug].push(slimFields ? slimFilm(film) : film)
+    }
+
+    // Apply per-festival limit + stable alphabetical sort, matching the
+    // single-festival endpoints' default behavior.
+    for (const [slug, list] of Object.entries(buckets)) {
+        list.sort((a, b) => String(a.title).localeCompare(String(b.title)))
+        if (list.length > limitPerFestival) {
+            buckets[slug] = list.slice(0, limitPerFestival)
+        }
+    }
+
+    return buckets
+}
+
 export default defineEventHandler(async (event) => {
     const query = getQuery(event)
     const slugsParam = String(query.festivals || '').trim()
@@ -97,34 +139,13 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
-        const placeholders = festivalNames.map(() => '?').join(', ')
-        const sql = `SELECT * FROM festival_films
-                     WHERE festival_name IN (${placeholders})
-                       AND festival_year = ?`
-        const args = [...festivalNames, year]
-
-        const result = await dbExecute({ sql, args })
-
-        // Bucket by slug for easy client consumption.
-        const buckets: Record<string, any[]> = {}
-        for (const slug of requestedSlugs) buckets[slug] = []
-
-        for (const row of result.rows as any[]) {
-            const slug = NAME_TO_SLUG[row.festival_name as string]
-            if (!slug || !buckets[slug]) continue
-            const film = mapRow(row)
-            if (!film.title || !String(film.title).trim()) continue
-            buckets[slug].push(slimFields ? slimFilm(film) : film)
-        }
-
-        // Apply per-festival limit + stable alphabetical sort, matching the
-        // single-festival endpoints' default behavior.
-        for (const [slug, list] of Object.entries(buckets)) {
-            list.sort((a, b) => String(a.title).localeCompare(String(b.title)))
-            if (list.length > limitPerFestival) {
-                buckets[slug] = list.slice(0, limitPerFestival)
-            }
-        }
+        const buckets = slimFields
+            ? await cachedWithRefresh(
+                `films-batch:${requestedSlugs.join(',')}:${limitPerFestival}:${year}`,
+                CARD_BATCH_FRESH_MS,
+                () => loadBuckets(requestedSlugs, festivalNames, year, limitPerFestival, slimFields),
+            )
+            : await loadBuckets(requestedSlugs, festivalNames, year, limitPerFestival, slimFields)
 
         return { results: buckets }
     } catch (error: any) {
