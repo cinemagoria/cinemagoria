@@ -1227,13 +1227,33 @@ $ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     display: none;
   }
 
+  .editing {
+    flex-wrap: wrap;
+  }
+
+  .editForm {
+    flex: 1 1 100%;
+  }
+
   .editRow {
     flex-direction: column;
     align-items: stretch;
   }
 
+  .privacySwitch {
+    display: flex;
+
+    span {
+      flex: 1;
+      text-align: center;
+    }
+  }
+
   .editActions {
-    justify-content: flex-end;
+    .btnGhost,
+    .btnPrimary {
+      flex: 1;
+    }
   }
 }
 </style>

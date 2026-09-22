@@ -5467,11 +5467,6 @@ svg.rating-logo.imdb {
 }
 .dropdown-trigger svg { width: 20px; height: 20px; display: block; flex-shrink: 0; }
 .dropdown-trigger:hover { background: rgba(139, 233, 253, 0.18); }
-@media (hover: hover) and (pointer: fine) {
-  .card-actions-menu .dropdown-trigger { opacity: 0; }
-  .card-actions-menu.menu-open .dropdown-trigger,
-  .movie-card:hover .card-actions-menu .dropdown-trigger { opacity: 1; }
-}
 .action-dropdown,
 .card-actions-menu.menu-open .action-dropdown {
   position: absolute !important;
