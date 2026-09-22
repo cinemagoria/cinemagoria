@@ -2019,11 +2019,12 @@ export default {
 }
 
 .card-actions-menu {
-  position: absolute;
-  top: 8px; right: 8px;
-  z-index: 6;
+  position: static;
 
   .dropdown-trigger {
+    position: absolute;
+    top: 8px; right: 8px;
+    z-index: 6;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2050,10 +2051,10 @@ export default {
 
 .action-dropdown {
   position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
+  top: 42px;
+  left: 8px;
+  right: 8px;
   z-index: 20;
-  min-width: 150px;
   background: rgba(3, 4, 6, 0.95);
   border: 1px solid rgba(139, 233, 253, 0.25);
   border-radius: 12px;

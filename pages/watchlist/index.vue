@@ -5361,8 +5361,15 @@ svg.rating-logo.imdb {
 }
 
 /* Card actions menu (mirror lists) */
-.card-actions-menu { position: absolute; top: 8px; right: 8px; z-index: 6; }
-.dropdown-trigger {
+.card-actions-menu,
+.card-actions-menu.menu-open {
+  position: static !important;
+  top: auto !important; right: auto !important; bottom: auto !important; left: auto !important;
+  width: auto !important; height: auto !important;
+}
+.dropdown-trigger,
+.card-actions-menu.menu-open .dropdown-trigger {
+  position: absolute !important; top: 8px !important; right: 8px !important; z-index: 6 !important;
   display: flex; align-items: center; justify-content: center;
   width: 28px; height: 28px;
   background: rgba(3, 4, 6, 0.7);
@@ -5381,31 +5388,39 @@ svg.rating-logo.imdb {
   .card-actions-menu.menu-open .dropdown-trigger,
   .movie-card:hover .card-actions-menu .dropdown-trigger { opacity: 1; }
 }
-.action-dropdown {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
+.action-dropdown,
+.card-actions-menu.menu-open .action-dropdown {
+  position: absolute !important;
+  top: 42px !important; left: 8px !important; right: 8px !important; bottom: auto !important;
+  width: auto !important; height: auto !important; margin: 0 !important;
+  display: block !important;
   z-index: 20;
-  min-width: 150px;
-  background: rgba(3, 4, 6, 0.95);
-  border: 1px solid rgba(139, 233, 253, 0.25);
-  border-radius: 12px;
-  padding: 5px;
+  background: rgba(3, 4, 6, 0.95) !important;
+  border: 1px solid rgba(139, 233, 253, 0.25) !important;
+  border-radius: 12px !important;
+  padding: 5px !important;
   backdrop-filter: blur(16px);
   box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
 }
-.action-dropdown .dropdown-item {
-  display: flex; align-items: center; gap: 8px;
-  padding: 9px 11px;
-  border-radius: 8px;
-  font-size: 13px;
-  color: #cfd6dc;
+.action-dropdown .dropdown-item,
+.card-actions-menu.menu-open .dropdown-item {
+  display: flex; align-items: center; justify-content: flex-start !important; gap: 8px;
+  width: auto !important;
+  padding: 9px 11px !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  color: #cfd6dc !important;
+  background: transparent;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 .action-dropdown .dropdown-item svg { flex-shrink: 0; }
-.action-dropdown .dropdown-item:hover { background: rgba(139, 233, 253, 0.1); color: #fff; }
-.action-dropdown .dropdown-item.remove-action:hover { background: rgba(255, 95, 95, 0.12); color: #ff9999; }
+.action-dropdown .dropdown-item:hover,
+.card-actions-menu.menu-open .dropdown-item:hover { background: rgba(139, 233, 253, 0.1) !important; color: #fff !important; }
+.action-dropdown .dropdown-item.remove-action:hover,
+.card-actions-menu.menu-open .dropdown-item.remove-action:hover { background: rgba(255, 95, 95, 0.12) !important; color: #ff9999 !important; }
 
 /* Card info (mirror .card-info — centered, cyan title) */
 .movie-info-container {

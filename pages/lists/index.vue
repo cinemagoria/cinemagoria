@@ -1,144 +1,120 @@
 <template>
   <div class="lists-page">
     <UserNav />
-    
+
     <main class="main-content">
-      <h1 class="page-title">Colecciones</h1>
-      <h2 class="page-subtitle">
-        Organiza tus películas y series favoritas en colecciones personalizadas.
-      </h2>
-      
-      <div class="toolbar-section" :class="{ 'justify-center': !shouldShowFilter }">
-        <button @click="openCreateModal" class="create-btn">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;min-width:20px"><path d="M16 5H3"/><path d="M11 12H3"/><path d="M16 19H3"/><path d="M18 9v6"/><path d="M21 12h-6"/></svg>
-          Crear Nueva Colección
+      <header class="page-hero">
+        <h1 class="page-title">Colecciones</h1>
+        <p class="page-subtitle">Organiza tus películas y series favoritas en colecciones personalizadas.</p>
+      </header>
+
+      <div v-if="loading" class="loader-container">
+        <Loader :size="60" />
+      </div>
+
+      <div v-else-if="lists.length === 0" class="state-card">
+        <div class="state-visual">
+          <div v-if="imageLoading" class="state-visual-loader">
+            <Loader :size="40" color="#8BE9FD" />
+          </div>
+          <img v-show="!imageLoading" src="/placeholders/empty-list-placeholder.webp" alt="" class="state-image" @load="imageLoading = false" />
+        </div>
+        <h3>Aún no has creado ninguna colección</h3>
+        <p>Crea tus propias colecciones de películas y series.</p>
+        <button type="button" @click="openCreateModal" class="primary-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+          Crear mi primera colección
         </button>
+      </div>
 
-        <div v-if="shouldShowFilter" class="filter-switch-container">
-            <div class="segmented-control">
-                <input type="radio" id="filter-all" value="all" v-model="filterMode">
-                <label for="filter-all">Todos</label>
-                
-                <input type="radio" id="filter-private" value="private" v-model="filterMode">
-                <label for="filter-private">Privadas</label>
-                
-                <input type="radio" id="filter-public" value="public" v-model="filterMode">
-                <label for="filter-public">Públicas</label>
-                
-                <div class="glider" :class="filterMode"></div>
+      <section v-else class="list-panel">
+        <div class="panel-toolbar">
+          <div v-if="shouldShowFilter" class="seg-control" role="radiogroup" aria-label="Filtrar colecciones">
+            <input type="radio" id="filter-all" value="all" v-model="filterMode">
+            <label for="filter-all">Todas</label>
+            <input type="radio" id="filter-private" value="private" v-model="filterMode">
+            <label for="filter-private">Privadas</label>
+            <input type="radio" id="filter-public" value="public" v-model="filterMode">
+            <label for="filter-public">Públicas</label>
+            <span class="seg-glider" :class="filterMode" aria-hidden="true"></span>
+          </div>
+          <span v-else class="panel-count">{{ lists.length }} {{ lists.length === 1 ? 'colección' : 'colecciones' }}</span>
+
+          <button type="button" @click="openCreateModal" class="primary-btn create-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            <span>Crear nueva colección</span>
+          </button>
+        </div>
+
+        <div v-if="filteredLists.length === 0" class="state-card inset">
+          <h3>No se encontraron colecciones {{ filterMode === 'private' ? 'privadas' : 'públicas' }}</h3>
+          <p>Cambia el filtro para ver el resto de tus colecciones.</p>
+        </div>
+
+        <div v-else class="lists-grid">
+          <article
+            v-for="list in filteredLists"
+            :key="list.id"
+            class="list-card"
+            :class="{ 'is-editing': editingListId === list.id }"
+            @click="editingListId !== list.id && $router.push(`/lists/${list.slug}`)">
+            <div class="card-cover">
+              <div v-if="list.item_count > 0 && list.cover_images && list.cover_images.length > 0" class="cover-grid">
+                <div v-for="i in 4" :key="i" class="cover-cell">
+                  <img v-if="list.cover_images[i - 1]" :src="resolvePoster(list.cover_images[i - 1])" @error="handleImgError" class="cover-img" alt="" />
+                  <img v-else src="/placeholders/plus_placeholder.webp" class="cover-plus" alt="" />
+                </div>
+              </div>
+              <div v-else class="cover-empty">
+                <img src="/placeholders/empty-list-placeholder.webp" class="cover-empty-img" alt="" />
+              </div>
+
+              <span class="privacy-badge" :class="{ 'is-public': list.is_public }">
+                <svg v-if="list.is_public" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span class="privacy-label">{{ list.is_public ? 'Pública' : 'Privada' }}</span>
+              </span>
+
+              <div v-if="editingListId !== list.id" class="card-actions">
+                <button type="button" @click.stop="startEdit(list)" class="icon-btn" aria-label="Editar colección" title="Editar">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+                </button>
+                <button type="button" @click.stop="deleteList(list)" class="icon-btn danger" aria-label="Eliminar colección" title="Eliminar">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                </button>
+              </div>
             </div>
-        </div>
-      </div>
 
-      <div v-if="loading" class="loading-state">
-        <Loader />
-      </div>
+            <div class="card-body">
+              <div v-if="editingListId === list.id" class="edit-form" @click.stop>
+                <input v-model="editForm.name" class="field-input" placeholder="Nombre de la colección" @keyup.enter="saveEdit" @keyup.esc="cancelEdit" autoFocus />
+                <textarea v-model="editForm.description" class="field-input field-textarea" placeholder="Descripción" rows="2"></textarea>
+                <label class="seg-switch">
+                  <input type="checkbox" v-model="editForm.is_public">
+                  <span>Privada</span>
+                  <span>Pública</span>
+                </label>
+                <div class="edit-actions">
+                  <button type="button" @click.stop="cancelEdit" class="btn-ghost">Cancelar</button>
+                  <button type="button" @click.stop="saveEdit" class="btn-primary" :disabled="!editForm.name || !editForm.name.trim()">Guardar</button>
+                </div>
+              </div>
 
-      <div v-else-if="filteredLists.length === 0" class="empty-state">
-        <div v-if="imageLoading" class="empty-icon placeholder-loader">
-          <Loader :size="40" color="#8BE9FD" />
+              <template v-else>
+                <h3 class="list-name">{{ list.name }}</h3>
+                <p v-if="list.description" class="list-desc">{{ list.description }}</p>
+                <span class="item-count">{{ list.item_count || 0 }} {{ list.item_count === 1 ? 'elemento' : 'elementos' }}</span>
+              </template>
+            </div>
+          </article>
         </div>
-        <img 
-          v-show="!imageLoading"
-          src="/placeholders/empty-list-placeholder.webp" 
-          alt="No lists" 
-          class="empty-icon" 
-          @load="imageLoading = false"
-        />
-        <h3 v-if="lists.length === 0">Aún no has creado ninguna colección</h3>
-        <h3 v-else>No se encontraron colecciones {{ filterMode === 'private' ? 'privadas' : 'públicas' }}</h3>
-        <p v-if="lists.length === 0">Crea tus propias colecciones de películas y series.</p>
-      </div>
+      </section>
 
-      <div v-else class="lists-grid">
-        <div 
-          v-for="list in filteredLists" 
-          :key="list.id" 
-          class="list-card"
-          @click="editingListId !== list.id && $router.push(`/lists/${list.slug}`)"
-          :class="{ 'is-editing': editingListId === list.id }"
-        >
-          <div class="card-cover">
-             <div v-if="list.item_count > 0 && list.cover_images && list.cover_images.length > 0" class="dynamic-cover-grid">
-                <div v-for="i in 4" :key="i" class="grid-cell">
-                    <img 
-                      v-if="list.cover_images && list.cover_images[i-1]" 
-                      :src="resolvePoster(list.cover_images[i-1])" 
-                      @error="handleImgError"
-                      class="cover-img" 
-                      alt="Cover"
-                    />
-                    <div v-else class="plus-placeholder">
-                        <img src="/placeholders/plus_placeholder.webp" class="plus-icon" alt="+" />
-                    </div>
-                </div>
-             </div>
-             <div v-else class="empty-cover">
-               <img src="/placeholders/empty-list-placeholder.webp" alt="Empty List" class="placeholder-img-match-modal" />
-             </div>
-             
-             <div v-if="editingListId !== list.id" class="privacy-badge">
-                <span v-if="list.is_public" title="Pública">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                </span>
-                <span v-else title="Privada">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                </span>
-             </div>
-          </div>
-          
-          <div class="card-info">
-             <template v-if="editingListId === list.id">
-                 <div class="edit-form-container" @click.stop>
-                     <input 
-                        v-model="editForm.name" 
-                        class="edit-input"
-                        placeholder="Nombre de la colección"
-                        @keyup.enter="saveEdit" 
-                        autoFocus
-                    />
-                    <textarea 
-                        v-model="editForm.description" 
-                        class="edit-input edit-textarea"
-                        placeholder="Descripción"
-                    ></textarea>
-                     <div class="privacy-toggle" @click.stop="editForm.is_public = !editForm.is_public">
-                         <div class="privacy-option">
-                             <span :class="{ 'privacy-active': !editForm.is_public }">Privada</span>
-                             <div class="toggle-switch">
-                                 <div class="toggle-knob" :class="{ 'toggle-on': editForm.is_public }"></div>
-                             </div>
-                             <span :class="{ 'privacy-active': editForm.is_public }">Pública</span>
-                         </div>
-                     </div>
-                     <div class="edit-actions">
-                         <button @click.stop="cancelEdit" class="cancel-btn">Cancelar</button>
-                         <button @click.stop="saveEdit" class="save-btn">Guardar</button>
-                     </div>
-                 </div>
-             </template>
-             <template v-else>
-                <div class="info-row">
-                    <h3 class="list-name">{{ list.name }}</h3>
-                    <p v-if="list.description" class="list-desc">{{ list.description }}</p>
-                    <span class="item-count">{{ list.item_count || 0 }} elementos</span>
-                </div>
-                <div class="action-buttons">
-                    <button @click.stop="deleteList(list)" class="action-btn delete-btn">Borrar</button>
-                    <button @click.stop="startEdit(list)" class="action-btn edit-btn">Editar</button>
-                </div>
-             </template>
-          </div>
-        </div>
-      </div>
-      
       <transition name="slide-up">
-        <div v-if="undoList" class="undo-banner">
-          <div class="undo-content">
-              <span>Colección "{{ undoList.name }}" borrada</span>
-              <button @click="undoDelete" class="undo-btn">Deshacer</button>
-          </div>
-          <div class="timer-line"></div>
+        <div v-if="undoList" class="undo-banner" role="status">
+          <span class="undo-text">Colección &ldquo;{{ undoList.name }}&rdquo; borrada</span>
+          <button type="button" @click="undoDelete" class="undo-btn">Deshacer</button>
+          <span class="timer-line"></span>
         </div>
       </transition>
     </main>
@@ -384,554 +360,675 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/css/utilities/variables' as *;
+$cyan: #8BE9FD;
+$teal: #1F5467;
+$muted: #a0aab2;
+$ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
 .lists-page {
   min-height: 100vh;
   padding-bottom: 5rem;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: rgba(255, 255, 255, 0.86);
 }
 
 .main-content {
-  max-width: 1400px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: var(--page-header-space-top) 4rem 2rem;
-  
-  @media (max-width: 768px) {
-    padding: var(--page-header-space-top) 2rem 1rem;
+  padding: var(--page-header-space-top) 32px 40px;
+
+  @media (max-width: 600px) {
+    padding: var(--page-header-space-top) 12px 32px;
   }
 }
 
-.toolbar-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 3rem;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-
-    @media (max-width: 600px) {
-        flex-direction: column;
-        justify-content: center;
-        gap: 2rem;
-
-        .create-btn {
-            order: 2;
-        }
-
-        .filter-switch-container {
-            order: 1;
-        }
-    }
-
-    &.justify-center {
-        justify-content: center;
-    }
+.page-hero {
+  margin-bottom: var(--page-header-space-bottom);
 }
 
-.segmented-control {
-    position: relative;
-    display: flex;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px; 
-    padding: 4px;
-    height: 40px;
-    align-items: center;
-    min-width: 300px;
-}
-
-.segmented-control input[type="radio"] {
-    display: none;
-}
-
-.segmented-control label {
-    position: relative;
-    z-index: 2;
-    flex: 1;
-    text-align: center;
-    font-size: 1.4rem;
-    color: rgba(255, 255, 255, 0.6);
-    cursor: pointer;
-    transition: color 0.3s;
-    font-weight: 500;
-    line-height: 32px;
-    white-space: nowrap;
-}
-
-.segmented-control input:checked + label {
-    color: #000;
-}
-
-.segmented-control .glider {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    height: calc(100% - 8px);
-    width: calc((100% - 8px) / 3);
-    background: #8BE9FD;
-    border-radius: 16px;
-    z-index: 1;
-    transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-}
-
-.segmented-control .glider.all { transform: translateX(0); }
-.segmented-control .glider.private { transform: translateX(100%); }
-.segmented-control .glider.public { transform: translateX(200%); }
-
-
-.create-btn {
+.loader-container {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 0.8rem;
-  background: #8BE9FD;
-  color: #000;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 15px;
-  font-weight: 600;
-  font-size: 1.4rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  
-  &:hover {
-    background: #73cde0;
-    transform: translateY(-2px);
-  }
+  min-height: 50vh;
 }
 
-.loading-state, .empty-state {
+.state-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem 0 5rem;
+  gap: 6px;
+  min-height: 360px;
+  padding: 48px 24px;
   text-align: center;
+  background: rgba(3, 4, 6, 0.6);
+  border: 1px solid rgba($cyan, 0.16);
+  border-radius: 18px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  p {
+    margin: 4px 0 18px;
+    font-size: 14px;
+    font-weight: 300;
+    color: $muted;
+  }
+
+  &.inset {
+    min-height: 260px;
+    background: transparent;
+    border: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+
+    p {
+      margin-bottom: 0;
+    }
+  }
 }
 
-.empty-icon {
-    height: 250px;
-    border-radius: 15px;
-    margin-bottom: 2rem;
-    border: #8BE9FD solid 1px;
+.state-visual {
+  position: relative;
+  width: 220px;
+  max-width: 80vw;
+  aspect-ratio: 16 / 9;
+  margin-bottom: 18px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #000;
+  box-shadow: 0 0 0 1px rgba($cyan, 0.2);
 }
 
-.placeholder-loader {
-    width: 448px;
-    max-width: 90vw;
-    background: rgba(0, 0, 0, 0.307);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.state-visual-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.empty-state h3 {
-  font-size: 2rem;
-  color: #fff;
-  margin-bottom: 1rem;
+.state-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.empty-state p {
-  color: #888;
-  font-size: 1.6rem;
-  margin-bottom: 3rem;
+.primary-btn,
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, $teal, $cyan);
+  border: 1px solid rgba($cyan, 0.5);
+  color: #03242C;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba($cyan, 0.18);
+  transition: all 0.2s ease;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba($cyan, 0.28);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
 }
 
-.create-btn-large {
-  @extend .create-btn;
-  padding: 1.5rem 3rem;
-  font-size: 1.6rem;
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: $muted;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+  }
+}
+
+.list-panel {
+  background: rgba(3, 4, 6, 0.6);
+  background-image:
+    radial-gradient(circle at 12% 0%, rgba($teal, 0.18), transparent 45%),
+    radial-gradient(circle at 90% 100%, rgba($cyan, 0.05), transparent 40%);
+  border: 1px solid rgba($cyan, 0.16);
+  border-radius: 20px;
+  padding: 16px 18px 22px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+
+  @media (max-width: 600px) {
+    padding: 12px 10px 16px;
+    border-radius: 16px;
+  }
+}
+
+.panel-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 4px 4px 14px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba($cyan, 0.12);
+}
+
+.panel-count {
+  font-size: 14px;
+  font-weight: 600;
+  color: #8F989E;
+}
+
+.create-btn {
+  padding: 9px 18px;
+
+  @media (max-width: 600px) {
+    span {
+      display: none;
+    }
+
+    padding: 9px 12px;
+  }
+}
+
+.seg-control {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba($cyan, 0.18);
+  user-select: none;
+
+  input {
+    display: none;
+  }
+
+  label {
+    position: relative;
+    z-index: 1;
+    min-width: 72px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    text-align: center;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #8F989E;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.25s ease;
+  }
+
+  input:checked + label {
+    color: #03242C;
+  }
+
+  @media (max-width: 600px) {
+    label {
+      min-width: 0;
+      padding: 7px 12px;
+      font-size: 12.5px;
+    }
+  }
+}
+
+.seg-glider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  height: calc(100% - 8px);
+  width: calc((100% - 8px) / 3);
+  border-radius: 999px;
+  background: linear-gradient(135deg, $teal, $cyan);
+  box-shadow: 0 2px 10px rgba($cyan, 0.25);
+  transition: transform 0.3s $ease-out;
+
+  &.all { transform: translateX(0); }
+  &.private { transform: translateX(100%); }
+  &.public { transform: translateX(200%); }
 }
 
 .lists-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 16px;
+  align-items: start;
 
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-  }
-  
-  @media (max-width: 480px) {
-    gap: 1rem;
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
   }
 }
 
 .list-card {
-  background: rgba(0, 0, 0, 0.307);
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-  cursor: pointer;
-  width: 100%;
+  position: relative;
   display: flex;
   flex-direction: column;
-  
+  overflow: hidden;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  cursor: pointer;
+  transition: transform 0.3s $ease-out, border-color 0.2s ease, box-shadow 0.3s ease, background 0.2s ease;
+
   &:hover {
-    transform: translateY(-5px);
-    border-color: rgba(139, 233, 253, 0.5);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    
+    border-color: rgba($cyan, 0.4);
+    background: rgba($cyan, 0.04);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+
     .list-name {
-        color: #8BE9FD;
+      color: $cyan;
     }
   }
-  
+
   &.is-editing {
-      transform: none !important;
-      border-color: #8BE9FD;
-      cursor: default;
+    cursor: default;
+    border-color: rgba($cyan, 0.5);
+    background: rgba($cyan, 0.04);
+    box-shadow: 0 0 0 1px rgba($cyan, 0.2);
+
+    .list-name {
+      color: #fff;
+    }
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .list-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .list-card.is-editing:hover {
+    transform: none;
   }
 }
 
 .card-cover {
   position: relative;
   width: 100%;
-  padding-top: 100%;
-  background: #111;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #000;
 }
 
-.empty-cover {
+.cover-grid {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #000; 
-  
-  .placeholder-img-match-modal {
-    object-fit: contain;
-    opacity: 1;
-  }
-}
-
-.dynamic-cover-grid {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  inset: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
+  gap: 1px;
 }
 
-.grid-cell {
+.cover-cell {
   position: relative;
+  overflow: hidden;
+  background: #000;
+}
+
+.cover-img,
+.cover-plus,
+.cover-empty-img {
+  display: block;
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  
-  .cover-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .plus-placeholder {
-    width: 100%;
-    height: 100%;
-    background: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .plus-icon {
-    width: 40%;
-    height: 40%;
-    object-fit: cover;
-    opacity: 1;
-  }
+  object-fit: cover;
+}
+
+.cover-plus {
+  opacity: 0.85;
+}
+
+.cover-empty {
+  position: absolute;
+  inset: 0;
 }
 
 .privacy-badge {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(4px);
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.1);
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px 4px 7px;
+  border-radius: 999px;
+  background: rgba(3, 4, 6, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cfd6dc;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  svg {
+    width: 11px;
+    height: 11px;
+  }
+
+  &.is-public {
+    color: $cyan;
+    border-color: rgba($cyan, 0.35);
+  }
+
+  @media (max-width: 600px) {
+    padding: 5px 6px;
+
+    .privacy-label {
+      display: none;
+    }
+  }
 }
 
-.card-info {
-  padding: 1.5rem;
-  flex: 1;
+.card-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: flex;
+  gap: 6px;
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 9px;
+  background: rgba(3, 4, 6, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #e6ebf0;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: all 0.2s ease;
+
+  svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  &:hover {
+    color: $cyan;
+    border-color: rgba($cyan, 0.5);
+    background: rgba($cyan, 0.14);
+  }
+
+  &.danger:hover {
+    color: #ff7e7e;
+    border-color: rgba(255, 95, 95, 0.55);
+    background: rgba(255, 95, 95, 0.16);
+  }
+}
+
+.card-body {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-}
-
-.info-row {
-  margin-bottom: 1rem;
+  gap: 4px;
+  padding: 12px 14px 14px;
 }
 
 .list-name {
-  font-size: 1.6rem;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.3;
   color: #fff;
-  margin: 0 0 0.5rem 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: color 0.2s;
-
-  @media (max-width: 768px) {
-    font-size: 1.4rem;
-  }
+  transition: color 0.2s ease;
 }
 
 .list-desc {
-    color: #ccc;
-    font-size: 1.2rem;
-    margin: 0 0 0.5rem 0;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    line-height: 1.4;
-    opacity: 0.8;
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 300;
+  line-height: 1.45;
+  color: $muted;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .item-count {
-  font-size: 1.3rem;
-  color: #888;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 1rem;
-    margin-top: auto;
-}
-
-.action-btn {
-  flex: 1;
-  font-size: 13px;
+  margin-top: 4px;
+  font-size: 12px;
   font-weight: 600;
-  padding: 8px 0;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-radius: 15px;
-  text-align: center;
+  color: #8F989E;
+}
+
+.edit-form {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-input {
+  width: 100%;
+  padding: 8px 11px;
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba($cyan, 0.2);
+  color: #fff;
+  font-size: 13.5px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+
+  &::placeholder {
+    color: rgba(160, 170, 178, 0.45);
+  }
+
+  &:focus {
+    border-color: rgba($cyan, 0.6);
+    box-shadow: 0 0 0 3px rgba($cyan, 0.12);
+    background: rgba(0, 0, 0, 0.4);
+  }
+}
+
+.field-textarea {
+  min-height: 56px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.seg-switch {
+  position: relative;
+  display: inline-flex;
+  align-self: flex-start;
   align-items: center;
-  border: 1px solid transparent; 
-}
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba($cyan, 0.18);
+  cursor: pointer;
+  user-select: none;
+  font-size: 12px;
 
-.delete-btn {
-  background: rgba(255, 0, 0, 0.15);
-  color: #ff6b6b;
-  border: 1px solid rgba(255, 0, 0, 0.3);
-
-  &:hover {
-    background: rgba(255, 0, 0, 0.3);
-    border-color: rgba(255, 0, 0, 0.5);
-    transform: translateY(-1px);
-    color: #ff6b6b;
+  input {
+    display: none;
   }
-}
 
-.edit-btn {
-  background: rgba(139, 233, 253, 0.15);
-  color: #8BE9FD;
-  border: 1px solid rgba(139, 233, 253, 0.3);
-
-  &:hover {
-    background: rgba(139, 233, 253, 0.3);
-    border-color: #8BE9FD;
-    transform: translateY(-1px);
-    color: #8BE9FD;
-  }
-}
-
-.edit-form-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.edit-input {
-    width: 100%;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid #8BE9FD;
-    padding: 0.5rem;
-    color: #fff;
-    border-radius: 4px;
-    font-size: 1.4rem;
-    
-    &:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(139, 233, 253, 0.2);
-    }
-}
-
-.edit-textarea {
-    resize: none;
-    height: 60px;
-    font-family: inherit;
-    font-size: 1.2rem;
-}
-
-.privacy-toggle {
-    cursor: pointer;
-}
-
-.privacy-option {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    font-size: 1.3rem;
-    color: #888;
-}
-
-.privacy-active {
-    color: #fff;
+  span {
+    padding: 4px 12px;
+    border-radius: 999px;
+    color: #8F989E;
     font-weight: 600;
-}
+    transition: all 0.25s ease;
+  }
 
-.toggle-switch {
-    width: 36px;
-    height: 20px;
-    background: #333;
-    border-radius: 20px;
-    position: relative;
-    transition: background 0.3s;
-}
-
-.toggle-knob {
-    width: 16px;
-    height: 16px;
-    background: #fff;
-    border-radius: 50%;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    transition: transform 0.3s;
-}
-
-.toggle-knob.toggle-on {
-     transform: translateX(16px);
-     background: #8BE9FD;
+  input:not(:checked) ~ span:first-of-type,
+  input:checked ~ span:last-of-type {
+    background: linear-gradient(135deg, $teal, $cyan);
+    color: #03242C;
+    box-shadow: 0 2px 10px rgba($cyan, 0.25);
+  }
 }
 
 .edit-actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+
+  .btn-primary {
+    padding: 8px 16px;
+    font-size: 13.5px;
+  }
 }
 
-.save-btn, .cancel-btn {
-    flex: 1;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 8px 0;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border-radius: 15px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid transparent;
-}
+@media (max-width: 600px) {
+  .list-card.is-editing {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: stretch;
 
-.save-btn {
-    background: rgba(139, 233, 253, 0.15);
-    color: #8BE9FD;
-    border: 1px solid rgba(139, 233, 253, 0.3);
-    
-    &:hover {
-        background: rgba(139, 233, 253, 0.3);
-        border-color: #8BE9FD;
-        transform: translateY(-1px);
-        color: #8BE9FD;
+    .card-cover {
+      flex: 0 0 96px;
+      width: 96px;
+      aspect-ratio: auto;
     }
-}
 
-.cancel-btn {
-    background: rgba(255, 0, 0, 0.15);
-    color: #ff6b6b;
-    border: 1px solid rgba(255, 0, 0, 0.3);
-    
-    &:hover {
-        background: rgba(255, 0, 0, 0.3);
-        border-color: rgba(255, 0, 0, 0.5);
-        transform: translateY(-1px);
-        color: #ff6b6b;
+    .card-body {
+      flex: 1;
+      min-width: 0;
     }
+  }
+
+  .seg-switch {
+    align-self: stretch;
+
+    span {
+      flex: 1;
+      text-align: center;
+    }
+  }
+
+  .edit-actions {
+    .btn-ghost,
+    .btn-primary {
+      flex: 1;
+    }
+  }
 }
 
 .undo-banner {
-    position: fixed;
-    bottom: 15vh;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #000;
-    border: 1px solid #333;
-    border-radius: 8px;
-    padding: 1rem 2rem;
-    z-index: 2000;
-    display: flex;
-    flex-direction: column;
-    min-width: 300px;
+  position: fixed;
+  bottom: 15vh;
+  left: 50%;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: min(420px, calc(100vw - 32px));
+  padding: 12px 12px 12px 18px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: rgba(3, 4, 6, 0.85);
+  border: 1px solid rgba($cyan, 0.22);
+  color: #cfd6dc;
+  font-size: 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transform: translateX(-50%);
 }
 
-.undo-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    font-size: 1.4rem;
-    gap: 1.5rem;
-    
-    span {
-        flex: 1;
-        min-width: 0;
-        word-wrap: break-word;
-        line-height: 1.4;
-    }
+.undo-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .undo-btn {
-    background: #8BE9FD;
-    color: #000;
-    border: none;
-    padding: 0.5rem 1.6rem;
-    border-radius: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 1.2rem;
-    flex-shrink: 0;
-    
-    &:hover {
-        background: #73cde0;
-    }
+  flex-shrink: 0;
+  padding: 5px 16px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid rgba($cyan, 0.4);
+  color: $cyan;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba($cyan, 0.12);
+    border-color: $cyan;
+  }
 }
 
 .timer-line {
-    height: 3px;
-    background: #8BE9FD;
-    width: 100%;
-    animation: undo-timer 4s linear forwards;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, $teal, $cyan);
+  transform-origin: left;
+  animation: undo-countdown 4s linear forwards;
 }
 
-@keyframes undo-timer {
-    from { width: 100%; }
-    to { width: 0%; }
+@keyframes undo-countdown {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
 }
 
-.slide-up-enter-active, .slide-up-leave-active {
-    transition: all 0.3s ease;
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.slide-up-enter, .slide-up-leave-to {
-    transform: translate(-50%, 100%);
-    opacity: 0;
+.slide-up-enter-from,
+.slide-up-enter,
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translate(-50%, 14px);
 }
-
-
 </style>
