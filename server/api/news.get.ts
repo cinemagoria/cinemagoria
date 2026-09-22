@@ -2,7 +2,39 @@ import { dbExecute } from '~~/server/utils/db'
 import { FIRST_PARTY_SOURCE, THIRD_PARTY_SOURCE } from '~/utils/newsSources'
 
 const FIRST_PARTY_DATE_GUARD =
-    `(datetime(published_at) IS NULL OR datetime(published_at) <= datetime('now'))`
+    `(datetime(a.published_at) IS NULL OR datetime(a.published_at) <= datetime('now'))`
+
+const TITLE_NAME_COLUMNS = `rt.title AS rt_title, rt.original_title AS rt_original,
+                            hs.title AS hs_title, hs.spanish_title AS hs_es,
+                            nh.title AS nh_title, nh.spanish_title AS nh_es`
+
+const titleNameJoins = (type: string, id: string) =>
+    `LEFT JOIN release_titles rt ON rt.media_type = ${type} AND rt.tmdb_id = ${id}
+     LEFT JOIN hero_selections hs ON hs.tmdb_id = ${id} AND hs.media_type = ${type}
+     LEFT JOIN noir_historical nh ON nh.tmdb_id = ${id} AND nh.media_type = ${type}`
+
+const LATIN_TITLE = /^[\p{Script=Latin}\p{N}\p{P}\p{S}\s]+$/u
+
+const firstText = (...values: unknown[]): string | null => {
+    for (const value of values) {
+        const text = typeof value === 'string' ? value.trim() : ''
+        if (text) return text
+    }
+    return null
+}
+
+const titleName = (row: any, lang: string): string | null => {
+    if (lang !== 'es') return firstText(row.rt_title, row.hs_title, row.nh_title)
+    const original = typeof row.rt_original === 'string' && LATIN_TITLE.test(row.rt_original.trim()) ? row.rt_original : null
+    return firstText(row.hs_es, row.nh_es, original, row.rt_title, row.hs_title, row.nh_title)
+}
+
+const relatedTitle = (row: any, lang: string) => {
+    const type = String(row.entity_type || '')
+    const id = Number(row.entity_id)
+    if ((type !== 'movie' && type !== 'tv') || !Number.isInteger(id) || id <= 0) return null
+    return { type, id, name: titleName(row, lang) }
+}
 
 const publisherOrigin = (link: string): string | null => {
     try {
@@ -47,20 +79,26 @@ export default defineEventHandler(async (event) => {
             const titleCol = lang === 'es' ? 'title_es' : 'title_en'
             const descCol = lang === 'es' ? 'description_es' : 'description_en'
 
-            let sql = `SELECT id, slug, ${titleCol} AS title, ${descCol} AS description,
-                              image_url, published_at, topics_json,
-                              requires_auth, editorial_category, secondary_categories_json
-                       FROM cinemagoria_articles
-                       WHERE is_visible = 1 AND is_cinemagoria = 1
+            const entityType = `json_extract(a.related_tmdb_ids, '$[0].type')`
+            const entityId = `json_extract(a.related_tmdb_ids, '$[0].id')`
+
+            let sql = `SELECT a.id, a.slug, a.${titleCol} AS title, a.${descCol} AS description,
+                              a.image_url, a.published_at, a.topics_json,
+                              a.requires_auth, a.editorial_category, a.secondary_categories_json,
+                              ${entityType} AS entity_type, ${entityId} AS entity_id,
+                              ${TITLE_NAME_COLUMNS}
+                       FROM cinemagoria_articles a
+                       ${titleNameJoins(entityType, entityId)}
+                       WHERE a.is_visible = 1 AND a.is_cinemagoria = 1
                          AND ${FIRST_PARTY_DATE_GUARD}`
             const args: any[] = []
 
             if (searchQuery) {
-                sql += ` AND (${titleCol} LIKE ? OR ${descCol} LIKE ?)`
+                sql += ` AND (a.${titleCol} LIKE ? OR a.${descCol} LIKE ?)`
                 args.push(`%${searchQuery}%`, `%${searchQuery}%`)
             }
 
-            sql += ` ORDER BY published_at DESC`
+            sql += ` ORDER BY a.published_at DESC`
 
             const result = await dbExecute({ sql, args })
 
@@ -79,27 +117,31 @@ export default defineEventHandler(async (event) => {
                 requires_auth: Number(row.requires_auth ?? 0) === 1 ? 1 : 0,
                 editorial_category: (row.editorial_category as string) || null,
                 secondary_categories: parseJsonArray(row.secondary_categories_json),
+                related_title: relatedTitle(row, lang),
             })))
         }
 
         if (wantsThirdParty) {
-            let sql = `SELECT id, publisher, title, description, link, image, published_at,
-                              editorial_category, secondary_categories_json
-                       FROM approved_news
-                       WHERE language = ? AND is_visible = 1`
+            let sql = `SELECT n.id, n.publisher, n.title, n.description, n.link, n.image, n.published_at,
+                              n.editorial_category, n.secondary_categories_json,
+                              n.tmdb_type AS entity_type, n.tmdb_id AS entity_id,
+                              ${TITLE_NAME_COLUMNS}
+                       FROM approved_news n
+                       ${titleNameJoins('n.tmdb_type', 'n.tmdb_id')}
+                       WHERE n.language = ? AND n.is_visible = 1`
             const args: any[] = [lang]
 
             if (publisher) {
-                sql += ` AND publisher = ?`
+                sql += ` AND n.publisher = ?`
                 args.push(publisher)
             }
 
             if (searchQuery) {
-                sql += ` AND (title LIKE ? OR description LIKE ?)`
+                sql += ` AND (n.title LIKE ? OR n.description LIKE ?)`
                 args.push(`%${searchQuery}%`, `%${searchQuery}%`)
             }
 
-            sql += ` ORDER BY published_at DESC LIMIT ?`
+            sql += ` ORDER BY n.published_at DESC LIMIT ?`
             args.push(limit)
 
             const result = await dbExecute({ sql, args })
@@ -116,6 +158,7 @@ export default defineEventHandler(async (event) => {
                 is_internal: false,
                 editorial_category: (row.editorial_category as string) || null,
                 secondary_categories: parseJsonArray(row.secondary_categories_json),
+                related_title: relatedTitle(row, lang),
             })))
         }
 
