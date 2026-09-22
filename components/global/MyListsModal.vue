@@ -1,156 +1,136 @@
 <template>
-  <div v-if="visible" :class="$style.modalOverlay" @click.self="close">
-    <div :class="$style.modalWrapper">
-      <div :class="$style.modalContent">
-        <div :class="$style.modalHeader">
-          <div :class="$style.headerContent">
-             <h2 class="title-primary">{{ modalTitle }}</h2>
-             <p v-if="modalSubtitle" :class="$style.subtitle">{{ modalSubtitle }}</p>
-          </div>
-          <button @click="close" :class="$style.closeButton" aria-label="Close"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  <div v-if="visible" :class="$style.overlay" @click.self="close">
+    <div :class="$style.modal" role="dialog" aria-modal="true" aria-labelledby="my-lists-title">
+      <header :class="$style.head">
+        <div :class="$style.headText">
+          <h2 id="my-lists-title" :class="$style.title">{{ modalTitle }}</h2>
+          <p v-if="modalSubtitle" :class="$style.subtitle">{{ modalSubtitle }}</p>
         </div>
+        <button type="button" @click="close" :class="$style.close" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 18 18 6M6 6l12 12"/></svg>
+        </button>
+      </header>
 
-        <div v-if="loading" :class="$style.loader">
-          <Loader :size="60" color="#8BE9FD" />
-        </div>
-
-        <div v-if="undoList" :class="$style.undoBarContainer">
-           <div :class="$style.undoBar">
-             <span>List "{{ undoList.name }}" deleted</span>
-             <button @click="handleUndo" :class="$style.undoButton">UNDO</button>
-           </div>
-        </div>
-
-        <div :class="$style.modalBody">
-            <div :class="$style.grid">
-              
-
-                <div 
-                  v-if="itemToAdd && !Array.isArray(itemsToAdd)"
-                  :class="[$style.card, watchlistSelected ? $style.activeCard : '']"
-                  @click="toggleWatchlist">
-                  <div :class="$style.cardImage">
-                     <div :class="$style.listIcon">
-                       <img src="/placeholders/empty-list-placeholder.webp" :class="$style.listPlaceholderImg" alt="Watchlist" style="object-fit: cover; opacity: 0.8;" />
-                     </div>
-                     <div v-if="watchlistSelected" :class="$style.addedIndicator">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                     </div>
-                  </div>
-                  <div :class="$style.cardContent">
-                    <h4>Watchlist</h4>
-                    <div :class="$style.meta">
-                      <span>Favorites</span>
-                    </div>
-                  </div>
-                </div>
-
-
-                <div 
-                  v-for="list in lists" 
-                  :key="list.id"
-                  :class="[$style.card, isListSelected(list.id) ? $style.activeCard : '']"
-                  @click="goToList(list)">
-                  <div :class="$style.cardImage">
-                     <div v-if="list.item_count > 0 && list.cover_images && list.cover_images.length > 0" :class="$style.dynamicCoverGrid">
-                        <div v-for="i in 4" :key="i" :class="$style.gridCell">
-                            <img 
-                              v-if="list.cover_images && list.cover_images[i-1]" 
-                              :src="resolvePoster(list.cover_images[i-1])" 
-                              @error="handleImgError"
-                              :class="$style.coverImg" 
-                              alt="Cover"
-                            />
-                            <div v-else :class="$style.plusPlaceholder">
-                                <img src="/placeholders/plus_placeholder.webp" :class="$style.plusIcon" alt="+" />
-                            </div>
-                        </div>
-                     </div>
-                     <div v-else :class="$style.listIcon">
-                       <img src="/placeholders/empty-list-placeholder.webp" :class="$style.listPlaceholderImg" alt="List placeholder" />
-                     </div>
-                     
-
-                     <div v-if="isListSelected(list.id) && !Array.isArray(itemsToAdd)" :class="$style.addedIndicator">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                     </div>
-                     <div v-if="isListSelected(list.id) && Array.isArray(itemsToAdd)" :class="$style.addedIndicator">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                     </div>
-                  </div>
-                  <div :class="$style.cardContent">
-                    <template v-if="editingListId === list.id">
-
-                        <div :class="$style.editFormContainer">
-                            <input 
-                              v-model="editForm.name" 
-                              :class="$style.editInput"
-                              placeholder="List Name"
-                              @keyup.enter="saveEdit" 
-                              @click.stop
-                              autoFocus
-                            />
-                            
-                            <div :class="$style.privacyToggle" @click.stop="editForm.is_public = !editForm.is_public">
-                               <div :class="$style.privacyOption">
-                                   <span :class="!editForm.is_public ? $style.privacyActive : ''">Private</span>
-                                   <div :class="$style.toggleSwitch">
-                                       <div :class="[$style.toggleKnob, editForm.is_public ? $style.toggleOn : '']"></div>
-                                   </div>
-                                   <span :class="editForm.is_public ? $style.privacyActive : ''">Public</span>
-                               </div>
-                            </div>
-
-                            <div :class="$style.editActions">
-                                 <button @click.stop="cancelEdit" :class="$style.cancelBtn">Cancel</button>
-                                 <button @click.stop="saveEdit" :class="$style.saveBtn">Save</button>
-                            </div>
-                        </div>
-                    </template>
-                    
-                    <template v-else>
-                        <h4>{{ list.name }}</h4>
-                        <div :class="$style.meta">
-                          <span>{{ list.item_count || 0 }} items</span>
-                          <span v-if="list.is_public" title="Public">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                          </span>
-                          <span v-else title="Private">
-                               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                          </span>
-                        </div>
-                        <div v-if="!itemToAdd && !itemsToAdd" :class="$style.actionButtons">
-                           <button @click.stop="startEdit(list)" :class="$style.editButton">Edit</button>
-                           <button @click.stop="deleteList(list)" :class="$style.deleteButton">Delete</button>
-                        </div>
-                    </template>
-                  </div>
-                </div>
-                
-
-                 <div :class="[$style.card, $style.createCard]" @click="openCreateModal">
-                    <div :class="$style.createContent">
-                        <img src="/placeholders/plus_placeholder.webp" :class="$style.createIcon" alt="+" />
-                        <span :class="$style.createLabel">Create New List</span>
-                    </div>
-                 </div>
-              </div>
-
-              <div v-if="!loading && lists.length === 0 && !itemToAdd && !itemsToAdd" :class="$style.emptyState">
-                 <p>Start curating by creating your first list.</p>
-              </div>
-          </div>
-          
-          <div v-if="itemToAdd || Array.isArray(itemsToAdd)" :class="$style.modalFooter">
-              <button @click="close" :class="$style.footerCancelBtn">Cancel</button>
-              <button @click="confirmBulkAdd" :class="$style.footerDoneBtn" :disabled="Array.isArray(itemsToAdd) && selectedListIds.length === 0">
-                 Done ({{ selectedCount }})
-              </button>
-          </div>
-        </div>
+      <div v-if="undoList" :class="$style.undo">
+        <span :class="$style.undoText">List &ldquo;{{ undoList.name }}&rdquo; deleted</span>
+        <button type="button" @click="handleUndo" :class="$style.undoBtn">Undo</button>
+        <span :class="$style.undoTimer"></span>
       </div>
-    </div>
 
+      <div :class="$style.body">
+        <div v-if="loading" :class="$style.loader">
+          <Loader :size="44" color="#8BE9FD" />
+        </div>
+
+        <div v-else :class="$style.rows">
+          <button type="button" :class="[$style.row, $style.createRow]" @click="openCreateModal">
+            <span :class="[$style.cover, $style.coverCreate]">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+            </span>
+            <span :class="$style.rowMain">
+              <span :class="$style.rowName">Create new list</span>
+              <span :class="$style.rowMeta">Start a fresh collection</span>
+            </span>
+          </button>
+
+          <div
+            v-if="itemToAdd && !Array.isArray(itemsToAdd)"
+            :class="[$style.row, $style.selectable, { [$style.selected]: watchlistSelected }]"
+            role="checkbox"
+            :aria-checked="watchlistSelected ? 'true' : 'false'"
+            tabindex="0"
+            @click="toggleWatchlist"
+            @keydown.enter.prevent="toggleWatchlist"
+            @keydown.space.prevent="toggleWatchlist">
+            <span :class="[$style.cover, $style.coverIcon]">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 21 12 16 6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z"/></svg>
+            </span>
+            <span :class="$style.rowMain">
+              <span :class="$style.rowName">Watchlist</span>
+              <span :class="$style.rowMeta">Favorites</span>
+            </span>
+            <span :class="$style.check" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
+            </span>
+          </div>
+
+          <div
+            v-for="list in lists"
+            :key="list.id"
+            :class="[$style.row, { [$style.selectable]: itemToAdd || itemsToAdd, [$style.selected]: isListSelected(list.id), [$style.editing]: editingListId === list.id }]"
+            :role="itemToAdd || itemsToAdd ? 'checkbox' : 'link'"
+            :aria-checked="itemToAdd || itemsToAdd ? (isListSelected(list.id) ? 'true' : 'false') : null"
+            tabindex="0"
+            @click="goToList(list)"
+            @keydown.enter.self.prevent="goToList(list)"
+            @keydown.space.self.prevent="goToList(list)">
+            <span :class="$style.cover">
+              <template v-if="list.item_count > 0 && list.cover_images && list.cover_images.length > 0">
+                <span v-for="i in 4" :key="i" :class="$style.cell">
+                  <img v-if="list.cover_images[i - 1]" :src="resolvePoster(list.cover_images[i - 1])" @error="handleImgError" :class="$style.cellImg" alt="" />
+                  <img v-else src="/placeholders/plus_placeholder.webp" :class="$style.cellPlus" alt="" />
+                </span>
+              </template>
+              <img v-else src="/placeholders/empty-list-placeholder.webp" :class="$style.coverEmpty" alt="" />
+            </span>
+
+            <div v-if="editingListId === list.id" :class="$style.editForm" @click.stop>
+              <input v-model="editForm.name" :class="$style.editInput" placeholder="List name" @keyup.enter="saveEdit" @keyup.esc="cancelEdit" autoFocus />
+              <div :class="$style.editRow">
+                <label :class="$style.privacySwitch">
+                  <input type="checkbox" v-model="editForm.is_public" />
+                  <span>Private</span>
+                  <span>Public</span>
+                </label>
+                <div :class="$style.editActions">
+                  <button type="button" @click.stop="cancelEdit" :class="$style.btnGhost">Cancel</button>
+                  <button type="button" @click.stop="saveEdit" :class="$style.btnPrimary" :disabled="!editForm.name || !editForm.name.trim()">Save</button>
+                </div>
+              </div>
+            </div>
+
+            <template v-else>
+              <span :class="$style.rowMain">
+                <span :class="$style.rowName">{{ list.name }}</span>
+                <span :class="$style.rowMeta">
+                  <span>{{ list.item_count || 0 }} {{ list.item_count === 1 ? 'item' : 'items' }}</span>
+                  <span :class="$style.metaDot" aria-hidden="true">&middot;</span>
+                  <span :class="$style.privacy">
+                    <svg v-if="list.is_public" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <span :class="$style.privacyLabel">{{ list.is_public ? 'Public' : 'Private' }}</span>
+                  </span>
+                </span>
+              </span>
+
+              <span v-if="itemToAdd || itemsToAdd" :class="$style.check" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
+              </span>
+
+              <span v-else :class="$style.rowActions">
+                <button type="button" @click.stop="startEdit(list)" :class="$style.iconBtn" aria-label="Edit list" title="Edit">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+                </button>
+                <button type="button" @click.stop="deleteList(list)" :class="[$style.iconBtn, $style.iconBtnDanger]" aria-label="Delete list" title="Delete">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                </button>
+                <svg :class="$style.chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+              </span>
+            </template>
+          </div>
+        </div>
+
+        <p v-if="!loading && lists.length === 0 && !itemToAdd && !itemsToAdd" :class="$style.empty">Start curating by creating your first list.</p>
+      </div>
+
+      <footer v-if="itemToAdd || Array.isArray(itemsToAdd)" :class="$style.foot">
+        <button type="button" @click="close" :class="$style.btnGhost">Cancel</button>
+        <button type="button" @click="confirmBulkAdd" :class="$style.btnPrimary" :disabled="Array.isArray(itemsToAdd) && selectedListIds.length === 0">
+          Done ({{ selectedCount }})
+        </button>
+      </footer>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -608,545 +588,652 @@ export default {
 </script>
 
 <style lang="scss" module>
-@use '~/assets/css/utilities/variables' as *;
+$cyan: #8BE9FD;
+$teal: #1F5467;
+$muted: #a0aab2;
+$ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
-.modalOverlay {
+.overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(1, 4, 6, 0.82);
+  inset: 0;
+  z-index: 1002;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(3, 4, 6, 0.7);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1002;
-  padding: 2rem;
 }
 
-.modalWrapper {
-  width: 100%;
-  max-width: 1200px;
-}
-
-.modalContent {
+.modal {
   position: relative;
-  background-color: #040E13;
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 28' width='56' height='28'%3E%3Cpath fill='%237ed2e3' fill-opacity='0.06' d='M56 26v2h-7.75c2.3-1.27 4.94-2 7.75-2zm-26 2a2 2 0 1 0-4 0h-4.09A25.98 25.98 0 0 0 0 16v-2c.67 0 1.34.02 2 .07V14a2 2 0 0 0-2-2v-2a4 4 0 0 1 3.98 3.6 28.09 28.09 0 0 1 2.8-3.86A8 8 0 0 0 0 6V4a9.99 9.99 0 0 1 8.17 4.23c.94-.95 1.96-1.83 3.03-2.63A13.98 13.98 0 0 0 0 0h7.75c2 1.1 3.73 2.63 5.1 4.45 1.12-.72 2.3-1.37 3.53-1.93A20.1 20.1 0 0 0 14.28 0h2.7c.45.56.88 1.14 1.29 1.74 1.3-.48 2.63-.87 4-1.15-.11-.2-.23-.4-.36-.59H26v.07a28.4 28.4 0 0 1 4 0V0h4.09l-.37.59c1.38.28 2.72.67 4.01 1.15.4-.6.84-1.18 1.3-1.74h2.69a20.1 20.1 0 0 0-2.1 2.52c1.23.56 2.41 1.2 3.54 1.93A16.08 16.08 0 0 1 48.25 0H56c-4.58 0-8.65 2.2-11.2 5.6 1.07.8 2.09 1.68 3.03 2.63A9.99 9.99 0 0 1 56 4v2a8 8 0 0 0-6.77 3.74c1.03 1.2 1.97 2.5 2.79 3.86A4 4 0 0 1 56 10v2a2 2 0 0 0-2 2.07 28.4 28.4 0 0 1 2-.07v2c-9.2 0-17.3 4.78-21.91 12H30zM7.75 28H0v-2c2.81 0 5.46.73 7.75 2zM56 20v2c-5.6 0-10.65 2.3-14.28 6h-2.7c4.04-4.89 10.15-8 16.98-8zm-39.03 8h-2.69C10.65 24.3 5.6 22 0 22v-2c6.83 0 12.94 3.11 16.97 8zm15.01-.4a28.09 28.09 0 0 1 2.8-3.86 8 8 0 0 0-13.55 0c1.03 1.2 1.97 2.5 2.79 3.86a4 4 0 0 1 7.96 0zm14.29-11.86c1.3-.48 2.63-.87 4-1.15a25.99 25.99 0 0 0-44.55 0c1.38.28 2.72.67 4.01 1.15a21.98 21.98 0 0 1 36.54 0zm-5.43 2.71c1.13-.72 2.3-1.37 3.54-1.93a19.98 19.98 0 0 0-32.76 0c1.23.56 2.41 1.2 3.54 1.93a15.98 15.98 0 0 1 25.68 0zm-4.67 3.78c.94-.95 1.96-1.83 3.03-2.63a13.98 13.98 0 0 0-22.4 0c1.07.8 2.09 1.68 3.03 2.63a9.99 9.99 0 0 1 16.34 0z'%3E%3C/path%3E%3C/svg%3E"),
-    radial-gradient(110% 80% at 8% 0%, rgba(31, 84, 103, 0.26), transparent 52%),
-    linear-gradient(150deg, #071820 0%, #040D12 58%, #02080B 100%);
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(139, 233, 253, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  border-radius: 20px;
-  border: 1px solid rgba(139, 233, 253, 0.18);
-  
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border-radius: 20px;
-  width: 100%;
-  max-height: 90vh;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100vh - 40px);
+  overflow: hidden;
+  border-radius: 20px;
+  background: rgba(3, 4, 6, 0.9);
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba($teal, 0.2), transparent 35%),
+    radial-gradient(circle at 85% 80%, rgba($cyan, 0.08), transparent 30%);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba($teal, 0.5),
+    inset 0 0 24px rgba($cyan, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: rgba(255, 255, 255, 0.86);
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  animation: floatIn 0.45s $ease-out;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, $cyan, $teal, transparent);
+    opacity: 0.8;
+    pointer-events: none;
+  }
 }
 
-  .modalHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 2rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
+@keyframes floatIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
 
-  .headerContent {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-right: 2rem;
-  }
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 26px 22px 16px;
+}
 
-  .modalHeader h2 {
-    font-size: 2.4rem;
-    color: #8BE9FD;
-    margin: 0;
-    text-align: center;
-    line-height: 1.2;
-  }
-  
-  .subtitle {
-      font-size: 1.4rem;
-      color: rgba(255, 255, 255, 0.7);
-      margin-top: 0.5rem;
-      text-align: center;
-      font-weight: 300;
-  }
+.headText {
+  min-width: 0;
+}
 
-.closeButton {
-  flex: 0 0 auto;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: rgba(139, 233, 253, 0.08);
-  border: 1px solid rgba(139, 233, 253, 0.22);
-  color: #8BE9FD;
-  cursor: pointer;
+.title {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: #fff;
+  text-shadow: 0 0 20px rgba($cyan, 0.25);
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 13.5px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: $muted;
+}
+
+.close {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  width: 36px;
+  height: 36px;
   padding: 0;
-
-  &:hover {
-  background: rgba(139, 233, 253, 0.18);
-    border-color: rgba(139, 233, 253, 0.5);
-    color: #fff;
-  }
-}
-
-.modalBody {
-  flex: 1;
-  overflow-y: auto;
-  padding: 2rem;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 2rem;
-
-  @media (max-width: 768px) {
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: 1rem;
-  }
-}
-
-.card {
-  background: rgba(0, 0, 0, 0.307);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #e6ebf0;
   cursor: pointer;
-  border: 1px solid transparent;
+  transition: all 0.2s ease;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+  }
 
   &:hover {
-    transform: translateY(-4px);
-    border-color: rgba(139, 233, 253, 0.3);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    background: rgba(255, 95, 95, 0.18);
+    border-color: rgba(255, 95, 95, 0.5);
+    color: #ff7e7e;
   }
 }
 
-.activeCard {
-    border-color: #8BE9FD;
-    box-shadow: 0 0 15px rgba(139, 233, 253, 0.2);
-    background: rgba(139, 233, 253, 0.05);
-}
-
-.createCard {
-    border: 2px dashed rgba(139, 233, 253, 0.3);
-    background: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 250px;
-
-    @media (max-width: 768px) {
-        min-height: 150px;
-    }
-    
-    &:hover {
-        border-color: #8BE9FD;
-        background: #000;
-    }
-}
-
-.createContent {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: #8BE9FD;
-    font-weight: 600;
-    
-    .createIcon {
-        width: 120px;
-        height: 120px;
-        object-fit: contain;
-
-        @media (max-width: 768px) {
-             width: 60px;
-             height: 60px;
-             margin-bottom: 0.8rem;
-        }
-
-        margin-bottom: 1.5rem;
-        opacity: 0.9;
-        transition: transform 0.2s;
-    }
-
-    .createLabel {
-        font-size: 1.8rem;
-        text-align: center;
-        line-height: 1.2;
-
-        @media (max-width: 768px) {
-            font-size: 1.2rem;
-        }
-    }
-
-    &:hover .createIcon {
-        transform: scale(1.1);
-        opacity: 1;
-    }
-}
-
-.cardImage {
-  padding-top: 60%;
+.undo {
   position: relative;
-  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0 22px 12px;
+  padding: 10px 10px 10px 16px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: rgba(3, 4, 6, 0.75);
+  border: 1px solid rgba($cyan, 0.22);
+  font-size: 13.5px;
+  color: #cfd6dc;
 }
 
-.listIcon {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255,255,255,0.2);
-    overflow: hidden;
+.undoText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.dynamicCoverGrid {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 0; 
-}
-
-.gridCell {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: #000; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 0.5px solid rgba(139, 233, 253, 0.2); 
-}
-
-.coverImg {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.plusPlaceholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #000;
-}
-
-.plusIcon {
-    width: 50%; 
-    height: 50%;
-    object-fit: contain;
-    opacity: 0.8;
-}
-
-.listPlaceholderImg {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.cardContent {
-  padding: 1.5rem;
-  
-  h4 {
-    color: #fff;
-    margin: 0 0 0.5rem 0;
-    font-size: 1.6rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
-.meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #8F989E;
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-}
-
-.actionButtons {
-    display: flex;
-    gap: 0.8rem;
-    margin-top: auto;
-}
-
-.editButton, .deleteButton {
-  flex: 1;
+.undoBtn {
+  flex-shrink: 0;
+  padding: 5px 16px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid rgba($cyan, 0.4);
+  color: $cyan;
   font-size: 13px;
   font-weight: 600;
-  padding: 8px 0;
+  font-family: inherit;
   cursor: pointer;
   transition: all 0.2s ease;
-  border-radius: 15px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.deleteButton {
-  background: rgba(255, 0, 0, 0.15);
-  color: #ff6b6b;
-  border: 1px solid rgba(255, 0, 0, 0.3);
 
   &:hover {
-    background: rgba(255, 0, 0, 0.3);
-    border-color: rgba(255, 0, 0, 0.5);
-    transform: translateY(-1px);
+    background: rgba($cyan, 0.12);
+    border-color: $cyan;
   }
 }
 
-.editButton {
-  background: rgba(139, 233, 253, 0.15);
-  color: #8BE9FD;
-  border: 1px solid rgba(139, 233, 253, 0.3);
-
-  &:hover {
-    background: rgba(139, 233, 253, 0.3);
-    border-color: #8BE9FD;
-    transform: translateY(-1px);
-  }
+.undoTimer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, $teal, $cyan);
+  transform-origin: left;
+  animation: undoCountdown 7s linear forwards;
 }
 
-.editFormContainer {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    min-height: 110px;
+@keyframes undoCountdown {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
 }
 
-.editInput {
-    background: rgba(0,0,0,0.4);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: white;
-    padding: 8px 10px;
-    border-radius: 6px;
-    font-size: 1.4rem;
-    width: 100%;
-    margin-bottom: 1rem;
-    outline: none;
-    
-    &:focus {
-        border-color: #8BE9FD;
-    }
-}
-
-.privacyToggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1rem;
-    cursor: pointer;
-}
-
-.privacyOption {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    font-size: 1.2rem;
-    color: #666;
-}
-
-.privacyActive {
-    color: #fff;
-    font-weight: 600;
-}
-
-.toggleSwitch {
-    width: 36px;
-    height: 20px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 20px;
-    position: relative;
-    transition: background 0.3s;
-}
-
-.toggleKnob {
-    width: 16px;
-    height: 16px;
-    background: #fff;
-    border-radius: 50%;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    transition: left 0.3s;
-}
-
-.toggleOn {
-    left: 18px;
-    background: #8BE9FD;
-}
-
-.editActions {
-    display: flex;
-    gap: 0.8rem;
-    margin-top: auto;
-}
-
-.saveBtn, .cancelBtn {
-    flex: 1;
-    padding: 6px 0;
-    border-radius: 6px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    transition: opacity 0.2s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-    &:hover { opacity: 0.9; }
-}
-
-.saveBtn {
-    background: #8BE9FD;
-    color: #000;
-}
-
-.cancelBtn {
-    background: rgba(255,255,255,0.1);
-    color: #aaa;
-}
-
-.emptyState {
-  text-align: center;
-  padding: 4rem;
-  color: #aaa;
-  font-size: 1.6rem;
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 4px 22px 18px;
 }
 
 .loader {
-    display: flex;
-    justify-content: center;
-    padding: 4rem;
-}
-
-.undoBarContainer {
-    padding: 0 2rem;
-    margin-bottom: 1rem;
-}
-
-.undoBar {
-  background: linear-gradient(90deg, rgba(139, 233, 253, 0.2) 0%, rgba(0, 136, 204, 0.2) 100%);
-  border-bottom: 2px solid #8BE9FD;
-  color: white;
-  padding: 1.2rem 3rem;
   display: flex;
-  position: relative;
-  border-radius: 15px;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 1.4rem;
+  justify-content: center;
+  padding: 40px 0;
 }
 
-.undoButton {
-  background: #8BE9FD;
-  border: none;
-  color: #000;
-  padding: 0.6rem 1.6rem;
-  border-radius: 6px;
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  margin: 0;
+  padding: 9px 12px 9px 9px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
   cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
-    background: #7DD4E8;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(139, 233, 253, 0.3);
+    border-color: rgba($cyan, 0.35);
+    background: rgba($cyan, 0.05);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $cyan;
+    outline-offset: 2px;
   }
 }
 
-.addedIndicator {
-    position: absolute;
-    top: 8px;
-    right: 8px;
+.createRow {
+  border-style: dashed;
+  border-color: rgba($cyan, 0.3);
+  background: transparent;
+
+  .rowName {
+    color: $cyan;
+  }
+
+  &:hover {
+    border-color: $cyan;
+    background: rgba($cyan, 0.06);
+  }
+}
+
+.selected {
+  border-color: rgba($cyan, 0.55);
+  background: rgba($cyan, 0.08);
+  box-shadow: 0 0 18px rgba($cyan, 0.08);
+
+  &:hover {
+    border-color: rgba($cyan, 0.7);
+    background: rgba($cyan, 0.1);
+  }
+}
+
+.editing {
+  align-items: flex-start;
+  cursor: default;
+  border-color: rgba($cyan, 0.45);
+  background: rgba($cyan, 0.04);
+
+  &:hover {
+    border-color: rgba($cyan, 0.45);
+    background: rgba($cyan, 0.04);
+  }
+}
+
+.cover {
+  position: relative;
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1px;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #000;
+  box-shadow: 0 0 0 1px rgba($cyan, 0.16);
+}
+
+.cell {
+  position: relative;
+  overflow: hidden;
+  background: #000;
+}
+
+.cellImg,
+.cellPlus,
+.coverEmpty {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cellPlus {
+  opacity: 0.85;
+}
+
+.coverEmpty {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+}
+
+.coverCreate,
+.coverIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $cyan;
+  background: rgba($cyan, 0.06);
+
+  svg {
     width: 24px;
     height: 24px;
-    background: #8BE9FD;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    z-index: 2;
-    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
 }
 
-@keyframes popIn {
-  from { transform: scale(0); }
-  to { transform: scale(1); }
+.coverCreate {
+  box-shadow: none;
+  border: 1px dashed rgba($cyan, 0.4);
+  background: transparent;
 }
 
-.modalFooter {
-    padding: 1.5rem 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    background: rgba(0, 0, 0, 0.2);
+.rowMain {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
-.footerCancelBtn {
-    padding: 0.8rem 1.5rem;
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #fff;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
-
-    &:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: #fff;
-    }
+.rowName {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.footerDoneBtn {
-    padding: 0.8rem 1.5rem;
-    background: #8BE9FD;
-    color: #000;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+.rowMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12.5px;
+  color: #8F989E;
+}
+
+.metaDot {
+  opacity: 0.5;
+}
+
+.privacy {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.check {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  color: transparent;
+  transition: all 0.2s ease;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.selected .check {
+  background: linear-gradient(135deg, $teal, $cyan);
+  border-color: transparent;
+  color: #03242C;
+  box-shadow: 0 2px 10px rgba($cyan, 0.3);
+}
+
+.rowActions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: $muted;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    color: $cyan;
+    border-color: rgba($cyan, 0.45);
+    background: rgba($cyan, 0.08);
+  }
+}
+
+.iconBtnDanger:hover {
+  color: #ff7e7e;
+  border-color: rgba(255, 95, 95, 0.5);
+  background: rgba(255, 95, 95, 0.12);
+}
+
+.chevron {
+  width: 18px;
+  height: 18px;
+  margin-left: 2px;
+  color: rgba(255, 255, 255, 0.3);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.row:hover .chevron {
+  color: $cyan;
+  transform: translateX(2px);
+}
+
+.editForm {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 2px;
+}
+
+.editInput {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba($cyan, 0.2);
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+
+  &::placeholder {
+    color: rgba(160, 170, 178, 0.45);
+  }
+
+  &:focus {
+    border-color: rgba($cyan, 0.6);
+    box-shadow: 0 0 0 3px rgba($cyan, 0.12);
+    background: rgba(0, 0, 0, 0.4);
+  }
+}
+
+.editRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.privacySwitch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba($cyan, 0.18);
+  cursor: pointer;
+  user-select: none;
+  font-size: 12.5px;
+
+  input {
+    display: none;
+  }
+
+  span {
+    padding: 5px 13px;
+    border-radius: 999px;
+    color: #8F989E;
     font-weight: 600;
-    transition: all 0.2s;
+    transition: all 0.25s ease;
+  }
 
-    &:hover {
-        background: #A4F0FF;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(139, 233, 253, 0.3);
-    }
+  input:not(:checked) ~ span:first-of-type,
+  input:checked ~ span:last-of-type {
+    background: linear-gradient(135deg, $teal, $cyan);
+    color: #03242C;
+    box-shadow: 0 2px 10px rgba($cyan, 0.25);
+  }
+}
 
-    &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-    }
+.editActions {
+  display: flex;
+  gap: 8px;
+}
+
+.btnPrimary,
+.btnGhost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btnPrimary {
+  background: linear-gradient(135deg, $teal, $cyan);
+  border: 1px solid rgba($cyan, 0.5);
+  color: #03242C;
+  box-shadow: 0 4px 16px rgba($cyan, 0.18);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba($cyan, 0.28);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.btnGhost {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: $muted;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+  }
+}
+
+.empty {
+  margin: 0;
+  padding: 26px 10px 10px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 300;
+  color: $muted;
+}
+
+.foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 22px 18px;
+  border-top: 1px solid rgba($cyan, 0.12);
+  background: rgba(0, 0, 0, 0.2);
+
+  .btnPrimary,
+  .btnGhost {
+    padding: 10px 22px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .overlay {
+    padding: 12px;
+  }
+
+  .modal {
+    max-height: calc(100vh - 24px);
+  }
+
+  .head {
+    padding: 22px 16px 14px;
+  }
+
+  .undo {
+    margin: 0 16px 10px;
+  }
+
+  .body {
+    padding: 4px 16px 16px;
+  }
+
+  .foot {
+    padding: 12px 16px 16px;
+  }
+
+  .row {
+    gap: 12px;
+    padding: 8px 10px 8px 8px;
+  }
+
+  .cover {
+    width: 56px;
+    height: 56px;
+  }
+
+  .rowName {
+    font-size: 14px;
+  }
+
+  .rowActions {
+    gap: 4px;
+  }
+
+  .iconBtn {
+    width: 30px;
+    height: 30px;
+  }
+
+  .chevron {
+    display: none;
+  }
+
+  .privacyLabel {
+    display: none;
+  }
+
+  .editRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .editActions {
+    justify-content: flex-end;
+  }
 }
 </style>
