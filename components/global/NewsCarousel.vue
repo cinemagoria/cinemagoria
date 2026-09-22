@@ -58,6 +58,23 @@
               />
             </component>
 
+            <div v-if="relatedTitle(article)" class="related-title" :data-related-root="article.id">
+              <button
+                type="button"
+                class="related-title__toggle"
+                :class="{ 'related-title__toggle--open': openRelated === article.id }"
+                :aria-expanded="openRelated === article.id ? 'true' : 'false'"
+                :aria-label="relatedLabel(article)"
+                :title="relatedLabel(article)"
+                @click.stop.prevent="toggleRelated(article)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div v-if="openRelated === article.id" class="related-title__panel">
+                <span class="related-title__label">{{ relatedLabel(article) }}</span>
+                <NuxtLink :to="relatedHref(article)" no-prefetch class="related-title__name" @click="closeRelated">{{ relatedTitle(article).name }}</NuxtLink>
+              </div>
+            </div>
+
             <div class="card-content">
               <div class="card-meta">
                 <span
@@ -126,6 +143,7 @@ import carousel from '~/mixins/Carousel';
 import striptags from 'striptags';
 import { formatDate, handleImageError } from '~/utils/helpers';
 import { categoryLabel, CATEGORY_LABELS } from '~/utils/categoryLabels';
+import { relatedTitleLabel, relatedTitleOf, relatedTitleHref } from '~/utils/relatedTitleLabels';
 
 const AUTOPLAY_INTERVAL = 10000;
 
@@ -143,6 +161,7 @@ export default {
       pending: true,
       error: null,
       loadingMap: {},
+      openRelated: null,
     }
   },
   // mounted (client-only), not created: in created() the fetch also ran during
@@ -243,6 +262,37 @@ export default {
       (Array.isArray(article?.secondary_categories) ? article.secondary_categories : []).forEach(add);
       return out;
     },
+    relatedTitle(article) {
+      return relatedTitleOf(article);
+    },
+    relatedLabel(article) {
+      const related = relatedTitleOf(article);
+      return related ? relatedTitleLabel(related.type) : '';
+    },
+    relatedHref(article) {
+      return relatedTitleHref(relatedTitleOf(article));
+    },
+    toggleRelated(article) {
+      if (this.openRelated === article.id) {
+        this.closeRelated();
+        return;
+      }
+      this.openRelated = article.id;
+      document.addEventListener('pointerdown', this.onRelatedPointer, true);
+      document.addEventListener('keydown', this.onRelatedKey);
+    },
+    closeRelated() {
+      this.openRelated = null;
+      document.removeEventListener('pointerdown', this.onRelatedPointer, true);
+      document.removeEventListener('keydown', this.onRelatedKey);
+    },
+    onRelatedPointer(event) {
+      const root = event.target?.closest?.('[data-related-root]');
+      if (!root || root.dataset.relatedRoot !== String(this.openRelated)) this.closeRelated();
+    },
+    onRelatedKey(event) {
+      if (event.key === 'Escape') this.closeRelated();
+    },
     onImageLoad(id) {
        this.loadingMap[id] = false; 
     },
@@ -260,6 +310,7 @@ export default {
     startAutoplay() {
       if (this.autoplayInterval) clearInterval(this.autoplayInterval);
       this.autoplayInterval = setInterval(() => {
+        if (this.openRelated !== null) return;
         if (!this.disableRightButton) {
            this.moveToClickEvent('right');
         } else {
@@ -280,6 +331,7 @@ export default {
   },
   beforeUnmount() {
     if (this.autoplayInterval) clearInterval(this.autoplayInterval);
+    this.closeRelated();
   },
   watch: {
     data: {
@@ -415,6 +467,138 @@ export default {
   width: 100%;
   height: 100%;
   background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+}
+
+.related-title {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  z-index: 6;
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+
+.related-title__toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(3, 4, 6, 0.6);
+  border: 1px solid rgba(139, 233, 253, 0.35);
+  color: #8BE9FD;
+  cursor: pointer;
+  pointer-events: auto;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+  }
+
+  svg {
+    flex-shrink: 0;
+    transition: transform 0.25s ease;
+  }
+
+  &:hover {
+    background: rgba(3, 4, 6, 0.88);
+    border-color: #8BE9FD;
+    color: #B8F4FF;
+    box-shadow: 0 0 0 1px rgba(139, 233, 253, 0.35), 0 0 14px rgba(139, 233, 253, 0.35);
+    transform: scale(1.08);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #8BE9FD;
+    outline-offset: 2px;
+  }
+}
+
+.related-title__toggle--open {
+  background: rgba(3, 4, 6, 0.88);
+  border-color: #8BE9FD;
+  color: #B8F4FF;
+  box-shadow: 0 0 0 1px rgba(139, 233, 253, 0.35), 0 0 14px rgba(139, 233, 253, 0.35);
+
+  svg {
+    transform: rotate(180deg);
+  }
+}
+
+.related-title__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  max-width: 100%;
+  padding: 8px 12px 10px;
+  background: rgba(4, 6, 10, 0.86);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 14px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55), inset 0 0 20px rgba(139, 233, 253, 0.05);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  pointer-events: auto;
+  animation: related-title-in 0.18s ease-out;
+}
+
+.related-title__label {
+  flex-shrink: 0;
+  padding: 3px 8px;
+  border: 1px solid rgba(139, 233, 253, 0.55);
+  border-radius: 999px;
+  background: rgba(139, 233, 253, 0.16);
+  color: #B8F4FF;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.related-title__name {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #8BE9FD;
+  }
+}
+
+@keyframes related-title-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .card-content {

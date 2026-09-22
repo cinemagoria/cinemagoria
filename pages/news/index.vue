@@ -234,6 +234,24 @@
                     </button>
                   </component>
 
+                  <div v-if="relatedTitle(item)" class="related-title" :class="{ 'related-title--beside-save': userEmail }" :data-related-root="item.id">
+                    <button
+                      type="button"
+                      class="related-title__toggle"
+                      :class="{ 'related-title__toggle--open': openRelated === item.id }"
+                      :aria-expanded="openRelated === item.id ? 'true' : 'false'"
+                      :aria-label="relatedLabel(item)"
+                      :title="relatedLabel(item)"
+                      @click.stop.prevent="toggleRelated(item)"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                    </button>
+                    <div v-if="openRelated === item.id" class="related-title__panel">
+                      <span class="related-title__label">{{ relatedLabel(item) }}</span>
+                      <NuxtLink :to="relatedHref(item)" no-prefetch class="related-title__name" @click="closeRelated">{{ relatedTitle(item).name }}</NuxtLink>
+                    </div>
+                  </div>
+
                   <div class="card-content">
                     <div class="meta-row">
                       <span
@@ -319,16 +337,35 @@
                     </div>
                   </div>
 
-                  <button
-                    v-if="userEmail"
-                    class="news-row__save"
-                    :class="{ 'is-saved': isSaved(item) }"
-                    @click.prevent="toggleSave(item)"
-                    :title="isSaved(item) ? 'Remove from Saved' : 'Read Later'"
-                  >
-                    <svg v-if="!isSaved(item)" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><line x1="12" x2="12" y1="7" y2="13"/><line x1="15" x2="9" y1="10" y2="10"/></svg>
-                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/><path d="m9 10 2 2 4-4"/></svg>
-                  </button>
+                  <div v-if="userEmail || relatedTitle(item)" class="news-row__actions">
+                    <div v-if="relatedTitle(item)" class="related-title related-title--row" :data-related-root="item.id">
+                      <button
+                        type="button"
+                        class="related-title__toggle"
+                        :class="{ 'related-title__toggle--open': openRelated === item.id }"
+                        :aria-expanded="openRelated === item.id ? 'true' : 'false'"
+                        :aria-label="relatedLabel(item)"
+                        :title="relatedLabel(item)"
+                        @click.stop.prevent="toggleRelated(item)"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                      </button>
+                      <div v-if="openRelated === item.id" class="related-title__panel related-title__panel--row">
+                        <span class="related-title__label">{{ relatedLabel(item) }}</span>
+                        <NuxtLink :to="relatedHref(item)" no-prefetch class="related-title__name" @click="closeRelated">{{ relatedTitle(item).name }}</NuxtLink>
+                      </div>
+                    </div>
+                    <button
+                      v-if="userEmail"
+                      class="news-row__save"
+                      :class="{ 'is-saved': isSaved(item) }"
+                      @click.prevent="toggleSave(item)"
+                      :title="isSaved(item) ? 'Remove from Saved' : 'Read Later'"
+                    >
+                      <svg v-if="!isSaved(item)" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/><line x1="12" x2="12" y1="7" y2="13"/><line x1="15" x2="9" y1="10" y2="10"/></svg>
+                      <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/><path d="m9 10 2 2 4-4"/></svg>
+                    </button>
+                  </div>
                 </article>
               </div>
             </div>
@@ -358,6 +395,7 @@ import Loader from '@/components/Loader';
 import striptags from 'striptags';
 import { FIRST_PARTY_SOURCE, THIRD_PARTY_SOURCE, SOURCE_URLS } from '~/utils/newsSources';
 import { categoryLabel } from '~/utils/categoryLabels';
+import { relatedTitleLabel, relatedTitleOf, relatedTitleHref } from '~/utils/relatedTitleLabels';
 import { formatDate as formatDateHelper, handleImageError as handleImageErrorHelper } from '~/utils/helpers';
 
 useHead({
@@ -517,6 +555,47 @@ function linkTag(item) {
   return item.is_internal ? NuxtLink : 'a';
 }
 
+const openRelated = ref(null);
+
+function relatedTitle(item) {
+  return relatedTitleOf(item);
+}
+
+function relatedLabel(item) {
+  const related = relatedTitleOf(item);
+  return related ? relatedTitleLabel(related.type) : '';
+}
+
+function relatedHref(item) {
+  return relatedTitleHref(relatedTitleOf(item));
+}
+
+function onRelatedPointer(event) {
+  const root = event.target?.closest?.('[data-related-root]');
+  if (!root || root.dataset.relatedRoot !== String(openRelated.value)) closeRelated();
+}
+
+function onRelatedKey(event) {
+  if (event.key === 'Escape') closeRelated();
+}
+
+function toggleRelated(item) {
+  if (openRelated.value === item.id) {
+    closeRelated();
+    return;
+  }
+  openRelated.value = item.id;
+  document.addEventListener('pointerdown', onRelatedPointer, true);
+  document.addEventListener('keydown', onRelatedKey);
+}
+
+function closeRelated() {
+  openRelated.value = null;
+  if (typeof document === 'undefined') return;
+  document.removeEventListener('pointerdown', onRelatedPointer, true);
+  document.removeEventListener('keydown', onRelatedKey);
+}
+
 function linkAttrs(item) {
   if (item.is_internal) return { to: item.href };
   return { href: item.href, target: '_blank', rel: 'noopener noreferrer' };
@@ -606,6 +685,14 @@ const savedPending = ref(false);
 const userEmail = ref(null);
 const isLoading = computed(() => pending.value || savedPending.value);
 
+const relatedByHref = computed(() => {
+  const map = new Map();
+  for (const item of newsItems.value) {
+    if (item.href && item.related_title) map.set(item.href, item.related_title);
+  }
+  return map;
+});
+
 const savedItems = computed(() => localSavedArticlesList.value.map((article) => {
   const link = article.link || article.href || '';
   return {
@@ -617,6 +704,7 @@ const savedItems = computed(() => localSavedArticlesList.value.map((article) => 
     published_at: article.published_at,
     source: { name: article.source || 'Unknown Source' },
     is_internal: !/^https?:\/\//i.test(link),
+    related_title: relatedByHref.value.get(link) || null,
   };
 }));
 
@@ -707,6 +795,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+  closeRelated();
   if (observer) {
     observer.disconnect();
   }
@@ -1320,6 +1409,7 @@ watch(userEmail, (val) => {
 }
 
 .news-card {
+  position: relative;
   background: rgba(3, 4, 6, 0.7);
   background-image:
     radial-gradient(circle at 15% 0%, rgba(31, 84, 103, 0.2), transparent 55%);
@@ -1586,8 +1676,8 @@ watch(userEmail, (val) => {
   height: 32px;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
+  border: 1px solid rgba(139, 233, 253, 0.35);
+  color: #8BE9FD;
   cursor: pointer;
   transition: all 0.2s ease;
   padding: 0;
@@ -1603,10 +1693,11 @@ watch(userEmail, (val) => {
 
 .bookmark-btn:hover,
 .news-row__save:hover {
-  background: rgba(139, 233, 253, 0.2);
+  background: rgba(3, 4, 6, 0.88);
   border-color: #8BE9FD;
-  color: #8BE9FD;
-  transform: scale(1.1);
+  color: #B8F4FF;
+  box-shadow: 0 0 0 1px rgba(139, 233, 253, 0.35), 0 0 14px rgba(139, 233, 253, 0.35);
+  transform: scale(1.08);
 }
 
 .bookmark-btn.is-saved,
@@ -1618,6 +1709,176 @@ watch(userEmail, (val) => {
 
 .bookmark-btn svg,
 .news-row__save svg {
+  flex-shrink: 0;
+}
+
+.related-title {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  z-index: 11;
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+
+.related-title--beside-save {
+  right: 50px;
+}
+
+.related-title--row {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  flex-shrink: 0;
+}
+
+.related-title__toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(139, 233, 253, 0.35);
+  color: #8BE9FD;
+  cursor: pointer;
+  pointer-events: auto;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.related-title__toggle::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+}
+
+.related-title__toggle:hover {
+  background: rgba(3, 4, 6, 0.88);
+  border-color: #8BE9FD;
+  color: #B8F4FF;
+  box-shadow: 0 0 0 1px rgba(139, 233, 253, 0.35), 0 0 14px rgba(139, 233, 253, 0.35);
+  transform: scale(1.08);
+}
+
+.related-title__toggle:focus-visible {
+  outline: 2px solid #8BE9FD;
+  outline-offset: 2px;
+}
+
+.related-title__toggle--open {
+  background: rgba(3, 4, 6, 0.88);
+  border-color: #8BE9FD;
+  color: #B8F4FF;
+  box-shadow: 0 0 0 1px rgba(139, 233, 253, 0.35), 0 0 14px rgba(139, 233, 253, 0.35);
+}
+
+.related-title__toggle svg {
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.related-title__toggle--open svg {
+  transform: rotate(180deg);
+}
+
+.related-title__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  max-width: 100%;
+  padding: 8px 12px 10px;
+  background: rgba(4, 6, 10, 0.86);
+  border: 1px solid rgba(139, 233, 253, 0.3);
+  border-radius: 14px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55), inset 0 0 20px rgba(139, 233, 253, 0.05);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  pointer-events: auto;
+  animation: related-title-in 0.18s ease-out;
+}
+
+.related-title__panel--row {
+  top: 50%;
+  right: calc(100% + 8px);
+  width: max-content;
+  max-width: min(320px, 60vw);
+  transform: translateY(-50%);
+  animation-name: related-title-row-in;
+}
+
+.related-title__label {
+  flex-shrink: 0;
+  padding: 3px 8px;
+  border: 1px solid rgba(139, 233, 253, 0.55);
+  border-radius: 999px;
+  background: rgba(139, 233, 253, 0.16);
+  color: #B8F4FF;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.related-title__name {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.related-title__name:hover {
+  color: #8BE9FD;
+}
+
+@keyframes related-title-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes related-title-row-in {
+  from {
+    opacity: 0;
+    transform: translate(4px, -50%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%);
+  }
+}
+
+.news-row__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   flex-shrink: 0;
 }
 
