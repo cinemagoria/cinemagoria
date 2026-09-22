@@ -23,16 +23,14 @@
           aria-label="Previous"
           type="button"
           :disabled="disableLeftButton"
-          @click="manualMove('left')">
+          @click="moveToClickEvent('left')">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M17.9 23.2L6.1 12 17.9.8"/></svg>
         </button>
 
         <div
           ref="carouselElement"
           class="carousel__items"
-          @scroll="scrollEvent"
-          @mouseenter="pauseAutoplay"
-          @mouseleave="resumeAutoplay">
+          @scroll="scrollEvent">
           
           <div v-for="article in articles" :key="article.id" class="card">
             <div class="release-card" :class="{ 'release-card--external': article.is_internal === false }">
@@ -127,7 +125,7 @@
           aria-label="Next"
           type="button"
           :disabled="disableRightButton"
-          @click="manualMove('right')">
+          @click="moveToClickEvent('right')">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="1.5" d="M6.1 23.2 17.9 12 6.1.8"/></svg>
         </button>
       </div>
@@ -144,8 +142,6 @@ import { formatDate, handleImageError } from '~/utils/helpers';
 import { categoryLabelES, CATEGORY_LABELS_ES } from '~/utils/categoryLabels';
 import { relatedTitleLabel, relatedTitleOf, relatedTitleHref } from '~/utils/relatedTitleLabels';
 
-const AUTOPLAY_INTERVAL = 10000;
-
 export default {
   name: 'NewsCarousel',
   mixins: [carousel],
@@ -155,7 +151,6 @@ export default {
   },
   data() {
     return {
-      autoplayInterval: null,
       data: null,
       pending: true,
       error: null,
@@ -214,9 +209,6 @@ export default {
         this.$nextTick(() => {
           if (this.articles.length > 0) {
             this.calculateState(this.articles.length);
-            if (typeof window !== 'undefined') {
-              this.startAutoplay();
-            }
           }
         });
       }
@@ -302,34 +294,8 @@ export default {
     resizeEvent () {
       this.calculateState(this.articles.length);
     },
-    manualMove(direction) {
-      this.moveToClickEvent(direction);
-      this.resetAutoplay();
-    },
-    startAutoplay() {
-      if (this.autoplayInterval) clearInterval(this.autoplayInterval);
-      this.autoplayInterval = setInterval(() => {
-        if (this.openRelated !== null) return;
-        if (!this.disableRightButton) {
-           this.moveToClickEvent('right');
-        } else {
-           this.moveTo(0);
-        }
-      }, AUTOPLAY_INTERVAL); 
-    },
-    pauseAutoplay() {
-      if (this.autoplayInterval) clearInterval(this.autoplayInterval);
-    },
-    resumeAutoplay() {
-      this.startAutoplay();
-    },
-    resetAutoplay() {
-      this.pauseAutoplay();
-      this.resumeAutoplay();
-    },
   },
   beforeUnmount() {
-    if (this.autoplayInterval) clearInterval(this.autoplayInterval);
     this.closeRelated();
   },
   watch: {
