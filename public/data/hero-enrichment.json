@@ -136,14 +136,6 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 1182935,
-    "media_type": "movie",
-    "trailer_key": "vJ3vIzWzFno",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1788568108/cinemagoria/backdrops/hero_1182935.webp",
-    "poster_path": "/888ksoUkfKSBJHxKp6M9sYpJhv2.jpg",
-    "force_enrichment": true
-  },
-  {
     "tmdb_id": 1425859,
     "media_type": "movie",
     "trailer_key": "h969bLwxgKc",
@@ -155,7 +147,7 @@
     "tmdb_id": 1457866,
     "media_type": "movie",
     "trailer_key": "hbU1zLAwj3w",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1789291761/cinemagoria/backdrops/hero_themisadventuresofcliffboth-backdrop.webp",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1789952204/cinemagoria/backdrops/hero_1457866.webp",
     "poster_path": "/skSMOTFYcWyHZqFNPfz0f3Jsyc5.jpg",
     "force_enrichment": true
   },
@@ -189,6 +181,22 @@
     "trailer_key": "TrMGdrCJ5Ck",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1789600127/cinemagoria/backdrops/hero_1452168.webp",
     "poster_path": "/bcyGYWfcXr0GnXewaE5gkvYy1iQ.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1290000,
+    "media_type": "movie",
+    "trailer_key": "YBsTBGq6-hA",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1789692640/cinemagoria/backdrops/hero_1290000.webp",
+    "poster_path": "/eoyLMVeP1cuQRTU74W5NAFJBvsu.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1442761,
+    "media_type": "movie",
+    "trailer_key": "vQX4nA17MZE",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1790030813/cinemagoria/backdrops/hero_slayground-backdrop.webp",
+    "poster_path": "/85JcCat1n2fizmf5fgAJTn5n49s.jpg",
     "force_enrichment": true
   }
 ]
