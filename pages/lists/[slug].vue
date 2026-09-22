@@ -2042,13 +2042,6 @@ export default {
   }
 }
 
-/* Touch devices always show the menu trigger; true-mouse devices reveal it on hover */
-@media (hover: hover) and (pointer: fine) {
-  .card-actions-menu .dropdown-trigger { opacity: 0; }
-  .card-actions-menu.menu-open .dropdown-trigger,
-  .movie-card:hover .card-actions-menu .dropdown-trigger { opacity: 1; }
-}
-
 .action-dropdown {
   position: absolute;
   top: 42px;
