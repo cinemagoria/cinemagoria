@@ -259,12 +259,74 @@
         </button>
         <h3 class="modal-title">Rate &lsquo;{{ currentRatingItem?.details?.nameForDb }}&rsquo;</h3>
 
+        <div class="rate-score">
+          <span class="rate-score-value">{{ hoverRating || selectedRating || '–' }}</span>
+          <span class="rate-score-label">{{ (hoverRating || selectedRating) ? 'out of 10' : 'Pick a score' }}</span>
+        </div>
+
         <div class="rating-numbers">
           <button v-for="n in 10" :key="n"
             @click="setRating(n)" @mouseover="previewRating(n)" @mouseout="resetPreview()"
             :class="['rating-btn', { 'rating-btn-active': n <= (hoverRating || selectedRating) }]">
             {{ n }}
           </button>
+        </div>
+
+        <div v-if="isRatingMovie" class="pg-section">
+          <div class="pg-label">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Viewing progress
+          </div>
+
+          <div class="pg-row">
+            <div class="pg-dial">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <defs>
+                  <linearGradient id="listRateRing" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#8BE9FD"/>
+                    <stop offset="100%" stop-color="#1F5467"/>
+                  </linearGradient>
+                </defs>
+                <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(139,233,253,0.12)" stroke-width="8"/>
+                <circle
+                  cx="60" cy="60" r="52" fill="none" stroke="url(#listRateRing)" stroke-width="8" stroke-linecap="round"
+                  :stroke-dasharray="2 * Math.PI * 52"
+                  :stroke-dashoffset="2 * Math.PI * 52 * (1 - progressPercentage / 100)"
+                  class="pg-ring" />
+              </svg>
+              <span class="pg-pct">{{ progressPercentage }}<em>%</em></span>
+            </div>
+
+            <div class="pg-controls">
+              <input
+                v-if="ratingRuntime"
+                type="range"
+                class="pg-slider"
+                min="0"
+                :max="ratingRuntime"
+                step="1"
+                v-model.number="watchedMinutes"
+                aria-label="Minutes watched" />
+              <input v-else type="range" class="pg-slider" min="0" max="100" step="1" v-model.number="progressPercentage" aria-label="Percent watched" />
+
+              <div v-if="ratingRuntime" class="pg-times">
+                <div class="pg-time">
+                  <span class="pg-time-label">Watched</span>
+                  <span class="pg-entry">
+                    <input type="number" min="0" :max="Math.floor(ratingRuntime / 60)" v-model.number="watchedHours" aria-label="Hours watched" />
+                    <em>h</em>
+                    <input type="number" min="0" max="59" v-model.number="watchedMins" aria-label="Minutes watched" />
+                    <em>m</em>
+                  </span>
+                </div>
+                <div class="pg-time pg-time--right">
+                  <span class="pg-time-label">Remaining</span>
+                  <span class="pg-time-value">{{ progressRemaining }}</span>
+                </div>
+              </div>
+              <p v-else class="pg-no-duration">Duration not available</p>
+            </div>
+          </div>
         </div>
 
         <div class="review-section">
@@ -462,7 +524,7 @@
 
 <script>
 import Loader from '~/components/Loader.vue';
-import { apiImgUrl, resolveItemPoster } from '~/utils/api';
+import { apiImgUrl, resolveItemPoster, getMovieRuntime } from '~/utils/api';
 
 export default {
     components: {
@@ -551,10 +613,51 @@ export default {
             selectedRating: 0,
             hoverRating: 0,
             userReview: '',
+            watchedMinutes: 0,
+            progressPercentageRaw: 0,
+            ratingRuntimeFallback: 0,
         };
     },
 
     computed: {
+        isRatingMovie() {
+            return this.currentRatingItem?.details?.typeForDb === 'movie';
+        },
+
+        ratingRuntime() {
+            return Number(this.currentRatingItem?.details?.runtime) || this.ratingRuntimeFallback || 0;
+        },
+
+        progressPercentage: {
+            get() {
+                const rt = this.ratingRuntime;
+                if (!rt) return this.progressPercentageRaw;
+                return Math.min(100, Math.max(0, Math.round(this.watchedMinutes / rt * 100)));
+            },
+            set(value) {
+                const pct = Math.min(100, Math.max(0, Number(value) || 0));
+                this.progressPercentageRaw = pct;
+                const rt = this.ratingRuntime;
+                if (rt) this.watchedMinutes = Math.round(rt * pct / 100);
+            },
+        },
+
+        watchedHours: {
+            get() { return Math.floor(this.watchedMinutes / 60); },
+            set(value) { this.setWatched((Number(value) || 0) * 60 + this.watchedMinutes % 60); },
+        },
+
+        watchedMins: {
+            get() { return this.watchedMinutes % 60; },
+            set(value) { this.setWatched(Math.floor(this.watchedMinutes / 60) * 60 + (Number(value) || 0)); },
+        },
+
+        progressRemaining() {
+            const rt = this.ratingRuntime;
+            if (!rt) return '0m';
+            return this.formatMinutes(Math.max(0, rt - this.watchedMinutes));
+        },
+
         shareUrl() {
             if (import.meta.client) {
                 return window.location.href;
@@ -1351,7 +1454,14 @@ export default {
             this.currentRatingItem = item;
             this.selectedRating = item.details.userRatingForDb && item.details.userRatingForDb !== '-' ? parseInt(item.details.userRatingForDb) : 0;
             this.userReview = item.details.userReview || '';
+            this.watchedMinutes = 0;
+            this.progressPercentageRaw = 0;
+            this.ratingRuntimeFallback = 0;
             this.ratingModalVisible = true;
+            if (item.details.typeForDb === 'movie') {
+                this.loadItemProgress(item);
+                this.resolveRatingRuntime(item);
+            }
         },
 
         closeRatingModal() {
@@ -1360,6 +1470,81 @@ export default {
             this.selectedRating = 0;
             this.hoverRating = 0;
             this.userReview = '';
+            this.watchedMinutes = 0;
+            this.progressPercentageRaw = 0;
+            this.ratingRuntimeFallback = 0;
+        },
+
+        async resolveRatingRuntime(item) {
+            if (Number(item.details.runtime) > 0) return;
+            const itemId = item.details.idForDb;
+            const runtime = await getMovieRuntime(itemId);
+            if (!runtime || this.currentRatingItem?.details?.idForDb !== itemId) return;
+            item.details.runtime = runtime;
+            item.details.runtimeNum = runtime;
+            this.ratingRuntimeFallback = runtime;
+            if (this.progressPercentageRaw > 0 && this.watchedMinutes === 0) {
+                this.watchedMinutes = Math.round(runtime * this.progressPercentageRaw / 100);
+            }
+        },
+
+        setWatched(value) {
+            const rt = this.ratingRuntime;
+            const next = Math.max(0, Math.round(Number(value) || 0));
+            this.watchedMinutes = rt ? Math.min(rt, next) : next;
+        },
+
+        formatMinutes(minutes) {
+            const total = Math.round(minutes || 0);
+            if (total <= 0) return '0m';
+            if (total < 60) return `${total}m`;
+            const hours = Math.floor(total / 60);
+            const rest = total % 60;
+            return rest > 0 ? `${hours}h ${rest}m` : `${hours}h`;
+        },
+
+        async loadItemProgress(item) {
+            if (!this.userEmail) return;
+            const itemId = item.details.idForDb;
+            try {
+                const response = await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/movie/${itemId}?_t=${Date.now()}`);
+                if (!response.ok) return;
+                const data = await response.json();
+                if (this.currentRatingItem?.details?.idForDb !== itemId) return;
+                if (!data.found) return;
+                const storedDuration = Number(data.total_duration_minutes) || 0;
+                if (storedDuration > 0 && !Number(this.currentRatingItem?.details?.runtime)) {
+                    this.ratingRuntimeFallback = storedDuration;
+                }
+                const stored = Number(data.elapsed_minutes) || 0;
+                if (this.ratingRuntime && stored > 0) {
+                    this.setWatched(stored);
+                    this.progressPercentageRaw = Math.round(this.watchedMinutes / this.ratingRuntime * 100);
+                } else {
+                    this.progressPercentage = Number(data.progress_percentage) || 0;
+                }
+            } catch (error) {
+                console.error('Error loading progress:', error);
+            }
+        },
+
+        async saveItemProgress(item) {
+            if (!this.userEmail) return;
+            const rt = this.ratingRuntime;
+            try {
+                await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/movie/${item.details.idForDb}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        progress_percentage: this.progressPercentage,
+                        elapsed_minutes: rt ? this.watchedMinutes : 0,
+                        total_duration_minutes: rt
+                    })
+                });
+                window.dispatchEvent(new CustomEvent('progress-updated'));
+            } catch (error) {
+                console.error('Error saving progress:', error);
+            }
         },
 
         setRating(rating) { this.selectedRating = rating; },
@@ -1412,6 +1597,8 @@ export default {
 
             item.details.userRatingForDb = this.selectedRating.toString();
             item.details.userReview = this.userReview.trim();
+
+            if (item.details.typeForDb === 'movie') await this.saveItemProgress(item);
 
             this.closeRatingModal();
             this.$bus.$emit('lists-updated');
@@ -2351,24 +2538,251 @@ export default {
 /* Rating modal */
 .rating-numbers {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-columns: repeat(10, minmax(0, 1fr));
   gap: 6px;
   margin-bottom: 16px;
+
+  @media (max-width: 380px) {
+    gap: 4px;
+  }
 }
 
 .rating-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   aspect-ratio: 1;
+  min-width: 0;
+  padding: 0;
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(139, 233, 253, 0.2);
   color: #cfd6dc;
   border-radius: 8px;
   font-size: 13px;
   font-weight: 700;
+  line-height: 1;
+  text-align: center;
   cursor: pointer;
   transition: all 0.12s ease;
   font-family: inherit;
   &:hover { border-color: #8BE9FD; }
   &.rating-btn-active { background: linear-gradient(135deg, #1F5467, #8BE9FD); color: #03242C; border-color: #8BE9FD; }
+
+  @media (max-width: 380px) {
+    border-radius: 6px;
+    font-size: 12px;
+  }
+}
+
+.rate-score {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 12px;
+  min-height: 34px;
+}
+
+.rate-score-value {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+  color: #8BE9FD;
+  font-variant-numeric: tabular-nums;
+}
+
+.rate-score-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #a0aab2;
+}
+
+.pg-section {
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(139, 233, 253, 0.14);
+}
+
+.pg-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(139, 233, 253, 0.9);
+
+  svg { width: 13px; height: 13px; }
+}
+
+.pg-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.pg-dial {
+  position: relative;
+  flex-shrink: 0;
+  width: 76px;
+  height: 76px;
+
+  svg { width: 100%; height: 100%; }
+}
+
+.pg-ring {
+  transform: rotate(-90deg);
+  transform-origin: center;
+  transition: stroke-dashoffset 0.35s ease;
+}
+
+.pg-pct {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+
+  em {
+    margin-left: 1px;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 700;
+    color: rgba(139, 233, 253, 0.8);
+  }
+}
+
+.pg-controls { flex: 1; min-width: 0; }
+
+.pg-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  margin: 0 0 14px;
+  border-radius: 999px;
+  background: rgba(139, 233, 253, 0.14);
+  outline: none;
+  cursor: pointer;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8BE9FD, #5cc4d8);
+    border: 2px solid rgba(3, 4, 6, 0.9);
+    box-shadow: 0 0 10px rgba(139, 233, 253, 0.45);
+    cursor: pointer;
+  }
+
+  &::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8BE9FD, #5cc4d8);
+    border: 2px solid rgba(3, 4, 6, 0.9);
+    box-shadow: 0 0 10px rgba(139, 233, 253, 0.45);
+    cursor: pointer;
+  }
+
+  &:focus-visible { box-shadow: 0 0 0 3px rgba(139, 233, 253, 0.25); }
+}
+
+.pg-times {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.pg-time {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+
+  &.pg-time--right { text-align: right; }
+}
+
+.pg-time-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.pg-time-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.pg-entry {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  padding: 5px 9px;
+  border-radius: 9px;
+  border: 1px solid rgba(139, 233, 253, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+  transition: border-color 0.2s ease, background 0.2s ease;
+
+  &:focus-within {
+    border-color: rgba(139, 233, 253, 0.6);
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  input {
+    width: 2.4ch;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    outline: none;
+    -moz-appearance: textfield;
+    appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
+  em {
+    margin-right: 3px;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 700;
+    color: #8BE9FD;
+  }
+}
+
+.pg-no-duration {
+  margin: 0;
+  font-size: 12px;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+@media (max-width: 480px) {
+  .pg-row { gap: 12px; }
+  .pg-dial { width: 64px; height: 64px; }
 }
 
 .review-section { position: relative; margin-bottom: 16px; }

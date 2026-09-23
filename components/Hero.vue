@@ -405,105 +405,101 @@
         </div>
       </div>
 
-    <div v-if="ratingModalVisible" class="modal-overlay">
-      <div class="rating-modal">
-        <div class="modal-header">
-          <h3>Rate '{{ nameForDb }}'</h3>
-          <button class="close-btn" @click="closeRatingModal" aria-label="Close"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <div v-if="ratingModalVisible" :class="$style.rateOverlay" @click.self="closeRatingModal">
+      <div :class="$style.rateModal" role="dialog" aria-modal="true" aria-labelledby="hero-rate-title">
+        <button type="button" :class="$style.rateClose" @click="closeRatingModal" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 18 18 6M6 6l12 12"/></svg>
+        </button>
+
+        <h3 :class="$style.rateTitle" id="hero-rate-title">Rate &lsquo;{{ nameForDb }}&rsquo;</h3>
+
+        <div :class="$style.rateScore">
+          <span :class="$style.rateScoreValue">{{ hoverRating || selectedRating || '–' }}</span>
+          <span :class="$style.rateScoreLabel">{{ (hoverRating || selectedRating) ? 'out of 10' : 'Pick a score' }}</span>
         </div>
-        
-        <div class="rating-content">
-          <div class="rating-selector">
-            <div class="rating-numbers">
-              <button 
-                v-for="n in 10" 
-                :key="n" 
-                @click="setRating(n)"
-                @mouseover="previewRating(n)"
-                @mouseout="resetPreview()"
-                :class="[
-                  'rating-btn', 
-                  { 'rating-btn-active': n <= (hoverRating || selectedRating) }
-                ]"
-              >
-                {{ n }}
-              </button>
-            </div>
-          </div>
-          
-          <!-- Progress tracking -->
-          <div v-if="type === 'movie'" class="mpb-section">
-            <div class="mpb-section-label">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              VIEWING PROGRESS
-            </div>
-            <div class="mpb-row">
-              <div class="mpb-circle-wrap">
-                <svg class="mpb-svg" viewBox="0 0 120 120">
-                  <defs><linearGradient id="pgH" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8AE8FC"/><stop offset="100%" stop-color="#50C8E8"/></linearGradient></defs>
-                  <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(138,232,252,0.1)" stroke-width="6"/>
-                  <circle cx="60" cy="60" r="52" fill="none" stroke="url(#pgH)" stroke-width="6" stroke-linecap="round" :stroke-dasharray="2 * Math.PI * 52" :stroke-dashoffset="2 * Math.PI * 52 * (1 - progressPercentage / 100)" style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .35s ease"/>
-                </svg>
-                <div class="mpb-pct"><span class="mpb-pct-num">{{ progressPercentage }}</span><span class="mpb-pct-sign">%</span></div>
-              </div>
-              <div class="mpb-controls">
-                <input
-                  v-if="heroItem.runtime"
-                  type="range"
-                  class="mpb-slider"
-                  min="0"
-                  :max="heroItem.runtime"
-                  step="1"
-                  v-model.number="watchedMinutes"
-                  aria-label="Minutes watched" />
-                <input v-else type="range" class="mpb-slider" min="0" max="100" step="1" v-model.number="progressPercentage" />
 
-                <div v-if="heroItem.runtime" class="mpb-times">
-                  <div class="mpb-time">
-                    <span class="mpb-time-label">Watched</span>
-                    <span class="mpb-time-entry">
-                      <input type="number" min="0" :max="Math.floor(heroItem.runtime / 60)" v-model.number="watchedHours" aria-label="Hours watched" />
-                      <em>h</em>
-                      <input type="number" min="0" max="59" v-model.number="watchedMins" aria-label="Minutes watched" />
-                      <em>m</em>
-                    </span>
-                  </div>
-                  <div class="mpb-time mpb-time--right">
-                    <span class="mpb-time-label">Remaining</span>
-                    <span class="mpb-time-val">{{ progressRemaining }}</span>
-                  </div>
+        <div :class="$style.rateNumbers">
+          <button
+            v-for="n in 10"
+            :key="n"
+            type="button"
+            @click="setRating(n)"
+            @mouseover="previewRating(n)"
+            @mouseout="resetPreview()"
+            :class="[$style.rateBtn, { [$style.rateBtnActive]: n <= (hoverRating || selectedRating) }]">
+            {{ n }}
+          </button>
+        </div>
+
+        <div v-if="type === 'movie'" :class="$style.pgSection">
+          <div :class="$style.pgLabel">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Viewing progress
+          </div>
+
+          <div :class="$style.pgRow">
+            <div :class="$style.pgDial">
+              <svg viewBox="0 0 120 120" aria-hidden="true">
+                <defs>
+                  <linearGradient id="heroRateRing" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#8BE9FD"/>
+                    <stop offset="100%" stop-color="#1F5467"/>
+                  </linearGradient>
+                </defs>
+                <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(139,233,253,0.12)" stroke-width="8"/>
+                <circle
+                  cx="60" cy="60" r="52" fill="none" stroke="url(#heroRateRing)" stroke-width="8" stroke-linecap="round"
+                  :stroke-dasharray="2 * Math.PI * 52"
+                  :stroke-dashoffset="2 * Math.PI * 52 * (1 - progressPercentage / 100)"
+                  :class="$style.pgRing" />
+              </svg>
+              <span :class="$style.pgPct">{{ progressPercentage }}<em>%</em></span>
+            </div>
+
+            <div :class="$style.pgControls">
+              <input
+                v-if="heroItem.runtime"
+                type="range"
+                :class="$style.pgSlider"
+                min="0"
+                :max="heroItem.runtime"
+                step="1"
+                v-model.number="watchedMinutes"
+                aria-label="Minutes watched" />
+              <input v-else type="range" :class="$style.pgSlider" min="0" max="100" step="1" v-model.number="progressPercentage" aria-label="Percent watched" />
+
+              <div v-if="heroItem.runtime" :class="$style.pgTimes">
+                <div :class="$style.pgTime">
+                  <span :class="$style.pgTimeLabel">Watched</span>
+                  <span :class="$style.pgEntry">
+                    <input type="number" min="0" :max="Math.floor(heroItem.runtime / 60)" v-model.number="watchedHours" aria-label="Hours watched" />
+                    <em>h</em>
+                    <input type="number" min="0" max="59" v-model.number="watchedMins" aria-label="Minutes watched" />
+                    <em>m</em>
+                  </span>
                 </div>
-                <div v-else class="mpb-times"><span class="mpb-no-dur">Duration not available</span></div>
+                <div :class="[$style.pgTime, $style.pgTimeRight]">
+                  <span :class="$style.pgTimeLabel">Remaining</span>
+                  <span :class="$style.pgTimeValue">{{ progressRemaining }}</span>
+                </div>
               </div>
+              <p v-else :class="$style.pgNoDuration">Duration not available</p>
             </div>
           </div>
+        </div>
 
-          <div class="review-section">
-            <textarea
-              v-model="userReview"
-              :placeholder="selectedRating > 0 ? ratingDescriptions[selectedRating - 1] : 'Select a rating first'"
-              class="review-textarea"
-              maxlength="2000"
-            ></textarea>
-            <div class="char-count">{{ userReview.length }}/2000</div>
-          </div>
-          
-          <div class="rating-modal-buttons">
-            <button 
-              v-if="hasUserRating"
-              @click="removeRating" 
-              class="remove-rating-btn"
-            >
-              <span style="position:relative; margin:0 auto;">Remove Rating</span>
-            </button>
-            
-            <button 
-              @click="saveRatingAndReview" 
-              class="save-btn"
-            >
-              <span style="position:relative; margin:0 auto;">Save</span>
-            </button>
-          </div>
+        <div :class="$style.rateReview">
+          <textarea
+            v-model="userReview"
+            :placeholder="selectedRating > 0 ? 'Add an optional review…' : 'Select a rating first'"
+            :class="$style.rateTextarea"
+            maxlength="2000"></textarea>
+          <div :class="$style.rateCharCount">{{ userReview.length }}/2000</div>
+        </div>
+
+        <div :class="$style.rateActions">
+          <button v-if="hasUserRating" type="button" @click="removeRating" :class="[$style.rateGhost, $style.rateDanger]">Remove rating</button>
+          <button type="button" @click="saveRatingAndReview" :class="$style.ratePrimary">Save</button>
         </div>
       </div>
     </div>
@@ -3270,6 +3266,494 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.rateOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(3, 4, 6, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.rateModal {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  padding: 30px 26px 24px;
+  border-radius: 20px;
+  background: rgba(3, 4, 6, 0.9);
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(31, 84, 103, 0.2), transparent 35%),
+    radial-gradient(circle at 85% 80%, rgba(139, 233, 253, 0.08), transparent 30%);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(31, 84, 103, 0.5),
+    inset 0 0 24px rgba(139, 233, 253, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-sizing: border-box;
+  color: rgba(255, 255, 255, 0.86);
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  animation: rateFloatIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #8BE9FD, #1F5467, transparent);
+    opacity: 0.8;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+  }
+}
+
+@keyframes rateFloatIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.rateClose {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #e6ebf0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+  }
+
+  &:hover {
+    background: rgba(255, 95, 95, 0.18);
+    border-color: rgba(255, 95, 95, 0.5);
+    color: #ff7e7e;
+  }
+}
+
+.rateTitle {
+  margin: 0 0 16px;
+  padding-right: 40px;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(139, 233, 253, 0.25);
+}
+
+.rateScore {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 12px;
+  min-height: 34px;
+}
+
+.rateScoreValue {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+  color: #8BE9FD;
+  font-variant-numeric: tabular-nums;
+}
+
+.rateScoreLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #a0aab2;
+}
+
+.rateNumbers {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.rateBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 0;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(139, 233, 253, 0.2);
+  color: #cfd6dc;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.12s ease;
+
+  &:hover {
+    border-color: #8BE9FD;
+  }
+}
+
+.rateBtnActive {
+  background: linear-gradient(135deg, #1F5467, #8BE9FD);
+  border-color: #8BE9FD;
+  color: #03242C;
+}
+
+.pgSection {
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(139, 233, 253, 0.14);
+}
+
+.pgLabel {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(139, 233, 253, 0.9);
+
+  svg {
+    width: 13px;
+    height: 13px;
+  }
+}
+
+.pgRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.pgDial {
+  position: relative;
+  flex-shrink: 0;
+  width: 76px;
+  height: 76px;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.pgRing {
+  transform: rotate(-90deg);
+  transform-origin: center;
+  transition: stroke-dashoffset 0.35s ease;
+}
+
+.pgPct {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+
+  em {
+    margin-left: 1px;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 700;
+    color: rgba(139, 233, 253, 0.8);
+  }
+}
+
+.pgControls {
+  flex: 1;
+  min-width: 0;
+}
+
+.pgSlider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  margin: 0 0 14px;
+  border-radius: 999px;
+  background: rgba(139, 233, 253, 0.14);
+  outline: none;
+  cursor: pointer;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8BE9FD, #5cc4d8);
+    border: 2px solid rgba(3, 4, 6, 0.9);
+    box-shadow: 0 0 10px rgba(139, 233, 253, 0.45);
+    cursor: pointer;
+  }
+
+  &::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8BE9FD, #5cc4d8);
+    border: 2px solid rgba(3, 4, 6, 0.9);
+    box-shadow: 0 0 10px rgba(139, 233, 253, 0.45);
+    cursor: pointer;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px rgba(139, 233, 253, 0.25);
+  }
+}
+
+.pgTimes {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.pgTime {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.pgTimeRight {
+  text-align: right;
+}
+
+.pgTimeLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.pgTimeValue {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.pgEntry {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  padding: 5px 9px;
+  border-radius: 9px;
+  border: 1px solid rgba(139, 233, 253, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+  transition: border-color 0.2s ease, background 0.2s ease;
+
+  &:focus-within {
+    border-color: rgba(139, 233, 253, 0.6);
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  input {
+    width: 2.4ch;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    outline: none;
+    -moz-appearance: textfield;
+    appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
+  em {
+    margin-right: 3px;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 700;
+    color: #8BE9FD;
+  }
+}
+
+.pgNoDuration {
+  margin: 0;
+  font-size: 12px;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.rateReview {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.rateTextarea {
+  width: 100%;
+  min-height: 96px;
+  padding: 10px 13px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(139, 233, 253, 0.2);
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+
+  &::placeholder {
+    color: rgba(160, 170, 178, 0.45);
+  }
+
+  &:focus {
+    border-color: rgba(139, 233, 253, 0.6);
+    box-shadow: 0 0 0 3px rgba(139, 233, 253, 0.12);
+    background: rgba(0, 0, 0, 0.4);
+  }
+}
+
+.rateCharCount {
+  margin-top: 5px;
+  text-align: right;
+  font-size: 11px;
+  color: #6b7480;
+  font-variant-numeric: tabular-nums;
+}
+
+.rateActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.ratePrimary,
+.rateGhost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 22px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ratePrimary {
+  background: linear-gradient(135deg, #1F5467, #8BE9FD);
+  border: 1px solid rgba(139, 233, 253, 0.5);
+  color: #03242C;
+  box-shadow: 0 4px 16px rgba(139, 233, 253, 0.18);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(139, 233, 253, 0.28);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.rateGhost {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #a0aab2;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+  }
+}
+
+.rateDanger {
+  border-color: rgba(255, 95, 95, 0.35);
+  color: #ff9999;
+
+  &:hover {
+    background: rgba(255, 95, 95, 0.1);
+    border-color: rgba(255, 95, 95, 0.55);
+    color: #ff9999;
+  }
+}
+
+@media (max-width: 480px) {
+  .rateOverlay {
+    padding: 12px;
+  }
+
+  .rateModal {
+    padding: 26px 18px 20px;
+  }
+
+  .rateNumbers {
+    gap: 4px;
+  }
+
+  .rateBtn {
+    border-radius: 6px;
+    font-size: 12px;
+  }
+
+  .pgRow {
+    gap: 12px;
+  }
+
+  .pgDial {
+    width: 64px;
+    height: 64px;
+  }
+
+  .rateActions {
+    flex-direction: column-reverse;
+  }
+
+  .ratePrimary,
+  .rateGhost {
+    width: 100%;
+  }
+}
 </style>
 
 <style>
@@ -3590,23 +4074,6 @@ export default {
   }
 }
 
-.rating-modal {
-  position: relative;
-  width: 100%;
-  max-width: 400px;
-  background-color: #040E13;
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 28' width='56' height='28'%3E%3Cpath fill='%237ed2e3' fill-opacity='0.06' d='M56 26v2h-7.75c2.3-1.27 4.94-2 7.75-2zm-26 2a2 2 0 1 0-4 0h-4.09A25.98 25.98 0 0 0 0 16v-2c.67 0 1.34.02 2 .07V14a2 2 0 0 0-2-2v-2a4 4 0 0 1 3.98 3.6 28.09 28.09 0 0 1 2.8-3.86A8 8 0 0 0 0 6V4a9.99 9.99 0 0 1 8.17 4.23c.94-.95 1.96-1.83 3.03-2.63A13.98 13.98 0 0 0 0 0h7.75c2 1.1 3.73 2.63 5.1 4.45 1.12-.72 2.3-1.37 3.53-1.93A20.1 20.1 0 0 0 14.28 0h2.7c.45.56.88 1.14 1.29 1.74 1.3-.48 2.63-.87 4-1.15-.11-.2-.23-.4-.36-.59H26v.07a28.4 28.4 0 0 1 4 0V0h4.09l-.37.59c1.38.28 2.72.67 4.01 1.15.4-.6.84-1.18 1.3-1.74h2.69a20.1 20.1 0 0 0-2.1 2.52c1.23.56 2.41 1.2 3.54 1.93A16.08 16.08 0 0 1 48.25 0H56c-4.58 0-8.65 2.2-11.2 5.6 1.07.8 2.09 1.68 3.03 2.63A9.99 9.99 0 0 1 56 4v2a8 8 0 0 0-6.77 3.74c1.03 1.2 1.97 2.5 2.79 3.86A4 4 0 0 1 56 10v2a2 2 0 0 0-2 2.07 28.4 28.4 0 0 1 2-.07v2c-9.2 0-17.3 4.78-21.91 12H30zM7.75 28H0v-2c2.81 0 5.46.73 7.75 2zM56 20v2c-5.6 0-10.65 2.3-14.28 6h-2.7c4.04-4.89 10.15-8 16.98-8zm-39.03 8h-2.69C10.65 24.3 5.6 22 0 22v-2c6.83 0 12.94 3.11 16.97 8zm15.01-.4a28.09 28.09 0 0 1 2.8-3.86 8 8 0 0 0-13.55 0c1.03 1.2 1.97 2.5 2.79 3.86a4 4 0 0 1 7.96 0zm14.29-11.86c1.3-.48 2.63-.87 4-1.15a25.99 25.99 0 0 0-44.55 0c1.38.28 2.72.67 4.01 1.15a21.98 21.98 0 0 1 36.54 0zm-5.43 2.71c1.13-.72 2.3-1.37 3.54-1.93a19.98 19.98 0 0 0-32.76 0c1.23.56 2.41 1.2 3.54 1.93a15.98 15.98 0 0 1 25.68 0zm-4.67 3.78c.94-.95 1.96-1.83 3.03-2.63a13.98 13.98 0 0 0-22.4 0c1.07.8 2.09 1.68 3.03 2.63a9.99 9.99 0 0 1 16.34 0z'%3E%3C/path%3E%3C/svg%3E"),
-    radial-gradient(110% 80% at 8% 0%, rgba(31, 84, 103, 0.26), transparent 52%),
-    linear-gradient(150deg, #071820 0%, #040D12 58%, #02080B 100%);
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(139, 233, 253, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(139, 233, 253, 0.18);
-  border-radius: 20px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
 .modal-header {
   display: flex;
   align-items: center;
@@ -3640,196 +4107,8 @@ export default {
   padding: 0;
 }
 
-
 .close-btn:hover {
   color: #fff;
-}
-
-.rating-content {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.rating-selector {
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-.rating-numbers {
-  display: flex;
-  justify-content: space-between;
-  position: relative;
-}
-
-.rating-numbers::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.07);
-  transform: translateY(-50%);
-  z-index: 0;
-}
-
-.rating-btn {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  border: none;
-  background: #041019;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  position: relative;
-  z-index: 2;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.rating-btn-active {
-  background: #8BE9FD;
-  color: #000;
-  transform: scale(1.15);
-  box-shadow: 0 0 10px rgba(139, 233, 253, 0.5);
-}
-
-.rating-btn:hover {
-  transform: scale(1.15);
-}
-
-.review-section {
-  width: 100%;
-  position: relative;
-  margin-bottom: 20px;
-}
-
-.review-textarea {
-  width: 100%;
-  height: 160px;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 12px;
-  color: #fff;
-  font-size: 1.3rem;
-  resize: none;
-  transition: border-color 0.2s ease;
-}
-
-.review-textarea:focus {
-  outline: none;
-  border-color: rgba(139, 233, 253, 0.5);
-}
-
-.review-textarea:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.char-count {
-  position: absolute;
-  bottom: 8px;
-  right: 12px;
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.save-btn {
-  background: rgba(139, 233, 253, 0.12);
-  color: #8BE9FD;
-  border: 1px solid rgba(139, 233, 253, 0.35);
-  font-size: 1.3rem;
-  font-weight: 600;
-  padding: 0.8rem 0;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-radius: 8px;
-  width: 120px;
-  text-align: center;
-}
-
-.save-btn:hover {
-  background: rgba(139, 233, 253, 0.22);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(139, 233, 253, 0.2);
-}
-
-.save-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.rating-modal-buttons {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-  justify-content: center;
-}
-
-.save-btn {
-  flex: 1;
-}
-
-.remove-rating-btn {
-  background: rgba(255, 107, 107, 0.1);
-  color: #FF6B6B;
-  border: 1px solid rgba(255, 107, 107, 0.35);
-  font-size: 1.3rem;
-  font-weight: 600;
-  padding: 0.8rem 0;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-radius: 8px;
-  flex: 1;
-  text-align: center;
-}
-
-.remove-rating-btn:hover {
-  background: rgba(255, 0, 0, 0.4);
-  border-color: rgba(255, 0, 0, 0.6);
-  transform: translateY(-1px);
-  box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
-}
-
-@media (max-width: 400px) {
-  .rating-modal-buttons {
-    flex-direction: column;
-  }
-  
-  .rating-modal-buttons .save-btn,
-  .remove-rating-btn {
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 400px) {
-  .rating-modal {
-    max-width: 300px;
-  }
-  
-  .rating-btn {
-    width: 22px;
-    height: 22px;
-    font-size: 11px;
-  }
-  
-  .modal-header h3 {
-    font-size: 1.4rem;
-  }
-  
-  .review-textarea {
-    font-size: 1.2rem;
-  }
 }
 
 .optimization-modal {
@@ -3842,16 +4121,6 @@ export default {
   display: flex;
   flex-direction: column;
 }
-
-
-
-
-
-
-
-
-
-
 
 
 </style>
