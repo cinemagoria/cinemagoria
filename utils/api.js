@@ -717,6 +717,12 @@ export function getMovie(id) {
     });
 };
 
+export function getMovieRuntime(id) {
+    return axios.get(`${apiUrl}/movie/${id}`, {
+        params: { api_key: getEnv('API_KEY'), language: getEnv('API_LANG') },
+    }).then((response) => Number(response?.data?.runtime) || 0).catch(() => 0);
+}
+
 export function getMovieReleaseDates(id) {
     return new Promise((resolve, reject) => {
         axios.get(`${apiUrl}/movie/${id}/release_dates`, {
