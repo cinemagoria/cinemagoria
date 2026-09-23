@@ -32,6 +32,7 @@ export default defineNuxtConfig({
     '/api/awards/**': { headers: { 'cache-control': 'public, max-age=86400, s-maxage=86400' } },
     '/api/article/**': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=3600' } },
     '/api/festival/**': { headers: { 'cache-control': 'public, max-age=3600, s-maxage=3600' } },
+    '/api/festival/featured': { headers: { 'cache-control': 'public, max-age=60, s-maxage=300' } },
     '/api/search/**': { headers: { 'cache-control': 'public, max-age=60, s-maxage=60' } },
 
     // Public SSR pages — emit Cache-Control: public, s-maxage=X so Cloudflare caches the HTML
