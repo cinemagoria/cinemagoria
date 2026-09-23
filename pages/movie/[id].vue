@@ -57,7 +57,6 @@
         <AwardsTab
           class="tab-full"
           :tmdb-id="item.id"
-          :title="item.title"
           type="movie"
           :oscars-prop="awardsData.oscars"
           :golden-globes-prop="awardsData.goldenGlobes"
@@ -212,7 +211,6 @@ watch(item, async () => {
       const awards = await $fetch('/api/awards', {
           query: {
              tmdbId: item.value.id,
-             title: item.value.original_title || item.value.title,
              type: 'movie'
           }
       });

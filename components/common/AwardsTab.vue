@@ -196,7 +196,6 @@
 <script setup>
 const props = defineProps({
   tmdbId: { type: Number, default: null },
-  title: { type: String, default: null }, 
   name: { type: String, default: null },  
   type: { type: String, default: 'movie' },
   oscarsProp: { type: Array, default: null },
@@ -259,7 +258,6 @@ const fetchAwards = async () => {
             params: {
                 tmdbId: props.tmdbId,
                 name: props.name,
-                title: props.title,
                 type: props.type
             }
         });

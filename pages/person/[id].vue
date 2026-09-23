@@ -277,7 +277,6 @@ watch(person, async () => {
         try {
              const awards = await $fetch('/api/awards', {
                 params: {
-                   tmdbId: person.value.id,
                    name: person.value.name,
                    type: 'person'
                 }

@@ -21,7 +21,7 @@
                         <td>
                             <span 
                                 :class="$style.clickableName"
-                                @click="searchAndNavigateToFilm(award.film_title, award.category)"
+                                @click="openFilm(award, award.film_title, award.category)"
                             >
                                 {{ award.film_title }}
                             </span>
@@ -57,7 +57,7 @@
                         <td>
                             <span 
                                 :class="$style.clickableName"
-                                @click="searchAndNavigateToFilm(award.film, award.category)"
+                                @click="openFilm(award, award.film, award.category)"
                             >
                                 {{ award.film }}
                             </span>
@@ -93,7 +93,7 @@
                         <td>
                             <span 
                                 :class="$style.clickableName"
-                                @click="searchAndNavigateToFilm(award.film_title, 'Best Picture')"
+                                @click="openFilm(award, award.film_title, 'Best Picture')"
                             >
                                 {{ award.film_title }}
                             </span>
@@ -126,7 +126,7 @@
                         <td>
                             <span 
                                 :class="$style.clickableName"
-                                @click="searchAndNavigateToFilm(award.film_title, 'Best Picture')"
+                                @click="openFilm(award, award.film_title, 'Best Picture')"
                             >
                                 {{ award.film_title }}
                             </span>
@@ -159,7 +159,7 @@
                         <td>
                             <span 
                                 :class="$style.clickableName"
-                                @click="searchAndNavigateToFilm(award.film_title, 'Best Picture')"
+                                @click="openFilm(award, award.film_title, 'Best Picture')"
                             >
                                 {{ award.film_title }}
                             </span>
@@ -191,6 +191,14 @@ const sortedGoldenBear = computed(() => [...props.goldenBear].sort((a, b) => b.y
 const router = useRouter();
 const config = useRuntimeConfig();
 const apiKey = config.public.apiKey;
+
+const openFilm = (award, filmTitle, category) => {
+  if (award.tmdb_id) {
+    router.push(`/${award.media_type === 'tv' ? 'tv' : 'movie'}/${award.tmdb_id}`);
+    return;
+  }
+  searchAndNavigateToFilm(filmTitle, category);
+};
 
 const searchAndNavigateToFilm = async (filmTitle, category = '') => {
   if (!filmTitle) return;

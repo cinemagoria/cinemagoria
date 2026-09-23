@@ -1,23 +1,6 @@
 import { createError, defineEventHandler, getQuery } from 'h3'
 import { dbExecute } from '~~/server/utils/db'
 
-/**
- * Per-title / per-person award lookup, backed by `awards_archive`.
- *
- * The response keeps the historical per-body shape the UI reads
- * (`oscars`, `goldenGlobes`, `palme`, `goldenLion`, `goldenBear`), so this is a
- * data-source change only — no component had to move.
- *
- * Lookups resolve through indexes rather than scanning:
- *   tmdb_id  -> idx_aa_tmdb
- *   person   -> idx_aar_norm on the recipients child table
- *   title    -> idx_aa_title (COLLATE NOCASE)
- *
- * Person lookups go through `awards_archive_recipients` because the archive
- * packs several credited names into one field ("Chloe Zhao & Maggie O'Farrell").
- * Matching the parent column directly would miss roughly a fifth of the Oscars.
- */
-
 const BODY_KEYS: Record<string, 'oscars' | 'goldenGlobes' | 'palme' | 'goldenLion' | 'goldenBear'> = {
     oscars: 'oscars',
     'golden-globes': 'goldenGlobes',
@@ -46,6 +29,7 @@ function toLegacyShape(row: any) {
         year,
         category: row.category,
         won: row.won,
+        media_type: row.media_type === 'tv' ? 'tv' : 'movie',
         tmdb_id: row.tmdb_id ?? undefined,
         imdb_id: row.imdb_id ?? '',
     }
@@ -68,56 +52,47 @@ function toLegacyShape(row: any) {
     }
 }
 
+const AWARD_COLUMNS = `id, body_slug, ceremony_year, year_label, category, won,
+                       title, original_title, director, country,
+                       recipient_name, tmdb_id, imdb_id, media_type`
+
+function lookupStatement(type: string, tmdbId: number | undefined, name: string | undefined) {
+    if ((type === 'movie' || type === 'tv') && tmdbId) {
+        return {
+            sql: `SELECT ${AWARD_COLUMNS}
+                  FROM awards_archive
+                  WHERE tmdb_id = ? AND COALESCE(media_type, 'movie') = ?`,
+            args: [tmdbId, type],
+        }
+    }
+    if (type === 'person' && name) {
+        return {
+            sql: `SELECT ${AWARD_COLUMNS}
+                  FROM awards_archive
+                  WHERE id IN (SELECT award_id FROM awards_archive_recipients WHERE recipient_norm = ?)`,
+            args: [norm(name)],
+        }
+    }
+    return null
+}
+
 export default defineEventHandler(async (event) => {
     const query = getQuery(event)
     const tmdbIdRaw = query.tmdbId ? parseInt(String(query.tmdbId), 10) : undefined
     const tmdbId = Number.isFinite(tmdbIdRaw) && (tmdbIdRaw as number) > 0 ? tmdbIdRaw : undefined
     const name = query.name ? String(query.name) : undefined
-    const title = query.title ? String(query.title) : undefined
-    const type = query.type ? String(query.type) : undefined
+    const type = String(query.type || (name ? 'person' : 'movie'))
 
-    if (!tmdbId && !name && !title) return emptyResult()
-
-    // One indexed OR-query instead of five in-memory scans.
-    const clauses: string[] = []
-    const args: any[] = []
-
-    if (tmdbId) {
-        clauses.push('tmdb_id = ?')
-        args.push(tmdbId)
-    }
-    // A person lookup matches the credited recipient; a title lookup matches the film.
-    if (name && (type === 'person' || !type)) {
-        clauses.push('id IN (SELECT award_id FROM awards_archive_recipients WHERE recipient_norm = ?)')
-        args.push(norm(name))
-    }
-    if (title && type !== 'person') {
-        clauses.push('title = ? COLLATE NOCASE')
-        args.push(title)
-    }
-
-    if (clauses.length === 0) return emptyResult()
+    const statement = lookupStatement(type, tmdbId, name)
+    if (!statement) return emptyResult()
 
     try {
-        const result = await dbExecute({
-            sql: `SELECT id, body_slug, ceremony_year, year_label, category, won,
-                         title, original_title, director, country,
-                         recipient_name, tmdb_id, imdb_id, media_type
-                  FROM awards_archive
-                  WHERE ${clauses.join(' OR ')}`,
-            args,
-        })
+        const result = await dbExecute(statement)
 
         const out = emptyResult()
         for (const row of result.rows as any[]) {
             const key = BODY_KEYS[row.body_slug]
-            if (!key) continue
-
-            // Movie and TV pages share the Globes archive; keep them apart.
-            if (type === 'movie' && row.media_type === 'tv') continue
-            if (type === 'tv' && row.media_type !== 'tv') continue
-
-            out[key].push(toLegacyShape(row))
+            if (key) out[key].push(toLegacyShape(row))
         }
         return out
     } catch (error: any) {
