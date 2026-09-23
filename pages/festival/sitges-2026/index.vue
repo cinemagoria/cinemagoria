@@ -58,20 +58,6 @@
 
       <div v-else>
 
-        <!-- PROVISIONAL-LINEUP-BEGIN · se apaga con PROVISIONAL_LINEUP = false -->
-        <div v-if="PROVISIONAL_LINEUP && activeTab === 'films'" class="provisional-banner">
-          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
-          <div class="provisional-banner__copy">
-            <h3>Provisional lineup</h3>
-            <p>The festival has not published its official programme yet. This catalog is built from its press announcements, so titles and sections can still change.</p>
-          </div>
-          <button type="button" class="provisional-banner__more" @click="provisionalOpen = true">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>Details</button>
-        </div>
-
-        <SitgesLineupModal v-if="PROVISIONAL_LINEUP && provisionalOpen" @close="provisionalOpen = false" />
-        <!-- PROVISIONAL-LINEUP-END -->
-
         <div v-if="activeTab === 'films'" class="selection">
           <div v-if="catalogTotal" class="catalog-total">
             <span class="catalog-total__chip">
@@ -285,6 +271,9 @@
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                       <h3>General Information</h3>
                     </div>
+                    <div class="youtube-embed">
+                      <iframe src="https://www.youtube.com/embed/QJh3rb_du_Q" title="Sitges Film Festival 2026 press conference" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
                     <p class="carousel-desc"><strong>Edition:</strong> 59th Sitges — International Fantastic Film Festival of Catalonia</p>
                     <p class="carousel-desc"><strong>Dates:</strong> October 8 – 18, 2026</p>
                     <p class="carousel-desc"><strong>Location:</strong> Sitges, Catalonia, Spain</p>
@@ -296,15 +285,12 @@
                   <!-- Slide 1: Programme status -->
                   <template v-if="infoSlide === 1">
                     <div class="carousel-card-header">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
-                      <h3>Provisional lineup</h3>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                      <h3>Official programme</h3>
                     </div>
-                    <p class="carousel-desc">The festival has not yet published its official programme. Everything listed here comes from its press announcements, so <strong>titles, sections and counts can all still change</strong>, and more films will be added as the festival announces them.</p>
-                    <p class="carousel-desc">Screening times and venues have not been released at all, which is why the Schedule tab is still empty.</p>
-                    <p class="carousel-desc"><strong>Announcements this catalog is built from:</strong></p>
-                    <p class="carousel-desc">· <a href="https://sitgesfilmfestival.com/en/noticies/sitges-2026-brings-together-peter-jackson-danny-devito-and-amy-irving-edition-celebrates" target="_blank" class="accent-link">Official Fantàstic, Noves Visions, Òrbita, Sitges Collection and Seven Chances</a></p>
-                    <p class="carousel-desc">· <a href="https://sitgesfilmfestival.com/en/noticies/2026-sitges-film-festival-presents-new-films-panorama-midnight-x-treme-and-brigadoon" target="_blank" class="accent-link">Panorama, Midnight X-treme and Brigadoon</a></p>
-                    <p class="carousel-desc">· <a href="https://sitgesfilmfestival.com/en/noticies/spanish-talent-takes-sitges-2026-storm-horror-science-fiction-and-fresh-new-takes-on-genre" target="_blank" class="accent-link">Spanish productions</a></p>
+                    <p class="carousel-desc">The festival has published its complete programme and timetable. The catalog lists every title with a public metadata entry, grouped under the festival's own sections, and the Schedule tab carries every screening with its room, in Sitges local time (CEST).</p>
+                    <p class="carousel-desc">A number of short films, film-school works and archive compilations have no public metadata entry yet, so they do not appear here. That reflects the coverage of third-party sources, not an editorial choice.</p>
+                    <p class="carousel-desc"><strong>Source:</strong> <a href="https://sitgesfilmfestival.com/en/edition/program" target="_blank" class="accent-link">official programme</a></p>
                   </template>
 
                   <!-- Slide 2: Venues -->
@@ -318,10 +304,10 @@
                       <div class="venue-item"><strong>Sala Tramuntana</strong><span>Meliá Sitges</span></div>
                       <div class="venue-item"><strong>Sala Llevant</strong><span>Meliá Sitges · home of Brigadoon</span></div>
                       <div class="venue-item"><strong>Cinema Casino Prado</strong><span>Sitges</span></div>
-                      <div class="venue-item"><strong>Escorxador — Centre Cultural</strong><span>Sitges</span></div>
-                      <div class="venue-item"><strong>Centre Cultural Miramar</strong><span>Sitges</span></div>
+                      <div class="venue-item"><strong>Cinema Escorxador</strong><span>Sitges</span></div>
+                      <div class="venue-item"><strong>Mercat Vell</strong><span>Sitges</span></div>
                     </div>
-                    <p class="carousel-desc">The official circuit for this edition, as announced by the festival. Which film screens where is published with the timetable, which is still pending.</p>
+                    <p class="carousel-desc">The six rooms in the official timetable. Every screening in the Schedule tab names the room it plays in.</p>
                   </template>
 
                   <!-- Slide 3: Sections -->
@@ -331,15 +317,28 @@
                       <h3>What each section means</h3>
                     </div>
                     <div class="section-glossary">
-                      <div class="section-glossary-item"><strong>Official Fantàstic — Competition</strong><span>The main competitive section, spanning horror, science fiction, fantasy and hybrid work. It opens with <em>Found Alive</em> and closes with <em>Wicker</em>.</span></div>
+                      <div class="section-glossary-item"><strong>Opening Film</strong><span>The opening gala: <em>Found Alive</em>, which also competes in Official Fantàstic, preceded by the short <em>Homing</em>.</span></div>
+                      <div class="section-glossary-item"><strong>Closing Film</strong><span><em>Wicker</em>, presented at the closing gala.</span></div>
+                      <div class="section-glossary-item"><strong>Official Fantàstic — Competition</strong><span>The main competitive section, spanning horror, science fiction, fantasy and hybrid work.</span></div>
+                      <div class="section-glossary-item"><strong>Official Fantàstic — Shorts</strong><span>The short film competition of the Official Fantàstic section.</span></div>
                       <div class="section-glossary-item"><strong>Noves Visions</strong><span>The most singular, experimental and boundary-pushing work, for filmmakers willing to break with genre convention.</span></div>
+                      <div class="section-glossary-item"><strong>Noves Visions — Petit Format</strong><span>Short films competing within Noves Visions.</span></div>
                       <div class="section-glossary-item"><strong>Òrbita</strong><span>Territories adjacent to the festival's universe without strictly belonging to the fantastic: thriller, crime, action, suspense and adventure.</span></div>
                       <div class="section-glossary-item"><strong>Panorama</strong><span>An independent-minded survey of where genre currently stands, with a focus on new voices reworking classic horror codes.</span></div>
                       <div class="section-glossary-item"><strong>Midnight X-treme</strong><span>The most extreme and uncompromising independent horror, programmed for the small hours.</span></div>
                       <div class="section-glossary-item"><strong>Brigadoon</strong><span>Celebrating its 40th anniversary: cult cinema, documentary on genre history, and the most personal and daring independent work.</span></div>
                       <div class="section-glossary-item"><strong>Sitges Collection</strong><span>Films that widen the festival's universe across horror, science fiction, adventure, action and humour.</span></div>
                       <div class="section-glossary-item"><strong>Seven Chances</strong><span>Programmed with the Catalan Association of Film Critics: seven films at least fifteen years old, rescued for rediscovery.</span></div>
-                      <div class="section-glossary-item"><strong>Section to be confirmed</strong><span>Announced titles whose section the festival has not yet stated.</span></div>
+                      <div class="section-glossary-item"><strong>Sitges Clàssics</strong><span>Restored classics and this edition's retrospective, back on the big screen.</span></div>
+                      <div class="section-glossary-item"><strong>Sitges Documenta</strong><span>Documentaries about genre cinema, its makers and its history.</span></div>
+                      <div class="section-glossary-item"><strong>Serial Sitges</strong><span>Series and episodic work. These titles open on their series page.</span></div>
+                      <div class="section-glossary-item"><strong>Anima't</strong><span>Animated features.</span></div>
+                      <div class="section-glossary-item"><strong>Anima't — Shorts</strong><span>Animated short films.</span></div>
+                      <div class="section-glossary-item"><strong>Sitges Family</strong><span>The family programme, with sessions for children and teenagers.</span></div>
+                      <div class="section-glossary-item"><strong>Catalunya Imaginària</strong><span>A showcase of fantastic cinema made in Catalonia.</span></div>
+                      <div class="section-glossary-item"><strong>Foco Iberoamericano</strong><span>Genre cinema from across Ibero-America.</span></div>
+                      <div class="section-glossary-item"><strong>Nova Autoria</strong><span>Short films from Catalan film schools, a showcase for emerging filmmakers.</span></div>
+                      <div class="section-glossary-item"><strong>Special Sessions</strong><span>One-off screenings outside the regular sections.</span></div>
                     </div>
                   </template>
                 </div>
@@ -366,12 +365,6 @@ import Loader from '~/components/Loader.vue';
 import WinnersCarousel from '~/components/festival/WinnersCarousel.vue';
 import FestivalDataDisclaimer from '~/components/FestivalDataDisclaimer.vue';
 import SitgesCard from '~/components/SitgesCard.vue';
-import SitgesLineupModal from '~/components/festival/SitgesLineupModal.vue';
-
-// Aviso de line-up provisorio: se apaga poniendo esto en false cuando el
-// festival publique su programa oficial y se rehaga la ingesta.
-const PROVISIONAL_LINEUP = true;
-const provisionalOpen = ref(false);
 
 const activeTab = ref('films');
 const scheduleSearch = ref('');
@@ -428,8 +421,12 @@ const showSchedulePending = computed(() => schedule.value.length === 0);
 const openDays = ref(new Set());
 
 const CATEGORY_ORDER = [
+    "Opening Film",
+    "Closing Film",
     "Official Fantàstic In-Competition",
+    "Official Fantàstic Shorts",
     "Noves Visions",
+    "Noves Visions Shorts",
     "Òrbita",
     "Panorama",
     "Midnight X-treme",
@@ -440,20 +437,37 @@ const CATEGORY_ORDER = [
     "Sitges Documenta",
     "Serial Sitges",
     "Anima't",
+    "Anima't Shorts",
     "Sitges Family",
     "Catalunya Imaginària",
     "Foco Iberoamericano",
+    "Nova Autoria",
+    "Special Sessions",
 ];
 
 const CATEGORY_LABELS = {
+    ["Opening Film"]: "Opening Film",
+    ["Closing Film"]: "Closing Film",
     ["Official Fantàstic In-Competition"]: "Official Fantàstic — Competition",
+    ["Official Fantàstic Shorts"]: "Official Fantàstic — Shorts",
     ["Noves Visions"]: "Noves Visions",
+    ["Noves Visions Shorts"]: "Noves Visions — Petit Format",
     ["Òrbita"]: "Òrbita",
     ["Panorama"]: "Panorama",
     ["Midnight X-treme"]: "Midnight X-treme",
     ["Brigadoon"]: "Brigadoon",
     ["Sitges Collection"]: "Sitges Collection",
     ["Seven Chances"]: "Seven Chances",
+    ["Sitges Clàssics"]: "Sitges Clàssics",
+    ["Sitges Documenta"]: "Sitges Documenta",
+    ["Serial Sitges"]: "Serial Sitges",
+    ["Anima't"]: "Anima't",
+    ["Anima't Shorts"]: "Anima't — Shorts",
+    ["Sitges Family"]: "Sitges Family",
+    ["Catalunya Imaginària"]: "Catalunya Imaginària",
+    ["Foco Iberoamericano"]: "Foco Iberoamericano",
+    ["Nova Autoria"]: "Nova Autoria",
+    ["Special Sessions"]: "Special Sessions",
     OTHER: "Section to be confirmed",
 };
 
@@ -1721,68 +1735,6 @@ onMounted(async () => {
         max-width: 240px;
     }
 }
-
-/* PROVISIONAL-LINEUP-BEGIN */
-.provisional-banner {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    max-width: 1400px;
-    margin: 0 auto 1.5rem;
-    padding: 1rem 1.25rem;
-    background: rgba(139, 233, 253, 0.06);
-    border: 1px solid rgba(139, 233, 253, 0.28);
-    border-radius: 14px;
-}
-
-.provisional-banner svg { flex-shrink: 0; }
-
-.provisional-banner__copy { flex: 1; min-width: 0; }
-
-.provisional-banner__copy h3 {
-    margin: 0 0 0.25rem;
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #8BE9FD;
-}
-
-.provisional-banner__copy p {
-    margin: 0;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.78);
-}
-
-.provisional-banner__more {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.8rem;
-    flex-shrink: 0;
-    padding: 0.8rem 1.8rem;
-    border-radius: 999px;
-    border: 1px solid rgba(139, 233, 253, 0.22);
-    background: rgba(31, 84, 103, 0.3);
-    color: #8BE9FD;
-    font-family: var(--font-display);
-    font-size: 1.3rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease;
-
-    svg { width: 1.7rem; height: 1.7rem; flex: 0 0 auto; }
-}
-
-.provisional-banner__more:hover {
-    background: rgba(31, 84, 103, 0.5);
-    border-color: rgba(139, 233, 253, 0.45);
-}
-
-
-@media (max-width: 700px) {
-    .provisional-banner { flex-direction: column; align-items: flex-start; }
-    .provisional-banner__more { align-self: stretch; }
-}
-/* PROVISIONAL-LINEUP-END */
 
 .schedule-pending {
     max-width: 640px;
