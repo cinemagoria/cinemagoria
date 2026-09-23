@@ -447,6 +447,7 @@ const searchQuery = ref('');
 const isSearchActive = ref(false);
 const debouncedSearchQuery = refDebounced(searchQuery, 500);
 const topicFromArticle = ref(null);
+const topicFilter = ref(null);
 
 const queryString = (key) => (typeof route.query[key] === 'string' && route.query[key] ? route.query[key] : null);
 
@@ -468,7 +469,8 @@ const groupBy = computed(() => {
   return value && GROUP_VALUES.includes(value) ? value : 'none';
 });
 const isSavedView = computed(() => route.query.view === 'saved');
-const isSearching = computed(() => isSearchActive.value && !!debouncedSearchQuery.value);
+const isTopicMode = computed(() => isSearchActive.value && !!topicFilter.value);
+const isSearching = computed(() => isTopicMode.value || (isSearchActive.value && !!debouncedSearchQuery.value));
 
 const showSourceFacet = computed(() => !isSavedView.value && !isSearching.value);
 const showPublisherFacet = computed(() => showSourceFacet.value && scope.value === 'third-party' && knownPublishers.value.length > 0);
@@ -602,19 +604,23 @@ function linkAttrs(item) {
 }
 
 onMounted(() => {
-  if (route.query.q && typeof route.query.q === 'string') {
-    searchQuery.value = route.query.q;
-    isSearchActive.value = true;
-    if (route.query.from) {
-      topicFromArticle.value = route.query.from;
-    }
-    nextTick(() => updateQuery({ q: null, from: null }, { replace: true }));
+  const topic = queryString('topic');
+  const text = topic || queryString('q');
+  if (!text) return;
+  topicFilter.value = topic;
+  searchQuery.value = text;
+  isSearchActive.value = true;
+  if (route.query.from) {
+    topicFromArticle.value = route.query.from;
   }
+  const consumed = { q: null, topic: null, from: null };
+  nextTick(() => updateQuery(topic ? { ...consumed, category: null, view: null } : consumed, { replace: true }));
 });
 
 const toggleSearch = () => {
   isSearchActive.value = !isSearchActive.value;
   if (!isSearchActive.value) {
+    topicFilter.value = null;
     clearSearch();
   } else {
     nextTick(() => {
@@ -632,6 +638,7 @@ function goHome() {
   if (isSearchActive.value) {
     isSearchActive.value = false;
     searchQuery.value = '';
+    topicFilter.value = null;
   }
   updateQuery({ view: null, source: null, group: null });
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -647,10 +654,11 @@ const { data, pending, refresh, error } = await useFetch('/api/news', {
     limit: isSearching.value ? 200 : (selectedPublisher.value ? 100 : 200),
     source: isSearching.value ? FIRST_PARTY_SOURCE : (selectedSource.value || undefined),
     lang: currentLang.value,
-    q: isSearching.value ? debouncedSearchQuery.value : undefined,
+    q: isSearching.value && !isTopicMode.value ? debouncedSearchQuery.value : undefined,
+    topic: isTopicMode.value ? topicFilter.value : undefined,
   })),
-  key: computed(() => `news-${currentLang.value}-${isSearching.value ? 'search' : (selectedSource.value || 'all')}-${isSearching.value ? debouncedSearchQuery.value : ''}`),
-  watch: [selectedSource, debouncedSearchQuery, isSearchActive],
+  key: computed(() => `news-${currentLang.value}-${isTopicMode.value ? 'topic' : (isSearching.value ? 'search' : (selectedSource.value || 'all'))}-${isTopicMode.value ? topicFilter.value : (isSearching.value ? debouncedSearchQuery.value : '')}`),
+  watch: [selectedSource, topicFilter, isSearchActive],
   lazy: true,
   server: false,
   dedupe: 'defer',
@@ -772,7 +780,7 @@ const sections = computed(() => {
   return [...groups.values()];
 });
 
-watch([selectedSource, categoryFilter, groupBy, isSavedView, debouncedSearchQuery], () => {
+watch([selectedSource, categoryFilter, groupBy, isSavedView, debouncedSearchQuery, topicFilter], () => {
   visibleLimit.value = PAGE_SIZE;
 });
 
@@ -843,14 +851,20 @@ function sanitizeDescription(desc) {
 }
 
 function searchByTopic(topic) {
+  topicFilter.value = topic;
   searchQuery.value = topic;
   isSearchActive.value = true;
   topicFromArticle.value = null;
+  updateQuery({ category: null, view: null }, { replace: true });
   window.scrollTo({ top: 0, behavior: 'smooth' });
   nextTick(() => {
     document.querySelector('.search-input')?.focus();
   });
 }
+
+watch(debouncedSearchQuery, (value) => {
+  if (topicFilter.value && value !== topicFilter.value) topicFilter.value = null;
+});
 
 watch(isSavedView, (saved) => {
   if (saved) {

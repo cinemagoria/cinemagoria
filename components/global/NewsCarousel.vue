@@ -109,7 +109,7 @@
               <div v-if="article.topics?.length" class="card-tags-section">
                 <span class="card-tags-label">Topics:</span>
                 <div class="card-tags-row">
-                  <NuxtLink v-for="topic in article.topics" :key="topic" :to="{ path: '/news', query: { q: topic } }" class="card-topic-tag">{{ topic }}</NuxtLink>
+                  <NuxtLink v-for="topic in article.topics" :key="topic" :to="{ path: '/news', query: { topic } }" class="card-topic-tag">{{ topic }}</NuxtLink>
                 </div>
               </div>
               <p class="card-description">
