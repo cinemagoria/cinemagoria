@@ -4,7 +4,7 @@ import { cachedWithRefresh } from '~~/server/utils/staleCache'
 import { NAME_TO_SLUG } from '~~/server/utils/festivals'
 import { mapFestivalRow, slimFestivalFilm } from '~~/server/utils/festivalCards'
 
-const FEATURED_FRESH_MS = 10 * 60 * 1000
+const FEATURED_FRESH_MS = 60 * 1000
 
 const CARD_FIELDS = [
     'id', 'title', 'name', 'overview', 'poster_path', 'tmdb_poster', 'backdrop_path', 'release_date',
