@@ -96,7 +96,7 @@
                 <div v-if="article.topics?.length" class="sidebar-meta-item">
                   <span class="sidebar-meta-label">Temas</span>
                   <div class="sidebar-tags">
-                    <NuxtLink v-for="topic in article.topics" :key="topic" :to="{ path: '/news', query: { q: topic, from: `/news/${route.params.slug}` } }" class="sidebar-tag sidebar-tag--clickable">{{ topic }}</NuxtLink>
+                    <NuxtLink v-for="topic in article.topics" :key="topic" :to="{ path: '/news', query: { topic, from: `/news/${route.params.slug}` } }" class="sidebar-tag sidebar-tag--clickable">{{ topic }}</NuxtLink>
                   </div>
                 </div>
               </div>
@@ -233,7 +233,7 @@
                 <p class="article-lead">{{ article.description_es }}</p>
 
                 <div v-if="article.topics?.length" class="article-tags">
-                  <NuxtLink v-for="topic in article.topics" :key="topic" :to="{ path: '/news', query: { q: topic, from: `/news/${route.params.slug}` } }" class="tag tag--clickable">{{ topic }}</NuxtLink>
+                  <NuxtLink v-for="topic in article.topics" :key="topic" :to="{ path: '/news', query: { topic, from: `/news/${route.params.slug}` } }" class="tag tag--clickable">{{ topic }}</NuxtLink>
                 </div>
 
                 <!-- Related TMDB entities -->

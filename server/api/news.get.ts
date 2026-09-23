@@ -4,6 +4,9 @@ import { FIRST_PARTY_SOURCE, THIRD_PARTY_SOURCE } from '~/utils/newsSources'
 const FIRST_PARTY_DATE_GUARD =
     `(datetime(a.published_at) IS NULL OR datetime(a.published_at) <= datetime('now'))`
 
+const topicExists = (condition: string) =>
+    `EXISTS (SELECT 1 FROM json_each(CASE WHEN json_valid(a.topics_json) THEN a.topics_json END) j WHERE ${condition})`
+
 const TITLE_NAME_COLUMNS = `rt.title AS rt_title, rt.original_title AS rt_original,
                             hs.title AS hs_title, hs.spanish_title AS hs_es,
                             nh.title AS nh_title, nh.spanish_title AS nh_es`
@@ -67,9 +70,10 @@ export default defineEventHandler(async (event) => {
     // and 504'd. Short/empty terms fall back to the normal recent-news listing.
     const rawSearch = query.q ? String(query.q).trim() : null
     const searchQuery = rawSearch && rawSearch.length >= 2 ? rawSearch : null
+    const topic = query.topic ? String(query.topic).trim() : null
 
-    const wantsFirstParty = !source || source === FIRST_PARTY_SOURCE
-    const wantsThirdParty = !source || source !== FIRST_PARTY_SOURCE
+    const wantsFirstParty = !!topic || !source || source === FIRST_PARTY_SOURCE
+    const wantsThirdParty = !topic && (!source || source !== FIRST_PARTY_SOURCE)
     const publisher = source && source !== THIRD_PARTY_SOURCE ? source : null
 
     try {
@@ -93,9 +97,12 @@ export default defineEventHandler(async (event) => {
                          AND ${FIRST_PARTY_DATE_GUARD}`
             const args: any[] = []
 
-            if (searchQuery) {
-                sql += ` AND (a.${titleCol} LIKE ? OR a.${descCol} LIKE ?)`
-                args.push(`%${searchQuery}%`, `%${searchQuery}%`)
+            if (topic) {
+                sql += ` AND ${topicExists('lower(j.value) = lower(?)')}`
+                args.push(topic)
+            } else if (searchQuery) {
+                sql += ` AND (a.${titleCol} LIKE ? OR a.${descCol} LIKE ? OR ${topicExists('j.value LIKE ?')})`
+                args.push(`%${searchQuery}%`, `%${searchQuery}%`, `%${searchQuery}%`)
             }
 
             sql += ` ORDER BY a.published_at DESC`
