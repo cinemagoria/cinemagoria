@@ -39,15 +39,17 @@
           <div v-if="media === 'festival'" class="card__badge">Festival</div>
       </div>
 
-      <h2
-        class="card__name"
-        :class="{ 'card__name--rounded': !year && !hasRating && !knownFor }">
-        {{ name }}
-      </h2>
+      <div :class="knownFor ? 'card__person-meta' : null">
+        <h2
+          class="card__name"
+          :class="{ 'card__name--rounded': !year && !hasRating && !knownFor }">
+          {{ name }}
+        </h2>
 
-      <div v-if="knownFor" class="card__known-for">
-        <span v-if="knownFor.department" class="card__known-for-dept">{{ knownFor.department }}</span>
-        <span v-if="knownFor.title" class="card__known-for-title">{{ knownFor.title }}</span>
+        <div v-if="knownFor" class="card__known-for">
+          <span v-if="knownFor.department" class="card__known-for-dept">{{ knownFor.department }}</span>
+          <span v-if="knownFor.title" class="card__known-for-title">{{ knownFor.title }}</span>
+        </div>
       </div>
 
       <div
@@ -375,12 +377,31 @@ export default {
   border-bottom-right-radius: 15px;
 }
 
+.card__person-meta {
+  position: relative;
+  top: -20px;
+  margin-bottom: -20px;
+  padding: 0 0.6rem 0.8rem;
+  background: #000;
+  text-align: center;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.card__person-meta .card__name {
+  position: static;
+  top: auto;
+  margin-top: 0;
+  margin-bottom: 0.2rem;
+  padding-top: 0.4rem;
+  background: transparent;
+  text-align: center;
+}
+
 .card__known-for {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin-top: -0.3rem;
-  padding-bottom: 2px;
   min-width: 0;
 }
 
