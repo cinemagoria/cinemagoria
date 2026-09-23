@@ -41,9 +41,14 @@
 
       <h2
         class="card__name"
-        :class="{ 'card__name--rounded': !year && !hasRating }">
+        :class="{ 'card__name--rounded': !year && !hasRating && !knownFor }">
         {{ name }}
       </h2>
+
+      <div v-if="knownFor" class="card__known-for">
+        <span v-if="knownFor.department" class="card__known-for-dept">{{ knownFor.department }}</span>
+        <span v-if="knownFor.title" class="card__known-for-title">{{ knownFor.title }}</span>
+      </div>
 
       <div
         v-if="year"
@@ -161,6 +166,26 @@ export default {
     onImageLoaded() {
       this.isLoading = false;
     },
+    formatDepartment(department) {
+      if (!department) return '';
+      const labels = {
+        'Acting': 'Actuación',
+        'Directing': 'Dirección',
+        'Writing': 'Guion',
+        'Production': 'Producción',
+        'Editing': 'Edición',
+        'Camera': 'Cámara',
+        'Art': 'Arte',
+        'Sound': 'Sonido',
+        'Visual Effects': 'Efectos Visuales',
+        'Costume & Make-Up': 'Vestuario y Maquillaje',
+        'Lighting': 'Iluminación',
+        'Crew': 'Equipo',
+        'Creator': 'Creador'
+      };
+      return labels[department] || department;
+    },
+
     getRouteLink() {
         if (this.item.media_type === 'production') {
             return { name: 'production-slug', params: { slug: this.item.slug } };
@@ -198,6 +223,15 @@ export default {
       } else {
         return false;
       }
+    },
+
+    knownFor () {
+      if (this.media !== 'person') return null;
+      const department = this.formatDepartment(this.item.known_for_department);
+      const credits = Array.isArray(this.item.known_for) ? this.item.known_for : [];
+      const title = credits.map(credit => credit.title || credit.name).find(Boolean) || '';
+      if (!department && !title) return null;
+      return { department, title };
     },
 
     media () {
@@ -339,6 +373,36 @@ export default {
 .card__release-year--rounded {
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
+}
+
+.card__known-for {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: -0.3rem;
+  padding-bottom: 2px;
+  min-width: 0;
+}
+
+.card__known-for-dept {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #8BE9FD;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card__known-for-title {
+  font-size: 1.1rem;
+  font-weight: 300;
+  line-height: 1.3;
+  color: #a0aab2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .card__rating {
