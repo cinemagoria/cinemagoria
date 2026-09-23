@@ -116,6 +116,7 @@ export default {
       const cardTop = firstCard.getBoundingClientRect().top;
       const lastEl = firstCard.querySelector('.card__rating') 
         || firstCard.querySelector('.card__release-year') 
+        || firstCard.querySelector('.card__known-for')
         || firstCard.querySelector('.card__name');
       if (lastEl) {
         const h = lastEl.getBoundingClientRect().bottom - cardTop;
