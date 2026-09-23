@@ -144,7 +144,7 @@ const { data: pageData, error: pageError, refresh: refreshHomepage } = useAsyncD
             // fields=card keeps only what the carousel cards consume — the
             // full tmdb_data spread (cast/crew/videos/companies) was inflating
             // the serialized Nuxt payload by hundreds of KB per page view.
-            const data = await $fetch(`/api/festival/films-batch?festivals=${FESTIVAL_SLUGS.join(',')}&limit=${limit}&fields=card`, { timeout: HOMEPAGE_FETCH_TIMEOUT_MS });
+            const data = await $fetch(`/api/festival/films-batch?festivals=${FESTIVAL_SLUGS.join(',')}&limit=${limit}&fields=card`);
             const buckets = data?.results || {};
             return Object.fromEntries(
                 Object.entries(buckets).map(([slug, films]) => [
@@ -169,7 +169,7 @@ const { data: pageData, error: pageError, refresh: refreshHomepage } = useAsyncD
     };
 
     const [festivalsBuckets, trendingMovies, trendingTv, featured] = await Promise.all([
-        withinDeadline(fetchAllFestivalsBatched(), {}),
+        fetchAllFestivalsBatched(),
         withinDeadline(fetchSpotlight('/api/spotlight/movies'), { results: [] }),
         withinDeadline(fetchSpotlight('/api/spotlight/tv'), { results: [] }),
         withinDeadline(fetchHero(), null)
