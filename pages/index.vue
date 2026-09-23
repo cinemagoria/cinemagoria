@@ -135,26 +135,13 @@ const { data: pageData, error: pageError, refresh: refreshHomepage } = useAsyncD
       }
     };
 
-    // Batched: 1 HTTP request + 1 Turso `IN` query for all 11 festivals.
-    // Replaces the previous fan-out of 11 parallel /api/festival/{slug}/films
-    // calls that was bottlenecking the homepage at 35-38s on the slow wave.
-    const FESTIVAL_SLUGS = ['sundance','berlinale','rotterdam','slamdance','sxsw','romford','bifff','bafici','cannes','tribeca','cuff','kviff','fantasia','frightfest','venice','tiff','locarno','bifan','biff','bfi','sitges'];
-    const fetchAllFestivalsBatched = async (limit = 1000) => {
+    const fetchFestivalSelections = async () => {
         try {
-            // fields=card keeps only what the carousel cards consume — the
-            // full tmdb_data spread (cast/crew/videos/companies) was inflating
-            // the serialized Nuxt payload by hundreds of KB per page view.
-            const data = await $fetch(`/api/festival/films-batch?festivals=${FESTIVAL_SLUGS.join(',')}&limit=${limit}&fields=card`);
-            const buckets = data?.results || {};
-            return Object.fromEntries(
-                Object.entries(buckets).map(([slug, films]) => [
-                    slug,
-                    films.map(f => ({ ...f, festival_source: slug }))
-                ])
-            );
+            const data = await $fetch('/api/festival/featured', { timeout: HOMEPAGE_FETCH_TIMEOUT_MS });
+            return data?.results ?? [];
         } catch (e) {
-            console.error('Festivals batch fetch error', e);
-            return {};
+            console.error('Festival selections fetch error', e);
+            return [];
         }
     };
 
@@ -168,163 +155,15 @@ const { data: pageData, error: pageError, refresh: refreshHomepage } = useAsyncD
         }
     };
 
-    const [festivalsBuckets, trendingMovies, trendingTv, featured] = await Promise.all([
-        fetchAllFestivalsBatched(),
+    const [festivalSelections, trendingMovies, trendingTv, featured] = await Promise.all([
+        withinDeadline(fetchFestivalSelections(), []),
         withinDeadline(fetchSpotlight('/api/spotlight/movies'), { results: [] }),
         withinDeadline(fetchSpotlight('/api/spotlight/tv'), { results: [] }),
         withinDeadline(fetchHero(), null)
     ]);
 
-    const sundanceList = festivalsBuckets.sundance || [];
-    const berlinaleList = festivalsBuckets.berlinale || [];
-    const rotterdamList = festivalsBuckets.rotterdam || [];
-    const slamdanceList = festivalsBuckets.slamdance || [];
-    const sxswList = festivalsBuckets.sxsw || [];
-    const romfordList = festivalsBuckets.romford || [];
-    const bifffList = festivalsBuckets.bifff || [];
-    const baficiList = festivalsBuckets.bafici || [];
-    const cannesList = festivalsBuckets.cannes || [];
-    const tribecaList = festivalsBuckets.tribeca || [];
-    const cuffList = festivalsBuckets.cuff || [];
-    const kviffList = festivalsBuckets.kviff || [];
-    const fantasiaList = festivalsBuckets.fantasia || [];
-    const frightfestList = festivalsBuckets.frightfest || [];
-    const veniceList = festivalsBuckets.venice || [];
-    const tiffList = festivalsBuckets.tiff || [];
-    const locarnoList = festivalsBuckets.locarno || [];
-    const bifanList = festivalsBuckets.bifan || [];
-    const biffList = festivalsBuckets.biff || [];
-    const bfiList = festivalsBuckets.bfi || [];
-    const sitgesList = festivalsBuckets.sitges || [];
-
- const FEATURED_ORDER = [
-    // tiff 2026
-    'Bad Lieutenant: Tokyo',
-    'Inherit',
-    'Elsinore',
-    'The Julia Set',
-    // venice 2026
-    'The Echo Chamber',
-    'Bunker',
-    'Wild Horse Nine',
-    'DAU',
-    // frightfest 2026
-    'Ithaqua',
-    'Salmokji: Whispering Water',
-    'Nervous',
-    // locarno 2026
-    'Hearing',
-    'Demons',
-    'Bloody Tennis',
-    'Fire Flower',
-    // fantasia 2026
-    'Hot Spot',
-    'Ferine',
-    'Our Effed Up World',
-    'The Village of Eight Gravestones',
-    'The Eyes',
-    'Ancestral Beasts',
-    // bifan 2026
-    'Korean Haunted Hospital',
-    'The Fertilizer Home',
-    'The Mage',
-    // kviff 2026
-    'Rose of Nevada',
-    // tribeca 2026
-    'The Last Day',
-    'Breeder',
-    'Recluse',
-    // cannes 2026
-    'Hope|cannes',
-    'Atonement',
-    'Minotaur',
-    'Fatherland',
-    'Fjord',
-    'Paper Tiger',
-    'The Unknown',
-    'Teenage Sex and Death at Camp Miasma',
-    'Titanic Ocean',
-    // cuff 2026
-    'Lucid',
-    'Mag Mag',
-    // bafici 2026
-    'Nova \'78',
-    'El infierno está encantador - Gulp. 1985',
-    // bifff 2026
-    'Mārama',
-    'Sicko',
-    // sxsw 2026
-    'Hokum',
-    'Obsession',
-    'Never After Dark',
-    'The Peril at Pincer Point',
-    'Dead Eyes',
-    // romford 2026
-    'Adorable Humans',
-    'Spoiling You',
-    // berlinale 2026
-    'Yellow Letters',
-    'Rose',
-    'Heysel 85',
-    // rotterdam 2026
-    'Krakatoa',
-    'Butterfly',
-    'Silent Friend',
-    // sundance 2026
-    'The Weight',
-    'Night Nurse',
-    'Shame and Money',
-    'The Only Living Pickpocket in New York',
-];  
-    
-    const norm = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : '';
-    
-    const allFestivalFilms = [...sundanceList, ...berlinaleList, ...rotterdamList, ...slamdanceList, ...sxswList, ...romfordList, ...bifffList, ...baficiList, ...cannesList, ...tribecaList, ...cuffList, ...kviffList, ...fantasiaList, ...frightfestList, ...veniceList, ...tiffList, ...locarnoList, ...bifanList, ...biffList, ...bfiList, ...sitgesList];
-    
-    let mixedFestivalFilms = allFestivalFilms.filter(f => {
-        const t = norm(f.title);
-        if (f.title.includes('Kurtulu')) return true; 
-        if (f.title.includes('A voix basse') || f.title.includes('À voix basse')) return true;
-        return FEATURED_ORDER.some(o => {
-            const [oTitle, oFest] = o.split('|');
-            if (oFest) return norm(oTitle) === t && f.festival_source === oFest;
-            return norm(oTitle) === t;
-        });
-    });
-    
-    mixedFestivalFilms.sort((a, b) => {
-        const getIdx = (title, festival) => {
-             const t = norm(title);
-             if (title.includes('Kurtulu')) return FEATURED_ORDER.findIndex(x => x.startsWith('Kurtul'));
-             if (title.includes('voix basse')) return FEATURED_ORDER.findIndex(x => x.includes('voix basse'));
-             
-             return FEATURED_ORDER.findIndex(o => {
-                 const [oTitle, oFest] = o.split('|');
-                 if (oFest) return norm(oTitle) === t && festival === oFest;
-                 return norm(oTitle) === t;
-             });
-        };
-        
-        let idxA = getIdx(a.title, a.festival_source);
-        let idxB = getIdx(b.title, b.festival_source);
-        
-        if (idxA === -1) idxA = 999;
-        if (idxB === -1) idxB = 999;
-        
-        return idxA - idxB;
-    });
-    
-    const uniqueMixed = [];
-    const seenTitles = new Set();
-    for (const f of mixedFestivalFilms) {
-        if (!seenTitles.has(norm(f.title))) {
-            seenTitles.add(norm(f.title));
-            uniqueMixed.push(f);
-        }
-    }
-
     if (import.meta.server && partial) homepageCacheControl.value = PARTIAL_HOMEPAGE_CACHE_CONTROL;
-    return { trendingMovies, trendingTv, featured, festivalsMovies: { results: uniqueMixed }, partial };
+    return { trendingMovies, trendingTv, featured, festivalsMovies: { results: festivalSelections }, partial };
   } catch (error) {
     console.error('Homepage data load error:', error);
     if (import.meta.server) homepageCacheControl.value = PARTIAL_HOMEPAGE_CACHE_CONTROL;
