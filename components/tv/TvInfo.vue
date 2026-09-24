@@ -300,7 +300,7 @@
 
 
         <div v-if="activeTab === 'awards'">
-          <AwardsTab :tmdb-id="item.id" :title="item.name" type="tv" />
+          <AwardsTab :tmdb-id="item.id" type="tv" />
         </div>
 
         <ListingCarousel
