@@ -395,6 +395,7 @@ const CATEGORY_ORDER = [
     'WAVELENGTHS',
     'TIFF DOCS',
     'TIFF CLASSICS',
+    'TIFF MARKET',
     'PRIMETIME',
 ];
 
@@ -408,6 +409,7 @@ const CATEGORY_LABELS = {
     WAVELENGTHS: 'Wavelengths',
     'TIFF DOCS': 'TIFF Docs',
     'TIFF CLASSICS': 'TIFF Classics',
+    'TIFF MARKET': 'TIFF Market',
     PRIMETIME: 'Primetime',
     OTHER: 'Other',
 };
