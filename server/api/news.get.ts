@@ -1,4 +1,5 @@
 import { dbExecute } from '~~/server/utils/db'
+import { fillMissingTitleNames } from '~~/server/utils/tmdbTitleNames'
 import { FIRST_PARTY_SOURCE, THIRD_PARTY_SOURCE } from '~/utils/newsSources'
 
 const FIRST_PARTY_DATE_GUARD =
@@ -174,6 +175,8 @@ export default defineEventHandler(async (event) => {
             const dateB = new Date(b.published_at || 0).getTime()
             return dateB - dateA
         })
+
+        await fillMissingTitleNames(items, lang, String(config.public.apiKey || ''))
 
         return {
             status: 'ok',
