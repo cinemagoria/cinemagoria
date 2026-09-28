@@ -3436,7 +3436,7 @@
     "media_type": "movie",
     "trailer_key": "mcrwcvad84U",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1783420886/cinemagoria/backdrops/noir_1503762.webp",
-    "poster_path": "/sYzWktm1YwJydX92fbSOWHJs33m.jpg",
+    "poster_path": "/czsyPHosFNbh4PPqXfqWu1aBXnA.jpg",
     "force_enrichment": false
   },
   {
@@ -4068,7 +4068,7 @@
     "media_type": "movie",
     "trailer_key": "87ekbcLWPN4",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1785214735/cinemagoria/backdrops/noir_1290418.webp",
-    "poster_path": "/rn8iywziOBFcmi922YZXkbO56vK.jpg",
+    "poster_path": "/h1UkhUC2wqenN8dxDcbD5wsH373.jpg",
     "force_enrichment": true
   },
   {
@@ -4996,7 +4996,7 @@
     "media_type": "movie",
     "trailer_key": "WBv50qmq1uo",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1788277534/cinemagoria/backdrops/noir_1498001.webp",
-    "poster_path": "/ia54hSSj0jDwWuYll5ZIbS7EFCr.jpg",
+    "poster_path": "/h6QtaiBPgFVxVUbcfhOlPwaD0IB.jpg",
     "force_enrichment": false
   },
   {
@@ -5148,7 +5148,7 @@
     "media_type": "movie",
     "trailer_key": "V3fAIJ5bvo0",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1788637702/cinemagoria/backdrops/noir_1445148.webp",
-    "poster_path": "/12BH9wSreJwl7h7VRHo84V0iydR.jpg",
+    "poster_path": "/gu4tbKO2P10axzQdfPqJqUHv3am.jpg",
     "force_enrichment": false
   },
   {
@@ -5298,9 +5298,9 @@
   {
     "tmdb_id": 1709585,
     "media_type": "movie",
-    "trailer_key": null,
+    "trailer_key": "R07ae1wiPDU",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1789595066/cinemagoria/backdrops/noir_1709585.webp",
-    "poster_path": "/sdODkJKy4eEiv31kryXss1XzJtw.jpg",
+    "poster_path": "/becPKaTF5Ie7sPULH1dOT5HXj5T.jpg",
     "force_enrichment": false
   },
   {
@@ -5556,7 +5556,7 @@
     "media_type": "movie",
     "trailer_key": null,
     "backdrop_path": null,
-    "poster_path": null,
+    "poster_path": "/csbtSzyX3tw2VCUAH9qJhV7i9A9.jpg",
     "force_enrichment": false
   },
   {
