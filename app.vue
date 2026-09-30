@@ -1,5 +1,14 @@
 <script setup>
+const route = useRoute()
+const pagePath = computed(() => route.path.replace(/\/+$/, ''))
+
 useHead({
+  link: computed(() => [
+    { rel: 'canonical', href: `https://es.cinemagoria.com${pagePath.value}` },
+    { rel: 'alternate', hreflang: 'en', href: `https://cinemagoria.com${pagePath.value}` },
+    { rel: 'alternate', hreflang: 'es', href: `https://es.cinemagoria.com${pagePath.value}` },
+    { rel: 'alternate', hreflang: 'x-default', href: `https://cinemagoria.com${pagePath.value}` },
+  ]),
   script: [
     {
       type: 'application/ld+json',
