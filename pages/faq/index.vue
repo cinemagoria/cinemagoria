@@ -177,10 +177,10 @@ const sections = [
   <li><strong>BIFF</strong> &middot; Busan International Film Festival</li>
   <li><strong>BFI London</strong> &middot; BFI London Film Festival</li>
   <li><strong>Sitges</strong> &middot; International Fantastic Film Festival of Catalonia</li>
+  <li><strong>Thessaloniki</strong> &middot; Thessaloniki International Film Festival</li>
   <li><strong>Cairo</strong> &middot; Cairo International Film Festival</li>
   <li><strong>Mar del Plata</strong> &middot; International Film Festival</li>
   <li><strong>BARS</strong> &middot; Buenos Aires Rojo Sangre</li>
-  <li><strong>Marrakech</strong> &middot; Marrakech International Film Festival</li>
   <li><strong>Red Sea</strong> &middot; Red Sea International Film Festival</li>
 </ul>
 <p>Each edition is picked up again the following year. The list is indicative &mdash; additions and adjustments happen as scope and resources evolve.</p>`

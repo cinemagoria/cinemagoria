@@ -64,9 +64,9 @@ Every covered festival gets its own page, API endpoints, card and badge componen
 
 **Still to land in the 2026 cycle**
 
-**Cairo** · **Mar del Plata** · **BARS** *(Buenos Aires Rojo Sangre)* · **Marrakech** · **Red Sea**
+**Thessaloniki** · **Cairo** · **Mar del Plata** · **BARS** *(Buenos Aires Rojo Sangre)* · **Red Sea**
 
-Cairo, Marrakech and Red Sea take coverage into Africa and the Middle East. The 2027 cycle adds **Göteborg**.
+Thessaloniki opens the Balkans and the Eastern Mediterranean, and Cairo and Red Sea take coverage into Africa and the Middle East. The 2027 cycle adds **Göteborg**.
 
 Cannes ships the official screenings plus the parallel sections — Critics' Week, Quinzaine des Cinéastes and ACID — and Venice carries its own parallel sections. FrightFest ships the full official screening schedule, and Berlinale adds an interactive timezone-aware view of it. The hero section supports multiple simultaneous festival premiere badges with display precedence.
 
