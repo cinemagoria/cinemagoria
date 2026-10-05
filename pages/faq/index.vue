@@ -177,10 +177,10 @@ const sections = [
   <li><strong>BIFF</strong> &middot; Festival Internacional de Cine de Busan</li>
   <li><strong>BFI London</strong> &middot; BFI London Film Festival</li>
   <li><strong>Sitges</strong> &middot; Festival Internacional de Cine Fantástico de Cataluña</li>
+  <li><strong>Tesalónica</strong> &middot; Festival Internacional de Cine de Tesalónica</li>
   <li><strong>El Cairo</strong> &middot; Festival Internacional de Cine de El Cairo</li>
   <li><strong>Mar del Plata</strong> &middot; Festival Internacional de Cine</li>
   <li><strong>BARS</strong> &middot; Buenos Aires Rojo Sangre</li>
-  <li><strong>Marrakech</strong> &middot; Festival Internacional de Cine de Marrakech</li>
   <li><strong>Mar Rojo</strong> &middot; Festival Internacional de Cine del Mar Rojo</li>
 </ul>
 <p>Cada edición se retoma al año siguiente. La lista es orientativa y puede ajustarse a medida que evolucionan el alcance editorial y los recursos disponibles.</p>`
