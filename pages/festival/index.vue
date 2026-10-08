@@ -9,6 +9,9 @@ useHead({
 })
 
 const festivals = [
+  { slug: 'tallinn-2026',   name: 'Tallinn Black Nights', year: 2026, city: 'Tallin', country: 'Estonia',
+    startDate: '2026-11-06', endDate: '2026-11-22', dateLabel: '6 – 22 nov 2026',
+    image: '/festivals/tallinn/tallinn_backdrop_2026_es.webp' },
   { slug: 'sitges-2026',    name: 'Sitges',         year: 2026, city: 'Sitges',     country: 'España',
     startDate: '2026-10-08', endDate: '2026-10-18', dateLabel: '8 – 18 oct 2026',
     image: '/festivals/sitges/sitges_backdrop_2026_es.webp' },
