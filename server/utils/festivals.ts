@@ -25,6 +25,7 @@ export const FESTIVAL_NAME_BY_SLUG: Record<string, string> = {
     biff: 'Busan International Film Festival',
     bfi: 'BFI London Film Festival',
     sitges: 'Sitges Film Festival',
+    tallinn: 'Tallinn Black Nights Film Festival',
 }
 
 export const NAME_TO_SLUG: Record<string, string> = Object.fromEntries(
