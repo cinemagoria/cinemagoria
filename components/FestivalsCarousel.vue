@@ -75,6 +75,7 @@ import TiffCard from '~/components/TiffCard.vue';
 import LocarnoCard from '~/components/LocarnoCard.vue';
 import BifanCard from '~/components/BifanCard.vue';
 import BiffCard from '~/components/BiffCard.vue';
+import ThessalonikiCard from '~/components/ThessalonikiCard.vue';
 import BfiCard from '~/components/BfiCard.vue';
 import SitgesCard from '~/components/SitgesCard.vue';
 import TallinnCard from '~/components/TallinnCard.vue';
@@ -106,6 +107,7 @@ export default {
     LocarnoCard,
     BifanCard,
     BiffCard,
+    ThessalonikiCard,
     BfiCard,
     SitgesCard,
     TallinnCard,
@@ -170,6 +172,7 @@ export default {
         locarno: 'LocarnoCard',
         bifan: 'BifanCard',
         biff: 'BiffCard',
+        thessaloniki: 'ThessalonikiCard',
         bfi: 'BfiCard',
         sitges: 'SitgesCard',
         tallinn: 'TallinnCard',

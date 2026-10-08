@@ -513,6 +513,7 @@ import TiffBadge from '~/components/festival/TiffBadge.vue';
 import LocarnoBadge from '~/components/festival/LocarnoBadge.vue';
 import BifanBadge from '~/components/festival/BifanBadge.vue';
 import BiffBadge from '~/components/festival/BiffBadge.vue';
+import ThessalonikiBadge from '~/components/festival/ThessalonikiBadge.vue';
 import BfiBadge from '~/components/festival/BfiBadge.vue';
 import SitgesBadge from '~/components/festival/SitgesBadge.vue';
 import TallinnBadge from '~/components/festival/TallinnBadge.vue';
@@ -555,6 +556,7 @@ function mapFestivalsToFields(festivals, itemId, itemName) {
     locarnoFilm: f.locarno || null,
     bifanFilm: f.bifan || null,
     biffFilm: f.biff || null,
+    thessalonikiFilm: f.thessaloniki || null,
     bfiFilm: f.bfi || null,
     sitgesFilm: f.sitges || null,
     tallinnFilm: f.tallinn || null,
@@ -602,6 +604,7 @@ function mapFestivalsToFields(festivals, itemId, itemName) {
     if (manual.includes('locarno') && !fields.locarnoFilm) fields.locarnoFilm = stub;
     if (manual.includes('bifan') && !fields.bifanFilm) fields.bifanFilm = stub;
     if (manual.includes('biff') && !fields.biffFilm) fields.biffFilm = stub;
+    if (manual.includes('thessaloniki') && !fields.thessalonikiFilm) fields.thessalonikiFilm = stub;
     if (manual.includes('bfi') && !fields.bfiFilm) fields.bfiFilm = stub;
     if (manual.includes('sitges') && !fields.sitgesFilm) fields.sitgesFilm = stub;
     if (manual.includes('tallinn') && !fields.tallinnFilm) fields.tallinnFilm = stub;
@@ -636,6 +639,7 @@ export default {
     LocarnoBadge,
     BifanBadge,
     BiffBadge,
+    ThessalonikiBadge,
     BfiBadge,
     SitgesBadge,
     TallinnBadge,
@@ -838,6 +842,7 @@ export default {
         { name: 'locarno', film: this.locarnoFilm, component: 'LocarnoBadge', link: '/festival/locarno-2026', isSimple: true },
         { name: 'bifan', film: this.bifanFilm, component: 'BifanBadge', link: '/festival/bifan-2026', isSimple: true },
         { name: 'biff', film: this.biffFilm, component: 'BiffBadge', link: '/festival/biff-2026', isSimple: true },
+        { name: 'thessaloniki', film: this.thessalonikiFilm, component: 'ThessalonikiBadge', link: '/festival/thessaloniki-2026', isSimple: true },
         { name: 'bfi', film: this.bfiFilm, component: 'BfiBadge', link: '/festival/bfi-2026', isSimple: true },
         { name: 'sitges', film: this.sitgesFilm, component: 'SitgesBadge', link: '/festival/sitges-2026', isSimple: true },
         { name: 'tallinn', film: this.tallinnFilm, component: 'TallinnBadge', link: '/festival/tallinn-2026', isSimple: true },
