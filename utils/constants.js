@@ -1704,6 +1704,12 @@ export function getStreamingProviderBySlug(slug) {
 
 export const SUPPORTED_FESTIVALS = [
     {
+        id: 'tallinn',
+        name: 'Tallinn Black Nights Film Festival (PÖFF · POFF · Pimedate Ööde Filmifestival) 2026',
+        slug: 'tallinn-2026',
+        logo_path: '/festivals/tallinn/tallinn_film_festival_2026_logo.png'
+    },
+    {
         id: 'sitges',
         name: 'Sitges Film Festival (Festival Internacional de Cinema Fantàstic de Catalunya) 2026',
         slug: 'sitges-2026',

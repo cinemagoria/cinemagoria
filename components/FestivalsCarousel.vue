@@ -78,6 +78,7 @@ import BifanCard from '~/components/BifanCard.vue';
 import BiffCard from '~/components/BiffCard.vue';
 import BfiCard from '~/components/BfiCard.vue';
 import SitgesCard from '~/components/SitgesCard.vue';
+import TallinnCard from '~/components/TallinnCard.vue';
 
 const AUTOPLAY_INTERVAL = 10000;
 
@@ -109,6 +110,7 @@ export default {
     BiffCard,
     BfiCard,
     SitgesCard,
+    TallinnCard,
   },
 
   props: {
@@ -173,6 +175,7 @@ export default {
         biff: 'BiffCard',
         bfi: 'BfiCard',
         sitges: 'SitgesCard',
+        tallinn: 'TallinnCard',
       };
       return cardMap[item.festival_source] || 'SundanceCard';
     },
