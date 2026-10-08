@@ -9,6 +9,9 @@ useHead({
 })
 
 const festivals = [
+  { slug: 'mardelplata-2026', name: 'Mar del Plata', year: 2026, city: 'Mar del Plata', country: 'Argentina',
+    startDate: '2026-11-05', endDate: '2026-11-15', dateLabel: 'Nov 5 – 15, 2026',
+    image: '/festivals/mardelplata/mardelplata_backdrop_2026_en.webp' },
   { slug: 'tallinn-2026',   name: 'Tallinn Black Nights', year: 2026, city: 'Tallinn', country: 'Estonia',
     startDate: '2026-11-06', endDate: '2026-11-22', dateLabel: 'Nov 6 – 22, 2026',
     image: '/festivals/tallinn/tallinn_backdrop_2026_en.webp' },

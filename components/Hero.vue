@@ -548,6 +548,7 @@ import ThessalonikiBadge from '~/components/festival/ThessalonikiBadge.vue';
 import BfiBadge from '~/components/festival/BfiBadge.vue';
 import SitgesBadge from '~/components/festival/SitgesBadge.vue';
 import TallinnBadge from '~/components/festival/TallinnBadge.vue';
+import MardelplataBadge from '~/components/festival/MardelplataBadge.vue';
 import { MANUAL_FESTIVAL_BADGES, MANUAL_OVERVIEWS } from '~/utils/constants';
 import { getHeroEnrichment, getNoirEnrichment } from '~/utils/api';
 import NoirModal from '~/components/NoirModal.vue';
@@ -590,6 +591,7 @@ function mapFestivalsToFields(festivals, itemId, itemName) {
     bfiFilm: f.bfi || null,
     sitgesFilm: f.sitges || null,
     tallinnFilm: f.tallinn || null,
+    mardelplataFilm: f.mardelplata || null,
     cannesFilm: null,
     cannesCriticsChoiceFilm: null,
     cannesQuinzaineFilm: null,
@@ -638,6 +640,7 @@ function mapFestivalsToFields(festivals, itemId, itemName) {
     if (manual.includes('bfi') && !fields.bfiFilm) fields.bfiFilm = stub;
     if (manual.includes('sitges') && !fields.sitgesFilm) fields.sitgesFilm = stub;
     if (manual.includes('tallinn') && !fields.tallinnFilm) fields.tallinnFilm = stub;
+    if (manual.includes('mardelplata') && !fields.mardelplataFilm) fields.mardelplataFilm = stub;
   }
 
   return fields;
@@ -673,6 +676,7 @@ export default {
     BfiBadge,
     SitgesBadge,
     TallinnBadge,
+    MardelplataBadge,
     NoirModal,
   },
 
@@ -875,6 +879,7 @@ export default {
         { name: 'bfi', film: this.bfiFilm, component: 'BfiBadge', link: '/festival/bfi-2026', isSimple: true },
         { name: 'sitges', film: this.sitgesFilm, component: 'SitgesBadge', link: '/festival/sitges-2026', isSimple: true },
         { name: 'tallinn', film: this.tallinnFilm, component: 'TallinnBadge', link: '/festival/tallinn-2026', isSimple: true },
+        { name: 'mardelplata', film: this.mardelplataFilm, component: 'MardelplataBadge', link: '/festival/mardelplata-2026', isSimple: true },
       ];
       return festivalConfig.filter(f => f.film);
     },

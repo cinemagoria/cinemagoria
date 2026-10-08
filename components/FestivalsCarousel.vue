@@ -80,6 +80,7 @@ import ThessalonikiCard from '~/components/ThessalonikiCard.vue';
 import BfiCard from '~/components/BfiCard.vue';
 import SitgesCard from '~/components/SitgesCard.vue';
 import TallinnCard from '~/components/TallinnCard.vue';
+import MardelplataCard from '~/components/MardelplataCard.vue';
 
 const AUTOPLAY_INTERVAL = 10000;
 
@@ -113,6 +114,7 @@ export default {
     BfiCard,
     SitgesCard,
     TallinnCard,
+    MardelplataCard,
   },
 
   props: {
@@ -179,6 +181,7 @@ export default {
         bfi: 'BfiCard',
         sitges: 'SitgesCard',
         tallinn: 'TallinnCard',
+        mardelplata: 'MardelplataCard',
       };
       return cardMap[item.festival_source] || 'SundanceCard';
     },
