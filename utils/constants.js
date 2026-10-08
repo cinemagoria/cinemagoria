@@ -1704,6 +1704,12 @@ export function getStreamingProviderBySlug(slug) {
 
 export const SUPPORTED_FESTIVALS = [
     {
+        id: 'mardelplata',
+        name: 'Mar del Plata International Film Festival (Festival Internacional de Cine de Mar del Plata · Festival de Mar del Plata) 2026',
+        slug: 'mardelplata-2026',
+        logo_path: '/festivals/mardelplata/mardelplata_film_festival_2026_logo.png'
+    },
+    {
         id: 'tallinn',
         name: 'Tallinn Black Nights Film Festival (PÖFF · POFF · Pimedate Ööde Filmifestival) 2026',
         slug: 'tallinn-2026',
