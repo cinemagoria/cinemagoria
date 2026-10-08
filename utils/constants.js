@@ -1824,6 +1824,12 @@ export const SUPPORTED_FESTIVALS = [
         logo_path: '/festivals/tiff/tiff_film_festival_2026_logo.png'
     },
     {
+        id: 'thessaloniki',
+        name: 'Thessaloniki International Film Festival (Thessaloniki Film Festival · TIFF Thessaloniki · Φεστιβάλ Κινηματογράφου Θεσσαλονίκης · Festival de Cine de Tesalónica) 2026',
+        slug: 'thessaloniki-2026',
+        logo_path: '/festivals/thessaloniki/thessaloniki_film_festival_2026_logo.png'
+    },
+    {
         id: 'locarno',
         name: 'Locarno Film Festival 2026 Festival del film Locarno Pardo',
         slug: 'locarno-2026',
