@@ -24,6 +24,9 @@ export default defineNitroPlugin((nitroApp) => {
     const req = event.node.req
     const res = event.node.res
     if (req.method === 'HEAD' || res.getHeader('Content-Encoding')) return
+    // Nuxt renders error pages through an internal fetch flagged with x-nuxt-error and reads
+    // it back with res.text(), which does not decompress: the outer response carries the HTML.
+    if (req.headers['x-nuxt-error']) return
 
     let body = response.body
     if (Array.isArray(body) || body?.constructor === Object) {
