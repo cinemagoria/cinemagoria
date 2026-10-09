@@ -186,10 +186,10 @@
   {
     "tmdb_id": 1297467,
     "media_type": "movie",
-    "trailer_key": null,
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1791344897/cinemagoria/backdrops/noir_1297467.webp",
+    "trailer_key": "5knKQTEddik",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1791587282/cinemagoria/backdrops/noir_1297467.webp",
     "poster_path": "/yu4Gm4WEVORMXu7NylWcUhKHBjJ.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1457866,
