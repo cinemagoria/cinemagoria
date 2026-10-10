@@ -73,6 +73,7 @@
         <!-- PROVISIONAL-LINEUP-END -->
 
         <div v-if="activeTab === 'films'" class="selection">
+          <CatalogSearch />
           <div v-if="catalogTotal" class="catalog-total">
             <span class="catalog-total__chip">
               <strong>{{ catalogTotal }}</strong> {{ catalogTotal === 1 ? 'título' : 'títulos' }}
@@ -290,7 +291,7 @@
                     <p class="carousel-desc"><strong>Sede:</strong> Tallin y Tartu, Estonia</p>
                     <p class="carousel-desc"><strong>Sitio oficial:</strong> <a href="https://poff.ee/en/" target="_blank" class="accent-link">poff.ee</a></p>
                     <p class="carousel-desc">Conocido en Estonia como PÖFF (Pimedate Ööde Filmifestival), Black Nights es uno de los festivales de cine más grandes del norte de Europa y uno de los festivales competitivos acreditados por la FIAPF. Su Selección Oficial admite solo estrenos mundiales, y su Competencia de Óperas Primas estrenos mundiales e internacionales, así que la mayoría de las películas en competencia se ven acá por primera vez.</p>
-                    <p class="carousel-desc">Junto al festival principal funciona Just Film, su programa para el público infantil y juvenil, con una competencia internacional juvenil, la sección de cine europeo para chicos y programas propios de documental y animé.</p>
+                    <p class="carousel-desc">Junto al festival principal funcionan Just Film, su programa para el público infantil y juvenil, y PÖFF Shorts, su festival de cortometrajes, con competencias de acción real y de animación.</p>
                   </template>
 
                   <!-- Slide 1: Programme status -->
@@ -300,7 +301,7 @@
                       <h3>Estado del programa</h3>
                     </div>
                     <p class="carousel-desc">El festival publica su programación por etapas, y el programa completo sale el 31 de octubre. El catálogo reúne todos los títulos difundidos hasta ahora en las secciones que cubre, agrupados en las secciones del propio festival, y la pestaña de horarios incluye cada función anunciada, con su cine y su sala, en hora local de Tallin (EET).</p>
-                    <p class="carousel-desc">Cuando salga el programa completo, el catálogo y los horarios se actualizan contra él.</p>
+                    <p class="carousel-desc">Algunos cortometrajes todavía no tienen ficha pública de metadatos, así que no figuran acá. Es una cuestión de cobertura de las fuentes externas, no una decisión editorial. Cuando salga el programa completo, el catálogo y los horarios se actualizan contra él.</p>
                     <p class="carousel-desc"><strong>Fuente:</strong> <a href="https://poff.ee/en/" target="_blank" class="accent-link">sitio oficial del festival</a></p>
                   </template>
 
@@ -311,10 +312,12 @@
                       <h3>Sedes</h3>
                     </div>
                     <div class="venue-list">
+                      <div class="venue-item"><strong>Alexela Concert Hall</strong><span>Tallin · ceremonia de apertura</span></div>
                       <div class="venue-item"><strong>Apollo Kino Plaza</strong><span>Tallin · funciones de competencia</span></div>
                       <div class="venue-item"><strong>Apollo Kino Solaris</strong><span>Tallin</span></div>
                       <div class="venue-item"><strong>Kino Sõprus</strong><span>Tallin · casco antiguo</span></div>
                       <div class="venue-item"><strong>Kino Artis</strong><span>Tallin</span></div>
+                      <div class="venue-item"><strong>Film Museum</strong><span>Tallin</span></div>
                       <div class="venue-item"><strong>Elektriteater (Electric Cinema)</strong><span>Tartu · Church Hall</span></div>
                       <div class="venue-item"><strong>Apollo Kino Tasku</strong><span>Tartu</span></div>
                     </div>
@@ -328,13 +331,24 @@
                       <h3>Qué significa cada sección</h3>
                     </div>
                     <div class="section-glossary">
+                      <div class="section-glossary-item"><strong>Película de apertura</strong><span><em>Ulya</em>, de Viesturs Kairišs, en la ceremonia de apertura.</span></div>
                       <div class="section-glossary-item"><strong>Selección Oficial – Competencia</strong><span>La competencia principal: películas nuevas de todo el mundo, solo en estreno mundial. Entrega el Gran Premio a la Mejor Película y el premio a la Mejor Dirección.</span></div>
                       <div class="section-glossary-item"><strong>Competencia de Óperas Primas</strong><span>Primeros largometrajes, en estreno mundial o internacional, con un premio a la mejor película.</span></div>
                       <div class="section-glossary-item"><strong>Competencia Internacional Juvenil</strong><span>La competencia internacional de Just Film, con estrenos para público joven. Su Gran Premio lo eligen un jurado internacional y un jurado juvenil.</span></div>
+                      <div class="section-glossary-item"><strong>Competencia Infantil</strong><span>La competencia de Just Film para espectadores de 10 a 13 años y sus familias.</span></div>
+                      <div class="section-glossary-item"><strong>Competencia Juniors</strong><span>La competencia de Just Film para los más chicos: cuentos y aventuras, en funciones adaptadas para ellos.</span></div>
                       <div class="section-glossary-item"><strong>Competencia ECFA</strong><span>Cine europeo para chicos, juzgado por un jurado de la Asociación Europea de Cine Infantil (ECFA). La ganadora compite luego por el premio anual ECFA, que se entrega en la Berlinale.</span></div>
                       <div class="section-glossary-item"><strong>Programa Juvenil</strong><span>Un repaso de las películas más destacadas del año en festivales orientados al público joven.</span></div>
+                      <div class="section-glossary-item"><strong>Programa Infantil</strong><span>El cine familiar del año para espectadores de 10 a 13 años, sus padres y sus abuelos.</span></div>
+                      <div class="section-glossary-item"><strong>Programa de Derechos de la Infancia</strong><span>Películas sobre la vida de chicos y jóvenes, muchas veces en situaciones que nadie de su edad debería atravesar.</span></div>
                       <div class="section-glossary-item"><strong>Doc@Just</strong><span>El programa documental de Just Film, sobre los temas y tendencias que marcan el mundo de hoy.</span></div>
                       <div class="section-glossary-item"><strong>Just Anime</strong><span>Largometrajes de animé, de los mundos fantásticos al drama íntimo.</span></div>
+                      <div class="section-glossary-item"><strong>#youngfilmmaker</strong><span>Películas hechas por estudiantes de escuelas de Estonia y de otros países.</span></div>
+                      <div class="section-glossary-item"><strong>Competencia de Cortos de Acción Real</strong><span>La competencia internacional de cortometrajes de acción real de PÖFF Shorts.</span></div>
+                      <div class="section-glossary-item"><strong>Competencia de Cortos de Animación</strong><span>La competencia internacional de cortometrajes de animación de PÖFF Shorts.</span></div>
+                      <div class="section-glossary-item"><strong>Competencia Nuevos Talentos: Acción Real</strong><span>Cortos de acción real de nuevos realizadores.</span></div>
+                      <div class="section-glossary-item"><strong>Competencia Nuevos Talentos: Animación</strong><span>Cortos de animación de nuevos realizadores.</span></div>
+                      <div class="section-glossary-item"><strong>Competencia de Cortos de Animación Infantil</strong><span>Cortos de animación para chicos.</span></div>
                     </div>
                   </template>
                 </div>
@@ -356,6 +370,7 @@
 </template>
 
 <script setup>
+import CatalogSearch from '~/components/festival/CatalogSearch.vue';
 import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import Loader from '~/components/Loader.vue';
 import WinnersCarousel from '~/components/festival/WinnersCarousel.vue';
@@ -422,21 +437,42 @@ const showSchedulePending = computed(() => schedule.value.length === 0);
 const openDays = ref(new Set());
 
 const CATEGORY_ORDER = [
+    "Opening Ceremony and Opening Film",
     "Official Selection – Competition",
     "First Feature Competition",
     "International Youth Competition Programme",
+    "Children's Competition Programme",
+    "Juniors' Competition Programme",
     "ECFA Competition Programme",
     "Youth Programme",
+    "Children's Programme",
+    "Children's Rights Programme",
     "Doc@Just",
     "Just Anime",
+    "#youngfilmmaker",
+    "Shorts Live-Action Competition",
+    "Shorts Animation Competition",
+    "Shorts New Talents Competition: Live-action",
+    "Shorts New Talents Competition: Animation",
+    "Shorts Kids Animation Competition",
 ];
 
 const CATEGORY_LABELS = {
+    ["Opening Ceremony and Opening Film"]: "Película de apertura",
     ["Official Selection – Competition"]: "Selección Oficial – Competencia",
     ["First Feature Competition"]: "Competencia de Óperas Primas",
     ["International Youth Competition Programme"]: "Competencia Internacional Juvenil",
+    ["Children's Competition Programme"]: "Competencia Infantil",
+    ["Juniors' Competition Programme"]: "Competencia Juniors",
     ["ECFA Competition Programme"]: "Competencia ECFA",
     ["Youth Programme"]: "Programa Juvenil",
+    ["Children's Programme"]: "Programa Infantil",
+    ["Children's Rights Programme"]: "Programa de Derechos de la Infancia",
+    ["Shorts Live-Action Competition"]: "Competencia de Cortos de Acción Real",
+    ["Shorts Animation Competition"]: "Competencia de Cortos de Animación",
+    ["Shorts New Talents Competition: Live-action"]: "Competencia Nuevos Talentos: Acción Real",
+    ["Shorts New Talents Competition: Animation"]: "Competencia Nuevos Talentos: Animación",
+    ["Shorts Kids Animation Competition"]: "Competencia de Cortos de Animación Infantil",
     OTHER: "Sección por confirmar",
 };
 
