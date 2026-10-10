@@ -475,11 +475,13 @@ const formatDate = (dateStr) => {
     return new Date(`${dateStr}T00:00:00Z`).toLocaleDateString('en-US', options);
 };
 
-const formatTime = (timeStr, tz) => {
+// The stored time zone is a display label ("CEST", "MDT"), not an IANA name:
+// passing it to Intl throws and blanks the whole tab.
+const formatTime = (timeStr) => {
     return new Date(timeStr).toLocaleTimeString('en-US', {
         hour: '2-digit',
         minute: '2-digit',
-        timeZone: tz || FESTIVAL_TZ
+        timeZone: FESTIVAL_TZ
     });
 };
 
