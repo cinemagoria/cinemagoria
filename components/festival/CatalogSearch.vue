@@ -36,25 +36,25 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
         </button>
       </div>
-    </div>
 
-    <ul v-if="showResults" id="catalog-search-results" class="catalog-search__results" role="listbox">
-      <li
-        v-for="(r, i) in results"
-        :key="r.key"
-        class="catalog-search__result"
-        :class="{ active: i === active }"
-        role="option"
-        :aria-selected="i === active"
-        @mousedown.prevent="go(r)"
-        @mouseenter="active = i"
-      >
-        <span class="catalog-search__title">{{ r.title }}</span>
-        <span v-if="r.section" class="catalog-search__section">{{ r.section }}</span>
-      </li>
-      <li v-if="!results.length" class="catalog-search__empty">Ningún título coincide con "<strong>{{ query.trim() }}</strong>"</li>
-      <li v-else-if="total > results.length" class="catalog-search__more">Mostrando {{ results.length }} de {{ total }} coincidencias</li>
-    </ul>
+      <ul v-if="showResults" id="catalog-search-results" class="catalog-search__results" role="listbox">
+        <li
+          v-for="(r, i) in results"
+          :key="r.key"
+          class="catalog-search__result"
+          :class="{ active: i === active }"
+          role="option"
+          :aria-selected="i === active"
+          @mousedown.prevent="go(r)"
+          @mouseenter="active = i"
+        >
+          <span class="catalog-search__title">{{ r.title }}</span>
+          <span v-if="r.section" class="catalog-search__section">{{ r.section }}</span>
+        </li>
+        <li v-if="!results.length" class="catalog-search__empty">Ningún título coincide con "<strong>{{ query.trim() }}</strong>"</li>
+        <li v-else-if="total > results.length" class="catalog-search__more">Mostrando {{ results.length }} de {{ total }} coincidencias</li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -289,11 +289,12 @@ onBeforeUnmount(() => {
     }
 }
 
+/* Anchored to the wrapper: as wide as the button plus the field, never wider. */
 .catalog-search__results {
     position: absolute;
-    top: calc(100% + 6px);
+    top: calc(100% + 15px);
+    left: 0;
     right: 0;
-    width: min(420px, 100%);
     max-height: min(60vh, 420px);
     overflow-y: auto;
     margin: 0;
@@ -360,16 +361,17 @@ onBeforeUnmount(() => {
 
 <style lang="scss">
 /* The card belongs to another component, so its marker cannot be scoped.
-   A line under the card, outside it: nothing to fit to the card's own shape. */
-.card.catalog-search-hit {
+   A line just under the card. It hangs from the logo block, the last thing the
+   card draws: the card's own box ends 30px lower, past its shifted content. */
+.card.catalog-search-hit .card__logo-container {
     position: relative;
 
     &::after {
         content: '';
         position: absolute;
-        left: 0.4rem;
-        right: 0.4rem;
-        bottom: 0;
+        left: 0;
+        right: 0;
+        top: calc(100% + 10px);
         height: 3px;
         border-radius: 3px;
         background: #8BE9FD;
@@ -390,6 +392,6 @@ onBeforeUnmount(() => {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .card.catalog-search-hit::after { animation: none; }
+    .card.catalog-search-hit .card__logo-container::after { animation: none; }
 }
 </style>
