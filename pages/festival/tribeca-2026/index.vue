@@ -59,6 +59,7 @@
 
       <div v-else>
         <div v-if="activeTab === 'films'" class="selection">
+          <CatalogSearch />
           <div v-if="catalogTotal" class="catalog-total">
             <span class="catalog-total__chip">
               <strong>{{ catalogTotal }}</strong> {{ catalogTotal === 1 ? 'title' : 'titles' }}
@@ -308,6 +309,7 @@
 </template>
 
 <script setup>
+import CatalogSearch from '~/components/festival/CatalogSearch.vue';
 import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import Loader from '~/components/Loader.vue';
 import FestivalDataDisclaimer from '~/components/FestivalDataDisclaimer.vue';

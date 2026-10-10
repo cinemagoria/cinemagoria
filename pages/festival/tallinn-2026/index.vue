@@ -73,6 +73,7 @@
         <!-- PROVISIONAL-LINEUP-END -->
 
         <div v-if="activeTab === 'films'" class="selection">
+          <CatalogSearch />
           <div v-if="catalogTotal" class="catalog-total">
             <span class="catalog-total__chip">
               <strong>{{ catalogTotal }}</strong> {{ catalogTotal === 1 ? 'title' : 'titles' }}
@@ -290,7 +291,7 @@
                     <p class="carousel-desc"><strong>Location:</strong> Tallinn and Tartu, Estonia</p>
                     <p class="carousel-desc"><strong>Website:</strong> <a href="https://poff.ee/en/" target="_blank" class="accent-link">poff.ee</a></p>
                     <p class="carousel-desc">Known in Estonia as PÖFF (Pimedate Ööde Filmifestival), Black Nights is one of Northern Europe's largest film festivals and one of the FIAPF-accredited competitive festivals. Its Official Selection admits world premieres only, and its First Feature Competition world and international premieres, so most of its competition titles are seen here for the first time.</p>
-                    <p class="carousel-desc">Alongside the main festival runs Just Film, its programme for children and young audiences, with an international youth competition, the European children's film strand and dedicated documentary and anime programmes.</p>
+                    <p class="carousel-desc">Alongside the main festival run Just Film, its programme for children and young audiences, and PÖFF Shorts, its short film festival, with live-action and animation competitions.</p>
                   </template>
 
                   <!-- Slide 1: Programme status -->
@@ -300,7 +301,7 @@
                       <h3>Programme status</h3>
                     </div>
                     <p class="carousel-desc">The festival publishes its programme in stages, and the complete programme is due on 31 October. The catalog lists every title released so far in the sections it covers, grouped under the festival's own section names, and the Schedule tab carries every screening announced for them, with cinema and hall, in Tallinn local time (EET).</p>
-                    <p class="carousel-desc">When the complete programme is out, the catalog and the schedule are updated against it.</p>
+                    <p class="carousel-desc">A number of short films have no public metadata entry yet, so they do not appear here. That reflects the coverage of third-party sources, not an editorial choice. When the complete programme is out, the catalog and the schedule are updated against it.</p>
                     <p class="carousel-desc"><strong>Source:</strong> <a href="https://poff.ee/en/" target="_blank" class="accent-link">official festival site</a></p>
                   </template>
 
@@ -311,10 +312,12 @@
                       <h3>Venues</h3>
                     </div>
                     <div class="venue-list">
+                      <div class="venue-item"><strong>Alexela Concert Hall</strong><span>Tallinn · opening ceremony</span></div>
                       <div class="venue-item"><strong>Apollo Kino Plaza</strong><span>Tallinn · competition screenings</span></div>
                       <div class="venue-item"><strong>Apollo Kino Solaris</strong><span>Tallinn</span></div>
                       <div class="venue-item"><strong>Kino Sõprus</strong><span>Tallinn · Old Town</span></div>
                       <div class="venue-item"><strong>Kino Artis</strong><span>Tallinn</span></div>
+                      <div class="venue-item"><strong>Film Museum</strong><span>Tallinn</span></div>
                       <div class="venue-item"><strong>Elektriteater (Electric Cinema)</strong><span>Tartu · Church Hall</span></div>
                       <div class="venue-item"><strong>Apollo Kino Tasku</strong><span>Tartu</span></div>
                     </div>
@@ -328,13 +331,24 @@
                       <h3>What each section means</h3>
                     </div>
                     <div class="section-glossary">
+                      <div class="section-glossary-item"><strong>Opening Film</strong><span><em>Ulya</em>, by Viesturs Kairišs, at the opening ceremony.</span></div>
                       <div class="section-glossary-item"><strong>Official Selection – Competition</strong><span>The main competition: new films from around the world, in world premiere only. It awards the Grand Prix for Best Film and the Best Director award.</span></div>
                       <div class="section-glossary-item"><strong>First Feature Competition</strong><span>Debut features, in world or international premiere, with a prize for the best film.</span></div>
                       <div class="section-glossary-item"><strong>International Youth Competition Programme</strong><span>Just Film's international competition of premieres for young audiences. Its Grand Prix is chosen by an international jury and a youth jury.</span></div>
+                      <div class="section-glossary-item"><strong>Children's Competition Programme</strong><span>Just Film's competition for viewers aged 10 to 13 and their families.</span></div>
+                      <div class="section-glossary-item"><strong>Juniors' Competition Programme</strong><span>Just Film's competition for the youngest viewers: fairy tales and adventures, in sessions adapted for them.</span></div>
                       <div class="section-glossary-item"><strong>ECFA Competition Programme</strong><span>European films for children, judged by a European Children's Film Association jury. The winner goes on to compete for the annual ECFA Award, presented at the Berlinale.</span></div>
                       <div class="section-glossary-item"><strong>Youth Programme</strong><span>A round-up of the year's most acclaimed films from youth-oriented festivals.</span></div>
+                      <div class="section-glossary-item"><strong>Children's Programme</strong><span>The year's family films for viewers aged 10 to 13, their parents and grandparents.</span></div>
+                      <div class="section-glossary-item"><strong>Children's Rights Programme</strong><span>Films about the lives of children and young people, often in situations nobody their age should face.</span></div>
                       <div class="section-glossary-item"><strong>Doc@Just</strong><span>Just Film's documentary programme, on topics and trends shaping the world right now.</span></div>
                       <div class="section-glossary-item"><strong>Just Anime</strong><span>Feature-length anime, from fantasy worlds to intimate drama.</span></div>
+                      <div class="section-glossary-item"><strong>#youngfilmmaker</strong><span>Films made by school students from Estonia and abroad.</span></div>
+                      <div class="section-glossary-item"><strong>Shorts Live-Action Competition</strong><span>PÖFF Shorts' international competition of live-action short films.</span></div>
+                      <div class="section-glossary-item"><strong>Shorts Animation Competition</strong><span>PÖFF Shorts' international competition of animated short films.</span></div>
+                      <div class="section-glossary-item"><strong>Shorts New Talents Competition: Live-action</strong><span>Live-action shorts by new filmmakers.</span></div>
+                      <div class="section-glossary-item"><strong>Shorts New Talents Competition: Animation</strong><span>Animated shorts by new filmmakers.</span></div>
+                      <div class="section-glossary-item"><strong>Shorts Kids Animation Competition</strong><span>Animated shorts for children.</span></div>
                     </div>
                   </template>
                 </div>
@@ -356,6 +370,7 @@
 </template>
 
 <script setup>
+import CatalogSearch from '~/components/festival/CatalogSearch.vue';
 import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import Loader from '~/components/Loader.vue';
 import WinnersCarousel from '~/components/festival/WinnersCarousel.vue';
@@ -422,16 +437,28 @@ const showSchedulePending = computed(() => schedule.value.length === 0);
 const openDays = ref(new Set());
 
 const CATEGORY_ORDER = [
+    "Opening Ceremony and Opening Film",
     "Official Selection – Competition",
     "First Feature Competition",
     "International Youth Competition Programme",
+    "Children's Competition Programme",
+    "Juniors' Competition Programme",
     "ECFA Competition Programme",
     "Youth Programme",
+    "Children's Programme",
+    "Children's Rights Programme",
     "Doc@Just",
     "Just Anime",
+    "#youngfilmmaker",
+    "Shorts Live-Action Competition",
+    "Shorts Animation Competition",
+    "Shorts New Talents Competition: Live-action",
+    "Shorts New Talents Competition: Animation",
+    "Shorts Kids Animation Competition",
 ];
 
 const CATEGORY_LABELS = {
+    ["Opening Ceremony and Opening Film"]: "Opening Film",
     OTHER: "Section to be confirmed",
 };
 
