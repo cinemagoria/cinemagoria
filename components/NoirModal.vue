@@ -18,7 +18,7 @@
         <div class="noir-modal-divider"></div>
 
         <p class="noir-modal-text">
-          De estrenos anticipados a un archivo permanente: una selección de Cinemagoria que reúne lo mejor del cine emergente desde 2024.
+          De estrenos anticipados a un archivo vivo: una selección de Cinemagoria que reúne lo mejor del cine emergente desde 2024.
         </p>
 
         <button v-if="!showManifesto" class="noir-manifesto-toggle" @click="showManifesto = true">
@@ -108,7 +108,7 @@ export default {
           title: 'Criterio de selecci\u00f3n',
           lines: [
             'No hacemos un catálogo, reconocemos señales. Solo permanece lo que irrumpe y trasciende.',
-            'La selección nunca es fija, evoluciona, se desplaza. Nada desaparece, todo se transforma en histórico.'
+            'La selección nunca es fija, evoluciona, se desplaza. Lo que perdura se transforma en histórico.'
           ]
         }
       ]

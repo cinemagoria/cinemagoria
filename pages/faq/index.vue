@@ -115,14 +115,14 @@ const sections = [
       {
         q: '¿Qué es N.O.I.R.?',
         a: `<p class="lead-line"><strong>N.O.I.R. &mdash; <em>Nothing Out Is Ready</em>.</strong></p>
-<p>La capa curatorial más importante de la plataforma y su herramienta editorial más activa. Desde premieres tempranas hasta histórico permanente, N.O.I.R. reúne títulos emergentes desde <strong>2024 en adelante</strong> considerados culturales o relevantes dentro del marco editorial.</p>
+<p>La capa curatorial más importante de la plataforma y su herramienta editorial más activa. Desde premieres tempranas hasta un histórico vivo, N.O.I.R. reúne títulos emergentes desde <strong>2024 en adelante</strong> considerados culturales o relevantes dentro del marco editorial.</p>
 <p>El histórico dedicado en <a href="/noir" class="inline-link">/noir</a> se puede consultar sin cuenta. Solo hace falta una para clonarlo a una colección propia.</p>`
       },
       {
         q: '¿Cómo entra un título a N.O.I.R. y cómo se mueve dentro de la plataforma?',
         a: `<p>La mayoría de los títulos surge desde festivales, premieres, adquisiciones, seguimiento crítico y una infraestructura interna de procesos editoriales, bases de datos, automatizaciones y análisis curatorial. Los festivales funcionan como el principal sistema de detección editorial: <strong>Sundance, Róterdam, Berlinale, Romford Horror, Slamdance, SXSW, BIFFF, BAFICI, CUFF, Cannes, Tribeca, BIFAN, KVIFF, Fantasia, Locarno, FrightFest, Venecia</strong> y <strong>TIFF</strong> alimentan activamente el sistema de selección, con nuevos festivales incorporándose progresivamente durante 2026.</p>
 <p>Cuando un proyecto gana relevancia editorial, pasa a la rotación principal de la página principal: una selección destacada de títulos N.O.I.R. próximos a estrenarse o recientemente lanzados. El sello aparece en cada tarjeta y conecta directamente con el histórico completo.</p>
-<p>Una vez que el título se encuentra ampliamente disponible, abandona esa rotación principal e ingresa al <strong>histórico permanente de N.O.I.R.</strong> en <a href="/noir" class="inline-link">/noir</a>, organizado por año y formato. Con frecuencia continúa también en <strong>Spotlight</strong>, el segundo espacio editorial de la página principal &mdash; cerca del setenta por ciento de los títulos destacados allí pasaron antes por la rotación principal.</p>
+<p>Una vez que el título se encuentra ampliamente disponible, abandona esa rotación principal e ingresa al <strong>histórico de N.O.I.R.</strong> en <a href="/noir" class="inline-link">/noir</a>, organizado por año y formato. Con frecuencia continúa también en <strong>Spotlight</strong>, el segundo espacio editorial de la página principal &mdash; cerca del setenta por ciento de los títulos destacados allí pasaron antes por la rotación principal.</p>
 <p>Salir de la rotación nunca implica desaparecer del histórico. El histórico es acumulativo.</p>`
       },
       {
@@ -139,7 +139,7 @@ const sections = [
       {
         q: '¿Qué es Spotlight?',
         a: `<p>El espacio principal de descubrimiento editorial dentro de la página principal para títulos emergentes y obras consideradas relevantes por la curaduría de la plataforma. Spotlight es curado, no algorítmico: conviven descubrimientos de festivales, proyectos de autor, horror contemporáneo, thrillers psicológicos, ciencia ficción, drama y estrenos independientes con identidad marcada.</p>
-<p>Muchos títulos llegan después de pasar por la rotación principal y continúan visibles mucho tiempo después de finalizado su período inicial de exposición, antes de asentarse de forma permanente dentro del histórico.</p>`
+<p>Muchos títulos llegan después de pasar por la rotación principal y continúan visibles mucho tiempo después de finalizado su período inicial de exposición, antes de asentarse dentro del histórico.</p>`
       },
       {
         q: '¿Qué significa “descubrimiento centrado en festivales”?',
