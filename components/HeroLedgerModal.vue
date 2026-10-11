@@ -24,7 +24,7 @@
           </p>
           <div v-if="showAbout" class="ledger-about">
             <p>The Ledger is the record of the homepage marquee: every title featured there, dated by the day it arrived.</p>
-            <p>It isn't <nuxt-link to="/noir" no-prefetch class="ledger-link" @click="$emit('close')">N.O.I.R.</nuxt-link> Every title that reaches the marquee is also archived in <nuxt-link to="/noir" no-prefetch class="ledger-link" @click="$emit('close')">N.O.I.R.</nuxt-link>, but <nuxt-link to="/noir" no-prefetch class="ledger-link" @click="$emit('close')">N.O.I.R.</nuxt-link> holds more than the marquee ever shows.</p>
+            <p>It isn't <nuxt-link to="/noir" no-prefetch class="ledger-link" @click="$emit('close')">N.O.I.R.</nuxt-link> Many titles are in both, but they are separate lists: <nuxt-link to="/noir" no-prefetch class="ledger-link" @click="$emit('close')">N.O.I.R.</nuxt-link> is the curated archive, and the Ledger records what was on the marquee.</p>
           </div>
         </header>
 
