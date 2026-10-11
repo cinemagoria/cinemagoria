@@ -115,14 +115,14 @@ const sections = [
       {
         q: 'What is N.O.I.R.?',
         a: `<p class="lead-line"><strong>N.O.I.R. &mdash; <em>Nothing Out Is Ready</em>.</strong></p>
-<p>The highest curatorial layer on the platform and its most actively developed feature. From early premieres to a permanent archive, N.O.I.R. catalogs emerging titles from <strong>2024 onward</strong> considered culturally, aesthetically or creatively significant within the editorial framework.</p>
+<p>The highest curatorial layer on the platform and its most actively developed feature. From early premieres to a living archive, N.O.I.R. catalogs emerging titles from <strong>2024 onward</strong> considered culturally, aesthetically or creatively significant within the editorial framework.</p>
 <p>The dedicated archive at <a href="/noir" class="inline-link">/noir</a> is open to read. An account is only needed to clone it into a personal list.</p>`
       },
       {
         q: 'How does a title enter N.O.I.R., and how does it move through the platform?',
         a: `<p>Most candidates originate from festival ecosystems, premiere reactions, acquisition tracking and an internal pipeline of workflows, datasets, enrichment scripts and editorial analysis. Festivals are the upstream signal layer &mdash; <strong>Sundance, Rotterdam, Berlinale, Romford Horror, Slamdance, SXSW, BIFFF, BAFICI, CUFF, Cannes, Tribeca, BIFAN, KVIFF, Fantasia, Locarno, FrightFest, Venice</strong> and <strong>TIFF</strong> all feed the selection, with more festivals joining the rotation throughout 2026.</p>
 <p>Once recognized, a title is promoted to the primary editorial slot at the top of the homepage &mdash; a rotating showcase of N.O.I.R.-certified works near or just before release. The seal appears on each card and links directly to the full archive.</p>
-<p>Roughly a week after a title becomes broadly available, it leaves that primary rotation and enters the <strong>permanent N.O.I.R. archive</strong> at <a href="/noir" class="inline-link">/noir</a>, organized by year and form. Many titles continue inside <strong>Spotlight</strong>, the homepage&rsquo;s secondary editorial surface &mdash; roughly seventy percent of Spotlight entries passed through the primary rotation first.</p>
+<p>Roughly a week after a title becomes broadly available, it leaves that primary rotation and enters the <strong>N.O.I.R. archive</strong> at <a href="/noir" class="inline-link">/noir</a>, organized by year and form. Many titles continue inside <strong>Spotlight</strong>, the homepage&rsquo;s secondary editorial surface &mdash; roughly seventy percent of Spotlight entries passed through the primary rotation first.</p>
 <p>Removal from the rotation never means removal from the archive. The archive is additive.</p>`
       },
       {
@@ -139,7 +139,7 @@ const sections = [
       {
         q: 'What is Spotlight?',
         a: `<p>The homepage&rsquo;s long-form discovery surface for emerging and editorially relevant titles. Spotlight is curated rather than algorithmic: festival discoveries, auteur projects, elevated genre, psychological thrillers, contemporary horror, mature drama and significant independent releases all live here.</p>
-<p>Many entries arrive after a stint in the primary editorial rotation and continue to surface long after their initial promotion period concludes &mdash; before settling permanently into the archive.</p>`
+<p>Many entries arrive after a stint in the primary editorial rotation and continue to surface long after their initial promotion period concludes &mdash; before settling into the archive.</p>`
       },
       {
         q: 'What does “festival-first discovery” mean?',

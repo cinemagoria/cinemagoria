@@ -18,7 +18,7 @@
         <div class="noir-modal-divider"></div>
 
         <p class="noir-modal-text">
-          From early premieres to a permanent archive: a curated Cinemagoria selection of emerging titles from 2024 onwards.
+          From early premieres to a living archive: a curated Cinemagoria selection of emerging titles from 2024 onwards.
         </p>
 
         <button v-if="!showManifesto" class="noir-manifesto-toggle" @click="showManifesto = true">
@@ -108,7 +108,7 @@ export default {
         title: 'Selection Criteria',
         lines: [
           'Not a catalog, but a recognition of signals. Only what disrupts and transcends remains.',
-          'The selection is never static, it evolves and shifts. Nothing disappears, everything becomes part of the archive.'
+          'The selection is never static, it evolves and shifts. What endures becomes the archive.'
         ]
       }
     ]
