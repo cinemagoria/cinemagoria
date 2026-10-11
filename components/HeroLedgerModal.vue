@@ -24,7 +24,7 @@
           </p>
           <div v-if="showAbout" class="ledger-about">
             <p>"Ledger" en español significa "libro de registro". El Ledger es el registro de la marquesina de la portada de la página principal: cada título que pasó por ahí, fechado el día que llegó.</p>
-            <p>No es <nuxt-link to="/noir" no-prefetch class="ledger-link" @click="$emit('close')">N.O.I.R.</nuxt-link> Todo título que llega a la marquesina queda archivado en <nuxt-link to="/noir" no-prefetch class="ledger-link" @click="$emit('close')">N.O.I.R.</nuxt-link>, pero <nuxt-link to="/noir" no-prefetch class="ledger-link" @click="$emit('close')">N.O.I.R.</nuxt-link> guarda más de lo que la marquesina llega a mostrar.</p>
+            <p>No es <nuxt-link to="/noir" no-prefetch class="ledger-link" @click="$emit('close')">N.O.I.R.</nuxt-link> Muchos títulos están en los dos, pero son listas distintas: <nuxt-link to="/noir" no-prefetch class="ledger-link" @click="$emit('close')">N.O.I.R.</nuxt-link> es el archivo curado y el Ledger registra lo que pasó por la marquesina.</p>
           </div>
         </header>
 
