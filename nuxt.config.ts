@@ -40,6 +40,8 @@ export default defineNuxtConfig({
 
     // Public SSR pages — emit Cache-Control: public, s-maxage=X so Cloudflare caches the HTML
     '/': { headers: { 'cache-control': 'public, max-age=600, s-maxage=600' } },
+    // The Ledger modal fetches this on click; cached like the homepage it belongs to.
+    '/data/hero-history.json': { headers: { 'cache-control': 'public, max-age=600, s-maxage=600' } },
     '/movie': { headers: { 'cache-control': 'public, max-age=1800, s-maxage=1800' } },
     '/movie/followed': { ssr: false },
     '/movie/**': { headers: { 'cache-control': 'public, max-age=1800, s-maxage=1800' } },
