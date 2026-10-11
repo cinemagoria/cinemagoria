@@ -35,6 +35,19 @@
         <Loader :size="60" />
       </div>
       
+      <div v-if="isHomepage" :class="$style.ledgerBadgeGroup">
+        <button type="button" :class="[$style.noirBadgeImg, $style.ledgerBadgeBtn]" title="Ledger" aria-label="Ledger" @click.stop="showLedgerModal = true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" :class="$style.noirBadgeImgEl" aria-hidden="true">
+            <rect :class="$style.ledgerHit" x="0" y="150" width="210" height="208" fill="transparent" />
+            <g transform="translate(-16.9 161) scale(7.75)" fill="none" stroke="#fff" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <path d="M12 7v5l4 2" />
+            </g>
+          </svg>
+        </button>
+      </div>
+      <HeroLedgerModal v-if="showLedgerModal" @close="showLedgerModal = false" />
       <div :class="$style.backdrop" @click="handleBackdropClick">
         <div>
           <div v-if="isHomepage || isNoirTitle" :class="$style.noirBadgeGroup">
@@ -522,6 +535,7 @@ import { translateText } from '~/utils/api';
 import { MANUAL_FESTIVAL_BADGES, MANUAL_OVERVIEWS } from '~/utils/constants';
 import { getHeroEnrichment, getNoirEnrichment } from '~/utils/api';
 import NoirModal from '~/components/NoirModal.vue';
+import HeroLedgerModal from '~/components/HeroLedgerModal.vue';
 
 // Festival membership per tmdb_id, shared across every Hero instance for the
 // session. Badges don't change mid-visit, so cycling the homepage carousel
@@ -648,6 +662,7 @@ export default {
     TallinnBadge,
     MardelplataBadge,
     NoirModal,
+    HeroLedgerModal,
   },
 
   mixins: [
@@ -750,6 +765,7 @@ export default {
       translatedOverview: null,
 
       showNoirModal: false,
+      showLedgerModal: false,
       isNoirTitle: false,
       relatedArticles: [],
       showArticlesPanel: false,
@@ -2882,6 +2898,56 @@ export default {
     @media (max-width: 600px) {
         top: -0.55rem;
         right: 1.5rem;
+    }
+}
+
+// Same left edge as the title: mirrors .pane's padding-left at each breakpoint.
+.ledgerBadgeGroup {
+    position: absolute;
+    top: -0.5rem;
+    left: 1.5rem;
+    z-index: 20;
+
+    @media (min-width: $breakpoint-small) {
+        left: 4rem;
+    }
+
+    @media (min-width: $breakpoint-large) {
+        left: 5rem;
+    }
+
+    @media (max-width: 600px) {
+        top: -0.55rem;
+    }
+}
+
+// The svg keeps the N.O.I.R. badge's 512 frame (same size, filter and hover), but only the
+// glyph is clickable so the empty frame never covers the title.
+.ledgerBadgeBtn {
+    padding: 0;
+    border: 0;
+    background: none;
+    pointer-events: none;
+}
+
+.ledgerHit {
+    pointer-events: all;
+}
+
+// The icon sits above the title: on desktop the homepage pane keeps the same total padding but
+// moves 1.5rem of it to the top, and `safe` makes a hero taller than the pane (many festival
+// badges) grow downwards instead of up into the icon.
+.heroHomepage .pane {
+    @media (min-width: $breakpoint-medium) {
+        align-items: safe center;
+        padding-top: 6.5rem;
+        padding-bottom: 3.5rem;
+    }
+
+    // Under 1500px the 43% column wraps the tallest heroes past the bottom edge once the icon
+    // band is reserved, so the homepage keeps the 55% column until then.
+    @media (min-width: $breakpoint-xlarge) and (max-width: 1499px) {
+        width: 55%;
     }
 }
 
