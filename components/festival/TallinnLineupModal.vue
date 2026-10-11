@@ -130,7 +130,8 @@ defineEmits(['close'])
   color: #fff;
 }
 
-.body { padding: 3.2rem 3rem 2.6rem; }
+// The top padding clears the close button: 14px above it, its 32px, 14px below.
+.body { padding: 6rem 3rem 2.6rem; }
 
 .intro {
   margin-bottom: 2.4rem;
@@ -264,7 +265,7 @@ defineEmits(['close'])
 @media (max-width: 640px) {
   .modalOverlay { padding: 12px; align-items: flex-end; }
   .modalContent { max-height: calc(100vh - 24px); }
-  .body { padding: 2.6rem 1.8rem 2.2rem; }
+  .body { padding: 6rem 1.8rem 2.2rem; }
   .intro h3 { font-size: 1.9rem; }
   .defs div { gap: 0.6rem; }
 }
