@@ -54,10 +54,17 @@
 import Loader from '~/components/Loader.vue';
 
 let ledgerPromise;
+const isCloudinary = (path) => {
+  try {
+    return new URL(path).hostname === 'res.cloudinary.com';
+  } catch {
+    return false;
+  }
+};
 const thumb = (path) => {
   if (!path) return null;
   if (path.startsWith('/')) return `https://image.tmdb.org/t/p/w300${path}`;
-  return path.includes('res.cloudinary.com/') ? path.replace('/image/upload/', '/image/upload/c_fill,w_192,h_108,q_auto,f_auto/') : path;
+  return isCloudinary(path) ? path.replace('/image/upload/', '/image/upload/c_fill,w_192,h_108,q_auto,f_auto/') : path;
 };
 const monthLabel = (ymd) => new Date(`${ymd.slice(0, 7)}-01T00:00:00Z`).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 
