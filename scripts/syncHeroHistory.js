@@ -44,9 +44,12 @@ for (const [k, row] of open) {
     if (!live.has(k)) row.exited = today;
     else if (live.get(k).backdrop_path) row.backdrop_path = live.get(k).backdrop_path;
 }
+// New stays go first: the file lists the newest arrival first, also within a single day.
+const arrivals = [];
 for (const [k, r] of live) {
-    if (!open.has(k)) rows.push({ tmdb_id: r.tmdb_id, media_type: r.media_type, entered: today, exited: null, backdrop_path: r.backdrop_path || null });
+    if (!open.has(k)) arrivals.push({ tmdb_id: r.tmdb_id, media_type: r.media_type, entered: today, exited: null, backdrop_path: r.backdrop_path || null });
 }
+rows = [...arrivals, ...rows];
 
 const tmdb = async (type, id, language) => {
     const res = await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${apiKey}&language=${language}${type === 'movie' ? '&append_to_response=credits' : ''}`);
@@ -83,7 +86,8 @@ for (const row of rows) {
 }
 
 rows = rows.filter((r) => !gone.has(key(r)));
-rows.sort((a, b) => b.entered.localeCompare(a.entered) || (a.title || '').localeCompare(b.title || '', 'en'));
+// Stable sort by date only, so rows from the same day keep their arrival order.
+rows.sort((a, b) => b.entered.localeCompare(a.entered));
 const ordered = rows.map((r) => ({
     tmdb_id: r.tmdb_id,
     media_type: r.media_type,
