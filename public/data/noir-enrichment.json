@@ -2706,10 +2706,10 @@
   {
     "tmdb_id": 1520592,
     "media_type": "movie",
-    "trailer_key": null,
-    "backdrop_path": "/gDpRamKdIUrlea0KyzaPnS9NM8K.jpg",
+    "trailer_key": "ox8lEnsxDag",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1791857233/cinemagoria/backdrops/noir_1520592.webp",
     "poster_path": "/d9jqItIaBvvtSWLKvd5oopEan2y.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1244523,
