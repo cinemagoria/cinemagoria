@@ -317,8 +317,10 @@
                       <div class="section-glossary-item"><strong>Panorama – Autores</strong><span>Recent work by established filmmakers, out of competition.</span></div>
                       <div class="section-glossary-item"><strong>Panorama – Nuevos Autores</strong><span>First and early films by new filmmakers, out of competition.</span></div>
                       <div class="section-glossary-item"><strong>Estados Alterados</strong><span>Films that explore new forms and cinematic universes.</span></div>
+                      <div class="section-glossary-item"><strong>Hora Cero</strong><span>Fantasy and horror cinema.</span></div>
                       <div class="section-glossary-item"><strong>Luces Nórdicas</strong><span>A showcase of films from Denmark, Finland, Iceland, Norway and Sweden.</span></div>
-                      <div class="section-glossary-item"><strong>Mar de Chicos y Chicas</strong><span>The programme for children and young audiences.</span></div>
+                      <div class="section-glossary-item"><strong>Banda Sonora Original</strong><span>Films about music and musicians.</span></div>
+                      <div class="section-glossary-item"><strong>Pequeños y jóvenes espectadores</strong><span>A new section of animated and live-action films for children and teenagers.</span></div>
                       <div class="section-glossary-item"><strong>Open-Air Argentine Cinema</strong><span>Free open-air screenings at Villa Ocampo of this year's Argentine releases.</span></div>
                       <div class="section-glossary-item"><strong>Astor Lifetime Achievement Award</strong><span>A film for each of this year's honorees: Emilio Kauderer, Alejandro Agresti and Natalia Oreiro.</span></div>
                       <div class="section-glossary-item"><strong>Tribute to Héctor Babenco</strong><span>A selection of films by the Argentine-born Brazilian director.</span></div>
@@ -419,8 +421,10 @@ const CATEGORY_ORDER = [
     "Panorama – Autores",
     "Panorama – Nuevos Autores",
     "Estados Alterados",
+    "Hora Cero",
     "Luces Nórdicas",
-    "Mar de Chicos y Chicas",
+    "Banda Sonora Original",
+    "Pequeños y jóvenes espectadores",
     "Cine argentino al aire libre",
     "Astor a la Trayectoria",
     "Homenaje a Héctor Babenco",

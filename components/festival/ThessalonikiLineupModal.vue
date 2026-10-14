@@ -19,6 +19,7 @@
         <section :class="$style.block">
           <span :class="$style.blockLabel">What it covers</span>
           <ul :class="$style.list">
+            <li><a href="https://www.filmfestival.gr/en/newsroom/news/67o-fk8-oi-ellhnikes-tainies-ths-fetinhs-diorganwshs/" target="_blank" rel="noopener">The Greek films of the 67th edition</a></li>
             <li><a href="https://www.filmfestival.gr/en/newsroom/news/67o-fk8-balkan-horror-ena-megalo-afierwma-stis-stoixeiwmenes-geitonies-twn-balkaniwn/" target="_blank" rel="noopener">Balkan Horror</a></li>
             <li><a href="https://www.filmfestival.gr/en/newsroom/news/67o-fk8-timhtikos-xrysos-ale3andros-kai-afierwma-ston-niko-grammatiko/" target="_blank" rel="noopener">Tribute to Nikos Grammatikos</a></li>
             <li><a href="https://www.filmfestival.gr/en/newsroom/news/67o-fk8-o-skhno8eths-toy-sirat-oliber-lase-sth-8essalonikh/" target="_blank" rel="noopener">Welcome to the Desert, curated by Oliver Laxe</a></li>
@@ -28,7 +29,7 @@
         <section :class="$style.block">
           <span :class="$style.blockLabel">What is still to come</span>
           <dl :class="$style.defs">
-            <div><dt>More titles</dt><dd>The competitions and the rest of the programme, plus the remaining titles of Welcome to the Desert.</dd></div>
+            <div><dt>More titles</dt><dd>The rest of the competitions and of the programme, plus the remaining titles of Welcome to the Desert.</dd></div>
             <div><dt>Showtimes</dt><dd>No screening times have been published yet, which is why the schedule is empty.</dd></div>
           </dl>
         </section>

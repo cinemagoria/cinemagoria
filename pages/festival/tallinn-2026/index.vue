@@ -334,6 +334,9 @@
                       <div class="section-glossary-item"><strong>Opening Film</strong><span><em>Ulya</em>, by Viesturs Kairišs, at the opening ceremony.</span></div>
                       <div class="section-glossary-item"><strong>Official Selection – Competition</strong><span>The main competition: new films from around the world, in world premiere only. It awards the Grand Prix for Best Film and the Best Director award.</span></div>
                       <div class="section-glossary-item"><strong>First Feature Competition</strong><span>Debut features, in world or international premiere, with a prize for the best film.</span></div>
+                      <div class="section-glossary-item"><strong>Baltic Film Competition</strong><span>Films from Estonia, Latvia and Lithuania and their international co-productions, at the heart of this year's Focus: Baltics.</span></div>
+                      <div class="section-glossary-item"><strong>Critics' Picks Competition</strong><span>World premieres of auteur cinema with a clear artistic vision, curated by Nikolaj Nikitin.</span></div>
+                      <div class="section-glossary-item"><strong>Rebels with a Cause Competition</strong><span>World premieres that challenge cinematic conventions, curated by Javier Garcia Puerto.</span></div>
                       <div class="section-glossary-item"><strong>International Youth Competition Programme</strong><span>Just Film's international competition of premieres for young audiences. Its Grand Prix is chosen by an international jury and a youth jury.</span></div>
                       <div class="section-glossary-item"><strong>Children's Competition Programme</strong><span>Just Film's competition for viewers aged 10 to 13 and their families.</span></div>
                       <div class="section-glossary-item"><strong>Juniors' Competition Programme</strong><span>Just Film's competition for the youngest viewers: fairy tales and adventures, in sessions adapted for them.</span></div>
@@ -440,6 +443,9 @@ const CATEGORY_ORDER = [
     "Opening Ceremony and Opening Film",
     "Official Selection – Competition",
     "First Feature Competition",
+    "Baltic Film Competition",
+    "Critics' Picks Competition",
+    "Rebels with a Cause Competition",
     "International Youth Competition Programme",
     "Children's Competition Programme",
     "Juniors' Competition Programme",

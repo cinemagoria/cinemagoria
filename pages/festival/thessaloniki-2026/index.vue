@@ -63,7 +63,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
           <div class="provisional-banner__copy">
             <h3>Early lineup</h3>
-            <p>The festival has announced its first programmes and tributes, and its main lineup is still to come. This catalog carries every title announced so far.</p>
+            <p>The festival has announced its Greek selection, its first programmes and its tributes, and the rest of its competitions are still to come. This catalog carries every title announced so far.</p>
           </div>
           <button type="button" class="provisional-banner__more" @click="provisionalOpen = true">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>Details</button>
@@ -300,8 +300,8 @@
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                       <h3>Programme status</h3>
                     </div>
-                    <p class="carousel-desc">The festival is announcing its programme in stages, and its main lineup is still to come. The catalog lists every title announced so far, grouped under the festival's own programme names. Screening times have not been published yet.</p>
-                    <p class="carousel-desc">The four short films in the Grammatikos tribute have no public metadata entry yet, so they don't appear here. That reflects the coverage of third-party sources, not an editorial choice.</p>
+                    <p class="carousel-desc">The festival is announcing its programme in stages. Its Greek selection is out, and the rest of its competitions are still to come. The catalog lists every title announced so far, grouped under the festival's own programme names. Screening times have not been published yet.</p>
+                    <p class="carousel-desc">Some titles, among them the four short films in the Grammatikos tribute and several Greek premieres, have no public metadata entry yet, so they don't appear here. That reflects the coverage of third-party sources, not an editorial choice.</p>
                     <p class="carousel-desc"><strong>Source:</strong> <a href="https://www.filmfestival.gr/en/" target="_blank" class="accent-link">official festival site</a></p>
                   </template>
 
@@ -312,9 +312,17 @@
                       <h3>What each section means</h3>
                     </div>
                     <div class="section-glossary">
+                      <div class="section-glossary-item"><strong>International Competition</strong><span>The festival's main competition. The Greek films in it are listed so far; the rest of the lineup is still to come.</span></div>
+                      <div class="section-glossary-item"><strong>Meet the Neighbors+</strong><span>Competition for films from the Balkans and the wider neighbouring region. Its Greek and Cypriot entries are listed so far.</span></div>
+                      <div class="section-glossary-item"><strong>&gt;&gt;Film Forward</strong><span>Competition for innovative, boundary-pushing cinema. Its Greek entries are listed so far.</span></div>
+                      <div class="section-glossary-item"><strong>First Run</strong><span>Greek films premiering at the festival outside the competitions.</span></div>
+                      <div class="section-glossary-item"><strong>A Second Viewing</strong><span>Recent Greek films that premiered elsewhere, screened again in Thessaloniki.</span></div>
+                      <div class="section-glossary-item"><strong>Special Screenings</strong><span>Special screenings of Greek films, including an avant-première and an open-air premiere at the Apollon cinema.</span></div>
+                      <div class="section-glossary-item"><strong>Classics Revisited</strong><span>A new section devoted to restored Greek classics.</span></div>
                       <div class="section-glossary-item"><strong>Balkan Horror</strong><span>Part of Meet the Neighbors+: a survey of horror from the Balkans, from folk horror and the supernatural to body horror and black comedy.</span></div>
-                      <div class="section-glossary-item"><strong>Tribute to Nikos Grammatikos</strong><span>Seven features and four rare shorts by the Greek director, who receives this year's Honorary Golden Alexander.</span></div>
+                      <div class="section-glossary-item"><strong>Tribute to Nikos Grammatikos</strong><span>All the features and shorts of the Greek director, who receives this year's Honorary Golden Alexander, including a 1995 TV film screened on the big screen for the first time.</span></div>
                       <div class="section-glossary-item"><strong>Welcome to the Desert</strong><span>Films set in desert landscapes, chosen by Oliver Laxe as guest curator. The titles named so far are listed here.</span></div>
+                      <div class="section-glossary-item"><strong>Greek Short Films</strong><span>Greek short films awarded at this year's Drama International Short Film Festival.</span></div>
                     </div>
                   </template>
                 </div>
@@ -403,9 +411,17 @@ const showSchedulePending = computed(() => schedule.value.length === 0);
 const openDays = ref(new Set());
 
 const CATEGORY_ORDER = [
-    "Balkan Horror",
+    "International Competition",
+    "Meet the Neighbors+",
+    ">>Film Forward",
+    "First Run",
+    "A Second Viewing",
+    "Special Screenings",
+    "Classics Revisited",
     "Tribute to Nikos Grammatikos",
+    "Balkan Horror",
     "Welcome to the Desert",
+    "Greek Short Films",
 ];
 
 const CATEGORY_LABELS = {

@@ -21,9 +21,10 @@
           <ul :class="$style.list">
             <li>Opening and closing films</li>
             <li>Panorama – Autores and Panorama – Nuevos Autores</li>
-            <li>Estados Alterados</li>
+            <li>Estados Alterados and Hora Cero</li>
             <li>Luces Nórdicas</li>
-            <li>Mar de Chicos y Chicas</li>
+            <li>Banda Sonora Original</li>
+            <li>Pequeños y jóvenes espectadores</li>
             <li>Open-air Argentine cinema at Villa Ocampo</li>
             <li>The Astor Lifetime Achievement Awards and the tribute to Héctor Babenco</li>
             <li>Retrospectives of Argentine cinema, Andrzej Wajda and Japanese classics</li>
