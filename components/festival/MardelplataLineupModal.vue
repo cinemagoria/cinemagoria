@@ -21,9 +21,10 @@
           <ul :class="$style.list">
             <li>Películas de apertura y clausura</li>
             <li>Panorama – Autores y Panorama – Nuevos Autores</li>
-            <li>Estados Alterados</li>
+            <li>Estados Alterados y Hora Cero</li>
             <li>Luces Nórdicas</li>
-            <li>Mar de Chicos y Chicas</li>
+            <li>Banda Sonora Original</li>
+            <li>Pequeños y jóvenes espectadores</li>
             <li>Cine argentino al aire libre en Villa Ocampo</li>
             <li>Los Astor a la Trayectoria y el homenaje a Héctor Babenco</li>
             <li>Retrospectivas de cine argentino, Andrzej Wajda y clásicos japoneses</li>

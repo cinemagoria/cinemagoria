@@ -63,7 +63,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
           <div class="provisional-banner__copy">
             <h3>Primera ola del programa</h3>
-            <p>El festival anunció sus primeros programas y homenajes, y su selección principal todavía no se conoce. Este catálogo reúne todos los títulos anunciados hasta ahora.</p>
+            <p>El festival anunció su selección griega, sus primeros programas y sus homenajes, y el resto de sus competencias todavía no se conoce. Este catálogo reúne todos los títulos anunciados hasta ahora.</p>
           </div>
           <button type="button" class="provisional-banner__more" @click="provisionalOpen = true">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>Ver detalle</button>
@@ -300,8 +300,8 @@
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                       <h3>Estado del programa</h3>
                     </div>
-                    <p class="carousel-desc">El festival anuncia su programación por etapas, y su selección principal todavía no se conoce. El catálogo reúne todos los títulos anunciados hasta ahora, agrupados en los programas del propio festival. Los horarios de las funciones todavía no se publicaron.</p>
-                    <p class="carousel-desc">Los cuatro cortometrajes del homenaje a Grammatikos todavía no tienen ficha pública de metadatos, así que no figuran acá. Es una cuestión de cobertura de las fuentes externas, no una decisión editorial.</p>
+                    <p class="carousel-desc">El festival anuncia su programación por etapas. Ya presentó su selección griega, y el resto de sus competencias todavía no se conoce. El catálogo reúne todos los títulos anunciados hasta ahora, agrupados en los programas del propio festival. Los horarios de las funciones todavía no se publicaron.</p>
+                    <p class="carousel-desc">Algunos títulos, entre ellos los cuatro cortometrajes del homenaje a Grammatikos y varios estrenos griegos, todavía no tienen ficha pública de metadatos, así que no figuran acá. Es una cuestión de cobertura de las fuentes externas, no una decisión editorial.</p>
                     <p class="carousel-desc"><strong>Fuente:</strong> <a href="https://www.filmfestival.gr/en/" target="_blank" class="accent-link">sitio oficial del festival</a></p>
                   </template>
 
@@ -312,9 +312,17 @@
                       <h3>Qué significa cada sección</h3>
                     </div>
                     <div class="section-glossary">
+                      <div class="section-glossary-item"><strong>Competencia Internacional</strong><span>La competencia principal del festival. Por ahora figuran sus películas griegas; el resto de la selección todavía no se anunció.</span></div>
+                      <div class="section-glossary-item"><strong>Meet the Neighbors+</strong><span>Competencia de cine de los Balcanes y de la región vecina. Por ahora figuran sus películas griegas y chipriotas.</span></div>
+                      <div class="section-glossary-item"><strong>&gt;&gt;Film Forward</strong><span>Competencia de cine innovador, que corre los límites. Por ahora figuran sus películas griegas.</span></div>
+                      <div class="section-glossary-item"><strong>First Run</strong><span>Películas griegas que se estrenan en el festival, fuera de competencia.</span></div>
+                      <div class="section-glossary-item"><strong>A Second Viewing</strong><span>Películas griegas recientes que se estrenaron en otros festivales y vuelven a verse en Tesalónica.</span></div>
+                      <div class="section-glossary-item"><strong>Funciones especiales</strong><span>Funciones especiales de cine griego, con un preestreno y un estreno al aire libre en el cine Apollon.</span></div>
+                      <div class="section-glossary-item"><strong>Classics Revisited</strong><span>Una sección nueva dedicada a clásicos griegos restaurados.</span></div>
                       <div class="section-glossary-item"><strong>Balkan Horror</strong><span>Dentro de Meet the Neighbors+: un recorrido por el terror de los Balcanes, del folk horror y lo sobrenatural al body horror y la comedia negra.</span></div>
-                      <div class="section-glossary-item"><strong>Homenaje a Nikos Grammatikos</strong><span>Siete largometrajes y cuatro cortos poco vistos del director griego, que recibe este año el Alejandro de Oro honorífico.</span></div>
+                      <div class="section-glossary-item"><strong>Homenaje a Nikos Grammatikos</strong><span>Todos los largos y cortos del director griego, que recibe este año el Alejandro de Oro honorífico, incluido un telefilm de 1995 que se proyecta por primera vez en pantalla grande.</span></div>
                       <div class="section-glossary-item"><strong>Welcome to the Desert</strong><span>Películas ambientadas en el desierto, elegidas por Oliver Laxe como curador invitado. Acá figuran los títulos anunciados hasta ahora.</span></div>
+                      <div class="section-glossary-item"><strong>Cortos griegos</strong><span>Cortometrajes griegos premiados este año en el Festival Internacional de Cortometrajes de Drama.</span></div>
                     </div>
                   </template>
                 </div>
@@ -403,13 +411,24 @@ const showSchedulePending = computed(() => schedule.value.length === 0);
 const openDays = ref(new Set());
 
 const CATEGORY_ORDER = [
-    "Balkan Horror",
+    "International Competition",
+    "Meet the Neighbors+",
+    ">>Film Forward",
+    "First Run",
+    "A Second Viewing",
+    "Special Screenings",
+    "Classics Revisited",
     "Tribute to Nikos Grammatikos",
+    "Balkan Horror",
     "Welcome to the Desert",
+    "Greek Short Films",
 ];
 
 const CATEGORY_LABELS = {
+    ["International Competition"]: "Competencia Internacional",
+    ["Special Screenings"]: "Funciones especiales",
     ["Tribute to Nikos Grammatikos"]: "Homenaje a Nikos Grammatikos",
+    ["Greek Short Films"]: "Cortos griegos",
     OTHER: "Sección por anunciar",
 };
 

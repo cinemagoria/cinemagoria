@@ -334,6 +334,9 @@
                       <div class="section-glossary-item"><strong>Película de apertura</strong><span><em>Ulya</em>, de Viesturs Kairišs, en la ceremonia de apertura.</span></div>
                       <div class="section-glossary-item"><strong>Selección Oficial – Competencia</strong><span>La competencia principal: películas nuevas de todo el mundo, solo en estreno mundial. Entrega el Gran Premio a la Mejor Película y el premio a la Mejor Dirección.</span></div>
                       <div class="section-glossary-item"><strong>Competencia de Óperas Primas</strong><span>Primeros largometrajes, en estreno mundial o internacional, con un premio a la mejor película.</span></div>
+                      <div class="section-glossary-item"><strong>Competencia de Cine Báltico</strong><span>Películas de Estonia, Letonia y Lituania y sus coproducciones internacionales, en el centro del foco báltico de este año.</span></div>
+                      <div class="section-glossary-item"><strong>Competencia Critics' Picks</strong><span>Estrenos mundiales de cine de autor con una mirada artística propia, con curaduría de Nikolaj Nikitin.</span></div>
+                      <div class="section-glossary-item"><strong>Competencia Rebels with a Cause</strong><span>Estrenos mundiales que desafían las convenciones del cine, con curaduría de Javier Garcia Puerto.</span></div>
                       <div class="section-glossary-item"><strong>Competencia Internacional Juvenil</strong><span>La competencia internacional de Just Film, con estrenos para público joven. Su Gran Premio lo eligen un jurado internacional y un jurado juvenil.</span></div>
                       <div class="section-glossary-item"><strong>Competencia Infantil</strong><span>La competencia de Just Film para espectadores de 10 a 13 años y sus familias.</span></div>
                       <div class="section-glossary-item"><strong>Competencia Juniors</strong><span>La competencia de Just Film para los más chicos: cuentos y aventuras, en funciones adaptadas para ellos.</span></div>
@@ -440,6 +443,9 @@ const CATEGORY_ORDER = [
     "Opening Ceremony and Opening Film",
     "Official Selection – Competition",
     "First Feature Competition",
+    "Baltic Film Competition",
+    "Critics' Picks Competition",
+    "Rebels with a Cause Competition",
     "International Youth Competition Programme",
     "Children's Competition Programme",
     "Juniors' Competition Programme",
@@ -461,6 +467,9 @@ const CATEGORY_LABELS = {
     ["Opening Ceremony and Opening Film"]: "Película de apertura",
     ["Official Selection – Competition"]: "Selección Oficial – Competencia",
     ["First Feature Competition"]: "Competencia de Óperas Primas",
+    ["Baltic Film Competition"]: "Competencia de Cine Báltico",
+    ["Critics' Picks Competition"]: "Competencia Critics' Picks",
+    ["Rebels with a Cause Competition"]: "Competencia Rebels with a Cause",
     ["International Youth Competition Programme"]: "Competencia Internacional Juvenil",
     ["Children's Competition Programme"]: "Competencia Infantil",
     ["Juniors' Competition Programme"]: "Competencia Juniors",

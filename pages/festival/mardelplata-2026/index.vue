@@ -317,8 +317,10 @@
                       <div class="section-glossary-item"><strong>Panorama – Autores</strong><span>Lo más reciente de realizadores consagrados, fuera de competencia.</span></div>
                       <div class="section-glossary-item"><strong>Panorama – Nuevos Autores</strong><span>Óperas primas y primeras películas de nuevos realizadores, fuera de competencia.</span></div>
                       <div class="section-glossary-item"><strong>Estados Alterados</strong><span>Películas que exploran nuevas formas y universos cinematográficos.</span></div>
+                      <div class="section-glossary-item"><strong>Hora Cero</strong><span>Cine fantástico y de terror.</span></div>
                       <div class="section-glossary-item"><strong>Luces Nórdicas</strong><span>Una muestra de cine de Dinamarca, Finlandia, Islandia, Noruega y Suecia.</span></div>
-                      <div class="section-glossary-item"><strong>Mar de Chicos y Chicas</strong><span>La programación para el público infantil y juvenil.</span></div>
+                      <div class="section-glossary-item"><strong>Banda Sonora Original</strong><span>Películas sobre música y músicos.</span></div>
+                      <div class="section-glossary-item"><strong>Pequeños y jóvenes espectadores</strong><span>Una sección nueva de animación y películas con actores para chicos y adolescentes.</span></div>
                       <div class="section-glossary-item"><strong>Cine argentino al aire libre</strong><span>Funciones gratuitas al aire libre en Villa Ocampo, con estrenos argentinos del año.</span></div>
                       <div class="section-glossary-item"><strong>Astor a la Trayectoria</strong><span>Una película por cada homenajeado del año: Emilio Kauderer, Alejandro Agresti y Natalia Oreiro.</span></div>
                       <div class="section-glossary-item"><strong>Homenaje a Héctor Babenco</strong><span>Una selección de películas del director argentino-brasileño.</span></div>
@@ -419,8 +421,10 @@ const CATEGORY_ORDER = [
     "Panorama – Autores",
     "Panorama – Nuevos Autores",
     "Estados Alterados",
+    "Hora Cero",
     "Luces Nórdicas",
-    "Mar de Chicos y Chicas",
+    "Banda Sonora Original",
+    "Pequeños y jóvenes espectadores",
     "Cine argentino al aire libre",
     "Astor a la Trayectoria",
     "Homenaje a Héctor Babenco",
