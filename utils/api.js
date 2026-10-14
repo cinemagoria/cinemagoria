@@ -1,6 +1,16 @@
 import { SUPPORTED_PRODUCTION_COMPANIES, STREAMING_PROVIDERS, SUPPORTED_FESTIVALS } from '~/utils/constants';
 import { resolveTvTrailer } from '~/utils/tvTrailer';
 
+const _plainTitle = (item) => {
+    for (const [shown, original] of [['title', 'original_title'], ['name', 'original_name']]) {
+        const text = item?.[shown];
+        const source = item?.[original];
+        if (typeof text !== 'string' || typeof source !== 'string' || text === source) continue;
+        if (text === text.toUpperCase() && text.toLowerCase() === source.toLowerCase()) item[shown] = source;
+    }
+    return item;
+};
+
 const axios = {
     get: async (url, config = {}) => {
         try {
@@ -11,6 +21,8 @@ const axios = {
                 timeout: config.timeout,
                 ignoreResponseError: true
             });
+            _plainTitle(response);
+            if (Array.isArray(response?.results)) response.results.forEach(_plainTitle);
             return { data: response, status: 200, statusText: 'OK' };
         } catch (error) {
             throw {
