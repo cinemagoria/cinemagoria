@@ -31,10 +31,17 @@ jobs:
           TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
 
+      # title_overrides (forced posters/backdrops/trailers, e.g. from the admin Staleness tab).
+      - name: Sync custom overrides
+        run: node scripts/syncCustomOverrides.js
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/data/hero-enrichment.json public/data/noir-enrichment.json
+          git add public/data/hero-enrichment.json public/data/noir-enrichment.json public/data/custom-enrichment.json
           git diff --cached --quiet || git commit -m "chore: update enrichment data"
           git push
