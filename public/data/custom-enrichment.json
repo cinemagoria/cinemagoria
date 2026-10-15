@@ -2330,8 +2330,8 @@
   {
     "tmdb_id": 1468846,
     "media_type": "movie",
-    "poster_path": "/fDvZvNmLIwUcKKQ4Cfb6TmQJM7M.jpg",
-    "backdrop_path": "/jySTVXi8UDajVgYh01KavKtY4YJ.jpg",
+    "poster_path": "https://image.tmdb.org/t/p/original/aQatcQac5gv4qSRCgjpLqMgAeHH.jpg",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1790869299/cinemagoria/backdrops/hero_1468846.webp",
     "trailer_key": "W-9g7YFYmV0",
     "force_enrichment": true
   }
