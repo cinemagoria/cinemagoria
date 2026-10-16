@@ -20,7 +20,7 @@
           <span :class="$style.blockLabel">What it covers</span>
           <ul :class="$style.list">
             <li>Opening and closing films</li>
-            <li>Panorama – Autores and Panorama – Nuevos Autores</li>
+            <li>Panorama – Autores, Nuevos Autores and Ganadoras de grandes festivales</li>
             <li>Estados Alterados and Hora Cero</li>
             <li>Luces Nórdicas</li>
             <li>Banda Sonora Original</li>
@@ -28,7 +28,6 @@
             <li>Open-air Argentine cinema at Villa Ocampo</li>
             <li>The Astor Lifetime Achievement Awards and the tribute to Héctor Babenco</li>
             <li>Retrospectives of Argentine cinema, Andrzej Wajda and Japanese classics</li>
-            <li>Award winners from this year's festival circuit, before their section is announced</li>
           </ul>
         </section>
 
@@ -36,7 +35,6 @@
           <span :class="$style.blockLabel">What is still to come</span>
           <dl :class="$style.defs">
             <div><dt>Competitions</dt><dd>The five competitions, presented on 19 October.</dd></div>
-            <div><dt>Sections</dt><dd>The section of each award winner listed under Section to be announced.</dd></div>
             <div><dt>Showtimes</dt><dd>No screening times have been published yet, which is why the schedule is empty.</dd></div>
           </dl>
         </section>

@@ -301,7 +301,7 @@
                       <h3>Programme status</h3>
                     </div>
                     <p class="carousel-desc">The festival announces its programme in stages. Its five competitions are presented on 19 October, and the screening schedule comes after that. The catalog lists every title announced so far, grouped under the festival's own section names.</p>
-                    <p class="carousel-desc">A group of award winners from this year's festival circuit has been announced without a section yet; they appear under <em>Section to be announced</em> until the festival places them. A few titles have no public metadata entry yet, so they don't appear here. That reflects the coverage of third-party sources, not an editorial choice.</p>
+                    <p class="carousel-desc">A few titles have no public metadata entry yet, so they don't appear here. That reflects the coverage of third-party sources, not an editorial choice.</p>
                     <p class="carousel-desc"><strong>Source:</strong> <a href="https://mardelplatafilmfest.com/" target="_blank" class="accent-link">official festival site</a></p>
                   </template>
 
@@ -316,6 +316,7 @@
                       <div class="section-glossary-item"><strong>Closing Film</strong><span><em>Borges and Me</em>, by Marc Turtletaub.</span></div>
                       <div class="section-glossary-item"><strong>Panorama – Autores</strong><span>Recent work by established filmmakers, out of competition.</span></div>
                       <div class="section-glossary-item"><strong>Panorama – Nuevos Autores</strong><span>First and early films by new filmmakers, out of competition.</span></div>
+                      <div class="section-glossary-item"><strong>Panorama – Ganadoras de grandes festivales</strong><span>This year's award winners from the major international festivals, out of competition.</span></div>
                       <div class="section-glossary-item"><strong>Estados Alterados</strong><span>Films that explore new forms and cinematic universes.</span></div>
                       <div class="section-glossary-item"><strong>Hora Cero</strong><span>Fantasy and horror cinema.</span></div>
                       <div class="section-glossary-item"><strong>Luces Nórdicas</strong><span>A showcase of films from Denmark, Finland, Iceland, Norway and Sweden.</span></div>
@@ -327,7 +328,6 @@
                       <div class="section-glossary-item"><strong>Argentine Cinema Retrospective</strong><span>Argentine films turning fifty this year, alongside restored classics.</span></div>
                       <div class="section-glossary-item"><strong>Andrzej Wajda Retrospective</strong><span>Four films by the Polish director.</span></div>
                       <div class="section-glossary-item"><strong>Japanese Cinema Classics</strong><span>Classics by Yasujirō Ozu, Kenji Mizoguchi and Keisuke Kinoshita.</span></div>
-                      <div class="section-glossary-item"><strong>Section to be announced</strong><span>Award winners from this year's festival circuit whose section the festival has not announced yet.</span></div>
                     </div>
                   </template>
                 </div>
@@ -420,6 +420,7 @@ const CATEGORY_ORDER = [
     "Clausura",
     "Panorama – Autores",
     "Panorama – Nuevos Autores",
+    "Panorama – Ganadoras de grandes festivales",
     "Estados Alterados",
     "Hora Cero",
     "Luces Nórdicas",
