@@ -301,7 +301,7 @@
                       <h3>Estado del programa</h3>
                     </div>
                     <p class="carousel-desc">El festival anuncia su programación por etapas. Sus cinco competencias se presentan el 19 de octubre, y los horarios llegan después. El catálogo reúne todos los títulos anunciados hasta ahora, agrupados en las secciones del propio festival.</p>
-                    <p class="carousel-desc">Un grupo de películas premiadas en el circuito de este año se anunció todavía sin sección; figuran en <em>Sección por anunciar</em> hasta que el festival las ubique. Algunos títulos todavía no tienen ficha pública de metadatos, así que no figuran acá. Es una cuestión de cobertura de las fuentes externas, no una decisión editorial.</p>
+                    <p class="carousel-desc">Algunos títulos todavía no tienen ficha pública de metadatos, así que no figuran acá. Es una cuestión de cobertura de las fuentes externas, no una decisión editorial.</p>
                     <p class="carousel-desc"><strong>Fuente:</strong> <a href="https://mardelplatafilmfest.com/" target="_blank" class="accent-link">sitio oficial del festival</a></p>
                   </template>
 
@@ -316,6 +316,7 @@
                       <div class="section-glossary-item"><strong>Película de clausura</strong><span><em>Borges and Me</em>, de Marc Turtletaub.</span></div>
                       <div class="section-glossary-item"><strong>Panorama – Autores</strong><span>Lo más reciente de realizadores consagrados, fuera de competencia.</span></div>
                       <div class="section-glossary-item"><strong>Panorama – Nuevos Autores</strong><span>Óperas primas y primeras películas de nuevos realizadores, fuera de competencia.</span></div>
+                      <div class="section-glossary-item"><strong>Panorama – Ganadoras de grandes festivales</strong><span>Las películas premiadas este año en los grandes festivales internacionales, fuera de competencia.</span></div>
                       <div class="section-glossary-item"><strong>Estados Alterados</strong><span>Películas que exploran nuevas formas y universos cinematográficos.</span></div>
                       <div class="section-glossary-item"><strong>Hora Cero</strong><span>Cine fantástico y de terror.</span></div>
                       <div class="section-glossary-item"><strong>Luces Nórdicas</strong><span>Una muestra de cine de Dinamarca, Finlandia, Islandia, Noruega y Suecia.</span></div>
@@ -327,7 +328,6 @@
                       <div class="section-glossary-item"><strong>Retrospectiva de cine argentino</strong><span>Películas argentinas que cumplen cincuenta años, junto a clásicos restaurados.</span></div>
                       <div class="section-glossary-item"><strong>Retrospectiva Andrzej Wajda</strong><span>Cuatro películas del director polaco.</span></div>
                       <div class="section-glossary-item"><strong>Clásicos del cine japonés</strong><span>Clásicos de Yasujirō Ozu, Kenji Mizoguchi y Keisuke Kinoshita.</span></div>
-                      <div class="section-glossary-item"><strong>Sección por anunciar</strong><span>Películas premiadas en el circuito de este año cuya sección el festival todavía no anunció.</span></div>
                     </div>
                   </template>
                 </div>
@@ -420,6 +420,7 @@ const CATEGORY_ORDER = [
     "Clausura",
     "Panorama – Autores",
     "Panorama – Nuevos Autores",
+    "Panorama – Ganadoras de grandes festivales",
     "Estados Alterados",
     "Hora Cero",
     "Luces Nórdicas",

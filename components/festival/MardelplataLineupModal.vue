@@ -20,7 +20,7 @@
           <span :class="$style.blockLabel">Qué incluye</span>
           <ul :class="$style.list">
             <li>Películas de apertura y clausura</li>
-            <li>Panorama – Autores y Panorama – Nuevos Autores</li>
+            <li>Panorama – Autores, Nuevos Autores y Ganadoras de grandes festivales</li>
             <li>Estados Alterados y Hora Cero</li>
             <li>Luces Nórdicas</li>
             <li>Banda Sonora Original</li>
@@ -28,7 +28,6 @@
             <li>Cine argentino al aire libre en Villa Ocampo</li>
             <li>Los Astor a la Trayectoria y el homenaje a Héctor Babenco</li>
             <li>Retrospectivas de cine argentino, Andrzej Wajda y clásicos japoneses</li>
-            <li>Películas premiadas en el circuito de este año, antes de que se anuncie su sección</li>
           </ul>
         </section>
 
@@ -36,7 +35,6 @@
           <span :class="$style.blockLabel">Qué falta todavía</span>
           <dl :class="$style.defs">
             <div><dt>Competencias</dt><dd>Las cinco competencias, que se presentan el 19 de octubre.</dd></div>
-            <div><dt>Secciones</dt><dd>La sección de cada película que hoy figura en Sección por anunciar.</dd></div>
             <div><dt>Horarios</dt><dd>Todavía no se publicaron los horarios de las funciones, y por eso la grilla está vacía.</dd></div>
           </dl>
         </section>
