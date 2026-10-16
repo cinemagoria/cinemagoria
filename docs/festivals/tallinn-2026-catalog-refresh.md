@@ -22,9 +22,9 @@ candidate that cannot be confirmed on every one of those points.
 | Outcome | Rows |
 | --- | ---: |
 | Matched (12 features, 3 shorts) | 15 |
-| Rejected: title only, different director | 10 |
+| Rejected: title only, different director | 8 |
 | Rejected: not confirmable (no director on the festival's page, or a different original title) | 2 |
-| No candidate on TMDB | 33 |
+| No candidate on TMDB | 35 |
 
 On matched rows only `tmdb_id`, `tmdb_data`, `imdb_id`, the poster and the
 runtime changed. 2 of the 15 bring a TMDB poster; the other 13 keep the
