@@ -89,19 +89,6 @@ const FESTIVALS = [
     tagline: 'Galas, secciones competitivas y programación diaria —',
     end: new Date('2026-10-18T23:00:00Z'),
   },
-  {
-    key: 'sitges',
-    to: '/festival/sitges-2026',
-    label: 'Sitges 2026',
-    logo: '/festivals/sitges/sitges_logo_live_banner_2026.png',
-    pattern: '/festivals/sitges/sitges_pattern_live_banner_2026.png',
-    invertLogo: true,
-    edition: '59ª',
-    editionSuffix: '',
-    dates: '8 – 18 OCTUBRE · 2026',
-    tagline: 'Estrenos fantásticos, Midnight X-treme y programación diaria —',
-    end: new Date('2026-10-18T22:00:00Z'),
-  },
 ];
 
 export default {
