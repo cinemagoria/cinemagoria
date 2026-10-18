@@ -23,6 +23,7 @@
             <li><a href="https://www.filmfestival.gr/en/newsroom/news/67o-fk8-balkan-horror-ena-megalo-afierwma-stis-stoixeiwmenes-geitonies-twn-balkaniwn/" target="_blank" rel="noopener">Balkan Horror</a></li>
             <li><a href="https://www.filmfestival.gr/en/newsroom/news/67o-fk8-timhtikos-xrysos-ale3andros-kai-afierwma-ston-niko-grammatiko/" target="_blank" rel="noopener">Tribute to Nikos Grammatikos</a></li>
             <li><a href="https://www.filmfestival.gr/en/newsroom/news/67o-fk8-o-skhno8eths-toy-sirat-oliber-lase-sth-8essalonikh/" target="_blank" rel="noopener">Welcome to the Desert, curated by Oliver Laxe</a></li>
+            <li><a href="https://www.filmfestival.gr/en/newsroom/news/67o-fk8-oi-tainies-toy-tmhmatos-nextgen/" target="_blank" rel="noopener">NextGen</a></li>
           </ul>
         </section>
 
