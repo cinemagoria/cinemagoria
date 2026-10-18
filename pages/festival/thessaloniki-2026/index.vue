@@ -323,6 +323,7 @@
                       <div class="section-glossary-item"><strong>Homenaje a Nikos Grammatikos</strong><span>Todos los largos y cortos del director griego, que recibe este año el Alejandro de Oro honorífico, incluido un telefilm de 1995 que se proyecta por primera vez en pantalla grande.</span></div>
                       <div class="section-glossary-item"><strong>Welcome to the Desert</strong><span>Películas ambientadas en el desierto, elegidas por Oliver Laxe como curador invitado. Acá figuran los títulos anunciados hasta ahora.</span></div>
                       <div class="section-glossary-item"><strong>Cortos griegos</strong><span>Cortometrajes griegos premiados este año en el Festival Internacional de Cortometrajes de Drama.</span></div>
+                      <div class="section-glossary-item"><strong>NextGen</strong><span>Largos y cortos de todo el mundo para chicos y adolescentes, en las funciones del festival para escuelas y familias.</span></div>
                     </div>
                   </template>
                 </div>
@@ -422,6 +423,7 @@ const CATEGORY_ORDER = [
     "Balkan Horror",
     "Welcome to the Desert",
     "Greek Short Films",
+    "NextGen",
 ];
 
 const CATEGORY_LABELS = {

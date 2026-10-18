@@ -349,6 +349,7 @@
                       <div class="section-glossary-item"><strong>#youngfilmmaker</strong><span>Películas hechas por estudiantes de escuelas de Estonia y de otros países.</span></div>
                       <div class="section-glossary-item"><strong>Competencia de Cortos de Acción Real</strong><span>La competencia internacional de cortometrajes de acción real de PÖFF Shorts.</span></div>
                       <div class="section-glossary-item"><strong>Competencia de Cortos de Animación</strong><span>La competencia internacional de cortometrajes de animación de PÖFF Shorts.</span></div>
+                      <div class="section-glossary-item"><strong>Competencia Nacional de Cortos</strong><span>La competencia de PÖFF Shorts con los cortometrajes estonios más recientes, de realizadores nuevos y consagrados.</span></div>
                       <div class="section-glossary-item"><strong>Competencia Nuevos Talentos: Acción Real</strong><span>Cortos de acción real de nuevos realizadores.</span></div>
                       <div class="section-glossary-item"><strong>Competencia Nuevos Talentos: Animación</strong><span>Cortos de animación de nuevos realizadores.</span></div>
                       <div class="section-glossary-item"><strong>Competencia de Cortos de Animación Infantil</strong><span>Cortos de animación para chicos.</span></div>
@@ -458,6 +459,7 @@ const CATEGORY_ORDER = [
     "#youngfilmmaker",
     "Shorts Live-Action Competition",
     "Shorts Animation Competition",
+    "Shorts National Competition",
     "Shorts New Talents Competition: Live-action",
     "Shorts New Talents Competition: Animation",
     "Shorts Kids Animation Competition",
@@ -479,6 +481,7 @@ const CATEGORY_LABELS = {
     ["Children's Rights Programme"]: "Programa de Derechos de la Infancia",
     ["Shorts Live-Action Competition"]: "Competencia de Cortos de Acción Real",
     ["Shorts Animation Competition"]: "Competencia de Cortos de Animación",
+    ["Shorts National Competition"]: "Competencia Nacional de Cortos",
     ["Shorts New Talents Competition: Live-action"]: "Competencia Nuevos Talentos: Acción Real",
     ["Shorts New Talents Competition: Animation"]: "Competencia Nuevos Talentos: Animación",
     ["Shorts Kids Animation Competition"]: "Competencia de Cortos de Animación Infantil",
