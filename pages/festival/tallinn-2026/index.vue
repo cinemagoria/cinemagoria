@@ -349,6 +349,7 @@
                       <div class="section-glossary-item"><strong>#youngfilmmaker</strong><span>Films made by school students from Estonia and abroad.</span></div>
                       <div class="section-glossary-item"><strong>Shorts Live-Action Competition</strong><span>PÖFF Shorts' international competition of live-action short films.</span></div>
                       <div class="section-glossary-item"><strong>Shorts Animation Competition</strong><span>PÖFF Shorts' international competition of animated short films.</span></div>
+                      <div class="section-glossary-item"><strong>Shorts National Competition</strong><span>PÖFF Shorts' competition of the latest Estonian short films, by emerging and established filmmakers.</span></div>
                       <div class="section-glossary-item"><strong>Shorts New Talents Competition: Live-action</strong><span>Live-action shorts by new filmmakers.</span></div>
                       <div class="section-glossary-item"><strong>Shorts New Talents Competition: Animation</strong><span>Animated shorts by new filmmakers.</span></div>
                       <div class="section-glossary-item"><strong>Shorts Kids Animation Competition</strong><span>Animated shorts for children.</span></div>
@@ -458,6 +459,7 @@ const CATEGORY_ORDER = [
     "#youngfilmmaker",
     "Shorts Live-Action Competition",
     "Shorts Animation Competition",
+    "Shorts National Competition",
     "Shorts New Talents Competition: Live-action",
     "Shorts New Talents Competition: Animation",
     "Shorts Kids Animation Competition",

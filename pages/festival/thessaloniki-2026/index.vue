@@ -323,6 +323,7 @@
                       <div class="section-glossary-item"><strong>Tribute to Nikos Grammatikos</strong><span>All the features and shorts of the Greek director, who receives this year's Honorary Golden Alexander, including a 1995 TV film screened on the big screen for the first time.</span></div>
                       <div class="section-glossary-item"><strong>Welcome to the Desert</strong><span>Films set in desert landscapes, chosen by Oliver Laxe as guest curator. The titles named so far are listed here.</span></div>
                       <div class="section-glossary-item"><strong>Greek Short Films</strong><span>Greek short films awarded at this year's Drama International Short Film Festival.</span></div>
+                      <div class="section-glossary-item"><strong>NextGen</strong><span>Features and shorts for children and teenagers, from around the world, at the festival's school and family screenings.</span></div>
                     </div>
                   </template>
                 </div>
@@ -422,6 +423,7 @@ const CATEGORY_ORDER = [
     "Balkan Horror",
     "Welcome to the Desert",
     "Greek Short Films",
+    "NextGen",
 ];
 
 const CATEGORY_LABELS = {
