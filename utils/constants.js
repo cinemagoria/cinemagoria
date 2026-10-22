@@ -1852,6 +1852,7 @@ export const SUPPORTED_FESTIVALS = [
 
 export const MANUAL_OVERVIEWS = {
     1666712: "Un documental que reúne a jugadores de Argentina e Inglaterra para reconstruir el partido de fútbol que ambas selecciones jugaron en 1986, tras la Guerra de las Malvinas. Testimonios de entrenadores, árbitros, hinchas, músicos y políticos, junto con imágenes de archivo inéditas, entretejen la belleza del juego con los hechos históricos que, siglos antes, pusieron en marcha el conflicto entre ambos países.",
+    1789849: "Documental sobre María Gabriela Epumer, que compuso y tocó rock en los años 80 y 90 como integrante de Viuda e Hijas de Roque Enroll, guitarrista de Charly García y solista. A veinte años de su fallecimiento, cincuenta horas de material que ella misma filmó recorren desde conciertos multitudinarios hasta momentos íntimos en estudios de grabación.",
 };
 
 export const MANUAL_FESTIVAL_BADGES = {
