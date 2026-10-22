@@ -247,6 +247,7 @@
                             {{ screening.venue }}
                          </div>
                          <div class="tags">
+                             <span v-if="screening.id === openingScreeningId" class="tag opening">Opening Film</span>
                              <span v-if="screening.is_in_person" class="tag in-person">In Person</span>
                              <span v-if="screening.is_online" class="tag online">Online</span>
                              <span v-if="screening.is_sold_out" class="tag sold-out">Sold Out</span>
@@ -599,6 +600,11 @@ const filteredSchedule = computed(() => {
     });
 });
 
+const openingScreeningId = computed(() => {
+    const opening = (films.value.results || []).find((f) => f.section === 'Película de Apertura');
+    return (opening && schedule.value.find((s) => s.film.id === opening.internal_id))?.id ?? null;
+});
+
 const groupedScreenings = computed(() => {
     const source = filteredSchedule.value;
     if (!source) return {};
@@ -608,6 +614,12 @@ const groupedScreenings = computed(() => {
         if (!groups[dateKey]) groups[dateKey] = [];
         groups[dateKey].push(s);
     });
+    const opening = source.find((s) => s.id === openingScreeningId.value);
+    if (opening) {
+        const day = groups[opening.start_time.split('T')[0]];
+        day.splice(day.indexOf(opening), 1);
+        day.unshift(opening);
+    }
     return Object.keys(groups).sort().reduce((obj, key) => {
         obj[key] = groups[key];
         return obj;
@@ -1334,6 +1346,7 @@ onMounted(async () => {
         &.in-person { background: rgba(52, 152, 219, 0.2); }
         &.online { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
         &.sold-out { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+        &.opening { background: rgba(139, 233, 253, 0.15); color: #8BE9FD; }
     }
 }
 
