@@ -300,9 +300,9 @@
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                       <h3>Estado del programa</h3>
                     </div>
-                    <p class="carousel-desc">El festival anuncia su programación por etapas. Sus cinco competencias se presentan el 19 de octubre, y los horarios llegan después. El catálogo reúne todos los títulos anunciados hasta ahora, agrupados en las secciones del propio festival.</p>
-                    <p class="carousel-desc">Algunos títulos todavía no tienen ficha pública de metadatos, así que no figuran acá. Es una cuestión de cobertura de las fuentes externas, no una decisión editorial.</p>
-                    <p class="carousel-desc"><strong>Fuente:</strong> <a href="https://mardelplatafilmfest.com/" target="_blank" class="accent-link">sitio oficial del festival</a></p>
+                    <p class="carousel-desc">El festival publicó su programación completa el 19 de octubre: 188 títulos en 31 secciones, con 481 funciones del 6 al 15 de noviembre. El catálogo sigue las secciones del propio festival, y la pestaña Horarios reúne todas las funciones por día y sala.</p>
+                    <p class="carousel-desc">Los títulos que todavía no tienen ficha pública de metadatos, en su mayoría de las competencias, figuran en Horarios pero no en el catálogo. Es una cuestión de cobertura de las fuentes externas, no una decisión editorial.</p>
+                    <p class="carousel-desc"><strong>Fuente:</strong> <a href="https://mardelplatafilmfest.com/41/es/programas/" target="_blank" class="accent-link">programación oficial del festival</a></p>
                   </template>
 
                   <!-- Slide 2: Sections -->
@@ -314,20 +314,31 @@
                     <div class="section-glossary">
                       <div class="section-glossary-item"><strong>Película de apertura</strong><span><em>Caballo salvaje nueve</em>, de Martin McDonagh, en la gala de apertura.</span></div>
                       <div class="section-glossary-item"><strong>Película de clausura</strong><span><em>Borges and Me</em>, de Marc Turtletaub.</span></div>
-                      <div class="section-glossary-item"><strong>Panorama – Autores</strong><span>Lo más reciente de realizadores consagrados, fuera de competencia.</span></div>
-                      <div class="section-glossary-item"><strong>Panorama – Nuevos Autores</strong><span>Óperas primas y primeras películas de nuevos realizadores, fuera de competencia.</span></div>
-                      <div class="section-glossary-item"><strong>Panorama – Ganadoras de grandes festivales</strong><span>Las películas premiadas este año en los grandes festivales internacionales, fuera de competencia.</span></div>
+                      <div class="section-glossary-item"><strong>Competencia internacional de largometrajes</strong><span>La competencia principal: 14 largometrajes de todo el mundo.</span></div>
+                      <div class="section-glossary-item"><strong>Competencia latinoamericana de largometrajes</strong><span>14 largometrajes de América Latina.</span></div>
+                      <div class="section-glossary-item"><strong>Competencia argentina de largometrajes</strong><span>12 largometrajes argentinos.</span></div>
+                      <div class="section-glossary-item"><strong>Competencias de cortometrajes</strong><span>Internacional, latinoamericana y argentina, con ocho cortos cada una.</span></div>
+                      <div class="section-glossary-item"><strong>Competencia En tránsito (WIP)</strong><span>Películas en proceso, con funciones solo para acreditados.</span></div>
+                      <div class="section-glossary-item"><strong>Proyecciones especiales</strong><span>Funciones fuera de competencia, en su mayoría estrenos argentinos del año.</span></div>
+                      <div class="section-glossary-item"><strong>Ganadoras de grandes festivales</strong><span>Las películas premiadas este año en los grandes festivales internacionales, fuera de competencia.</span></div>
+                      <div class="section-glossary-item"><strong>Autores</strong><span>Lo más reciente de realizadores consagrados, fuera de competencia.</span></div>
+                      <div class="section-glossary-item"><strong>Nuevos autores</strong><span>Óperas primas y primeras películas de nuevos realizadores, fuera de competencia.</span></div>
                       <div class="section-glossary-item"><strong>Estados Alterados</strong><span>Películas que exploran nuevas formas y universos cinematográficos.</span></div>
-                      <div class="section-glossary-item"><strong>Hora Cero</strong><span>Cine fantástico y de terror.</span></div>
+                      <div class="section-glossary-item"><strong>Hora cero</strong><span>Cine fantástico y de terror.</span></div>
                       <div class="section-glossary-item"><strong>Luces Nórdicas</strong><span>Una muestra de cine de Dinamarca, Finlandia, Islandia, Noruega y Suecia.</span></div>
-                      <div class="section-glossary-item"><strong>Banda Sonora Original</strong><span>Películas sobre música y músicos.</span></div>
-                      <div class="section-glossary-item"><strong>Pequeños y jóvenes espectadores</strong><span>Una sección nueva de animación y películas con actores para chicos y adolescentes.</span></div>
-                      <div class="section-glossary-item"><strong>Cine argentino al aire libre</strong><span>Funciones gratuitas al aire libre en Villa Ocampo, con estrenos argentinos del año.</span></div>
-                      <div class="section-glossary-item"><strong>Astor a la Trayectoria</strong><span>Una película por cada homenajeado del año: Emilio Kauderer, Alejandro Agresti y Natalia Oreiro.</span></div>
+                      <div class="section-glossary-item"><strong>España en la pantalla</strong><span>Cine español reciente.</span></div>
+                      <div class="section-glossary-item"><strong>Cine Contemporáneo israelí</strong><span>Películas recientes de Israel.</span></div>
+                      <div class="section-glossary-item"><strong>Banda Sonora Original (BSO) presenta</strong><span>Películas sobre música y músicos.</span></div>
+                      <div class="section-glossary-item"><strong>Pequeños y jóvenes espectadores</strong><span>Animación y películas con actores para chicos y adolescentes.</span></div>
+                      <div class="section-glossary-item"><strong>Perlas: obras destacadas de los Festivales Nacionales</strong><span>Títulos destacados de los festivales nacionales de cine de la Argentina, con una función cada uno.</span></div>
+                      <div class="section-glossary-item"><strong>Astor a la trayectoria</strong><span>Una película por cada homenajeado del año: Emilio Kauderer, Alejandro Agresti y Natalia Oreiro.</span></div>
                       <div class="section-glossary-item"><strong>Homenaje a Héctor Babenco</strong><span>Una selección de películas del director argentino-brasileño.</span></div>
-                      <div class="section-glossary-item"><strong>Retrospectiva de cine argentino</strong><span>Películas argentinas que cumplen cincuenta años, junto a clásicos restaurados.</span></div>
-                      <div class="section-glossary-item"><strong>Retrospectiva Andrzej Wajda</strong><span>Cuatro películas del director polaco.</span></div>
-                      <div class="section-glossary-item"><strong>Clásicos del cine japonés</strong><span>Clásicos de Yasujirō Ozu, Kenji Mizoguchi y Keisuke Kinoshita.</span></div>
+                      <div class="section-glossary-item"><strong>Homenaje a Eduardo Mignogna</strong><span><em>Sol de otoño</em> (1996), del director argentino.</span></div>
+                      <div class="section-glossary-item"><strong>Homenaje a Andrzej Wajda</strong><span>Cuatro películas del director polaco.</span></div>
+                      <div class="section-glossary-item"><strong>Actrices de la Época Dorada del Cine Japonés</strong><span>Clásicos de Yasujirō Ozu, Kenji Mizoguchi y Keisuke Kinoshita.</span></div>
+                      <div class="section-glossary-item"><strong>50 Años del estreno</strong><span>Películas argentinas estrenadas en 1976.</span></div>
+                      <div class="section-glossary-item"><strong>Clásicos nacionales</strong><span><em>La casa del ángel</em> (1957), de Leopoldo Torre Nilsson.</span></div>
+                      <div class="section-glossary-item"><strong>Proyecciones institucionales</strong><span>Programas de cortos de escuelas de cine y de instituciones de la industria.</span></div>
                     </div>
                   </template>
                 </div>
@@ -358,7 +369,7 @@ import MardelplataCard from '~/components/MardelplataCard.vue';
 import MardelplataLineupModal from '~/components/festival/MardelplataLineupModal.vue';
 
 // Se apaga cuando salga el programa completo, después de las competencias del 19 de octubre.
-const PROVISIONAL_LINEUP = true;
+const PROVISIONAL_LINEUP = false;
 const provisionalOpen = ref(false);
 
 const activeTab = ref('films');
@@ -416,27 +427,42 @@ const showSchedulePending = computed(() => schedule.value.length === 0);
 const openDays = ref(new Set());
 
 const CATEGORY_ORDER = [
-    "Apertura",
-    "Clausura",
-    "Panorama – Autores",
-    "Panorama – Nuevos Autores",
-    "Panorama – Ganadoras de grandes festivales",
+    "Película de Apertura",
+    "Película de Clausura",
+    "Competencia internacional de largometrajes",
+    "Competencia latinoamericana de largometrajes",
+    "Competencia argentina de largometrajes",
+    "Competencia Internacional de cortometrajes",
+    "Competencia latinoamericana de cortometrajes",
+    "Competencia argentina de cortometrajes",
+    "Competencia En tránsito (WIP)",
+    "Proyecciones especiales",
+    "Ganadoras de grandes festivales",
+    "Autores",
+    "Nuevos autores",
     "Estados Alterados",
-    "Hora Cero",
+    "Hora cero",
     "Luces Nórdicas",
-    "Banda Sonora Original",
+    "España en la pantalla",
+    "Cine Contemporáneo israelí",
+    "Banda Sonora Original (BSO) presenta",
     "Pequeños y jóvenes espectadores",
-    "Cine argentino al aire libre",
-    "Astor a la Trayectoria",
+    "Perlas: obras destacadas de los Festivales Nacionales",
+    "Astor a la trayectoria: Emilio Kauderer",
+    "Astor a la trayectoria: Alejandro Agresti",
+    "Astor a la trayectoria: Natalia Oreiro",
     "Homenaje a Héctor Babenco",
-    "Retrospectiva de cine argentino",
-    "Retrospectiva Andrzej Wajda",
-    "Clásicos del cine japonés",
+    "Homenaje a Eduardo Mignogna",
+    "Homenaje a Andrzej Wajda",
+    "Actrices de la Época Dorada del Cine Japonés",
+    "50 Años del estreno",
+    "Clásicos nacionales",
+    "Proyecciones institucionales",
 ];
 
 const CATEGORY_LABELS = {
-    ["Apertura"]: "Película de apertura",
-    ["Clausura"]: "Película de clausura",
+    ["Película de Apertura"]: "Película de apertura",
+    ["Película de Clausura"]: "Película de clausura",
     OTHER: "Sección por anunciar",
 };
 
