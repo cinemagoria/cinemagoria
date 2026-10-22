@@ -288,5 +288,7 @@ defineEmits(['close'])
   .intro h3 { font-size: 1.9rem; }
   .notice { padding: 1.2rem 1.4rem; }
   .defs div { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+  .defs { gap: 1.4rem; }
+  .defs dd { flex: none; }
 }
 </style>
