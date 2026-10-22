@@ -55,3 +55,16 @@ jobs:
           git add public/data/hero-enrichment.json public/data/noir-enrichment.json public/data/custom-enrichment.json public/data/hero-history.json
           git diff --cached --quiet || git commit -m "chore: update enrichment data"
           git push
+
+      # Schedules only run on the default branch, so es gets the same files from here.
+      # A separate worktree keeps this checkout untouched; a push to es redeploys it.
+      - name: Mirror data files to es
+        run: |
+          git fetch --depth=1 origin es
+          git worktree add --detach ../es FETCH_HEAD
+          for f in hero-enrichment noir-enrichment custom-enrichment hero-history; do
+            cp "public/data/$f.json" "../es/public/data/$f.json"
+          done
+          cd ../es
+          git add public/data/hero-enrichment.json public/data/noir-enrichment.json public/data/custom-enrichment.json public/data/hero-history.json
+          git diff --cached --quiet || { git commit -m "chore: update enrichment data" && git push origin HEAD:es; }
