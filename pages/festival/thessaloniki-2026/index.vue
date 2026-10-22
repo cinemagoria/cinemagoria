@@ -1741,8 +1741,31 @@ onMounted(async () => {
 
 
 @media (max-width: 700px) {
-    .provisional-banner { flex-direction: column; align-items: flex-start; }
-    .provisional-banner__more { align-self: stretch; }
+    .provisional-banner {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: start;
+        gap: 12px;
+        margin-bottom: 20px;
+        padding: 16px;
+
+        > svg { width: 22px; height: 22px; }
+    }
+
+    .provisional-banner__copy h3 { margin-bottom: 4px; font-size: 15px; line-height: 22px; }
+
+    .provisional-banner__copy p { font-size: 13.5px; line-height: 1.55; }
+
+    .provisional-banner__more {
+        grid-column: 1 / -1;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 10px 18px;
+        font-size: 15px;
+
+        svg { width: 18px; height: 18px; }
+    }
 }
 /* PROVISIONAL-LINEUP-END */
 
