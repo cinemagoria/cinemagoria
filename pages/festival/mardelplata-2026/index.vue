@@ -300,9 +300,9 @@
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                       <h3>Programme status</h3>
                     </div>
-                    <p class="carousel-desc">The festival announces its programme in stages. Its five competitions are presented on 19 October, and the screening schedule comes after that. The catalog lists every title announced so far, grouped under the festival's own section names.</p>
-                    <p class="carousel-desc">A few titles have no public metadata entry yet, so they don't appear here. That reflects the coverage of third-party sources, not an editorial choice.</p>
-                    <p class="carousel-desc"><strong>Source:</strong> <a href="https://mardelplatafilmfest.com/" target="_blank" class="accent-link">official festival site</a></p>
+                    <p class="carousel-desc">The festival published its full programme on 19 October: 188 titles in 31 sections, with 481 screenings from 6 to 15 November. The catalog follows the festival's own sections, and the Schedule tab lists every screening by day and room.</p>
+                    <p class="carousel-desc">Titles with no public metadata entry yet, most of them in competition, appear in the Schedule tab but not in the catalog. That reflects the coverage of third-party sources, not an editorial choice.</p>
+                    <p class="carousel-desc"><strong>Source:</strong> <a href="https://mardelplatafilmfest.com/41/en/programas/" target="_blank" class="accent-link">official festival programme</a></p>
                   </template>
 
                   <!-- Slide 2: Sections -->
@@ -314,20 +314,31 @@
                     <div class="section-glossary">
                       <div class="section-glossary-item"><strong>Opening Film</strong><span><em>Wild Horse Nine</em>, by Martin McDonagh, at the opening gala.</span></div>
                       <div class="section-glossary-item"><strong>Closing Film</strong><span><em>Borges and Me</em>, by Marc Turtletaub.</span></div>
-                      <div class="section-glossary-item"><strong>Panorama – Autores</strong><span>Recent work by established filmmakers, out of competition.</span></div>
-                      <div class="section-glossary-item"><strong>Panorama – Nuevos Autores</strong><span>First and early films by new filmmakers, out of competition.</span></div>
-                      <div class="section-glossary-item"><strong>Panorama – Ganadoras de grandes festivales</strong><span>This year's award winners from the major international festivals, out of competition.</span></div>
-                      <div class="section-glossary-item"><strong>Estados Alterados</strong><span>Films that explore new forms and cinematic universes.</span></div>
-                      <div class="section-glossary-item"><strong>Hora Cero</strong><span>Fantasy and horror cinema.</span></div>
-                      <div class="section-glossary-item"><strong>Luces Nórdicas</strong><span>A showcase of films from Denmark, Finland, Iceland, Norway and Sweden.</span></div>
-                      <div class="section-glossary-item"><strong>Banda Sonora Original</strong><span>Films about music and musicians.</span></div>
-                      <div class="section-glossary-item"><strong>Pequeños y jóvenes espectadores</strong><span>A new section of animated and live-action films for children and teenagers.</span></div>
-                      <div class="section-glossary-item"><strong>Open-Air Argentine Cinema</strong><span>Free open-air screenings at Villa Ocampo of this year's Argentine releases.</span></div>
-                      <div class="section-glossary-item"><strong>Astor Lifetime Achievement Award</strong><span>A film for each of this year's honorees: Emilio Kauderer, Alejandro Agresti and Natalia Oreiro.</span></div>
-                      <div class="section-glossary-item"><strong>Tribute to Héctor Babenco</strong><span>A selection of films by the Argentine-born Brazilian director.</span></div>
-                      <div class="section-glossary-item"><strong>Argentine Cinema Retrospective</strong><span>Argentine films turning fifty this year, alongside restored classics.</span></div>
-                      <div class="section-glossary-item"><strong>Andrzej Wajda Retrospective</strong><span>Four films by the Polish director.</span></div>
-                      <div class="section-glossary-item"><strong>Japanese Cinema Classics</strong><span>Classics by Yasujirō Ozu, Kenji Mizoguchi and Keisuke Kinoshita.</span></div>
+                      <div class="section-glossary-item"><strong>International Feature Film Competition</strong><span>The main competition: 14 features from around the world.</span></div>
+                      <div class="section-glossary-item"><strong>Latin American Feature Film Competition</strong><span>14 features from Latin America.</span></div>
+                      <div class="section-glossary-item"><strong>Argentine Feature Film Competition</strong><span>12 Argentine features.</span></div>
+                      <div class="section-glossary-item"><strong>Short Film Competitions</strong><span>International, Latin American and Argentine, with eight shorts each.</span></div>
+                      <div class="section-glossary-item"><strong>In Transit (WIP) Competition</strong><span>Works in progress, shown only to accredited guests.</span></div>
+                      <div class="section-glossary-item"><strong>Special Screenings</strong><span>Out-of-competition screenings, most of them this year's Argentine releases.</span></div>
+                      <div class="section-glossary-item"><strong>Award Winners from Leading Festivals</strong><span>This year's award winners from the major international festivals, out of competition.</span></div>
+                      <div class="section-glossary-item"><strong>Auteurs</strong><span>Recent work by established filmmakers, out of competition.</span></div>
+                      <div class="section-glossary-item"><strong>New Auteurs</strong><span>First and early films by new filmmakers, out of competition.</span></div>
+                      <div class="section-glossary-item"><strong>Altered States</strong><span>Films that explore new forms and cinematic universes.</span></div>
+                      <div class="section-glossary-item"><strong>Midnight Screamings</strong><span>Fantasy and horror cinema.</span></div>
+                      <div class="section-glossary-item"><strong>Nordic Lights</strong><span>A showcase of films from Denmark, Finland, Iceland, Norway and Sweden.</span></div>
+                      <div class="section-glossary-item"><strong>Spain on Screen</strong><span>Recent Spanish cinema.</span></div>
+                      <div class="section-glossary-item"><strong>Contemporary Israeli Cinema</strong><span>Recent films from Israel.</span></div>
+                      <div class="section-glossary-item"><strong>Original Soundtrack (OST) Presents</strong><span>Films about music and musicians.</span></div>
+                      <div class="section-glossary-item"><strong>Children and Young Audiences</strong><span>Animated and live-action films for children and teenagers.</span></div>
+                      <div class="section-glossary-item"><strong>Pearls: Outstanding Works from National Festivals</strong><span>Standout titles from Argentina's national film festivals, one screening each.</span></div>
+                      <div class="section-glossary-item"><strong>Astor for Lifetime Achievement Award</strong><span>A film for each of this year's honorees: Emilio Kauderer, Alejandro Agresti and Natalia Oreiro.</span></div>
+                      <div class="section-glossary-item"><strong>Homage to Babenco</strong><span>A selection of films by the Argentine-born Brazilian director Héctor Babenco.</span></div>
+                      <div class="section-glossary-item"><strong>Homage to Eduardo Mignogna</strong><span><em>Sol de otoño</em> (1996), by the Argentine director.</span></div>
+                      <div class="section-glossary-item"><strong>Homage to Andrzej Wajda</strong><span>Four films by the Polish director.</span></div>
+                      <div class="section-glossary-item"><strong>Actresses of the Golden Age of Japanese Cinema</strong><span>Classics by Yasujirō Ozu, Kenji Mizoguchi and Keisuke Kinoshita.</span></div>
+                      <div class="section-glossary-item"><strong>50th Anniversary Screening</strong><span>Argentine films released in 1976.</span></div>
+                      <div class="section-glossary-item"><strong>National Classics</strong><span><em>La casa del ángel</em> (1957), by Leopoldo Torre Nilsson.</span></div>
+                      <div class="section-glossary-item"><strong>Institutional Screenings</strong><span>Short-film programmes from film schools and industry partners.</span></div>
                     </div>
                   </template>
                 </div>
@@ -358,7 +369,7 @@ import MardelplataCard from '~/components/MardelplataCard.vue';
 import MardelplataLineupModal from '~/components/festival/MardelplataLineupModal.vue';
 
 // Se apaga cuando salga el programa completo, después de las competencias del 19 de octubre.
-const PROVISIONAL_LINEUP = true;
+const PROVISIONAL_LINEUP = false;
 const provisionalOpen = ref(false);
 
 const activeTab = ref('films');
@@ -416,33 +427,71 @@ const showSchedulePending = computed(() => schedule.value.length === 0);
 const openDays = ref(new Set());
 
 const CATEGORY_ORDER = [
-    "Apertura",
-    "Clausura",
-    "Panorama – Autores",
-    "Panorama – Nuevos Autores",
-    "Panorama – Ganadoras de grandes festivales",
+    "Película de Apertura",
+    "Película de Clausura",
+    "Competencia internacional de largometrajes",
+    "Competencia latinoamericana de largometrajes",
+    "Competencia argentina de largometrajes",
+    "Competencia Internacional de cortometrajes",
+    "Competencia latinoamericana de cortometrajes",
+    "Competencia argentina de cortometrajes",
+    "Competencia En tránsito (WIP)",
+    "Proyecciones especiales",
+    "Ganadoras de grandes festivales",
+    "Autores",
+    "Nuevos autores",
     "Estados Alterados",
-    "Hora Cero",
+    "Hora cero",
     "Luces Nórdicas",
-    "Banda Sonora Original",
+    "España en la pantalla",
+    "Cine Contemporáneo israelí",
+    "Banda Sonora Original (BSO) presenta",
     "Pequeños y jóvenes espectadores",
-    "Cine argentino al aire libre",
-    "Astor a la Trayectoria",
+    "Perlas: obras destacadas de los Festivales Nacionales",
+    "Astor a la trayectoria: Emilio Kauderer",
+    "Astor a la trayectoria: Alejandro Agresti",
+    "Astor a la trayectoria: Natalia Oreiro",
     "Homenaje a Héctor Babenco",
-    "Retrospectiva de cine argentino",
-    "Retrospectiva Andrzej Wajda",
-    "Clásicos del cine japonés",
+    "Homenaje a Eduardo Mignogna",
+    "Homenaje a Andrzej Wajda",
+    "Actrices de la Época Dorada del Cine Japonés",
+    "50 Años del estreno",
+    "Clásicos nacionales",
+    "Proyecciones institucionales",
 ];
 
 const CATEGORY_LABELS = {
-    ["Apertura"]: "Opening Film",
-    ["Clausura"]: "Closing Film",
-    ["Cine argentino al aire libre"]: "Open-Air Argentine Cinema",
-    ["Astor a la Trayectoria"]: "Astor Lifetime Achievement Award",
-    ["Homenaje a Héctor Babenco"]: "Tribute to Héctor Babenco",
-    ["Retrospectiva de cine argentino"]: "Argentine Cinema Retrospective",
-    ["Retrospectiva Andrzej Wajda"]: "Andrzej Wajda Retrospective",
-    ["Clásicos del cine japonés"]: "Japanese Cinema Classics",
+    ["Película de Apertura"]: "Opening Film",
+    ["Película de Clausura"]: "Closing Film",
+    ["Competencia internacional de largometrajes"]: "International Feature Film Competition",
+    ["Competencia latinoamericana de largometrajes"]: "Latin American Feature Film Competition",
+    ["Competencia argentina de largometrajes"]: "Argentine Feature Film Competition",
+    ["Competencia Internacional de cortometrajes"]: "International Short Film Competition",
+    ["Competencia latinoamericana de cortometrajes"]: "Latin American Short Film Competition",
+    ["Competencia argentina de cortometrajes"]: "Argentine Short Film Competition",
+    ["Competencia En tránsito (WIP)"]: "In Transit (WIP) Competition",
+    ["Proyecciones especiales"]: "Special Screenings",
+    ["Ganadoras de grandes festivales"]: "Award Winners from Leading Festivals",
+    ["Autores"]: "Auteurs",
+    ["Nuevos autores"]: "New Auteurs",
+    ["Estados Alterados"]: "Altered States",
+    ["Hora cero"]: "Midnight Screamings",
+    ["Luces Nórdicas"]: "Nordic Lights",
+    ["España en la pantalla"]: "Spain on Screen",
+    ["Cine Contemporáneo israelí"]: "Contemporary Israeli Cinema",
+    ["Banda Sonora Original (BSO) presenta"]: "Original Soundtrack (OST) Presents",
+    ["Pequeños y jóvenes espectadores"]: "Children and Young Audiences",
+    ["Perlas: obras destacadas de los Festivales Nacionales"]: "Pearls: Outstanding Works from National Festivals",
+    ["Astor a la trayectoria: Emilio Kauderer"]: "Astor for Lifetime Achievement Award: Emilio Kauderer",
+    ["Astor a la trayectoria: Alejandro Agresti"]: "Astor for Lifetime Achievement Award: Alejandro Agresti",
+    ["Astor a la trayectoria: Natalia Oreiro"]: "Astor for Lifetime Achievement Award: Natalia Oreiro",
+    ["Homenaje a Héctor Babenco"]: "Homage to Babenco",
+    ["Homenaje a Eduardo Mignogna"]: "Homage to Eduardo Mignogna",
+    ["Homenaje a Andrzej Wajda"]: "Homage to Andrzej Wajda",
+    ["Actrices de la Época Dorada del Cine Japonés"]: "Actresses of the Golden Age of Japanese Cinema",
+    ["50 Años del estreno"]: "50th Anniversary Screening",
+    ["Clásicos nacionales"]: "National Classics",
+    ["Proyecciones institucionales"]: "Institutional Screenings",
     OTHER: "Section to be announced",
 };
 
