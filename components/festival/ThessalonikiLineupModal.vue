@@ -265,10 +265,30 @@ defineEmits(['close'])
 }
 
 @media (max-width: 640px) {
-  .modalOverlay { padding: 12px; align-items: flex-end; }
-  .modalContent { max-height: calc(100vh - 24px); }
-  .body { padding: 6rem 1.8rem 2.2rem; }
+  .modalOverlay { padding: 0; align-items: flex-end; }
+
+  .modalContent {
+    max-height: 92vh;
+    max-height: 92dvh;
+    padding-bottom: env(safe-area-inset-bottom);
+    border-radius: 20px 20px 0 0;
+    background-color: rgba(3, 4, 6, 0.97);
+    overscroll-behavior: contain;
+  }
+
+  .closeButton {
+    position: sticky;
+    top: 12px;
+    width: 36px;
+    height: 36px;
+    margin: 12px 12px -48px auto;
+    background: rgba(10, 24, 30, 0.94);
+  }
+
+  .body { padding: 6rem 1.8rem 2.4rem; }
+  .intro { padding-right: 0; }
   .intro h3 { font-size: 1.9rem; }
-  .defs div { gap: 0.6rem; }
+  .notice { padding: 1.2rem 1.4rem; }
+  .defs div { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
 }
 </style>
