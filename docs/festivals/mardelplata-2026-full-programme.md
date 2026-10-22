@@ -50,12 +50,13 @@ poster and film page. `source_id` follows `mardelplata-2026-<slug>`. The seven
 row each, under their published title. The six works in progress of the
 *En tránsito* competition have no runtime in the official programme.
 
-**TMDB.** A `tmdb_id` was set only when the TMDB entry's title and every
-director match the official page, and its runtime, year and production
-countries, wherever TMDB lists them, agree with it. 60 of the 115 new titles
-qualify. The other 55 are stored without one, together with the three older
-rows that still have no TMDB entry. Most of them are this year's premieres in
-competition, and they can be matched once TMDB lists them.
+**TMDB.** Every `tmdb_id` was checked by hand against the official page on
+title and director, searching TMDB by title and by director. 73 of the 115 new
+titles have one, and so does the older *Pacífico* row by Riccardo Gabrielli.
+The other 42 are stored without one, together with two older rows that still
+have no TMDB entry. Most of them are short-film programmes, works in progress
+and this year's premieres in competition, and they can be matched once TMDB
+lists them.
 
 **Screenings.** 481 screenings from 6 to 15 November in 11 rooms.
 `start_time` is the official date and time with a `-03:00` offset,
@@ -102,7 +103,8 @@ screening of this festival was written before the import.
 | Astor a la trayectoria: Natalia Oreiro | 1 | 4 |
 | **Total** | **188** | **481** |
 
-130 rows have a `tmdb_id`. Screenings per day:
+144 rows have a `tmdb_id` and are shown in the catalog; the other 44 appear in
+the Schedule tab. Screenings per day:
 
 | Day | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
