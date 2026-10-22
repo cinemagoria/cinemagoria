@@ -39,7 +39,7 @@
         <button type="button" :class="[$style.noirBadgeImg, $style.ledgerBadgeBtn]" title="Ledger" aria-label="Ledger" @click.stop="showLedgerModal = true">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" :class="$style.noirBadgeImgEl" aria-hidden="true">
             <rect :class="$style.ledgerHit" x="0" y="150" width="210" height="208" fill="transparent" />
-            <g transform="translate(-16.9 161) scale(7.75)" fill="none" stroke="#fff" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
+            <g transform="translate(-14.7 173) scale(6.75)" fill="none" stroke="#fff" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
               <path d="M3 3v5h5" />
               <path d="M12 7v5l4 2" />
