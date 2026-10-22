@@ -5574,5 +5574,13 @@
     "backdrop_path": null,
     "poster_path": "/cHoIlL1K5R4K85JjTAMVlJkCrFs.jpg",
     "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1789849,
+    "media_type": "movie",
+    "trailer_key": "_8RhTgio1k4",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1792677765/cinemagoria/backdrops/noir_1789849.webp",
+    "poster_path": "/xoDVOccPiOejX9OJmt7z4zYIYQO.jpg",
+    "force_enrichment": true
   }
 ]
