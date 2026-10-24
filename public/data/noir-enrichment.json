@@ -1058,7 +1058,7 @@
   {
     "tmdb_id": 1399525,
     "media_type": "movie",
-    "trailer_key": "HafsUWXP3UM",
+    "trailer_key": "3v-DLPMztqs",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1774662553/cinemagoria/backdrops/hero_1399525.webp",
     "poster_path": "/1x34FPfKP8uYO7LlzopbHpJFGAh.jpg",
     "force_enrichment": false
@@ -1308,7 +1308,7 @@
     "media_type": "movie",
     "trailer_key": "2AxtdPvDojA",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1785217419/cinemagoria/backdrops/noir_1476614.webp",
-    "poster_path": "/kFD1vl6FPt8heIIgFiAyIbZqrYh.jpg",
+    "poster_path": "/fgxhBo4elwt89J5k9wzhHSXGQmY.jpg",
     "force_enrichment": true
   },
   {
@@ -1578,8 +1578,8 @@
   {
     "tmdb_id": 1595346,
     "media_type": "movie",
-    "trailer_key": "EvkIypHUjWk",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1777437882/cinemagoria/backdrops/noir_1595346.webp",
+    "trailer_key": "YrEC0z2tL1M",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1792824012/cinemagoria/backdrops/noir_1595346.webp",
     "poster_path": "/k0MdqAUD3PsdgjDGBNGhP5E0Xct.jpg",
     "force_enrichment": true
   },
@@ -1684,7 +1684,7 @@
     "media_type": "movie",
     "trailer_key": "_ojRO5vIna0",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1778531633/cinemagoria/backdrops/noir_1318864.webp",
-    "poster_path": "/tFzSSetNzvdaxms6RLfr2pyu9sM.jpg",
+    "poster_path": "/4JvPjkH0OXm6K1IFcjl2kk8gerC.jpg",
     "force_enrichment": true
   },
   {
@@ -5212,7 +5212,7 @@
     "media_type": "movie",
     "trailer_key": "n7cWYpqt-bo",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1791619075/cinemagoria/backdrops/noir_1025231.webp",
-    "poster_path": "/1sHvb9l4ZVejU3K2kA8lt4WZFZi.jpg",
+    "poster_path": "/fyRoKPsLIZc4vNfaHxbAmY3cbX1.jpg",
     "force_enrichment": false
   },
   {
@@ -5346,7 +5346,7 @@
   {
     "tmdb_id": 1687667,
     "media_type": "movie",
-    "trailer_key": null,
+    "trailer_key": "E-R8bIC_XcI",
     "backdrop_path": null,
     "poster_path": "/gqvNTLRwgQqp0FHQz5PvoyUbWmx.jpg",
     "force_enrichment": false
