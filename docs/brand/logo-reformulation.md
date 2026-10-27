@@ -44,8 +44,10 @@ Every file is replaced at the same path, size and format, so no reference change
 |---|---|
 | Transparent | `icon.png` (512), `icons/icon-medium.png` (180), `icons/favicon-{32,36,48,57,60,72,76,96,192}.png`, `icons/icon-512x512.webp` (512), `favicon.ico` (16/32/48), `icons/favicon.ico` (16/32), `assets/images/favicon-32.png` (repository root) |
 | Circle | `icons/favicon-circle-{48,96,192}.png` |
-| Maskable | `icons/icon-192x192.png` (192), `icons/favicon-{72,114,120,144,152,180}-precomposed.png` |
+| Maskable | `icons/icon-192x192.png` (192), `icons/favicon-{72,114,120,144,152,180}-precomposed.png`, `icons/icon-512x512-maskable.webp` (512, new) |
 | Composed | `og-image.jpg` (1200×630, mark with wordmark and tagline) |
+
+The manifest's maskable 512 px entry pointed to `/icon-512x512.webp`, which never existed; it now points to `icons/icon-512x512-maskable.webp`.
 
 The editorial tooling's admin panel holds its own copies of `favicon.ico`, `favicon-32.png`, `favicon-96.png`, `favicon-192.png` and `favicon-180-precomposed.png`. The feed scripts and the old-domain redirect page load the icons by URL and follow the new files without changes.
 
