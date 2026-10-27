@@ -4,7 +4,7 @@
       <div :class="$style.top">
         <div :class="$style.brand">
           <nuxt-link to="/" :class="$style.lockup" aria-label="Home">
-            <img src="/icons/icon-medium.png" alt="" width="36" height="36" loading="lazy" />
+            <img src="/icons/icon-medium.png?v=2" alt="" width="36" height="36" loading="lazy" />
             <span :class="$style.wordmark">Cinemagoria</span>
           </nuxt-link>
           <p :class="$style.tagline">Movies, series, festivals, awards and streaming availability &mdash; in one place.</p>

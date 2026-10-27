@@ -7,7 +7,7 @@
           :to="{ name: 'index' }"
           aria-label="Home"
           @click.native="clearSearchBeforeNavigate">
-          <img src="/icons/icon-medium.png" alt="Home" class="home-icon" :class="$style.navIcon" />
+          <img src="/icons/icon-medium.png?v=2" alt="Home" class="home-icon" :class="$style.navIcon" />
         <span :class="$style.navLabel">Home</span>
         </nuxt-link>
       </li>

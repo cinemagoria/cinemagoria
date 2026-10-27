@@ -155,14 +155,14 @@ export default defineNuxtConfig({
         { property: 'og:description', content: 'Browse movies, series, festival coverage, awards, and streaming availability in one place.' },
         { property: 'og:type', content: 'website' },
         { property: 'og:url', content: 'https://cinemagoria.com' },
-        { property: 'og:image', content: 'https://cinemagoria.com/og-image.jpg' },
+        { property: 'og:image', content: 'https://cinemagoria.com/og-image.jpg?v=2' },
         { name: 'twitter:card', content: 'summary_large_image' },
       ],
       link: [
-        { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/icons/favicon-circle-48.png' },
-        { rel: 'icon', type: 'image/png', sizes: '96x96', href: '/icons/favicon-circle-96.png' },
-        { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/icons/favicon-circle-192.png' },
-        { rel: 'shortcut icon', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/icons/favicon-circle-48.png?v=2' },
+        { rel: 'icon', type: 'image/png', sizes: '96x96', href: '/icons/favicon-circle-96.png?v=2' },
+        { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/icons/favicon-circle-192.png?v=2' },
+        { rel: 'shortcut icon', href: '/favicon.ico?v=2' },
         // Preconnect so the render-blocking font CSS + woff2 handshakes start
         // immediately instead of after HTML parse reaches the stylesheet links.
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
