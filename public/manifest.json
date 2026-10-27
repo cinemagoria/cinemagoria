@@ -9,25 +9,25 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/icons/icon-192x192.png",
+      "src": "/icons/icon-192x192.png?v=2",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-192x192.png",
+      "src": "/icons/icon-192x192.png?v=2",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/icons/icon-512x512.webp",
+      "src": "/icons/icon-512x512.webp?v=2",
       "sizes": "512x512",
       "type": "image/webp",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-512x512-maskable.webp",
+      "src": "/icons/icon-512x512-maskable.webp?v=2",
       "sizes": "512x512",
       "type": "image/webp",
       "purpose": "maskable"
