@@ -1,4 +1,4 @@
-<img src="docs/readme/cinemagoria-header.jpg" alt="Cinemagoria" width="440">
+<img src="docs/readme/cinemagoria-header.jpg" alt="Cinemagoria" width="100%">
 
 > A community-oriented film & TV discovery platform.
 > Lead developer: [@imprvhub](https://github.com/imprvhub) · In active development since March 27, 2024.
