@@ -165,6 +165,8 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/png', sizes: '96x96', href: '/icons/favicon-circle-96.png?v=2' },
         { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/icons/favicon-circle-192.png?v=2' },
         { rel: 'shortcut icon', href: '/favicon.ico?v=2' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/icons/favicon-180-precomposed.png?v=2' },
+        { rel: 'manifest', href: '/manifest.json' },
         // Preconnect so the render-blocking font CSS + woff2 handshakes start
         // immediately instead of after HTML parse reaches the stylesheet links.
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
