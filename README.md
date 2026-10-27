@@ -1,9 +1,9 @@
-## Cinemagoria
+<img src="docs/readme/cinemagoria-header.jpg" alt="Cinemagoria" width="100%">
 
 > A community-oriented film & TV discovery platform.
 > Lead developer: [@imprvhub](https://github.com/imprvhub) · In active development since March 27, 2024.
 
-![Cinemagoria Cover](https://ivanluna.dev/images/assets/cinemagoria-asset1.webp)
+![Cinemagoria Cover](docs/readme/cinemagoria-asset1.webp)
 
 Cinemagoria aggregates metadata, ratings, reviews, festival coverage, awards history, streaming availability and original soundtracks from **IMDb, TMDB, MusicBrainz, Trakt.tv, Rotten Tomatoes, JustWatch and MDBList** into a single deeply integrated experience — with full user accounts, public profiles, watchlists, custom lists and a follow-based notification system.
 
@@ -33,7 +33,7 @@ The platform is built around four principles:
 ## N.O.I.R. — The Cinemagoria Selection
 
 <div align="center">
-  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset11.webp" alt="N.O.I.R. — Nothing Out Is Ready" width="70%">
+  <img src="docs/readme/cinemagoria-asset11.webp" alt="N.O.I.R. — Nothing Out Is Ready" width="70%">
 </div>
 
 **N.O.I.R. (Nothing Out Is Ready)** is Cinemagoria's in-house editorial selection — a parallel content layer to the algorithmic feeds, covering titles released or scheduled from 2024 onwards. Curation is forward-looking: upcoming premieres are added well in advance, with the current selection reaching as far as March 2027.
@@ -53,7 +53,7 @@ The N.O.I.R. badge — rendered in the top-right corner of each backdrop in `Her
 
 ### Film Festivals
 <div align="center">
-  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset9.webp" alt="Festivals" width="70%">
+  <img src="docs/readme/cinemagoria-asset9.webp" alt="Festivals" width="70%">
 </div>
 
 Every covered festival gets its own page, API endpoints, card and badge components, and a slot in the homepage carousel. Selections are grouped by the festival's real sections, screening schedules are timezone-aware, and award winners are seeded once the ceremonies close.
@@ -76,56 +76,56 @@ Cannes ships the official screenings plus the parallel sections — Critics' Wee
 
 ### Release Calendar
 <div align="center">
-  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset12.webp" alt="Release Calendar" width="70%">
+  <img src="docs/readme/cinemagoria-asset12.webp" alt="Release Calendar" width="70%">
 </div>
 
 A public calendar at `/calendar` with every release the platform tracks for a given month or week — films and episodes together, drawn from the curated catalog (festival programmes, N.O.I.R.). A release date belongs to a country and a format, so every entry names its territory and release type instead of presenting one date as universal. A title's festival itinerary stays expanded, while a wide same-week international rollout collapses into a single entry. Lens, territory, media type and free-text filters run client-side over one cacheable payload per month.
 
 ### Search & Discovery
 <div align="center">
-  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset10.webp" alt="Search" width="70%">
+  <img src="docs/readme/cinemagoria-asset10.webp" alt="Search" width="70%">
 </div>
 
 Categorized multi-search across movies, TV shows, people, news, festivals and production companies — visually separated by category through horizontal carousels. Contextual query parsing extracts year and person signals to score results by relevance, with a built-in search guide modal for best practices. Supports direct IMDb / TMDb ID lookup, embedded Discover filters and Rust-backed typo detection.
 
 ### Catalog Discovery
 <div align="center">
-  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset2.webp" alt="Discover" width="70%">
+  <img src="docs/readme/cinemagoria-asset2.webp" alt="Discover" width="70%">
 </div>
 
 A unified Discover component embedded directly in Movie and TV pages: granular content filters, IMDb and user rating ranges, item enrichment with chunking, and chip-based active filter display.
 
 ### Awards
 <div align="center">
-  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset6.webp" alt="Awards" width="70%">
+  <img src="docs/readme/cinemagoria-asset6.webp" alt="Awards" width="70%">
 </div>
 
 Full historical coverage of the Academy Awards, Golden Globes, Palme d'Or, Golden Lion and Golden Bear, with festival winners archived as each covered edition closes. Includes a dedicated Awards page, per-title and per-person awards tabs, and intelligent link resolution that routes to the correct movie or TV page even when TMDb IDs collide.
 
 ### Movie & TV Detail
 <div align="center">
-  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset8.webp" alt="Detail Pages" width="70%">
+  <img src="docs/readme/cinemagoria-asset8.webp" alt="Detail Pages" width="70%">
 </div>
 
 IMDb-first ratings with TMDB fallback (always labeled), Rotten Tomatoes Tomatometer, MusicBrainz original soundtracks, Trakt.tv reviews, release status context, country-flagged release dates, and tab-based recommendation carousels (Similar / By the Director / By the Producer / By the Creator). External links render conditionally — never broken.
 
 ### Watchlist & Custom Lists
 <div align="center">
-  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset4.webp" alt="Watchlist" width="70%">
+  <img src="docs/readme/cinemagoria-asset4.webp" alt="Watchlist" width="70%">
 </div>
 
 A 50-movie + 50-TV watchlist with persistent filters (genre, year, IMDb rating range, votes, personal rating) and Bayesian-weighted sorting. Unlimited custom themed lists with descriptions, public/private toggles, cloning of public lists, dynamic SEO, and bulk multi-select actions with undo. The global QuickFav dropdown manages list membership from any content card.
 
 ### Follows & Notifications
 <div align="center">
-  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset3.webp" alt="Notifications" width="70%">
+  <img src="docs/readme/cinemagoria-asset3.webp" alt="Notifications" width="70%">
 </div>
 
 Follow people (actors, directors, writers), TV shows, production companies and streaming platforms. A `/cron/check-releases` job detects new films (±30 days for people) and new episodes (±7 days for TV), pushing rich notifications synced across devices via Turso. The notification center supports filtering, bulk mark-all-read, paginated browsing and per-item deletion with ownership validation.
 
 ### Cinema News
 <div align="center">
-  <img src="https://ivanluna.dev/images/assets/cinemagoria-asset5.webp" alt="News" width="70%">
+  <img src="docs/readme/cinemagoria-asset5.webp" alt="News" width="70%">
 </div>
 
 Cinemagoria runs its own editorial pipeline for cinema news, alongside a curated set of trusted outlets — every card is labeled with its source, first-party articles open in-app and third-party ones link out to the publisher. Article pages feature YouTube trailer embeds, multi-asset image carousels, and related TMDB movies, TV shows and people for discoverability. The frontend reads pre-computed results from Turso (sub-50ms load times), with article search scoped to Cinemagoria articles, saved articles, an RSS feed for Cinemagoria-sourced content and a homepage news carousel.

@@ -4,7 +4,7 @@
       <div :class="$style.top">
         <div :class="$style.brand">
           <nuxt-link to="/" :class="$style.lockup" aria-label="Home">
-            <img src="/icons/icon-medium.png" alt="" width="36" height="36" loading="lazy" />
+            <img src="/icons/icon-medium.png?v=2" alt="" width="36" height="36" loading="lazy" />
             <span :class="$style.wordmark">Cinemagoria</span>
           </nuxt-link>
           <p :class="$style.tagline">Movies, series, festivals, awards and streaming availability &mdash; in one place.</p>
@@ -232,9 +232,6 @@ $ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     width: 3.6rem;
     height: 3.6rem;
     display: block;
-    border-radius: 10px;
-    box-shadow: 0 0 0 1px rgba($cyan, 0.22);
-    transition: box-shadow 0.3s ease;
   }
 }
 
@@ -460,10 +457,6 @@ $ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
 @media (hover: hover) and (pointer: fine) {
   .lockup:hover {
-    img {
-      box-shadow: 0 0 0 1px rgba($cyan, 0.55), 0 6px 18px rgba($cyan, 0.18);
-    }
-
     .wordmark {
       color: $cyan;
     }

@@ -267,7 +267,7 @@
               <div class="article-divider"></div>
 
               <div class="article-byline">
-                <img src="/icons/favicon-192.png" alt="Cinemagoria" class="byline-logo" />
+                <img src="/icons/favicon-192.png?v=2" alt="Cinemagoria" class="byline-logo" />
                 <span>By Cinemagoria Lab</span>
               </div>
 
@@ -765,7 +765,7 @@ useHead(() => {
     '@type': 'NewsArticle',
     headline: article.value.title_en,
     description: article.value.description_en,
-    image: article.value.image_url ? [article.value.image_url] : ['https://cinemagoria.com/og-image.jpg'],
+    image: article.value.image_url ? [article.value.image_url] : ['https://cinemagoria.com/og-image.jpg?v=2'],
     datePublished: article.value.published_at,
     dateModified: article.value.published_at,
     author: [{ '@type': 'Organization', name: 'Cinemagoria', url: 'https://cinemagoria.com' }],
@@ -773,7 +773,7 @@ useHead(() => {
       '@type': 'Organization',
       name: 'Cinemagoria',
       url: 'https://cinemagoria.com',
-      logo: { '@type': 'ImageObject', url: 'https://cinemagoria.com/icons/favicon-192.png' }
+      logo: { '@type': 'ImageObject', url: 'https://cinemagoria.com/icons/favicon-192.png?v=2' }
     },
     mainEntityOfPage: { '@type': 'WebPage', '@id': `https://cinemagoria.com/news/${article.value.slug}` },
     url: `https://cinemagoria.com/news/${article.value.slug}`,
@@ -795,7 +795,7 @@ useHead(() => {
       { name: 'description', content: article.value.description_en },
       { property: 'og:title', content: article.value.title_en },
       { property: 'og:description', content: article.value.description_en },
-      { property: 'og:image', content: article.value.image_url || 'https://cinemagoria.com/og-image.jpg' },
+      { property: 'og:image', content: article.value.image_url || 'https://cinemagoria.com/og-image.jpg?v=2' },
       { property: 'og:type', content: 'article' },
       { property: 'og:url', content: `https://cinemagoria.com/news/${article.value.slug}` },
       { property: 'article:published_time', content: article.value.published_at },
