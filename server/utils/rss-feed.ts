@@ -329,7 +329,7 @@ ${media.length ? media.join('\n') + '\n' : ''}      <atom:link rel="alternate" h
     <ttl>60</ttl>
     <lastBuildDate>${now}</lastBuildDate>
     <image>
-      <url>${selfBase}/og-image.jpg</url>
+      <url>${selfBase}/og-image.jpg?v=2</url>
       <title>${channelTitle}</title>
       <link>${selfBase}</link>
     </image>

@@ -164,7 +164,7 @@
                     <div :class="$style.reviewMeta">
                        <span v-if="review.source === 'User'" :class="$style.userBadge">TÚ</span>
                        <img v-else-if="review.source === 'Trakt'" src="/logos/streaming/traktv-logo.svg" alt="Trakt" :class="$style.sourceLogo" />
-                       <img v-else-if="review.source === 'Cinemagoria'" src="/icons/icon-medium.png" alt="Cinemagoria" :class="$style.ecIcon" />
+                       <img v-else-if="review.source === 'Cinemagoria'" src="/icons/icon-medium.png?v=2" alt="Cinemagoria" :class="$style.ecIcon" />
                        <img v-else src="/logos/platforms/tmdb.svg" alt="TMDB" :class="$style.sourceLogoTMDB" />
                        <span :class="$style.reviewDate">{{ formatCreatedAt(review.createdAt) }}</span>
                     </div>

@@ -25,7 +25,7 @@ useHead({
             foundingDate: '2023',
             logo: {
               '@type': 'ImageObject',
-              url: 'https://cinemagoria.com/icons/icon-192x192.png',
+              url: 'https://cinemagoria.com/icons/icon-192x192.png?v=2',
               width: 192,
               height: 192,
             },
