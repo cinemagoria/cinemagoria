@@ -1,9 +1,9 @@
-## Cinemagoria
+<img src="docs/readme/cinemagoria-header.jpg" alt="Cinemagoria" width="440">
 
 > A community-oriented film & TV discovery platform.
 > Lead developer: [@imprvhub](https://github.com/imprvhub) · In active development since March 27, 2024.
 
-![Cinemagoria Cover](public/og-image.jpg)
+![Cinemagoria Cover](docs/readme/cinemagoria-asset1.webp)
 
 Cinemagoria aggregates metadata, ratings, reviews, festival coverage, awards history, streaming availability and original soundtracks from **IMDb, TMDB, MusicBrainz, Trakt.tv, Rotten Tomatoes, JustWatch and MDBList** into a single deeply integrated experience — with full user accounts, public profiles, watchlists, custom lists and a follow-based notification system.
 
