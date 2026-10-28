@@ -49,7 +49,7 @@ Every file is replaced at the same path, size and format, so no reference change
 
 The manifest's maskable 512 px entry pointed to `/icon-512x512.webp`, which never existed; it now points to `icons/icon-512x512-maskable.webp`.
 
-The editorial tooling's admin panel holds its own copies of `favicon.ico`, `favicon-32.png`, `favicon-96.png`, `favicon-192.png` and `favicon-180-precomposed.png`. The feed scripts and the old-domain redirect page load the icons by URL and follow the new files without changes.
+The editorial tooling's admin panel keeps its own gold variant of the logo, so the private tools stay visually apart from the public sites. The feed scripts and the old-domain redirect page load the icons by URL and follow the new files without changes.
 
 ## Limits
 
