@@ -99,7 +99,7 @@ const TAGS = [
   ['international', 'International Horror', 'Terror internacional'],
 ];
 
-const EXCLUDED = new Set([86825, 696605, 771536, 1233413, 8329, 201085]);
+const EXCLUDED = new Set([86825, 696605, 771536, 1233413, 8329, 201085, 594718]);
 
 const CLASSIFICATION = {
   1083381: 'cosmic-horror reality-bending unknown-entities #liminal',
@@ -179,7 +179,6 @@ const CLASSIFICATION = {
   1480387: 'paranormal-investigations demonic',
   1730: 'unreliable-perception doppelgangers #surreal #experimental',
   313922: 'survival-killer siege',
-  594718: 'alien infection #sci-fi #international',
   556509: 'cults religious #k-horror #asian #international',
   1107166: 'serial-killers satanic',
   1240889: 'classic-slasher',
@@ -310,11 +309,9 @@ const CLASSIFICATION = {
   376570: 'home-invasion survival-killer',
   567609: 'survival-killer dark-comedy',
   22970: 'classic-slasher parody',
-  176: 'serial-killers torture',
   9542: 'stalker survival-killer',
   39874: 'classic-slasher',
   458723: 'doppelgangers home-invasion #social',
-  520023: 'classic-slasher murder-mystery dark-comedy',
   517116: 'classic-slasher',
   234: 'unreliable-perception serial-killers #international',
   653: 'vampire gothic-horror #international',
@@ -352,12 +349,8 @@ const CLASSIFICATION = {
   17918: 'monster mutation',
   11503: 'occult-horror zombie',
   12158: 'vampire dark-comedy',
-  4232: 'classic-slasher murder-mystery',
-  4233: 'classic-slasher murder-mystery',
-  4234: 'classic-slasher murder-mystery',
   10012: 'werewolf',
   43931: 'serial-killers',
-  41446: 'classic-slasher murder-mystery',
   9538: 'mutation paranoia #sci-fi',
   9540: 'medical doppelgangers',
   1946: 'reality-bending mutation #sci-fi',
@@ -394,7 +387,6 @@ const CLASSIFICATION = {
   766: 'possession dark-comedy',
   2046: 'occult-mystery murder-mystery',
   16871: 'curses demonic',
-  1198994: 'survival-horror dark-comedy',
   571: 'animal-attack siege',
   223: 'gothic-horror psych-thriller',
   21734: 'serial-killers psych-thriller',
