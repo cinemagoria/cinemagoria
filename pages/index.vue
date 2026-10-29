@@ -14,7 +14,9 @@
          kept as reference for future editions; import + computed preserved below. -->
     <!-- <TribecaLiveBanner v-if="showTribecaLiveBanner" /> -->
 
-    <FestivalsRotatingBanner />
+    <HalloweenMarathonBanner>
+      <FestivalsRotatingBanner />
+    </HalloweenMarathonBanner>
 
     <Hero
       v-if="featured && featured.length"
@@ -23,6 +25,8 @@
       :is-homepage="true" />
 
     <NewsCarousel />
+
+    <HalloweenMarathonCarousel />
 
     <FestivalsCarousel
       v-if="festivalsMovies && festivalsMovies.results.length"
@@ -64,6 +68,8 @@ import Hero from '~/components/Hero';
 import SpotlightCarousel from '~/components/SpotlightCarousel';
 import FestivalsCarousel from '~/components/FestivalsCarousel';
 import NewsCarousel from '~/components/global/NewsCarousel';
+import HalloweenMarathonCarousel from '~/components/HalloweenMarathonCarousel';
+import HalloweenMarathonBanner from '~/components/HalloweenMarathonBanner';
 import ProductionCompanyCarousel from '~/components/ProductionCompanyCarousel';
 import StreamingPlatformCarousel from '~/components/StreamingPlatformCarousel';
 import OscarsLiveBanner from '~/components/OscarsLiveBanner';
