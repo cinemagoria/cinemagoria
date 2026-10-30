@@ -300,9 +300,9 @@
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                       <h3>Programme status</h3>
                     </div>
-                    <p class="carousel-desc">The festival publishes its programme in stages, and the complete programme is due on 31 October. The catalog lists every title released so far in the sections it covers, grouped under the festival's own section names, and the Schedule tab carries every screening announced for them, with cinema and hall, in Tallinn local time (EET).</p>
-                    <p class="carousel-desc">A number of short films have no public metadata entry yet, so they do not appear here. That reflects the coverage of third-party sources, not an editorial choice. When the complete programme is out, the catalog and the schedule are updated against it.</p>
-                    <p class="carousel-desc"><strong>Source:</strong> <a href="https://poff.ee/en/" target="_blank" class="accent-link">official festival site</a></p>
+                    <p class="carousel-desc">The festival published its complete programme at the end of October: 498 titles in 39 sections, with more than 1,000 screenings from 6 to 22 November in Tallinn and Tartu. The catalog follows the festival's own section names, and the Schedule tab lists every screening with cinema and hall, in Tallinn local time (EET).</p>
+                    <p class="carousel-desc">A number of short films have no public metadata entry yet, so they do not appear here. That reflects the coverage of third-party sources, not an editorial choice.</p>
+                    <p class="carousel-desc"><strong>Source:</strong> <a href="https://poff.ee/en/programmes/" target="_blank" class="accent-link">official festival programme</a></p>
                   </template>
 
                   <!-- Slide 2: Venues -->
@@ -317,11 +317,12 @@
                       <div class="venue-item"><strong>Apollo Kino Solaris</strong><span>Tallinn</span></div>
                       <div class="venue-item"><strong>Kino Sõprus</strong><span>Tallinn · Old Town</span></div>
                       <div class="venue-item"><strong>Kino Artis</strong><span>Tallinn</span></div>
+                      <div class="venue-item"><strong>Von Krahl</strong><span>Tallinn · Old Town</span></div>
                       <div class="venue-item"><strong>Film Museum</strong><span>Tallinn</span></div>
                       <div class="venue-item"><strong>Elektriteater (Electric Cinema)</strong><span>Tartu · Church Hall</span></div>
                       <div class="venue-item"><strong>Apollo Kino Tasku</strong><span>Tartu</span></div>
                     </div>
-                    <p class="carousel-desc">The cinemas in the published timetable so far, in Tallinn and in Tartu. Every screening in the Schedule tab names the cinema and the hall it plays in.</p>
+                    <p class="carousel-desc">The cinemas in the festival's timetable, in Tallinn and in Tartu. Every screening in the Schedule tab names the cinema and the hall it plays in.</p>
                   </template>
 
                   <!-- Slide 3: Sections -->
@@ -337,6 +338,19 @@
                       <div class="section-glossary-item"><strong>Baltic Film Competition</strong><span>Films from Estonia, Latvia and Lithuania and their international co-productions, at the heart of this year's Focus: Baltics.</span></div>
                       <div class="section-glossary-item"><strong>Critics' Picks Competition</strong><span>World premieres of auteur cinema with a clear artistic vision, curated by Nikolaj Nikitin.</span></div>
                       <div class="section-glossary-item"><strong>Rebels with a Cause Competition</strong><span>World premieres that challenge cinematic conventions, curated by Javier Garcia Puerto.</span></div>
+                      <div class="section-glossary-item"><strong>Doc@PÖFF International Competition</strong><span>Documentaries in world or international premiere: untold, real-life stories from around the world.</span></div>
+                      <div class="section-glossary-item"><strong>Doc@PÖFF Baltic Competition</strong><span>Documentary competition for new films from Estonia, Latvia and Lithuania.</span></div>
+                      <div class="section-glossary-item"><strong>Special Screenings</strong><span>Special events, rare film experiences and films by major names, out of competition.</span></div>
+                      <div class="section-glossary-item"><strong>Best of Festivals</strong><span>The year's most talked-about films from Cannes, Venice, Berlin and other leading festivals.</span></div>
+                      <div class="section-glossary-item"><strong>Best of Docs</strong><span>The year's most acclaimed and award-winning documentaries.</span></div>
+                      <div class="section-glossary-item"><strong>Midnight Shivers</strong><span>Recent horror, fantasy and genre films.</span></div>
+                      <div class="section-glossary-item"><strong>In Focus: the Baltic States</strong><span>The 30th edition's tribute to Estonian, Latvian and Lithuanian cinema, from world premieres to restored classics.</span></div>
+                      <div class="section-glossary-item"><strong>Spotlight: Basque Audiovisual</strong><span>Films from the Basque Country, from genre cinema to short films.</span></div>
+                      <div class="section-glossary-item"><strong>Standing with Ukraine</strong><span>Films by Ukrainian filmmakers who keep working despite the war.</span></div>
+                      <div class="section-glossary-item"><strong>Old Gold: Classic Films Come to Life</strong><span>Restored classics of world cinema and lesser-known masterpieces.</span></div>
+                      <div class="section-glossary-item"><strong>PÖFF Is Celebrating! This Is Where It All Began</strong><span>Nordic films that bring back the spirit of the first edition, in 1997, for the 30th anniversary.</span></div>
+                      <div class="section-glossary-item"><strong>Environmental and Science Film Programme</strong><span>Documentaries about the climate, the environment and science.</span></div>
+                      <div class="section-glossary-item"><strong>Estonian Olympic Committee Sports Film Programme</strong><span>Sports stories from Estonia and around the world.</span></div>
                       <div class="section-glossary-item"><strong>International Youth Competition Programme</strong><span>Just Film's international competition of premieres for young audiences. Its Grand Prix is chosen by an international jury and a youth jury.</span></div>
                       <div class="section-glossary-item"><strong>Children's Competition Programme</strong><span>Just Film's competition for viewers aged 10 to 13 and their families.</span></div>
                       <div class="section-glossary-item"><strong>Juniors' Competition Programme</strong><span>Just Film's competition for the youngest viewers: fairy tales and adventures, in sessions adapted for them.</span></div>
@@ -353,6 +367,10 @@
                       <div class="section-glossary-item"><strong>Shorts New Talents Competition: Live-action</strong><span>Live-action shorts by new filmmakers.</span></div>
                       <div class="section-glossary-item"><strong>Shorts New Talents Competition: Animation</strong><span>Animated shorts by new filmmakers.</span></div>
                       <div class="section-glossary-item"><strong>Shorts Kids Animation Competition</strong><span>Animated shorts for children.</span></div>
+                      <div class="section-glossary-item"><strong>Shorts Panorama</strong><span>PÖFF Shorts' panorama of short films from around the world, out of competition.</span></div>
+                      <div class="section-glossary-item"><strong>Shorts Alternatives</strong><span>Genre shorts, dance films and other unexpected short films.</span></div>
+                      <div class="section-glossary-item"><strong>Rebels With Their Shorts</strong><span>Two programmes of animated and live-action shorts that stretch the rules of cinema.</span></div>
+                      <div class="section-glossary-item"><strong>Doc@Shorts</strong><span>Short documentaries, in themed programmes.</span></div>
                     </div>
                   </template>
                 </div>
@@ -383,7 +401,7 @@ import TallinnCard from '~/components/TallinnCard.vue';
 import TallinnLineupModal from '~/components/festival/TallinnLineupModal.vue';
 
 // Se apaga cuando salga el programa completo (31 de octubre).
-const PROVISIONAL_LINEUP = true;
+const PROVISIONAL_LINEUP = false;
 const provisionalOpen = ref(false);
 
 const activeTab = ref('films');
@@ -447,6 +465,19 @@ const CATEGORY_ORDER = [
     "Baltic Film Competition",
     "Critics' Picks Competition",
     "Rebels with a Cause Competition",
+    "Doc@PÖFF International Competition",
+    "Doc@PÖFF Baltic Competition",
+    "Special Screenings",
+    "Best of Festivals",
+    "Best of Docs",
+    "Midnight Shivers",
+    "In Focus: the Baltic States",
+    "Spotlight: Basque Audiovisual",
+    "Standing with Ukraine",
+    "Old Gold: Classic Films Come to Life",
+    "PÖFF Is Celebrating! This Is Where It All Began",
+    "Environmental and Science Film Programme",
+    "Estonian Olympic Committee Sports Film Programme",
     "International Youth Competition Programme",
     "Children's Competition Programme",
     "Juniors' Competition Programme",
@@ -463,6 +494,10 @@ const CATEGORY_ORDER = [
     "Shorts New Talents Competition: Live-action",
     "Shorts New Talents Competition: Animation",
     "Shorts Kids Animation Competition",
+    "Shorts Panorama",
+    "Shorts Alternatives",
+    "Rebels With Their Shorts",
+    "Doc@Shorts",
 ];
 
 const CATEGORY_LABELS = {
