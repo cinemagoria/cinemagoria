@@ -43,9 +43,10 @@
     <!-- Article Content -->
     <template v-else>
       <!-- Cover Image — Hero style -->
-      <div v-if="article.image_url" class="article-hero">
+      <div v-if="article.image_url" class="article-hero" :class="{ 'article-hero--review': isReview }">
         <img :src="article.image_url" :alt="article.title_es" class="hero-img" loading="eager" />
         <div class="hero-overlay"></div>
+        <HalloweenSpecialPill v-if="isHalloween" class="hero-seasonal" />
         <NuxtLink to="/news" class="hero-back-btn">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
           Noticias
@@ -107,6 +108,7 @@
                 <NuxtLink
                   :to="{ path: '/news', query: { category: article.editorial_category } }"
                   class="sidebar-tag sidebar-tag--category sidebar-tag--primary"
+                  :class="{ 'sidebar-tag--review': isReview }"
                 >{{ categoryLabelES(article.editorial_category) }}</NuxtLink>
                 <NuxtLink
                   v-for="sec in (article.secondary_categories || [])"
@@ -222,12 +224,18 @@
                     </span>
                   </NuxtLink>
                 </div>
+                <div v-if="isReview" class="review-eyebrow">
+                  <span class="review-eyebrow__bar" aria-hidden="true"></span>
+                  <span class="review-eyebrow__text">Crítica</span>
+                  <HalloweenSpecialPill v-if="isHalloween && !article.image_url" />
+                </div>
                 <h1 class="article-title">{{ article.title_es }}</h1>
 
                 <!-- Cover image inline for mobile -->
                 <!-- Imagen de portada inline para mobile -->
-                <div v-if="article.image_url" class="mobile-hero">
+                <div v-if="article.image_url" class="mobile-hero" :class="{ 'mobile-hero--review': isReview }">
                   <img :src="article.image_url" :alt="article.title_es" loading="eager" />
+                  <HalloweenSpecialPill v-if="isHalloween" class="mobile-hero-seasonal" />
                 </div>
 
                 <p class="article-lead">{{ article.description_es }}</p>
@@ -317,7 +325,9 @@
 
               <div
                 class="article-body"
-                :class="{ 'article-body--gated': isGated }"
+                :class="{ 'article-body--gated': isGated, 'article-body--locked': isReview }"
+                @copy="blockReviewCopy"
+                @cut="blockReviewCopy"
                 v-html="isGated ? renderedBody : bodyParts.before"
               ></div>
               <div v-if="isGated" class="gate-card" role="region" aria-label="Artículo exclusivo para miembros">
@@ -366,7 +376,40 @@
               </div>
 
               <!-- Body (segunda mitad — solo cuando se pudo dividir por un <h2>) -->
-              <div v-if="!isGated && bodyParts.after" class="article-body" v-html="bodyParts.after"></div>
+              <div v-if="!isGated && bodyParts.spoilers" class="spoiler-zone" :class="{ 'spoiler-zone--locked': !spoilersRevealed }">
+                <div v-if="!spoilersRevealed" class="gate-card gate-card--spoiler" role="region" aria-label="Aviso de spoilers">
+                  <div class="gate-card__accent"></div>
+                  <div class="gate-card__icon-wrap" aria-hidden="true">
+                    <svg class="gate-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </div>
+                  <h3 class="gate-card__title">Alerta de spoilers</h3>
+                  <p class="gate-card__sub">A partir de acá, la crítica revela la trama completa, final incluido.</p>
+                  <div class="gate-card__actions">
+                    <button type="button" class="gate-card__cta" @click="revealSpoilers">Seguir leyendo</button>
+                    <button type="button" class="gate-card__ghost" @click="leaveSpoilers">Cancelar</button>
+                  </div>
+                </div>
+                <div
+                  ref="spoilerBody"
+                  class="article-body article-body--spoilers article-body--locked"
+                  :inert="!spoilersRevealed"
+                  tabindex="-1"
+                  @copy="blockReviewCopy"
+                  @cut="blockReviewCopy"
+                  v-html="bodyParts.after"
+                ></div>
+              </div>
+              <div
+                v-else-if="!isGated && bodyParts.after"
+                class="article-body"
+                :class="{ 'article-body--locked': isReview }"
+                @copy="blockReviewCopy"
+                @cut="blockReviewCopy"
+                v-html="bodyParts.after"
+              ></div>
 
               <!-- Leyenda editorial IA + modal de reporte de errores.
                    Oculta cuando está gated: si el lector no está viendo el body,
@@ -427,10 +470,12 @@ import UserNav from '@/components/global/UserNav';
 import RelatedArticlesCarousel from '@/components/global/RelatedArticlesCarousel';
 import ArticleAIDisclosure from '@/components/global/ArticleAIDisclosure';
 import ArticleShareModal from '@/components/global/ArticleShareModal';
+import HalloweenSpecialPill from '@/components/global/HalloweenSpecialPill';
 import MarkdownIt from 'markdown-it'
 import { apiImgUrl, getCustomEnrichment } from '@/utils/api'
 import { stripRelatedFooter, extractRelatedSlugs } from '@/utils/relatedFooter'
 import { categoryLabelES } from '@/utils/categoryLabels'
+import { SPOILER_MARKER, isInHouseReview, isHalloweenSpecial } from '@/utils/inHouseReview'
 
 const md = new MarkdownIt({ breaks: true, html: true })
 const route = useRoute()
@@ -458,6 +503,7 @@ function closeShareModal() {
 
 watch(() => route.params.slug, () => {
   carouselIndex.value = 0
+  spoilersRevealed.value = false
 })
 
 const handleAuthChange = () => {
@@ -714,6 +760,10 @@ const trailerEmbedAllow = computed(() => {
 const bodyParts = computed(() => {
   const html = renderedBody.value
   if (!html) return { before: '', after: '' }
+  const markerIdx = isReview.value ? html.indexOf(SPOILER_MARKER) : -1
+  if (markerIdx >= 0) {
+    return { before: html.slice(0, markerIdx), after: html.slice(markerIdx + SPOILER_MARKER.length), spoilers: true }
+  }
   const hasBoth = !!(article.value?.trailer_youtube_id && article.value?.carousel_assets?.length)
   if (!hasBoth) return { before: html, after: '' }
   const h2Regex = /<h2[\s>]/gi
@@ -730,6 +780,24 @@ const bodyParts = computed(() => {
 const requiresAuth = computed(() => Number(article.value?.requires_auth) === 1)
 
 const isGated = computed(() => requiresAuth.value && !isLoggedIn.value)
+
+const isReview = computed(() => isInHouseReview(article.value))
+const isHalloween = computed(() => isHalloweenSpecial(article.value))
+const spoilersRevealed = ref(false)
+const spoilerBody = ref(null)
+
+function revealSpoilers() {
+  spoilersRevealed.value = true
+  nextTick(() => spoilerBody.value?.focus({ preventScroll: true }))
+}
+
+function leaveSpoilers() {
+  navigateTo('/')
+}
+
+function blockReviewCopy(event) {
+  if (isReview.value) event.preventDefault()
+}
 
 function openGateModal() {
   if (typeof window === 'undefined') return
@@ -832,6 +900,29 @@ useHead(() => {
   overflow: hidden;
   aspect-ratio: 21 / 9;
   max-height: 500px;
+}
+
+.article-hero--review,
+.mobile-hero--review {
+  position: relative;
+  border: 1px solid transparent;
+  background: linear-gradient(#000, #000) padding-box,
+              linear-gradient(140deg, rgba(240, 196, 45, 0.7), rgba(184, 134, 11, 0.5) 55%, rgba(240, 196, 45, 0.18)) border-box;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5), 0 0 40px -16px rgba(240, 196, 45, 0.3);
+}
+
+.hero-seasonal {
+  position: absolute;
+  left: 24px;
+  bottom: 22px;
+  z-index: 2;
+}
+
+.mobile-hero-seasonal {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  z-index: 2;
 }
 
 .hero-img {
@@ -978,6 +1069,18 @@ useHead(() => {
 .sidebar-tag--primary { color: #8BE9FD; background: rgba(139, 233, 253, 0.12); border-color: rgba(139, 233, 253, 0.5); }
 .sidebar-tag--primary:hover { background: #8BE9FD; color: #03242C; border-color: #8BE9FD; }
 
+.sidebar-tag--review {
+  color: #f0c42d;
+  background: rgba(240, 196, 45, 0.12);
+  border-color: rgba(240, 196, 45, 0.5);
+}
+
+.sidebar-tag--review:hover {
+  background: linear-gradient(135deg, #f0c42d 0%, #b8860b 100%);
+  color: #0d0a08;
+  border-color: #f0c42d;
+}
+
 .sidebar-sources { display: flex; flex-direction: column; gap: 4px; margin-bottom: 4px; }
 
 .source-btn {
@@ -1052,6 +1155,29 @@ useHead(() => {
   color: #fff;
   margin: 0 0 var(--page-header-space-title);
   text-wrap: balance;
+}
+
+.review-eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.review-eyebrow__bar {
+  width: 3px;
+  height: 13px;
+  background: linear-gradient(180deg, #f0c42d 0%, #b8860b 100%);
+  border-radius: 2px;
+}
+
+.review-eyebrow__text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(240, 196, 45, 0.85);
 }
 
 .article-body--gated {
@@ -1155,6 +1281,119 @@ useHead(() => {
 @keyframes gateFloatIn {
   from { opacity: 0; transform: translateY(12px) scale(0.985); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.article-body--locked {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.article-body--locked :deep(a) {
+  -webkit-touch-callout: default;
+}
+
+.spoiler-zone {
+  position: relative;
+}
+
+.spoiler-zone--locked {
+  min-height: 380px;
+}
+
+.article-body--spoilers {
+  transition: filter 0.4s ease;
+}
+
+.article-body--spoilers:focus {
+  outline: none;
+}
+
+.spoiler-zone--locked .article-body--spoilers {
+  max-height: 520px;
+  overflow: hidden;
+  filter: blur(8px);
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 35%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 35%, transparent 100%);
+}
+
+.gate-card--spoiler {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  width: min(520px, calc(100% - 24px));
+  margin: 24px auto 0;
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(240, 196, 45, 0.35),
+    inset 0 0 22px rgba(240, 196, 45, 0.05);
+}
+
+.gate-card--spoiler .gate-card__accent {
+  background: linear-gradient(90deg, transparent, #f0c42d, #b8860b, transparent);
+}
+
+.gate-card--spoiler .gate-card__icon-wrap {
+  background: rgba(240, 196, 45, 0.08);
+  border-color: rgba(240, 196, 45, 0.3);
+}
+
+.gate-card--spoiler .gate-card__icon {
+  color: #f0c42d;
+  filter: drop-shadow(0 0 8px rgba(240, 196, 45, 0.35));
+}
+
+.gate-card--spoiler .gate-card__title {
+  text-shadow: 0 0 18px rgba(240, 196, 45, 0.18);
+}
+
+.gate-card--spoiler .gate-card__cta {
+  border-color: rgba(240, 196, 45, 0.6);
+  background: linear-gradient(135deg, #f0c42d 0%, #b8860b 100%);
+  color: #0d0a08;
+  box-shadow: 0 4px 14px rgba(240, 196, 45, 0.25);
+}
+
+.gate-card--spoiler .gate-card__cta:hover {
+  box-shadow: 0 6px 20px rgba(240, 196, 45, 0.4);
+}
+
+.gate-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.gate-card__ghost {
+  padding: 11px 24px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: transparent;
+  color: #c9ced4;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease;
+}
+
+.gate-card__ghost:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gate-card--spoiler {
+    animation: none;
+  }
+
+  .article-body--spoilers {
+    transition: none;
+  }
 }
 
 .article-lead { font-size: 18px; line-height: 1.7; color: #ACAFB5; margin: 0 0 var(--page-header-space-bottom); font-weight: 400; }

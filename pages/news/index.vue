@@ -214,6 +214,7 @@
                   :key="item.id"
                   :id="'news-item-' + item.id"
                   class="news-card"
+                  :class="{ 'news-card--review': isInHouseReview(item) }"
                 >
                   <component :is="linkTag(item)" v-bind="linkAttrs(item)" class="card-image">
                     <img
@@ -257,7 +258,7 @@
                       <span
                         v-if="item.source?.name"
                         class="publisher-badge"
-                        :class="{ 'publisher-badge--external': item.is_internal === false }"
+                        :class="{ 'publisher-badge--external': item.is_internal === false, 'publisher-badge--review': isInHouseReview(item) }"
                       >
                         {{ item.source.name }}
                         <svg v-if="item.is_internal === false" class="publisher-badge__out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -267,7 +268,7 @@
                         </svg>
                       </span>
                       <div v-if="categoryChips(item).length" class="card-cats-row">
-                        <button v-for="chip in categoryChips(item)" :key="chip.label" type="button" class="card-cat-tag" @click="filterByCategory(chip.token)">{{ chip.label }}</button>
+                        <button v-for="chip in categoryChips(item)" :key="chip.label" type="button" class="card-cat-tag" :class="{ 'card-cat-tag--review': chip.token === 'review' && isInHouseReview(item) }" @click="filterByCategory(chip.token)">{{ chip.label }}</button>
                       </div>
                       <span class="card-date">{{ formatDate(item.published_at) }}</span>
                     </div>
@@ -303,6 +304,7 @@
                   :key="item.id"
                   :id="'news-item-' + item.id"
                   class="news-row"
+                  :class="{ 'news-row--review': isInHouseReview(item) }"
                 >
                   <component :is="linkTag(item)" v-bind="linkAttrs(item)" class="news-row__thumb">
                     <img
@@ -332,7 +334,7 @@
                       <span v-if="item.published_at" class="news-row__date">{{ formatDate(item.published_at) }}</span>
                       <template v-if="primaryCategory(item)">
                         <span class="news-row__sep" aria-hidden="true">·</span>
-                        <button type="button" class="news-row__cat" @click="filterByCategory(primaryCategory(item).token)">{{ primaryCategory(item).label }}</button>
+                        <button type="button" class="news-row__cat" :class="{ 'news-row__cat--review': isInHouseReview(item) }" @click="filterByCategory(primaryCategory(item).token)">{{ primaryCategory(item).label }}</button>
                       </template>
                     </div>
                   </div>
@@ -396,6 +398,7 @@ import striptags from 'striptags';
 import { FIRST_PARTY_SOURCE, THIRD_PARTY_SOURCE, SOURCE_URLS } from '~/utils/newsSources';
 import { categoryLabelES } from '~/utils/categoryLabels';
 import { relatedTitleLabel, relatedTitleOf, relatedTitleHref } from '~/utils/relatedTitleLabels';
+import { isInHouseReview } from '~/utils/inHouseReview';
 import { formatDate as formatDateHelper, handleImageError as handleImageErrorHelper } from '~/utils/helpers';
 
 useHead({
@@ -1447,6 +1450,19 @@ watch(userEmail, (val) => {
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5), 0 0 24px rgba(139, 233, 253, 0.15);
 }
 
+.news-card--review,
+.news-card--review:hover {
+  border-color: transparent;
+  background:
+    linear-gradient(180deg, #0d1418 0%, #06090b 100%) padding-box,
+    linear-gradient(140deg, rgba(240, 196, 45, 0.7), rgba(184, 134, 11, 0.5) 55%, rgba(240, 196, 45, 0.18)) border-box;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5), 0 0 40px -16px rgba(240, 196, 45, 0.3);
+}
+
+.news-card--review:hover {
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 64px -18px rgba(240, 196, 45, 0.45);
+}
+
 .news-card.highlight-news {
   border-color: #8BE9FD;
   box-shadow: 0 0 0 2px rgba(139, 233, 253, 0.3), 0 12px 40px 0 rgba(139, 233, 253, 0.15);
@@ -1504,6 +1520,12 @@ watch(userEmail, (val) => {
   border-color: rgba(255, 255, 255, 0.34);
   color: #E6E8EC;
 }
+.publisher-badge--review {
+  background: linear-gradient(135deg, #f0c42d 0%, #b8860b 100%);
+  border-color: transparent;
+  color: #0d0a08;
+  box-shadow: 0 1px 8px rgba(240, 196, 45, 0.4);
+}
 .publisher-badge__out {
   width: 10px;
   height: 10px;
@@ -1560,6 +1582,18 @@ watch(userEmail, (val) => {
   color: #aef2ff;
   background: rgba(139, 233, 253, 0.16);
   border-color: rgba(139, 233, 253, 0.5);
+}
+
+.card-cat-tag--review {
+  color: #f0c42d;
+  background: rgba(240, 196, 45, 0.08);
+  border-color: rgba(240, 196, 45, 0.4);
+}
+
+.card-cat-tag--review:hover {
+  color: #f7d65e;
+  background: rgba(240, 196, 45, 0.16);
+  border-color: rgba(240, 196, 45, 0.6);
 }
 
 .card-title-link {
@@ -1926,6 +1960,13 @@ watch(userEmail, (val) => {
   background: rgba(139, 233, 253, 0.05);
 }
 
+.news-row--review,
+.news-row--review:hover {
+  background-image: linear-gradient(180deg, #f0c42d 0%, #b8860b 100%);
+  background-size: 3px 100%;
+  background-repeat: no-repeat;
+}
+
 .news-row.highlight-news {
   background: rgba(139, 233, 253, 0.1);
   box-shadow: inset 3px 0 0 #8BE9FD;
@@ -2029,6 +2070,10 @@ watch(userEmail, (val) => {
 
 .news-row__cat:hover {
   text-decoration: underline;
+}
+
+.news-row__cat--review {
+  color: #f0c42d;
 }
 
 .loading-grid, .error-container, .no-results {

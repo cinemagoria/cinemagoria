@@ -1,6 +1,7 @@
 import MarkdownIt from 'markdown-it'
 import { useDb } from './db'
 import { getVimeoOembed } from './vimeo-oembed'
+import { SPOILER_MARKER } from '~/utils/inHouseReview'
 
 // Shared, canonical news-feed builder used by /feed (and by the legacy
 // /api/article/rss redirect target). Keep this file byte-identical across
@@ -157,8 +158,12 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
         const isGated = Number(row.requires_auth ?? 0) === 1
         const loginUrl = `${selfBase}/login`
 
+        const isReview = String(row.editorial_category || '').trim().toLowerCase() === 'review'
+        const spoilerIdx = isReview ? bodyMd.indexOf(SPOILER_MARKER) : -1
+        const visibleMd = spoilerIdx >= 0 ? bodyMd.slice(0, spoilerIdx) : bodyMd
+
         let bodyHtml = ''
-        try { bodyHtml = md.render(bodyMd) } catch { bodyHtml = `<p>${escapeXml(bodyMd)}</p>` }
+        try { bodyHtml = md.render(visibleMd) } catch { bodyHtml = `<p>${escapeXml(visibleMd)}</p>` }
 
         // Self-contained article that mirrors the on-site layout
         // (pages/news/[slug].vue): cover first (so readers render OUR image
@@ -224,6 +229,11 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
                 parts.push(bodyHtml)
             } else {
                 parts.push(bodyHtml)
+            }
+            if (spoilerIdx >= 0) {
+                parts.push(isEs
+                    ? `<p>La crítica sigue con spoilers en <a href="${link}">${link}</a>.</p>`
+                    : `<p>The review continues with spoilers at <a href="${link}">${link}</a>.</p>`)
             }
         }
         const contentHtml = parts.filter(Boolean).join('\n')

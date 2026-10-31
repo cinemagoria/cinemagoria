@@ -33,7 +33,7 @@
           @scroll="scrollEvent">
           
           <div v-for="article in articles" :key="article.id" class="card">
-            <div class="release-card" :class="{ 'release-card--external': article.is_internal === false }">
+            <div class="release-card" :class="{ 'release-card--external': article.is_internal === false, 'release-card--review': isInHouseReview(article) }">
             
             <component
               :is="article.is_internal === false ? 'a' : 'NuxtLink'"
@@ -78,7 +78,7 @@
                 <span
                   v-if="article.source?.name"
                   class="publisher-badge"
-                  :class="{ 'publisher-badge--external': article.is_internal === false }"
+                  :class="{ 'publisher-badge--external': article.is_internal === false, 'publisher-badge--review': isInHouseReview(article) }"
                 >
                   {{ article.source.name }}
                   <svg v-if="article.is_internal === false" class="publisher-badge__out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -93,6 +93,7 @@
                     :key="chip.label"
                     :to="{ path: '/news', query: { category: chip.token } }"
                     class="card-cat-tag"
+                    :class="{ 'card-cat-tag--review': chip.token === 'review' && isInHouseReview(article) }"
                   >{{ chip.label }}</NuxtLink>
                 </div>
                 <span class="card-date">{{ formatDate(article.published_at) }}</span>
@@ -141,6 +142,7 @@ import striptags from 'striptags';
 import { formatDate, handleImageError } from '~/utils/helpers';
 import { categoryLabelES, CATEGORY_LABELS_ES } from '~/utils/categoryLabels';
 import { relatedTitleLabel, relatedTitleOf, relatedTitleHref } from '~/utils/relatedTitleLabels';
+import { isInHouseReview } from '~/utils/inHouseReview';
 
 export default {
   name: 'NewsCarousel',
@@ -223,6 +225,7 @@ export default {
       if (!desc) return '';
       return striptags(desc);
     },
+    isInHouseReview,
     linkAttrs(article) {
       if (article?.is_internal === false) {
         return { href: article.href, target: '_blank', rel: 'noopener noreferrer' };
@@ -390,6 +393,26 @@ export default {
     &::before {
       opacity: 1;
     }
+  }
+}
+
+$review-frame:
+  linear-gradient(180deg, #0d1418 0%, #06090b 100%) padding-box,
+  linear-gradient(140deg, rgba(240, 196, 45, 0.7), rgba(184, 134, 11, 0.5) 55%, rgba(240, 196, 45, 0.18)) border-box;
+
+.release-card--review {
+  border-color: transparent;
+  background: $review-frame;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5), 0 0 40px -16px rgba(240, 196, 45, 0.3);
+
+  &::before {
+    background: linear-gradient(90deg, transparent, #f0c42d, #b8860b, transparent);
+  }
+
+  &:hover {
+    border-color: transparent;
+    background: $review-frame;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 64px -18px rgba(240, 196, 45, 0.45);
   }
 }
 
@@ -608,6 +631,12 @@ export default {
   border-color: rgba(255, 255, 255, 0.34);
   color: #E6E8EC;
 }
+.publisher-badge--review {
+  background: linear-gradient(135deg, #f0c42d 0%, #b8860b 100%);
+  border-color: transparent;
+  color: #0d0a08;
+  box-shadow: 0 1px 8px rgba(240, 196, 45, 0.4);
+}
 .publisher-badge__out {
   width: 10px;
   height: 10px;
@@ -660,6 +689,18 @@ export default {
   color: #aef2ff;
   background: rgba(139, 233, 253, 0.16);
   border-color: rgba(139, 233, 253, 0.55);
+}
+
+.card-cat-tag--review {
+  color: #f0c42d;
+  background: rgba(240, 196, 45, 0.08);
+  border-color: rgba(240, 196, 45, 0.4);
+
+  &:hover {
+    color: #f7d65e;
+    background: rgba(240, 196, 45, 0.16);
+    border-color: rgba(240, 196, 45, 0.6);
+  }
 }
 
 .card-title {
