@@ -396,6 +396,8 @@ const CLASSIFICATION = {
   44351: 'reality-bending #surreal #experimental',
   44239: 'unreliable-perception #dream #experimental',
   104391: 'paranoia #surreal #experimental',
+  744746: 'haunted-places isolation slow-burn',
+  1136558: 'j-horror ritual rural #asian #international',
 };
 
 const db = createClient({ url: process.env.TURSO_DATABASE_URL, authToken: process.env.TURSO_AUTH_TOKEN });
