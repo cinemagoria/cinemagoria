@@ -300,7 +300,7 @@
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                       <h3>Estado del programa</h3>
                     </div>
-                    <p class="carousel-desc">El festival publicó su programa completo en su guía oficial A–Z: 239 títulos en 20 secciones, con 312 funciones del 5 al 15 de noviembre. El catálogo sigue las secciones del propio festival, y la pestaña de horarios incluye cada función con su sala, en hora local (EET). No se incluyen las series, las obras inmersivas ni el programa solo online.</p>
+                    <p class="carousel-desc">El festival publicó su programa completo en su guía oficial A–Z: 246 títulos en 21 secciones, con 319 funciones del 5 al 15 de noviembre. El catálogo sigue las secciones del propio festival, y la pestaña de horarios incluye cada función con su sala, en hora local (EET). No se incluyen las obras inmersivas ni las ventanas de visionado online.</p>
                     <p class="carousel-desc">Algunos títulos, entre ellos los cuatro cortometrajes del homenaje a Grammatikos, todavía no tienen ficha pública de metadatos, así que no figuran acá. Es una cuestión de cobertura de las fuentes externas, no una decisión editorial.</p>
                     <p class="carousel-desc"><strong>Fuente:</strong> <a href="https://www.filmfestival.gr/documents/1733/TIFF67_AZ.pdf" target="_blank" class="accent-link">guía oficial A–Z</a></p>
                   </template>
@@ -317,6 +317,7 @@
                       <div class="section-glossary-item"><strong>&gt;&gt;Film Forward</strong><span>Competencia de cine innovador, que corre los límites.</span></div>
                       <div class="section-glossary-item"><strong>Open Horizons</strong><span>Un panorama del cine más arriesgado del año, fuera de competencia.</span></div>
                       <div class="section-glossary-item"><strong>Funciones especiales</strong><span>Películas nuevas de realizadores que el festival sigue, fuera de competencia.</span></div>
+                      <div class="section-glossary-item"><strong>Funciones especiales de series</strong><span>Series europeas nuevas, presentadas en pantalla grande.</span></div>
                       <div class="section-glossary-item"><strong>Round Midnight</strong><span>Cine de género para la trasnoche.</span></div>
                       <div class="section-glossary-item"><strong>Smart7</strong><span>Una competencia compartida por siete festivales europeos, cada uno de los cuales elige una película.</span></div>
                       <div class="section-glossary-item"><strong>Taming Time</strong><span>Un programa temático en torno al tiempo.</span></div>
@@ -425,6 +426,7 @@ const CATEGORY_ORDER = [
     ">>Film Forward",
     "Open Horizons",
     "Special Screenings",
+    "Series Special Screenings",
     "Round Midnight",
     "Smart7",
     "Taming Time",
@@ -445,6 +447,7 @@ const CATEGORY_ORDER = [
 const CATEGORY_LABELS = {
     ["International Competition"]: "Competencia Internacional",
     ["Special Screenings"]: "Funciones especiales",
+    ["Series Special Screenings"]: "Funciones especiales de series",
     ["Greek Special Screenings"]: "Funciones especiales griegas",
     ["Tribute to Emin Alper"]: "Homenaje a Emin Alper",
     ["Spotlight on Laura Mulvey"]: "Foco: Laura Mulvey",
@@ -628,6 +631,17 @@ onBeforeUnmount(() => {
     if (mobileMql) mobileMql.removeEventListener('change', updateIsMobile);
 });
 
+// The Series Special Screenings are TV, stored as movie-shaped rows enriched
+// from TMDB's /tv/ endpoint, like TIFF's Primetime: media_type is forced by
+// section so their cards route to /tv/{id} instead of /movie/{id}.
+function withSeriesAsTv(filmsData) {
+    const results = (filmsData?.results || []).map((f) => {
+        const key = String(f.category || f.section || '').trim();
+        return key === 'Series Special Screenings' ? { ...f, media_type: 'tv' } : f;
+    });
+    return { ...filmsData, results };
+}
+
 onMounted(async () => {
     try {
         const [filmsData, scheduleData, awardsData] = await Promise.all([
@@ -636,7 +650,7 @@ onMounted(async () => {
             $fetch('/api/festival/thessaloniki/awards').catch(() => ({ results: [] })),
         ]);
 
-        films.value = filmsData;
+        films.value = withSeriesAsTv(filmsData);
         awards.value = awardsData.results || [];
         schedule.value = scheduleData.results || [];
 
