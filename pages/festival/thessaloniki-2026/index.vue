@@ -290,7 +290,7 @@
                     <p class="carousel-desc"><strong>Dates:</strong> November 5 – 15, 2026</p>
                     <p class="carousel-desc"><strong>Location:</strong> Thessaloniki, Greece</p>
                     <p class="carousel-desc"><strong>Website:</strong> <a href="https://www.filmfestival.gr/en/" target="_blank" class="accent-link">filmfestival.gr</a></p>
-                    <p class="carousel-desc">Greece's leading film festival, international since 1992. Its competitions are built around discovery: the International Competition is open to first and second features, Meet the Neighbors+ covers Greece's wider neighbourhood, and Film Forward rewards formally adventurous work.</p>
+                    <p class="carousel-desc">Greece's leading film festival, international since 1992. Its competitions are built around discovery: the Arrivals International Competition is open to first and second features, Meet the Neighbors+ covers Greece's wider neighbourhood, and Film Forward rewards formally adventurous work.</p>
                     <p class="carousel-desc">This edition gives its Honorary Golden Alexander to Greek director Nikos Grammatikos, with a tribute to his work, and invites Oliver Laxe, the director of <em>Sirāt</em>, to curate a programme of films set in the desert.</p>
                   </template>
 
@@ -300,9 +300,9 @@
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                       <h3>Programme status</h3>
                     </div>
-                    <p class="carousel-desc">The festival is announcing its programme in stages. Its Greek selection is out, and the rest of its competitions are still to come. The catalog lists every title announced so far, grouped under the festival's own programme names. Screening times have not been published yet.</p>
-                    <p class="carousel-desc">Some titles, among them the four short films in the Grammatikos tribute and several Greek premieres, have no public metadata entry yet, so they don't appear here. That reflects the coverage of third-party sources, not an editorial choice.</p>
-                    <p class="carousel-desc"><strong>Source:</strong> <a href="https://www.filmfestival.gr/en/" target="_blank" class="accent-link">official festival site</a></p>
+                    <p class="carousel-desc">The festival published its complete programme in its official A–Z guide: 239 titles in 20 sections, with 312 screenings from 5 to 15 November. The catalog follows the festival's own sections, and the Schedule tab lists every screening with its venue, in local time (EET). Series, immersive works and the online-only programme are not included.</p>
+                    <p class="carousel-desc">A few titles, among them the four short films in the Grammatikos tribute, have no public metadata entry yet, so they don't appear here. That reflects the coverage of third-party sources, not an editorial choice.</p>
+                    <p class="carousel-desc"><strong>Source:</strong> <a href="https://www.filmfestival.gr/documents/1733/TIFF67_AZ.pdf" target="_blank" class="accent-link">official A–Z guide</a></p>
                   </template>
 
                   <!-- Slide 2: Sections -->
@@ -312,16 +312,24 @@
                       <h3>What each section means</h3>
                     </div>
                     <div class="section-glossary">
-                      <div class="section-glossary-item"><strong>International Competition</strong><span>The festival's main competition. The Greek films in it are listed so far; the rest of the lineup is still to come.</span></div>
-                      <div class="section-glossary-item"><strong>Meet the Neighbors+</strong><span>Competition for films from the Balkans and the wider neighbouring region. Its Greek and Cypriot entries are listed so far.</span></div>
-                      <div class="section-glossary-item"><strong>&gt;&gt;Film Forward</strong><span>Competition for innovative, boundary-pushing cinema. Its Greek entries are listed so far.</span></div>
+                      <div class="section-glossary-item"><strong>International Competition</strong><span>Arrivals, the festival's main competition, for first and second features. Its top prize is the Golden Alexander “Theo Angelopoulos”.</span></div>
+                      <div class="section-glossary-item"><strong>Meet the Neighbors+</strong><span>Competition for films from the Balkans and the wider neighbouring region.</span></div>
+                      <div class="section-glossary-item"><strong>&gt;&gt;Film Forward</strong><span>Competition for innovative, boundary-pushing cinema.</span></div>
+                      <div class="section-glossary-item"><strong>Open Horizons</strong><span>A panorama of the year's most adventurous cinema, out of competition.</span></div>
+                      <div class="section-glossary-item"><strong>Special Screenings</strong><span>New films by filmmakers the festival follows, out of competition.</span></div>
+                      <div class="section-glossary-item"><strong>Round Midnight</strong><span>Late-night genre cinema.</span></div>
+                      <div class="section-glossary-item"><strong>Smart7</strong><span>A competition shared by seven European festivals, each of which selects one film.</span></div>
+                      <div class="section-glossary-item"><strong>Taming Time</strong><span>A thematic programme built around time.</span></div>
+                      <div class="section-glossary-item"><strong>Welcome to the Desert</strong><span>Films set in desert landscapes, chosen by Oliver Laxe as guest curator.</span></div>
+                      <div class="section-glossary-item"><strong>Balkan Horror</strong><span>Part of Meet the Neighbors+: a survey of horror from the Balkans, from folk horror and the supernatural to body horror and black comedy.</span></div>
+                      <div class="section-glossary-item"><strong>Tribute to Emin Alper</strong><span>A retrospective of the Turkish director.</span></div>
+                      <div class="section-glossary-item"><strong>Spotlight on Laura Mulvey</strong><span>Films by the British filmmaker and feminist film theorist, who gives a talk at the festival.</span></div>
+                      <div class="section-glossary-item"><strong>Bauhaus Cinema</strong><span>Films around the Bauhaus and its legacy.</span></div>
                       <div class="section-glossary-item"><strong>First Run</strong><span>Greek films premiering at the festival outside the competitions.</span></div>
                       <div class="section-glossary-item"><strong>A Second Viewing</strong><span>Recent Greek films that premiered elsewhere, screened again in Thessaloniki.</span></div>
-                      <div class="section-glossary-item"><strong>Special Screenings</strong><span>Special screenings of Greek films, including an avant-première and an open-air premiere at the Apollon cinema.</span></div>
+                      <div class="section-glossary-item"><strong>Greek Special Screenings</strong><span>Special screenings of Greek films, including an avant-première and an open-air premiere at the Apollon cinema.</span></div>
                       <div class="section-glossary-item"><strong>Classics Revisited</strong><span>A new section devoted to restored Greek classics.</span></div>
-                      <div class="section-glossary-item"><strong>Balkan Horror</strong><span>Part of Meet the Neighbors+: a survey of horror from the Balkans, from folk horror and the supernatural to body horror and black comedy.</span></div>
                       <div class="section-glossary-item"><strong>Tribute to Nikos Grammatikos</strong><span>All the features and shorts of the Greek director, who receives this year's Honorary Golden Alexander, including a 1995 TV film screened on the big screen for the first time.</span></div>
-                      <div class="section-glossary-item"><strong>Welcome to the Desert</strong><span>Films set in desert landscapes, chosen by Oliver Laxe as guest curator. The titles named so far are listed here.</span></div>
                       <div class="section-glossary-item"><strong>Greek Short Films</strong><span>Greek short films awarded at this year's Drama International Short Film Festival.</span></div>
                       <div class="section-glossary-item"><strong>NextGen</strong><span>Features and shorts for children and teenagers, from around the world, at the festival's school and family screenings.</span></div>
                     </div>
@@ -354,7 +362,7 @@ import ThessalonikiCard from '~/components/ThessalonikiCard.vue';
 import ThessalonikiLineupModal from '~/components/festival/ThessalonikiLineupModal.vue';
 
 // Se apaga cuando el festival publique su programa completo.
-const PROVISIONAL_LINEUP = true;
+const PROVISIONAL_LINEUP = false;
 const provisionalOpen = ref(false);
 
 const activeTab = ref('films');
@@ -415,13 +423,21 @@ const CATEGORY_ORDER = [
     "International Competition",
     "Meet the Neighbors+",
     ">>Film Forward",
+    "Open Horizons",
+    "Special Screenings",
+    "Round Midnight",
+    "Smart7",
+    "Taming Time",
+    "Welcome to the Desert",
+    "Balkan Horror",
+    "Tribute to Emin Alper",
+    "Spotlight on Laura Mulvey",
+    "Bauhaus Cinema",
     "First Run",
     "A Second Viewing",
-    "Special Screenings",
+    "Greek Special Screenings",
     "Classics Revisited",
     "Tribute to Nikos Grammatikos",
-    "Balkan Horror",
-    "Welcome to the Desert",
     "Greek Short Films",
     "NextGen",
 ];
