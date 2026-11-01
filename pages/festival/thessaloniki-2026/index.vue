@@ -300,7 +300,7 @@
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                       <h3>Programme status</h3>
                     </div>
-                    <p class="carousel-desc">The festival published its complete programme in its official A–Z guide: 239 titles in 20 sections, with 312 screenings from 5 to 15 November. The catalog follows the festival's own sections, and the Schedule tab lists every screening with its venue, in local time (EET). Series, immersive works and the online-only programme are not included.</p>
+                    <p class="carousel-desc">The festival published its complete programme in its official A–Z guide: 246 titles in 21 sections, with 319 screenings from 5 to 15 November. The catalog follows the festival's own sections, and the Schedule tab lists every screening with its venue, in local time (EET). Immersive works and the online viewing windows are not included.</p>
                     <p class="carousel-desc">A few titles, among them the four short films in the Grammatikos tribute, have no public metadata entry yet, so they don't appear here. That reflects the coverage of third-party sources, not an editorial choice.</p>
                     <p class="carousel-desc"><strong>Source:</strong> <a href="https://www.filmfestival.gr/documents/1733/TIFF67_AZ.pdf" target="_blank" class="accent-link">official A–Z guide</a></p>
                   </template>
@@ -317,6 +317,7 @@
                       <div class="section-glossary-item"><strong>&gt;&gt;Film Forward</strong><span>Competition for innovative, boundary-pushing cinema.</span></div>
                       <div class="section-glossary-item"><strong>Open Horizons</strong><span>A panorama of the year's most adventurous cinema, out of competition.</span></div>
                       <div class="section-glossary-item"><strong>Special Screenings</strong><span>New films by filmmakers the festival follows, out of competition.</span></div>
+                      <div class="section-glossary-item"><strong>Series Special Screenings</strong><span>New European series, presented on the big screen.</span></div>
                       <div class="section-glossary-item"><strong>Round Midnight</strong><span>Late-night genre cinema.</span></div>
                       <div class="section-glossary-item"><strong>Smart7</strong><span>A competition shared by seven European festivals, each of which selects one film.</span></div>
                       <div class="section-glossary-item"><strong>Taming Time</strong><span>A thematic programme built around time.</span></div>
@@ -425,6 +426,7 @@ const CATEGORY_ORDER = [
     ">>Film Forward",
     "Open Horizons",
     "Special Screenings",
+    "Series Special Screenings",
     "Round Midnight",
     "Smart7",
     "Taming Time",
@@ -621,6 +623,17 @@ onBeforeUnmount(() => {
     if (mobileMql) mobileMql.removeEventListener('change', updateIsMobile);
 });
 
+// The Series Special Screenings are TV, stored as movie-shaped rows enriched
+// from TMDB's /tv/ endpoint, like TIFF's Primetime: media_type is forced by
+// section so their cards route to /tv/{id} instead of /movie/{id}.
+function withSeriesAsTv(filmsData) {
+    const results = (filmsData?.results || []).map((f) => {
+        const key = String(f.category || f.section || '').trim();
+        return key === 'Series Special Screenings' ? { ...f, media_type: 'tv' } : f;
+    });
+    return { ...filmsData, results };
+}
+
 onMounted(async () => {
     try {
         const [filmsData, scheduleData, awardsData] = await Promise.all([
@@ -629,7 +642,7 @@ onMounted(async () => {
             $fetch('/api/festival/thessaloniki/awards').catch(() => ({ results: [] })),
         ]);
 
-        films.value = filmsData;
+        films.value = withSeriesAsTv(filmsData);
         awards.value = awardsData.results || [];
         schedule.value = scheduleData.results || [];
 

@@ -62,9 +62,19 @@ Greek local time (`+02:00`, `EET`).
 | Kanellopoulos | 6 |
 | **Total** | **312** |
 
-Not imported: the series programme and the immersive works, which are not
-films; the online-only availability windows; and the NextGen school screenings,
-which are not open to the public.
+Not imported: the immersive works, which are not films; the online viewing
+windows; and the NextGen school screenings, which are not open to the public.
+The series programme was added the same day (see below).
+
+## Series
+
+The seven titles of Series Special Screenings, the festival's series
+programme, were added in a follow-up. As with TIFF's Primetime strand, they are
+movie-shaped rows enriched from TMDB's `/tv/` endpoint, with
+`media_type: 'tv'` in `tmdb_data`, and the page forces `media_type` by section
+so their cards open the TV page. Six matched under the rule below, *Seas
+Between Us* by its Greek original title; *Project Odysseus* has no TMDB entry
+yet. Each has one screening, 7 in all.
 
 ## Matching rule
 
@@ -76,8 +86,8 @@ gained its `tmdb_id` under the same rule.
 
 ## State after the import
 
-* 239 titles in 20 sections and 312 screenings.
-* 232 rows with `tmdb_id`. The 7 without one have no TMDB entry yet.
+* 246 titles in 21 sections and 319 screenings.
+* 238 rows with `tmdb_id`. The 8 without one have no TMDB entry yet.
 
 A rollback snapshot was written before the write. The import is
 festival-scoped: earlier rows changed only in the section rename and the one
@@ -87,7 +97,7 @@ nothing.
 ## Verification queries
 
 ```sql
--- Whole festival (expected: 239 / 312)
+-- Whole festival (expected: 246 / 319)
 SELECT COUNT(DISTINCT f.id), COUNT(s.id) FROM festival_films f
 LEFT JOIN festival_screenings s ON s.film_id = f.id
 WHERE f.festival_name = 'Thessaloniki International Film Festival' AND f.festival_year = 2026;
