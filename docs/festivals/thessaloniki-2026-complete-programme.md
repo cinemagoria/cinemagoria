@@ -84,10 +84,29 @@ the festival's. 136 of the 137 new titles matched. 94 of those ids were already
 on other festivals' rows in the catalog, which confirms them. One earlier short
 gained its `tmdb_id` under the same rule.
 
+## Update, 3 November
+
+The festival's online schedule (`https://vp.eventival.com/thessaloniki/tiff67/film-schedule`) was checked
+screening by screening against the catalog:
+
+* Two pairs of screenings had been read crosswise from the guide's columns and
+  are corrected: *Uchronia* (7 Nov, 16:00) and *Amaranth* (6 Nov, 16:00, DISFF
+  programme 4); *Eve* (12 Nov, 16:00) and *Sea of Glass* (8 Nov, 18:45).
+* Four titles missing from the guide's text are added: *Self-Sown* and *Sad Girl
+  Weekend* (Series Special Screenings, one shared screening), and *Out of
+  Service* and *The Shadow of the Kalikantzaros* (Greek Special Screenings).
+  *Self-Sown* is a short film on TMDB, so it keeps `media_type: 'movie'` and the
+  page does not route it as TV.
+* The Kanellopoulos venue takes its full name, Takis Kanellopoulos.
+* *23rd August 2008* gains its `tmdb_id` (director and title; the film is from
+  2013, as fits a retrospective).
+
+Talks, masterclasses and workshops in the schedule are not films and stay out.
+
 ## State after the import
 
-* 246 titles in 21 sections and 319 screenings.
-* 238 rows with `tmdb_id`. The 8 without one have no TMDB entry yet.
+* 250 titles in 21 sections and 323 screenings.
+* 240 rows with `tmdb_id`. The 10 without one have no TMDB entry yet.
 
 A rollback snapshot was written before the write. The import is
 festival-scoped: earlier rows changed only in the section rename and the one
@@ -97,7 +116,7 @@ nothing.
 ## Verification queries
 
 ```sql
--- Whole festival (expected: 246 / 319)
+-- Whole festival (expected: 250 / 323)
 SELECT COUNT(DISTINCT f.id), COUNT(s.id) FROM festival_films f
 LEFT JOIN festival_screenings s ON s.film_id = f.id
 WHERE f.festival_name = 'Thessaloniki International Film Festival' AND f.festival_year = 2026;
