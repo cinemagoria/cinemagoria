@@ -300,9 +300,9 @@
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                       <h3>Estado del programa</h3>
                     </div>
-                    <p class="carousel-desc">El festival publicó su programa completo en su guía oficial A–Z: 246 títulos en 21 secciones, con 319 funciones del 5 al 15 de noviembre. El catálogo sigue las secciones del propio festival, y la pestaña de horarios incluye cada función con su sala, en hora local (EET). No se incluyen las obras inmersivas ni las ventanas de visionado online.</p>
+                    <p class="carousel-desc">El festival publicó su programa completo en su guía oficial A–Z: 250 títulos en 21 secciones, con 323 funciones del 5 al 15 de noviembre. El catálogo sigue las secciones del propio festival, y la pestaña de horarios incluye cada función con su sala, en hora local (EET). No se incluyen las obras inmersivas ni las ventanas de visionado online.</p>
                     <p class="carousel-desc">Algunos títulos, entre ellos los cuatro cortometrajes del homenaje a Grammatikos, todavía no tienen ficha pública de metadatos, así que no figuran acá. Es una cuestión de cobertura de las fuentes externas, no una decisión editorial.</p>
-                    <p class="carousel-desc"><strong>Fuente:</strong> <a href="https://www.filmfestival.gr/documents/1733/TIFF67_AZ.pdf" target="_blank" class="accent-link">guía oficial A–Z</a></p>
+                    <p class="carousel-desc"><strong>Fuente:</strong> <a href="https://www.filmfestival.gr/documents/1733/TIFF67_AZ.pdf" target="_blank" class="accent-link">guía oficial A–Z</a> y <a href="https://vp.eventival.com/thessaloniki/tiff67/film-schedule" target="_blank" class="accent-link">horario online</a></p>
                   </template>
 
                   <!-- Slide 2: Sections -->
@@ -633,11 +633,12 @@ onBeforeUnmount(() => {
 
 // The Series Special Screenings are TV, stored as movie-shaped rows enriched
 // from TMDB's /tv/ endpoint, like TIFF's Primetime: media_type is forced by
-// section so their cards route to /tv/{id} instead of /movie/{id}.
+// section so their cards route to /tv/{id} instead of /movie/{id}. Short films
+// screened in the section keep media_type 'movie' from their tmdb_data.
 function withSeriesAsTv(filmsData) {
     const results = (filmsData?.results || []).map((f) => {
         const key = String(f.category || f.section || '').trim();
-        return key === 'Series Special Screenings' ? { ...f, media_type: 'tv' } : f;
+        return key === 'Series Special Screenings' && f.media_type !== 'movie' ? { ...f, media_type: 'tv' } : f;
     });
     return { ...filmsData, results };
 }
