@@ -5307,9 +5307,9 @@
     "tmdb_id": 1702931,
     "media_type": "movie",
     "trailer_key": "bv9q7rupSRw",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1792026577/cinemagoria/backdrops/noir_1702931.webp",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1792198102/cinemagoria/news_covers/article_kingpins-an-international-premiere-in-tallinn-black-nights-b.webp",
     "poster_path": "/dP1RKLjYwK501syAaEeCyHVnQEW.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1374640,
