@@ -5322,18 +5322,18 @@
   {
     "tmdb_id": 1786551,
     "media_type": "movie",
-    "trailer_key": null,
+    "trailer_key": "oo0rrJ1Ni2U",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1792026597/cinemagoria/backdrops/noir_1786551.webp",
     "poster_path": "/kKb1s1g0kZMcYodOQ3OaQ98rkeP.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1299379,
     "media_type": "movie",
-    "trailer_key": null,
+    "trailer_key": "cP43hDLwn5E",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1792026604/cinemagoria/backdrops/noir_1299379.webp",
     "poster_path": "/4U2uC0aFDCmlcYdJMXI5rKdCGHK.jpg",
-    "force_enrichment": false
+    "force_enrichment": true
   },
   {
     "tmdb_id": 1376400,
