@@ -22,7 +22,7 @@ to short film programmes, which the timetable lists by programme.
 
 ## What was imported
 
-**137 titles** that were not in the catalog yet. The source URL is the guide.
+**137 titles** that were not in the catalog yet. The source URL was the guide at first; see the update of 3 November.
 
 | Section | Titles |
 | --- | ---: |
@@ -103,9 +103,20 @@ screening by screening against the catalog:
 
 Talks, masterclasses and workshops in the schedule are not films and stay out.
 
+A second pass the same day compared every title with its card in the schedule:
+
+* A double-bill screening absent from the catalog is added, and a screening read
+  from the wrong entry moves to the Ciné Apollon, as the guide's entry, timetable
+  and events pages all state. The Ciné Apollon has no schedule card: its tickets
+  are sold apart.
+* Production countries left in nine director names and a stray letter in one
+  title are removed.
+* `source_url` now points to the film's own page in the online programme, for 248
+  of the 250 rows. The other two are not in that catalogue and keep their source.
+
 ## State after the import
 
-* 250 titles in 21 sections and 323 screenings.
+* 250 titles in 21 sections and 324 screenings.
 * 240 rows with `tmdb_id`. The 10 without one have no TMDB entry yet.
 
 A rollback snapshot was written before the write. The import is
@@ -116,7 +127,7 @@ nothing.
 ## Verification queries
 
 ```sql
--- Whole festival (expected: 250 / 323)
+-- Whole festival (expected: 250 / 324)
 SELECT COUNT(DISTINCT f.id), COUNT(s.id) FROM festival_films f
 LEFT JOIN festival_screenings s ON s.film_id = f.id
 WHERE f.festival_name = 'Thessaloniki International Film Festival' AND f.festival_year = 2026;
