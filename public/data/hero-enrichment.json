@@ -152,19 +152,35 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 1125822,
-    "media_type": "movie",
-    "trailer_key": "2iIBYPng3uI",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1793457196/cinemagoria/backdrops/hero_1125822.webp",
-    "poster_path": "/aRPeGH99uVY3q5KUBbDbPKv8E0o.jpg",
-    "force_enrichment": true
-  },
-  {
     "tmdb_id": 1287365,
     "media_type": "movie",
     "trailer_key": "L3FUDA_I-BQ",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1793764396/cinemagoria/backdrops/hero_1287365.webp",
     "poster_path": "/cjbHYvJz9j5H3BSBfoaOiGMEHeZ.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 300398,
+    "media_type": "tv",
+    "trailer_key": "jnHvbr3O2Jg",
+    "backdrop_path": "/8KzkePNofLdl8D5Kd5mwpitHIBe.jpg",
+    "poster_path": null,
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1451238,
+    "media_type": "movie",
+    "trailer_key": "BQcpfoPcpY0",
+    "backdrop_path": "/rb54rwhOuiSq8yp3h45mjbZaE6H.jpg",
+    "poster_path": "/64Ny6F2RpcGociNnRqx27sESU8N.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1125822,
+    "media_type": "movie",
+    "trailer_key": "2iIBYPng3uI",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1793451728/cinemagoria/news_carousel/carousel_eternal-return-quiver-releases-the-trailer-for-the_0.webp",
+    "poster_path": "/aRPeGH99uVY3q5KUBbDbPKv8E0o.jpg",
     "force_enrichment": true
   }
 ]
