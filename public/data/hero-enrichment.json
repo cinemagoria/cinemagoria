@@ -56,14 +56,6 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 1051646,
-    "media_type": "movie",
-    "trailer_key": "K0RSqAxbehs",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1790306270/cinemagoria/backdrops/hero_1051646.webp",
-    "poster_path": "/t0hRH0AGfFhTAD70Dqerd5anT8C.jpg",
-    "force_enrichment": false
-  },
-  {
     "tmdb_id": 1421903,
     "media_type": "movie",
     "trailer_key": "CL1EFACsWag",
@@ -112,35 +104,11 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 1596282,
-    "media_type": "movie",
-    "trailer_key": "ld465IU0NGY",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1791947067/cinemagoria/backdrops/hero_1596282.webp",
-    "poster_path": "/5uRKIfMNcEzS1vWl0l69YUYoW1F.jpg",
-    "force_enrichment": true
-  },
-  {
-    "tmdb_id": 1630464,
-    "media_type": "movie",
-    "trailer_key": "sJAqmdXaM8U",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1792099007/cinemagoria/backdrops/hero_1630464.webp",
-    "poster_path": "/9qS8heXhQdLoyGsqZHHb3HkrK62.jpg",
-    "force_enrichment": true
-  },
-  {
     "tmdb_id": 1534221,
     "media_type": "movie",
     "trailer_key": "MpIwPydkWac",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1792102804/cinemagoria/backdrops/hero_1534221.webp",
     "poster_path": "/wj4CICdz6ikL37KzFG3D5MNk4LC.jpg",
-    "force_enrichment": true
-  },
-  {
-    "tmdb_id": 1531947,
-    "media_type": "movie",
-    "trailer_key": "Nz1f-XUPDGw",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1792102809/cinemagoria/backdrops/hero_1531947.webp",
-    "poster_path": "/q0TvzikzGqojqjZNZxdfGmhLOOV.jpg",
     "force_enrichment": true
   },
   {
@@ -176,11 +144,19 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 1125822,
+    "tmdb_id": 1486020,
     "media_type": "movie",
-    "trailer_key": "2iIBYPng3uI",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1793451728/cinemagoria/news_carousel/carousel_eternal-return-quiver-releases-the-trailer-for-the_0.webp",
-    "poster_path": "/aRPeGH99uVY3q5KUBbDbPKv8E0o.jpg",
+    "trailer_key": null,
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794043928/cinemagoria/backdrops/hero_1486020.webp",
+    "poster_path": "/xaZrc3mPhKMbmr8Rl5EGKZghZbz.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1412795,
+    "media_type": "movie",
+    "trailer_key": "OiPKYpJlRGM",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794044107/cinemagoria/backdrops/hero_1412795.webp",
+    "poster_path": "/hkpxitZPz3cKQMl2g0MxzKQdtpP.jpg",
     "force_enrichment": true
   }
 ]
