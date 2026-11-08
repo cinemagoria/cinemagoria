@@ -24,6 +24,7 @@ export const FESTIVAL_NAME_BY_SLUG: Record<string, string> = {
     bifan: 'BIFAN',
     biff: 'Busan International Film Festival',
     thessaloniki: 'Thessaloniki International Film Festival',
+    cairo: 'Cairo International Film Festival',
     bfi: 'BFI London Film Festival',
     sitges: 'Sitges Film Festival',
     tallinn: 'Tallinn Black Nights Film Festival',
