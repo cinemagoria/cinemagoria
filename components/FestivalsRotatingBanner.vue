@@ -41,7 +41,7 @@
       <div class="fest-banner__inner">
         <img
           class="fest-banner__logo"
-          :class="{ 'fest-banner__logo--invert': festival.invertLogo }"
+          :class="{ 'fest-banner__logo--invert': festival.invertLogo, 'fest-banner__logo--wide': festival.logoWide }"
           :src="festival.logo"
           alt=""
           aria-hidden="true"
@@ -114,6 +114,20 @@ const FESTIVALS = [
     dates: 'NOV 6 – 22 · 2026',
     tagline: 'Official competition, first features & daily schedule —',
     end: new Date('2026-11-22T22:00:00Z'),
+  },
+  {
+    key: 'cairo',
+    to: '/festival/cairo-2026',
+    label: 'Cairo International Film Festival 2026',
+    logo: '/festivals/cairo/cairo_logo_live_banner_2026.png',
+    pattern: '/festivals/cairo/cairo_pattern_live_banner_2026.png',
+    invertLogo: true,
+    logoWide: true,
+    edition: '47',
+    editionSuffix: 'TH',
+    dates: 'NOV 11 – 20 · 2026',
+    tagline: 'International competition, Arab cinema & classics —',
+    end: new Date('2026-11-20T22:00:00Z'),
   },
 ];
 
@@ -270,6 +284,14 @@ export default {
   animation: fest-banner-logo-glow-invert 4.5s ease-in-out infinite;
 }
 
+/* Horizontal lockup on the shared 250×150 canvas: its content fills half the
+   height, so crop the transparent bands and size it to the stacked logos' visual weight. */
+.fest-banner__logo.fest-banner__logo--wide {
+  height: 38px;
+  aspect-ratio: 250 / 84;
+  object-fit: cover;
+}
+
 @keyframes fest-banner-logo-glow {
   0%, 100% {
     filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.22))
@@ -397,6 +419,10 @@ export default {
 }
 
 @media (max-width: 768px) {
+  .fest-banner__logo.fest-banner__logo--wide {
+    height: 34px;
+  }
+
   .fest-banner__inner {
     height: auto;
     min-height: 64px;
@@ -430,6 +456,10 @@ export default {
 }
 
 @media (max-width: 480px) {
+  .fest-banner__logo.fest-banner__logo--wide {
+    height: 31px;
+  }
+
   .fest-banner__tagline {
     display: none;
   }
@@ -471,6 +501,10 @@ export default {
 }
 
 @media (max-width: 400px) {
+  .fest-banner__logo.fest-banner__logo--wide {
+    height: 28px;
+  }
+
   .fest-banner__logo {
     height: 38px;
   }
