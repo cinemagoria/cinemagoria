@@ -21,7 +21,7 @@ const festivals = [
   { slug: 'cairo-2026',     name: 'El Cairo',       year: 2026, city: 'El Cairo',   country: 'Egipto',
     startDate: '2026-11-11', endDate: '2026-11-20', dateLabel: '11 – 20 nov 2026',
     image: '/festivals/cairo/cairo_backdrop_2026_es.webp' },
-  { slug: 'bars-2026',      name: 'Buenos Aires Rojo Sangre', year: 2026, city: 'Buenos Aires', country: 'Argentina',
+  { slug: 'bars-2026',      name: 'BARS', year: 2026, city: 'Buenos Aires', country: 'Argentina',
     startDate: '2026-11-19', endDate: '2026-11-29', dateLabel: '19 – 29 nov 2026',
     image: '/festivals/bars/bars_backdrop_2026_es.webp' },
   { slug: 'sitges-2026',    name: 'Sitges',         year: 2026, city: 'Sitges',     country: 'España',
