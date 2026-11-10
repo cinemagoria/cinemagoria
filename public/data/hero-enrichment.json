@@ -96,14 +96,6 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 171802,
-    "media_type": "tv",
-    "trailer_key": "AwK5KxoJsvk",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1791869111/cinemagoria/backdrops/hero_171802.webp",
-    "poster_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1791869116/cinemagoria/posters/poster_hero_171802.webp",
-    "force_enrichment": true
-  },
-  {
     "tmdb_id": 1534221,
     "media_type": "movie",
     "trailer_key": "MpIwPydkWac",
@@ -117,14 +109,6 @@
     "trailer_key": "_8RhTgio1k4",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1792677764/cinemagoria/backdrops/hero_1789849.webp",
     "poster_path": "/xoDVOccPiOejX9OJmt7z4zYIYQO.jpg",
-    "force_enrichment": true
-  },
-  {
-    "tmdb_id": 1287365,
-    "media_type": "movie",
-    "trailer_key": "L3FUDA_I-BQ",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1793764396/cinemagoria/backdrops/hero_1287365.webp",
-    "poster_path": "/cjbHYvJz9j5H3BSBfoaOiGMEHeZ.jpg",
     "force_enrichment": true
   },
   {
@@ -152,11 +136,19 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 1412795,
+    "tmdb_id": 615121,
     "media_type": "movie",
-    "trailer_key": "OiPKYpJlRGM",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794044107/cinemagoria/backdrops/hero_1412795.webp",
-    "poster_path": "/hkpxitZPz3cKQMl2g0MxzKQdtpP.jpg",
+    "trailer_key": "gnm4HgIAVmU",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794283685/cinemagoria/backdrops/hero_thomascrownaffair-backdrop.webp",
+    "poster_path": "/sT1TQeAy1PdRfPIb6rrM2DB7DB.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1259211,
+    "media_type": "movie",
+    "trailer_key": "E17Gf7LmZqw",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794283528/cinemagoria/backdrops/hero_moonglow-backdrop.webp",
+    "poster_path": "/mrHkgFmSp9bIQk44YypTrFlvqwL.jpg",
     "force_enrichment": true
   }
 ]
