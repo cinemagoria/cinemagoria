@@ -1842,6 +1842,12 @@ export const SUPPORTED_FESTIVALS = [
         logo_path: '/festivals/cairo/cairo_film_festival_2026_logo.png'
     },
     {
+        id: 'bars',
+        name: 'Buenos Aires Rojo Sangre (BARS · Rojo Sangre · Festival Internacional de Cine de Terror, Fantástico y Bizarro · Buenos Aires Rojo Sangre Film Festival) 2026',
+        slug: 'bars-2026',
+        logo_path: '/festivals/bars/bars_film_festival_2026_logo.png'
+    },
+    {
         id: 'locarno',
         name: 'Locarno Film Festival 2026 Festival del film Locarno Pardo',
         slug: 'locarno-2026',
