@@ -300,7 +300,7 @@
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                       <h3>Programme status</h3>
                     </div>
-                    <p class="carousel-desc">The festival published its complete programme at the end of October: 498 titles in 39 sections, with more than 1,000 screenings from 6 to 22 November in Tallinn and Tartu. The catalog follows the festival's own section names, and the Schedule tab lists every screening with cinema and hall, in Tallinn local time (EET).</p>
+                    <p class="carousel-desc">The festival published its complete programme at the end of October: 513 titles in 40 sections, with more than 1,000 screenings from 6 to 22 November in Tallinn and Tartu. The catalog follows the festival's own section names, and the Schedule tab lists every screening with cinema and hall, in Tallinn local time (EET).</p>
                     <p class="carousel-desc">A number of short films have no public metadata entry yet, so they do not appear here. That reflects the coverage of third-party sources, not an editorial choice.</p>
                     <p class="carousel-desc"><strong>Source:</strong> <a href="https://poff.ee/en/programmes/" target="_blank" class="accent-link">official festival programme</a></p>
                   </template>
@@ -341,6 +341,7 @@
                       <div class="section-glossary-item"><strong>Doc@PÖFF International Competition</strong><span>Documentaries in world or international premiere: untold, real-life stories from around the world.</span></div>
                       <div class="section-glossary-item"><strong>Doc@PÖFF Baltic Competition</strong><span>Documentary competition for new films from Estonia, Latvia and Lithuania.</span></div>
                       <div class="section-glossary-item"><strong>Special Screenings</strong><span>Special events, rare film experiences and films by major names, out of competition.</span></div>
+                      <div class="section-glossary-item"><strong>TV Beats Screenings</strong><span>New series from the festival's industry programme, presented on the big screen.</span></div>
                       <div class="section-glossary-item"><strong>Best of Festivals</strong><span>The year's most talked-about films from Cannes, Venice, Berlin and other leading festivals.</span></div>
                       <div class="section-glossary-item"><strong>Best of Docs</strong><span>The year's most acclaimed and award-winning documentaries.</span></div>
                       <div class="section-glossary-item"><strong>Midnight Shivers</strong><span>Recent horror, fantasy and genre films.</span></div>
@@ -468,6 +469,7 @@ const CATEGORY_ORDER = [
     "Doc@PÖFF International Competition",
     "Doc@PÖFF Baltic Competition",
     "Special Screenings",
+    "TV Beats Screenings",
     "Best of Festivals",
     "Best of Docs",
     "Midnight Shivers",
@@ -683,7 +685,7 @@ onBeforeUnmount(() => {
 onMounted(async () => {
     try {
         const [filmsData, scheduleData, awardsData] = await Promise.all([
-            $fetch('/api/festival/tallinn/films?limit=400&sort=title'),
+            $fetch('/api/festival/tallinn/films?limit=1000&sort=title'),
             $fetch('/api/festival/tallinn/schedule').catch(() => ({ results: [] })),
             $fetch('/api/festival/tallinn/awards').catch(() => ({ results: [] })),
         ]);
