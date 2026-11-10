@@ -128,6 +128,18 @@ const FESTIVALS = [
     dates: 'NOV 11 – 20 · 2026',
     tagline: 'International competition, Arab cinema & classics —',
     end: new Date('2026-11-20T22:00:00Z'),
+  },  {
+    key: 'bars',
+    to: '/festival/bars-2026',
+    label: 'Buenos Aires Rojo Sangre 2026',
+    logo: '/festivals/bars/bars_logo_live_banner_2026.png',
+    pattern: '/festivals/bars/bars_pattern_live_banner_2026.png',
+    invertLogo: true,
+    edition: '27',
+    editionSuffix: 'TH',
+    dates: 'NOV 19 – 29 · 2026',
+    tagline: 'Horror competitions, Panorama Bizarro & cult classics —',
+    end: new Date('2026-11-30T03:00:00Z'),
   },
 ];
 
