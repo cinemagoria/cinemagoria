@@ -300,7 +300,7 @@
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8BE9FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                       <h3>Estado del programa</h3>
                     </div>
-                    <p class="carousel-desc">El festival publicó su programa completo a fines de octubre: 498 títulos en 39 secciones, con más de 1000 funciones del 6 al 22 de noviembre en Tallin y Tartu. El catálogo sigue las secciones del propio festival, y la pestaña de horarios incluye cada función con su cine y su sala, en hora local de Tallin (EET).</p>
+                    <p class="carousel-desc">El festival publicó su programa completo a fines de octubre: 513 títulos en 40 secciones, con más de 1000 funciones del 6 al 22 de noviembre en Tallin y Tartu. El catálogo sigue las secciones del propio festival, y la pestaña de horarios incluye cada función con su cine y su sala, en hora local de Tallin (EET).</p>
                     <p class="carousel-desc">Algunos cortometrajes todavía no tienen ficha pública de metadatos, así que no figuran acá. Es una cuestión de cobertura de las fuentes externas, no una decisión editorial.</p>
                     <p class="carousel-desc"><strong>Fuente:</strong> <a href="https://poff.ee/en/programmes/" target="_blank" class="accent-link">programa oficial del festival</a></p>
                   </template>
@@ -341,6 +341,7 @@
                       <div class="section-glossary-item"><strong>Competencia Internacional Doc@PÖFF</strong><span>Documentales en estreno mundial o internacional: historias reales y desconocidas de todo el mundo.</span></div>
                       <div class="section-glossary-item"><strong>Competencia Báltica Doc@PÖFF</strong><span>La competencia documental de películas nuevas de Estonia, Letonia y Lituania.</span></div>
                       <div class="section-glossary-item"><strong>Funciones especiales</strong><span>Eventos especiales, experiencias de cine poco frecuentes y películas de grandes nombres, fuera de competencia.</span></div>
+                      <div class="section-glossary-item"><strong>Series TV Beats</strong><span>Series nuevas del programa de industria del festival, presentadas en pantalla grande.</span></div>
                       <div class="section-glossary-item"><strong>Lo mejor de los festivales</strong><span>Las películas más comentadas del año en Cannes, Venecia, Berlín y otros festivales de primera línea.</span></div>
                       <div class="section-glossary-item"><strong>Lo mejor del documental</strong><span>Los documentales más celebrados y premiados del año.</span></div>
                       <div class="section-glossary-item"><strong>Midnight Shivers</strong><span>Terror, fantasía y cine de género recientes.</span></div>
@@ -468,6 +469,7 @@ const CATEGORY_ORDER = [
     "Doc@PÖFF International Competition",
     "Doc@PÖFF Baltic Competition",
     "Special Screenings",
+    "TV Beats Screenings",
     "Best of Festivals",
     "Best of Docs",
     "Midnight Shivers",
@@ -523,6 +525,7 @@ const CATEGORY_LABELS = {
     ["Doc@PÖFF International Competition"]: "Competencia Internacional Doc@PÖFF",
     ["Doc@PÖFF Baltic Competition"]: "Competencia Báltica Doc@PÖFF",
     ["Special Screenings"]: "Funciones especiales",
+    ["TV Beats Screenings"]: "Series TV Beats",
     ["Best of Festivals"]: "Lo mejor de los festivales",
     ["Best of Docs"]: "Lo mejor del documental",
     ["In Focus: the Baltic States"]: "Foco: los países bálticos",
@@ -715,7 +718,7 @@ onBeforeUnmount(() => {
 onMounted(async () => {
     try {
         const [filmsData, scheduleData, awardsData] = await Promise.all([
-            $fetch('/api/festival/tallinn/films?limit=400&sort=title'),
+            $fetch('/api/festival/tallinn/films?limit=1000&sort=title'),
             $fetch('/api/festival/tallinn/schedule').catch(() => ({ results: [] })),
             $fetch('/api/festival/tallinn/awards').catch(() => ({ results: [] })),
         ]);
