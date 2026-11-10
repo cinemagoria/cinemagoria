@@ -6014,5 +6014,21 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794188834/cinemagoria/backdrops/noir_1591126.webp",
     "poster_path": "/8KFZwwIoh5zoMl1WxEXWhYlp53Y.jpg",
     "force_enrichment": false
+  },
+  {
+    "tmdb_id": 615121,
+    "media_type": "movie",
+    "trailer_key": "gnm4HgIAVmU",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794283685/cinemagoria/backdrops/hero_thomascrownaffair-backdrop.webp",
+    "poster_path": "/sT1TQeAy1PdRfPIb6rrM2DB7DB.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1259211,
+    "media_type": "movie",
+    "trailer_key": "E17Gf7LmZqw",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794283528/cinemagoria/backdrops/hero_moonglow-backdrop.webp",
+    "poster_path": "/mrHkgFmSp9bIQk44YypTrFlvqwL.jpg",
+    "force_enrichment": true
   }
 ]
