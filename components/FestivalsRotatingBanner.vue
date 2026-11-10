@@ -128,6 +128,18 @@ const FESTIVALS = [
     dates: '11 – 20 NOVIEMBRE · 2026',
     tagline: 'Competencia internacional, cine árabe y clásicos —',
     end: new Date('2026-11-20T22:00:00Z'),
+  },  {
+    key: 'bars',
+    to: '/festival/bars-2026',
+    label: 'Buenos Aires Rojo Sangre 2026',
+    logo: '/festivals/bars/bars_logo_live_banner_2026.png',
+    pattern: '/festivals/bars/bars_pattern_live_banner_2026.png',
+    invertLogo: true,
+    edition: '27ª',
+    editionSuffix: '',
+    dates: '19 – 29 NOVIEMBRE · 2026',
+    tagline: 'Competencias de terror, Panorama Bizarro y clásicos de culto —',
+    end: new Date('2026-11-30T03:00:00Z'),
   },
 ];
 
