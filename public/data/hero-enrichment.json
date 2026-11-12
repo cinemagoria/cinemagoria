@@ -136,19 +136,19 @@
     "force_enrichment": true
   },
   {
-    "tmdb_id": 615121,
-    "media_type": "movie",
-    "trailer_key": "gnm4HgIAVmU",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794283685/cinemagoria/backdrops/hero_thomascrownaffair-backdrop.webp",
-    "poster_path": "/sT1TQeAy1PdRfPIb6rrM2DB7DB.jpg",
-    "force_enrichment": true
-  },
-  {
     "tmdb_id": 1259211,
     "media_type": "movie",
     "trailer_key": "E17Gf7LmZqw",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794283528/cinemagoria/backdrops/hero_moonglow-backdrop.webp",
     "poster_path": "/mrHkgFmSp9bIQk44YypTrFlvqwL.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 243214,
+    "media_type": "tv",
+    "trailer_key": "46AEtqYlMlc",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794481221/cinemagoria/backdrops/hero_243214.webp",
+    "poster_path": "/qsS3xGLmNAlElDNs2B89QABCgMx.jpg",
     "force_enrichment": true
   }
 ]
