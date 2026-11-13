@@ -93,6 +93,12 @@ function _hasNonLatinScript(text) {
     return /[^\u0000-\u024F\u1E00-\u1EFF\u2000-\u206F\u2100-\u214F\d\s.,!?:;'"()\-–—/&@#$%+='"""''…·•½¼¾°ºª×÷]/.test(text);
 }
 
+// Without a Spanish title TMDB answers with the original one, even in Latin script
+// ("Dykumos garsai", "A pokol élővilága"); those get the en-US title instead.
+function _lacksSpanishTitle(shown, original, language) {
+    return !!shown && shown === original && language !== 'es' && language !== 'en';
+}
+
 // Check if any credit person carries a non-Latin name. Only sample the top
 // of each list — full crews can hit dozens of names and the heuristic only
 // needs to know whether to spend one extra TMDB call on the en-US fallback.
@@ -633,7 +639,8 @@ export function getMovie(id) {
 
             if (apiLang !== 'en-US') {
                 const needsOverviewFallback = !responseData.overview;
-                const needsTitleFallback = _hasNonLatinScript(responseData.title);
+                const needsTitleFallback = _hasNonLatinScript(responseData.title)
+                    || _lacksSpanishTitle(responseData.title, responseData.original_title, responseData.original_language);
                 const needsCreditsFallback = _hasNonLatinScriptInCredits(responseData.credits);
 
                 if (needsOverviewFallback || needsTitleFallback || needsCreditsFallback) {
@@ -1037,7 +1044,8 @@ export function getTvShow(id) {
 
             if (apiLang !== 'en-US') {
                 const needsOverviewFallback = !responseData.overview;
-                const needsTitleFallback = _hasNonLatinScript(responseData.name);
+                const needsTitleFallback = _hasNonLatinScript(responseData.name)
+                    || _lacksSpanishTitle(responseData.name, responseData.original_name, responseData.original_language);
                 const needsCreditsFallback = _hasNonLatinScriptInCredits(responseData.credits);
 
                 if (needsOverviewFallback || needsTitleFallback || needsCreditsFallback) {
