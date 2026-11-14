@@ -1,27 +1,17 @@
 steps:
-  # BuildKit with a registry cache (mode=max keeps the builder stage too), so
-  # `yarn install` is reused while package.json / yarn.lock / nuxt.config.ts
-  # don't change. Cloud Build workers start empty; without this every deploy
-  # reinstalled every dependency.
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['buildx', 'create', '--name', 'cached', '--driver', 'docker-container', '--use']
-
   - name: 'gcr.io/cloud-builders/docker'
     args:
-      - 'buildx'
       - 'build'
       - '--build-arg'
       - 'SUPABASE_URL=${_SUPABASE_URL}'
       - '--build-arg'
       - 'SUPABASE_ANON_KEY=${_SUPABASE_ANON_KEY}'
-      - '--cache-from'
-      - 'type=registry,ref=us-east1-docker.pkg.dev/${PROJECT_ID}/cinemagoria/cinemagoria-es:buildcache'
-      - '--cache-to'
-      - 'type=registry,ref=us-east1-docker.pkg.dev/${PROJECT_ID}/cinemagoria/cinemagoria-es:buildcache,mode=max'
       - '-t'
       - 'us-east1-docker.pkg.dev/${PROJECT_ID}/cinemagoria/cinemagoria-es:latest'
-      - '--push'
       - '.'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-east1-docker.pkg.dev/${PROJECT_ID}/cinemagoria/cinemagoria-es:latest']
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
