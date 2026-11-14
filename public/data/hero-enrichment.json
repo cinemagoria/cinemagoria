@@ -3,7 +3,7 @@
     "tmdb_id": 1170608,
     "media_type": "movie",
     "trailer_key": "3_9vCamtuPY",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794621414/cinemagoria/backdrops/hero_dunepartthree-backdrop-paul.webp",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1793151459/cinemagoria/news_covers/article_dune-part-iii-warner-bros-releases-the-final-trailer-ahead-o.webp",
     "poster_path": "/b4wekkUaxExzOeGe7hKXzhnyXHt.jpg",
     "force_enrichment": true
   },
@@ -189,6 +189,14 @@
     "trailer_key": "Xlm4e5WpeuE",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794603894/cinemagoria/backdrops/hero_1783050.webp",
     "poster_path": "/o7QYGWcmuvcbqk80evh4AEur34k.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1266690,
+    "media_type": "movie",
+    "trailer_key": "j25yVrXT5Po",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794624117/cinemagoria/backdrops/hero_1266690.webp",
+    "poster_path": "/l12BcSymwDQhXbcA4Ls42UkS4QY.jpg",
     "force_enrichment": true
   }
 ]
