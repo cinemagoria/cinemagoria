@@ -4,8 +4,9 @@ import { cachedWithRefresh } from '~~/server/utils/staleCache'
 
 // Same rows scripts/sync{HeroData,NoirEnrichmentData,CustomOverrides}.js write to
 // public/data/*-enrichment.json, read live so hero/noir/title_overrides edits reach
-// the detail pages without a redeploy. ~1.1k rows per refresh.
-const ENRICHMENT_FRESH_MS = 2 * 60 * 1000
+// the detail pages without a redeploy. ~1.1k Turso rows per refresh, at most one
+// refresh per instance every 5 min and only while there is traffic.
+const ENRICHMENT_FRESH_MS = 5 * 60 * 1000
 
 async function loadTable(table: string, forceUnlessZero: boolean) {
     const result = await dbExecute({
