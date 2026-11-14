@@ -92,33 +92,37 @@ function _buildEnrichmentMap(data) {
     return map;
 }
 
-export async function getHeroEnrichment() {
-    if (!_heroEnrichmentPromise) {
-        _heroEnrichmentPromise = fetch('/data/hero-enrichment.json')
-            .then(res => res.ok ? res.json() : [])
-            .then(_buildEnrichmentMap)
-            .catch(() => new Map());
+let _liveEnrichmentPromise = null;
+
+// Live rows from /api/enrichment (Turso, ~2 min cache) so DB edits need no redeploy;
+// the committed public/data JSON is only the fallback. Browser-only, as before.
+function _loadEnrichment(kind) {
+    if (!import.meta.client) return Promise.resolve(new Map());
+    if (!_liveEnrichmentPromise) {
+        _liveEnrichmentPromise = fetch('/api/enrichment')
+            .then(res => res.ok ? res.json() : null)
+            .catch(() => null);
     }
+    return _liveEnrichmentPromise
+        .then(live => Array.isArray(live?.[kind])
+            ? live[kind]
+            : fetch(`/data/${kind}-enrichment.json`).then(res => res.ok ? res.json() : []))
+        .then(_buildEnrichmentMap)
+        .catch(() => new Map());
+}
+
+export async function getHeroEnrichment() {
+    if (!_heroEnrichmentPromise) _heroEnrichmentPromise = _loadEnrichment('hero');
     return _heroEnrichmentPromise;
 }
 
 export async function getNoirEnrichment() {
-    if (!_noirEnrichmentPromise) {
-        _noirEnrichmentPromise = fetch('/data/noir-enrichment.json')
-            .then(res => res.ok ? res.json() : [])
-            .then(_buildEnrichmentMap)
-            .catch(() => new Map());
-    }
+    if (!_noirEnrichmentPromise) _noirEnrichmentPromise = _loadEnrichment('noir');
     return _noirEnrichmentPromise;
 }
 
 export async function getCustomEnrichment() {
-    if (!_customEnrichmentPromise) {
-        _customEnrichmentPromise = fetch('/data/custom-enrichment.json')
-            .then(res => res.ok ? res.json() : [])
-            .then(_buildEnrichmentMap)
-            .catch(() => new Map());
-    }
+    if (!_customEnrichmentPromise) _customEnrichmentPromise = _loadEnrichment('custom');
     return _customEnrichmentPromise;
 }
 
