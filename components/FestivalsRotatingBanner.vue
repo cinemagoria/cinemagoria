@@ -77,19 +77,6 @@ const BANNER_START = new Date('2026-07-30T00:00:00Z');
 
 const FESTIVALS = [
   {
-    key: 'thessaloniki',
-    to: '/festival/thessaloniki-2026',
-    label: 'Thessaloniki International Film Festival 2026',
-    logo: '/festivals/thessaloniki/thessaloniki_logo_live_banner_2026.png',
-    pattern: '/festivals/thessaloniki/thessaloniki_pattern_live_banner_2026.png',
-    invertLogo: true,
-    edition: '67',
-    editionSuffix: 'TH',
-    dates: 'NOV 5 – 15 · 2026',
-    tagline: 'International competition, Greek cinema & tributes —',
-    end: new Date('2026-11-15T22:00:00Z'),
-  },
-  {
     key: 'tallinn',
     to: '/festival/tallinn-2026',
     label: 'Tallinn Black Nights Film Festival 2026',
