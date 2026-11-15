@@ -77,19 +77,6 @@ const BANNER_START = new Date('2026-07-30T00:00:00Z');
 
 const FESTIVALS = [
   {
-    key: 'mardelplata',
-    to: '/festival/mardelplata-2026',
-    label: 'Festival Internacional de Cine de Mar del Plata 2026',
-    logo: '/festivals/mardelplata/mardelplata_logo_live_banner_2026.png',
-    pattern: '/festivals/mardelplata/mardelplata_pattern_live_banner_2026.png',
-    invertLogo: true,
-    edition: '41ª',
-    editionSuffix: '',
-    dates: '5 – 15 NOVIEMBRE · 2026',
-    tagline: 'Panorama, cine argentino y retrospectivas —',
-    end: new Date('2026-11-16T03:00:00Z'),
-  },
-  {
     key: 'thessaloniki',
     to: '/festival/thessaloniki-2026',
     label: 'Festival de Cine de Tesalónica 2026',
