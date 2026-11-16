@@ -15,3 +15,21 @@
 body {
   background: linear-gradient(270deg, #2c0a47, #092739 #000000);
 }
+
+// Light mode (see the lite-mode script in nuxt.config.ts): weak GPUs choke on live blur, endless animations
+// and forced GPU layers, so they all go. Animations jump straight to their end state.
+html[data-lite] {
+  *, *::before, *::after {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    will-change: auto !important;
+    scroll-behavior: auto !important;
+  }
+
+  .carousel__items, .card__img { transform: none !important; }
+}

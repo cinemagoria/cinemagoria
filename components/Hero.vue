@@ -535,6 +535,7 @@ import TallinnBadge from '~/components/festival/TallinnBadge.vue';
 import MardelplataBadge from '~/components/festival/MardelplataBadge.vue';
 import { translateText } from '~/utils/api';
 import { MANUAL_FESTIVAL_BADGES, MANUAL_OVERVIEWS } from '~/utils/constants';
+import { isLiteMode } from '~/utils/liteMode';
 import { getHeroEnrichment, getNoirEnrichment } from '~/utils/api';
 import NoirModal from '~/components/NoirModal.vue';
 import HeroLedgerModal from '~/components/HeroLedgerModal.vue';
@@ -950,6 +951,8 @@ export default {
   },
 
   async mounted() {
+    // No self-advancing slides on weak devices; the arrows still work.
+    if (isLiteMode()) { this.autoAdvanceEnabled = false; this.stopAutoAdvance(); }
     this.$bus.$on('new-list-created', this.handleNewList);
 
     const email = localStorage.getItem('email');

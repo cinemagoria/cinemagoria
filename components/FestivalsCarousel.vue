@@ -56,6 +56,7 @@
 
 <script>
 import carousel from '~/mixins/Carousel';
+import { isLiteMode } from '~/utils/liteMode';
 import SundanceCard from '~/components/SundanceCard.vue';
 import SlamdanceCard from '~/components/SlamdanceCard.vue';
 import TribecaCard from '~/components/TribecaCard.vue';
@@ -199,6 +200,7 @@ export default {
     },
     startAutoplay () {
       if (this.autoplayInterval) clearInterval(this.autoplayInterval);
+      if (isLiteMode()) return;
       this.autoplayInterval = setInterval(() => {
         if (!this.disableRightButton) {
           this.moveToClickEvent('right');
