@@ -173,6 +173,10 @@ export default defineNuxtConfig({
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@100..800&family=Outfit:wght@300;400;600;800&display=swap' }
       ],
       script: [
+        // Light mode for weak devices: the TV app (user agent "CinemagoriaTV") and devices with ≤2 GB RAM.
+        // Runs before first paint so the heavy look never renders there; the TV also gets a desktop-width layout
+        // (re-applied if the head is re-rendered). localStorage.cgLite = '1' / '0' forces it on or off.
+        { key: 'lite-mode', innerHTML: "(function(){var d=document.documentElement,tv=/CinemagoriaTV/.test(navigator.userAgent),f=null;try{f=localStorage.getItem('cgLite')}catch(e){}var m=navigator.deviceMemory;if(f?f==='1':tv||(m>0&&m<=2))d.setAttribute('data-lite','');if(tv){d.setAttribute('data-tv','');var w='width=1280',fix=function(){var v=document.querySelector('meta[name=viewport]');if(v&&v.content!==w)v.content=w};fix();new MutationObserver(fix).observe(document.head,{subtree:true,childList:true,attributes:true,attributeFilter:['content']})}})()" },
         { src: 'https://script.tracevisor.com/hello.js', defer: true }
       ],
     }

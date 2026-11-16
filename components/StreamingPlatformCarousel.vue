@@ -62,6 +62,7 @@
 
 <script>
 import carousel from '~/mixins/Carousel';
+import { isLiteMode } from '~/utils/liteMode';
 import { apiImgUrl } from '~/utils/api';
 import { STREAMING_CUSTOM_LOGOS } from '~/utils/constants';
 
@@ -123,6 +124,7 @@ export default {
     },
     startAutoplay () {
       if (this.autoplayInterval) clearInterval(this.autoplayInterval);
+      if (isLiteMode()) return;
       this.autoplayInterval = setInterval(() => {
         if (!this.disableRightButton) {
           this.moveToClickEvent('right');
