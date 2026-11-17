@@ -5,7 +5,7 @@
 </template>
 
 <script>
-// Gold trophy pill next to a title or a person's name; opens AwardsModal.
+// Trophy chip next to a title or a person's name; opens AwardsModal.
 export default {
   name: 'AwardsButton',
   props: {
@@ -18,6 +18,12 @@ export default {
 <style lang="scss" module>
 @use '~/assets/css/utilities/variables' as *;
 
+$champagne: #f3d38a;
+$glass: rgba(12, 13, 17, 0.62);
+$ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+$spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+// Glass chip with a hairline champagne rim (gradient border through border-box).
 .button {
   display: inline-flex;
   align-items: center;
@@ -27,26 +33,37 @@ export default {
   padding: 0 15px;
   margin-left: 1.2rem;
   vertical-align: middle;
-  background: rgba(3, 4, 6, 0.55);
-  border: 1px solid rgba(240, 196, 45, 0.35);
+  border: 1px solid transparent;
   border-radius: 999px;
-  cursor: pointer;
+  background:
+    linear-gradient($glass, $glass) padding-box,
+    linear-gradient(135deg, rgba($champagne, 0.6), rgba(255, 255, 255, 0.1) 40%, rgba(255, 255, 255, 0.05) 65%, rgba($champagne, 0.3)) border-box;
+  box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: inset 0 0 12px rgba(240, 196, 45, 0.06);
-  transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  cursor: pointer;
+  animation: chipIn 0.55s $ease-out backwards;
+  transition: transform 0.35s $spring, box-shadow 0.3s ease, background 0.3s ease;
 
   &:hover {
-    background: rgba(240, 196, 45, 0.1);
-    border-color: rgba(240, 196, 45, 0.65);
+    background:
+      linear-gradient(rgba(38, 32, 20, 0.7), rgba(38, 32, 20, 0.7)) padding-box,
+      linear-gradient(135deg, rgba($champagne, 0.95), rgba($champagne, 0.25) 45%, rgba(255, 255, 255, 0.08) 65%, rgba($champagne, 0.6)) border-box;
+    box-shadow: 0 8px 22px -8px rgba($champagne, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(240, 196, 45, 0.18),
-                inset 0 0 12px rgba(240, 196, 45, 0.1);
+
+    .icon {
+      transform: rotate(-12deg) scale(1.12);
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 
   &:focus-visible {
-    outline: 2px solid #f0c42d;
-    outline-offset: 2px;
+    outline: 2px solid $champagne;
+    outline-offset: 3px;
   }
 
   @media (max-width: #{$breakpoint-small - 1px}) {
@@ -59,14 +76,20 @@ export default {
   }
 }
 
-// Same gold gradient as the festival WinnersCarousel, painted through the icon.
+// Brushed champagne trophy; a light band sweeps across it every few seconds.
 .icon {
   display: block;
   width: 18px;
   height: 18px;
-  background: linear-gradient(135deg, #f0c42d 0%, #b8860b 100%);
+  background:
+    linear-gradient(110deg, transparent 42%, rgba(255, 255, 255, 0.95) 50%, transparent 58%) no-repeat,
+    linear-gradient(160deg, #fff3d1 0%, $champagne 38%, #d9a343 72%, #a8711d 100%);
+  background-size: 250% 100%, 100% 100%;
+  background-position: 0 0, 0 0;
   -webkit-mask: url('/ui/trophy.svg') center / contain no-repeat;
   mask: url('/ui/trophy.svg') center / contain no-repeat;
+  animation: glint 6s ease-in-out 1s infinite;
+  transition: transform 0.45s $spring;
 
   @media (max-width: #{$breakpoint-small - 1px}) {
     width: 16px;
@@ -76,6 +99,24 @@ export default {
   @media (min-width: 1650px) {
     width: max(18px, calc(0.72vw + 5px));
     height: max(18px, calc(0.72vw + 5px));
+  }
+}
+
+@keyframes chipIn {
+  from { opacity: 0; transform: translateY(4px) scale(0.85); }
+}
+
+// 100% puts the band off the left edge, 0% off the right; most of the cycle is rest.
+@keyframes glint {
+  0%, 72% { background-position: 100% 0, 0 0; }
+  90%, 100% { background-position: 0 0, 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .icon {
+    animation: none;
+    transition: none;
   }
 }
 </style>
