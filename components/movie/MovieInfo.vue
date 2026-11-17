@@ -316,13 +316,10 @@
 
 
 
-         <div v-if="activeTab === 'awards'">
-          <AwardsTab :tmdb-id="item.id" type="movie" />
-        </div>
 
          <ListingCarousel
           ref="recommendationCarousel"
-          v-else-if="currentRecommendationList && currentRecommendationList.results && currentRecommendationList.results.length"
+          v-if="currentRecommendationList && currentRecommendationList.results && currentRecommendationList.results.length"
           :items="currentRecommendationList" />
       </div>
     </div>
@@ -330,6 +327,7 @@
 </template>
 
 <script>
+import { awardsSummary } from '~/utils/awards';
 import { apiImgUrl, getMovieProviders, getMovieReviews, getTraktReviews, getECReviews, getMovieRecommended, getPerson, getMoviesByProductionCompany, getIMDbRatingFromDB, enrichMovieWithIMDbRating } from '~/utils/api'; 
 import { getReleaseStatusContext } from '~/utils/helpers';
 import DOMPurify from 'dompurify';
@@ -350,7 +348,6 @@ export default {
     WatchOn,
     ListingCarousel,
     FullCreditsModal,
-    AwardsTab: () => import('~/components/common/AwardsTab'),
 
     Loader: () => import('~/components/Loader'),
   },
@@ -372,11 +369,7 @@ export default {
       type: Array,
       default: () => [],
     },
-    oscars: { type: Array, default: () => [] },
-    goldenGlobes: { type: Array, default: () => [] },
-    palme: { type: Array, default: () => [] },
-    goldenLion: { type: Array, default: () => [] },
-    goldenBear: { type: Array, default: () => [] }
+    awards: { type: Array, default: () => [] },
   },
 
   data() {
@@ -495,36 +488,11 @@ export default {
           return { text: this.item.status, detail: '' };
       }
     },
-    winnerOscars() {
-      return this.oscars.filter(award => award.won);
-    },
-    winnerGoldenGlobes() {
-      return this.goldenGlobes.filter(award => award.won);
-    },
     hasWinnerAwards() {
-      return this.winnerOscars.length > 0 || 
-             this.winnerGoldenGlobes.length > 0 || 
-             this.palme.length > 0 || 
-             this.goldenLion.length > 0 || 
-             this.goldenBear.length > 0;
+      return this.awards.length > 0;
     },
     awardsSummary() {
-      const oscarCount = this.winnerOscars.length;
-      const ggCount = this.winnerGoldenGlobes.length;
-      const palmeGold = this.palme.filter(a => a.rank !== 'silver').length;
-      const palmeSilver = this.palme.filter(a => a.rank === 'silver').length;
-      const lionCount = this.goldenLion.length;
-      const bearCount = this.goldenBear.length;
-
-      const parts = [];
-      if (oscarCount > 0) parts.push(`${oscarCount} Oscar${oscarCount > 1 ? 's' : ''}`);
-      if (ggCount > 0) parts.push(`${ggCount} Golden Globe${ggCount > 1 ? 's' : ''}`);
-      if (palmeGold > 0) parts.push(`${palmeGold} Palme d'Or`);
-      if (palmeSilver > 0) parts.push(`${palmeSilver} Grand Prix`);
-      if (lionCount > 0) parts.push(`${lionCount} Golden Lion${lionCount > 1 ? 's' : ''}`);
-      if (bearCount > 0) parts.push(`${bearCount} Golden Bear${bearCount > 1 ? 's' : ''}`);
-      
-      return parts.join(', ');
+      return awardsSummary(this.awards);
     },
     progressElapsed() {
       if (!this.item.runtime) return '0m';

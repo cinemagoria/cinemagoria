@@ -6,12 +6,8 @@
 
     <PersonInfo
       :person="person"
-      :oscars="awardsData.oscars"
-      :golden-globes="awardsData.goldenGlobes"
-      :palme="awardsData.palme"
-      :golden-lion="awardsData.goldenLion"
-      :golden-bear="awardsData.goldenBear"
-      @show-awards="activeMenu = 'awards'" />
+      :awards="personAwards"
+      @show-awards="showAwardsModal = true" />
 
     <div class="spacing">
       <MediaNav
@@ -55,17 +51,7 @@
           :images="person.images.profiles" />
       </div>
     </template>
-    <template v-if="activeMenu === 'awards' && showAwards">
-       <div class="spacing content-container">
-          <PersonAwardsTab 
-            :oscars="awardsData.oscars"
-            :golden-globes="awardsData.goldenGlobes"
-            :palme="awardsData.palme"
-            :golden-lion="awardsData.goldenLion"
-            :golden-bear="awardsData.goldenBear"
-          />
-       </div>
-    </template>
+    <AwardsModal v-if="showAwardsModal" :title="person.name" :groups="personAwards" @close="showAwardsModal = false" />
   </main>
 </template>
 <script setup>
@@ -80,7 +66,8 @@ import CreditsHistory from '~/components/person/CreditsHistory.vue';
 import Images from '~/components/Images.vue';
 import Listing from '~/components/Listing.vue';
 import Loader from '~/components/Loader.vue';
-import PersonAwardsTab from '~/components/person/PersonAwardsTab.vue';
+import AwardsModal from '~/components/AwardsModal.vue';
+import { loadPersonAwards } from '~/utils/awards';
 
 const route = useRoute();
 const router = useRouter();
@@ -99,7 +86,8 @@ const menu = ref([]);
 const knownFor = ref(null);
 const loadingCredits = ref(false);
 const loadingPhotos = ref(false);
-const awardsData = ref({ oscars: [], goldenGlobes: [], palme: [], goldenLion: [], goldenBear: [] });
+const personAwards = ref([]);
+const showAwardsModal = ref(false);
 
 const { data: personData, error } = await useAsyncData(`person-${route.params.id}`, async () => {
   try {
@@ -136,14 +124,6 @@ const metaImage = computed(() => {
 const showImages = computed(() => {
   const images = person.value.images;
   return images && (images.profiles && images.profiles.length);
-});
-
-const showAwards = computed(() => {
-  return (awardsData.value.oscars && awardsData.value.oscars.length > 0) || 
-         (awardsData.value.goldenGlobes && awardsData.value.goldenGlobes.length > 0) ||
-         (awardsData.value.palme && awardsData.value.palme.length > 0) ||
-         (awardsData.value.goldenLion && awardsData.value.goldenLion.length > 0) ||
-         (awardsData.value.goldenBear && awardsData.value.goldenBear.length > 0);
 });
 
 const removeDuplicates = (myArr) => {
@@ -241,7 +221,6 @@ const createMenu = () => {
   const m = [];
   m.push('Known For');
   m.push('Credits');
-  if (showAwards.value) m.push('Awards');
   if (showImages.value) m.push('Photos');
   menu.value = m;
 };
@@ -267,17 +246,8 @@ watch(person, async (newPerson) => {
         knownFor.value = null;
         initKnownFor();
 
-        try {
-             const awards = await $fetch('/api/awards', {
-                params: {
-                   name: newPerson.name,
-                   type: 'person'
-                }
-            });
-            awardsData.value = awards;
-        } catch(e) { 
-            console.error(e); 
-        }
+        personAwards.value = [];
+        loadPersonAwards(newPerson.name).then(groups => { personAwards.value = groups; });
         
         
         createMenu();
