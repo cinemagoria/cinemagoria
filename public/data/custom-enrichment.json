@@ -762,7 +762,7 @@
   {
     "tmdb_id": 1706730,
     "media_type": "movie",
-    "poster_path": "/ve7c9YJnYKKzl5rdv0ihcsaZXFH.jpg",
+    "poster_path": "/9ogOaLikTv2ZVxK2lImbOsJ3N1R.jpg",
     "backdrop_path": "/lJnlxv3NiE2a4jaomLLmg3H0Xd4.jpg",
     "trailer_key": null,
     "force_enrichment": true
@@ -866,8 +866,8 @@
   {
     "tmdb_id": 1706733,
     "media_type": "movie",
-    "poster_path": "/kvqLMSnuodLqwhs7YDpLlUYdXKE.jpg",
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780664740/cinemagoria/backdrops/backdrop_override_1706733.webp",
+    "poster_path": "/7ZTudCsOSj6gSoicb7gaITvMk9D.jpg",
+    "backdrop_path": "/NKDPUShNgyLeVb0wWbPBWfFJyo.jpg",
     "trailer_key": null,
     "force_enrichment": false
   },
@@ -1730,7 +1730,7 @@
   {
     "tmdb_id": 1590933,
     "media_type": "movie",
-    "poster_path": "/gimofPPz5J9KgMHXGoQuvl3q4VA.jpg",
+    "poster_path": "/w1pZb4owHCmwikGMZ8NU11ssKYp.jpg",
     "backdrop_path": "/fGwgblkNDNAnwrHckFkWSkJNR4W.jpg",
     "trailer_key": "lpDyieqHb5U",
     "force_enrichment": false
@@ -1810,7 +1810,7 @@
   {
     "tmdb_id": 1661926,
     "media_type": "movie",
-    "poster_path": "/tqhJCIYIVNJzI3DXV6tX0VAv20F.jpg",
+    "poster_path": "/uTlPSbu7MAapbxL84fhlXoyZW7S.jpg",
     "backdrop_path": "/hvVIS83R92hstmUzqA3WVofyUQ1.jpg",
     "trailer_key": "jEEsFxAhrvs",
     "force_enrichment": false
@@ -2002,8 +2002,8 @@
   {
     "tmdb_id": 1476614,
     "media_type": "movie",
-    "poster_path": "/fgxhBo4elwt89J5k9wzhHSXGQmY.jpg",
-    "backdrop_path": "/ed1w4D49Zno1lqs9h9X2qzbcPpH.jpg",
+    "poster_path": "/kFD1vl6FPt8heIIgFiAyIbZqrYh.jpg",
+    "backdrop_path": "/rQEfTB65F71Y2yIlAzv3GJ3m7Rz.jpg",
     "trailer_key": "vWCvHFgNB6k",
     "force_enrichment": false
   },
@@ -2291,7 +2291,7 @@
     "tmdb_id": 1380417,
     "media_type": "movie",
     "poster_path": "/85CvGoeXAcSSWy6So2DRD8ItJAN.jpg",
-    "backdrop_path": "/1jANqIbqrWJZb8GM5Kb3L6U8iHi.jpg",
+    "backdrop_path": "/nw9Q3idNO8EsTPnvr8vBJTpkWGA.jpg",
     "trailer_key": "nFedRMadEME",
     "force_enrichment": false
   },
