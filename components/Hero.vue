@@ -132,6 +132,8 @@
                   {{ name }}
                 </nuxt-link>
               </template>
+                <AwardsButton v-if="heroAwards.length > 0" :label="awardsLabel" @open="openAwardsModal" />
+                <AwardsModal v-if="showAwardsModal" :title="name" :groups="heroAwards" @close="closeAwardsModal" />
             </h1>
 
             <div :class="$style.meta">
@@ -569,6 +571,9 @@ import { isLiteMode } from '~/utils/liteMode';
 import { getHeroEnrichment, getNoirEnrichment } from '~/utils/api';
 import NoirModal from '~/components/NoirModal.vue';
 import HeroLedgerModal from '~/components/HeroLedgerModal.vue';
+import AwardsModal from '~/components/AwardsModal.vue';
+import AwardsButton from '~/components/AwardsButton.vue';
+import { loadTitleAwards, awardsSummary } from '~/utils/awards';
 
 const AUTO_ADVANCE_DURATION_MS = 15000;
 const SEASON_LABEL_LIMIT = 3;
@@ -702,6 +707,8 @@ export default {
     MardelplataBadge,
     NoirModal,
     HeroLedgerModal,
+    AwardsModal,
+    AwardsButton,
   },
 
   mixins: [
@@ -805,6 +812,8 @@ export default {
       isNoirTitle: false,
       relatedArticles: [],
       showArticlesPanel: false,
+      heroAwards: [],
+      showAwardsModal: false,
       currentIndex: 0,
       autoAdvanceEnabled: true,
       autoAdvanceTimer: null,
@@ -950,6 +959,9 @@ export default {
     articlesCapsuleLabel() {
       const count = this.relatedArticles.length;
       return count === 1 ? '1 Related article' : `${count} Related articles`;
+    },
+    awardsLabel() {
+      return awardsSummary(this.heroAwards);
     },
     progressPercentage: {
       get() {
@@ -1099,6 +1111,31 @@ export default {
 
       if (this.entityKeyFor(this.heroItem) === key) {
         this.relatedArticles = this._relatedArticlesCache.get(key) || [];
+      }
+    },
+    // One request covers the whole homepage pool; utils/awards caches it for the visit.
+    async loadAwards() {
+      this.showAwardsModal = false;
+      this.heroAwards = [];
+      const key = this.entityKeyFor(this.heroItem);
+      if (!key) return;
+      const pool = (this.isHomepage && this.items && this.items.length > 0) ? this.items : [];
+      const results = await loadTitleAwards([key, ...pool.map(item => this.entityKeyFor(item))]);
+      if (this.entityKeyFor(this.heroItem) === key) this.heroAwards = results[key] || [];
+    },
+    openAwardsModal() {
+      this.closeArticlesPanel();
+      this.showAwardsModal = true;
+      if (this.isHomepage && !this.autoAdvancePaused) {
+        this._awardsModalPausedAutoAdvance = true;
+        this.toggleAutoAdvance();
+      }
+    },
+    closeAwardsModal() {
+      this.showAwardsModal = false;
+      if (this._awardsModalPausedAutoAdvance) {
+        this._awardsModalPausedAutoAdvance = false;
+        if (this.autoAdvancePaused) this.toggleAutoAdvance();
       }
     },
     toggleArticlesPanel() {
@@ -1291,6 +1328,7 @@ export default {
 
         this.checkFestivalStatus();
         this.loadRelatedArticles();
+        this.loadAwards();
 
         if (!this.backdrop) {
           this.isLoading = false;

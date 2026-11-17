@@ -21,6 +21,7 @@
         <div :class="$style.headerRow">
           <h2 :class="$style.title">
             {{ person.name }}
+            <AwardsButton v-if="awards.length" :label="awardsSummary" @open="$emit('show-awards')" />
           </h2>
         </div>
 
@@ -110,18 +111,16 @@
 </template>
 
 <script>
+import { awardsSummary } from '~/utils/awards';
+import AwardsButton from '~/components/AwardsButton.vue';
 import { apiImgUrl } from '~/utils/api';
 import ExternalLinks from '~/components/ExternalLinks';
 
 export default {
-  components: { ExternalLinks },
+  components: { ExternalLinks, AwardsButton },
   props: { 
     person: { type: Object, required: true },
-    oscars: { type: Array, default: () => [] },
-    goldenGlobes: { type: Array, default: () => [] },
-    palme: { type: Array, default: () => [] },
-    goldenLion: { type: Array, default: () => [] },
-    goldenBear: { type: Array, default: () => [] }
+    awards: { type: Array, default: () => [] },
   },
   emits: ['show-awards'],
   data() {
@@ -158,34 +157,11 @@ export default {
       const dept = this.person.known_for_department;
       return dept === 'Acting' || dept === 'Directing' || dept === 'Writing';
     },
-    winnerOscars() {
-      return this.oscars.filter(award => award.won);
-    },
-    winnerGoldenGlobes() {
-      return this.goldenGlobes.filter(award => award.won);
-    },
     hasWinnerAwards() {
-      return this.winnerOscars.length > 0 || 
-             this.winnerGoldenGlobes.length > 0 || 
-             this.palme.length > 0 || 
-             this.goldenLion.length > 0 || 
-             this.goldenBear.length > 0;
+      return this.awards.length > 0;
     },
     awardsSummary() {
-      const oscarCount = this.winnerOscars.length;
-      const ggCount = this.winnerGoldenGlobes.length;
-      const palmeCount = this.palme.length;
-      const lionCount = this.goldenLion.length;
-      const bearCount = this.goldenBear.length;
-      
-      const parts = [];
-      if (oscarCount > 0) parts.push(`${oscarCount} Oscar${oscarCount > 1 ? 's' : ''}`);
-      if (ggCount > 0) parts.push(`${ggCount} Golden Globe${ggCount > 1 ? 's' : ''}`);
-      if (palmeCount > 0) parts.push(`${palmeCount} Palme d'Or`);
-      if (lionCount > 0) parts.push(`${lionCount} Golden Lion${lionCount > 1 ? 's' : ''}`);
-      if (bearCount > 0) parts.push(`${bearCount} Golden Bear${bearCount > 1 ? 's' : ''}`);
-      
-      return parts.join(', ');
+      return awardsSummary(this.awards);
     },
   },
   // homepage merged into :links binding in template to avoid direct prop mutation

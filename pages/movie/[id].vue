@@ -22,13 +22,9 @@
           v-if="item && item.id" 
           :item="item" 
           @open-releases="activeMenu = 'releases'" 
-          @show-awards="activeMenu = 'awards'" 
+          @show-awards="showAwardsModal = true" 
           :reviews-prop="reviews" 
-          :oscars="awardsData.oscars" 
-          :golden-globes="awardsData.goldenGlobes"
-          :palme="awardsData.palme"
-          :golden-lion="awardsData.goldenLion"
-          :golden-bear="awardsData.goldenBear"
+          :awards="titleAwards"
         >
           <template #before-recommendations>
             <Credits v-if="showCredits" :people="item.credits.cast" />
@@ -53,18 +49,7 @@
         <SoundtrackList class="tab-full" :items="soundtrackItems" />
       </template>
 
-      <template v-if="activeMenu === 'awards' && showAwards">
-        <AwardsTab
-          class="tab-full"
-          :tmdb-id="item.id"
-          type="movie"
-          :oscars-prop="awardsData.oscars"
-          :golden-globes-prop="awardsData.goldenGlobes"
-          :palme="awardsData.palme"
-          :golden-lion="awardsData.goldenLion"
-          :golden-bear="awardsData.goldenBear"
-        />
-      </template>
+      <AwardsModal v-if="showAwardsModal" :title="item.title || item.name" :groups="titleAwards" @close="showAwardsModal = false" />
     </template>
   </main>
 </template>
@@ -83,7 +68,8 @@ import Videos from '~/components/Videos.vue';
 import Images from '~/components/Images.vue';
 import Credits from '~/components/Credits.vue';
 import SoundtrackList from '~/components/music/SoundtrackList.vue';
-import AwardsTab from '~/components/common/AwardsTab.vue';
+import AwardsModal from '~/components/AwardsModal.vue';
+import { loadTitleAwards, awardsKey } from '~/utils/awards';
 import { searchSoundtracks } from '~/utils/musicbrainz';
 
 const route = useRoute();
@@ -102,7 +88,8 @@ const activeMenu = ref('overview');
 const menu = ref([]);
 const reviews = ref(null);
 const soundtrackItems = ref([]);
-const awardsData = ref({ oscars: [], goldenGlobes: [], palme: [], goldenLion: [], goldenBear: [] });
+const titleAwards = ref([]);
+const showAwardsModal = ref(false);
 const { data: movieData, error } = await useAsyncData(`movie-${route.params.id}`, async () => {
   try {
     // Festival badges resolve in parallel with the TMDB fetch (which
@@ -180,19 +167,10 @@ const showSoundtracks = computed(() => {
   return soundtrackItems.value && soundtrackItems.value.length > 0;
 });
 
-const showAwards = computed(() => {
-  return (awardsData.value.oscars && awardsData.value.oscars.length > 0) || 
-         (awardsData.value.goldenGlobes && awardsData.value.goldenGlobes.length > 0) ||
-         (awardsData.value.palme && awardsData.value.palme.length > 0) ||
-         (awardsData.value.goldenLion && awardsData.value.goldenLion.length > 0) ||
-         (awardsData.value.goldenBear && awardsData.value.goldenBear.length > 0);
-});
-
 const createMenu = () => {
   const m = [];
   m.push('Overview');
   m.push('Releases');
-  if (showAwards.value) m.push('Awards');
   if (showSoundtracks.value) m.push('OST');
   if (showVideos.value) m.push('Videos');
   if (showImages.value) m.push('Photos');
@@ -201,6 +179,8 @@ const createMenu = () => {
 
 watch(item, async () => {
   if (item.value && item.value.id) {
+    const key = awardsKey('movie', item.value.id);
+    loadTitleAwards([key]).then(results => { titleAwards.value = results[key] || []; });
     try {
       const query = item.value.original_title || item.value.title;
       if (query) {
@@ -208,13 +188,6 @@ watch(item, async () => {
         soundtrackItems.value = results;
       }
       
-      const awards = await $fetch('/api/awards', {
-          query: {
-             tmdbId: item.value.id,
-             type: 'movie'
-          }
-      });
-      awardsData.value = awards;
 
     } catch (e) {
       console.error(e);
