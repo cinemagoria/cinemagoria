@@ -415,6 +415,7 @@
             <select v-model="selectedUserRating" class="field-input native-select">
               <option value="">Todas mis calificaciones</option>
               <option value="not-rated">Sin calificar</option>
+              <option value="rated">Calificados</option>
               <option value="10">Mi calificación: 10</option>
               <option value="9">Mi calificación: 9</option>
               <option value="8">Mi calificación: 8</option>
@@ -689,6 +690,10 @@ export default {
              { value: 'older-releases', label: 'Estrenos antiguos' },
              { value: 'imdb-high', label: 'Mejor calificados (IMDB/TMDB)' },
              { value: 'imdb-low', label: 'Peor calificados (IMDB/TMDB)' },
+             ...(this.isOwner ? [
+               { value: 'my-rating-high', label: 'Mejor calificados (por mí)' },
+               { value: 'my-rating-low', label: 'Peor calificados (por mí)' }
+             ] : []),
              { value: 'votes-high', label: 'Más votados' },
              { value: 'votes-low', label: 'Menos votados' },
              { value: 'shortest-first', label: 'Más cortos primero' },
@@ -733,7 +738,7 @@ export default {
            }
 
            if (this.selectedUserRating) {
-               const label = this.selectedUserRating === 'not-rated' ? 'Sin calificar' : `Mi calificación: ${this.selectedUserRating}`;
+               const label = this.selectedUserRating === 'not-rated' ? 'Sin calificar' : this.selectedUserRating === 'rated' ? 'Calificados' : `Mi calificación: ${this.selectedUserRating}`;
                chips.push({ label, value: 'selectedUserRating' });
            }
 
@@ -779,7 +784,7 @@ export default {
                        if (rated) return false;
                    } else if (!rated) {
                        return false;
-                   } else {
+                   } else if (this.selectedUserRating !== 'rated') {
                        const userRating = parseInt(d.userRatingForDb);
                        if (this.selectedUserRating.includes('-')) {
                            const [min, max] = this.selectedUserRating.split('-').map(Number);
@@ -799,6 +804,9 @@ export default {
         sortedItems() {
            const mode = this.orderMode;
            const arr = this.filteredItems.slice();
+           // Missing scores (-1) always sink to the bottom; dir 1 = high first, -1 = low first.
+           const byScore = (p, q, dir) => (p === -1) - (q === -1) || dir * (q - p);
+           const myRating = d => parseInt(d.userRatingForDb) || -1;
            arr.sort((a, b) => {
                const x = a.details, y = b.details;
                switch (mode) {
@@ -806,18 +814,10 @@ export default {
                    case 'earliest-added': return x.addedTime - y.addedTime;
                    case 'newer-releases': return y.yearSort - x.yearSort;
                    case 'older-releases': return x.yearSort - y.yearSort;
-                   case 'imdb-high': {
-                       if (x.weightedRating === -1 && y.weightedRating === -1) return 0;
-                       if (x.weightedRating === -1) return 1;
-                       if (y.weightedRating === -1) return -1;
-                       return y.weightedRating - x.weightedRating;
-                   }
-                   case 'imdb-low': {
-                       if (x.weightedRating === -1 && y.weightedRating === -1) return 0;
-                       if (x.weightedRating === -1) return 1;
-                       if (y.weightedRating === -1) return -1;
-                       return x.weightedRating - y.weightedRating;
-                   }
+                   case 'imdb-high': return byScore(x.weightedRating, y.weightedRating, 1);
+                   case 'imdb-low': return byScore(x.weightedRating, y.weightedRating, -1);
+                   case 'my-rating-high': return byScore(myRating(x), myRating(y), 1);
+                   case 'my-rating-low': return byScore(myRating(x), myRating(y), -1);
                    case 'votes-high': return y.votesNum - x.votesNum;
                    case 'votes-low': return x.votesNum - y.votesNum;
                    case 'shortest-first': return x.runtimeNum - y.runtimeNum;
