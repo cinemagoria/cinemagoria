@@ -1426,7 +1426,7 @@
   {
     "tmdb_id": 1404684,
     "media_type": "movie",
-    "poster_path": "/eWPq3wSvJEMakESTXzaBECUNBYr.jpg",
+    "poster_path": "/zkQdcvpjZwUzIfHWJkbPi6wrwY3.jpg",
     "backdrop_path": "/l1fhfzNclQcp4oBz550KMY0CTre.jpg",
     "trailer_key": "WgkUS8yVGCY",
     "force_enrichment": false
@@ -1435,7 +1435,7 @@
     "tmdb_id": 1058424,
     "media_type": "movie",
     "poster_path": "/6VY1ZKgpsc8CfGsQcCGiYEgHdH0.jpg",
-    "backdrop_path": "/j96rurZqmBjyY37Fncl3IB0qJNe.jpg",
+    "backdrop_path": "/qqHFLg90IUSoTmSMpKOOW5RyqN3.jpg",
     "trailer_key": "4Tn3DfUEgmo",
     "force_enrichment": false
   },
@@ -2187,7 +2187,7 @@
     "tmdb_id": 1154730,
     "media_type": "movie",
     "poster_path": "/y6AkOgTEPM9nTJUOeyvHqlf6Bgp.jpg",
-    "backdrop_path": "/dZVZkmzHLnobFszwYZ9DybvhUHW.jpg",
+    "backdrop_path": "/kt8bR6HCWto7MRzLy1J67OVeOpy.jpg",
     "trailer_key": "mJcYelIGoZk",
     "force_enrichment": false
   },
@@ -2291,7 +2291,7 @@
     "tmdb_id": 1380417,
     "media_type": "movie",
     "poster_path": "/85CvGoeXAcSSWy6So2DRD8ItJAN.jpg",
-    "backdrop_path": "/nw9Q3idNO8EsTPnvr8vBJTpkWGA.jpg",
+    "backdrop_path": "/1jANqIbqrWJZb8GM5Kb3L6U8iHi.jpg",
     "trailer_key": "nFedRMadEME",
     "force_enrichment": false
   },
@@ -2306,8 +2306,8 @@
   {
     "tmdb_id": 947493,
     "media_type": "movie",
-    "poster_path": "/ltn7a7pfb7bXTEg1YEwVeAHs9GY.jpg",
-    "backdrop_path": "/qMryViRTIek9SkkOPjNMfnbCuI6.jpg",
+    "poster_path": "/oM39gmpBRjyKt9zJ71ae25nHSAT.jpg",
+    "backdrop_path": "/15xJ819H4W6bBt5buS9wHJ86HTp.jpg",
     "trailer_key": "kcjVH2w-0GQ",
     "force_enrichment": false
   },
@@ -2342,5 +2342,13 @@
     "backdrop_path": "/nkkZzghsZMTIZ4Uhozm38VRgoWj.jpg",
     "trailer_key": null,
     "force_enrichment": false
+  },
+  {
+    "tmdb_id": 1299379,
+    "media_type": "movie",
+    "poster_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1795010639/cinemagoria/posters/poster_1299379.webp",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794561710/cinemagoria/backdrops/hero_1299379.webp",
+    "trailer_key": "cP43hDLwn5E",
+    "force_enrichment": true
   }
 ]
