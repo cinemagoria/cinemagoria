@@ -34,7 +34,7 @@
   {
     "tmdb_id": 1675254,
     "media_type": "movie",
-    "poster_path": "/3Au8KOFIMxNtSUtxAzJIYGz4dXW.jpg",
+    "poster_path": "/4hIW9Q0SnWBe7Xl7oY1RhcfYcDv.jpg",
     "backdrop_path": "/d8phaWbKW7ZVfQrg0OnxvS6YO6d.jpg",
     "trailer_key": null,
     "force_enrichment": false
@@ -1066,7 +1066,7 @@
   {
     "tmdb_id": 1083624,
     "media_type": "movie",
-    "poster_path": "/olm4WGvsA3SLDEPI31biMfs5oto.jpg",
+    "poster_path": "/yhAFZCxc0PyI3r3nwIKxfcTpWAr.jpg",
     "backdrop_path": "/jm7KYDb6VomYqJn28JOJ1yqcTDz.jpg",
     "trailer_key": "BlQ2XH-ei58",
     "force_enrichment": false
@@ -1946,7 +1946,7 @@
   {
     "tmdb_id": 1429713,
     "media_type": "movie",
-    "poster_path": "/xwvvfmWitg2LQH0i6rMjtUa1VtO.jpg",
+    "poster_path": "/6NVZPz2tkFkIYYX1Ji26vesxhR5.jpg",
     "backdrop_path": "/cnuB1HfYzdAt3s5DbZybFsPuJ.jpg",
     "trailer_key": "wFAHV11z7TY",
     "force_enrichment": false
@@ -2298,8 +2298,8 @@
   {
     "tmdb_id": 1473148,
     "media_type": "movie",
-    "poster_path": "/v7sbP2qv8ezCfo9FOI6DVUXDSaw.jpg",
-    "backdrop_path": "/ozpCKXUhZjhH3mM6GzC5dnvXcSF.jpg",
+    "poster_path": "/e6JypFBgG2Mv037ZxhnxkEO8fHa.jpg",
+    "backdrop_path": "/A8ZP4aE0gq9FrHydF9HU4LCmrtF.jpg",
     "trailer_key": "xy3LZKfROOE",
     "force_enrichment": false
   },
