@@ -4,9 +4,19 @@
     <UserNav v-if="isMounted" />
     <nav class="page-header">
       <h1 class="page-title">Latest News</h1>
-      <h2 class="page-subtitle">
+      <h2 v-if="showNewsSubtitle" class="page-subtitle">
         Your daily briefing on film, television, and the entertainment industry.
       </h2>
+      <p v-if="showNewsScheduleNotice" class="news-schedule-notice">
+        <svg class="news-schedule-notice__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 16v-4M12 8h.01" />
+        </svg>
+        <span>
+          News coverage continues through November 30 and resumes on January 21 with the 43rd Sundance Film Festival, the first held in Boulder. Between those dates, the news archive, festival pages, awards, lists and notifications remain available as usual.
+          <NuxtLink to="/usage-policies#news-schedule" class="news-schedule-notice__link">More information</NuxtLink>
+        </span>
+      </p>
     </nav>
 
     <div class="news-section">
@@ -409,6 +419,13 @@ useHead({
     { property: 'og:description', content: 'Your daily briefing on film, television, and the entertainment industry.' },
   ],
 })
+
+// Midnight in Argentina on both ends: no publishing from Dec 1, coverage back on Jan 21.
+const NEWS_BREAK_START = new Date('2026-12-01T03:00:00Z');
+const NEWS_BREAK_END = new Date('2027-01-21T03:00:00Z');
+const newsScheduleNow = new Date();
+const showNewsScheduleNotice = newsScheduleNow < NEWS_BREAK_END;
+const showNewsSubtitle = newsScheduleNow < NEWS_BREAK_START || newsScheduleNow >= NEWS_BREAK_END;
 
 const PLACEHOLDER_IMAGE = '/placeholders/placeholder_news.webp';
 const VIEW_STORAGE_KEY = 'news-view-mode';
@@ -996,6 +1013,42 @@ watch(userEmail, (val) => {
 </script>
 
 <style scoped>
+.news-schedule-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  max-width: 76rem;
+  margin: 0 auto var(--page-header-space-bottom);
+  padding: 1rem 1.4rem;
+  border: 1px solid rgba(138, 232, 252, 0.22);
+  border-radius: 12px;
+  background: rgba(138, 232, 252, 0.05);
+  color: var(--page-subtitle-color);
+  font-size: 1.35rem;
+  line-height: 1.55;
+  text-align: left;
+}
+
+.page-subtitle + .news-schedule-notice {
+  margin-top: calc(1.2rem - var(--page-header-space-bottom));
+}
+
+.news-schedule-notice__icon {
+  flex: none;
+  width: 1.6rem;
+  height: 1.6rem;
+  margin-top: 0.25rem;
+  color: #8ae8fc;
+}
+
+.news-schedule-notice__link {
+  color: #8ae8fc;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+
 .news-section {
   display: flex;
   justify-content: center;
