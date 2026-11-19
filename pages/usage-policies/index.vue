@@ -12,7 +12,7 @@
         <p class="heroDates">
           <span><strong>Vigencia desde:</strong> 27 de marzo de 2024</span>
           <span class="heroDot">&middot;</span>
-          <span><strong>Última actualización:</strong> 15 de junio de 2026</span>
+          <span><strong>Última actualización:</strong> 18 de noviembre de 2026</span>
         </p>
       </div>
     </header>
@@ -155,6 +155,13 @@ const sections = [
     id: 'contact',
     title: '8. Contacto',
     body: `<p>Para consultas sobre estos términos o políticas, escribir a <a href="mailto:hello@cinemagoria.com">hello@cinemagoria.com</a>.</p>`,
+  },
+  {
+    id: 'news-schedule',
+    title: '9. Calendario de Publicación de Noticias 2026-2027',
+    body: `<p>La cobertura de la sección de Noticias continúa hasta el <strong>30 de noviembre de 2026</strong>. Del <strong>1 de diciembre de 2026 al 20 de enero de 2027</strong> no se publicarán nuevas notas editoriales ni se incorporarán noticias de terceros. Está previsto retomar la cobertura el 21 de enero de 2027, con el inicio del Festival de Sundance.</p>
+<p>Este calendario alcanza únicamente a la sección de Noticias. El archivo de notas, las páginas de festivales, los premios, las listas, las notificaciones y las cuentas siguen disponibles en las condiciones habituales. Los datos del catálogo pueden seguir actualizándose de forma automática. Las consultas enviadas según lo indicado en la <strong>Sección 8</strong> pueden demorar más en recibir respuesta.</p>
+<p>Estas fechas pueden cambiar. La publicación de noticias no implica un compromiso de frecuencia ni de continuidad: la sección puede modificarse, suspenderse o discontinuarse en cualquier momento.</p>`,
   },
 ];
 
