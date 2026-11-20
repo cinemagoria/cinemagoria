@@ -1202,7 +1202,7 @@ export function getTraktReviews(id, type) {
                     return {
                         authorName: review.user ? review.user.username : 'Anonymous',
                         authorAvatar: null,
-                        authorRating: review.rating,
+                        authorRating: review.user_stats?.rating ?? review.user_rating ?? review.rating ?? null,
                         content: review.comment,
                         createdAt: review.created_at,
                         url: `https://trakt.tv/comments/${review.id}`,

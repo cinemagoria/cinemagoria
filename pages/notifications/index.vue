@@ -89,7 +89,7 @@
                   <div class="notification-title">
                     <strong>
                       <NuxtLink v-if="item.alias" :to="`/u/${item.alias}`" target="_blank" rel="noopener noreferrer">@{{ item.alias }}</NuxtLink>
-                      <span v-else>{{ item.first_name || item.user_email }}</span>
+                      <span v-else>{{ item.first_name || 'Alguien' }}</span>
                     </strong>
                     <span class="has-release">
                       {{ item.activity_type === 'rating' ? ' calificó' : item.activity_type === 'review' ? ' reseñó' : ' creó una lista' }}
@@ -100,7 +100,7 @@
                     <span v-if="item.rating" style="color:#8BE9FD;font-weight:600;"> &middot; {{ item.rating }}/10</span>
                   </div>
                   <div v-else-if="item.list_name" class="notification-media">
-                    <NuxtLink :to="item.list_slug ? `/list/${item.list_slug}` : '#'" target="_blank" rel="noopener noreferrer">{{ item.list_name }}</NuxtLink>
+                    <NuxtLink :to="item.list_slug ? `/lists/${item.list_slug}` : '#'" target="_blank" rel="noopener noreferrer">{{ item.list_name }}</NuxtLink>
                   </div>
                   <div v-if="item.review" class="notification-overview" style="margin-top:4px;">
                     {{ item.review }}

@@ -57,10 +57,11 @@ export default {
     }
   },
   async mounted() {
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(window.location.hash.slice(1) || window.location.search);
     this.token = urlParams.get('token') || this.$route.query.token;
     this.email = urlParams.get('email') || this.$route.query.email;
     this.name = urlParams.get('name') || this.$route.query.name;
+    window.history.replaceState(window.history.state, '', window.location.pathname);
     
     if (!this.token || !this.email) {
       this.error = 'Información de autenticación incompleta';

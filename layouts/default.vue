@@ -22,7 +22,6 @@
     <LazyProgressTrackingModal hydrate-on-idle />
     <LazyRatedModal hydrate-on-idle />
     <LazyFollowingModal hydrate-on-idle />
-    <LazyQuickFavModal hydrate-on-idle />
     <LazyMyListsModal hydrate-on-idle />
     <LazyCreateListModal hydrate-on-idle />
   </div>

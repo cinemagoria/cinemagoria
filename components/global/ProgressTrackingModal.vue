@@ -472,6 +472,8 @@ export default {
     },
 
     openModal() {
+      // Read on open, not mount: the modal can mount before the user signs in.
+      this.userEmail = localStorage.getItem('email')?.replace(/['"]+/g, '') || '';
       this.isOpen = true;
       document.body.style.overflow = 'hidden';
       

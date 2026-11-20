@@ -744,18 +744,6 @@ export default {
       hoverRating: 0,
       activeTab: 'rating',
       userReview: '',
-      ratingDescriptions: [
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        ''
-      ],
 
       nameForDb: null,
       starsForDb: null,
@@ -1892,8 +1880,6 @@ export default {
        }
 
       try {
-        await this.loadRatingFromRatingsEndpoint();
-
         const response = await fetch(
           `${this.tursoBackendUrl}/favorites/rating/${this.userEmail}/${this.typeForDb}/${this.id}`,
           {
