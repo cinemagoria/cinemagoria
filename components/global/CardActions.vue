@@ -136,8 +136,8 @@ export default {
     },
     
     openRate() {
-        this.$bus.$emit('show-rated-modal');
-        this.$emit('rate', this.item);
+        // RatedModal opens straight on this title's rating form when given an item.
+        this.$bus.$emit('show-rated-modal', { details: mapItemToDbPayload(this.item) });
         this.close();
     },
     
@@ -187,7 +187,12 @@ export default {
             if (wasIn) {
                 await fetch(`${this.tursoBackendUrl}/favorites/${this.userEmail}/${this.itemType}/${this.itemId}`, { method: 'DELETE' });
             } else {
-                this.$bus.$emit('toggle-favorite-request', this.item);
+                await fetch(`${this.tursoBackendUrl}/favorites`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userEmail: this.userEmail, item: mapItemToDbPayload(this.item) })
+                });
+                this.$bus.$emit('favorites-updated');
             }
             await this.fetchMembership();
         } catch(e) { console.error(e); }

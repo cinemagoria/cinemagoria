@@ -266,7 +266,7 @@
           </div>
           <div class="movie-info-modal-buttons">
             <button @click="removeRatingAndReview" class="movie-info-remove-btn">Remove Rating</button>
-            <button @click="saveEditedReview" class="movie-info-save-btn">Save</button>
+            <button @click="saveEditedReview" class="movie-info-save-btn" :disabled="!selectedRating">Save</button>
           </div>
         </div>
       </div>
@@ -747,7 +747,8 @@ export default {
       if (!userEmail) return;
       const tursoUrl = this.$config.public.tursoBackendUrl || 'https://cinemagoria-favorites-746175915741.us-east1.run.app/api';
       try {
-        if (this.selectedRating > 0 || this.editUserReview.trim() !== '') {
+        // A rating marks the movie watched unless progress is partway (same rule as the hero).
+        if (this.selectedRating > 0 && (this.progressPercentage === 0 || this.progressPercentage >= 80)) {
           this.progressPercentage = 100;
         }
         if (this.selectedRating > 0) {

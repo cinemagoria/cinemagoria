@@ -332,7 +332,7 @@ export default {
         const resp = await fetch(`${DRF_API}/auth/delete-account/`, {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: this.userEmail, token_email: this.userEmail })
+          body: JSON.stringify({ email: this.userEmail, token_email: this.userEmail, token: localStorage.getItem('access_token') })
         });
         if (!resp.ok) {
           const err = await resp.json().catch(() => ({}));

@@ -774,18 +774,6 @@ export default {
       hoverRating: 0,
       activeTab: 'rating',
       userReview: '',
-      ratingDescriptions: [
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        ''
-      ],
 
       nameForDb: null,
       starsForDb: null,
@@ -1719,8 +1707,10 @@ export default {
         this.closeRatingModal();
         this.$bus.$emit('rated-items-updated');
         
-        const mediaType = this.type === 'movie' ? 'movie' : 'episode';
-        await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/${mediaType}/${this.id}`, { method: 'DELETE' }).catch(() => {});
+        // Only movies keep progress in this modal; a show's id is not an episode id.
+        if (this.type === 'movie') {
+          await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/movie/${this.id}`, { method: 'DELETE' }).catch(() => {});
+        }
         
       } catch (error) {
         console.error('Error removing rating:', error);
@@ -1839,8 +1829,6 @@ export default {
       }
 
       try {
-        await this.loadRatingFromRatingsEndpoint();
-
         const response = await fetch(
           `${this.tursoBackendUrl}/favorites/rating/${this.userEmail}/${this.typeForDb}/${this.id}`,
           {
@@ -1938,8 +1926,9 @@ export default {
     },
 
     async saveProgress() {
-      if (!this.userEmail) return;
-      const mediaType = this.type === 'movie' ? 'movie' : 'episode';
+      // Only movies are tracked from the hero; TV progress is per episode.
+      if (!this.userEmail || this.type !== 'movie') return;
+      const mediaType = 'movie';
       const rt = this.heroItem.runtime || 0;
       const elapsed = rt ? this.watchedMinutes : 0;
       try {
@@ -2046,8 +2035,9 @@ export default {
 
           await this.loadRatingFromRatingsEndpoint();
           
-          const mediaType = this.type === 'movie' ? 'movie' : 'episode';
-          await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/${mediaType}/${this.id}`, { method: 'DELETE' }).catch(() => {});
+          if (this.type === 'movie') {
+            await fetch(`/api/progress/${encodeURIComponent(this.userEmail)}/movie/${this.id}`, { method: 'DELETE' }).catch(() => {});
+          }
           
         } else {
           const response = await fetch(`${this.tursoBackendUrl}/favorites`, {

@@ -249,7 +249,7 @@
           </div>
           <div class="movie-info-modal-buttons">
             <button @click="removeRatingAndReview" class="movie-info-remove-btn">Remove Rating</button>
-            <button @click="saveEditedReview" class="movie-info-save-btn">Save</button>
+            <button @click="saveEditedReview" class="movie-info-save-btn" :disabled="!selectedRating">Save</button>
           </div>
         </div>
       </div>

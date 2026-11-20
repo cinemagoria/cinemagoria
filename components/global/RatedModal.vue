@@ -118,7 +118,7 @@
           <div class="review-section">
             <textarea
               v-model="userReview"
-              :placeholder="selectedRating > 0 ? ratingDescriptions[selectedRating - 1] : 'Select a rating first'"
+              :placeholder="selectedRating > 0 ? 'Add an optional review…' : 'Select a rating first'"
               class="review-textarea"
               maxlength="2000"
             ></textarea>
@@ -166,19 +166,8 @@ export default {
       moviesFetched: [],
       tvFetched: [],
       userEmail: '',
-      ratingDescriptions: [
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        ''
-      ],
       ratingModalVisible: false,
+      ratingOnly: false,
       currentRatingItem: null,
       selectedRating: 0,
       hoverRating: 0,
@@ -244,9 +233,18 @@ export default {
       }
     },
 
-    async show() {
+    async show(item) {
+      this.ratingOnly = false;
       this.visible = true;
       await this.fetchRatedItems();
+      if (item && item.details) {
+        // Opened from a card's "Rate": go straight to that title's form.
+        const { typeForDb, idForDb } = item.details;
+        const existing = [...this.moviesFetched, ...this.tvFetched]
+          .find(i => i.details.typeForDb === typeForDb && String(i.details.idForDb) === String(idForDb));
+        this.ratingOnly = true;
+        this.openRatingModal(existing || item);
+      }
     },
     
     close() {
@@ -353,6 +351,10 @@ export default {
     },
 
     closeRatingModal() {
+      if (this.ratingOnly) {
+        this.ratingOnly = false;
+        this.visible = false;
+      }
       this.ratingModalVisible = false;
       this.currentRatingItem = null;
       this.selectedRating = 0;
