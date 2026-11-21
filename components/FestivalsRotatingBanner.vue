@@ -89,6 +89,20 @@ const FESTIVALS = [
     tagline: 'Competencias de terror, Panorama Bizarro y clásicos de culto —',
     end: new Date('2026-11-30T03:00:00Z'),
   },
+  {
+    key: 'jaff',
+    to: '/festival/jaff-2026',
+    label: 'Festival de Cine Asiático Jogja-NETPAC 2026',
+    logo: '/festivals/jaff/jaff_logo_live_banner_2026.png',
+    pattern: '/festivals/jaff/jaff_pattern_live_banner_2026.png',
+    invertLogo: true,
+    edition: '21ª',
+    editionSuffix: '',
+    dates: '28 NOV – 5 DIC · 2026',
+    tagline: 'Competencia principal, Light of Asia y Nocturnal —',
+    start: new Date('2026-11-27T17:00:00Z'),
+    end: new Date('2026-12-05T17:00:00Z'),
+  },
 ];
 
 export default {
@@ -115,7 +129,8 @@ export default {
       this.visibleFestivals = [];
       return;
     }
-    this.visibleFestivals = FESTIVALS.filter(festival => now < festival.end);
+    // `start` is optional: an entry with one stays hidden until its festival opens.
+    this.visibleFestivals = FESTIVALS.filter(festival => now < festival.end && !(festival.start && now < festival.start));
   },
   mounted() {
     this.$bus.$on('hero-advance', this.handleHeroAdvance);
