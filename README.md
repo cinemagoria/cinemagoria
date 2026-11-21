@@ -60,13 +60,9 @@ Every covered festival gets its own page, API endpoints, card and badge componen
 
 **Live now**
 
-**Sundance** · **Rotterdam** · **Berlinale** · **Romford Horror** · **Slamdance** · **SXSW** · **BIFFF** · **BAFICI** · **CUFF** *(Calgary Underground)* · **Cannes** · **Tribeca** · **BIFAN** *(Bucheon)* · **KVIFF** *(Karlovy Vary)* · **Fantasia** *(Montréal)* · **Locarno** · **FrightFest** *(London)* · **Venice** *(La Biennale)* · **TIFF** *(Toronto)* · **BIFF** *(Busan)* · **BFI London** · **Sitges**
+**Sundance** · **Rotterdam** · **Berlinale** · **Romford Horror** · **Slamdance** · **SXSW** · **BIFFF** · **BAFICI** · **CUFF** *(Calgary Underground)* · **Cannes** · **Tribeca** · **BIFAN** *(Bucheon)* · **KVIFF** *(Karlovy Vary)* · **Fantasia** *(Montréal)* · **Locarno** · **FrightFest** *(London)* · **Venice** *(La Biennale)* · **TIFF** *(Toronto)* · **BIFF** *(Busan)* · **BFI London** · **Sitges** · **Thessaloniki** · **Mar del Plata** · **Tallinn Black Nights** *(PÖFF)* · **Cairo** · **BARS** *(Buenos Aires Rojo Sangre)* · **JAFF** *(Jogja-NETPAC)*
 
-**Still to land in the 2026 cycle**
-
-**Thessaloniki** · **Cairo** · **Mar del Plata** · **BARS** *(Buenos Aires Rojo Sangre)* · **Red Sea**
-
-Thessaloniki opens the Balkans and the Eastern Mediterranean, and Cairo and Red Sea take coverage into Africa and the Middle East. The 2027 cycle adds **Göteborg**.
+Thessaloniki opens the Balkans and the Eastern Mediterranean, Tallinn the Baltics, Cairo takes coverage into Africa and the Middle East, and JAFF into Southeast Asia, closing the 2026 cycle. The 2027 cycle adds **Göteborg**, **CPH:DOX**, **Tokyo** and **Red Sea**.
 
 Cannes ships the official screenings plus the parallel sections — Critics' Week, Quinzaine des Cinéastes and ACID — and Venice carries its own parallel sections. FrightFest ships the full official screening schedule, and Berlinale adds an interactive timezone-aware view of it. The hero section supports multiple simultaneous festival premiere badges with display precedence.
 

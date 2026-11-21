@@ -167,20 +167,25 @@ const sections = [
   <li><a href="/festival/frightfest-2026" class="inline-link">FrightFest</a> &middot; Londres</li>
   <li><a href="/festival/venice-2026" class="inline-link">Venecia</a> &middot; Venecia</li>
   <li><a href="/festival/tiff-2026" class="inline-link">TIFF</a> &middot; Toronto</li>
+  <li><a href="/festival/biff-2026" class="inline-link">BIFF</a> &middot; Busan</li>
+  <li><a href="/festival/bfi-2026" class="inline-link">BFI London</a> &middot; Londres</li>
+  <li><a href="/festival/sitges-2026" class="inline-link">Sitges</a> &middot; Sitges</li>
+  <li><a href="/festival/thessaloniki-2026" class="inline-link">Tesalónica</a> &middot; Tesalónica</li>
+  <li><a href="/festival/mardelplata-2026" class="inline-link">Mar del Plata</a> &middot; Mar del Plata</li>
+  <li><a href="/festival/tallinn-2026" class="inline-link">Tallinn Black Nights</a> &middot; Tallin</li>
+  <li><a href="/festival/cairo-2026" class="inline-link">El Cairo</a> &middot; El Cairo</li>
+  <li><a href="/festival/bars-2026" class="inline-link">BARS</a> &middot; Buenos Aires</li>
+  <li><a href="/festival/jaff-2026" class="inline-link">JAFF</a> &middot; Yogyakarta</li>
 </ul>
 <p>El hub completo se encuentra en <a href="/festival" class="inline-link">/festival</a>.</p>`
       },
       {
         q: '¿Qué festivales se incorporan próximamente?',
-        a: `<p>Pendientes de incorporarse durante 2026, en orden de calendario:</p>
+        a: `<p>El ciclo 2026 está completo. Se incorporan en 2027, en orden de calendario:</p>
 <ul>
-  <li><strong>BIFF</strong> &middot; Festival Internacional de Cine de Busan</li>
-  <li><strong>BFI London</strong> &middot; BFI London Film Festival</li>
-  <li><strong>Sitges</strong> &middot; Festival Internacional de Cine Fantástico de Cataluña</li>
-  <li><strong>Tesalónica</strong> &middot; Festival Internacional de Cine de Tesalónica</li>
-  <li><strong>El Cairo</strong> &middot; Festival Internacional de Cine de El Cairo</li>
-  <li><strong>Mar del Plata</strong> &middot; Festival Internacional de Cine</li>
-  <li><strong>BARS</strong> &middot; Buenos Aires Rojo Sangre</li>
+  <li><strong>Gotemburgo</strong> &middot; Festival de Cine de Gotemburgo</li>
+  <li><strong>CPH:DOX</strong> &middot; Festival Internacional de Cine Documental de Copenhague</li>
+  <li><strong>Tokio</strong> &middot; Festival Internacional de Cine de Tokio</li>
   <li><strong>Mar Rojo</strong> &middot; Festival Internacional de Cine del Mar Rojo</li>
 </ul>
 <p>Cada edición se retoma al año siguiente. La lista es orientativa y puede ajustarse a medida que evolucionan el alcance editorial y los recursos disponibles.</p>`
