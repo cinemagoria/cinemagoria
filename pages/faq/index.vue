@@ -167,20 +167,25 @@ const sections = [
   <li><a href="/festival/frightfest-2026" class="inline-link">FrightFest</a> &middot; London</li>
   <li><a href="/festival/venice-2026" class="inline-link">Venice</a> &middot; Venice</li>
   <li><a href="/festival/tiff-2026" class="inline-link">TIFF</a> &middot; Toronto</li>
+  <li><a href="/festival/biff-2026" class="inline-link">BIFF</a> &middot; Busan</li>
+  <li><a href="/festival/bfi-2026" class="inline-link">BFI London</a> &middot; London</li>
+  <li><a href="/festival/sitges-2026" class="inline-link">Sitges</a> &middot; Sitges</li>
+  <li><a href="/festival/thessaloniki-2026" class="inline-link">Thessaloniki</a> &middot; Thessaloniki</li>
+  <li><a href="/festival/mardelplata-2026" class="inline-link">Mar del Plata</a> &middot; Mar del Plata</li>
+  <li><a href="/festival/tallinn-2026" class="inline-link">Tallinn Black Nights</a> &middot; Tallinn</li>
+  <li><a href="/festival/cairo-2026" class="inline-link">Cairo</a> &middot; Cairo</li>
+  <li><a href="/festival/bars-2026" class="inline-link">BARS</a> &middot; Buenos Aires</li>
+  <li><a href="/festival/jaff-2026" class="inline-link">JAFF</a> &middot; Yogyakarta</li>
 </ul>
 <p>The full hub lives at <a href="/festival" class="inline-link">/festival</a>.</p>`
       },
       {
         q: 'Which festivals are scheduled to join the coverage?',
-        a: `<p>Still to join during 2026, in calendar order:</p>
+        a: `<p>The 2026 cycle is complete. Joining in 2027, in calendar order:</p>
 <ul>
-  <li><strong>BIFF</strong> &middot; Busan International Film Festival</li>
-  <li><strong>BFI London</strong> &middot; BFI London Film Festival</li>
-  <li><strong>Sitges</strong> &middot; International Fantastic Film Festival of Catalonia</li>
-  <li><strong>Thessaloniki</strong> &middot; Thessaloniki International Film Festival</li>
-  <li><strong>Cairo</strong> &middot; Cairo International Film Festival</li>
-  <li><strong>Mar del Plata</strong> &middot; International Film Festival</li>
-  <li><strong>BARS</strong> &middot; Buenos Aires Rojo Sangre</li>
+  <li><strong>G&ouml;teborg</strong> &middot; G&ouml;teborg Film Festival</li>
+  <li><strong>CPH:DOX</strong> &middot; Copenhagen International Documentary Film Festival</li>
+  <li><strong>Tokyo</strong> &middot; Tokyo International Film Festival</li>
   <li><strong>Red Sea</strong> &middot; Red Sea International Film Festival</li>
 </ul>
 <p>Each edition is picked up again the following year. The list is indicative &mdash; additions and adjustments happen as scope and resources evolve.</p>`

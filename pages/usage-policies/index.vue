@@ -12,7 +12,7 @@
         <p class="heroDates">
           <span><strong>Effective:</strong> March 27, 2024</span>
           <span class="heroDot">&middot;</span>
-          <span><strong>Last updated:</strong> November 18, 2026</span>
+          <span><strong>Last updated:</strong> November 21, 2026</span>
         </p>
       </div>
     </header>
@@ -160,7 +160,7 @@ const sections = [
     id: 'news-schedule',
     title: '9. News Publishing Schedule 2026–2027',
     body: `<p>Coverage in the News section continues through <strong>November 30, 2026</strong>. From <strong>December 1, 2026 through January 20, 2027</strong>, no new editorial articles will be published and no new third-party news items will be added. Coverage is expected to resume on January 21, 2027, with the opening of the Sundance Film Festival.</p>
-<p>This schedule applies to the News section only. The news archive, festival pages, awards, lists, notifications and accounts remain available under the usual conditions. Catalog data may continue to update automatically. Requests sent as indicated in <strong>Section 8</strong> may take longer to receive a response.</p>
+<p>This schedule applies to the News section only. The news archive, festival pages, awards, lists, notifications and accounts remain available under the usual conditions. Festival pages for editions that run past November 30, 2026, such as the Jogja-NETPAC Asian Film Festival (through December 5, 2026), continue to receive programme and awards updates. Catalog data may continue to update automatically. Requests sent as indicated in <strong>Section 8</strong> may take longer to receive a response.</p>
 <p>These dates may change. News publishing carries no commitment as to frequency or continuity: the section may be modified, suspended or discontinued at any time.</p>`,
   },
 ];
