@@ -77,19 +77,6 @@ const BANNER_START = new Date('2026-07-30T00:00:00Z');
 
 const FESTIVALS = [
   {
-    key: 'cairo',
-    to: '/festival/cairo-2026',
-    label: 'Cairo International Film Festival 2026',
-    logo: '/festivals/cairo/cairo_logo_live_banner_2026.png',
-    pattern: '/festivals/cairo/cairo_pattern_live_banner_2026.png',
-    invertLogo: true,
-    logoWide: true,
-    edition: '47',
-    editionSuffix: 'TH',
-    dates: 'NOV 11 – 20 · 2026',
-    tagline: 'International competition, Arab cinema & classics —',
-    end: new Date('2026-11-20T22:00:00Z'),
-  },  {
     key: 'bars',
     to: '/festival/bars-2026',
     label: 'Buenos Aires Rojo Sangre 2026',
