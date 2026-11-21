@@ -77,19 +77,6 @@ const BANNER_START = new Date('2026-07-30T00:00:00Z');
 
 const FESTIVALS = [
   {
-    key: 'tallinn',
-    to: '/festival/tallinn-2026',
-    label: 'Tallinn Black Nights Film Festival 2026',
-    logo: '/festivals/tallinn/tallinn_logo_live_banner_2026.png',
-    pattern: '/festivals/tallinn/tallinn_pattern_live_banner_2026.png',
-    invertLogo: true,
-    edition: '30',
-    editionSuffix: 'TH',
-    dates: 'NOV 6 – 22 · 2026',
-    tagline: 'Official competition, first features & daily schedule —',
-    end: new Date('2026-11-22T22:00:00Z'),
-  },
-  {
     key: 'cairo',
     to: '/festival/cairo-2026',
     label: 'Cairo International Film Festival 2026',
