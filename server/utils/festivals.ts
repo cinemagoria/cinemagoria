@@ -26,6 +26,7 @@ export const FESTIVAL_NAME_BY_SLUG: Record<string, string> = {
     thessaloniki: 'Thessaloniki International Film Festival',
     cairo: 'Cairo International Film Festival',
     bars: 'Buenos Aires Rojo Sangre',
+    jaff: 'Jogja-NETPAC Asian Film Festival',
     bfi: 'BFI London Film Festival',
     sitges: 'Sitges Film Festival',
     tallinn: 'Tallinn Black Nights Film Festival',

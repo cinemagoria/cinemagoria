@@ -531,6 +531,7 @@ import BiffBadge from '~/components/festival/BiffBadge.vue';
 import ThessalonikiBadge from '~/components/festival/ThessalonikiBadge.vue';
 import CairoBadge from '~/components/festival/CairoBadge.vue';
 import BarsBadge from '~/components/festival/BarsBadge.vue';
+import JaffBadge from '~/components/festival/JaffBadge.vue';
 import BfiBadge from '~/components/festival/BfiBadge.vue';
 import SitgesBadge from '~/components/festival/SitgesBadge.vue';
 import TallinnBadge from '~/components/festival/TallinnBadge.vue';
@@ -582,6 +583,7 @@ function mapFestivalsToFields(festivals, itemId, itemName) {
     thessalonikiFilm: f.thessaloniki || null,
     cairoFilm: f.cairo || null,
     barsFilm: f.bars || null,
+    jaffFilm: f.jaff || null,
     bfiFilm: f.bfi || null,
     sitgesFilm: f.sitges || null,
     tallinnFilm: f.tallinn || null,
@@ -633,6 +635,7 @@ function mapFestivalsToFields(festivals, itemId, itemName) {
     if (manual.includes('thessaloniki') && !fields.thessalonikiFilm) fields.thessalonikiFilm = stub;
     if (manual.includes('cairo') && !fields.cairoFilm) fields.cairoFilm = stub;
     if (manual.includes('bars') && !fields.barsFilm) fields.barsFilm = stub;
+    if (manual.includes('jaff') && !fields.jaffFilm) fields.jaffFilm = stub;
     if (manual.includes('bfi') && !fields.bfiFilm) fields.bfiFilm = stub;
     if (manual.includes('sitges') && !fields.sitgesFilm) fields.sitgesFilm = stub;
     if (manual.includes('tallinn') && !fields.tallinnFilm) fields.tallinnFilm = stub;
@@ -671,6 +674,7 @@ export default {
     ThessalonikiBadge,
     CairoBadge,
     BarsBadge,
+    JaffBadge,
     BfiBadge,
     SitgesBadge,
     TallinnBadge,
@@ -871,6 +875,7 @@ export default {
         { name: 'thessaloniki', film: this.thessalonikiFilm, component: 'ThessalonikiBadge', link: '/festival/thessaloniki-2026', isSimple: true },
         { name: 'cairo', film: this.cairoFilm, component: 'CairoBadge', link: '/festival/cairo-2026', isSimple: true },
         { name: 'bars', film: this.barsFilm, component: 'BarsBadge', link: '/festival/bars-2026', isSimple: true },
+        { name: 'jaff', film: this.jaffFilm, component: 'JaffBadge', link: '/festival/jaff-2026', isSimple: true },
         { name: 'bfi', film: this.bfiFilm, component: 'BfiBadge', link: '/festival/bfi-2026', isSimple: true },
         { name: 'sitges', film: this.sitgesFilm, component: 'SitgesBadge', link: '/festival/sitges-2026', isSimple: true },
         { name: 'tallinn', film: this.tallinnFilm, component: 'TallinnBadge', link: '/festival/tallinn-2026', isSimple: true },

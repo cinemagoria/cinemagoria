@@ -1848,6 +1848,12 @@ export const SUPPORTED_FESTIVALS = [
         logo_path: '/festivals/bars/bars_film_festival_2026_logo.png'
     },
     {
+        id: 'jaff',
+        name: 'Jogja-NETPAC Asian Film Festival (JAFF · JAFF21 · Jogja NETPAC Asian Film Festival · Jogja-NETPAC · Festival de Cine Asiático Jogja-NETPAC · Yogyakarta Asian Film Festival · Jogja Asian Film Festival) 2026',
+        slug: 'jaff-2026',
+        logo_path: '/festivals/jaff/jaff_film_festival_2026_logo.png'
+    },
+    {
         id: 'locarno',
         name: 'Locarno Film Festival 2026 Festival del film Locarno Pardo',
         slug: 'locarno-2026',
