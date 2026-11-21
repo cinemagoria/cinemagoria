@@ -77,19 +77,6 @@ const BANNER_START = new Date('2026-07-30T00:00:00Z');
 
 const FESTIVALS = [
   {
-    key: 'tallinn',
-    to: '/festival/tallinn-2026',
-    label: 'Tallinn Black Nights 2026',
-    logo: '/festivals/tallinn/tallinn_logo_live_banner_2026.png',
-    pattern: '/festivals/tallinn/tallinn_pattern_live_banner_2026.png',
-    invertLogo: true,
-    edition: '30ª',
-    editionSuffix: '',
-    dates: '6 – 22 NOVIEMBRE · 2026',
-    tagline: 'Competencia oficial, óperas primas y programación diaria —',
-    end: new Date('2026-11-22T22:00:00Z'),
-  },
-  {
     key: 'cairo',
     to: '/festival/cairo-2026',
     label: 'Festival Internacional de Cine de El Cairo 2026',
