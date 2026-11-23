@@ -1292,7 +1292,7 @@
     "media_type": "movie",
     "trailer_key": "52zHLYf25M0",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1785217399/cinemagoria/backdrops/noir_1437696.webp",
-    "poster_path": "/A4oNFaKi6BuIK3MZL3KEbB9H2T8.jpg",
+    "poster_path": "/oNejN1l69nBF8LdQwy5FkAQZT44.jpg",
     "force_enrichment": false
   },
   {
@@ -1420,7 +1420,7 @@
     "media_type": "movie",
     "trailer_key": "frg59VOungA",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1785217550/cinemagoria/backdrops/noir_1401459.webp",
-    "poster_path": "/3PPPIeSdeivjUn3O9RahGiaJ9b8.jpg",
+    "poster_path": "/bD6ynFDUP3PZvdIBjPi9VGhyi5a.jpg",
     "force_enrichment": true
   },
   {
@@ -2114,7 +2114,7 @@
   {
     "tmdb_id": 1000843,
     "media_type": "movie",
-    "trailer_key": "aUAZTtk_0Ao",
+    "trailer_key": "vGqAByD-fWM",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1779771908/cinemagoria/backdrops/noir_1000843.webp",
     "poster_path": "/1tv0zJ5fPtvll6VX1dZLtLTP7dJ.jpg",
     "force_enrichment": true
@@ -2364,7 +2364,7 @@
     "media_type": "movie",
     "trailer_key": "KfBSA1-Zk9s",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1780617925/cinemagoria/backdrops/noir_1532395.webp",
-    "poster_path": "/3n35jN2wQaziEb4f2DnJfZCLWad.jpg",
+    "poster_path": "/v2aS5PrqwvVjMxXDqdxXlo5qmEo.jpg",
     "force_enrichment": false
   },
   {
@@ -3092,7 +3092,7 @@
     "media_type": "movie",
     "trailer_key": "3_9vCamtuPY",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1793151459/cinemagoria/news_covers/article_dune-part-iii-warner-bros-releases-the-final-trailer-ahead-o.webp",
-    "poster_path": "/d43fvHQsIMa4kpyhKXw0haEJIvI.jpg",
+    "poster_path": "/gknAq4pAuToh1Aq5CJfVkGQkExT.jpg",
     "force_enrichment": true
   },
   {
@@ -4482,8 +4482,8 @@
   {
     "tmdb_id": 1486020,
     "media_type": "movie",
-    "trailer_key": null,
-    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794043929/cinemagoria/backdrops/noir_1486020.webp",
+    "trailer_key": "oSzEGtmTYjA",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1795361968/cinemagoria/backdrops/noir_1486020.webp",
     "poster_path": "/xaZrc3mPhKMbmr8Rl5EGKZghZbz.jpg",
     "force_enrichment": true
   },
@@ -5164,7 +5164,7 @@
     "media_type": "movie",
     "trailer_key": "NinlByMdwoA",
     "backdrop_path": "/vAzvEkOPGXBZG5zXrbXqtgqutmd.jpg",
-    "poster_path": "/96AKsSRSNRLhrKA3evVml7ctBrC.jpg",
+    "poster_path": "/57axyxps0ZYeZsJXpGv1qhQLVYe.jpg",
     "force_enrichment": false
   },
   {
@@ -5916,7 +5916,7 @@
     "media_type": "movie",
     "trailer_key": "D97YepMIpX8",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794041189/cinemagoria/backdrops/noir_683367.webp",
-    "poster_path": "/vOgyobhBylO7DDoUPcDMe31fw8d.jpg",
+    "poster_path": "/27mQ3JXIEnbDmIC6dZMNUjcpsy1.jpg",
     "force_enrichment": false
   },
   {
@@ -6381,6 +6381,14 @@
     "trailer_key": "JRR-tyO5xXE",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1795141807/cinemagoria/backdrops/noir_291368.webp",
     "poster_path": "/pQ2ZCQOhhssfmKb3MbZg0xJlJEW.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1523936,
+    "media_type": "movie",
+    "trailer_key": "E46vJpeM3CU",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1795331715/cinemagoria/backdrops/hero_blackcoffee-backdrop.webp",
+    "poster_path": "/8HsWFpif63RYePWpSDUBKV2Ju6O.jpg",
     "force_enrichment": true
   }
 ]
