@@ -1,5 +1,6 @@
 import { createError, defineEventHandler, getQuery } from 'h3'
 import { dbExecute } from '~~/server/utils/db'
+import { FESTIVAL_NAME_BY_SLUG } from '~~/server/utils/festivals'
 
 /**
  * Awards for the awards modal, from festival_awards (covered editions) and
@@ -149,7 +150,8 @@ export default defineEventHandler(async (event) => {
                 order: row.festival_year,
                 rank: -1,
                 logo: festival ? `/festivals/${festival}/${festival}_film_festival_${row.festival_year}_logo.png` : null,
-                link: row.festival_slug ? `/festival/${row.festival_slug}` : null,
+                // Only festivals with a page on the site get "View" (DOC NYC has a logo but no page).
+                link: row.festival_slug && FESTIVAL_NAME_BY_SLUG[festival] ? `/festival/${row.festival_slug}` : null,
             }).awards.push({
                 name: pick(row.award_name_es, row.award_name),
                 section: pick(row.award_section_es, row.award_section),
