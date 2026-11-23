@@ -1871,6 +1871,7 @@ export const SUPPORTED_FESTIVALS = [
 export const MANUAL_OVERVIEWS = {
     1666712: "A documentary that brings together players from Argentina and England to reconstruct the football match both national teams played in 1986, in the aftermath of the Falklands War. Testimonies from coaches, referees, fans, musicians and politicians, along with previously unseen archive footage, weave the beauty of the game with the historical events that, centuries earlier, set the conflict between both countries in motion.",
     1789849: "A documentary on María Gabriela Epumer, who wrote and played rock in the 1980s and 90s as a member of Viuda e Hijas de Roque Enroll, as Charly García's guitarist and as a solo artist. Twenty years after her passing, fifty hours of footage she shot herself lead from packed concerts to private moments in recording studios.",
+    1453909: "Three musicians from opposite ends of Europe set out on an inner journey in search of inspiration, turning to nature and to their own cultures to find the core of their next work. Joana delves into the caves of Mallorca, Emil loses himself in the Nordic fjords and Vasco moves among the ancestral voices of Portugal. Their solitary experiences reveal the beauty and mystery behind the creative process of composing music.",
 };
 
 export const MANUAL_FESTIVAL_BADGES = {
