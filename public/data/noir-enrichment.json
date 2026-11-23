@@ -6390,5 +6390,13 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1795331715/cinemagoria/backdrops/hero_blackcoffee-backdrop.webp",
     "poster_path": "/8HsWFpif63RYePWpSDUBKV2Ju6O.jpg",
     "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1794527,
+    "media_type": "movie",
+    "trailer_key": null,
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1795448406/cinemagoria/backdrops/noir_1794527.webp",
+    "poster_path": "/vvyvrBYCxRHD1H29Xfgcxo030dY.jpg",
+    "force_enrichment": true
   }
 ]
