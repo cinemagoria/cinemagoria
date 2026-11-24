@@ -31,7 +31,7 @@
 
           <p class="cov-text">The number of features and shorts displayed here may not match the festival's official lineup. Our catalog is built from publicly available metadata and third-party sources, which may not cover every title, particularly short films, experimental works, or regional entries.</p>
 
-          <p class="cov-text">This is a technical limitation, not an editorial choice. We don't censor, or intentionally omit any film. <nuxt-link to="/usage-policies" target="_blank" class="accent-link">Read full usage policies</nuxt-link>.</p>
+          <p class="cov-text">This is a technical limitation, not an editorial choice. We don't censor, or intentionally omit any film. <nuxt-link to="/usage-policies#festival-data" target="_blank" class="accent-link">Read full usage policies</nuxt-link>.</p>
 
           <div class="cov-actions">
             <button type="button" class="cov-btn cov-btn--report" @click="openReport">
