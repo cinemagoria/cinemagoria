@@ -100,7 +100,6 @@ const FESTIVALS = [
     editionSuffix: '',
     dates: '28 NOV – 5 DIC · 2026',
     tagline: 'Competencia principal, Light of Asia y Nocturnal —',
-    start: new Date('2026-11-27T17:00:00Z'),
     end: new Date('2026-12-05T17:00:00Z'),
   },
 ];

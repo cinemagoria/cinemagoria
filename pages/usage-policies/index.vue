@@ -97,20 +97,40 @@ const sections = [
   {
     id: 'data-sources',
     title: '5. Fuentes de Datos y Atribuciones',
-    body: `<p>La plataforma integra datos provenientes de APIs públicas y proveedores de metadatos. Todas las marcas y activos pertenecen a sus respectivos titulares. La información se presenta bajo criterios de uso legítimo y sin fines comerciales. Los titulares de derechos o editores que deseen solicitar la exclusión de su contenido (<em>opt-out</em>) pueden ponerse en contacto según lo indicado en la <strong>Sección 8</strong>.</p>
-<p><strong>Cobertura de datos de festivales:</strong> se recopilan programaciones a partir de fuentes públicas. La disponibilidad de datos puede ser incompleta, especialmente en el caso de cortometrajes. Como resultado, la cantidad de títulos mostrados para un festival puede diferir de su programación oficial. Estas diferencias responden a limitaciones técnicas y no a decisiones editoriales.</p>
-<p><strong>Agregación de noticias:</strong> los contenidos se obtienen de fuentes RSS públicas con fines de indexación. No se modifican las noticias de origen y se muestra únicamente la información proporcionada por dichas fuentes (como título, descripción y metadatos), en el formato en que estas son distribuidas. No es posible leer artículos completos dentro de la plataforma: toda interacción redirige al sitio original, siendo este el único entorno donde puede accederse al contenido íntegro, garantizando que el tráfico, las impresiones y la monetización correspondan exclusivamente al medio editorial. Adicionalmente, la plataforma puede publicar contenidos editoriales propios generados de forma automatizada o asistida a partir de múltiples fuentes públicas. Dichos contenidos pueden implicar procesos de síntesis, reformulación o estructuración automática de la información original, sin que ello implique una reproducción literal ni una correspondencia exacta con las fuentes de origen, y se ofrecen exclusivamente con fines informativos, pudiendo contener errores, omisiones, imprecisiones, inconsistencias o interpretaciones no intencionales respecto de las fuentes de origen. Las imágenes se utilizan únicamente con fines de identificación bajo principios de uso legítimo.</p>
-<p><strong>Artículos editoriales exclusivos para la comunidad (vigente desde el 1 de julio de 2026):</strong> algunas piezas editoriales publicadas a partir de esa fecha pueden marcarse como exclusivas para la comunidad. Estos artículos siguen presentes íntegramente en el feed RSS público en cuanto a título, descripción, categoría editorial, imagen de portada y metadatos de temas; sin embargo, el cuerpo completo del artículo solo se entrega a quienes hayan iniciado sesión con una cuenta gratuita en la plataforma. El ítem del feed invita explícitamente al lector a iniciar sesión o crear una cuenta gratuita para leer el artículo completo. <strong>La plataforma no cobra ninguna suscripción ni tarifa, no exige tarjeta de crédito ni de débito, y se mantiene como un servicio de código abierto y gratuito para todos los lectores.</strong> Todos los artículos publicados antes del 1 de julio de 2026, así como cualquier artículo que no lleve esta marca, permanecen completamente públicos tanto en la web como en el RSS.</p>
+    body: `<p>La plataforma integra datos provenientes de APIs públicas y proveedores de metadatos. Todas las marcas y activos pertenecen a sus respectivos titulares. La información se presenta bajo criterios de uso legítimo y sin fines comerciales. Los titulares de derechos o editores que deseen solicitar la exclusión de su contenido (<em>opt-out</em>) pueden ponerse en contacto según lo indicado en la <strong>Sección 12</strong>.</p>
 <p>Iconos y recursos gráficos bajo licencia Creative Commons Attribution 4.0. Trofeo de BnB Studio en <a href="https://thenounproject.com/browse/icons/term/trophy/" target="_blank" rel="noopener" title="Trophy Icons">Noun Project</a> (CC BY 3.0). Datos proporcionados por TMDB, JustWatch, MDBList y Trakt.</p>`,
   },
   {
+    id: 'festival-data',
+    title: '6. Cobertura de Datos de Festivales',
+    body: `<p>Se recopilan programaciones a partir de fuentes públicas. La disponibilidad de datos puede ser incompleta, especialmente en el caso de cortometrajes. Como resultado, la cantidad de títulos mostrados para un festival puede diferir de su programación oficial. Estas diferencias responden a limitaciones técnicas y no a decisiones editoriales.</p>`,
+  },
+  {
+    id: 'news-aggregation',
+    title: '7. Agregación de Noticias y Contenido Editorial',
+    body: `<p>Los contenidos se obtienen de fuentes RSS públicas con fines de indexación. No se modifican las noticias de origen y se muestra únicamente la información proporcionada por dichas fuentes (como título, descripción y metadatos), en el formato en que estas son distribuidas. No es posible leer artículos completos dentro de la plataforma: toda interacción redirige al sitio original, siendo este el único entorno donde puede accederse al contenido íntegro, garantizando que el tráfico, las impresiones y la monetización correspondan exclusivamente al medio editorial.</p>
+<p>Adicionalmente, la plataforma puede publicar contenidos editoriales propios generados de forma automatizada o asistida a partir de múltiples fuentes públicas. Dichos contenidos pueden implicar procesos de síntesis, reformulación o estructuración automática de la información original, sin que ello implique una reproducción literal ni una correspondencia exacta con las fuentes de origen, y se ofrecen exclusivamente con fines informativos, pudiendo contener errores, omisiones, imprecisiones, inconsistencias o interpretaciones no intencionales respecto de las fuentes de origen. Las imágenes se utilizan únicamente con fines de identificación bajo principios de uso legítimo.</p>`,
+  },
+  {
+    id: 'community-articles',
+    title: '8. Artículos Exclusivos para la Comunidad',
+    body: `<p><strong>Vigente desde el 1 de julio de 2026:</strong> algunas piezas editoriales publicadas a partir de esa fecha pueden marcarse como exclusivas para la comunidad. Estos artículos siguen presentes íntegramente en el feed RSS público en cuanto a título, descripción, categoría editorial, imagen de portada y metadatos de temas; sin embargo, el cuerpo completo del artículo solo se entrega a quienes hayan iniciado sesión con una cuenta gratuita en la plataforma. El ítem del feed invita explícitamente al lector a iniciar sesión o crear una cuenta gratuita para leer el artículo completo. <strong>La plataforma no cobra ninguna suscripción ni tarifa, no exige tarjeta de crédito ni de débito, y se mantiene como un servicio de código abierto y gratuito para todos los lectores.</strong> Todos los artículos publicados antes del 1 de julio de 2026, así como cualquier artículo que no lleve esta marca, permanecen completamente públicos tanto en la web como en el RSS.</p>`,
+  },
+  {
+    id: 'news-schedule',
+    title: '9. Calendario de Publicación de Noticias 2026-2027',
+    body: `<p>La cobertura de la sección de Noticias continúa hasta el <strong>30 de noviembre de 2026</strong>. Del <strong>1 de diciembre de 2026 al 20 de enero de 2027</strong> no se publicarán nuevas notas editoriales ni se incorporarán noticias de terceros. Está previsto retomar la cobertura el 21 de enero de 2027, con el inicio del Festival de Sundance.</p>
+<p>Este calendario alcanza únicamente a la sección de Noticias. El archivo de notas, las páginas de festivales, los premios, las listas, las notificaciones y las cuentas siguen disponibles en las condiciones habituales. Las páginas de los festivales cuyas ediciones se extienden más allá del 30 de noviembre de 2026, como el Festival de Cine Asiático Jogja-NETPAC (hasta el 5 de diciembre de 2026), siguen recibiendo actualizaciones de programación y premios. Los datos del catálogo pueden seguir actualizándose de forma automática. Las consultas enviadas según lo indicado en la <strong>Sección 12</strong> pueden demorar más en recibir respuesta.</p>
+<p>Estas fechas pueden cambiar. La publicación de noticias no implica un compromiso de frecuencia ni de continuidad: la sección puede modificarse, suspenderse o discontinuarse en cualquier momento.</p>`,
+  },
+  {
     id: 'general',
-    title: '6. Condiciones Generales',
+    title: '10. Condiciones Generales',
     body: `<p>Este es un proyecto en desarrollo continuo y se reserva el derecho de modificar estos términos en cualquier momento. El uso continuado implica la aceptación de la versión vigente.</p>`,
   },
   {
     id: 'cookies',
-    title: '7. Uso de Cookies',
+    title: '11. Uso de Cookies',
     body: `<p>Esta plataforma utiliza cookies y tecnologías similares de almacenamiento local. Se pueden gestionar las preferencias en cualquier momento desde el enlace de configuración de cookies en el pie de página o el banner de consentimiento mostrado en la primera visita.</p>
 <div class="cookie-table-wrapper">
   <table class="cookie-table">
@@ -153,15 +173,8 @@ const sections = [
   },
   {
     id: 'contact',
-    title: '8. Contacto',
+    title: '12. Contacto',
     body: `<p>Para consultas sobre estos términos o políticas, escribir a <a href="mailto:hello@cinemagoria.com">hello@cinemagoria.com</a>.</p>`,
-  },
-  {
-    id: 'news-schedule',
-    title: '9. Calendario de Publicación de Noticias 2026-2027',
-    body: `<p>La cobertura de la sección de Noticias continúa hasta el <strong>30 de noviembre de 2026</strong>. Del <strong>1 de diciembre de 2026 al 20 de enero de 2027</strong> no se publicarán nuevas notas editoriales ni se incorporarán noticias de terceros. Está previsto retomar la cobertura el 21 de enero de 2027, con el inicio del Festival de Sundance.</p>
-<p>Este calendario alcanza únicamente a la sección de Noticias. El archivo de notas, las páginas de festivales, los premios, las listas, las notificaciones y las cuentas siguen disponibles en las condiciones habituales. Las páginas de los festivales cuyas ediciones se extienden más allá del 30 de noviembre de 2026, como el Festival de Cine Asiático Jogja-NETPAC (hasta el 5 de diciembre de 2026), siguen recibiendo actualizaciones de programación y premios. Los datos del catálogo pueden seguir actualizándose de forma automática. Las consultas enviadas según lo indicado en la <strong>Sección 8</strong> pueden demorar más en recibir respuesta.</p>
-<p>Estas fechas pueden cambiar. La publicación de noticias no implica un compromiso de frecuencia ni de continuidad: la sección puede modificarse, suspenderse o discontinuarse en cualquier momento.</p>`,
   },
 ];
 
@@ -320,6 +333,8 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
   border: 1px solid rgba(31, 84, 103, 0.45);
   border-radius: 16px;
   padding: 1.1rem 0.7rem 1rem;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow:
@@ -338,6 +353,7 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
   @media (max-width: 1024px) {
     position: relative;
     top: auto;
+    max-height: none;
     padding: 0.8rem 0;
     background: transparent;
     border: none;
@@ -385,7 +401,6 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
   border-radius: 10px;
   border: 1px solid transparent;
   transition: all 0.2s ease;
-  white-space: nowrap;
   letter-spacing: 0.1px;
 
   &:hover {
@@ -396,6 +411,7 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
 
   @media (max-width: 1024px) {
     padding: 7px 14px;
+    white-space: nowrap;
     border: 1px solid rgba(139, 233, 253, 0.18);
     font-size: 13px;
     background: rgba(3, 4, 6, 0.5);
