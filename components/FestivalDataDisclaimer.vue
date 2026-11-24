@@ -31,7 +31,7 @@
 
           <p class="cov-text">La cantidad de largometrajes y cortometrajes mostrados aquí puede no coincidir con la grilla oficial del festival. Nuestro catálogo se construye a partir de metadatos públicos y fuentes de terceros, que pueden no cubrir todos los títulos, en particular cortometrajes, obras experimentales o producciones regionales.</p>
 
-          <p class="cov-text">Esto se debe a una limitación técnica, no a una decisión editorial. No censuramos ni omitimos intencionalmente ninguna película. <nuxt-link to="/usage-policies" target="_blank" class="accent-link">Leer políticas de uso completas</nuxt-link>.</p>
+          <p class="cov-text">Esto se debe a una limitación técnica, no a una decisión editorial. No censuramos ni omitimos intencionalmente ninguna película. <nuxt-link to="/usage-policies#festival-data" target="_blank" class="accent-link">Leer políticas de uso completas</nuxt-link>.</p>
 
           <div class="cov-actions">
             <button type="button" class="cov-btn cov-btn--report" @click="openReport">
