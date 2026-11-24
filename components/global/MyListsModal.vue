@@ -312,10 +312,13 @@ export default {
                      })
                  );
      
-                 await Promise.all(promises);
-                 this.$bus.$emit('bulk-items-added', { 
-                     elementCount: mappedItems.length, 
-                     listCount: this.selectedListIds.length 
+                 const responses = await Promise.all(promises);
+                 // Callers in 'move' mode delete the source items on this event, so only emit on full success.
+                 if (responses.some(r => !r.ok)) throw new Error('Bulk add rejected');
+                 this.$bus.$emit('bulk-items-added', {
+                     elementCount: mappedItems.length,
+                     listCount: this.selectedListIds.length,
+                     listIds: [...this.selectedListIds]
                  });
                  this.$bus.$emit('lists-updated');
                  this.close();

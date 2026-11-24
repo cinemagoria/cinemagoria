@@ -18,11 +18,11 @@
         <div class="list-meta">
           <span class="meta-author">{{ isOwner ? 'by You' : 'by ' + (list.owner_name || 'Unknown') }}</span>
           <span class="meta-dot">·</span>
-          <span class="meta-count">{{ items.length }} {{ items.length === 1 ? 'item' : 'items' }}</span>
+          <span class="meta-count">{{ totalCount }} {{ totalCount === 1 ? 'item' : 'items' }}</span>
         </div>
 
         <!-- Empty-list fallback: once the list has items these controls live in the toolbar -->
-        <div v-if="items.length === 0" class="list-actions">
+        <div v-if="totalCount === 0" class="list-actions">
           <div v-if="isOwner" class="privacy-wrapper">
             <button @click.stop="togglePrivacyDropdown" class="privacy-btn">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -52,15 +52,16 @@
 
       <!-- ── Undo banner ──────────────────────────────────────────── -->
       <transition name="slide-up">
-        <div v-if="undoItem" class="undo-banner">
-          <span>Removed &ldquo;{{ undoItem.details.nameForDb }}&rdquo;</span>
+        <div v-if="undoItems.length" class="undo-banner">
+          <span v-if="undoItems.length === 1">Removed &ldquo;{{ undoItems[0].details.nameForDb }}&rdquo;</span>
+          <span v-else>Removed {{ undoItems.length }} items</span>
           <button @click="handleUndo" class="undo-btn">Undo</button>
           <div class="timer-line"></div>
         </div>
       </transition>
 
       <!-- ── Empty list ───────────────────────────────────────────── -->
-      <div v-if="items.length === 0 && !undoItem" class="state-card">
+      <div v-if="totalCount === 0 && !undoItems.length" class="state-card">
         <img src="/ui/cinema-popcorn.svg" alt="" class="state-icon">
         <h3>This list is empty</h3>
         <p>Go explore and add some movies or TV shows.</p>
@@ -109,6 +110,22 @@
               <span class="filter-btn-label">Filters</span>
               <span v-if="hasActiveFilters" class="filter-dot"></span>
             </button>
+
+            <button v-if="userEmail" class="filter-btn" :class="{ active: selectionMode }" @click="toggleSelectionMode" aria-label="Select items" :aria-pressed="selectionMode ? 'true' : 'false'">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><polyline points="9 11 12 14 22 4"/></svg>
+              <span class="filter-btn-label">Select</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Bulk selection bar -->
+        <div v-if="selectionMode" class="filter-bar selection-bar">
+          <span class="selection-count">{{ selectedItems.length }} selected</span>
+          <div class="selection-actions">
+            <button class="action-pill" :disabled="!selectedItems.length" @click="openBulkModal('add')">Add to…</button>
+            <button v-if="isOwner" class="action-pill" :disabled="!selectedItems.length" @click="openBulkModal('move')">Move to…</button>
+            <button v-if="isOwner" class="clear-all-inline" :disabled="!selectedItems.length" @click="bulkRemove">Remove</button>
+            <button class="action-pill" @click="cancelSelection">Cancel</button>
           </div>
         </div>
 
@@ -162,8 +179,13 @@
 
           <!-- Grid -->
           <div class="movie-grid">
-            <div v-for="vm in displayItems" :key="vm.type + '-' + vm.id" class="movie-card" :id="'list-item-' + vm.id">
+            <div v-for="vm in displayItems" :key="vm.type + '-' + vm.id" class="movie-card" :id="'list-item-' + vm.id"
+              :class="{ 'selection-mode': selectionMode, selected: selectionMode && selectedKeys.has(vm.type + '-' + vm.id) }"
+              @click.capture="onCardClick($event, vm)">
               <div class="poster-container">
+                <span v-if="selectionMode" class="select-check" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
                 <nuxt-link :to="vm.link" class="poster-link">
                   <img
                     :src="vm.poster"
@@ -176,7 +198,7 @@
                   />
                 </nuxt-link>
 
-                <div v-if="isOwner && vm.userRating" class="user-rating-badge"
+                <div v-if="isOwner && vm.userRating && !selectionMode" class="user-rating-badge"
                   :class="{ 'has-review': vm.hasReview }"
                   @click.stop="openRatingModal(vm.raw)"
                   :title="vm.hasReview ? 'Has review' : 'Your rating'">
@@ -184,7 +206,7 @@
                   <span v-if="vm.hasReview" class="review-indicator"></span>
                 </div>
 
-                <div v-if="isOwner" class="card-actions-menu" :class="{ 'menu-open': activeCardMenuId === vm.id }">
+                <div v-if="isOwner && !selectionMode" class="card-actions-menu" :class="{ 'menu-open': activeCardMenuId === vm.id }">
                   <button class="dropdown-trigger" @click.prevent.stop="toggleCardMenu(vm.id)" aria-label="Card actions">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
                   </button>
@@ -598,8 +620,11 @@ export default {
             posterOverrideMap: {},
             movieGenres: [],
             tvGenres: [],
-            undoItem: null,
+            undoItems: [],
             undoTimer: null,
+            selectionMode: false,
+            selectedItems: [],
+            bulkMode: null,
             shareModalVisible: false,
             cloneModalVisible: false,
             customTitle: '',
@@ -876,6 +901,12 @@ export default {
            });
         },
 
+        totalCount() { return this.moviesFetched.length + this.tvFetched.length; },
+
+        selectedKeys() {
+            return new Set(this.selectedItems.map(i => i.details.typeForDb + '-' + i.details.idForDb));
+        },
+
         isOwner() {
             if (!this.list) return false;
             const dbEmail = this.list.user_email ? this.list.user_email.toLowerCase() : '';
@@ -902,9 +933,11 @@ export default {
             }
         });
         this.$bus.$on('lists-updated', this.handleListUpdate);
+        this.$bus.$on('bulk-items-added', this.onBulkItemsAdded);
     },
 
-    beforeDestroy() {
+    // Vue 3 (no compat build) never calls beforeDestroy; a leaked bus listener could act on a stale selection.
+    beforeUnmount() {
         if (this.resizeObserver) {
             this.resizeObserver.disconnect();
         }
@@ -912,6 +945,7 @@ export default {
         document.removeEventListener('click', this.closeDropdowns);
         document.removeEventListener('click', this.closeCardMenu);
         this.$bus.$off('lists-updated', this.handleListUpdate);
+        this.$bus.$off('bulk-items-added', this.onBulkItemsAdded);
         this.finalizeDelete();
     },
 
@@ -989,7 +1023,9 @@ export default {
                 if (response.ok) {
                     const data = await response.json();
                     this.list = data.list;
-                    this.items = data.items;
+                    // Keep removals still inside the undo window hidden across refetches.
+                    const pending = new Set(this.undoItems.map(u => u.details.typeForDb + '-' + u.details.idForDb));
+                    this.items = (data.items || []).filter(r => !pending.has(r.item_type + '-' + r.item_id));
                     this.hydrateItems();
                     if (this.filter === 'movies' && this.moviesFetched.length === 0 && this.tvFetched.length > 0) {
                         this.filter = 'tvShows';
@@ -1233,19 +1269,72 @@ export default {
              this.$bus.$emit('show-add-to-list-modal', item.details);
         },
 
-        async removeListItem(item) {
-            if (this.undoItem) {
+        toggleSelectionMode() {
+            if (this.selectionMode) this.cancelSelection();
+            else this.selectionMode = true;
+        },
+
+        cancelSelection() {
+            this.selectionMode = false;
+            this.selectedItems = [];
+            this.bulkMode = null;
+        },
+
+        toggleSelection(item) {
+            const key = item.details.typeForDb + '-' + item.details.idForDb;
+            if (this.selectedKeys.has(key)) {
+                this.selectedItems = this.selectedItems.filter(i => i.details.typeForDb + '-' + i.details.idForDb !== key);
+            } else {
+                this.selectedItems = [...this.selectedItems, item];
+            }
+        },
+
+        // In selection mode a click anywhere on the card toggles it instead of following its links.
+        onCardClick(e, vm) {
+            if (!this.selectionMode) return;
+            e.preventDefault();
+            e.stopPropagation();
+            this.toggleSelection(vm.raw);
+        },
+
+        openBulkModal(mode) {
+            if (!this.selectedItems.length) return;
+            this.bulkMode = mode;
+            this.$bus.$emit('show-add-to-list-modal', this.selectedItems.map(i => ({ ...i.details })), null, mode);
+        },
+
+        onBulkItemsAdded({ listIds } = {}) {
+            // Single-item adds from the card menu emit this too; only react to our own bulk action.
+            if (!this.bulkMode) return;
+            const isMove = this.bulkMode === 'move' && !(listIds || []).some(id => id == this.list.id);
+            const moved = this.selectedItems;
+            this.cancelSelection();
+            if (isMove && this.isOwner) this.removeListItems(moved);
+        },
+
+        bulkRemove() {
+            if (!this.selectedItems.length || !this.isOwner) return;
+            const items = this.selectedItems;
+            this.cancelSelection();
+            this.removeListItems(items);
+        },
+
+        removeListItem(item) {
+            this.removeListItems([item]);
+        },
+
+        removeListItems(items) {
+            if (this.undoItems.length) {
                 this.finalizeDelete();
             }
 
-            if (item.details.typeForDb === 'movie') {
-                this.moviesFetched = this.moviesFetched.filter(i => i.details.idForDb !== item.details.idForDb);
-            } else {
-                this.tvFetched = this.tvFetched.filter(i => i.details.idForDb !== item.details.idForDb);
-            }
-            this.items = this.items.filter(i => !(i.item_id == item.details.idForDb && i.item_type == item.details.typeForDb));
+            const keys = new Set(items.map(i => i.details.typeForDb + '-' + i.details.idForDb));
+            const keep = i => !keys.has(i.details.typeForDb + '-' + i.details.idForDb);
+            this.moviesFetched = this.moviesFetched.filter(keep);
+            this.tvFetched = this.tvFetched.filter(keep);
+            this.items = this.items.filter(i => !keys.has(i.item_type + '-' + i.item_id));
 
-            this.undoItem = item;
+            this.undoItems = items;
             this.startUndoTimer();
         },
 
@@ -1257,39 +1346,37 @@ export default {
         },
 
         async finalizeDelete() {
-            if (!this.undoItem) return;
-            const item = this.undoItem;
-            this.undoItem = null;
+            if (!this.undoItems.length) return;
+            const items = this.undoItems;
+            this.undoItems = [];
             if (this.undoTimer) clearTimeout(this.undoTimer);
 
             const listId = this.list.id;
-            const itemId = item.details.idForDb;
-            const itemType = item.details.typeForDb;
             const userEmail = this.userEmail;
 
             try {
-                let url = `${this.tursoBackendUrl}/lists/${listId}/items?itemId=${itemId}&itemType=${itemType}`;
-                if (userEmail) {
-                    url += `&userEmail=${encodeURIComponent(userEmail)}`;
-                }
-                await fetch(url, {
-                    method: 'DELETE'
-                });
+                // shortcut: one DELETE per item (no bulk endpoint for list items); add one to the API if lists get huge.
+                await Promise.all(items.map(item => {
+                    let url = `${this.tursoBackendUrl}/lists/${listId}/items?itemId=${item.details.idForDb}&itemType=${item.details.typeForDb}`;
+                    if (userEmail) {
+                        url += `&userEmail=${encodeURIComponent(userEmail)}`;
+                    }
+                    return fetch(url, { method: 'DELETE' });
+                }));
                 this.$bus.$emit('lists-updated');
             } catch(e) { console.error(e); }
         },
 
         handleUndo() {
             if (this.undoTimer) clearTimeout(this.undoTimer);
-            if (this.undoItem) {
-                if (this.undoItem.details.typeForDb === 'movie') {
-                    this.moviesFetched.unshift(this.undoItem);
+            this.undoItems.forEach(item => {
+                if (item.details.typeForDb === 'movie') {
+                    this.moviesFetched.unshift(item);
                 } else {
-                    this.tvFetched.unshift(this.undoItem);
+                    this.tvFetched.unshift(item);
                 }
-
-                this.undoItem = null;
-            }
+            });
+            this.undoItems = [];
         },
 
         formatVoteCount(count) {
@@ -2024,6 +2111,36 @@ export default {
 }
 
 .filter-chips { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; min-width: 0; }
+
+/* Bulk selection */
+.selection-bar {
+  border-color: rgba(139, 233, 253, 0.35);
+  .selection-count { color: #8BE9FD; font-size: 14px; font-weight: 600; }
+  .selection-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .action-pill { padding: 6px 14px; }
+  button:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+}
+
+.movie-card.selection-mode { cursor: pointer; }
+.movie-card.selected {
+  border-color: #8BE9FD;
+  box-shadow: 0 0 0 2px rgba(139, 233, 253, 0.55), 0 0 20px rgba(139, 233, 253, 0.2);
+  .poster { filter: brightness(0.7); }
+}
+
+.select-check {
+  position: absolute;
+  top: 8px; right: 8px;
+  z-index: 6;
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  border: 2px solid rgba(139, 233, 253, 0.8);
+  background: rgba(3, 4, 6, 0.7);
+  color: transparent;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s ease;
+}
+.movie-card.selected .select-check { background: #8BE9FD; border-color: #8BE9FD; color: #03242C; }
 
 .filter-chip {
   display: flex;
