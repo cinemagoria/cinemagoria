@@ -97,20 +97,40 @@ const sections = [
   {
     id: 'data-sources',
     title: '5. Data Sources and Attributions',
-    body: `<p>The platform integrates data from public APIs and metadata providers. All trademarks and assets belong to their respective owners. Information is presented under fair use principles and for non-commercial purposes. Rights holders or publishers who wish to request content removal (<em>opt-out</em>) may contact the team as indicated in <strong>Section 8</strong>.</p>
-<p><strong>Festival data coverage:</strong> festival lineups are collected from public sources. Data availability may be incomplete, particularly for short films or works with limited presence in public sources. As a result, the number of titles displayed for a given festival may differ from its official program. These differences reflect technical limitations of external data sources and not editorial decisions.</p>
-<p><strong>News aggregation:</strong> content is obtained from publicly available RSS feeds for indexing purposes. Original news content is not modified, and only the information provided by such sources (such as title, description, and metadata) is displayed, in the format in which it is distributed. Full articles cannot be read within the platform: all interactions redirect to the original site, which is the sole environment where the complete content can be accessed, ensuring that traffic, impressions, and monetization remain exclusively with the original publisher. Additionally, the platform may publish its own editorial content generated in an automated or assisted manner from multiple public sources. Such content may involve processes of synthesis, reformulation, or automated structuring of the original information, without implying literal reproduction or exact correspondence with the source material, and is provided exclusively for informational purposes, and may contain errors, omissions, inaccuracies, inconsistencies, or unintentional interpretations relative to the original sources. Images are used solely for identification purposes under fair use principles.</p>
-<p><strong>Community-gated editorial articles (effective July 1, 2026):</strong> select editorial pieces published on or after this date may be marked as community-gated. Such articles remain fully present in the public RSS feed in terms of title, description, editorial category, cover image, and topic metadata; however, the complete body text is delivered only to readers signed into a free account on the platform. The feed item explicitly invites the reader to sign in or create a free account in order to read the complete article. <strong>The platform does not charge any subscription or fee, does not require any credit or debit card, and remains open source and free for all readers.</strong> All articles published before July 1, 2026, and any article not bearing this mark, remain fully public both on the web and in RSS.</p>
+    body: `<p>The platform integrates data from public APIs and metadata providers. All trademarks and assets belong to their respective owners. Information is presented under fair use principles and for non-commercial purposes. Rights holders or publishers who wish to request content removal (<em>opt-out</em>) may contact the team as indicated in <strong>Section 12</strong>.</p>
 <p>Icons and visual assets are licensed under Creative Commons Attribution 4.0. Trophy by BnB Studio from <a href="https://thenounproject.com/browse/icons/term/trophy/" target="_blank" rel="noopener" title="Trophy Icons">Noun Project</a> (CC BY 3.0). Data provided by TMDB, JustWatch, MDBList, and Trakt.</p>`,
   },
   {
+    id: 'festival-data',
+    title: '6. Festival Data Coverage',
+    body: `<p>Festival lineups are collected from public sources. Data availability may be incomplete, particularly for short films or works with limited presence in public sources. As a result, the number of titles displayed for a given festival may differ from its official program. These differences reflect technical limitations of external data sources and not editorial decisions.</p>`,
+  },
+  {
+    id: 'news-aggregation',
+    title: '7. News Aggregation and Editorial Content',
+    body: `<p>Content is obtained from publicly available RSS feeds for indexing purposes. Original news content is not modified, and only the information provided by such sources (such as title, description, and metadata) is displayed, in the format in which it is distributed. Full articles cannot be read within the platform: all interactions redirect to the original site, which is the sole environment where the complete content can be accessed, ensuring that traffic, impressions, and monetization remain exclusively with the original publisher.</p>
+<p>Additionally, the platform may publish its own editorial content generated in an automated or assisted manner from multiple public sources. Such content may involve processes of synthesis, reformulation, or automated structuring of the original information, without implying literal reproduction or exact correspondence with the source material, and is provided exclusively for informational purposes, and may contain errors, omissions, inaccuracies, inconsistencies, or unintentional interpretations relative to the original sources. Images are used solely for identification purposes under fair use principles.</p>`,
+  },
+  {
+    id: 'community-articles',
+    title: '8. Community-Gated Articles',
+    body: `<p><strong>Effective July 1, 2026:</strong> select editorial pieces published on or after this date may be marked as community-gated. Such articles remain fully present in the public RSS feed in terms of title, description, editorial category, cover image, and topic metadata; however, the complete body text is delivered only to readers signed into a free account on the platform. The feed item explicitly invites the reader to sign in or create a free account in order to read the complete article. <strong>The platform does not charge any subscription or fee, does not require any credit or debit card, and remains open source and free for all readers.</strong> All articles published before July 1, 2026, and any article not bearing this mark, remain fully public both on the web and in RSS.</p>`,
+  },
+  {
+    id: 'news-schedule',
+    title: '9. News Publishing Schedule 2026–2027',
+    body: `<p>Coverage in the News section continues through <strong>November 30, 2026</strong>. From <strong>December 1, 2026 through January 20, 2027</strong>, no new editorial articles will be published and no new third-party news items will be added. Coverage is expected to resume on January 21, 2027, with the opening of the Sundance Film Festival.</p>
+<p>This schedule applies to the News section only. The news archive, festival pages, awards, lists, notifications and accounts remain available under the usual conditions. Festival pages for editions that run past November 30, 2026, such as the Jogja-NETPAC Asian Film Festival (through December 5, 2026), continue to receive programme and awards updates. Catalog data may continue to update automatically. Requests sent as indicated in <strong>Section 12</strong> may take longer to receive a response.</p>
+<p>These dates may change. News publishing carries no commitment as to frequency or continuity: the section may be modified, suspended or discontinued at any time.</p>`,
+  },
+  {
     id: 'general',
-    title: '6. General Conditions',
+    title: '10. General Conditions',
     body: `<p>This is an ongoing project under continuous development, and these terms may be modified at any time. Continued use implies acceptance of the current version.</p>`,
   },
   {
     id: 'cookies',
-    title: '7. Cookie Policy',
+    title: '11. Cookie Policy',
     body: `<p>The platform uses cookies and similar client-side storage technologies. Preferences can be managed at any time through the cookie settings available in the site footer or the consent banner shown on the first visit.</p>
 <div class="cookie-table-wrapper">
   <table class="cookie-table">
@@ -153,15 +173,8 @@ const sections = [
   },
   {
     id: 'contact',
-    title: '8. Contact',
+    title: '12. Contact',
     body: `<p>For inquiries regarding these terms or policies, write to <a href="mailto:hello@cinemagoria.com">hello@cinemagoria.com</a>.</p>`,
-  },
-  {
-    id: 'news-schedule',
-    title: '9. News Publishing Schedule 2026–2027',
-    body: `<p>Coverage in the News section continues through <strong>November 30, 2026</strong>. From <strong>December 1, 2026 through January 20, 2027</strong>, no new editorial articles will be published and no new third-party news items will be added. Coverage is expected to resume on January 21, 2027, with the opening of the Sundance Film Festival.</p>
-<p>This schedule applies to the News section only. The news archive, festival pages, awards, lists, notifications and accounts remain available under the usual conditions. Festival pages for editions that run past November 30, 2026, such as the Jogja-NETPAC Asian Film Festival (through December 5, 2026), continue to receive programme and awards updates. Catalog data may continue to update automatically. Requests sent as indicated in <strong>Section 8</strong> may take longer to receive a response.</p>
-<p>These dates may change. News publishing carries no commitment as to frequency or continuity: the section may be modified, suspended or discontinued at any time.</p>`,
   },
 ];
 
@@ -320,6 +333,8 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
   border: 1px solid rgba(31, 84, 103, 0.45);
   border-radius: 16px;
   padding: 1.1rem 0.7rem 1rem;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow:
@@ -338,6 +353,7 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
   @media (max-width: 1024px) {
     position: relative;
     top: auto;
+    max-height: none;
     padding: 0.8rem 0;
     background: transparent;
     border: none;
@@ -385,7 +401,6 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
   border-radius: 10px;
   border: 1px solid transparent;
   transition: all 0.2s ease;
-  white-space: nowrap;
   letter-spacing: 0.1px;
 
   &:hover {
@@ -396,6 +411,7 @@ onBeforeUnmount(() => { observer && observer.disconnect(); });
 
   @media (max-width: 1024px) {
     padding: 7px 14px;
+    white-space: nowrap;
     border: 1px solid rgba(139, 233, 253, 0.18);
     font-size: 13px;
     background: rgba(3, 4, 6, 0.5);

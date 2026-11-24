@@ -38,6 +38,7 @@
               <li><nuxt-link to="/changelog">Latest Updates</nuxt-link></li>
               <li><nuxt-link to="/faq">FAQ</nuxt-link></li>
               <li><nuxt-link to="/contact">Contact</nuxt-link></li>
+              <li><nuxt-link to="/usage-policies">Usage Policies</nuxt-link></li>
             </ul>
           </div>
         </nav>
