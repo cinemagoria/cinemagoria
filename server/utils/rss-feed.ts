@@ -100,6 +100,7 @@ export async function buildNewsFeed(lang: FeedLang): Promise<string> {
               FROM cinemagoria_articles
               WHERE is_visible = 1 AND is_cinemagoria = 1
                 AND (datetime(published_at) IS NULL OR datetime(published_at) <= datetime('now'))
+                AND (created_at IS NULL OR published_at IS NULL OR datetime(created_at) <= datetime(published_at, '+2 days'))
               ORDER BY published_at DESC
               LIMIT 50`,
         args: []
