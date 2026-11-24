@@ -1,161 +1,85 @@
-<img src="docs/readme/cinemagoria-header.jpg" alt="Cinemagoria" width="100%">
-
-> A community-oriented film & TV discovery platform.
-> Lead developer: [@imprvhub](https://github.com/imprvhub) · In active development since March 27, 2024.
-
-![Cinemagoria Cover](docs/readme/cinemagoria-asset1.webp)
-
-Cinemagoria aggregates metadata, ratings, reviews, festival coverage, awards history, streaming availability and original soundtracks from **IMDb, TMDB, MusicBrainz, Trakt.tv, Rotten Tomatoes, JustWatch and MDBList** into a single deeply integrated experience — with full user accounts, public profiles, watchlists, custom lists and a follow-based notification system.
-
-The platform is built around four principles:
-
-- **Aggregation over exclusivity** — no in-house catalog; trusted third-party sources only.
-- **Festival-first discovery** — dedicated coverage of major international film festivals.
-- **Personalization without lock-in** — public/private profiles, custom lists, transparent controls with granular cookie consent management.
-- **Performance as a feature** — pre-computed data, server-side selection, concurrent fetching.
-
----
-
-## Stack
-
-| Layer | Technology |
-|---|---|
-| Framework | Nuxt 4 · Vue 3 (Composition + Options API) |
-| State / Bus | Pinia · `mitt` |
-| Styling | SCSS (`@use`) |
-| Primary database | Turso (LibSQL) — favorites, ratings, follows, notifications, profiles, news |
-| Auth | Google OAuth + Django REST Framework (DRF) |
-| Hosting | Google Cloud Platform (frontend, backend, jobs) |
-| Background jobs | TypeScript + Rust workers (news curation, release detection, typo detection) |
-
----
-
-## N.O.I.R. — The Cinemagoria Selection
-
 <div align="center">
-  <img src="docs/readme/cinemagoria-asset11.webp" alt="N.O.I.R. — Nothing Out Is Ready" width="70%">
+
+<img src="docs/readme/cinemagoria-header.jpg" alt="Platform header" width="100%">
+
+### A community-oriented film & TV discovery platform.
+
+[![Latest release](https://img.shields.io/github/v/release/cinemagoria/cinemagoria?style=flat-square&label=release&color=8BE9FD&labelColor=03242C)](https://github.com/cinemagoria/cinemagoria/releases/latest)
+[![Last commit](https://img.shields.io/github/last-commit/cinemagoria/cinemagoria?style=flat-square&label=updated&color=8BE9FD&labelColor=03242C)](https://github.com/cinemagoria/cinemagoria/commits)
+[![Live](https://img.shields.io/badge/live-website-8BE9FD?style=flat-square&labelColor=03242C)](https://cinemagoria.com)
+
+[**Website**](https://cinemagoria.com) · [**En español**](https://es.cinemagoria.com) · [**Changelog**](https://cinemagoria.com/changelog) · [**Roadmap**](https://github.com/orgs/cinemagoria/projects/1) · [**Report an issue**](https://github.com/cinemagoria/cinemagoria/issues/new)
+
 </div>
 
-**N.O.I.R. (Nothing Out Is Ready)** is Cinemagoria's in-house editorial selection — a parallel content layer to the algorithmic feeds, covering titles released or scheduled from 2024 onwards. Curation is forward-looking: upcoming premieres are added well in advance, with the current selection reaching as far as March 2027.
+<br>
 
-**Two states, one badge.** A title in N.O.I.R. lives in one of two states:
+The platform aggregates metadata, ratings, reviews, festival coverage, awards history, streaming availability and soundtracks from **IMDb, TMDB, Trakt, Rotten Tomatoes, JustWatch, MDBList and MusicBrainz**, with user accounts, custom lists and follow-based notifications.
 
-- **`hero_selections`** — actively rotating in the homepage marquee rendered by `Hero.vue` (`pages/index.vue`). These are the titles Cinemagoria is currently promoting for cultural value and editorial alignment.
-- **`/noir` archive** — where titles move once they exit the active rotation. Nothing is ever removed; rotating out is a state transition into the historical record. The page also exposes a `?` trigger that opens the N.O.I.R. manifesto.
+![Homepage](docs/readme/cinemagoria-asset1.webp)
 
-The N.O.I.R. badge — rendered in the top-right corner of each backdrop in `Hero.vue` — applies in both states, so any title Cinemagoria has ever editorially promoted stays identifiable wherever it appears across the platform.
+## Principles
 
-**Data pipeline.** A scheduled GitHub Actions workflow keeps the N.O.I.R. dataset (titles, enrichment data, rotation state) in sync with the curatorial source so additions and state transitions propagate without manual deploys.
-
----
+- **Aggregation over exclusivity** — no in-house catalog; data comes from trusted third-party sources.
+- **Festival-first discovery** — every covered festival has its own hub with lineup, schedule and winners.
+- **Editorial curation** — N.O.I.R. and first-party news and reviews sit alongside the algorithmic feeds.
+- **Open access** — festivals, the release calendar and the N.O.I.R. archive need no account; accounts are free.
 
 ## Features
 
-### Film Festivals
-<div align="center">
-  <img src="docs/readme/cinemagoria-asset9.webp" alt="Festivals" width="70%">
-</div>
+| | |
+|---|---|
+| **Festival hubs** | Lineups grouped by official section, searchable schedules in the reader's timezone, and winners archived as each ceremony closes. |
+| **N.O.I.R.** | The platform's editorial selection: featured in the homepage marquee, then kept in a public archive, with a dated ledger of every featured title. |
+| **Release calendar** | Every tracked release by month or week, each date tied to its country and release format. |
+| **Search** | Unified search across films, series, people, news, festivals and production companies, with query parsing, typo detection and IMDb / TMDB ID lookup. |
+| **Movie & TV pages** | IMDb-first ratings, Rotten Tomatoes, Trakt reviews, soundtracks, awards, full crew, trailers and streaming availability. |
+| **Awards** | The major ceremonies and every covered festival, browsable by title and by person. |
+| **News & reviews** | First-party articles and reviews alongside trusted outlets, with topics, related titles and an RSS feed. |
+| **Lists & watchlist** | Unlimited public or private lists, personal ratings, and viewing progress by minute for films and by episode for series. |
+| **Follows & notifications** | Follow people, series, production companies and streaming services, and get notified of new releases and episodes. |
 
-Every covered festival gets its own page, API endpoints, card and badge components, and a slot in the homepage carousel. Selections are grouped by the festival's real sections, screening schedules are timezone-aware, and award winners are seeded once the ceremonies close.
+<table>
+  <tr>
+    <td width="50%" align="center"><img src="docs/readme/cinemagoria-asset9.webp" alt="Festival hubs"><br><sub>Festival hubs</sub></td>
+    <td width="50%" align="center"><img src="docs/readme/cinemagoria-asset11.webp" alt="N.O.I.R."><br><sub>N.O.I.R.</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/readme/cinemagoria-asset12.webp" alt="Release calendar"><br><sub>Release calendar</sub></td>
+    <td align="center"><img src="docs/readme/cinemagoria-asset8.webp" alt="Movie & TV pages"><br><sub>Movie & TV pages</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/readme/cinemagoria-asset10.webp" alt="Search"><br><sub>Search</sub></td>
+    <td align="center"><img src="docs/readme/cinemagoria-asset3.webp" alt="Notifications"><br><sub>Notifications</sub></td>
+  </tr>
+</table>
 
-**Live now**
+## Platform
 
-**Sundance** · **Rotterdam** · **Berlinale** · **Romford Horror** · **Slamdance** · **SXSW** · **BIFFF** · **BAFICI** · **CUFF** *(Calgary Underground)* · **Cannes** · **Tribeca** · **BIFAN** *(Bucheon)* · **KVIFF** *(Karlovy Vary)* · **Fantasia** *(Montréal)* · **Locarno** · **FrightFest** *(London)* · **Venice** *(La Biennale)* · **TIFF** *(Toronto)* · **BIFF** *(Busan)* · **BFI London** · **Sitges** · **Thessaloniki** · **Mar del Plata** · **Tallinn Black Nights** *(PÖFF)* · **Cairo** · **BARS** *(Buenos Aires Rojo Sangre)* · **JAFF** *(Jogja-NETPAC)*
+- **Devices** — phones, desktops and TVs, with a lite mode for TV screens and low-memory devices.
+- **Installable** as a web app from the browser.
+- **Languages** — English and Spanish.
+- **Seasonal programmes** alongside the regular catalog.
+- **News sources** — every item is labeled with its source; AI-assisted articles include a disclosure and a form to report errors.
+- **Privacy** — granular cookie consent, private profiles and self-service account deletion.
 
-Thessaloniki opens the Balkans and the Eastern Mediterranean, Tallinn the Baltics, Cairo takes coverage into Africa and the Middle East, and JAFF into Southeast Asia, closing the 2026 cycle. The 2027 cycle adds **Göteborg**, **CPH:DOX**, **Tokyo** and **Red Sea**.
+## Architecture
 
-Cannes ships the official screenings plus the parallel sections — Critics' Week, Quinzaine des Cinéastes and ACID — and Venice carries its own parallel sections. FrightFest ships the full official screening schedule, and Berlinale adds an interactive timezone-aware view of it. The hero section supports multiple simultaneous festival premiere badges with display precedence.
+- **Precomputed data** — workers prepare news, festival, awards and spotlight data ahead of time; pages read results instead of computing them.
+- **Edge caching** — home, movie and TV routes are served from the CDN.
+- **Render budget** — the homepage renders within a time limit and the browser fills in anything that arrives late.
+- **Query timeouts and profiling** — every database query has a timeout and is profiled by shape.
+- **Data sync without deploys** — scheduled workflows sync editorial selections, enrichment and overrides to the database.
 
-**Coverage runs from 2026 onwards** and continues across each subsequent edition. Each integration is planned against the festival's lineup announcement rather than a fixed countdown to opening night, since nothing can be ingested before the programme is public — the delivery plan is tracked on the [Festivals Coverage Roadmap](https://github.com/orgs/cinemagoria/projects/1). A festival is dropped when its selection largely duplicates coverage already shipped.
+## Stack
 
-> **Catalog coverage caveat:** festival pages are built from public metadata and third-party sources, which don't always cover every title — particularly short films, experimental works and regional productions. This is a technical limitation, not an editorial decision. No film is intentionally omitted or censored; gaps narrow as upstream metadata catches up.
-
-### Release Calendar
-<div align="center">
-  <img src="docs/readme/cinemagoria-asset12.webp" alt="Release Calendar" width="70%">
-</div>
-
-A public calendar at `/calendar` with every release the platform tracks for a given month or week — films and episodes together, drawn from the curated catalog (festival programmes, N.O.I.R.). A release date belongs to a country and a format, so every entry names its territory and release type instead of presenting one date as universal. A title's festival itinerary stays expanded, while a wide same-week international rollout collapses into a single entry. Lens, territory, media type and free-text filters run client-side over one cacheable payload per month.
-
-### Search & Discovery
-<div align="center">
-  <img src="docs/readme/cinemagoria-asset10.webp" alt="Search" width="70%">
-</div>
-
-Categorized multi-search across movies, TV shows, people, news, festivals and production companies — visually separated by category through horizontal carousels. Contextual query parsing extracts year and person signals to score results by relevance, with a built-in search guide modal for best practices. Supports direct IMDb / TMDb ID lookup, embedded Discover filters and Rust-backed typo detection.
-
-### Catalog Discovery
-<div align="center">
-  <img src="docs/readme/cinemagoria-asset2.webp" alt="Discover" width="70%">
-</div>
-
-A unified Discover component embedded directly in Movie and TV pages: granular content filters, IMDb and user rating ranges, item enrichment with chunking, and chip-based active filter display.
-
-### Awards
-<div align="center">
-  <img src="docs/readme/cinemagoria-asset6.webp" alt="Awards" width="70%">
-</div>
-
-Full historical coverage of the Academy Awards, Golden Globes, Palme d'Or, Golden Lion and Golden Bear, with festival winners archived as each covered edition closes. Includes a dedicated Awards page, per-title and per-person awards tabs, and intelligent link resolution that routes to the correct movie or TV page even when TMDb IDs collide.
-
-### Movie & TV Detail
-<div align="center">
-  <img src="docs/readme/cinemagoria-asset8.webp" alt="Detail Pages" width="70%">
-</div>
-
-IMDb-first ratings with TMDB fallback (always labeled), Rotten Tomatoes Tomatometer, MusicBrainz original soundtracks, Trakt.tv reviews, release status context, country-flagged release dates, and tab-based recommendation carousels (Similar / By the Director / By the Producer / By the Creator). External links render conditionally — never broken.
-
-### Watchlist & Custom Lists
-<div align="center">
-  <img src="docs/readme/cinemagoria-asset4.webp" alt="Watchlist" width="70%">
-</div>
-
-A 50-movie + 50-TV watchlist with persistent filters (genre, year, IMDb rating range, votes, personal rating) and Bayesian-weighted sorting. Unlimited custom themed lists with descriptions, public/private toggles, cloning of public lists, dynamic SEO, and bulk multi-select actions with undo. The global QuickFav dropdown manages list membership from any content card.
-
-### Follows & Notifications
-<div align="center">
-  <img src="docs/readme/cinemagoria-asset3.webp" alt="Notifications" width="70%">
-</div>
-
-Follow people (actors, directors, writers), TV shows, production companies and streaming platforms. A `/cron/check-releases` job detects new films (±30 days for people) and new episodes (±7 days for TV), pushing rich notifications synced across devices via Turso. The notification center supports filtering, bulk mark-all-read, paginated browsing and per-item deletion with ownership validation.
-
-### Cinema News
-<div align="center">
-  <img src="docs/readme/cinemagoria-asset5.webp" alt="News" width="70%">
-</div>
-
-Cinemagoria runs its own editorial pipeline for cinema news, alongside a curated set of trusted outlets — every card is labeled with its source, first-party articles open in-app and third-party ones link out to the publisher. Article pages feature YouTube trailer embeds, multi-asset image carousels, and related TMDB movies, TV shows and people for discoverability. The frontend reads pre-computed results from Turso (sub-50ms load times), with article search scoped to Cinemagoria articles, saved articles, an RSS feed for Cinemagoria-sourced content and a homepage news carousel.
-
-### Authentication
-
-Modal-based auth (no `/login` or `/register` pages) with Google OAuth backed by Django REST Framework, queued pending actions that resume after sign-in, event-driven session updates, and DOMPurify-protected user content. Account deletion is fully self-service.
-
----
-
-## Additional Capabilities
-
-- **Public user profiles** with activity feeds, follower/following management and configurable privacy.
-- **Granular media progress tracking** in real minutes for films and down to individual episodes for TV, editable from the hero and surfaced as progress bars on cards.
-- **Production company & streaming platform pages** with dedicated content listings, sorting, follow buttons and "Explore All" entry points.
-- **Server-side hero selection** with quality gating (IMDb origin, score > 7.0, > 5,000 votes, animation/fantasy excluded) and a promise-based Map cache for enrichment.
-- **Open access** to festival hubs, the release calendar, the N.O.I.R. archive, and more— no sign-in required.
-- **Internationalization** in English and Español via subdomain switching, with AI-delegated translation for hero overviews.
-
----
-
-## Architecture Highlights
-
-- **Concurrent fetching everywhere** — `Promise.all` for homepage data, awards and hero APIs; `Promise.allSettled` for provider and review fetching.
-- **Edge caching on Movie, TV and root routes** — route rules emit `Cache-Control` only and the CDN stores the response; Nitro's server-side cache is deliberately never enabled, since its default in-memory driver leaks heap on wildcard routes. CSR is preserved for interactive routes like `/search`.
-- **News and awards decoupled from request time** — pre-curated by background workers, read instantly at request time.
-- **Release calendar as one normalized payload per month** — title metadata serialized once and referenced by events, backed by an indexed range query on an event-grain release dataset synced by a scheduled job.
-- **Query profiling at the database client boundary** — every server-side query is timed and aggregated by shape.
-- **Dynamic, split sitemap generation** via server routes for SEO.
-- **`fetchWithRefill` carousel batching** with seen-ID deduplication and diversity capping.
-- **Hero enrichment override system** (`force_enrichment`, `_forcePoster`, `_forceBackdrop`, `_forceTrailer` mixins) for precise control over featured assets.
-- **Standardized utilities** — `mapItemToDbPayload`, `itemMapper`, `getPosterUrl`, `formatDate`, `handleImageError` — to keep payloads and rendering consistent across components.
-
----
+| | |
+|---|---|
+| **App** | Nuxt · Vue 3 · Pinia · SCSS |
+| **Data** | Turso (LibSQL) |
+| **Auth** | Google OAuth · Django REST Framework |
+| **Workers** | TypeScript · Rust · GitHub Actions |
+| **Infrastructure** | Google Cloud · CDN edge caching |
 
 ## Setup
 
@@ -163,28 +87,15 @@ Modal-based auth (no `/login` or `/register` pages) with Google OAuth backed by 
 git clone https://github.com/cinemagoria/cinemagoria.git
 cd cinemagoria
 yarn install
-cp .env.example .env   # configure required keys
 yarn dev
 ```
 
-Environment variables are accessed exclusively through `useRuntimeConfig()` — there are no hardcoded service endpoints.
+Add a `.env` with the keys listed under `runtimeConfig` in `nuxt.config.ts`. Configuration is read only through `useRuntimeConfig()`.
 
----
+<br>
 
-## Project Layout
+<div align="center">
 
-```
-/pages          Routes (movie, tv, festival, calendar, awards, watchlist, lists, news, notifications, ...)
-/components     Hero, Discover, QuickFav, AwardsTab, CategorySection, ExternalLinks, ...
-/components/global   UserNav, RatedModal, FollowingModal, AuthModal
-/server/api     hero, awards, news, festival/[slug], imdb-rating
-/mixins         Filters.js, _forcePoster, _forceBackdrop, _forceTrailer
-/utils          helpers.js, countries.js, constants.js
-/scripts        curator.js (background news curation)
-```
+<sub>Built for film enthusiasts, by film enthusiasts · Led by <a href="https://github.com/imprvhub">@imprvhub</a> · <a href="https://cinemagoria.com/usage-policies">Usage policies</a></sub>
 
----
-
-**Repository:** [github.com/cinemagoria/cinemagoria](https://github.com/cinemagoria/cinemagoria) · **Issues:** [open one](https://github.com/cinemagoria/cinemagoria/issues/new)
-
-*Built for film enthusiasts, by film enthusiasts.*
+</div>
