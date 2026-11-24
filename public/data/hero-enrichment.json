@@ -166,5 +166,13 @@
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1795448406/cinemagoria/backdrops/hero_1794527.webp",
     "poster_path": "/vvyvrBYCxRHD1H29Xfgcxo030dY.jpg",
     "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1818226,
+    "media_type": "movie",
+    "trailer_key": "TuDNjMV_LfE",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1795468528/cinemagoria/backdrops/hero_somalia-backdrop.webp",
+    "poster_path": "/kSioc8AkHRtyQyZhjyk37CQWdmN.jpg",
+    "force_enrichment": true
   }
 ]
