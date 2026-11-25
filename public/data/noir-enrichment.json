@@ -3092,7 +3092,7 @@
     "media_type": "movie",
     "trailer_key": "3_9vCamtuPY",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1793151459/cinemagoria/news_covers/article_dune-part-iii-warner-bros-releases-the-final-trailer-ahead-o.webp",
-    "poster_path": "/gknAq4pAuToh1Aq5CJfVkGQkExT.jpg",
+    "poster_path": "/d43fvHQsIMa4kpyhKXw0haEJIvI.jpg",
     "force_enrichment": true
   },
   {
@@ -5708,7 +5708,7 @@
     "media_type": "tv",
     "trailer_key": "jnHvbr3O2Jg",
     "backdrop_path": "/nkkZzghsZMTIZ4Uhozm38VRgoWj.jpg",
-    "poster_path": null,
+    "poster_path": "/jNWgYoIGpDMwfjI7k29N6lH4Dxf.jpg",
     "force_enrichment": true
   },
   {
@@ -6180,7 +6180,7 @@
     "media_type": "movie",
     "trailer_key": "QjQHkF_GyD8",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1794560223/cinemagoria/backdrops/noir_1213643.webp",
-    "poster_path": "/fagy0gsiGr6HdrDs59pptyBic5F.jpg",
+    "poster_path": "/pxiUYMlevGn56mnfPqfADdvo9ab.jpg",
     "force_enrichment": true
   },
   {
@@ -6405,6 +6405,54 @@
     "trailer_key": "TuDNjMV_LfE",
     "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1795468528/cinemagoria/backdrops/hero_somalia-backdrop.webp",
     "poster_path": "/kSioc8AkHRtyQyZhjyk37CQWdmN.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1769694,
+    "media_type": "movie",
+    "trailer_key": "aJgtZ-Hd54g",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1795569199/cinemagoria/backdrops/noir_1769694.webp",
+    "poster_path": "/ug7VeEwfYoeKl0l6yRkDvkd1Uio.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1287520,
+    "media_type": "movie",
+    "trailer_key": "8N9e-skJ3hw",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1795569206/cinemagoria/backdrops/noir_1287520.webp",
+    "poster_path": "/ujp2aHu1lWMjAGoletnsmv3mcMn.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 896096,
+    "media_type": "movie",
+    "trailer_key": "6qGGeUitkzU",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1795569213/cinemagoria/backdrops/noir_896096.webp",
+    "poster_path": "/xfPhni21LIEmuV8HiDfrLhcmTwr.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1598563,
+    "media_type": "movie",
+    "trailer_key": "vQczT-C1qLA",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1795569246/cinemagoria/backdrops/noir_1598563.webp",
+    "poster_path": "/9RSUjSRbPXyh3XBHPMbwxvZGwzG.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1622620,
+    "media_type": "movie",
+    "trailer_key": "rR-EmfqHJzE",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1795569252/cinemagoria/backdrops/noir_1622620.webp",
+    "poster_path": "/rJ4cTxCzX47QM9c7SyW9enRRpx0.jpg",
+    "force_enrichment": true
+  },
+  {
+    "tmdb_id": 1522183,
+    "media_type": "movie",
+    "trailer_key": "S0OB2kv7oRI",
+    "backdrop_path": "https://res.cloudinary.com/dbcpmaeww/image/upload/v1795569258/cinemagoria/backdrops/noir_1522183.webp",
+    "poster_path": "/5uQ3m7Qt4rj73ubBylu0lzElbL8.jpg",
     "force_enrichment": true
   }
 ]
