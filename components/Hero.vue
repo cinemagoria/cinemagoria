@@ -2257,11 +2257,18 @@ export default {
     padding-bottom: 55%;
   }
 
+  // The ::before keeps the 40%-of-width height; a pane taller than that (many festivals, articles,
+  // progress...) stretches the hero instead of spilling the buttons past its bottom edge.
   @media (min-width: 1024px) {
     position: relative;
-    display: block;
-    height: 0;
-    padding-bottom: 40%;
+    flex-direction: row;
+    justify-content: flex-start;
+    height: auto;
+
+    &::before {
+      content: '';
+      padding-bottom: 40%;
+    }
   }
 
   @media (orientation: landscape) and (max-width: #{$breakpoint-medium - 1px}) and (max-height: 600px) {
@@ -2702,15 +2709,12 @@ export default {
   }
 
   @media (min-width: $breakpoint-medium) {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
+    position: relative;
     z-index: 1;
     display: flex;
+    flex: none;
     align-items: center;
     width: 55%;
-    height: 100%;
     padding: 5rem 4rem;
   }
 
